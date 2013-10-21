@@ -77,13 +77,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 						<fieldset>
 							<form action="ajax/new/create.php" method="POST">
 								<p>
-									<label for="username">Server Name</label>
-									<input type="text" autocomplete="off" name="username" class="round default-width-input" />
+									<label for="server_name">Server Name</label>
+									<input type="text" autocomplete="off" name="server_name" class="round default-width-input" />
 									<em>Character Limits: a-zA-Z0-9_- (Max 35 characters)</em>
 								</p>
 								<p>
 									<label for="node">Node</label>
-									<select name="node" class="round default-width-input">
+									<select name="node" id="getNode" class="round default-width-input">
 										<?php
 											$selectData = $mysql->prepare("SELECT * FROM `node_data`");
 											$selectData->execute(array());
@@ -96,37 +96,51 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									</select><i class="icon-angle-down select-arrow"></i>
 								</p>
 								<p>
-									<label for="email">Owner</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
+									<label for="email">Owner Email</label>
+									<input type="text" autocomplete="off" name="email" value="<?php if(isset($_GET['email'])) echo $_GET['email']; ?>" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
-								<p><em><a href="ajax/new/viewPopup.php" onclick="window.open(this.href + '?node=' + $('select [\'name=node\']').val(), 'View Avaliable IPs and Ports', 'width=500, height=600, left=24, top=24'); return false;">View available</a> IPs & Ports as well as free RAM and Disk Space.</em></p>
+								<p><em><a href="ajax/new/viewPopup.php" onclick="window.open(this.href + '?node=' + $('#getNode').val(), 'View Avaliable IPs and Ports', 'width=500, height=600, left=24, top=24'); return false;">View available</a> IPs & Ports as well as free RAM and Disk Space.</em></p>
 								<p>
 									<label for="email">Assign IP Address</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
+									<input type="text" autocomplete="off" name="server_ip" class="round default-width-input" />
 								</p>
 								<p>
 									<label for="email">Assign Port</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
+									<input type="text" autocomplete="off" name="server_port" class="round default-width-input" />
 								</p>
 								<p>
 									<label for="email">Allocate Memory (in MB)</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
+									<input type="text" autocomplete="off" name="alloc_mem" class="round default-width-input" />
 								</p>
 								<p>
 									<label for="email">Allocate Disk Space (in MB)</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
+									<input type="text" autocomplete="off" name="alloc_disk" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
+								<p>
+									<label for="pass">SFTP Host</label>
+									<input type="password" autocomplete="off" name="sftp_host" class="round default-width-input" />
+									<em>Minimum Length 8 characters. Suggested 12.</em>
+								</p>
 								<div class="warning-box round" style="display: none;" id="gen_pass"></div>
 								<p>
 									<label for="pass">SFTP Password (<a href="#" id="gen_pass_bttn">Generate</a>)</label>
-									<input type="password" autocomplete="off" name="pass" class="round default-width-input" />
+									<input type="password" autocomplete="off" name="sftp_pass" class="round default-width-input" />
 									<em>Minimum Length 8 characters. Suggested 12.</em>
 								</p>
 								<p>
 									<label for="pass_2">SFTP Password (Again)</label>
-									<input type="password" autocomplete="off" name="pass_2" class="round default-width-input" />
+									<input type="password" autocomplete="off" name="sftp_pass_2" class="round default-width-input" />
+								</p>
+								<div class="stripe-separator"><!--  --></div>
+								<p>
+									<label for="backup_disk">Backup Disk Space (in MB)</label>
+									<input type="text" autocomplete="off" name="backup_disk" class="round default-width-input" />
+								</p>
+								<p>
+									<label for="backup_files">Backup Max Files</label>
+									<input type="text" autocomplete="off" name="backup_files" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
 								<p><em>To add a server to this user please go to the add new server page.</em></p>
@@ -142,12 +156,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "new.php?do=generate_password",
+				url: "add.php?do=generate_password",
 				success: function(data) {
 					$("#gen_pass").html('Generated Password: '+data);
 					$("#gen_pass").slideDown();
-					$('input[name="pass"]').val(data);
-					$('input[name="pass_2"]').val(data);
+					$('input[name="sftp_pass"]').val(data);
+					$('input[name="sftp_pass_2"]').val(data);
 					return false;
 				}
 			});
