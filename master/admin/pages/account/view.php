@@ -222,6 +222,7 @@ $selectServers->execute(array(
 								<?php echo $listServers; ?>
 							</tbody>
 						</table>
+						<p><a href="../server/add.php?email=<?php echo $user['email']; ?>">Add New Server</a></p>
 					</div>
 				</div>
 			</div>
