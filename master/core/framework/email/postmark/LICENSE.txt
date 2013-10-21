@@ -1,0 +1,1 @@
+Copyright 2009 - 2011, Markus Hedlund, Mimmin AB, www.mimmin.com Licensed under the MIT License.

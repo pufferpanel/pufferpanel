@@ -1,0 +1,11 @@
+# osx noise
+.DS_Store
+profile
+
+
+PufferPan.esproj/*
+*/tmp/*
+/master/HASHFILE.txt
+node/core/framework/node_configuration.php
+SETUP
+master/core/framework/master_configuration.php

@@ -1,0 +1,13 @@
+<?php
+
+/*
+ * Node Server Config
+ */
+$_INFO['sql_u'] = 'root';
+$_INFO['sql_p'] = 'root';
+$_INFO['sql_h'] = 'localhost';
+$_INFO['sql_db'] = 'database';
+
+define('HASH', '/etc/HASHFILE.txt');
+
+?>
