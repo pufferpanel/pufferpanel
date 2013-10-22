@@ -56,8 +56,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 						
 							switch($_GET['disp']){
 							
-								case 'u_fail':
-									echo '<div class="error-box">The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-</div>';
+								case 's_fail':
+									echo '<div class="error-box">The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-</div>';
+									break;
+								case 'n_fail':
+									echo '<div class="error-box">The node selected does not seem to exist.</div>';
+									break;
+								case 'ip_fail':
+									echo '<div class="error-box">The selected IP does not exist.</div>';
+									break;
+								case 'port_fail':
+									echo '<div class="error-box">The selected port does not exist.</div>';
+									break;
+								case 'port_full':
+									echo '<div class="error-box">The selected port is already in use.</div>';
 									break;
 								case 'e_fail':
 									echo '<div class="error-box">The email you entered is invalid.</div>';
@@ -66,7 +78,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									echo '<div class="error-box">The passwords you entered did not match or were not at least 8 characters.</div>';
 									break;
 								case 'a_fail':
-									echo '<div class="error-box">Account with that username or email already exists in the system.</div>';
+									echo '<div class="error-box">Account with that email does not exist in the system.</div>';
+									break;
+								case 'm_fail':
+									echo '<div class="error-box">You entered a non-number for Disk and/or Memory.</div>';
+									break;
+								case 'b_fail':
+									echo '<div class="error-box">You entered a non-number for Backup Files and/or Disk Space.</div>';
 									break;
 							
 							}
@@ -162,6 +180,28 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			});
 			return false;
 		});
+		$.urlParam = function(name){
+		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		    if (results==null){
+		       return null;
+		    }
+		    else{
+		       return results[1] || 0;
+		    }
+		}
+		if($.urlParam('error') != null){
+		
+			var field = $.urlParam('error');
+			var exploded = field.split('|');
+			$("#errorDetected").slideDown();
+			
+				$.each(exploded, function(key, val) {
+					
+					$('[name="' + val + '"]').addClass('error-input');
+					
+				});
+		
+		}
 	</script>
 	<div id="footer">
 		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.3 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
