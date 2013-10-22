@@ -366,8 +366,8 @@ form p.form-error em {
 	padding-left: 2em; /* 24/12 */
 }
 
-form input.error-input { border: 1px solid #ff876f; }
-	form input.error-input:hover { border: 1px solid #b03e27; }
+form .error-input { border: 1px solid #ff876f !important; }
+	form error-input:hover, form .error-input:focus { border: 1px solid #b03e27 !important; }
 
 /* Styling the HTML5 placeholders */
 /* So far they don't work in: IE, Opera 10 and below, Firefox 3.6 and below */
