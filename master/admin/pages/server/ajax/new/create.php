@@ -7,7 +7,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 //Cookies :3
-setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 60, '/', $core->framework->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
 
 /*
  * Are they all Posted?
