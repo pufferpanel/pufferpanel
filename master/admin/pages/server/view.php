@@ -88,7 +88,7 @@ $select->execute(array(
 						<div class="content-module-main cf">
 							<form action="ajax/server/connection.php" method="POST">
 								<?php
-									$selectData = $mysql->prepare("SELECT * FROM `node_data` WHERE `node` = :name");
+									$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = :name");
 									$selectData->execute(array(
 										':name' => $server['node']
 									));

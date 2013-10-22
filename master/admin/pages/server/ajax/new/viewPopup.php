@@ -10,7 +10,7 @@ if(!isset($_GET['node']) || empty($_GET['node']))
 	exit('No node defined!');
 
 
-$selectData = $mysql->prepare("SELECT * FROM `node_data` WHERE `node` = :name");
+$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = :name");
 $selectData->execute(array(
 	':name' => $_GET['node']
 ));

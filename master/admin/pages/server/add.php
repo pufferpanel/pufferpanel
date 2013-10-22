@@ -85,7 +85,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<label for="node">Node</label>
 									<select name="node" id="getNode" class="round default-width-input">
 										<?php
-											$selectData = $mysql->prepare("SELECT * FROM `node_data`");
+											$selectData = $mysql->prepare("SELECT * FROM `nodes`");
 											$selectData->execute(array());
 											while($node = $selectData->fetch()){
 											
@@ -118,11 +118,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<input type="text" autocomplete="off" name="alloc_disk" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
-								<p>
-									<label for="pass">SFTP Host</label>
-									<input type="password" autocomplete="off" name="sftp_host" class="round default-width-input" />
-									<em>Minimum Length 8 characters. Suggested 12.</em>
-								</p>
 								<div class="warning-box round" style="display: none;" id="gen_pass"></div>
 								<p>
 									<label for="pass">SFTP Password (<a href="#" id="gen_pass_bttn">Generate</a>)</label>
