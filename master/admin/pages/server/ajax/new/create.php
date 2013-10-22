@@ -39,7 +39,31 @@ foreach($_POST as $key => $val)
 				/*
 				 * Determine if Node (IP & Port) is Avaliable
 				 */
-		
+				$select = $mysql->prepare("SELECT * FROM `node_data` WHERE `node` = :name");
+				$seleect->execute(array(
+					':name' => $val
+				));
+				
+				if($select->rowCount() == 1)
+					$node = $select->fetch();
+				else
+					exit();
+				
+					/*
+					 * Validate IP & Port
+					 */
+					$ips = json_decode($node['ips'], true);
+					$ports = json_decode($node['ports'], true);
+				
+					if(!array_key_exists($_POST['server_ip'], $ips))
+						exit();
+						
+					if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
+						exit();
+						
+					if($ports[$_POST['server_ip']][$_POST['server_port'] == 0)
+						exit();
+					
 			}
 			
 		if($key == 'email')
