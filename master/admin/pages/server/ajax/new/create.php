@@ -6,6 +6,9 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	exit('<div class="error-box round">Failed to Authenticate Account.</div>');
 }
 
+//Cookies :3
+setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 60, '/', $core->framework->settings->get('cookie_website'));
+
 /*
  * Are they all Posted?
  */
@@ -80,7 +83,7 @@ $_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_g
 /*
  * Validate Backup Disk & Files
  */
-if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_space']))
+if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
 	$core->framework->page->redirect('../../add.php?error=backup_disk|backup_space&disp=b_fail');
 
 /*
@@ -95,7 +98,7 @@ $add->execute(array(
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
 	':disk' => $_POST['alloc_disk'],
-	':path' => $node['server_dir'].$_POST['server_name'],
+	':path' => $node['server_dir'].$_POST['server_name'].'/',
 	':date' => time(),
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],

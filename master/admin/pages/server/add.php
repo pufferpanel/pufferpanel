@@ -24,6 +24,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	
 	<!-- jQuery & JS files -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="../../../assets/javascript/jquery.cookie.js"></script>
 </head>
 <body>
 	<div id="top-bar">
@@ -195,9 +196,17 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			var exploded = field.split('|');
 			$("#errorDetected").slideDown();
 			
-				$.each(exploded, function(key, val) {
+				$.each(exploded, function(key, value) {
 					
-					$('[name="' + val + '"]').addClass('error-input');
+					$('[name="' + value + '"]').addClass('error-input');
+					
+				});
+				
+			var obj = $.parseJSON($.cookie('__TMP_pp_admin_newserver'));
+			
+				$.each(obj, function(key, value) {
+					
+					$('[name="' + key + '"]').val(value);
 					
 				});
 		
