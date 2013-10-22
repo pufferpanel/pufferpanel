@@ -61,7 +61,7 @@ foreach($_POST as $key => $val)
 					if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
 						exit();
 						
-					if($ports[$_POST['server_ip']][$_POST['server_port'] == 0)
+					if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
 						exit();
 					
 			}
