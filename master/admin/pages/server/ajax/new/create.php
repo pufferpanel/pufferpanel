@@ -7,103 +7,107 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 /*
-Array
-(
-    [server_name] => something
-    [node] => demo1
-    [email] => dane@daneeveritt.com
-    [server_ip] => 63.143.53.10
-    [server_port] => 25515
-    [alloc_mem] => 1024
-    [alloc_disk] => 10240
-    [sftp_host] => 63.143.53.10
-    [sftp_pass] => lWha9F6M6lj4
-    [sftp_pass_2] => lWha9F6M6lj4
-    [backup_disk] => 1024
-    [backup_files] => 10
-)
-*/
+ * Are they all Posted?
+ */
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files']))
+	$core->framework->page->redirect('../../add.php?error=missing_args');
 
-foreach($_POST as $key => $val)
-	{
+/*
+ * Validate Server Name
+ */
+if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
+	$core->framework->page->redirect('../../add.php?error=server_name');
 	
-		if(empty($val))
-			exit();
-			
-		if($key == 'server_name' && !preg_match('/^[\w-]{4,35}$/', $val))
-			exit();
-			
-		if($key == 'node')
-			{
+/*
+ * Determine if Node (IP & Port) is Avaliable
+ */
+$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = :name");
+$select->execute(array(
+	':name' => $_POST['node']
+));
+
+if($select->rowCount() == 1)
+	$node = $select->fetch();
+else
+	$core->framework->page->redirect('../../add.php?error=node');
+
+	/*
+	 * Validate IP & Port
+	 */
+	$ips = json_decode($node['ips'], true);
+	$ports = json_decode($node['ports'], true);
+
+	if(!array_key_exists($_POST['server_ip'], $ips))
+		$core->framework->page->redirect('../../add.php?error=server_ip');
 		
-				/*
-				 * Determine if Node (IP & Port) is Avaliable
-				 */
-				$select = $mysql->prepare("SELECT * FROM `node_data` WHERE `node` = :name");
-				$seleect->execute(array(
-					':name' => $val
-				));
-				
-				if($select->rowCount() == 1)
-					$node = $select->fetch();
-				else
-					exit();
-				
-					/*
-					 * Validate IP & Port
-					 */
-					$ips = json_decode($node['ips'], true);
-					$ports = json_decode($node['ports'], true);
-				
-					if(!array_key_exists($_POST['server_ip'], $ips))
-						exit();
-						
-					if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-						exit();
-						
-					if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
-						exit();
-					
-			}
-			
-		if($key == 'email')
-			{
-			
-				if(!filter_var($val, FILTER_VALIDATE_EMAIL))
-					exit();
-			
-				$select = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
-				$select->execute(array($val));
-				
-					if($select->rowCount() != 1)
-						exit();
-					else {
-						$oid = $select->fetch();
-						$oid = $oid['id'];
-					}
-					
-			}
-			
-		if($key == 'alloc_mem' || $key == 'alloc_disk' && !is_numeric($val))
-			exit();
-			
-		if($key == 'sftp_host' && !preg_match())
-			exit();
-			
-		if($key == 'sftp_pass')
-			{
-			
-				if($val != $_POST['sftp_pass_2'] || strlen($val) < 8)
-					exit();				
-				
-				$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-				$_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
-			
-			}
-			
-		if($key == 'backup_disk' || $key == 'backup_space' && !is_numeric($val))
-			exit();
+	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
+		$core->framework->page->redirect('../../add.php?error=server_port');
+		
+	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
+		$core->framework->page->redirect('../../add.php?error=server_port');
 	
+/*
+ * Validate Email
+ */	
+if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+	$core->framework->page->redirect('../../add.php?error=email');
+
+$selectEmail = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
+$selectEmail->execute(array($_POST['email']));
+
+	if($selectEmail->rowCount() != 1)
+		$core->framework->page->redirect('../../add.php?error=email');
+	else {
+		$oid = $selectEmail->fetch();
+		$oid = $oid['id'];
 	}
+
+/*
+ * Validate Disk & Memory
+ */	
+if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
+	$core->framework->page->redirect('../../add.php?error=alloc_mem|alloc_disk');
+
+/*
+ * Validate SFTP Password
+ */
+if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
+	$core->framework->page->redirect('../../add.php?error=sftp_pass|sftp_pass_2');				
+
+$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+$_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+
+/*
+ * Validate Backup Disk & Files
+ */
+if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_space']))
+	$core->framework->page->redirect('../../add.php?error=backup_disk|backup_space');
+
+/*
+ * Add Server to Database
+ */
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, 1, :oid, :ram, :disk, :path, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add->execute(array(
+	':hash' => $core->framework->auth->keygen(42),
+	':e_iv' => $iv,
+	':node' => $_POST['node'],
+	':sname' => $_POST['server_name'],
+	':oid' => $oid,
+	':ram' => $_POST['alloc_mem'],
+	':disk' => $_POST['alloc_disk'],
+	':path' => $node['server_dir'].$_POST['server_name'],
+	':date' => time(),
+	':sip' => $_POST['server_ip'],
+	':sport' => $_POST['server_port'],
+	':ftphost' => $node['sftp_ip'],
+	':ftpuser' => (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name']))),
+	':ftppass' => $_POST['sftp_pass'],
+	':bfiles' => $_POST['backup_files'],
+	':bdisk' => $_POST['backup_disk']
+));
+
+/*
+ * Do Server Making Stuff Here
+ */
 
 ?>
