@@ -100,7 +100,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<input type="text" autocomplete="off" name="email" value="<?php if(isset($_GET['email'])) echo $_GET['email']; ?>" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
-								<p><em><a href="ajax/new/viewPopup.php" onclick="window.open(this.href + '?node=' + $('#getNode').val(), 'View Avaliable IPs and Ports', 'width=500, height=600, left=24, top=24'); return false;">View available</a> IPs & Ports as well as free RAM and Disk Space.</em></p>
+								<p><em><a href="ajax/new/viewPopup.php" onclick="window.open(this.href + '?node=' + $('#getNode').val(), 'View Avaliable IPs and Ports', 'width=500, height=600, left=24, top=24'); return false;">View available</a> IPs &amp; Ports as well as free RAM and Disk Space.</em></p>
 								<p>
 									<label for="email">Assign IP Address</label>
 									<input type="text" autocomplete="off" name="server_ip" class="round default-width-input" />
