@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.29)
 # Database: pufferpanel
-# Generation Time: 2013-08-31 02:48:15 +0000
+# Generation Time: 2013-10-23 04:05:05 +0000
 # ************************************************************
 
 
@@ -56,6 +56,8 @@ CREATE TABLE `acp_announcements` (
 # Dump of table acp_email_templates
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `acp_email_templates`;
+
 CREATE TABLE `acp_email_templates` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `tpl_name` char(30) DEFAULT NULL,
@@ -79,22 +81,6 @@ VALUES
 /*!40000 ALTER TABLE `acp_email_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
-# Dump of table nodes
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `nodes`;
-
-CREATE TABLE `nodes` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `node_name` char(15) NOT NULL DEFAULT '',
-  `node_link` tinytext NOT NULL,
-  `node_ip` tinytext NOT NULL,
-  `server_dir` tinytext NOT NULL,
-  `backup_dir` tinytext NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 
 # Dump of table acp_settings
 # ------------------------------------------------------------
@@ -111,17 +97,22 @@ LOCK TABLES `acp_settings` WRITE;
 
 INSERT INTO `acp_settings` (`setting_ref`, `setting_val`)
 VALUES
-	('company_name','Company Name Here'),
-	('node_url','http://localhost/node/'),
-	('master_url','http://localhost/master/'),
+	('company_name','PufferPanel Server Panel'),
+	('node_url','http://node2.example.com/node/'),
+	('master_url','http://example.com/panel/'),
 	('cookie_website',NULL),
-	('postmark_api_key','XXXX-XXXX-XXXX'),
-	('mandrill_api_key','XXXXXXXXX'),
-	('sendmail_email','you@example.com'),
-	('main_website','http://localhost/master/'),
-	('sendmail_method','php'),
+	('postmark_api_key','NULL'),
+	('mandrill_api_key','NULL'),
+	('sendmail_email','webmaster@localhost'),
+	('main_website','http://example.com/panel/'),
+	('sendmail_method','mandrill'),
 	('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
-	('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz');
+	('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
+	('assets_url','http://example.com/panel/assets/'),
+	('use_api','0'),
+	('api_key','NULL'),
+	('api_allowed_ips','*'),
+	('api_module_controls_all','0');
 
 /*!40000 ALTER TABLE `acp_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -163,6 +154,29 @@ CREATE TABLE `backups` (
 
 
 
+# Dump of table nodes
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `nodes`;
+
+CREATE TABLE `nodes` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `node` char(15) NOT NULL DEFAULT '',
+  `node_link` tinytext NOT NULL,
+  `node_ip` tinytext NOT NULL,
+  `sftp_ip` tinytext NOT NULL,
+  `server_dir` tinytext NOT NULL,
+  `backup_dir` tinytext NOT NULL,
+  `username` tinytext NOT NULL,
+  `encryption_iv` tinytext NOT NULL,
+  `password` tinytext NOT NULL,
+  `ips` text NOT NULL,
+  `ports` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 # Dump of table servers
 # ------------------------------------------------------------
 
@@ -170,27 +184,22 @@ DROP TABLE IF EXISTS `servers`;
 
 CREATE TABLE `servers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `whmcs_id` int(11) NOT NULL DEFAULT '0',
-  `hash` varchar(42) NOT NULL DEFAULT '',
+  `whmcs_id` int(11) DEFAULT '0',
+  `hash` char(42) NOT NULL DEFAULT '',
+  `encryption_iv` tinytext NOT NULL,
   `node` varchar(50) NOT NULL DEFAULT '',
   `name` varchar(200) NOT NULL DEFAULT '',
   `active` int(1) DEFAULT '1',
   `owner_id` int(11) NOT NULL,
-  `owner` varchar(200) NOT NULL DEFAULT '',
   `max_ram` int(11) NOT NULL,
   `disk_space` int(11) NOT NULL,
   `path` text NOT NULL,
-  `type` varchar(50) NOT NULL DEFAULT '',
-  `package` varchar(11) NOT NULL DEFAULT '',
   `date_added` int(15) NOT NULL,
   `server_ip` varchar(50) NOT NULL DEFAULT '',
   `server_port` int(11) NOT NULL,
-  `rcon_ip` varchar(50) DEFAULT '',
-  `rcon_password` varchar(200) DEFAULT '',
-  `rcon_port` int(6) DEFAULT NULL,
-  `ftp_host` varchar(200) NOT NULL DEFAULT '',
-  `ftp_user` varchar(200) NOT NULL DEFAULT '',
-  `ftp_pass` varchar(200) NOT NULL DEFAULT '',
+  `ftp_host` tinytext NOT NULL,
+  `ftp_user` tinytext NOT NULL,
+  `ftp_pass` tinytext NOT NULL,
   `backup_file_limit` int(20) NOT NULL,
   `backup_disk_limit` int(20) NOT NULL,
   PRIMARY KEY (`id`)
@@ -205,7 +214,7 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `whmcs_id` int(11) NOT NULL DEFAULT '0',
+  `whmcs_id` int(11) DEFAULT NULL,
   `username` varchar(50) NOT NULL DEFAULT '',
   `email` tinytext NOT NULL,
   `password` tinytext NOT NULL,
@@ -218,27 +227,6 @@ CREATE TABLE `users` (
   `notify_login_s` int(1) DEFAULT '1',
   `notify_login_f` int(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table whmcs_data
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `whmcs_data`;
-
-CREATE TABLE `whmcs_data` (
-  `node` varchar(200) NOT NULL DEFAULT '',
-  `sftp_ip` varchar(200) DEFAULT NULL,
-  `max_alloc_ram` int(11) NOT NULL DEFAULT '0',
-  `curr_alloc_ram` int(11) NOT NULL DEFAULT '0',
-  `max_servers` int(11) NOT NULL DEFAULT '0',
-  `curr_servers` int(11) NOT NULL DEFAULT '0',
-  `ips` text NOT NULL,
-  `ports` text NOT NULL,
-  `disabled` int(1) NOT NULL DEFAULT '0',
-  `full` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
