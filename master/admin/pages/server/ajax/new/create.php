@@ -89,6 +89,8 @@ if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
 /*
  * Add Server to Database
  */
+$ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
+
 $add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, 1, :oid, :ram, :disk, :path, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
@@ -103,14 +105,22 @@ $add->execute(array(
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],
 	':ftphost' => $node['sftp_ip'],
-	':ftpuser' => (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name']))),
+	':ftpuser' => $ftpUser,
 	':ftppass' => $_POST['sftp_pass'],
 	':bfiles' => $_POST['backup_files'],
 	':bdisk' => $_POST['backup_disk']
 ));
 
 /*
- * Do Server Making Stuff Here
+ * Do Server Making Stuff Here 
  */
+$con = ssh2_connect($node['sftp_ip'], 22);
+ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+
+$stream = ssh2_exec($con, 'cd /srv/scripts; ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk']);
+stream_set_blocking($stream, true);
+fclose($stream);
+
+$core->framework->page->redirect('../../view.php?id='.$mysql->lastInsertId());
 
 ?>
