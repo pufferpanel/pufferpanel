@@ -62,13 +62,11 @@ class page extends dbConn {
 					$row = $query->fetch();
 					
 						setcookie('pp_server_hash', $row['hash'], 0, '/', $this->settings->get('cookie_website'));
-						//Should be irrelevant:
-						//setcookie('pp_server_node', $row['node'], 0, '/', $this->get('cookie_website'));	
 					
 						/*
 						 * Select Node Information
 						 */
-						$queryNode = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+						$queryNode = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 						$queryNode->execute(array($row['node']));
 						
 							if($queryNode->rowCount() == 1){
