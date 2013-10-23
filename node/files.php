@@ -121,11 +121,11 @@ if(!isset($_GET['do'])){
 			if(is_dir($file)){
 			
 				$displayFolders .= 	'<tr>
-										<td><i class="icon-folder-open">&nbsp</i></td>
+										<td><i class="fa fa-folder-open">&nbsp</i></td>
 										<td><a href="files.php?dir='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'">'.str_replace($core->framework->server->getData('path').$_GET['dir'], '', $file).'</a></td>
 										<td></td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}else{
@@ -136,11 +136,11 @@ if(!isset($_GET['do'])){
 					$url = str_replace($core->framework->server->getData('path').$_GET['dir'], '', $file);
 				}
 				$displayFiles .= 	'<tr>
-										<td><i class="icon-file-text"></i></td>
+										<td><i class="fa fa-file-text"></i></td>
 										<td>'.$url.'</td>
 										<td>'.$core->framework->files->formatSize($stat['size']).'</td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}
@@ -173,11 +173,11 @@ if(!isset($_GET['do'])){
 			if(is_dir($file)){
 			
 				$displayFolders .= 	'<tr>
-										<td><i class="icon-folder-open">&nbsp</i></td>
+										<td><i class="fa fa-folder-open">&nbsp</i></td>
 										<td><a href="files.php?dir='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'">'.str_replace($core->framework->server->getData('path'), '', $file).'</a></td>
 										<td></td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}else{
@@ -189,11 +189,11 @@ if(!isset($_GET['do'])){
 				}
 					
 				$displayFiles .= 	'<tr>
-										<td><i class="icon-file-text"></i></td>
+										<td><i class="fa fa-file-text"></i></td>
 										<td>'.$url.'</td>
 										<td>'.$core->framework->files->formatSize($stat['size']).'</td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="icon-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}
@@ -542,12 +542,12 @@ if(!isset($_GET['do'])){
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="icon-hdd"></i></a></li>
+				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-hdd"></i></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="icon-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -560,17 +560,17 @@ if(!isset($_GET['do'])){
 			<div class="side-menu fl">
 				<h3>Account Actions</h3>
 				<ul>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> My Servers</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
 				</ul>
 				<h3>Server Actions</h3>
 				<ul>
-					<li><a href="index.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Overview</a></li>
-					<li><a href="console.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Live Console</a></li>
-					<li><a href="settings.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Settings</a></li>
-					<li><a href="plugins.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Plugins</a></li>
-					<li><a href="files.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> File Manager</a></li>
-					<li><a href="backup.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Backup Manager</a></li>
+					<li><a href="index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Overview</a></li>
+					<li><a href="console.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Live Console</a></li>
+					<li><a href="settings.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Settings</a></li>
+					<li><a href="plugins.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Plugins</a></li>
+					<li><a href="files.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
+					<li><a href="backup.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Backup Manager</a></li>
 				</ul>
 			</div>
 			<div class="side-content fr">

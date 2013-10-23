@@ -57,11 +57,11 @@ $select->execute(array(
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="icon-signout"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
+				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -95,6 +95,7 @@ $select->execute(array(
 									$node = $selectData->fetch();
 								?>
 								<fieldset>
+									<p><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Click here</a> to access server control tools.</p>
 									<div class="information-box no-image round">If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</div>
 									<p>
 										<label for="server_ip">Server IP</label>

@@ -68,11 +68,11 @@ while($row = $query->fetch()){
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php" class="round button dark"><i class="icon-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php" class="round button dark"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
+				<li><a href="logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -85,8 +85,8 @@ while($row = $query->fetch()){
 			<div class="side-menu fl">
 				<h3>Account Actions</h3>
 				<ul>
-					<li><a href="account.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="servers.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> My Servers</a></li>
+					<li><a href="account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
+					<li><a href="servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
 				</ul>
 				<h3>Server Actions</h3>
 			</div>

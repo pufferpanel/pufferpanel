@@ -42,12 +42,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="icon-hdd"></i></a></li>
+				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-hdd"></i></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="icon-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -60,17 +60,17 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<div class="side-menu fl">
 				<h3>Account Actions</h3>
 				<ul>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> My Servers</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
 				</ul>
 				<h3>Server Actions</h3>
 				<ul>
-					<li><a href="index.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Overview</a></li>
-					<li><a href="console.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Live Console</a></li>
-					<li><a href="settings.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Settings</a></li>
-					<li><a href="plugins.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Plugins</a></li>
-					<li><a href="files.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> File Manager</a></li>
-					<li><a href="backup.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Backup Manager</a></li>
+					<li><a href="index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Overview</a></li>
+					<li><a href="console.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Live Console</a></li>
+					<li><a href="settings.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Settings</a></li>
+					<li><a href="plugins.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Plugins</a></li>
+					<li><a href="files.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
+					<li><a href="backup.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Backup Manager</a></li>
 				</ul>
 			</div>
 			<div class="side-content fr">

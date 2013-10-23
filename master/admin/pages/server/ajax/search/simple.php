@@ -75,12 +75,12 @@ if($_POST['field'] == 'owner_email'){
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isActive = ($row['active'] == 1) ? '<i class="icon-ok-circle"></i>' : '<i class="icon-remove-circle"></i>';
+		$isActive = ($row['active'] == 1) ? '<i class="fa fa-ok-circle"></i>' : '<i class="fa fa-remove-circle"></i>';
 		
 		$returnRows .= '
 		<tr>
 			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$row['owner_id'].'</a></td>
-			<td style="text-align:center;">'.$row['whmcs_id'].'</td>
+			<td style="text-align:center;"><a href="#"><i class="fa fa-terminal"></i></a></td>
 			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
 			<td><a href="../node/view.php?do=redirect&node='.$row['node'].'">'.$row['node'].'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
@@ -97,7 +97,7 @@ echo '
 	<thead>
 		<tr>
 			<th style="width:7%">Owner ID</th>
-			<th style="width:8%;text-align:center;">WHMCS ID</th>
+			<th style="width:8%;text-align:center;">Control</th>
 			<th style="width:20%">Server Name</th>
 			<th style="width:10%">Node</th>
 			<th style="width:30%">Connection Address</th>

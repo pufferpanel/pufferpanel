@@ -91,7 +91,7 @@ $find->execute(array(
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isRoot = ($row['root_admin'] == 1) ? '<i class="icon-ok-circle"></i>' : '<i class="icon-remove-circle"></i>';
+		$isRoot = ($row['root_admin'] == 1) ? '<i class="fa fa-ok-circle"></i>' : '<i class="fa fa-remove-circle"></i>';
 		
 		$returnRows .= '
 		<tr>

@@ -55,7 +55,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 		
 		$downloads .= '
 						<tr>
-							<td><a href="#install" id="'.$_GET['slug'].'|'.$i.'" class="install"><i class="icon-download"></i></a></td>
+							<td><a href="#install" id="'.$_GET['slug'].'|'.$i.'" class="install"><i class="fa fa-download"></i></a></td>
 							<td>'.$value['filename'].'</td>
 							<td>'.$value['version'].'</td>
 							<td>'.date('M n, Y \a\t g:ia', $value['date']).'</td>
@@ -105,7 +105,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 			$value['description'] = (strlen($value['description']) > 200) ? substr($value['description'], 0, 197).'...' : $value['description'];
 			
 			$searchResults .= '	<tr class="hover_fade_row">
-									<td><a href="#install" id="'.$value['slug'].'|0" class="install"><i class="icon-download"></i></a></td>
+									<td><a href="#install" id="'.$value['slug'].'|0" class="install"><i class="fa fa-download"></i></a></td>
 									<td><a href="plugins.php?do=view&slug='.$value['slug'].'">'.$value['plugin_name'].'</a></td>
 									<td>'.$value['description'].'</td>
 								</tr>';
@@ -163,12 +163,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="icon-hdd"></i></a></li>
+				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-hdd"></i></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="icon-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -181,17 +181,17 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 			<div class="side-menu fl">
 				<h3>Account Actions</h3>
 				<ul>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> My Servers</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
+					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
 				</ul>
 				<h3>Server Actions</h3>
 				<ul>
-					<li><a href="index.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Overview</a></li>
-					<li><a href="console.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Live Console</a></li>
-					<li><a href="settings.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Settings</a></li>
-					<li><a href="plugins.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Server Plugins</a></li>
-					<li><a href="files.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> File Manager</a></li>
-					<li><a href="backup.php"><i class="icon-double-angle-right pull-right menu-arrows"></i> Backup Manager</a></li>
+					<li><a href="index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Overview</a></li>
+					<li><a href="console.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Live Console</a></li>
+					<li><a href="settings.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Settings</a></li>
+					<li><a href="plugins.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Plugins</a></li>
+					<li><a href="files.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
+					<li><a href="backup.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Backup Manager</a></li>
 				</ul>
 			</div>
 			<?php if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty($_GET['slug'])){ ?>
@@ -201,7 +201,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 						<h3 class="fl">Plugin: <?php echo $pluginName; ?></h3>
 					</div>
 					<div id="p_install_one" class="content-module-main cf" style="display:none;">
-						<div class="warning-box round"><i class="icon-spinner icon-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong></div>
+						<div class="warning-box round"><i class="fa fa-spinner fa fa-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong></div>
 					</div>
 					<div id="p_install_two" class="content-module-main cf" style="display:none;">
 						<div class="confirmation-box round">Your plugin has been installed.</div>
@@ -228,7 +228,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 						<h3 class="fl">Search results for: "<?php echo $_GET['term']; ?>"</h3>
 					</div>
 					<div id="p_install_one" class="content-module-main cf" style="display:none;">
-						<div class="warning-box round"><i class="icon-spinner icon-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong></div>
+						<div class="warning-box round"><i class="fa fa-spinner fa fa-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong></div>
 					</div>
 					<div id="p_install_two" class="content-module-main cf" style="display:none;">
 						<div class="confirmation-box round">Your plugin has been installed.</div>

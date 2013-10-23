@@ -54,11 +54,11 @@ $selectServers->execute(array(
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="icon-signout"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
+				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -135,7 +135,7 @@ $selectServers->execute(array(
 										<select name="root_admin">
 											<option value="0" <?php echo $isSelected['no']; ?>>No</option>
 											<option value="1" <?php echo $isSelected['yes']; ?>>Yes</option>
-										</select><i class="icon-angle-down pull-right select-arrow select-halfbox"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
 										<em>Warning: setting this to yes will give the user full access to this Admin CP. Only set this to yes if the person is a member of your company.</em>
 									</p>
 									<div class="stripe-separator"><!--  --></div>

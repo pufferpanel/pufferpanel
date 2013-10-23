@@ -30,11 +30,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="icon-signout"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
+				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -112,7 +112,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 											
 											}
 										?>
-									</select><i class="icon-angle-down select-arrow"></i>
+									</select><i class="fa fa-angle-down select-arrow"></i>
 								</p>
 								<p>
 									<label for="email">Owner Email</label>

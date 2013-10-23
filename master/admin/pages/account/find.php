@@ -26,11 +26,11 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="icon-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="icon-signout"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="icon-off"></i></a></li>
+				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
+				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
 			</ul>
 		</div>	
 	</div>
@@ -44,7 +44,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<div class="side-content fr">
 				<div class="content-module">
 					<div class="content-module-heading cf">
-						<h3 class="fl"><i class="icon-cog" id="toggle_search_simple"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-cogs" id="toggle_search_advanced"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search Parameters</h3>
+						<h3 class="fl"><i class="fa fa-cog" id="toggle_search_simple"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-cogs" id="toggle_search_advanced"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search Parameters</h3>
 					</div>
 					<div class="content-module-main cf" id="search_simple">
 						<form id="ss_form" onsubmit="return false">
@@ -55,7 +55,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="email">Email</option>
 											<option value="username">Username</option>
 											<option value="root_admin">Root Admin</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:20%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -66,7 +66,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="like">Like</option>
 											<option value="starts_w">Starts With</option>
 											<option value="ends_w">Ends With</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:50%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -75,7 +75,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</p>
 								</div>
 								<div class="stripe-separator" style="margin: 0 0 1em 0;"><!--  --></div>
-								<div class="confirmation-box round pull-left" id="search_active" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="icon-refresh icon-spin"></i> &nbsp;Searching!</div>
+								<div class="confirmation-box round pull-left" id="search_active" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="fa fa-refresh fa fa-spin"></i> &nbsp;Searching!</div>
 								<input type="submit" value="Perform Simple Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
 							</fieldset>
 						</form>
@@ -89,7 +89,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="email">Email</option>
 											<option value="username">Username</option>
 											<option value="root_admin">Root Admin</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:10%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -100,7 +100,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="like" selected="selected">Like</option>
 											<option value="starts_w">Starts With</option>
 											<option value="ends_w">Ends With</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:20%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -113,7 +113,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="round" name="middle_operator">
 											<option value="and">And</option>
 											<option value="or">Or</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:10%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -122,7 +122,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="email">Email</option>
 											<option value="username">Username</option>
 											<option value="root_admin">Root Admin</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:10%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -133,7 +133,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="like">Like</option>
 											<option value="starts_w">Starts With</option>
 											<option value="ends_w">Ends With</option>
-										</select><i class="icon-angle-down pull-right select-arrow"></i>
+										</select><i class="fa fa-angle-down pull-right select-arrow"></i>
 									</p>
 								</div>
 								<div style="width:20%;display:inline-block;vertical-align:top;margin-right: 0.6em;">
@@ -142,7 +142,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</p>
 								</div>
 								<div class="stripe-separator" style="margin: 0 0 1em 0;"><!--  --></div>
-								<div class="confirmation-box round pull-left" id="search_active_2" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="icon-refresh icon-spin"></i> &nbsp;Searching!</div>
+								<div class="confirmation-box round pull-left" id="search_active_2" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="fa fa-refresh fa fa-spin"></i> &nbsp;Searching!</div>
 								<input type="submit" value="Perform Advanced Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
 							</fieldset>
 						</form>
