@@ -27,7 +27,7 @@ $selectServers->execute(array(
 		
 $select = $mysql->prepare("SELECT * FROM `users` WHERE `id` = :oid");
 $select->execute(array(
-	':oid' => $_GET['id']
+	':oid' => $server['owner_id']
 ));
 
 	if($select->rowCount() != 1)
