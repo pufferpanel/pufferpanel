@@ -18,7 +18,7 @@ if($_POST['method'] != 'simple')
 if(empty($_POST['field']) || empty($_POST['operator']))
 	exit('<div class="error-box round">Required Variable Empty.</div>');
 	
-if(!in_array($_POST['field'], array('node', 'server_name', 'server_ip', 'owner_email', 'active')))
+if(!in_array($_POST['field'], array('node', 'name', 'server_ip', 'owner_email', 'active')))
 	exit('<div class="error-box round">Required `field` contains unknown value.</div>');
 	
 if(!in_array($_POST['operator'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')))

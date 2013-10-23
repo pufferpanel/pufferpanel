@@ -54,7 +54,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<p>
 										<select class="round" name="field">
 											<option value="node">Node</option>
-											<option value="server_name">Server Name</option>
+											<option value="name" selected="selected">Server Name</option>
 											<option value="server_ip">Server IP</option>
 											<option value="owner_email">Owner Email</option>
 											<option value="active">Active</option>
@@ -66,7 +66,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="round" name="operator">
 											<option value="equal">Equals</option>
 											<option value="not_equal">Not Equal</option>
-											<option value="like">Like</option>
+											<option value="like" selected="selected">Like</option>
 											<option value="starts_w">Starts With</option>
 											<option value="ends_w">Ends With</option>
 										</select><i class="icon-angle-down pull-right select-arrow"></i>
@@ -90,7 +90,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<p>
 										<select class="round" name="field_1">
 											<option value="node">Node</option>
-											<option value="server_name">Server Name</option>
+											<option value="name">Server Name</option>
 											<option value="server_ip">Server IP</option>
 											<option value="owner_email">Owner Email</option>
 											<option value="active">Active</option>
@@ -125,7 +125,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<p>
 										<select class="round" name="field_2">
 											<option value="node">Node</option>
-											<option value="server_name">Server Name</option>
+											<option value="name">Server Name</option>
 											<option value="server_ip">Server IP</option>
 											<option value="owner_email">Owner Email</option>
 											<option value="active">Active</option>

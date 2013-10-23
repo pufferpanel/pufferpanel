@@ -18,7 +18,7 @@ if($_POST['method'] != 'advanced')
 if(empty($_POST['field_1']) || empty($_POST['operator_1']) || empty($_POST['mid_op']) || empty($_POST['field_2']) || empty($_POST['operator_2']))
 	exit('<div class="error-box round">Required Variable Empty.</div>');
 	
-if(!in_array($_POST['field_1'], array('node', 'server_name', 'server_ip', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('node', 'server_name', 'server_ip', 'owner_email', 'active')))
+if(!in_array($_POST['field_1'], array('node', 'name', 'server_ip', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('node', 'name', 'server_ip', 'owner_email', 'active')))
 	exit('<div class="error-box round">Required `field` contains unknown value.</div>');
 	
 if(!in_array($_POST['operator_1'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')) || !in_array($_POST['operator_2'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')))
