@@ -97,7 +97,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="round" name="operator_1">
 											<option value="equal">Equals</option>
 											<option value="not_equal">Not Equal</option>
-											<option value="like">Like</option>
+											<option value="like" selected="selected">Like</option>
 											<option value="starts_w">Starts With</option>
 											<option value="ends_w">Ends With</option>
 										</select><i class="icon-angle-down pull-right select-arrow"></i>
