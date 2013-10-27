@@ -105,7 +105,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										 * Select Current Email Method
 										 */
 										$method = $core->framework->settings->get('sendmail_method');
-										$marray = array('php' => '', 'postmark' => '', 'mandrill' => '');
+										$marray = array('php' => '', 'postmark' => '', 'mandrill' => '', 'mailgun' => '');
 										
 											foreach($marray as $id => $value){
 											
@@ -122,13 +122,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 											<option value="php" <?php echo $marray['php']; ?>>PHP mail()</option>
 											<option value="postmark" <?php echo $marray['postmark']; ?>>Postmark</option>
 											<option value="mandrill" <?php echo $marray['mandrill']; ?>>Mandrill</option>
+											<option value="mailgun" <?php echo $marray['mailgun']; ?>>Mailgun</option>
 										</select>
 										<i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
 									</p>
 									<p>
 										<label for="p_password">From Address</label>
 										<input type="text" name="main_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('sendmail_email'); ?>"/>
-										<em>The email address all outgoing emails should use. If using Postmark or Mandrill this must match the email used in their settings.</em>
+										<em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em>
 									</p>
 									<p id="postmark">
 										<label for="p_password">Postmark API Key</label>
@@ -139,6 +140,11 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<label for="p_password_new">Mandrill API Key</label>
 										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('mandrill_api_key'); ?>"/>
 										<em>The API key generated on <a href="https://mandrill.com/">Mandrill</a>. Leave blank if not using.</em>
+									</p>
+									<p id="mailgun">
+										<label for="p_password_new">Mailgun API Key</label>
+										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('mailgun_api_key'); ?>"/>
+										<em>The API key generated on <a href="https://mailgun.com/">Mailgun</a>. Leave blank if not using.</em>
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="submit" value="Update Email" class="round blue ic-right-arrow" />
@@ -178,38 +184,43 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			var method = $("#smail_method :selected").val();
 				if(method == "postmark"){
 					$("#mandrill").hide();
+					$("#mailgun").hide();
 				}else if(method == "mandrill"){
+					$("#postmark").hide();
+					$("#mailgun").hide();
+				}else if(method == "mailgun"){
+					$("#mandrill").hide();
 					$("#postmark").hide();
 				}else{
 					$("#mandrill").hide();
 					$("#postmark").hide();
+					$("#mailgun").hide();
 				}
 		
 			$("#smail_method").change(function(){
-				var method = $("#smail_method :selected").val();
+					var method = $("#smail_method :selected").val();
 					if(method == "postmark"){
-						if($("#mandrill").is(':visible')){
-							$("#mandrill").toggle("drop", "right", function(){
-								$("#postmark").toggle("drop", "right");
-							});
-						}else{
-							$("#postmark").toggle("drop", "right");
+						if($("#postmark").not(':visible')){
+							$("#mandrill").hide();
+							$("#mailgun").hide();
+							$("#postmark").toggle("drop", "down");
 						}
 					}else if(method == "mandrill"){
-						if($("#postmark").is(':visible')){
-							$("#postmark").toggle("drop", "right", function(){
-								$("#mandrill").toggle("drop", "right");
-							});
-						}else{
-							$("#mandrill").toggle("drop", "right");
-						}
-					}else{
-						if($("#postmark").is(':visible')){
-							$("#postmark").toggle("drop", "up");
-						}
-						if($("#mandrill").is(':visible')){
+						if($("#mandrill").not(':visible')){
+							$("#postmark").hide();
+							$("#mailgun").hide();
 							$("#mandrill").toggle("drop", "down");
 						}
+					}else if(method == "mailgun"){
+						if($("#mailgun").not(':visible')){
+							$("#postmark").hide();
+							$("#mandrill").hide();
+							$("#mailgun").toggle("drop", "down");
+						}
+					}else{
+						$("#mandrill").hide();
+						$("#mailgun").hide();
+						$("#postmark").hide();
 					}
 			});
 		});
