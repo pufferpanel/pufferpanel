@@ -22,7 +22,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	<!-- jQuery & JS files -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-	
+	<script src="../../../assets/javascript/jquery.cookie.js"></script>
 </head>
 <body>
 	<div id="top-bar">
@@ -50,10 +50,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Company Name</h3>
 						</div>
 						<div class="content-module-main cf">
-							<form action="account.php?action=email" method="post">
+							<form action="actions/cname.php" method="POST">
 								<fieldset>
 									<p>
-										<label for="newemail">Company Name</label>
+										<label for="company_name">Company Name</label>
 										<input type="text" name="company_name" class="round full-width-input" value="<?php echo $core->framework->settings->get('company_name'); ?>" />
 									</p>
 									<div class="stripe-separator"><!--  --></div>
@@ -67,20 +67,20 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">URL Settings</h3>
 						</div>
 						<div class="content-module-main">
-							<form action="account.php?action=password" method="post">
+							<form action="actions/url.php" method="post">
 								<fieldset>
 									<p>
-										<label for="p_password">Main Website URL</label>
+										<label for="main_url">Main Website URL</label>
 										<input type="text" name="main_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('main_website'); ?>"/>
 										<em>The URL corresponding to your main website.</em>
 									</p>
 									<p>
-										<label for="p_password_new">PufferPanel Master URL</label>
+										<label for="master_url">PufferPanel Master URL</label>
 										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('master_url'); ?>"/>
 										<em>The URL corresponding to this PufferPanel installation.</em>
 									</p>
 									<p>
-										<label for="p_password_new_2">PufferPanel Assets URL</label>
+										<label for="assets_url">PufferPanel Assets URL</label>
 										<input type="text" name="assets_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('assets_url'); ?>"/>
 										<em>The URL corresponding to the assets for PufferPanel. Update this only if you are using a CDN or Caching Service that modifies where the assets are stored.</em>
 									</p>
@@ -223,6 +223,34 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						$("#postmark").hide();
 					}
 			});
+			$.urlParam = function(name){
+			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+			    if (results==null){
+			       return null;
+			    }
+			    else{
+			       return results[1] || 0;
+			    }
+			}
+			if($.urlParam('error') != null){
+			
+				var field = $.urlParam('error');
+				var exploded = field.split('|');
+				
+					$.each(exploded, function(key, value) {
+						
+						$('[name="' + value + '"]').addClass('error-input');
+						
+					});
+					
+				var obj = $.parseJSON($.cookie('__TMP_pp_admin_updateglobal'));
+				
+					$.each(obj, function(key, value) {
+						
+						$('[name="' + key + '"]').val(value);
+						
+					});			
+			}
 		});
 	</script>
 	<div id="footer">
