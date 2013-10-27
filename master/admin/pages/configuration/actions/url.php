@@ -3,7 +3,7 @@ session_start();
 require_once('../../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), true) !== true){
-	$core->framework->page->redirect('../../../index.php');
+	$core->framework->page->redirect('../../../../index.php');
 }
 
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
