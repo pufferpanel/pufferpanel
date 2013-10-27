@@ -57,6 +57,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 						
 							switch($_GET['disp']){
 							
+								case 'missing_args':
+									echo '<div class="error-box">Not all arguments were passed by the script.</div>';
+									break;
 								case 's_fail':
 									echo '<div class="error-box">The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-</div>';
 									break;
