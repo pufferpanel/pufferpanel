@@ -45,7 +45,7 @@ class auth extends dbConn {
 					if($this->query->rowCount() == 1){
 					
 						$this->update = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-						$this->update->execute(array(':sesexp' => time() + 1800, ':sesip' => $ip, ':sesid' => $session));
+						$this->update->execute(array(':sesexp' => (time() + 1800), ':sesip' => $ip, ':sesid' => $session));
 					
 						return true;
 						
@@ -67,7 +67,7 @@ class auth extends dbConn {
 					if($this->query->rowCount() == 1){
 					
 						$this->update = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-						$this->update->execute(array(':sesexp' => time() + 1800, ':sesip' => $ip, ':sesid' => $session));
+						$this->update->execute(array(':sesexp' => (time() + 1800), ':sesip' => $ip, ':sesid' => $session));
 					
 						return true;
 				
