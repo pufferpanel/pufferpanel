@@ -9,13 +9,13 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
 
 if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
-	$core->framework->page->redirect('../global.php?error=main_url|master_url|assets_url&disp=url');
+	$core->framework->page->redirect('../global.php?error=main_url|master_url|assets_url');
 	
 foreach($_POST as $id => $val)
 	{
 	
 		if(!filter_var($val, FILTER_VALIDATE_URL))
-			$core->framework->page->redirect('../global.php?error='.$id.'&disp=url_error');
+			$core->framework->page->redirect('../global.php?error='.$id);
 	
 	}
 

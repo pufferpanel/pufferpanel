@@ -7,7 +7,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 if(!isset($_POST['company_name']))
-	$core->framework->page->redirect('../global.php?error=company_name&disp=cname');
+	$core->framework->page->redirect('../global.php?error=company_name');
 	
 $query = $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'company_name'");
 $query->execute(array($_POST['company_name']));
