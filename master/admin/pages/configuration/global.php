@@ -98,7 +98,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Email Settings</h3>
 						</div>
 						<div class="content-module-main cf">
-							<form action="account.php?action=email" method="post">
+							<form action="actions/email.php" method="post">
 								<fieldset>
 									<?php
 										/*
@@ -117,7 +117,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										
 									?>
 									<p>
-										<label for="p_password">Sendmail Method</label>
+										<label for="smail_method">Sendmail Method</label>
 										<select name="smail_method" class="round" id="smail_method">
 											<option value="php" <?php echo $marray['php']; ?>>PHP mail()</option>
 											<option value="postmark" <?php echo $marray['postmark']; ?>>Postmark</option>
@@ -127,27 +127,27 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
 									</p>
 									<p>
-										<label for="p_password">From Address</label>
-										<input type="text" name="main_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('sendmail_email'); ?>"/>
+										<label for="sendmail_email">From Address</label>
+										<input type="text" name="sendmail_email" class="round full-width-input" value="<?php echo $core->framework->settings->get('sendmail_email'); ?>"/>
 										<em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em>
 									</p>
 									<p id="postmark">
-										<label for="p_password">Postmark API Key</label>
-										<input type="text" name="main_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('postmark_api_key'); ?>"/>
+										<label for="postmark_api_key">Postmark API Key</label>
+										<input type="text" name="postmark_api_key" class="round full-width-input" value="<?php echo $core->framework->settings->get('postmark_api_key'); ?>"/>
 										<em>The API key generated on <a href="https://postmarkapp.com/">Postmark</a>. Leave blank if not using.</em>
 									</p>
 									<p id="mandrill">
-										<label for="p_password_new">Mandrill API Key</label>
-										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('mandrill_api_key'); ?>"/>
+										<label for="mandrill_api_key">Mandrill API Key</label>
+										<input type="text" name="mandrill_api_key" class="round full-width-input" value="<?php echo $core->framework->settings->get('mandrill_api_key'); ?>"/>
 										<em>The API key generated on <a href="https://mandrill.com/">Mandrill</a>. Leave blank if not using.</em>
 									</p>
 									<p id="mailgun">
-										<label for="p_password_new">Mailgun API Key</label>
-										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('mailgun_api_key'); ?>"/>
+										<label for="mailgun_api_key">Mailgun API Key</label>
+										<input type="text" name="mailgun_api_key" class="round full-width-input" value="<?php echo $core->framework->settings->get('mailgun_api_key'); ?>"/>
 										<em>The API key generated on <a href="https://mailgun.com/">Mailgun</a>. Leave blank if not using.</em>
 									</p>
 									<div class="stripe-separator"><!--  --></div>
-									<input type="submit" value="Update Email" class="round blue ic-right-arrow" />
+									<input type="submit" value="Update Email Settings" class="round blue ic-right-arrow" />
 								</fieldset>
 							</form>	
 						</div>
@@ -157,15 +157,15 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">reCAPTCHA Settings</h3>
 						</div>
 						<div class="content-module-main cf">
-							<form action="account.php?action=notifications" method="post">
+							<form action="actions/captcha.php" method="post">
 								<fieldset>
 									<p>
-										<label for="p_password">Public Key</label>
-										<input type="text" name="main_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('captcha_pub'); ?>"/>
+										<label for="pub_key">Public Key</label>
+										<input type="text" name="pub_key" class="round full-width-input" value="<?php echo $core->framework->settings->get('captcha_pub'); ?>"/>
 									</p>
 									<p>
-										<label for="p_password_new">Private Key</label>
-										<input type="text" name="master_url" class="round full-width-input" value="<?php echo $core->framework->settings->get('captcha_priv'); ?>"/>
+										<label for="priv_key">Private Key</label>
+										<input type="text" name="priv_key" class="round full-width-input" value="<?php echo $core->framework->settings->get('captcha_priv'); ?>"/>
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="submit" value="Update reCAPTCHA" class="round blue ic-right-arrow" />
@@ -224,7 +224,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					}
 			});
 			$.urlParam = function(name){
-			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
 			    if (results==null){
 			       return null;
 			    }
