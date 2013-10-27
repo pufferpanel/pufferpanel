@@ -18,7 +18,7 @@ $outputMessage = '';
  */
 if(isset($_GET['action'])){
 
-	if($_GET['action'] == 'notifications'){
+	if($_GET['action'] == 'notifications' && isset($_POST['password'])){
 
 		/*
 		 * Update Notification Settings
@@ -153,6 +153,10 @@ if(isset($_GET['action'])){
 				
 				}
 	
+	}else{
+	
+		$outputMessage = '<div class="error-box round">Invalid parameters passed. Did you fill out all required fields?</div>';
+	
 	}
 
 }
@@ -160,6 +164,7 @@ if(isset($_GET['action'])){
 /*
  * Get Notification Preferences
  */
+$core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'));
 if($core->framework->user->getData('notify_login_s') == 1){ $ns1 = 'checked="checked"'; $ns0 = ''; }else{ $ns0 = 'checked="checked"'; $ns1 = ''; }
 if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf0 = ''; }else{ $nf0 = 'checked="checked"'; $nf1 = ''; }
 
