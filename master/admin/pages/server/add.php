@@ -194,7 +194,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 		
 			var field = $.urlParam('error');
 			var exploded = field.split('|');
-			$("#errorDetected").slideDown();
 			
 				$.each(exploded, function(key, value) {
 					
