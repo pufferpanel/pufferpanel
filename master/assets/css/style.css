@@ -555,9 +555,8 @@ table { width: 100%; margin-bottom: 1.25em; /* 20/16 */ }
 
 	/* Push the first cell to the right so it doesn't stick to the table border */
 	table td:first-child, table th:first-child {
-		width: 4em /* 48/12 */;
-		text-align: center;
-		padding: 0;
+		/*text-align: center; Who thought this was ever a good idea?*/
+		padding: 0.833em 0 0.833em 1.25em;
 		border: none;
 		border-bottom: 1px solid #f8f9fa;
 	}
