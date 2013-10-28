@@ -19,7 +19,7 @@
 		</ul>
 	<h3>Node Management</h3>
 		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/edit.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Node</a></li>
+			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/list.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Node</a></li>
 			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/add.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Add New Node</a></li>
 		</ul>
 	<h3>Misc. Management</h3>
