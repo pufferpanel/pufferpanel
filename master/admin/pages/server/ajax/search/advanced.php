@@ -131,12 +131,18 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isActive = ($row['active'] == 1) ? '<i class="fa fa-ok-circle"></i>' : '<i class="fa fa-remove-circle"></i>';
+		$isActive = ($row['active'] == 1) ? '<i class="fa fa-check-circle-o"></i>' : '<i class="fa fa-times-circle-o"></i>';
+		
+		$find = $mysql->prepare("SELECT `email` FROM `users` WHERE `id`  = :id");
+		$find->execute(array(
+			':id' => $row['owner_id']
+		));
+		$user = $find->fetch();
 		
 		$returnRows .= '
 		<tr>
-			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$row['owner_id'].'</a></td>
-			<td style="text-align:center;"><a href="#"><i class="fa fa-terminal"></i></a></td>
+			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-terminal"></i></a></td>
+			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
 			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
 			<td><a href="../node/view.php?do=redirect&node='.$row['node'].'">'.$row['node'].'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
@@ -152,11 +158,11 @@ echo '
 <table>
 	<thead>
 		<tr>
-			<th style="width:7%">Owner ID</th>
-			<th style="width:8%;text-align:center;">Control</th>
+			<th style="width:5%"></th>
+			<th style="width:20%">Owner Information</th>
 			<th style="width:20%">Server Name</th>
 			<th style="width:10%">Node</th>
-			<th style="width:30%">Connection Address</th>
+			<th style="width:20%">Connection Address</th>
 			<th style="width:10%">RAM</th>
 			<th style="width:10%">Disk Space</th>
 			<th style="width:5%;text-align:center;">Active</th>
