@@ -71,15 +71,9 @@ foreach($lines as $id => $values)
 		for($l=0; $l<count($ports); $l++)
 			{
 							
-				$IPP[$ip] = array_merge($IPP[$ip], array($ports[$l] => $ports[$l]));
+				$IPP[$ip][$ports[$l]] = 1;
 			
 			}
-		
-		/*
-		 * Ghetto Function to Flip the Array since PHP wants to set the keys equal to random numbers and not the port.
-		 */
-		$IPP[$ip] = array_flip($IPP[$ip]);
-		$IPP[$ip] = array_fill_keys(array_keys($IPP[$ip]), 1);
 		
 		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip]), "ports_used" => 0, "ports_suspended" => 0));
 			
