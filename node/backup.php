@@ -253,7 +253,7 @@ $query->execute(array($core->framework->server->getData('hash')));
 				$sha1 = (strlen($row['sha1']) > 25) ? substr($row['sha1'], 0, 22).'...' : $row['sha1'];
 				
 				$returnBackups .= '<tr>
-										<td style="text-align:center;"><a href="core/ajax/backup/download.php?id='.$row['id'].'"><i class="fa fa-download"></i></a>&nbsp;&nbsp;&nbsp;<i class="fa fa-remove-circle"></i></td>
+										<td style="text-align:center;"><a href="core/ajax/backup/download.php?id='.$row['id'].'"><i class="fa fa-download"></i></a>&nbsp;&nbsp;&nbsp;<i class="fa fa-times-circle-o"></i></td>
 										<td>'.$row['file_name'].'</td>
 										<td><abbr title="'.$row['md5'].'">'.$md5.'</abbr></td>
 										<td><abbr title="'.$row['sha1'].'">'.$sha1.'</abbr></td>
@@ -319,7 +319,8 @@ $selectParams->execute(array($core->framework->server->getData('hash')));
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
 				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-hdd"></i></a></li>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-home"></i></a></li>
+				<li><a class="round button dark"><i class="fa fa-hdd"></i>&nbsp;&nbsp; <?php echo $core->framework->server->getData('name'); ?></a></li>
 			</ul>
 			<ul id="nav" class="fr">
 				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>

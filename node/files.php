@@ -125,7 +125,7 @@ if(!isset($_GET['do'])){
 										<td><a href="files.php?dir='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'">'.str_replace($core->framework->server->getData('path').$_GET['dir'], '', $file).'</a></td>
 										<td></td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-times-circle-o">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}else{
@@ -140,7 +140,7 @@ if(!isset($_GET['do'])){
 										<td>'.$url.'</td>
 										<td>'.$core->framework->files->formatSize($stat['size']).'</td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-times-circle-o">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}
@@ -177,7 +177,7 @@ if(!isset($_GET['do'])){
 										<td><a href="files.php?dir='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'">'.str_replace($core->framework->server->getData('path'), '', $file).'</a></td>
 										<td></td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><!--<img src="'.$core->framework->settings->get('master_url').'assets/images/node/file_manager/transparent.png"/>&nbsp;&nbsp;&nbsp;<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-times-circle-o">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}else{
@@ -193,7 +193,7 @@ if(!isset($_GET['do'])){
 										<td>'.$url.'</td>
 										<td>'.$core->framework->files->formatSize($stat['size']).'</td>
 										<td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
-										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-remove-circle">&nbsp</i></a>--></td>
+										<td class="center"><a href="files.php?do=download&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-download-alt">&nbsp</i></a>&nbsp;&nbsp;&nbsp;<!--<a href="files.php?do=delete&file='.urlencode(str_replace($core->framework->server->getData('path'), '', $file)).'"><i class="fa fa-times-circle-o">&nbsp</i></a>--></td>
 									</tr>';
 			
 			}
@@ -543,7 +543,8 @@ if(!isset($_GET['do'])){
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
 				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-hdd"></i></a></li>
+				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-home"></i></a></li>
+				<li><a class="round button dark"><i class="fa fa-hdd"></i>&nbsp;&nbsp; <?php echo $core->framework->server->getData('name'); ?></a></li>
 			</ul>
 			<ul id="nav" class="fr">
 				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
