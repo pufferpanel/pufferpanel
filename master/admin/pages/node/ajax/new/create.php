@@ -31,7 +31,7 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 /*
  * Validate Node URL
  */
-if(!preg_match('/^[https:\/\/]+[\w\d._-]+[\:]{0,1}[\d]{0,6}[\/]{1}$/', $_POST['node_url']))
+if(!preg_match('/^https?\:\/\/(?:[\w](?:[-\w]*[\w])?\.)+[a-zA-Z]{1,15}(?:\:[\d]+)?\/?$/', $_POST['node_url']))
 	$core->framework->page->redirect('../../add.php?error=node_url&disp=url_fail');
 	
 /*
@@ -40,7 +40,7 @@ if(!preg_match('/^[https:\/\/]+[\w\d._-]+[\:]{0,1}[\d]{0,6}[\/]{1}$/', $_POST['n
 if(!filter_var($_POST['node_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['node_sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
 	$core->framework->page->redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
 
-if(!preg_match('/^[\w.\/-]+[^\/][\/]{1}$/', $_POST['s_dir']) || !preg_match('/^[\w.\/-]+[^\/][\/]{1}$/', $_POST['s_dir_backup']))
+if(!preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir']) || !preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir_backup']))
 	$core->framework->page->redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_fail');
 	
 if($_POST['s_dir'] == $_POST['s_dir_backup'])
