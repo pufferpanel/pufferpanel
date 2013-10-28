@@ -562,9 +562,8 @@ table { width: 100%; margin-bottom: 1.25em; /* 20/16 */ }
 	}
 	
 	table td:last-child, table th:last-child {
-		width: 7em; /* 84/12 */
 		/*text-align: center;*/
-		padding: 0;
+		padding: 0.833em 0 0.833em 1.25em;
 	}
 	
 	table td.table-footer {
