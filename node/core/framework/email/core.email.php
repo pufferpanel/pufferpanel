@@ -1,5 +1,22 @@
 <?php
-
+/*
+    PufferPanel - A Minecraft Server Management Panel
+    Copyright (c) 2013 Dane Everitt
+ 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+ 
 /*
  * Core Email Sending Class
  */
@@ -76,6 +93,29 @@ class tplMail extends dbConn {
 					
 					}
 									
+				}
+			else if($this->getDispatchSystem == 'mailgun')
+				{
+			
+					list($name, $domain) = explode('@', $this->settings->get('sendmail_email'));
+					
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/'.$domain.'/messages');
+					curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+					curl_setopt($ch, CURLOPT_USERPWD, 'api:'.$this->settings->get('mailgun_api_key'));
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0);
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+					curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+						'from' => $this->settings->get('company_name').' <'.$this->settings->get('sendmail_email').'>',
+						'to' => $email.' <'.$email.'>',
+						'subject' => $subject,
+						'html' => $message
+					));
+					
+					curl_exec($ch);
+									
+					curl_close($ch);
+					
 				}
 			else 
 				{
