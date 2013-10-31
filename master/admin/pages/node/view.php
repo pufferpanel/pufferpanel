@@ -115,9 +115,10 @@ $selectNode->execute(array(
 						<div class="content-module-main">
 							<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
 								<p>
-									<label for="ports" id="setTitle"></label>
-									<input type="text" name="ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="round full-width-input" />
-									<input type="hidden" name="ip" value=""/>
+									<label for="add_ports" id="setTitle"></label>
+									<input type="text" name="add_ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="round full-width-input" />
+									<input type="hidden" name="add_ports_ip" value=""/>
+									<input type="hidden" name="add_ports_node" value=""/>
 								</p>
 							</form>
 							<table>
@@ -235,9 +236,9 @@ $selectNode->execute(array(
 				var node_id = exploded[3];
 				$("#addPorts").slideUp(function(){
 					$("#setTitle").html('Add Ports for '+ip);
-					$("input[name='ports']").val("");
-					$("input[name='ip']").val(ip);
-					$("input[name='node']").val(node_id);
+					$("input[name='add_ports']").val("");
+					$("input[name='add_ports_ip']").val(ip);
+					$("input[name='add_ports_node']").val(node_id);
 					$("#addPorts").slideDown();
 				});
 			});
