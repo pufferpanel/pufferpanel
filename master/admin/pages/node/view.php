@@ -113,25 +113,57 @@ $selectNode->execute(array(
 							<h3 class="fl">Edit IP &amp; Port Allocation</h3>
 						</div>
 						<div class="content-module-main">
-							<pre>
-<?php
-
-foreach(json_decode($node['ports'], true) as $ip => $ports)
-{
-
-echo "[{$ip}] => <br />";
-foreach($ports as $port => $avaliable)
-	{
-		
-		echo "	{$port} ({$avaliable}) <br />";
-	
-	}
-echo "<br />";
-
-}
-
-?>
-							</pre>
+							<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
+								<p>
+									<label for="ports" id="setTitle"></label>
+									<input type="text" name="ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="round full-width-input" />
+									<input type="hidden" name="ip" value=""/>
+								</p>
+							</form>
+							<table>
+								<thead>
+									<tr>
+										<th style="width:30%;">IP Address</th>
+										<th style="width:35%">Ports</th>
+										<th style="width:35%"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									
+										foreach(json_decode($node['ports'], true) as $ip => $ports)
+											{
+									
+												echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
+												$counter = 1;
+												$row1 = null; $row2 = null;
+												foreach($ports as $port => $avaliable)
+													{
+											
+														if($counter & 1)
+															{
+															
+																$row1 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+																$row1 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
+																
+															}else{
+															
+																$row2 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+																$row2 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
+															
+															}
+														
+														$counter++;
+										
+													}
+												echo "<td style=\"vertical-align:top;\">{$row1}</td><td style=\"vertical-align:top;\">{$row2}</td></tr>";
+									
+											}
+									
+									?>
+								</tbody>
+							</table>
+							<div class="information-box round no-image"><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)<br /><i class="fa fa-dot-circle-o"></i> (Port Used; Cannot Delete)</div>
 							<div class="error-box round">Editing this information is currently unavailable.</div>
 						</div>
 					</div>
@@ -194,6 +226,77 @@ echo "<br />";
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".clickToAdd").click(function(){
+				var rawUrl = $(this).attr("href");
+				var exploded = rawUrl.split('/');
+				var ip = exploded[2];
+				var node_id = exploded[3];
+				$("#addPorts").slideUp(function(){
+					$("#setTitle").html('Add Ports for '+ip);
+					$("input[name='ports']").val("");
+					$("input[name='ip']").val(ip);
+					$("input[name='node']").val(node_id);
+					$("#addPorts").slideDown();
+				});
+			});
+			$(".deletePort").click(function(){
+				
+				var rawUrl = $(this).attr("href");
+				var exploded = rawUrl.split('/');
+				var ip = exploded[2];
+				var port = exploded[3];
+				var node_id = exploded[4];
+				var conf = confirm("Are you sure you want to delete "+ip+":"+port);
+				
+					if(conf == true)
+						{
+							$.ajax({
+								type: "POST",
+								url: "ajax/ports/delete.php",
+								data: { ip: ip, port: port, node: node_id},
+								success: function(data) {
+									$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
+								}
+							});
+						}else{
+							return false;
+						}
+				
+			});
+			// Advanced Error Stuff
+			$.urlParam = function(name){
+			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
+			    if (results==null){
+			       return null;
+			    }
+			    else{
+			       return results[1] || 0;
+			    }
+			}
+			if($.urlParam('error') != null){
+			
+				var field = $.urlParam('error');
+				var exploded = field.split('|');
+				
+					$.each(exploded, function(key, value) {
+						
+						$('[name="' + value + '"]').addClass('error-input');
+						
+					});
+					
+				var obj = $.parseJSON($.cookie('__TMP_pp_admin_newnode'));
+				
+					$.each(obj, function(key, value) {
+						
+						$('[name="' + key + '"]').val(value);
+						
+					});
+			
+			}
+		});
+	</script>
 	<div id="footer">
 		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.3 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
 	</div>
