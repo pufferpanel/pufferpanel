@@ -21,15 +21,7 @@ require_once('../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
 
-	require_once('../../../core/framework/rcon/query.class.php');
-	require_once('../../../core/framework/rcon/rcon.class.php');
-	require_once('../../../core/framework/rcon/query.status.php');
-	
-	$rcon->status = new MinecraftStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-	$rcon->query = new MinecraftQuery();
-	$rcon->command = new MinecraftRcon();
-
-	if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+	if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 	
 		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
 		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));

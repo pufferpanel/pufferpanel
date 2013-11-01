@@ -24,7 +24,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 
 	if(isset($_POST['process'])){
 
-		$s = '';
+		$s = null;
 		/*
 		 * Verify that Server Port is set Correctly
 		 */
@@ -173,7 +173,7 @@ motd=A Minecraft Server';
 					 */
 					if($_POST['command'] == 'start'){
 						
-						if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);
@@ -192,7 +192,7 @@ motd=A Minecraft Server';
 					
 					}else if($_POST['command'] == 'stop'){
 					
-						if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
+						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);
@@ -212,7 +212,7 @@ motd=A Minecraft Server';
 					
 					}else if($_POST['command'] == 'kill'){
 					
-						if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
+						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);

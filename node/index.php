@@ -102,7 +102,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Players Online</h3>
 						</div>
 						<div class="content-module-main" id="server_players">
-							<p id="server_players_loading" style="margin: 1.25em;text-align: center;"><img src="<?php echo $core->framework->settings->get('master_url'); ?>assets/images/load/loading_sin.gif" alt="Loading..."/></p>
+							<p id="server_players_loading" style="margin: 1.25em;text-align: center;color: #000;"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 						</div>
 					</div>
 				</div>
@@ -112,7 +112,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Server Statistics</h3>
 						</div>
 						<div class="content-module-main cf" id="server_stats">
-							<p id="server_stats_loading" style="margin: 1.25em;text-align: center;"><img src="<?php echo $core->framework->settings->get('master_url'); ?>assets/images/load/loading_sin.gif" alt="Loading..."/></p>
+							<p id="server_stats_loading" style="margin: 1.25em;text-align: center;color: #000;"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 						</div>
 					</div>
 				</div>
@@ -123,7 +123,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<h3 class="fl">Server Information</h3>
 					</div> <!-- end content-module-heading -->
 					<div class="content-module-main" id="server_info">
-						<p id="server_info_loading" style="margin: 1.25em;text-align: center;"><img src="<?php echo $core->framework->settings->get('master_url'); ?>assets/images/load/loading_sin.gif" alt="Loading..."/></p>
+						<p id="server_info_loading" style="margin: 1.25em;text-align: center;color: #000;"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 					</div> <!-- end content-module-main -->
 				</div>
 			</div>

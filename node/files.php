@@ -453,7 +453,7 @@ if(!isset($_GET['do'])){
 //		/*
 //		 * Deleting File or Directory
 //		 */
-//		if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+//		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 //			
 //			$HTML = '<div class="error-box round">Server must be off in order to delete files via the online file management interface.</div>';
 //			

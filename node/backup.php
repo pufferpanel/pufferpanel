@@ -201,7 +201,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 					/*
 					 * If server is running we need to do this differently.
 					 */
-					if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+					if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 					
 						ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('name').' "save-all"');
 						sleep(2);

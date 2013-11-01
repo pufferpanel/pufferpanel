@@ -47,7 +47,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 			/*
 			 * Send Command to Backup Stuff
 			 */
-			if($rcon->s->isOnline($serverData['server_ip'], $serverData['server_port']) === true){
+			if($core->framework->rcon->online($serverData['server_ip'], $serverData['server_port']) === true){
 				
 //				$con = ssh2_connect($node['ip'], 22);
 //				ssh2_auth_password($con, $node['user'], $node['password']);

@@ -38,24 +38,15 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<p class="center nomargin">You are using '.$spaceUsedH.' of your maximum '.$maxSpaceH.' of disk space.</p>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'players'){
-	
-		if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
-				
-			include('../../../core/framework/rcon/query.class.php');
-			include('../../../core/framework/rcon/rcon.class.php');
-			include('../../../core/framework/rcon/query.status.php');
+					
+		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 			
-			$rcon->status = new MinecraftStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-			$rcon->query = new MinecraftQuery();
-			$rcon->command = new MinecraftRcon();
+			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
 			
-			$rcon->query->Connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'), 1);
-			$playersOnline = $rcon->query->GetPlayers();
-			$pl = $rcon->query->GetInfo();
-				
+									
 				$pOnlineL = '';
-				if(!empty($playersOnline)){
-					foreach($playersOnline as $id => $player){
+				if(count($core->framework->rcon->data('players')) > 0){
+					foreach($core->framework->rcon->data('players') as $id => $player){
 				
 						$pOnlineL .= '<img src="http://i.fishbans.com/player/'.$player.'/32" alt="'.$player.'" title="'.$player.'" style="padding:5px 10px;"/>';
 				
@@ -66,7 +57,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				
 				}
 			
-			$pPercent = round($pl['Players']/$pl['MaxPlayers'], 2) * 100;
+			$pPercent = round(count($core->framework->rcon->data('players'))/$core->framework->rcon->data('maxplayers'), 2) * 100;
 			($pPercent < 1) ? $pPercent = '1' : $pPercent = $pPercent;
 			
 			echo '
@@ -88,35 +79,24 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	
 	}else if($_POST['command'] && $_POST['command'] == 'info'){
 	
-		if($rcon->s->isOnline($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
-				
-			include('../../../core/framework/rcon/query.class.php');
-			include('../../../core/framework/rcon/rcon.class.php');
-			include('../../../core/framework/rcon/query.status.php');
+		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 			
-			$rcon->status = new MinecraftStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-			$rcon->query = new MinecraftQuery();
-			$rcon->command = new MinecraftRcon();
-			
-			$rcon->query->Connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'), 1);
-			$pl = $rcon->query->GetInfo();
-			
-			$pluginList = '';
-			if(is_array($pl['Plugins'])){			
-				foreach($pl['Plugins'] as $id => $plugin){
-					if(strpos(strtolower($plugin), 'mod') === false){
-						$pluginList .= $plugin.', ';
-					}
-				}
-			}
-			
+			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
 			$serverStatus = '<span style="color:green;">Online</span>';
-			$sVersion = $pl['Version']; 
-			$sSoftware = $pl['Software'];
+			$sVersion = $core->framework->rcon->data('version');
+			$sSoftware = $core->framework->rcon->data('software');
+			$sPlugins = null;
+			foreach(explode(',', $core->framework->rcon->data('plugins')) as $id => $plugin)
+				{
 				
+					$pData = explode(' ', $plugin);
+					$sPlugins .= str_replace(end($pData), '', $plugin).' ('.end($pData).')';
+				
+				}
+							
 		}else{
 		
-			$pluginList = 'Could not connect to server via RCON.';
+			$sPlugins = 'Could not connect to server via RCON.';
 			$serverStatus = '<span style="color:red;">Offline</span>';
 			$sVersion = 'Could not connect to server via RCON.'; 
 			$sSoftware = 'Could not connect to server via RCON.';
@@ -161,7 +141,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<tr>
 							<td>&nbsp;</td>
 							<td><strong>Plugins</strong></td>
-							<td>'.$pluginList.'</td>
+							<td>'.$sPlugins.'</td>
 						</tr>
 					</tbody>
 				</table>';

@@ -36,6 +36,7 @@ require_once('framework.user.php');
 require_once('framework.page.php');
 require_once('framework.folder.php');
 require_once('framework.server.php');
+require_once('framework.rcon.php');
 
 
 /*
@@ -59,14 +60,7 @@ $core->framework->page = new page();
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
 $core->framework->files = new files();
-
-/*
- * Minecraft RCON
- */
-include('rcon/rcon.connect.php');
-
-$rcon = new stdClass();
-$rcon->s = new MCOnline();
+$core->framework->rcon = new rcon();
 
 /*
  * MySQL PDO Connection Engine
