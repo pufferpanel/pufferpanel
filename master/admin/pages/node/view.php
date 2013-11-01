@@ -69,7 +69,6 @@ $selectNode->execute(array(
 	
 	<!-- jQuery & JS files -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="../../../assets/javascript/jquery.cookie.js"></script>
 </head>
 <body>
 	<div id="top-bar">
@@ -95,6 +94,41 @@ $selectNode->execute(array(
 					<div class="content-module-heading cf">
 						<h3 class="fl">Node <?php echo $node['node']; ?> Information</h3>
 					</div>
+					<?php 
+						
+						if(isset($_GET['disp']) && !empty($_GET['disp'])){
+						
+							echo '<div class="content-module-main">';
+							switch($_GET['disp']){
+								
+								case 'missing_warn':
+									echo '<div class="error-box">You must agree to the warning before updating the information.</div>';
+									break;
+								case 'missing_args':
+									echo '<div class="error-box">Not all arguments were passed by the script.</div>';
+									break;
+								case 'ip_fail':
+									echo '<div class="error-box">The IP address provided for SFTP was invalid.</div>';
+									break;
+								case 'user_fail':
+									echo '<div class="error-box">SFTP users must not be blank, and may not be \'root\'.</div>';
+									break;
+								case 'pass_fail':
+									echo '<div class="error-box">SSH passwords must be at least 12 characters.</div>';
+									break;
+								case 'n_fail':
+									echo '<div class="error-box">The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).</div>';
+									break;
+								case 'url_fail':
+									echo '<div class="error-box">The node URL provided is not valid.</div>';
+									break;
+							
+							}
+							echo '</div>';
+						
+						}
+					
+					?>
 				</div>
 			</div>
 			<div class="side-content fr">
@@ -193,7 +227,7 @@ $selectNode->execute(array(
 						</div>
 						<div class="content-module-main">
 							<p>If you have changed your SFTP IP address or the username of the main account used for provisioning servers please update it below. If the password has changed as well you can change that in the box below.</p>
-							<form action="ajax/update/sftp.php?do=ip+user" method="post">
+							<form action="ajax/update/sftp.php?do=ipuser" method="post">
 								<fieldset>
 									<p>
 										<label for="sftp_ip">SFTP IP Address</label>
@@ -205,7 +239,7 @@ $selectNode->execute(array(
 									</p>
 									<div class="stripe-separator"></div>
 										<div class="warning-box no-image round">
-											Editing this node information will require us to update multiple records in the database for servers in order to reflect these changes. Please ensure that you have entered the above information correctly. Changing this wrongly could result in multiple clients being unable to access their server(s).<br /><br />
+											Editing your username will require that you also update the account password below.<br /><br />
 											<input type="checkbox" name="warning" /> I have read and understand the above statement.
 										</div>
 										<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
@@ -224,10 +258,6 @@ $selectNode->execute(array(
 									<p>
 										<label for="pass">New SFTP Password</label>
 										<input type="password" name="pass" value="" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="pass_2">New SFTP Password Again</label>
-										<input type="password" name="pass_2" value="" class="round full-width-input" />
 									</p>
 									<div class="stripe-separator"></div>
 										<div class="warning-box no-image round">
@@ -301,14 +331,6 @@ $selectNode->execute(array(
 					$.each(exploded, function(key, value) {
 						
 						$('[name="' + value + '"]').addClass('error-input');
-						
-					});
-					
-				var obj = $.parseJSON($.cookie('__TMP_pp_admin_newnode'));
-				
-					$.each(obj, function(key, value) {
-						
-						$('[name="' + key + '"]').val(value);
 						
 					});
 			
