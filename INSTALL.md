@@ -54,17 +54,25 @@ Add a user for a server. (No SSH Access, SFTP Only)
 Change the user's password
 `[root@vpn ~]# passwd dane`
 
-Edit SSHD Config:
+####Edit SSHD Config:
 `/etc/ssh/sshd_config`
 
-		Subsystem	sftp    internal-sftp
-		Match Group rsshusers
-		ChrootDirectory /srv/servers/%u
-		X11Forwarding no
-		AllowTcpForwarding no
-		ForceCommand internal-sftp
+	Subsystem	sftp    internal-sftp
+	Match Group rsshusers
+	ChrootDirectory /srv/servers/%u
+	X11Forwarding no
+	AllowTcpForwarding no
+	ForceCommand internal-sftp
 
-Setup Permissions
+####Grant SFTP Access to RSSH Users
+
+The default action for rssh to lock down everything. To grant access sftp open the RSSH file:
+`[root@vpn ~]# /etc/rssh.conf`
+
+Append or uncomment following line:
+`allowsftp`
+
+####Setup Permissions
 
 	[root@vpn ~]# service sshd restart
 	[root@vpn ~]# mkdir /srv/servers/dane/server
