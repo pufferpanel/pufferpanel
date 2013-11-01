@@ -35,7 +35,7 @@ if($_POST['method'] != 'advanced')
 if(empty($_POST['field_1']) || empty($_POST['operator_1']) || empty($_POST['mid_op']) || empty($_POST['field_2']) || empty($_POST['operator_2']))
 	exit('<div class="error-box round">Required Variable Empty.</div>');
 	
-if(!in_array($_POST['field_1'], array('node', 'name', 'server_ip', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('node', 'name', 'server_ip', 'owner_email', 'active')))
+if(!in_array($_POST['field_1'], array('name', 'server_ip', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('name', 'server_ip', 'owner_email', 'active')))
 	exit('<div class="error-box round">Required `field` contains unknown value.</div>');
 	
 if(!in_array($_POST['operator_1'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')) || !in_array($_POST['operator_2'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')))
@@ -135,7 +135,7 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 	));
 
 }else{
-
+	
 	$find = $mysql->prepare("SELECT * FROM `servers` WHERE `".$_POST['field_1']."` ".$useOperator." :term ".$middleOperator." `".$_POST['field_2']."` ".$useOperator_2." :term_2");
 	$find->execute(array(
 		':term' => $searchTerm,
@@ -161,7 +161,7 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-terminal"></i></a></td>
 			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
 			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
-			<td><a href="../node/view.php?do=redirect&node='.$row['node'].'">'.$row['node'].'</a></td>
+			<td><a href="../node/view.php?id='.$row['node'].'">'.$row['node'].'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 			<td>'.$row['max_ram'].' MB</td>
 			<td>'.$row['disk_space'].' MB</td>

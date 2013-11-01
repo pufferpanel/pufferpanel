@@ -41,9 +41,9 @@ if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 /*
  * Determine if Node (IP & Port) is Avaliable
  */
-$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = :name");
+$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
 $select->execute(array(
-	':name' => $_POST['node']
+	':id' => $_POST['node']
 ));
 
 if($select->rowCount() == 1)

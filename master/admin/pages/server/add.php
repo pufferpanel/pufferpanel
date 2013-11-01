@@ -128,7 +128,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 											$selectData->execute(array());
 											while($node = $selectData->fetch()){
 											
-												echo '<option value="'.$node['node'].'">'.$node['node'].'</option>';
+												echo '<option value="'.$node['id'].'">'.$node['node'].'</option>';
 											
 											}
 										?>
