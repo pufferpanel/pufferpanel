@@ -188,7 +188,7 @@ CREATE TABLE `servers` (
   `whmcs_id` int(11) DEFAULT '0',
   `hash` char(42) NOT NULL DEFAULT '',
   `encryption_iv` tinytext NOT NULL,
-  `node` varchar(50) NOT NULL DEFAULT '',
+  `node` int(11) NOT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `active` int(1) DEFAULT '1',
   `owner_id` int(11) NOT NULL,
