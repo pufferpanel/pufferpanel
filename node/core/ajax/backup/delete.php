@@ -31,7 +31,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		
 			if($query->rowCount() == 1){
 			
-				$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+				$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 				$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 				
 				$row = $query->fetch();

@@ -158,7 +158,7 @@ motd=A Minecraft Server';
 		/*
 		 * Connect and Run Function
 		 */
-		$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+		$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 		$selectNode->execute(array($core->framework->server->getData('node')));
 		
 		$node = $selectNode->fetch();

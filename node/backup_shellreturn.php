@@ -40,7 +40,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 			 */
 			$serverData = $selectServerData->fetch();
 			
-			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 			$nodeSQLConnect->execute(array($serverData['node']));
 			$node = $nodeSQLConnect->fetch();
 		

@@ -41,7 +41,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 
 	if(isset($_POST['dbu'])){
 	
-		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 		
 		$node = $nodeSQLConnect->fetch();
@@ -260,7 +260,7 @@ $query->execute(array($core->framework->server->getData('hash')));
 			$returnBackups = '';
 			while($row = $query->fetch()){
 						
-				$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+				$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 				$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 				
 					$node = $nodeSQLConnect->fetch();

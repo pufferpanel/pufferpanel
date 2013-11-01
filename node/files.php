@@ -509,7 +509,7 @@ if(!isset($_GET['do'])){
 //				}else{
 //				
 //					if(is_dir('/srv/servers/'.$core->framework->server->getData('name').'/server/'.$FTPRemoteFile)){
-//					$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+//					$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 //					$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 //					
 //					$row = $nodeSQLConnect->fetch();

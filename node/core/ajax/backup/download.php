@@ -33,7 +33,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 				$row = $query->fetch();
 				
-				$nodeQuery = $mysql->prepare("SELECT * FROM `nodes` WHERE `node_name` = ? LIMIT 1");
+				$nodeQuery = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
 				$nodeQuery->execute(array($core->framework->server->getData('node')));
 				$node = $nodeQuery->fetch();
 				
