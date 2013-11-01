@@ -9,3 +9,4 @@ PufferPan.esproj/*
 node/core/framework/node_configuration.php
 SETUP
 master/core/framework/master_configuration.php
+node/core/framework/use_do17.php
