@@ -177,8 +177,17 @@ class rcon {
 					
 			}else{
 			
+				if(!file_exists(__DIR__.'/use_do17.php')){
+				
+					$addContent = '<?php 
+	exit();
+?>
+';
+				
+				}
+				
 				$fp = fopen(__DIR__.'/use_do17.php', 'a+');
-				fwrite($fp, $this->host.":".$this->port."\n");
+				fwrite($fp, $addContent.$this->host.":".$this->port."\n");
 				fclose($fp);
 				
 				self::getStatus($this->host, $this->port, true);
