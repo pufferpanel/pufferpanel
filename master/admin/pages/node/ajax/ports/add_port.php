@@ -20,7 +20,7 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), true) !== true){
-	exit('<div class="error-box round">Failed to Authenticate Account.</div>');
+	$core->framework->page->redirect('../../../../index.php');
 }
 
 if(!isset($_POST['add_ports_node']))
