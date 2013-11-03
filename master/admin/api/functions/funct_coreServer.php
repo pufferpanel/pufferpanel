@@ -19,6 +19,7 @@
 /*
  * PufferPanel API
  * WHMCS Module Provisioning
+ * Bad, pls no use
  */
  
 class api_main {
