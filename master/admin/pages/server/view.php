@@ -164,6 +164,7 @@ $select->execute(array(
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+									<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
 									<input type="submit" value="Update Server" class="round blue ic-right-arrow" />
 								</fieldset>
 							</form>
@@ -272,6 +273,25 @@ $select->execute(array(
 		</div>
 	</div>
 	<script type="text/javascript">
+		$.urlParam = function(name){
+		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		    if (results==null){
+		       return null;
+		    }
+		    else{
+		       return results[1] || 0;
+		    }
+		}
+		if($.urlParam('error') != null){
+			var field = $.urlParam('error');
+			var exploded = field.split('|');
+			
+				$.each(exploded, function(key, value) {
+					
+					$('[name="' + value + '"]').addClass('error-input');
+					
+				});
+		}
 		$(".click_ip").click(function(e){
 			e.preventDefault();
 			var start = $('#server_ip').val().replace(/\./g, "\\.");
