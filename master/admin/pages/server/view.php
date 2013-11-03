@@ -225,6 +225,7 @@ $select->execute(array(
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+									<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
 									<input type="submit" value="Update Password" class="round blue ic-right-arrow" />
 								</fieldset>
 							</form>
