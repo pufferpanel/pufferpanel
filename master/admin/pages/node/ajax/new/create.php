@@ -92,7 +92,7 @@ foreach($lines as $id => $values)
 			
 			}
 		
-		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip]), "ports_used" => 0, "ports_suspended" => 0));
+		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
 			
 	}
 	

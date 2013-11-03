@@ -23,3 +23,54 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	$core->framework->page->redirect('../../../../index.php');
 }
 
+if(!isset($_POST['sid']))
+	$core->framework->page->redirect('../../find.php');
+	
+if(!isset($_POST['server_ip'], $_POST['server_port'], $_POST['nid']))
+	$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
+	
+$select = $mysql->prepare("SELECT `ports`, `ips` FROM `nodes` WHERE `id` = :nid");
+$select->execute(array(':nid' => $_POST['nid']));
+$node = $select->fetch();
+
+$select = $mysql->prepare("SELECT `server_port`, `server_ip` FROM `servers` WHERE `id` = :sid");
+$select->execute(array(':sid' => $_POST['sid']));
+$server = $select->fetch();
+
+$ports = json_decode($node['ports'], true);
+$ips = json_decode($node['ips'], true);
+
+if(!array_key_exists($_POST['server_ip'], $ports))
+	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
+
+if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
+	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
+
+if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $server['server_port'])
+	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
+
+$mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port WHERE `id` = :sid")->execute(array(
+	':ip' => $_POST['server_ip'],
+	':port' => $_POST['server_port'],
+	':sid' => $_POST['sid']
+));
+
+/*
+ * Update Old
+ */
+$ports[$server['server_ip']][$server['server_port']] = 1;
+$ips[$server['server_ip']]['ports_free']++;
+
+/*
+ * Update Old
+ */
+$ports[$_POST['server_ip']][$_POST['server_port']] = 0;
+$ips[$_POST['server_ip']]['ports_free']--;
+
+$mysql->prepare("UPDATE `nodes` SET `ports` = :ports, `ips` = :ips WHERE `id` = :nid")->execute(array(
+	':ports' => json_encode($ports),
+	':ips' => json_encode($ips),
+	':nid' => $_POST['nid']
+));
+
+$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
