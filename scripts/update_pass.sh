@@ -16,7 +16,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-# PufferPanel User Creation Script
+# PufferPanel User Password Update Script
 # Parameters: 
 #	$1 = user
 #	$2 = pass
