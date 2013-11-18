@@ -71,7 +71,7 @@ class files {
 	
 	    $endIndex = strpos($size, ".")+3;
 	
-	    return substr( $size, 0, $endIndex).' '.$units[$i];
+	    return substr($size, 0, $endIndex).' '.$units[$i];
 	    
 	}
 	

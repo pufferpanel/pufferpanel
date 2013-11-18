@@ -23,7 +23,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 
 	if($_POST['command'] && $_POST['command'] == 'stats'){
 	
-		$maxSpace = ($core->framework->server->getData('disk_space') * 1024) * 1024;
+		$maxSpace = $core->framework->server->getData('disk_space') * 1024 * 1024;
 		$spaceUsed = $core->framework->files->getFolderSize($core->framework->server->getData('path'));
 		    
 		$returnSpacePercent = round(($spaceUsed / $maxSpace), 2) * 100;
@@ -35,7 +35,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		echo '	<div class="progress">
 		  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%;background-color: #2069b4"></div>
 				</div>
-				<p class="center nomargin">You are using '.$spaceUsedH.' of your maximum '.$maxSpaceH.' of disk space.</p>';
+				<p class="center nomargin">You are using '.$spaceUsedH.' of your maximum '.$core->framework->server->getData('disk_space').' MB of disk space.</p>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'players'){
 					
