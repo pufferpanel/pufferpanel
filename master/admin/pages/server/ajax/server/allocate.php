@@ -38,4 +38,25 @@ $mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHE
     ':disk' => $_POST['alloc_disk']
 ));
 
+/* 
+ * Select Node, User, & Server Information
+ */
+$select = $mysql->prepare("SELECT `ftp_user`, `node` FROM `servers` WHERE `id` = ?");
+$select->execute(array($_POST['sid']));
+    $server = $select->fetch();
+
+$selectNode = $mysql->prepare("SELECT `password`, `encryption_iv` FROM `nodes` WHERE `id` = ?");
+$selectNode->execute(array($server['node']));
+    $node = $selectNode->fetch();
+
+/*
+ * Update Disk Space 
+ */
+$con = ssh2_connect($node['sftp_ip'], 22);
+ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+
+$stream = ssh2_exec($con, 'cd /srv/scripts; ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk']);
+stream_set_blocking($stream, true);
+fclose($stream);
+
 $core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
