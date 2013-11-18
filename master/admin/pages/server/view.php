@@ -236,22 +236,20 @@ $select->execute(array(
 							<h3 class="fl">Server Settings</h3>
 						</div>
 						<div class="content-module-main">
-							<form action="ajax/server/settings.php" method="post">
+							<form action="ajax/server/allocate.php" method="post">
 								<fieldset>
 									<p>
 										<label for="owner">Owner</label>
 										<input type="text" readonly="readonly" value="<?php echo $user['username']; ?> (<?php echo $user['email']; ?>)" class="round full-width-input" />
-										<input type="hidden" name="owner_id" value="<?php echo $server['owner_id']; ?>" />
 									</p>
 									<div class="stripe-separator"><!--  --></div>
-									<div class="warning-box round" style="display: none;" id="gen_pass"></div>
 									<p>
-										<label for="alloc_ram">Allocate RAM (in Megabytes)</label>
-										<input type="text" name="pass" value="<?php echo $server['max_ram']; ?>" class="round full-width-input" />
+										<label for="alloc_mem">Allocate RAM (in Megabytes)</label>
+										<input type="text" name="alloc_mem" value="<?php echo $server['max_ram']; ?>" class="round full-width-input" />
 									</p>
 									<p>
 										<label for="alloc_disk">Disk Space (in Megabytes)</label>
-										<input type="text" name="pass_2" value="<?php echo $server['disk_space']; ?>" class="round full-width-input" />
+										<input type="text" name="alloc_disk" value="<?php echo $server['disk_space']; ?>" class="round full-width-input" />
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
