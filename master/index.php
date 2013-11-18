@@ -25,6 +25,11 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 
 if(isset($_GET['do']) && $_GET['do'] == 'login'){
 	
+        if(isset($_POST['redirect']) && !empty($_POST['redirect']))
+            $postLoginURL = $_GET['redirect'];
+        else
+            $postLoginURL = 'servers.php';
+    
 		$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
 		$selectAccount->execute(array(
 			':password' => $core->framework->auth->encrypt($_POST['password']),
@@ -67,7 +72,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 						    
 					}
 				
-					$core->framework->page->redirect('servers.php');
+					$core->framework->page->redirect($postLoginURL);
 			
 			}else{
 				
@@ -139,6 +144,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 					<input type="password" id="login-password" name="password" autocomplete="off" class="round full-width-input" />
 				</p>
 				<p>I've <a href="password.php">forgotten my password</a>.</p>
+                <?php
+                    (isset($_GET['redirect'])) ? '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'" />' : '';
+                ?>
 				<input type="submit" value="LOG IN" class="button round blue image-right ic-right-arrow" />
 			</fieldset>
 		</form>

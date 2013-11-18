@@ -21,7 +21,7 @@ require_once('core/framework/framework.core.php');
 $error = '';
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) !== true){
-	$core->framework->page->redirect('index.php');
+	$core->framework->page->redirect('index.php', $core->framework->page->genRedirect());
 	exit();
 }
 

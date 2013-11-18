@@ -31,18 +31,27 @@ class page extends dbConn {
 		
 		}
 
-	public function redirect($url) {
-		
-		if(!headers_sent()){
-			header('Location: '.urldecode($url));
+	public function redirect($url, $redirect = '') {
+        
+        $doRedirect = (isset($redirect) && !empty($redirect)) ? '?redirect='.$redirect : '';
+        if(!headers_sent()){
+			header('Location: '.urldecode($url).$doRedirect);
 			exit;
 		}else{
-			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
+			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).$doRedirect.'"/>');
 			return;
 		}
 		
 	}
-	
+    
+    public function genRedirect()
+        {
+        
+            $https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+            return $https.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        
+        }
+    	
 	public function isActive($p, $s){
 	
 		if($p == 'i' && $s == 'acp_index')
