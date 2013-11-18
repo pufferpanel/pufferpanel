@@ -83,7 +83,7 @@ class page extends dbConn {
 						/*
 						 * Select Node Information
 						 */
-						$queryNode = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
+						$queryNode = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
 						$queryNode->execute(array($row['node']));
 						
 							if($queryNode->rowCount() == 1){
