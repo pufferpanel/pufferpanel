@@ -23,21 +23,65 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	$core->framework->page->redirect('../../../../index.php');
 }
 
-if(!isset($_POST['sid']))
+if(!isset($_POST['sid']) || !isset($_POST['nid']))
 	$core->framework->page->redirect('../../find.php');
 	
 if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['nid']))
 	$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
 	
-if(strlen($_POST['sftp_pass']) < 8))
+if(strlen($_POST['sftp_pass']) < 8)
 	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_len');
 	
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
 	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_match');
 
-// Chupacabraalabra. nap.
-$node = exit();
+/* 
+ * Select Node, User, & Server Information
+ */
+$select = $mysql->prepare("SELECT `ftp_user`, `name`, `owner_id` FROM `servers` WHERE `id` = ?");
+$select->execute(array($_POST['sid']));
+    $server = $select->fetch();
+
+$selectUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id` = ?");
+$selectUser->execute(array($server['owner_id']));
+    $user = $selectUser->fetch();
+
+$selectNode = $mysql->prepare("SELECT `password`, `encryption_iv` FROM `nodes` WHERE `id` = ?");
+$selectNode->execute(array($_POST['nid']));
+    $node = $selectNode->fetch();
+
+/*
+ * Update Server SFTP Information
+ */
+$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+$pass = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+
+$mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
+    ':sid' => $_POST['sid'],
+    ':pass' => $pass,
+    ':iv' => $iv
+));
 	
 /*
  * Connect to Node and Execute Password Update
  */
+$con = ssh2_connect($node['sftp_ip'], 22);
+ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+
+$stream = ssh2_exec($con, 'cd /srv/scripts; ./update_pass.sh '.$server['ftp_user'].' '.$_POST['sftp_pass']);
+    stream_set_blocking($stream, true);
+    fclose($stream);
+
+/*
+ * Send the User an Email
+ */
+if(isset($_POST['email_user'])){
+    
+    $message = $core->framework->email->generateSFTPPasswordUpdateEmail(array('PASS' => $_POST['sftp_pass'], 'SERVER' => $server['name']));
+    $core->framework->email->dispatch($user['email'], $core->framework->settings->get('company_name').' - Your SFTP Password was Reset', $message);
+    
+}
+
+$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
+
+?>

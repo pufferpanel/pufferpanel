@@ -252,6 +252,16 @@ class tplMail extends dbConn {
 			return str_replace($this->find, $this->replace, $this->readTemplate('admin_newaccount'));
 		
 		}
+    
+    public function generateSFTPPasswordUpdateEmail($vars)
+        {
+            
+            $this->find = array('<%HOST_NAME%>', '<%PASS%>', '<%SERVER%>');
+			$this->replace = array($this->settings->get('company_name'), $vars['PASS'], $vars['SERVER']);
+				
+			return str_replace($this->find, $this->replace, $this->readTemplate('admin_new_sftppass'));
+        
+        }
 
 }
 
