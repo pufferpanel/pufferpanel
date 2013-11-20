@@ -98,9 +98,11 @@ if(isset($_GET['action'])){
 							/*
 							 * Send Email
 							 */
-							$message = $core->framework->email->generateEmailChangedNotification(array('EMAIL_KEY' => $emailKey, 'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'], 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])));
-							 
-							$core->framework->email->dispatch($_POST['newemail'], $core->framework->settings->get('company_name').' Email Updated', $message);	
+							$core->framework->email->buildEmail('email_changed', array(
+                                'EMAIL_KEY' => $emailKey,
+                                'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                                'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                            ))->dispatch($_POST['newemail'], $core->framework->settings->get('company_name').' Email Updated');	
 					
 					$outputMessage = '<div class="information-box round">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
 					
@@ -145,9 +147,10 @@ if(isset($_GET['action'])){
 								/*
 								 * Send Email
 								 */
-								$message = $core->framework->email->generatePasswordChangedNotification(array('IP_ADDRESS' => $_SERVER['REMOTE_ADDR'], 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])));
-								
-								$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Password Change Notification', $message);
+								$message = $core->framework->email->buidlEmail('password_changed', array(
+                                    'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                                    'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                                ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Password Change Notification');
 								
 							$outputMessage = '<div class="confirmation-box round">Your password has been sucessfully changed!</div>';
 								

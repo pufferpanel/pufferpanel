@@ -66,9 +66,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 						/*
 						 * Send Email
 						 */
-						$message = $core->framework->email->generateLoginNotification('success', array('IP_ADDRESS' => $_SERVER['REMOTE_ADDR'], 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])));
-						 
-						$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login  Notification', $message);
+						$core->framework->email->generateLoginNotification('success', array(
+                            'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                            'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                        ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login  Notification');
 						    
 					}
 				
@@ -94,9 +95,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 							/*
 							 * Send Email
 							 */								 
-							$message = $core->framework->email->generateLoginNotification('failed', array('IP_ADDRESS' => $_SERVER['REMOTE_ADDR'], 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])));
-							
-							$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login Failure Notification', $message);															 
+							$core->framework->email->generateLoginNotification('failed', array(
+                                'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                                'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                            ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login Failure Notification');															 
 								    
 						}
 							  
