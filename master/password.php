@@ -29,7 +29,7 @@ $statusMessage = ''; $noShow = false;
 
 if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
-	$resp = recaptcha_check_answer($core->framework->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+	$resp = recaptcha_check_answer($core->framework->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
 		
 	if($resp->is_valid){
 	
@@ -53,10 +53,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 					/*
 					 * Send Email
 					 */
-					$message = $core->framework->email->generateForgottenPasswordEmail(array('IP_ADDRESS' => $_SERVER['REMOTE_ADDR'], 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']), 'PKEY' => $pKey));
-					
-					$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Reset Your Password', $message);
-				
+					$message = $core->framework->email->buildEmail('password_reset', array(
+                        'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                        'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']),
+                        'PKEY' => $pKey
+                    ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Reset Your Password');
+									
 				$statusMessage = '<div class="confirmation-box round">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
 				$noShow = true;
 			
@@ -105,9 +107,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				/*
 				 * Send Email
 				 */
-				$message = $core->framework->email->generateNewPasswordEmail(array('NEW_PASS' => $raw_newpassword, 'EMAIL' => $row['content']));
-				
-				$core->framework->email->dispatch($row['content'], $core->framework->settings->get('company_name').' - New Password', $message);
+				$message = $core->framework->email->buildEmail('new_password', array(
+                    'NEW_PASS' => $raw_newpassword,
+                    'EMAIL' => $row['content']
+                ))->dispatch($row['content'], $core->framework->settings->get('company_name').' - New Password');
 		
 		}else{
 		
