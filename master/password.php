@@ -53,7 +53,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 					/*
 					 * Send Email
 					 */
-					$message = $core->framework->email->buildEmail('password_reset', array(
+					$core->framework->email->buildEmail('password_reset', array(
                         'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                         'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']),
                         'PKEY' => $pKey
@@ -107,7 +107,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				/*
 				 * Send Email
 				 */
-				$message = $core->framework->email->buildEmail('new_password', array(
+				$core->framework->email->buildEmail('new_password', array(
                     'NEW_PASS' => $raw_newpassword,
                     'EMAIL' => $row['content']
                 ))->dispatch($row['content'], $core->framework->settings->get('company_name').' - New Password');
