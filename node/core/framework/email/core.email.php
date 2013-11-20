@@ -23,6 +23,8 @@
 
 class tplMail extends dbConn {
 
+    private $message;
+    
 	public function __construct($settings)
 		{
 	
@@ -34,7 +36,7 @@ class tplMail extends dbConn {
 	/*
 	 * Email Sending
 	 */
-	public function dispatch($email, $subject, $message)
+	public function dispatch($email, $subject)
 		{
 		
 			$this->getDispatchSystem = $this->getDispatchSystemFunct();
@@ -56,7 +58,7 @@ class tplMail extends dbConn {
 					    ->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
 					    ->addTo($email, $email)
 					    ->subject($subject)
-					    ->messageHtml($message)
+					    ->messageHtml($this->message)
 					    ->send();
 				
 				}
@@ -69,7 +71,7 @@ class tplMail extends dbConn {
 					
 					    $mandrill = new Mandrill($this->settings->get('mandrill_api_key'));
 					    $mandrillMessage = array(
-					        'html' => $message,
+					        'html' => $this->message,
 					        'subject' => $subject,
 					        'from_email' => $this->settings->get('sendmail_email'),
 					        'from_name' => $this->settings->get('company_name'),
@@ -109,7 +111,7 @@ class tplMail extends dbConn {
 						'from' => $this->settings->get('company_name').' <'.$this->settings->get('sendmail_email').'>',
 						'to' => $email.' <'.$email.'>',
 						'subject' => $subject,
-						'html' => $message
+						'html' => $this->message
 					));
 					
 					curl_exec($ch);
@@ -124,7 +126,7 @@ class tplMail extends dbConn {
 					    'Reply-To: '. $this->settings->get('sendmail_email') . "\r\n" .
 					    'X-Mailer: PHP/' . phpversion();
 					
-					mail($email, $subject, $message, $headers);
+					mail($email, $subject, $this->message, $headers);
 			
 				}
 		
@@ -149,7 +151,7 @@ class tplMail extends dbConn {
 	private function readTemplate($template)
 		{
 		
-			$this->tpl = $this->mysql->prepare("SELECT * FROM	`acp_email_templates` WHERE `tpl_name` = ?");
+			$this->tpl = $this->mysql->prepare("SELECT * FROM `acp_email_templates` WHERE `tpl_name` = ?");
 			$this->tpl->execute(array($template));
 			
 			if($this->tpl->rowCount() == 1)
@@ -162,66 +164,28 @@ class tplMail extends dbConn {
 			else 
 				{
 				
-					die('Requested template `'.$tpl.'` could not be found.');
+					die('Requested template `'.$template.'` could not be found.');
 					
 				}
 			
 		
 		}
 	
-	/*
-	 * Generate the Email Message from the Templates for Login Notifications.
-	 * This does not send the email, simply generates the email message.
-	 */
-	public function generateLoginNotification($type, $vars)
-		{
-
-			if($type == 'failed')
-				{
-								
-					$this->find = array('<%HOST_NAME%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>', '<%MASTER_URL%>');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
-						
-					return str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
-				
-				}
-			else if($type == 'success')
-				{
-				
-					$this->find = array('<%HOST_NAME%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>', '<%MASTER_URL%>');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
-						
-					return str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
-				
-				}
-			else 
-				{
-				
-					die('Invalid email template specified.');
-					
-				}
-		
-		}
-		
-	public function generateEmailChangedNotification($vars)
-		{
-		
-			$this->find = array('<%HOST_NAME%>', '<%EMAIL_KEY%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>', '<%MASTER_URL%>');
-			$this->replace = array($this->settings->get('company_name'), $vars['EMAIL_KEY'], $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
-				
-			return str_replace($this->find, $this->replace, $this->readTemplate('email_changed'));
-		
-		}
-		
-	public function generatePasswordChangedNotification($vars)
-		{
-		
-			$this->find = array('<%HOST_NAME%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>');
-			$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()));
-				
-			return str_replace($this->find, $this->replace, $this->readTemplate('password_changed'));
-		
-		}
+    /*
+     * Read email template and compile data to send
+     */
+    public function buildEmail($tpl, $data = array())
+        {
+        
+            $this->message = $this->readTemplate($tpl);
+            $this->message = str_replace(array('<%HOST_NAME%>', '<%MASTER_URL%>', '<%DATE%>'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
+            
+                foreach($data as $key => $val)
+                    $this->message  = str_replace('<%'.$key.'%>', $val, $this->message);
+        
+                return $this;
+                
+        }
 
 }
 
