@@ -40,9 +40,10 @@ $update->execute(array(
 		/*
 		 * Send Email
 		 */
-		$message = $core->framework->email->generateNewPasswordEmail(array('NEW_PASS' => $_POST['pass'], 'EMAIL' => $_POST['email']));
-		
-		$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - An Admin has Reset Your Password', $message);
+		$core->framework->email->buildEmail('new_password', array(
+            'NEW_PASS' => $_POST['pass'],
+            'EMAIL' => $_POST['email']
+        ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - An Admin has Reset Your Password');
 	
 	}
 	

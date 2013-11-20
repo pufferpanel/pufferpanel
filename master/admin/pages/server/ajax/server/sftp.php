@@ -77,8 +77,10 @@ $stream = ssh2_exec($con, 'cd /srv/scripts; ./update_pass.sh '.$server['ftp_user
  */
 if(isset($_POST['email_user'])){
     
-    $message = $core->framework->email->generateSFTPPasswordUpdateEmail(array('PASS' => $_POST['sftp_pass'], 'SERVER' => $server['name']));
-    $core->framework->email->dispatch($user['email'], $core->framework->settings->get('company_name').' - Your SFTP Password was Reset', $message);
+    $core->framework->email->buildEmail('admin_new_sftppass', array(
+        'PASS' => $_POST['sftp_pass'],
+        'SERVER' => $server['name']
+    ))->dispatch($user['email'], $core->framework->settings->get('company_name').' - Your SFTP Password was Reset');
     
 }
 

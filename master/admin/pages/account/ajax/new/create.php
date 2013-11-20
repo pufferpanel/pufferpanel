@@ -52,8 +52,10 @@ $insert->execute(array(
 /*
  * Send Email
  */
-$message = $core->framework->email->adminAccountCreated(array('PASS' => $_POST['pass'], 'EMAIL' => $_POST['email']));
-$core->framework->email->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Created', $message);
+$core->framework->email->buildEmail('admin_newaccount', array(
+    'PASS' => $_POST['pass'],
+    'EMAIL' => $_POST['email']
+))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Created');
 
 $core->framework->page->redirect('../../view.php?id='.$mysql->lastInsertId());
 
