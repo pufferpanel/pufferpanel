@@ -25,6 +25,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 
 if(!isset($_POST['sid']))
 	$core->framework->page->redirect('../../find.php');
+
+$_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
 	
 if(!isset($_POST['server_ip'], $_POST['server_port'], $_POST['nid']))
 	$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);

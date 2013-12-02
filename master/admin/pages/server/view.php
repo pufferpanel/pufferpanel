@@ -116,51 +116,62 @@ $select->execute(array(
 									<div class="information-box no-image round">If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</div>
 									<p>
 										<label for="server_ip">Server IP</label>
-										<input type="text" name="server_ip" id="server_ip" value="<?php echo $server['server_ip']; ?>" class="round full-width-input" />
-										<div class="grey-box round">
-											<?php
+                                        <select name="server_ip" id="server_ip">
+                                            <?php
 											
 												$ips = json_decode($node['ips'], true);
 												foreach($ips as $ip => $internal){
 												
-													if($internal['ports_free'] > -1)
-														echo '<a href="#/!setIP" class="click_ip" id="'.$ip.'">'.$ip.'</a> has '.$internal['ports_free'].' avaliable port(s).<br />';
-													else
-														echo $ip.' has '.$internal['ports_free'].' avaliable port(s).<br />';
-												
+                                                    if($server['server_ip'] == $ip)
+                                                        echo '<option value="'.$ip.'" selected="selected">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+                                                    else{
+                                                    
+                                                        if($internal['ports_free'] > 0)
+														  echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+                                                        else
+														  echo '<option disabled="disabled">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+                                                    
+                                                    }
+                                                    												
 												}
 											
 											?>
-										</div>
+                                        </select>
+                                        <i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
 									</p>
 									<p>
 										<label for="server_port">Server Port</label>
-										<input type="text" name="server_port" id="server_port" value="<?php echo $server['server_port']; ?>" class="round full-width-input" />
-											<?php
-											
-												$ports = json_decode($node['ports'], true);
-												
-												foreach($ports as $ip => $internal){
-												
-													if($server['server_ip'] == $ip)
-														echo '<div class="grey-box round" id="node_'.$ip.'">';
-													else
-														echo '<div class="grey-box round" style="display:none;" id="node_'.$ip.'">';
-													
-													foreach($internal as $port => $avaliable){
-													
-														if($avaliable == 1)
-															echo '<a href="#/!setPort" class="click_port" id="'.$port.'">'.$port.'</a> is <span style="color:#52964f;">avaliable</span>.<br />';
-														else
-															echo $port.' is <span style="color:#cf4425;">unavaliable</span>.<br />';
-														
-													}
-													
-													echo '</div>';
-												
-												}
+								        <?php
+                                        
+                                            $ports = json_decode($node['ports'], true);
+                                            
+                                            foreach($ports as $ip => $internal){
+                                            
+                                                if($server['server_ip'] == $ip)
+                                                    echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'">';
+                                                else
+                                                    echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'">';
+                                                
+                                                    foreach($internal as $port => $avaliable){
+                                                    
+                                                        if($server['server_port'] == $port)
+                                                            echo '<option value="'.$port.'" selected="selected">'.$port.'</option>';
+                                                        else{
+                                                            
+                                                                if($avaliable == 1)
+                                                                    echo '<option value="'.$port.'">'.$port.'</option>';   
+                                                                else
+                                                                    echo '<option disabled="disabled">'.$port.'</option>';
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                
+                                                echo '</select><i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i></span>';
+                                            
+                                            }
 																							
-											?>
+								        ?>
 									</p>
 									<div class="stripe-separator"><!--  --></div>
 									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
@@ -290,20 +301,19 @@ $select->execute(array(
 					$('[name="' + value + '"]').addClass('error-input');
 					
 				});
-		}
-		$(".click_ip").click(function(e){
-			e.preventDefault();
-			var start = $('#server_ip').val().replace(/\./g, "\\.");
-			var ip = $(this).attr('id').replace(/\./g, "\\.");
-			$('#server_ip').val(ip.replace(/\\\./g, "."));
-			$('#node_'+start).slideToggle();
-			$('#node_'+ip).slideToggle();
-		});
-		$(".click_port").click(function(e){
-			e.preventDefault();
-			var port = $(this).attr('id');
-			$('#server_port').val(port);
-		});
+        }
+        
+        (function () {
+            var previous;
+            $("#server_ip").focus(function () {
+                previous = $(this).val().replace(/\./g, "\\.");
+            }).change(function() {
+                var ip = $(this).val().replace(/\./g, "\\.");
+                $("#node_"+previous).hide();
+                $("#node_"+ip).show();
+            });
+        })();
+        
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
