@@ -49,13 +49,15 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 			 */
 			if($core->framework->rcon->online($serverData['server_ip'], $serverData['server_port']) === true){
 				
-//				$con = ssh2_connect($node['ip'], 22);
-//				ssh2_auth_password($con, $node['user'], $node['password']);
-//					
-//				ssh2_exec($con, 'echo "'.$node['password'].'" | sudo -S su - root -c "cd /srv/scripts; ./send_command.sh '.$serverData['name'].' \"save-on\""');
-//				ssh2_exec($con, 'echo "'.$node['password'].'" | sudo -S su - root -c "cd /srv/scripts; ./send_command.sh '.$serverData['name'].' \"save-all\""');
-				
-			}
+                /*
+                 * Connections
+                 */
+                $con = ssh2_connect($node['node_ip'], 22);
+                ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+                
+                $s = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('name').' "save-on"');
+                stream_set_blocking($s, true);
+            
 			
 				/*
 				 * Did they want an email?
