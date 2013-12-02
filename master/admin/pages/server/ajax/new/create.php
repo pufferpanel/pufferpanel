@@ -129,6 +129,15 @@ $add->execute(array(
 ));
 
 /*
+ * Update IP Count
+ */
+$ips[$_POST['server_ip']]['ports_free']--;
+$ports[$_POST['server_ip']]['server_port']--;
+
+$mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
+$mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
+
+/*
  * Do Server Making Stuff Here 
  */
 $con = ssh2_connect($node['sftp_ip'], 22);
