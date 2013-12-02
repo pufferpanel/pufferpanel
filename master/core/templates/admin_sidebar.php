@@ -5,7 +5,6 @@
 	<h3>Configuration</h3>
 		<ul>
 			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/configuration/global.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Global Settings</a></li>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/configuration/database.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Database Settings</a></li>
 		</ul>
 	<h3>Account Management</h3>
 		<ul>
