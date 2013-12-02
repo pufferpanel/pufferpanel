@@ -132,7 +132,7 @@ $add->execute(array(
  * Update IP Count
  */
 $ips[$_POST['server_ip']]['ports_free']--;
-$ports[$_POST['server_ip']]['server_port']--;
+$ports[$_POST['server_ip']][$_POST['server_port']]--;
 
 $mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
 $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
