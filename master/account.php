@@ -147,7 +147,7 @@ if(isset($_GET['action'])){
 								/*
 								 * Send Email
 								 */
-								$message = $core->framework->email->buidlEmail('password_changed', array(
+								$message = $core->framework->email->buildEmail('password_changed', array(
                                     'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                                     'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
                                 ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Password Change Notification');
