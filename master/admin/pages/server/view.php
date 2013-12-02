@@ -302,18 +302,11 @@ $select->execute(array(
 					
 				});
         }
-        
-        (function () {
-            var previous;
-            $("#server_ip").focus(function () {
-                previous = $(this).val().replace(/\./g, "\\.");
-            }).change(function() {
-                var ip = $(this).val().replace(/\./g, "\\.");
-                $("#node_"+previous).hide();
-                $("#node_"+ip).show();
-            });
-        })();
-        
+        $("#server_ip").change(function() {
+            var ip = $(this).val().replace(/\./g, "\\.");
+            $("[id^=node_]").hide();
+            $("#node_"+ip).show();
+        });
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
