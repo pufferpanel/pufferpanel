@@ -195,7 +195,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 					/*
 					 * Connections
 					 */
-					$con = ssh2_connect($node['node_ip'], 22);
+					$con = ssh2_connect($node['sftp_ip'], 22);
 					ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 					
 					/*

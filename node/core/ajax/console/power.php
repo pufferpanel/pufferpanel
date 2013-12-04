@@ -25,13 +25,24 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	if(isset($_POST['process'])){
 
 		$s = null;
+        
+        /*
+         * Get the Server Node Info
+         */
+        $query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
+        $query->execute(array(
+            ':nodeid' => $core->framework->server->getData('node')
+        ));
+        
+        $node = $query->fetch();
+        
 		/*
 		 * Verify that Server Port is set Correctly
 		 */
-		$SFTPConnection = ssh2_connect($core->framework->server->getData('ftp_host'), 22);
-		ssh2_auth_password($SFTPConnection, $core->framework->server->getData('ftp_user'), openssl_decrypt($core->framework->server->getData('ftp_pass'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->getData('encryption_iv'))));
+		$con = ssh2_connect($node['sftp_ip'], 22);
+		ssh2_auth_password($con, $core->framework->server->getData('ftp_user'), openssl_decrypt($core->framework->server->getData('ftp_pass'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->getData('encryption_iv'))));
 		
-			$sftp = ssh2_sftp($SFTPConnection);
+			$sftp = ssh2_sftp($con);
 				
 				$rewrite = false;							
 				$stream = fopen("ssh2.sftp://".$sftp."/server/server.properties", 'r');
@@ -154,15 +165,11 @@ motd=A Minecraft Server';
 									fclose($stream);
 									
 								}
-
-		/*
+        
+        /*
 		 * Connect and Run Function
 		 */
-		$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
-		$selectNode->execute(array($core->framework->server->getData('node')));
-		
-		$node = $selectNode->fetch();
-		
+        
 		$con = ssh2_connect($node['node_ip'], 22);
 		ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 				
