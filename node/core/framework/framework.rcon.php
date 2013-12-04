@@ -153,7 +153,11 @@ class rcon {
 		        $data = explode("\x00\x00\x01player_\x00\x00", substr($data, 11));
 		        $this->info['players'] = explode("\x00", substr($data[1], 0, -2));
 		        $data = explode("\x00", $data[0]);
-		
+                 
+                #Bug Fix for Players
+                $this->info['players'] = (strlen($this->info['players'][0]) < 1) ? null : $this->info['players'];
+                
+                    
 				foreach($data as $key => $value)
 					{
 					
