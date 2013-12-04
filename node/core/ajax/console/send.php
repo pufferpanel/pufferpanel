@@ -23,14 +23,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 
 	if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 	
-		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
+		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
 		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 		
 		$row = $nodeSQLConnect->fetch();
 		/*
 		 * Connect and Run Function
 		 */		
-		if(!($con = ssh2_connect($row['node_ip'], 22))){
+		if(!($con = ssh2_connect($row['sftp_ip'], 22))){
 		    
 		    die("Unable to establish connection to Server.");
 		    
