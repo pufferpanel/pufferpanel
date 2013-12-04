@@ -92,7 +92,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				</ul>
 			</div>
 			<div class="side-content fr">
-				<div class="error-box round" id="text_highlighted" style="display:none;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
+				<div class="error-box round text_highlighted" style="display:none;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
 				<div class="content-module">
 					<div class="content-module-heading cf">
 						<h3 class="fl">Live Console</h3>
@@ -101,6 +101,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<textarea id="live_console" disabled="disabled"><?php echo $core->framework->files->last_lines($core->framework->server->getData('path').'server.log', 500); ?></textarea>
 					</div> <!-- end content-module-main -->
 				</div>
+                <div class="error-box round text_highlighted" style="display:none;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
 			</div>
 			<div class="side-content fr">
 				<div class="half-size-column fl">
@@ -109,6 +110,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Send Command</h3>
 						</div>
 						<div class="content-module-main" id="server_players">
+                            <div class="error-box round" id="sc_resp" style="display:none;"></div>
 							<form action="#" method="post" id="console_command">
 								<fieldset>
 									<p>
@@ -127,6 +129,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							<h3 class="fl">Server Actions</h3>
 						</div>
 						<div class="content-module-main cf center" id="server_stats">
+                            <div class="confirmation-box round" id="pw_resp" style="display:none;"></div>
 							<a href="#start" id="start" class="poke round button blue text-upper">Start Server</a>
 							<a href="#stop" id="stop" class="poke round button blue text-upper">Stop Server</a>
 							<a href="#kill" id="kill" class="poke round button blue text-upper">Kill Server</a>
@@ -161,8 +164,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					    		
 					    			if(data != ''){
 					    			
-					    				//make nicer
-					    				alert(data);
+					    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
 					    			
 					    			}
 					    		
@@ -240,10 +242,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				
 				setInterval(function(){
 					if(isTextSelected($('#live_console')[0]) === false){
-						$("#text_highlighted").slideUp();
+						$(".text_highlighted").slideUp();
 						updateConsole();
 					}else{
-						$("#text_highlighted").slideDown();
+						$(".text_highlighted").slideDown();
 					}
 				}, 200);
 				
@@ -276,7 +278,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					    				$("a.poke").fadeTo(1000, 1);
 					    				
 					    				//make nicer
-					    				alert('Server Started');
+					    				$("#pw_resp").html("Server has been started successfully.").slideDown().delay(5000).slideUp();
 					    				
 					    				return false;
 					    			
@@ -287,7 +289,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					    				$("a.poke").fadeTo(1000, 1);
 					    				
 					    				//make nicer
-					    				alert('Server Stopped');
+					    				$("#pw_resp").html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
 					    				
 					    				return false;
 					    			
@@ -298,7 +300,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					    				$("a.poke").fadeTo(1000, 1);
 					    				
 					    				//make nicer
-					    				alert('Server Killed');
+					    				$("#pw_resp").html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();
 					    				
 					    				return false;
 					    					
