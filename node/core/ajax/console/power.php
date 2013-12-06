@@ -193,7 +193,7 @@ motd=A Minecraft Server';
 						
 						}else{
 												
-							$stream = ssh2_exec($con, 'cd /srv/scripts; ./start_server.sh "/srv/servers/'.$core->framework->server->getData('name').'/server" "'.$core->framework->server->getData('max_ram').'" "'.$core->framework->server->getData('name').'"');
+							$stream = ssh2_exec($con, 'cd /srv/scripts; ./start_server.sh "/srv/servers/'.$core->framework->server->getData('ftp_name').'/server" "'.$core->framework->server->getData('max_ram').'" "'.$core->framework->server->generateServerToken().'"');
 
                            $core->framework->log->getUrl()->addLog(0, 1, array('user.server_start', 'The server `'.$core->framework->server->getData('name').'` was started.'));
                             
@@ -214,7 +214,7 @@ motd=A Minecraft Server';
 						
 						}else{
 						
-							$stream = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh "'.$core->framework->server->getData('name').'" "stop"');
+							$stream = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh "'.$core->framework->server->generateServerToken().'" "stop"');
 							stream_set_blocking($stream, true);
 							
                             $core->framework->log->getUrl()->addLog(0, 1, array('user.server_stop', 'The server `'.$core->framework->server->getData('name').'` was stopped.'));
@@ -236,7 +236,7 @@ motd=A Minecraft Server';
 						
 						}else{
 						
-							$stream = ssh2_exec($con, 'cd /srv/scripts; ./kill_server.sh "'.$core->framework->server->getData('name').'"');
+							$stream = ssh2_exec($con, 'cd /srv/scripts; ./kill_server.sh "'.$core->framework->server->generateServerToken().'"');
 							stream_set_blocking($stream, true);
 							
                             $core->framework->log->getUrl()->addLog(1, 1, array('user.server_kill', 'The server `'.$core->framework->server->getData('name').'` was forceably stopped.'))
