@@ -160,6 +160,7 @@ motd=A Minecraft Server';
 								
 										if(!fwrite($stream, $newContents)){
 								
+                                            $core->framework->log->getUrl()->addLog(3, 1, array('system.update_serverprops_failed', 'Unable to update the servers.properties file.'));
 											exit('Unable to fix broken server.properties. Please contact support.');
 								
 										}
