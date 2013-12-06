@@ -71,8 +71,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
                             'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
                         ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login  Notification');
 						    
-					}
-				
+                    }
+                
+                    $core->framework->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
+                
 					$core->framework->page->redirect($postLoginURL);
 			
 			}else{
@@ -103,6 +105,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 						}
 							  
 					}
+                
+                $core->framework->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
+                
 				$core->framework->page->redirect('index.php?error=true');
 			
 			}

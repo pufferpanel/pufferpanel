@@ -58,12 +58,16 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
                         'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']),
                         'PKEY' => $pKey
                     ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Reset Your Password');
-									
+				
+                $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset_email', 'A password reset was requested and confimation emailed to your account email.'));
+                
 				$statusMessage = '<div class="confirmation-box round">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
 				$noShow = true;
 			
 			}else{
-			
+                
+			     $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
+                
 				$statusMessage = '<div class="error-box round">We couldn\'t find that email in our database.</div>';
 			
 			}
@@ -101,6 +105,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				':email' => $row['content']
 			));
 			
+            $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset', 'Your account password was successfull reset from the password reset form.'));
+            
 			$statusMessage = '<div class="confirmation-box round">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>';
 			$noShow = true;
 		
@@ -114,6 +120,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		
 		}else{
 		
+            $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_fail', 'A password reset request was attempted but failed to be verified.'));
+            
 			$statusMessage = '<div class="error-box round">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>';
 		
 		}

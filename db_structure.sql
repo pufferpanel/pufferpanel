@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.29)
 # Database: pufferpanel
-# Generation Time: 2013-10-23 04:05:05 +0000
+# Generation Time: 2013-12-06 00:41:52 +0000
 # ************************************************************
 
 
@@ -22,8 +22,6 @@
 
 # Dump of table account_change
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `account_change`;
 
 CREATE TABLE `account_change` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -41,8 +39,6 @@ CREATE TABLE `account_change` (
 # Dump of table acp_announcements
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `acp_announcements`;
-
 CREATE TABLE `acp_announcements` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
@@ -55,8 +51,6 @@ CREATE TABLE `acp_announcements` (
 
 # Dump of table acp_email_templates
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `acp_email_templates`;
 
 CREATE TABLE `acp_email_templates` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -76,7 +70,8 @@ VALUES
 	(4,'password_changed','<html>\n	<head>\n		<title><%HOST_NAME%> Password Change Notification</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> Password Change Notification</h1></center>\n		<p>Hello there! You are receiving this email because you recently changed your password on <%HOST_NAME%>.</p>\n		<p>This change was requested from <%IP_ADDRESS%> (<%GETHOTBY_IP_ADDRESS%>) on <%DATE%>. If you did not request this change then you should immediately check your computer for anything suspicious, and then login and change your password. You should also immediately contact support so that we can help to protect your account.\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
 	(5,'password_reset','<html>\n	<head>\n		<title><%HOST_NAME%> Lost Password Recovery</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> Lost Password Recovery</h1></center>\n		<p>Hello there! You are receiving this email because you requested a new password for your <%HOST_NAME%> account.</p>\n		<p>Please click the link below to confirm that you wish to change your password. If you did not make this request, or do not wish to continue simply ignore this email and nothing will happen. <strong>This link will expire in 4 hours.</strong></p>\n		<p><a href=\"<%MASTER_URL%>password.php?key=<%PKEY%>\"><%MASTER_URL%>password.php?key=<%PKEY%></a></p>\n		<p>This change was requested from <%IP_ADDRESS%> (<%GETHOSTBY_IP_ADDRESS%>) on <%DATE%>. Please do not hesitate to contact us if you belive something is wrong.\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
 	(7,'new_password','<html>\n	<head>\n		<title><%HOST_NAME%> - New Password</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - New Password</h1></center>\n		<p>Hello there! You are receiving this email because you requested a new password for your <%HOST_NAME%> account.</p>\n		<p><strong>Login:</strong> <a href=\"<%MASTER_URL%>\"><%MASTER_URL%></a><br />\n			<strong>Email:</strong> <%EMAIL%><br />\n			<strong>Password:</strong> <%NEW_PASS%></p>\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
-	(8,'admin_newaccount','<html>\n	<head>\n		<title><%HOST_NAME%> - Account Created</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - Account Created</h1></center>\n		<p>Hello there! This email is to inform you that an account has been created for you on <%HOST_NAME%>.</p>\n		<p><strong>Login:</strong> <a href=\"<%MASTER_URL%>\"><%MASTER_URL%></a><br />\n			<strong>Email:</strong> <%EMAIL%><br />\n			<strong>Password:</strong> <%PASS%></p>\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>');
+	(8,'admin_newaccount','<html>\n	<head>\n		<title><%HOST_NAME%> - Account Created</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - Account Created</h1></center>\n		<p>Hello there! This email is to inform you that an account has been created for you on <%HOST_NAME%>.</p>\n		<p><strong>Login:</strong> <a href=\"<%MASTER_URL%>\"><%MASTER_URL%></a><br />\n			<strong>Email:</strong> <%EMAIL%><br />\n			<strong>Password:</strong> <%PASS%></p>\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
+	(9,'admin_new_sftppass','<html>\n	<head>\n		<title><%HOST_NAME%> - SFTP Password Changed</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - SFTP Password Changed </h1></center>\n		<p>Hello there! This email is to inform you that the SFTP password for <%SERVER%> has been changed by an administrator.</p>\n		<p><strong>New Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>');
 
 /*!40000 ALTER TABLE `acp_email_templates` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -84,8 +79,6 @@ UNLOCK TABLES;
 
 # Dump of table acp_settings
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `acp_settings`;
 
 CREATE TABLE `acp_settings` (
   `setting_ref` char(25) NOT NULL DEFAULT '',
@@ -119,10 +112,26 @@ VALUES
 UNLOCK TABLES;
 
 
-# Dump of table backup_datastore
+# Dump of table actions_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `backup_datastore`;
+CREATE TABLE `actions_log` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
+  `priority` int(1) NOT NULL,
+  `viewable` int(1) NOT NULL DEFAULT '0',
+  `user` int(1) DEFAULT NULL,
+  `time` int(1) NOT NULL,
+  `ip` char(100) NOT NULL DEFAULT '',
+  `url` tinytext NOT NULL,
+  `action` char(100) NOT NULL DEFAULT '',
+  `desc` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table backup_datastore
+# ------------------------------------------------------------
 
 CREATE TABLE `backup_datastore` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -135,8 +144,6 @@ CREATE TABLE `backup_datastore` (
 
 # Dump of table backups
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `backups`;
 
 CREATE TABLE `backups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -158,8 +165,6 @@ CREATE TABLE `backups` (
 # Dump of table nodes
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `nodes`;
-
 CREATE TABLE `nodes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `node` char(15) NOT NULL DEFAULT '',
@@ -180,8 +185,6 @@ CREATE TABLE `nodes` (
 
 # Dump of table servers
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `servers`;
 
 CREATE TABLE `servers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -211,8 +214,6 @@ CREATE TABLE `servers` (
 # Dump of table users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
-
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `whmcs_id` int(11) DEFAULT NULL,
@@ -234,8 +235,6 @@ CREATE TABLE `users` (
 
 # Dump of table whmcs_suspend_data
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `whmcs_suspend_data`;
 
 CREATE TABLE `whmcs_suspend_data` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

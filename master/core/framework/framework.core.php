@@ -34,6 +34,7 @@ require_once('framework.auth.php');
 require_once('framework.page.php');
 require_once('framework.settings.php');
 require_once('framework.user.php');
+require_once('framework.log.php');
 
 /*
  * Include Email Sending Files
@@ -54,6 +55,7 @@ $core->framework->auth = new auth();
 $core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'));
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
+$core->framework->log = new log($core->framework->user->getData('id'));
 #$core->framework->email = new sendMail();
 
 /*

@@ -56,10 +56,14 @@ if(isset($_GET['action'])){
 					':password' => $core->framework->auth->encrypt($_POST['password'])
 				));
 				
+                $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
+                
 				$outputMessage = '<div class="confirmation-box round">Your notification preferences have been updated.</div>';
 			
 			}else{
 			
+                $core->framework->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
+                
 				$outputMessage = '<div class="error-box round">We were unable to verify your password. Please try again.</div>';
 			
 			}
@@ -87,27 +91,20 @@ if(isset($_GET['action'])){
 			
 				if($selectAccount->rowCount() == 1){
 						
-						$updateEmail = $mysql->prepare("INSERT INTO `account_change` VALUES(NULL, :uid, 'email', :nemail, :ekey, :expires, 0)");
+						$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
 						$updateEmail->execute(array(
-							':uid' => $core->framework->user->getData('id'),
-							':nemail' => $_POST['newemail'],
-							':ekey' => $emailKey,
-							':expires' => $expire
+							':email' => $_POST['newemail'],
+							':id' => $core->framework->user->getData('id')
 						));
-											
-							/*
-							 * Send Email
-							 */
-							$core->framework->email->buildEmail('email_changed', array(
-                                'EMAIL_KEY' => $emailKey,
-                                'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
-                                'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                            ))->dispatch($_POST['newemail'], $core->framework->settings->get('company_name').' Email Updated');	
 					
-					$outputMessage = '<div class="information-box round">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
+                    $core->framework->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
+                    
+					$outputMessage = '<div class="confirmation-box round">Your email has been updated successfully.</div>';
 					
 				}else{
 				
+                    $core->framework->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
+                    
 					$outputMessage = '<div class="error-box round">We were unable to verify your password. Please try again.</div>';
 				
 				}
@@ -152,11 +149,13 @@ if(isset($_GET['action'])){
                                     'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
                                 ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Password Change Notification');
 								
+                            $core->framework->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
+                            
 							$outputMessage = '<div class="confirmation-box round">Your password has been sucessfully changed!</div>';
 								
 						
 						}else{
-						
+                            
 							$outputMessage = '<div class="error-box round">Your passowrds did not match.</div>';
 						
 						}
@@ -169,6 +168,8 @@ if(isset($_GET['action'])){
 				
 				}else{
 				
+                    $core->framework->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
+                    
 					$outputMessage = '<div class="error-box round">Current account password is not correct.</div>';
 				
 				}
