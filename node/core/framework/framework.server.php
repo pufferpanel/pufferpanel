@@ -59,6 +59,33 @@ class server extends user {
 				$this->_s = false;
 				
 			}
+        
+        /*
+         * Grab Node Information
+         */
+        $this->_ndata = array();
+        $this->_n = true;
+        
+        $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
+        $this->query->node->execute(array(
+            ':node' => $this->_data['node'] 
+        ));
+        
+        if($this->query->node->rowCount() == 1){
+			
+            $this->node = $this->query->node->fetch();
+    
+                foreach($this->node as $this->nid => $this->nval){
+        
+                    $this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
+        
+                }
+                
+        }else{
+        
+            $this->_n = false;
+            
+        }
 	
 	}
 	
@@ -75,6 +102,20 @@ class server extends user {
 		}
 
 	}
+    
+    public function nodeData($id) {
+        
+        if($this->_n === true){
+		
+			return $this->_ndata[$id];
+		
+		}else{
+		
+			return false;
+		
+		}
+        
+    }
 
 }
 
