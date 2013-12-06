@@ -55,7 +55,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
                 $con = ssh2_connect($node['node_ip'], 22);
                 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
                 
-                $s = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('name').' "save-on"');
+                $s = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->generateServerToken().' "save-on"');
                 stream_set_blocking($s, true);
             
 			
