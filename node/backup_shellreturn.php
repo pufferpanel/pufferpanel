@@ -59,16 +59,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
                 stream_set_blocking($s, true);
             
 			
-				/*
-				 * Did they want an email?
-				 */
 				$selectBackup = $mysql->prepare("SELECT * FROM `backups` WHERE `backup_token` = ?");
 				$selectBackup->execute(array($_GET['token']));
 				
-					$row = $selectBackup->fetch();
+				$row = $selectBackup->fetch();
 					
-					$fileSHA1 = sha1_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
-					$fileMD5 = md5_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
+				$fileSHA1 = sha1_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
+				$fileMD5 = md5_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
 					
 					/*
 					 * Update MySQL Stuff
@@ -76,8 +73,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 					$updateBackups = $mysql->prepare("UPDATE `backups` SET `complete` = '1', `timeend` = :time, `md5` = :md5, `sha1` = :sha1 WHERE `server` = :server AND `complete` = 0 AND `backup_token` = :token");	
 					$updateBackups->execute(array(
 						':time' => time(),
-						':md5' => md5_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz'), 
-						':sha1' => sha1_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz'),
+						':md5' => md5_file($node['backup_dir'].$serverData['ftp_user'].'/'.$row['file_name'].'.tar.gz'), 
+						':sha1' => sha1_file($node['backup_dir'].$serverData['ftp_user'].'/'.$row['file_name'].'.tar.gz'),
 						':server' => $serverData['hash'],
 						':token' => $_GET['token']
 					));		
