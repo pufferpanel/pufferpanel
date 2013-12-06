@@ -259,7 +259,7 @@ $query->execute(array($core->framework->server->getData('hash')));
 			$returnBackups = '';
 			while($row = $query->fetch()){
 						
-				$stat = stat($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('name').'/'.$row['file_name'].'.tar.gz');
+				$stat = stat($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('ftp_user').'/'.$row['file_name'].'.tar.gz');
 				
 				$md5 = (strlen($row['md5']) > 25) ? substr($row['md5'], 0, 22).'...' : $row['md5'];
 				$sha1 = (strlen($row['sha1']) > 25) ? substr($row['sha1'], 0, 22).'...' : $row['sha1'];
