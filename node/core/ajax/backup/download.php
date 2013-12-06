@@ -33,10 +33,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 				$row = $query->fetch();
 				
-				$nodeQuery = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
-				$nodeQuery->execute(array($core->framework->server->getData('node')));
-				$node = $nodeQuery->fetch();
-				
 				header("Pragma: private");
 				header("Expires: 0");
 				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
@@ -45,9 +41,11 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				header('Content-Disposition: response; filename="'.$row['file_name'].'.tar.gz"');
 				header("Content-Transfer-Encoding: binary");
 				header('Accept-Ranges: bytes');
-				header("Content-Length: ".filesize($node['backup_dir'].$core->framework->server->getData('name').'/'.$row['file_name'].'.tar.gz'));
-					
-				$core->framework->files->download($node['backup_dir'].$core->framework->server->getData('name').'/'.$row['file_name'].'.tar.gz');
+				header("Content-Length: ".filesize($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('ftp_user').'/'.$row['file_name'].'.tar.gz'));
+				
+                $core->framework->log->getUrl()->addLog(0, 1, array('user.backup_download', 'A backup was downloaded for the server `'.$core->framework->server->getData('name').'`.'));
+                
+				$core->framework->files->download($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('ftp_user').'/'.$row['file_name'].'.tar.gz');
 				
 			}else{
 			
