@@ -48,6 +48,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			stream_set_blocking($errorStream, true);
 			stream_set_blocking($stream, true);
 			
+            $core->framework->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
+        
 			echo "Output: " . stream_get_contents($stream);
 			
 			fclose($errorStream);
