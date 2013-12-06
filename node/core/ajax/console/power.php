@@ -85,10 +85,12 @@ motd=A Minecraft Server';
 						
 							if(!fwrite($newStream, $newProps)){
 					
+                                $core->framework->log->getUrl()->addLog(3, 1, array('system.create_serverprops_failed', 'Unable to create a servers.properties file.'));
 								exit('Unable to create new server.properties. Contact support ASAP.');
 					
 							}
 						
+                        $core->framework->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
 						fclose($newStream);
 						/*
 						 * Re-Open
@@ -162,6 +164,7 @@ motd=A Minecraft Server';
 								
 										}
 								
+                                    $core->framework->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
 									fclose($stream);
 									
 								}
@@ -184,7 +187,7 @@ motd=A Minecraft Server';
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);
-							
+							                            
 							echo "Server is already running!";
 							fclose($stream);
 						
@@ -192,6 +195,8 @@ motd=A Minecraft Server';
 												
 							$stream = ssh2_exec($con, 'cd /srv/scripts; ./start_server.sh "/srv/servers/'.$core->framework->server->getData('name').'/server" "'.$core->framework->server->getData('max_ram').'" "'.$core->framework->server->getData('name').'"');
 
+                           $core->framework->log->getUrl()->addLog(0, 1, array('user.server_start', 'The server `'.$core->framework->server->getData('name').'` was started.'));
+                            
 							echo "Server Started.";
 							fclose($stream);
 													
@@ -212,6 +217,8 @@ motd=A Minecraft Server';
 							$stream = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh "'.$core->framework->server->getData('name').'" "stop"');
 							stream_set_blocking($stream, true);
 							
+                            $core->framework->log->getUrl()->addLog(0, 1, array('user.server_stop', 'The server `'.$core->framework->server->getData('name').'` was stopped.'));
+                            
 							echo "Server Stopped.";
 							fclose($stream);
 							
@@ -232,6 +239,8 @@ motd=A Minecraft Server';
 							$stream = ssh2_exec($con, 'cd /srv/scripts; ./kill_server.sh "'.$core->framework->server->getData('name').'"');
 							stream_set_blocking($stream, true);
 							
+                            $core->framework->log->getUrl()->addLog(1, 1, array('user.server_kill', 'The server `'.$core->framework->server->getData('name').'` was forceably stopped.'))
+                            
 							echo "Server Killed.";
 							fclose($stream);
 							
@@ -239,6 +248,7 @@ motd=A Minecraft Server';
 					
 					}else{
 					
+                        $core->framework->log->getUrl()->addLog(0, 0, array('system.unspecified', 'An unknown error was encountered when trying to process a power function for the server.'));
 						exit('Unknown.');
 					
 					}
