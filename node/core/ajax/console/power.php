@@ -239,7 +239,7 @@ motd=A Minecraft Server';
 							$stream = ssh2_exec($con, 'cd /srv/scripts; ./kill_server.sh "'.$core->framework->server->generateServerToken().'"');
 							stream_set_blocking($stream, true);
 							
-                            $core->framework->log->getUrl()->addLog(1, 1, array('user.server_kill', 'The server `'.$core->framework->server->getData('name').'` was forceably stopped.'))
+                            $core->framework->log->getUrl()->addLog(1, 1, array('user.server_kill', 'The server `'.$core->framework->server->getData('name').'` was forceably stopped.'));
                             
 							echo "Server Killed.";
 							fclose($stream);
