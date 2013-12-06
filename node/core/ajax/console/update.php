@@ -22,7 +22,7 @@ $filesIncluded = true;
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
 
-	echo $core->framework->files->last_lines($core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/server.log', 500);
+	echo $core->framework->files->last_lines($core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/server.log', 250);
 	
 }else{
 
