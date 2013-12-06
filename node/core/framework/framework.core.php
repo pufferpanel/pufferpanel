@@ -37,6 +37,7 @@ require_once('framework.page.php');
 require_once('framework.folder.php');
 require_once('framework.server.php');
 require_once('framework.rcon.php');
+require_once('framework.log.php');
 
 
 /*
@@ -61,6 +62,7 @@ $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
 $core->framework->files = new files();
 $core->framework->rcon = new rcon();
+$core->framework->log = new log();
 
 /*
  * MySQL PDO Connection Engine
