@@ -32,6 +32,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		 */		
 		if(!($con = ssh2_connect($row['sftp_ip'], 22))){
 		    
+            $core->framework->log->getUrl()->addLog(4, 1, array('system.sftp_connect_fail', 'The server `'.$core->framework->server->getData('name').'` was unable to have a command sent due to a connection error.'));
 		    die("Unable to establish connection to Server.");
 		    
 		} else {
@@ -39,6 +40,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		    
 		    if(!ssh2_auth_password($con, $row['username'], openssl_decrypt($row['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($row['encryption_iv'])))) {
 		        
+                $core->framework->log->getUrl()->addLog(4, 1, array('system.sftp_auth_fail', 'The server `'.$core->framework->server->getData('name').'` was unable to have a command sent due to an authentication error.'));
 		        die("Unable to Authenticate with Server.");
 		    
 		    }else{
@@ -53,6 +55,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		
 	}else{
 	
+        $core->framework->log->getUrl()->addLog(1, 1, array('system.server_off', 'The server `'.$core->framework->server->getData('name').'` was unable to recieve a command because it is not on.'));
 		exit('Could not establish connection to server. Is it turned on?');
 	
 	}
