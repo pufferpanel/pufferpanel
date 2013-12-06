@@ -40,16 +40,11 @@ $backupStatus = '';
 if(isset($_GET['do']) && $_GET['do'] == 'create'){
 
 	if(isset($_POST['dbu'])){
-	
-		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
-		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
-		
-		$node = $nodeSQLConnect->fetch();
-	
-		/*
+
+        /*
 		 * Does User have Space!
 		 */
-		$files = glob($node['backup_dir'].$core->framework->server->getData('name').'/*', GLOB_MARK);
+		$files = glob($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('name').'/*', GLOB_MARK);
 		
 			$totalSpace = 0;
 			$totalFiles = 0;
@@ -94,7 +89,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 		$filename = preg_replace('/[^A-Za-z0-9_-]/', '', $filename);
 		$filename = preg_replace('/(\.){2,}/', '.', $filename);
 		$filename = $filename.'_'.$core->framework->auth->keygen('10');
-		if(isset($_POST['save_options'])){ $saveOptions = true; }else{ $saveOptions = false; }
+		$saveOptions = (isset($_POST['save_options'])) ? true : false;
 		$backupToken = 'TOKEN-'.$core->framework->auth->keygen('5').'-'.$core->framework->auth->keygen('10').'-'.$core->framework->auth->keygen('5');
 		
 			/*
@@ -137,7 +132,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 			 */
 			$data = $_POST['backup_params'];
 			
-			if($data == ''){ $data = '*'; }
+			if($data == '')
+                $data = '*';
 			
 			if($_POST['backup_params'] != '' && $_POST['backup_params'] != '*') {
 			
@@ -195,8 +191,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 					/*
 					 * Connections
 					 */
-					$con = ssh2_connect($node['sftp_ip'], 22);
-					ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+					$con = ssh2_connect($core->framework->server->nodeData('sftp_ip'), 22);
+					ssh2_auth_password($con, $core->framework->server->nodeData('username'), openssl_decrypt($core->framework->server->nodeData('password'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->nodeData('encryption_iv'))));
 					
 					/*
 					 * If server is running we need to do this differently.
@@ -224,22 +220,25 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 						
 								if($backup == 'all'){
 								                                    
-									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->getData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
 
 								}else{
 													                                    
-									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->getData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
 									
 								}
 								
 								stream_set_blocking($s, true);
 								
+                                $core->framework->log->getUrl()->addLog(0, 1, array('user.backup_started', 'A backup was started for `'.$core->framework->server->getData('name').'`.'));
 								$backupStatus .= '<div class="confirmation-box round">Your backup has been started. Backups will appear at the bottom of this page when they are finished.</div>';
 						
 						}else{
 						
 							ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('name').' "save-on"');
 							
+                            $core->framework->log->getUrl()->addLog(2, 1, array('system.sql_error', 'A backup was started for `'.$core->framework->server->getData('name').'` but failed due to a MySQL error.'));
+                            
 							$backupStatus .= '<div class="error-box round">A MySQL error was encountered and to ensure the integrity of your server we have stopped this backup process. Please try again or contact support if this error continues to occur.</div>';
 						
 						}
@@ -260,11 +259,7 @@ $query->execute(array($core->framework->server->getData('hash')));
 			$returnBackups = '';
 			while($row = $query->fetch()){
 						
-				$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
-				$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
-				
-					$node = $nodeSQLConnect->fetch();
-					$stat = stat($node['backup_dir'].$core->framework->server->getData('name').'/'.$row['file_name'].'.tar.gz');
+				$stat = stat($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('name').'/'.$row['file_name'].'.tar.gz');
 				
 				$md5 = (strlen($row['md5']) > 25) ? substr($row['md5'], 0, 22).'...' : $row['md5'];
 				$sha1 = (strlen($row['sha1']) > 25) ? substr($row['sha1'], 0, 22).'...' : $row['sha1'];
