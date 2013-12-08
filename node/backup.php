@@ -80,168 +80,171 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 		/*
 		 * Do Backup
 		 */
+		if($continue === true) {
 		
-		$user = $core->framework->server->getData('name');
-		$filename = str_replace(" ", "", stripslashes(trim($_POST['backup_name'])));
-		$filename = ltrim($filename, '/');
-		$filename = rtrim($filename, '/');
-		$filename = rtrim($filename, '.');
-		$filename = preg_replace('/[^A-Za-z0-9_-]/', '', $filename);
-		$filename = preg_replace('/(\.){2,}/', '.', $filename);
-		$filename = $filename.'_'.$core->framework->auth->keygen('10');
-		$saveOptions = (isset($_POST['save_options'])) ? true : false;
-		$backupToken = 'TOKEN-'.$core->framework->auth->keygen('5').'-'.$core->framework->auth->keygen('10').'-'.$core->framework->auth->keygen('5');
-		
-			/*
-			 * Save Options
-			 */
-			if($saveOptions === true){
-			
-				$checkSave = $mysql->prepare("SELECT * FROM `backup_datastore` WHERE `server` = ?");
-				$checkSave->execute(array($core->framework->server->getData('hash')));
-				
-					if($checkSave->rowCount() > 0){
-					
-						/*
-						 * Update
-						 */
-						$updateDatastore = $mysql->prepare("UPDATE `backup_datastore` SET `backup_pattern` = :params WHERE `server` = :server");
-						$updateDatastore->execute(array(
-						 	':params' => $_POST['backup_params'],
-						 	':server' => $core->framework->server->getData('hash')
-						));
-						 
-					
-					}else{
-					
-						/*
-						 * Insert
-						 */
-						$insertDatastore = $mysql->prepare("INSERT INTO `backup_datastore` VALUES(NULL, :server, :params)");
-						$insertDatastore->execute(array(
-							':params' => $_POST['backup_params'],
-							':server' => $core->framework->server->getData('hash')
-						));
-						
-					}
-			
-			}
-		
-			/*
-			 * Clean up Backup Data
-			 */
-			$data = $_POST['backup_params'];
-			
-			if($data == '')
-                $data = '*';
-			
-			if($_POST['backup_params'] != '' && $_POST['backup_params'] != '*') {
-			
-				$lines = explode("\n", $data);
-				
-					$backup = '';
-					$skip = '';
-					foreach($lines as $line){
-					
-						/*
-						 * Remove Whitespace
-						 */
-						$line = str_replace(array(" ", "\\"), "", trim($line));
-						$line = preg_replace("#/+#", "/", $line);
-						$firstChara = substr($line, 0, 1);
-							/* 
-							 * Check if line is commented out & that it is also not blank
-							 */
-							if($firstChara != "#" && preg_match('~[0-9a-z]~i', $line) > 0){
-							
-								if($firstChara == '!'){
-								
-									/*
-									 * Skip Folder or File
-									 */
-									if($skip == ''){
-										$skip .= ltrim(rtrim($line, "/"), "!");
-									}else{
-										$skip .= ','.ltrim(rtrim($line, "/"), "!");
-									}
-								
-								}else{
-								
-									/*
-									 * Backup Folder
-									 */
-									if($backup == ''){
-										$backup .= rtrim($line, "/");
-									}else{
-										$backup .= ','.rtrim($line, "/");
-									}
-								
-								}
-							
-							}
-					
-					}
-					
-				}else{
-				
-					$backup = 'all';
-				
-				}
-	
-					/*
-					 * Connections
-					 */
-					$con = ssh2_connect($core->framework->server->nodeData('sftp_ip'), 22);
-					ssh2_auth_password($con, $core->framework->server->nodeData('username'), openssl_decrypt($core->framework->server->nodeData('password'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->nodeData('encryption_iv'))));
-					
-					/*
-					 * If server is running we need to do this differently.
-					 */
-					if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
-					
-						ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-all"');
-						sleep(2);
-						ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-off"');
-					
-					}
-					
-					
-						/*
-						 * Proceed with Backup
-						 */
-						$newBackup = $mysql->prepare("INSERT INTO `backups` VALUES(NULL, :hash, :token, :filename, 0, NULL, :time, NULL, 0, NULL, NULL)");
-						
-						if($newBackup->execute(array(
-							':hash' => $core->framework->server->getData('hash'),
-							':token' => $backupToken,
-							':filename' => $filename,
-							':time' => time()
-						))){
-						
-								if($backup == 'all'){
-								                                    
-									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
-
-								}else{
-													                                    
-									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
-                                    									
-								}
-								
-								stream_set_blocking($s, true);
-								
+            $user = $core->framework->server->getData('name');
+            $filename = str_replace(" ", "", stripslashes(trim($_POST['backup_name'])));
+            $filename = ltrim($filename, '/');
+            $filename = rtrim($filename, '/');
+            $filename = rtrim($filename, '.');
+            $filename = preg_replace('/[^A-Za-z0-9_-]/', '', $filename);
+            $filename = preg_replace('/(\.){2,}/', '.', $filename);
+            $filename = $filename.'_'.$core->framework->auth->keygen('10');
+            $saveOptions = (isset($_POST['save_options'])) ? true : false;
+            $backupToken = 'TOKEN-'.$core->framework->auth->keygen('5').'-'.$core->framework->auth->keygen('10').'-'.$core->framework->auth->keygen('5');
+            
+                /*
+                 * Save Options
+                 */
+                if($saveOptions === true){
+                
+                    $checkSave = $mysql->prepare("SELECT * FROM `backup_datastore` WHERE `server` = ?");
+                    $checkSave->execute(array($core->framework->server->getData('hash')));
+                    
+                        if($checkSave->rowCount() > 0){
+                        
+                            /*
+                             * Update
+                             */
+                            $updateDatastore = $mysql->prepare("UPDATE `backup_datastore` SET `backup_pattern` = :params WHERE `server` = :server");
+                            $updateDatastore->execute(array(
+                                ':params' => $_POST['backup_params'],
+                                ':server' => $core->framework->server->getData('hash')
+                            ));
+                             
+                        
+                        }else{
+                        
+                            /*
+                             * Insert
+                             */
+                            $insertDatastore = $mysql->prepare("INSERT INTO `backup_datastore` VALUES(NULL, :server, :params)");
+                            $insertDatastore->execute(array(
+                                ':params' => $_POST['backup_params'],
+                                ':server' => $core->framework->server->getData('hash')
+                            ));
+                            
+                        }
+                
+                }
+            
+                /*
+                 * Clean up Backup Data
+                 */
+                $data = $_POST['backup_params'];
+                
+                if($data == '')
+                    $data = '*';
+                
+                if($_POST['backup_params'] != '' && $_POST['backup_params'] != '*') {
+                
+                    $lines = explode("\n", $data);
+                    
+                        $backup = '';
+                        $skip = '';
+                        foreach($lines as $line){
+                        
+                            /*
+                             * Remove Whitespace
+                             */
+                            $line = str_replace(array(" ", "\\"), "", trim($line));
+                            $line = preg_replace("#/+#", "/", $line);
+                            $firstChara = substr($line, 0, 1);
+                                /* 
+                                 * Check if line is commented out & that it is also not blank
+                                 */
+                                if($firstChara != "#" && preg_match('~[0-9a-z]~i', $line) > 0){
+                                
+                                    if($firstChara == '!'){
+                                    
+                                        /*
+                                         * Skip Folder or File
+                                         */
+                                        if($skip == ''){
+                                            $skip .= ltrim(rtrim($line, "/"), "!");
+                                        }else{
+                                            $skip .= ','.ltrim(rtrim($line, "/"), "!");
+                                        }
+                                    
+                                    }else{
+                                    
+                                        /*
+                                         * Backup Folder
+                                         */
+                                        if($backup == ''){
+                                            $backup .= rtrim($line, "/");
+                                        }else{
+                                            $backup .= ','.rtrim($line, "/");
+                                        }
+                                    
+                                    }
+                                
+                                }
+                        
+                        }
+                        
+                }else{
+                
+                    $backup = 'all';
+                
+                }
+        
+                    /*
+                     * Connections
+                     */
+                    $con = ssh2_connect($core->framework->server->nodeData('sftp_ip'), 22);
+                    ssh2_auth_password($con, $core->framework->server->nodeData('username'), openssl_decrypt($core->framework->server->nodeData('password'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->nodeData('encryption_iv'))));
+                    
+                    /*
+                     * If server is running we need to do this differently.
+                     */
+                    if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+                    
+                        ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-all"');
+                        sleep(2);
+                        ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-off"');
+                    
+                    }
+                    
+                    
+                        /*
+                         * Proceed with Backup
+                         */
+                        $newBackup = $mysql->prepare("INSERT INTO `backups` VALUES(NULL, :hash, :token, :filename, 0, NULL, :time, NULL, 0, NULL, NULL)");
+                        
+                        if($newBackup->execute(array(
+                            ':hash' => $core->framework->server->getData('hash'),
+                            ':token' => $backupToken,
+                            ':filename' => $filename,
+                            ':time' => time()
+                        ))){
+                        
+                                if($backup == 'all'){
+                                                                    
+                                    $s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+    
+                                }else{
+                                                                                        
+                                    $s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+                                                                        
+                                }
+                                
+                                stream_set_blocking($s, true);
+                                
                                 $core->framework->log->getUrl()->addLog(0, 1, array('user.backup_started', 'A backup was started for `'.$core->framework->server->getData('name').'`.'));
-								$backupStatus .= '<div class="confirmation-box round">Your backup has been started. Backups will appear at the bottom of this page when they are finished.</div>';
-						
-						}else{
-						
-							ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-on"');
-							
+                                $backupStatus .= '<div class="confirmation-box round">Your backup has been started. Backups will appear at the bottom of this page when they are finished.</div>';
+                        
+                        }else{
+                        
+                            ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-on"');
+                            
                             $core->framework->log->getUrl()->addLog(2, 1, array('system.sql_error', 'A backup was started for `'.$core->framework->server->getData('name').'` but failed due to a MySQL error.'));
                             
-							$backupStatus .= '<div class="error-box round">A MySQL error was encountered and to ensure the integrity of your server we have stopped this backup process. Please try again or contact support if this error continues to occur.</div>';
-						
-						}
+                            $backupStatus .= '<div class="error-box round">A MySQL error was encountered and to ensure the integrity of your server we have stopped this backup process. Please try again or contact support if this error continues to occur.</div>';
+                        
+                        }
+            
+        }
 	
 	}else{
 	
