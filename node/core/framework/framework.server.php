@@ -116,12 +116,6 @@ class server extends user {
 		}
         
     }
-    
-    public function generateServerToken(){
-        
-        return $this->getData('name').'_'.substr(0, 10, $this->getData('hash'));
-        
-    }
 
 }
 
