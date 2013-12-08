@@ -108,7 +108,7 @@ if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, 1, :oid, :ram, :disk, :path, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, 1, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
@@ -117,7 +117,6 @@ $add->execute(array(
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
 	':disk' => $_POST['alloc_disk'],
-	':path' => $node['server_dir'].$_POST['server_name'].'/',
 	':date' => time(),
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],
@@ -146,6 +145,13 @@ ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], '
 $stream = ssh2_exec($con, 'cd /srv/scripts; ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk']);
 stream_set_blocking($stream, true);
 fclose($stream);
+
+$core->framework->email->buildEmail('admin_new_server', array(
+        'NAME' => $_POST['server_name'],
+        'CONNECT' => $_POST['server_ip'].':'.$_POST['server_port'],
+        'USER' => $ftpUser,
+        'PASS' => $_POST['sftp_pass_2']
+))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - New Server Added');
 
 $core->framework->page->redirect('../../view.php?id='.$mysql->lastInsertId());
 
