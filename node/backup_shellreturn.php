@@ -21,7 +21,33 @@
 /*
  * Include Dependencies
  */
-require_once('core/framework/framework.core.php');
+require_once('core/framework/framework.database.connect.php');
+require_once('core/framework/framework.rcon.php');
+
+$core = new stdClass();
+$core->framework = new stdClass();
+$core->framework->rcon = new rcon();
+
+/*
+ * MySQL PDO Connection Engine
+ */
+$mysql = dbConn::getConnection();
+
+function pdo_exception_handler($exception) {
+    if ($exception instanceof PDOException) {
+        
+        error_log($exception);
+        
+        die(json_encode(array('error' => 'A MySQL error was encountered with this request.', 'e_code' => $exception->getCode(), 'e_line' => $exception->getLine(), 'e_time' => date('d-M-Y H:i:s', time()))));
+        
+    } else {
+    
+    	die('Exception handler from unknown source.');
+    
+    }
+}
+set_exception_handler('pdo_exception_handler');
+
 
 
 /*
@@ -40,7 +66,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 			 */
 			$serverData = $selectServerData->fetch();
 			
-			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
+			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
 			$nodeSQLConnect->execute(array($serverData['node']));
 			$node = $nodeSQLConnect->fetch();
 		
@@ -55,17 +81,18 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
                 $con = ssh2_connect($node['node_ip'], 22);
                 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
                 
-                $s = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-on"');
+                $s = ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$serverData['ftp_user'].' "save-on"');
                 stream_set_blocking($s, true);
             
-			
+            }
+            
 				$selectBackup = $mysql->prepare("SELECT * FROM `backups` WHERE `backup_token` = ?");
 				$selectBackup->execute(array($_GET['token']));
 				
 				$row = $selectBackup->fetch();
 					
-				$fileSHA1 = sha1_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
-				$fileMD5 = md5_file($node['backup_dir'].$serverData['name'].'/'.$row['file_name'].'.tar.gz');
+				$fileSHA1 = sha1_file($node['backup_dir'].$serverData['ftp_user'].'/'.$row['file_name'].'.tar.gz');
+				$fileMD5 = md5_file($node['backup_dir'].$serverData['ftp_user'].'/'.$row['file_name'].'.tar.gz');
 					
 					/*
 					 * Update MySQL Stuff
@@ -77,14 +104,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'backup_done' && isset($_GET['server']) 
 						':sha1' => sha1_file($node['backup_dir'].$serverData['ftp_user'].'/'.$row['file_name'].'.tar.gz'),
 						':server' => $serverData['hash'],
 						':token' => $_GET['token']
-					));		
-			
+					));
+                			
 		}else{
 		
 			echo 'Not Found in MYSQL';
 		
 		}
 		
-	exit();
-
 }

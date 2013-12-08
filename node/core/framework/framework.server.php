@@ -63,26 +63,34 @@ class server extends user {
         /*
          * Grab Node Information
          */
-        $this->_ndata = array();
-        $this->_n = true;
-        
-        $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-        $this->query->node->execute(array(
-            ':node' => $this->_data['node'] 
-        ));
-        
-        if($this->query->node->rowCount() == 1){
-			
-            $this->node = $this->query->node->fetch();
-    
-                foreach($this->node as $this->nid => $this->nval){
-        
-                    $this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-        
-                }
+        if($this->_data['node'] !== false){
+            
+            $this->_ndata = array();
+            $this->_n = true;
+            
+            $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
+            $this->query->node->execute(array(
+                ':node' => $this->_data['node'] 
+            ));
+            
+            if($this->query->node->rowCount() == 1){
                 
-        }else{
+                $this->node = $this->query->node->fetch();
         
+                    foreach($this->node as $this->nid => $this->nval){
+            
+                        $this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
+            
+                    }
+                    
+            }else{
+            
+                $this->_n = false;
+                
+            }
+            
+        }else{
+            
             $this->_n = false;
             
         }
@@ -91,7 +99,7 @@ class server extends user {
 	
 	public function getData($id){
 	
-		if($this->_s === true){
+		if($this->_s === true && array_key_exists($id, $this->_data)){
 		
 			return $this->_data[$id];
 		
@@ -105,7 +113,7 @@ class server extends user {
     
     public function nodeData($id) {
         
-        if($this->_n === true){
+        if($this->_n === true && array_key_exists($id, $this->_ndata)){
 		
 			return $this->_ndata[$id];
 		

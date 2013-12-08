@@ -225,7 +225,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 								}else{
 													                                    
 									$s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
-									
+                                    									
 								}
 								
 								stream_set_blocking($s, true);
