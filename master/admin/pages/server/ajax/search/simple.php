@@ -94,17 +94,17 @@ if($_POST['field'] == 'owner_email'){
 		
 		$isActive = ($row['active'] == 1) ? '<i class="fa fa-check-circle-o"></i>' : '<i class="fa fa-times-circle-o"></i>';
 		
-		$find = $mysql->prepare("SELECT `email` FROM `users` WHERE `id`  = :id");
-		$find->execute(array(
+		$findUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id`  = :id");
+		$findUser->execute(array(
 			':id' => $row['owner_id']
 		));
-		$user = $find->fetch();
+		$user = $findUser->fetch();
 		
 		$returnRows .= '
 		<tr>
 			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-terminal"></i></a></td>
 			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
-			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
+			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a> ('.$row['ftp_user'].')</td>
 			<td><a href="../node/view.php?do=redirect&node='.$row['node'].'">'.$row['node'].'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 			<td>'.$row['max_ram'].' MB</td>
@@ -121,7 +121,7 @@ echo '
 		<tr>
 			<th style="width:5%"></th>
 			<th style="width:20%">Owner Information</th>
-			<th style="width:20%">Server Name</th>
+			<th style="width:20%">Server Name (FTP User)</th>
 			<th style="width:10%">Node</th>
 			<th style="width:20%">Connection Address</th>
 			<th style="width:10%">RAM</th>
