@@ -98,33 +98,33 @@ $selectNode->execute(array(
 						
 						if(isset($_GET['disp']) && !empty($_GET['disp'])){
 						
-							echo '<div class="content-module-main">';
+							echo '<div class="content-module-main"><div class="error-box">';
 							switch($_GET['disp']){
 								
 								case 'missing_warn':
-									echo '<div class="error-box">You must agree to the warning before updating the information.</div>';
+									echo 'You must agree to the warning before updating the information.';
 									break;
 								case 'missing_args':
-									echo '<div class="error-box">Not all arguments were passed by the script.</div>';
+									echo 'Not all arguments were passed by the script.';
 									break;
 								case 'ip_fail':
-									echo '<div class="error-box">The IP address provided for SFTP was invalid.</div>';
+									echo 'The IP address provided for SFTP was invalid.';
 									break;
 								case 'user_fail':
-									echo '<div class="error-box">SFTP users must not be blank, and may not be \'root\'.</div>';
+									echo 'SFTP users must not be blank, and may not be \'root\'.';
 									break;
 								case 'pass_fail':
-									echo '<div class="error-box">SSH passwords must be at least 12 characters.</div>';
+									echo 'SSH passwords must be at least 12 characters.';
 									break;
 								case 'n_fail':
-									echo '<div class="error-box">The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).</div>';
+									echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
 									break;
 								case 'url_fail':
-									echo '<div class="error-box">The node URL provided is not valid.</div>';
+									echo 'The node URL provided is not valid.';
 									break;
 							
 							}
-							echo '</div>';
+							echo '</div></div>';
 						
 						}
 					
