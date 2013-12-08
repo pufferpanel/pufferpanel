@@ -71,7 +71,9 @@ VALUES
 	(5,'password_reset','<html>\n	<head>\n		<title><%HOST_NAME%> Lost Password Recovery</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> Lost Password Recovery</h1></center>\n		<p>Hello there! You are receiving this email because you requested a new password for your <%HOST_NAME%> account.</p>\n		<p>Please click the link below to confirm that you wish to change your password. If you did not make this request, or do not wish to continue simply ignore this email and nothing will happen. <strong>This link will expire in 4 hours.</strong></p>\n		<p><a href=\"<%MASTER_URL%>password.php?key=<%PKEY%>\"><%MASTER_URL%>password.php?key=<%PKEY%></a></p>\n		<p>This change was requested from <%IP_ADDRESS%> (<%GETHOSTBY_IP_ADDRESS%>) on <%DATE%>. Please do not hesitate to contact us if you belive something is wrong.\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
 	(7,'new_password','<html>\n	<head>\n		<title><%HOST_NAME%> - New Password</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - New Password</h1></center>\n		<p>Hello there! You are receiving this email because you requested a new password for your <%HOST_NAME%> account.</p>\n		<p><strong>Login:</strong> <a href=\"<%MASTER_URL%>\"><%MASTER_URL%></a><br />\n			<strong>Email:</strong> <%EMAIL%><br />\n			<strong>Password:</strong> <%NEW_PASS%></p>\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
 	(8,'admin_newaccount','<html>\n	<head>\n		<title><%HOST_NAME%> - Account Created</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - Account Created</h1></center>\n		<p>Hello there! This email is to inform you that an account has been created for you on <%HOST_NAME%>.</p>\n		<p><strong>Login:</strong> <a href=\"<%MASTER_URL%>\"><%MASTER_URL%></a><br />\n			<strong>Email:</strong> <%EMAIL%><br />\n			<strong>Password:</strong> <%PASS%></p>\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
-	(9,'admin_new_sftppass','<html>\n	<head>\n		<title><%HOST_NAME%> - SFTP Password Changed</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - SFTP Password Changed </h1></center>\n		<p>Hello there! This email is to inform you that the SFTP password for <%SERVER%> has been changed by an administrator.</p>\n		<p><strong>New Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>');
+	(9,'admin_new_sftppass','<html>\n	<head>\n		<title><%HOST_NAME%> - SFTP Password Changed</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - SFTP Password Changed </h1></center>\n		<p>Hello there! This email is to inform you that the SFTP password for <%SERVER%> has been changed by an administrator.</p>\n		<p><strong>New Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
+	(10,'admin_new_server','<html>\n	<head>\n		<title><%HOST_NAME%> - New Server Added</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - New Server Added </h1></center>\n		<p>Hello there! This email is to inform you that a new server (<%NAME%>) has been created for you.</p>\n		<p><strong>Connect:</strong> <%CONNECT%><br />\n		<p><strong>SFTP Username:</strong> <%USER%><br />\n		<p><strong>SFTP Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>');
+
 
 /*!40000 ALTER TABLE `acp_email_templates` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -197,7 +199,6 @@ CREATE TABLE `servers` (
   `owner_id` int(11) NOT NULL,
   `max_ram` int(11) NOT NULL,
   `disk_space` int(11) NOT NULL,
-  `path` text NOT NULL,
   `date_added` int(15) NOT NULL,
   `server_ip` varchar(50) NOT NULL DEFAULT '',
   `server_port` int(11) NOT NULL,
