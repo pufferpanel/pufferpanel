@@ -95,7 +95,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								</div>
 								<div class="stripe-separator" style="margin: 0 0 1em 0;"><!--  --></div>
 								<div class="confirmation-box round pull-left" id="search_active" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="fa fa-refresh fa fa-spin"></i> &nbsp;Searching!</div>
-								<input type="submit" value="Perform Simple Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
+                                <input type="submit" value="Perform Simple Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
+                                <input type="submit" value="View All Servers" id="viewall_servers" class="round blue pull-right" style="margin-bottom: -1em;margin-right:1em;padding-right:0.833em;">
 							</fieldset>
 						</form>
 					</div>
@@ -164,7 +165,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								</div>
 								<div class="stripe-separator" style="margin: 0 0 1em 0;"><!--  --></div>
 								<div class="confirmation-box round pull-left" id="search_active_2" style="display: none;margin-bottom: -1em; background: #e7fae6; padding-left: 0.833em;"><i class="fa fa-refresh fa fa-spin"></i> &nbsp;Searching!</div>
-								<input type="submit" value="Perform Advanced Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
+                                <input type="submit" value="Perform Advanced Search" class="round blue ic-right-arrow pull-right" style="margin-bottom: -1em;" />
 							</fieldset>
 						</form>
 					</div>
@@ -189,6 +190,23 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		$("#toggle_search_advanced").click(function(){
 			$("#search_simple").slideUp(function(){
 				$("#search_advanced").slideDown();
+			});
+		});
+        $("#viewall_servers").click(function(e){
+			e.preventDefault();
+			
+			$.ajax({
+				type: "POST",
+				url: "ajax/search/getall.php",
+			  	success: function(data) {
+			  		$("#search_results").slideUp(function(){
+			  			$("#search_results").html(data);
+		  				$("#search_results").fadeIn(function(){
+		  					$("#search_active").fadeOut();
+		  					return false;
+		  				});
+			  		});
+			  	}
 			});
 		});
 		$("#ss_form").submit(function(){
