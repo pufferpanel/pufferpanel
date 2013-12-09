@@ -45,9 +45,11 @@ class tplMail extends dbConn {
 				
 					$headers = 'From: '. $this->settings->get('sendmail_email') . "\r\n" .
 					    'Reply-To: '. $this->settings->get('sendmail_email') . "\r\n" .
+                        'MIME-Version: 1.0' . "\r\n" .
+                        'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
 					    'X-Mailer: PHP/' . phpversion();
 	
-					mail($email, $subject, $message, $headers);
+					mail($email, $subject, $this->message, $headers);
 
 				}
 			else if($this->getDispatchSystem == 'postmark')
