@@ -65,7 +65,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<h3 class="fl">My Servers</h3>
 					</div>
 					<div class="content-module-main">
-						<p>Lorem Ipsum.</p>
+						<?php
+                            if(is_dir('install'))
+                                echo '<div class="error-box round"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>';
+                            else
+                                echo '<p>Welcome to PufferPanel Admin.</p>';
+                        ?>
 					</div>
 				</div>
 			</div>
