@@ -32,7 +32,7 @@ class auth extends dbConn {
 	
 	public function encrypt($string, $algo = 'ripemd320'){
 		
-		$salt = crypt($string, '$6$rounds=5000$c2aX7d0JJSVA9*^xj#0sA$');
+		$salt = crypt($string, '$6$rounds=5000$'.$_INFO['salt'].'$');
 		return hash($algo, $salt);
 	
 	}
