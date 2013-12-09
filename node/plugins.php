@@ -208,7 +208,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'view' && isset($_GET['slug']) && !empty
 					<li><a href="console.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Live Console</a></li>
 					<li><a href="settings.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Settings</a></li>
 					<li><a href="plugins.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Plugins</a></li>
-					<li><a href="files.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
+					<li><a href="files/index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
 					<li><a href="backup.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Backup Manager</a></li>
 				</ul>
 			</div>
