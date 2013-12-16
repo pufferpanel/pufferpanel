@@ -72,7 +72,7 @@
                                     $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
                                 }
                                 
-                                    $fp = fopen('../../../core/framework/master_configuration.php', 'w+');
+                                    $fp = fopen('../../../core/framework/master_configuration.php.dist', 'w+');
                                     fwrite($fp, "<?php
 \$_INFO['sql_u'] = '".$_POST['sql_u']."';
 \$_INFO['sql_p'] = '".$_POST['sql_p']."';
@@ -81,6 +81,7 @@
 \$_INFO['salt'] = '".$randkey."';");
                                     fclose($fp);
                                 
+                                    rename('../../../core/framework/master_configuration.php.dist', '../../../core/framework/master_configuration.php');
                                     exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
                         
                             }catch (PDOException $e) {
