@@ -59,7 +59,7 @@ for ($i=0; $i<64; $i++){
     $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
 }
 
-echo $randKey;
+echo $randkey;
                         ?></pre>
                 <br /><br />
                     <?php
