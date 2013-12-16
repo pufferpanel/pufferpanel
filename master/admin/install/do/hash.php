@@ -51,13 +51,15 @@
                     <p>PufferPanel encrypts sensitive SFTP password information with AES-256 encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key on all of the servers running PufferPanel (master and nodes). You can generate a key below that should be placed in a file that PHP can access, but is outside of the public web root. We suggest /etc/hashfile.txt. <strong>Do not move on to the next step until you have done so, and have entered the specific file location for this hash.</strong></p>
                     <div class="stripe-separator"><!--  --></div>
                     <pre><?php
-                            $fp = fopen('/dev/random','rb');
-                            $result = fread($fp, 64);
-                            fclose($fp);
-                            $result = base64_encode($result);
-                            #$result = strtr($result, '+/', '-_');
-                            $result = rtrim($result, '=');
-echo substr($result, 0, 64);
+/* Make File */
+$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*-=+";
+$randkey = "";
+
+for ($i=0; $i<64; $i++){
+    $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
+}
+
+echo $randKey;
                         ?></pre>
                 <br /><br />
                     <?php
