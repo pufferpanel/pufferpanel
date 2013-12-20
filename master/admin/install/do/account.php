@@ -72,6 +72,7 @@ if(file_exists('../install.lock'))
                                 ':time' => time()
                             ));
                             
+                            rename('../install.lock.dist', '../install.lock');
                             exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
                             
                         }
