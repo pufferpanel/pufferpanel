@@ -22,7 +22,8 @@ This software is currently unstable and should not be used on a live environment
     * mcrypt
 * screen
 * gzip
-* rssh    
+* rssh
+* setquota
 
 
 ####Automatic Install
@@ -35,16 +36,8 @@ You will also need to upload the `scripts` folder to `/srv/scripts` and chmod al
 You should then open `/srv/scripts/backup_server.sh` and edit line 75 changing `http://localhost/` to the URL for your node that the script is located on.
 
 ###Using RSSH
-You will need to do this manually for now until an automatic script is made to interface with the Admin CP server creation.
-
 Make the group for RSSH Users
 `[root@vpn ~]# groupadd rsshusers`
-
-Add a user for a server. (No SSH Access, SFTP Only)
-`[root@vpn ~]# useradd -d /srv/servers/dane -s /usr/bin/rssh -G rsshusers dane`
-
-Change the user's password
-`[root@vpn ~]# passwd dane`
 
 ####Edit SSHD Config:
 `/etc/ssh/sshd_config`
@@ -67,7 +60,3 @@ Append or uncomment following line:
 ####Setup Permissions
 
 	[root@vpn ~]# service sshd restart
-	[root@vpn ~]# mkdir /srv/servers/dane/server
-	[root@vpn ~]# chown root.root /srv/servers/dane
-	[root@vpn ~]# chmod 755 /srv/servers/dane
-	[root@vpn ~]# chown dane.rsshusers /srv/servers/dane/server
