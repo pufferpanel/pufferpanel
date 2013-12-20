@@ -1,5 +1,4 @@
-PufferPanel
-===========
+#About PufferPanel
 
 Minecraft Web Management Panel for Hosts.
 
@@ -11,45 +10,29 @@ This software is currently unstable and should not be used on a live environment
 
 ###Dependencies:
 
-* nginx or Apache
-* MySQL (5.5+) or MariaDB (10.0+)
-* PHP (5.3+)
-    * SSH2
-    * OpenSSL
+* Nginx
+* MySQL (5.5+ or equivalent)
+* PHP (5.3+) with the following modules:
+    * ssh2
+    * openssl
     * PDO
+    * pdo_mysql
+    * hash
+    * curl
     * mcrypt
 * screen
 * gzip
 * rssh    
 
-###MySQL Setup
-Create a database named `pufferpanel` and edit the connection details for the database in the following files:
 
-`/master/core/framework/php/master_configuration.php.dist`
+####Automatic Install
+PufferPanel comes with an automatic installer located in `/master/admin/install/`. After uploading all of the files, go to this directory and follow the instructions. This will get PufferPanel setup with a new account, and all of the basic settings and MySQL information.
 
-`/node/core/framework/php/node_configuration.php.dist`
+After running the automatic installer you will need to manually add a new server. Please ensure that you have a node setup correctly before doing this. You will need to setup RSSH, as well as create a user who has rights to all of the server files and backup directory.
 
-Make sure to remove the `.dist` from the ends of the file name.
+You will also need to upload the `scripts` folder to `/srv/scripts` and chmod all of the files using `chmod +x *`, and create a server directory in `/srv/servers`. Your backup directory can be wherever you want on the server, as right now it does not do off-site backups (in development). We suggest `/srv/backups` or a second hard-drive if possible.
 
-After that, upload the `db_structure.sql` file into `pufferpanel`.
-
-### Making a User Account
-To create your account you will need to manually edit the `pufferpanel.users` table. To do this, run the following command on the MySQL table:
-
-	INSERT INTO `users` (`id`, `whmcs_id`, `username`, `email`, `password`, `register_time`, `position`, `session_id`, `session_ip`, `session_expires`, `root_admin`, `notify_login_s`, `notify_login_f`) VALUES(NULL, NULL, 'YOUR_USERNAME', 'YOUR_EMAIL', 'YOUR_PASSWORD', 0, 'owner', NULL, NULL, NULL, 1, 0, 0);
-    
-Replace `YOUR_USERNAME` with the username you want to use for your RSSH user (discussed below). Replace `YOUR_EMAIL` with the email you want to use to login to PufferPanel. In order to get an encrypted password for `YOUR_PASSWORD` follow the directions below.
-
-####Creating an Encrypted Password
-Open the file `/master/encrypt.php` and edit the values it says to edit. You will need to create an AES encryption key. Use the [GRC](https://www.grc.com/passwords.htm) site and copy the ASCII line into a file somewhere **outside of the web accessable part of your server**. Name this file whatever you want to name it. Edit line 4 of the file to point to the file. Edit line 13 to have a new slat for your passwords. You will  not be able to change this later.
-
-After this, edit `/master/core/framework/php/framework.auth.php` and edit line 18 to match the salt you selected. Ignore the one already in there. Afterwards, edit the same file in the node folder (`/node/core/framework/php/framework.auth.php`) doing the same thing.
-
-To generate your password go to `http://pufferpanel/master/encrypt.php` and add the following GET variables to the end: `openssl` and `ripemd`. The `openssl` variable should be the password you are going to use for your user that can access via SFTP (discussed below). The `ripemd` variable should eb the password you want to use for your PufferPanel account. When you do this, it will output your encrypted passwords. Copy the `ripemd` password into the database for `YOUR_PASSWORD`. IF you re-run the file the `openssl` password will change each time.
-
-Example Request: `http://pufferpanel/master/encrypt.php?openssl=sftppassword&ripemd=mypassword`
-
-Ignore the OpenSSL password for now, it can be generated in the Admin CP when you make a server.
+You should then open `/srv/scripts/backup_server.sh` and edit line 75 changing `http://localhost/` to the URL for your node that the script is located on.
 
 ###Using RSSH
 You will need to do this manually for now until an automatic script is made to interface with the Admin CP server creation.
