@@ -96,11 +96,11 @@
                     <form action="start.php" method="post">
                         <p>
                             <label for="sql_db">Database Name</label>
-                            <input type="text" name="sql_db" placeholder="pufferpanel" class="round default-width-input" />
+                            <input type="text" name="sql_db" value="pufferpanel" class="round default-width-input" />
                         </p>
                         <p>
                             <label for="sql_h">Database Host</label>
-                            <input type="text" name="sql_h" placeholder="<?php echo $_SERVER['SERVER_ADDR']; ?>" class="round default-width-input" />
+                            <input type="text" name="sql_h" value="<?php echo $_SERVER['SERVER_ADDR']; ?>" class="round default-width-input" />
                         </p>
                         <p>
                             <label for="sql_u">Database User</label>
