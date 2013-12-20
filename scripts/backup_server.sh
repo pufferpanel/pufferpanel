@@ -71,7 +71,7 @@ skip=( $4 )
 	tar -zcf /second/backups/$1/${data[0]}.tar.gz *
 	
 	#Tell Server backup is Finished
-	curl "http://localhost/pages/server/backup_shellreturn.php?do=backup_done&server=${data[2]}&token=${data[3]}" > /dev/null 2>&1
+	curl "http://localhost/backup_shellreturn.php?do=backup_done&server=${data[2]}&token=${data[3]}" > /dev/null 2>&1
 	
 	#Remove tmp
 	rm -rf /second/backups/$1/tmp
