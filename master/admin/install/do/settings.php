@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+if(file_exists('../install.lock'))
+	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +50,7 @@
             <div class="content-module">
 				<div class="content-module-main">
 				    <h1>General Settings</h1>
-                    <p>This infomration can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.</p>
+                    <p>This information can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.</p>
                     <div class="stripe-separator"><!--  --></div>
                     <?php
                     

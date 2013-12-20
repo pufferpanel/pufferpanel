@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+if(file_exists('install.lock'))
+	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +55,7 @@
                     <pre>
                         <?php
 
+							$continue = true;
                             /* Check for Required Dependencies */
                             $list = array(
                                 'curl',
@@ -69,10 +72,31 @@
                                 echo (extension_loaded($ext)) ? $ext." extension was loaded.\n" : $ext." extension was not loaded.\n";
                                 
                             }
+                            
+                            $functions = array(
+                            	'fopen',
+                            	'fclose',
+                            	'fwrite',
+                            	'session_start',
+                            	'socket_set_option',
+                            	'socket_send',
+                            	'socket_connect',
+                            	'socket_create',
+                            	'stream_set_timeout',
+                            	'fsockopen',
+                            	'crypt',
+                            	'hash'
+                            );
+                            
+                            foreach($functions as $fct) {
+                                
+                                echo (function_exists($fct)) ? $fct." is enabled.\n" : $fct." is not enabled.\n";
+                                
+                            }
 
                         ?>
                     </pre>
-                    <a href="do/start.php">Start Install &rarr;</a>
+                    <?php echo ($continue === true) ? '<a href="do/start.php">Start Install &rarr;</a>' : '<p>Please fix missing extensions and functions before continuing.</p>'; ?>
 				</div>
             </div>
 		</div>

@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+if(file_exists('../install.lock'))
+	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +61,7 @@
                             
                             $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
                             
-                            require_once('../../../core/framework/master_configuration.php');
+                            include('../../../core/framework/master_configuration.php');
                             $salt = crypt($_POST['password'], '$6$rounds=5000$'.$_INFO['salt'].'$');
                             $password = hash('ripemd320', $salt);
                             

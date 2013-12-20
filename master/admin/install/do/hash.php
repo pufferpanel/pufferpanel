@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+if(file_exists('../install.lock'))
+	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,7 +73,8 @@ echo $randkey;
                                 $fp = fopen('../../../core/framework/master_configuration.php', 'a+');
                                 fwrite($fp, "
                                 
-define('HASH', '".$_POST['hash']."');");
+if(!defined('HASH'))
+	define('HASH', '".$_POST['hash']."');");
                                 fclose($fp);
                                 
                                 exit('<meta http-equiv="refresh" content="0;url=account.php"/>');
