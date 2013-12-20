@@ -24,12 +24,12 @@
 class dbConn {
  
 	protected static $db;
-    private static $salt;
+    public static $salt;
     
 	private function __construct() {
 	 	
 	 	require('master_configuration.php');
-        $salt = $_INFO['salt'];
+        self::$salt = $_INFO['salt'];
 		try {
 
 			self::$db = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
@@ -47,7 +47,7 @@ class dbConn {
 	 
 	}
 
-    public function getSalt() {
+    public static function getSalt() {
         
         return self::$salt;
         
