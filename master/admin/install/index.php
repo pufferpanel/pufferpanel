@@ -68,7 +68,7 @@ if(file_exists('install.lock'))
 	                    ?>
                     	</p>
                     <div class="stripe-separator"><!--  --></div>
-                    <pre>
+                    <p>
                         <?php
 
 							$continue = true;
@@ -85,10 +85,13 @@ if(file_exists('install.lock'))
                             echo "\n";
                             foreach($list as $ext) {
                                 
-                                echo (extension_loaded($ext)) ? $ext." extension was loaded.\n" : $ext." extension was not loaded.\n";
+                                echo (extension_loaded($ext)) ? '<span style="color:green;">The php-'.$ext.' extension was loaded.</span><br />' : '<span style="color:red;"><strong>The php-'.$ext.' extension was not loaded.</strong></span><br />';
                                 
                             }
-                            
+						?>
+					</p><div class="stripe-separator"></div><p>
+						<?php
+						
                             $functions = array(
                             	'fopen',
                             	'fclose',
@@ -106,12 +109,12 @@ if(file_exists('install.lock'))
                             
                             foreach($functions as $fct) {
                                 
-                                echo (function_exists($fct)) ? $fct." is enabled.\n" : $fct." is not enabled.\n";
+                                echo (function_exists($fct)) ? '<span style="color:green;">'.$fct.'() is enabled.</span><br />' : '<span style="color:red;"><strong>'.$fct.'() is not enabled.</strong></span><br />';
                                 
                             }
 
                         ?>
-                    </pre>
+                    </p>
                     <?php echo ($continue === true) ? '<a href="do/start.php">Start Install &rarr;</a>' : '<p>Please fix missing extensions and functions before continuing.</p>'; ?>
 				</div>
             </div>
