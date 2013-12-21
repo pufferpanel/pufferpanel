@@ -114,7 +114,7 @@ if(file_exists('install.lock'))
                                 
                                 echo (function_exists($fct)) ? '<span style="color:green;">'.$fct.'() is enabled.</span><br />' : '<span style="color:red;"><strong>'.$fct.'() is not enabled.</strong></span><br />';
                                 
-                                if(!function_exists($ext))
+                                if(!function_exists($fct))
                                 	$continue = false;
                                 
                             }
