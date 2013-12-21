@@ -35,6 +35,9 @@ You will also need to upload the `scripts` folder to `/srv/scripts` and chmod al
 
 You should then open `/srv/scripts/backup_server.sh` and edit line 75 changing `http://localhost/` to the URL for your node that the script is located on.
 
+#####Setting up Node
+You will need to copy the master_configuration.php file from the master directory into the same location in the node folder, renaming it node_configuration.php.
+
 ###Using RSSH
 Make the group for RSSH Users
 `[root@vpn ~]# groupadd rsshusers`
