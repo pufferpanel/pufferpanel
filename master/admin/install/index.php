@@ -87,6 +87,9 @@ if(file_exists('install.lock'))
                                 
                                 echo (extension_loaded($ext)) ? '<span style="color:green;">The php-'.$ext.' extension was loaded.</span><br />' : '<span style="color:red;"><strong>The php-'.$ext.' extension was not loaded.</strong></span><br />';
                                 
+                                if(!extension_loaded($ext))
+                                	$continue = false;
+                                
                             }
 						?>
 					</p><div class="stripe-separator"></div><p>
@@ -110,6 +113,9 @@ if(file_exists('install.lock'))
                             foreach($functions as $fct) {
                                 
                                 echo (function_exists($fct)) ? '<span style="color:green;">'.$fct.'() is enabled.</span><br />' : '<span style="color:red;"><strong>'.$fct.'() is not enabled.</strong></span><br />';
+                                
+                                if(!function_exists($ext))
+                                	$continue = false;
                                 
                             }
 
