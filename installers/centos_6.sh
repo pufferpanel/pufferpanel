@@ -18,7 +18,6 @@
 #
 
 echo "Beginning CentOS Automatic Installer for PufferPanel"
-echo "!!NOTICE!! This script will NOT install MySQL or NGINX."
 echo "USE AT YOUR OWN RISK!"
 
 rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
@@ -26,13 +25,13 @@ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 
 yum update -y
 
-echo "Installing PHP Dependences"
-yum install -y php-fpm php-pdo php-devel pecl
+echo "Installing Apache and MySQL"
+yum install -y mysql-server httpd
 
-pecl install ssh2
-pecl install mcrypt
+echo "Installing PHP Dependences (assuming apache)"
+yum install -y php php-mysql php-pdo php-devel php-ssh2 php-mcrypt pear
 
 echo "Installing Other Dependences"
-yum install -y screen gzip quota
+yum install -y screen quota
 
 echo "Done."
