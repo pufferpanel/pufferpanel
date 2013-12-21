@@ -13,4 +13,4 @@ Support for PufferPanel comes from [Fishbans](http://fishbans.com) and [DigitSer
 * [puffrfish](https://github.com/puffrfish)
 * [nasonfish](https://github.com/nasonfish)
 * [clone1018](https://github.com/clone1018)
-* [Eoin / Cookednoodles](https://github.com/cookednoodles)
+* [cookednoodles](https://github.com/cookednoodles)
