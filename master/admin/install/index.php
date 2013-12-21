@@ -51,7 +51,7 @@ if(file_exists('install.lock'))
 				<div class="content-module-main">
 				    <h1>Install PufferPanel on your Server</h1>
                     <p>This script will guide you through the process for setting up PufferPanel on your server. Please ensure that you have installed all of the dependencies required or this install will fail.</p>
-                    <p><strong><span style="color:red;">!!IMPORTANT!!</span> Please ensure that you have CHMOD'ed the /master/core/framework/ folder and this installer folder (and the /do/ directory) to 0777 for installation. The installer will reset the permission when it is done. </strong></p>
+                    <p><strong><span style="color:red;">!!IMPORTANT!!</span> When this installer finishes please manually change the permissions back to 0755 for the /core/framework folder, and delete this installer. Please set the permissions on the global_configuration.php file to 0444.</strong></p>
                     <div class="stripe-separator"></div>
                     	<p>
 	                    <?php
