@@ -73,6 +73,8 @@ if(file_exists('../install.lock'))
                             ));
                             
                             rename('../install.lock.dist', '../install.lock');
+                            chmod('../../../core/framework/', 0755);
+                            
                             exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
                             
                         }

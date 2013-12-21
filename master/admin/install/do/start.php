@@ -83,7 +83,11 @@ if(file_exists('../install.lock'))
 \$_INFO['salt'] = '".$randkey."';");
                                     fclose($fp);
                                 
-                                    rename('../../../core/framework/master_configuration.php.dist', '../../../core/framework/master_configuration.php');
+                                    if(!rename('../../../core/framework/master_configuration.php.dist', '../../../core/framework/master_configuration.php')){
+                                    
+                                    	echo '<div class="error-box round">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>'; 
+                                    
+                                    }
                                     exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
                         
                             }catch (PDOException $e) {
