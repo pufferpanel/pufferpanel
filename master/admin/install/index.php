@@ -51,13 +51,20 @@ if(file_exists('install.lock'))
 				<div class="content-module-main">
 				    <h1>Install PufferPanel on your Server</h1>
                     <p>This script will guide you through the process for setting up PufferPanel on your server. Please ensure that you have installed all of the dependencies required or this install will fail.</p>
-                    <p><strong><span style="color:red;">!!IMPORTANT!!</span> Please ensure that you have CHMOD'ed the /master/core/framework/ folder and this installer folder (and the /do/ directory) to 0777 for installation. The installer will reset the permission when it is done.</strong></p>
+                    <p><strong><span style="color:red;">!!IMPORTANT!!</span> Please ensure that you have CHMOD'ed the /master/core/framework/ folder and this installer folder (and the /do/ directory) to 0777 for installation. The installer will reset the permission when it is done. </strong></p>
                     <div class="stripe-separator"></div>
                     	<p>
-	                    <?php 
-	                    	echo "/core/framework is CHMOD ".substr(sprintf('%o', fileperms('../../core/framework')), -4).'<br />';
-	                    	echo "/admin/install is CHMOD ".substr(sprintf('%o', fileperms('../install')), -4).'<br />';
-	                    	echo "/admin/install/do is CHMOD ".substr(sprintf('%o', fileperms('do')), -4);
+	                    <?php
+	                    
+	                    	/* Permissions Checking */
+	                    	echo (substr(sprintf('%o', fileperms('../../core/framework/master_configuration.php.dist')), -4) == "0666") '<span style="color:green;">/core/framework/master_configuration.php.dist is correctly CHMOD\'d 0666</span><br />' : '<span style="color:red;"><strong>/core/framework/master_configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework/master_configuration.php.dist')), -4).' and should be 0666.</strong></span><br />';
+	                    	
+	                    	echo (substr(sprintf('%o', fileperms('../../core/framework')), -4) == "0777") '<span style="color:green;">/core/framework is correctly CHMOD\'d 0777</span><br />' : '<span style="color:red;"><strong>/core/framework is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework')), -4).' and should be 0777.</strong></span><br />';
+	                    	
+	                    	echo (substr(sprintf('%o', fileperms('../install')), -4) == "0777") '<span style="color:green;">/admin/install is correctly CHMOD\'d 0777</span><br />' : '<span style="color:red;"><strong>/admin/install is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../install')), -4).' and should be 0777.</strong></span><br />';
+	                    	
+	                    	echo (substr(sprintf('%o', fileperms('do')), -4) == "0777") '<span style="color:green;">/admin/install/do is correctly CHMOD\'d 0777</span>' : '<span style="color:red;"><strong>/admin/install/do is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('do')), -4).' and should be 0777.</strong></span>';
+	                    	
 	                    ?>
                     	</p>
                     <div class="stripe-separator"><!--  --></div>
