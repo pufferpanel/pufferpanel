@@ -6,10 +6,11 @@ Downloads of PufferPanel can be found here. You can contact us on IRC (irc.esper
 # Installing
 Check out our [wiki](https://github.com/DaneEveritt/PufferPanel/wiki) for guides to set up PufferPanel.
 
-# Support
-Support for PufferPanel comes from [Fishbans](http://fishbans.com), [Pufferfi.sh](http://pufferfi.sh), and [DigitServers](http://digitservers.com/) for development servers, testing, and bug reporting.
+# Development Support
+Support for PufferPanel comes from [Fishbans](http://fishbans.com) and [DigitServers](http://digitservers.com/) for development servers.
 
-# Additional Support
-* nasonfish
-* clone1018
-* Eoin @ Clanslots
+# Additional Thanks
+* [puffrfish](https://github.com/puffrfish)
+* [nasonfish](https://github.com/nasonfish)
+* [clone1018](https://github.com/clone1018)
+* [Eoin / Cookednoodles](https://github.com/cookednoodles)
