@@ -98,7 +98,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<h3 class="fl">Live Console</h3>
 					</div> <!-- end content-module-heading -->
 					<div class="content-module-main" id="server_info">
-						<textarea id="live_console" disabled="disabled"><?php echo $core->framework->files->last_lines($core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/server.log', 250); ?></textarea>
+						<textarea id="live_console" disabled="disabled"><?php echo $core->framework->files->last_lines($core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/logs/latest.log', 250); ?></textarea>
 					</div> <!-- end content-module-main -->
 				</div>
                 <div class="error-box round text_highlighted" style="display:none;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>

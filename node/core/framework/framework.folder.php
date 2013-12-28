@@ -101,7 +101,7 @@ class files {
 	    
 	    if(!is_file($path)) {
 	    	
-	    	echo('Could not locate server.log! Path (`'.$path.'`) not found.');
+	    	echo('Could not locate server.log!');
 	    	return false;
 	    	
 	    }else{
