@@ -23,9 +23,6 @@
 #	$3 = soft_limit
 #	$4 = hard_limit
 
-#Create Home Directory
-mkdir -p /srv/servers/$1
-
 #Add User
 useradd -d /srv/servers/$1 -s /usr/bin/rssh -G rsshusers $1
 
