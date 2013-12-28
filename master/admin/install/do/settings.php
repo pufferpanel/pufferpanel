@@ -60,24 +60,24 @@ if(file_exists('../install.lock'))
                             $mysql = dbConn::getConnection();
                             
                             $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
-                                ('company_name',:cname),
-                                ('master_url',:murl),
-                                ('cookie_website',:cwebsite),
+                                ('company_name', :cname),
+                                ('master_url', :murl),
+                                ('cookie_website', :cwebsite),
                                 ('postmark_api_key', NULL),
                                 ('mandrill_api_key', NULL),
                                 ('mailgun_api_key', NULL),
-                                ('sendmail_email',:smail),
-                                ('main_website',:mwebsite),
+                                ('sendmail_email', :smail),
+                                ('main_website', :mwebsite),
                                 ('sendmail_method','php'),
                                 ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
                                 ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
-                                ('assets_url',:aurl),
+                                ('assets_url', :aurl),
                                 ('use_api','0'),
                                 ('api_key', NULL),
                                 ('api_allowed_ips','*'),
                                 ('api_module_controls_all','0')");
                             
-                            $cookieSite = (strtolower($_POST['cookie_website']) == 'null') ? null : $_POST['cookie_website'];
+                            $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
                             $prepare->execute(array(
                                 ':cname' => $_POST['company_name'],
                                 ':murl' => $_POST['master_url'],
@@ -113,7 +113,7 @@ if(file_exists('../install.lock'))
                         </p>
                         <p>
                             <label for="cookie_website">Cookie Website</label>
-                            <input type="text" name="cookie_website" placeholder=".example.com" class="round default-width-input" />
+                            <input type="text" name="cookie_website" placeholder="example.com" class="round default-width-input" />
                         </p>
                         <p>
                             <label for="sendmail_email">Sendmail Email</label>
