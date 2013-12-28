@@ -19,8 +19,6 @@
 session_start();
 require_once('core/framework/framework.core.php');
 
-$filesIncluded = true;
-
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
 
 	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
