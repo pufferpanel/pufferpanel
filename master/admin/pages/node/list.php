@@ -100,7 +100,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	</div>
 	<script type="text/javascript">
 		$.urlParam = function(name){
-		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
 		    if (results==null){
 		       return null;
 		    }
