@@ -127,6 +127,8 @@ $add->execute(array(
 	':bdisk' => $_POST['backup_disk']
 ));
 
+$lastInsert = $mysql->lastInsertId();
+
 /*
  * Update IP Count
  */
@@ -143,8 +145,6 @@ $con = ssh2_connect($node['sftp_ip'], 22);
 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 
 $stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], true);
-stream_set_blocking($stream, true);
-fclose($stream);
 
 $core->framework->email->buildEmail('admin_new_server', array(
         'NAME' => $_POST['server_name'],
@@ -153,6 +153,6 @@ $core->framework->email->buildEmail('admin_new_server', array(
         'PASS' => $_POST['sftp_pass_2']
 ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - New Server Added');
 
-$core->framework->page->redirect('../../view.php?id='.$mysql->lastInsertId());
+$core->framework->page->redirect('../../view.php?id='.$lastInsert);
 
 ?>
