@@ -139,15 +139,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<input type="text" autocomplete="off" name="email" value="<?php if(isset($_GET['email'])) echo $_GET['email']; ?>" class="round default-width-input" />
 								</p>
 								<div class="stripe-separator"><!--  --></div>
-								<p><em><a href="ajax/new/viewPopup.php" onclick="window.open(this.href + '?node=' + $('#getNode').val(), 'View Avaliable IPs and Ports', 'width=500, height=600, left=24, top=24'); return false;">View available</a> IPs &amp; Ports as well as free RAM and Disk Space.</em></p>
-								<p>
-									<label for="email">Assign IP Address</label>
-									<input type="text" autocomplete="off" name="server_ip" class="round default-width-input" />
-								</p>
-								<p>
-									<label for="email">Assign Port</label>
-									<input type="text" autocomplete="off" name="server_port" class="round default-width-input" />
-								</p>
+								<span id="updateList">
+									<p>
+										<label for="server_ip">Assign IP Address</label>
+										<select name="server_ip" class="round default-width-input">
+											<option value="---">Select a Node</option>
+										</select><i class="fa fa-angle-down select-arrow"></i>
+									</p>
+									<p>
+										<label for="server_port">Assign Port</label>
+										<select name="server_port" class="round default-width-input">
+											<option value="---">Select a Node</option>
+										</select><i class="fa fa-angle-down select-arrow"></i>
+									</p>
+								</span>
 								<p>
 									<label for="email">Allocate Memory (in MB)</label>
 									<input type="text" autocomplete="off" name="alloc_mem" class="round default-width-input" />
@@ -201,8 +206,35 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			});
 			return false;
 		});
+		function updatePortList(){
+			$("#server_ip").change(function() {
+			    var ip = $(this).val().replace(/\./g, "\\.");
+			    $("[id^=node_]").hide();
+			    $("#node_"+ip).show();
+			});
+		}
+		function updateList(){
+			var activeNode = $('#getNode').val();
+			$.ajax({
+				type: "POST",
+				url: "ajax/new/load_list.php",
+				data: {'node' : activeNode},
+				success: function(data) {
+					$('#updateList').html(data);
+					updatePortList();
+					return false;
+				}
+			});
+			return false;
+		}
+		$(document).ready(function(){
+			updateList();
+		});
+		$('#getNode').change(function(){
+			updateList();
+		});
 		$.urlParam = function(name){
-		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
 		    if (results==null){
 		       return null;
 		    }
