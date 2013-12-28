@@ -200,9 +200,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
                      */
                     if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
                     
-                        ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-all"');
+                        ssh2_exec($con, 'cd /srv/scripts; sudo ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-all"');
                         sleep(2);
-                        ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-off"');
+                        ssh2_exec($con, 'cd /srv/scripts; sudo ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-off"');
                     
                     }
                     
@@ -221,11 +221,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
                         
                                 if($backup == 'all'){
                                                                     
-                                    $s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+                                    $s = ssh2_exec($con, 'cd /srv/scripts; sudo ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "*" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
     
                                 }else{
                                                                                         
-                                    $s = ssh2_exec($con, 'cd /srv/scripts; ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
+                                    $s = ssh2_exec($con, 'cd /srv/scripts; sudo ./backup_server.sh '.$core->framework->server->getData('ftp_user').' "'.$filename.' '.$core->framework->server->nodeData('node').' '.$core->framework->server->getData('hash').' '.$backupToken.'" "'.escapeshellcmd(str_replace(",", " ", $backup)).'" "'.escapeshellcmd(str_replace(",", " ", $skip)).'"');
                                                                         
                                 }
                                 
@@ -236,7 +236,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
                         
                         }else{
                         
-                            ssh2_exec($con, 'cd /srv/scripts; ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-on"');
+                            ssh2_exec($con, 'cd /srv/scripts; sudo ./send_command.sh '.$core->framework->server->getData('ftp_user').' "save-on"');
                             
                             $core->framework->log->getUrl()->addLog(2, 1, array('system.sql_error', 'A backup was started for `'.$core->framework->server->getData('name').'` but failed due to a MySQL error.'));
                             
