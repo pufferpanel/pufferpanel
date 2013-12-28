@@ -20,6 +20,10 @@
 /*
  * PufferPanel Node Core Framework File
  */
+if(!file_exists('node_configuration.php')){
+	header($_SERVER['HTTP_REFERER'].'&node_error=node_improperly_configured');
+	exit();
+}
 
 /*
  * Cloudflare IP Fix
