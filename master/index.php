@@ -144,11 +144,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 			<fieldset>
 				<p>
 					<label for="login-email">email</label>
-					<input type="text" id="login-email" name="email" autocomplete="off" class="round full-width-input" autofocus />
+					<input type="text" id="login-email" name="email" class="round full-width-input" autofocus />
 				</p>
 				<p>
 					<label for="login-password">password</label>
-					<input type="password" id="login-password" name="password" autocomplete="off" class="round full-width-input" />
+					<input type="password" id="login-password" name="password" class="round full-width-input" />
 				</p>
 				<p>I've <a href="password.php">forgotten my password</a>.</p>
                 <?php
