@@ -42,7 +42,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			$con = ssh2_connect($node['node_ip'], 22);
 			ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 			
-			$stream = ssh2_exec($con, 'cd /srv/scripts && sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"');
+			$stream = ssh2_exec($con, 'cd /srv/scripts && sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
 			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 			
 			stream_set_blocking($errorStream, true);
