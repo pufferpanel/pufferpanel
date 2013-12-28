@@ -55,7 +55,7 @@ $selectNode->execute(array($server['node']));
 $con = ssh2_connect($node['sftp_ip'], 22);
 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 
-$stream = ssh2_exec($con, 'cd /srv/scripts; ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk']);
+$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk']);
 stream_set_blocking($stream, true);
 fclose($stream);
 
