@@ -46,7 +46,16 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		    }else{
 
 				$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./send_command.sh '.$core->framework->server->getData('ftp_user').' "'.escapeshellcmd($_POST['command']).'"', true);
+				$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+				
+				stream_set_blocking($errorStream, true);
 				stream_set_blocking($stream, true);
+				
+				$isError = stream_get_contents($errorStream);
+				if(!empty($isError))
+					echo $isError;
+				
+				fclose($errorStream);
 				fclose($stream);
 		
 		    }

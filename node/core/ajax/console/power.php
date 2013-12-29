@@ -201,11 +201,21 @@ motd=A Minecraft Server';
 						}else{
 												
 							$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./start_server.sh "'.$core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server" "'.$core->framework->server->getData('max_ram').'" "'.$core->framework->server->getData('ftp_user').'"', true);
+	                        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+	                        
+	                        stream_set_blocking($errorStream, true);
+	                        stream_set_blocking($stream, true);
+	                        
+	                        $isError = stream_get_contents($errorStream);
+	                        if(!empty($isError))
+	                        	echo $isError;
+	                        
+	                        fclose($errorStream);
+	                        fclose($stream);
                             
-                           $core->framework->log->getUrl()->addLog(0, 1, array('user.server_start', 'The server `'.$core->framework->server->getData('name').'` was started.'));
+                           	$core->framework->log->getUrl()->addLog(0, 1, array('user.server_start', 'The server `'.$core->framework->server->getData('name').'` was started.'));
                             
 							echo "Server Started.";
-							fclose($stream);
 													
 						}
 					
@@ -222,12 +232,23 @@ motd=A Minecraft Server';
 						}else{
 						
 							$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./send_command.sh "'.$core->framework->server->getData('ftp_user').'" "stop"', true);
+	                        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+	
+							$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+							
+							stream_set_blocking($errorStream, true);
 							stream_set_blocking($stream, true);
 							
+							$isError = stream_get_contents($errorStream);
+							if(!empty($isError))
+								echo $isError;
+							
+							fclose($errorStream);
+							fclose($stream);
+	                        
                             $core->framework->log->getUrl()->addLog(0, 1, array('user.server_stop', 'The server `'.$core->framework->server->getData('name').'` was stopped.'));
                             
 							echo "Server Stopped.";
-							fclose($stream);
 							
 						}
 					
@@ -244,12 +265,21 @@ motd=A Minecraft Server';
 						}else{
 						
 							$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./kill_server.sh "'.$core->framework->server->getData('ftp_user').'"', true);
-							stream_set_blocking($stream, true);
-							
+	                        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+	                        
+	                        stream_set_blocking($errorStream, true);
+	                        stream_set_blocking($stream, true);
+	                        
+	                        $isError = stream_get_contents($errorStream);
+	                        if(!empty($isError))
+	                        	echo $isError;
+	                        
+	                        fclose($errorStream);
+	                        fclose($stream);
+	                        
                             $core->framework->log->getUrl()->addLog(1, 1, array('user.server_kill', 'The server `'.$core->framework->server->getData('name').'` was forceably stopped.'));
                             
 							echo "Server Killed.";
-							fclose($stream);
 							
 						}
 					
