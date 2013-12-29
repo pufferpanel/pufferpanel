@@ -1,0 +1,1 @@
+<p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a></p>
