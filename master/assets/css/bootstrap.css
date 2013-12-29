@@ -1,4 +1,5 @@
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
 @import url("fontawesome/font-awesome.min.css");
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 
@@ -415,8 +416,18 @@ h6,
   font-size: 13px;
 }
 
+	h1.nopad,
+	h2.nopad,
+	h3.nopad,
+	h4.nopad,
+	h5.nopad,
+	h6.nopad {
+		margin-top: 0 !important;
+	}
+
 p {
   margin: 0 0 10.5px;
+  font-size: 85%;
 }
 
 .lead {
@@ -5044,6 +5055,13 @@ a.list-group-item:focus {
   background-color: #f5f5f5;
 }
 
+	.list-group-item-heading:hover,
+	.list-group-item-heading:focus {
+		text-decoration: none;
+		background-color: #ffffff !important;
+		cursor: default;
+	}
+
 a.list-group-item.active,
 a.list-group-item.active:hover,
 a.list-group-item.active:focus {
@@ -6631,3 +6649,19 @@ label,
 .affix {
   position: fixed;
 }
+
+textarea.console {
+	font: 75% 'Droid Sans Mono', monospace;
+	color: #333333;
+	height: 300px;
+	text-wrap: normal;
+	overflow-y: scroll;
+	overflow-x:  hidden;
+	border: 0px;
+	resize: none;
+}
+
+	textarea.console[readonly="readonly"] {
+		background: #fefefe;
+		cursor: default;
+	}
