@@ -202,6 +202,17 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
 			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="logout.php">Logout</a></li>
+								<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+							</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-3">
