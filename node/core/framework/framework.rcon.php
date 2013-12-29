@@ -39,57 +39,7 @@ class rcon {
 	public function getStatus($host, $port = 25565, $kill = false)
         {
         
-        	$this->host = $host;
-        	$this->port = $port;
-        	
-        	/*
-        	 * Check Cache
-        	 */
-        	$fp = fopen(__DIR__.'/use_do17.php', 'r');
-        	$content = fread($fp, filesize(__DIR__.'/use_do17.php'));
-        	fclose($fp);
-        	
-        	$lines = explode("\n", $content);
-        	
-        		$do17 = false;
-        		foreach($lines as $id => $value)
-        			{
-        			
-        				if($id > 2){
-        				
-        					if($value == $this->host.':'.$this->port)
-        						$do17 = true;
-        				
-        				}
-        			
-        			}
-        	
-			if($kill === false && $do17 === false)
-				$this->do16($this->host, $this->port);
-			else
-				$this->do17($this->host, $this->port);
-						                
-        }
-        
-    public function do16($host, $port = 25565)
-    	{
-    	
-    		$this->socket = @fsockopen('udp://'.$host, $port, $this->errNo, $this->errStr, $this->timeout);
-    		stream_set_timeout($this->socket, $this->timeout);
-    		
-    		$challengePack = pack('c*', 0xFE, 0xFD, 0x09, 0x01, 0x02, 0x03, 0x04);
-    		fwrite($this->socket, $challengePack, strlen($challengePack));
-    		
-    		$this->get(pack('N', substr(fread($this->socket, 2048), 5)));
-    		
-    		//Hide Code Bug because of this 1.7 Stuff
-    		@fclose($this->socket);
-    	
-    	}
-    	
-    public function do17($host, $port = 25565)
-    	{
-    	
+        	    	
     		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     		socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, array( 'sec' => $this->timeout, 'usec' => 0 ));
     		socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array( 'sec' => $this->timeout, 'usec' => 0 ));
