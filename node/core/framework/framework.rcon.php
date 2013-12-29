@@ -67,7 +67,6 @@ class rcon {
     		
     		$pList = array();
     		
-    		die(print_r($data));
     		foreach($data['players']['sample'] as $id => $internal)
     			{
     				
