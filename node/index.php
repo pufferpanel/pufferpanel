@@ -38,8 +38,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<div class="col-3">
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="account.php" class="list-group-item">Settings</a>
-					<a href="servers.php" class="list-group-item">My Servers</a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php" class="list-group-item">Settings</a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="list-group-item">My Servers</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
