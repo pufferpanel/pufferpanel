@@ -80,15 +80,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
 			$sVersion = $core->framework->rcon->data('version');
-			$sSoftware = $core->framework->rcon->data('software');
-			$sPlugins = null;
-			foreach(explode(',', $core->framework->rcon->data('plugins')) as $id => $plugin)
-				{
-				
-					$pData = explode(' ', $plugin);
-					$sPlugins .= str_replace(end($pData), '', $plugin).' ('.end($pData).')';
-				
-				}
 							
 		}else{
 		
@@ -122,14 +113,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<tr>
 							<td><strong>Version</strong></td>
 							<td>'.$sVersion.'</td>
-						</tr>
-						<tr>
-							<td><strong>Software</strong></td>
-							<td>'.$sSoftware.'</td>
-						</tr>
-						<tr>
-							<td><strong>Plugins</strong></td>
-							<td>'.$sPlugins.'</td>
 						</tr>
 					</tbody>
 				</table>';
