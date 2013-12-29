@@ -228,7 +228,7 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 						<h3 style="margin-top:0;">Change Password</h3><hr />
 							<form action="account.php?action=password" method="post">
 								<div class="form-group">
-									<label for="email" class="control-label">Current Password</label>
+									<label for="p_password" class="control-label">Current Password</label>
 									<div>
 										<input type="password" class="form-control" name="p_password" />
 									</div>
@@ -256,9 +256,9 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 						<h3 style="margin-top:0;">Update Account Email</h3><hr />
 							<form action="account.php?action=email" method="post">
 								<div class="form-group">
-									<label for="newemail" class="control-label">New Email</label>
+									<label for="email" class="control-label">New Email</label>
 									<div>
-										<input type="text" class="form-control" name="newemail" />
+										<input type="text" class="form-control" name="email" />
 									</div>
 								</div>
 								<div class="form-group">
