@@ -146,11 +146,12 @@ class files {
 		    	$total = count($a);
 		    	foreach($a as $id => $line){
 		    	
-		    		if($id == $total || $id == ($total - 1)){
+		    		if($id == ($total - 2))
 		    			$output .= $line;
-		    		}else{
+					else if($id == ($total - 1))
+						$output .= '';
+		    		else
 		    			$output .= $line."\n";
-		    		}
 		    	
 		    	}	    	
 		    
