@@ -40,8 +40,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<div class="col-3">
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="account.php" class="list-group-item">Settings</a>
-					<a href="servers.php" class="list-group-item">My Servers</a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php" class="list-group-item">Settings</a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="list-group-item">My Servers</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
@@ -62,7 +62,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				</div>
 				<div class="col-6">
 					<hr />
-					<div class="alert alert-danger" id="sc_resp" style="display:none;"></div>
 					<form action="#" method="post" id="console_command">
 						<fieldset>
 							<div class="input-group">
@@ -73,12 +72,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							</div>
 						</fieldset>
 					</form>
+					<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
 				</div>
 				<div class="col-6" style="text-align:center;">
 					<hr />
 					<button class="btn btn-primary btn-sm poke" id="start">Start</button>
 					<button class="btn btn-primary btn-sm poke" id="stop">Stop</button>
 					<button class="btn btn-danger btn-sm poke" id="kill">Kill</button>
+					<div class="alert alert-info" id="pw_resp" style="display:none;margin-top: 15px;"></div>
 				</div>
 			</div>
 		</div>
@@ -87,7 +88,127 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		</div>
 	</div>
 	<script type="text/javascript">
-	$(document).ready(function(){$("#live_console").scrollTop($("#live_console")[0].scrollHeight-$("#live_console").height());$("#console_command").submit(function(){$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass("disabled");var ccmd=$("#ccmd").val();$.ajax({type:"POST",url:"core/ajax/console/send.php",data:{command:ccmd},success:function(data){$("#sending_command").removeClass("disabled");$("#sending_command").html("&rarr;");$("#ccmd").val("");if(data!=""){$("#sc_resp").html(data).slideDown().delay(5000).slideUp()}updateConsole()}});return false});function updateConsole(){if(isScroll!==true){$.ajax({type:"GET",url:"core/ajax/console/update.php",success:function(data){if(isTextSelected($("#live_console")[0])===false){if(isBottom()===true){var b=true;var bottom=$("#live_console")[0].scrollHeight-$("#live_console").height()}else{b=false;curloc=$("#live_console").scrollTop()}$("#live_console").html(data);if(b===true){$("#live_console").scrollTop(bottom);bottom=0}else{$("#live_console").scrollTop(curloc);curloc=0}}else{}}})}}var isScroll;$("#live_console").scroll($.debounce(100,true,function(){isScroll=true}));$("#live_console").scroll($.debounce(100,function(){isScroll=false}));function isTextSelected(input){var startPos=input.selectionStart;var endPos=input.selectionEnd;var doc=document.selection;if(doc&&doc.createRange().text.length!=0){return true}else{if(!doc&&input.value.substring(startPos,endPos).length!=0){return true}}return false}function isBottom(){if(($("#live_console").scrollTop()+$("#live_console").innerHeight())>=$("#live_console")[0].scrollHeight){return true}}setInterval(function(){if(isTextSelected($("#live_console")[0])===false){$(".text_highlighted").slideUp();updateConsole()}else{$(".text_highlighted").slideDown()}},200);setInterval(function(){updateConsole()},1000);var can_run=true;$(".poke").click(function(){var command=$(this).attr("id");if(command=="stop"){uCommand="Stopping"}else{if(command=="start"){uCommand="Starting"}else{uCommand="Killing"}}if(can_run===true){can_run=false;$(this).append(' <i class="fa fa-refresh fa-spin"></i>');$(this).toggleClass("disabled");$.ajax({type:"POST",url:"core/ajax/console/power.php",data:{process:"power",command:command},success:function(data){if(data=="Server Started."){$("#"+command).toggleClass("disabled");$("#"+command).html("Start");$("#pw_resp").html("Server has been started successfully.").slideDown().delay(5000).slideUp();can_run=true;return false}else{if(data=="Server Stopped."){$("#"+command).toggleClass("disabled");$("#"+command).html("Stop");$("#pw_resp").html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();can_run=true;return false}else{if(data=="Server Killed."){$("#"+command).toggleClass("disabled");$("#"+command).html("Kill");$("#pw_resp").html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();can_run=true;return false}else{alert(data);$("#stop").removeClass("disabled");$("#stop").html("Stop");$("#start").removeClass("disabled");$("#start").html("Start");$("#kill").removeClass("disabled");$("#kill").html("Kill");can_run=true}}}}})}else{return false}return false})});
+	$(document).ready(function(){
+		$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		$("#console_command").submit(function(){
+			$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
+			var ccmd = $("#ccmd").val();
+			$.ajax({
+				type: "POST",
+				url: 'core/ajax/console/send.php',
+				data: { command: ccmd },
+			  		success: function(data) {
+			    		$("#sending_command").removeClass('disabled');
+			    		$("#sending_command").html('&rarr;');
+			    		$("#ccmd").val('');
+			    			if(data != ''){
+			    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
+			    			}
+			    		updateConsole();
+			 		 }
+			});
+			return false;
+		});
+		var isScroll;
+		$("#live_console").scroll($.debounce(100, true, function(){ isScroll = true;}));
+		$("#live_console").scroll($.debounce(100, function(){ isScroll = false;}));
+		function updateConsole() {
+			var b = true;
+			var curloc = 0;
+			if(isScroll !== true){
+				$.ajax({
+					type: "GET",
+					url: 'core/ajax/console/update.php',
+				  		success: function(data) {
+				    		if(isTextSelected($('#live_console')[0]) === false){
+								if(isBottom() !== true){
+									b = false;
+									curloc = $('#live_console').scrollTop();
+								}
+								$("#live_console").html(data);
+								if(b === true){
+					    			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+					    		}else{
+					    			$('#live_console').scrollTop(curloc);
+					    		}
+					    	}else{ /*Do Nothing*/ }
+				 		 }
+				});
+			}
+		}		
+		function isTextSelected(input){
+		   var startPos = input.selectionStart;
+		   var endPos = input.selectionEnd;
+		   var doc = document.selection;
+		   if(doc && doc.createRange().text.length != 0){
+		      return true;
+		   }else if (!doc && input.value.substring(startPos,endPos).length != 0){
+		      return true;
+		   }
+		   return false;
+		}
+		function isBottom() {
+			if(($('#live_console').scrollTop() + $('#live_console').innerHeight()) >= $('#live_console')[0].scrollHeight){
+				return true;
+			}
+		}
+		setInterval(function(){
+			if(isTextSelected($('#live_console')[0]) === false){
+				$(".text_highlighted").slideUp();
+				updateConsole();
+			}else{
+				$(".text_highlighted").slideDown();
+			}
+			updateConsole();
+		}, 1000);
+		var can_run = true;
+		$(".poke").click(function(){
+			var command = $(this).attr("id");
+			if(command == 'stop'){ uCommand = 'Stopping'; }else if(command == 'start'){ uCommand = 'Starting';}else{ uCommand = 'Killing';}
+				if(can_run === true){
+					can_run = false;
+					$(this).append(' <i class="fa fa-refresh fa-spin"></i>');
+					$(this).toggleClass('disabled');
+					$.ajax({
+						type: "POST",
+						url: "core/ajax/console/power.php",
+						data: { process: "power", command: command },
+					  		success: function(data) {
+				    			if(data == "Server Started."){
+				    				$("#"+command).toggleClass('disabled');
+				    				$("#"+command).html('Start');
+				    				$("#pw_resp").html("Server has been started successfully.").slideDown().delay(5000).slideUp();
+				    				can_run = true;
+				    				return false;
+				    			}else if(data == "Server Stopped."){
+				    				$("#"+command).toggleClass('disabled');
+				    				$("#"+command).html('Stop');
+				    				$("#pw_resp").html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
+				    				can_run = true;
+				    				return false;
+				    			}else if(data == "Server Killed."){
+				    				$("#"+command).toggleClass('disabled');
+				    				$("#"+command).html('Kill');
+				    				$("#pw_resp").html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();
+				    				can_run = true;
+				    				return false;
+				    			}else{
+				    				$("#pw_resp").html(data);				    				
+				    				$("#stop").removeClass('disabled');
+				    				$("#stop").html('Stop');
+				    				$("#start").removeClass('disabled');
+				    				$("#start").html('Start');
+				    				$("#kill").removeClass('disabled');
+				    				$("#kill").html('Kill');
+				    				can_run = true;
+				    			}
+					 		 }
+					});
+				}else{
+					return false;
+				}
+		});
+	});
 	</script>
 </body>
 </html>
