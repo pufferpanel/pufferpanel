@@ -75,13 +75,13 @@ while($row = $query->fetch()){
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-3">
 				<div class="list-group">
 					<a href="account.php" class="list-group-item">Settings</a>
 					<a href="servers.php" class="list-group-item active">My Servers</a>
 				</div>
 			</div>
-			<div class="col-md-9">
+			<div class="col-9">
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>

@@ -148,8 +148,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">&nbsp;</div>
-			<div class="col-md-6">
+			<div class="col-3">&nbsp;</div>
+			<div class="col-6">
 				<form action="password.php?do=recover" method="POST" id="login-form">
 					<legend>Reset Your Password</legend>
 					<fieldset>
@@ -166,10 +166,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 						<div class="form-group">
 							<label for="recaptcha_response_field" class="control-label">Spam Prevention <a href="javascript:Recaptcha.reload()">Refresh</a></label>
 							<div>
-								<div class="col-md-4" style="padding-left: 0;">
+								<div class="col-4" style="padding-left: 0;">
 									<input type="text" class="form-control" id="recaptcha_response_field" name="recaptcha_response_field"/>
 								</div>
-								<div class="col-md-8">
+								<div class="col-8">
 									<div id="recaptcha_image"></div>
 								</div>
 								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo $core->framework->settings->get('captcha_pub'); ?>"></script>
@@ -191,7 +191,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 					</fieldset>
 				</form>
 			</div>
-			<div class="col-md-3">&nbsp;</div>
+			<div class="col-3">&nbsp;</div>
 		</div>
 		<div class="footer">
 			<?php include('assets/include/footer.php'); ?>
