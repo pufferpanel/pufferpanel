@@ -217,6 +217,7 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
 					<a href="account.php" class="list-group-item active">Settings</a>
 					<a href="servers.php" class="list-group-item">My Servers</a>
 				</div>
