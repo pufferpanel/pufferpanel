@@ -60,7 +60,7 @@ $path = $core->framework->server->nodeData('server_dir').$core->framework->serve
 					<a href="../console.php" class="list-group-item">Live Console</a>
 					<a href="../settings.php" class="list-group-item">Server Settings</a>
 					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
-					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="save_inp"></i></a>
+					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" style="display: none;" id="save_inp"></i></a>
 					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 			</div>

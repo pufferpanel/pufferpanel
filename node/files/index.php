@@ -78,7 +78,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 					<a href="../console.php" class="list-group-item">Live Console</a>
 					<a href="../settings.php" class="list-group-item">Server Settings</a>
 					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
-					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir"></i></a>
+					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir" style="display:none;"></i></a>
 					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 			</div>
