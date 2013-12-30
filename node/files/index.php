@@ -58,158 +58,127 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title><?php echo $core->framework->settings->get('company_name'); ?> - Server Console</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="<?php echo $core->framework->settings->get('master_url'); ?>assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo $core->framework->settings->get('master_url'); ?>assets/javascript/jquery.ba-throttle-debounce.min.js"></script>
-    <script type="text/javascript" src="<?php echo $core->framework->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
-    
+	<?php include('../assets/include/header.php'); ?>
+	<script type="text/javascript" src="<?php echo $core->framework->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
+	<title>PufferPanel - Manage Your Server</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="round button dark"><i class="fa fa-home"></i></a></li>
-				<li><a class="round button dark"><i class="fa fa-hdd"></i>&nbsp;&nbsp; <?php echo $core->framework->server->getData('name'); ?></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="'.$core->framework->settings->get('master_url').'admin/index.php" class="round button dark"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
-		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<div class="side-menu fl">
-				<h3>Account Actions</h3>
-				<ul>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
-				</ul>
-				<h3>Server Actions</h3>
-				<ul>
-					<li><a href="../index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Overview</a></li>
-					<li><a href="../console.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Live Console</a></li>
-					<li><a href="../settings.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Settings</a></li>
-					<li><a href="../plugins.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Server Plugins</a></li>
-					<li><a href="index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> File Manager</a></li>
-					<li><a href="../backup.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Backup Manager</a></li>
-				</ul>
-			</div>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">File Manager <i class="fa fa-cog fa-spin" id="loading_dir"></i></h3>
-					</div> <!-- end content-module-heading -->
-					<div class="content-module-main" id="load_files">
-                        
-					</div> <!-- end content-module-main -->
+	<div class="container">
+		<?php include('../assets/include/navbar.php'); ?>
+		<div class="row">
+			<div class="col-3">
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php" class="list-group-item">Settings</a>
+					<a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="list-group-item">My Servers</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
+					<a href="../index.php" class="list-group-item">Overview</a>
+					<a href="../console.php" class="list-group-item">Live Console</a>
+					<a href="../settings.php" class="list-group-item">Server Settings</a>
+					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
+					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir"></i></a>
+					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 			</div>
+			<div class="col-9" id="load_files">
+			</div>
+		</div>
+		<div class="footer">
+			<?php include('../assets/include/footer.php'); ?>
 		</div>
 	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
-	</div>
-    <script type="text/javascript">
-    $(document).ready(function(){
-       firstLoad(); 
-    });
-        
-        $.urlParam = function(name, url){
+	<script type="text/javascript">
+	$(document).ready(function(){ 
+	    $.urlParam = function(name, url){
 			 var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
 			 if (results==null){
 			     return null;
-             }else{
+	         }else{
 			     return results[1] || 0;
 			 }
-        }
-        
-        function newLoad(){
-            
-            $("a.load_new").click(function(event){
-                event.preventDefault();
-                
-                $("#loading_dir").fadeIn(200);
-                if($.urlParam('dir', $(this).attr("href")) != null){
-                
-                    var dir = $.urlParam('dir', $(this).attr("href"));
-                    $.ajax({
-                        type: "POST",
-                        url: '../core/ajax/files/list_dir.php',
-                        data: {'dir': dir},
-                        success: function(data) {
-                            $("#load_files").slideUp(function(){
-                                $("#load_files").html(data);
-                                $("#load_files").slideDown();
-                                $("#loading_dir").fadeOut(200);
-                                newLoad();
-                            });
-                        }
-                    });
-                    
-                }else{
-                 
-                    $.ajax({
-                    type: "POST",
-                    url: '../core/ajax/files/list_dir.php',
-                    data: {},
-                    success: function(data) {
-                        $("#load_files").slideUp(function(){
-                            $("#load_files").html(data);
-                            $("#load_files").slideDown();
-                            $("#loading_dir").fadeOut(200);
-                            newLoad();
-                        });
-                    }
-                });
-                    
-                }
-                
-            });
-            
-            $("a.edit_file").click(function(event){
-             
-                event.preventDefault();
-                var file = $.urlParam('file', $(this).attr("href"));
-                $().redirect('edit.php', {'file': file});
-                
-            });
-            
-        }
-        
-        function firstLoad() {
-            
-            $("#loading_dir").fadeIn(200);
-            $.ajax({
-                type: "POST",
-                url: '../core/ajax/files/list_dir.php',
-                data: {},
-                success: function(data) {
-                    $("#load_files").slideUp(function(){
-                        $("#load_files").html(data);
-                        $("#load_files").slideDown();
-                        $("#loading_dir").fadeOut(200);
-                        newLoad();
-                    });
-                }
-            });
-            
-        }
-    </script>
+	    }
+	    var doneLoad = false;
+	    function newLoad(){
+	        $("a.load_new").click(function(event){
+	            event.preventDefault();
+	            $("#loading_dir").fadeIn(200);
+	            if($.urlParam('dir', $(this).attr("href")) != null){
+	                var dir = $.urlParam('dir', $(this).attr("href"));
+	                $.ajax({
+	                    type: "POST",
+	                    url: '../core/ajax/files/list_dir.php',
+	                    data: {'dir': dir},
+	                    success: function(data) {
+	                        $("#load_files").slideUp(function(){
+	                            $("#load_files").html(data);
+	                            $("#load_files").slideDown();
+	                            $("#loading_dir").fadeOut(200);
+	                            newLoad();
+	                        });
+	                    }
+	                });
+	            }else{
+	                $.ajax({
+		                type: "POST",
+		                url: '../core/ajax/files/list_dir.php',
+		                data: {},
+		                success: function(data) {
+		                    $("#load_files").slideUp(function(){
+		                        $("#load_files").html(data);
+		                        $("#load_files").slideDown();
+		                        $("#loading_dir").fadeOut(200);
+		                        newLoad();
+		                    });
+	                	}
+	                });
+	            }
+	        });
+	        $("a.edit_file").click(function(event){
+	            event.preventDefault();
+	            var file = $.urlParam('file', $(this).attr("href"));
+	            $().redirect('edit.php', {'file': file});
+	        });
+	    }
+	    function firstLoad() {
+	        if($.urlParam('dir', $(location).attr('href')) != null && doneLoad === false){
+	        	var dir = $.urlParam('dir', $(location).attr('href'));
+				$("#loading_dir").fadeIn(200);
+	        	$.ajax({
+	        	    type: "POST",
+	        	    url: '../core/ajax/files/list_dir.php',
+	        	    data: {'dir': dir},
+	        	    success: function(data) {
+	        	        $("#load_files").slideUp(function(){
+	        	            $("#load_files").html(data);
+	        	            $("#load_files").slideDown();
+	        	            $("#loading_dir").fadeOut(200);
+	        	            doneLoad = true;
+	        	            newLoad();
+	        	        });
+	        	    }
+	        	});
+	        }else{
+		        $("#loading_dir").fadeIn(200);
+		        $.ajax({
+		            type: "POST",
+		            url: '../core/ajax/files/list_dir.php',
+		            data: {},
+		            success: function(data) {
+		                $("#load_files").slideUp(function(){
+		                    $("#load_files").html(data);
+		                    $("#load_files").slideDown();
+		                    $("#loading_dir").fadeOut(200);
+		                    doneLoad = true;
+		                    newLoad();
+		                });
+		            }
+		        });
+	        }
+	    }
+	    firstLoad();
+	});
+	</script>
 </body>
 </html>

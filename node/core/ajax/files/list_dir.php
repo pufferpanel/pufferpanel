@@ -184,14 +184,14 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 /*
  * Setup Basic Display
  */
-echo '<table>
+echo '<table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
-                    <th style="width:5%"></th>
+                    <th style="width:5%;text-align:center;"></th>
                     <th style="width:45%">File Name</th>
                     <th style="width:20%">File Size</th>
                     <th style="width:20%">Last Modified</th>
-                    <th style="width:10%" style="text-align:center;">Options</th>
+                    <th style="width:10%;text-align:center;">Options</th>
                 </tr>
             </thead>
             <tbody>
