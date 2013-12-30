@@ -5500,8 +5500,8 @@ button.close {
 .modal-dialog {
   position: relative;
   z-index: 1050;
-  width: auto;
-  margin: 10px;
+  width: 940px;
+  margin: 35px auto;
 }
 
 .modal-content {
