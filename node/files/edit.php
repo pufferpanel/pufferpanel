@@ -35,7 +35,7 @@ if(isset($_POST['dir']))
     $_POST['dir'] = str_replace('..', '', urldecode($_POST['dir']));
 
 $path = $core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/';
-
+$parName = 'Editing: /'.$_POST['file'].'';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,12 +60,12 @@ $path = $core->framework->server->nodeData('server_dir').$core->framework->serve
 					<a href="../console.php" class="list-group-item">Live Console</a>
 					<a href="../settings.php" class="list-group-item">Server Settings</a>
 					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
-					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" style="display: none;" id="save_inp"></i></a>
+					<a href="index.php" class="list-group-item active">File Manager</a>
 					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 			</div>
 			<div class="col-9" id="load_files">
-				<span id="save_status" style="display:none;"></span>
+				<span id="save_status" style="display:none;width: 100%;"></span>
 				<?php                        
 				if(!isset($_GET['error'])){
 				    
@@ -130,16 +130,15 @@ $path = $core->framework->server->nodeData('server_dir').$core->framework->serve
 				                
 				                echo '<form method="post" id="editing_file">
 										<div class="form-group">
-											<label for="email" class="control-label">Plugin Name</label>
+											<label for="email" class="control-label">'.$parName.'</label>
 											<div>
 												<textarea name="file_contents" id="live_console" class="form-control console">'.$contents.'</textarea>
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="email" class="control-label">Plugin Name</label>
 											<div>
 												<input type="hidden" name="file" value="'.$_POST['file'].'" />
-												<input type="submit" class="btn btn-primary" id="save_file" value="Save File"/>
+												<button class="btn btn-primary btn-sm" id="save_file">Save</button>
 												<button class="btn btn-default btn-sm" onclick="window.location=\'index.php\';return false;">Back to File Manager</button>
 											</div>
 										</div>
@@ -171,22 +170,22 @@ $path = $core->framework->server->nodeData('server_dir').$core->framework->serve
 	</div>
 	<script type="text/javascript">
 	$(document).ready(function(){ 
-	    $("input#save_file").click(function(event){
-	         event.preventDefault();
-	         var file = $("input[name='file']").val();
-	         var content = $("#live_console").val();
-	         $("#save_inp").fadeIn(200);
-	         $.ajax({
-	             type: "POST",
-	             url: '../core/ajax/files/save.php',
-	             data: {'file': file, 'file_contents': content},
-	                 success: function(data) {
-	                     $("#save_status").hide();
-	                     $("#save_inp").fadeOut(200);
-	                     $("#save_status").html(data);
-	                     $("#save_status").slideDown().delay(2500).slideUp();
-	                  }
-	         });
+	    $("#save_file").click(function(event){
+			event.preventDefault();
+			var file = $("input[name='file']").val();
+			var content = $("#live_console").val();
+			$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
+			
+			$.ajax({
+				type: "POST",
+				url: '../core/ajax/files/save.php',
+				data: {'file': file, 'file_contents': content},
+				success: function(data) {
+					$("#save_status").html(data);
+					$("#save_file").html('Save').removeClass('disabled');
+					$("#save_status").slideDown().delay(2500).slideUp();
+				}
+			});
 		});
 	});
 	</script>
