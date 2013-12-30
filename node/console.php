@@ -48,7 +48,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					<a href="index.php" class="list-group-item">Overview</a>
 					<a href="console.php" class="list-group-item active">Live Console</a>
 					<a href="settings.php" class="list-group-item">Server Settings</a>
-					<a href="plugins.php" class="list-group-item">Server Plugins</a>
+					<a href="plugins/index.php" class="list-group-item">Server Plugins</a>
 					<a href="files/index.php" class="list-group-item">File Manager</a>
 					<a href="backup.php" class="list-group-item">Backup Manager</a>
 				</div>
