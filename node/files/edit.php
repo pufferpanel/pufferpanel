@@ -132,7 +132,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 										<div class="form-group">
 											<label for="email" class="control-label">'.$parName.'</label>
 											<div>
-												<textarea name="file_contents" id="live_console" class="form-control console">'.$contents.'</textarea>
+												<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">'.$contents.'</textarea>
 											</div>
 										</div>
 										<div class="form-group">
