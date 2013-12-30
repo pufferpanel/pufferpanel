@@ -139,7 +139,7 @@ $path = $core->framework->server->nodeData('server_dir').$core->framework->serve
 											<label for="email" class="control-label">Plugin Name</label>
 											<div>
 												<input type="hidden" name="file" value="'.$_POST['file'].'" />
-												<input type="submit" class="form-control btn btn-primary" id="save_file" value="Save File"/>
+												<input type="submit" class="btn btn-primary" id="save_file" value="Save File"/>
 												<button class="btn btn-default btn-sm" onclick="window.location=\'index.php\';return false;">Back to File Manager</button>
 											</div>
 										</div>
