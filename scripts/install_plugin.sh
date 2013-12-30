@@ -24,14 +24,15 @@
 #	$4 = plugin folder name
 #	$5 = plugin file name
 
-su - $1 -s /bin/bash -c "mkdir -p $3 && cd $3 && rm -rf $5 && wget $2 && exit"
+mkdir -p /srv/servers/$1/server/$3 && cd /srv/servers/$1/server/$3 && rm -rf $5 && wget $2
 
 file=$(echo "$3/$5"|awk -F . '{print $NF}')
 
 #Unzip and remove zip, otherwise ignore it
 if [ "$file" == "zip" ];
 	then
-		su - $1 -s /bin/bash -c "cd $3 && rm -rf $4 && mkdir $4 && unzip -od $4 \"$5\" && mv $4/*.jar ./ && rm -rf \"$5\""
+		cd /srv/servers/$1/server/$3 && rm -rf $4 && mkdir $4 && unzip -od $4 "$5" && mv $4/*.jar ./ && rm -rf "$5"
+
 fi
 
 exit
