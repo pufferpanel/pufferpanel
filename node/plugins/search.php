@@ -113,6 +113,12 @@ if(isset($_GET['term']) && !empty($_GET['term'])){
 			</div>
 			<div class="col-9">
 				<?php echo $errorMessage; ?>
+				<div id="p_install_one" class="alert alert-warning" style="display:none;">
+					<i class="fa fa-spinner fa fa-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong>
+				</div>
+				<div id="p_install_two" class="alert alert-success" style="display:none;">
+					Your plugin has been installed successfully.
+				</div>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
@@ -141,7 +147,7 @@ if(isset($_GET['term']) && !empty($_GET['term'])){
 				$("#p_install_one").slideDown();
 				$.ajax({
 					type: "POST",
-					url: "core/ajax/plugins/install.php",
+					url: "../core/ajax/plugins/install.php",
 					data: { plugin: sendme },
 			  		success: function(data) {
 			  			$("#p_install_one").slideUp("fast", function(){$("#p_install_two").slideDown();});
