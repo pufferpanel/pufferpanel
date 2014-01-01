@@ -197,10 +197,10 @@ if(file_exists('../install.lock'))
 	                         */
 	                         $mysql->exec("CREATE TABLE `jars` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          'dir' tinytext NOT NULL,
-	                          'name' tinytext NOT NULL DEFAULT '',
-	                          'desc' text NOT NULL,
-	                          'cat' int(11) unsigned NOT NULL,
+	                          `dir` tinytext NOT NULL,
+	                          `name` tinytext NOT NULL DEFAULT '',
+	                          `desc` text NOT NULL,
+	                          `cat` int(11) unsigned NOT NULL,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `jars` created.\n";
