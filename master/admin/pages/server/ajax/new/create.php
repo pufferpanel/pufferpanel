@@ -143,13 +143,23 @@ $ports[$_POST['server_ip']][$_POST['server_port']]--;
 $mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
 $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
 
+$jaquery = $mysql->prepare("SELECT * FROM `jars` WHERE `default` = :def");
+$jaquery->execute(array(
+	':def' => 1
+));
+
+if($jaquery->rowCount() == 1)
+	$jars = $jquery->fetch();
+else
+	$core->framework->page->redirect('../../add.php?error=node&disp=j_fail');
+
 /*
  * Do Server Making Stuff Here 
  */
 $con = ssh2_connect($node['sftp_ip'], 22);
 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 
-$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], true);
+$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'].' '.$jars['dir'], true);
 
 $core->framework->email->buildEmail('admin_new_server', array(
         'NAME' => $_POST['server_name'],
