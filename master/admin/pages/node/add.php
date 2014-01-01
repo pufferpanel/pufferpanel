@@ -131,7 +131,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								</p>
 								<p>
 									<label for="ds_dir">Default Server's Directory</label>
-									<input type="text" autocomplete="off" name="ds_dir" placeholder="/srv/djar/" class="round default-width-input" />
+									<input type="text" autocomplete="off" name="ds_dir" placeholder="/srv/jars/default" class="round default-width-input" />
 								</p>
 								<p>
 									<label for="s_dir_backup">Server Backup Directory</label>
