@@ -187,7 +187,6 @@ if(file_exists('../install.lock'))
 	                          `password` tinytext NOT NULL,
 	                          `ips` text NOT NULL,
 	                          `ports` text NOT NULL,
-	                          `dsdir` tinytext NOT NULL,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `nodes` created.\n";
