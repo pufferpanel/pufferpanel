@@ -107,6 +107,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 								case 'b_fail':
 									echo '<div class="error-box">You entered a non-number for Backup Files and/or Disk Space.</div>';
 									break;
+								case 'j_fail':
+									echo '<div class="error-box">Default JAR does not exist. Create it first</div>';
+									break;
 							
 							}
 						
