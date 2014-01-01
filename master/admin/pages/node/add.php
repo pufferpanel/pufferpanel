@@ -130,6 +130,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<input type="text" autocomplete="off" name="s_dir" placeholder="/srv/servers/" class="round default-width-input" />
 								</p>
 								<p>
+									<label for="ds_dir">Default Server's Directory</label>
+									<input type="text" autocomplete="off" name="ds_dir" placeholder="/srv/default/" class="round default-width-input" />
+								</p>
+								<p>
 									<label for="s_dir_backup">Server Backup Directory</label>
 									<input type="text" autocomplete="off" name="s_dir_backup" placeholder="/second/backups/" class="round default-width-input" />
 									<em>Remote backup directories are not <strong>currently</strong> supported.</em>
