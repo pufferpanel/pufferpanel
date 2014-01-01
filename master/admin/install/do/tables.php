@@ -200,6 +200,7 @@ if(file_exists('../install.lock'))
 	                          `dir` tinytext NOT NULL,
 	                          `name` tinytext NOT NULL DEFAULT '',
 	                          `desc` text NOT NULL,
+	                          `default` int(1) unsigned NOT NULL,
 	                          `cat` int(11) unsigned NOT NULL,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
