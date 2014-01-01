@@ -102,7 +102,7 @@ $IPP = json_encode($IPP);
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['ssh_pass'] = openssl_encrypt($_POST['ssh_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :link, :ip, :sftp_ip, :sdir, :bdir, :suser, :iv, :spass, :ips, :ports, :dsdir)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :link, :ip, :sftp_ip, :sdir, :bdir, :suser, :iv, :spass, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
 	':link' => $_POST['node_url'],
@@ -114,8 +114,7 @@ $create->execute(array(
 	':iv' => $iv,
 	':spass' => $_POST['ssh_pass'],
 	':ips' => $IPA,
-	':ports' => $IPP,
-	':dsdir' => $_POST['ds_dir']
+	':ports' => $IPP
 ));
 
 $core->framework->page->redirect('../../view.php?id='.$mysql->lastInsertId());
