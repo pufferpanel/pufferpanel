@@ -1,29 +1,27 @@
-<div class="side-menu fl">
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/index.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Admin CP Index</a></li>
-		</ul>
-	<h3>Configuration</h3>
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/configuration/global.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Global Settings</a></li>
-		</ul>
-	<h3>Account Management</h3>
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/account/find.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Find Account</a></li>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/account/new.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Add New Account</a></li>
-		</ul>
-	<h3>Server Management</h3>
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/find.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Find Server</a></li>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/add.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Add New Server</a></li>
-		</ul>
-	<h3>Node Management</h3>
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/list.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Node</a></li>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/add.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Add New Node</a></li>
-		</ul>
-	<h3>Misc. Management</h3>
-		<ul>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/misc/api.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> External API Settings</a></li>
-			<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/misc/error.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Error Logs</a></li>
-		</ul>
+<div class="list-group">
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/index.php" class="list-group-item" id="admin-11">Admin CP Index</a></li>
 </div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>Configuration</strong></a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/configuration/global.php" class="list-group-item" id="admin-21">Global Settings</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/account/find.php" class="list-group-item" id="admin-31">Find Account</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/account/new.php" class="list-group-item" id="admin-32">Add New Account</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/find.php" class="list-group-item" id="admin-41">Find Server</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/add.php" class="list-group-item" id="admin-42">Add New Server</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/list.php" class="list-group-item" id="admin-51">Edit Node</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/add.php" class="list-group-item" id="admin-52">Add New Node</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>Misc. Management</strong></a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/misc/api.php" class="list-group-item" id="admin-61">External API Settings</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/misc/error.php" class="list-group-item" id="admin-62">Error Logs</a>
+</div>	
