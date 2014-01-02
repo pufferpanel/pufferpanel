@@ -39,22 +39,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<div class="col-9">
 				<div class="row">
 					<div class="col-6">
-						<h3 style="margin-top:0;">Company Name</h3><hr />
-						<form action="actions/cname.php" method="POST">
-							<div class="form-group">
-								<label for="company_name" class="control-label">Company Name</label>
-								<div>
-									<input type="text" name="company_name" class="form-control" value="<?php echo $core->framework->settings->get('company_name'); ?>" />
-								</div>
-							</div>
-							<div class="form-group">
-								<div>
-									<input type="submit" class="btn btn-primary" value="Update Company Name" />
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="col-6">
 						<h3 style="margin-top:0;">URL Settings</h3><hr />
 						<form action="actions/url.php" method="post">
 							<div class="form-group">
@@ -85,8 +69,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							</div>
 						</form>
 					</div>
-				</div>
-				<div class='row'>
 					<div class="col-6">
 						<h3 style="margin-top:0;">Email Settings</h3><hr />
 						<form action="actions/email.php" method="post">
@@ -140,6 +122,24 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							</div>
 						</form>
 					</div>
+				</div>
+				<div class='row'>
+					<div class="col-6">
+						<h3 style="margin-top:0;">Company Name</h3><hr />
+						<form action="actions/cname.php" method="POST">
+							<div class="form-group">
+								<label for="company_name" class="control-label">Company Name</label>
+								<div>
+									<input type="text" name="company_name" class="form-control" value="<?php echo $core->framework->settings->get('company_name'); ?>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div>
+									<input type="submit" class="btn btn-primary" value="Update Company Name" />
+								</div>
+							</div>
+						</form>
+					</div>
 					<div class="col-6">
 						<h3 style="margin-top:0;">reCAPTCHA Settings</h3><hr />
 						<form action="actions/captcha.php" method="post">
@@ -157,6 +157,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<span class='text-muted'><small>reCAPTCHA is the system used to help prevent people from abusing the password reset page on PufferPanel. You may use these default provided keys, or you may generate your own at <a href="https://www.google.com/recaptcha">Google reCAPTCHA</a>.</small></span>
 						</form>
 					</div>
+					
 				</div>
 			</div>
 		</div>
