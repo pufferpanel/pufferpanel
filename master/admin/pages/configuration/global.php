@@ -164,6 +164,76 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		<script type='text/javascript'>
 			$( document ).ready(function() {
 				$( "#admin-21" ).addClass( "active" );
+				var method = $("#smail_method :selected").val();
+				if(method == "postmark"){
+					$("#mandrill").hide();
+					$("#mailgun").hide();
+				}else if(method == "mandrill"){
+					$("#postmark").hide();
+					$("#mailgun").hide();
+				}else if(method == "mailgun"){
+					$("#mandrill").hide();
+					$("#postmark").hide();
+				}else{
+					$("#mandrill").hide();
+					$("#postmark").hide();
+					$("#mailgun").hide();
+				}
+		
+				$("#smail_method").change(function(){
+						var method = $("#smail_method :selected").val();
+						if(method == "postmark"){
+							if($("#postmark").not(':visible')){
+								$("#mandrill").hide();
+								$("#mailgun").hide();
+								$("#postmark").toggle("drop", "down");
+							}
+						}else if(method == "mandrill"){
+							if($("#mandrill").not(':visible')){
+								$("#postmark").hide();
+								$("#mailgun").hide();
+								$("#mandrill").toggle("drop", "down");
+							}
+						}else if(method == "mailgun"){
+							if($("#mailgun").not(':visible')){
+								$("#postmark").hide();
+								$("#mandrill").hide();
+								$("#mailgun").toggle("drop", "down");
+							}
+						}else{
+							$("#mandrill").hide();
+							$("#mailgun").hide();
+							$("#postmark").hide();
+						}
+				});
+				$.urlParam = function(name){
+					var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
+					if (results==null){
+					   return null;
+					}
+					else{
+					   return results[1] || 0;
+					}
+				}
+				if($.urlParam('error') != null){
+				
+					var field = $.urlParam('error');
+					var exploded = field.split('|');
+					
+						$.each(exploded, function(key, value) {
+							
+							$('[name="' + value + '"]').addClass('error-input');
+							
+						});
+						
+					var obj = $.parseJSON($.cookie('__TMP_pp_admin_updateglobal'));
+					
+						$.each(obj, function(key, value) {
+							
+							$('[name="' + key + '"]').val(value);
+							
+						});			
+				}
 			});
 		</script>
 		<div class='footer'>
