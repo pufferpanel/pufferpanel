@@ -821,6 +821,10 @@ pre code {
 	.nopad {
 		padding-left: 0px;
 	}
+	
+	.nopad-right {
+		padding-right: 0px;
+	}
 
 .col-1,
 .col-2,
