@@ -24,10 +24,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 if(!isset($_POST['pub_key'], $_POST['priv_key']))
-	$core->framework->page->redirect('../global.php?error=pub_key|priv_key');
+	$core->framework->page->redirect('../global.php?error=pub_key|priv_key&tab=captcha');
 	
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_pub'")->execute(array($_POST['pub_key']));
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_priv'")->execute(array($_POST['priv_key']));
 
-$core->framework->page->redirect('../global.php');
+$core->framework->page->redirect('../global.php?tab=captcha');
 ?>
