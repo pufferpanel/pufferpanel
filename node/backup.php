@@ -267,9 +267,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
                                     fclose($stream);
                                                                         
                                 }
-                                
-                                stream_set_blocking($s, true);
-                                
+                                                                
                                 $core->framework->log->getUrl()->addLog(0, 1, array('user.backup_started', 'A backup was started for `'.$core->framework->server->getData('name').'`.'));
                                 $backupStatus .= '<div class="alert alert-success">Your backup has been started. Backups will appear at the bottom of this page when they are finished.</div>';
                         
