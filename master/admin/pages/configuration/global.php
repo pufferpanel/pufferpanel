@@ -42,6 +42,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<ul class="nav nav-tabs" id="config_tabs">
 					<li class="active"><a href="#company" data-toggle="tab">Company Name</a></li>
 					<li><a href="#url" data-toggle="tab">URL Settings</a></li>
+					<li><a href="#cookies" data-toggle="tab">Cookies</a></li>
 					<li><a href="#email" data-toggle="tab">Email Settings</a></li>
 					<li><a href="#captcha" data-toggle="tab">reCAPTCHA</a></li>
 				</ul>
@@ -87,6 +88,25 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<div>
 										<input type="submit" value="Update URL Settings" class="btn btn-primary" />
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+					<div class="tab-pane" id="cookies">
+						<h3>Cookie Settings</h3><hr />
+						<form action="actions/cookies.php" method="POST">
+							<fieldset>
+								<div class="form-group">
+									<label for="cookie_website" class="control-label">Cookie Website</label>
+									<div>
+										<input type="text" name="cookie_website" class="form-control" value="<?php echo $core->framework->settings->get('cookie_website'); ?>"/>
+										<p><small class="text-muted"><em>This should be the website that PufferPanel is running on. For example, if your master is on panel.example.com and your node is usa1.nodes.example.com you should set this to be "example.com". <strong>Setting this to the wrong value will lock you and all other users out of the panel.</strong></em></small></p>
+									</div>
+								</div>
+								<div class="form-group">
+									<div>
+										<input type="submit" value="Update Cookie Settings" class="btn btn-primary" />
 									</div>
 								</div>
 							</fieldset>
