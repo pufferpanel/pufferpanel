@@ -42,14 +42,13 @@ $find->execute();
 	
 	}
 
-echo '
-<table>
+echo '<table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="width:20%">Username</th>
-			<th style="width:30%">Email</th>
-			<th style="width:35%">Registered</th>
-			<th style="width:5%;text-align:center;">Admin</th>
+			<th>Username</th>
+			<th>Email</th>
+			<th>Registered</th>
+			<th>Admin</th>
 		</tr>
 	</thead>
 	<tbody>
