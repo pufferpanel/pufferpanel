@@ -37,13 +37,16 @@ $find->execute();
 		));
 		$user = $findUser->fetch();
 		
+		$row['name'] = (strlen($row['name']) > 20) ? substr($row['name'], 0, 17).'...' : $row['name'];
+		$user['email'] = (strlen($user['email']) > 25) ? substr($user['email'], 0, 22).'...' : $user['email'];
+		
 		$returnRows .= '
 		<tr>
 			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
-			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a> ('.$row['ftp_user'].')</td>
+			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
 			<td><a href="../node/view.php?id='.$row['node'].'">'.$core->framework->settings->nodeName($row['node']).'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
+			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a></td>
 			<td style="text-align:center;">'.$isActive.'</td>
 		</tr>
 		';
@@ -55,7 +58,7 @@ echo '
 	<thead>
 		<tr>
 			<th style="width:2%"></th>
-			<th>Server Name (FTP User)</th>
+			<th>Server Name</th>
 			<th>Node</th>
 			<th>Connection Address</th>
 			<th>Owner Information</th>

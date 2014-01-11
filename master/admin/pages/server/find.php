@@ -65,6 +65,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="form-control" name="field">
 											<option value="name" selected="selected">Server Name</option>
 											<option value="server_ip">Server IP</option>
+											<option value="server_port">Server Port</option>
 											<option value="owner_email">Owner Email</option>
 											<option value="active">Active</option>
 										</select>
@@ -101,6 +102,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="form-control" name="field_1">
 											<option value="name" selected="selected">Server Name</option>
 											<option value="server_ip">Server IP</option>
+											<option value="server_port">Server Port</option>
 											<option value="owner_email">Owner Email</option>
 											<option value="active">Active</option>
 										</select>
@@ -136,6 +138,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<select class="form-control" name="field_2">
 											<option value="name">Server Name</option>
 											<option value="server_ip">Server IP</option>
+											<option value="server_port">Server Port</option>
 											<option value="owner_email" selected="selected">Owner Email</option>
 											<option value="active">Active</option>
 										</select>
