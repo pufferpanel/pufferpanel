@@ -93,6 +93,72 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					</div>
 					<div class="tab-pane" id="advanced">
 						<h3>Advanced Search</h3><hr />
+						<form id="as_form" onsubmit="return false">
+							<fieldset>
+								<div class="form-group col-3 nopad">
+									<div>
+										<select class="form-control" name="field_1">
+											<option value="email">Email</option>
+											<option value="username" selected="selected">Username</option>
+											<option value="root_admin">Root Admin</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-2">
+									<div>
+										<select class="form-control" name="operator_1">
+											<option value="equal">Equals</option>
+											<option value="not_equal">Not Equal</option>
+											<option value="like" selected="selected">Like</option>
+											<option value="starts_w">Starts With</option>
+											<option value="ends_w">Ends With</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-7 nopad-right">
+									<div class="input-group">
+										<input type="text" class="form-control" name="term_1" />
+										<span class="input-group-btn">
+											<div class="btn-group">
+							                  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+							                  <ul class="dropdown-menu" id="special_case_dropdown">
+							                    <li><a href="and" id="radio_and"><input type="radio" name="middle_operator" value="and" checked="checked"/> AND</a></li>
+							                    <li><a href="or" id="radio_or"><input type="radio" name="middle_operator" value="or"/> OR</a></li>
+							                  </ul>
+							                </div>
+										</span>
+									</div>
+								</div>
+								<div class="form-group col-3 nopad">
+									<div>
+										<select class="form-control" name="field_2">
+											<option value="email">Email</option>
+											<option value="username" selected="selected">Username</option>
+											<option value="root_admin">Root Admin</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-2">
+									<div>
+										<select class="form-control" name="operator_2">
+											<option value="equal">Equals</option>
+											<option value="not_equal">Not Equal</option>
+											<option value="like" selected="selected">Like</option>
+											<option value="starts_w">Starts With</option>
+											<option value="ends_w">Ends With</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-7 nopad-right">
+									<div class="input-group">
+										<input type="text" class="form-control" name="term_2" />
+										<span class="input-group-btn">
+											<button class="btn btn-primary" id="as_active_spin" type="submit">&rarr;</button>
+										</span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
 					</div>
 					<div class="tab-pane" id="list_all">
 						<h3>All Registered Users</h3><hr />
@@ -127,6 +193,30 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				  	}
 				});
 			});
+			$("#as_form").submit(function(){
+				$("#as_active_spin").html('<i class="fa fa-refresh fa-spin"></i>');
+				var search_field_1 = $('select[name="field_1"] :selected').val();
+				var search_operator_1 = $('select[name="operator_1"] :selected').val();
+				var search_term_1 = $('input[name="term_1"]').val();
+				var middle_op = $('input[name="middle_operator"]:checked').val();
+				var search_field_2 = $('select[name="field_2"] :selected').val();
+				var search_operator_2 = $('select[name="operator_2"] :selected').val();
+				var search_term_2 = $('input[name="term_2"]').val();
+				$.ajax({
+					type: "POST",
+					url: "ajax/search/advanced.php",
+					data: { method: "advanced", field_1: search_field_1, operator_1: search_operator_1, term_1: search_term_1, mid_op: middle_op, field_2: search_field_2, operator_2: search_operator_2, term_2: search_term_2},
+				  	success: function(data) {
+				  		$("#search_results").slideUp(function(){
+				  			$("#search_results").html(data);
+			  				$("#search_results").fadeIn(function(){
+			  					$("#as_active_spin").html('&rarr;');
+			  					return false;
+			  				});
+				  		});
+				  	}
+				});
+			});
 			$("#list_all_tab").click(function(e){
 				$("#list_all_tab").append(' <i class="fa fa-refresh fa-spin"></i>');			
 				$.ajax({
@@ -142,6 +232,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				  		});
 				  	}
 				});
+			});
+			$('#special_case_dropdown a').click(function(e) {
+				var radio = $(this).attr("href");
+				$("input[value='"+radio+"']").prop("checked", true)
+				e.preventDefault();
+			    e.stopPropagation();
 			});
 		});
 	</script>
