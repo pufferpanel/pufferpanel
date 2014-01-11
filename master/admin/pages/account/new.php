@@ -54,7 +54,31 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
 			<div class="col-9">
 				<h3 class="nopad">Create New Account</h3><hr />
-				<form action="" method="post">
+				<?php 
+					
+					if(isset($_GET['disp']) && !empty($_GET['disp'])){
+					
+						switch($_GET['disp']){
+						
+							case 'u_fail':
+								echo '<div class="alert alert-danger">The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-</div>';
+								break;
+							case 'e_fail':
+								echo '<div class="alert alert-danger">The email you entered is invalid.</div>';
+								break;
+							case 'p_fail':
+								echo '<div class="alert alert-danger">The passwords you entered did not match or were not at least 8 characters.</div>';
+								break;
+							case 'a_fail':
+								echo '<div class="alert alert-danger">Account with that username or email already exists in the system.</div>';
+								break;
+						
+						}
+					
+					}
+				
+				?>
+				<form action="ajax/new/create.php" method="post">
 					<fieldset>
 						<div class="form-group">
 							<label for="username" class="control-label">Username</label>
@@ -112,7 +136,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 				});
 				return false;
 			});
-			$('#fadeOut').delay(5000).slideUp();
 		});
 	</script>
 </body>
