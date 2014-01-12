@@ -65,6 +65,7 @@ enable-query=true
 allow-flight=false
 announce-player-achievements=true
 server-port='.$core->framework->server->getData('server_port').'
+query.port='.$core->framework->server->getData('server_port').'
 level-type=DEFAULT
 enable-rcon=false
 force-gamemode=false
@@ -148,6 +149,10 @@ motd=A Minecraft Server';
 									}else if($var[0] == 'enable-query' && $var[1] != 'true'){
 										//Reset Query Port
 										$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
+										$rewrite = true;
+									}else if($var[0] == 'query.port' && $var[1] != $core->framework->server->getData('server_port')){
+										//Reset Query Port
+										$newContents = str_replace('query.port='.$var[1], "query.port=".$core->framework->server->getData('server_port')."\n", $newContents);
 										$rewrite = true;
 									}else if($var[0] == 'server-ip' && $var[1] != $core->framework->server->getData('server_ip')){
 										//Reset Query Port
