@@ -232,7 +232,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				  		$("#search_results").slideUp(function(){
 				  			$("#search_results").html(data);
 			  				$("#search_results").fadeIn(function(){
-			  					$("#list_all_tab").html("All Users");
+			  					$("#list_all_tab").html("All Servers");
 			  					return false;
 			  				});
 				  		});
