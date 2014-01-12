@@ -23,7 +23,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	$core->framework->page->redirect('../../../../index.php');
 }
 
-setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->framework->settings->get('cookie_website'));
 
 if(!isset($_POST['smail_method'], $_POST['sendmail_email'], $_POST['postmark_api_key'], $_POST['mandrill_api_key'], $_POST['mailgun_api_key']))
 	$core->framework->page->redirect('../global.php?error=smail_method|sendmail_email|postmark_api_key|mandrill_api_key|mailgun_api_key&tab=email');

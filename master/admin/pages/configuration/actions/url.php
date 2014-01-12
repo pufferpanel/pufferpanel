@@ -23,7 +23,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	$core->framework->page->redirect('../../../../index.php');
 }
 
-setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->framework->settings->get('cookie_website'));
 
 if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
 	$core->framework->page->redirect('../global.php?error=main_url|master_url|assets_url&tab=url');
