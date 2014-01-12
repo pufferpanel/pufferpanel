@@ -13,7 +13,7 @@
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
 	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/find.php" id="sidenav_server-find" class="list-group-item">Find Server</a>
-	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/new.php" id="sidenav_server-new" class="list-group-item">New Server</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/server/add.php" id="sidenav_server-add" class="list-group-item">New Server</a>
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
