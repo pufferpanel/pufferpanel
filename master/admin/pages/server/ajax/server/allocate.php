@@ -30,7 +30,7 @@ if(!isset($_POST['sid']))
  * Validate Disk & Memory
  */	
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail');
+	$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
 
 $mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHERE `id` = :sid")->execute(array(
     ':sid' => $_POST['sid'],
@@ -59,4 +59,4 @@ $stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp
 stream_set_blocking($stream, true);
 fclose($stream);
 
-$core->framework->page->redirect('../../view.php?id='.$_POST['sid']);
+$core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
