@@ -33,9 +33,10 @@ $selectData->execute(array(
 $node = $selectData->fetch();
 ?>
 
-<p>
-	<label for="server_ip">Server IP</label>
-    <select name="server_ip" id="server_ip" class="round default-width-input">
+<div class="form-group col-6 nopad">
+	<label for="server_ip" class="control-label">Server IP</label>
+	<div>
+		<select name="server_ip" id="server_ip" class="form-control">
         <?php
 		
 			$ips = json_decode($node['ips'], true);
@@ -56,16 +57,12 @@ $node = $selectData->fetch();
 			}
 		
 		?>
-    </select><i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
-    <?php
-    	
-    	if($hasFree === false)
-    		echo '<div class="error-box round"><strong>Error:</strong> This node does not have any free ports avaliable. Please select another node.</div>';
-    
-    ?>
-</p>
-<p>
-	<label for="server_port">Server Port</label>
+    	</select>
+	</div>
+</div>
+<div class="form-group col-6 nopad-right">
+	<label for="server_ip" class="control-label">Server Port</label>
+		<div>
   		<?php
 	    
 	        $ports = json_decode($node['ports'], true);
@@ -73,9 +70,9 @@ $node = $selectData->fetch();
 	        foreach($ports as $ip => $internal){
 	        
 	            if($firstIP == $ip)
-	                echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="round default-width-input">';
+	                echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
 	            else
-	                echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="round default-width-input">';
+	                echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
 	            
 	                foreach($internal as $port => $avaliable){
 	                
@@ -86,9 +83,15 @@ $node = $selectData->fetch();
 	                    
 	                }
 	            
-	            echo '</select><i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i></span>';
+	            echo '</select></span>';
 	        
 	        }
 														
   		?>
-</p>
+  		</div>
+</div>
+<?php
+	
+	if($hasFree === false)
+		echo "<script type=\"text/javascript\">$('#noPorts').show();</script>";
+?>
