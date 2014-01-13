@@ -69,6 +69,10 @@ class page extends dbConn {
 	
 	}
 	
+	public function override_getCount(){
+		return $this->getCount();
+	}
+	
 	public function nodeRedirect($hash)
 		{
 		

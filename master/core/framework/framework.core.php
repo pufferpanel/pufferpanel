@@ -20,6 +20,7 @@
 /*
  * PufferPanel Core Framework File
  */
+$pageStartTime = microtime(true);
 
 /*
  * Cloduflare IP Fix
@@ -56,7 +57,6 @@ $core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->aut
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
 $core->framework->log = new log($core->framework->user->getData('id'));
-#$core->framework->email = new sendMail();
 
 /*
  * MySQL PDO Connection Engine

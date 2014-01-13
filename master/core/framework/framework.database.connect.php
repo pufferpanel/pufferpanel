@@ -21,18 +21,18 @@
  *Database Connection
  */
 
-class dbConn {
+class dbConn extends PDOEx {
  
 	protected static $db;
     public static $salt;
     
-	private function __construct() {
+	public function __construct() {
 	 	
 	 	require('master_configuration.php');
         self::$salt = $_INFO['salt'];
 		try {
 
-			self::$db = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
+			self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
 	    		PDO::ATTR_PERSISTENT => true,
 	    		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 			));
@@ -64,7 +64,35 @@ class dbConn {
 		return self::$db;
 
 	}
-		 
+
+}
+
+class PDOEx extends PDO {
+	
+	private static $queryCounter = 0;
+		
+	public function query($query)
+    {
+        ++self::$queryCounter;
+        return parent::query($query);
+    }
+    
+    public function prepare($statement, $options = array())
+    {
+        ++self::$queryCounter;
+        return parent::prepare($statement, $options);
+    }
+    
+    public function exec($statement)
+    {
+        ++self::$queryCounter;
+        return parent::exec($statement);
+    }
+    
+    public function getCount(){
+    	return self::$queryCounter;
+    }
+	
 }
 
 ?>

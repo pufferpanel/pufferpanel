@@ -20,6 +20,7 @@
 /*
  * PufferPanel Node Core Framework File
  */
+$pageStartTime = microtime(true);
 
 /*
  * Cloudflare IP Fix
