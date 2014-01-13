@@ -29,7 +29,7 @@ $find->execute();
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isActive = ($row['active'] == 1) ? '<i class="fa fa-check-circle-o"></i>' : '<i class="fa fa-times-circle-o"></i>';
+		$isActive = ($row['active'] == '1') ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>';
 		
 		$findUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id`  = :id");
 		$findUser->execute(array(
@@ -37,15 +37,16 @@ $find->execute();
 		));
 		$user = $findUser->fetch();
 		
+		$row['name'] = (strlen($row['name']) > 20) ? substr($row['name'], 0, 17).'...' : $row['name'];
+		$user['email'] = (strlen($user['email']) > 25) ? substr($user['email'], 0, 22).'...' : $user['email'];
+		
 		$returnRows .= '
 		<tr>
-			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-terminal"></i></a></td>
-			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
-			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a> ('.$row['ftp_user'].')</td>
-			<td><a href="../node/view.php?do=redirect&node='.$row['node'].'">'.$row['node'].'</a></td>
+			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
+			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
+			<td><a href="../node/view.php?id='.$row['node'].'">'.$core->framework->settings->nodeName($row['node']).'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-			<td>'.$row['max_ram'].' MB</td>
-			<td>'.$row['disk_space'].' MB</td>
+			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a></td>
 			<td style="text-align:center;">'.$isActive.'</td>
 		</tr>
 		';
@@ -53,17 +54,15 @@ $find->execute();
 	}
 
 echo '
-<table>
+<table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="width:5%"></th>
-			<th style="width:20%">Owner Information</th>
-			<th style="width:20%">Server Name (FTP User)</th>
-			<th style="width:10%">Node</th>
-			<th style="width:20%">Connection Address</th>
-			<th style="width:10%">RAM</th>
-			<th style="width:10%">Disk Space</th>
-			<th style="width:5%;text-align:center;">Active</th>
+			<th style="width:2%"></th>
+			<th>Server Name</th>
+			<th>Node</th>
+			<th>Connection Address</th>
+			<th>Owner Information</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>

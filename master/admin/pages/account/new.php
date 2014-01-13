@@ -24,126 +24,119 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
-	exit($core->framework->auth->keygen(12));
+	exit($core->framework->auth->keygen(rand(12, 18)));
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Create New Account</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<?php include('../../../assets/include/header.php'); ?>
+	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+							</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<?php include('../../../core/templates/admin_sidebar.php'); ?>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">Create New User Account</h3>
-					</div>
-					<div class="content-module-main cf">
-					<?php 
+		<div class="row">
+			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-9">
+				<h3 class="nopad">Create New Account</h3><hr />
+				<?php 
+					
+					if(isset($_GET['disp']) && !empty($_GET['disp'])){
+					
+						switch($_GET['disp']){
 						
-						if(isset($_GET['disp']) && !empty($_GET['disp'])){
-						
-							switch($_GET['disp']){
-							
-								case 'u_fail':
-									echo '<div class="error-box">The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-</div>';
-									break;
-								case 'e_fail':
-									echo '<div class="error-box">The email you entered is invalid.</div>';
-									break;
-								case 'p_fail':
-									echo '<div class="error-box">The passwords you entered did not match or were not at least 8 characters.</div>';
-									break;
-								case 'a_fail':
-									echo '<div class="error-box">Account with that username or email already exists in the system.</div>';
-									break;
-							
-							}
+							case 'u_fail':
+								echo '<div class="alert alert-danger">The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-</div>';
+								break;
+							case 'e_fail':
+								echo '<div class="alert alert-danger">The email you entered is invalid.</div>';
+								break;
+							case 'p_fail':
+								echo '<div class="alert alert-danger">The passwords you entered did not match or were not at least 8 characters.</div>';
+								break;
+							case 'a_fail':
+								echo '<div class="alert alert-danger">Account with that username or email already exists in the system.</div>';
+								break;
 						
 						}
 					
-					?>
-						<fieldset>
-							<form action="ajax/new/create.php" method="POST">
-								<p>
-									<label for="username">Username</label>
-									<input type="text" autocomplete="off" name="username" class="round default-width-input" />
-									<em>Character Limits: a-zA-Z0-9_- (Max 35 characters)</em>
-								</p>
-								<p>
-									<label for="email">Email</label>
-									<input type="text" autocomplete="off" name="email" class="round default-width-input" />
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<div class="warning-box round" style="display: none;" id="gen_pass"></div>
-								<p>
-									<label for="pass">Password (<a href="#" id="gen_pass_bttn">Generate</a>)</label>
-									<input type="password" autocomplete="off" name="pass" class="round default-width-input" />
-									<em>Minimum Length 8 characters. Suggested 12.</em>
-								</p>
-								<p>
-									<label for="pass_2">Password (Again)</label>
-									<input type="password" autocomplete="off" name="pass_2" class="round default-width-input" />
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<p><em>To add a server to this user please go to the add new server page.</em></p>
-								<input type="submit" value="Create User" class="round blue ic-right-arrow" />
-							</form>
-						</fieldset>
-					</div>
-				</div>
+					}
+				
+				?>
+				<form action="ajax/new/create.php" method="post">
+					<fieldset>
+						<div class="form-group">
+							<label for="username" class="control-label">Username</label>
+							<div>
+								<input type="text" autocomplete="off" name="username" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="email" class="control-label">Email</label>
+							<div>
+								<input type="text" autocomplete="off" name="email" class="form-control" />
+							</div>
+						</div>
+						<div id="gen_pass" class="alert alert-success" style="display:none;margin-bottom: 10px;"></div>
+						<div class="form-group col-6 nopad">
+							<label for="pass" class="control-label">Password</label>
+							<div>
+								<input type="password" name="pass" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group col-6 nopad-right">
+							<label for="pass_2" class="control-label">Password Again</label>
+							<div>
+								<input type="password" name="pass_2" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<button class="btn btn-primary" type="submit">Create Account</button>
+								<button class="btn btn-default" id="gen_pass_bttn" type="button">Generate Password</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
 			</div>
+		</div>
+		<div class="footer">
+			<?php include('../../../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
-		$("#gen_pass_bttn").click(function(){
-			$.ajax({
-				type: "GET",
-				url: "new.php?do=generate_password",
-				success: function(data) {
-					$("#gen_pass").html('Generated Password: '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="pass"]').val(data);
-					$('input[name="pass_2"]').val(data);
-					return false;
-				}
-			});
-			return false;
-		});
 		$(document).ready(function(){
-			$('#fadeOut').delay(5000).slideUp();
+			$("#gen_pass_bttn").click(function(e){
+				e.preventDefault();
+				$.ajax({
+					type: "GET",
+					url: "new.php?do=generate_password",
+					success: function(data) {
+						$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+						$("#gen_pass").slideDown();
+						$('input[name="pass"]').val(data);
+						$('input[name="pass_2"]').val(data);
+						return false;
+					}
+				});
+				return false;
+			});
 		});
 	</script>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
-	</div>
 </body>
 </html>

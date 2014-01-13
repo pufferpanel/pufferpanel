@@ -20,35 +20,35 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), true) !== true){
-	exit('<div class="error-box round">Failed to Authenticate Account.</div>');
+	exit('<div class="alert alert-warning">Failed to Authenticate Account.</div>');
 }
 
 /*
  * Check Variables
  */
 if(!isset($_POST['method'], $_POST['field_1'], $_POST['operator_1'], $_POST['term_1'], $_POST['mid_op'], $_POST['field_2'], $_POST['operator_2'], $_POST['term_2']))
-	exit('<div class="error-box round">Missing required variable.</div>');
+	exit('<div class="alert alert-warning">Missing required variable.</div>');
 
 if($_POST['method'] != 'advanced')
-	exit('<div class="error-box round">Invalid Search Method.</div>');
+	exit('<div class="alert alert-warning">Invalid Search Method.</div>');
 	
 if(empty($_POST['field_1']) || empty($_POST['operator_1']) || empty($_POST['mid_op']) || empty($_POST['field_2']) || empty($_POST['operator_2']))
-	exit('<div class="error-box round">Required Variable Empty.</div>');
+	exit('<div class="alert alert-warning">Required Variable Empty.</div>');
 	
-if(!in_array($_POST['field_1'], array('name', 'server_ip', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('name', 'server_ip', 'owner_email', 'active')))
-	exit('<div class="error-box round">Required `field` contains unknown value.</div>');
+if(!in_array($_POST['field_1'], array('name', 'server_ip', 'server_port', 'owner_email', 'active')) || !in_array($_POST['field_2'], array('name', 'server_ip', 'owner_email', 'active')))
+	exit('<div class="alert alert-warning">Required `field` contains unknown value.</div>');
 	
 if(!in_array($_POST['operator_1'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')) || !in_array($_POST['operator_2'], array('equal', 'not_equal', 'starts_w', 'ends_w', 'like')))
-	exit('<div class="error-box round">Required `operator` contains unknown value.</div>');
+	exit('<div class="alert alert-warning">Required `operator` contains unknown value.</div>');
 
 if(strlen($_POST['term_1']) < 4 && $_POST['field_1'] != 'active' || strlen($_POST['term_2']) < 4 && $_POST['field_2'] != 'active')
-	exit('<div class="error-box round">Required `term` must be at least 4 characters.</div>');
+	exit('<div class="alert alert-warning">Required `term` must be at least 4 characters.</div>');
 	
 if($_POST['field_1'] == 'active' && !in_array($_POST['term_1'], array('0', '1')) || $_POST['field_2'] == 'active' && !in_array($_POST['term_2'], array('0', '1')))
-	exit('<div class="error-box round">Required `term` for root_admin must be 1 or 0.</div>');
+	exit('<div class="alert alert-warning">Required `term` for root_admin must be 1 or 0.</div>');
 	
 if(!in_array($_POST['mid_op'], array('and', 'or')))
-	exit('<div class="error-box round">Required `comparison_operator` must be AND/OR.</div>');
+	exit('<div class="alert alert-warning">Required `comparison_operator` must be AND/OR.</div>');
 	
 /*
  * Is Search Looking for Similar
@@ -148,7 +148,7 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isActive = ($row['active'] == 1) ? '<i class="fa fa-check-circle-o"></i>' : '<i class="fa fa-times-circle-o"></i>';
+		$isActive = ($row['active'] == '1') ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>';
 		
 		$findUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id`  = :id");
 		$findUser->execute(array(
@@ -156,15 +156,16 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 		));
 		$user = $findUser->fetch();
 		
+		$row['name'] = (strlen($row['name']) > 20) ? substr($row['name'], 0, 17).'...' : $row['name'];
+		$user['email'] = (strlen($user['email']) > 25) ? substr($user['email'], 0, 22).'...' : $user['email'];
+		
 		$returnRows .= '
 		<tr>
-			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-terminal"></i></a></td>
-			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a> (uID #'.$row['owner_id'].')</td>
-			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a> ('.$row['ftp_user'].')</td>
-			<td><a href="../node/view.php?id='.$row['node'].'">'.$row['node'].'</a></td>
+			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
+			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
+			<td><a href="../node/view.php?id='.$row['node'].'">'.$core->framework->settings->nodeName($row['node']).'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-			<td>'.$row['max_ram'].' MB</td>
-			<td>'.$row['disk_space'].' MB</td>
+			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a></td>
 			<td style="text-align:center;">'.$isActive.'</td>
 		</tr>
 		';
@@ -172,17 +173,15 @@ if($_POST['field_1'] == 'owner_email' || $_POST['field_2'] == 'owner_email'){
 	}
 
 echo '
-<table>
+<table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="width:5%"></th>
-			<th style="width:20%">Owner Information</th>
-			<th style="width:20%">Server Name (FTP User)</th>
-			<th style="width:10%">Node</th>
-			<th style="width:20%">Connection Address</th>
-			<th style="width:10%">RAM</th>
-			<th style="width:10%">Disk Space</th>
-			<th style="width:5%;text-align:center;">Active</th>
+			<th style="width:2%"></th>
+			<th>Server Name</th>
+			<th>Node</th>
+			<th>Connection Address</th>
+			<th>Owner Information</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>

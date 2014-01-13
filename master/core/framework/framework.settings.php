@@ -32,6 +32,15 @@ class getSettings extends dbConn {
 					$this->_data[$this->row['setting_ref']] = $this->row['setting_val'];
 					
 				}
+				
+			$this->queryNode = $this->mysql->prepare("SELECT `id`, `node` FROM `nodes`");
+			$this->queryNode->execute();
+				
+				while($this->rowNode = $this->queryNode->fetch()){
+					
+					$this->_dataNode[$this->rowNode['id']] = $this->rowNode['node'];
+					
+				}
 		
 		}
 		
@@ -40,6 +49,13 @@ class getSettings extends dbConn {
 		
 			return (array_key_exists($setting, $this->_data)) ? $this->_data[$setting] : '_notfound_';
 		
+		}
+		
+	public function nodeName($id)
+		{
+	
+			return (array_key_exists($id, $this->_dataNode)) ? $this->_dataNode[$id] : 'unknown';
+	
 		}
 
 }

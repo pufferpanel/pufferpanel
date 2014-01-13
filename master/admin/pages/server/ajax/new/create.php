@@ -24,13 +24,18 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 }
 
 //Cookies :3
-setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 10, '/', $core->framework->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->framework->settings->get('cookie_website'));
+
+/*
+ * Set Values
+ */
+$_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
 
 /*
  * Are they all Posted?
  */
 if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files']))
-	$core->framework->page->redirect('../../add.php?disp=missing_args');
+	$core->framework->page->redirect('../../add.php?disp=missing_args&error=na');
 
 /*
  * Validate Server Name

@@ -18,7 +18,6 @@
  */
 session_start();
 require_once('core/framework/framework.core.php');
-$HTML = '';
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) === true){
 	$core->framework->page->redirect('servers.php');
@@ -61,20 +60,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				
                 $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset_email', 'A password reset was requested and confimation emailed to your account email.'));
                 
-				$statusMessage = '<div class="confirmation-box round">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
+				$statusMessage = '<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
 				$noShow = true;
 			
 			}else{
                 
 			     $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
                 
-				$statusMessage = '<div class="error-box round">We couldn\'t find that email in our database.</div>';
+				$statusMessage = '<div class="alert alert-danger">We couldn\'t find that email in our database.</div>';
 			
 			}
 	
 	}else{
 	
-		$statusMessage = '<div class="error-box round">The spam prevention was not filled out correctly.<br />Go back and try again.</div>';
+		$statusMessage = '<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>';
 	
 	}
 
@@ -107,7 +106,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 			
             $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset', 'Your account password was successfull reset from the password reset form.'));
             
-			$statusMessage = '<div class="confirmation-box round">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>';
+			$statusMessage = '<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>';
 			$noShow = true;
 		
 				/*
@@ -122,7 +121,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		
             $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_fail', 'A password reset request was attempted but failed to be verified.'));
             
-			$statusMessage = '<div class="error-box round">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>';
+			$statusMessage = '<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>';
 		
 		}
 		
@@ -132,53 +131,71 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title><?php echo $core->framework->settings->get('company_name'); ?> - Forgotten Password</title>
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="assets/css/style.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<?php include('assets/include/header.php'); ?>
+	<title><?php echo $core->framework->settings->get('company_name'); ?> - Reset Password</title>
 	<script type="text/javascript">
 		var RecaptchaOptions = {
-			theme : 'clean'
+			theme : 'custom',
+			custom_theme_widget: 'recaptcha_widget'
 		};
-	</script>  
+	</script>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width">
-			<a href="<?php echo $core->framework->settings->get('main_website'); ?>" class="round button dark ic-left-arrow image-left">Return to website</a>
-		</div> <!-- end full-width -->	
-	</div> <!-- end top-bar -->
-	<div id="header">
-		<div class="page-full-width cf">
-			<div id="login-intro" class="fl">
-				<h1>Password Recovery</h1>
-				<h5>Enter your email below</h5>
-			</div> <!-- login-intro -->
-		</div> <!-- end full-width -->	
-	</div> <!-- end header -->
-	<!-- MAIN CONTENT -->
-	<div id="content">
-		<form action="password.php?do=recover" method="POST" id="login-form">
-			<fieldset style="margin-left:-65px">
-				<?php echo $statusMessage; ?>
-				<?php if($noShow === false) { ?>
-				<p>
-					<label for="login-email">email</label>
-					<input type="text" id="login-email" name="email" autocomplete="off" class="round full-width-input" autofocus />
-				</p>
-				<p>
-					<label for="login-email">bot protection</label>
-					<?php echo recaptcha_get_html($core->framework->settings->get('captcha_pub')); ?>
-				</p>
-				<input type="submit" value="RESET PASSWORD" class="button round blue image-right ic-right-arrow" />
-				<?php } ?>
-			</fieldset>
-		</form>
-	</div> <!-- end content -->
-	<!-- FOOTER -->
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</p>	
-	</div> <!-- end footer -->
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="<?php echo $core->framework->settings->get('master_url'); ?>"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-3">&nbsp;</div>
+			<div class="col-6">
+				<form action="password.php?do=recover" method="POST" id="login-form">
+					<legend>Reset Your Password</legend>
+					<fieldset>
+						<?php 
+							echo $statusMessage;
+							if($noShow === false){
+						?>
+						<div class="form-group">
+							<label for="email" class="control-label">Email</label>
+							<div>
+								<input type="text" class="form-control" name="email" placeholder="Email" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="recaptcha_response_field" class="control-label">Spam Prevention <a href="javascript:Recaptcha.reload()">Refresh</a></label>
+							<div>
+								<div class="col-4" style="padding-left: 0;">
+									<input type="text" class="form-control" id="recaptcha_response_field" name="recaptcha_response_field"/>
+								</div>
+								<div class="col-8">
+									<div id="recaptcha_image"></div>
+								</div>
+								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo $core->framework->settings->get('captcha_pub'); ?>"></script>
+								<noscript>
+									<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo $core->framework->settings->get('captcha_pub'); ?>"
+								height="300" width="500" frameborder="0"></iframe><br>
+									<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+									<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+								</noscript>
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<input type="submit" class="btn btn-primary" value="Reset Password" />
+								<button class="btn btn-default" onclick="window.location='index.php';return false;">Login</button>
+							</div>
+						</div>
+						<?php } ?>
+					</fieldset>
+				</form>
+			</div>
+			<div class="col-3">&nbsp;</div>
+		</div>
+		<div class="footer">
+			<?php include('assets/include/footer.php'); ?>
+		</div>
+	</div>
 </body>
 </html>

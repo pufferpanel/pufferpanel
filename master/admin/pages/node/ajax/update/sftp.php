@@ -29,22 +29,22 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		$core->framework->page->redirect('../../list.php');
 		
 	if(!isset($_POST['warning']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
 	
 	if(!isset($_POST['sftp_ip'], $_POST['sftp_user']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip|sftp_user&disp=missing_args');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip|sftp_user&disp=missing_args&tab=sftp');
 		
 	if(!filter_var($_POST['sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip&disp=ip_fail');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip&disp=ip_fail&tab=sftp');
 			
 	if(strlen($_POST['sftp_user']) < 1 || $_POST['sftp_user'] == 'root')
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_user&disp=user_fail');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_user&disp=user_fail&tab=sftp');
 	
 	/*
 	 * Run Update on Node Table
 	 */
 	$mysql->prepare("UPDATE `nodes` SET `sftp_ip` = :ip, `username` = :name WHERE `id` = :nid")->execute(array(':ip' => $_POST['sftp_ip'], ':name' => $_POST['sftp_user'], ':nid' => $_POST['nid']));
-	$core->framework->page->redirect('../../view.php?id='.$_POST['nid']);
+	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
 }else if(isset($_GET['do']) && $_GET['do'] == 'pass'){
 
@@ -52,13 +52,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		$core->framework->page->redirect('../../list.php');
 		
 	if(!isset($_POST['warning']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
 	
 	if(!isset($_POST['pass']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=missing_args');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=missing_args&tab=sftp');
 		
 	if(strlen($_POST['pass']) < 12)
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=pass_fail');
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=pass_fail&tab=sftp');
 	
 	$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 	$_POST['pass'] = openssl_encrypt($_POST['pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
@@ -67,7 +67,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 	 * Run Update on Node Table
 	 */
 	$mysql->prepare("UPDATE `nodes` SET `encryption_iv` = :iv, `password` = :pass WHERE `id` = :nid")->execute(array(':iv' => $iv, ':pass' => $_POST['pass'], ':nid' => $_POST['nid']));
-	$core->framework->page->redirect('../../view.php?id='.$_POST['nid']);
+	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
 }
 

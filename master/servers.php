@@ -51,12 +51,9 @@ while($row = $query->fetch()){
 	($row['active'] == '1') ? $isActive = 'Enabled' : $isActive = 'Disabled';
 	$listServers .= '
 					<tr>
+						<td>'.$core->framework->settings->nodeName($row['node']).'</td>
 						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
-						<td>'.$row['node'].'</td>
-						<td>'.$row['server_ip'].'</td>
-						<td>'.$row['server_port'].'</td>
-						<td>'.$row['max_ram'].' MB</td>
-						<td>'.$row['disk_space'].' MB</td>
+						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 						<td>'.$isActive.'</td>
 					</tr>
 					';
@@ -67,76 +64,54 @@ while($row = $query->fetch()){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - My Servers</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	
+	<?php include('assets/include/header.php'); ?>
+	<title>PufferPanel - Your Servers</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php" class="round button dark"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
-		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<div class="side-menu fl">
-				<h3>Account Actions</h3>
-				<ul>
-					<li><a href="account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
-				</ul>
-				<h3>Server Actions</h3>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
 			</div>
-			<div class="side-content fr">
-				<?php if(isset($_GET['error'])){ echo '<div class="error-box round">Unable to locate that specific server. Has it been suspended?</div>'; } ?>
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">My Servers</h3>
-					</div>
-					<div class="content-module-main">
-						<table>
-							<thead>
-								<tr>
-									<th style="width:15%">Server Name</th>
-									<th style="width:10%">Node</th>
-									<th style="width:20%">IP Address</th>
-									<th style="width:10%">Port</th>
-									<th style="width:15%">Memory</th>
-									<th style="width:15%">Disk Space</th>
-									<th style="width:15%">Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php echo $listServers; ?>
-							</tbody>
-						</table>
-					</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="logout.php">Logout</a></li>
+								<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+							</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-3">
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
+					<a href="account.php" class="list-group-item">Settings</a>
+					<a href="servers.php" class="list-group-item active">My Servers</a>
 				</div>
 			</div>
+			<div class="col-9">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>Node</th>
+							<th>Name</th>
+							<th>Connect</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php echo $listServers; ?>
+					</tbody>
+				</table>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<?php include('assets/include/footer.php'); ?>
+		</div>
 	</div>
 </body>
 </html>

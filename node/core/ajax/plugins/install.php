@@ -32,28 +32,30 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		$filename = $data['versions'][$pluginID]['filename'];
 		$downloadPath = $data['versions'][$pluginID]['download'];
 
-			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `node` = ? LIMIT 1");
+			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
 			$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
 			$node = $nodeSQLConnect->fetch();
 			
 			/*
 			 * Connect and Run Function
 			 */
-			$con = ssh2_connect($node['node_ip'], 22);
+			$con = ssh2_connect($node['sftp_ip'], 22);
 			ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 			
-			$stream = ssh2_exec($con, 'cd /srv/scripts && sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
+			$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
 			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 			
 			stream_set_blocking($errorStream, true);
 			stream_set_blocking($stream, true);
 			
-            $core->framework->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
-        
-			echo "Output: " . stream_get_contents($stream);
+			$isError = stream_get_contents($errorStream);
+			if(!empty($isError))
+				echo $isError;
 			
 			fclose($errorStream);
 			fclose($stream);
+			
+            $core->framework->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
 			
 	}
 

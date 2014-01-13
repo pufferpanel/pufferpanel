@@ -29,7 +29,7 @@ $find->execute();
 	$returnRows = '';
 	while($row = $find->fetch()){
 		
-		$isRoot = ($row['root_admin'] == 1) ? '<i class="fa fa-check-circle-o"></i>' : '<i class="fa fa-times-circle-o"></i>';
+		$isRoot = ($row['root_admin'] == 1) ? '<span class="label label-danger">Admin</span>' : '<span class="label label-success">User</span>';
 		
 		$returnRows .= '
 		<tr>
@@ -42,14 +42,13 @@ $find->execute();
 	
 	}
 
-echo '
-<table>
+echo '<table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>
-			<th style="width:20%">Username</th>
-			<th style="width:30%">Email</th>
-			<th style="width:35%">Registered</th>
-			<th style="width:5%;text-align:center;">Admin</th>
+			<th>Username</th>
+			<th>Email</th>
+			<th>Registered</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>

@@ -21,8 +21,15 @@
  * PufferPanel Page Actions Function File
  */
  
-class page {
+class page extends dbConn {
 
+	public function __construct()
+		{
+		
+			$this->mysql = parent::getConnection();
+		
+		}
+	
 	public function redirect($url) {
 		
 		if(!headers_sent()){
@@ -50,6 +57,10 @@ class page {
 		else if($p == 'sett' && $s == 'settings')
 			return 'active';
 	
+	}
+	
+	public function override_getCount(){
+		return PDOEx::getCount();
 	}
 	
 }

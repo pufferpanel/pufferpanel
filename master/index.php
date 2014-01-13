@@ -117,50 +117,53 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+	<?php include('assets/include/header.php'); ?>
 	<title><?php echo $core->framework->settings->get('company_name'); ?> - Login</title>
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="assets/css/style.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width">
-			<a href="<?php echo $core->framework->settings->get('main_website'); ?>" class="round button dark ic-left-arrow image-left">Return to website</a>
-		</div> <!-- end full-width -->	
-	</div> <!-- end top-bar -->
-	<div id="header">
-		<div class="page-full-width cf">
-			<div id="login-intro" class="fl">
-				<h1>Login to <?php echo $core->framework->settings->get('company_name'); ?></h1>
-				<h5>Enter your credentials below</h5>
-			</div> <!-- login-intro -->
-		</div> <!-- end full-width -->	
-	</div> <!-- end header -->
-	<!-- MAIN CONTENT -->
-	<div id="content">
-		<form action="index.php?do=login" method="POST" id="login-form">
-			<?php if(isset($_GET['error'])){ echo '<div class="error-box round">Wrong email or password.</div><br />'; } ?>
-			<fieldset>
-				<p>
-					<label for="login-email">email</label>
-					<input type="text" id="login-email" name="email" class="round full-width-input" autofocus />
-				</p>
-				<p>
-					<label for="login-password">password</label>
-					<input type="password" id="login-password" name="password" class="round full-width-input" />
-				</p>
-				<p>I've <a href="password.php">forgotten my password</a>.</p>
-                <?php
-                    (isset($_GET['redirect'])) ? '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'" />' : '';
-                ?>
-				<input type="submit" value="LOG IN" class="button round blue image-right ic-right-arrow" />
-			</fieldset>
-		</form>
-	</div> <!-- end content -->
-	<!-- FOOTER -->
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</p>	
-	</div> <!-- end footer -->
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-3">&nbsp;</div>
+			<div class="col-6">
+				<form action="index.php?do=login" method="POST" id="login-form">
+					<legend>Login to PufferPanel</legend>
+					<fieldset>
+						<?php 
+							if(isset($_GET['error'])){
+								echo '<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>';
+							}
+						?>
+						<div class="form-group">
+							<label for="email" class="control-label">Email</label>
+							<div>
+								<input type="text" class="form-control" name="email" placeholder="Email" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="login-password" class="control-label">Password</label>
+							<div>
+								<input type="password" class="form-control" name="password" placeholder="Password" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<input type="submit" class="btn btn-primary" value="Login" />
+								<button class="btn btn-default" onclick="window.location='password.php';return false;">Reset Password</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="col-3">&nbsp;</div>
+		</div>
+		<div class="footer">
+			<?php include('assets/include/footer.php'); ?>
+		</div>
+	</div>
 </body>
 </html>

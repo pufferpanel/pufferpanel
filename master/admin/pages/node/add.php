@@ -26,173 +26,192 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Add New Node</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="../../../assets/javascript/jquery.cookie.js"></script>
+	<?php include('../../../assets/include/header.php'); ?>
+	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+							</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<?php include('../../../core/templates/admin_sidebar.php'); ?>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">Add New Node</h3>
-					</div>
-					<div class="content-module-main cf">
-					<?php 
-						
-						if(isset($_GET['disp']) && !empty($_GET['disp'])){
-						
-							switch($_GET['disp']){
-								
-								case 'agree_warn':
-									echo '<div class="error-box">You must agree to the node warning before we can create the node.</div>';
-									break;
-								case 'missing_args':
-									echo '<div class="error-box">Not all arguments were passed by the script.</div>';
-									break;
-								case 'n_fail':
-									echo '<div class="error-box">The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).</div>';
-									break;
-								case 'url_fail':
-									echo '<div class="error-box">The node URL provided is not valid.</div>';
-									break;
-								case 'ip_fail':
-									echo '<div class="error-box">The IP addresses provided were not valid.</div>';
-									break;
-								case 'dir_fail':
-									echo '<div class="error-box">The director(y/ies) you entered were not valid. They must end with a trailing slash.</div>';
-									break;
-								case 'fir_match_fail':
-									echo '<div class="error-box">The main server directory and backup directory cannot be the same, and the backup directory cannot be located inside the main server directory.</div>';
-									break;
-								case 'user_fail':
-									echo '<div class="error-box">SSH users must not be blank, and may not be \'root\'.</div>';
-									break;
-								case 'pass_fail':
-									echo '<div class="error-box">SSH passwords must be at least 12 characters.</div>';
-									break;
+		<div class="row">
+			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-9">
+				<h3 class="nopad">Add New Node</h3><hr />
+				<?php 
+					
+					if(isset($_GET['disp']) && !empty($_GET['disp'])){
+					
+						switch($_GET['disp']){
 							
-							}
+							case 'agree_warn':
+								echo '<div class="alert alert-danger">You must agree to the node warning before we can create the node.</div>';
+								break;
+							case 'missing_args':
+								echo '<div class="alert alert-danger">Not all arguments were passed by the script.</div>';
+								break;
+							case 'n_fail':
+								echo '<div class="alert alert-danger">The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).</div>';
+								break;
+							case 'url_fail':
+								echo '<div class="alert alert-danger">The node URL provided is not valid. URLs must end with a trailing slash and must be a subdomain without any additional folders. (e.g. <strong>http://node.example.com/</strong>)</div>';
+								break;
+							case 'ip_fail':
+								echo '<div class="alert alert-danger">The IP addresses provided were not valid.</div>';
+								break;
+							case 'dir_fail':
+								echo '<div class="alert alert-danger">The directories you entered were not valid. They must end with a trailing slash.</div>';
+								break;
+							case 'fir_match_fail':
+								echo '<div class="alert alert-danger">The main server directory and backup directory cannot be the same, and the backup directory cannot be located inside the main server directory.</div>';
+								break;
+							case 'user_fail':
+								echo '<div class="alert alert-danger">SSH users must not be blank, and may not be \'root\'.</div>';
+								break;
+							case 'pass_fail':
+								echo '<div class="alert alert-danger">SSH passwords must be at least 12 characters.</div>';
+								break;
 						
 						}
 					
-					?>
-						<fieldset>
-							<form action="ajax/new/create.php" method="POST">
-								<p>
-									<label for="node_name">Node Short Name</label>
-									<input type="text" autocomplete="off" name="node_name" placeholder="1.nyc.us" class="round default-width-input" />
-									<em>15 character maximum (a-zA-Z0-9_-.)
-								</p>
-								<p>
-									<label for="node_url">Node URL</label>
-									<input type="text" autocomplete="off" name="node_url" placeholder="http://1.nyc.us.example.com" class="round default-width-input" />
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<p>
-									<label for="node_ip">Node IP Address</label>
-									<input type="text" autocomplete="off" name="node_ip" class="round default-width-input" />
-								</p>
-								<p>
-									<label for="node_sftp_ip">Node SFTP IP Address</label>
-									<input type="text" autocomplete="off" name="node_sftp_ip" class="round default-width-input" />
-									<em>In most cases this is the same as the Node IP Address</em>
-								</p>
-								<p>
-									<label for="s_dir">Server Directory</label>
-									<input type="text" autocomplete="off" name="s_dir" placeholder="/srv/servers/" class="round default-width-input" />
-								</p>
-								<p>
-									<label for="s_dir_backup">Server Backup Directory</label>
-									<input type="text" autocomplete="off" name="s_dir_backup" placeholder="/second/backups/" class="round default-width-input" />
-									<em>Remote backup directories are not <strong>currently</strong> supported.</em>
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<div class="warning-box round" style="display: none;" id="gen_pass"></div>
-								<p>
-									<label for="ssh_user">SSH Username</label>
-									<input type="text" autocomplete="off" name="ssh_user" class="round default-width-input" />
-								</p>
-								<p>
-									<label for="ssh_pass">SSH Password</label>
-									<input type="password" autocomplete="off" name="ssh_pass" class="round default-width-input" />
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<p>
-									<label for="ip_port">Available IPs &amp; Ports</label>
-									<textarea name="ip_port" class="round full-width-input" rows="10" placeholder="127.0.0.1|25565,25566,25567,25568,25569,25570"></textarea>
-									<em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas.</em>
-								</p>
-								<div class="stripe-separator"><!--  --></div>
-								<div class="warning-box round"><input type="checkbox" name="read_warning" /> By checking this box you are confirming that you have correctly set up your node to handle Minecraft&trade; servers created from this system. Do not add this node until you have correctly done so. Please consult the <a href="#documentation-404">documentation</a> for how to do this if you are unsure.</div>
-								<input type="submit" value="Create Node" class="round blue ic-right-arrow" />
-							</form>
-						</fieldset>
-					</div>
-				</div>
+					}
+				
+				?>
+				<form action="ajax/new/create.php" method="POST">
+					<fieldset>
+						<div class="well">
+							<div class="row">
+								<div class="form-group col-6 nopad">
+									<label for="node_name" class="control-label">Node Short Name</label>
+									<div>
+										<input type="text" name="node_name" placeholder="shortname" class="form-control" />
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.). The short name should match the subdomain for the node.</em></small></p>
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="node_url" class="control-label">Node URL</label>
+									<div>
+										<input type="text" name="node_url" placeholder="http://shortname.mysite.com/" class="form-control" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-6 nopad">
+									<label for="node_ip" class="control-label">Node IP Address</label>
+									<div>
+										<input type="text" name="node_ip" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="node_sftp_ip" class="control-label">Node SFTP IP Address</label>
+									<div>
+										<input type="text" name="node_sftp_ip" class="form-control" />
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>In most cases this is the same as the Node IP Address.</em></small></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="well">
+							<div class="row">
+								<div class="form-group col-6 nopad">
+									<label for="s_dir" class="control-label">Server Directory</label>
+									<div>
+										<input type="text" name="s_dir" value="/srv/servers/" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="s_dir_backup" class="control-label">Server Backup Directory</label>
+									<div>
+										<input type="text" name="s_dir_backup" placeholder="/second/backups/" class="form-control" />
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Must be a directory on the server. Remote backups are not currently supported.</em></small></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="well">
+							<div class="row">
+								<div class="form-group col-6 nopad">
+									<label for="ssh_user" class="control-label">SSH Username</label>
+									<div>
+										<input type="text" autocomplete="off" name="ssh_user" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="ssh_pass" class="control-label">SSH Password</label>
+									<div>
+										<input type="password" autocomplete="off" name="ssh_pass" class="form-control" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="well">
+							<div class="row">
+								<div class="form-group">
+									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
+									<div>
+										<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25566,25567,25568,25569,25570"></textarea>
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas.</em></small></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="alert alert-danger"><input type="checkbox" name="read_warning" /> By checking this box you are confirming that you have correctly set up your node to handle Minecraft&trade; servers created from this system. Do not add this node until you have correctly done so. Please consult the <a href="https://github.com/DaneEveritt/PufferPanel/wiki/Setting-up-a-New-Node" target="_blank">documentation</a> for how to do this if you are unsure.</div>
+						<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
+						
+					</fieldset>
+				</form>
 			</div>
+		</div>
+		<div class="footer">
+			<?php include('../../../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
-		$.urlParam = function(name){
-		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
-		    if (results==null){
-		       return null;
-		    }
-		    else{
-		       return results[1] || 0;
-		    }
-		}
-		if($.urlParam('error') != null){
-		
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-			
-				$.each(exploded, function(key, value) {
-					
-					$('[name="' + value + '"]').addClass('error-input');
-					
-				});
-				
-			var obj = $.parseJSON($.cookie('__TMP_pp_admin_newnode'));
-			
-				$.each(obj, function(key, value) {
-					
-					$('[name="' + key + '"]').val(value);
-					
-				});
-		
-		}
+		$(document).ready(function(){
+			$("input[name='node_name']").keyup(function(){
+				if($(this).val().length > 15 || /^[a-zA-Z0-9_.-]*$/.test($(this).val()) == false){
+					$(this).parent().parent().removeClass('has-success');
+					$(this).parent().parent().addClass('has-error');
+				}else if($(this).val().length == 0){
+					$(this).parent().parent().removeClass('has-success');
+					$(this).parent().parent().removeClass('has-error');
+				}else{
+					$(this).parent().parent().removeClass('has-error');
+					$(this).parent().parent().addClass('has-success');
+				}
+			});
+			$("input[name='read_warning']").click(function(){
+				if($("input[name='read_warning']").is(":checked"))
+					$("#disable_complete").removeClass("disabled");
+				else
+					$("#disable_complete").addClass("disabled");
+			});
+			if($.urlParam('error') != null){
+				var field = $.urlParam('error');
+				var exploded = field.split('|');
+					$.each(exploded, function(key, value) {
+						$('[name="' + value + '"]').parent().parent().addClass('has-error');
+					});
+				var obj = $.parseJSON($.cookie('__TMP_pp_admin_newnode'));
+					$.each(obj, function(key, value) {
+						$('[name="' + key + '"]').val(value);
+					});
+			}
+		});
 	</script>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
-	</div>
 </body>
 </html>

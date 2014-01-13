@@ -58,13 +58,13 @@ if(isset($_GET['action'])){
 				
                 $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
                 
-				$outputMessage = '<div class="confirmation-box round">Your notification preferences have been updated.</div>';
+				$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
 			
 			}else{
 			
                 $core->framework->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
                 
-				$outputMessage = '<div class="error-box round">We were unable to verify your password. Please try again.</div>';
+				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 			
 			}
 
@@ -79,7 +79,7 @@ if(isset($_GET['action'])){
 		
 		if($_POST['newemail'] == $core->framework->user->getData('email')){
 		
-			$outputMessage = '<div class="error-box round">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
+			$outputMessage = '<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
 		
 		}else{
 		
@@ -99,13 +99,13 @@ if(isset($_GET['action'])){
 					
                     $core->framework->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
                     
-					$outputMessage = '<div class="confirmation-box round">Your email has been updated successfully.</div>';
+					$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
 					
 				}else{
 				
                     $core->framework->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
                     
-					$outputMessage = '<div class="error-box round">We were unable to verify your password. Please try again.</div>';
+					$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 				
 				}
 				
@@ -151,18 +151,18 @@ if(isset($_GET['action'])){
 								
                             $core->framework->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
                             
-							$outputMessage = '<div class="confirmation-box round">Your password has been sucessfully changed!</div>';
+							$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 								
 						
 						}else{
                             
-							$outputMessage = '<div class="error-box round">Your passowrds did not match.</div>';
+							$outputMessage = '<div class="alert alert-danger">Your passowrds did not match.</div>';
 						
 						}
 					
 					}else{
 					
-						$outputMessage = '<div class="error-box round">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
+						$outputMessage = '<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
 					
 					}
 				
@@ -170,13 +170,13 @@ if(isset($_GET['action'])){
 				
                     $core->framework->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
                     
-					$outputMessage = '<div class="error-box round">Current account password is not correct.</div>';
+					$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
 				
 				}
 	
 	}else{
 	
-		$outputMessage = '<div class="error-box round">Invalid parameters passed. Did you fill out all required fields?</div>';
+		$outputMessage = '<div class="alert alert-danger">Invalid parameters passed. Did you fill out all required fields?</div>';
 	
 	}
 
@@ -193,131 +193,128 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title><?php echo $core->framework->settings->get('company_name'); ?> - Account Dashboard</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	
+	<?php include('assets/include/header.php'); ?>
+	<title>PufferPanel - Your Settings</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="#" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php" class="round button dark"><i class="fa fa-bar-chart-o"></i>&nbsp;&nbsp; Admin CP</a></li>'; } ?>
-				<li><a href="logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
-		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<div class="side-menu fl">
-				<h3>Account Actions</h3>
-				<ul>
-					<li><a href="account.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> Edit Settings</a></li>
-					<li><a href="servers.php"><i class="fa fa-angle-double-right pull-right menu-arrows"></i> My Servers</a></li>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="logout.php">Logout</a></li>
+								<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+							</ul>
+					</li>
 				</ul>
-				<h3>Server Actions</h3>
-			</div>
-			<div class="side-content fr">
-				<?php echo $outputMessage; ?>
-				<div class="half-size-column fl">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Change Your Password</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="account.php?action=password" method="post">
-								<fieldset>
-									<p>
-										<label for="p_password">Current Password</label>
-										<input type="password" name="p_password" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="p_password_new">New Password</label>
-										<input type="password" name="p_password_new" class="round full-width-input"/>
-										<em>Your password must be at least 8 characters and contain mixed case and a number.</em>								
-									</p>
-									<p>
-										<label for="p_password_new_2">New Password Again</label>
-										<input type="password" name="p_password_new_2" class="round full-width-input"/>
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="submit" value="Change Password" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>							
-						</div>
-					</div>
-				</div>
-				<div class="half-size-column fr">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Update Your Email</h3>
-						</div>
-						<div class="content-module-main cf">
-							<form action="account.php?action=email" method="post">
-								<fieldset>
-									<p>
-										<label for="newemail">New Email</label>
-										<input type="text" name="newemail" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="password">Current Password</label>
-										<input type="password" name="password" class="round full-width-input"/>
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="submit" value="Update Email" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>	
-						</div>
-					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Notification Preferences</h3>
-						</div>
-						<div class="content-module-main cf">
-							<form action="account.php?action=notifications" method="post">
-								<fieldset>
-									<p>
-										<label>Successful Login</label>
-										<label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>/>Please Email Me</label>
-										<label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>/>Don't Email Me</label>
-									</p>
-									<p>
-										<label>Failed Login</label>
-										<label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>/>Please Email Me</label>
-										<label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>/>Don't Email Me</label>
-									</p>
-									<p>
-										<label for="password">Current Password</label>
-										<input type="password" name="password" class="round full-width-input"/>
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="submit" value="Update Preferences" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>	
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="row">
+			<div class="col-3">
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
+					<a href="account.php" class="list-group-item active">Settings</a>
+					<a href="servers.php" class="list-group-item">My Servers</a>
+				</div>
+			</div>
+			<div class="col-9">
+				<?php echo $outputMessage; ?>
+				<div class="row">
+					<div class="col-6">
+						<h3 style="margin-top:0;">Change Password</h3><hr />
+							<form action="account.php?action=password" method="post">
+								<div class="form-group">
+									<label for="p_password" class="control-label">Current Password</label>
+									<div>
+										<input type="password" class="form-control" name="p_password" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="p_password_new" class="control-label">New Password</label>
+									<div>
+										<input type="password" class="form-control" name="p_password_new" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="p_password_new_2" class="control-label">New Password (Again)</label>
+									<div>
+										<input type="password" class="form-control" name="p_password_new_2" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div>
+										<input type="submit" class="btn btn-primary" value="Change Password" />
+									</div>
+								</div>
+							</form>
+					</div>
+					<div class="col-6">
+						<h3 style="margin-top:0;">Update Account Email</h3><hr />
+							<form action="account.php?action=email" method="post">
+								<div class="form-group">
+									<label for="email" class="control-label">New Email</label>
+									<div>
+										<input type="text" class="form-control" name="email" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="password" class="control-label">Current Password</label>
+									<div>
+										<input type="password" class="form-control" name="password" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div>
+										<input type="submit" class="btn btn-primary" value="Update Email" />
+									</div>
+								</div>
+							</form>
+					</div>
+				</div>
+				<h3>Update Notification Preferences</h3><hr />
+				<form action="account.php?action=notifications" method="post">
+					<div class="col-6 nopad">
+						<div class="form-group">
+							<h4>Successful Login</h4>
+							<div class="radio">
+		                        <label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>/>Please Email Me</label>
+							</div>
+							<div class="radio">
+							    <label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>/>Don't Email Me</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<h4>Failed Login</h4>
+							<div class="radio">
+						        <label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>/>Please Email Me</label>
+							</div>
+							<div class="radio">
+							    <label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>/>Don't Email Me</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="control-label">Current Password</label>
+							<div>
+								<input type="password" class="form-control" name="password" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<input type="submit" class="btn btn-primary" value="Update Preferences" />
+							</div>
+						</div>
+					</div>
+				</form>	
+			</div>
+		</div>
+		<div class="footer">
+			<?php include('assets/include/footer.php'); ?>
+		</div>
 	</div>
 </body>
 </html>

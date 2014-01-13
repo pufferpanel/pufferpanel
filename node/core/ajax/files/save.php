@@ -86,7 +86,7 @@ if(isset($_POST['file']) && !is_dir($_POST['file']) && file_exists($path.$_POST[
                             
                                 if(!$stream){
                                 
-                                    exit('<div class="error-box round">Unable to connect and upload file.</div>');
+                                    exit('<div class="alert alert-danger">Unable to connect and upload file.</div>');
                                 
                                 }else{
                                     
@@ -94,12 +94,12 @@ if(isset($_POST['file']) && !is_dir($_POST['file']) && file_exists($path.$_POST[
                                     
                                         fclose($stream);
                                         unlink($FTPLocalFile);
-                                        exit('<div class="confirmation-box round">File was sucessfully saved.</div>');
+                                        exit('<div class="alert alert-success">File was sucessfully saved.</div>');
                                     
                                     }else{
                                     
                                         fclose($stream);
-                                        exit('<div class="error-box round">Unknown error. Unable to save file.</div>');
+                                        exit('<div class="alert alert-danger">Unknown error. Unable to save file.</div>');
                                     
                                     }
                                 
@@ -107,12 +107,12 @@ if(isset($_POST['file']) && !is_dir($_POST['file']) && file_exists($path.$_POST[
     
     }else{
     
-        exit('<div class="error-box round">This type of file cannot be edited via our online file manager. Please use a FTP client.</div>');
+        exit('<div class="alert alert-warning">This type of file cannot be edited via our online file manager. Please use a FTP client.</div>');
     
     }
 
 }else{
 
-    exit('<div class="error-box round">The file specified could not be found on the server.</div>');
+    exit('<div class="alert alert-danger">The file specified could not be found on the server.</div>');
 
 }

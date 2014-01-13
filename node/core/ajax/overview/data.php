@@ -33,9 +33,9 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		$maxSpaceH = $core->framework->files->formatSize($maxSpace);
 		
 		echo '	<div class="progress">
-		  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%;background-color: #2069b4"></div>
+		  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%"></div>
 				</div>
-				<p class="center nomargin">You are using '.$spaceUsedH.' of your maximum '.$core->framework->server->getData('disk_space').' MB of disk space.</p>';
+				<p class="text-muted">You are using '.$spaceUsedH.' of your maximum '.$core->framework->server->getData('disk_space').' MB of disk space.</p>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'players'){
 					
@@ -48,12 +48,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				if(count($core->framework->rcon->data('players')) > 0){
 					foreach($core->framework->rcon->data('players') as $id => $player){
 				
-						$pOnlineL .= '<img src="http://i.fishbans.com/player/'.$player.'/32" alt="'.$player.'" title="'.$player.'" style="padding:5px 10px;"/>';
+						$pOnlineL .= '<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'.$player.'/32" title="'.$player.'" style="padding: 0 2px 6px 0;"/>';
 				
 					}
 				}else{
 				
-					$pOnlineL = '<p class="center nomargin">No players are currently online.</p>';
+					$pOnlineL = '<p class="text-muted">No players are currently online.</p>';
 				
 				}
 			
@@ -62,17 +62,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 			echo '
 					<div class="progress">
-					  	<div class="progress-bar" style="width:'.$pPercent.'%;background-color: #2069b4"></div>
+					  	<div class="progress-bar" style="width:'.$pPercent.'%"></div>
 					</div>
 					'.$pOnlineL;
 				
 		}else{
 		
 			echo '
-					<div class="progress">
-					  	<div class="progress-bar" style="width:1%;background-color: #2069b4"></div>
-					</div>
-					<p class="center nomargin">Could not connect to server via RCON.</p>
+					<div class="alert alert-info">Unable to connect and query the server. Is it online?</div>
 				';
 		
 		}
@@ -82,66 +79,40 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
 			
 			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-			$serverStatus = '<span style="color:green;">Online</span>';
 			$sVersion = $core->framework->rcon->data('version');
-			$sSoftware = $core->framework->rcon->data('software');
-			$sPlugins = null;
-			foreach(explode(',', $core->framework->rcon->data('plugins')) as $id => $plugin)
-				{
-				
-					$pData = explode(' ', $plugin);
-					$sPlugins .= str_replace(end($pData), '', $plugin).' ('.end($pData).')';
-				
-				}
 							
 		}else{
 		
-			$sPlugins = 'Could not connect to server via RCON.';
-			$serverStatus = '<span style="color:red;">Offline</span>';
-			$sVersion = 'Could not connect to server via RCON.'; 
-			$sSoftware = 'Could not connect to server via RCON.';
+			$sPlugins = 'Unable to query the server.';
+			$sVersion = 'Unable to query the server.'; 
+			$sSoftware = 'Unable to query the server.';
 		
 		}
 		
 		echo '
-				<table>
+				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
-							<th style="width:1%"></th>
-							<th style="width:20%">Information</th>
-							<th style="width:79%">Data</th>
+							<th>Information</th>
+							<th>Data</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>&nbsp;</td>
 							<td><strong>IP</strong></td>
 							<td>'.$core->framework->server->getData('server_ip').'</td>
 						</tr>
 						<tr>
-							<td>&nbsp;</td>
 							<td><strong>Port</strong></td>
 							<td>'.$core->framework->server->getData('server_port').'</td>
 						</tr>
 						<tr>
-							<td>&nbsp;</td>
 							<td><strong>Node</strong></td>
-							<td>'.$core->framework->server->getData('node').'</td>
+							<td>'.$core->framework->settings->nodeName($core->framework->server->getData('node')).'</td>
 						</tr>
 						<tr>
-							<td>&nbsp;</td>
 							<td><strong>Version</strong></td>
 							<td>'.$sVersion.'</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td><strong>Software</strong></td>
-							<td>'.$sSoftware.'</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td><strong>Plugins</strong></td>
-							<td>'.$sPlugins.'</td>
 						</tr>
 					</tbody>
 				</table>';

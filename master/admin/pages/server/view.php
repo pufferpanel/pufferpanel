@@ -56,274 +56,265 @@ $select->execute(array(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Viewing Server `<?php echo $server['name']; ?>`</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	
+	<?php include('../../../assets/include/header.php'); ?>
+	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
-		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<?php include('../../../core/templates/admin_sidebar.php'); ?>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">Viewing Server `<?php echo $server['name']; ?>`</h3>
-					</div>
-				</div>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
 			</div>
-			<div class="side-content fr">
-				<div class="half-size-column fl">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Server Information</h3>
-						</div>
-						<div class="content-module-main cf">
-							<form action="ajax/server/connection.php" method="POST">
-								<?php
-									$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :name");
-									$selectData->execute(array(
-										':name' => $server['node']
-									));
-									$node = $selectData->fetch();
-								?>
-								<fieldset>
-									<p><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Click here</a> to access server control tools.</p>
-									<div class="information-box no-image round">If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</div>
-									<p>
-										<label for="server_ip">Server IP</label>
-                                        <select name="server_ip" id="server_ip">
-                                            <?php
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+							</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-9">
+				<ul class="nav nav-tabs" id="config_tabs">
+					<li class="active"><a href="#info" data-toggle="tab">Connection</a></li>
+					<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
+					<li><a href="#backup_sett" data-toggle="tab">Backups</a></li>
+					<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
+					<li><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Server Control</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="info">
+						<h3>Connection Information</h3><hr />
+						<form action="ajax/server/connection.php" method="POST">
+							<?php
+								$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :name");
+								$selectData->execute(array(
+									':name' => $server['node']
+								));
+								$node = $selectData->fetch();
+							?>
+							<fieldset>
+								<div class="panel panel-default">
+									<div class="panel-heading">Changing IP &amp; Port</div>
+									<div class="panel-body">
+										<p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
+									</div>
+								</div>
+								<div class="form-group col-6 nopad">
+									<label for="server_ip" class="control-label">Server IP</label>
+									<div>
+										<select name="server_ip" id="server_ip" class="form-control">
+										    <?php
 											
 												$ips = json_decode($node['ips'], true);
 												foreach($ips as $ip => $internal){
 												
-                                                    if($server['server_ip'] == $ip)
-                                                        echo '<option value="'.$ip.'" selected="selected">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-                                                    else{
-                                                    
-                                                        if($internal['ports_free'] > 0)
+										            if($server['server_ip'] == $ip)
+										                echo '<option value="'.$ip.'" selected="selected">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+										            else{
+										            
+										                if($internal['ports_free'] > 0)
 														  echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-                                                        else
+										                else
 														  echo '<option disabled="disabled">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-                                                    
-                                                    }
-                                                    												
+										            
+										            }
+										            												
 												}
 											
 											?>
-                                        </select>
-                                        <i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i>
-									</p>
-									<p>
-										<label for="server_port">Server Port</label>
-								        <?php
-                                        
-                                            $ports = json_decode($node['ports'], true);
-                                            
-                                            foreach($ports as $ip => $internal){
-                                            
-                                                if($server['server_ip'] == $ip)
-                                                    echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'">';
-                                                else
-                                                    echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'">';
-                                                
-                                                    foreach($internal as $port => $avaliable){
-                                                    
-                                                        if($server['server_port'] == $port)
-                                                            echo '<option value="'.$port.'" selected="selected">'.$port.'</option>';
-                                                        else{
-                                                            
-                                                                if($avaliable == 1)
-                                                                    echo '<option value="'.$port.'">'.$port.'</option>';   
-                                                                else
-                                                                    echo '<option disabled="disabled">'.$port.'</option>';
-                                                            
-                                                        }
-                                                        
-                                                    }
-                                                
-                                                echo '</select><i class="fa fa-angle-down pull-right select-arrow select-halfbox"></i></span>';
-                                            
-                                            }
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="server_ip" class="control-label">Server Port</label>
+									<div>
+										<?php
+										
+										    $ports = json_decode($node['ports'], true);
+										    
+										    foreach($ports as $ip => $internal){
+										    
+										        if($server['server_ip'] == $ip)
+										            echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
+										        else
+										            echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
+										        
+										            foreach($internal as $port => $avaliable){
+										            
+										                if($server['server_port'] == $port)
+										                    echo '<option value="'.$port.'" selected="selected">'.$port.'</option>';
+										                else{
+										                    
+										                        if($avaliable == 1)
+										                            echo '<option value="'.$port.'">'.$port.'</option>';   
+										                        else
+										                            echo '<option disabled="disabled">'.$port.'</option>';
+										                    
+										                }
+										                
+										            }
+										        
+										        echo '</select></span>';
+										    
+										    }
 																							
-								        ?>
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
-									<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
-									<input type="submit" value="Update Server" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>
-						</div>
+										?>
+									</div>
+								</div>
+								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+								<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
+								<input type="submit" value="Update Server" class="btn btn-primary btn-sm" />
+							</fieldset>
+						</form>
 					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Backup Settings</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="ajax/server/backup.php" method="post">
-								<fieldset>
-									<p>
-										<label for="max_files">Maximum Files</label>
-										<input type="text" readonly="readonly" value="<?php echo $server['backup_file_limit']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="pass">Maximum Space (In Megabytes)</label>
-										<input type="text" readonly="readonly" value="<?php echo $server['backup_disk_limit']; ?>" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
-									<input type="submit" value="Update Backup Information" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>
-						</div>
+					<div class="tab-pane" id="server_sett">
+						<h3>Server Settings</h3><hr />
+						<form action="ajax/server/allocate.php" method="post">
+							<fieldset>
+								<div class="form-group">
+									<label class="control-label">Owner Email</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $user['username']; ?> (<?php echo $user['email']; ?>)" class="form-control" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<label for="alloc_mem" class="control-label">Allocate RAM</label>
+										<div class="input-group">
+											<input type="text" autocomplete="off" name="alloc_mem" value="<?php echo $server['max_ram']; ?>" class="form-control" />
+											<span class="input-group-addon">MB</span>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad-right">
+										<label for="alloc_disk" class="control-label">Disk Space</label>
+										<div class="input-group">
+											<input type="text" name="alloc_disk" value="<?php echo $server['disk_space']; ?>" class="form-control" />
+											<span class="input-group-addon">MB</span>
+										</div>
+									</div>
+								</div>
+								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+								<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
+							</fieldset>
+						</form>
 					</div>
-				</div>
-				<div class="half-size-column fr">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">SFTP Information</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="ajax/server/sftp.php" method="post">
-								<fieldset>
-									<p>
-										<label for="sftp_host">Host</label>
-										<input type="text" readonly="readonly" value="<?php echo $server['ftp_host']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="sftp_user">Username</label>
-										<input type="text" readonly="readonly" value="<?php echo $server['ftp_user']; ?>" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<div class="warning-box round" style="display: none;" id="gen_pass"></div>
-									<p>
-										<label for="sftp_pass">New Password (<a href="#" id="gen_pass_bttn">Generate</a>)</label>
-										<input type="password" name="sftp_pass" class="round full-width-input" />
-										<em>Minimum length is 8 characters. 12 or more is suggested for highest security.</em>
-									</p>
-									<p>
-										<label for="sftp_pass_2">New Password (Again)</label>
-										<input type="password" name="sftp_pass_2" class="round full-width-input" />
-									</p>
-									<p>
-										<input type="checkbox" name="email_user" /> Email new password to user.
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
-									<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
-									<input type="submit" value="Update Password" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>
-						</div>
+					<div class="tab-pane" id="backup_sett">
+						<h3>Backup Settings</h3><hr />
+						<form action="ajax/server/backup.php" method="post">
+							<fieldset>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<label for="backup_disk" class="control-label">Maximum Backup Space (in MB)</label>
+										<div class="input-group">
+											<input type="text" autocomplete="off" readonly="readonly" value="<?php echo $server['backup_disk_limit']; ?>" name="backup_disk" class="form-control" />
+											<span class="input-group-addon">MB</span>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad-right">
+										<label for="max_files" class="control-label">Maximum Compressed Backups</label>
+										<div>
+											<input type="text" autocomplete="off" readonly="readonly" name="max_files" value="<?php echo $server['backup_file_limit']; ?>" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+								<input type="submit" disabled="disabled" value="Update Backup Information" class="btn btn-primary btn-sm disabled" />
+							</fieldset>
+						</form>
 					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Server Settings</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="ajax/server/allocate.php" method="post">
-								<fieldset>
-									<p>
-										<label for="owner">Owner</label>
-										<input type="text" readonly="readonly" value="<?php echo $user['username']; ?> (<?php echo $user['email']; ?>)" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<p>
-										<label for="alloc_mem">Allocate RAM (in Megabytes)</label>
-										<input type="text" name="alloc_mem" value="<?php echo $server['max_ram']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="alloc_disk">Disk Space (in Megabytes)</label>
-										<input type="text" name="alloc_disk" value="<?php echo $server['disk_space']; ?>" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"><!--  --></div>
-									<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
-									<input type="submit" value="Update Server Settings" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>
-						</div>
-					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Server Settings</h3>
-						</div>
-						<div class="content-module-main">
-							<p>Do the diddily-do here for banning a server, or suspending it.</p>
-						</div>
+					<div class="tab-pane" id="sftp_sett">
+						<h3>SFTP Settings</h3><hr />
+						<form action="ajax/server/sftp.php" method="post">
+							<fieldset>
+								<div class="form-group">
+									<label for="sftp_host" class="control-label">Host</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $server['ftp_host']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="sftp_user" class="control-label">Username</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $server['ftp_user']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="well">
+									<div class="row">
+										<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+										<div class="form-group col-6 nopad">
+											<label for="sftp_pass" class="control-label">New Password</label>
+											<div class="input-group">
+												<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+												<span class="input-group-btn">
+													<button class="btn btn-success" id="gen_pass_bttn" type="button">Generate</button>
+												</span>
+											</div>
+										</div>
+										<div class="form-group col-6 nopad-right">
+											<label for="sftp_pass_2" class="control-label">New Password (Again)</label>
+											<div>
+												<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
+											</div>
+											<div class="checkbox" style="margin-bottom:-20px;">
+												<label>
+													<input type="checkbox" name="email_user" /> Email new password to user.
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
+								<input type="hidden" name="nid" value="<?php echo $node['id']; ?>" />
+								<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
+							</fieldset>
+						</form>
 					</div>
 				</div>
 			</div>
-			</div>
+		</div>
+		<div class="footer">
+			<?php include('../../../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
-		$.urlParam = function(name){
-		    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
-		    if (results==null){
-		       return null;
-		    }
-		    else{
-		       return results[1] || 0;
-		    }
-		}
-		if($.urlParam('error') != null){
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-			
-				$.each(exploded, function(key, value) {
-					
-					$('[name="' + value + '"]').addClass('error-input');
-					
-				});
-        }
-        $("#server_ip").change(function() {
-            var ip = $(this).val().replace(/\./g, "\\.");
-            $("[id^=node_]").hide();
-            $("#node_"+ip).show();
-        });
-		$("#gen_pass_bttn").click(function(){
-			$.ajax({
-				type: "GET",
-				url: "view.php?do=generate_password",
-				success: function(data) {
-					$("#gen_pass").html('Generated Password: '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="sftp_pass"]').val(data);
-					$('input[name="sftp_pass_2"]').val(data);
-					return false;
-				}
+		$(document).ready(function(){
+			setActiveOption('server-find');
+			if($.urlParam('error') != null){
+				var field = $.urlParam('error');
+				var exploded = field.split('|');
+					$.each(exploded, function(key, value) {
+						$('[name="' + value + '"]').parent().parent().addClass('has-error');
+					});
+			}
+			if($.urlParam('tab') != null){
+				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
+			}
+			$("#server_ip").change(function() {
+			    var ip = $(this).val().replace(/\./g, "\\.");
+			    $("[id^=node_]").hide();
+			    $("#node_"+ip).show();
 			});
-			return false;
+			$("#gen_pass_bttn").click(function(){
+				$.ajax({
+					type: "GET",
+					url: "add.php?do=generate_password",
+					success: function(data) {
+						$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+						$("#gen_pass").slideDown();
+						$('input[name="sftp_pass"]').val(data);
+						$('input[name="sftp_pass_2"]').val(data);
+						return false;
+					}
+				});
+				return false;
+			});
 		});
 	</script>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
-	</div>
 </body>
 </html>

@@ -39,15 +39,15 @@ class auth extends dbConn {
 	
 	public function keygen($amount){
 		
-		$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
 		
-		$randkey = "";
+		$randkey = null;
 		
 		for ($i=0; $i<$amount; $i++)
 			$randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
 		
 		return $randkey;
-			
+					
 	}
 	
 	public function isLoggedIn($ip, $session, $acp = false){

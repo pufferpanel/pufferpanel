@@ -39,57 +39,7 @@ class rcon {
 	public function getStatus($host, $port = 25565, $kill = false)
         {
         
-        	$this->host = $host;
-        	$this->port = $port;
-        	
-        	/*
-        	 * Check Cache
-        	 */
-        	$fp = fopen(__DIR__.'/use_do17.php', 'r');
-        	$content = fread($fp, filesize(__DIR__.'/use_do17.php'));
-        	fclose($fp);
-        	
-        	$lines = explode("\n", $content);
-        	
-        		$do17 = false;
-        		foreach($lines as $id => $value)
-        			{
-        			
-        				if($id > 2){
-        				
-        					if($value == $this->host.':'.$this->port)
-        						$do17 = true;
-        				
-        				}
-        			
-        			}
-        	
-			if($kill === false && $do17 === false)
-				$this->do16($this->host, $this->port);
-			else
-				$this->do17($this->host, $this->port);
-						                
-        }
-        
-    public function do16($host, $port = 25565)
-    	{
-    	
-    		$this->socket = @fsockopen('udp://'.$host, $port, $this->errNo, $this->errStr, $this->timeout);
-    		stream_set_timeout($this->socket, $this->timeout);
-    		
-    		$challengePack = pack('c*', 0xFE, 0xFD, 0x09, 0x01, 0x02, 0x03, 0x04);
-    		fwrite($this->socket, $challengePack, strlen($challengePack));
-    		
-    		$this->get(pack('N', substr(fread($this->socket, 2048), 5)));
-    		
-    		//Hide Code Bug because of this 1.7 Stuff
-    		@fclose($this->socket);
-    	
-    	}
-    	
-    public function do17($host, $port = 25565)
-    	{
-    	
+        	    	
     		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     		socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, array( 'sec' => $this->timeout, 'usec' => 0 ));
     		socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array( 'sec' => $this->timeout, 'usec' => 0 ));
@@ -114,7 +64,9 @@ class rcon {
     		
     		$data = json_decode($data, true);
     		
+    		
     		$pList = array();
+    		
     		foreach($data['players']['sample'] as $id => $internal)
     			{
     				
@@ -124,8 +76,6 @@ class rcon {
     		
     		$this->info = array();
     		$this->info['motd'] = $data['description'];
-    		$this->info['software'] = 'Unavaliable due to Minecraft 1.7 Query Changes.';
-    		$this->info['plugins'] = 'Unavaliable due to Minecraft 1.7 Query Changes. n/a';
     		$this->info['version'] = $data['version']['name'];
     		$this->info['players'] = $pList;
     		$this->info['maxplayers'] = $data['players']['max'];
@@ -135,71 +85,10 @@ class rcon {
 	public function data($value)
 		{
 		
-			return array_key_exists($value, $this->info) ? $this->info[$value] : false;	
+			return array_key_exists($value, $this->info) ? $this->info[$value] : false;
 		
 		}
 	
-	private function get($challenge)
-		{
-		        
-	        $sendData = pack('c*', 0xFE, 0xFD, 0x00, 0x01, 0x02, 0x03, 0x04).$challenge.pack('c*', 0x00, 0x00, 0x00, 0x00);
-	        fwrite($this->socket, $sendData, strlen($sendData));
-	        $data = substr(fread($this->socket, 2048), 5);
-	       
-	       	if(!empty($data)) {
-	       	
-		        $this->info = array();
-		
-		        $data = explode("\x00\x00\x01player_\x00\x00", substr($data, 11));
-		        $this->info['players'] = explode("\x00", substr($data[1], 0, -2));
-		        $data = explode("\x00", $data[0]);
-                 
-                #Bug Fix for Players
-                $this->info['players'] = (strlen($this->info['players'][0]) < 1) ? null : $this->info['players'];
-                
-                    
-				foreach($data as $key => $value)
-					{
-					
-						if($key & 1) {
-						
-							if($data[($key - 1)] == 'plugins')
-								{
-								
-									list($software, $plugins) = explode(':', $value, 2);
-									$this->info['software'] = $software;
-									$this->info['plugins'] = str_replace(';', ',', str_replace(',', '-', trim($plugins)));
-								
-								}
-							else
-								$this->info[$data[($key - 1)]] = $value;
-							
-						
-						}
-					
-					}
-					
-			}else{
-			
-				if(!file_exists(__DIR__.'/use_do17.php')){
-				
-					$addContent = '<?php 
-	exit();
-?>
-';
-				
-				}
-				
-				$fp = fopen(__DIR__.'/use_do17.php', 'a+');
-				fwrite($fp, $addContent.$this->host.":".$this->port."\n");
-				fclose($fp);
-				
-				self::getStatus($this->host, $this->port, true);
-				
-			}
-		
-		}
-
 	private function readInt($socket)
 		{
 		

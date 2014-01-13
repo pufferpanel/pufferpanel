@@ -26,58 +26,41 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Admin CP</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="../assets/javascript/script.js"></script>
+	<?php include('../assets/include/header.php'); ?>
+	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<li><a href="../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
-				<li><a href="../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
-		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<?php include('../core/templates/admin_sidebar.php'); ?>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">My Servers</h3>
-					</div>
-					<div class="content-module-main">
-						<?php
-                            if(is_dir('install'))
-                                echo '<div class="error-box round"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>';
-                            else
-                                echo '<p>Welcome to PufferPanel Admin.</p>';
-                        ?>
-					</div>
-				</div>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+							</ul>
+					</li>
+				</ul>
 			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="row">
+			<div class="col-3"><?php include('../assets/include/admin.php'); ?></div>
+			<div class="col-9">
+				<?php
+				    if(is_dir('install'))
+				        echo '<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>';
+				    else
+				        echo '<p>Welcome to PufferPanel Admin.</p>';
+				?>
+			</div>
+		</div>
+		<div class="footer">
+			<?php include('../assets/include/footer.php'); ?>
+		</div>
 	</div>
 </body>
 </html>
