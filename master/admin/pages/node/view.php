@@ -57,225 +57,245 @@ $selectNode->execute(array(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Viewing Node `<?php echo $node['node']; ?>`</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<?php include('../../../assets/include/header.php'); ?>
+	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
-			</ul>
-			<ul id="nav" class="fr">
-				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>
-				<li><a href="../../../logout.php" class="round button dark"><i class="fa fa-power-off"></i></a></li>
-			</ul>
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+							</ul>
+					</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-			<?php include('../../../core/templates/admin_sidebar.php'); ?>
-			<div class="side-content fr">
-				<div class="content-module">
-					<div class="content-module-heading cf">
-						<h3 class="fl">Node <?php echo $node['node']; ?> Information</h3>
-					</div>
-					<?php 
-						
-						if(isset($_GET['disp']) && !empty($_GET['disp'])){
-						
-							echo '<div class="content-module-main"><div class="error-box">';
-							switch($_GET['disp']){
-								
-								case 'missing_warn':
-									echo 'You must agree to the warning before updating the information.';
-									break;
-								case 'missing_args':
-									echo 'Not all arguments were passed by the script.';
-									break;
-								case 'ip_fail':
-									echo 'The IP address provided for SFTP was invalid.';
-									break;
-								case 'user_fail':
-									echo 'SFTP users must not be blank, and may not be \'root\'.';
-									break;
-								case 'pass_fail':
-									echo 'SSH passwords must be at least 12 characters.';
-									break;
-								case 'n_fail':
-									echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
-									break;
-								case 'url_fail':
-									echo 'The node URL provided is not valid.';
-									break;
+		<div class="row">
+			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-9">
+				<ul class="nav nav-tabs" id="config_tabs">
+					<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
+					<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
+					<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
+				</ul>
+				<?php 
+					
+					if(isset($_GET['disp']) && !empty($_GET['disp'])){
+					
+						echo '<div class="alert alert-danger" style="margin-top:15px;">';
+						switch($_GET['disp']){
 							
-							}
-							echo '</div></div>';
+							case 'missing_warn':
+								echo 'You must agree to the warning before updating the information.';
+								break;
+							case 'missing_args':
+								echo 'Not all arguments were passed by the script.';
+								break;
+							case 'ip_fail':
+								echo 'The IP address provided for SFTP was invalid.';
+								break;
+							case 'user_fail':
+								echo 'SFTP users must not be blank, and may not be \'root\'.';
+								break;
+							case 'pass_fail':
+								echo 'SSH passwords must be at least 12 characters.';
+								break;
+							case 'n_fail':
+								echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
+								break;
+							case 'url_fail':
+								echo 'The node URL provided is not valid.';
+								break;
+							case 'add_port_fail':
+								echo 'The port list entered was invalid.';
+								break;
 						
 						}
+						echo '</div>';
 					
-					?>
-				</div>
-			</div>
-			<div class="side-content fr">
-				<div class="half-size-column fl">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Basic Node Information</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="ajax/update/basic.php" method="post">
-								<fieldset>
-									<p>
-										<label for="name">Node Name</label>
-										<input type="text" name="name" value="<?php echo $node['node']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="link">Node Link</label>
-										<input type="text" name="link" value="<?php echo $node['node_link']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="ip">Node IP</label>
-										<input type="text" name="ip" value="<?php echo $node['node_ip']; ?>" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"></div>
+					}
+				
+				?>
+				<div class="tab-content">
+					<div class="tab-pane active" id="info">
+						<h3>Basic Information</h3><hr />
+						<form action="ajax/update/basic.php" method="post">
+							<fieldset>
+								<div class="form-group">
+									<label for="name" class="control-label">Node Name</label>
+									<div>
+										<input type="text" name="name" value="<?php echo $node['node']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="link" class="control-label">Node Link</label>
+									<div>
+										<input type="text" name="link" value="<?php echo $node['node_link']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="ip" class="control-label">Node IP</label>
+									<div>
+										<input type="text" name="ip" value="<?php echo $node['node_ip']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div>
 										<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-										<input type="submit" value="Update Information" class="round blue ic-right-arrow" />
-								</fieldset>
-							</form>
-						</div>
+										<input type="submit" value="Update Information" class="btn btn-primary" />
+									</div>
+								</div>
+							</fieldset>
+						</form>
 					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Edit IP &amp; Port Allocation</h3>
-						</div>
-						<div class="content-module-main">
-							<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
-								<p>
-									<label for="add_ports" id="setTitle"></label>
-									<input type="text" name="add_ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="round full-width-input" />
-									<input type="hidden" name="add_ports_ip" value=""/>
-									<input type="hidden" name="add_ports_node" value=""/>
-								</p>
-							</form>
-							<table>
-								<thead>
-									<tr>
-										<th style="width:30%;">IP Address</th>
-										<th style="width:35%">Ports</th>
-										<th style="width:35%"></th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-									
-										foreach(json_decode($node['ports'], true) as $ip => $ports)
-											{
-									
-												echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
-												$counter = 1;
-												$row1 = null; $row2 = null;
-												foreach($ports as $port => $avaliable)
-													{
-											
-														if($counter & 1)
-															{
-															
-																$row1 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
-																$row1 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
-																
-															}else{
-															
-																$row2 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
-																$row2 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
-															
-															}
-														
-														$counter++;
+					<div class="tab-pane" id="allocation">
+						<h3>IP &amp; Port Allocation</h3><hr />
+						<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
+							<div class="form-group">
+								<label for="add_ports" class="control-label" id="setTitle"></label>
+								<div class="input-group">
+									<input type="text" name="add_ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="form-control" />
+									<span class="input-group-btn">
+										<input type="hidden" name="add_ports_ip" value=""/>
+										<input type="hidden" name="add_ports_node" value=""/>
+										<button class="btn btn-primary" type="submit">&rarr;</button>
+									</span>
+								</div>
+							</div>
+						</form>
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>IP Address</th>
+									<th>Ports</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								
+									foreach(json_decode($node['ports'], true) as $ip => $ports)
+										{
+								
+											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
+											$counter = 1;
+											$row1 = null; $row2 = null;
+											foreach($ports as $port => $avaliable)
+												{
 										
-													}
-												echo "<td style=\"vertical-align:top;\">{$row1}</td><td style=\"vertical-align:top;\">{$row2}</td></tr>";
+													if($counter & 1)
+														{
+														
+															$row1 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+															$row1 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
+															
+														}else{
+														
+															$row2 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+															$row2 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
+														
+														}
+													
+													$counter++;
 									
-											}
-									
-									?>
-								</tbody>
-							</table>
-							<div class="information-box round no-image"><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)<br /><i class="fa fa-dot-circle-o"></i> (Port Used; Cannot Delete)</div>
-							<div class="error-box round">Editing this information is currently unavailable.</div>
+												}
+											echo "<td style=\"vertical-align:top;\">{$row1}</td><td style=\"vertical-align:top;\">{$row2}</td></tr>";
+								
+										}
+								
+								?>
+							</tbody>
+						</table>
+						<div class="panel panel-default">
+							<div class="panel-heading">Key</div>
+							<div class="panel-body">
+								<p><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-dot-circle-o"></i> (Port Used; Cannot Delete)</p>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="half-size-column fr">
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Update SFTP IP &amp; Username</h3>
-						</div>
-						<div class="content-module-main">
-							<p>If you have changed your SFTP IP address or the username of the main account used for provisioning servers please update it below. If the password has changed as well you can change that in the box below.</p>
+					<div class="tab-pane" id="sftp">
+						<h3>SFTP Settings</h3><hr />
+						<div class="well">
 							<form action="ajax/update/sftp.php?do=ipuser" method="post">
 								<fieldset>
-									<p>
-										<label for="sftp_ip">SFTP IP Address</label>
-										<input type="text" name="sftp_ip" value="<?php echo $node['sftp_ip']; ?>" class="round full-width-input" />
-									</p>
-									<p>
-										<label for="sftp_user">SFTP Username</label>
-										<input type="text" name="sftp_user" value="<?php echo $node['username']; ?>" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"></div>
-										<div class="warning-box no-image round">
-											Editing your username will require that you also update the account password below.<br /><br />
-											<input type="checkbox" name="warning" /> I have read and understand the above statement.
+									<div class="form-group">
+										<label for="sftp_ip" class="control-label">SFTP IP</label>
+										<div>
+											<input type="text" name="sftp_ip" value="<?php echo $node['sftp_ip']; ?>" class="form-control" />
 										</div>
-										<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-										<input type="submit" value="Update SFTP" class="round blue ic-right-arrow" />
+									</div>
+									<div class="form-group">
+										<label for="sftp_user" class="control-label">SFTP Username</label>
+										<div>
+											<input type="text" name="sftp_user" value="<?php echo $node['username']; ?>" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<div>
+											<div class="alert alert-warning">Editing your username will require that you also update the account password below.</div>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" id="warning_1" name="warning" /> I have read and understand the above statement.
+											</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<div>
+											<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
+											<input type="submit" value="Update SFTP Information" id="disable_complete" class="btn btn-primary disabled" />
+										</div>
+									</div>
 								</fieldset>
 							</form>
 						</div>
-					</div>
-					<div class="content-module">
-						<div class="content-module-heading cf">
-							<h3 class="fl">Update SFTP Password</h3>
-						</div>
-						<div class="content-module-main">
+						<div class="well">
 							<form action="ajax/update/sftp.php?do=pass" method="post">
 								<fieldset>
-									<p>
-										<label for="pass">New SFTP Password</label>
-										<input type="password" name="pass" value="" class="round full-width-input" />
-									</p>
-									<div class="stripe-separator"></div>
-										<div class="warning-box no-image round">
-											Please ensure that you have entered the above information correctly. Changing this wrongly could result in multiple clients being unable to access their server(s).<br /><br />
-											<input type="checkbox" name="warning" /> I have read and understand the above statement.
+									<div class="form-group">
+										<label for="sftp_ip" class="control-label">New SFTP Password</label>
+										<div>
+											<input type="password" name="pass" autocomplete="off" class="form-control" />
 										</div>
-										<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-										<input type="submit" value="Update SFTP Password" class="round blue ic-right-arrow" />
+									</div>
+									<div class="form-group">
+										<div>
+											<div class="alert alert-warning">Please ensure that you have entered the above information correctly. Changing this wrongly could result in multiple clients being unable to access their server(s).</div>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" id="warning_2" name="warning" /> I have read and understand the above statement.
+											</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<div>
+											<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
+											<input type="submit" value="Update SFTP Password" id="disable_complete_pass" class="btn btn-primary disabled" />
+										</div>
+									</div>
 								</fieldset>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="footer">
+			<?php include('../../../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(document).ready(function(){
+			setActiveOption('node-list');
 			$(".clickToAdd").click(function(){
 				var rawUrl = $(this).attr("href");
 				var exploded = rawUrl.split('/');
@@ -313,32 +333,29 @@ $selectNode->execute(array(
 						}
 				
 			});
-			// Advanced Error Stuff
-			$.urlParam = function(name){
-			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(window.location.href));
-			    if (results==null){
-			       return null;
-			    }
-			    else{
-			       return results[1] || 0;
-			    }
-			}
 			if($.urlParam('error') != null){
-			
 				var field = $.urlParam('error');
 				var exploded = field.split('|');
-				
 					$.each(exploded, function(key, value) {
-						
-						$('[name="' + value + '"]').addClass('error-input');
-						
+						$('[name="' + value + '"]').parent().parent().addClass('has-error');
 					});
-			
+			}
+			$("#warning_1").click(function(){
+				if($(this).is(":checked"))
+					$("#disable_complete").removeClass("disabled");
+				else
+					$("#disable_complete").addClass("disabled");
+			});
+			$("#warning_2").click(function(){
+				if($(this).is(":checked"))
+					$("#disable_complete_pass").removeClass("disabled");
+				else
+					$("#disable_complete_pass").addClass("disabled");
+			});
+			if($.urlParam('tab') != null){
+				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
 			}
 		});
 	</script>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
-	</div>
 </body>
 </html>

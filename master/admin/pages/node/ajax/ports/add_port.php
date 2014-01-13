@@ -27,10 +27,10 @@ if(!isset($_POST['add_ports_node']))
 	$core->framework->page->redirect('../../list.php');
 
 if(!isset($_POST['add_ports'], $_POST['add_ports_ip']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node']);
+	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 	
 if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node']);
+	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
 	
 $ports = explode(',', str_replace(" ", "", $_POST['add_ports']));
 
@@ -58,6 +58,6 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	':ips' => json_encode($saveips),
 	':ports' => json_encode($saveports)
 ));
-$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node']);
+$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 
 ?>
