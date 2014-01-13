@@ -17,6 +17,6 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/list.php" id="sidenav_node-list" class="list-group-item">Edit Node</a>
+	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/list.php" id="sidenav_node-list" class="list-group-item">List Nodes</a>
 	<a href="<?php echo $core->framework->settings->get('master_url'); ?>admin/pages/node/add.php" id="sidenav_node-add" class="list-group-item">Add Node</a>
 </div>
