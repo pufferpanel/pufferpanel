@@ -276,7 +276,6 @@ $select->execute(array(
 						</form>
 					</div>
 				</div>
-				<div id="search_results"></div>
 			</div>
 		</div>
 		<div class="footer">
@@ -285,6 +284,7 @@ $select->execute(array(
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			setActiveOption('server-find');
 			if($.urlParam('error') != null){
 				var field = $.urlParam('error');
 				var exploded = field.split('|');
