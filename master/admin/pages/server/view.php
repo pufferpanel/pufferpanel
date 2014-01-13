@@ -100,7 +100,7 @@ $select->execute(array(
 							?>
 							<fieldset>
 								<div class="panel panel-default">
-									<div class="panel-heading">Panel heading</div>
+									<div class="panel-heading">Changing IP &amp; Port</div>
 									<div class="panel-body">
 										<p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
 									</div>
