@@ -170,6 +170,23 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `backups` created.\n";
+	                        
+	                        /*
+	                         * CREATE TABLE `modpacks`
+	                         */
+	                        $mysql->exec("CREATE TABLE `modpacks` (
+	                          `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
+	                          `hash` char(16) NOT NULL DEFAULT '',
+	                          `name` char(64) NOT NULL DEFAULT '',
+	                          `version` char(32) NOT NULL DEFAULT '',
+	                          `min_ram` int(1) NOT NULL,
+	                          `permgen` int(1) NOT NULL,
+	                          `added` int(11) NOT NULL,
+	                          `default` int(1) NOT NULL,
+	                          `deleted` int(1) NOT NULL DEFAULT '0',
+	                          PRIMARY KEY (`id`)
+	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+	                        echo "Table `modpacks` created.\n";
 	
 	                        /*
 	                         * CREATE TABLE `nodes`
@@ -201,6 +218,7 @@ if(file_exists('../install.lock'))
 	                          `encryption_iv` tinytext NOT NULL,
 	                          `node` int(11) NOT NULL,
 	                          `name` varchar(200) NOT NULL DEFAULT '',
+	                          `modpack` char(16) NOT NULL,
 	                          `active` int(1) DEFAULT '1',
 	                          `owner_id` int(11) NOT NULL,
 	                          `max_ram` int(11) NOT NULL,
