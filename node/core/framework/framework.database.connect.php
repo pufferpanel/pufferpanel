@@ -21,11 +21,11 @@
  *Database Connection
  */
 
-class dbConn {
+class dbConn extends PDOEx {
  
 	protected static $db;
 	 
-	private function __construct() {
+	public function __construct() {
 	 	
 	 	require('node_configuration.php');
 		try {

@@ -60,7 +60,7 @@ class page extends dbConn {
 	}
 	
 	public function override_getCount(){
-		return PDOEx::getCount();
+		return $this->getCount();
 	}
 	
 }
