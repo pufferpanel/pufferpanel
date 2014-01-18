@@ -129,45 +129,49 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						?>
 						<form action="ajax/modpack/new.php" method="post" enctype="multipart/form-data">
 							<fieldset>
-								<div class="form-group">
-									<label for="pack_name" class="control-label">Modpack Name</label>
-									<div>
-										<input type="text" name="pack_name" class="form-control" />
+								<div class="well">
+									<div class="form-group">
+										<label for="pack_name" class="control-label">Modpack Name</label>
+										<div>
+											<input type="text" name="pack_name" class="form-control" />
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" name="pack_default" /> Set this as the default modpack.
+											</label>
+										</div>
 									</div>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" name="pack_default" /> Set this as the default modpack.
-										</label>
+									<div class="row">
+										<div class="form-group col-4 nopad">
+											<label for="pack_version" class="control-label">Modpack Version</label>
+											<div class="input-group">
+												<span class="input-group-addon">v.</span>
+												<input type="text" name="pack_version" class="form-control" />
+											</div>
+										</div>
+										<div class="form-group col-4 nopad">
+											<label for="pack_minram" class="control-label">Minimum RAM Allocation to Install</label>
+											<div class="input-group">
+												<input type="text" name="pack_minram" class="form-control" />
+												<span class="input-group-addon">MB</span>
+											</div>
+										</div>
+										<div class="form-group col-4 nopad">
+											<label for="pack_permgen" class="control-label">PermGen Default Size</label>
+											<div class="input-group">
+												<input type="text" name="pack_permgen" class="form-control" />
+												<span class="input-group-addon">MB</span>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="form-group col-4 nopad">
-										<label for="pack_version" class="control-label">Modpack Version</label>
-										<div class="input-group">
-											<span class="input-group-addon">v.</span>
-											<input type="text" name="pack_version" class="form-control" />
+								<div class="well">
+									<div class="form-group">
+										<label for="pack_jar" class="control-label">Upload Modpack</label>
+										<div>
+											<input type="file" name="pack_jar" class="form-control" />
+											<em><p class="text-muted"><small>Please put all of the files for the Modpack into a compressed (.zip) file. Upload the compressed file. The Modpack installer will unzip the file and move them into the server directory when users install the Modpack.</small></p></em>
 										</div>
-									</div>
-									<div class="form-group col-4 nopad">
-										<label for="pack_minram" class="control-label">Minimum RAM Allocation to Install</label>
-										<div class="input-group">
-											<input type="text" name="pack_minram" class="form-control" />
-											<span class="input-group-addon">MB</span>
-										</div>
-									</div>
-									<div class="form-group col-4 nopad">
-										<label for="pack_permgen" class="control-label">PermGen Default Size</label>
-										<div class="input-group">
-											<input type="text" name="pack_permgen" class="form-control" />
-											<span class="input-group-addon">MB</span>
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="pack_jar" class="control-label">Upload Modpack Jar</label>
-									<div>
-										<input type="file" name="pack_jar" class="form-control" />
-										<em><p class="text-muted"><small>Please put all of the files for the Modpack into a compressed (.zip) file. Upload the compressed file. The Modpack installer will unzip the file and move them into the server directory when users install the Modpack.</small></p></em>
 									</div>
 								</div>
 								<div class="form-group">
