@@ -53,7 +53,21 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				</div>
 			</div>
 			<div class="col-9">
-				<div class="alert alert-info">This feature is currently not available.</div>
+				<h3 class="nopad">Server Modpack Management</h3><hr />
+				<form action="" method="post">
+					<div class="form-group col-8 nopad">
+						<div>
+							<select class="form-control">
+								<option>Some Modpack</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-4 nopad-right">
+						<div>
+							<input type="submit" value="Install Modpack" class="btn btn-primary" />
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<div class="footer">
