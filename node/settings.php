@@ -54,19 +54,50 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 			<div class="col-9">
 				<h3 class="nopad">Server Modpack Management</h3><hr />
-				<form action="" method="post">
-					<div class="form-group col-8 nopad">
-						<div>
-							<select class="form-control">
-								<option>Some Modpack</option>
-							</select>
+				<form action="#" method="post" id="updateModpack">
+					<fieldset>
+						<div class="row" id="installingModpack" style="display:none;"></div>
+						<div class="row">
+							<div class="well well-sm">
+								<?php
+									$packs = $mysql->prepare("SELECT hash, name, version, deleted FROM `modpacks` WHERE `hash` = :hash");
+									$packs->execute(array(
+										':hash' => $core->framework->server->getData('modpack')
+									));
+									
+									$pack = $packs->fetch();
+									$isDeleted = ($pack['deleted'] == 1) ? '[DELETED] ' : null;
+								?>
+							 	<small>Current Modpack: <strong><?php echo $isDeleted.$pack['name'].' ('.$pack['version'].')'; ?></strong></small>
+							</div>
 						</div>
-					</div>
-					<div class="form-group col-4 nopad-right">
-						<div>
-							<input type="submit" value="Install Modpack" class="btn btn-primary" />
+						<div class="form-group col-8 nopad">
+							<div>
+								<select class="form-control" name="new_pack">
+									<option disabled="disabled">-- Select a Modpack</option>
+									<?php
+										$packs = $mysql->prepare("SELECT hash, name, version FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
+										$packs->execute(array(
+											':ram' => $core->framework->server->getData('max_ram')
+										));
+										
+										while($row = $packs->fetch()){
+											
+											if($row['hash'] != $pack['hash'])
+												echo '<option value="'.$row['hash'].'">'.$row['name'].' ('.$row['version'].')</option>';
+											else
+												echo '<option disabled="disabled">'.$row['name'].' ('.$row['version'].')</option>';
+										}
+									?>
+								</select>
+							</div>
 						</div>
-					</div>
+						<div class="form-group col-4 nopad-right">
+							<div>
+								<input type="submit" id="install_modpack_submit" value="Install Modpack" class="btn btn-primary" />
+							</div>
+						</div>
+					</fieldset>
 				</form>
 			</div>
 		</div>
@@ -74,5 +105,26 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			<?php include('assets/include/footer.php'); ?>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("#updateModpack").submit(function(e){
+			e.preventDefault();
+			var pack = $('select[name="new_pack"]').val();
+			
+			if(pack != null){
+				$('#install_modpack_submit').addClass('disabled');
+				$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Installing Modpack.</div>').show();
+				$.ajax({
+					type: "POST",
+					url: 'core/ajax/settings/modpack.php',
+					data: { new_pack: pack },
+			  		success: function(data) {
+			    		$("#installingModpack").hide().html(data).show();
+			    		$('#install_modpack_submit').removeClass('disabled');
+			 		}
+				});
+			}else
+				alert('You can not use a disabled form input as a modpack!');
+		});
+	</script>
 </body>
 </html>
