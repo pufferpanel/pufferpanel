@@ -63,25 +63,33 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Connect and Run Function
 		 */
-//		$con = ssh2_connect($node['sftp_ip'], 22);
-//		ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+		$con = ssh2_connect($node['sftp_ip'], 22);
+		ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+				
+		$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
+		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 		
-		exit('cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"');
+		stream_set_blocking($errorStream, true);
+		stream_set_blocking($stream, true);
 		
-//		$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
-//		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-//		
-//		stream_set_blocking($errorStream, true);
-//		stream_set_blocking($stream, true);
-//		
-//		$isError = stream_get_contents($errorStream);
-//		if(!empty($isError))
-//			echo $isError;
-//		
-//		fclose($errorStream);
-//		fclose($stream);
+		$isError = stream_get_contents($errorStream);
+		if(!empty($isError))
+			echo $isError;
 		
-//        $core->framework->log->getUrl()->addLog(0, 1, array('user.modpack_install', 'A new modpack was installed for this server. The modpack installed was '.$pack['name'].' ('.$pack['version'].').'));
+		fclose($errorStream);
+		fclose($stream);
+		
+        $core->framework->log->getUrl()->addLog(0, 1, array('user.modpack_install', 'A new modpack was installed for this server. The modpack installed was '.$pack['name'].' ('.$pack['version'].').'));
+        
+        /*
+         * Update SQL
+         */
+        $mysql->prepare("UPDATE `servers` SET `modpack` = :pack WHERE `id` = :sid")->execute(array(
+        	':pack' => $pack['hash'],
+        	':sid' => $core->framework->server->getData('id')
+        ));
+        
+        echo '<div class="alert alert-success">Modpack successfully installed.</div>';
 			
 	}
 
