@@ -89,11 +89,13 @@ if($finfo->file($_FILES['pack_jar']['tmp_name']) != "application/zip")
  * File is Legit, Add Modpack
  */
 $modpackHash = $core->framework->auth->keygen(8).'-'.$core->framework->auth->keygen(7);
+$downloadHash = $core->framework->auth->keygen(4).'-'.$core->framework->auth->keygen(4).'-'.$core->framework->auth->keygen(6);
 $isDefault = (isset($_POST['pack_default'])) ? 1 : 0;
 
-$addPack = $mysql->prepare("INSERT INTO `modpacks` VALUES(NULL, :hash, :name, :version, :minram, :permgen, :time, :default, 0)");
+$addPack = $mysql->prepare("INSERT INTO `modpacks` VALUES(NULL, :hash, :dlhash, :name, :version, :minram, :permgen, :time, :default, 0)");
 $addPack->execute(array(
 	':hash' => $modpackHash,
+	':dlhash' => $downloadHash,
 	':name' => $_POST['pack_name'],
 	':version' => $_POST['pack_version'],
 	':minram' => $_POST['pack_minram'],

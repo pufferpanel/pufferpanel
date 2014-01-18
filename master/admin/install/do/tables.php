@@ -177,6 +177,7 @@ if(file_exists('../install.lock'))
 	                        $mysql->exec("CREATE TABLE `modpacks` (
 	                          `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `hash` char(16) NOT NULL DEFAULT '',
+	                          `download_hash` char(16) DEFAULT NULL,
 	                          `name` char(64) NOT NULL DEFAULT '',
 	                          `version` char(32) NOT NULL DEFAULT '',
 	                          `min_ram` int(1) NOT NULL,
