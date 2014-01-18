@@ -23,10 +23,10 @@
 #	$3 = modpack zip
 
 cd /tmp
-wget $2
+curl -o "$3" "$2"
 
 cd /srv/servers/$1/server
 
-unzip -fo /tmp/$3
+unzip -o /tmp/$3 -x __MACOSX/*
 
 rm -rf /tmp/$3
