@@ -34,7 +34,7 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args&error=na');
 
 /*
@@ -109,16 +109,36 @@ if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
 	$core->framework->page->redirect('../../add.php?error=backup_disk|backup_space&disp=b_fail');
 
 /*
+ * Validate Modpack
+ */
+$selectPack = $mysql->prepare("SELECT `min_ram` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
+$selectPack->execute(array(
+	':hash' => $_POST['modpack']
+));
+
+	if($selectPack->rowCount() != 1)
+		$core->framework->page->redirect('../../add.php?error=modpack&disp=no_modpack');
+	else
+		$pack = $selectPack->fetch();
+		
+/*
+ * Modpack RAM Requirements
+ */
+if($pack['min_ram'] > $_POST['alloc_mem'])
+	$core->framework->page->redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
+
+/*
  * Add Server to Database
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, 1, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
+	':modpack' => $_POST['modpack'],
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
 	':disk' => $_POST['alloc_disk'],

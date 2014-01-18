@@ -69,6 +69,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 							case 'n_fail':
 								echo '<div class="alert alert-danger">The node selected does not seem to exist.</div>';
 								break;
+							case 'no_modpack':
+								echo '<div class="alert alert-danger">The modpack hash passed is not valid.</div>';
+								break;
+							case 'modpack_ram':
+								echo '<div class="alert alert-danger">The modpack selected requires more RAM be allocated to it. Miimum amount of RAM that can be allocated: '.$_GET['min_ram'].' MB.</div>';
+								break;
 							case 'ip_fail':
 								echo '<div class="alert alert-danger">The selected IP does not exist.</div>';
 								break;
@@ -130,6 +136,22 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 												while($node = $selectData->fetch()){
 												
 													echo '<option value="'.$node['id'].'">'.$node['node'].'</option>';
+												
+												}
+											?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="modpack" class="control-label">Server Modpack</label>
+									<div>
+										<select name="modpack"class="form-control">
+											<?php
+												$packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `deleted` = 0");
+												$packs->execute();
+												while($pack = $packs->fetch()){
+												
+													echo '<option value="'.$pack['hash'].'">'.$pack['name'].' ('.$pack['version'].')</option>';
 												
 												}
 											?>
