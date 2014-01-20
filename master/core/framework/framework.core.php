@@ -36,6 +36,7 @@ require_once('framework.page.php');
 require_once('framework.settings.php');
 require_once('framework.user.php');
 require_once('framework.log.php');
+require_once('framework.query.php');
 
 /*
  * Include Email Sending Files
@@ -57,6 +58,7 @@ $core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->aut
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
 $core->framework->log = new log($core->framework->user->getData('id'));
+$core->framework->query = new MinecraftQuery();
 
 /*
  * MySQL PDO Connection Engine

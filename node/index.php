@@ -59,13 +59,13 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					</div>
 				</div>
 				<div class="col-12">
-					<h3 class="nopad">Disk Space Used</h3><hr />
+					<h3>Disk Space Used</h3><hr />
 					<div id="server_stats">
 						<p id="server_stats_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 					</div>
 				</div>
 				<div class="col-12">
-					<h3 class="nopad">Server Information</h3><hr />
+					<h3>Server Information</h3><hr />
 					<div id="server_info">
 						<p id="server_info_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 					</div>
@@ -78,7 +78,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			$("img[data-toggle='tooltip']").tooltip();
 			$.ajax({
 				type: "POST",
 				url: "core/ajax/overview/data.php",
@@ -99,7 +98,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						$("#server_players_loading").slideUp("slow", function(){
 							$("#server_players").hide();
 							$("#server_players").html(data);
-							$("#server_players").slideDown("slow");				
+							$("#server_players").slideDown("slow");
+							$("img[data-toggle='tooltip']").tooltip();			
 						});
 			 		}
 			});

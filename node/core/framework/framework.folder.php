@@ -23,43 +23,6 @@
 
 class files {
 
-	public function getFolderSize($dir_name){
-		
-		$dir_size =0;
-			
-			if (is_dir($dir_name)) {
-				
-				if ($dh = opendir($dir_name)) {
-					
-					while (($file = readdir($dh)) !== false) {
-
-						if($file !="." && $file != ".."){
-
-							if(is_file($dir_name."/".$file)){
-
-								$dir_size += filesize($dir_name."/".$file);
-
-							}
-	                             
-							if(is_dir($dir_name."/".$file)){
-								
-								$dir_size +=  $this->getFolderSize($dir_name."/".$file);
-							
-							}
-							
-						}
-					
-					}
-				
-				}
-				
-			}
-	    
-	    if(isset($dh)){ closedir($dh); }
-		return $dir_size;
-	
-	}
-	
 	public function formatSize($size) {
 
 		$units = explode(',', 'B,KB,MB,GB,TB,PB');	
@@ -184,45 +147,6 @@ class files {
 		
 	} 
 	
-	/*
-	 * Broken Function
-	 */
-	public function ftp_rmdirr($path, $handle){
-	    
-	    if (!(@ssh2_sftp_rmdir($handle, $path) || @ssh2_sftp_unlink($handle, $path))){
-	        
-	        $list = scandir("ssh2.sftp://".$handle.$path);
-	        
-	        if (!empty($list)){
-	            
-	            foreach($list as $value){
-					
-					if($value != '.' && $value != '..'){
-						
-						if(!is_dir("ssh2.sftp://".$handle.$path.$value)){
-							
-							ssh2_sftp_unlink($handle, $path);
-							echo $value." is not a Dir.\n";
-							
-						}else{
-							
-							ssh2_sftp_rmdir($handle, $value);
-							echo $value." is a Dir.\n";
-							
-						}
-						
-					}
-					
-	            }
-	            
-	        }
-	        
-	    }
-	        
-	    @ssh2_sftp_rmdir($handle, $path);
-	    
-	}
-
 }
 
 ?>

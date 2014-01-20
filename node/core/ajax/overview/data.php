@@ -20,16 +20,50 @@ session_start();
 require_once('../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
-
+	
 	if($_POST['command'] && $_POST['command'] == 'stats'){
 	
 		$maxSpace = $core->framework->server->getData('disk_space') * 1024 * 1024;
-		$spaceUsed = $core->framework->files->getFolderSize($core->framework->server->getData('path'));
-		    
-		$returnSpacePercent = round(($spaceUsed / $maxSpace), 2) * 100;
+		
+		/*
+		* Get the Server Node Info
+		*/
+		$query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
+		$query->execute(array(
+		':nodeid' => $core->framework->server->getData('node')
+		));
+		
+		$node = $query->fetch();
+		
+			/*
+			 * Run Command
+			 */
+			$con = ssh2_connect($node['sftp_ip'], 22);
+			ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+			
+			
+			$stream = ssh2_exec($con, 'sudo du -s '.$node['server_dir'].$core->framework->server->getData('ftp_user').'/server', true);
+			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+			
+			stream_set_blocking($errorStream, true);
+			stream_set_blocking($stream, true);
+			
+			$getCommandData = stream_get_contents($stream);
+			if(empty($getCommandData))
+				exit('<div class="alert alert-danger">Unable to execute command on the server.</div>');
+			
+			fclose($errorStream);
+			fclose($stream);
+		
+		/*
+		 * Do Math
+		 */
+		$getCommandData = explode("\t", $getCommandData);
+				
+		$returnSpacePercent = round((($getCommandData[0] * 1024) / $maxSpace), 2) * 100;
 		if($returnSpacePercent < 1){ $returnSpacePercent = 1; }
 		
-		$spaceUsedH = $core->framework->files->formatSize($spaceUsed);
+		$spaceUsedH = $core->framework->files->formatSize($getCommandData[0] * 1024);
 		$maxSpaceH = $core->framework->files->formatSize($maxSpace);
 		
 		echo '	<div class="progress">
@@ -38,84 +72,102 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<p class="text-muted">You are using '.$spaceUsedH.' of your maximum '.$core->framework->server->getData('disk_space').' MB of disk space.</p>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'players'){
-					
-		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+		
+		/*
+		 * Query Dodads
+		 */
+		try {
+			$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
+		}catch(MinecraftQueryException $e){
+			exit('<div class="alert alert-danger">The server appears to be offline. <strong>'.htmlspecialchars($e->getMessage()).'</strong></div>');
+		}
 			
-			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
+			$onlinePlayers = null;
+			$players = $core->framework->query->getPlayers();
 			
-									
-				$pOnlineL = '';
-				if(count($core->framework->rcon->data('players')) > 0){
-					foreach($core->framework->rcon->data('players') as $id => $player){
-				
-						$pOnlineL .= '<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'.$player.'/32" title="'.$player.'" style="padding: 0 2px 6px 0;"/>';
-				
-					}
-				}else{
-				
-					$pOnlineL = '<p class="text-muted">No players are currently online.</p>';
-				
+			if($players !== false){
+			
+				$i = 0;
+				foreach($players as $player){
+			
+					$onlinePlayers .= '<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'.$player.'/32" title="'.$player.'" style="padding: 0 2px 6px 0;"/>';
+					$i++;
+			
 				}
-			
-			$pPercent = round(count($core->framework->rcon->data('players'))/$core->framework->rcon->data('maxplayers'), 2) * 100;
-			($pPercent < 1) ? $pPercent = '1' : $pPercent = $pPercent;
-			
-			echo '
-					<div class="progress">
-					  	<div class="progress-bar" style="width:'.$pPercent.'%"></div>
-					</div>
-					'.$pOnlineL;
 				
-		}else{
-		
-			echo '
-					<div class="alert alert-info">Unable to connect and query the server. Is it online?</div>
-				';
-		
-		}
-	
-	}else if($_POST['command'] && $_POST['command'] == 'info'){
-	
-		if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+			}else{
 			
-			$core->framework->rcon->getStatus($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-			$sVersion = $core->framework->rcon->data('version');
-							
-		}else{
+				$onlinePlayers = '<p class="text-muted">No players are currently online.</p>';
+			
+			}
 		
-			$sPlugins = 'Unable to query the server.';
-			$sVersion = 'Unable to query the server.'; 
-			$sSoftware = 'Unable to query the server.';
-		
-		}
+		$playerPercentage = round($i / $core->framework->query->getInfo('MaxPlayers'), 2) * 100;
+		$playerPercentage = ($playerPercentage < 1) ? 1 : $playerPercentage;
 		
 		echo '
-				<table class="table table-striped table-bordered table-hover">
-					<thead>
-						<tr>
-							<th>Information</th>
-							<th>Data</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><strong>IP</strong></td>
-							<td>'.$core->framework->server->getData('server_ip').'</td>
-						</tr>
-						<tr>
-							<td><strong>Port</strong></td>
-							<td>'.$core->framework->server->getData('server_port').'</td>
-						</tr>
-						<tr>
-							<td><strong>Node</strong></td>
-							<td>'.$core->framework->settings->nodeName($core->framework->server->getData('node')).'</td>
-						</tr>
-						<tr>
-							<td><strong>Version</strong></td>
-							<td>'.$sVersion.'</td>
-						</tr>
-					</tbody>
-				</table>';
+				<div class="progress">
+				  	<div class="progress-bar" style="width:'.$playerPercentage.'%"></div>
+				</div>
+				'.$onlinePlayers;
+				
+	}else if($_POST['command'] && $_POST['command'] == 'info'){
+	
+		/*
+		 * Query Dodads
+		 */
+		try {
+			$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
+			$response = true;
+		}catch(MinecraftQueryException $e){
+			$response = false;
+		}
+		
+		if($response === true){
+		
+			$version = $core->framework->query->getInfo('Software');
+			
+			$plugins = null;
+			foreach($core->framework->query->getInfo('Plugins') as $id => $name){
+			
+				$plugins .= $name.', ';
+			
+			}
+			$plugins = rtrim($plugins, ", ");
+		
+		}else{
+		
+			$version = "Unable to query the server.";
+			$plugins = "Unable to query the server.";
+		
+		}
+		
+			echo '
+					<table class="table table-striped table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Information</th>
+								<th>Data</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><strong>Connection</strong></td>
+								<td>'.$core->framework->server->getData('server_ip').':'.$core->framework->server->getData('server_port').'</td>
+							</tr>
+							<tr>
+								<td><strong>Node</strong></td>
+								<td>'.$core->framework->settings->nodeName($core->framework->server->getData('node')).'</td>
+							</tr>
+							<tr>
+								<td><strong>Version</strong></td>
+								<td>'.$version.'</td>
+							</tr>
+							<tr>
+								<td><strong>Plugins</strong></td>
+								<td>'.$plugins.'</td>
+							</tr>
+						</tbody>
+					</table>';
 	
 	}
 
