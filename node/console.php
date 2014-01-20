@@ -79,7 +79,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					<button class="btn btn-primary btn-sm poke" id="start">Start</button>
 					<button class="btn btn-primary btn-sm poke" id="stop">Stop</button>
 					<button class="btn btn-danger btn-sm poke" id="kill">Kill</button>
-					<div class="alert alert-info" id="pw_resp" style="display:none;margin-top: 15px;"></div>
+					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 				</div>
 			</div>
 		</div>
@@ -177,23 +177,23 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				    			if(data == "Server Started."){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Start');
-				    				$("#pw_resp").html("Server has been started successfully.").slideDown().delay(5000).slideUp();
+				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been started successfully.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
 				    			}else if(data == "Server Stopped."){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Stop');
-				    				$("#pw_resp").html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
+				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
 				    			}else if(data == "Server Killed."){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Kill');
-				    				$("#pw_resp").html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();
+				    				$("#pw_resp").attr('class', 'alert alert-success').html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
 				    			}else{
-				    				$("#pw_resp").html(data);				    				
+				    				$("#pw_resp").attr('class', 'alert alert-danger').html(data);				    				
 				    				$("#stop").removeClass('disabled');
 				    				$("#stop").html('Stop');
 				    				$("#start").removeClass('disabled');
