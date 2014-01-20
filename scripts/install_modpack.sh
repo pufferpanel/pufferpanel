@@ -22,11 +22,25 @@
 #	$2 = download
 #	$3 = modpack zip
 
+# Download the Mod
 cd /tmp
 curl -o "$3" "$2"
 
+# Move into Server Directory
 cd /srv/servers/$1/server
 
-unzip -o /tmp/$3 -x __MACOSX/*
+# Remove Possible Old Installer Files & Unzip into Directory
+rm -rf pufferpanel_modpack_installer
+unzip -o /tmp/$3 -x __MACOSX/* -d pufferpanel_modpack_installer
 
+# Move into Directory & Apply Ownership
+cd pufferpanel_modpack_installer
+chown -R $1:$1 *
+
+# Move all Files Out
+cp -r * ../
+cd /srv/servers/$1/server
+
+# Cleanup
+rm -rf pufferpanel_modpack_installer
 rm -rf /tmp/$3
