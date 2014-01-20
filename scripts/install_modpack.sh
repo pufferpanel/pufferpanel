@@ -38,7 +38,7 @@ cd pufferpanel_modpack_installer
 chown -R $1:$1 *
 
 # Move all Files Out
-cp -r * ../
+rsync -rgop * ../
 cd /srv/servers/$1/server
 
 # Cleanup
