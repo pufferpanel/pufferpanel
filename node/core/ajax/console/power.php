@@ -189,13 +189,23 @@ motd=A Minecraft Server';
 		ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 				
 				if(isset($_POST['command'])){
-				
+					
+					/*
+					 * Query Dodads
+					 */
+					$online = true;
+					try {
+						$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
+					}catch(MinecraftQueryException $e){
+						$online = false;
+					}
+					
 					/*
 					 * This Start Command is not working from PHP
 					 */
 					if($_POST['command'] == 'start'){
 						
-						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+						if($online === true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);
@@ -226,7 +236,7 @@ motd=A Minecraft Server';
 					
 					}else if($_POST['command'] == 'stop'){
 					
-						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
+						if($online !== true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);
@@ -259,7 +269,7 @@ motd=A Minecraft Server';
 					
 					}else if($_POST['command'] == 'kill'){
 					
-						if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) !== true){
+						if($online !== true){
 						
 							$stream = ssh2_exec($con, 'exit');
 							stream_set_blocking($stream, true);

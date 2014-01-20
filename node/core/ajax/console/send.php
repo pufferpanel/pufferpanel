@@ -21,7 +21,17 @@ require_once('../../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
 
-	if($core->framework->rcon->online($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port')) === true){
+	/*
+	 * Query Dodads
+	 */
+	$online = true;
+	try {
+		$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
+	}catch(MinecraftQueryException $e){
+		$online = false;
+	}
+	
+	if($online === true){
 	
 		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
 		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
