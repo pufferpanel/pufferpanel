@@ -84,10 +84,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 			$onlinePlayers = null;
 			$players = $core->framework->query->getPlayers();
+			$i = 0;
 			
 			if($players !== false){
 			
-				$i = 0;
 				foreach($players as $player){
 			
 					$onlinePlayers .= '<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'.$player.'/32" title="'.$player.'" style="padding: 0 2px 6px 0;"/>';
