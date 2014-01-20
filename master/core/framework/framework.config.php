@@ -40,7 +40,7 @@ class Config
     {
         if (!$this->existsInCache($path)) {
             list($file, $reference) = explode('.', $path, 1);
-            $this->config[$file] = (require 'config/' . $file);
+            $this->config[$file] = (require 'config/' . $file . '.php');
         }
 
         return $this->getFromCache($path);
