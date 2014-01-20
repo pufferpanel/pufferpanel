@@ -50,11 +50,11 @@ while($row = $query->fetch()){
 	
 	($row['active'] == '1') ? $isActive = 'Enabled' : $isActive = 'Disabled';
 	$listServers .= '
-					<tr>
+					<tr class="dynUpdate" id="'.$row['server_ip'].'+'.$row['server_port'].'">
 						<td>'.$core->framework->settings->nodeName($row['node']).'</td>
 						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
 						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-						<td>'.$isActive.'</td>
+						<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i> </span></td>
 					</tr>
 					';
 
@@ -100,7 +100,7 @@ while($row = $query->fetch()){
 							<th>Node</th>
 							<th>Name</th>
 							<th>Connect</th>
-							<th>Status</th>
+							<th style="width:5%;">Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -113,5 +113,21 @@ while($row = $query->fetch()){
 			<?php include('assets/include/footer.php'); ?>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+				$(".dynUpdate").each(function(index, data){
+				    var connection = $(this).attr("id");
+				    var element = $(this);
+				    $.ajax({
+				    	type: "POST",
+				    	url: "core/ajax/get_status.php",
+				    	data: { server: connection },
+				      		success: function(data) {
+				    			element.find(".applyUpdate").html(data);
+				     		}
+				    });
+				});
+		});
+	</script>
 </body>
 </html>
