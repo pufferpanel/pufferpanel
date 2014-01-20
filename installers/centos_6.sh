@@ -20,13 +20,21 @@
 echo "Beginning CentOS Automatic Installer for PufferPanel"
 echo "USE AT YOUR OWN RISK!"
 
-rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+read -p "Do you want to install the EPEL and REMI repos? This is recommended to get the most up-to-date versions of software. [Y/n] " -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+    rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+fi
 
 yum update -y
 
+read -p "Do you want to install Apache and MySQL? These are required, unless you are using a different web server or database solution. [Y/n] " -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
 echo "Installing Apache and MySQL"
 yum install -y mysql-server httpd
+fi
 
 echo "Installing PHP Dependences (assuming apache)"
 yum install -y php php-mysql php-pdo php-devel php-ssh2 php-mcrypt pear
