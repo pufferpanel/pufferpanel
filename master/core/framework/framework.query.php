@@ -62,13 +62,16 @@ class MinecraftQuery
 			
 	}
 	
-	public function getInfo(){
+	public function getInfo($value = null){
 	
-		return isset($this->info) ? $this->info : false;
+		if(is_null($value))
+			return isset($this->info) ? $this->info : false;
+		else
+			return (isset($this->info) && array_key_exists($value, $this->info)) ? $this->info[$value] : false;
 	
 	}
 	
-	public function GetPlayers(){
+	public function getPlayers(){
 	
 		return isset($this->players) ? $this->players : false;
 		
@@ -137,10 +140,10 @@ class MinecraftQuery
 		}
 		
 		$info['Players'] = intval($info['Players']);
-		$info['MaxPlayers'] = intval($info['MaxPLayers']);
+		$info['MaxPlayers'] = intval($info['MaxPlayers']);
 		$info['HostPort'] = intval($info['HostPort']);
 		
-		if($info['plugins']){
+		if($info['Plugins']){
 		
 			$data = explode(": ", $info['Plugins'], 2);
 			
