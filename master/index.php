@@ -159,6 +159,35 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 					</fieldset>
 				</form>
 			</div>
+			<div class="col-6">
+				<form action="suspendmcfuser.php" method="POST" id="be-an-asshole">
+					<legend>Suspend User</legend>
+					<fieldset>
+						<?php 
+							if(isset($_GET['error'])){
+								echo '<div class="alert alert-danger"><strong>Oh snap!</strong> Thank god you couldnt abuse your powers!</div>';
+							}
+						?>
+						<div class="form-group">
+							<label for="victim" class="control-label">Username</label>
+							<div>
+								<input type="text" class="form-control" name="victim" placeholder="TobyG123" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="BS-Reason" class="control-label">BS Reason</label>
+							<div>
+								<input type="text" class="form-control" name="bsreason" placeholder="Being too facetious towards a troll thread." />
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<input type="submit" class="btn btn-danger btn-large" value="BRING DOWN THE HAMMER" />
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
 			<div class="col-3">&nbsp;</div>
 		</div>
 		<div class="footer">
