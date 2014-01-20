@@ -132,7 +132,7 @@ if($pack['min_ram'] > $_POST['alloc_mem'])
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, 1, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
@@ -169,7 +169,52 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 $con = ssh2_connect($node['sftp_ip'], 22);
 ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 
-$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], true);
+	/*
+	 * Set the Soft Limit
+	 */
+	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
+
+	/*
+	 * Create User
+	 */
+	$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], true);
+	$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+	
+	stream_set_blocking($errorStream, true);
+	stream_set_blocking($stream, true);
+	
+	$isError = stream_get_contents($errorStream);
+	
+	fclose($errorStream);
+	fclose($stream);
+	
+	/*
+	 * Install Modpack
+	 */
+	
+		/*
+		 * Generate URL
+		 */
+		$packiv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+		$packEncryptedHash = openssl_encrypt($pack['download_hash'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($packiv));
+		
+		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
+	
+		/*
+		 * Execute Commands
+		 */
+		$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
+		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+		
+		stream_set_blocking($errorStream, true);
+		stream_set_blocking($stream, true);
+		
+		$isError = stream_get_contents($errorStream);
+		if(!empty($isError))
+			echo $isError;
+		
+		fclose($errorStream);
+		fclose($stream);
 
 $core->framework->email->buildEmail('admin_new_server', array(
         'NAME' => $_POST['server_name'],
