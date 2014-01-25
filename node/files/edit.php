@@ -58,10 +58,14 @@ $parName = 'Editing: /'.$_POST['file'].'';
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
 					<a href="../index.php" class="list-group-item">Overview</a>
 					<a href="../console.php" class="list-group-item">Live Console</a>
-					<a href="../settings.php" class="list-group-item">Server Settings</a>
-					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
 					<a href="index.php" class="list-group-item active">File Manager</a>
 					<a href="../backup.php" class="list-group-item">Backup Manager</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="../properties.php" class="list-group-item">Server Properties</a>
+					<a href="../settings.php" class="list-group-item">Modpack Management</a>
+					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
 				</div>
 			</div>
 			<div class="col-9" id="load_files">
