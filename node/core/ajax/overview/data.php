@@ -39,7 +39,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			 * Run Command
 			 */
 			$con = ssh2_connect($node['sftp_ip'], 22);
-			ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+			if(!ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv']))))
+				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
 			
 			
 			$stream = ssh2_exec($con, 'sudo du -s '.$node['server_dir'].$core->framework->server->getData('ftp_user').'/server', true);
