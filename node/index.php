@@ -45,10 +45,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
 					<a href="index.php" class="list-group-item active">Overview</a>
 					<a href="console.php" class="list-group-item">Live Console</a>
-					<a href="settings.php" class="list-group-item">Server Settings</a>
-					<a href="plugins/index.php" class="list-group-item">Server Plugins</a>
 					<a href="files/index.php" class="list-group-item">File Manager</a>
 					<a href="backup.php" class="list-group-item">Backup Manager</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="properties.php" class="list-group-item">Server Properties</a>
+					<a href="settings.php" class="list-group-item">Modpack Management</a>
+					<a href="plugins/index.php" class="list-group-item">Server Plugins</a>
 				</div>
 			</div>
 			<div class="col-9">
@@ -81,12 +85,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			$.ajax({
 				type: "POST",
 				url: "core/ajax/overview/data.php",
-				data: { command: 'stats' },
+				data: { command: 'info' },
 			  		success: function(data) {
-						$("#server_stats_loading").slideUp("slow", function(){
-							$("#server_stats").hide();
-							$("#server_stats").html(data);
-							$("#server_stats").slideDown("slow");				
+						$("#server_info_loading").slideUp("slow", function(){
+							$("#server_info").hide();
+							$("#server_info").html(data);
+							$("#server_info").slideDown("slow");				
 						});
 			 		}
 			});
@@ -106,12 +110,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			$.ajax({
 				type: "POST",
 				url: "core/ajax/overview/data.php",
-				data: { command: 'info' },
+				data: { command: 'stats' },
 			  		success: function(data) {
-						$("#server_info_loading").slideUp("slow", function(){
-							$("#server_info").hide();
-							$("#server_info").html(data);
-							$("#server_info").slideDown("slow");				
+						$("#server_stats_loading").slideUp("slow", function(){
+							$("#server_stats").hide();
+							$("#server_stats").html(data);
+							$("#server_stats").slideDown("slow");				
 						});
 			 		}
 			});
