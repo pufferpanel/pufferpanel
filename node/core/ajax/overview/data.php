@@ -128,12 +128,17 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			$version = $core->framework->query->getInfo('Software');
 			
 			$plugins = null;
-			foreach($core->framework->query->getInfo('Plugins') as $id => $name){
 			
-				$plugins .= $name.', ';
+			if($pluginList = is_array($core->framework->query->getInfo('Plugins'))){
 			
+				foreach($pluginList as $id => $name){
+				
+					$plugins .= $name.', ';
+				
+				}
+				$plugins = rtrim($plugins, ", ");
+				
 			}
-			$plugins = rtrim($plugins, ", ");
 		
 		}else{
 		
