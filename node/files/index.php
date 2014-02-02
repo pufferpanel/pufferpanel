@@ -82,7 +82,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
 					
-					<a href="../settings.php" class="list-group-item">Modpack Management</a>
+					<a href="../settings.php" class="list-group-item">Server Management</a>
 					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
 				</div>
 			</div>

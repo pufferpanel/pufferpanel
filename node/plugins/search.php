@@ -109,7 +109,7 @@ if(isset($_GET['term']) && !empty($_GET['term'])){
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
 					
-					<a href="../settings.php" class="list-group-item">Modpack Management</a>
+					<a href="../settings.php" class="list-group-item">Server Management</a>
 					<a href="index.php" class="list-group-item active">Server Plugins</a>
 				</div>
 			</div>
