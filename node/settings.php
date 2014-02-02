@@ -101,6 +101,25 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						</div>
 					</fieldset>
 				</form>
+				<div class="row">
+					<h3>Server .jar Name</h3><hr />
+						<div class="well">
+							<form action="core/ajax/settings/jarname.php" method="post">
+								<fieldset>
+								<div class="form-group">
+									<label for="jarfile" class="control-label">Jarfile Name</label>
+									<div class="input-group">
+										<input type="text" autocomplete="off" name="jarfile" class="form-control" />
+										<span class="input-group-addon">.jar</span>
+										<span class="input-group-btn">
+											<button class="btn btn-primary">Update Name</button>
+										</span>
+									</div>
+								</div>
+								</fieldset>
+							</form>
+						</div>
+				</div>
 			</div>
 		</div>
 		<div class="footer">
