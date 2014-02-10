@@ -211,8 +211,10 @@ motd=A Minecraft Server';
                     stream_set_blocking($stream, true);
                     
                     $isError = stream_get_contents($errorStream);
-                    if(!empty($isError))
+                    if(!empty($isError)){
                     	echo $isError;
+                    	$core->framework->log->getUrl()->addLog(5, 0, array('user.server_start_failed', 'The server `'.$core->framework->server->getData('name').'` was unable to be started due to an error. ##'.$isError.'##'));
+                    }
                     
                     fclose($errorStream);
                     fclose($stream);
@@ -244,8 +246,10 @@ motd=A Minecraft Server';
 					stream_set_blocking($stream, true);
 					
 					$isError = stream_get_contents($errorStream);
-					if(!empty($isError))
+					if(!empty($isError)){
 						echo $isError;
+						$core->framework->log->getUrl()->addLog(5, 0, array('user.server_stopped_failed', 'The server `'.$core->framework->server->getData('name').'` was unable to be stopped due to an error. ##'.$isError.'##'));
+					}
 					
 					fclose($errorStream);
 					fclose($stream);
@@ -275,8 +279,10 @@ motd=A Minecraft Server';
                     stream_set_blocking($stream, true);
                     
                     $isError = stream_get_contents($errorStream);
-                    if(!empty($isError))
+                    if(!empty($isError)){
                     	echo $isError;
+                    	$core->framework->log->getUrl()->addLog(5, 0, array('user.server_kill_failed', 'The server `'.$core->framework->server->getData('name').'` was unable to be killed due to an error. ##'.$isError.'##'));
+                    }
                     
                     fclose($errorStream);
                     fclose($stream);
