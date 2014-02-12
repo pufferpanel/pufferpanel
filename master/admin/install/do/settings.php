@@ -75,7 +75,8 @@ if(file_exists('../install.lock'))
                                 ('use_api','0'),
                                 ('api_key', NULL),
                                 ('api_allowed_ips','*'),
-                                ('api_module_controls_all','0')");
+                                ('api_module_controls_all','0'),
+                                ('modpack_dir',':mpackdir')");
                             
                             $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
                             $prepare->execute(array(
@@ -84,7 +85,8 @@ if(file_exists('../install.lock'))
                                 ':cwebsite' => $cookieSite,
                                 ':smail' => $_POST['sendmail_email'],
                                 ':mwebsite' => $_POST['main_website'],
-                                ':aurl' => $_POST['assets_url']
+                                ':aurl' => $_POST['assets_url'],
+                                ':mpackdir' => $_POST['modpack_dir']
                             ));
                             
                             exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
@@ -118,6 +120,10 @@ if(file_exists('../install.lock'))
                         <p>
                             <label for="sendmail_email">Sendmail Email</label>
                             <input type="text" name="sendmail_email" class="round default-width-input" />
+                        </p>
+                        <p>
+                            <label for="modpack_dir">Modpack Directory</label>
+                            <input type="text" name="modpack_dir" placeholder="/srv/modpacks/" class="round default-width-input" />
                         </p>
                         <input type="submit" name="do_settings" value="Setup Database" class="round blue ic-right-arrow" />
                     </form>
