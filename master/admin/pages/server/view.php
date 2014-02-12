@@ -85,6 +85,7 @@ $select->execute(array(
 					<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
 					<li><a href="#backup_sett" data-toggle="tab">Backups</a></li>
 					<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
+					<li><a href="#delete" data-toggle="tab">Delete</a></li>
 					<li><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Server Control</a></li>
 				</ul>
 				<div class="tab-content">
@@ -274,6 +275,11 @@ $select->execute(array(
 								<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
 							</fieldset>
 						</form>
+					</div>
+					<div class="tab-pane" id="delete">
+						<h3>Delete Server</h3><hr />
+							<div class="alert alert-danger"><strong>WARNING:</strong> This is an irreversible action. After deleting the server all user data will be destroyed, backups removed, and database rows cleared.</div>
+							<div><button class="btn btn-danger btn-sm disabled">I Understand - Delete Server</button></div>
 					</div>
 				</div>
 			</div>
