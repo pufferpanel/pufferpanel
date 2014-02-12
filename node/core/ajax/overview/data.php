@@ -139,6 +139,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				$plugins = rtrim($plugins, ", ");
 				
 			}
+			
+			$plugins = (is_null($plugins)) ? "No plugins detected." : $plugins;
 		
 		}else{
 		
