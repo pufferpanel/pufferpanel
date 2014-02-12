@@ -42,8 +42,6 @@ class dbConn extends PDOEx {
 				        PDO::MYSQL_ATTR_SSL_KEY => $_INFO['sql_ssl_client-key'],
 				        PDO::MYSQL_ATTR_SSL_CERT => $_INFO['sql_ssl_client-cert'],
 				        PDO::MYSQL_ATTR_SSL_CA => $_INFO['sql_ssl_ca-cert']
-				    ),
-				    array(
 						PDO::ATTR_PERSISTENT => true,
 						PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 					)
