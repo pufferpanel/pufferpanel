@@ -31,11 +31,32 @@ class dbConn extends PDOEx {
 	 	require('master_configuration.php');
         self::$salt = $_INFO['salt'];
 		try {
-
-			self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
-	    		PDO::ATTR_PERSISTENT => true,
-	    		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-			));
+			
+			/*
+			 * Connect to SQL Server over SSL
+			 */
+			if(array_key_exists('sql_ssl', $_INFO) && $_INFO['sql_ssl'] === true){
+			
+				self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'],
+					array(
+				        PDO::MYSQL_ATTR_SSL_KEY => $_INFO['sql_ssl_client-key'],
+				        PDO::MYSQL_ATTR_SSL_CERT => $_INFO['sql_ssl_client-cert'],
+				        PDO::MYSQL_ATTR_SSL_CA => $_INFO['sql_ssl_ca-cert']
+				    ),
+				    array(
+						PDO::ATTR_PERSISTENT => true,
+						PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+					)
+				);
+			
+			}else{
+			
+				self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
+		    		PDO::ATTR_PERSISTENT => true,
+		    		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+				));
+			
+			}
 	
 			self::$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 	

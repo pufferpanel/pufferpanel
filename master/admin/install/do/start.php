@@ -80,7 +80,11 @@ if(file_exists('../install.lock'))
 \$_INFO['sql_p'] = '".$_POST['sql_p']."';
 \$_INFO['sql_h'] = '".$_POST['sql_h']."';
 \$_INFO['sql_db'] = '".$_POST['sql_db']."';
-\$_INFO['salt'] = '".$randkey."';");
+\$_INFO['salt'] = '".$randkey."';
+\$_INFO['sql_ssl'] = false;
+\$_INFO['sql_ssl_client-key'] = '/path/to/client-key.pem';
+\$_INFO['sql_ssl_client-cert'] = '/path/to/client-cert.pem';
+\$_INFO['sql_ssl_ca-cert'] = '/path/to/ca-cert.pem';");
                                     fclose($fp);
                                 
                                     if(!rename('../../../core/framework/master_configuration.php.dist', '../../../core/framework/master_configuration.php')){
