@@ -90,7 +90,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="assets_url" class="control-label">Main Website URL</label>
+									<label for="assets_url" class="control-label">Assets Directory URL</label>
 									<div>
 										<input type="text" name="assets_url" class="form-control" value="<?php echo $core->framework->settings->get('assets_url'); ?>"/>
 										<p><small class="text-muted"><em>The URL corresponding to the assets for PufferPanel. Update this only if you are using a CDN or Caching Service that modifies where the assets are stored.</em></small></p>
