@@ -23,12 +23,12 @@
 
 class user extends auth {
 
-	public function __construct($ip, $session){
+	public function __construct($ip, $session, $serverhash = null){
 	
 		//Re-Initalize the MySQL PDO Class
 		$this->mysql = parent::getConnection();
 		
-		if(auth::isLoggedIn($ip, $session) === true){
+		if(auth::isLoggedIn($ip, $session, $serverhash) === true){
 		
 			$this->_l = true;
 			

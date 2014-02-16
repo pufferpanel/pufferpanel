@@ -49,55 +49,92 @@ class auth extends dbConn {
 		return $randkey;
 					
 	}
+
+	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
+
+		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session AND `session_expires` > :sesexp");
+		$this->query->execute(array(
+			':sessip' => $ip,
+			':session' => $session,
+			':sesexp' => time()
+		));
+
+			if($this->query->rowCount() == 1){
+
+				$this->row = $this->query->fetch();
+
+					/*
+					 * Accessing Admin Directory
+					 */
+					if($this->row['root_admin'] != 1 && $acp === true)
+						return false;
+					else{
+
+						/*
+						 * Allow Admins Access to any Server
+						 */
+						if($this->row['root_admin'] != '1'){	
 	
-	public function isLoggedIn($ip, $session, $acp = false){
-	
-		$this->expires = time();
+							/*
+							 * Validate User is Owner of Server
+							 */
+							if(!is_null($serverhash)){
+							
+								$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :shash AND `owner_id` = :ownerid AND `active` = 1");
+								$this->_validateServer->execute(array(
+									':shash' => $serverhash,
+									':ownerid' => $this->row['id']
+								));
 		
-			if($acp !== true){
-						
-				$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid AND `session_expires` > '".$this->expires."'");
-				$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
-				
-					if($this->query->rowCount() == 1){
-					
-						$this->update = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-						$this->update->execute(array(':sesexp' => (time() + 1800), ':sesip' => $ip, ':sesid' => $session));
-					
-						return true;
-						
-					}else{
-					
-						return false;
-					
-					}
-					
-			}else{
-			
-				/*
-				 * Admin CP Login
-				 */
-				
-				$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid AND `session_expires` > '".$this->expires."' AND `root_admin` = 1");
-				$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
-				
-					if($this->query->rowCount() == 1){
-					
-						$this->update = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-						$this->update->execute(array(':sesexp' => (time() + 1800), ':sesip' => $ip, ':sesid' => $session));
-					
-						return true;
-				
-						
-					}else{
-					
-						return false;
-					
-					}
-				
-			
-			}
+									if($this->_validateServer->rowCount() == 1){
+		
+										$this->updateUsers = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
+										$this->updateUsers->execute(array(
+											':sesexp' => time() + 1800,
+											':sesip' => $ip,
+											':sesid' => $session
+		
+										));
+		
+											return true;
+		
+									}else{
+		
+										return false;
+		
+									}
+							
+							/*
+							 * Just Check if they are Logged In
+							 */	
+							}else{
+							
+								return true;
+								
+							}
 	
+						}else{
+	
+							$this->updateUsers = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
+							$this->updateUsers->execute(array(
+								':sesexp' => time() + 1800,
+								':sesip' => $ip,
+								':sesid' => $session
+	
+							));
+	
+								return true;
+	
+						}
+						
+					}
+
+			}else{
+
+				return false;
+
+			}
+
 	}
 	
 	public function getCookie($cookie){
@@ -108,7 +145,7 @@ class auth extends dbConn {
 		
 		}else{
 		
-			return 'error';
+			return null;
 		
 		}
 	

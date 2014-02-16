@@ -33,8 +33,10 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 require_once('framework.database.connect.php');
 require_once('framework.auth.php');
 require_once('framework.page.php');
+require_once('framework.folder.php');
 require_once('framework.settings.php');
 require_once('framework.user.php');
+require_once('framework.server.php');
 require_once('framework.log.php');
 require_once('framework.query.php');
 
@@ -54,7 +56,8 @@ $core->framework = new stdClass();
  */
 $core->framework->settings = new getSettings();
 $core->framework->auth = new auth();
-$core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'));
+$core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash'));
+$core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
 $core->framework->log = new log($core->framework->user->getData('id'));
