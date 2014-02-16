@@ -84,6 +84,9 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							case 'pass_fail':
 								echo '<div class="alert alert-danger">SSH passwords must be at least 12 characters.</div>';
 								break;
+							case 'ip_port_space':
+								echo '<div class="alert alert-danger">Unable to allocate the ports you inputted. This is most likely due to a spacing issue.</div>';
+								break;
 						
 						}
 					
@@ -162,8 +165,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
 									<div>
-										<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25566,25567,25568,25569,25570"></textarea>
-										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas.</em></small></p>
+										<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25567,25569,25571,25573,25575"></textarea>
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas. <strong>Please leave at least one empty port between each that you allocate. (e.g If you allocate 25565, do not allocate 25566, you can allocate 25567 though)</strong></em></small></p>
 									</div>
 								</div>
 							</div>

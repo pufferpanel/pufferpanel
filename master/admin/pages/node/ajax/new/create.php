@@ -87,15 +87,25 @@ foreach($lines as $id => $values)
 
 		for($l=0; $l<count($ports); $l++)
 			{
-							
-				$IPP[$ip][$ports[$l]] = 1;
+				
+				/*
+				 * Validate Port Spacing
+				 */
+				if(!array_key_exists($l - 1, $IPP[$ip]) && !array_key_exists($l + 1, $IPP[$ip])
+					$IPP[$ip][$ports[$l]] = 1;
 			
 			}
-		
-		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
+			
+		/*
+		 * Make sure Ports are in the array
+		 */
+		if(count($IPP[$ip]) > 0)
+			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
+		else
+			$core->framework->page->redirect('../../add.php?error=ip_port&disp=ip_port_space');
 			
 	}
-	
+
 $IPA = json_encode($IPA);
 $IPP = json_encode($IPP);
 
