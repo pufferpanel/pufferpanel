@@ -59,7 +59,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 			<div class="col-9">
 				<div class="col-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly"><?php echo $core->framework->files->last_lines($core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/logs/latest.log', 250); ?></textarea>
+					<textarea id="live_console" class="form-control console" readonly="readonly">http://localhost:25566</textarea>
 				</div>
 				<div class="col-12">
 					<div class="alert alert-danger text_highlighted" style="display:none;margin: 15px 0 -5px 0;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
