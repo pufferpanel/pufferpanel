@@ -44,13 +44,7 @@ if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['no
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 	$core->framework->page->redirect('../../add.php?error=node_name&disp=n_fail');
-	
-/*
- * Validate Node URL
- */
-if(!preg_match('/^https?\:\/\/(?:[\w](?:[-\w]*[\w])?\.)+[a-zA-Z]{1,15}(?:\:[\d]+)?\/?$/', $_POST['node_url']))
-	$core->framework->page->redirect('../../add.php?error=node_url&disp=url_fail');
-	
+		
 /*
  * Validate node_ip & node_sftp_ip
  */
@@ -112,10 +106,9 @@ $IPP = json_encode($IPP);
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['ssh_pass'] = openssl_encrypt($_POST['ssh_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :link, :ip, :sftp_ip, :sdir, :bdir, :suser, :iv, :spass, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :bdir, :suser, :iv, :spass, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
-	':link' => $_POST['node_url'],
 	':ip' => $_POST['node_ip'],
 	':sftp_ip' => $_POST['node_sftp_ip'],
 	':sdir' => $_POST['s_dir'],

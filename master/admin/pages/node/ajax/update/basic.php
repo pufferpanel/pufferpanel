@@ -34,13 +34,7 @@ if(!isset($_POST['name'], $_POST['link'], $_POST['ip']))
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['name']))
 	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
-	
-/*
- * Validate Node URL
- */
-if(!preg_match('/^https?\:\/\/(?:[\w](?:[-\w]*[\w])?\.)+[a-zA-Z]{1,15}(?:\:[\d]+)?\/?$/', $_POST['link']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=link&disp=url_fail');
-	
+		
 /*
  * Validate node_ip & node_sftp_ip
  */
@@ -50,7 +44,7 @@ if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FI
 /*
  * Update Record
  */
-$mysql->prepare("UPDATE `nodes` SET `node` = :name, `node_link` = :link, `node_ip` = :ip WHERE `id` = :nid")->execute(array(
+$mysql->prepare("UPDATE `nodes` SET `node` = :name, `node_ip` = :ip WHERE `id` = :nid")->execute(array(
 	':nid' => $_POST['nid'],
 	':name' => $_POST['name'],
 	':link' => $_POST['link'],

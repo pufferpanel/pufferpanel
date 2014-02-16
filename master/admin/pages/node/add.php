@@ -105,10 +105,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</div>
 								</div>
 								<div class="form-group col-6 nopad-right">
-									<label for="node_url" class="control-label">Node URL</label>
-									<div>
-										<input type="text" name="node_url" placeholder="http://shortname.mysite.com/" class="form-control" />
-									</div>
+									
 								</div>
 							</div>
 							<div class="row">

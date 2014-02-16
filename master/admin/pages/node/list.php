@@ -54,7 +54,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					<thead>
 						<tr>
 							<th>Node Name</th>
-							<th>Node URL</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -69,7 +68,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									echo '
 									<tr>
 										<td><a href="view.php?id='.$row['id'].'">'.$row['node'].'</a></td>
-										<td>'.$row['node_link'].'</td>
 									</tr>
 									';
 								

@@ -136,12 +136,6 @@ $selectNode->execute(array(
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="link" class="control-label">Node Link</label>
-									<div>
-										<input type="text" name="link" value="<?php echo $node['node_link']; ?>" class="form-control" />
-									</div>
-								</div>
-								<div class="form-group">
 									<label for="ip" class="control-label">Node IP</label>
 									<div>
 										<input type="text" name="ip" value="<?php echo $node['node_ip']; ?>" class="form-control" />

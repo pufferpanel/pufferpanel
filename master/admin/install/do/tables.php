@@ -195,7 +195,6 @@ if(file_exists('../install.lock'))
 	                        $mysql->exec("CREATE TABLE `nodes` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `node` char(15) NOT NULL DEFAULT '',
-	                          `node_link` tinytext NOT NULL,
 	                          `node_ip` tinytext NOT NULL,
 	                          `sftp_ip` tinytext NOT NULL,
 	                          `server_dir` tinytext NOT NULL,
