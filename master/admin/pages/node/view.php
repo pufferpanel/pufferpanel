@@ -163,6 +163,7 @@ $selectNode->execute(array(
 										<button class="btn btn-primary" type="submit">&rarr;</button>
 									</span>
 								</div>
+								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please leave at least one empty port between each that you allocate (e.g If you allocate 25565, do not allocate 25566, you can allocate 25567 though).</em></small>
 							</div>
 						</form>
 						<table class="table table-striped table-bordered table-hover">
