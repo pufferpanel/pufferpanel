@@ -149,7 +149,7 @@ if(isset($_GET['term']) && !empty($_GET['term'])){
 				$("#p_install_one").slideDown();
 				$.ajax({
 					type: "POST",
-					url: "../core/ajax/plugins/install.php",
+					url: "../ajax/plugins/install.php",
 					data: { plugin: sendme },
 			  		success: function(data) {
 			  			$("#p_install_one").slideUp("fast", function(){$("#p_install_two").slideDown();});

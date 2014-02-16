@@ -182,7 +182,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 			
 			$.ajax({
 				type: "POST",
-				url: '../core/ajax/files/save.php',
+				url: '../ajax/files/save.php',
 				data: {'file': file, 'file_contents': content},
 				success: function(data) {
 					$("#save_status").html(data);

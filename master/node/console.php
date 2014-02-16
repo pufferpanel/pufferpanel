@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('core/framework/framework.core.php');
+require_once('../core/framework/framework.core.php');
 
 $filesIncluded = true;
 
@@ -30,18 +30,18 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('assets/include/header.php'); ?>
+	<?php include('../assets/include/header.php'); ?>
 	<title>PufferPanel - Manage Your Server</title>
 </head>
 <body>
 	<div class="container">
-		<?php include('assets/include/navbar.php'); ?>
+		<?php include('../assets/include/navbar.php'); ?>
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php" class="list-group-item">Settings</a>
-					<a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="list-group-item">My Servers</a>
+					<a href="../account.php" class="list-group-item">Settings</a>
+					<a href="../servers.php" class="list-group-item">My Servers</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
@@ -88,7 +88,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('assets/include/footer.php'); ?>
+			<?php include('../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -99,7 +99,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			var ccmd = $("#ccmd").val();
 			$.ajax({
 				type: "POST",
-				url: 'core/ajax/console/send.php',
+				url: 'ajax/console/send.php',
 				data: { command: ccmd },
 			  		success: function(data) {
 			    		$("#sending_command").removeClass('disabled');
@@ -122,7 +122,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			if(isScroll !== true){
 				$.ajax({
 					type: "GET",
-					url: 'core/ajax/console/update.php',
+					url: 'ajax/console/update.php',
 				  		success: function(data) {
 				    		if(isTextSelected($('#live_console')[0]) === false){
 								if(isBottom() !== true){
@@ -175,7 +175,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					$(this).toggleClass('disabled');
 					$.ajax({
 						type: "POST",
-						url: "core/ajax/console/power.php",
+						url: "ajax/console/power.php",
 						data: { process: "power", command: command },
 					  		success: function(data) {
 				    			if(data == "Server Started."){

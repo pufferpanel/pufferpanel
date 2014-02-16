@@ -21,8 +21,8 @@
 /*
  * Include Dependencies
  */
-require_once('core/framework/framework.database.connect.php');
-require_once('core/framework/framework.rcon.php');
+require_once('../core/framework/framework.database.connect.php');
+require_once('../core/framework/framework.rcon.php');
 
 $core = new stdClass();
 $core->framework = new stdClass();

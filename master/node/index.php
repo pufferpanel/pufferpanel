@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('core/framework/framework.core.php');
+require_once('../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
 
@@ -28,18 +28,18 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('assets/include/header.php'); ?>
+	<?php include('../assets/include/header.php'); ?>
 	<title>PufferPanel - Manage Your Server</title>
 </head>
 <body>
 	<div class="container">
-		<?php include('assets/include/navbar.php'); ?>
+		<?php include('../assets/include/navbar.php'); ?>
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="<?php echo $core->framework->settings->get('master_url'); ?>account.php" class="list-group-item">Settings</a>
-					<a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php" class="list-group-item">My Servers</a>
+					<a href="../account.php" class="list-group-item">Settings</a>
+					<a href="../servers.php" class="list-group-item">My Servers</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
@@ -77,14 +77,14 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('assets/include/footer.php'); ?>
+			<?php include('../assets/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$.ajax({
 				type: "POST",
-				url: "core/ajax/overview/data.php",
+				url: "ajax/overview/data.php",
 				data: { command: 'info' },
 			  		success: function(data) {
 						$("#server_info_loading").slideUp("slow", function(){
@@ -96,7 +96,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			});
 			$.ajax({
 				type: "POST",
-				url: "core/ajax/overview/data.php",
+				url: "ajax/overview/data.php",
 				data: { command: 'players' },
 			  		success: function(data) {
 						$("#server_players_loading").slideUp("slow", function(){
@@ -109,7 +109,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			});
 			$.ajax({
 				type: "POST",
-				url: "core/ajax/overview/data.php",
+				url: "ajax/overview/data.php",
 				data: { command: 'stats' },
 			  		success: function(data) {
 						$("#server_stats_loading").slideUp("slow", function(){

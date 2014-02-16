@@ -112,7 +112,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	                var dir = $.urlParam('dir', $(this).attr("href"));
 	                $.ajax({
 	                    type: "POST",
-	                    url: '../core/ajax/files/list_dir.php',
+	                    url: '../ajax/files/list_dir.php',
 	                    data: {'dir': dir},
 	                    success: function(data) {
 	                        $("#load_files").slideUp(function(){
@@ -126,7 +126,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	            }else{
 	                $.ajax({
 		                type: "POST",
-		                url: '../core/ajax/files/list_dir.php',
+		                url: '../ajax/files/list_dir.php',
 		                data: {},
 		                success: function(data) {
 		                    $("#load_files").slideUp(function(){
@@ -151,7 +151,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 				$("#loading_dir").fadeIn(200);
 	        	$.ajax({
 	        	    type: "POST",
-	        	    url: '../core/ajax/files/list_dir.php',
+	        	    url: '../ajax/files/list_dir.php',
 	        	    data: {'dir': dir},
 	        	    success: function(data) {
 	        	        $("#load_files").slideUp(function(){
@@ -167,7 +167,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 		        $("#loading_dir").fadeIn(200);
 		        $.ajax({
 		            type: "POST",
-		            url: '../core/ajax/files/list_dir.php',
+		            url: '../ajax/files/list_dir.php',
 		            data: {},
 		            success: function(data) {
 		                $("#load_files").slideUp(function(){

@@ -120,7 +120,7 @@ while($row = $query->fetch()){
 				    var element = $(this);
 				    $.ajax({
 				    	type: "POST",
-				    	url: "core/ajax/get_status.php",
+				    	url: "ajax/get_status.php",
 				    	data: { server: connection },
 				      		success: function(data) {
 				    			element.find(".applyUpdate").html(data);
