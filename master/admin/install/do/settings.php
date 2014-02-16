@@ -62,7 +62,6 @@ if(file_exists('../install.lock'))
                             $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
                                 ('company_name', :cname),
                                 ('master_url', :murl),
-                                ('node_url', :nurl),
                                 ('cookie_website', :cwebsite),
                                 ('postmark_api_key', NULL),
                                 ('mandrill_api_key', NULL),
@@ -87,8 +86,7 @@ if(file_exists('../install.lock'))
                                 ':smail' => $_POST['sendmail_email'],
                                 ':mwebsite' => $_POST['main_website'],
                                 ':aurl' => $_POST['assets_url'],
-                                ':mpackdir' => $_POST['modpack_dir'],
-                                ':nurl' => $_POST['node_url']
+                                ':mpackdir' => $_POST['modpack_dir']
                             ));
                             
                             exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
@@ -113,11 +111,6 @@ if(file_exists('../install.lock'))
                         <p>
                             <label for="assets_url">PufferPanel Assets URL</label>
                             <input type="text" name="assets_url" placeholder="http://example.com/pufferpanel/assets/" class="round default-width-input" />
-                            <em>Trailing slashes are required.</em>
-                        </p>
-                        <p>
-                            <label for="node_url">PufferPanel Node URL</label>
-                            <input type="text" name="node_url" placeholder="http://example.com/puffernode/" class="round default-width-input" />
                             <em>Trailing slashes are required.</em>
                         </p>
                         <p>

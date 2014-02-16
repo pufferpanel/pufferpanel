@@ -93,7 +93,7 @@ class page extends dbConn {
 					
 						setcookie('pp_server_hash', $row['hash'], 0, '/', $this->settings->get('cookie_website'));
 					
-						$this->redirect($this->settings->get('node_url').'index.php');
+						$this->redirect('node/index.php');
 				
 				}else{
 				
