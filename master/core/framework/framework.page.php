@@ -93,22 +93,7 @@ class page extends dbConn {
 					
 						setcookie('pp_server_hash', $row['hash'], 0, '/', $this->settings->get('cookie_website'));
 					
-						/*
-						 * Select Node Information
-						 */
-						$queryNode = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
-						$queryNode->execute(array($row['node']));
-						
-							if($queryNode->rowCount() == 1){
-						 
-						 		$queryRow = $queryNode->fetch();
-								$this->redirect($queryRow['node_link'].'index.php');
-								
-							}else{
-							
-								$this->redirect('servers.php?error=error&c=NODE_NOT_FOUND');
-							
-							}
+						$this->redirect($this->settings->get('node_url').'index.php');
 				
 				}else{
 				
