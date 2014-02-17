@@ -132,7 +132,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	            $displayFolders .= 	'<tr>
 	                                    <td><i class="fa fa-folder-open">&nbsp</i></td>
 	                                    <td><a href="index.php?dir='.urlencode($_POST['dir'].$entry).'" class="load_new">'.$entry.'</a></td>
-	                                    <td></td>
+	                                    <td>'.$core->framework->files->formatSize($stat['size']).'</td>
 	                                    <td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
 	                                    <td class="center"></td>
 	                                </tr>';
@@ -141,11 +141,10 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	        
 	            $url = (in_array(pathinfo($entry, PATHINFO_EXTENSION), $canEdit)) ? '<a href="edit.php?file='.urlencode($_POST['dir'].$entry).'" class="edit_file">'.$entry.'</a>' : $url = $entry;
 	               
-	            /*$core->framework->files->formatSize($stat['size'])*/
 	            $displayFiles .= 	'<tr>
 	                                    <td><i class="fa fa-file-text"></i></td>
 	                                    <td>'.$url.'</td>
-	                                    <td></td>
+	                                    <td>'.$core->framework->files->formatSize($stat['size']).'</td>
 	                                    <td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
 	                                    <td style="text-align:center;"><a href="index.php?do=download&file='.urlencode($_POST['dir'].$entry).'"><i class="fa fa-download"></i></a></td>
 	                                </tr>';
@@ -202,7 +201,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	            $displayFolders .= 	'<tr>
 	                                    <td><i class="fa fa-folder-open">&nbsp</i></td>
 	                                    <td><a href="index.php?dir='.urlencode($entry).'" class="load_new">'.$entry.'</a></td>
-	                                    <td></td>
+	                                    <td>'.$core->framework->files->formatSize($stat['size']).'</td>
 	                                    <td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
 	                                    <td class="center"></td>
 	                                </tr>';
@@ -211,11 +210,10 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	        
 	            $url = (in_array(pathinfo($entry, PATHINFO_EXTENSION), $canEdit)) ? '<a href="edit.php?file='.urlencode($entry).'" class="edit_file">'.$entry.'</a>' : $url = $entry;
 	               
-	            /*$core->framework->files->formatSize($stat['size'])*/
 	            $displayFiles .= 	'<tr>
 	                                    <td><i class="fa fa-file-text"></i></td>
 	                                    <td>'.$url.'</td>
-	                                    <td></td>
+	                                    <td>'.$core->framework->files->formatSize($stat['size']).'</td>
 	                                    <td>'.date('m/d/y H:i:s', $stat['mtime']).'</td>
 	                                    <td style="text-align:center;"><a href="index.php?do=download&file='.urlencode($entry).'"><i class="fa fa-download"></i></a></td>
 	                                </tr>';
