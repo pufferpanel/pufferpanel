@@ -33,7 +33,7 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 require_once('framework.database.connect.php');
 require_once('framework.auth.php');
 require_once('framework.page.php');
-require_once('framework.folder.php');
+require_once('framework.files.php');
 require_once('framework.settings.php');
 require_once('framework.user.php');
 require_once('framework.server.php');
@@ -62,6 +62,7 @@ $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
 $core->framework->log = new log($core->framework->user->getData('id'));
 $core->framework->query = new MinecraftQuery();
+$core->framework->files = new files();
 
 /*
  * MySQL PDO Connection Engine
