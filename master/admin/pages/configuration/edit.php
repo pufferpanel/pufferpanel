@@ -59,7 +59,8 @@ else
 		<div class="row">
 			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
 			<div class="col-9">
-				<h3>Modpack: <strong><?php echo $pack['name'].' ('.$pack['version'].')'; ?></strong></h3><hr />
+				<h3>Modpack: <strong><?php echo $pack['name'].' ('.$pack['version'].')'; ?></strong></h3>
+				<h5>Modpack File Name: <strong><?php echo $pack['hash']; ?>.zip</strong></h5><hr />
 				<?php 
 					
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){

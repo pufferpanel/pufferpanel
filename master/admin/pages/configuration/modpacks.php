@@ -166,11 +166,19 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</div>
 								</div>
 								<div class="well">
-									<div class="form-group">
-										<label for="pack_jar" class="control-label">Upload Modpack</label>
-										<div>
-											<input type="file" name="pack_jar" class="form-control" />
-											<em><p class="text-muted"><small>Please put all of the files for the Modpack into a compressed (.zip) file. Upload the compressed file. The Modpack installer will unzip the file and move them into the server directory when users install the Modpack.</small></p></em>
+									<div class="row">
+										<div class="form-group col-6">
+											<label for="pack_jar" class="control-label">Upload Modpack</label>
+											<div>
+												<input type="file" name="pack_jar" class="form-control" />
+												<em><p class="text-muted"><small>Please put all of the files for the Modpack into a compressed (.zip) file. Upload the compressed file. The Modpack installer will unzip the file and move them into the server directory when users install the Modpack.</small></p></em>
+											</div>
+										</div>
+										<div class="form-group col-6">
+											<label for="server_jar" class="control-label">.jar Executable Name</label>
+											<div>
+												<input type="text" name="server_jar" value="server.jar" class="form-control" />
+											</div>
 										</div>
 									</div>
 								</div>

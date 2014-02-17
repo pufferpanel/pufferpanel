@@ -37,6 +37,12 @@ if(!isset($_POST['pack_name'], $_POST['pack_version'], $_POST['pack_minram'], $_
  */
 if(!preg_match('/^[\s\w.()-]{1,64}$/', $_POST['pack_name']))
 	$core->framework->page->redirect('../../modpacks.php?error=pack_name&disp=pn_fail&tab=install');
+	
+/*
+ * Validate Modpack Jar Name
+ */
+if(!preg_match('/^[\s\w.-]{1,64}$/', $_POST['server_jar']))
+	$core->framework->page->redirect('../../modpacks.php?error=server_jar&disp=pn_fail&tab=install');
 
 /*
  * Validate Min. RAM and Permgen
@@ -92,11 +98,12 @@ $modpackHash = $core->framework->auth->keygen(8).'-'.$core->framework->auth->key
 $downloadHash = $core->framework->auth->keygen(4).'-'.$core->framework->auth->keygen(4).'-'.$core->framework->auth->keygen(6);
 $isDefault = (isset($_POST['pack_default'])) ? 1 : 0;
 
-$addPack = $mysql->prepare("INSERT INTO `modpacks` VALUES(NULL, :hash, :dlhash, :name, :version, :minram, :permgen, :time, :default, 0)");
+$addPack = $mysql->prepare("INSERT INTO `modpacks` VALUES(NULL, :hash, :dlhash, :name, :jar, :version, :minram, :permgen, :time, :default, 0)");
 $addPack->execute(array(
 	':hash' => $modpackHash,
 	':dlhash' => $downloadHash,
 	':name' => $_POST['pack_name'],
+	':jar' => $_POST['server_jar'],
 	':version' => $_POST['pack_version'],
 	':minram' => $_POST['pack_minram'],
 	':permgen' => $_POST['pack_permgen'],
@@ -124,6 +131,6 @@ if(!move_uploaded_file($_FILES['pack_jar']['tmp_name'], sprintf($core->framework
 		$mysql->exec("UPDATE `modpacks` SET `default` = 0 WHERE `id` != '".$addpackId."' LIMIT 1");
 		
 	//Redirect
-	$core->framework->page->redirect('../../modpacks.php');
+	$core->framework->page->redirect('../../edit.php?mid='.$modpackHash);
 
 }

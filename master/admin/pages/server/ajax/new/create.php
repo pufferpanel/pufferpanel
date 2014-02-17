@@ -111,7 +111,7 @@ if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
 /*
  * Validate Modpack
  */
-$selectPack = $mysql->prepare("SELECT `min_ram` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
+$selectPack = $mysql->prepare("SELECT `min_ram`, `server_jar` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
 $selectPack->execute(array(
 	':hash' => $_POST['modpack']
 ));
@@ -132,13 +132,14 @@ if($pack['min_ram'] > $_POST['alloc_mem'])
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, 1, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
 	':modpack' => $_POST['modpack'],
+	':sjar' => $pack['server_jar'],
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
 	':disk' => $_POST['alloc_disk'],

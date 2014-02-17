@@ -39,6 +39,13 @@ if(!preg_match('/^[\s\w.()-]{1,64}$/', $_POST['pack_name']))
 	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_hash'].'&error=pack_name&disp=pn_fail');
 
 /*
+ * Validate Modpack Jar Name
+ */
+if(!preg_match('/^[\s\w.-]{1,64}$/', $_POST['server_jar']))
+	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_hash'].'&error=server_jar&disp=pn_fail');
+
+
+/*
  * Validate Min. RAM and Permgen
  */	
 if(!is_numeric($_POST['pack_minram']) || !is_numeric($_POST['pack_permgen']))
@@ -54,6 +61,8 @@ $mysql->prepare("UPDATE `modpacks` SET `name` = ? WHERE `hash` = ? ")->execute(a
 $mysql->prepare("UPDATE `modpacks` SET `version` = ? WHERE `hash` = ? ")->execute(array($_POST['pack_version'], $_POST['pack_hash']));
 $mysql->prepare("UPDATE `modpacks` SET `min_ram` = ? WHERE `hash` = ? ")->execute(array($_POST['pack_minram'], $_POST['pack_hash']));
 $mysql->prepare("UPDATE `modpacks` SET `permgen` = ? WHERE `hash` = ? ")->execute(array($_POST['pack_permgen'], $_POST['pack_hash']));
+$mysql->prepare("UPDATE `modpacks` SET `server_jar` = ? WHERE `hash` = ? ")->execute(array($_POST['server_jar'], $_POST['pack_hash']));
+
 
 if(isset($_POST['pack_default'])){
 	$mysql->exec("UPDATE `modpacks` SET `default` = 0");

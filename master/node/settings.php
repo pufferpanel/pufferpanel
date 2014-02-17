@@ -77,7 +77,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<select class="form-control" name="new_pack">
 									<option disabled="disabled">-- Select a Modpack</option>
 									<?php
-										$packs = $mysql->prepare("SELECT hash, name, version FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
+										$packs = $mysql->prepare("SELECT hash, name, version, server_jar FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
 										$packs->execute(array(
 											':ram' => $core->framework->server->getData('max_ram')
 										));
@@ -108,7 +108,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="jarfile" class="control-label">Jarfile Name</label>
 									<div class="input-group">
-										<input type="text" autocomplete="off" name="jarfile" class="form-control" />
+										<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->framework->server->getData('server_jar')); ?>"/>
 										<span class="input-group-addon">.jar</span>
 										<span class="input-group-btn">
 											<button class="btn btn-primary">Update Name</button>
