@@ -97,6 +97,10 @@ class server extends user {
 	            
 	        }
         
+        }else{
+        
+        	$this->_s = false;
+        	
         }
 	
 	}

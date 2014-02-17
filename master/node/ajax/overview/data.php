@@ -77,10 +77,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Query Dodads
 		 */
-		try {
-			$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-		}catch(MinecraftQueryException $e){
-			exit('<div class="alert alert-danger">The server appears to be offline. <strong>'.htmlspecialchars($e->getMessage()).'</strong></div>');
+		if($core->framework->gsd->online() !== true){
+			exit('<div class="alert alert-danger">The server appears to be offline.</div>');
 		}
 			
 			$onlinePlayers = null;
@@ -102,7 +100,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 			}
 		
-		$playerPercentage = round($i / $core->framework->query->getInfo('MaxPlayers'), 2) * 100;
+		$playerPercentage = round($i / $core->framework->gsd->retrieve('maxplayers'), 2) * 100;
 		$playerPercentage = ($playerPercentage < 1) ? 1 : $playerPercentage;
 		
 		echo '
@@ -116,30 +114,25 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Query Dodads
 		 */
-		try {
-			$core->framework->query->connect($core->framework->server->getData('server_ip'), $core->framework->server->getData('server_port'));
-			$response = true;
-		}catch(MinecraftQueryException $e){
-			$response = false;
-		}
 		
-		if($response === true){
+		
+		if($core->framework->gsd->online() === true){
 		
 			$version = $core->framework->query->getInfo('Software');
 			
 			$plugins = null;
-			
+
 			if($pluginList = is_array($core->framework->query->getInfo('Plugins'))){
-			
+
 				foreach($pluginList as $id => $name){
-				
+
 					$plugins .= $name.', ';
-				
+
 				}
 				$plugins = rtrim($plugins, ", ");
-				
+
 			}
-			
+
 			$plugins = (is_null($plugins)) ? "No plugins detected." : $plugins;
 		
 		}else{
