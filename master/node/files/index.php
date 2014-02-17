@@ -86,7 +86,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
 				</div>
 			</div>
-			<div class="col-9" id="load_files">
+			<div class="col-9" id="internal_alert">
+				<div class="alert alert-info">
+					<i class="fa fa-spinner fa fa-spin"></i> Loading Directory. Please wait.
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-9" id="load_files"></div>
 			</div>
 		</div>
 		<div class="footer">
@@ -108,6 +114,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	        $("a.load_new").click(function(event){
 	            event.preventDefault();
 	            $("#loading_dir").fadeIn(200);
+	            $("#internal_alert").slideDown();
 	            if($.urlParam('dir', $(this).attr("href")) != null){
 	                var dir = $.urlParam('dir', $(this).attr("href"));
 	                $.ajax({
@@ -117,6 +124,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	                    success: function(data) {
 	                        $("#load_files").slideUp(function(){
 	                            $("#load_files").html(data);
+	                            $("#internal_alert").slideUp();
 	                            $("#load_files").slideDown();
 	                            $("#loading_dir").fadeOut(200);
 	                            newLoad();
@@ -131,6 +139,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 		                success: function(data) {
 		                    $("#load_files").slideUp(function(){
 		                        $("#load_files").html(data);
+		                        $("#internal_alert").slideUp();
 		                        $("#load_files").slideDown();
 		                        $("#loading_dir").fadeOut(200);
 		                        newLoad();
@@ -156,6 +165,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	        	    success: function(data) {
 	        	        $("#load_files").slideUp(function(){
 	        	            $("#load_files").html(data);
+	        	            $("#internal_alert").slideUp();
 	        	            $("#load_files").slideDown();
 	        	            $("#loading_dir").fadeOut(200);
 	        	            doneLoad = true;
@@ -172,6 +182,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 		            success: function(data) {
 		                $("#load_files").slideUp(function(){
 		                    $("#load_files").html(data);
+		                    $("#internal_alert").slideUp();
 		                    $("#load_files").slideDown();
 		                    $("#loading_dir").fadeOut(200);
 		                    doneLoad = true;
