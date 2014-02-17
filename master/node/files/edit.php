@@ -59,7 +59,6 @@ $parName = 'Editing: /'.$_POST['file'].'';
 					<a href="../index.php" class="list-group-item">Overview</a>
 					<a href="../console.php" class="list-group-item">Live Console</a>
 					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir" style="display: none;"></i></a>
-					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>

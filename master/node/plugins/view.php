@@ -103,7 +103,6 @@ if(isset($_GET['slug']) && !empty($_GET['slug'])){
 					<a href="../index.php" class="list-group-item">Overview</a>
 					<a href="../console.php" class="list-group-item">Live Console</a>
 					<a href="../files/index.php" class="list-group-item">File Manager</a>
-					<a href="../backup.php" class="list-group-item">Backup Manager</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
