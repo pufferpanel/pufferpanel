@@ -25,74 +25,78 @@
 class server extends user {
 
 	public function __construct($hash, $userid, $isroot){
-
-		$this->mysql = parent::getConnection();
 		
-		$this->_data = array();
-		$this->_s = true;
+		if($userid !== false){
 		
-			if($isroot == '1'){
-				$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
-				$this->query->execute(array(
-					':hash' => $hash
-				));
-			}else{
-				$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :ownerid AND `active` = 1");
-				$this->query->execute(array(
-					':hash' => $hash,
-					':ownerid' => $userid
-				));
-			}
-		
-			if($this->query->rowCount() == 1){
+			$this->mysql = parent::getConnection();
 			
-				$this->row = $this->query->fetch();
-		
-					foreach($this->row as $this->id => $this->val){
+			$this->_data = array();
+			$this->_s = true;
 			
-						$this->_data = array_merge($this->_data, array($this->id => $this->val));
+				if($isroot == '1'){
+					$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
+					$this->query->execute(array(
+						':hash' => $hash
+					));
+				}else{
+					$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :ownerid AND `active` = 1");
+					$this->query->execute(array(
+						':hash' => $hash,
+						':ownerid' => $userid
+					));
+				}
 			
-					}
-					
-			}else{
-			
-				$this->_s = false;
+				if($this->query->rowCount() == 1){
 				
-			}
+					$this->row = $this->query->fetch();
+			
+						foreach($this->row as $this->id => $this->val){
+				
+							$this->_data = array_merge($this->_data, array($this->id => $this->val));
+				
+						}
+						
+				}else{
+				
+					$this->_s = false;
+					
+				}
+	        
+	        /*
+	         * Grab Node Information
+	         */
+	        if($this->_data['node'] !== false){
+	            
+	            $this->_ndata = array();
+	            $this->_n = true;
+	            
+	            $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
+	            $this->query->node->execute(array(
+	                ':node' => $this->_data['node'] 
+	            ));
+	            
+	            if($this->query->node->rowCount() == 1){
+	                
+	                $this->node = $this->query->node->fetch();
+	        
+	                    foreach($this->node as $this->nid => $this->nval){
+	            
+	                        $this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
+	            
+	                    }
+	                    
+	            }else{
+	            
+	                $this->_n = false;
+	                
+	            }
+	            
+	        }else{
+	            
+	            $this->_n = false;
+	            
+	        }
         
-        /*
-         * Grab Node Information
-         */
-        if($this->_data['node'] !== false){
-            
-            $this->_ndata = array();
-            $this->_n = true;
-            
-            $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-            $this->query->node->execute(array(
-                ':node' => $this->_data['node'] 
-            ));
-            
-            if($this->query->node->rowCount() == 1){
-                
-                $this->node = $this->query->node->fetch();
-        
-                    foreach($this->node as $this->nid => $this->nval){
-            
-                        $this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-            
-                    }
-                    
-            }else{
-            
-                $this->_n = false;
-                
-            }
-            
-        }else{
-            
-            $this->_n = false;
-            
         }
 	
 	}
