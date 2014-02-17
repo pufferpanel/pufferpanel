@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('core/framework/framework.core.php');
+require_once('../core/framework/framework.core.php');
 
 $filesIncluded = true;
 
@@ -35,15 +35,32 @@ if(isset($_GET['do']) && $_GET['do'] == 'create'){
 	if(isset($_POST['dbu'])){
 
         /*
-		 * Does User have Space!
-		 */
-		$files = glob($core->framework->server->nodeData('backup_dir').$core->framework->server->getData('name').'/*', GLOB_MARK);
-		
+         * Get the Server Node Info
+         */
+        $query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
+        $query->execute(array(
+            ':nodeid' => $core->framework->server->getData('node')
+        ));
+        
+        $node = $query->fetch();
+        
+        $con = ssh2_connect($node['node_ip'], 22);
+        ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+        
+        $sftp = ssh2_sftp($con);
+        
+        $handle = opendir("ssh2.sftp://".$sftp.$core->framework->settings->get('backup_dir').$core->framework->server->getData('ftp_user'));
+        
+        $entries = array();
+        while (false != ($entries[] = readdir($handle)));
+        sort($entries);
+        closedir($handle);
+        
 			$totalSpace = 0;
 			$totalFiles = 0;
-			foreach($files as $file){
+			foreach($entries as $entry){
 			
-				$stat = stat($file);
+				$stat = ssh2_sftp_stat($sftp, $core->framework->settings->get('backup_dir').$core->framework->server->getData('ftp_user').'/'.$entry);
 				$bytes = ($stat['size'] / 1024) / 1024;
 				
 				$totalFiles = $totalFiles + 1;

@@ -33,8 +33,22 @@ if(isset($_GET['dir']))
 	
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
 
-    $path = $core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/';
-    if(file_exists($path.$_GET['file'])){
+    /*
+     * Get the Server Node Info
+     */
+    $query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
+    $query->execute(array(
+        ':nodeid' => $core->framework->server->getData('node')
+    ));
+    
+    $node = $query->fetch();
+    
+    $con = ssh2_connect($node['node_ip'], 22);
+    ssh2_auth_password($con, $core->framework->server->getData('ftp_user'), openssl_decrypt($core->framework->server->getData('ftp_pass'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->getData('encryption_iv'))));
+    
+    $sftp = ssh2_sftp($con);
+    
+    if(file_exists("ssh2.sftp://$sftp/server/".$_GET['file'])){
         
         /*
          * Download a File
@@ -45,9 +59,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
         header("Content-Type: application/force-download");
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
-        header("Content-Length: ".filesize($path.$_GET['file']));
-            
-        $core->framework->files->download($path.$_GET['file']);
+        header("Content-Length: ".filesize("ssh2.sftp://$sftp/server/".$_GET['file']));
+           
+        $core->framework->files->download("ssh2.sftp://$sftp/server/".$_GET['file']);
         exit();
         
     }
