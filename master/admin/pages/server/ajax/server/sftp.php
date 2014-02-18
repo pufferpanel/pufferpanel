@@ -65,10 +65,15 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
 /*
  * Connect to Node and Execute Password Update
  */
-$con = ssh2_connect($node['sftp_ip'], 22);
-ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
-
-$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"', true);
+$core->framework->auth->generateSSH2Connection(array(
+	'host' => $node['sftp_ip'],
+	'user' => $node['username']
+), array(
+	'pub' => $node['rsa_pub'],
+	'priv' => $node['rsa_priv'],
+	'secret' => $node['rsa_secret'],
+	'secret_iv' => $node['rsa_secret_iv']
+), true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"');
 
 /*
  * Send the User an Email
