@@ -153,6 +153,7 @@ if(isset($_GET['action'])){
                             
 							$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 								
+                        ))->dispatch($core->framework->user->getData('email'), $core->framework->settings->get('company_name').' - Password Change Notification');
 						
 						}else{
                             
