@@ -105,6 +105,7 @@ class auth extends dbConn {
 	public function executeSSH2Command($command, $callback = false, $tty = true){
 	
 		if($this->connectFailed === true){
+			error_log('[PufferPanel] Error in "framework.auth.php" --> unable to connect to server using ssh2_auth. Authentication failed.');
 			return false;
 		}else{
 	
