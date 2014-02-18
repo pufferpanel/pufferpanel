@@ -53,11 +53,16 @@ class GSD_Query extends dbConn {
 	
 	}
 	
-	public function online() {
+	public function online($override = false) {
 	
-		if($this->_queryData === false)
+		if($this->_queryData === false && $override === false)
 			return false;
 		else {
+			
+			/*
+			 * Allow Override of Specific Server (used for pinging)
+			 */
+			$this->_queryData['gsd_id'] = ($override !== false) ? (int)$override : $this->_queryData['gsd_id'];
 			
 			$this->context = stream_context_create(array(
 				"http" => array(

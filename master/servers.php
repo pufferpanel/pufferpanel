@@ -50,7 +50,7 @@ while($row = $query->fetch()){
 	
 	($row['active'] == '1') ? $isActive = 'Enabled' : $isActive = 'Disabled';
 	$listServers .= '
-					<tr class="dynUpdate" id="'.$row['server_ip'].'+'.$row['server_port'].'">
+					<tr class="dynUpdate" id="'.$row['gsd_id'].'">
 						<td>'.$core->framework->settings->nodeName($row['node']).'</td>
 						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
 						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
@@ -120,7 +120,7 @@ while($row = $query->fetch()){
 				    var element = $(this);
 				    $.ajax({
 				    	type: "POST",
-				    	url: "ajax/get_status.php",
+				    	url: "core/ajax/get_status.php",
 				    	data: { server: connection },
 				      		success: function(data) {
 				    			element.find(".applyUpdate").html(data);

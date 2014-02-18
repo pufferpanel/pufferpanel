@@ -21,27 +21,25 @@ require_once('../../core/framework/framework.core.php');
 
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
 
-	if($_POST['server'] && !empty($_POST['server'])){
-		
-		list($ip, $port) = explode('+', $_POST['server']);
+	if(isset($_POST['server'])){
 		
 		/*
-		 * Query Dodads
+		 * Query Servers
 		 */
-		try {
-			$core->framework->query->connect($ip, $port);
-		}catch(MinecraftQueryException $e){
+		if($core->framework->gsd->online($_POST['server']) === false)
 			exit('<span class="label label-danger">Offline</span>');
-		}
+		else
+			exit('<span class="label label-success">Online</span>');
 		
-		sleep(1);
-		exit('<span class="label label-success">Online</span>');
-		
+	}else{
+	
+		exit('<span class="label label-danger">No ID#</span>');
+	
 	}
 
 }else{
 
-	exit('Invalid Authentication.');
+	exit('<span class="label label-danger">Auth Error</span>');
 
 }
 

@@ -57,7 +57,7 @@ class getSettings extends dbConn {
 			return (array_key_exists($id, $this->_dataNode)) ? $this->_dataNode[$id] : 'unknown';
 	
 		}
-
+		
 }
 
 ?>

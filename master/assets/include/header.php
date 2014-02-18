@@ -5,3 +5,4 @@
 <script src="<?php echo $core->framework->settings->get('assets_url'); ?>javascript/jquery.cookie.js"></script>
 <script src="<?php echo $core->framework->settings->get('assets_url'); ?>javascript/jquery.debounce.js"></script>
 <script src="<?php echo $core->framework->settings->get('assets_url'); ?>javascript/jquery.redirect.min.js"></script>
+<script src="<?php echo $core->framework->settings->get('assets_url'); ?>javascript/socket.io.min.js"></script>

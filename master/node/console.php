@@ -58,7 +58,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 			<div class="col-9">
 				<div class="col-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly">http://localhost:25566</textarea>
+					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
 				</div>
 				<div class="col-12">
 					<div class="alert alert-danger text_highlighted" style="display:none;margin: 15px 0 -5px 0;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
@@ -71,6 +71,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<input type="text" class="form-control" name="command" id="ccmd" placeholder="Enter Console Command" />
 								<span class="input-group-btn">
 									<button id="sending_command" class="btn btn-primary">&rarr;</button>
+									<button class="btn btn-link" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
+									
 								</span>
 							</div>
 						</fieldset>
@@ -79,10 +81,32 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				</div>
 				<div class="col-6" style="text-align:center;">
 					<hr />
-					<button class="btn btn-primary btn-sm poke" id="start">Start</button>
-					<button class="btn btn-primary btn-sm poke" id="stop">Stop</button>
-					<button class="btn btn-danger btn-sm poke" id="kill">Kill</button>
+					<button class="btn btn-primary btn-sm poke" id="on">Start</button>
+					<button class="btn btn-primary btn-sm poke" id="restart">Restart</button>
+					<button class="btn btn-danger btn-sm poke" id="off">Stop</button>
 					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="PauseConsole">ScrollStop&trade; Console Window</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-1"></div>
+							<div class="col-10">
+								<textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
+							</div>
+							<div class="col-1"></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -92,107 +116,63 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	</div>
 	<script type="text/javascript">
 	$(document).ready(function(){
+		var socket = io.connect('http://<?php echo $core->framework->server->getData('ftp_host'); ?>:<?php echo $core->framework->server->getData('server_port') + 1; ?>');
 		$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		$("#console_command").submit(function(){
 			$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 			var ccmd = $("#ccmd").val();
 			$.ajax({
 				type: "POST",
-				url: 'ajax/console/send.php',
+				url: 'http://<?php echo $core->framework->server->getData('ftp_host'); ?>:8003/gameservers/<?php echo $core->framework->server->getData('gsd_id'); ?>/console',
 				data: { command: ccmd },
 			  		success: function(data) {
 			    		$("#sending_command").removeClass('disabled');
 			    		$("#sending_command").html('&rarr;');
 			    		$("#ccmd").val('');
-			    			if(data != ''){
+			    			if(data != 'ok'){
 			    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
 			    			}
-			    		updateConsole();
 			 		 }
 			});
 			return false;
 		});
-		var isScroll;
-		$("#live_console").scroll($.debounce(100, true, function(){ isScroll = true;}));
-		$("#live_console").scroll($.debounce(100, function(){ isScroll = false;}));
-		function updateConsole() {
-			var b = true;
-			var curloc = 0;
-			if(isScroll !== true){
-				$.ajax({
-					type: "GET",
-					url: 'ajax/console/update.php',
-				  		success: function(data) {
-				    		if(isTextSelected($('#live_console')[0]) === false){
-								if(isBottom() !== true){
-									b = false;
-									curloc = $('#live_console').scrollTop();
-								}
-								$("#live_console").html(data);
-								if(b === true){
-					    			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-					    		}else{
-					    			$('#live_console').scrollTop(curloc);
-					    		}
-					    	}else{ /*Do Nothing*/ }
-				 		 }
-				});
-			}
-		}		
-		function isTextSelected(input){
-		   var startPos = input.selectionStart;
-		   var endPos = input.selectionEnd;
-		   var doc = document.selection;
-		   if(doc && doc.createRange().text.length != 0){
-		      return true;
-		   }else if (!doc && input.value.substring(startPos,endPos).length != 0){
-		      return true;
-		   }
-		   return false;
-		}
-		function isBottom() {
-			if(($('#live_console').scrollTop() + $('#live_console').innerHeight()) >= $('#live_console')[0].scrollHeight){
-				return true;
-			}
-		}
-		setInterval(function(){
-			if(isTextSelected($('#live_console')[0]) === false){
-				$(".text_highlighted").slideUp();
-				updateConsole();
-			}else{
-				$(".text_highlighted").slideDown();
-			}
-			updateConsole();
-		}, 1000);
+		socket.on('console', function (data) {
+			$("#live_console").val($("#live_console").val() + data.l);
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		$("#pause_console").click(function(){
+			$("#paused_console").val();
+			$("#paused_console").val($("#live_console").val());
+		});
 		var can_run = true;
 		$(".poke").click(function(){
 			var command = $(this).attr("id");
-			if(command == 'stop'){ uCommand = 'Stopping'; }else if(command == 'start'){ uCommand = 'Starting';}else{ uCommand = 'Killing';}
+			if(command == 'off'){ uCommand = 'Stopping'; }else if(command == 'on'){ uCommand = 'Starting';}else{ uCommand = 'Restarting';}
 				if(can_run === true){
 					can_run = false;
 					$(this).append(' <i class="fa fa-refresh fa-spin"></i>');
 					$(this).toggleClass('disabled');
 					$.ajax({
-						type: "POST",
-						url: "ajax/console/power.php",
+						type: "GET",
+						url: "http://<?php echo $core->framework->server->getData('ftp_host'); ?>:8003/gameservers/<?php echo $core->framework->server->getData('gsd_id'); ?>/"+command,
 						data: { process: "power", command: command },
 					  		success: function(data) {
-				    			if(data == "Server Started."){
+				    			if(data == "ok" && command == "on"){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Start');
 				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been started successfully.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
-				    			}else if(data == "Server Stopped."){
+				    			}else if(data == "ok" && command == "off"){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Stop');
 				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
-				    			}else if(data == "Server Killed."){
+				    			}else if(data == "ok" && command == "restart"){
 				    				$("#"+command).toggleClass('disabled');
 				    				$("#"+command).html('Kill');
-				    				$("#pw_resp").attr('class', 'alert alert-success').html("The server java process has been killed. Please check your data for possible corruption.").slideDown().delay(5000).slideUp();
+				    				$("#pw_resp").attr('class', 'alert alert-success').html("The server has been rebooted.").slideDown().delay(5000).slideUp();
 				    				can_run = true;
 				    				return false;
 				    			}else{
@@ -201,8 +181,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				    				$("#stop").html('Stop');
 				    				$("#start").removeClass('disabled');
 				    				$("#start").html('Start');
-				    				$("#kill").removeClass('disabled');
-				    				$("#kill").html('Kill');
+				    				$("#restart").removeClass('disabled');
+				    				$("#restart").html('Restart');
 				    				can_run = true;
 				    			}
 					 		 }
