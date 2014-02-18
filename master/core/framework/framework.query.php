@@ -70,7 +70,7 @@ class GSD_Query extends dbConn {
 					"timeout" => 3
 				)
 			));
-			$this->gatherData = file_get_contents("http://".$this->_queryData['ftp_host'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
+			$this->gatherData = @file_get_contents("http://".$this->_queryData['ftp_host'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
 		
 			$this->raw = json_decode($this->gatherData, true);
 			
