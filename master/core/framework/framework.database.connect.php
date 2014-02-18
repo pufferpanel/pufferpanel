@@ -29,7 +29,6 @@ class dbConn extends PDOEx {
 	public function __construct() {
 	 	
 	 	require('master_configuration.php');
-        self::$salt = $_INFO['salt'];
 		try {
 			
 			/*
@@ -65,12 +64,6 @@ class dbConn extends PDOEx {
 		}
 	 
 	}
-
-    public static function getSalt() {
-        
-        return self::$salt;
-        
-    }
     
 	public static function getConnection() {
 	 

@@ -65,22 +65,13 @@ if(file_exists('../install.lock'))
                                 ));
                         
                                 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                                
-                                /* Make File */
-                                $keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!^*%#@";
-                                $randkey = "";
-
-                                for ($i=0; $i<30; $i++){
-                                    $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
-                                }
-                                
+                                                                
                                     $fp = fopen('../../../core/framework/master_configuration.php.dist', 'w+');
                                     fwrite($fp, "<?php
 \$_INFO['sql_u'] = '".$_POST['sql_u']."';
 \$_INFO['sql_p'] = '".$_POST['sql_p']."';
 \$_INFO['sql_h'] = '".$_POST['sql_h']."';
 \$_INFO['sql_db'] = '".$_POST['sql_db']."';
-\$_INFO['salt'] = '".$randkey."';
 \$_INFO['sql_ssl'] = false;
 \$_INFO['sql_ssl_client-key'] = '/path/to/client-key.pem';
 \$_INFO['sql_ssl_client-cert'] = '/path/to/client-cert.pem';
