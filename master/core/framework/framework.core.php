@@ -27,6 +27,11 @@ $pageStartTime = microtime(true);
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
 
+/*
+ * Include Dependency Libs
+ */
+require_once('lib/password.lib.php');
+
 /* 
  * Include Required Global Framework Files
  */

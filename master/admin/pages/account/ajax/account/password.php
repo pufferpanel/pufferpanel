@@ -31,7 +31,7 @@ if($_POST['pass'] != $_POST['pass_2'])
 	
 $update = $mysql->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :uid");
 $update->execute(array(
-	':password' => $core->framework->auth->encrypt($_POST['pass']),
+	':password' => $core->framework->auth->hash($_POST['pass']),
 	':uid' => $_POST['uid']
 ));
 

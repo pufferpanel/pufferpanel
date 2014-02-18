@@ -42,7 +42,7 @@ if(isset($_GET['action'])){
 		 */
 		$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
 		$selectAccount->execute(array(
-			':password' => $core->framework->auth->encrypt($_POST['password']),
+			':password' => $core->framework->auth->hash($_POST['password']),
 			':email' => $core->framework->user->getData('email')
 		));
 		
@@ -53,7 +53,7 @@ if(isset($_GET['action'])){
 					':e_s' => $_POST['e_s'],
 					':e_f' => $_POST['e_f'],
 					':uid' => $core->framework->user->getData('id'),
-					':password' => $core->framework->auth->encrypt($_POST['password'])
+					':password' => $core->framework->auth->hash($_POST['password'])
 				));
 				
                 $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
@@ -85,7 +85,7 @@ if(isset($_GET['action'])){
 		
 			$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
 			$selectAccount->execute(array(
-				':password' => $core->framework->auth->encrypt($_POST['password']),
+				':password' => $core->framework->auth->hash($_POST['password']),
 				':email' => $core->framework->user->getData('email')
 			));
 			
@@ -116,11 +116,11 @@ if(isset($_GET['action'])){
 		/*
 		 * Update Account Password
 		 */
-		$oldPassword = $core->framework->auth->encrypt($_POST['p_password']);
+		$oldPassword = $core->framework->auth->hash($_POST['p_password']);
 		 
 			$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :oldpass AND `email` = :email");
 			$selectAccount->execute(array(
-				':oldpass' => $core->framework->auth->encrypt($_POST['p_password']),
+				':oldpass' => $core->framework->auth->hash($_POST['p_password']),
 				':email' => $core->framework->user->getData('email')
 			));
 			
@@ -129,14 +129,14 @@ if(isset($_GET['action'])){
 					
 						if($_POST['p_password_new'] == $_POST['p_password_new_2']){
 						
-							$newPassword = $core->framework->auth->encrypt($_POST['p_password_new']);
+							$newPassword = $core->framework->auth->hash($_POST['p_password_new']);
 							
 								/*
 								 * Change Password
 								 */
 								$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `id` = :uid");
 								$updatePassword->execute(array(
-									':password' => $core->framework->auth->encrypt($_POST['p_password_new']),
+									':password' => $core->framework->auth->hash($_POST['p_password_new']),
 									':uid' => $core->framework->user->getData('id')
 								));
 								

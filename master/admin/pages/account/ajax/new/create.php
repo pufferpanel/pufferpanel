@@ -45,7 +45,7 @@ $insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email,
 $insert->execute(array(
 	':user' => $_POST['username'],
 	':email' => $_POST['email'],
-	':pass' => $core->framework->auth->encrypt($_POST['pass']),
+	':pass' => $core->framework->auth->hash($_POST['pass']),
 	':time' => time()
 ));
 

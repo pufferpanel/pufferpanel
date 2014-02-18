@@ -30,10 +30,53 @@ class auth extends dbConn {
 		
 		}
 	
-	public function encrypt($string, $algo = 'ripemd320'){
+	public function hash($raw){
+	
+		return password_hash($raw, PASSWORD_BCRYPT);
+	
+	}
+	
+	private function password_compare($raw, $hashed){
+	
+		if(password_verify($raw, $hashed))
+			return true;
+		else
+			return false;
+	
+	}
+	
+	public function generate_iv(){
+	
+		return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 		
-        $salt = crypt($string, '$6$rounds=5000$'.$this->getSalt().'$');
-		return hash($algo, $salt);
+	}
+	
+	public function encrypt($raw, $iv, $method = 'AES-256-CBC'){
+	
+		return openssl_encrypt($raw, $method, file_get_contents(HASH), false, base64_decode($iv));
+	
+	}
+	
+	public function decrypt($encrypted, $iv, $method = 'AES-256-CBC'){
+	
+		return openssl_decrypt($encrypted, $method, file_get_contents(HASH), 0, base64_decode($iv));
+	
+	}
+	
+	public function verifyPassword($email, $raw){
+	
+		$this->get = $this->mysql->prepare("SELECT `password` FROM `users` WHERE `email` = :email");
+		$this->get->execute(array(
+			':email' => $email
+		));
+	
+			if($this->get->rowCount() == 1){
+			
+				$this->row = $this->get->fetch();
+				return $this->password_compare($raw, $this->row['password']);
+				
+			}else
+				return false;
 	
 	}
 	

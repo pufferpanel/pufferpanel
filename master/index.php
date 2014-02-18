@@ -30,36 +30,32 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
         else
             $postLoginURL = 'servers.php';
     
-		$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
-		$selectAccount->execute(array(
-			':password' => $core->framework->auth->encrypt($_POST['password']),
-			':email' => $_POST['email']
-		));
-		
-			if($selectAccount->rowCount() == 1){
+			if($core->framework->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
 			
 				/*
 				 * Account Exists
 				 * Set Cookies and List Servers
 				 */
 				$token = $core->framework->auth->keygen('12');
-				(isset($_POST['remember_me']) ? $expires = time() + 604800 : $expires = time() + 1800);
-				(isset($_POST['remember_me']) ? $cookieExpire = time() + 604800 : $cookieExpire = 0);
+				$expires = (isset($_POST['remember_me'])) ? time() + 604800 : time() + 1800;
+				$cookieExpire = (isset($_POST['remember_me'])) ? time() + 604800 : 0;
 				
 					setcookie("pp_auth_token", $token, $cookieExpire, '/', $core->framework->settings->get('cookie_website'));
 				
-					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr, `session_expires` = :expires WHERE `password` = :password AND `email` = :email");
+					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr, `session_expires` = :expires WHERE `email` = :email");
 					$updateUsers->execute(array(
 						':token' => $token,
 						':ipaddr' => $_SERVER['REMOTE_ADDR'],
 						':expires' => $expires,
-						':password' => $core->framework->auth->encrypt($_POST['password']),
 						':email' => $_POST['email']
 					));
 				
 					/*
 					 * Send Email if Set
 					 */
+					$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
+					$selectAccount->execute(array($_POST['email']));
+					
 					$row = $selectAccount->fetch();
 					if($row['notify_login_s'] == 1){
 						

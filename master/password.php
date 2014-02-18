@@ -100,7 +100,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 			
 			$updateUsers = $mysql->prepare("UPDATE `users` SET `password` = :newpass WHERE `email` = :email");
 			$updateUsers->execute(array(
-				':newpass' => $core->framework->auth->encrypt($raw_newpassword),
+				':newpass' => $core->framework->auth->hash($raw_newpassword),
 				':email' => $row['content']
 			));
 			
