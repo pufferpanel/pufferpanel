@@ -36,38 +36,27 @@ $outputMessage = '';
 if(isset($_GET['action'])){
 
 	if($_GET['action'] == 'notifications' && isset($_POST['password'])){
-
-		/*
-		 * Update Notification Settings
-		 */
-		$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
-		$selectAccount->execute(array(
-			':password' => $core->framework->auth->hash($_POST['password']),
-			':email' => $core->framework->user->getData('email')
-		));
+			
+		if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['password']) === true){
 		
-			if($selectAccount->rowCount() == 1){
+			$updateUsers = $mysql->prepare("UPDATE `users` SET `notify_login_s` = :e_s, `notify_login_f` = :e_f WHERE `id` = :uid");
+			$updateUsers->execute(array(
+				':e_s' => $_POST['e_s'],
+				':e_f' => $_POST['e_f'],
+				':uid' => $core->framework->user->getData('id')
+			));
 			
-				$updateUsers = $mysql->prepare("UPDATE `users` SET `notify_login_s` = :e_s, `notify_login_f` = :e_f WHERE `id` = :uid AND `password` = :password");
-				$updateUsers->execute(array(
-					':e_s' => $_POST['e_s'],
-					':e_f' => $_POST['e_f'],
-					':uid' => $core->framework->user->getData('id'),
-					':password' => $core->framework->auth->hash($_POST['password'])
-				));
-				
-                $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
-                
-				$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
-			
-			}else{
-			
-                $core->framework->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
-                
-				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
-			
-			}
-
+            $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
+            
+			$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
+		
+		}else{
+		
+            $core->framework->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
+            
+			$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
+		
+		}
 
 	}else if($_GET['action'] == 'email'){
 	
@@ -83,97 +72,80 @@ if(isset($_GET['action'])){
 		
 		}else{
 		
-			$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :password AND `email` = :email");
-			$selectAccount->execute(array(
-				':password' => $core->framework->auth->hash($_POST['password']),
-				':email' => $core->framework->user->getData('email')
-			));
+			if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['password']) === true){
+					
+				$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
+				$updateEmail->execute(array(
+					':email' => $_POST['newemail'],
+					':id' => $core->framework->user->getData('id')
+				));
+				
+                $core->framework->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
+                
+				$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
+				
+			}else{
 			
-				if($selectAccount->rowCount() == 1){
-						
-						$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
-						$updateEmail->execute(array(
-							':email' => $_POST['newemail'],
-							':id' => $core->framework->user->getData('id')
-						));
-					
-                    $core->framework->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
-                    
-					$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
-					
-				}else{
-				
-                    $core->framework->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
-                    
-					$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
-				
-				}
+                $core->framework->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
+                
+				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
+			
+			}
 				
 		}
 	
 	}else if($_GET['action'] == 'password'){
 	
-		/*
-		 * Update Account Password
-		 */
-		$oldPassword = $core->framework->auth->hash($_POST['p_password']);
-		 
-			$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `password` = :oldpass AND `email` = :email");
-			$selectAccount->execute(array(
-				':oldpass' => $core->framework->auth->hash($_POST['p_password']),
-				':email' => $core->framework->user->getData('email')
-			));
+		if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['p_password']) === true){
+		
+			if(preg_match("#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#", $_POST['p_password_new'])){
 			
-				if($selectAccount->rowCount() == 1){
-					if(preg_match("#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#", $_POST['p_password_new'])){
+				if($_POST['p_password_new'] == $_POST['p_password_new_2']){
+				
+					$newPassword = $core->framework->auth->hash($_POST['p_password_new']);
 					
-						if($_POST['p_password_new'] == $_POST['p_password_new_2']){
+						/*
+						 * Change Password
+						 */
+						$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `id` = :uid");
+						$updatePassword->execute(array(
+							':password' => $core->framework->auth->hash($_POST['p_password_new']),
+							':uid' => $core->framework->user->getData('id')
+						));
 						
-							$newPassword = $core->framework->auth->hash($_POST['p_password_new']);
 							
-								/*
-								 * Change Password
-								 */
-								$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `id` = :uid");
-								$updatePassword->execute(array(
-									':password' => $core->framework->auth->hash($_POST['p_password_new']),
-									':uid' => $core->framework->user->getData('id')
-								));
-								
-									
-								/*
-								 * Send Email
-								 */
-								$message = $core->framework->email->buildEmail('password_changed', array(
-                                    'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
-                                    'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                                ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Password Change Notification');
-								
-                            $core->framework->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
-                            
-							$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
-								
+						/*
+						 * Send Email
+						 */
+						$message = $core->framework->email->buildEmail('password_changed', array(
+                            'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                            'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
                         ))->dispatch($core->framework->user->getData('email'), $core->framework->settings->get('company_name').' - Password Change Notification');
 						
-						}else{
-                            
-							$outputMessage = '<div class="alert alert-danger">Your passowrds did not match.</div>';
+                    $core->framework->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
+                    
+					$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 						
-						}
-					
-					}else{
-					
-						$outputMessage = '<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
-					
-					}
 				
 				}else{
-				
-                    $core->framework->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
                     
-					$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
+					$outputMessage = '<div class="alert alert-danger">Your passowrds did not match.</div>';
 				
 				}
+			
+			}else{
+			
+				$outputMessage = '<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
+			
+			}
+		
+		}else{
+		
+            $core->framework->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
+            
+			$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
+		
+		}
 	
 	}else{
 	
