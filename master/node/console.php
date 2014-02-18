@@ -117,6 +117,25 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	<script type="text/javascript">
 	$(document).ready(function(){
 		var socket = io.connect('http://<?php echo $core->framework->server->getData('ftp_host'); ?>:<?php echo $core->framework->server->getData('server_port') + 1; ?>');
+		$.ajaxSetup({
+		        error: function(jqXHR, exception) {
+		            if (jqXHR.status === 0) {
+		                alert('Not connect.\n Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.\n' + jqXHR.responseText);
+		            }
+		        }
+		    });
 		$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		$("#console_command").submit(function(){
 			$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
@@ -124,15 +143,22 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			$.ajax({
 				type: "POST",
 				url: 'http://<?php echo $core->framework->server->getData('ftp_host'); ?>:8003/gameservers/<?php echo $core->framework->server->getData('gsd_id'); ?>/console',
+				timeout: 5000,
 				data: { command: ccmd },
-			  		success: function(data) {
-			    		$("#sending_command").removeClass('disabled');
-			    		$("#sending_command").html('&rarr;');
-			    		$("#ccmd").val('');
-			    			if(data != 'ok'){
-			    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
-			    			}
-			 		 }
+				error: function(jqXHR, textStatus, errorThrown) {
+				   	$("#sc_resp").html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
+				   	$("#sending_command").removeClass('disabled');
+				   	$("#sending_command").html('&rarr;');
+				   	$("#ccmd").val('');
+				},
+		  		success: function(data) {
+		    		$("#sending_command").removeClass('disabled');
+		    		$("#sending_command").html('&rarr;');
+		    		$("#ccmd").val('');
+		    			if(data != 'ok'){
+		    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
+		    			}
+		 		 }
 			});
 			return false;
 		});
@@ -155,37 +181,48 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					$.ajax({
 						type: "GET",
 						url: "http://<?php echo $core->framework->server->getData('ftp_host'); ?>:8003/gameservers/<?php echo $core->framework->server->getData('gsd_id'); ?>/"+command,
-						data: { process: "power", command: command },
-					  		success: function(data) {
-				    			if(data == "ok" && command == "on"){
-				    				$("#"+command).toggleClass('disabled');
-				    				$("#"+command).html('Start');
-				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been started successfully.").slideDown().delay(5000).slideUp();
-				    				can_run = true;
-				    				return false;
-				    			}else if(data == "ok" && command == "off"){
-				    				$("#"+command).toggleClass('disabled');
-				    				$("#"+command).html('Stop');
-				    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
-				    				can_run = true;
-				    				return false;
-				    			}else if(data == "ok" && command == "restart"){
-				    				$("#"+command).toggleClass('disabled');
-				    				$("#"+command).html('Kill');
-				    				$("#pw_resp").attr('class', 'alert alert-success').html("The server has been rebooted.").slideDown().delay(5000).slideUp();
-				    				can_run = true;
-				    				return false;
-				    			}else{
-				    				$("#pw_resp").attr('class', 'alert alert-danger').html(data);				    				
-				    				$("#stop").removeClass('disabled');
-				    				$("#stop").html('Stop');
-				    				$("#start").removeClass('disabled');
-				    				$("#start").html('Start');
-				    				$("#restart").removeClass('disabled');
-				    				$("#restart").html('Restart');
-				    				can_run = true;
-				    			}
-					 		 }
+						timeout: 5000,
+						error: function(jqXHR, textStatus, errorThrown) {
+						   	$("#pw_resp").attr('class', 'alert alert-danger').html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
+						   	$("#stop").removeClass('disabled');
+						   	$("#stop").html('Stop');
+						   	$("#start").removeClass('disabled');
+						   	$("#start").html('Start');
+						   	$("#restart").removeClass('disabled');
+						   	$("#restart").html('Restart');
+						   	can_run = true;
+						   	return false;
+						},
+				  		success: function(data) {
+			    			if(data == "ok" && command == "on"){
+			    				$("#"+command).toggleClass('disabled');
+			    				$("#"+command).html('Start');
+			    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been started successfully.").slideDown().delay(5000).slideUp();
+			    				can_run = true;
+			    				return false;
+			    			}else if(data == "ok" && command == "off"){
+			    				$("#"+command).toggleClass('disabled');
+			    				$("#"+command).html('Stop');
+			    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
+			    				can_run = true;
+			    				return false;
+			    			}else if(data == "ok" && command == "restart"){
+			    				$("#"+command).toggleClass('disabled');
+			    				$("#"+command).html('Kill');
+			    				$("#pw_resp").attr('class', 'alert alert-success').html("The server has been rebooted.").slideDown().delay(5000).slideUp();
+			    				can_run = true;
+			    				return false;
+			    			}else{
+			    				$("#pw_resp").attr('class', 'alert alert-danger').html(data);				    				
+			    				$("#stop").removeClass('disabled');
+			    				$("#stop").html('Stop');
+			    				$("#start").removeClass('disabled');
+			    				$("#start").html('Start');
+			    				$("#restart").removeClass('disabled');
+			    				$("#restart").html('Restart');
+			    				can_run = true;
+			    			}
+				 		 }
 					});
 				}else{
 					return false;
