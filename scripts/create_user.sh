@@ -30,7 +30,7 @@ useradd -d /srv/servers/$1 -s /usr/bin/rssh -G rsshusers $1
 echo -e "$2\n$2" | passwd $1
 
 #Set Folder Permissions
-mkdir /srv/servers/$1/server
+mkdir -p /srv/servers/$1/server
 chown root.root /srv/servers/$1
 chmod 755 /srv/servers/$1
 chown $1.rsshusers /srv/servers/$1/server
