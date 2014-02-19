@@ -26,7 +26,7 @@ class server extends user {
 
 	public function __construct($hash, $userid, $isroot){
 		
-		if($userid !== false){
+		if($userid !== false && !empty($hash)){
 		
 			$this->mysql = parent::getConnection();
 			

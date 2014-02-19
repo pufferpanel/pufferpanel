@@ -36,7 +36,7 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pass'], $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'] $_POST['ip_port']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args');
 
 /*
@@ -59,9 +59,16 @@ if($_POST['s_dir'] == $_POST['s_dir_backup'])
 	
 if(strlen($_POST['ssh_user']) < 1 || $_POST['ssh_user'] == 'root')
 	$core->framework->page->redirect('../../add.php?error=ssh_user&disp=user_fail');
+	
+if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_priv_key']))
+	$core->framework->page->redirect('../../add.php?error=ssh_pub_key|ssh_priv_key&disp=key_fail');
 
-if(strlen($_POST['ssh_pass']) < 12)
-	$core->framework->page->redirect('../../add.php?error=ssh_pass&disp=pass_fail');
+/*
+ * Generate Encrypted Version of Secret
+ */
+
+$ssh_secret_iv = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->generate_iv() : null;
+$ssh_secret = (!empty($_POST['ssh_secret'])) $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
 
 /*
  * Process IPs and Ports
@@ -106,16 +113,18 @@ $IPP = json_encode($IPP);
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['ssh_pass'] = openssl_encrypt($_POST['ssh_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :bdir, :suser, :iv, :spass, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :bdir, :suser, :rsa_pub, :rsa_priv, :rsa_secret, :rsa_secret_iv, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
 	':ip' => $_POST['node_ip'],
 	':sftp_ip' => $_POST['node_sftp_ip'],
 	':sdir' => $_POST['s_dir'],
-	'bdir' => $_POST['s_dir_backup'],
+	':bdir' => $_POST['s_dir_backup'],
 	':suser' => $_POST['ssh_user'],
-	':iv' => $iv,
-	':spass' => $_POST['ssh_pass'],
+	':rsa_pub' => $_POST['ssh_pub_key'],
+	':rsa_priv' => $_POST['ssh_priv_key'],
+	':rsa_secret' => $rsa_secret,
+	':rsa_secret_iv' => $rsa_secret_iv,
 	':ips' => $IPA,
 	':ports' => $IPP
 ));

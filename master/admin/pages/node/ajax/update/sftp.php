@@ -53,20 +53,26 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		
 	if(!isset($_POST['warning']))
 		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
-	
-	if(!isset($_POST['pass']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=missing_args&tab=sftp');
 		
-	if(strlen($_POST['pass']) < 12)
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=pass&disp=pass_fail&tab=sftp');
+	if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_priv_key']))
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ssh_pub_key|ssh_priv_key&disp=key_fail');
 	
-	$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-	$_POST['pass'] = openssl_encrypt($_POST['pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+	/*
+	 * Generate Encrypted Version of Secret
+	 */
+	$ssh_secret_iv = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->generate_iv() : null;
+	$ssh_secret = (!empty($_POST['ssh_secret'])) $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
 	
 	/*
 	 * Run Update on Node Table
 	 */
-	$mysql->prepare("UPDATE `nodes` SET `encryption_iv` = :iv, `password` = :pass WHERE `id` = :nid")->execute(array(':iv' => $iv, ':pass' => $_POST['pass'], ':nid' => $_POST['nid']));
+	$mysql->prepare("UPDATE `nodes` SET `ssh_pub` = :ssh_pub, `ssh_priv` = :ssh_priv, `ssh_secret` = :ssh_secret, `ssh_secret_iv` = :ssh_secret_iv WHERE `id` = :nid")->execute(array(
+		':rsa_pub' => $_POST['ssh_pub_key'],
+		':rsa_priv' => $_POST['ssh_priv_key'],
+		':rsa_secret' => $rsa_secret,
+		':rsa_secret_iv' => $rsa_secret_iv,
+		':nid' => $_POST['nid']
+	));
 	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
 }

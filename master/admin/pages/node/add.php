@@ -81,8 +81,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							case 'user_fail':
 								echo '<div class="alert alert-danger">SSH users must not be blank, and may not be \'root\'.</div>';
 								break;
-							case 'pass_fail':
-								echo '<div class="alert alert-danger">SSH passwords must be at least 12 characters.</div>';
+							case 'key_fail':
+								echo '<div class="alert alert-danger">The SSH Keys you entered were not in a valid format.</div>';
 								break;
 							case 'ip_port_space':
 								echo '<div class="alert alert-danger">Unable to allocate the ports you inputted. This is most likely due to a spacing issue.</div>';
@@ -150,9 +150,23 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									</div>
 								</div>
 								<div class="form-group col-6 nopad-right">
-									<label for="ssh_pass" class="control-label">SSH Password</label>
+									<label for="ssh_secret" class="control-label">SSH Key Secret (optional)</label>
 									<div>
-										<input type="password" autocomplete="off" name="ssh_pass" class="form-control" />
+										<input type="password" autocomplete="off" name="ssh_secret" class="form-control" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-6 nopad">
+									<label for="ssh_pub_key" class="control-label">SSH Public Key</label>
+									<div>
+										<input type="text" placeholder="~/.ssh/id_rsa.pub" autocomplete="off" name="ssh_pub_key" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group col-6 nopad-right">
+									<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
+									<div>
+										<input type="text" placeholder="~/.ssh/id_rsa" autocomplete="off" name="ssh_priv_key" class="form-control" />
 									</div>
 								</div>
 							</div>

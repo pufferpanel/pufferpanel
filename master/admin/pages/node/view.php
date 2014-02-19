@@ -105,14 +105,8 @@ $selectNode->execute(array(
 							case 'user_fail':
 								echo 'SFTP users must not be blank, and may not be \'root\'.';
 								break;
-							case 'pass_fail':
-								echo 'SSH passwords must be at least 12 characters.';
-								break;
 							case 'n_fail':
 								echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
-								break;
-							case 'url_fail':
-								echo 'The node URL provided is not valid.';
 								break;
 							case 'add_port_fail':
 								echo 'The port list entered was invalid.';
@@ -228,7 +222,7 @@ $selectNode->execute(array(
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="sftp_user" class="control-label">SFTP Username</label>
+										<label for="sftp_user" class="control-label">SSH Username</label>
 										<div>
 											<input type="text" name="sftp_user" value="<?php echo $node['username']; ?>" class="form-control" />
 										</div>
@@ -256,9 +250,21 @@ $selectNode->execute(array(
 							<form action="ajax/update/sftp.php?do=pass" method="post">
 								<fieldset>
 									<div class="form-group">
-										<label for="sftp_ip" class="control-label">New SFTP Password</label>
+										<label for="ssh_pub_key" class="control-label">SSH Public Key</label>
 										<div>
-											<input type="password" name="pass" autocomplete="off" class="form-control" />
+											<input type="text" name="ssh_pub_key" autocomplete="off" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
+										<div>
+											<input type="text" name="ssh_priv_key" autocomplete="off" class="form-control" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="ssh_secret" class="control-label">SSH Secret (optional)</label>
+										<div>
+											<input type="password" name="ssh_secret" autocomplete="off" class="form-control" />
 										</div>
 									</div>
 									<div class="form-group">
@@ -274,7 +280,7 @@ $selectNode->execute(array(
 									<div class="form-group">
 										<div>
 											<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-											<input type="submit" value="Update SFTP Password" id="disable_complete_pass" class="btn btn-primary disabled" />
+											<input type="submit" value="Update SSH Keys" id="disable_complete_pass" class="btn btn-primary disabled" />
 										</div>
 									</div>
 								</fieldset>
