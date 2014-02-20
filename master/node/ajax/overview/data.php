@@ -34,28 +34,26 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		));
 		
 		$node = $query->fetch();
-		
+			
 			/*
 			 * Run Command
 			 */
-			$con = ssh2_connect($node['sftp_ip'], 22);
-			if(!ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv']))))
+			$getCommandData = $core->framework->auth->generateSSH2Connection(array(
+				'ip' => $node['sftp_ip'],
+				'user' => $node['username']
+			), array(
+				'pub' => $node['ssh_pub'],
+				'priv' => $node['ssh_priv'],
+				'secret' => $node['ssh_secret'],
+				'secret_iv' => $node['ssh_secret_iv']
+			), true)->executeSSH2Command('sudo du -s '.$node['server_dir'].$core->framework->server->getData('ftp_user').'/server', true);
+			
+			if($getCommandData === false)
 				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
-			
-			
-			$stream = ssh2_exec($con, 'sudo du -s '.$node['server_dir'].$core->framework->server->getData('ftp_user').'/server', true);
-			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-			
-			stream_set_blocking($errorStream, true);
-			stream_set_blocking($stream, true);
-			
-			$getCommandData = stream_get_contents($stream);
-			if(empty($getCommandData))
+			elseif(empty($getCommandData))
 				exit('<div class="alert alert-danger">Unable to execute command on the server.</div>');
 			
-			fclose($errorStream);
-			fclose($stream);
-		
+			
 		/*
 		 * Do Math
 		 */
@@ -81,11 +79,21 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			exit('<div class="alert alert-danger">The server appears to be offline.</div>');
 		}
 			
+		echo '	<h5>CPU Usage</h5>
+				<div class="progress">
+				  	<div class="progress-bar" id="cpu_bar" style="width:'.round($core->framework->gsd->retrieve_process('cpu'), 0, PHP_ROUND_HALF_UP).'%;max-width:100%;">'.round($core->framework->gsd->retrieve_process('cpu'), 0, PHP_ROUND_HALF_UP).'%</div>
+				</div>';
+			
+		echo '	<h5>Memory Usage</h5>
+				<div class="progress">
+				  	<div class="progress-bar" id="memory_bar" style="width:'.(($core->framework->files->format($core->framework->gsd->retrieve_process('memory')) / $core->framework->server->getData('max_ram')) * 100).'%;max-width:100%;">'.$core->framework->files->format($core->framework->gsd->retrieve_process('memory')).'MB / '.$core->framework->server->getData('max_ram').'MB</div>
+				</div>';
+			
 			$onlinePlayers = null;
-			$players = $core->framework->query->getPlayers();
+			$players = $core->framework->gsd->retrieve('players');
 			$i = 0;
 			
-			if($players !== false){
+			if(count($players) > 0){
 			
 				foreach($players as $player){
 			
@@ -100,14 +108,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 			}
 		
-		$playerPercentage = round($i / $core->framework->gsd->retrieve('maxplayers'), 2) * 100;
-		$playerPercentage = ($playerPercentage < 1) ? 1 : $playerPercentage;
-		
-		echo '
-				<div class="progress">
-				  	<div class="progress-bar" style="width:'.$playerPercentage.'%"></div>
-				</div>
-				'.$onlinePlayers;
+		echo '	<h5>Players Online</h5>
+				<span id="player_list">'.$onlinePlayers.'</span>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'info'){
 	

@@ -56,7 +56,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			</div>
 			<div class="col-9">
 				<div class="col-12">
-					<h3 class="nopad">Players Online</h3><hr />
+					<h3 class="nopad">Stats Overview</h3><hr />
 					<div id="server_players">
 						<p id="server_players_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
 					</div>
@@ -118,6 +118,38 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						});
 			 		}
 			});
+			setInterval(function(){ 
+				$.ajax({
+					type: "POST",
+					url: "ajax/overview/raw_data.php",
+					data: { data: 'memory' },
+				  		success: function(data) {
+				  			var percentage = Math.floor( (data * 100) / <?php echo $core->framework->server->getData('max_ram'); ?>) + '%';
+							$("#memory_bar").html(data + 'MB / <?php echo $core->framework->server->getData('max_ram'); ?>MB');
+							$("#memory_bar").css('width', percentage);
+				 		}
+				});
+				$.ajax({
+					type: "POST",
+					url: "ajax/overview/raw_data.php",
+					data: { data: 'cpu' },
+				  		success: function(data) {
+				  			var cpu_percent = data + '%';
+							$("#cpu_bar").html(cpu_percent);
+							$("#cpu_bar").css('width', cpu_percent);
+				 		}
+				});
+				$.ajax({
+					type: "POST",
+					url: "ajax/overview/raw_data.php",
+					data: { data: 'players' },
+				  		success: function(data) {
+							$("#player_list").html(data);
+							$("img[data-toggle='tooltip']").tooltip();
+				 		}
+				});
+			}, 10000);
+			
 		});
 	</script>
 </body>
