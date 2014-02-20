@@ -83,6 +83,7 @@ class GSD_Query extends dbConn {
 						return false;
 					else{
 						$this->_jsonData = $this->raw['query'];
+						$this->_jsonProcess = $this->raw['process'];
 						return true;
 					}
 				
@@ -92,6 +93,18 @@ class GSD_Query extends dbConn {
 		}
 		
 	
+	}
+	
+	public function retrieve_process($element = null) {
+		
+		if($this->online() === true)
+			if(is_null($element))
+				return $this->_jsonProcess;
+			else
+				return (array_key_exists($element, $this->_jsonProcess)) ? $this->_jsonProcess[$element] : null;
+		else
+			return null;
+		
 	}
 	
 	public function retrieve($element = null) {
