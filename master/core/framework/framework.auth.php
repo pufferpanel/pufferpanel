@@ -83,7 +83,7 @@ class auth extends dbConn {
 	
 	}
 	
-	public function generateSSH2Connection($vars, $pubkey, $usekey = false){
+	public function generateSSH2Connection($vars, $pubkey){
 	
 		/*
 		 * Connect to Node
@@ -91,9 +91,11 @@ class auth extends dbConn {
 		$this->ssh2_connection = ssh2_connect($vars['ip'], 22);
 		$this->connectFailed = false;		
 		
-			if($usekey === true)
+			if(!empty($pubkey))
 				if(!ssh2_auth_pubkey_file($this->ssh2_connection, $vars['user'], $pubkey['pub'], $pubkey['priv'], $this->decrypt($pubkey['secret'], $pubkey['secret_iv'])))
 					$this->connectFailed = true;
+				else
+					null;
 			else
 				if(!ssh2_auth_password($this->ssh2_connection, $vars['user'], $this->decrypt($vars['pass'], $vars['iv'])))
 					$this->connectFailed = true;
@@ -118,7 +120,7 @@ class auth extends dbConn {
 			stream_set_blocking($this->errorStream, true);
 			stream_set_blocking($this->stream, true);
 			
-			$this->isError = stream_get_contents($errorStream);
+			$this->isError = stream_get_contents($this->errorStream);
 			
 			/*
 			 * Do we want the data?
