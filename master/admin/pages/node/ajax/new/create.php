@@ -75,6 +75,12 @@ $ssh_secret = (!empty($_POST['ssh_secret'])) $core->framework->auth->encrypt($_P
  */
 $IPP = array();
 $IPA = array();
+
+/*
+ * Clean Inputs
+ */
+$_POST['ip_port'] = str_replace(" ", "", $_POST['ip_port']);
+
 $lines = explode("\r\n", $_POST['ip_port']);
 foreach($lines as $id => $values)
 	{
