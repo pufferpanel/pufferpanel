@@ -4925,9 +4925,10 @@ a.thumbnail.active {
   width: 0;
   height: 100%;
   font-size: 12px;
-  line-height: 21px;
+  line-height: 16px;
   color: #ffffff;
-  text-align: center;
+  text-align: left;
+  padding-left: 10px;
   background-color: #008cba;
   -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
           box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
