@@ -38,6 +38,14 @@ class files {
 	    
 	}
 	
+	public function format($size, $precision = 0){
+	
+		$base = log($size) / log(1024);
+	
+	    return round(pow(1024, $base - floor($base)), $precision);
+	    
+	}
+	
 	public function readLines($filename, $lines)
 	{
 
