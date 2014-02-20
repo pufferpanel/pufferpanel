@@ -108,6 +108,9 @@ $selectNode->execute(array(
 							case 'n_fail':
 								echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
 								break;
+							case 'key_fail':
+								echo 'The SSH keys you entered were not in a valid format.';
+								break;
 							case 'add_port_fail':
 								echo 'The port list entered was invalid.';
 								break;
@@ -252,13 +255,13 @@ $selectNode->execute(array(
 									<div class="form-group">
 										<label for="ssh_pub_key" class="control-label">SSH Public Key</label>
 										<div>
-											<input type="text" name="ssh_pub_key" autocomplete="off" class="form-control" />
+											<input type="text" name="ssh_pub_key" value="<?php echo $node['ssh_pub']; ?>" autocomplete="off" class="form-control" />
 										</div>
 									</div>
 									<div class="form-group">
 										<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
 										<div>
-											<input type="text" name="ssh_priv_key" autocomplete="off" class="form-control" />
+											<input type="text" name="ssh_priv_key" value="<?php echo $node['ssh_priv']; ?>" autocomplete="off" class="form-control" />
 										</div>
 									</div>
 									<div class="form-group">

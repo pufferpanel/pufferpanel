@@ -59,7 +59,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					<tbody>
 						<?php
 						
-							$find = $mysql->prepare("SELECT `id`, `node`, `node_link` FROM `nodes`");
+							$find = $mysql->prepare("SELECT `id`, `node` FROM `nodes`");
 							$find->execute(array());
 							
 							while($row = $find->fetch())

@@ -19,6 +19,7 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
+
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
 	$core->framework->page->redirect('../../../index.php');
 }
@@ -53,24 +54,27 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		
 	if(!isset($_POST['warning']))
 		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
-		
-	if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_priv_key']))
-		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ssh_pub_key|ssh_priv_key&disp=key_fail');
+	
+	$_POST['ssh_pub_key'] = trim($_POST['ssh_pub_key']);
+	$_POST['ssh_priv_key'] = trim($_POST['ssh_priv_key']);
+	
+	if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+)$/', $_POST['ssh_priv_key']))
+		$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ssh_pub_key|ssh_priv_key&disp=key_fail&tab=sftp');
 	
 	/*
 	 * Generate Encrypted Version of Secret
 	 */
 	$ssh_secret_iv = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->generate_iv() : null;
-	$ssh_secret = (!empty($_POST['ssh_secret'])) $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
+	$ssh_secret = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
 	
 	/*
 	 * Run Update on Node Table
 	 */
 	$mysql->prepare("UPDATE `nodes` SET `ssh_pub` = :ssh_pub, `ssh_priv` = :ssh_priv, `ssh_secret` = :ssh_secret, `ssh_secret_iv` = :ssh_secret_iv WHERE `id` = :nid")->execute(array(
-		':rsa_pub' => $_POST['ssh_pub_key'],
-		':rsa_priv' => $_POST['ssh_priv_key'],
-		':rsa_secret' => $rsa_secret,
-		':rsa_secret_iv' => $rsa_secret_iv,
+		':ssh_pub' => $_POST['ssh_pub_key'],
+		':ssh_priv' => $_POST['ssh_priv_key'],
+		':ssh_secret' => $ssh_secret,
+		':ssh_secret_iv' => $ssh_secret_iv,
 		':nid' => $_POST['nid']
 	));
 	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
