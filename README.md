@@ -19,7 +19,7 @@ Please do not run PufferPanel on a live environment at this stage in its develop
 Support for PufferPanel comes from [Fishbans](http://fishbans.com) and **OSTKCabal** who have graciously provided us with development servers.
 
 # Special Thanks
-* **[GSD](https://github.com/gametainers/gsd) - Special thanks to cookednoodles (Eoin) for creating and licensing GSD for use by PufferPanel. This is the core software daemon that we use to control server actions and quickly display data. (v0.5.5-beta and above)
+* **[GSD](https://github.com/gametainers/gsd)** - Special thanks to cookednoodles (Eoin) for creating and licensing GSD for use by PufferPanel. This is the core software daemon that we use to control server actions and quickly display data. (v0.5.5-beta and above)
 * **[xPaw](http://xpaw.ru)** — A special thanks to xPaw for allowing PufferPanel to use the [Minecraft Query](https://github.com/xPaw/PHP-Minecraft-Query) class that he developed. This code allows us to access server information such as version, players online, and more directly from the panel without any additional configuration needed on your end. (v0.5.0.1-beta and below)
 * **[FontAwesome.io](http://fontawesome.io)** — Mad props to the people who created this wonderful open-source icon-set that we take advantage of in PufferPanel.
 * **[puffrfish](https://github.com/puffrfish)** — A very special thank you to puffrfish who had the idea almost two years ago to create PufferPanel for a hosting buisness. Without his reassurance, ideas, and determination this panel never would have made it off the ground and gotten to the point it has made it.
