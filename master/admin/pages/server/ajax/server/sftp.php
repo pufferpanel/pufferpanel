@@ -69,10 +69,10 @@ $core->framework->auth->generateSSH2Connection(array(
 	'host' => $node['sftp_ip'],
 	'user' => $node['username']
 ), array(
-	'pub' => $node['rsa_pub'],
-	'priv' => $node['rsa_priv'],
-	'secret' => $node['rsa_secret'],
-	'secret_iv' => $node['rsa_secret_iv']
+	'pub' => $node['ssh_pub'],
+	'priv' => $node['ssh_priv'],
+	'secret' => $node['ssh_secret'],
+	'secret_iv' => $node['ssh_secret_iv']
 ), true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"');
 
 /*
