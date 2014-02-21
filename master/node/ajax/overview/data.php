@@ -67,10 +67,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		if($core->framework->gsd->online() !== true){
 			exit('<div class="alert alert-danger">The server appears to be offline.</div>');
 		}
-			
+		
+		$cpu = round(($core->framework->gsd->retrieve_process('cpu') / $core->framework->server->getData('cpu_limit')) * 100, 2);
+		$cpu = ($cpu > "100") ? "100" : $cpu;	
 		echo '	<h5>CPU Usage</h5>
 				<div class="progress">
-				  	<div class="progress-bar" id="cpu_bar" style="width:'.round($core->framework->gsd->retrieve_process('cpu'), 0, PHP_ROUND_HALF_UP).'%;max-width:100%;">'.round($core->framework->gsd->retrieve_process('cpu'), 0, PHP_ROUND_HALF_UP).'%</div>
+				  	<div class="progress-bar" id="cpu_bar" style="width:'.$cpu.'%;max-width:100%;">'.round($cpu, 2).'%</div>
 				</div>';
 			
 		echo '	<h5>Memory Usage</h5>

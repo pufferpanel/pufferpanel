@@ -28,6 +28,7 @@ class GSD_Query extends dbConn {
 			$this->mysql = parent::getConnection();
 			$this->gsid = (int)$serverid;
 			$this->_queryData = array();
+			$this->_nodeData = array();
 			
 			/*
 			 * Load Information into Script
@@ -46,6 +47,24 @@ class GSD_Query extends dbConn {
 					 	
 				}else
 					$this->_queryData = false;
+					
+			/*
+			 * Load Node Information into Script
+			 */
+			$this->executeNodeQuery = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nid");
+			$this->executeNodeQuery->execute(array(
+				':nid' => $this->_queryData['node']
+			));
+			
+				if($this->executeNodeQuery->rowCount() == 1){
+				
+					 $this->node = $this->executeNodeQuery->fetch();
+					 
+					 foreach($this->node as $this->id => $this->val)
+					 	$this->_nodeData = array_merge($this->_nodeData, array($this->id => $this->val));
+					 	
+				}else
+					$this->_nodeData = false;
 					
 		}
 	
@@ -68,7 +87,7 @@ class GSD_Query extends dbConn {
 					"timeout" => 3
 				)
 			));
-			$this->gatherData = @file_get_contents("http://".$this->_queryData['ftp_host'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
+			$this->gatherData = @file_get_contents("http://".$this->_nodeData['sftp_ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
 		
 			$this->raw = json_decode($this->gatherData, true);
 			
@@ -81,6 +100,7 @@ class GSD_Query extends dbConn {
 						return false;
 					else{
 						$this->_jsonData = $this->raw['query'];
+						$this->_serverPID = $this->raw['pid'];
 						$this->_jsonProcess = $this->raw['process'];
 						return true;
 					}
@@ -91,6 +111,15 @@ class GSD_Query extends dbConn {
 		}
 		
 	
+	}
+	
+	public function pid() {
+		
+		if($this->online() === true)
+			return $this->_serverPID;
+		else
+			return null;
+		
 	}
 	
 	public function retrieve_process($element = null) {

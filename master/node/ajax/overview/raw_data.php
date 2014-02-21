@@ -24,8 +24,13 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	if($_POST['data'] && $_POST['data'] == 'memory')
 		exit($core->framework->files->format($core->framework->gsd->retrieve_process('memory')));
 	
-	if($_POST['data'] && $_POST['data'] == 'cpu')
-		exit(round($core->framework->gsd->retrieve_process('cpu'), 2, PHP_ROUND_HALF_UP));
+	if($_POST['data'] && $_POST['data'] == 'cpu'){
+		$cpu = round(($core->framework->gsd->retrieve_process('cpu') / $core->framework->server->getData('cpu_limit')) * 100, 2);
+		$cpu = ($cpu > "100") ? "100" : $cpu;
+		
+		exit($cpu);
+		
+	}
 	
 	if($_POST['data'] && $_POST['data'] == 'players'){
 	
