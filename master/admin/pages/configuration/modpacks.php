@@ -182,6 +182,9 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										</div>
 									</div>
 								</div>
+								<div class="well well-sm">
+									<p class="text-muted"><small><strong>My Modpack is too big!</strong> If the modpack you want to upload is larger than 35MB this script will not work. Please create an empty .zip archive and upload it in place of the modpack. When it is done, go to the modpack edit page, and find the listed file name at the top. Name the modpack you wish to use to that name, and using a FTP client or SSH upload it into your modpack directory, overwriting the one that is currently there.</small></p>
+								</div>
 								<div class="form-group">
 									<div>
 										<input type="submit" value="Upload Modpack" class="btn btn-primary" />
