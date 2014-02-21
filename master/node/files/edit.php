@@ -111,7 +111,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 				                /*
 				                 * Download Via SFTP
 				                 */
-				                $connection = $core->framework->auth->generateSSH2Connection(array(
+				                $connection = $core->framework->ssh->generateSSH2Connection(array(
 				                	'ip' => $core->framework->server->nodeData('sftp_ip'),
 				                	'user' => $core->framework->server->getData('ftp_user'),
 				                	'pass' => $core->framework->server->getData('ftp_pass'),

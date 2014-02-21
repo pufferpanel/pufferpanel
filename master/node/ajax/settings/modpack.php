@@ -56,7 +56,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Connect and Run Function
 		 */
-		$callbackData = $core->framework->auth->generateSSH2Connection(array(
+		$callbackData = $core->framework->ssh->generateSSH2Connection(array(
 			'ip' => $core->framework->server->nodeData('sftp_ip'),
 			'user' => $core->framework->server->nodeData('username')
 		), array(

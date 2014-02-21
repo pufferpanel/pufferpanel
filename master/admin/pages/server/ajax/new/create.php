@@ -173,7 +173,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	 */
 	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
 	
-	$core->framework->auth->generateSSH2Connection(array(
+	$core->framework->ssh->generateSSH2Connection(array(
 		'ip' => $node['sftp_ip'],
 		'user' => $node['username']
 	), array(
@@ -199,7 +199,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		/*
 		 * Execute Commands
 		 */
-		$core->framework->auth->generateSSH2Connection(array(
+		$core->framework->ssh->generateSSH2Connection(array(
 			'ip' => $node['sftp_ip'],
 			'user' => $node['username']
 		), array(

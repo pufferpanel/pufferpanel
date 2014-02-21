@@ -22,13 +22,13 @@ require_once('../../../core/framework/framework.core.php');
 if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
 	
 	if($_POST['command'] && $_POST['command'] == 'stats'){
-	
+		
 		$maxSpace = $core->framework->server->getData('disk_space') * 1024 * 1024;
-					
+			
 			/*
 			 * Run Command
 			 */
-			$getCommandData = $core->framework->auth->generateSSH2Connection(array(
+			$getCommandData = $core->framework->ssh->generateSSH2Connection(array(
 				'ip' => $core->framework->server->nodeData('sftp_ip'),
 				'user' => $core->framework->server->nodeData('username')
 			), array(
@@ -37,12 +37,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				'secret' => $core->framework->server->nodeData('ssh_secret'),
 				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
 			))->executeSSH2Command('sudo du -s '.$core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server', true);
-			
+						
 			if($getCommandData === false)
 				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
-			elseif(empty($getCommandData))
+			else if(empty($getCommandData))
 				exit('<div class="alert alert-danger">Unable to execute command on the server.</div>');
-			
+		
 			
 		/*
 		 * Do Math

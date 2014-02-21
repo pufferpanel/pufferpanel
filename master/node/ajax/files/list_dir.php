@@ -50,7 +50,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
         
     $_POST['dir'] = $_POST['dir'].'/';
 	
-	$connection = $core->framework->auth->generateSSH2Connection(array(
+	$connection = $core->framework->ssh->generateSSH2Connection(array(
 		'ip' => $core->framework->server->nodeData('sftp_ip'),
 		'user' => $core->framework->server->getData('ftp_user'),
 		'pass' => $core->framework->server->getData('ftp_pass'),
@@ -151,7 +151,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
     
 }else{
 	
-	$connection = $core->framework->auth->generateSSH2Connection(array(
+	$connection = $core->framework->ssh->generateSSH2Connection(array(
 		'ip' => $core->framework->server->nodeData('sftp_ip'),
 		'user' => $core->framework->server->getData('ftp_user'),
 		'pass' => $core->framework->server->getData('ftp_pass'),

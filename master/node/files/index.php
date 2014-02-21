@@ -33,7 +33,7 @@ if(isset($_GET['dir']))
     
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
     
-    $connection = $core->framework->auth->generateSSH2Connection(array(
+    $connection = $core->framework->ssh->generateSSH2Connection(array(
     	'ip' => $core->framework->server->nodeData('sftp_ip'),
     	'user' => $core->framework->server->getData('ftp_user'),
     	'pass' => $core->framework->server->getData('ftp_pass'),

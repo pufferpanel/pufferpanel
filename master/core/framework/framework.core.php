@@ -37,6 +37,7 @@ require_once('lib/password.lib.php');
  */
 require_once('framework.database.connect.php');
 require_once('framework.auth.php');
+require_once('framework.ssh2.php');
 require_once('framework.page.php');
 require_once('framework.files.php');
 require_once('framework.settings.php');
@@ -61,6 +62,7 @@ $core->framework = new stdClass();
  */
 $core->framework->settings = new getSettings();
 $core->framework->auth = new auth();
+$core->framework->ssh = new ssh();
 $core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash'));
 $core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
 $core->framework->email = new tplMail($core->framework->settings);

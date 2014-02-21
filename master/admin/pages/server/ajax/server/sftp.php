@@ -65,7 +65,7 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
 /*
  * Connect to Node and Execute Password Update
  */
-$core->framework->auth->generateSSH2Connection(array(
+$core->framework->ssh->generateSSH2Connection(array(
 	'ip' => $node['sftp_ip'],
 	'user' => $node['username']
 ), array(

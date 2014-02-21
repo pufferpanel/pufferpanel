@@ -52,7 +52,7 @@ $selectNode->execute(array($server['node']));
 /*
  * Update Disk Space 
  */
-$core->framework->auth->generateSSH2Connection(array(
+$core->framework->ssh->generateSSH2Connection(array(
 	'ip' => $node['sftp_ip'],
 	'user' => $node['username']
 ), array(
