@@ -58,7 +58,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		 * Do Math
 		 */
 		$getCommandData = explode("\t", $getCommandData);
-				
 		$returnSpacePercent = round((($getCommandData[0] * 1024) / $maxSpace), 2) * 100;
 		if($returnSpacePercent < 1){ $returnSpacePercent = 1; }
 		
@@ -112,37 +111,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<span id="player_list">'.$onlinePlayers.'</span>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'info'){
-	
-		/*
-		 * Query Dodads
-		 */
-		
-		
-		if($core->framework->gsd->online() === true){
-		
-			$version = $core->framework->query->getInfo('Software');
-			
-			$plugins = null;
-
-			if($pluginList = is_array($core->framework->query->getInfo('Plugins'))){
-
-				foreach($pluginList as $id => $name){
-
-					$plugins .= $name.', ';
-
-				}
-				$plugins = rtrim($plugins, ", ");
-
-			}
-
-			$plugins = (is_null($plugins)) ? "No plugins detected." : $plugins;
-		
-		}else{
-		
-			$version = "Unable to query the server.";
-			$plugins = "Unable to query the server.";
-		
-		}
 		
 			echo '
 					<table class="table table-striped table-bordered table-hover">
@@ -162,12 +130,12 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<td>'.$core->framework->settings->nodeName($core->framework->server->getData('node')).'</td>
 							</tr>
 							<tr>
-								<td><strong>Version</strong></td>
-								<td>'.$version.'</td>
+								<td><strong>Memory Allocated</strong></td>
+								<td>'.$core->framework->server->getData('max_ram').' MB</td>
 							</tr>
 							<tr>
-								<td><strong>Plugins</strong></td>
-								<td>'.$plugins.'</td>
+								<td><strong>Disk Allocated</strong></td>
+								<td>'.$core->framework->server->getData('disk_space').' MB</td>
 							</tr>
 						</tbody>
 					</table>';
