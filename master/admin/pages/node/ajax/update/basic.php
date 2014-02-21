@@ -38,7 +38,7 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['name']))
 /*
  * Validate node_ip & node_sftp_ip
  */
-if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
 	$core->framework->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail');
 	
 /*
