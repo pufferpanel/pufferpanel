@@ -1,3 +1,6 @@
+<div class="alert alert-danger">
+	<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
+</div>
 <div class="navbar navbar-default">
 	<div class="navbar-header">
 		<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
