@@ -167,27 +167,22 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 /*
  * Do Server Making Stuff Here 
  */
-$con = ssh2_connect($node['sftp_ip'], 22);
-ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
 
 	/*
 	 * Set the Soft Limit
 	 */
 	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
-
-	/*
-	 * Create User
-	 */
-	$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], true);
-	$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 	
-	stream_set_blocking($errorStream, true);
-	stream_set_blocking($stream, true);
+	$core->framework->auth->generateSSH2Connection(array(
+		'ip' => $node['sftp_ip'],
+		'user' => $node['username']
+	), array(
+		'pub' => $node['ssh_pub'],
+		'priv' => $node['ssh_priv'],
+		'secret' => $node['ssh_secret'],
+		'secret_iv' => $node['ssh_secret_iv']
+	), true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
-	$isError = stream_get_contents($errorStream);
-	
-	fclose($errorStream);
-	fclose($stream);
 	
 	/*
 	 * Install Modpack
@@ -196,34 +191,34 @@ ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], '
 		/*
 		 * Generate URL
 		 */
-		$packiv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-		$packEncryptedHash = openssl_encrypt($pack['download_hash'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($packiv));
+		$packiv = $core->framework->auth->generate_iv();
+		$packEncryptedHash = $core->framework->auth->excrypt($pack['download_hash'], $packiv);
 		
 		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
 	
 		/*
 		 * Execute Commands
 		 */
-		$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
-		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-		
-		stream_set_blocking($errorStream, true);
-		stream_set_blocking($stream, true);
-		
-		$isError = stream_get_contents($errorStream);
-		if(!empty($isError))
-			echo $isError;
-		
-		fclose($errorStream);
-		fclose($stream);
+		$core->framework->auth->generateSSH2Connection(array(
+			'ip' => $node['sftp_ip'],
+			'user' => $node['username']
+		), array(
+			'pub' => $node['ssh_pub'],
+			'priv' => $node['ssh_priv'],
+			'secret' => $node['ssh_secret'],
+			'secret_iv' => $node['ssh_secret_iv']
+		), true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
 
-$core->framework->email->buildEmail('admin_new_server', array(
-        'NAME' => $_POST['server_name'],
-        'CONNECT' => $_POST['server_ip'].':'.$_POST['server_port'],
-        'USER' => $ftpUser,
-        'PASS' => $_POST['sftp_pass_2']
-))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - New Server Added');
-
-$core->framework->page->redirect('../../view.php?id='.$lastInsert);
+	/*
+	 * Send User Email
+	 */
+	$core->framework->email->buildEmail('admin_new_server', array(
+	        'NAME' => $_POST['server_name'],
+	        'CONNECT' => $_POST['server_ip'].':'.$_POST['server_port'],
+	        'USER' => $ftpUser,
+	        'PASS' => $_POST['sftp_pass_2']
+	))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - New Server Added');
+	
+	$core->framework->page->redirect('../../view.php?id='.$lastInsert);
 
 ?>

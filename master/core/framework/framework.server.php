@@ -127,7 +127,7 @@ class server extends user {
 		
 		}else{
 		
-			return false;
+			return null;
 		
 		}
         

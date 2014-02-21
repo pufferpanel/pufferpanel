@@ -26,34 +26,34 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		list($slug, $pluginID) = explode('|', $_POST['plugin']);
 		
 		$pluginName = str_replace(array(' ', '+', '%20'), '', $slug);
-		$data = file_get_contents('http://api.bukget.org/3/plugins/bukkit/'.$slug);
+		
+		$context = stream_context_create(array(
+			"http" => array(
+				"method" => "GET",
+				"timeout" => 5
+			)
+		));
+		$data = @file_get_contents('http://api.bukget.org/3/plugins/bukkit/'.$slug, 0, $context);
 		$data = json_decode($data, true);
 
 		$filename = $data['versions'][$pluginID]['filename'];
 		$downloadPath = $data['versions'][$pluginID]['download'];
-
-			$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
-			$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
-			$node = $nodeSQLConnect->fetch();
 			
 			/*
 			 * Connect and Run Function
 			 */
-			$con = ssh2_connect($node['sftp_ip'], 22);
-			ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
+			$callbackData = $core->framework->auth->generateSSH2Connection(array(
+				'ip' => $core->framework->server->nodeData('sftp_ip'),
+				'user' => $core->framework->server->nodeData('username')
+			), array(
+				'pub' => $core->framework->server->nodeData('ssh_pub'),
+				'priv' => $core->framework->server->nodeData('ssh_priv'),
+				'secret' => $core->framework->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('cd /srv/scripts; sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
 			
-			$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
-			$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-			
-			stream_set_blocking($errorStream, true);
-			stream_set_blocking($stream, true);
-			
-			$isError = stream_get_contents($errorStream);
-			if(!empty($isError))
-				echo $isError;
-			
-			fclose($errorStream);
-			fclose($stream);
+			if(!empty($callbackData))
+				echo $callbackData;
 			
             $core->framework->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
 			

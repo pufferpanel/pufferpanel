@@ -73,7 +73,7 @@ $core->framework->auth->generateSSH2Connection(array(
 	'priv' => $node['ssh_priv'],
 	'secret' => $node['ssh_secret'],
 	'secret_iv' => $node['ssh_secret_iv']
-))->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"');
+))->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"', false);
 
 /*
  * Send the User an Email

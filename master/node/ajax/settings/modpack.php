@@ -48,36 +48,27 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Generate URL
 		 */
-		$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-		$encryptedHash = openssl_encrypt($pack['download_hash'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
-		
+		$iv = $core->framework->auth->generate_iv();
+		$encryptedHash = $core->framework->auth->encrypt($pack['download_hash'], $iv);
+				
 		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($encryptedHash.'.'.$iv);
-		
-		/*
-		 * Get Node Info
-		 */
-		$nodeSQLConnect = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ? LIMIT 1");
-		$nodeSQLConnect->execute(array($core->framework->server->getData('node')));
-		$node = $nodeSQLConnect->fetch();
-		
+
 		/*
 		 * Connect and Run Function
 		 */
-		$con = ssh2_connect($node['sftp_ip'], 22);
-		ssh2_auth_password($con, $node['username'], openssl_decrypt($node['password'], 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($node['encryption_iv'])));
-				
-		$stream = ssh2_exec($con, 'cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
-		$errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+		$callbackData = $core->framework->auth->generateSSH2Connection(array(
+			'ip' => $core->framework->server->nodeData('sftp_ip'),
+			'user' => $core->framework->server->nodeData('username')
+		), array(
+			'pub' => $core->framework->server->nodeData('ssh_pub'),
+			'priv' => $core->framework->server->nodeData('ssh_priv'),
+			'secret' => $core->framework->server->nodeData('ssh_secret'),
+			'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
+		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
 		
-		stream_set_blocking($errorStream, true);
-		stream_set_blocking($stream, true);
+		if(!empty($callbackData))
+			echo $callbackData;
 		
-		$isError = stream_get_contents($errorStream);
-		if(!empty($isError))
-			echo $isError;
-		
-		fclose($errorStream);
-		fclose($stream);
 		
         $core->framework->log->getUrl()->addLog(0, 1, array('user.modpack_install', 'A new modpack was installed for this server. The modpack installed was '.$pack['name'].' ('.$pack['version'].').'));
         

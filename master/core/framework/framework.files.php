@@ -23,18 +23,12 @@
 
 class files {
 
-	public function formatSize($size) {
+	public function formatSize($bytes, $decimals = 2) {
 
-		$units = explode(',', 'B,KB,MB,GB,TB,PB');	
-	    $mod = 1024;
-	
-	    for ($i = 0; $size > $mod; $i++) {
-	        $size /= $mod;
-	    }
-	
-	    $endIndex = strpos($size, ".")+3;
-	
-	    return substr($size, 0, $endIndex).' '.$units[$i];
+		  $sz = explode(',', 'B,KB,MB,GB');
+		  $factor = floor((strlen($bytes) - 1) / 3);
+		  
+		  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' '.$sz[$factor];
 	    
 	}
 	

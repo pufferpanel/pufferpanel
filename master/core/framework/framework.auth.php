@@ -83,7 +83,7 @@ class auth extends dbConn {
 	
 	}
 	
-	public function generateSSH2Connection($vars, $pubkey){
+	public function generateSSH2Connection($vars, $pubkey = null, $return = false){
 	
 		/*
 		 * Connect to Node
@@ -100,12 +100,16 @@ class auth extends dbConn {
 				if(!ssh2_auth_password($this->ssh2_connection, $vars['user'], $this->decrypt($vars['pass'], $vars['iv'])))
 					$this->connectFailed = true;
 		
-		return $this;
+		if($return === false)
+			return $this;
+		else
+			return $this->ssh2_connection;
 	
 	}
 
 	public function executeSSH2Command($command, $callback = false, $tty = true){
 	
+		exit();
 		if($this->connectFailed === true){
 			error_log('[PufferPanel] Error in "framework.auth.php" --> unable to connect to server using ssh2_auth. Authentication failed.');
 			return false;

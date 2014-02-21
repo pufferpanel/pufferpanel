@@ -24,29 +24,19 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	if($_POST['command'] && $_POST['command'] == 'stats'){
 	
 		$maxSpace = $core->framework->server->getData('disk_space') * 1024 * 1024;
-		
-		/*
-		* Get the Server Node Info
-		*/
-		$query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
-		$query->execute(array(
-		':nodeid' => $core->framework->server->getData('node')
-		));
-		
-		$node = $query->fetch();
-			
+					
 			/*
 			 * Run Command
 			 */
 			$getCommandData = $core->framework->auth->generateSSH2Connection(array(
-				'ip' => $node['sftp_ip'],
-				'user' => $node['username']
+				'ip' => $core->framework->server->nodeData('sftp_ip'),
+				'user' => $core->framework->server->nodeData('username')
 			), array(
-				'pub' => $node['ssh_pub'],
-				'priv' => $node['ssh_priv'],
-				'secret' => $node['ssh_secret'],
-				'secret_iv' => $node['ssh_secret_iv']
-			), true)->executeSSH2Command('sudo du -s '.$node['server_dir'].$core->framework->server->getData('ftp_user').'/server', true);
+				'pub' => $core->framework->server->nodeData('ssh_pub'),
+				'priv' => $core->framework->server->nodeData('ssh_priv'),
+				'secret' => $core->framework->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('sudo du -s '.$core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server', true);
 			
 			if($getCommandData === false)
 				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');

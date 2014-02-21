@@ -66,7 +66,6 @@ $core->framework->server = new server($core->framework->auth->getCookie('pp_serv
 $core->framework->email = new tplMail($core->framework->settings);
 $core->framework->page = new page($core->framework->user, $core->framework->settings);
 $core->framework->log = new log($core->framework->user->getData('id'));
-$core->framework->query = new MinecraftQuery();
 $core->framework->gsd = new GSD_Query($core->framework->server->getData('id'));
 $core->framework->files = new files();
 

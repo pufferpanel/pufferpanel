@@ -30,23 +30,17 @@ if(isset($_GET['file']))
 
 if(isset($_GET['dir']))
     $_GET['dir'] = str_replace('..', '', urldecode($_GET['dir']));
-	
+    
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
-
-    /*
-     * Get the Server Node Info
-     */
-    $query = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nodeid");
-    $query->execute(array(
-        ':nodeid' => $core->framework->server->getData('node')
-    ));
     
-    $node = $query->fetch();
+    $connection = $core->framework->auth->generateSSH2Connection(array(
+    	'ip' => $core->framework->server->nodeData('sftp_ip'),
+    	'user' => $core->framework->server->getData('ftp_user'),
+    	'pass' => $core->framework->server->getData('ftp_pass'),
+    	'iv' => $core->framework->server->getData('encryption_iv')
+    ), null, true);
     
-    $con = ssh2_connect($node['node_ip'], 22);
-    ssh2_auth_password($con, $core->framework->server->getData('ftp_user'), openssl_decrypt($core->framework->server->getData('ftp_pass'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->getData('encryption_iv'))));
-    
-    $sftp = ssh2_sftp($con);
+    $sftp = ssh2_sftp($connection);
     
     if(file_exists("ssh2.sftp://$sftp/server/".$_GET['file'])){
         
