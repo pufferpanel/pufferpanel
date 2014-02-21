@@ -177,7 +177,7 @@ $selectNode->execute(array(
 									foreach(json_decode($node['ports'], true) as $ip => $ports)
 										{
 								
-											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
+											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a> :: <a href=\"#\">Delete IP</a></td>";
 											$counter = 1;
 											$row1 = null; $row2 = null;
 											foreach($ports as $port => $avaliable)
@@ -204,6 +204,11 @@ $selectNode->execute(array(
 										}
 								
 								?>
+								<tr>
+									<td><a href="#" data-toggle="modal" data-target="#toggle_popup" id="t_popup">Add New IP Address</a></td>
+									<td></td>
+									<td></td>
+								</tr>
 							</tbody>
 						</table>
 						<div class="panel panel-default">
@@ -289,6 +294,46 @@ $selectNode->execute(array(
 								</fieldset>
 							</form>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="toggle_popup" tabindex="-1" role="dialog" aria-labelledby="AddNewIP" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="add_new_ip">Add New IP Address</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-1"></div>
+							<div class="col-10">
+								<form action="ajax/ports/new_ip.php" method="post">
+									<div class="row">
+										<div class="form-group">
+											<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
+											<div>
+												<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25567,25569,25571,25573,25575"></textarea>
+												<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas. <strong>Please leave at least one empty port between each that you allocate. (e.g If you allocate 25565, do not allocate 25566, you can allocate 25567 though)</strong></em></small></p>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<div>
+												<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
+												<input type="submit" class="btn btn-primary" name="submit" value="Add New IPs" />
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-1"></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
