@@ -103,7 +103,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<div class="row">
 					<h3>Server .jar Name</h3><hr />
 						<div class="well">
-							<form action="#" method="post">
+							<form action="ajax/settings/jarname.php" method="post">
 								<fieldset>
 								<div class="form-group">
 									<label for="jarfile" class="control-label">Jarfile Name</label>

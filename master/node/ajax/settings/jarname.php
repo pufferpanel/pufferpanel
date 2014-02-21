@@ -19,8 +19,22 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
-
-
+	if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+	
+	if(!isset($_POST['jarfile']) || empty($_POST['jarfile']))
+		$core->framework->page->redirect('../../settings.php');
+	
+	if(!preg_match('/^([\w\d_.-]+)$/', $_POST['jarfile']))
+		$core->framework->page->redirect('../../settings.php');
+		
+	/*
+	 * Update It
+	 */
+	$update = $mysql->prepare("UPDATE `servers` SET `server_jar` = :jar WHERE `id` = :sid");
+	$update->execute(array(
+		':jar' => $_POST['jarfile'],
+		':sid' => $core->framework->server->getData('id')
+	));
+	$core->framework->page->redirect('../../settings.php');
 
 }
