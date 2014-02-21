@@ -36,7 +36,7 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'] $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args');
 
 /*
