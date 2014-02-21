@@ -177,7 +177,7 @@ $selectNode->execute(array(
 									foreach(json_decode($node['ports'], true) as $ip => $ports)
 										{
 								
-											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a> :: <a href=\"#\">Delete IP</a></td>";
+											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
 											$counter = 1;
 											$row1 = null; $row2 = null;
 											foreach($ports as $port => $avaliable)
