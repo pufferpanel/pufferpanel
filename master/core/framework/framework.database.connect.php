@@ -28,7 +28,7 @@ class dbConn extends PDOEx {
     
 	public function __construct() {
 	 	
-	 	require('master_configuration.php');
+	 	require('configuration.php');
 		try {
 			
 			/*

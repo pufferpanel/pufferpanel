@@ -70,7 +70,7 @@ echo $randkey;
                             
                             if(fopen($_POST['hash'], 'r')){
                                 
-                                $fp = fopen('../../../core/framework/master_configuration.php', 'a+');
+                                $fp = fopen('../../../core/framework/configuration.php', 'a+');
                                 fwrite($fp, "
                                 
 if(!defined('HASH'))

@@ -61,7 +61,7 @@ if(file_exists('../install.lock'))
                             
                             $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
                             
-                            include('../../../core/framework/master_configuration.php');
+                            include('../../../core/framework/configuration.php');
                             $salt = crypt($_POST['password'], '$6$rounds=5000$'.$_INFO['salt'].'$');
                             $password = hash('ripemd320', $salt);
                             
