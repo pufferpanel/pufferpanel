@@ -184,10 +184,10 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						timeout: 5000,
 						error: function(jqXHR, textStatus, errorThrown) {
 						   	$("#pw_resp").attr('class', 'alert alert-danger').html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
-						   	$("#stop").removeClass('disabled');
-						   	$("#stop").html('Stop');
-						   	$("#start").removeClass('disabled');
-						   	$("#start").html('Start');
+						   	$("#off").removeClass('disabled');
+						   	$("#off").html('Stop');
+						   	$("#on").removeClass('disabled');
+						   	$("#on").html('Start');
 						   	$("#restart").removeClass('disabled');
 						   	$("#restart").html('Restart');
 						   	can_run = true;
