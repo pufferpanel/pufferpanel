@@ -50,7 +50,7 @@ if(file_exists('../install.lock'))
 					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
 					        
 					        include('../../../core/framework/configuration.php');
-					        include('../../../core/framework/lib/lib.password.php');
+					        include('../../../core/framework/lib/password.lib.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 					        
 					        $prepare->execute(array(
