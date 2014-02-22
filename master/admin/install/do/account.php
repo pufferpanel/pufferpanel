@@ -22,84 +22,83 @@ if(file_exists('../install.lock'))
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Install</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="../../../assets/css/bootstrap.css">
+	<title>PufferPanel Installer</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-            &nbsp;
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="alert alert-danger">
+			<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-            <div class="content-module">
-				<div class="content-module-main">
-				    <h1>Create Your Account</h1>
-                    <p>You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC (irc.esper.net) in #pufferpanel if you encounter any problems or have questions, comments, or concerns.</p>
-                    <div class="stripe-separator"><!--  --></div>
-                    <?php
-                    
-                        if(isset($_POST['do_account'])){
-                        
-                            include('../../../core/framework/framework.database.connect.php');
-                            $mysql = dbConn::getConnection();
-                            
-                            $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
-                            
-                            include('../../../core/framework/configuration.php');
-                            $salt = crypt($_POST['password'], '$6$rounds=5000$'.$_INFO['salt'].'$');
-                            $password = hash('ripemd320', $salt);
-                            
-                            $prepare->execute(array(
-                                ':username' => $_POST['username'],
-                                ':email' => $_POST['email'],
-                                ':password' => $password,
-                                ':time' => time()
-                            ));
-                            
-                            rename('../install.lock.dist', '../install.lock');
-                            
-                            exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
-                            
-                        }
-                    
-                    ?>
-                    <form action="account.php" method="post">
-                        <p>
-                            <label for="email">Email</label>
-                            <input type="text" name="email" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="username">Username</label>
-                            <input type="text" name="username" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="password">Password</label>
-                            <input type="password" name="password" class="round default-width-input" />
-                        </p>
-                        <input type="submit" name="do_account" value="Setup Account" class="round blue ic-right-arrow" />
-                    </form>
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Install PufferPanel - Your Account</a>
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<p>You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC <code>(irc.esper.net/#pufferpanel)</code> if you encounter any problems or have questions, comments, or concerns.</p>
+					<?php
+					
+					    if(isset($_POST['do_account'])){
+					    
+					        include('../../../core/framework/framework.database.connect.php');
+					        $mysql = dbConn::getConnection();
+					        
+					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
+					        
+					        include('../../../core/framework/configuration.php');
+					        include('../../../core/framework/lib/lib.password.php');
+					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+					        
+					        $prepare->execute(array(
+					            ':username' => $_POST['username'],
+					            ':email' => $_POST['email'],
+					            ':password' => $password,
+					            ':time' => time()
+					        ));
+					        
+					        rename('../install.lock.dist', '../install.lock');
+					        
+					        exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
+					        
+					    }
+					
+					?>
+					<form action="account.php" method="post">
+					    <div class="form-group">
+					    	<label for="email" class="control-label">Email</label>
+					    	<div>
+					    		<input type="text" class="form-control" name="email" autocomplete="off" />
+					    	</div>
+					    </div>
+					    <div class="form-group">
+					    	<label for="username" class="control-label">Username</label>
+					    	<div>
+					    		<input type="text" class="form-control" name="username" autocomplete="off" />
+					    	</div>
+					    </div>
+					    <div class="form-group">
+					    	<label for="password" class="control-label">Password</label>
+					    	<div>
+					    		<input type="password" class="form-control" name="password" autocomplete="off" />
+					    	</div>
+					    </div>
+					    <div class="form-group">
+					    	<div>
+					    		<input type="text" class="btn btn-primary" name="do_account" value="Finish &rarr;" />
+					    	</div>
+					    </div>
+					</form>
 				</div>
-            </div>
+				<div class="col-2"></div>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+		</div>
 	</div>
 </body>
 </html>

@@ -22,37 +22,26 @@ if(file_exists('../install.lock'))
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Install</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="../../../assets/css/bootstrap.css">
+	<title>PufferPanel Installer</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-            &nbsp;
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="alert alert-danger">
+			<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-            <div class="content-module">
-				<div class="content-module-main">
-				    <h1>Database Information</h1>
-                    <p>Please fill out the database connection information that you will be using. <strong>For security reasons ensure it has a strong password and <span style="color:red;">do not</span> run this database under root credentials.</strong> This database user only needs the following permissions: CREATE, INSERT, SELECT, UPDATE, DELETE. This database user must be accessable from other servers.</p>
-                    <div class="stripe-separator"><!--  --></div>
-                    <?php
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Install PufferPanel - Database Information</a>
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<div class="alert alert-info">For security reasons ensure it has a strong password and <strong>do not</strong> run this database under root credentials.</div>
+					<p>Please fill out the database connection information that you will be using. This database user only needs the following permissions: <code>CREATE</code>, <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>. This database user must be accessible from other servers.</p>
+					<?php
                     
                         /* Check Connection Information */
                         if(isset($_POST['do_connect'])){
@@ -80,14 +69,14 @@ if(file_exists('../install.lock'))
                                 
                                     if(!rename('../../../core/framework/configuration.php.dist', '../../../core/framework/configuration.php')){
                                     
-                                    	echo '<div class="error-box round">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>'; 
+                                    	echo '<div class="alert alert-danger">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>'; 
                                     
                                     }
                                     exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
                         
                             }catch (PDOException $e) {
                         
-                                echo '<div class="error-box round">MySQL Connection Error: ' . $e->getMessage() . '</div>';
+                                echo '<div class="alert alert-danger">MySQL Connection Error: ' . $e->getMessage() . '</div>';
                         
                             }
                             
@@ -95,30 +84,45 @@ if(file_exists('../install.lock'))
                     
                     ?>
                     <form action="start.php" method="post">
-                        <p>
-                            <label for="sql_db">Database Name</label>
-                            <input type="text" name="sql_db" value="pufferpanel" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="sql_h">Database Host</label>
-                            <input type="text" name="sql_h" value="<?php echo $_SERVER['SERVER_ADDR']; ?>" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="sql_u">Database User</label>
-                            <input type="text" name="sql_u" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="sql_p">Database User Password</label>
-                            <input type="password" name="sql_p" class="round default-width-input" />
-                        </p>
-                        <input type="submit" name="do_connect" value="Setup Database" class="round blue ic-right-arrow" />
+                    	<fieldset>
+                    		<div class="form-group">
+                    			<label for="sql_db" class="control-label">Database Name</label>
+                    			<div>
+                    				<input type="text" class="form-control" name="sql_db" autocomplete="off" />
+                    			</div>
+                    		</div>
+                    		<div class="form-group">
+                    			<label for="sql_h" class="control-label">Database Host</label>
+                    			<div>
+                    				<input type="text" class="form-control" name="sql_h" autocomplete="off" />
+                    			</div>
+                    		</div>
+                    		<div class="form-group">
+                    			<label for="sql_u" class="control-label">Database User</label>
+                    			<div>
+                    				<input type="text" class="form-control" name="sql_u" autocomplete="off" />
+                    			</div>
+                    		</div>
+                    		<div class="form-group">
+                    			<label for="sql_p" class="control-label">Database User Password</label>
+                    			<div>
+                    				<input type="password" class="form-control" name="sql_p" autocomplete="off" />
+                    			</div>
+                    		</div>
+                    		<div class="form-group">
+                    			<div>
+                    				<input type="submit" name="do_connect" value="Continue &rarr;" class="btn btn-primary" />
+                    			</div>
+                    		</div>
+                        </fieldset>
                     </form>
 				</div>
-            </div>
+				<div class="col-2"></div>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+		</div>
 	</div>
 </body>
 </html>

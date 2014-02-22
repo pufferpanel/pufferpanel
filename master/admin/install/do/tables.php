@@ -17,46 +17,33 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 if(file_exists('../install.lock'))
- 	exit('Installer is Locked.');
+	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Install</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="../../../assets/css/bootstrap.css">
+	<title>PufferPanel Installer</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-            &nbsp;
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="alert alert-danger">
+			<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-            <div class="content-module">
-				<div class="content-module-main">
-				    <h1>Installing Tables</h1>
-                    <p>Your database details were correct, the script is now installing the necessary tables.</p>
-                    <div class="stripe-separator"></div>
-                    <pre>
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Install PufferPanel - Database Content</a>
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<pre>
                     <?php
                     
                     	if(!file_exists('../../../core/framework/configuration.php'))
-                    		echo '<div class="error-box round">The configuration file was not found.</div>';	
+                    		echo '<div class="alert alert-danger">The configuration file was not found.</div>';	
                     	else {
                     	
 	                        include('../../../core/framework/framework.database.connect.php');
@@ -272,14 +259,17 @@ if(file_exists('../install.lock'))
 						}
 
                     ?>
-                    </pre>
-               	    <a href="settings.php">Next Step &rarr;</a>
+					</pre>
+					<form action="settings.php">
+					    <input type="submit" class="btn btn-primary" value="Continue &rarr;">
+					</form>
 				</div>
-            </div>
+				<div class="col-2"></div>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+		</div>
 	</div>
 </body>
 </html>

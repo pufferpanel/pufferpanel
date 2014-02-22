@@ -22,117 +22,124 @@ if(file_exists('../install.lock'))
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Install</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="../../../assets/css/bootstrap.css">
+	<title>PufferPanel Installer</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-            &nbsp;
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="alert alert-danger">
+			<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-            <div class="content-module">
-				<div class="content-module-main">
-				    <h1>General Settings</h1>
-                    <p>This information can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.</p>
-                    <div class="stripe-separator"><!--  --></div>
-                    <?php
-                    
-                        if(isset($_POST['do_settings'])){
-                        
-                            include('../../../core/framework/framework.database.connect.php');
-                            $mysql = dbConn::getConnection();
-                            
-                            $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
-                                ('company_name', :cname),
-                                ('master_url', :murl),
-                                ('cookie_website', :cwebsite),
-                                ('postmark_api_key', NULL),
-                                ('mandrill_api_key', NULL),
-                                ('mailgun_api_key', NULL),
-                                ('sendmail_email', :smail),
-                                ('main_website', :mwebsite),
-                                ('sendmail_method','php'),
-                                ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
-                                ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
-                                ('assets_url', :aurl),
-                                ('use_api','0'),
-                                ('api_key', NULL),
-                                ('api_allowed_ips','*'),
-                                ('api_module_controls_all','0'),
-                                ('modpack_dir',':mpackdir')");
-                            
-                            $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
-                            $prepare->execute(array(
-                                ':cname' => $_POST['company_name'],
-                                ':murl' => $_POST['master_url'],
-                                ':cwebsite' => $cookieSite,
-                                ':smail' => $_POST['sendmail_email'],
-                                ':mwebsite' => $_POST['main_website'],
-                                ':aurl' => $_POST['assets_url'],
-                                ':mpackdir' => $_POST['modpack_dir']
-                            ));
-                            
-                            exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
-                            
-                        }
-                    
-                    ?>
-                    <form action="settings.php" method="post">
-                        <p>
-                            <label for="company_name">Company Name</label>
-                            <input type="text" name="company_name" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="main_website">Main Website URL</label>
-                            <input type="text" name="main_website" placeholder="http://example.com/" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="master_url">PufferPanel Master URL</label>
-                            <input type="text" name="master_url" placeholder="http://example.com/pufferpanel/" class="round default-width-input" />
-                            <em>Trailing slashes are required.</em>
-                        </p>
-                        <p>
-                            <label for="assets_url">PufferPanel Assets URL</label>
-                            <input type="text" name="assets_url" placeholder="http://example.com/pufferpanel/assets/" class="round default-width-input" />
-                            <em>Trailing slashes are required.</em>
-                        </p>
-                        <p>
-                            <label for="cookie_website">Cookie Website</label>
-                            <input type="text" name="cookie_website" placeholder="example.com" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="sendmail_email">Sendmail Email</label>
-                            <input type="text" name="sendmail_email" class="round default-width-input" />
-                        </p>
-                        <p>
-                            <label for="modpack_dir">Modpack Directory</label>
-                            <input type="text" name="modpack_dir" placeholder="/srv/modpacks/" class="round default-width-input" />
-                        </p>
-                        <input type="submit" name="do_settings" value="Setup Database" class="round blue ic-right-arrow" />
-                    </form>
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Install PufferPanel - General Settings</a>
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<p>This information can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.</p>
+					<?php
+					
+					    if(isset($_POST['do_settings'])){
+					    
+					        include('../../../core/framework/framework.database.connect.php');
+					        $mysql = dbConn::getConnection();
+					        
+					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
+					            ('company_name', :cname),
+					            ('master_url', :murl),
+					            ('cookie_website', :cwebsite),
+					            ('postmark_api_key', NULL),
+					            ('mandrill_api_key', NULL),
+					            ('mailgun_api_key', NULL),
+					            ('sendmail_email', :smail),
+					            ('main_website', :mwebsite),
+					            ('sendmail_method','php'),
+					            ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
+					            ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
+					            ('assets_url', :aurl),
+					            ('use_api','0'),
+					            ('api_key', NULL),
+					            ('api_allowed_ips','*'),
+					            ('api_module_controls_all','0'),
+					            ('modpack_dir',':mpackdir')");
+					        
+					        $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
+					        $prepare->execute(array(
+					            ':cname' => $_POST['company_name'],
+					            ':murl' => $_POST['master_url'],
+					            ':cwebsite' => $cookieSite,
+					            ':smail' => $_POST['sendmail_email'],
+					            ':mwebsite' => $_POST['main_website'],
+					            ':aurl' => $_POST['assets_url'],
+					            ':mpackdir' => $_POST['modpack_dir']
+					        ));
+					        
+					        exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
+					        
+					    }
+					
+					?>
+					<form action="settings.php" method="post">
+						<fieldset>
+							<div class="form-group">
+								<label for="company_name" class="control-label">Company Name</label>
+								<div>
+									<input type="text" class="form-control" name="company_name" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="main_website" class="control-label">Main Website URL</label>
+								<div>
+									<input type="text" class="form-control" name="main_website" placeholder="http://www.example.com/" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="master_url" class="control-label">PufferPanel Master URL</label>
+								<div>
+									<input type="text" class="form-control" name="master_url" placeholder="http://panel.example.com/" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="assets_url" class="control-label">PufferPanel Assets URL</label>
+								<div>
+									<input type="text" class="form-control" name="assets_url" placeholder="http://panel.example.com/assets/" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="cookie_website" class="control-label">Cookie Website</label>
+								<div>
+									<input type="text" class="form-control" name="cookie_website" placeholder="example.com" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="sendmail_email" class="control-label">Sendmail Email</label>
+								<div>
+									<input type="text" class="form-control" name="sendmail_email" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="modpack_dir" class="control-label">Modpack Directory</label>
+								<div>
+									<input type="text" class="form-control" name="modpack_dir" value="/srv/modpacks/" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div>
+									<input type="text" class="btn btn-primary" name="do_settings" value="Continue &rarr;" />
+								</div>
+							</div>
+					    </fieldset>
+					</form>
 				</div>
-            </div>
+				<div class="col-2"></div>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+		</div>
 	</div>
 </body>
 </html>

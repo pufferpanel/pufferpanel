@@ -22,112 +22,98 @@ if(file_exists('install.lock'))
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>PufferPanel - Install</title>
-	
-	<!-- Stylesheets -->
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet'>
-	<link rel="stylesheet" href="../../assets/css/style.css">
-	
-	<!-- Optimize for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	
-	<!-- jQuery & JS files -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="../../assets/css/bootstrap.css">
+	<title>PufferPanel Installer</title>
 </head>
 <body>
-	<div id="top-bar">
-		<div class="page-full-width cf">
-            &nbsp;
-		</div>	
-	</div>
-	<div id="header-with-tabs">
-		<div class="page-full-width cf">
+	<div class="container">
+		<div class="alert alert-danger">
+			<strong>WARNING:</strong> Do not run this version on a live environment! There are known security holes that we are working on getting patched. This is extremely beta software and this version is to get the features in place while we work on security enhancements.
 		</div>
-	</div>
-	<div id="content">
-		<div class="page-full-width cf">
-            <div class="content-module">
-				<div class="content-module-main">
-				    <h1>Install PufferPanel on your Server</h1>
-                    <p>This script will guide you through the process for setting up PufferPanel on your server. Please ensure that you have installed all of the dependencies required or this install will fail.</p>
-                    <p><strong><span style="color:red;">!!IMPORTANT!!</span> When this installer finishes please manually change the permissions back to 0755 for the /core/framework folder, and delete this installer. Please set the permissions on the global_configuration.php file to 0444.</strong></p>
-                    <div class="stripe-separator"></div>
-                    	<p>
-	                    <?php
-	                    
-	                    	/* Permissions Checking */
-	                    	echo (substr(sprintf('%o', fileperms('../../core/framework/configuration.php.dist')), -4) == "0666") ? '<span style="color:green;">/core/framework/configuration.php.dist is correctly CHMOD\'d 0666</span><br />' : '<span style="color:red;"><strong>/core/framework/configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework/configuration.php.dist')), -4).' and should be 0666.</strong></span><br />';
-	                    	
-	                    	echo (substr(sprintf('%o', fileperms('../../core/framework')), -4) == "0777") ? '<span style="color:green;">/core/framework is correctly CHMOD\'d 0777</span><br />' : '<span style="color:red;"><strong>/core/framework is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework')), -4).' and should be 0777.</strong></span><br />';
-	                    	
-	                    	echo (substr(sprintf('%o', fileperms('../install')), -4) == "0777") ? '<span style="color:green;">/admin/install is correctly CHMOD\'d 0777</span><br />' : '<span style="color:red;"><strong>/admin/install is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../install')), -4).' and should be 0777.</strong></span><br />';
-	                    	
-	                    	echo (substr(sprintf('%o', fileperms('do')), -4) == "0777") ? '<span style="color:green;">/admin/install/do is correctly CHMOD\'d 0777</span>' : '<span style="color:red;"><strong>/admin/install/do is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('do')), -4).' and should be 0777.</strong></span>';
-	                    	
-	                    ?>
-                    	</p>
-                    <div class="stripe-separator"><!--  --></div>
-                    <p>
-                        <?php
-
-							$continue = true;
-                            /* Check for Required Dependencies */
-                            $list = array(
-                                'curl',
-                                'hash',
-                                'openssl',
-                                'mcrypt',
-                                'PDO',
-                                'pdo_mysql',
-                                'ssh2'
-                            );
-                            echo "\n";
-                            foreach($list as $ext) {
-                                
-                                echo (extension_loaded($ext)) ? '<span style="color:green;">The php-'.$ext.' extension was loaded.</span><br />' : '<span style="color:red;"><strong>The php-'.$ext.' extension was not loaded.</strong></span><br />';
-                                
-                                if(!extension_loaded($ext))
-                                	$continue = false;
-                                
-                            }
-						?>
-					</p><div class="stripe-separator"></div><p>
-						<?php
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Install PufferPanel</a>
+			</div>
+		</div>
+		<div class="col-12">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<div class="alert alert-danger">When this installer finishes please manually change the permissions back to 0755 for the /core/framework folder, and delete this installer. Please set the permissions on the global_configuration.php file to 0444.</div>
+					<p>This script will guide you through the process for setting up PufferPanel on your server. Please ensure that you have installed all of the dependencies required or this install will fail.</p>
+					<p><?php
+					
+						/* Permissions Checking */
+						echo (substr(sprintf('%o', fileperms('../../core/framework/configuration.php.dist')), -4) == "0666") ? '<small class="text-success">/core/framework/configuration.php.dist is correctly CHMOD\'d 0666</small><br />' : '<small class="text-danger">/core/framework/configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework/configuration.php.dist')), -4).' and should be 0666.</small><br />';
 						
-                            $functions = array(
-                            	'fopen',
-                            	'fclose',
-                            	'fwrite',
-                            	'session_start',
-                            	'socket_set_option',
-                            	'socket_send',
-                            	'socket_connect',
-                            	'socket_create',
-                            	'stream_set_timeout',
-                            	'fsockopen',
-                            	'crypt',
-                            	'hash'
-                            );
-                            
-                            foreach($functions as $fct) {
-                                
-                                echo (function_exists($fct)) ? '<span style="color:green;">'.$fct.'() is enabled.</span><br />' : '<span style="color:red;"><strong>'.$fct.'() is not enabled.</strong></span><br />';
-                                
-                                if(!function_exists($fct))
-                                	$continue = false;
-                                
-                            }
+						echo (substr(sprintf('%o', fileperms('../../core/framework')), -4) == "0777") ? '<small class="text-success">/core/framework is correctly CHMOD\'d 0777</small><br />' : '<small class="text-danger">/core/framework is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../core/framework')), -4).' and should be 0777.</small><br />';
+						
+						echo (substr(sprintf('%o', fileperms('../install')), -4) == "0777") ? '<small class="text-success">/admin/install is correctly CHMOD\'d 0777</small><br />' : '<small class="text-danger">/admin/install is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../install')), -4).' and should be 0777.</small><br />';
+						
+						echo (substr(sprintf('%o', fileperms('do')), -4) == "0777") ? '<small class="text-success">/admin/install/do is correctly CHMOD\'d 0777</small>' : '<small class="text-danger">/admin/install/do is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('do')), -4).' and should be 0777.</small>';
+						
+					?></p>
+					<hr />
+					<p><?php
 
-                        ?>
-                    </p>
-                    <?php echo ($continue === true) ? '<a href="do/start.php">Start Install &rarr;</a>' : '<p>Please fix missing extensions and functions before continuing.</p>'; ?>
+						$continue = true;
+                        /* Check for Required Dependencies */
+                        $list = array(
+                            'curl',
+                            'hash',
+                            'openssl',
+                            'mcrypt',
+                            'PDO',
+                            'pdo_mysql',
+                            'ssh2'
+                        );
+                        echo "\n";
+                        foreach($list as $ext) {
+                            
+                            echo (extension_loaded($ext)) ? '<small class="text-success">The php-'.$ext.' extension was loaded.</small><br />' : '<small class="text-danger"><strong>The php-'.$ext.' extension was not loaded.</strong></small><br />';
+                            
+                            if(!extension_loaded($ext))
+                            	$continue = false;
+                            
+                        }
+					?></p>
+					<hr />
+					<p><?php
+					
+                        $functions = array(
+                        	'fopen',
+                        	'fclose',
+                        	'fwrite',
+                        	'session_start',
+                        	'socket_set_option',
+                        	'socket_send',
+                        	'socket_connect',
+                        	'socket_create',
+                        	'stream_set_timeout',
+                        	'fsockopen',
+                        	'crypt',
+                        	'hash'
+                        );
+                        
+                        foreach($functions as $fct) {
+                            
+                            echo (function_exists($fct)) ? '<small class="text-success">'.$fct.'() is enabled.</small><br />' : '<small class="text-danger"><strong>'.$fct.'() is not enabled.</strong></small><br />';
+                            
+                            if(!function_exists($fct))
+                            	$continue = false;
+                            
+                        }
+
+                    ?></p>
+                    <hr />
+                    <?php echo ($continue === true) ? '<a href="do/start.php">Continue &rarr;</a>' : '<p>Please fix missing extensions and functions before continuing.</p>'; ?>
 				</div>
-            </div>
+				<div class="col-2"></div>
+			</div>
 		</div>
-	</div>
-	<div id="footer">
-		<p>Copyright &copy; 2012 - 2013. All Rights Reserved.<br />Running PufferPanel Version 0.4.2 Beta distributed by <a href="http://pufferfi.sh">Puffer Enterprises</a>.</p>
+		<div class="footer">
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+		</div>
 	</div>
 </body>
 </html>
