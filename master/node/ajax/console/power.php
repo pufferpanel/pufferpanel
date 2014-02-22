@@ -175,10 +175,8 @@ motd=A Minecraft Server';
 	$gatherData = @file_get_contents("http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/on", 0, $context);
 	
 	if($gatherData != "\"ok\"")
-		exit($gatherData);
-		
-	exit("ok");
-	
+		exit("An error was encountered with this AJAX request.");
+			
 	/*
 	 * Run CPU Limit
 	 * cpulimit -p #### -l #### -d
