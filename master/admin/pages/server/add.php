@@ -183,21 +183,29 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 						</div>
 						<div class="well">
 							<div class="row">
-								<div class="form-group col-6 nopad">
+								<div class="form-group col-4 nopad">
 									<label for="alloc_mem" class="control-label">Allocate Memory (in MB)</label>
 									<div class="input-group">
 										<input type="text" autocomplete="off" name="alloc_mem" class="form-control" />
 										<span class="input-group-addon">MB</span>
 									</div>
 								</div>
-								<div class="form-group col-6 nopad-right">
+								<div class="form-group col-4">
 									<label for="alloc_disk" class="control-label">Allocate Disk Space (in MB)</label>
 									<div class="input-group">
 										<input type="text" autocomplete="off" name="alloc_disk" class="form-control" />
 										<span class="input-group-addon">MB</span>
 									</div>
 								</div>
+								<div class="form-group col-4 nopad-right">
+									<label for="cpu_limit" class="control-label">CPU Limit</label>
+									<div class="input-group">
+										<input type="text" autocomplete="off" name="cpu_limit" class="form-control" />
+										<span class="input-group-addon">%</span>
+									</div>
+								</div>
 							</div>
+							<div class="row"><p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p></div>
 						</div>
 						<div class="well">
 							<div class="row">

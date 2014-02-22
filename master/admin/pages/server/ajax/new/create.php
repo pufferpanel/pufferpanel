@@ -34,7 +34,7 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files'], $_POST['cpu_limit']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args&error=na');
 
 /*
@@ -94,6 +94,13 @@ if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 	$core->framework->page->redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
 
 /*
+ * Validate CPU Limit
+ */	
+if(!is_numeric($_POST['cpu_limit']))
+	$core->framework->page->redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
+
+
+/*
  * Validate SFTP Password
  */
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
@@ -132,7 +139,7 @@ if($pack['min_ram'] > $_POST['alloc_mem'])
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, :oid, :ram, :disk, :date, :sip, :sport, :ftphost, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
@@ -143,10 +150,10 @@ $add->execute(array(
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
 	':disk' => $_POST['alloc_disk'],
+	':cpu' => $_POST['cpu_limit'],
 	':date' => time(),
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],
-	':ftphost' => $node['sftp_ip'],
 	':ftpuser' => $ftpUser,
 	':ftppass' => $_POST['sftp_pass'],
 	':bfiles' => $_POST['backup_files'],
