@@ -189,15 +189,19 @@ motd=A Minecraft Server';
 		if(!array_key_exists('pid', $data))
 			exit("Unable to get PID.");
 	
-	$getCommandData = $core->framework->ssh->generateSSH2Connection(array(
-		'ip' => $core->framework->server->nodeData('sftp_ip'),
-		'user' => $core->framework->server->nodeData('username')
-	), array(
-		'pub' => $core->framework->server->nodeData('ssh_pub'),
-		'priv' => $core->framework->server->nodeData('ssh_priv'),
-		'secret' => $core->framework->server->nodeData('ssh_secret'),
-		'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-	))->executeSSH2Command('cpulimit -p '.$data['pid'].' -l '.$core->framework->server->getData('cpu_limit').' -d', true);
+	if($core->framework->server->getData('cpu_limit') > 0){
+	
+		$getCommandData = $core->framework->ssh->generateSSH2Connection(array(
+			'ip' => $core->framework->server->nodeData('sftp_ip'),
+			'user' => $core->framework->server->nodeData('username')
+		), array(
+			'pub' => $core->framework->server->nodeData('ssh_pub'),
+			'priv' => $core->framework->server->nodeData('ssh_priv'),
+			'secret' => $core->framework->server->nodeData('ssh_secret'),
+			'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
+		))->executeSSH2Command('cpulimit -p '.$data['pid'].' -l '.$core->framework->server->getData('cpu_limit').' -d', true);
+		
+	}
 	
 	echo 'ok';
 		
