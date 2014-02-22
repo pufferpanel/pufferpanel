@@ -64,7 +64,7 @@ if(file_exists('../install.lock'))
 					            ('api_key', NULL),
 					            ('api_allowed_ips','*'),
 					            ('api_module_controls_all','0'),
-					            ('modpack_dir',':mpackdir')");
+					            ('modpack_dir',:mpackdir)");
 					        
 					        $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
 					        $prepare->execute(array(
