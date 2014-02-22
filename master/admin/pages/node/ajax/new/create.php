@@ -36,7 +36,7 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['node_url'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args');
 
 /*
@@ -60,7 +60,7 @@ if($_POST['s_dir'] == $_POST['s_dir_backup'])
 if(strlen($_POST['ssh_user']) < 1 || $_POST['ssh_user'] == 'root')
 	$core->framework->page->redirect('../../add.php?error=ssh_user&disp=user_fail');
 	
-if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_priv_key']))
+if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+)$/', $_POST['ssh_priv_key']))
 	$core->framework->page->redirect('../../add.php?error=ssh_pub_key|ssh_priv_key&disp=key_fail');
 
 /*
@@ -68,7 +68,7 @@ if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg
  */
 
 $ssh_secret_iv = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->generate_iv() : null;
-$ssh_secret = (!empty($_POST['ssh_secret'])) $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
+$ssh_secret = (!empty($_POST['ssh_secret'])) ? $core->framework->auth->encrypt($_POST['ssh_secret'], $ssh_secret_iv) : null;
 
 /*
  * Process IPs and Ports
