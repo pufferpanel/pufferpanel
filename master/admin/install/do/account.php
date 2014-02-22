@@ -88,7 +88,7 @@ if(file_exists('../install.lock'))
 					    </div>
 					    <div class="form-group">
 					    	<div>
-					    		<input type="text" class="btn btn-primary" name="do_account" value="Finish &rarr;" />
+					    		<input type="submit" class="btn btn-primary" name="do_account" value="Finish &rarr;" />
 					    	</div>
 					    </div>
 					</form>

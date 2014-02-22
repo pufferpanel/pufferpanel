@@ -89,7 +89,7 @@ if(!defined('HASH'))
 					    </div>
 					    <div class="form-group">
 					    	<div>
-					    		<input type="text" class="btn btn-primary" name="hash_do" value="Continue &rarr;" />
+					    		<input type="submit" class="btn btn-primary" name="hash_do" value="Continue &rarr;" />
 					    	</div>
 					    </div>
 					</form>
