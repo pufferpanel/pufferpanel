@@ -40,6 +40,6 @@ echo "Installing PHP Dependences (assuming apache)"
 yum install -y php php-mysql php-pdo php-devel php-ssh2 php-mcrypt pear
 
 echo "Installing Other Dependences"
-yum install -y screen quota
+yum install -y quota
 
 echo "Done."
