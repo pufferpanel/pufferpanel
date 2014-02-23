@@ -33,7 +33,7 @@ if(isset($_POST['file']))
 
 $path = $core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/';
 
-if(isset($_POST['file']) && !is_dir($_POST['file']) && file_exists($path.$_POST['file'])){
+if(isset($_POST['file'])){
         
     if(in_array(pathinfo($_POST['file'], PATHINFO_EXTENSION), $canEdit)){
     
@@ -76,17 +76,21 @@ if(isset($_POST['file']) && !is_dir($_POST['file']) && file_exists($path.$_POST[
                     /*
                      * Upload Via SFTP
                      */
-                    $SFTPConnection = ssh2_connect($core->framework->server->getData('ftp_host'), 22);
-                    ssh2_auth_password($SFTPConnection, $core->framework->server->getData('ftp_user'), openssl_decrypt($core->framework->server->getData('ftp_pass'), 'AES-256-CBC', file_get_contents(HASH), 0, base64_decode($core->framework->server->getData('encryption_iv'))));
+                    $connection = $core->framework->ssh->generateSSH2Connection(array(
+                    	'ip' => $core->framework->server->nodeData('sftp_ip'),
+                    	'user' => $core->framework->server->getData('ftp_user'),
+                    	'pass' => $core->framework->server->getData('ftp_pass'),
+                    	'iv' => $core->framework->server->getData('encryption_iv')
+                    ), null, true);
                     
                         $FTPLocalFile = $saveDir.'save.'.$file;
-                        $sftp = ssh2_sftp($SFTPConnection);
-                                                            
-                            $stream = fopen("ssh2.sftp://".$sftp."/server/".$directory.$file, 'w');
+                        $sftp = ssh2_sftp($connection);
+                                                     
+                            $stream = fopen("ssh2.sftp://$sftp/server/".$directory.$file, 'w+');
                             
                                 if(!$stream){
                                 
-                                    exit('<div class="alert alert-danger">Unable to connect and upload file.</div>');
+                                    exit('<div class="alert alert-danger">Unable to connect and upload file. This is usually due to a permissions error.</div>');
                                 
                                 }else{
                                     

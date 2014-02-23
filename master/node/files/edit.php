@@ -190,7 +190,8 @@ $parName = 'Editing: /'.$_POST['file'].'';
 				success: function(data) {
 					$("#save_status").html(data);
 					$("#save_file").html('Save').removeClass('disabled');
-					$("#save_status").slideDown().delay(2500).slideUp();
+					$("#save_status").slideDown();
+//					/.delay(2500).slideUp()
 				}
 			});
 		});

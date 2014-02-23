@@ -41,8 +41,8 @@ if(!preg_match('/^[\s\w.()-]{1,64}$/', $_POST['pack_name']))
 /*
  * Validate Modpack Jar Name
  */
-if(!preg_match('/^[\s\w.-]{1,64}$/', $_POST['server_jar']))
-	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_hash'].'&error=server_jar&disp=pn_fail');
+//if(!preg_match('/^[\s\w.-]{1,64}$/', $_POST['server_jar']))
+//	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_hash'].'&error=server_jar&disp=pn_fail');
 
 
 /*

@@ -60,6 +60,6 @@ $core->framework->ssh->generateSSH2Connection(array(
 	'priv' => $node['ssh_priv'],
 	'secret' => $node['ssh_secret'],
 	'secret_iv' => $node['ssh_secret_iv']
-), true)->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
+))->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
 
 $core->framework->page->redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');

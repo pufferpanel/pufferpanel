@@ -139,7 +139,7 @@ if($pack['min_ram'] > $_POST['alloc_mem'])
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
 	':hash' => $core->framework->auth->keygen(42),
 	':e_iv' => $iv,
@@ -188,7 +188,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		'priv' => $node['ssh_priv'],
 		'secret' => $node['ssh_secret'],
 		'secret_iv' => $node['ssh_secret_iv']
-	), true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
+	))->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
 	
 	/*
@@ -199,7 +199,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		 * Generate URL
 		 */
 		$packiv = $core->framework->auth->generate_iv();
-		$packEncryptedHash = $core->framework->auth->excrypt($pack['download_hash'], $packiv);
+		$packEncryptedHash = $core->framework->auth->encrypt($pack['download_hash'], $packiv);
 		
 		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
 	
@@ -214,7 +214,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 			'priv' => $node['ssh_priv'],
 			'secret' => $node['ssh_secret'],
 			'secret_iv' => $node['ssh_secret_iv']
-		), true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
+		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
 
 	/*
 	 * Send User Email
