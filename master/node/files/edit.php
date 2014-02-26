@@ -77,76 +77,43 @@ $parName = 'Editing: /'.$_POST['file'].'';
 				        if(in_array(pathinfo($path.$_POST['file'], PATHINFO_EXTENSION), $canEdit)){
 				                    
 				            /*
-				             * Begin Advanced Saving
-				             */
-				            $saveDir = '/tmp/'.$core->framework->server->getData('hash').'/';
-				            
-				                /*
-				                 * Check that Secure User Directory Exists
-				                 */
-				                if(!is_dir($saveDir)){
-				                
-				                    /*
-				                     * Make Directory
-				                     */
-				                    mkdir($saveDir);
-				                
-				                }
-				                
-				            /*
-				             * SFTP Connect to Show File
-				             */
-				            $file = pathinfo($path.$_POST['file'], PATHINFO_BASENAME);
-				            $directory = dirname($_POST['file']).'/';
-				            
-				            /*
-				             * Directory Cleaning
-				             */
-				            if($directory == './' || $directory == '.')
-				                $directory = '';
-				            
-				            if(substr($directory, 0, 1) == '/')
-				                $directory = substr($directory, 1);
-				                                        
-				                /*
-				                 * Download Via SFTP
-				                 */
-				                $connection = $core->framework->ssh->generateSSH2Connection(array(
-				                	'ip' => $core->framework->server->nodeData('sftp_ip'),
-				                	'user' => $core->framework->server->getData('ftp_user'),
-				                	'pass' => $core->framework->server->getData('ftp_pass'),
-				                	'iv' => $core->framework->server->getData('encryption_iv')
-				                ), null, true);
-				                
-				                    $FTPLocalFile = $saveDir.'save.'.$file;
-				                    $sftp = ssh2_sftp($connection);
-				                                                        
-				                        $stream = fopen("ssh2.sftp://".$sftp."/server/".$directory.$file, 'r');
-				    
-				                            if(!$stream){
-				                            
-				                                $core->framework->page->redirect('edit.php?error='.base64_encode('Unable to download file for editing.'));
-				                                exit();
-				                            
-				                            }else{
-				                                
-				                                $contents = stream_get_contents($stream);
-				                                fclose($stream);
-				                                
-				                            }
-				                
+		                     * Create File Path
+		                     */
+		                    $file = pathinfo($_POST['file'], PATHINFO_BASENAME);
+		                    $directory = dirname($_POST['file']).'/';
+		                    
+		                    /*
+		                     * Directory Cleaning
+		                     */
+		                    if($directory == './' || $directory == '.')
+		                        $directory = '';
+		            
+		                    if(substr($directory, 0, 1) == '/')
+		                        $directory = substr($directory, 1);
+		                	                    
+		            		$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/".$directory.$file;
+		            		
+		            		$context = stream_context_create(array(
+		            			"http" => array(
+		            				"method" => "GET",
+		            				"timeout" => 3
+		            			)
+		            		));
+		            		
+		            		$json = json_decode(file_get_contents($url, 0, $context), true);
+		                
 				                echo '<form method="post" id="editing_file">
 										<div class="form-group">
 											<label for="email" class="control-label">'.$parName.'</label>
 											<div>
-												<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">'.$contents.'</textarea>
+												<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">'.$json['contents'].'</textarea>
 											</div>
 										</div>
 										<div class="form-group">
 											<div>
 												<input type="hidden" name="file" value="'.$_POST['file'].'" />
 												<button class="btn btn-primary btn-sm" id="save_file">Save</button>
-												<button class="btn btn-default btn-sm" onclick="window.location=\'index.php\';return false;">Back to File Manager</button>
+												<button class="btn btn-default btn-sm" onclick="window.location=\'index.php?dir='.urlencode('/'.$directory).'\';return false;">Back to File Manager</button>
 											</div>
 										</div>
 				                    </form>';

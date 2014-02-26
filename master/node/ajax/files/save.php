@@ -31,83 +31,45 @@ $canEdit = array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'pro
 if(isset($_POST['file']))
     $_POST['file'] = str_replace('..', '', urldecode($_POST['file']));
 
-$path = $core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/';
-
 if(isset($_POST['file'])){
         
     if(in_array(pathinfo($_POST['file'], PATHINFO_EXTENSION), $canEdit)){
     
-        /*
-         * Begin Advanced Saving
+    	/*
+         * Create File Path
          */
-        $saveDir = '/tmp/'.$core->framework->server->getData('hash').'/';
+        $file = pathinfo($_POST['file'], PATHINFO_BASENAME);
+        $directory = dirname($_POST['file']).'/';
         
-            /*
-             * Check that Secure User DIrectory Exists
-             */
-            if(!is_dir($saveDir)){
-            
-                /*
-                 * Make Directory
-                 */
-                mkdir($saveDir);
-            
-            }
-            
-                /*
-                 * Create Save File
-                 */
-                $file = pathinfo($_POST['file'], PATHINFO_BASENAME);
-                $directory = dirname($_POST['file']).'/';
-                
-                /*
-                 * Directory Cleaning
-                 */
-                if($directory == './' || $directory == '.')
-                    $directory = '';
+        /*
+         * Directory Cleaning
+         */
+        if($directory == './' || $directory == '.')
+            $directory = '';
+
+        if(substr($directory, 0, 1) == '/')
+            $directory = substr($directory, 1);
+    	                    
+		$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/".$directory.$file;
+		
+		$data = array("contents" => $_POST['file_contents']);
+		
+		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+		curl_setopt($curl, CURLOPT_HEADER, false);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+		$response = curl_exec($curl);
+
+        if(empty($response)){
         
-                if(substr($directory, 0, 1) == '/')
-                    $directory = substr($directory, 1);
-                
-                $fp = fopen($saveDir.'save.'.$file , 'w');
-                fwrite($fp, $_POST['file_contents']);
-                fclose($fp);
-                
-                    /*
-                     * Upload Via SFTP
-                     */
-                    $connection = $core->framework->ssh->generateSSH2Connection(array(
-                    	'ip' => $core->framework->server->nodeData('sftp_ip'),
-                    	'user' => $core->framework->server->getData('ftp_user'),
-                    	'pass' => $core->framework->server->getData('ftp_pass'),
-                    	'iv' => $core->framework->server->getData('encryption_iv')
-                    ), null, true);
-                    
-                        $FTPLocalFile = $saveDir.'save.'.$file;
-                        $sftp = ssh2_sftp($connection);
-                                                     
-                            $stream = fopen("ssh2.sftp://$sftp/server/".$directory.$file, 'w+');
-                            
-                                if(!$stream){
-                                
-                                    exit('<div class="alert alert-danger">Unable to connect and upload file. This is usually due to a permissions error.</div>');
-                                
-                                }else{
-                                    
-                                    if(fwrite($stream, file_get_contents($FTPLocalFile))){
-                                    
-                                        fclose($stream);
-                                        unlink($FTPLocalFile);
-                                        exit('<div class="alert alert-success">File was sucessfully saved.</div>');
-                                    
-                                    }else{
-                                    
-                                        fclose($stream);
-                                        exit('<div class="alert alert-danger">Unknown error. Unable to save file.</div>');
-                                    
-                                    }
-                                
-                                }
+        	exit('<div class="alert alert-success">File was sucessfully saved.</div>');
+        
+        }else{
+        
+        	exit('<div class="alert alert-danger">Unable to save the file.</div>'.$response);
+        
+        }
     
     }else{
     

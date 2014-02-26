@@ -46,7 +46,7 @@ $selectUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id` = ?");
 $selectUser->execute(array($server['owner_id']));
     $user = $selectUser->fetch();
 
-$selectNode = $mysql->prepare("SELECT `username`, `sftp_ip`, `password`, `encryption_iv` FROM `nodes` WHERE `id` = ?");
+$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ?");
 $selectNode->execute(array($_POST['nid']));
     $node = $selectNode->fetch();
 

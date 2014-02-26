@@ -236,7 +236,7 @@ $select->execute(array(
 								<div class="form-group">
 									<label for="sftp_host" class="control-label">Host</label>
 									<div>
-										<input type="text" readonly="readonly" value="<?php echo $server['ftp_host']; ?>" class="form-control" />
+										<input type="text" readonly="readonly" value="<?php echo $node['sftp_ip']; ?>" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">

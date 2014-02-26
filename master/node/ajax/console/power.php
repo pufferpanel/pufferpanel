@@ -38,14 +38,19 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	 */	
 	$rewrite = false;						
 	
-		if(file_exists("ssh2.sftp://$sftp/server/server.properties") && filesize("ssh2.sftp://$sftp/server/server.properties") != 0){
+	$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/server.properties";
+	
+	$context = stream_context_create(array(
+		"http" => array(
+			"method" => "GET",
+			"timeout" => 3
+		)
+	));
+	
+	$json = json_decode(file_get_contents($url, 0, $context), true);
+	
+		if(!array_key_exists('contents', $json)) {
 		
-			$stream = fopen("ssh2.sftp://$sftp/server/server.properties", "r+");
-		
-		}else{
-		
-			$stream = fopen("ssh2.sftp://$sftp/server/server.properties", "w+");
-			
 			/*
 			 * Create server.properties
 			 */
@@ -87,83 +92,68 @@ view-distance=10
 spawn-protection=16
 motd=A Minecraft Server';
 
+			$data = array("contents" => $generateProperties);
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+			$response = curl_exec($curl);
 			
-				if(!fwrite($stream, $generateProperties)){
+		        if(!empty($response))
+		        	exit("An error was encountered with this AJAX request. Unable to make server.properties.");
+					
+			$core->framework->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
+			 
+		}
 		
-                    $core->framework->log->getUrl()->addLog(3, 1, array('system.create_serverprops_failed', 'Unable to create a servers.properties file.'));
-					exit('Unable to create new server.properties. Contact support ASAP.');
+		$lines = explode("\n", $json['contents']);
+		$newContents = $json['contents'];
+		foreach($lines as $line){
 		
+			$var = explode('=', $line);
+			
+				if($var[0] == 'server-port' && $var[1] != $core->framework->server->getData('server_port')){
+					//Reset Port
+					$newContents = str_replace('server-port='.$var[1], "server-port=".$core->framework->server->getData('server_port')."\n", $newContents);
+					$rewrite = true;
+				}else if($var[0] == 'online-mode' && $var[1] == 'false'){
+					//Force Online Mode
+					$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
+					$rewrite = true;
+				}else if($var[0] == 'enable-query' && $var[1] != 'true'){
+					//Reset Query Port
+					$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
+					$rewrite = true;
+				}else if($var[0] == 'query.port' && $var[1] != $core->framework->server->getData('server_port')){
+					//Reset Query Port
+					$newContents = str_replace('query.port='.$var[1], "query.port=".$core->framework->server->getData('server_port')."\n", $newContents);
+					$rewrite = true;
+				}else if($var[0] == 'server-ip' && $var[1] != $core->framework->server->getData('server_ip')){
+					//Reset Query Port
+					$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->framework->server->getData('server_ip')."\n", $newContents);
+					$rewrite = true;
 				}
-			
-            $core->framework->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));						
 		
 		}
-		
-		/*
-		 * Passed Inital Checks
-		 */
-		$contents = fread($stream, filesize("ssh2.sftp://".$sftp."/server/server.properties"));
-			
-		/*
-		 * Generate Save File
-		 */
-		$saveDir = '/tmp/'.$core->framework->server->getData('hash').'/';
-		if(!is_dir($saveDir)){
-			mkdir($saveDir);
-		}
-		
-		$fp = fopen($saveDir.'server.properties.savefile', 'w');
-		fwrite($fp, $contents);
-		fclose($fp);
-		
-		$newContents = $contents;
-		fclose($stream);
-		$lines = file($saveDir.'server.properties.savefile');
-		
-			foreach($lines as $line){
-			
-				$var = explode('=', $line);
-				
-					if($var[0] == 'server-port' && $var[1] != $core->framework->server->getData('server_port')){
-						//Reset Port
-						$newContents = str_replace('server-port='.$var[1], "server-port=".$core->framework->server->getData('server_port')."\n", $newContents);
-						$rewrite = true;
-					}else if($var[0] == 'online-mode' && $var[1] == 'false'){
-						//Force Online Mode
-						$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
-						$rewrite = true;
-					}else if($var[0] == 'enable-query' && $var[1] != 'true'){
-						//Reset Query Port
-						$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
-						$rewrite = true;
-					}else if($var[0] == 'query.port' && $var[1] != $core->framework->server->getData('server_port')){
-						//Reset Query Port
-						$newContents = str_replace('query.port='.$var[1], "query.port=".$core->framework->server->getData('server_port')."\n", $newContents);
-						$rewrite = true;
-					}else if($var[0] == 'server-ip' && $var[1] != $core->framework->server->getData('server_ip')){
-						//Reset Query Port
-						$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->framework->server->getData('server_ip')."\n", $newContents);
-						$rewrite = true;
-					}
-			
-			}
 			
 				/*
 				 * Write New Data
 				 */
 				if($rewrite === true){
-				
-					$stream = fopen("ssh2.sftp://".$sftp."/server/server.properties", 'w+');
-				
-						if(!fwrite($stream, $newContents)){
-				
-                            $core->framework->log->getUrl()->addLog(3, 1, array('system.update_serverprops_failed', 'Unable to update the servers.properties file.'));
-							exit('Unable to fix broken server.properties. Please contact support.');
-				
-						}
-				
+							
+					$data = array("contents" => $newContents);
+					$curl = curl_init($url);
+					curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+					curl_setopt($curl, CURLOPT_HEADER, false);
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+					$response = curl_exec($curl);
+					
+					    if(!empty($response))
+					    	exit("An error was encountered with this AJAX request. Unable to update server.properties.");
+					    		
                     $core->framework->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
-					fclose($stream);
 					
 				}
 
@@ -184,27 +174,28 @@ motd=A Minecraft Server';
 	/*
 	 * Run CPU Limit
 	 * cpulimit -p #### -l #### -d
+	 *
+	 * This is super buggy.
 	 */
-	sleep(1);
-	$gatherData = @file_get_contents("http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id'), 0, $context);
-	
-	$data = json_decode($gatherData, true);
-	
-		if(!array_key_exists('pid', $data))
-			exit("Unable to get PID.");
-	
 	if($core->framework->server->getData('cpu_limit') > 0){
 	
-		$getCommandData = $core->framework->ssh->generateSSH2Connection(array(
-			'ip' => $core->framework->server->nodeData('sftp_ip'),
-			'user' => $core->framework->server->nodeData('username')
-		), array(
-			'pub' => $core->framework->server->nodeData('ssh_pub'),
-			'priv' => $core->framework->server->nodeData('ssh_priv'),
-			'secret' => $core->framework->server->nodeData('ssh_secret'),
-			'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-		))->executeSSH2Command('cpulimit -p '.$data['pid'].' -l '.$core->framework->server->getData('cpu_limit').' -d', true);
+		$gatherData = @file_get_contents("http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id'), 0, $context);
 		
+		$data = json_decode($gatherData, true);
+		
+			if(!array_key_exists('pid', $data))
+				exit("Unable to get PID. Server has been started.");
+		
+			$core->framework->ssh->generateSSH2Connection(array(
+				'ip' => $core->framework->server->nodeData('sftp_ip'),
+				'user' => $core->framework->server->nodeData('username')
+			), array(
+				'pub' => $core->framework->server->nodeData('ssh_pub'),
+				'priv' => $core->framework->server->nodeData('ssh_priv'),
+				'secret' => $core->framework->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->framework->server->getData('cpu_limit').' -d');
+					
 	}
 	
 	echo 'ok';
