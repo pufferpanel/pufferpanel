@@ -1,3 +1,5 @@
+**DO NOT INSTALL THE REPO VERSION OF PUFFERPANEL ON YOUR SERVER. IT IS UNSTABLE, PLEASE USE A RELEASE VERSION.**
+
 # About PufferPanel
 PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/DaneEveritt/PufferPanel/master/LICENSE).
 
