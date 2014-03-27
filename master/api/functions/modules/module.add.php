@@ -65,12 +65,16 @@ trait addServer {
 			$this->throwResponse('Accessing API in an illegal manner.', false);
 		
 		}
+		
+		$this->validateData();
 	
 	}
 	
-	public function runRequest() {
+	private function validateData() {
 	
+		$data = $this->getStoredData();
 		$data = $data['data'];
+		
 		/*
 		 * Validate Server Name
 		 */
@@ -167,14 +171,21 @@ trait addServer {
 		 */
 		if($pack['min_ram'] > $data['alloc_mem'])
 			$this->throwResponse('Function Failed to Finish: not enough ram was allocated to use with this modpack.', false);
+	
+	}
+	
+	public function runRequest() {
+	
+		$data = $this->getStoredData();
+		$data = $data['data'];
 		
 		/*
 		 * Add Server to Database
 		 */
-		$ftpUser = (strlen($data['server_name']) > 6) ? substr($data['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $data['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($data['server_name'])));
+		$this->ftpUser = (strlen($data['server_name']) > 6) ? substr($data['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $data['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($data['server_name'])));
 		
-		$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
-		$add->execute(array(
+		$this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
+		$this->add->execute(array(
 			':hash' => $core->framework->auth->keygen(42),
 			':e_iv' => $iv,
 			':node' => $data['node'],
@@ -194,7 +205,7 @@ trait addServer {
 			':bdisk' => $data['backup_disk']
 		));
 		
-		$lastInsert = $mysql->lastInsertId();
+		$this->lastInsert = $this->mysql->lastInsertId();
 		
 		/*
 		 * Update IP Count
@@ -203,26 +214,7 @@ trait addServer {
 		$ports[$data['server_ip']][$data['server_port']]--;
 		
 		$mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
-		$mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
-		
-		/*
-		 * Do Server Making Stuff Here 
-		 */
-		
-			/*
-			 * Set the Soft Limit
-			 */
-			$softLimit = ($data['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
-			
-			$core->framework->ssh->generateSSH2Connection(array(
-				'ip' => $node['sftp_ip'],
-				'user' => $node['username']
-			), array(
-				'pub' => $node['ssh_pub'],
-				'priv' => $node['ssh_priv'],
-				'secret' => $node['ssh_secret'],
-				'secret_iv' => $node['ssh_secret_iv']
-			))->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$data['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);			
+		$mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));		
 	
 	}
 
@@ -234,8 +226,13 @@ class apiModuleAddServer extends GSD_Query {
 	
 	public function __construct() {
 	
+		$this->mysql = parent::getConnection();
+	
 		$this->validateRequest();
 		$this->runRequest();
+		$this->runSSH();
+		
+		$this->finish();
 	
 	}
 	
@@ -253,6 +250,24 @@ class apiModuleAddServer_Extended extends ssh {
 	
 	public function run() {
 	
+		/*
+		 * Do Server Making Stuff Here 
+		 */
+		
+			/*
+			 * Set the Soft Limit
+			 */
+			$softLimit = ($data['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
+			
+			$core->framework->ssh->generateSSH2Connection(array(
+				'ip' => $node['sftp_ip'],
+				'user' => $node['username']
+			), array(
+				'pub' => $node['ssh_pub'],
+				'priv' => $node['ssh_priv'],
+				'secret' => $node['ssh_secret'],
+				'secret_iv' => $node['ssh_secret_iv']
+			))->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$data['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);	
 	
 	}
 
