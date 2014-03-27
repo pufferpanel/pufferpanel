@@ -17,6 +17,9 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 require_once('../../core/framework/framework.database.connect.php');
+require_once('../../core/framework/framework.auth.php');
+require_once('../../core/framework/framework.ssh2.php');
+require_once('../../core/framework/framework.query.php');
 require_once('../../core/framework/framework.settings.php');
 require_once('api.init.php');
 

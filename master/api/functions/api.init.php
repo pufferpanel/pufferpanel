@@ -17,13 +17,11 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class apiInitializationClass extends getSettings {
+trait globalInit {
 
-	public $data;
+	public static function getStoredData() {
 	
-	public function __construct() {
-	
-		$this->mysql = parent::getConnection();
+		return json_decode($_POST['request'], true);
 	
 	}
 	
@@ -37,10 +35,22 @@ class apiInitializationClass extends getSettings {
 		));
 	
 	}
+
+}
+
+class apiInitializationClass extends getSettings {
+
+	use globalInit;
+	
+	public function __construct() {
+	
+		$this->mysql = parent::getConnection();
+	
+	}
 	
 	public function init() {
-	
-		$this->data = json_decode($_POST['request'], true);
+		
+		$this->data = $this->getStoredData();
 		
 		/*
 		 * Throw Authentication Errors, otherwise allow script to continue running
