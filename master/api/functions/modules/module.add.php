@@ -37,6 +37,22 @@ trait addServer {
 			/*
 			 * Is all of the data here?
 			 */
+			$dataOptions = array(
+				'server_name',
+				'node',
+				'modpack',
+				'email',
+				'server_ip',
+				'server_port',
+				'alloc_mem',
+				'alloc_disk',
+				'sftp_pass',
+				'sftp_pass_2',
+				'backup_disk',
+				'backup_files',
+				'cpu_limit'
+			); 
+			
 			foreach($dataOptions as $dataOption) {
 			
 				if(!array_key_exists($dataOption, $data['data']) || $data['data'][$dataOption] == "")
