@@ -139,6 +139,12 @@ $selectNode->execute(array(
 									</div>
 								</div>
 								<div class="form-group">
+									<label for="name" class="control-label">GSD Secret Token</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $node['gsd_secret']; ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
 									<div>
 										<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
 										<input type="submit" value="Update Information" class="btn btn-primary" />

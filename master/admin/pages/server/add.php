@@ -228,23 +228,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 							</div>
 						</div>
 						<div class="well">
-							<div class="row">
-								<div class="form-group col-6 nopad">
-									<label for="backup_disk" class="control-label">Maximum Backup Space (in MB)</label>
-									<div class="input-group">
-										<input type="text" autocomplete="off" name="backup_disk" class="form-control" />
-										<span class="input-group-addon">MB</span>
-									</div>
-								</div>
-								<div class="form-group col-6 nopad-right">
-									<label for="backup_files" class="control-label">Maximum Compressed Backups</label>
-									<div>
-										<input type="text" autocomplete="off" name="backup_files" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="well">
 							<input type="submit" value="Create Server" class="btn btn-primary btn-sm" />
 						</div>
 					</fieldset>

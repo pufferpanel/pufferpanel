@@ -75,9 +75,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 							case 'dir_fail':
 								echo '<div class="alert alert-danger">The directories you entered were not valid. They must end with a trailing slash.</div>';
 								break;
-							case 'fir_match_fail':
-								echo '<div class="alert alert-danger">The main server directory and backup directory cannot be the same, and the backup directory cannot be located inside the main server directory.</div>';
-								break;
 							case 'user_fail':
 								echo '<div class="alert alert-danger">SSH users must not be blank, and may not be \'root\'.</div>';
 								break;

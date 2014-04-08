@@ -83,7 +83,6 @@ $select->execute(array(
 				<ul class="nav nav-tabs" id="config_tabs">
 					<li class="active"><a href="#info" data-toggle="tab">Connection</a></li>
 					<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
-					<li><a href="#backup_sett" data-toggle="tab">Backups</a></li>
 					<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 					<li><a href="#delete" data-toggle="tab">Delete</a></li>
 					<li><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Server Control</a></li>
@@ -202,30 +201,6 @@ $select->execute(array(
 								</div>
 								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
 								<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
-							</fieldset>
-						</form>
-					</div>
-					<div class="tab-pane" id="backup_sett">
-						<h3>Backup Settings</h3><hr />
-						<form action="ajax/server/backup.php" method="post">
-							<fieldset>
-								<div class="row">
-									<div class="form-group col-6 nopad">
-										<label for="backup_disk" class="control-label">Maximum Backup Space (in MB)</label>
-										<div class="input-group">
-											<input type="text" autocomplete="off" readonly="readonly" value="<?php echo $server['backup_disk_limit']; ?>" name="backup_disk" class="form-control" />
-											<span class="input-group-addon">MB</span>
-										</div>
-									</div>
-									<div class="form-group col-6 nopad-right">
-										<label for="max_files" class="control-label">Maximum Compressed Backups</label>
-										<div>
-											<input type="text" autocomplete="off" readonly="readonly" name="max_files" value="<?php echo $server['backup_file_limit']; ?>" class="form-control" />
-										</div>
-									</div>
-								</div>
-								<input type="hidden" name="sid" value="<?php echo $_GET['id']; ?>" />
-								<input type="submit" disabled="disabled" value="Update Backup Information" class="btn btn-primary btn-sm disabled" />
 							</fieldset>
 						</form>
 					</div>

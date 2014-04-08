@@ -36,7 +36,7 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['s_dir_backup'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args');
 
 /*
@@ -51,12 +51,9 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 if(!filter_var($_POST['node_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['node_sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
 	$core->framework->page->redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
 
-if(!preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir']) || !preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir_backup']))
+if(!preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir']))
 	$core->framework->page->redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_fail');
-	
-if($_POST['s_dir'] == $_POST['s_dir_backup'])
-	$core->framework->page->redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_match_fail');
-	
+		
 if(strlen($_POST['ssh_user']) < 1 || $_POST['ssh_user'] == 'root')
 	$core->framework->page->redirect('../../add.php?error=ssh_user&disp=user_fail');
 	
@@ -119,18 +116,18 @@ $IPP = json_encode($IPP);
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['ssh_pass'] = openssl_encrypt($_POST['ssh_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :bdir, :suser, :rsa_pub, :rsa_priv, :rsa_secret, :rsa_secret_iv, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :suser, :gsd_secret, :ssh_pub, :ssh_priv, :ssh_secret, :ssh_secret_iv, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
 	':ip' => $_POST['node_ip'],
 	':sftp_ip' => $_POST['node_sftp_ip'],
 	':sdir' => $_POST['s_dir'],
-	':bdir' => $_POST['s_dir_backup'],
 	':suser' => $_POST['ssh_user'],
-	':rsa_pub' => $_POST['ssh_pub_key'],
-	':rsa_priv' => $_POST['ssh_priv_key'],
-	':rsa_secret' => $rsa_secret,
-	':rsa_secret_iv' => $rsa_secret_iv,
+	':gsd_secret' => $core->framework->auth->keygen(16).$core->framework->auth->keygen(16),
+	':ssh_pub' => $_POST['ssh_pub_key'],
+	':ssh_priv' => $_POST['ssh_priv_key'],
+	':ssh_secret' => $rsa_secret,
+	':ssh_secret_iv' => $rsa_secret_iv,
 	':ips' => $IPA,
 	':ports' => $IPP
 ));

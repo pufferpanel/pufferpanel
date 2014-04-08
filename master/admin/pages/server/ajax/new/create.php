@@ -34,7 +34,7 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['backup_disk'], $_POST['backup_files'], $_POST['cpu_limit']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
 	$core->framework->page->redirect('../../add.php?disp=missing_args&error=na');
 
 /*
@@ -110,12 +110,6 @@ $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_
 $_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
 /*
- * Validate Backup Disk & Files
- */
-if(!is_numeric($_POST['backup_disk']) || !is_numeric($_POST['backup_files']))
-	$core->framework->page->redirect('../../add.php?error=backup_disk|backup_space&disp=b_fail');
-
-/*
  * Validate Modpack
  */
 $selectPack = $mysql->prepare("SELECT `min_ram`, `server_jar` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
@@ -139,9 +133,12 @@ if($pack['min_ram'] > $_POST['alloc_mem'])
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$serverHash = $core->framework->auth->keygen(42);
+
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
 $add->execute(array(
-	':hash' => $core->framework->auth->keygen(42),
+	':hash' => $serverHash,
+	':gsd_secret' => $core->framework->auth->keygen(16).$core->framework->auth->keygen(16),
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
@@ -155,9 +152,7 @@ $add->execute(array(
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],
 	':ftpuser' => $ftpUser,
-	':ftppass' => $_POST['sftp_pass'],
-	':bfiles' => $_POST['backup_files'],
-	':bdisk' => $_POST['backup_disk']
+	':ftppass' => $_POST['sftp_pass']
 ));
 
 $lastInsert = $mysql->lastInsertId();
@@ -176,7 +171,40 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
  */
 
 	/*
-	 * Set the Soft Limit
+	 * Build Call
+	 */
+	$data = array(
+		"name" => $serverHash,
+        "user" => $ftpUser,
+        "consoleport" => ($_POST['server_port'] + 1),
+        "overide_command_line" => "",
+        "path" => $node['server_dir'].$ftpUser."/server/",
+        "variables" => array(
+        	"-jar" => "server.jar",
+            "-Xmx" => $_POST['alloc_mem']."M"
+        ),
+        "gameport" => $_POST['server_port'],
+        "gamehost" => "",
+        "plugin" => "minecraft"
+	);
+	$data = http_build_query($data);
+	
+	$context_options = array (
+		'http' => array (
+			'method' => 'POST',
+			'header'=> "X-Access-Token: ".$node['gsd_secret']."\r\n"
+				."Content-Length: ".strlen($data)."\r\n",
+			'content' => $data
+		)
+	);
+	
+	$context = context_create_stream($context_options)
+	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers/', 'r', false, $context);
+	$content = stream_get_contents($fp);
+	fclose($fp);
+	
+	/*
+	 * Create the User
 	 */
 	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
 	
