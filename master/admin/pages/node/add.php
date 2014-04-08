@@ -129,13 +129,6 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 										<input type="text" name="s_dir" value="/srv/servers/" class="form-control" />
 									</div>
 								</div>
-								<div class="form-group col-6 nopad-right">
-									<label for="s_dir_backup" class="control-label">Server Backup Directory</label>
-									<div>
-										<input type="text" name="s_dir_backup" placeholder="/second/backups/" class="form-control" />
-										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Must be a directory on the server. Remote backups are not currently supported.</em></small></p>
-									</div>
-								</div>
 							</div>
 						</div>
 						<div class="well">
