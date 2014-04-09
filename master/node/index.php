@@ -80,7 +80,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		</div>
 	</div>
 	<script type="text/javascript">
-		$(document).ready(function(){
+		$(window).load(function(){
 			$.ajax({
 				type: "POST",
 				url: "ajax/overview/data.php",
