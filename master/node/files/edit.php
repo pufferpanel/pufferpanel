@@ -143,7 +143,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 		</div>
 	</div>
 	<script type="text/javascript">
-	$(document).ready(function(){ 
+	$(window).load(function(){ 
 	    $("#save_file").click(function(event){
 			event.preventDefault();
 			var file = $("input[name='file']").val();

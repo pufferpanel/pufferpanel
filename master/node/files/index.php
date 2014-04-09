@@ -107,7 +107,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 		</div>
 	</div>
 	<script type="text/javascript">
-	$(document).ready(function(){ 
+	$(window).load(function(){
 	    $.urlParam = function(name, url){
 			 var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
 			 if (results==null){

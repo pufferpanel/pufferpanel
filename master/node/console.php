@@ -115,7 +115,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		</div>
 	</div>
 	<script type="text/javascript">
-	$(document).ready(function(){
+	$(window).load(function(){
 		var socket = io.connect('http://<?php echo $core->framework->server->nodeData('sftp_ip'); ?>:<?php echo $core->framework->server->getData('server_port') + 1; ?>');
 		$.ajaxSetup({
 		        error: function(jqXHR, exception) {
