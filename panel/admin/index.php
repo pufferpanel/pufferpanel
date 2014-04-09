@@ -53,9 +53,51 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				<?php
 				    if(is_dir('install'))
 				        echo '<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>';
-				    else
-				        echo '<p>Welcome to PufferPanel Admin.</p>';
 				?>
+					<h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
+					<p>Welcome to the most advanced, lightweight, and user-friendly control panel for Minecraft. You are currently running version <code><?php echo file_get_contents('../assets/versions/current'); ?></code>.</p>
+					
+					<p>Please include the following information in any bug reports that you submit:</p>
+					<pre><?php
+						
+						$extensions = "";
+						
+						foreach(get_loaded_extensions() as $id => $val){
+							if(phpversion($val) == "")
+								$extensions .= $val.", ";
+							else
+								$extensions .= $val." (".phpversion($val)."), ";
+						}
+					
+echo "=================[ PufferPanel Debug Output ]=================
+\r\r=====[ System Information ]=====
+\rOperating System: ".php_uname('s').
+"\rOperating System Release: ".php_uname('r').
+"\rHost Name: ".php_uname('n').
+"\rVersion Information: ".php_uname('v').
+"\rMachine Type: ".php_uname('m').
+"\r\r=====[ PHP Information ]=====
+\rPHP Version: ".phpversion().
+"\rPHP SAPI: ".php_sapi_name().
+"\rZend Engine Version: ".zend_version().
+"\rLoaded PHP Extentions: ".rtrim($extensions, ", ").
+"\r\r=====[ Panel Information ]=====
+\rPanel Version: ".file_get_contents('../assets/versions/current').
+"\rCurrent Directory: ".__DIR__.
+"\rCurrent URL: http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].
+"\rMaster URL: ".$core->framework->settings->get('master_url').
+"\rAssets URL: ".$core->framework->settings->get('assets_url').
+"\rCookie Domain: ".str_replace("_notfound_", "NULL", $core->framework->settings->get('cookie_domain')).
+"\rModpack Directory: ".$core->framework->settings->get('modpack_dir')
+					?></pre>
+					
+					<h3>Updates</h3><hr />
+					<?php
+						if(file_get_contents("https://raw.githubusercontent.com/DaneEveritt/PufferPanel/master/LATEST") != file_get_contents('../assets/versions/current'))
+							echo '<div class="alert alert-warning">There is an update avaliable! You are currently running <code>'.file_get_contents('../assets/versions/current').'</code>. The latest avaliable version is <code>'.file_get_contents("https://raw.githubusercontent.com/DaneEveritt/PufferPanel/master/LATEST").'</code>.';
+						else
+							echo '<div class="alert alert-success">You are currently using the most up-to-date version of PufferPanel!</div>';
+					?>
 			</div>
 		</div>
 		<div class="footer">
