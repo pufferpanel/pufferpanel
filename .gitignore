@@ -5,7 +5,6 @@ profile
 
 PufferPan.esproj/*
 */tmp/*
-/master/HASHFILE.txt
-master/core/framework/configuration.php
+*HASHFILE*
+*configuration.php*
 SETUP
-master/core/framework/configuration.php
