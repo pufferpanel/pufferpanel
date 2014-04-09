@@ -158,7 +158,10 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 		'iv' => $core->framework->server->getData('encryption_iv')
 	), null, true);
 	
-	$sftp = ssh2_sftp($connection);
+	$sftp = @ssh2_sftp($connection);
+	
+		if(!$sftp)
+			exit('<div class="alert alert-danger">Unable to connect to the server to get the files. Please try again.</div>');
 	
 	$displayFolders = '';
 	$displayFiles = '';
