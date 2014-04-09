@@ -25,24 +25,38 @@ class ssh extends auth {
 	public function generateSSH2Connection($vars, $pubkey = null, $return = false){
 	
 		/*
+		 * Add check to ensure IP can be conencted to, otherwise this function runs like a dead turtle.
+		 */
+		$this->connectFailed = false;	
+		if(!$fp = @fsockopen($vars['ip'], 22, $errString, $errCode, 2))
+			$this->connectFailed = true;
+		
+		/*
 		 * Connect to Node
 		 */
-		$this->ssh2_connection = ssh2_connect($vars['ip'], 22);
-		$this->connectFailed = false;		
+		if($this->connectFailed === false){
 		
-			if(!empty($pubkey))
-				if(!ssh2_auth_pubkey_file($this->ssh2_connection, $vars['user'], $pubkey['pub'], $pubkey['priv'], $this->decrypt($pubkey['secret'], $pubkey['secret_iv'])))
-					$this->connectFailed = true;
+			$this->ssh2_connection = ssh2_connect($vars['ip'], 22);	
+		
+				if(!empty($pubkey))
+					if(!ssh2_auth_pubkey_file($this->ssh2_connection, $vars['user'], $pubkey['pub'], $pubkey['priv'], $this->decrypt($pubkey['secret'], $pubkey['secret_iv'])))
+						$this->connectFailed = true;
+					else
+						null;
 				else
-					null;
+					if(!ssh2_auth_password($this->ssh2_connection, $vars['user'], $this->decrypt($vars['pass'], $vars['iv'])))
+						$this->connectFailed = true;
+						
+			if($return === false)
+				return $this;
 			else
-				if(!ssh2_auth_password($this->ssh2_connection, $vars['user'], $this->decrypt($vars['pass'], $vars['iv'])))
-					$this->connectFailed = true;
+				return $this->ssh2_connection;
+						
+		}else{
 		
-		if($return === false)
 			return $this;
-		else
-			return $this->ssh2_connection;
+		
+		}
 	
 	}
 
