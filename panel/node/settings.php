@@ -102,7 +102,9 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 				</form>
 				<div class="row">
 					<h3>Server .jar Name</h3><hr />
-						<div class="well">
+						<div class="alert alert-info">This function is currently unavailable due to a limitation in the software used for managing the server. Please name your main server jar <strong>server.jar</strong>. Hopefully this function will be back in the future.</div>
+						
+<!--						<div class="well">
 							<form action="ajax/settings/jarname.php" method="post">
 								<fieldset>
 								<div class="form-group">
@@ -117,7 +119,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								</div>
 								</fieldset>
 							</form>
-						</div>
+						</div>-->
 				</div>
 			</div>
 		</div>
@@ -126,25 +128,25 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		</div>
 	</div>
 	<script type="text/javascript">
-		$("#updateModpack").submit(function(e){
-			e.preventDefault();
-			var pack = $('select[name="new_pack"]').val();
-			
-			if(pack != null){
-				$('#install_modpack_submit').addClass('disabled');
-				$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Installing Modpack.</div>').show();
-				$.ajax({
-					type: "POST",
-					url: 'ajax/settings/modpack.php',
-					data: { new_pack: pack },
-			  		success: function(data) {
-			    		$("#installingModpack").hide().html(data).show();
-			    		$('#install_modpack_submit').removeClass('disabled');
-			 		}
-				});
-			}else
-				alert('You can not use a disabled form input as a modpack!');
-		});
+//		$("#updateModpack").submit(function(e){
+//			e.preventDefault();
+//			var pack = $('select[name="new_pack"]').val();
+//			
+//			if(pack != null){
+//				$('#install_modpack_submit').addClass('disabled');
+//				$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Installing Modpack.</div>').show();
+//				$.ajax({
+//					type: "POST",
+//					url: 'ajax/settings/modpack.php',
+//					data: { new_pack: pack },
+//			  		success: function(data) {
+//			    		$("#installingModpack").hide().html(data).show();
+//			    		$('#install_modpack_submit').removeClass('disabled');
+//			 		}
+//				});
+//			}else
+//				alert('You can not use a disabled form input as a modpack!');
+//		});
 	</script>
 </body>
 </html>
