@@ -60,10 +60,6 @@ if(file_exists('../install.lock'))
 					            ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
 					            ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
 					            ('assets_url', :aurl),
-					            ('use_api','0'),
-					            ('api_key', NULL),
-					            ('api_allowed_ips','*'),
-					            ('api_module_controls_all','0'),
 					            ('modpack_dir',:mpackdir)");
 					        
 					        $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
@@ -138,7 +134,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.6.0 Alpha (R1) distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
 		</div>
 	</div>
 </body>

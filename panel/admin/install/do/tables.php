@@ -65,18 +65,6 @@ if(file_exists('../install.lock'))
 	                        echo "\nTable `account_change` created.\n";
 	
 	                        /*
-	                         * CREATE TABLE `acp_announcements`
-	                         */
-	                        $mysql->exec("CREATE TABLE `acp_announcements` (
-	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `text` text NOT NULL,
-	                          `enabled` int(1) NOT NULL DEFAULT '1',
-	                          `priority` int(4) NOT NULL DEFAULT '0',
-	                          PRIMARY KEY (`id`)
-	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-	                        echo "Table `acp_announcements` created.\n";
-	
-	                        /*
 	                         * CREATE TABLE `acp_email_templates`
 	                         */
 	                        $mysql->exec("CREATE TABLE `acp_email_templates` (
@@ -127,37 +115,7 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `actions_log` created.\n";
-	
-	                        /*
-	                         * CREATE TABLE `backup_datastore`
-	                         */
-	                        $mysql->exec("CREATE TABLE `backup_datastore` (
-	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `server` text NOT NULL,
-	                          `backup_pattern` longtext,
-	                          PRIMARY KEY (`id`)
-	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-	                        echo "Table `backup_datastore` created.\n";
-	
-	                        /*
-	                         * CREATE TABLE `backups`
-	                         */
-	                        $mysql->exec("CREATE TABLE `backups` (
-	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `server` varchar(100) NOT NULL DEFAULT '',
-	                          `backup_token` varchar(50) NOT NULL DEFAULT '',
-	                          `file_name` text NOT NULL,
-	                          `email_done` int(1) NOT NULL DEFAULT '0',
-	                          `user_email` text,
-	                          `timestart` int(15) NOT NULL,
-	                          `timeend` int(15) DEFAULT NULL,
-	                          `complete` int(1) NOT NULL DEFAULT '0',
-	                          `md5` text,
-	                          `sha1` text,
-	                          PRIMARY KEY (`id`)
-	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-	                        echo "Table `backups` created.\n";
-	                        
+		                        
 	                        /*
 	                         * CREATE TABLE `modpacks`
 	                         */
@@ -186,8 +144,8 @@ if(file_exists('../install.lock'))
 	                          `node_ip` tinytext NOT NULL,
 	                          `sftp_ip` tinytext NOT NULL,
 	                          `server_dir` tinytext NOT NULL,
-	                          `backup_dir` tinytext NOT NULL,
 	                          `username` tinytext NOT NULL,
+	                          `gsd_secret` char(32) DEFAULT NULL,
 	                          `ssh_pub` tinytext NOT NULL,
 	                          `ssh_priv` tinytext NOT NULL,
 	                          `ssh_secret` tinytext,
@@ -206,6 +164,7 @@ if(file_exists('../install.lock'))
 	                          `gsd_id` int(11) DEFAULT NULL,
 	                          `whmcs_id` int(11) DEFAULT '0',
 	                          `hash` char(42) NOT NULL DEFAULT '',
+	                          `gsd_secret` char(32) NOT NULL DEFAULT '',
 	                          `encryption_iv` tinytext NOT NULL,
 	                          `node` int(11) NOT NULL,
 	                          `name` varchar(200) NOT NULL DEFAULT '',
@@ -221,8 +180,6 @@ if(file_exists('../install.lock'))
 	                          `server_port` int(11) NOT NULL,
 	                          `ftp_user` tinytext NOT NULL,
 	                          `ftp_pass` tinytext NOT NULL,
-	                          `backup_file_limit` int(20) NOT NULL,
-	                          `backup_disk_limit` int(20) NOT NULL,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `servers` created.\n";
@@ -247,20 +204,7 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `users` created.\n";
-	
-	                        /*
-	                         * CREATE TABLE `whmcs_suspend_data`
-	                         */
-	                        $mysql->exec("CREATE TABLE `whmcs_suspend_data` (
-	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `server_id` int(11) NOT NULL,
-	                          `whmcs_server_id` int(11) NOT NULL,
-	                          `old_password` varchar(40) NOT NULL DEFAULT '',
-	                          `unsuspended` int(11) NOT NULL DEFAULT '0' COMMENT '0 = False, 1 = True',
-	                          PRIMARY KEY (`id`)
-	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-	                        echo "Table `whmcs_suspend_data` created.\n";
-	                        
+		                        
 						}
 
                     ?>
@@ -273,7 +217,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.5.5 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.6.0 Alpha (R1) distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
 		</div>
 	</div>
 </body>
