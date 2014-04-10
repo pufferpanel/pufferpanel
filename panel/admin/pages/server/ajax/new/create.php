@@ -135,7 +135,7 @@ $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0
 
 $serverHash = $core->framework->auth->keygen(42);
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
 	':hash' => $serverHash,
 	':gsd_secret' => $core->framework->auth->keygen(16).$core->framework->auth->keygen(16),
