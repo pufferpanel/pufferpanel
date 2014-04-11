@@ -19,8 +19,8 @@
 session_start();
 require_once('core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) === true){
-	$core->framework->page->redirect('servers.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true){
+	$core->page->redirect('servers.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'login'){
@@ -30,17 +30,17 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
         else
             $postLoginURL = 'servers.php';
     
-			if($core->framework->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
+			if($core->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
 			
 				/*
 				 * Account Exists
 				 * Set Cookies and List Servers
 				 */
-				$token = $core->framework->auth->keygen('12');
+				$token = $core->auth->keygen('12');
 				$expires = (isset($_POST['remember_me'])) ? time() + 604800 : time() + 1800;
 				$cookieExpire = (isset($_POST['remember_me'])) ? time() + 604800 : 0;
 				
-					setcookie("pp_auth_token", $token, $cookieExpire, '/', $core->framework->settings->get('cookie_website'));
+					setcookie("pp_auth_token", $token, $cookieExpire, '/', $core->settings->get('cookie_website'));
 				
 					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr, `session_expires` = :expires WHERE `email` = :email");
 					$updateUsers->execute(array(
@@ -62,16 +62,16 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 						/*
 						 * Send Email
 						 */
-						$core->framework->email->generateLoginNotification('success', array(
+						$core->email->generateLoginNotification('success', array(
                             'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                             'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                        ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login  Notification');
+                        ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login  Notification');
 						    
                     }
                 
-                    $core->framework->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
+                    $core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
                 
-					$core->framework->page->redirect($postLoginURL);
+					$core->page->redirect($postLoginURL);
 			
 			}else{
 				
@@ -93,18 +93,18 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 							/*
 							 * Send Email
 							 */								 
-							$core->framework->email->generateLoginNotification('failed', array(
+							$core->email->generateLoginNotification('failed', array(
                                 'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                                 'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                            ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Account Login Failure Notification');															 
+                            ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login Failure Notification');															 
 								    
 						}
 							  
 					}
                 
-                $core->framework->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
+                $core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
                 
-				$core->framework->page->redirect('index.php?error=true');
+				$core->page->redirect('index.php?error=true');
 			
 			}
 	
@@ -114,13 +114,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 <html lang="en">
 <head>
 	<?php include('assets/include/header.php'); ?>
-	<title><?php echo $core->framework->settings->get('company_name'); ?> - Login</title>
+	<title><?php echo $core->settings->get('company_name'); ?> - Login</title>
 </head>
 <body>
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 		</div>
 		<div class="row">

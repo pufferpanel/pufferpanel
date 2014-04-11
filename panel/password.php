@@ -19,8 +19,8 @@
 session_start();
 require_once('core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) === true){
-	$core->framework->page->redirect('servers.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true){
+	$core->page->redirect('servers.php');
 }
 
 require_once("core/captcha/recaptchalib.php");
@@ -28,7 +28,7 @@ $statusMessage = ''; $noShow = false;
 
 if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
-	$resp = recaptcha_check_answer($core->framework->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
+	$resp = recaptcha_check_answer($core->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
 		
 	if($resp->is_valid){
 	
@@ -40,7 +40,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		
 			if($query->rowCount() == 1){
 	
-				$pKey = $core->framework->auth->keygen('30');
+				$pKey = $core->auth->keygen('30');
 				
 				$accountChangeInsert = $mysql->prepare("INSERT INTO `account_change` VALUES(NULL, NULL, 'password', :email, :pkey, :expires, 0)");
 				$accountChangeInsert->execute(array(
@@ -52,20 +52,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 					/*
 					 * Send Email
 					 */
-					$core->framework->email->buildEmail('password_reset', array(
+					$core->email->buildEmail('password_reset', array(
                         'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                         'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']),
                         'PKEY' => $pKey
-                    ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - Reset Your Password');
+                    ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Reset Your Password');
 				
-                $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset_email', 'A password reset was requested and confimation emailed to your account email.'));
+                $core->log->getUrl()->addLog(0, 1, array('auth.password_reset_email', 'A password reset was requested and confimation emailed to your account email.'));
                 
 				$statusMessage = '<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>';
 				$noShow = true;
 			
 			}else{
                 
-			     $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
+			     $core->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
                 
 				$statusMessage = '<div class="alert alert-danger">We couldn\'t find that email in our database.</div>';
 			
@@ -93,18 +93,18 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		
 			$row = $query->fetch();
 			
-			$raw_newpassword = $core->framework->auth->keygen('12');
+			$raw_newpassword = $core->auth->keygen('12');
 			
 			$updateAccountChange = $mysql->prepare("UPDATE `account_change` SET `verified` = 1 WHERE `key` = ?");
 			$updateAccountChange->execute(array($key));
 			
 			$updateUsers = $mysql->prepare("UPDATE `users` SET `password` = :newpass WHERE `email` = :email");
 			$updateUsers->execute(array(
-				':newpass' => $core->framework->auth->hash($raw_newpassword),
+				':newpass' => $core->auth->hash($raw_newpassword),
 				':email' => $row['content']
 			));
 			
-            $core->framework->log->getUrl()->addLog(0, 1, array('auth.password_reset', 'Your account password was successfull reset from the password reset form.'));
+            $core->log->getUrl()->addLog(0, 1, array('auth.password_reset', 'Your account password was successfull reset from the password reset form.'));
             
 			$statusMessage = '<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>';
 			$noShow = true;
@@ -112,14 +112,14 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				/*
 				 * Send Email
 				 */
-				$core->framework->email->buildEmail('new_password', array(
+				$core->email->buildEmail('new_password', array(
                     'NEW_PASS' => $raw_newpassword,
                     'EMAIL' => $row['content']
-                ))->dispatch($row['content'], $core->framework->settings->get('company_name').' - New Password');
+                ))->dispatch($row['content'], $core->settings->get('company_name').' - New Password');
 		
 		}else{
 		
-            $core->framework->log->getUrl()->addLog(1, 0, array('auth.password_reset_fail', 'A password reset request was attempted but failed to be verified.'));
+            $core->log->getUrl()->addLog(1, 0, array('auth.password_reset_fail', 'A password reset request was attempted but failed to be verified.'));
             
 			$statusMessage = '<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>';
 		
@@ -132,7 +132,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 <html lang="en">
 <head>
 	<?php include('assets/include/header.php'); ?>
-	<title><?php echo $core->framework->settings->get('company_name'); ?> - Reset Password</title>
+	<title><?php echo $core->settings->get('company_name'); ?> - Reset Password</title>
 	<script type="text/javascript">
 		var RecaptchaOptions = {
 			theme : 'custom',
@@ -144,7 +144,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="<?php echo $core->framework->settings->get('master_url'); ?>"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="<?php echo $core->settings->get('master_url'); ?>"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 		</div>
 		<div class="row">
@@ -172,9 +172,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 								<div class="col-8">
 									<div id="recaptcha_image"></div>
 								</div>
-								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo $core->framework->settings->get('captcha_pub'); ?>"></script>
+								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo $core->settings->get('captcha_pub'); ?>"></script>
 								<noscript>
-									<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo $core->framework->settings->get('captcha_pub'); ?>"
+									<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo $core->settings->get('captcha_pub'); ?>"
 								height="300" width="500" frameborder="0"></iframe><br>
 									<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
 									<input type="hidden" name="recaptcha_response_field" value="manual_challenge">

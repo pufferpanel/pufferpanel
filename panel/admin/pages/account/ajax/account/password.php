@@ -19,19 +19,19 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../../../index.php');
 }
 
 if(!isset($_POST['uid']) || !is_numeric($_POST['uid']))
-	$core->framework->page->redirect('../find.php?error=UPDATE-USER__undefined_user');
+	$core->page->redirect('../find.php?error=UPDATE-USER__undefined_user');
 	
 if($_POST['pass'] != $_POST['pass_2'])
-	$core->framework->page->redirect('../../view.php?id='.$_POST['uid'].'&error=password');
+	$core->page->redirect('../../view.php?id='.$_POST['uid'].'&error=password');
 	
 $update = $mysql->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :uid");
 $update->execute(array(
-	':password' => $core->framework->auth->hash($_POST['pass']),
+	':password' => $core->auth->hash($_POST['pass']),
 	':uid' => $_POST['uid']
 ));
 
@@ -40,10 +40,10 @@ $update->execute(array(
 		/*
 		 * Send Email
 		 */
-		$core->framework->email->buildEmail('new_password', array(
+		$core->email->buildEmail('new_password', array(
             'NEW_PASS' => $_POST['pass'],
             'EMAIL' => $_POST['email']
-        ))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - An Admin has Reset Your Password');
+        ))->dispatch($_POST['email'], $core->settings->get('company_name').' - An Admin has Reset Your Password');
 	
 	}
 	
@@ -56,6 +56,6 @@ $update->execute(array(
 	
 	}
 
-$core->framework->page->redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
+$core->page->redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
 
 ?>

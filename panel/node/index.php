@@ -19,9 +19,9 @@
 session_start();
 require_once('../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
 }
 ?>
@@ -124,8 +124,8 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 					url: "ajax/overview/raw_data.php",
 					data: { data: 'memory' },
 				  		success: function(data) {
-				  			var percentage = Math.floor( (data * 100) / <?php echo $core->framework->server->getData('max_ram'); ?>) + '%';
-							$("#memory_bar").html(data + 'MB / <?php echo $core->framework->server->getData('max_ram'); ?>MB');
+				  			var percentage = Math.floor( (data * 100) / <?php echo $core->server->getData('max_ram'); ?>) + '%';
+							$("#memory_bar").html(data + 'MB / <?php echo $core->server->getData('max_ram'); ?>MB');
 							$("#memory_bar").css('width', percentage);
 				 		}
 				});

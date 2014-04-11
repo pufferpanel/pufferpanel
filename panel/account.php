@@ -20,8 +20,8 @@ session_start();
 require_once('core/framework/framework.core.php');
 $error = '';
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) !== true){
-	$core->framework->page->redirect('index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
+	$core->page->redirect('index.php');
 	exit();
 }
 
@@ -37,22 +37,22 @@ if(isset($_GET['action'])){
 
 	if($_GET['action'] == 'notifications' && isset($_POST['password'])){
 			
-		if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['password']) === true){
+		if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
 		
 			$updateUsers = $mysql->prepare("UPDATE `users` SET `notify_login_s` = :e_s, `notify_login_f` = :e_f WHERE `id` = :uid");
 			$updateUsers->execute(array(
 				':e_s' => $_POST['e_s'],
 				':e_f' => $_POST['e_f'],
-				':uid' => $core->framework->user->getData('id')
+				':uid' => $core->user->getData('id')
 			));
 			
-            $core->framework->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
+            $core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
             
 			$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
 		
 		}else{
 		
-            $core->framework->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
+            $core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
             
 			$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 		
@@ -63,30 +63,30 @@ if(isset($_GET['action'])){
 		/*
 		 * Update Email Address
 		 */
-		$emailKey = $core->framework->auth->keygen('30');
+		$emailKey = $core->auth->keygen('30');
 		$expire = time() + 14400;
 		
-		if($_POST['newemail'] == $core->framework->user->getData('email')){
+		if($_POST['newemail'] == $core->user->getData('email')){
 		
 			$outputMessage = '<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
 		
 		}else{
 		
-			if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['password']) === true){
+			if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
 					
 				$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
 				$updateEmail->execute(array(
 					':email' => $_POST['newemail'],
-					':id' => $core->framework->user->getData('id')
+					':id' => $core->user->getData('id')
 				));
 				
-                $core->framework->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
+                $core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
                 
 				$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
 				
 			}else{
 			
-                $core->framework->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
+                $core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
                 
 				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 			
@@ -96,33 +96,33 @@ if(isset($_GET['action'])){
 	
 	}else if($_GET['action'] == 'password'){
 	
-		if($core->framework->auth->verifyPassword($core->framework->user->getData('email'), $_POST['p_password']) === true){
+		if($core->auth->verifyPassword($core->user->getData('email'), $_POST['p_password']) === true){
 		
 			if(preg_match("#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#", $_POST['p_password_new'])){
 			
 				if($_POST['p_password_new'] == $_POST['p_password_new_2']){
 				
-					$newPassword = $core->framework->auth->hash($_POST['p_password_new']);
+					$newPassword = $core->auth->hash($_POST['p_password_new']);
 					
 						/*
 						 * Change Password
 						 */
 						$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `id` = :uid");
 						$updatePassword->execute(array(
-							':password' => $core->framework->auth->hash($_POST['p_password_new']),
-							':uid' => $core->framework->user->getData('id')
+							':password' => $core->auth->hash($_POST['p_password_new']),
+							':uid' => $core->user->getData('id')
 						));
 						
 							
 						/*
 						 * Send Email
 						 */
-						$message = $core->framework->email->buildEmail('password_changed', array(
+						$message = $core->email->buildEmail('password_changed', array(
                             'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                             'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                        ))->dispatch($core->framework->user->getData('email'), $core->framework->settings->get('company_name').' - Password Change Notification');
+                        ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Password Change Notification');
 						
-                    $core->framework->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
+                    $core->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
                     
 					$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 						
@@ -141,7 +141,7 @@ if(isset($_GET['action'])){
 		
 		}else{
 		
-            $core->framework->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
+            $core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
             
 			$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
 		
@@ -158,9 +158,9 @@ if(isset($_GET['action'])){
 /*
  * Get Notification Preferences
  */
-$core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'));
-if($core->framework->user->getData('notify_login_s') == 1){ $ns1 = 'checked="checked"'; $ns0 = ''; }else{ $ns0 = 'checked="checked"'; $ns1 = ''; }
-if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf0 = ''; }else{ $nf0 = 'checked="checked"'; $nf1 = ''; }
+$core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'));
+if($core->user->getData('notify_login_s') == 1){ $ns1 = 'checked="checked"'; $ns0 = ''; }else{ $ns0 = 'checked="checked"'; $ns1 = ''; }
+if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf0 = ''; }else{ $nf0 = 'checked="checked"'; $nf1 = ''; }
 
 ?>
 <!DOCTYPE html>
@@ -173,7 +173,7 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
@@ -181,7 +181,7 @@ if($core->framework->user->getData('notify_login_f') == 1){ $nf1 = 'checked="che
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="logout.php">Logout</a></li>
-								<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
 							</ul>
 					</li>
 				</ul>

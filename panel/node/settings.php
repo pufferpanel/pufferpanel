@@ -19,9 +19,9 @@
 session_start();
 require_once('../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
 }
 ?>
@@ -63,7 +63,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<?php
 									$packs = $mysql->prepare("SELECT hash, name, version, deleted FROM `modpacks` WHERE `hash` = :hash");
 									$packs->execute(array(
-										':hash' => $core->framework->server->getData('modpack')
+										':hash' => $core->server->getData('modpack')
 									));
 									
 									$pack = $packs->fetch();
@@ -79,7 +79,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									<?php
 										$packs = $mysql->prepare("SELECT hash, name, version, server_jar FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
 										$packs->execute(array(
-											':ram' => $core->framework->server->getData('max_ram')
+											':ram' => $core->server->getData('max_ram')
 										));
 										
 										while($row = $packs->fetch()){
@@ -108,7 +108,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="jarfile" class="control-label">Jarfile Name</label>
 									<div class="input-group">
-										<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->framework->server->getData('server_jar')); ?>"/>
+										<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->server->getData('server_jar')); ?>"/>
 										<span class="input-group-addon">.jar</span>
 										<span class="input-group-btn">
 											<button class="btn btn-primary">Update Name</button>

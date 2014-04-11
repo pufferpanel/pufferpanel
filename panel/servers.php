@@ -20,8 +20,8 @@ session_start();
 require_once('core/framework/framework.core.php');
 $error = '';
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token')) !== true){
-	$core->framework->page->redirect('index.php', $core->framework->page->genRedirect());
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
+	$core->page->redirect('index.php', $core->page->genRedirect());
 	exit();
 }
 
@@ -30,16 +30,16 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
  */
 if(isset($_GET['goto']) && !empty($_GET['goto'])){
 
-	$core->framework->page->nodeRedirect($_GET['goto']);
+	$core->page->nodeRedirect($_GET['goto']);
 	
 }
 
-if($core->framework->user->getData('root_admin') == '1'){
+if($core->user->getData('root_admin') == '1'){
 	$query = $mysql->prepare("SELECT * FROM `servers` ORDER BY `active` DESC");
 	$query->execute();
 }else{
 	$query = $mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid ORDER BY `active` DESC");
-	$query->execute(array(':oid' => $core->framework->user->getData('id')));
+	$query->execute(array(':oid' => $core->user->getData('id')));
 }
 
 /*
@@ -51,7 +51,7 @@ while($row = $query->fetch()){
 	($row['active'] == '1') ? $isActive = 'Enabled' : $isActive = 'Disabled';
 	$listServers .= '
 					<tr class="dynUpdate" id="'.$row['gsd_id'].'">
-						<td>'.$core->framework->settings->nodeName($row['node']).'</td>
+						<td>'.$core->settings->nodeName($row['node']).'</td>
 						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
 						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 						<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i> </span></td>
@@ -71,7 +71,7 @@ while($row = $query->fetch()){
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
@@ -79,7 +79,7 @@ while($row = $query->fetch()){
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="logout.php">Logout</a></li>
-								<?php if($core->framework->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
 							</ul>
 					</li>
 				</ul>
