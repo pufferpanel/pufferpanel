@@ -90,14 +90,6 @@ echo "=================[ PufferPanel Debug Output ]=================
 "\rCookie Domain: ".str_replace("_notfound_", "NULL", $core->framework->settings->get('cookie_domain')).
 "\rModpack Directory: ".$core->framework->settings->get('modpack_dir')
 					?></pre>
-					
-					<h3>Updates</h3><hr />
-					<?php
-						if(file_get_contents("https://raw.githubusercontent.com/DaneEveritt/PufferPanel/master/VERSION.txt") != file_get_contents('../assets/versions/current'))
-							echo '<div class="alert alert-danger">There is an update avaliable! You are currently running <code>'.file_get_contents('../assets/versions/current').'</code>. The latest avaliable version is <code>'.file_get_contents("https://raw.githubusercontent.com/DaneEveritt/PufferPanel/master/VERSION.txt").'</code>.';
-						else
-							echo '<div class="alert alert-success">You are currently using the most up-to-date version of PufferPanel!</div>';
-					?>
 			</div>
 		</div>
 		<div class="footer">
