@@ -35,6 +35,28 @@ require_once('../../../core/framework/framework.core.php');
 		':jar' => $_POST['jarfile'],
 		':sid' => $core->framework->server->getData('id')
 	));
+	
+	/*
+	 * Update GSD Setting
+	 */
+	$data = http_build_query(array(
+		"variables" => array(
+			"-jar" => $_POST['jarfile'],
+			"-xmx" => $core->framework->server->getData('max_ram').'M'
+		)
+	));
+	$context_options = array (
+		'http' => array (
+			'method' => 'PUT',
+			'header'=> "X-Access-Token: ".$core->framework->server->nodeData('gsd_secret')."\r\n"
+				."Content-Length: ".strlen($data)."\r\n",
+			'content' => $data
+		)
+	);
+	
+	$context = context_create_stream($context_options);
+	file_get_contents('http://'.$core->framework->server->nodeData('sftp_ip').':8003/gameservers/'.$core->framework->server->getData('gsd_id'), false, $context);
+		
 	$core->framework->page->redirect('../../settings.php');
 
 }
