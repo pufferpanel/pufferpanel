@@ -19,16 +19,16 @@
 session_start();
 require_once('../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../../index.php');
 }
 
 if(!isset($_POST['cookie_website']))
-	$core->framework->page->redirect('../global.php?error=cookie_website&tab=cookies');
+	$core->page->redirect('../global.php?error=cookie_website&tab=cookies');
 	
 $query = $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'cookie_website'");
 $query->execute(array($_POST['cookie_website']));
 
-$core->framework->page->redirect('../global.php?tab=cookies');
+$core->page->redirect('../global.php?tab=cookies');
 
 ?>
