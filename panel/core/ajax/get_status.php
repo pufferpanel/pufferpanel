@@ -19,14 +19,14 @@
 session_start();
 require_once('../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	if(isset($_POST['server'])){
 		
 		/*
 		 * Query Servers
 		 */
-		if($core->framework->gsd->online($_POST['server']) === false)
+		if($core->gsd->online($_POST['server']) === false)
 			exit('<span class="label label-danger">Offline</span>');
 		else
 			exit('<span class="label label-success">Online</span>');

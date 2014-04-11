@@ -55,21 +55,21 @@ require_once('email/core.email.php');
  * Initalize Global Framework
  */
 $core = new stdClass();
-$core->framework = new stdClass();
+$core = new stdClass();
 
 /*
  * Initalize Frameworks
  */
-$core->framework->settings = new getSettings();
-$core->framework->auth = new auth();
-$core->framework->ssh = new ssh();
-$core->framework->user = new user($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash'));
-$core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
-$core->framework->email = new tplMail($core->framework->settings);
-$core->framework->page = new page($core->framework->user, $core->framework->settings);
-$core->framework->log = new log($core->framework->user->getData('id'));
-$core->framework->gsd = new GSD_Query($core->framework->server->getData('id'));
-$core->framework->files = new files();
+$core->settings = new getSettings();
+$core->auth = new auth();
+$core->ssh = new ssh();
+$core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
+$core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
+$core->email = new tplMail($core->settings);
+$core->page = new page($core->user, $core->settings);
+$core->log = new log($core->user->getData('id'));
+$core->gsd = new GSD_Query($core->server->getData('id'));
+$core->files = new files();
 
 /*
  * MySQL PDO Connection Engine

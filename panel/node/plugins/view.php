@@ -21,9 +21,9 @@ require_once('../../core/framework/framework.core.php');
 
 $filesIncluded = true;
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
 }
 
@@ -77,7 +77,7 @@ if(isset($_GET['slug']) && !empty($_GET['slug'])){
 
 }else{
 
-	$core->framework->page->redirect('search.php');
+	$core->page->redirect('search.php');
 	exit();
 	
 }

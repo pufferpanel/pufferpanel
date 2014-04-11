@@ -19,9 +19,9 @@
 session_start();
 require_once('../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
 }
 
@@ -33,11 +33,11 @@ if(isset($_GET['dir']))
     
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
     
-    $connection = $core->framework->ssh->generateSSH2Connection(array(
-    	'ip' => $core->framework->server->nodeData('sftp_ip'),
-    	'user' => $core->framework->server->getData('ftp_user'),
-    	'pass' => $core->framework->server->getData('ftp_pass'),
-    	'iv' => $core->framework->server->getData('encryption_iv')
+    $connection = $core->ssh->generateSSH2Connection(array(
+    	'ip' => $core->server->nodeData('sftp_ip'),
+    	'user' => $core->server->getData('ftp_user'),
+    	'pass' => $core->server->getData('ftp_pass'),
+    	'iv' => $core->server->getData('encryption_iv')
     ), null, true);
     
     $sftp = ssh2_sftp($connection);
@@ -55,7 +55,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
         header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
         header("Content-Length: ".filesize("ssh2.sftp://$sftp/server/".$_GET['file']));
            
-        $core->framework->files->download("ssh2.sftp://$sftp/server/".$_GET['file']);
+        $core->files->download("ssh2.sftp://$sftp/server/".$_GET['file']);
         exit();
         
     }
@@ -67,7 +67,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 <html lang="en">
 <head>
 	<?php include('../../assets/include/header.php'); ?>
-	<script type="text/javascript" src="<?php echo $core->framework->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
+	<script type="text/javascript" src="<?php echo $core->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
 	<title>PufferPanel - Manage Your Server</title>
 </head>
 <body>

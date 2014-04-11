@@ -19,9 +19,9 @@
 session_start();
 require_once('../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
     
 }
@@ -34,14 +34,14 @@ if(isset($_POST['file']))
 if(isset($_POST['dir']))
     $_POST['dir'] = str_replace('..', '', urldecode($_POST['dir']));
 
-$path = $core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server/';
+$path = $core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server/';
 $parName = 'Editing: /'.$_POST['file'].'';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<?php include('../../assets/include/header.php'); ?>
-	<script type="text/javascript" src="<?php echo $core->framework->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
+	<script type="text/javascript" src="<?php echo $core->settings->get('master_url'); ?>assets/javascript/jquery.redirect.min.js"></script>
 	<title>PufferPanel - Manage Your Server</title>
 </head>
 <body>
@@ -91,7 +91,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 		                    if(substr($directory, 0, 1) == '/')
 		                        $directory = substr($directory, 1);
 		                	                    
-		            		$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/".$directory.$file;
+		            		$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
 		            		
 		            		$context = stream_context_create(array(
 		            			"http" => array(

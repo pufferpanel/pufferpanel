@@ -19,7 +19,7 @@
  
 /*
  * PufferPanel Server Class File
- $core->framework->server = new server($core->framework->auth->getCookie('pp_server_hash'), $core->framework->user->getData('id'), $core->framework->user->getData('root_admin'));
+ $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
  */
 
 class server extends user {

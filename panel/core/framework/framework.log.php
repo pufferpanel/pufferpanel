@@ -31,7 +31,7 @@ class log extends user {
     
     /*
      * Call as Such:
-     * $core->framework->log->getUrl()->addLog(priority, viewable, array(action, desc, uid*));
+     * $core->log->getUrl()->addLog(priority, viewable, array(action, desc, uid*));
      *
      * priority: 0 - None, 1 - Low, 2 - Medium, 3 - High, 4 - Urgent
      * viewable: 0 - Admin Only, 1 - User & Admin
