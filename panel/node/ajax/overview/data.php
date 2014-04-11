@@ -19,24 +19,24 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 	
 	if($_POST['command'] && $_POST['command'] == 'stats'){
 		
-		$maxSpace = $core->framework->server->getData('disk_space') * 1024 * 1024;
+		$maxSpace = $core->server->getData('disk_space') * 1024 * 1024;
 			
 			/*
 			 * Run Command
 			 */
-			$getCommandData = $core->framework->ssh->generateSSH2Connection(array(
-				'ip' => $core->framework->server->nodeData('sftp_ip'),
-				'user' => $core->framework->server->nodeData('username')
+			$getCommandData = $core->ssh->generateSSH2Connection(array(
+				'ip' => $core->server->nodeData('sftp_ip'),
+				'user' => $core->server->nodeData('username')
 			), array(
-				'pub' => $core->framework->server->nodeData('ssh_pub'),
-				'priv' => $core->framework->server->nodeData('ssh_priv'),
-				'secret' => $core->framework->server->nodeData('ssh_secret'),
-				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-			))->executeSSH2Command('sudo du -s '.$core->framework->server->nodeData('server_dir').$core->framework->server->getData('ftp_user').'/server', true);
+				'pub' => $core->server->nodeData('ssh_pub'),
+				'priv' => $core->server->nodeData('ssh_priv'),
+				'secret' => $core->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
 						
 			if($getCommandData === false)
 				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
@@ -51,24 +51,24 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		$returnSpacePercent = round((($getCommandData[0] * 1024) / $maxSpace), 2) * 100;
 		if($returnSpacePercent < 1){ $returnSpacePercent = 1; }
 		
-		$spaceUsedH = $core->framework->files->formatSize($getCommandData[0] * 1024);
-		$maxSpaceH = $core->framework->files->formatSize($maxSpace);
+		$spaceUsedH = $core->files->formatSize($getCommandData[0] * 1024);
+		$maxSpaceH = $core->files->formatSize($maxSpace);
 		
 		echo '	<div class="progress">
 		  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%"></div>
 				</div>
-				<p class="text-muted">You are using '.$spaceUsedH.' of your maximum '.$core->framework->server->getData('disk_space').' MB of disk space.</p>';
+				<p class="text-muted">You are using '.$spaceUsedH.' of your maximum '.$core->server->getData('disk_space').' MB of disk space.</p>';
 				
 	}else if($_POST['command'] && $_POST['command'] == 'players'){
 		
 		/*
 		 * Query Dodads
 		 */
-		if($core->framework->gsd->online() !== true){
+		if($core->gsd->online() !== true){
 			exit('<div class="alert alert-danger">The server appears to be offline.</div>');
 		}
 		
-		$cpu = round(($core->framework->gsd->retrieve_process('cpu') / $core->framework->server->getData('cpu_limit')) * 100, 2);
+		$cpu = round(($core->gsd->retrieve_process('cpu') / $core->server->getData('cpu_limit')) * 100, 2);
 		$cpu = ($cpu > "100") ? "100" : $cpu;	
 		echo '	<h5>CPU Usage</h5>
 				<div class="progress">
@@ -77,11 +77,11 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			
 		echo '	<h5>Memory Usage</h5>
 				<div class="progress">
-				  	<div class="progress-bar" id="memory_bar" style="width:'.(($core->framework->files->format($core->framework->gsd->retrieve_process('memory')) / $core->framework->server->getData('max_ram')) * 100).'%;max-width:100%;">'.$core->framework->files->format($core->framework->gsd->retrieve_process('memory')).'MB / '.$core->framework->server->getData('max_ram').'MB</div>
+				  	<div class="progress-bar" id="memory_bar" style="width:'.(($core->files->format($core->gsd->retrieve_process('memory')) / $core->server->getData('max_ram')) * 100).'%;max-width:100%;">'.$core->files->format($core->gsd->retrieve_process('memory')).'MB / '.$core->server->getData('max_ram').'MB</div>
 				</div>';
 			
 			$onlinePlayers = null;
-			$players = $core->framework->gsd->retrieve('players');
+			$players = $core->gsd->retrieve('players');
 			$i = 0;
 			
 			if(count($players) > 0){
@@ -115,19 +115,19 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<tbody>
 							<tr>
 								<td><strong>Connection</strong></td>
-								<td>'.$core->framework->server->getData('server_ip').':'.$core->framework->server->getData('server_port').'</td>
+								<td>'.$core->server->getData('server_ip').':'.$core->server->getData('server_port').'</td>
 							</tr>
 							<tr>
 								<td><strong>Node</strong></td>
-								<td>'.$core->framework->settings->nodeName($core->framework->server->getData('node')).'</td>
+								<td>'.$core->settings->nodeName($core->server->getData('node')).'</td>
 							</tr>
 							<tr>
 								<td><strong>Memory Allocated</strong></td>
-								<td>'.$core->framework->server->getData('max_ram').' MB</td>
+								<td>'.$core->server->getData('max_ram').' MB</td>
 							</tr>
 							<tr>
 								<td><strong>Disk Allocated</strong></td>
-								<td>'.$core->framework->server->getData('disk_space').' MB</td>
+								<td>'.$core->server->getData('disk_space').' MB</td>
 							</tr>
 						</tbody>
 					</table>';

@@ -19,7 +19,7 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	if(isset($_POST['plugin'])){
 	
@@ -42,20 +42,20 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 			/*
 			 * Connect and Run Function
 			 */
-			$callbackData = $core->framework->ssh->generateSSH2Connection(array(
-				'ip' => $core->framework->server->nodeData('sftp_ip'),
-				'user' => $core->framework->server->nodeData('username')
+			$callbackData = $core->ssh->generateSSH2Connection(array(
+				'ip' => $core->server->nodeData('sftp_ip'),
+				'user' => $core->server->nodeData('username')
 			), array(
-				'pub' => $core->framework->server->nodeData('ssh_pub'),
-				'priv' => $core->framework->server->nodeData('ssh_priv'),
-				'secret' => $core->framework->server->nodeData('ssh_secret'),
-				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-			))->executeSSH2Command('cd /srv/scripts; sudo ./install_plugin.sh '.$core->framework->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->framework->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
+				'pub' => $core->server->nodeData('ssh_pub'),
+				'priv' => $core->server->nodeData('ssh_priv'),
+				'secret' => $core->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('cd /srv/scripts; sudo ./install_plugin.sh '.$core->server->getData('ftp_user').' "'.$downloadPath.'" "'.$core->server->getData('path').'plugins" "'.$data['plugin_name'].'" "'.$filename.'"', true);
 			
 			if(!empty($callbackData))
 				echo $callbackData;
 			
-            $core->framework->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
+            $core->log->getUrl()->addLog(0, 1, array('user.install_plugin', 'A plugin was installed.'));
 			
 	}
 

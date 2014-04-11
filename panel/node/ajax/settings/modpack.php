@@ -19,7 +19,7 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	if(isset($_POST['new_pack'])){
 	
@@ -42,42 +42,42 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 		/*
 		 * Minimum Requirements Met?
 		 */
-		if($pack['min_ram'] > $core->framework->server->getData('max_ram'))
-			exit('<div class="alert alert-error">Your server does not have enough RAM allocated to run this Modpack. This Modpack requires '.$pack['min_ram'].'MB of RAM, you have '.$core->framework->server->getData('max_ram').'MB allocated.</div>');
+		if($pack['min_ram'] > $core->server->getData('max_ram'))
+			exit('<div class="alert alert-error">Your server does not have enough RAM allocated to run this Modpack. This Modpack requires '.$pack['min_ram'].'MB of RAM, you have '.$core->server->getData('max_ram').'MB allocated.</div>');
 		
 		/*
 		 * Generate URL
 		 */
-		$iv = $core->framework->auth->generate_iv();
-		$encryptedHash = $core->framework->auth->encrypt($pack['download_hash'], $iv);
+		$iv = $core->auth->generate_iv();
+		$encryptedHash = $core->auth->encrypt($pack['download_hash'], $iv);
 				
-		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($encryptedHash.'.'.$iv);
+		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($encryptedHash.'.'.$iv);
 
 		/*
 		 * Connect and Run Function
 		 */
-		$callbackData = $core->framework->ssh->generateSSH2Connection(array(
-			'ip' => $core->framework->server->nodeData('sftp_ip'),
-			'user' => $core->framework->server->nodeData('username')
+		$callbackData = $core->ssh->generateSSH2Connection(array(
+			'ip' => $core->server->nodeData('sftp_ip'),
+			'user' => $core->server->nodeData('username')
 		), array(
-			'pub' => $core->framework->server->nodeData('ssh_pub'),
-			'priv' => $core->framework->server->nodeData('ssh_priv'),
-			'secret' => $core->framework->server->nodeData('ssh_secret'),
-			'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh '.$core->framework->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
+			'pub' => $core->server->nodeData('ssh_pub'),
+			'priv' => $core->server->nodeData('ssh_priv'),
+			'secret' => $core->server->nodeData('ssh_secret'),
+			'secret_iv' => $core->server->nodeData('ssh_secret_iv')
+		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh '.$core->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
 		
 		if(!empty($callbackData))
 			echo $callbackData;
 		
 		
-        $core->framework->log->getUrl()->addLog(0, 1, array('user.modpack_install', 'A new modpack was installed for this server. The modpack installed was '.$pack['name'].' ('.$pack['version'].').'));
+        $core->log->getUrl()->addLog(0, 1, array('user.modpack_install', 'A new modpack was installed for this server. The modpack installed was '.$pack['name'].' ('.$pack['version'].').'));
         
         /*
          * Update SQL
          */
         $mysql->prepare("UPDATE `servers` SET `modpack` = :pack WHERE `id` = :sid")->execute(array(
         	':pack' => $pack['hash'],
-        	':sid' => $core->framework->server->getData('id')
+        	':sid' => $core->server->getData('id')
         ));
         
         echo '<div class="alert alert-success">Modpack successfully installed.</div>';

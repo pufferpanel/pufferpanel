@@ -19,9 +19,9 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->framework->page->redirect($core->framework->settings->get('master_url').'index.php');
+	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
     
 }
@@ -50,7 +50,7 @@ if(isset($_POST['file'])){
         if(substr($directory, 0, 1) == '/')
             $directory = substr($directory, 1);
     	                    
-		$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/".$directory.$file;
+		$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
 		
 		$data = array("contents" => $_POST['file_contents']);
 		

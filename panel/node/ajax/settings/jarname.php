@@ -19,13 +19,13 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-	if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+	if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 	
 	if(!isset($_POST['jarfile']) || empty($_POST['jarfile']))
-		$core->framework->page->redirect('../../settings.php');
+		$core->page->redirect('../../settings.php');
 	
 	if(!preg_match('/^([\w\d_.-]+)$/', $_POST['jarfile']))
-		$core->framework->page->redirect('../../settings.php');
+		$core->page->redirect('../../settings.php');
 		
 	/*
 	 * Update It
@@ -33,7 +33,7 @@ require_once('../../../core/framework/framework.core.php');
 	$update = $mysql->prepare("UPDATE `servers` SET `server_jar` = :jar WHERE `id` = :sid");
 	$update->execute(array(
 		':jar' => $_POST['jarfile'],
-		':sid' => $core->framework->server->getData('id')
+		':sid' => $core->server->getData('id')
 	));
 	
 	/*
@@ -42,21 +42,21 @@ require_once('../../../core/framework/framework.core.php');
 	$data = http_build_query(array(
 		"variables" => array(
 			"-jar" => $_POST['jarfile'],
-			"-xmx" => $core->framework->server->getData('max_ram').'M'
+			"-xmx" => $core->server->getData('max_ram').'M'
 		)
 	));
 	$context_options = array (
 		'http' => array (
 			'method' => 'PUT',
-			'header'=> "X-Access-Token: ".$core->framework->server->nodeData('gsd_secret')."\r\n"
+			'header'=> "X-Access-Token: ".$core->server->nodeData('gsd_secret')."\r\n"
 				."Content-Length: ".strlen($data)."\r\n",
 			'content' => $data
 		)
 	);
 	
 	$context = context_create_stream($context_options);
-	file_get_contents('http://'.$core->framework->server->nodeData('sftp_ip').':8003/gameservers/'.$core->framework->server->getData('gsd_id'), false, $context);
+	file_get_contents('http://'.$core->server->nodeData('sftp_ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
 		
-	$core->framework->page->redirect('../../settings.php');
+	$core->page->redirect('../../settings.php');
 
 }

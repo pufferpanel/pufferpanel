@@ -19,8 +19,8 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../index.php');
 }
 ?>
 <!DOCTYPE html>
@@ -33,15 +33,15 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
-								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+								<li><a href="<?php echo $core->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
 							</ul>
 					</li>
 				</ul>
@@ -63,7 +63,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 						<form action="actions/cname.php" method="POST">
 							<fieldset>
 								<div class="input-group">
-									<input type="text" name="company_name" class="form-control" value="<?php echo $core->framework->settings->get('company_name'); ?>" />
+									<input type="text" name="company_name" class="form-control" value="<?php echo $core->settings->get('company_name'); ?>" />
 									<span class="input-group-btn">
 										<input type="submit" value="Update Company Name" class="btn btn-primary" />
 									</span>
@@ -78,21 +78,21 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="main_url" class="control-label">Main Website URL</label>
 									<div>
-										<input type="text" name="main_url" class="form-control" value="<?php echo $core->framework->settings->get('main_website'); ?>"/>
+										<input type="text" name="main_url" class="form-control" value="<?php echo $core->settings->get('main_website'); ?>"/>
 										<p><small class="text-muted"><em>The URL corresponding to your main website, not necessarily this PufferPanel installation.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="master_url" class="control-label">PufferPanel Master URL</label>
 									<div>
-										<input type="text" name="master_url" class="form-control" value="<?php echo $core->framework->settings->get('master_url'); ?>"/>
+										<input type="text" name="master_url" class="form-control" value="<?php echo $core->settings->get('master_url'); ?>"/>
 										<p><small class="text-muted"><em>The URL corresponding to this PufferPanel installation.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="assets_url" class="control-label">Assets Directory URL</label>
 									<div>
-										<input type="text" name="assets_url" class="form-control" value="<?php echo $core->framework->settings->get('assets_url'); ?>"/>
+										<input type="text" name="assets_url" class="form-control" value="<?php echo $core->settings->get('assets_url'); ?>"/>
 										<p><small class="text-muted"><em>The URL corresponding to the assets for PufferPanel. Update this only if you are using a CDN or Caching Service that modifies where the assets are stored.</em></small></p>
 									</div>
 								</div>
@@ -111,7 +111,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="cookie_website" class="control-label">Cookie Website</label>
 									<div>
-										<input type="text" name="cookie_website" class="form-control" value="<?php echo $core->framework->settings->get('cookie_website'); ?>"/>
+										<input type="text" name="cookie_website" class="form-control" value="<?php echo $core->settings->get('cookie_website'); ?>"/>
 										<p><small class="text-muted"><em>This should be the website that PufferPanel is running on. <strong>Setting this to the wrong value will lock you and all other users out of the panel.</strong></em></small></p>
 									</div>
 								</div>
@@ -131,7 +131,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 									/*
 									 * Select Current Email Method
 									 */
-									$method = $core->framework->settings->get('sendmail_method');
+									$method = $core->settings->get('sendmail_method');
 									$marray = array('php' => '', 'postmark' => '', 'mandrill' => '', 'mailgun' => '');
 									
 										foreach($marray as $id => $value){
@@ -157,28 +157,28 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group col-6 nopad-right">
 									<label for="sendmail_email" class="control-label">Sendmail Address</label>
 									<div>
-										<input type="text" name="sendmail_email" class="form-control" value="<?php echo $core->framework->settings->get('sendmail_email'); ?>"/>
+										<input type="text" name="sendmail_email" class="form-control" value="<?php echo $core->settings->get('sendmail_email'); ?>"/>
 										<p><small class="text-muted"><em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group" id="postmark">
 									<label for="postmark_api_key" class="control-label">PostmarkApp API Key</label>
 									<div>
-										<input type="text" name="postmark_api_key" class="form-control" value="<?php echo $core->framework->settings->get('postmark_api_key'); ?>"/>
+										<input type="text" name="postmark_api_key" class="form-control" value="<?php echo $core->settings->get('postmark_api_key'); ?>"/>
 										<p><small class="text-muted"><em>The API key generated on <a href="https://postmarkapp.com/">Postmark</a>. Leave blank if not using.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group" id="mandrill">
 									<label for="mandrill_api_key" class="control-label">Mandrill API Key</label>
 									<div>
-										<input type="text" name="mandrill_api_key" class="form-control" value="<?php echo $core->framework->settings->get('mandrill_api_key'); ?>"/>
+										<input type="text" name="mandrill_api_key" class="form-control" value="<?php echo $core->settings->get('mandrill_api_key'); ?>"/>
 										<p><small class="text-muted"><em>The API key generated on <a href="https://mandrill.com/">Mandrill</a>. Leave blank if not using.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group" id="mailgun">
 									<label for="mailgun_api_key" class="control-label">Mailgun API Key</label>
 									<div>
-										<input type="text" name="mailgun_api_key" class="form-control" value="<?php echo $core->framework->settings->get('mailgun_api_key'); ?>"/>
+										<input type="text" name="mailgun_api_key" class="form-control" value="<?php echo $core->settings->get('mailgun_api_key'); ?>"/>
 										<p><small class="text-muted"><em>The API key generated on <a href="https://mailgun.com/">Mailgun</a>. Leave blank if not using.</em></small></p>
 									</div>
 								</div>
@@ -197,13 +197,13 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 								<div class="form-group">
 									<label for="pub_key" class="control-label">Public Key</label>
 									<div>
-										<input type="text" name="pub_key" class="form-control" value="<?php echo $core->framework->settings->get('captcha_pub'); ?>"/>
+										<input type="text" name="pub_key" class="form-control" value="<?php echo $core->settings->get('captcha_pub'); ?>"/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="priv_key" class="control-label">Private Key</label>
 									<div>
-										<input type="text" name="priv_key" class="form-control" value="<?php echo $core->framework->settings->get('captcha_priv'); ?>"/>
+										<input type="text" name="priv_key" class="form-control" value="<?php echo $core->settings->get('captcha_priv'); ?>"/>
 									</div>
 								</div>
 								<div class="form-group">

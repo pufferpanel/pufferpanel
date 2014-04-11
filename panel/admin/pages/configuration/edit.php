@@ -19,8 +19,8 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../index.php');
 }
 
 $packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `hash` = :mid");
@@ -29,7 +29,7 @@ $packs->execute(array(':mid' => $_GET['mid']));
 if($packs->rowCount() == 1)
 	$pack = $packs->fetch();
 else
-	$core->framework->page->redirect('modpacks.php');
+	$core->page->redirect('modpacks.php');
 
 ?>
 <!DOCTYPE html>
@@ -42,15 +42,15 @@ else
 	<div class="container">
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->framework->settings->get('company_name'); ?></a>
+				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>logout.php">Logout</a></li>
-								<li><a href="<?php echo $core->framework->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
+								<li><a href="<?php echo $core->settings->get('master_url'); ?>logout.php">Logout</a></li>
+								<li><a href="<?php echo $core->settings->get('master_url'); ?>servers.php">View All Servers</a></li>
 							</ul>
 					</li>
 				</ul>
@@ -156,7 +156,7 @@ else
 								
 								echo '<tr>
 										<td><a href="../server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
-										<td>'.$core->framework->settings->nodeName($row['node']).'</td>
+										<td>'.$core->settings->nodeName($row['node']).'</td>
 										<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 									</tr>';
 							

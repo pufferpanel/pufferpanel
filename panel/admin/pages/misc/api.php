@@ -19,8 +19,8 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../index.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'toggle_api_on'){
@@ -28,7 +28,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'toggle_api_on'){
 	/*
 	 * Generate API Key
 	 */
-	$apiKey = $core->framework->auth->keygen(6).'-'.$core->framework->auth->keygen(8).'-'.$core->framework->auth->keygen(8).'-'.md5($core->framework->auth->keygen(6));
+	$apiKey = $core->auth->keygen(6).'-'.$core->auth->keygen(8).'-'.$core->auth->keygen(8).'-'.md5($core->auth->keygen(6));
 
 	$mysql->exec("UPDATE `acp_settings` SET `setting_val` = '1' WHERE `setting_ref` = 'use_api'");
 	$mysql->exec("UPDATE `acp_settings` SET `setting_val` = '".$apiKey."' WHERE `setting_ref` = 'api_key'");
@@ -58,7 +58,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'toggle_api_on'){
 	<div id="top-bar">
 		<div class="page-full-width cf">
 			<ul id="nav" class="fl">
-				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->framework->user->getData('username'); ?></strong></a></li>
+				<li><a href="../../../account.php" class="round button dark"><i class="fa fa-user"></i>&nbsp;&nbsp; <strong><?php echo $core->user->getData('username'); ?></strong></a></li>
 			</ul>
 			<ul id="nav" class="fr">
 				<li><a href="../../../servers.php" class="round button dark"><i class="fa fa-sign-out"></i></a></li>

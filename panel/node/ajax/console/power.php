@@ -19,16 +19,16 @@
 session_start();
 require_once('../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), $core->framework->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	/*
 	 * Verify that Server Port is set Correctly
 	 */
-	$connection = $core->framework->ssh->generateSSH2Connection(array(
-		'ip' => $core->framework->server->nodeData('sftp_ip'),
-		'user' => $core->framework->server->getData('ftp_user'),
-		'pass' => $core->framework->server->getData('ftp_pass'),
-		'iv' => $core->framework->server->getData('encryption_iv')
+	$connection = $core->ssh->generateSSH2Connection(array(
+		'ip' => $core->server->nodeData('sftp_ip'),
+		'user' => $core->server->getData('ftp_user'),
+		'pass' => $core->server->getData('ftp_pass'),
+		'iv' => $core->server->getData('encryption_iv')
 	), null, true);
 	
 	$sftp = ssh2_sftp($connection);
@@ -38,7 +38,7 @@ if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework-
 	 */	
 	$rewrite = false;						
 	
-	$url = "http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/file/server.properties";
+	$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/server.properties";
 	
 	$context = stream_context_create(array(
 		"http" => array(
@@ -63,13 +63,13 @@ level-name=world
 enable-query=true
 allow-flight=false
 announce-player-achievements=true
-server-port='.$core->framework->server->getData('server_port').'
-query.port='.$core->framework->server->getData('server_port').'
+server-port='.$core->server->getData('server_port').'
+query.port='.$core->server->getData('server_port').'
 level-type=DEFAULT
 enable-rcon=false
 force-gamemode=false
 level-seed=
-server-ip='.$core->framework->server->getData('server_ip').'
+server-ip='.$core->server->getData('server_ip').'
 max-build-height=256
 spawn-npcs=true
 white-list=false
@@ -103,7 +103,7 @@ motd=A Minecraft Server';
 		        if(!empty($response))
 		        	exit("An error was encountered with this AJAX request. Unable to make server.properties.");
 					
-			$core->framework->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
+			$core->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
 			 
 		}
 		
@@ -113,9 +113,9 @@ motd=A Minecraft Server';
 		
 			$var = explode('=', $line);
 			
-				if($var[0] == 'server-port' && $var[1] != $core->framework->server->getData('server_port')){
+				if($var[0] == 'server-port' && $var[1] != $core->server->getData('server_port')){
 					//Reset Port
-					$newContents = str_replace('server-port='.$var[1], "server-port=".$core->framework->server->getData('server_port')."\n", $newContents);
+					$newContents = str_replace('server-port='.$var[1], "server-port=".$core->server->getData('server_port')."\n", $newContents);
 					$rewrite = true;
 				}else if($var[0] == 'online-mode' && $var[1] == 'false'){
 					//Force Online Mode
@@ -125,13 +125,13 @@ motd=A Minecraft Server';
 					//Reset Query Port
 					$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
 					$rewrite = true;
-				}else if($var[0] == 'query.port' && $var[1] != $core->framework->server->getData('server_port')){
+				}else if($var[0] == 'query.port' && $var[1] != $core->server->getData('server_port')){
 					//Reset Query Port
-					$newContents = str_replace('query.port='.$var[1], "query.port=".$core->framework->server->getData('server_port')."\n", $newContents);
+					$newContents = str_replace('query.port='.$var[1], "query.port=".$core->server->getData('server_port')."\n", $newContents);
 					$rewrite = true;
-				}else if($var[0] == 'server-ip' && $var[1] != $core->framework->server->getData('server_ip')){
+				}else if($var[0] == 'server-ip' && $var[1] != $core->server->getData('server_ip')){
 					//Reset Query Port
-					$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->framework->server->getData('server_ip')."\n", $newContents);
+					$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->server->getData('server_ip')."\n", $newContents);
 					$rewrite = true;
 				}
 		
@@ -153,7 +153,7 @@ motd=A Minecraft Server';
 					    if(!empty($response))
 					    	exit("An error was encountered with this AJAX request. Unable to update server.properties.");
 					    		
-                    $core->framework->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
+                    $core->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
 					
 				}
 
@@ -166,7 +166,7 @@ motd=A Minecraft Server';
 			"timeout" => 3
 		)
 	));
-	$gatherData = @file_get_contents("http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id')."/on", 0, $context);
+	$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
 	
 	if($gatherData != "\"ok\"")
 		exit("An error was encountered with this AJAX request. ($gatherData)");
@@ -177,24 +177,24 @@ motd=A Minecraft Server';
 	 *
 	 * This is super buggy.
 	 */
-	if($core->framework->server->getData('cpu_limit') > 0){
+	if($core->server->getData('cpu_limit') > 0){
 	
-		$gatherData = @file_get_contents("http://".$core->framework->server->nodeData('sftp_ip').":8003/gameservers/".$core->framework->server->getData('gsd_id'), 0, $context);
+		$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id'), 0, $context);
 		
 		$data = json_decode($gatherData, true);
 		
 			if(!array_key_exists('pid', $data))
 				exit("Unable to get PID. Server has been started.");
 		
-			$core->framework->ssh->generateSSH2Connection(array(
-				'ip' => $core->framework->server->nodeData('sftp_ip'),
-				'user' => $core->framework->server->nodeData('username')
+			$core->ssh->generateSSH2Connection(array(
+				'ip' => $core->server->nodeData('sftp_ip'),
+				'user' => $core->server->nodeData('username')
 			), array(
-				'pub' => $core->framework->server->nodeData('ssh_pub'),
-				'priv' => $core->framework->server->nodeData('ssh_priv'),
-				'secret' => $core->framework->server->nodeData('ssh_secret'),
-				'secret_iv' => $core->framework->server->nodeData('ssh_secret_iv')
-			))->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->framework->server->getData('cpu_limit').' -d');
+				'pub' => $core->server->nodeData('ssh_pub'),
+				'priv' => $core->server->nodeData('ssh_priv'),
+				'secret' => $core->server->nodeData('ssh_secret'),
+				'secret_iv' => $core->server->nodeData('ssh_secret_iv')
+			))->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->server->getData('cpu_limit').' -d');
 					
 	}
 	
