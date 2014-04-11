@@ -19,21 +19,21 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../../index.php');
 }
 
 /*
  * All Posted?
  */
 if(!isset($_POST['pack_del'], $_POST['pack_newdefault'], $_POST['conf_pack_hash'], $_POST['confirm_delete']))
-	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=missing_params');
+	$core->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=missing_params');
 
 /*
  * Does the Pack Delete Match?
  */
 if($_POST['pack_del'] != $_POST['conf_pack_hash'])
-	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=pack_hash_mismatch');
+	$core->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=pack_hash_mismatch');
 	
 $getPack = $mysql->prepare("SELECT * FROM `modpacks` WHERE `hash` = :hash");
 $getPack->execute(array(
@@ -41,7 +41,7 @@ $getPack->execute(array(
 ));
 
 	if($getPack->rowCount() != 1)
-		$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=pack_hash');
+		$core->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=pack_hash');
 	else
 		$pack = $getPack->fetch();
 
@@ -49,7 +49,7 @@ $getPack->execute(array(
  * Do we need a new default.
  */		
 if($pack['default'] == 1 && !isset($_POST['pack_newdefault']) || $_POST['pack_newdefault'] == 'no-continue')
-	$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=no_new_default');
+	$core->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=no_new_default');
 	
 	if($pack['default'] == 1){
 	
@@ -62,7 +62,7 @@ if($pack['default'] == 1 && !isset($_POST['pack_newdefault']) || $_POST['pack_ne
 		));
 		
 		if($checkHash->rowCount() != 1)
-			$core->framework->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=new_default_noexist');
+			$core->page->redirect('../../edit.php?mid='.$_POST['pack_del'].'&error=pack_delete&disp=new_default_noexist');
 		
 	}
 
@@ -85,7 +85,7 @@ $deletePack->execute(array(
  /*
   * Delete Modpack from Server
   */
- if(file_exists($core->framework->settings->get('modpack_dir').$_POST['pack_del'].'.zip') && is_readable($core->framework->settings->get('modpack_dir').$_POST['pack_del'].'.zip'))
- 	unlink($core->framework->settings->get('modpack_dir').$_POST['pack_del'].'.zip');
+ if(file_exists($core->settings->get('modpack_dir').$_POST['pack_del'].'.zip') && is_readable($core->settings->get('modpack_dir').$_POST['pack_del'].'.zip'))
+ 	unlink($core->settings->get('modpack_dir').$_POST['pack_del'].'.zip');
  	
- $core->framework->page->redirect('../../modpacks.php');
+ $core->page->redirect('../../modpacks.php');

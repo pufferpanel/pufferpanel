@@ -19,12 +19,12 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../../index.php');
 }
 
 //Cookies :3
-setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->framework->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
 /*
  * Set Values
@@ -35,13 +35,13 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
  * Are they all Posted?
  */
 if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
-	$core->framework->page->redirect('../../add.php?disp=missing_args&error=na');
+	$core->page->redirect('../../add.php?disp=missing_args&error=na');
 
 /*
  * Validate Server Name
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
-	$core->framework->page->redirect('../../add.php?error=server_name&disp=s_fail');
+	$core->page->redirect('../../add.php?error=server_name&disp=s_fail');
 	
 /*
  * Determine if Node (IP & Port) is Avaliable
@@ -54,7 +54,7 @@ $select->execute(array(
 if($select->rowCount() == 1)
 	$node = $select->fetch();
 else
-	$core->framework->page->redirect('../../add.php?error=node&disp=n_fail');
+	$core->page->redirect('../../add.php?error=node&disp=n_fail');
 
 	/*
 	 * Validate IP & Port
@@ -63,25 +63,25 @@ else
 	$ports = json_decode($node['ports'], true);
 
 	if(!array_key_exists($_POST['server_ip'], $ips))
-		$core->framework->page->redirect('../../add.php?error=server_ip&disp=ip_fail');
+		$core->page->redirect('../../add.php?error=server_ip&disp=ip_fail');
 		
 	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-		$core->framework->page->redirect('../../add.php?error=server_port&disp=port_fail');
+		$core->page->redirect('../../add.php?error=server_port&disp=port_fail');
 		
 	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
-		$core->framework->page->redirect('../../add.php?error=server_port&disp=port_full');
+		$core->page->redirect('../../add.php?error=server_port&disp=port_full');
 	
 /*
  * Validate Email
  */	
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	$core->framework->page->redirect('../../add.php?error=email&disp=e_fail');
+	$core->page->redirect('../../add.php?error=email&disp=e_fail');
 
 $selectEmail = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
 $selectEmail->execute(array($_POST['email']));
 
 	if($selectEmail->rowCount() != 1)
-		$core->framework->page->redirect('../../add.php?error=email&disp=a_fail');
+		$core->page->redirect('../../add.php?error=email&disp=a_fail');
 	else {
 		$oid = $selectEmail->fetch();
 		$oid = $oid['id'];
@@ -91,20 +91,20 @@ $selectEmail->execute(array($_POST['email']));
  * Validate Disk & Memory
  */	
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
-	$core->framework->page->redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
+	$core->page->redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
 
 /*
  * Validate CPU Limit
  */	
 if(!is_numeric($_POST['cpu_limit']))
-	$core->framework->page->redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
+	$core->page->redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
 
 
 /*
  * Validate SFTP Password
  */
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
-	$core->framework->page->redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');				
+	$core->page->redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');				
 
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
@@ -118,7 +118,7 @@ $selectPack->execute(array(
 ));
 
 	if($selectPack->rowCount() != 1)
-		$core->framework->page->redirect('../../add.php?error=modpack&disp=no_modpack');
+		$core->page->redirect('../../add.php?error=modpack&disp=no_modpack');
 	else
 		$pack = $selectPack->fetch();
 		
@@ -126,19 +126,19 @@ $selectPack->execute(array(
  * Modpack RAM Requirements
  */
 if($pack['min_ram'] > $_POST['alloc_mem'])
-	$core->framework->page->redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
+	$core->page->redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
 
 /*
  * Add Server to Database
  */
-$ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->framework->auth->keygen(5) : $_POST['server_name'].'_'.$core->framework->auth->keygen((11 - strlen($_POST['server_name'])));
+$ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->auth->keygen(5) : $_POST['server_name'].'_'.$core->auth->keygen((11 - strlen($_POST['server_name'])));
 
-$serverHash = $core->framework->auth->keygen(42);
+$serverHash = $core->auth->keygen(42);
 
 $add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
 	':hash' => $serverHash,
-	':gsd_secret' => $core->framework->auth->keygen(16).$core->framework->auth->keygen(16),
+	':gsd_secret' => $core->auth->keygen(16).$core->auth->keygen(16),
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
@@ -208,7 +208,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	 */
 	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
 	
-	$core->framework->ssh->generateSSH2Connection(array(
+	$core->ssh->generateSSH2Connection(array(
 		'ip' => $node['sftp_ip'],
 		'user' => $node['username']
 	), array(
@@ -226,15 +226,15 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		/*
 		 * Generate URL
 		 */
-		$packiv = $core->framework->auth->generate_iv();
-		$packEncryptedHash = $core->framework->auth->encrypt($pack['download_hash'], $packiv);
+		$packiv = $core->auth->generate_iv();
+		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
 		
-		$modpack_request = $core->framework->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
+		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
 	
 		/*
 		 * Execute Commands
 		 */
-		$core->framework->ssh->generateSSH2Connection(array(
+		$core->ssh->generateSSH2Connection(array(
 			'ip' => $node['sftp_ip'],
 			'user' => $node['username']
 		), array(
@@ -247,13 +247,13 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	/*
 	 * Send User Email
 	 */
-	$core->framework->email->buildEmail('admin_new_server', array(
+	$core->email->buildEmail('admin_new_server', array(
 	        'NAME' => $_POST['server_name'],
 	        'CONNECT' => $_POST['server_ip'].':'.$_POST['server_port'],
 	        'USER' => $ftpUser,
 	        'PASS' => $_POST['sftp_pass_2']
-	))->dispatch($_POST['email'], $core->framework->settings->get('company_name').' - New Server Added');
+	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 	
-	$core->framework->page->redirect('../../view.php?id='.$lastInsert);
+	$core->page->redirect('../../view.php?id='.$lastInsert);
 
 ?>

@@ -19,18 +19,18 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->framework->page->redirect('../../../../index.php');
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+	$core->page->redirect('../../../../index.php');
 }
 
 if(!isset($_POST['add_ports_node']))
-	$core->framework->page->redirect('../../list.php');
+	$core->page->redirect('../../list.php');
 
 if(!isset($_POST['add_ports'], $_POST['add_ports_ip']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
+	$core->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 	
 if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']))
-	$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
+	$core->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
 	
 $ports = explode(',', str_replace(" ", "", $_POST['add_ports']));
 
@@ -62,6 +62,6 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	':ips' => json_encode($saveips),
 	':ports' => json_encode($saveports)
 ));
-$core->framework->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
+$core->page->redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 
 ?>

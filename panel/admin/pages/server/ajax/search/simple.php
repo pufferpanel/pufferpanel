@@ -19,7 +19,7 @@
 session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
-if($core->framework->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->framework->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
 	exit('<div class="error-box round">Failed to Authenticate Account.</div>');
 }
 
@@ -107,7 +107,7 @@ if($_POST['field'] == 'owner_email'){
 		<tr>
 			<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
 			<td><a href="view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
-			<td><a href="../node/view.php?id='.$row['node'].'">'.$core->framework->settings->nodeName($row['node']).'</a></td>
+			<td><a href="../node/view.php?id='.$row['node'].'">'.$core->settings->nodeName($row['node']).'</a></td>
 			<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 			<td><a href="../account/view.php?id='.$row['owner_id'].'">'.$user['email'].'</a></td>
 			<td style="text-align:center;">'.$isActive.'</td>
