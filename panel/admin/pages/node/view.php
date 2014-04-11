@@ -142,6 +142,7 @@ $selectNode->execute(array(
 									<label for="name" class="control-label">GSD Secret Token</label>
 									<div>
 										<input type="text" readonly="readonly" value="<?php echo $node['gsd_secret']; ?>" class="form-control" />
+										<p><small>Please update your GSD configuration file and add this as a token that can connect and use it.</small></p>
 									</div>
 								</div>
 								<div class="form-group">
@@ -243,7 +244,7 @@ $selectNode->execute(array(
 									</div>
 									<div class="form-group">
 										<div>
-											<div class="alert alert-warning">Editing your username will require that you also update the account password below.</div>
+											<div class="alert alert-warning">Editing your username will require that you also update the account SSH keys below.</div>
 										</div>
 										<div class="checkbox">
 											<label>
@@ -272,7 +273,7 @@ $selectNode->execute(array(
 									<div class="form-group">
 										<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
 										<div>
-											<input type="text" name="ssh_priv_key" value="<?php echo $node['ssh_priv']; ?>" autocomplete="off" class="form-control" />
+											<input type="text" name="ssh_priv_key" value="<?php echo $node['ssh_priv']; ?>" class="form-control" autocomplete="off"/>
 										</div>
 									</div>
 									<div class="form-group">
