@@ -85,8 +85,7 @@ class GSD_Query extends dbConn {
 				"http" => array(
 					"method" => "GET",
 					"timeout" => 3,
-					'header'=> "X-Access-Token: ".$this->_nodeData['gsd_secret']."\r\n"
-						."Content-Length: ".strlen($data)."\r\n",
+					'header'=> "X-Access-Token: ".$this->_nodeData['gsd_secret']
 				)
 			));
 			$this->gatherData = @file_get_contents("http://".$this->_nodeData['sftp_ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
