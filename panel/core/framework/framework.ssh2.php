@@ -17,18 +17,64 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class ssh extends auth {
+class ssh extends getSettings {
 
 	private $ssh2_connection;
 	private $connectFailed;
 	
-	public function generateSSH2Connection($vars, $pubkey = null, $return = false){
+	public function __construct() {
+	
+		$this->mysql = parent::getConnection();
+		
+	}
+	
+	public function generateSSH2Connection($id, $usekey = false, $return = false){
+	
+		/*
+		 * Do some Stuff
+		 */
+		if($usekey === true && $this->get('use_ssh_keys') == 1){
+							
+			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
+			$query->execute(array(
+				':id' => $id
+			));
+			
+				if($query->rowCount() == 1) {
+					$this->node = $query->fetch();
+				else
+					exit('SQL Error encountered in SSH2 trying to select node (2).');
+		
+		}else{
+		
+			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id");
+			$query->execute(array(
+				':id' => $id
+			));
+			
+				if($query->rowCount() == 1) {
+					$this->user = $query->fetch();
+				else
+					exit('SQL Error encountered in SSH2 trying to select user.');
+				
+			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
+			$query->execute(array(
+				':id' => $this->user['node']
+			));
+			
+				if($query->rowCount() == 1) {
+					$this->node = $query->fetch();
+				else
+					exit('SQL Error encountered in SSH2 trying to select node.');
+			
+		
+		}
 	
 		/*
 		 * Add check to ensure IP can be conencted to, otherwise this function runs like a dead turtle.
 		 */
 		$this->connectFailed = false;	
-		if(!$fp = @fsockopen($vars['ip'], 22, $errString, $errCode, 2))
+		if(!$fp = @fsockopen($this->node['sftp_ip'], 22, $errString, $errCode, 2))
 			$this->connectFailed = true;
 		
 		/*
@@ -36,16 +82,45 @@ class ssh extends auth {
 		 */
 		if($this->connectFailed === false){
 		
-			$this->ssh2_connection = ssh2_connect($vars['ip'], 22);	
+			$this->ssh2_connection = ssh2_connect($this->node['sftp_ip'], 22);	
 		
-				if(!empty($pubkey))
-					if(!ssh2_auth_pubkey_file($this->ssh2_connection, $vars['user'], $pubkey['pub'], $pubkey['priv'], $this->decrypt($pubkey['secret'], $pubkey['secret_iv'])))
+				if($usekey === true && $this->get('use_ssh_keys') == 1){
+				
+					if(!ssh2_auth_pubkey_file(
+						$this->ssh2_connection,
+						$this->node['username'],
+						$this->node['ssh_pub'],
+						$this->node['ssh_priv'],
+						$this->decrypt($this->node['ssh_secret'], $this->node['ssh_secret_iv'])
+					))
 						$this->connectFailed = true;
 					else
 						null;
-				else
-					if(!ssh2_auth_password($this->ssh2_connection, $vars['user'], $this->decrypt($vars['pass'], $vars['iv'])))
-						$this->connectFailed = true;
+						
+				}else {
+				
+					if($usekey === true){
+					
+						if(!ssh2_auth_password(
+							$this->ssh2_connection,
+							$this->node['username'],
+							$this->decrypt($this->node['ssh_secret'], $this->node['ssh_secret_iv'])
+						))
+							$this->connectFailed = true;
+							
+					}else{
+					
+						if(!ssh2_auth_password(
+							$this->ssh2_connection,
+							$this->user['ftp_user'],
+							$this->decrypt($this->user['ftp_pass'], $this->user['encryption_iv'])
+						))
+							$this->connectFailed = true;
+					
+					}
+					
+				}
+						
 						
 			if($return === false)
 				return $this;

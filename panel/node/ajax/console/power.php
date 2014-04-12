@@ -24,12 +24,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	/*
 	 * Verify that Server Port is set Correctly
 	 */
-	$connection = $core->ssh->generateSSH2Connection(array(
-		'ip' => $core->server->nodeData('sftp_ip'),
-		'user' => $core->server->getData('ftp_user'),
-		'pass' => $core->server->getData('ftp_pass'),
-		'iv' => $core->server->getData('encryption_iv')
-	), null, true);
+	$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
 	
 	$sftp = ssh2_sftp($connection);
 	
@@ -186,15 +181,7 @@ motd=A Minecraft Server';
 			if(!array_key_exists('pid', $data))
 				exit("Unable to get PID. Server has been started.");
 		
-			$core->ssh->generateSSH2Connection(array(
-				'ip' => $core->server->nodeData('sftp_ip'),
-				'user' => $core->server->nodeData('username')
-			), array(
-				'pub' => $core->server->nodeData('ssh_pub'),
-				'priv' => $core->server->nodeData('ssh_priv'),
-				'secret' => $core->server->nodeData('ssh_secret'),
-				'secret_iv' => $core->server->nodeData('ssh_secret_iv')
-			))->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->server->getData('cpu_limit').' -d');
+			$core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->server->getData('cpu_limit').' -d');
 					
 	}
 	

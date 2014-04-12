@@ -60,7 +60,8 @@ if(file_exists('../install.lock'))
 					            ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
 					            ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
 					            ('assets_url', :aurl),
-					            ('modpack_dir',:mpackdir)");
+					            ('modpack_dir',:mpackdir),
+					            ('use_ssh_keys', 1)");
 					        
 					        $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
 					        $prepare->execute(array(

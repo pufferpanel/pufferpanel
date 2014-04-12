@@ -56,15 +56,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		/*
 		 * Connect and Run Function
 		 */
-		$callbackData = $core->ssh->generateSSH2Connection(array(
-			'ip' => $core->server->nodeData('sftp_ip'),
-			'user' => $core->server->nodeData('username')
-		), array(
-			'pub' => $core->server->nodeData('ssh_pub'),
-			'priv' => $core->server->nodeData('ssh_priv'),
-			'secret' => $core->server->nodeData('ssh_secret'),
-			'secret_iv' => $core->server->nodeData('ssh_secret_iv')
-		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh '.$core->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
+		$callbackData = $core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh '.$core->server->getData('ftp_user').' "'.$modpack_request.'" "'.$pack['hash'].'.zip"', true);
 		
 		if(!empty($callbackData))
 			echo $callbackData;

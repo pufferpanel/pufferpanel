@@ -208,15 +208,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	 */
 	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
 	
-	$core->ssh->generateSSH2Connection(array(
-		'ip' => $node['sftp_ip'],
-		'user' => $node['username']
-	), array(
-		'pub' => $node['ssh_pub'],
-		'priv' => $node['ssh_priv'],
-		'secret' => $node['ssh_secret'],
-		'secret_iv' => $node['ssh_secret_iv']
-	))->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
+	$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
 	
 	/*
@@ -234,15 +226,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		/*
 		 * Execute Commands
 		 */
-		$core->ssh->generateSSH2Connection(array(
-			'ip' => $node['sftp_ip'],
-			'user' => $node['username']
-		), array(
-			'pub' => $node['ssh_pub'],
-			'priv' => $node['ssh_priv'],
-			'secret' => $node['ssh_secret'],
-			'secret_iv' => $node['ssh_secret_iv']
-		))->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
+		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
 
 	/*
 	 * Send User Email

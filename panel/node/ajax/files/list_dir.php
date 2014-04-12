@@ -50,12 +50,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
         
     $_POST['dir'] = $_POST['dir'].'/';
 	
-	$connection = $core->ssh->generateSSH2Connection(array(
-		'ip' => $core->server->nodeData('sftp_ip'),
-		'user' => $core->server->getData('ftp_user'),
-		'pass' => $core->server->getData('ftp_pass'),
-		'iv' => $core->server->getData('encryption_iv')
-	), null, true);
+	$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
 	
 	$sftp = ssh2_sftp($connection);
 	
@@ -151,12 +146,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
     
 }else{
 	
-	$connection = $core->ssh->generateSSH2Connection(array(
-		'ip' => $core->server->nodeData('sftp_ip'),
-		'user' => $core->server->getData('ftp_user'),
-		'pass' => $core->server->getData('ftp_pass'),
-		'iv' => $core->server->getData('encryption_iv')
-	), null, true);
+	$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
 	
 	$sftp = @ssh2_sftp($connection);
 	

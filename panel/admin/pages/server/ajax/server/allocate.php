@@ -52,14 +52,6 @@ $selectNode->execute(array($server['node']));
 /*
  * Update Disk Space 
  */
-$core->ssh->generateSSH2Connection(array(
-	'ip' => $node['sftp_ip'],
-	'user' => $node['username']
-), array(
-	'pub' => $node['ssh_pub'],
-	'priv' => $node['ssh_priv'],
-	'secret' => $node['ssh_secret'],
-	'secret_iv' => $node['ssh_secret_iv']
-))->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
+$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
 
 $core->page->redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');

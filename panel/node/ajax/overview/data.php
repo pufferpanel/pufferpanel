@@ -28,15 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			/*
 			 * Run Command
 			 */
-			$getCommandData = $core->ssh->generateSSH2Connection(array(
-				'ip' => $core->server->nodeData('sftp_ip'),
-				'user' => $core->server->nodeData('username')
-			), array(
-				'pub' => $core->server->nodeData('ssh_pub'),
-				'priv' => $core->server->nodeData('ssh_priv'),
-				'secret' => $core->server->nodeData('ssh_secret'),
-				'secret_iv' => $core->server->nodeData('ssh_secret_iv')
-			))->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
+			$getCommandData = $core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
 						
 			if($getCommandData === false)
 				exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
