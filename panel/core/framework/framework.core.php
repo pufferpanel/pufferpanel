@@ -62,7 +62,7 @@ set_exception_handler('pdo_exception_handler');
  */
 $core->settings = new getSettings();
 $core->auth = new auth();
-$core->ssh = new ssh();
+$core->ssh = new ssh($core->settings->get('use_ssh_keys'));
 $core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
 $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
 $core->email = new tplMail($core->settings);

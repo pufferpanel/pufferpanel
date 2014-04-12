@@ -17,14 +17,15 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class ssh extends getSettings {
+class ssh extends dbConn {
 
 	private $ssh2_connection;
 	private $connectFailed;
 	
-	public function __construct() {
+	public function __construct($settingValue) {
 	
 		$this->mysql = parent::getConnection();
+		$this->useSSHKeys = $settingValue;
 		
 	}
 	
@@ -33,14 +34,14 @@ class ssh extends getSettings {
 		/*
 		 * Do some Stuff
 		 */
-		if($usekey === true && $this->get('use_ssh_keys') == 1){
+		if($usekey === true && $this->useSSHKeys == 1){
 							
 			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
 			$query->execute(array(
 				':id' => $id
 			));
 			
-				if($query->rowCount() == 1) {
+				if($query->rowCount() == 1)
 					$this->node = $query->fetch();
 				else
 					exit('SQL Error encountered in SSH2 trying to select node (2).');
@@ -52,7 +53,7 @@ class ssh extends getSettings {
 				':id' => $id
 			));
 			
-				if($query->rowCount() == 1) {
+				if($query->rowCount() == 1)
 					$this->user = $query->fetch();
 				else
 					exit('SQL Error encountered in SSH2 trying to select user.');
@@ -62,7 +63,7 @@ class ssh extends getSettings {
 				':id' => $this->user['node']
 			));
 			
-				if($query->rowCount() == 1) {
+				if($query->rowCount() == 1)
 					$this->node = $query->fetch();
 				else
 					exit('SQL Error encountered in SSH2 trying to select node.');
@@ -84,7 +85,7 @@ class ssh extends getSettings {
 		
 			$this->ssh2_connection = ssh2_connect($this->node['sftp_ip'], 22);	
 		
-				if($usekey === true && $this->get('use_ssh_keys') == 1){
+				if($usekey === true && $this->useSSHKeys == 1){
 				
 					if(!ssh2_auth_pubkey_file(
 						$this->ssh2_connection,

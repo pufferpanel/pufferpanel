@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
  
-class getSettings extends server {
+class getSettings extends dbConn {
 
 	public function __construct()
 		{
