@@ -188,6 +188,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
         "plugin" => "minecraft"
 	);
 	$data = http_build_query($data);
+	$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 	
 	$context_options = array (
 		'http' => array (
