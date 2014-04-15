@@ -6,7 +6,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$core->page->redirect('../../../index.php');
 }
 	
-if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['nid']))
+if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2']))
 	$core->page->redirect('../../settings.php');
 	
 if(strlen($_POST['sftp_pass']) < 8)
@@ -15,26 +15,6 @@ if(strlen($_POST['sftp_pass']) < 8)
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
 	$core->page->redirect('../../settings.php?error=sftp_pass|sftp_pass_2&disp=pass_match');
 
-/* 
- * Select Node, User, & Server Information
- */
-$select = $mysql->prepare("SELECT `ftp_user`, `name`, `owner_id`, `node` FROM `servers` WHERE `id` = :id");
-$select->execute(array(
-	':id' => $core->server->getData('id')
-));
-    $server = $select->fetch();
-
-$selectUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id` = :id");
-$selectUser->execute(array(
-	':id' => $server['owner_id']
-));
-    $user = $selectUser->fetch();
-
-$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
-$selectNode->execute(array(
-	':id' => $server['node']
-));
-    $node = $selectNode->fetch();
 
 /*
  * Update Server SFTP Information
@@ -60,8 +40,8 @@ if(isset($_POST['email_user'])){
     
     $core->email->buildEmail('admin_new_sftppass', array(
         'PASS' => $_POST['sftp_pass'],
-        'SERVER' => $server['name']
-    ))->dispatch($user['email'], $core->settings->get('company_name').' - Your SFTP Password was Reset');
+        'SERVER' => $core->server->getData('name')
+    ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Your SFTP Password was Reset');
     
 }
 
