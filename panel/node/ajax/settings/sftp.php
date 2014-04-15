@@ -39,7 +39,7 @@ $selectNode->execute(array(
 /*
  * Update Server SFTP Information
  */
-$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+$iv = $core->auth->generate_iv();
 $pass = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
 $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
@@ -51,7 +51,7 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
 /*
  * Connect to Node and Execute Password Update
  */
-$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"', false);
+$core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"', false);
 
 /*
  * Send the User an Email
