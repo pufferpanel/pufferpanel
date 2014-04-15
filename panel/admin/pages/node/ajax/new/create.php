@@ -17,7 +17,6 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-error_reporting('E_ALL');
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
