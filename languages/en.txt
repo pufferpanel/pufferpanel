@@ -1,0 +1,11 @@
+account.login.login_h1, Login to PufferPanel
+string.email, Email
+string.password, Password
+string.login, Login
+string.reset_password, Reset Password
+string.spam_protection, Spam Protection
+reset.reset_h1, Reset Your Password
+footer.license, PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.version, Running Version %s distributed by <a href="http://kelp.in/">Kelpin' Systems</a>.
+footer.generated, Page Generated in %s seconds.
+footer.queries, Executed %s database queries.
