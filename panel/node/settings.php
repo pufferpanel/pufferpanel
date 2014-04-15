@@ -23,7 +23,11 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 	$core->page->redirect($core->settings->get('master_url').'index.php');
 	exit();
+	
 }
+
+if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
+	exit($core->auth->keygen(rand(12, 18)));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,70 +58,119 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				</div>
 			</div>
 			<div class="col-9">
-				<h3 class="nopad">Server Modpack Management</h3><hr />
-				<form action="#" method="post" id="updateModpack">
-					<fieldset>
-						<div class="row" id="installingModpack" style="display:none;"></div>
-						<div class="row">
-							<div class="well well-sm">
-								<?php
-									$packs = $mysql->prepare("SELECT hash, name, version, deleted FROM `modpacks` WHERE `hash` = :hash");
-									$packs->execute(array(
-										':hash' => $core->server->getData('modpack')
-									));
-									
-									$pack = $packs->fetch();
-									$isDeleted = ($pack['deleted'] == 1) ? '[DELETED] ' : null;
-								?>
-							 	<small>Current Modpack: <strong><?php echo $isDeleted.$pack['name'].' ('.$pack['version'].')'; ?></strong></small>
-							</div>
-						</div>
-						<div class="form-group col-8 nopad">
-							<div>
-								<select class="form-control" name="new_pack">
-									<option disabled="disabled">-- Select a Modpack</option>
-									<?php
-										$packs = $mysql->prepare("SELECT hash, name, version, server_jar FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
-										$packs->execute(array(
-											':ram' => $core->server->getData('max_ram')
-										));
-										
-										while($row = $packs->fetch()){
+				<ul class="nav nav-tabs" id="config_tabs">
+					<li class="active"><a href="#server_sett" data-toggle="tab">Modpacks</a></li>
+					<li class=""><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="server_sett">
+					<br>
+					<h3 class="nopad">Server Modpack Management</h3><hr />
+						<form action="#" method="post" id="updateModpack">
+							<fieldset>
+								<div class="row" id="installingModpack" style="display:none;"></div>
+								<div class="row">
+									<div class="well well-sm">
+										<?php
+											$packs = $mysql->prepare("SELECT hash, name, version, deleted FROM `modpacks` WHERE `hash` = :hash");
+											$packs->execute(array(
+												':hash' => $core->server->getData('modpack')
+											));
 											
-											if($row['hash'] != $pack['hash'])
-												echo '<option value="'.$row['hash'].'">'.$row['name'].' ('.$row['version'].')</option>';
-											else
-												echo '<option disabled="disabled">'.$row['name'].' ('.$row['version'].')</option>';
-										}
-									?>
-								</select>
-							</div>
-						</div>
-						<div class="form-group col-4 nopad-right">
-							<div>
-								<input type="submit" id="install_modpack_submit" value="Install Modpack" class="btn btn-primary" />
-							</div>
-						</div>
-					</fieldset>
-				</form>
-				<div class="row">
-					<h3>Server .jar Name</h3><hr />
-						<div class="well">
-							<form action="ajax/settings/jarname.php" method="post">
-								<fieldset>
-								<div class="form-group">
-									<label for="jarfile" class="control-label">Jarfile Name</label>
-									<div class="input-group">
-										<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->server->getData('server_jar')); ?>"/>
-										<span class="input-group-addon">.jar</span>
-										<span class="input-group-btn">
-											<button class="btn btn-primary">Update Name</button>
-										</span>
+											$pack = $packs->fetch();
+											$isDeleted = ($pack['deleted'] == 1) ? '[DELETED] ' : null;
+										?>
+										<small>Current Modpack: <strong><?php echo $isDeleted.$pack['name'].' ('.$pack['version'].')'; ?></strong></small>
 									</div>
 								</div>
-								</fieldset>
-							</form>
+								<div class="form-group col-8 nopad">
+									<div>
+										<select class="form-control" name="new_pack">
+											<option disabled="disabled">-- Select a Modpack</option>
+											<?php
+												$packs = $mysql->prepare("SELECT hash, name, version, server_jar FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
+												$packs->execute(array(
+													':ram' => $core->server->getData('max_ram')
+												));
+												
+												while($row = $packs->fetch()){
+													
+													if($row['hash'] != $pack['hash'])
+														echo '<option value="'.$row['hash'].'">'.$row['name'].' ('.$row['version'].')</option>';
+													else
+														echo '<option disabled="disabled">'.$row['name'].' ('.$row['version'].')</option>';
+												}
+											?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-4 nopad-right">
+									<div>
+										<input type="submit" id="install_modpack_submit" value="Install Modpack" class="btn btn-primary" />
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<div class="row">
+							<h3>Server .jar Name</h3><hr />
+								<div class="well">
+									<form action="ajax/settings/jarname.php" method="post">
+										<fieldset>
+										<div class="form-group">
+											<label for="jarfile" class="control-label">Jarfile Name</label>
+											<div class="input-group">
+												<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->server->getData('server_jar')); ?>"/>
+												<span class="input-group-addon">.jar</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary">Update Name</button>
+												</span>
+											</div>
+										</div>
+										</fieldset>
+									</form>
+								</div>
 						</div>
+					</div>
+					<div class="tab-pane" id="sftp_sett">
+						<h3>SFTP Settings</h3><hr />
+						<form action="ajax/settings/sftp.php" method="post">
+							<fieldset>
+								<div class="form-group">
+									<label for="sftp_host" class="control-label">Host</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $core->server->nodeData('sftp_ip'); ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="sftp_user" class="control-label">Username</label>
+									<div>
+										<input type="text" readonly="readonly" value="<?php echo $core->server->getData('ftp_user'); ?>" class="form-control" />
+									</div>
+								</div>
+								<div class="well">
+									<div class="row">
+										<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+										<div class="form-group col-6 nopad">
+											<label for="sftp_pass" class="control-label">New Password</label>
+											<div class="input-group">
+												<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+												<span class="input-group-btn">
+													<button class="btn btn-success" id="gen_pass_bttn" type="button">Generate</button>
+												</span>
+											</div>
+										</div>
+										<div class="form-group col-6 nopad-right">
+											<label for="sftp_pass_2" class="control-label">New Password (Again)</label>
+											<div>
+												<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
+							</fieldset>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -145,6 +198,20 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			}else
 				alert('You can not use a disabled form input as a modpack!');
 		});
+		$("#gen_pass_bttn").click(function(){
+				$.ajax({
+					type: "GET",
+					url: "settings.php?do=generate_password",
+					success: function(data) {
+						$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+						$("#gen_pass").slideDown();
+						$('input[name="sftp_pass"]').val(data);
+						$('input[name="sftp_pass_2"]').val(data);
+						return false;
+					}
+				});
+				return false;
+			});
 	</script>
 </body>
 </html>
