@@ -176,7 +176,6 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	$data = array(
 		"name" => $serverHash,
         "user" => $ftpUser,
-        "consoleport" => ($_POST['server_port'] + 1),
         "overide_command_line" => "",
         "path" => $node['server_dir'].$ftpUser."/server/",
         "variables" => array(
@@ -187,7 +186,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
         "gamehost" => "",
         "plugin" => "minecraft"
 	);
-	$data = http_build_query($data);
+
 	$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 	
 	$context_options = array (
@@ -200,7 +199,6 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	);
 	
 	$context = stream_context_create($context_options);
-	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers/', 'r', false, $context);
 	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers', 'r', false, $context);
 	$content = stream_get_contents($fp);
 	fclose($fp);
