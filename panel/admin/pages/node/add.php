@@ -160,6 +160,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									</div>
 								</div>
 							</div>
+							<p class="text-muted"><small>If you would prefer to use password based SSH authentication please follow the instructions found <a href="https://github.com/DaneEveritt/PufferPanel/wiki/Using-password-based-SSH-authentication">here</a>.</small></p>
 						</div>
 						<div class="well">
 							<div class="row">
