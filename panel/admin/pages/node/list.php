@@ -54,20 +54,22 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					<thead>
 						<tr>
 							<th>Node Name</th>
+							<th>GSD</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php
 						
-							$find = $mysql->prepare("SELECT `id`, `node` FROM `nodes`");
+							$find = $mysql->prepare("SELECT `id`, `node`, `node_ip` FROM `nodes`");
 							$find->execute(array());
 							
 							while($row = $find->fetch())
 								{
 								
 									echo '
-									<tr>
+									<tr class="dynUpdate" id="'.$row['node_ip'].'">
 										<td><a href="view.php?id='.$row['id'].'">'.$row['node'].'</a></td>
+										<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i> </span></td>
 									</tr>
 									';
 								
@@ -82,5 +84,21 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			<?php include('../../../assets/include/footer.php'); ?>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+				$(".dynUpdate").each(function(index, data){
+				    var connection = $(this).attr("id");
+				    var element = $(this);
+				    $.ajax({
+				    	type: "POST",
+				    	url: "ajax/get_status.php",
+				    	data: { ip: connection },
+				      		success: function(data) {
+				    			element.find(".applyUpdate").html(data);
+				     		}
+				    });
+				});
+		});
+	</script>
 </body>
 </html>
