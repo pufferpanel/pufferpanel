@@ -25,25 +25,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit();
 }
 
-/*
- * Select Servers Information
- */
-$selectServers = $mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id ORDER BY `active` DESC");
-$selectServers->execute(array(
-	':id' => $core->server->getData('id')
-));
-$server = $selectServers->fetch();
-
-$select = $mysql->prepare("SELECT * FROM `users` WHERE `id` = :oid");
-$select->execute(array(
-	':oid' => $server['owner_id']
-));
-
-$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :name");
-$selectData->execute(array(
-	':name' => $server['node']
-));
-$node = $selectData->fetch();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -154,13 +135,13 @@ $node = $selectData->fetch();
 								<div class="form-group">
 									<label for="sftp_host" class="control-label">Host</label>
 									<div>
-										<input type="text" readonly="readonly" value="<?php echo $node['sftp_ip']; ?>" class="form-control" />
+										<input type="text" readonly="readonly" value="<?php echo $core->server->nodeData('sftp_ip'); ?>" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="sftp_user" class="control-label">Username</label>
 									<div>
-										<input type="text" readonly="readonly" value="<?php echo $server['ftp_user']; ?>" class="form-control" />
+										<input type="text" readonly="readonly" value="<?php echo core->server->getData('ftp_user'); ?>" class="form-control" />
 									</div>
 								</div>
 								<div class="well">
