@@ -95,7 +95,7 @@ foreach($lines as $id => $values)
 				/*
 				 * Validate Port Spacing
 				 */
-				if(!array_key_exists($l - 1, $IPP[$ip]) && !array_key_exists($l + 1, $IPP[$ip]))
+				if(!array_key_exists($l, $IPP[$ip]))
 					$IPP[$ip][$ports[$l]] = 1;
 			
 			}
