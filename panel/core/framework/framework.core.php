@@ -37,12 +37,12 @@ require_once('lib/password.lib.php');
  */
 require_once('framework.database.connect.php');
 require_once('framework.auth.php');
-require_once('framework.ssh2.php');
 require_once('framework.page.php');
 require_once('framework.files.php');
-require_once('framework.settings.php');
 require_once('framework.user.php');
 require_once('framework.server.php');
+require_once('framework.settings.php');
+require_once('framework.ssh2.php');
 require_once('framework.log.php');
 require_once('framework.query.php');
 
