@@ -20,7 +20,7 @@ if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
  * Update Server SFTP Information
  */
 $iv = $core->auth->generate_iv();
-$pass = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+$pass = $core->auth->encrypt($_POST['sftp_pass'], $iv)
 
 $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
     ':sid' => $core->server->getData('id'),
