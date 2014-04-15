@@ -200,6 +200,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	
 	$context = stream_context_create($context_options);
 	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers/', 'r', false, $context);
+	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers', 'r', false, $context);
 	$content = stream_get_contents($fp);
 	fclose($fp);
 	
