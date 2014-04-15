@@ -116,7 +116,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	</div>
 	<script type="text/javascript">
 	$(window).load(function(){
-		var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:<?php echo $core->server->getData('server_port') + 1; ?>');
+		var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:<?php echo $core->server->getData('server_port'); ?>');
 		$.ajaxSetup({
 		        error: function(jqXHR, exception) {
 		            if (jqXHR.status === 0) {
@@ -142,7 +142,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			var ccmd = $("#ccmd").val();
 			$.ajax({
 				type: "POST",
-				url: 'http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8003/gameservers/<?php echo $core->server->getData('gsd_id'); ?>/console',
+				url: 'http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8031/<?php echo $core->server->getData('gsd_id'); ?>',
 				timeout: 5000,
 				data: { command: ccmd },
 				error: function(jqXHR, textStatus, errorThrown) {
