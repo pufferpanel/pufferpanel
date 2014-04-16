@@ -112,9 +112,6 @@ foreach($lines as $id => $values)
 $IPA = json_encode($IPA);
 $IPP = json_encode($IPP);
 
-$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-$_POST['ssh_pass'] = openssl_encrypt($_POST['ssh_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
-
 $create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :suser, :gsd_secret, :ssh_pub, :ssh_priv, :ssh_secret, :ssh_secret_iv, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
@@ -125,8 +122,8 @@ $create->execute(array(
 	':gsd_secret' => $core->auth->keygen(16).$core->auth->keygen(16),
 	':ssh_pub' => $_POST['ssh_pub_key'],
 	':ssh_priv' => $_POST['ssh_priv_key'],
-	':ssh_secret' => $rsa_secret,
-	':ssh_secret_iv' => $rsa_secret_iv,
+	':ssh_secret' => $ssh_secret,
+	':ssh_secret_iv' => $ssh_secret_iv,
 	':ips' => $IPA,
 	':ports' => $IPP
 ));

@@ -187,21 +187,29 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
         "plugin" => "minecraft"
 	);
 
-	$data = json_encode($data, JSON_UNESCAPED_SLASHES);
-	
-	$context_options = array (
-		'http' => array (
-			'method' => 'POST',
-			'header'=> "X-Access-Token: ".$node['gsd_secret']."\r\n"
-				."Content-Length: ".strlen($data)."\r\n",
-			'content' => $data
-		)
-	);
-	
-	$context = stream_context_create($context_options);
-	$fp = fopen('http://'.$node['sftp_ip'].':8003/gameservers', 'r', false, $context);
-	$content = stream_get_contents($fp);
-	fclose($fp);
+	$data = json_encode($data);
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://'.$node['sftp_ip'].':8003/gameservers');
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+	    'X-Access-Token: '.$node['gsd_secret']
+	));
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); 
+	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "settings=".$data);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$content = json_decode(curl_exec($ch), true);
+	curl_close($ch);
+
+	/*
+	 * Update MySQL
+	 */
+	$update = $mysql->prepare("UPDATE `servers` SET `gsd_id` = :gsdid WHERE `hash` = :hash");
+	$update->execute(array(
+		':gsdid' => $content['id'],
+		':hash' => $serverHash
+	));
 	
 	/*
 	 * Create the User
@@ -211,23 +219,23 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
 	
-	/*
-	 * Install Modpack
-	 */
-	
-		/*
-		 * Generate URL
-		 */
-		$packiv = $core->auth->generate_iv();
-		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
-		
-		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
-	
-		/*
-		 * Execute Commands
-		 */
-		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
-
+//	/*
+//	 * Install Modpack
+//	 */
+//	
+//		/*
+//		 * Generate URL
+//		 */
+//		$packiv = $core->auth->generate_iv();
+//		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
+//		
+//		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
+//	
+//		/*
+//		 * Execute Commands
+//		 */
+//		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
+//
 	/*
 	 * Send User Email
 	 */

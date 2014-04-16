@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class ssh extends dbConn {
+class ssh extends auth {
 
 	private $ssh2_connection;
 	private $connectFailed;
@@ -32,9 +32,9 @@ class ssh extends dbConn {
 	public function generateSSH2Connection($id, $usekey = false, $return = false){
 	
 		/*
-		 * Do some Stuff
+		 *Connect to Node or Connect to User?
 		 */
-		if($usekey === true && $this->useSSHKeys == 1){
+		if($usekey === true){
 							
 			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
 			$query->execute(array(
@@ -57,17 +57,6 @@ class ssh extends dbConn {
 					$this->user = $query->fetch();
 				else
 					exit('SQL Error encountered in SSH2 trying to select user.');
-				
-			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
-			$query->execute(array(
-				':id' => $this->user['node']
-			));
-			
-				if($query->rowCount() == 1)
-					$this->node = $query->fetch();
-				else
-					exit('SQL Error encountered in SSH2 trying to select node.');
-			
 		
 		}
 	

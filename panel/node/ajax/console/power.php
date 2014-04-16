@@ -20,13 +20,6 @@ session_start();
 require_once('../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
-
-	/*
-	 * Verify that Server Port is set Correctly
-	 */
-	$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
-	
-	$sftp = ssh2_sftp($connection);
 	
 	/*
 	 * Open Stream for Reading/Writing
@@ -38,6 +31,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$context = stream_context_create(array(
 		"http" => array(
 			"method" => "GET",
+			"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
 			"timeout" => 3
 		)
 	));
@@ -90,7 +84,9 @@ motd=A Minecraft Server';
 			$data = array("contents" => $generateProperties);
 			$curl = curl_init($url);
 			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
+			    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+			));
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 			$response = curl_exec($curl);
@@ -140,7 +136,9 @@ motd=A Minecraft Server';
 					$data = array("contents" => $newContents);
 					$curl = curl_init($url);
 					curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-					curl_setopt($curl, CURLOPT_HEADER, false);
+					curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
+					    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+					));
 					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 					$response = curl_exec($curl);
