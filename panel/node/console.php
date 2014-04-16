@@ -60,6 +60,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				<div class="col-12">
 					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
 				</div>
+				<div id="box"></div>
 				<div class="col-12">
 					<div class="alert alert-danger text_highlighted" style="display:none;margin: 15px 0 -5px 0;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
 				</div>
@@ -116,7 +117,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	</div>
 	<script type="text/javascript">
 	$(window).load(function(){
-		var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:<?php echo $core->server->getData('server_port'); ?>');
+		var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8031/<?php echo $core->server->getData('gsd_id'); ?>');
 		$.ajaxSetup({
 		        error: function(jqXHR, exception) {
 		            if (jqXHR.status === 0) {

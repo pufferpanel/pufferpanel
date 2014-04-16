@@ -57,9 +57,18 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			<div class="col-9">
 				<div class="col-12">
 					<h3 class="nopad">Stats Overview</h3><hr />
-					<div id="server_players">
-						<p id="server_players_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
-					</div>
+					<h5>CPU Usage</h5>
+						<div class="progress">
+							<div class="progress-bar" id="cpu_bar" style="width:100%;max-width:100%;">Gathering...</div>
+						</div>
+					<h5>Memory Usage</h5>
+						<div class="progress">
+							<div class="progress-bar" id="memory_bar" style="width:100%; max-width:100%;">Gathering...</div>
+						</div>
+					<h5>Players Online</h5>
+						<span id="player_list">
+							<p class="text-muted">No players are currently online.</p>
+						</span>
 				</div>
 				<div class="col-12">
 					<h3>Disk Space Used</h3><hr />
@@ -81,6 +90,18 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	</div>
 	<script type="text/javascript">
 		$(window).load(function(){
+			
+			var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8031/<?php echo $core->server->getData('gsd_id'); ?>');
+			socket.on('process', function (data) {
+				$("#cpu_bar").css('width', data.process.cpu + '%');
+				$("#cpu_bar").html(data.process.cpu + '%');
+				$("#memory_bar").css('width', (data.process.memory / (1024 * 1024)).toFixed(0) + '%');
+				$("#memory_bar").html((data.process.memory / (1024 * 1024)).toFixed(0) + 'MB / <?php echo $core->server->getData('max_ram'); ?>MB');
+			});
+			socket.on('query', function (data) {
+				$("#live_console").val($("#live_console").val() + data.process.memory);
+				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+			});
 			$.ajax({
 				type: "POST",
 				url: "ajax/overview/data.php",
@@ -96,19 +117,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			$.ajax({
 				type: "POST",
 				url: "ajax/overview/data.php",
-				data: { command: 'players' },
-			  		success: function(data) {
-						$("#server_players_loading").slideUp("slow", function(){
-							$("#server_players").hide();
-							$("#server_players").html(data);
-							$("#server_players").slideDown("slow");
-							$("img[data-toggle='tooltip']").tooltip();			
-						});
-			 		}
-			});
-			$.ajax({
-				type: "POST",
-				url: "ajax/overview/data.php",
 				data: { command: 'stats' },
 			  		success: function(data) {
 						$("#server_stats_loading").slideUp("slow", function(){
@@ -118,38 +126,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						});
 			 		}
 			});
-			setInterval(function(){ 
-				$.ajax({
-					type: "POST",
-					url: "ajax/overview/raw_data.php",
-					data: { data: 'memory' },
-				  		success: function(data) {
-				  			var percentage = Math.floor( (data * 100) / <?php echo $core->server->getData('max_ram'); ?>) + '%';
-							$("#memory_bar").html(data + 'MB / <?php echo $core->server->getData('max_ram'); ?>MB');
-							$("#memory_bar").css('width', percentage);
-				 		}
-				});
-				$.ajax({
-					type: "POST",
-					url: "ajax/overview/raw_data.php",
-					data: { data: 'cpu' },
-				  		success: function(data) {
-				  			var cpu_percent = data + '%';
-							$("#cpu_bar").html(cpu_percent);
-							$("#cpu_bar").css('width', cpu_percent);
-				 		}
-				});
-				$.ajax({
-					type: "POST",
-					url: "ajax/overview/raw_data.php",
-					data: { data: 'players' },
-				  		success: function(data) {
-							$("#player_list").html(data);
-							$("img[data-toggle='tooltip']").tooltip();
-				 		}
-				});
-			}, 10000);
-			
 		});
 	</script>
 </body>

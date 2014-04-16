@@ -28,15 +28,15 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	
 	$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/server.properties";
 	
-	$context = stream_context_create(array(
-		"http" => array(
-			"method" => "GET",
-			"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
-			"timeout" => 3
-		)
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
+	curl_setopt($curl, CURLOPT_HTTPHEADER, array(                                                                          
+	    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
 	));
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	$response = curl_exec($curl);
 	
-	$json = json_decode(file_get_contents($url, 0, $context), true);
+	$json = json_decode($response, true);
 	
 		if(!array_key_exists('contents', $json)) {
 		
@@ -156,6 +156,7 @@ motd=A Minecraft Server';
 	$context = stream_context_create(array(
 		"http" => array(
 			"method" => "GET",
+			"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
 			"timeout" => 3
 		)
 	));

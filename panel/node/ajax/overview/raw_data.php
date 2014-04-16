@@ -22,13 +22,13 @@ require_once('../../../core/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 	
 	if($_POST['data'] && $_POST['data'] == 'memory')
+	
 		exit($core->files->format($core->gsd->retrieve_process('memory')));
 	
 	if($_POST['data'] && $_POST['data'] == 'cpu'){
-		$cpu = round(($core->gsd->retrieve_process('cpu') / $core->server->getData('cpu_limit')) * 100, 2);
-		$cpu = ($cpu > "100") ? "100" : $cpu;
 		
-		exit($cpu);
+		print($core->gsd->retrieve_process('cpu'));
+		exit();
 		
 	}
 	

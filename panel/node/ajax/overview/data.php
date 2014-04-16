@@ -60,11 +60,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			exit('<div class="alert alert-danger">The server appears to be offline.</div>');
 		}
 		
-		$cpu = round(($core->gsd->retrieve_process('cpu') / $core->server->getData('cpu_limit')) * 100, 2);
-		$cpu = ($cpu > "100") ? "100" : $cpu;	
+		$cpu = $core->gsd->retrieve_process('cpu');
 		echo '	<h5>CPU Usage</h5>
 				<div class="progress">
-				  	<div class="progress-bar" id="cpu_bar" style="width:'.$cpu.'%;max-width:100%;">'.round($cpu, 2).'%</div>
+				  	<div class="progress-bar" id="cpu_bar" style="width:'.$cpu.'%;max-width:100%;">'.$cpu.'%</div>
 				</div>';
 			
 		echo '	<h5>Memory Usage</h5>
