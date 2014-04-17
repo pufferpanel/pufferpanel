@@ -57,30 +57,57 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			<div class="col-9">
 				<div class="col-12">
 					<h3 class="nopad">Stats Overview</h3><hr />
-					<h5>CPU Usage</h5>
-						<div class="progress">
-							<div class="progress-bar" id="cpu_bar" style="width:100%;max-width:100%;">Gathering...</div>
-						</div>
-					<h5>Memory Usage</h5>
-						<div class="progress">
-							<div class="progress-bar" id="memory_bar" style="width:100%; max-width:100%;">Gathering...</div>
-						</div>
+					<div id="online_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Attempting to collect usage information, this could take a few seconds. Please ensure server is online.</div>
+					<span id="toggle_on" style="display:none;">
+						<h5>CPU Usage</h5>
+							<div class="progress">
+								<div class="progress-bar" id="cpu_bar" style="width:100%;max-width:100%;">Gathering...</div>
+							</div>
+						<h5>Memory Usage</h5>
+							<div class="progress">
+								<div class="progress-bar" id="memory_bar" style="width:100%; max-width:100%;">Gathering...</div>
+							</div>
+					</span>
 					<h5>Players Online</h5>
-						<span id="player_list">
+						<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Attempting to collect player information, this could take a few seconds. Please ensure server is online.</div>
+						<span id="toggle_players" style="display:none;">
 							<p class="text-muted">No players are currently online.</p>
 						</span>
 				</div>
 				<div class="col-12">
 					<h3>Disk Space Used</h3><hr />
 					<div id="server_stats">
-						<p id="server_stats_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
+						<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Collecting disk usage information, this could take a few seconds.</div>
 					</div>
 				</div>
 				<div class="col-12">
 					<h3>Server Information</h3><hr />
-					<div id="server_info">
-						<p id="server_info_loading" style="margin: 1.25em;text-align: center;" class="text-muted"><i class="fa fa-cog fa-3x fa-spin"></i></p>
-					</div>
+					<table class="table table-striped table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Information</th>
+								<th>Data</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><strong>Connection</strong></td>
+								<td><?php echo $core->server->getData('server_ip').':'.$core->server->getData('server_port'); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Node</strong></td>
+								<td><?php echo $core->settings->nodeName($core->server->getData('node')); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Memory Allocated</strong></td>
+								<td><?php echo $core->server->getData('max_ram').' MB'; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Disk Allocated</strong></td>
+								<td><?php echo $core->server->getData('disk_space').' MB'; ?></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -90,40 +117,38 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	</div>
 	<script type="text/javascript">
 		$(window).load(function(){
-			
 			var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8031/<?php echo $core->server->getData('gsd_id'); ?>');
 			socket.on('process', function (data) {
 				$("#cpu_bar").css('width', data.process.cpu + '%');
 				$("#cpu_bar").html(data.process.cpu + '%');
 				$("#memory_bar").css('width', (data.process.memory / (1024 * 1024)).toFixed(0) + '%');
 				$("#memory_bar").html((data.process.memory / (1024 * 1024)).toFixed(0) + 'MB / <?php echo $core->server->getData('max_ram'); ?>MB');
+				if($("#online_notice").is(":visible")){
+					$("#online_notice").hide();
+					$("#toggle_on").show();
+				}
 			});
 			socket.on('query', function (data) {
-				$("#live_console").val($("#live_console").val() + data.process.memory);
-				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-			});
-			$.ajax({
-				type: "POST",
-				url: "ajax/overview/data.php",
-				data: { command: 'info' },
-			  		success: function(data) {
-						$("#server_info_loading").slideUp("slow", function(){
-							$("#server_info").hide();
-							$("#server_info").html(data);
-							$("#server_info").slideDown("slow");				
-						});
-			 		}
+				if($("#players_notice").is(":visible")){
+					$("#players_notice").hide();
+					$("#toggle_players").show();
+				}
+				if(data.query.players.length !== 0){
+					$("#toggle_players").html("");
+					$.each(data.query.players, function(id, name) {
+						$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
+					});
+				}else{
+					$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
+				}
+				$("img[data-toggle='tooltip']").tooltip();
 			});
 			$.ajax({
 				type: "POST",
 				url: "ajax/overview/data.php",
 				data: { command: 'stats' },
 			  		success: function(data) {
-						$("#server_stats_loading").slideUp("slow", function(){
-							$("#server_stats").hide();
-							$("#server_stats").html(data);
-							$("#server_stats").slideDown("slow");				
-						});
+						$("#server_stats").html(data);
 			 		}
 			});
 		});

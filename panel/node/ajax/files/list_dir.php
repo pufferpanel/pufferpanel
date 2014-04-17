@@ -147,8 +147,8 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 }else{
 	
 	$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
-	
-	$sftp = @ssh2_sftp($connection);
+
+	$sftp = ssh2_sftp($connection);
 	
 		if(!$sftp)
 			exit('<div class="alert alert-danger">Unable to connect to the server to get the files. Please try again.</div>');
