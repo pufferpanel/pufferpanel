@@ -47,16 +47,27 @@ class ssh extends auth {
 					exit('SQL Error encountered in SSH2 trying to select node (2).');
 		
 		}else{
-		
+							
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id");
 			$query->execute(array(
 				':id' => $id
 			));
 			
 				if($query->rowCount() == 1)
-					$this->user = $query->fetch();
+					$this->server = $query->fetch();
 				else
-					exit('SQL Error encountered in SSH2 trying to select user.');
+					exit('SQL Error encountered in SSH2 trying to select server.');
+					
+			$query = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
+			$query->execute(array(
+				':id' => $this->server['node']
+			));
+			
+				if($query->rowCount() == 1)
+					$this->node = $query->fetch();
+				else
+					exit('SQL Error encountered in SSH2 trying to select node.');
+			
 		
 		}
 	
@@ -102,8 +113,8 @@ class ssh extends auth {
 					
 						if(!ssh2_auth_password(
 							$this->ssh2_connection,
-							$this->user['ftp_user'],
-							$this->decrypt($this->user['ftp_pass'], $this->user['encryption_iv'])
+							$this->server['ftp_user'],
+							$this->decrypt($this->server['ftp_pass'], $this->server['encryption_iv'])
 						))
 							$this->connectFailed = true;
 					
@@ -119,7 +130,7 @@ class ssh extends auth {
 						
 		}else{
 		
-			return $this;
+			return false;
 		
 		}
 	
