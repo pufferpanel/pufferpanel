@@ -41,11 +41,12 @@ $query->execute(array(
 if($query->rowCount() > 0)
 	$core->page->redirect('../../new.php?disp=a_fail');
 
-$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, :time, 'owner', NULL, NULL, NULL, 0, 0, 0)");
+$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, :language, :time, 'owner', NULL, NULL, NULL, 0, 0, 0)");
 $insert->execute(array(
 	':user' => $_POST['username'],
 	':email' => $_POST['email'],
 	':pass' => $core->auth->hash($_POST['pass']),
+	':language' => $core->settings->get('default_langauge'),
 	':time' => time()
 ));
 

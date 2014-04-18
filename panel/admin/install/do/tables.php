@@ -189,18 +189,19 @@ if(file_exists('../install.lock'))
 	                         */
 	                        $mysql->exec("CREATE TABLE `users` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `whmcs_id` int(11) DEFAULT NULL,
-	                          `username` varchar(50) NOT NULL DEFAULT '',
-	                          `email` tinytext NOT NULL,
-	                          `password` tinytext NOT NULL,
-	                          `register_time` int(15) NOT NULL,
-	                          `position` varchar(50) DEFAULT '' COMMENT 'owner,admin,staff',
-	                          `session_id` varchar(12) DEFAULT '',
-	                          `session_ip` varchar(50) DEFAULT '',
-	                          `session_expires` int(15) DEFAULT NULL,
-	                          `root_admin` int(1) NOT NULL DEFAULT '0',
-	                          `notify_login_s` int(1) DEFAULT '1',
-	                          `notify_login_f` int(1) DEFAULT '1',
+	                           `whmcs_id` int(11) DEFAULT NULL,
+	                           `username` varchar(50) NOT NULL DEFAULT '',
+	                           `email` tinytext NOT NULL,
+	                           `password` tinytext NOT NULL,
+	                           `language` tinytext NOT NULL,
+	                           `register_time` int(15) NOT NULL,
+	                           `position` varchar(50) DEFAULT '' COMMENT 'owner,admin,staff',
+	                           `session_id` varchar(12) DEFAULT '',
+	                           `session_ip` varchar(50) DEFAULT '',
+	                           `session_expires` int(15) DEFAULT NULL,
+	                           `root_admin` int(1) NOT NULL DEFAULT '0',
+	                           `notify_login_s` int(1) DEFAULT '1',
+	                           `notify_login_f` int(1) DEFAULT '1',
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `users` created.\n";
