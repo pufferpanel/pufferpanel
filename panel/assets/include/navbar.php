@@ -1,14 +1,14 @@
 <p class="pull-right" style="margin-top: -26px;">
-	<img src="http://localhost/PufferPan/panel/assets/flags/da.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/de.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/en.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/es.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/fr.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/ja.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/nl.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/pt.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/se.png" />
-	<img src="http://localhost/PufferPan/panel/assets/flags/zh.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/da.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/de.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/en.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/es.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/fr.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/ja.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/nl.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/pt.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/se.png" />
+	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/zh.png" />
 </p>
 <div class="navbar navbar-default">
 	<div class="navbar-header">
