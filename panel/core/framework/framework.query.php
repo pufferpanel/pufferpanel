@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class GSD_Query extends dbConn {
+class query extends dbConn {
 
 	public function __construct($serverid){
 		

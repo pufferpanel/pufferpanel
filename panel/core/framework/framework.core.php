@@ -70,7 +70,7 @@ $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user
 $core->email = new tplMail($core->settings);
 $core->page = new page($core->user, $core->settings);
 $core->log = new log($core->user->getData('id'));
-$core->gsd = new GSD_Query($core->server->getData('id'));
+$core->gsd = new query($core->server->getData('id'));
 $core->files = new files();
 
 /*

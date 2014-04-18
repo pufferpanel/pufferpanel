@@ -220,7 +220,7 @@ trait addServer {
 
 }
 
-class apiModuleAddServer extends GSD_Query {
+class apiModuleAddServer extends query {
 	
 	use addServer;
 	
