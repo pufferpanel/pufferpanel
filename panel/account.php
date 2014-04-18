@@ -178,10 +178,10 @@ if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_l->tpl('header.account'); ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="logout.php">Logout</a></li>
-								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
+								<li><a href="logout.php"><?php echo $_l->tpl('header.logout'); ?></a></li>
+								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">'.$_l->tpl('header.admin').'</a></li>'; } ?>
 							</ul>
 					</li>
 				</ul>
@@ -190,95 +190,95 @@ if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="account.php" class="list-group-item active">Settings</a>
-					<a href="servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="account.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 			</div>
 			<div class="col-9">
 				<?php echo $outputMessage; ?>
 				<div class="row">
 					<div class="col-6">
-						<h3 style="margin-top:0;">Change Password</h3><hr />
+						<h3 style="margin-top:0;"><?php echo $_l->tpl('settings.change_pass'); ?></h3><hr />
 							<form action="account.php?action=password" method="post">
 								<div class="form-group">
-									<label for="p_password" class="control-label">Current Password</label>
+									<label for="p_password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
 									<div>
 										<input type="password" class="form-control" name="p_password" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="p_password_new" class="control-label">New Password</label>
+									<label for="p_password_new" class="control-label"><?php echo $_l->tpl('settings.new_pass'); ?></label>
 									<div>
 										<input type="password" class="form-control" name="p_password_new" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="p_password_new_2" class="control-label">New Password (Again)</label>
+									<label for="p_password_new_2" class="control-label"><?php echo $_l->tpl('settings.new_pass').' '.$_l->tpl('string.again'); ?></label>
 									<div>
 										<input type="password" class="form-control" name="p_password_new_2" />
 									</div>
 								</div>
 								<div class="form-group">
 									<div>
-										<input type="submit" class="btn btn-primary" value="Change Password" />
+										<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.change_pass'); ?>" />
 									</div>
 								</div>
 							</form>
 					</div>
 					<div class="col-6">
-						<h3 style="margin-top:0;">Update Account Email</h3><hr />
+						<h3 style="margin-top:0;"><?php echo $_l->tpl('settings.update_email'); ?></h3><hr />
 							<form action="account.php?action=email" method="post">
 								<div class="form-group">
-									<label for="email" class="control-label">New Email</label>
+									<label for="email" class="control-label"><?php echo $_l->tpl('settings.new_email'); ?></label>
 									<div>
 										<input type="text" class="form-control" name="email" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="password" class="control-label">Current Password</label>
+									<label for="password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
 									<div>
 										<input type="password" class="form-control" name="password" />
 									</div>
 								</div>
 								<div class="form-group">
 									<div>
-										<input type="submit" class="btn btn-primary" value="Update Email" />
+										<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.update_email'); ?>" />
 									</div>
 								</div>
 							</form>
 					</div>
 				</div>
-				<h3>Update Notification Preferences</h3><hr />
+				<h3><?php echo $_l->tpl('settings.update_preferences'); ?></h3><hr />
 				<form action="account.php?action=notifications" method="post">
 					<div class="col-6 nopad">
 						<div class="form-group">
-							<h4>Successful Login</h4>
+							<h4><?php echo $_l->tpl('settings.login_success'); ?></h4>
 							<div class="radio">
-		                        <label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>/>Please Email Me</label>
+		                        <label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>/><?php echo $_l->tpl('settings.notify.email_me'); ?></label>
 							</div>
 							<div class="radio">
-							    <label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>/>Don't Email Me</label>
-							</div>
-						</div>
-						<div class="form-group">
-							<h4>Failed Login</h4>
-							<div class="radio">
-						        <label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>/>Please Email Me</label>
-							</div>
-							<div class="radio">
-							    <label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>/>Don't Email Me</label>
+							    <label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>/><?php echo $_l->tpl('settings.notify.no_email_me'); ?></label>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="password" class="control-label">Current Password</label>
+							<h4><?php echo $_l->tpl('settings.failed_login'); ?></h4>
+							<div class="radio">
+						        <label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>/><?php echo $_l->tpl('settings.notify.email_me'); ?></label>
+							</div>
+							<div class="radio">
+							    <label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>/><?php echo $_l->tpl('settings.notify.no_email_me'); ?></label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
 							<div>
 								<input type="password" class="form-control" name="password" />
 							</div>
 						</div>
 						<div class="form-group">
 							<div>
-								<input type="submit" class="btn btn-primary" value="Update Preferences" />
+								<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.update_preferences'); ?>" />
 							</div>
 						</div>
 					</div>
