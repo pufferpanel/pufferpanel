@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <link rel="stylesheet" href="<?php echo $core->settings->get('assets_url'); ?>css/bootstrap.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="<?php echo $core->settings->get('assets_url'); ?>javascript/bootstrap.min.js"></script>

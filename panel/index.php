@@ -124,10 +124,10 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3">&nbsp;</div>
+			<div class="col-3"></div>
 			<div class="col-6">
 				<form action="index.php?do=login" method="POST" id="login-form">
-					<legend>Login to PufferPanel</legend>
+					<legend><?php echo $_l->tpl('login.login_h1'); ?></legend>
 					<fieldset>
 						<?php 
 							if(isset($_GET['error'])){
@@ -135,27 +135,27 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 							}
 						?>
 						<div class="form-group">
-							<label for="email" class="control-label">Email</label>
+							<label for="email" class="control-label"><?php echo $_l->tpl('string.email'); ?></label>
 							<div>
-								<input type="text" class="form-control" name="email" placeholder="Email" />
+								<input type="text" class="form-control" name="email" placeholder="<?php echo $_l->tpl('string.email'); ?>" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="login-password" class="control-label">Password</label>
+							<label for="login-password" class="control-label"><?php echo $_l->tpl('string.password'); ?></label>
 							<div>
-								<input type="password" class="form-control" name="password" placeholder="Password" />
+								<input type="password" class="form-control" name="password" placeholder="<?php echo $_l->tpl('string.password'); ?>" />
 							</div>
 						</div>
 						<div class="form-group">
 							<div>
 								<input type="submit" class="btn btn-primary" value="Login" />
-								<button class="btn btn-default" onclick="window.location='password.php';return false;">Reset Password</button>
+								<button class="btn btn-default" onclick="window.location='password.php';return false;"><?php echo $_l->tpl('string.reset_password'); ?></button>
 							</div>
 						</div>
 					</fieldset>
 				</form>
 			</div>
-			<div class="col-3">&nbsp;</div>
+			<div class="col-3"></div>
 		</div>
 		<div class="footer">
 			<?php include('assets/include/footer.php'); ?>
