@@ -9,3 +9,4 @@ PufferPan.esproj/*
 *configuration.php*
 *.lock*
 SETUP
+languages/build/index.php
