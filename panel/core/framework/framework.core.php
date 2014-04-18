@@ -45,6 +45,7 @@ require_once('framework.settings.php');
 require_once('framework.ssh2.php');
 require_once('framework.log.php');
 require_once('framework.query.php');
+require_once('framework.language.php');
 
 /*
  * Include Email Sending Files
@@ -55,6 +56,7 @@ require_once('email/core.email.php');
  * Initalize Global Framework
  */
 $core = new stdClass();
+$_l = new stdClass();
 set_exception_handler('pdo_exception_handler');
 
 /*
@@ -71,6 +73,17 @@ $core->log = new log($core->user->getData('id'));
 $core->gsd = new GSD_Query($core->server->getData('id'));
 $core->files = new files();
 
+/*
+ * Check Language Settings
+ */
+if($core->user->getData('language') === false)
+	if(!isset($_COOKIE['pp_language']) || empty($_COOKIE['pp_language']))
+		$_l = new lang($core->settings->get('default_language'));
+	else
+		$_l = new lang($_COOKIE['pp_language']);
+else
+	$_l = new lang($core->user->getData('language'));
+	
 /*
  * MySQL PDO Connection Engine
  */
