@@ -24,9 +24,27 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	if(isset($_POST['server'])){
 		
 		/*
+		 * Query Database
+		 */
+		$select = $mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id AND `owner_id` = :oid");
+		$select->execute(array(
+			':id' => $_POST['server'],
+			':oid' => $core->user->getData('id')
+		));
+		
+			$server = $select->fetch();
+
+		$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
+		$select->execute(array(
+			':id' => $server['node'],
+		));
+		
+			$node = $select->fetch();
+		
+		/*
 		 * Query Servers
 		 */
-		if($core->gsd->online($_POST['server']) === false)
+		if($core->gsd->check_status($node['node_ip'], $server['gsd_id'], $node['gsd_secret']) === false)
 			exit('<span class="label label-danger">'.$_l->tpl('string.offline').'</span>');
 		else
 			exit('<span class="label label-success">'.$_l->tpl('string.online').'</span>');

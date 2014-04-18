@@ -20,7 +20,7 @@
 class GSD_Query extends dbConn {
 
 	public function __construct($serverid){
-	
+		
 		if($serverid === false)
 			$this->_queryData = false;
 		else {
@@ -59,20 +59,54 @@ class GSD_Query extends dbConn {
 				if($this->executeNodeQuery->rowCount() == 1){
 				
 					 $this->node = $this->executeNodeQuery->fetch();
-					 
+
 					 foreach($this->node as $this->id => $this->val)
 					 	$this->_nodeData = array_merge($this->_nodeData, array($this->id => $this->val));
 					 	
-				}else
+				}else{
 					$this->_nodeData = false;
-					
+					exit('here');	
+				}
+										
 		}
+		
+	}
+	
+	/*
+	 * Get status of any specificed server
+	 */
+	public function check_status($ip, $id, $secret){
+	
+		$this->context = stream_context_create(array(
+			"http" => array(
+				"method" => "GET",
+				"timeout" => 3,
+				"header" => "X-Access-Token: ".$secret
+			)
+		));
+		$this->gatherData = @file_get_contents("http://".$ip.":8003/gameservers/".$id , 0, $this->context);
+		
+		$this->raw = json_decode($this->gatherData, true);
+		
+			/*
+			 * Valid Data was Returned
+			 */
+			if(!$this->gatherData)
+				return false;
+			else
+				if(json_last_error() == JSON_ERROR_NONE)
+					return true;
+				else
+					return false;
 	
 	}
 	
-	public function online($override = false) {
-	
-		if($this->_queryData === false && $override === false)
+	/*
+	 * Get status of currently selected server
+	 */
+	public function online() {
+		
+		if($this->_queryData === false)
 			return false;
 		else {
 			
@@ -85,7 +119,7 @@ class GSD_Query extends dbConn {
 				"http" => array(
 					"method" => "GET",
 					"timeout" => 3,
-					'header'=> "X-Access-Token: ".$this->_nodeData['gsd_secret']
+					"header" => "X-Access-Token: ".$this->_nodeData['gsd_secret']
 				)
 			));
 			$this->gatherData = @file_get_contents("http://".$this->_nodeData['sftp_ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
@@ -95,19 +129,25 @@ class GSD_Query extends dbConn {
 				/*
 				 * Valid Data was Returned
 				 */
-				if(json_last_error() == JSON_ERROR_NONE){
-				
-					if($this->raw['status'] == 0)
-						return false;
-					else{
-						$this->_jsonData = $this->raw['query'];
-						$this->_serverPID = $this->raw['pid'];
-						$this->_jsonProcess = $this->raw['process'];
-						return true;
-					}
-				
-				}else
+				if(!$this->gatherData)
 					return false;
+				else{
+				
+					if(json_last_error() == JSON_ERROR_NONE){
+					
+						if($this->raw['status'] == 0)
+							return false;
+						else{
+							$this->_jsonData = $this->raw['query'];
+							$this->_serverPID = $this->raw['pid'];
+							$this->_jsonProcess = $this->raw['process'];
+							return true;
+						}
+					
+					}else
+						return false;
+						
+				}
 		
 		}
 		

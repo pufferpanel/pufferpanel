@@ -49,7 +49,7 @@ $listServers = '';
 while($row = $query->fetch()){
 	
 	$listServers .= '
-					<tr class="dynUpdate" id="'.$row['gsd_id'].'">
+					<tr class="dynUpdate" id="'.$row['id'].'">
 						<td>'.$core->settings->nodeName($row['node']).'</td>
 						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
 						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
