@@ -1,4 +1,4 @@
-<p class="pull-right" style="margin-top: -26px;">
+<div class="pull-right" style="margin-top: -26px;">
 	<img src="http://localhost/PufferPan/panel/assets/flags/da.png" />
 	<img src="http://localhost/PufferPan/panel/assets/flags/de.png" />
 	<img src="http://localhost/PufferPan/panel/assets/flags/en.png" />
@@ -9,7 +9,7 @@
 	<img src="http://localhost/PufferPan/panel/assets/flags/pt.png" />
 	<img src="http://localhost/PufferPan/panel/assets/flags/se.png" />
 	<img src="http://localhost/PufferPan/panel/assets/flags/zh.png" />
-</p>
+</div>
 <div class="navbar navbar-default">
 	<div class="navbar-header">
 		<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
