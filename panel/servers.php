@@ -48,7 +48,6 @@ if($core->user->getData('root_admin') == '1'){
 $listServers = '';
 while($row = $query->fetch()){
 	
-	($row['active'] == '1') ? $isActive = 'Enabled' : $isActive = 'Disabled';
 	$listServers .= '
 					<tr class="dynUpdate" id="'.$row['gsd_id'].'">
 						<td>'.$core->settings->nodeName($row['node']).'</td>
@@ -69,38 +68,23 @@ while($row = $query->fetch()){
 </head>
 <body>
 	<div class="container">
-		<div class="navbar navbar-default">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
-			</div>
-			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="logout.php">Logout</a></li>
-								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">Admin CP</a></li>'; } ?>
-							</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
+		<?php include('assets/include/navbar.php'); ?>
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="account.php" class="list-group-item">Settings</a>
-					<a href="servers.php" class="list-group-item active">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="servers.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 			</div>
 			<div class="col-9">
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
-							<th>Node</th>
-							<th>Name</th>
-							<th>Connect</th>
-							<th style="width:5%;">Status</th>
+							<th><?php echo $_l->tpl('string.node'); ?></th>
+							<th><?php echo $_l->tpl('string.name'); ?></th>
+							<th><?php echo $_l->tpl('string.connect'); ?></th>
+							<th style="width:5%;"><?php echo $_l->tpl('string.status'); ?></th>
 						</tr>
 					</thead>
 					<tbody>

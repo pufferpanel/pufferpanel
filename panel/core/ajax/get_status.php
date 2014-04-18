@@ -27,9 +27,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		 * Query Servers
 		 */
 		if($core->gsd->online($_POST['server']) === false)
-			exit('<span class="label label-danger">Offline</span>');
+			exit('<span class="label label-danger">'.$_l->tpl('string.offline').'</span>');
 		else
-			exit('<span class="label label-success">Online</span>');
+			exit('<span class="label label-success">'.$_l->tpl('string.online').'</span>');
 		
 	}else{
 	

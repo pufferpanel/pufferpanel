@@ -171,22 +171,7 @@ if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf
 </head>
 <body>
 	<div class="container">
-		<div class="navbar navbar-default">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
-			</div>
-			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_l->tpl('header.account'); ?> <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="logout.php"><?php echo $_l->tpl('header.logout'); ?></a></li>
-								<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">'.$_l->tpl('header.admin').'</a></li>'; } ?>
-							</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
+		<?php include('assets/include/navbar.php'); ?>
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
