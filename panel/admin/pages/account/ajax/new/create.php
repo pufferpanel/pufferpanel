@@ -46,7 +46,7 @@ $insert->execute(array(
 	':user' => $_POST['username'],
 	':email' => $_POST['email'],
 	':pass' => $core->auth->hash($_POST['pass']),
-	':language' => $core->settings->get('default_langauge'),
+	':language' => $core->settings->get('default_language'),
 	':time' => time()
 ));
 
