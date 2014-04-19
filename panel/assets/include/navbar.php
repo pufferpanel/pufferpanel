@@ -20,7 +20,7 @@
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_l->tpl('header.account'); ?> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="logout.php"><?php echo $_l->tpl('header.logout'); ?></a></li>
-						<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="admin/index.php">'.$_l->tpl('header.admin').'</a></li>'; } ?>
+						<?php if($core->user->getData('root_admin') == 1){ echo '<li><a href="/admin/index.php">'.$_l->tpl('header.admin').'</a></li>'; } ?>
 					</ul>
 			</li>
 		</ul>
