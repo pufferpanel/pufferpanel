@@ -20,6 +20,7 @@
    "string.options":"Options",
    "string.search":"Search",
    "string.clear":"Clear",
+   "string.refresh":"Refresh",
    "footer.license":"PufferPanel is licensed under a <a href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\">GPL-v3 License</a>.",
    "footer.version":"Running Version %s distributed by <a href=\"http://kelp.in/\">Kelpin' Systems</a>.",
    "footer.generated":"Page Generated in %s seconds.",
