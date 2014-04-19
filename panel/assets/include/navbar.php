@@ -1,4 +1,4 @@
-<p class="pull-right" style="margin-top: -26px;">
+<div class="pull-right" style="margin-top: -26px;">
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/da.png" />
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/de.png" />
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/en.png" />
@@ -9,7 +9,7 @@
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/pt.png" />
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/se.png" />
 	<img src="<?php echo $core->settings->get('assets_url'); ?>flags/zh.png" />
-</p>
+</div>
 <div class="navbar navbar-default">
 	<div class="navbar-header">
 		<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
