@@ -36,7 +36,7 @@
  		if(array_key_exists($template, $this->loaded_language))
  			return $this->loaded_language[$template];
  		else
- 			return '[null lang.key]';
+ 			return $template;
  	
  	}
  
