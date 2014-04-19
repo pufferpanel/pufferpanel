@@ -21,6 +21,8 @@
  
  	public function __construct($language){
  	
+ 		$this->_language = $language;
+ 		
 		/*
 		 * Get Current Language
 		 */
@@ -35,8 +37,25 @@
  	
  		if(array_key_exists($template, $this->loaded_language))
  			return $this->loaded_language[$template];
- 		else
- 			return $template;
+ 		else{
+ 		
+ 			/*
+ 			 * Check if Key exists in the English Version
+ 			 */
+ 			if($this->_language == "en")
+ 				return $template;
+ 			else{
+ 			
+ 				$this->load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
+ 				
+ 					if(array_key_exists($template, $this->load_english))
+ 						return $this->load_english[$template];
+ 					else
+ 						return $template;
+ 				
+ 			}
+ 			
+ 		}
  	
  	}
  
