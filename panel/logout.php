@@ -31,6 +31,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	 */
 	setcookie("pp_auth_token", null, time()-86400, '/', $core->settings->get('cookie_website'));
 	setcookie("pp_server_node", null, time()-86400, '/', $core->settings->get('cookie_website'));
+	setcookie("pp_server_hash", null, time()-86400, '/', $core->settings->get('cookie_website'));
 	
 	$logoutUser = $mysql->prepare("UPDATE `users` SET `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `session_ip` = :sesip AND `session_id` = :sesid");
 	$logoutUser->execute(array(':sesip' => $_SERVER['REMOTE_ADDR'], ':sesid' => $_COOKIE['pp_auth_token']));

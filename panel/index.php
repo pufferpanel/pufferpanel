@@ -118,6 +118,19 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 </head>
 <body>
 	<div class="container">
+		<div class="pull-right" style="margin-top: -26px;">
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=ar"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/ar.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=da"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/da.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=de"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/de.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=en"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/en.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=es"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/es.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=fr"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/fr.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=ja"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/ja.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=nl"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/nl.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=pt"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/pt.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=se"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/se.png" /></a>
+			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=zh"><img src="<?php echo $core->settings->get('assets_url'); ?>flags/zh.png" /></a>
+		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
