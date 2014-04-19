@@ -151,20 +151,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 			<div class="col-3">&nbsp;</div>
 			<div class="col-6">
 				<form action="password.php?do=recover" method="POST" id="login-form">
-					<legend>Reset Your Password</legend>
+					<legend><?php echo $_l->tpl('reset.reset_h1'); ?></legend>
 					<fieldset>
 						<?php 
 							echo $statusMessage;
 							if($noShow === false){
 						?>
 						<div class="form-group">
-							<label for="email" class="control-label">Email</label>
+							<label for="email" class="control-label"><?php echo $_l->tpl('string.email'); ?></label>
 							<div>
-								<input type="text" class="form-control" name="email" placeholder="Email" />
+								<input type="text" class="form-control" name="email" placeholder="<?php echo $_l->tpl('string.email'); ?>" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="recaptcha_response_field" class="control-label">Spam Prevention <a href="javascript:Recaptcha.reload()">Refresh</a></label>
+							<label for="recaptcha_response_field" class="control-label"><?php echo $_l->tpl('string.spam_protection'); ?> <a href="javascript:Recaptcha.reload()"><?php echo $_l->tpl('string.refresh'); ?></a></label>
 							<div>
 								<div class="col-4" style="padding-left: 0;">
 									<input type="text" class="form-control" id="recaptcha_response_field" name="recaptcha_response_field"/>
@@ -183,8 +183,8 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 						</div>
 						<div class="form-group">
 							<div>
-								<input type="submit" class="btn btn-primary" value="Reset Password" />
-								<button class="btn btn-default" onclick="window.location='index.php';return false;">Login</button>
+								<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('string.reset_password'); ?>" />
+								<button class="btn btn-default" onclick="window.location='index.php';return false;"><?php echo $_l->tpl('string.login'); ?></button>
 							</div>
 						</div>
 						<?php } ?>
