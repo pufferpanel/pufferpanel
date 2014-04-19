@@ -21,6 +21,12 @@ string.search, Search
 string.clear, Clear
 string.refresh, Refresh
 string.close, Close
+string.generated_pass, Generated Password
+string.modpacks, Modpacks
+string.sftp, SFTP
+string.host, Host
+string.username, Username
+string.generate, Generate
 footer.license, PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
 footer.version, Running Version %s distributed by <a href="http://kelp.in/">Kelpin' Systems</a>.
 footer.generated, Page Generated in %s seconds.
@@ -73,9 +79,13 @@ node.file.modified, Last Modified
 node.settings.modpack.modpack_h1, Server Modpack Management
 node.settings.modpack.current, Current Modpack
 node.settings.modpack.install, Install Modpack
+node.settings.modpack.select, —- Select a Modpack
 node.settings.jar.jar_h1, Server .jar Name
 node.settings.jar.jarfile_name, Jarfile Name
 node.settings.jar.update, Update Name
+node.settings.sftp.sftp_h1, SFTP Settings
+node.settings.ajax.installing_modpack, Installing Modpack
+node.settings.ajax.modpack_error, You can not use a disabled form input as a modpack!
 node.plugins.welcome_h1, Plugin Installer
 node.plugins.welcome, Welcome to your built-in plugin installer. This installer gathers results and data from Bukget and displays them here in an easy to use manner. The automatic installer can be buggy at times, especially for complex plugins. We recommend downloading plugins to your computer first if possible.
 node.plugins.search_h1, Search Plugin Repository

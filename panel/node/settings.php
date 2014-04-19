@@ -41,31 +41,32 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="../account.php" class="list-group-item">Settings</a>
-					<a href="../servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="../account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="../servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
-					<a href="index.php" class="list-group-item">Overview</a>
-					<a href="console.php" class="list-group-item">Live Console</a>
-					<a href="files/index.php" class="list-group-item">File Manager</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
+					<a href="index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="console.php" class="list-group-item"><?php echo $_l->tpl('sidebar.console'); ?></a>
+					<a href="files/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
-					<a href="settings.php" class="list-group-item active">Server Management</a>
-					<a href="plugins/index.php" class="list-group-item">Server Plugins</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_sett'); ?></strong></a>
+					
+					<a href="settings.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.manage'); ?></a>
+					<a href="plugins/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.plugins'); ?></a>
 				</div>
 			</div>
 			<div class="col-9">
 				<ul class="nav nav-tabs" id="config_tabs">
-					<li class="active"><a href="#server_sett" data-toggle="tab">Modpacks</a></li>
-					<li class=""><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
+					<li class="active"><a href="#server_sett" data-toggle="tab"><?php echo $_l->tpl('string.modpacks'); ?></a></li>
+					<li class=""><a href="#sftp_sett" data-toggle="tab"><?php echo $_l->tpl('string.sftp'); ?></a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="server_sett">
 					<br>
-					<h3 class="nopad">Server Modpack Management</h3><hr />
+					<h3 class="nopad"><?php echo $_l->tpl('node.settings.modpack.modpack_h1'); ?></h3><hr />
 						<form action="#" method="post" id="updateModpack">
 							<fieldset>
 								<div class="row" id="installingModpack" style="display:none;"></div>
@@ -80,13 +81,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 											$pack = $packs->fetch();
 											$isDeleted = ($pack['deleted'] == 1) ? '[DELETED] ' : null;
 										?>
-										<small>Current Modpack: <strong><?php echo $isDeleted.$pack['name'].' ('.$pack['version'].')'; ?></strong></small>
+										<small><?php echo $_l->tpl('node.settings.modpack.current'); ?>: <strong><?php echo $isDeleted.$pack['name'].' ('.$pack['version'].')'; ?></strong></small>
 									</div>
 								</div>
 								<div class="form-group col-8 nopad">
 									<div>
 										<select class="form-control" name="new_pack">
-											<option disabled="disabled">-- Select a Modpack</option>
+											<option disabled="disabled"><?php echo $_l->tpl('node.settings.modpack.select'); ?></option>
 											<?php
 												$packs = $mysql->prepare("SELECT hash, name, version, server_jar FROM `modpacks` WHERE `deleted` = 0 AND `min_ram` <= :ram");
 												$packs->execute(array(
@@ -106,23 +107,23 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 								</div>
 								<div class="form-group col-4 nopad-right">
 									<div>
-										<input type="submit" id="install_modpack_submit" value="Install Modpack" class="btn btn-primary" />
+										<input type="submit" id="install_modpack_submit" value="<?php echo $_l->tpl('node.settings.modpack.install'); ?>" class="btn btn-primary" />
 									</div>
 								</div>
 							</fieldset>
 						</form>
 						<div class="row">
-							<h3>Server .jar Name</h3><hr />
+							<h3><?php echo $_l->tpl('node.settings.jar.jar_h1'); ?></h3><hr />
 								<div class="well">
 									<form action="ajax/settings/jarname.php" method="post">
 										<fieldset>
 										<div class="form-group">
-											<label for="jarfile" class="control-label">Jarfile Name</label>
+											<label for="jarfile" class="control-label"><?php echo $_l->tpl('node.settings.jar.jarfile_name'); ?></label>
 											<div class="input-group">
 												<input type="text" autocomplete="off" name="jarfile" class="form-control" value="<?php echo str_replace('.jar' , '', $core->server->getData('server_jar')); ?>"/>
 												<span class="input-group-addon">.jar</span>
 												<span class="input-group-btn">
-													<button class="btn btn-primary">Update Name</button>
+													<button class="btn btn-primary"><?php echo $_l->tpl('node.settings.jar.update'); ?></button>
 												</span>
 											</div>
 										</div>
@@ -132,17 +133,17 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 						</div>
 					</div>
 					<div class="tab-pane" id="sftp_sett">
-						<h3>SFTP Settings</h3><hr />
+						<h3><?php echo $_l->tpl('node.settings.jar.update'); ?></h3><hr />
 						<form action="ajax/settings/sftp.php" method="post">
 							<fieldset>
 								<div class="form-group">
-									<label for="sftp_host" class="control-label">Host</label>
+									<label for="sftp_host" class="control-label"><?php echo $_l->tpl('string.host'); ?></label>
 									<div>
 										<input type="text" readonly="readonly" value="<?php echo $core->server->nodeData('sftp_ip'); ?>" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="sftp_user" class="control-label">Username</label>
+									<label for="sftp_user" class="control-label"><?php echo $_l->tpl('string.username'); ?></label>
 									<div>
 										<input type="text" readonly="readonly" value="<?php echo $core->server->getData('ftp_user'); ?>" class="form-control" />
 									</div>
@@ -151,23 +152,23 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<div class="row">
 										<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
 										<div class="form-group col-6 nopad">
-											<label for="sftp_pass" class="control-label">New Password</label>
+											<label for="sftp_pass" class="control-label"><?php echo $_l->tpl('settings.new_pass'); ?></label>
 											<div class="input-group">
 												<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
 												<span class="input-group-btn">
-													<button class="btn btn-success" id="gen_pass_bttn" type="button">Generate</button>
+													<button class="btn btn-success" id="gen_pass_bttn" type="button"><?php echo $_l->tpl('string.generate'); ?></button>
 												</span>
 											</div>
 										</div>
 										<div class="form-group col-6 nopad-right">
-											<label for="sftp_pass_2" class="control-label">New Password (Again)</label>
+											<label for="sftp_pass_2" class="control-label"><?php echo $_l->tpl('settings.new_pass').' '.$_l->tpl('string.again'); ?></label>
 											<div>
 												<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
 											</div>
 										</div>
 									</div>
 								</div>
-								<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
+								<input type="submit" value="<?php echo $_l->tpl('settings.change_pass'); ?>" class="btn btn-primary btn-sm" />
 							</fieldset>
 						</form>
 					</div>
@@ -185,7 +186,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			
 			if(pack != null){
 				$('#install_modpack_submit').addClass('disabled');
-				$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> Installing Modpack.</div>').show();
+				$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> <?php echo $_l->tpl('node.settings.ajax.installing_modpack'); ?></div>').show();
 				$.ajax({
 					type: "POST",
 					url: 'ajax/settings/modpack.php',
@@ -196,14 +197,14 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			 		}
 				});
 			}else
-				alert('You can not use a disabled form input as a modpack!');
+				alert('<?php echo $_l->tpl('node.settings.ajax.modpack_error'); ?>');
 		});
 		$("#gen_pass_bttn").click(function(){
 				$.ajax({
 					type: "GET",
 					url: "settings.php?do=generate_password",
 					success: function(data) {
-						$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+						$("#gen_pass").html('<strong><?php echo $_l->tpl('string.generated_pass'); ?>:</strong> '+data);
 						$("#gen_pass").slideDown();
 						$('input[name="sftp_pass"]').val(data);
 						$('input[name="sftp_pass_2"]').val(data);
