@@ -39,21 +39,21 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="../account.php" class="list-group-item">Settings</a>
-					<a href="../servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="../account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="../servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
-					<a href="index.php" class="list-group-item">Overview</a>
-					<a href="console.php" class="list-group-item active">Live Console</a>
-					<a href="files/index.php" class="list-group-item">File Manager</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
+					<a href="index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="console.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.console'); ?></a>
+					<a href="files/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_sett'); ?></strong></a>
 					
-					<a href="settings.php" class="list-group-item">Server Management</a>
-					<a href="plugins/index.php" class="list-group-item">Server Plugins</a>
+					<a href="settings.php" class="list-group-item"><?php echo $_l->tpl('sidebar.manage'); ?></a>
+					<a href="plugins/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.plugins'); ?></a>
 				</div>
 			</div>
 			<div class="col-9">
@@ -62,14 +62,14 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				</div>
 				<div id="box"></div>
 				<div class="col-12">
-					<div class="alert alert-danger text_highlighted" style="display:none;margin: 15px 0 -5px 0;">You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.</div>
+					<div class="alert alert-danger text_highlighted" style="display:none;margin: 15px 0 -5px 0;"><?php echo $_l->tpl('node.console.scrollstop_alert'); ?></div>
 				</div>
 				<div class="col-6">
 					<hr />
 					<form action="#" method="post" id="console_command">
 						<fieldset>
 							<div class="input-group">
-								<input type="text" class="form-control" name="command" id="ccmd" placeholder="Enter Console Command" />
+								<input type="text" class="form-control" name="command" id="ccmd" placeholder="<?php echo $_l->tpl('node.console.command_help'); ?>" />
 								<span class="input-group-btn">
 									<button id="sending_command" class="btn btn-primary">&rarr;</button>
 									<button class="btn btn-link" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
@@ -82,9 +82,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				</div>
 				<div class="col-6" style="text-align:center;">
 					<hr />
-					<button class="btn btn-primary btn-sm start" id="on">Start</button>
-					<button class="btn btn-primary btn-sm poke" id="restart">Restart</button>
-					<button class="btn btn-danger btn-sm poke" id="off">Stop</button>
+					<button class="btn btn-primary btn-sm start" id="on"><?php echo $_l->tpl('string.start'); ?></button>
+					<button class="btn btn-primary btn-sm poke" id="restart"><?php echo $_l->tpl('string.restart'); ?></button>
+					<button class="btn btn-danger btn-sm poke" id="off"><?php echo $_l->tpl('string.stop'); ?></button>
 					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 				</div>
 			</div>
@@ -94,7 +94,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="PauseConsole">ScrollStop&trade; Console Window</h4>
+						<h4 class="modal-title" id="PauseConsole"><?php echo $_l->tpl('node.console.scrollstop_h1'); ?></h4>
 					</div>
 					<div class="modal-body">
 						<div class="row">
@@ -106,7 +106,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $_l->tpl('string.close'); ?></button>
 					</div>
 				</div>
 			</div>
@@ -147,7 +147,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				timeout: 5000,
 				data: { command: ccmd },
 				error: function(jqXHR, textStatus, errorThrown) {
-				   	$("#sc_resp").html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
+				   	$("#sc_resp").html('<?php echo $_l->tpl('node.ajax.generic_error'); ?>').slideDown().delay(5000).slideUp();
 				   	$("#sending_command").removeClass('disabled');
 				   	$("#sending_command").html('&rarr;');
 				   	$("#ccmd").val('');
@@ -184,7 +184,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						url: "http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8003/gameservers/<?php echo $core->server->getData('gsd_id'); ?>/off",
 						timeout: 5000,
 						error: function(jqXHR, textStatus, errorThrown) {
-						   	$("#pw_resp").attr('class', 'alert alert-danger').html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
+						   	$("#pw_resp").attr('class', 'alert alert-danger').html('<?php echo $_l->tpl('node.ajax.generic_error'); ?>').slideDown().delay(5000).slideUp();
 						   	$("#off").removeClass('disabled');
 						   	$("#off").html('Stop');
 						   	$("#restart").removeClass('disabled');
@@ -200,9 +200,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			    					start_server();
 			    				}
 			    				$("#off").removeClass('disabled');
-			    				$("#off").html('Stop');
+			    				$("#off").html('<?php echo $_l->tpl('string.stop'); ?>');
 			    				$("#restart").removeClass('disabled');
-			    				$("#restart").html('Restart');
+			    				$("#restart").html('<?php echo $_l->tpl('string.restart'); ?>');
 			    				return false;
 			    			}
 				 		 }
@@ -224,7 +224,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					url: "ajax/console/power.php",
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
-					   	$("#pw_resp").attr('class', 'alert alert-danger').html('An error was encountered with this AJAX request.').slideDown().delay(5000).slideUp();
+					   	$("#pw_resp").attr('class', 'alert alert-danger').html('<?php echo $_l->tpl('node.ajax.generic_error'); ?>').slideDown().delay(5000).slideUp();
 					   	$("#on").removeClass('disabled');
 					   	$("#on").html('Start');
 					   	can_run = true;
@@ -232,14 +232,14 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					},
 			  		success: function(data) {
 		    			if(data == "ok"){
-		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been started successfully.").slideDown().delay(5000).slideUp();
+		    				$("#pw_resp").attr('class', 'alert alert-success').html("<?php echo $_l->tpl('node.console.ajax.server_started'); ?>").slideDown().delay(5000).slideUp();
 		    				can_run = true;
 		    			}else{
 		    				$("#pw_resp").attr('class', 'alert alert-danger').html(data).slideDown().delay(5000).slideUp();
 		    				can_run = true;
 		    			}
 		    			$("#on").toggleClass('disabled');
-		    			$("#on").html('Start');
+		    			$("#on").html('<?php echo $_l->tpl('string.start'); ?>');
 			 		 }
 				});
 			}else{
