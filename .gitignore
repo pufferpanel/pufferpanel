@@ -6,7 +6,7 @@ profile
 PufferPan.esproj/*
 /panel/node/tmp/*
 *HASHFILE*
-*configuration.php*
+*configuration.php
 *.lock*
 SETUP
 languages/build/index.php
