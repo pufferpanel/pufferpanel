@@ -50,7 +50,7 @@ if(file_exists('../install.lock'))
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),
 					            ('master_url', :murl),
-					            ('cookie_website', :cwebsite),
+					            ('cookie_website', NULL),
 					            ('postmark_api_key', NULL),
 					            ('mandrill_api_key', NULL),
 					            ('mailgun_api_key', NULL),
@@ -64,11 +64,9 @@ if(file_exists('../install.lock'))
 					            ('use_ssh_keys', 1),
 					            ('default_language', 'en')");
 					        
-					        $cookieSite = (strtolower($_POST['cookie_website']) == 'null' || empty($_POST['cookie_website'])) ? null : $_POST['cookie_website'];
 					        $prepare->execute(array(
 					            ':cname' => $_POST['company_name'],
 					            ':murl' => $_POST['master_url'],
-					            ':cwebsite' => $cookieSite,
 					            ':smail' => $_POST['sendmail_email'],
 					            ':mwebsite' => $_POST['main_website'],
 					            ':aurl' => $_POST['assets_url'],
@@ -91,25 +89,19 @@ if(file_exists('../install.lock'))
 							<div class="form-group">
 								<label for="main_website" class="control-label">Main Website URL</label>
 								<div>
-									<input type="text" class="form-control" name="main_website" placeholder="http://www.example.com/" autocomplete="off" />
+									<input type="text" class="form-control" name="main_website" value="http://<?php echo $_SERVER['HTTP_HOST']; ?>/" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="master_url" class="control-label">PufferPanel Master URL</label>
 								<div>
-									<input type="text" class="form-control" name="master_url" placeholder="http://panel.example.com/" autocomplete="off" />
+									<input type="text" class="form-control" name="master_url" value="<?php echo str_replace("admin/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="assets_url" class="control-label">PufferPanel Assets URL</label>
 								<div>
-									<input type="text" class="form-control" name="assets_url" placeholder="http://panel.example.com/assets/" autocomplete="off" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="cookie_website" class="control-label">Cookie Website</label>
-								<div>
-									<input type="text" class="form-control" name="cookie_website" placeholder="example.com" autocomplete="off" />
+									<input type="text" class="form-control" name="assets_url" value="<?php echo str_replace("admin/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']).'assets/'; ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">

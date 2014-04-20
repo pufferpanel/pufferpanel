@@ -112,7 +112,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									<label for="cookie_website" class="control-label">Cookie Website</label>
 									<div>
 										<input type="text" name="cookie_website" class="form-control" value="<?php echo $core->settings->get('cookie_website'); ?>"/>
-										<p><small class="text-muted"><em>This should be the website that PufferPanel is running on. <strong>Setting this to the wrong value will lock you and all other users out of the panel.</strong></em></small></p>
+										<p><small class="text-muted"><em>This should be the website that PufferPanel is running on (but can be left blank). <strong>Setting this to the wrong value will lock you and all other users out of the panel.</strong></em></small></p>
 									</div>
 								</div>
 								<div class="form-group">
