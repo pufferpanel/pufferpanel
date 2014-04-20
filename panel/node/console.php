@@ -143,6 +143,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			var ccmd = $("#ccmd").val();
 			$.ajax({
 				type: "POST",
+				headers: {"X-Access-Token": "<?php echo $core->server->nodeData('gsd_secret'); ?>"},
 				url: 'http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8003/gameservers/<?php echo $core->server->getData('gsd_id'); ?>/console',
 				timeout: 5000,
 				data: { command: ccmd },
@@ -181,6 +182,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					$(this).toggleClass('disabled');
 					$.ajax({
 						type: "GET",
+						headers: {"X-Access-Token": "<?php echo $core->server->nodeData('gsd_secret'); ?>"},
 						url: "http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8003/gameservers/<?php echo $core->server->getData('gsd_id'); ?>/off",
 						timeout: 5000,
 						error: function(jqXHR, textStatus, errorThrown) {
