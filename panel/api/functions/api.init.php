@@ -18,12 +18,6 @@
  */
 
 trait globalInit {
-
-	public static function getStoredData() {
-	
-		return json_decode($_POST['request'], true);
-	
-	}
 	
 	public function throwResponse($text, $success = false){
 	
@@ -33,6 +27,15 @@ trait globalInit {
 				'info' => $text
 			)
 		));
+	
+	}
+	
+	public function getStoredData() {
+	
+		if(!isset($_POST['request']))
+			$this->throwResponse("No data was sent in the request.");
+		else
+			return json_decode($_POST['request'], true);
 	
 	}
 
