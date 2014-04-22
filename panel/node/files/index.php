@@ -71,21 +71,21 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="../../account.php" class="list-group-item">Settings</a>
-					<a href="../../servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="../../account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="../../servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
-					<a href="../index.php" class="list-group-item">Overview</a>
-					<a href="../console.php" class="list-group-item">Live Console</a>
-					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir" style="display: none;"></i></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
+					<a href="../index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="../console.php" class="list-group-item"><?php echo $_l->tpl('sidebar.console'); ?></a>
+					<a href="index.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_sett'); ?></strong></a>
 					
-					<a href="../settings.php" class="list-group-item">Server Management</a>
-					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
+					<a href="../settings.php" class="list-group-item"><?php echo $_l->tpl('sidebar.manage'); ?></a>
+					<a href="../plugins/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.plugins'); ?></a>
 				</div>
 			</div>
 			<div class="col-9" id="internal_alert">

@@ -56,7 +56,7 @@ if(isset($_POST['file'])){
 		
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($curl, CURLOPT_HEADER, false);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array("X-Access-Token: ".$core->server->nodeData('gsd_secret')));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 		$response = curl_exec($curl);
@@ -67,7 +67,7 @@ if(isset($_POST['file'])){
         
         }else{
         
-        	exit('<div class="alert alert-danger">Unable to save the file.</div>'.$response);
+        	exit('<div class="alert alert-danger">Unable to save the file.</div>');
         
         }
     

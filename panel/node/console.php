@@ -118,25 +118,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	<script type="text/javascript">
 	$(window).load(function(){
 		var socket = io.connect('http://<?php echo $core->server->nodeData('sftp_ip'); ?>:8031/<?php echo $core->server->getData('gsd_id'); ?>');
-		$.ajaxSetup({
-		        error: function(jqXHR, exception) {
-		            if (jqXHR.status === 0) {
-		                alert('Not connect.\n Verify Network.');
-		            } else if (jqXHR.status == 404) {
-		                alert('Requested page not found. [404]');
-		            } else if (jqXHR.status == 500) {
-		                alert('Internal Server Error [500].');
-		            } else if (exception === 'parsererror') {
-		                alert('Requested JSON parse failed.');
-		            } else if (exception === 'timeout') {
-		                alert('Time out error.');
-		            } else if (exception === 'abort') {
-		                alert('Ajax request aborted.');
-		            } else {
-		                alert('Uncaught Error.\n' + jqXHR.responseText);
-		            }
-		        }
-		    });
 		$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		$("#console_command").submit(function(){
 			$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
@@ -157,7 +138,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		    		$("#sending_command").removeClass('disabled');
 		    		$("#sending_command").html('&rarr;');
 		    		$("#ccmd").val('');
-		    			if(data != 'ok'){
+		    			if(data !== true){
 		    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
 		    			}
 		 		 }

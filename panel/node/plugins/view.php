@@ -33,7 +33,14 @@ if(isset($_GET['slug']) && !empty($_GET['slug'])){
 	 * Viewing Plugin
 	 */
 	$_GET['slug'] = str_replace(array(' ', '+', '%20'), '', $_GET['slug']);
-	$data = file_get_contents('http://api.bukget.org/3/plugins/bukkit/'.$_GET['slug']);
+	$context = stream_context_create(array(
+		"http" => array(
+			"method" => "GET",
+			"header" => 'User-Agent: PufferPanel',
+			"timeout" => 5
+		)
+	));
+	$data = file_get_contents('http://api.bukget.org/3/plugins/bukkit/'.$_GET['slug'], false, $context);
 	$data = json_decode($data, true);
 	
 	$data['description'] = (strlen($data['description']) == 0) ? 'No description is avaliable for this plugin.' : $data['description'];

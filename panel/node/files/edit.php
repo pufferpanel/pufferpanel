@@ -34,8 +34,7 @@ if(isset($_POST['file']))
 if(isset($_POST['dir']))
     $_POST['dir'] = str_replace('..', '', urldecode($_POST['dir']));
 
-$path = $core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server/';
-$parName = 'Editing: /'.$_POST['file'].'';
+$parName = 'Editing: '.$_POST['file'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +73,7 @@ $parName = 'Editing: /'.$_POST['file'].'';
 				    
 				    if(isset($_POST['file'])){
 				    
-				        if(in_array(pathinfo($path.$_POST['file'], PATHINFO_EXTENSION), $canEdit)){
+				        if(in_array(pathinfo($_POST['file'], PATHINFO_EXTENSION), $canEdit)){
 				                    
 				            /*
 		                     * Create File Path
@@ -96,28 +95,39 @@ $parName = 'Editing: /'.$_POST['file'].'';
 		            		$context = stream_context_create(array(
 		            			"http" => array(
 		            				"method" => "GET",
+		            				"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
 		            				"timeout" => 3
 		            			)
 		            		));
 		            		
-		            		$json = json_decode(file_get_contents($url, 0, $context), true);
+		            		$content = file_get_contents($url, 0, $context);
+		            		
+		            			if(!$content){
+		            			
+		            				echo '<div class="alert alert-danger">Unable to connect to the daemon.</div>';
+		            					
+		            			}else{
+		            				
+		            				$json = json_decode($content, true);
 		                
-				                echo '<form method="post" id="editing_file">
-										<div class="form-group">
-											<label for="email" class="control-label">'.$parName.'</label>
-											<div>
-												<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">'.$json['contents'].'</textarea>
+					                echo '<form method="post" id="editing_file">
+											<div class="form-group">
+												<label for="email" class="control-label">'.$parName.'</label>
+												<div>
+													<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">'.$json['contents'].'</textarea>
+												</div>
 											</div>
-										</div>
-										<div class="form-group">
-											<div>
-												<input type="hidden" name="file" value="'.$_POST['file'].'" />
-												<button class="btn btn-primary btn-sm" id="save_file">Save</button>
-												<button class="btn btn-default btn-sm" onclick="window.location=\'index.php?dir='.urlencode('/'.$directory).'\';return false;">Back to File Manager</button>
+											<div class="form-group">
+												<div>
+													<input type="hidden" name="file" value="'.$_POST['file'].'" />
+													<button class="btn btn-primary btn-sm" id="save_file">Save</button>
+													<button class="btn btn-default btn-sm" onclick="window.location=\'index.php?dir='.urlencode('/'.$directory).'\';return false;">Back to File Manager</button>
+												</div>
 											</div>
-										</div>
-				                    </form>';
-				            
+					                    </form>';
+								
+								}
+
 				        }else{
 				        
 				            echo '<div class="alert alert-danger">This type of file cannot be edited via our control panel.</div>';
@@ -158,7 +168,6 @@ $parName = 'Editing: /'.$_POST['file'].'';
 					$("#save_status").html(data);
 					$("#save_file").html('Save').removeClass('disabled');
 					$("#save_status").slideDown();
-//					/.delay(2500).slideUp()
 				}
 			});
 		});
