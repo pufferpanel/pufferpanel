@@ -18,8 +18,12 @@
  */
 require_once('../core/framework/framework.core.php');
 require_once('api.init.php');
+require_once('modules/module.add.php');
 
-$api = new apiInitializationClass(); 
+$api = new apiInitializationClass();
+$api->module = new stdClass();
+
+$api->module->add = new apiModuleAddServer();
 #$api->auth = new apiAuthenticationClass();
 #$api->process = new apiProcessingClass();
 #$api->run = new apiModuleRunClass();

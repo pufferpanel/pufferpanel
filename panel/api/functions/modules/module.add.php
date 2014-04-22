@@ -48,8 +48,6 @@ trait addServer {
 				'alloc_disk',
 				'sftp_pass',
 				'sftp_pass_2',
-				'backup_disk',
-				'backup_files',
 				'cpu_limit'
 			); 
 			
@@ -144,14 +142,9 @@ trait addServer {
 		if($data['sftp_pass'] != $data['sftp_pass_2'] || strlen($data['sftp_pass']) < 8)
 			$this->throwResponse('Function Failed to Finish: invalid SFTP passwords provided.', false);			
 		
-		$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+		//@TODO: This is a horrendous mess.
+		$this->iv = ;
 		$data['sftp_pass'] = openssl_encrypt($data['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
-		
-		/*
-		 * Validate Backup Disk & Files
-		 */
-		if(!is_numeric($data['backup_disk']) || !is_numeric($data['backup_files']))
-			$this->throwResponse('Function Failed to Finish: invalid backup limits provided.', false);
 		
 		/*
 		 * Validate Modpack
@@ -183,10 +176,11 @@ trait addServer {
 		 * Add Server to Database
 		 */
 		$this->ftpUser = (strlen($data['server_name']) > 6) ? substr($data['server_name'], 0, 6).'_'.$core->auth->keygen(5) : $data['server_name'].'_'.$core->auth->keygen((11 - strlen($data['server_name'])));
-		
-		$this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass, :bfiles, :bdisk)");
+				
+		$this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 		$this->add->execute(array(
 			':hash' => $core->auth->keygen(42),
+			':gsd_secret' => $core->auth->keygen(16).$core->auth->keygen(16),
 			':e_iv' => $iv,
 			':node' => $data['node'],
 			':sname' => $data['server_name'],
@@ -199,10 +193,8 @@ trait addServer {
 			':date' => time(),
 			':sip' => $data['server_ip'],
 			':sport' => $data['server_port'],
-			':ftpuser' => $ftpUser,
-			':ftppass' => $data['sftp_pass'],
-			':bfiles' => $data['backup_files'],
-			':bdisk' => $data['backup_disk']
+			':ftpuser' => $this->ftpUser,
+			':ftppass' => $data['sftp_pass']
 		));
 		
 		$this->lastInsert = $this->mysql->lastInsertId();
