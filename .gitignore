@@ -11,3 +11,5 @@ PufferPan.esproj/*
 SETUP
 languages/build/index.php
 api/*
+
+panel/api/index.php
