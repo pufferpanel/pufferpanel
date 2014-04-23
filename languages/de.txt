@@ -19,19 +19,27 @@ string.stop, Stop
 string.options, Optionen
 string.search, Suchen
 string.clear, Leeren
+String.Refresh, Aktualisieren
+string.close, Schließen
+string.generated_pass, Passwort generieren
+string.modpacks, Modpacks
+string.sftp, SFTP
+string.host, Host
+string.username, Nutzername
+string.generate, Generieren
 footer.license, PufferPanel ist unter der <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 Lizenz</a> lizensiert.
 footer.version, Die momentane Version %s wurde bereitgestellt von <a href="http://kelp.in/">Kelpin' Systems</a>.
 footer.generated, Seite in %s Sekunden erstellt.
 footer.queries, %s ausgeführte Datenbank-Anfragen.
-sidebar.acc_actions, Konto-Aktionen
-sidebar.server_acc, Server-Aktionen
-sidebar.server_sett, Server-Einstellungen
-sidebar.settings, Einstellungen
+Sidebar.acc_actions, Konto-Aktionen
+Sidebar.server_acc, Server-Aktionen
+Sidebar.server_sett, Server-Einstellungen
+Sidebar.Settings, Einstellungen
 sidebar.servers, Meine Server
-sidebar.overview, Übersicht
+Sidebar.Overview, Übersicht
 sidebar.console, Live-Konsole
-sidebar.files, Datei-Manager
-sidebar.manage, Server-Management
+Sidebar.Files, Datei-Manager
+Sidebar.Manage, Server-Management
 sidebar.plugins, Server Plugins
 header.account, Konto
 header.logout, Logout
@@ -43,30 +51,43 @@ settings.update_email, Email aktualisieren
 settings.current_pass, Aktuelles Passwort
 settings.new_pass, Neues Passwort
 settings.new_email, Neue Email
-settings.notifications_h1, Update-Benachrichtigungseinstellungen
+Settings.notifications_h1, Update-Benachrichtigungseinstellungen
 settings.login_success, Erfolgreich eingeloggt
 settings.failed_login, Fehler beim einloggen
 settings.notify.email_me, Bitte schreiben Sie mir eine Email
 settings.notify.no_email_me, Mailen Sie mir nicht
-settings.update_preferences, Update-Einstellungen
-node.overview.stats_h1, Statistiken
+Settings.update_preferences, Update-Einstellungen
+Node.Overview.stats_h1, Statistiken
 node.overview.collect_usage, Beginne Sammeln von Nutzungsdaten, dies könnte ein paar Sekunden dauern. Bitte stellen Sie sicher, dass der Server online ist.
 node.overview.collect_usage, Beginne Sammeln von Spielerdaten, dies könnte ein paar Sekunden dauern. Bitte stellen Sie sicher, dass der Server online ist.
+node.overview.collect_disk, Sammle Daten über die Festplattennutzung. Dies könnte ein paar Sekunden dauern.
+node.overview.no_players, Es sind momentan keine Spieler online.
 node.overview.disk_h1, Genutzer Festplattenspeicherplatz
 node.overview.space_used, Sie verwenden %s MB von %s MB an Festplattenspeicherplatz.
-node.overview.information_h1, Serverinformationen
+Node.Overview.information_h1, Serverinformationen
+node.overview.players_h5, Spieler Online
+node.overview.cpu_h5, CPU Auslastung
+node.overview.memory_h5, Speichernutzung
 node.console.command_help, Konsolenbefehl eingeben
+Node.Console.scrollstop_alert, Sie haben Text in der Konsole markiert. Ist dies der Fall, wird die Konsole nicht automatisch aktualisieren. Dadurch wird ein einfacheres Kopieren oder Selektieren möglich gemacht. Um die automatische Aktualisierung wieder zu starten, deselektieren Sie einfach den zuvor markierten Text.
 node.file.loading, Lade Verzeichnis. Bitte warten.
-node.file.name, Dateiname
-node.file.size, Dateigröße
-node.file.modified, Zuletzt geändert
+node.console.scrollstop_h1, Scrollstop&trade; Konsole
+node.console.ajax.server_started, Der Server wurde erfolgreich gestartet.
+Node.file.Name, Dateiname
+Node.file.Size, Dateigröße
+Node.file.modified, Zuletzt geändert
 node.settings.modpack.modpack_h1, Server Modpack Management
-node.settings.modpack.current, Aktuelles Modpack
-node.settings.modpack.install, Modpack installieren
+Node.Settings.Modpack.Current, Aktuelles Modpack
+Node.Settings.Modpack.Install, Modpack installieren
+node.settings.modpack.select, —- Wähle ein Modpack
 node.settings.jar.jar_h1, Name der Server .jar
 node.settings.jar.jarfile_name, Name der Jar-Datei
 node.settings.jar.update, Name des Updates
+node.settings.sftp.sftp_h1, SFTP Einstellungen
+node.settings.ajax.installing_modpack, Installiere Modpack
+node.settings.ajax.modpack_error, Du kannst eine deaktivierte Eingabemaske nicht als Modpack nutzen!
 node.plugins.welcome_h1, Plugin Manager
-node.plugins.Welcome, Willkommen im integrierten Plugin-Manager. Dieser Manager sammelt Ergebnisse und Daten von Bukget und zeigt diese in einer benutzerfreundlichen Art an. Der automatische Installer kann, vor allem bei komplexeren Plugins, fehlerhaft sein. Es wird empfohlen, wenn möglich, die Plugins zuerst auf Ihren Computer herunterzuladen.
+node.plugins.welcome, Willkommen im integrierten Plugin-Manager. Dieser Manager sammelt Ergebnisse und Daten von Bukget und zeigt diese in einer benutzerfreundlichen Art an. Der automatische Installer kann, vor allem bei komplexeren Plugins, fehlerhaft sein. Es wird empfohlen, wenn möglich, die Plugins zuerst auf Ihren Computer herunterzuladen.
 node.plugins.search_h1, Durchsuche Plugin Datenbank
 node.plugins.plugin_name, Plugin Name
+node.ajax.generic_error, Bei diesem AJAX-Request ist ein Fehler aufgetreten.

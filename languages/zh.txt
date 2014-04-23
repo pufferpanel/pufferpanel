@@ -19,6 +19,14 @@ string.stop, 停止
 string.options, 设置
 string.search, 搜索
 string.clear, 清除
+string.refresh, Refresh
+string.close, Close
+string.generated_pass, Generated Password
+string.modpacks, Modpacks
+string.sftp, SFTP
+string.host, Host
+string.username, Username
+string.generate, Generate
 footer.license, PufferPanel 是以<a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 许可证</a>以下授权。
 footer.version, 现行版本（%s）是由 <a href="http://kelp.in/">Kelpin' Systems</a> 分发。
 footer.generated, 在%s秒内生成此页。
@@ -47,26 +55,39 @@ settings.notifications_h1, 通知首设置
 settings.login_success, 成功登录
 settings.failed_login, 失败登录
 settings.notify.email_me, 请联络我
-settings.notify.no_email_me, 不要联络我
-settings.update_preferences, 更新选项
-node.overview.stats_h1, 统计概览
-node.overview.collect_usage, 正在收集使用统计, 该过程可能需要一些时间。 请确保服务器处于联机状态。
-node.overview.collect_usage, 正在收集玩家统计, 该过程可能需要一些时间。 请确保服务器处于联机状态。
-node.overview.disk_h1, 该磁盘使用空间
+settings.notify.no_email_me, Don't Email Me
+settings.update_preferences，更新选项
+node.overview.stats_h1，统计概览
+node.overview.collect_usage, 正在收集使用统计，该过程可能需要一些时间。 请确保服务器处于联机状态。
+node.overview.collect_players, 正在收集玩家统计，该过程可能需要一些时间。 请确保服务器处于联机状态。
+node.overview.collect_disk, Collecting disk usage information, this could take a few seconds.
+node.overview.no_players, No players are currently online.
+node.overview.disk_h1，该磁盘使用空间
 node.overview.space_used, 您已经用了您所允许的%sMB的%sMB。
-node.overview.information_h1, 服务器资料
-node.console.command_help, 输入控制台命令
-node.file.loading, 正在显示目录。 请稍候。
+node.overview.information_h1，服务器资料
+node.overview.players_h5, Players Online
+node.overview.cpu_h5, CPU Usage
+node.overview.memory_h5, Memory Usage
+node.console.command_help，输入控制台命令
+node.console.scrollstop_alert, You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.
+node.file.loading，正在显示目录。 请稍候。
+node.console.scrollstop_h1, Scrollstop&trade; Console Window
+node.console.ajax.server_started, Server has been started successfully.
 node.file.name, 文件名称
 node.file.size, 文件大小
 node.file.modified, 最后修改
 node.settings.modpack.modpack_h1, 服务器改装配套管理
 node.settings.modpack.current, 现时改装配套
 node.settings.modpack.install, 安装改装配套
-node.settings.jar.jar_h1, 服务器 .jar 名称
-node.settings.jar.jarfile_name, Jarfile 名称
-node.settings.jar.update, 更新名称
-node.plugins.welcome_h1, 插件安装程序
-node.plugins.welcome, 欢迎光临, 您正在使用内置插件的安装程序。 这一个安装程序将从Bukget收集数据, 并将它们在这里显示。 安装程序可能会有时出错, 尤其是在处理比较复杂的插件。 如果方便的话, 我们建议首先在电脑上下载您的插件。
-node.plugins.search_h1, 搜索插件库
-node.plugins.plugin_name, 插件名称
+node.settings.modpack.select, —- Select a Modpack
+node.settings.jar.jar_h1 服务器 .jar 名称
+node.settings.jar.jarfile_name，Jarfile 名称
+node.settings.jar.update，更新名称
+node.settings.sftp.sftp_h1, SFTP Settings
+node.settings.ajax.installing_modpack, Installing Modpack
+node.settings.ajax.modpack_error, You can not use a disabled form input as a modpack!
+node.plugins.welcome_h1，插件安装程序
+node.plugins.welcome，欢迎光临，您正在使用内置插件的安装程序。 这一个安装程序将从Bukget收集数据，并将它们在这里显示。 安装程序可能会有时出错，尤其是在处理比较复杂的插件。 如果方便的话，我们建议首先在电脑上下载您的插件。
+node.plugins.search_h1，搜索插件库
+node.plugins.plugin_name 插件名称
+node.ajax.generic_error, An error was encountered with this AJAX request.
