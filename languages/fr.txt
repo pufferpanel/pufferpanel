@@ -1,0 +1,93 @@
+string.email, Email
+string.password, Mot de passe
+string.login, Connexion
+string.reset_password, Réinitialiser le mot de passe
+string.spam_protection, Protection contre le spam
+string.again, (Encore)
+string.node, Node
+string.name, Nom du serveur
+string.connect, Connexion
+string.status, Statut
+string.offline, Hors ligne
+string.online, En ligne
+string.connection, IP:PORT
+string.mem_alloc, Mémoire allouée
+string.disk_alloc, Disque alloué
+string.start, Démarrer
+string.restart, Redémarrer
+string.stop, Arrêter
+string.options, Options
+string.search, Recherche
+string.clear, Effacer
+string.refresh, Actualiser
+string.close, Fermer
+string.generated_pass, Mot de passe généré
+string.modpacks, Modpacks
+string.sftp, SFTP
+string.host, Hôte
+string.username, Nom d'utilisateur
+string.generate, Générer
+footer.license, PufferPanel est licencié sous une licence <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.version, Version courante %s distribué par <a href="http://kelp.in/">Kelpin' Systems</a>.
+footer.generated, Page générée en %s secondes.
+footer.queries,  %s requêtes de base de données exécutées.
+sidebar.acc_actions, Actions du compte
+sidebar.server_acc, Actions du serveur
+sidebar.server_sett, Paramètres du serveur
+sidebar.settings, Paramètres
+sidebar.servers, Mes serveurs
+sidebar.overview, Vue d'ensemble
+sidebar.console, Live Console
+sidebar.files, Gestionnaire de fichiers
+sidebar.manage, Gestion du serveur
+sidebar.plugins, Plugins du serveur
+header.account, Compte
+header.logout, Déconnexion
+header.admin, Administration
+login.login_h1, Connexion à PufferPanel
+reset.reset_h1, Réinitialiser votre mot de passe
+settings.change_pass, Changer votre mot de passe
+settings.update_email, Mettre à jour votre Email
+settings.current_pass, Mot de passe actuel
+settings.new_pass, Nouveau mot de passe
+settings.new_email, Nouvelle Email
+settings.notifications_h1, Mise à jour des préférences de notification
+settings.login_success, Connexion réussie
+settings.failed_login, Échec de la connexion
+settings.notify.email_me, M'envoyer un Email
+settings.notify.no_email_me, Ne pas m'envoyer d'Email
+settings.update_preferences, Mettre à jour les préférences
+node.overview.stats_h1, Statistiques de la vue d'ensemble
+node.overview.collect_usage, Acquisition des informations d'utilisation, cela peut prendre quelques secondes. S'il vous plaît assurer vous que le serveur est en ligne.
+node.overview.collect_players, Acquisition des informations des joueurs, cela peut prendre quelques secondes. S'il vous plaît assurer vous que le serveur est en ligne.
+node.overview.collect_disk, Acquisition des informations du disque, cette opération peut prendre quelques secondes.
+node.overview.no_players, Aucun joueurs en ligne.
+node.overview.disk_h1, Espace disque utilisé
+node.overview.space_used, Vous utilisez %s MB de votre maximum %s MB d'espace disque.
+node.overview.information_h1, Informations du serveur
+node.overview.players_h5, Joueurs en ligne
+node.overview.cpu_h5, Utilisation du CPU
+node.overview.memory_h5, Utilisation de la mémoire
+node.console.command_help, Entrez une commande
+node.console.scrollstop_alert, Vous avez sélectionné du texte dans la console. La console ne sera pas mise à jour automatique lorsque cela se produit. Ceci est fait pour vous permettre de facilement copier ou sélectionnez du texte dans la console. Pour permettre le rafraîchissement automatique de nouveau, désélectionnez simplement  le texte.
+node.file.loading, Chargement du répertoire. Merci de patienter.
+node.console.scrollstop_h1, Scrollstop&trade; Fenêtre de console
+node.console.ajax.server_started, Serveur démarré avec succès.
+node.file.name, Nom du fichier
+node.file.size, Taille du fichier
+node.file.modified, Dernière mise à jour
+node.settings.modpack.modpack_h1, Gestion du Modpack du server
+node.settings.modpack.current, Modpack actuel
+node.settings.modpack.install, Installer un Modpack
+node.settings.modpack.select, \u2014- Sélectionnez un Modpack
+node.settings.jar.jar_h1, Server .jar Name
+node.settings.jar.jarfile_name, Nom du .jar
+node.settings.jar.update, Mettre a jour le nom
+node.settings.sftp.sftp_h1, Options SFTP
+node.settings.ajax.installing_modpack, Installation du Modpack
+node.settings.ajax.modpack_error, Vous ne pouvez pas utiliser un modpack désactivé !
+node.plugins.welcome_h1, Installateur de plugin
+node.plugins.welcome, Bienvenue à votre installateur de plugin intégré. Cette installation rassemble les résultats et les données de Bukget et les affiche ici dans un format facile à utiliser. Le programme d'installation automatique peut être bogué à certains moments, en particulier pour les plugins complexes. Nous vous recommandons de les installer manuellement.
+node.plugins.search_h1, Dépot Recherche de Plugin
+node.plugins.plugin_name, Nom du plugin
+node.ajax.generic_error, Une erreur s'est produite avec cette requête AJAX.

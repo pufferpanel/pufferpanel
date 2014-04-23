@@ -59,7 +59,7 @@ settings.notify.no_email_me, Mailen Sie mir nicht
 Settings.update_preferences, Update-Einstellungen
 Node.Overview.stats_h1, Statistiken
 node.overview.collect_usage, Beginne Sammeln von Nutzungsdaten, dies könnte ein paar Sekunden dauern. Bitte stellen Sie sicher, dass der Server online ist.
-node.overview.collect_usage, Beginne Sammeln von Spielerdaten, dies könnte ein paar Sekunden dauern. Bitte stellen Sie sicher, dass der Server online ist.
+node.overview.collect_players, Beginne Sammeln von Spielerdaten, dies könnte ein paar Sekunden dauern. Bitte stellen Sie sicher, dass der Server online ist.
 node.overview.collect_disk, Sammle Daten über die Festplattennutzung. Dies könnte ein paar Sekunden dauern.
 node.overview.no_players, Es sind momentan keine Spieler online.
 node.overview.disk_h1, Genutzer Festplattenspeicherplatz

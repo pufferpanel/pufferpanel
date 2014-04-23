@@ -59,7 +59,7 @@ settings.notify.no_email_me, No me envíes correos
 settings.update_preferences, Actualizar Preferencias
 node.overview.stats_h1, Resumen de Estadísticas
 node.Overview.collect_usage, Tratando de recopilar información de uso, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
-node.Overview.collect_usage, Tratando de recopilar información de jugadores, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
+node.overview.collect_players, Tratando de recopilar información de jugadores, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
 node.Overview.collect_disk, Recogiendo Información sobre el uso del disco, esto puede tardar unos segundos.
 node.Overview.no_players, No hay jugadores en línea.
 node.overview.disk_h1, Espacio de Disco Utilizado

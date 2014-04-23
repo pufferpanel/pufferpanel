@@ -1,0 +1,93 @@
+string.email, Email
+string.password, Lösenord
+string.login, Logga in
+string.reset_password, Återställ lösenord
+string.spam_protection, Spamfilter
+string.again, (Igen)
+string.node, Nod
+string.name, Namn
+string.connect, Anslut
+string.status, Status
+string.offline, Offline
+string.online, Online
+string.connection, Anslutning
+string.mem_alloc, Minne tilldelat
+string.disk_alloc, Diskutrymme tilldelat
+string.start, Starta
+string.restart, Starta om
+string.stop, Stoppa
+string.options, Alternativ
+string.search, Sök
+string.clear, Klart
+string.refresh, Uppdatera
+string.close, Stäng
+string.generated_pass, Genererat lösenord
+string.modpacks, Modpacket
+string.sftp, SFTP
+string.host, Host
+string.username, Användarnamn
+string.generate, Generera
+footer.license, PufferPanel är licensierat under en <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 Licens</a>.
+footer.version, Kör version %s distribuerat utav <a href="http://kelp.in/">Kelpin' Systems</a>.
+footer.generated, Sida genererad på %s sekunder.
+footer.queries, Genomförde %s databasförfrågningar.
+sidebar.acc_actions, Konto åtgärder
+sidebar.server_acc, Serveråtgärder
+sidebar.server_sett, Serverinställningar
+sidebar.settings, Inställningar
+sidebar.servers, Mina servrar
+sidebar.overview, Översikt
+sidebar.console, Live konsol
+sidebar.files, Filhanterare
+sidebar.manage, Serverhantering
+sidebar.plugins, Server Plugins
+header.account, Konto
+header.logout, Logga ut
+header.admin, Admin Kontrollpanel
+login.login_h1, Logga in till PufferPanel
+reset.reset_h1, Återställ ditt lösenord
+settings.change_pass, Byt lösenord
+settings.update_email, Uppdatera email
+settings.current_pass, Nuvarande lösenord
+settings.new_pass, Nytt lösenord
+settings.new_email, Ny email
+settings.notifications_h1, Uppdatera notifikations preferenser
+settings.login_success, Inloggning lyckades
+settings.failed_login, Inloggningen misslyckades
+settings.notify.email_me, Vänligen emaila mig
+settings.notify.no_email_me, Emaila mig inte
+settings.update_preferences, Uppdatera preferenser
+node.overview.stats_h1, Statistiks översikt
+node.overview.collect_usage, Försöker att samla information om användning, detta kan ta några sekunder. Kontrollera att servern är online.
+node.overview.collect_players, Försöker att samla spelarinformation, detta kan ta några sekunder. Kontrollera att servern är online.
+node.overview.collect_disk, Samlar diskanvändingsinformation, detta kan ta några sekunder.
+node.overview.no_players, Inga spelare är online för tillfället.
+node.overview.disk_h1, Diskutrymme som används
+node.overview.space_used, Du använder %s MB av ditt maximala %s MB av diskutrymme.
+node.overview.information_h1, Server Information
+node.overview.players_h5, Spelare Online
+node.overview.cpu_h5, CPU-användning
+node.overview.memory_h5, Minnes användning
+node.console.command_help, Ange konsolkommando
+node.console.scrollstop_alert, Du har markerat text i konsolen. Konsolen kommer inte automatiskt uppdateras när detta inträffar. Detta görs så att du kan enkelt kopiera eller markera text i konsolen. För att tillåta automatiska uppdateringar igen, avmarkera den markerade texten.
+node.file.loading, Laddar katalogen. Vänligen vänta.
+node.console.scrollstop_h1, Scrollstop&trade; konsolfönster
+node.console.ajax.server_started, Servern har nu startats.
+node.file.name, Filnamn
+node.file.size, Filstorlek
+node.file.modified, Senast modifierad
+node.settings.modpack.modpack_h1, Server Modpacketshantering
+node.settings.modpack.current, Nuvarande modpacket
+node.settings.modpack.install, Installera modpacket
+node.settings.modpack.select, —- Välj ett modpacket
+node.settings.jar.jar_h1, Server .jar namn
+node.settings.jar.jarfile_name, Jarfils namn
+node.settings.jar.update, Uppdatera namn
+node.settings.sftp.sftp_h1, SFTP inställningar
+node.settings.ajax.installing_modpack, Installerar modpacket
+node.settings.ajax.modpack_error, Du kan inte använda ett avstängt val som modpacket!
+node.plugins.welcome_h1, Plugin installerare
+node.plugins.welcome, Välkommen till din inbyggda plugin installerare. Installationsprogrammet samlar in resultat och data från Bukget och visar dem här på ett lätt-att-använda sätt. Den automatiska installeraren kan vara buggig ibland, särskilt med för komplexa plugins. Vi rekommenderar att ladda ner plugins till datorn först, om möjligheten finns.
+node.plugins.search_h1, Sök i pluginlistan
+node.plugins.plugin_name, Plugin namn
+node.ajax.generic_error, Ett fel uppstod med AJAX förfrågningen.
