@@ -1,8 +1,6 @@
 # osx noise
 .DS_Store
 profile
-
-
 PufferPan.esproj/*
 /panel/node/tmp/*
 *HASHFILE*
@@ -10,6 +8,4 @@ PufferPan.esproj/*
 *.lock*
 SETUP
 languages/build/index.php
-api/*
-
-panel/api/index.php
+panel/api/*
