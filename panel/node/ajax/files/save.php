@@ -63,22 +63,22 @@ if(isset($_POST['file'])){
 
         if(empty($response)){
         
-        	exit('<div class="alert alert-success">File was sucessfully saved.</div>');
+        	exit('<div class="alert alert-success">'.$_l->tpl('node.files.ajax.saved').'</div>');
         
         }else{
         
-        	exit('<div class="alert alert-danger">Unable to save the file.</div>');
+        	exit('<div class="alert alert-danger">'.$_l->tpl('node.files.ajax.no_save').'</div>');
         
         }
     
     }else{
     
-        exit('<div class="alert alert-warning">This type of file cannot be edited via our online file manager. Please use a FTP client.</div>');
+        exit('<div class="alert alert-warning">'.$_l->tpl('node.files.ajax.no_edit').'</div>');
     
     }
 
 }else{
 
-    exit('<div class="alert alert-danger">The file specified could not be found on the server.</div>');
+    exit('<div class="alert alert-danger">'.$_l->tpl('node.files.ajax.file_404').'</div>');
 
 }

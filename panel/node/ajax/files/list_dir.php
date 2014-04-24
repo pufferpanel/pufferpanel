@@ -60,7 +60,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	if(!is_dir("ssh2.sftp://$sftp/server/".$_POST['dir'])){
 	    
 	    $core->log->getUrl()->addLog(4, 0, array('system.path_missing', 'The directory for `'.$core->server->getData('name').'` could not be found by the file manager.'));
-	    exit('<div class="error-box round">Unable to locate request directory. Error logged.</a>');
+	    exit('<div class="error-box round">'.$_l->tpl('node.files.ajax.no_dir').'</a>');
 	
 	}
 	
@@ -151,7 +151,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	$sftp = ssh2_sftp($connection);
 	
 		if(!$sftp)
-			exit('<div class="alert alert-danger">Unable to connect to the server to get the files. Please try again.</div>');
+			exit('<div class="alert alert-danger">'.$_l->tpl('node.files.ajax.no_dl').'</div>');
 	
 	$displayFolders = '';
 	$displayFiles = '';
@@ -214,10 +214,10 @@ echo '<table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
                     <th style="width:5%;text-align:center;"></th>
-                    <th style="width:45%">File Name</th>
-                    <th style="width:20%">File Size</th>
-                    <th style="width:20%">Last Modified</th>
-                    <th style="width:10%;text-align:center;">Options</th>
+                    <th style="width:45%">'.$_l->tpl('node.files.name').'</th>
+                    <th style="width:20%">'.$_l->tpl('node.files.size').'</th>
+                    <th style="width:20%">'.$_l->tpl('node.files.modified').'</th>
+                    <th style="width:10%;text-align:center;">'.$_l->tpl('string.options').'</th>
                 </tr>
             </thead>
             <tbody>

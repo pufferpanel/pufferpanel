@@ -49,21 +49,21 @@ $parName = 'Editing: '.$_POST['file'];
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="../../account.php" class="list-group-item">Settings</a>
-					<a href="../../servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="../../account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="../../servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
-					<a href="../index.php" class="list-group-item">Overview</a>
-					<a href="../console.php" class="list-group-item">Live Console</a>
-					<a href="index.php" class="list-group-item active">File Manager <i class="fa fa-spinner fa fa-spin" id="loading_dir" style="display: none;"></i></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
+					<a href="../index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="../console.php" class="list-group-item"><?php echo $_l->tpl('sidebar.console'); ?></a>
+					<a href="index.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_sett'); ?></strong></a>
 					
-					<a href="../settings.php" class="list-group-item">Server Management</a>
-					<a href="../plugins/index.php" class="list-group-item">Server Plugins</a>
+					<a href="../settings.php" class="list-group-item"><?php echo $_l->tpl('sidebar.manage'); ?></a>
+					<a href="../plugins/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.plugins'); ?></a>
 				</div>
 			</div>
 			<div class="col-9" id="load_files">
@@ -104,7 +104,7 @@ $parName = 'Editing: '.$_POST['file'];
 		            		
 		            			if(!$content){
 		            			
-		            				echo '<div class="alert alert-danger">Unable to connect to the daemon.</div>';
+		            				echo '<div class="alert alert-danger">'.$_l->tpl('node.files.edit.daemon_error').'</div>';
 		            					
 		            			}else{
 		            				
@@ -120,8 +120,8 @@ $parName = 'Editing: '.$_POST['file'];
 											<div class="form-group">
 												<div>
 													<input type="hidden" name="file" value="'.$_POST['file'].'" />
-													<button class="btn btn-primary btn-sm" id="save_file">Save</button>
-													<button class="btn btn-default btn-sm" onclick="window.location=\'index.php?dir='.urlencode('/'.$directory).'\';return false;">Back to File Manager</button>
+													<button class="btn btn-primary btn-sm" id="save_file">'.$_l->tpl('string.save').'</button>
+													<button class="btn btn-default btn-sm" onclick="window.location=\'index.php?dir='.urlencode('/'.$directory).'\';return false;">'.$_l->tpl('node.files.edit.back').'</button>
 												</div>
 											</div>
 					                    </form>';
@@ -130,19 +130,19 @@ $parName = 'Editing: '.$_POST['file'];
 
 				        }else{
 				        
-				            echo '<div class="alert alert-danger">This type of file cannot be edited via our control panel.</div>';
+				            echo '<div class="alert alert-danger">'.$_l->tpl('node.files.edit.type_error').'</div>';
 				        
 				        }
 				    
 				    }else{
 				    
-				        echo '<div class="alert alert-warning">No file was specified that can be edited.</div>';
+				        echo '<div class="alert alert-warning">'.$_l->tpl('node.files.edit.no_file').'</div>';
 				    
 				    }
 				    
 				}else{
 				    
-				    echo (isset($_GET['error'])) ? '<div class="alert alert-danger">'.base64_decode($_GET['error']).' You can return to the file manager by <a href="index.php">clicking here</a>.</div>' : '';
+				    echo (isset($_GET['error'])) ? '<div class="alert alert-danger">'.base64_decode($_GET['error']).' '.$_l->tpl('node.files.edit.error').'</div>' : '';
 				    
 				}
 				?>

@@ -29,9 +29,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		$getCommandData = $core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
 					
 		if($getCommandData === false)
-			exit('<div class="alert alert-danger">Unable to connect to the node.</div>');
+			exit('<div class="alert alert-danger">'.$_l->tpl('node.overview.ajax.no_conn').'</div>');
 		else if(empty($getCommandData))
-			exit('<div class="alert alert-danger">Unable to execute command on the server.</div>');
+			exit('<div class="alert alert-danger">'.$_l->tpl('node.overview.ajax.no_exec').'</div>');
 	
 		
 	/*
@@ -47,7 +47,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	echo '	<div class="progress">
 	  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%"></div>
 			</div>
-			<p class="text-muted">You are using '.$spaceUsedH.' of your maximum '.$core->server->getData('disk_space').' MB of disk space.</p>';
+			<p class="text-muted">'.sprintf($_l->tpl('node.overview.space_used'), $spaceUsedH, $core->server->getData('disk_space')).'</p>';
 			
 }else{
 
