@@ -35,6 +35,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	));
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	$response = curl_exec($curl);
+
+	if(!$response)
+		exit("An error was encountered with this AJAX request. (No Response)");
 	
 	$json = json_decode($response, true);
 	
