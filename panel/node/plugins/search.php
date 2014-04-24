@@ -99,7 +99,7 @@ if(isset($_GET['term']) && !empty($_GET['term'])){
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
-					<a href="../index.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="../index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.overview'); ?></a>
 					<a href="../console.php" class="list-group-item"><?php echo $_l->tpl('sidebar.console'); ?></a>
 					<a href="../files/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
