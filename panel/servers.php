@@ -29,7 +29,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
  */
 if(isset($_GET['goto']) && !empty($_GET['goto'])){
 
-	$core->server->nodeRedirect($_GET['goto']);
+	$core->server->nodeRedirect($_GET['goto'], $core->user->getData('root_admin'));
 	
 }
 

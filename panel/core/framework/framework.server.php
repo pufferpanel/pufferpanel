@@ -135,24 +135,30 @@ class server extends user {
         
     }
     
-    public function nodeRedirect($hash) {
+    public function nodeRedirect($hash, $rootAdmin) {
     	
-		if($this->user->getData('root_admin') == '1'){
+		if($rootAdmin == 1){
+		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
-			$query->execute(array($hash));
+			$query->execute(array(
+				$hash
+			));
+			
 		}else{
+		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => user::getData('id'),
+				':ownerid' => $userid,
 				':hash' => $hash
 			));
+			
 		}
 		
 			if($query->rowCount() == 1){
 			
 				$row = $query->fetch();
 				
-					setcookie('pp_server_hash', $row['hash'], 0, '/', $this->settings->get('cookie_website'));
+					setcookie('pp_server_hash', $row['hash'], 0, '/');
 				
 					$this->redirect('node/index.php');
 			
