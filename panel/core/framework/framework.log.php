@@ -19,13 +19,14 @@
 
 class log extends user {
     
+    //use Database\database;
     private $url;
     
     public function __construct($uid)
         {
         
             $this->uid = ($uid !== false) ? $uid : null;
-            $this->mysql = parent::getConnection();
+            $this->mysql = self::connect();
         
         }
     

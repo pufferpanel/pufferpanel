@@ -17,15 +17,17 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class query extends dbConn {
+class query {
 
+	use Database\database;
+	
 	public function __construct($serverid){
 		
 		if($serverid === false)
 			$this->_queryData = false;
 		else {
 		
-			$this->mysql = parent::getConnection();
+			$this->mysql = self::connect();
 			$this->gsid = (int)$serverid;
 			$this->_queryData = array();
 			$this->_nodeData = array();

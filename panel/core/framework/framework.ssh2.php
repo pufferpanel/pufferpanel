@@ -17,14 +17,16 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-class ssh extends auth {
+class ssh extends \Auth\auth {
 
+	//use Database\database;
+	
 	private $ssh2_connection;
 	private $connectFailed;
 	
 	public function __construct($settingValue) {
 	
-		$this->mysql = parent::getConnection();
+		$this->mysql = self::connect();
 		$this->useSSHKeys = $settingValue;
 		
 	}

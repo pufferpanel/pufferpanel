@@ -16,8 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
- 
- class lang {
+namespace Language;
+
+class lang {
  
  	public function __construct($language){
  	

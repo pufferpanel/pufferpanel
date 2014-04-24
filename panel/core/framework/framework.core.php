@@ -63,7 +63,7 @@ set_exception_handler('pdo_exception_handler');
  * Initalize Frameworks
  */
 $core->settings = new getSettings();
-$core->auth = new auth();
+$core->auth = new \Auth\auth();
 $core->ssh = new ssh($core->settings->get('use_ssh_keys'));
 $core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
 $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
@@ -78,16 +78,17 @@ $core->files = new files();
  */
 if($core->user->getData('language') === false)
 	if(!isset($_COOKIE['pp_language']) || empty($_COOKIE['pp_language']))
-		$_l = new lang($core->settings->get('default_language'));
+		$_l = new Language\lang($core->settings->get('default_language'));
 	else
-		$_l = new lang($_COOKIE['pp_language']);
+		$_l = new Language\lang($_COOKIE['pp_language']);
 else
-	$_l = new lang($core->user->getData('language'));
+	$_l = new Language\lang($core->user->getData('language'));
 	
 /*
  * MySQL PDO Connection Engine
  */
-$mysql = dbConn::getConnection();
+$mysql = Database\database::connect();
+
 
 function pdo_exception_handler($exception) {
     if ($exception instanceof PDOException) {

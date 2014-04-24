@@ -24,11 +24,13 @@
 
 class server extends user {
 
+	//use Database\database;
+	
 	public function __construct($hash, $userid, $isroot){
 		
 		if($userid !== false && !empty($hash)){
 		
-			$this->mysql = parent::getConnection();
+			$this->mysql = self::connect();
 			
 			$this->_data = array();
 			$this->_s = true;

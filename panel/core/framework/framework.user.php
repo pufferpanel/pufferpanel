@@ -21,14 +21,14 @@
  * PufferPanel User Class File
  */
 
-class user extends auth {
+class user extends Auth\auth {
 
 	public function __construct($ip, $session, $serverhash = null){
 	
 		//Re-Initalize the MySQL PDO Class
-		$this->mysql = parent::getConnection();
+		$this->mysql = self::connect();
 		
-		if(auth::isLoggedIn($ip, $session, $serverhash) === true){
+		if(self::isLoggedIn($ip, $session, $serverhash) === true){
 		
 			$this->_l = true;
 			

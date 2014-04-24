@@ -45,7 +45,7 @@ if(file_exists('../install.lock'))
 					    if(isset($_POST['do_settings'])){
 					    
 					        include('../../../core/framework/framework.database.connect.php');
-					        $mysql = dbConn::getConnection();
+					        $mysql = Database\database::connect();
 					        
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),

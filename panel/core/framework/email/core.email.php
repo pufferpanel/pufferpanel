@@ -21,14 +21,15 @@
  * Core Email Sending Class
  */
 
-class tplMail extends dbConn {
+class tplMail {
 
+	use Database\database;
     private $message;
     
 	public function __construct($settings)
 		{
 	
-			$this->mysql = parent::getConnection();
+			$this->mysql = self::connect();
 			$this->settings = $settings;
 	
 		}

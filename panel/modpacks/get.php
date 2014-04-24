@@ -21,7 +21,7 @@ require_once('../core/framework/framework.database.connect.php');
 /*
  * MySQL PDO Connection Engine
  */
-$mysql = dbConn::getConnection();
+$mysql = Database\database::connect();
 
 function pdo_exception_handler($exception) {
     if ($exception instanceof PDOException) {

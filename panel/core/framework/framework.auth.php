@@ -16,16 +16,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace Auth;
 
-class auth extends dbConn {
-	
-	public function __construct()
-		{
-		
-			$this->mysql = parent::getConnection();
-		
-		}
-	
+trait components {
+
 	public function hash($raw){
 	
 		return password_hash($raw, PASSWORD_BCRYPT);
@@ -59,6 +53,46 @@ class auth extends dbConn {
 	
 	}
 	
+	public function keygen($amount){
+		
+		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
+		
+		$randkey = null;
+		
+		for ($i=0; $i<$amount; $i++)
+			$randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
+		
+		return $randkey;
+					
+	}
+	
+	public function getCookie($cookie){
+	
+		if(isset($_COOKIE[$cookie])){
+		
+			return $_COOKIE[$cookie];
+		
+		}else{
+		
+			return null;
+		
+		}
+	
+	}
+
+}
+
+class auth {
+	
+	use \Database\database, \Auth\components;
+	
+	public function __construct()
+		{
+		
+			$this->mysql = self::connect();
+		
+		}
+		
 	public function verifyPassword($email, $raw){
 	
 		$this->get = $this->mysql->prepare("SELECT `password` FROM `users` WHERE `email` = :email");
@@ -74,19 +108,6 @@ class auth extends dbConn {
 			}else
 				return false;
 	
-	}
-	
-	public function keygen($amount){
-		
-		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
-		
-		$randkey = null;
-		
-		for ($i=0; $i<$amount; $i++)
-			$randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
-		
-		return $randkey;
-					
 	}
 
 	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
@@ -176,20 +197,6 @@ class auth extends dbConn {
 
 	}
 	
-	public function getCookie($cookie){
-	
-		if(isset($_COOKIE[$cookie])){
-		
-			return $_COOKIE[$cookie];
-		
-		}else{
-		
-			return null;
-		
-		}
-	
-	}
-
 }
 
 ?>

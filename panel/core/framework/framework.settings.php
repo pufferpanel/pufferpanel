@@ -17,12 +17,14 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
  
-class getSettings extends dbConn {
+class getSettings {
 
+	use Database\database;
+	
 	public function __construct()
 		{
 		
-			$this->mysql = parent::getConnection();
+			$this->mysql = self::connect();
 		
 			$this->query = $this->mysql->prepare("SELECT * FROM `acp_settings`");
 			$this->query->execute();

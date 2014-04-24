@@ -20,12 +20,14 @@
 /*
  * PufferPanel Page Actions Function File
  */
-class page extends dbConn {
+class page {
 
+	use Database\database;
+	
 	public function __construct($user, $settings)
 		{
 		
-			$this->mysql = parent::getConnection();
+			$this->mysql = self::connect();
 			$this->user = $user;
 			$this->settings = $settings;
 		
@@ -68,11 +70,7 @@ class page extends dbConn {
 			return 'active';
 	
 	}
-	
-	public function override_getCount(){
-		return $this->getCount();
-	}
-	
+		
 	public function nodeRedirect($hash)
 		{
 		

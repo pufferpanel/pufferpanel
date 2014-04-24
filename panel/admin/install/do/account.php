@@ -45,7 +45,7 @@ if(file_exists('../install.lock'))
 					    if(isset($_POST['do_account'])){
 					    
 					        include('../../../core/framework/framework.database.connect.php');
-					        $mysql = dbConn::getConnection();
+					        $mysql = Database\database::connect();
 					        
 					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
 					        
