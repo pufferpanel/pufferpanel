@@ -111,13 +111,6 @@ class auth {
 	
 	}
 	
-	public function init($admin = false) {
-	
-		if($this->isLoggedIn($_SERVER['REMOTE_ADDR'], $this->getCookie('pp_auth_token'), $this->getCookie('pp_server_hash'), $admin) === false)
-			$this->redirect($this->settings->get('master_url').'index.php?login');
-	
-	}
-
 	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
 
 		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session AND `session_expires` > :sesexp");

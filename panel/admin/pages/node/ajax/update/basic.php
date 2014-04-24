@@ -20,7 +20,7 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php');
+	Page\components::redirect('../../../index.php?login');
 }
 
 if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
