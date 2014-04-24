@@ -42,4 +42,14 @@ trait components {
     		
 }
 
+trait CURL {
+
+	public function makeConnection() {
+	
+		return false;
+	
+	}
+
+}
+
 ?>
