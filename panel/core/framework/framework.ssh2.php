@@ -18,8 +18,6 @@
  */
 
 class ssh extends \Auth\auth {
-
-	//use Database\database;
 	
 	private $ssh2_connection;
 	private $connectFailed;

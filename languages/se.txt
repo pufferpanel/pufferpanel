@@ -27,6 +27,14 @@ string.sftp, SFTP
 string.host, Host
 string.username, Användarnamn
 string.generate, Generera
+string.description, Beskrivning
+string.previous, Tidigare
+string.next, Nästa
+string.about, Om
+string.version, Version
+string.published, Publiserad
+string.versions, Versioner
+string.save, Spara
 footer.license, PufferPanel är licensierat under en <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 Licens</a>.
 footer.version, Kör version %s distribuerat utav <a href="http://kelp.in/">Kelpin' Systems</a>.
 footer.generated, Sida genererad på %s sekunder.
@@ -59,7 +67,7 @@ settings.notify.no_email_me, Emaila mig inte
 settings.update_preferences, Uppdatera preferenser
 node.overview.stats_h1, Statistiks översikt
 node.overview.collect_usage, Försöker att samla information om användning, detta kan ta några sekunder. Kontrollera att servern är online.
-node.overview.collect_players, Försöker att samla spelarinformation, detta kan ta några sekunder. Kontrollera att servern är online.
+node.overview.collect_usage, Försöker att samla spelarinformation, detta kan ta några sekunder. Kontrollera att servern är online.
 node.overview.collect_disk, Samlar diskanvändingsinformation, detta kan ta några sekunder.
 node.overview.no_players, Inga spelare är online för tillfället.
 node.overview.disk_h1, Diskutrymme som används
@@ -68,14 +76,27 @@ node.overview.information_h1, Server Information
 node.overview.players_h5, Spelare Online
 node.overview.cpu_h5, CPU-användning
 node.overview.memory_h5, Minnes användning
+node.overview.ajax.no_conn, Kan inte ansluta till noden.
+node.overview.ajax.no_exec, Det går inte att utföra kommandot på servern.
 node.console.command_help, Ange konsolkommando
 node.console.scrollstop_alert, Du har markerat text i konsolen. Konsolen kommer inte automatiskt uppdateras när detta inträffar. Detta görs så att du kan enkelt kopiera eller markera text i konsolen. För att tillåta automatiska uppdateringar igen, avmarkera den markerade texten.
-node.file.loading, Laddar katalogen. Vänligen vänta.
 node.console.scrollstop_h1, Scrollstop&trade; konsolfönster
 node.console.ajax.server_started, Servern har nu startats.
-node.file.name, Filnamn
-node.file.size, Filstorlek
-node.file.modified, Senast modifierad
+node.files.loading, Laddar katalogen. Vänligen vänta.
+node.files.name, Filnamn
+node.files.size, Filstorlek
+node.files.modified, Senast modifierad
+node.files.edit.daemon_error, Det går inte att ansluta till daemonen.
+node.files.edit.back, Tillbaka till filhanteraren
+node.files.edit.type_error, Denna typ av fil kan ej redigeras via vår kontrollpanel.
+node.files.edit.no_file, Ingen fil som angavs kan redigeras.
+node.files.edit.error, Du kan återvända till filhanteraren genom att <a href="index.php">klicka här</a>.
+node.files.ajax.no_dir, Det går inte att hitta den katalogen som är begären. Error loggas.
+node.files.ajax.no_dl, Kan ej ansluta till servern för att få filer. Försök igen.
+node.files.ajax.saved, Filen är nu sparad.
+node.files.ajax.no_save, Det går ej att spara filen.
+node.files.ajax.no_edit, Den här typen av fil kan inte redigeras via vår online filhanterare. Var god och använd en FTP-klient.
+node.files.ajax.file_404, Den specificerade filen kunde ej hittas på servern.
 node.settings.modpack.modpack_h1, Server Modpacketshantering
 node.settings.modpack.current, Nuvarande modpacket
 node.settings.modpack.install, Installera modpacket
@@ -90,4 +111,10 @@ node.plugins.welcome_h1, Plugin installerare
 node.plugins.welcome, Välkommen till din inbyggda plugin installerare. Installationsprogrammet samlar in resultat och data från Bukget och visar dem här på ett lätt-att-använda sätt. Den automatiska installeraren kan vara buggig ibland, särskilt med för komplexa plugins. Vi rekommenderar att ladda ner plugins till datorn först, om möjligheten finns.
 node.plugins.search_h1, Sök i pluginlistan
 node.plugins.plugin_name, Plugin namn
+node.plugins.installed, Ditt plugin har installerats.
+node.plugins.installing, Var god, vänta medans ditt plugin installeras. Denna process kan ta ungefär en minut att slutföra.
+node.plugins.installing_warning, Navigera inte bort från denna sida!
+node.plugins.error.term, Var god och ange ett giltigt sökord.
+node.plugins.view.author, Det här pluginet är skapat och underhålls utav %s.
+node.plugins.view.view, Se det pluginet <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank">på Bukkit</a>.
 node.ajax.generic_error, Ett fel uppstod med AJAX förfrågningen.
