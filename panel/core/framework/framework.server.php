@@ -137,6 +137,9 @@ class server extends user {
     
     public function nodeRedirect($hash, $rootAdmin) {
     	
+    	//@TODO: Solve this bug
+    	$this->mysql = self::connect();
+    	
 		if($rootAdmin == 1){
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
