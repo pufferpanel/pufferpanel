@@ -90,7 +90,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 			</div>
 			<div class="col-9" id="internal_alert">
 				<div class="alert alert-info">
-					<i class="fa fa-spinner fa fa-spin"></i> Loading Directory. Please wait.
+					<i class="fa fa-spinner fa fa-spin"></i> <?php echo $_l->tpl('node.files.loading'); ?>
 				</div>
 			</div>
 			<div class="row">
