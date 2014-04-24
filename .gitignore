@@ -8,5 +8,3 @@ PufferPan.esproj/*
 *.lock*
 SETUP
 languages/build/index.php
-panel/api/*
-panel/api-ignore/*
