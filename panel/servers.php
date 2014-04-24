@@ -18,12 +18,6 @@
  */
 session_start();
 require_once('core/framework/framework.core.php');
-$error = '';
-
-//if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
-//	Page\components::redirect('index.php', $core->page->genRedirect());
-//	exit();
-//}
 
 $core->auth->init();
 
@@ -32,7 +26,7 @@ $core->auth->init();
  */
 if(isset($_GET['goto']) && !empty($_GET['goto'])){
 
-	$core->page->nodeRedirect($_GET['goto']);
+	$core->server->nodeRedirect($_GET['goto']);
 	
 }
 

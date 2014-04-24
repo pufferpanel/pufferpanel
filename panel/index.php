@@ -146,6 +146,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 							if(isset($_GET['error'])){
 								echo '<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>';
 							}
+							if(isset($_GET['login'])){
+								echo '<div class="alert alert-danger">You are not authorized to access that page. Please log in.</div>';
+							}
 						?>
 						<div class="form-group">
 							<label for="email" class="control-label"><?php echo $_l->tpl('string.email'); ?></label>
