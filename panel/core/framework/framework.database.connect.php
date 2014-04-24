@@ -38,7 +38,7 @@ trait database {
 			 */
 			if(array_key_exists('sql_ssl', $_INFO) && $_INFO['sql_ssl'] === true){
 			
-				self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'],
+				self::$db = new databaseInit('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'],
 					array(
 				        \PDO::MYSQL_ATTR_SSL_KEY => $_INFO['sql_ssl_client-key'],
 				        \PDO::MYSQL_ATTR_SSL_CERT => $_INFO['sql_ssl_client-cert'],
@@ -50,7 +50,7 @@ trait database {
 			
 			}else{
 			
-				self::$db = new PDOEx('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
+				self::$db = new databaseInit('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
 		    		\PDO::ATTR_PERSISTENT => true,
 		    		\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
 				));
@@ -81,38 +81,33 @@ trait database {
 	
 }
 
-class databaseInit extends PDOEx {
+class databaseInit extends \PDO {
 
 	use database;
-
-}
-
-class PDOEx extends \PDO {
 	
 	private static $queryCounter = 0;
 		
 	public function query($query)
-    {
-        ++self::$queryCounter;
-        return parent::query($query);
-    }
-    
-    public function prepare($statement, $options = array())
-    {
-        ++self::$queryCounter;
-        return parent::prepare($statement, $options);
-    }
-    
-    public function exec($statement)
-    {
-        ++self::$queryCounter;
-        return parent::exec($statement);
-    }
-    
-    public static function getCount(){
-    	return self::$queryCounter;
-    }
+	{
+	    ++self::$queryCounter;
+	    return parent::query($query);
+	}
 	
-}
+	public function prepare($statement, $options = array())
+	{
+	    ++self::$queryCounter;
+	    return parent::prepare($statement, $options);
+	}
+	
+	public function exec($statement)
+	{
+	    ++self::$queryCounter;
+	    return parent::exec($statement);
+	}
+	
+	public static function getCount(){
+		return self::$queryCounter;
+	}
 
+}
 ?>
