@@ -22,10 +22,10 @@ require_once('../../../core/framework/framework.core.php');
 	if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 	
 	if(!isset($_POST['jarfile']) || empty($_POST['jarfile']))
-		$core->page->redirect('../../settings.php');
+		Page\components::redirect('../../settings.php');
 	
 	if(!preg_match('/^([\w\d_.-]+)$/', $_POST['jarfile']))
-		$core->page->redirect('../../settings.php');
+		Page\components::redirect('../../settings.php');
 		
 	/*
 	 * Update It
@@ -56,6 +56,6 @@ require_once('../../../core/framework/framework.core.php');
 	$context = stream_context_create($context_options);
 	file_get_contents('http://'.$core->server->nodeData('sftp_ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
 		
-	$core->page->redirect('../../settings.php');
+	Page\components::redirect('../../settings.php');
 
 }

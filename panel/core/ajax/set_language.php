@@ -50,8 +50,8 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
  * Redirect
  */
 if(!isset($_SERVER["HTTP_REFERER"]) || $_SERVER["HTTP_REFERER"] == "")
-	$core->page->redirect('../../index.php');
+	Page\components::redirect('../../index.php');
 else
-	$core->page->redirect($_SERVER["HTTP_REFERER"]);
+	Page\components::redirect($_SERVER["HTTP_REFERER"]);
 
 ?>

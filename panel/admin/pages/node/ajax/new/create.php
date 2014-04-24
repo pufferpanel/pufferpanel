@@ -20,7 +20,7 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 	
 //Cookies :3
@@ -30,34 +30,34 @@ setcookie("__TMP_pp_admin_newnode", json_encode($_POST), time() + 10, '/', $core
  * Agree Warning
  */
 if(!isset($_POST['read_warning']))
-	$core->page->redirect('../../add.php?disp=agree_warn');
+	Page\components::redirect('../../add.php?disp=agree_warn');
 
 /*
  * Are they all Posted?
  */
 if(!isset($_POST['node_name'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['s_dir'], $_POST['ssh_user'], $_POST['ssh_pub_key'], $_POST['ssh_priv_key'], $_POST['ssh_secret'], $_POST['ip_port']))
-	$core->page->redirect('../../add.php?disp=missing_args');
+	Page\components::redirect('../../add.php?disp=missing_args');
 
 /*
  * Validate Node Name
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
-	$core->page->redirect('../../add.php?error=node_name&disp=n_fail');
+	Page\components::redirect('../../add.php?error=node_name&disp=n_fail');
 		
 /*
  * Validate node_ip & node_sftp_ip
  */
 if(!filter_var($_POST['node_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['node_sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-	$core->page->redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
+	Page\components::redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
 
 if(!preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir']))
-	$core->page->redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_fail');
+	Page\components::redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_fail');
 		
 if(strlen($_POST['ssh_user']) < 1 || $_POST['ssh_user'] == 'root')
-	$core->page->redirect('../../add.php?error=ssh_user&disp=user_fail');
+	Page\components::redirect('../../add.php?error=ssh_user&disp=user_fail');
 	
 if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+)$/', $_POST['ssh_priv_key']))
-	$core->page->redirect('../../add.php?error=ssh_pub_key|ssh_priv_key&disp=key_fail');
+	Page\components::redirect('../../add.php?error=ssh_pub_key|ssh_priv_key&disp=key_fail');
 
 /*
  * Generate Encrypted Version of Secret
@@ -105,7 +105,7 @@ foreach($lines as $id => $values)
 		if(count($IPP[$ip]) > 0)
 			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
 		else
-			$core->page->redirect('../../add.php?error=ip_port&disp=ip_port_space');
+			Page\components::redirect('../../add.php?error=ip_port&disp=ip_port_space');
 			
 	}
 
@@ -128,6 +128,6 @@ $create->execute(array(
 	':ports' => $IPP
 ));
 
-$core->page->redirect('../../view.php?id='.$mysql->lastInsertId());
+Page\components::redirect('../../view.php?id='.$mysql->lastInsertId());
 
 ?>

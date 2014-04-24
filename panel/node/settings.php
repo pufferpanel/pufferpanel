@@ -21,7 +21,7 @@ require_once('../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	$core->page->redirect($core->settings->get('master_url').'index.php');
+	Page\components::redirect($core->settings->get('master_url').'index.php');
 	exit();
 	
 }

@@ -24,7 +24,7 @@
 
 class server extends user {
 
-	//use Database\database;
+	use Page\components;
 	
 	public function __construct($hash, $userid, $isroot){
 		
@@ -134,6 +134,35 @@ class server extends user {
 		}
         
     }
+    
+    public function nodeRedirect($hash) {
+    	
+		if($this->user->getData('root_admin') == '1'){
+			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
+			$query->execute(array($hash));
+		}else{
+			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
+			$query->execute(array(
+				':ownerid' => user::getData('id'),
+				':hash' => $hash
+			));
+		}
+		
+			if($query->rowCount() == 1){
+			
+				$row = $query->fetch();
+				
+					setcookie('pp_server_hash', $row['hash'], 0, '/', $this->settings->get('cookie_website'));
+				
+					$this->redirect('node/index.php');
+			
+			}else{
+			
+				$this->redirect('servers.php?error=error');
+			
+			}
+	
+	}
 
 }
 

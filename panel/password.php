@@ -20,7 +20,7 @@ session_start();
 require_once('core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true){
-	$core->page->redirect('servers.php');
+	Page\components::redirect('servers.php');
 }
 
 require_once("core/captcha/recaptchalib.php");

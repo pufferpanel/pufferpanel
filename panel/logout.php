@@ -21,7 +21,7 @@ require_once('core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
 	
-	$core->page->redirect('index.php');
+	Page\components::redirect('index.php');
 	exit();
 	
 }else{
@@ -37,7 +37,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$logoutUser->execute(array(':sesip' => $_SERVER['REMOTE_ADDR'], ':sesid' => $_COOKIE['pp_auth_token']));
 	
     $core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from '.$_SERVER['REMOTE_ADDR'].'.'));
-	$core->page->redirect('index.php');
+	Page\components::redirect('index.php');
 	exit();
 
 }

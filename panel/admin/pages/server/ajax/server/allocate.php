@@ -20,17 +20,17 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['sid']))
-	$core->page->redirect('../../find.php');
+	Page\components::redirect('../../find.php');
 
 /*
  * Validate Disk & Memory
  */	
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
 
 $mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHERE `id` = :sid")->execute(array(
     ':sid' => $_POST['sid'],
@@ -54,4 +54,4 @@ $selectNode->execute(array($server['node']));
  */
 $core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
 
-$core->page->redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
+Page\components::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');

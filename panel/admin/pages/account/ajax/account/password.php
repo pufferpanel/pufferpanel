@@ -20,14 +20,14 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../../index.php');
+	Page\components::redirect('../../../../../index.php');
 }
 
 if(!isset($_POST['uid']) || !is_numeric($_POST['uid']))
-	$core->page->redirect('../find.php?error=UPDATE-USER__undefined_user');
+	Page\components::redirect('../find.php?error=UPDATE-USER__undefined_user');
 	
 if($_POST['pass'] != $_POST['pass_2'])
-	$core->page->redirect('../../view.php?id='.$_POST['uid'].'&error=password');
+	Page\components::redirect('../../view.php?id='.$_POST['uid'].'&error=password');
 	
 $update = $mysql->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :uid");
 $update->execute(array(
@@ -56,6 +56,6 @@ $update->execute(array(
 	
 	}
 
-$core->page->redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
+Page\components::redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
 
 ?>

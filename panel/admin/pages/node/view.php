@@ -20,7 +20,7 @@ session_start();
 require_once('../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
@@ -30,15 +30,15 @@ if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
 	
 	if($select->rowCount() == 1) {
 		$n = $select->fetch();
-		$core->page->redirect('view.php?id='.$n['id']);
+		Page\components::redirect('view.php?id='.$n['id']);
 	}else{
-		$core->page->redirect('list.php');
+		Page\components::redirect('list.php');
 	}
 
 }
 
 if(!isset($_GET['id']))
-	$core->page->redirect('list.php');
+	Page\components::redirect('list.php');
 
 /*
  * Select Node Information
@@ -49,7 +49,7 @@ $selectNode->execute(array(
 ));
 
 	if($selectNode->rowCount() != 1)
-		$core->page->redirect('list.php?error=no_node');
+		Page\components::redirect('list.php?error=no_node');
 	else
 		$node = $selectNode->fetch();
 

@@ -20,26 +20,26 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
-	$core->page->redirect('../../list.php');
+	Page\components::redirect('../../list.php');
 
 if(!isset($_POST['name'], $_POST['link'], $_POST['ip']))
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
 
 /*
  * Validate Node Name
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['name']))
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
 		
 /*
  * Validate node_ip & node_sftp_ip
  */
 if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail');
 	
 /*
  * Update Record
@@ -51,6 +51,6 @@ $mysql->prepare("UPDATE `nodes` SET `node` = :name, `node_ip` = :ip WHERE `id` =
 	':ip' => $_POST['ip']
 ));
 
-$core->page->redirect('../../view.php?id='.$_POST['nid']);
+Page\components::redirect('../../view.php?id='.$_POST['nid']);
 
 ?>

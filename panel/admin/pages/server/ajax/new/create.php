@@ -20,7 +20,7 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 //Cookies :3
@@ -35,13 +35,13 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
  * Are they all Posted?
  */
 if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
-	$core->page->redirect('../../add.php?disp=missing_args&error=na');
+	Page\components::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
  * Validate Server Name
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
-	$core->page->redirect('../../add.php?error=server_name&disp=s_fail');
+	Page\components::redirect('../../add.php?error=server_name&disp=s_fail');
 	
 /*
  * Determine if Node (IP & Port) is Avaliable
@@ -54,7 +54,7 @@ $select->execute(array(
 if($select->rowCount() == 1)
 	$node = $select->fetch();
 else
-	$core->page->redirect('../../add.php?error=node&disp=n_fail');
+	Page\components::redirect('../../add.php?error=node&disp=n_fail');
 
 	/*
 	 * Validate IP & Port
@@ -63,25 +63,25 @@ else
 	$ports = json_decode($node['ports'], true);
 
 	if(!array_key_exists($_POST['server_ip'], $ips))
-		$core->page->redirect('../../add.php?error=server_ip&disp=ip_fail');
+		Page\components::redirect('../../add.php?error=server_ip&disp=ip_fail');
 		
 	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-		$core->page->redirect('../../add.php?error=server_port&disp=port_fail');
+		Page\components::redirect('../../add.php?error=server_port&disp=port_fail');
 		
 	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
-		$core->page->redirect('../../add.php?error=server_port&disp=port_full');
+		Page\components::redirect('../../add.php?error=server_port&disp=port_full');
 	
 /*
  * Validate Email
  */	
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	$core->page->redirect('../../add.php?error=email&disp=e_fail');
+	Page\components::redirect('../../add.php?error=email&disp=e_fail');
 
 $selectEmail = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
 $selectEmail->execute(array($_POST['email']));
 
 	if($selectEmail->rowCount() != 1)
-		$core->page->redirect('../../add.php?error=email&disp=a_fail');
+		Page\components::redirect('../../add.php?error=email&disp=a_fail');
 	else {
 		$oid = $selectEmail->fetch();
 		$oid = $oid['id'];
@@ -91,20 +91,20 @@ $selectEmail->execute(array($_POST['email']));
  * Validate Disk & Memory
  */	
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
-	$core->page->redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
+	Page\components::redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
 
 /*
  * Validate CPU Limit
  */	
 if(!is_numeric($_POST['cpu_limit']))
-	$core->page->redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
+	Page\components::redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
 
 
 /*
  * Validate SFTP Password
  */
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
-	$core->page->redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');				
+	Page\components::redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');				
 
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
@@ -118,7 +118,7 @@ $selectPack->execute(array(
 ));
 
 	if($selectPack->rowCount() != 1)
-		$core->page->redirect('../../add.php?error=modpack&disp=no_modpack');
+		Page\components::redirect('../../add.php?error=modpack&disp=no_modpack');
 	else
 		$pack = $selectPack->fetch();
 		
@@ -126,7 +126,7 @@ $selectPack->execute(array(
  * Modpack RAM Requirements
  */
 if($pack['min_ram'] > $_POST['alloc_mem'])
-	$core->page->redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
+	Page\components::redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
 
 /*
  * Add Server to Database
@@ -246,6 +246,6 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	        'PASS' => $_POST['sftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 	
-	$core->page->redirect('../../view.php?id='.$lastInsert);
+	Page\components::redirect('../../view.php?id='.$lastInsert);
 
 ?>

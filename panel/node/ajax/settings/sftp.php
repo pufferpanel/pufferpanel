@@ -22,13 +22,13 @@ require_once('../../../core/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 	
 	if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2']))
-		$core->page->redirect('../../settings.php');
+		Page\components::redirect('../../settings.php');
 		
 	if(strlen($_POST['sftp_pass']) < 8)
-		$core->page->redirect('../../settings.php?error=sftp_pass|sftp_pass_2&disp=pass_len');
+		Page\components::redirect('../../settings.php?error=sftp_pass|sftp_pass_2&disp=pass_len');
 		
 	if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
-		$core->page->redirect('../../settings.php?error=sftp_pass|sftp_pass_2&disp=pass_match');
+		Page\components::redirect('../../settings.php?error=sftp_pass|sftp_pass_2&disp=pass_match');
 	
 	/*
 	 * Update Server SFTP Information
@@ -47,7 +47,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	 */
 	$core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$core->server->getData('ftp_user').'" "'.$_POST['sftp_pass'].'"', false);
 	
-	$core->page->redirect('../../settings.php?success');
+	Page\components::redirect('../../settings.php?success');
 	
 }
 

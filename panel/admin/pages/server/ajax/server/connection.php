@@ -20,16 +20,16 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['sid']))
-	$core->page->redirect('../../find.php');
+	Page\components::redirect('../../find.php');
 
 $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
 	
 if(!isset($_POST['server_ip'], $_POST['server_port'], $_POST['nid']))
-	$core->page->redirect('../../view.php?id='.$_POST['sid']);
+	Page\components::redirect('../../view.php?id='.$_POST['sid']);
 	
 $select = $mysql->prepare("SELECT `ports`, `ips` FROM `nodes` WHERE `id` = :nid");
 $select->execute(array(':nid' => $_POST['nid']));
@@ -43,13 +43,13 @@ $ports = json_decode($node['ports'], true);
 $ips = json_decode($node['ips'], true);
 
 if(!array_key_exists($_POST['server_ip'], $ports))
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
 
 if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
 
 if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $server['server_port'])
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
 
 $mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port WHERE `id` = :sid")->execute(array(
 	':ip' => $_POST['server_ip'],
@@ -75,4 +75,4 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports, `ips` = :ips WHERE `id` = 
 	':nid' => $_POST['nid']
 ));
 
-$core->page->redirect('../../view.php?id='.$_POST['sid']);
+Page\components::redirect('../../view.php?id='.$_POST['sid']);

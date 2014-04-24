@@ -20,7 +20,7 @@ session_start();
 require_once('core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true){
-	$core->page->redirect('servers.php');
+	Page\components::redirect('servers.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'login'){
@@ -71,7 +71,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
                 
                     $core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
                 
-					$core->page->redirect($postLoginURL);
+					Page\components::redirect($postLoginURL);
 			
 			}else{
 				
@@ -104,7 +104,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
                 
                 $core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
                 
-				$core->page->redirect('index.php?error=true');
+				Page\components::redirect('index.php?error=true');
 			
 			}
 	

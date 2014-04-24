@@ -36,8 +36,8 @@ require_once('lib/password.lib.php');
  * Include Required Global Framework Files
  */
 require_once('framework.database.connect.php');
-require_once('framework.auth.php');
 require_once('framework.page.php');
+require_once('framework.auth.php');
 require_once('framework.files.php');
 require_once('framework.user.php');
 require_once('framework.server.php');
@@ -62,13 +62,12 @@ set_exception_handler('pdo_exception_handler');
 /*
  * Initalize Frameworks
  */
-$core->settings = new getSettings();
-$core->auth = new \Auth\auth();
+$core->settings = new settings();
+$core->auth = new \Auth\auth($core->settings);
 $core->ssh = new ssh($core->settings->get('use_ssh_keys'));
 $core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
 $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
 $core->email = new tplMail($core->settings);
-$core->page = new page($core->user, $core->settings);
 $core->log = new log($core->user->getData('id'));
 $core->gsd = new query($core->server->getData('id'));
 $core->files = new files();

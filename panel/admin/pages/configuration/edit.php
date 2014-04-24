@@ -20,7 +20,7 @@ session_start();
 require_once('../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 $packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `hash` = :mid");
@@ -29,7 +29,7 @@ $packs->execute(array(':mid' => $_GET['mid']));
 if($packs->rowCount() == 1)
 	$pack = $packs->fetch();
 else
-	$core->page->redirect('modpacks.php');
+	Page\components::redirect('modpacks.php');
 
 ?>
 <!DOCTYPE html>

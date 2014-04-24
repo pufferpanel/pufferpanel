@@ -20,14 +20,14 @@ session_start();
 require_once('../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(rand(12,18)));
 
 if(!isset($_GET['id']))
-	$core->page->redirect('find.php');
+	Page\components::redirect('find.php');
 
 /*
  * Select User Information
@@ -38,7 +38,7 @@ $selectUser->execute(array(
 ));
 
 	if($selectUser->rowCount() != 1)
-		$core->page->redirect('find.php?error=no_user');
+		Page\components::redirect('find.php?error=no_user');
 	else
 		$user = $selectUser->fetch();
 		

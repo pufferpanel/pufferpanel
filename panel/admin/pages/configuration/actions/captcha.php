@@ -20,14 +20,14 @@ session_start();
 require_once('../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['pub_key'], $_POST['priv_key']))
-	$core->page->redirect('../global.php?error=pub_key|priv_key&tab=captcha');
+	Page\components::redirect('../global.php?error=pub_key|priv_key&tab=captcha');
 	
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_pub'")->execute(array($_POST['pub_key']));
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_priv'")->execute(array($_POST['priv_key']));
 
-$core->page->redirect('../global.php?tab=captcha');
+Page\components::redirect('../global.php?tab=captcha');
 ?>

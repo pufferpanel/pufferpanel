@@ -20,17 +20,17 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../../index.php');
+	Page\components::redirect('../../../../../index.php');
 }
 
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
-	$core->page->redirect('../../new.php?disp=u_fail');
+	Page\components::redirect('../../new.php?disp=u_fail');
 	
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	$core->page->redirect('../../new.php?disp=e_fail');
+	Page\components::redirect('../../new.php?disp=e_fail');
 	
 if(strlen($_POST['pass']) < 8 || $_POST['pass'] != $_POST['pass_2'])
-	$core->page->redirect('../../new.php?disp=p_fail');
+	Page\components::redirect('../../new.php?disp=p_fail');
 
 $query = $mysql->prepare("SELECT * FROM `users` WHERE `username` = :user OR `email` = :email");
 $query->execute(array(
@@ -39,7 +39,7 @@ $query->execute(array(
 ));
 
 if($query->rowCount() > 0)
-	$core->page->redirect('../../new.php?disp=a_fail');
+	Page\components::redirect('../../new.php?disp=a_fail');
 
 $insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, :language, :time, 'owner', NULL, NULL, NULL, 0, 0, 0)");
 $insert->execute(array(
@@ -58,6 +58,6 @@ $core->email->buildEmail('admin_newaccount', array(
     'EMAIL' => $_POST['email']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Created');
 
-$core->page->redirect('../../view.php?id='.$mysql->lastInsertId());
+Page\components::redirect('../../view.php?id='.$mysql->lastInsertId());
 
 ?>

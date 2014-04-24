@@ -20,19 +20,19 @@ session_start();
 require_once('../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
 if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
-	$core->page->redirect('../global.php?error=main_url|master_url|assets_url&tab=url');
+	Page\components::redirect('../global.php?error=main_url|master_url|assets_url&tab=url');
 	
 foreach($_POST as $id => $val)
 	{
 	
 		if(!filter_var($val, FILTER_VALIDATE_URL))
-			$core->page->redirect('../global.php?error='.$id.'&tab=url');
+			Page\components::redirect('../global.php?error='.$id.'&tab=url');
 	
 	}
 
@@ -40,6 +40,6 @@ $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref`
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'master_url'")->execute(array($_POST['master_url']));
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'assets_url'")->execute(array($_POST['assets_url']));
 
-$core->page->redirect('../global.php?tab=url');
+Page\components::redirect('../global.php?tab=url');
 
 ?>

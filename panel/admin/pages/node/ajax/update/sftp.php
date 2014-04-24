@@ -21,45 +21,45 @@ require_once('../../../../../core/framework/framework.core.php');
 
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 
 	if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
-		$core->page->redirect('../../list.php');
+		Page\components::redirect('../../list.php');
 		
 	if(!isset($_POST['warning']))
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
 	
 	if(!isset($_POST['sftp_ip'], $_POST['sftp_user']))
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip|sftp_user&disp=missing_args&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip|sftp_user&disp=missing_args&tab=sftp');
 		
 	if(!filter_var($_POST['sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip&disp=ip_fail&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_ip&disp=ip_fail&tab=sftp');
 			
 	if(strlen($_POST['sftp_user']) < 1 || $_POST['sftp_user'] == 'root')
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_user&disp=user_fail&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=sftp_user&disp=user_fail&tab=sftp');
 	
 	/*
 	 * Run Update on Node Table
 	 */
 	$mysql->prepare("UPDATE `nodes` SET `sftp_ip` = :ip, `username` = :name WHERE `id` = :nid")->execute(array(':ip' => $_POST['sftp_ip'], ':name' => $_POST['sftp_user'], ':nid' => $_POST['nid']));
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
 }else if(isset($_GET['do']) && $_GET['do'] == 'pass'){
 
 	if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
-		$core->page->redirect('../../list.php');
+		Page\components::redirect('../../list.php');
 		
 	if(!isset($_POST['warning']))
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=warning&disp=missing_warn&tab=sftp');
 	
 	$_POST['ssh_pub_key'] = trim($_POST['ssh_pub_key']);
 	$_POST['ssh_priv_key'] = trim($_POST['ssh_priv_key']);
 	
 	if(!preg_match('/^\/(.+)\/.ssh\/([^\/]+).pub$/', $_POST['ssh_pub_key']) || !preg_match('/^\/(.+)\/.ssh\/([^\/]+)$/', $_POST['ssh_priv_key']))
-		$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ssh_pub_key|ssh_priv_key&disp=key_fail&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ssh_pub_key|ssh_priv_key&disp=key_fail&tab=sftp');
 	
 	/*
 	 * Generate Encrypted Version of Secret
@@ -77,7 +77,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		':ssh_secret_iv' => $ssh_secret_iv,
 		':nid' => $_POST['nid']
 	));
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
 }
 

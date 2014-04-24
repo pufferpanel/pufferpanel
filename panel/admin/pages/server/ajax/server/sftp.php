@@ -20,20 +20,20 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['sid']) || !isset($_POST['nid']))
-	$core->page->redirect('../../find.php');
+	Page\components::redirect('../../find.php');
 	
 if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['nid']))
-	$core->page->redirect('../../view.php?id='.$_POST['sid']);
+	Page\components::redirect('../../view.php?id='.$_POST['sid']);
 	
 if(strlen($_POST['sftp_pass']) < 8)
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_len');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_len');
 	
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
-	$core->page->redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_match');
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_match');
 
 /* 
  * Select Node, User, & Server Information
@@ -79,6 +79,6 @@ if(isset($_POST['email_user'])){
     
 }
 
-$core->page->redirect('../../view.php?id='.$_POST['sid']);
+Page\components::redirect('../../view.php?id='.$_POST['sid']);
 
 ?>

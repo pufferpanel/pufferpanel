@@ -21,11 +21,11 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['ip_port']))
-	$core->page->redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
 
 /*
  * Clean Inputs
@@ -71,7 +71,7 @@ foreach($lines as $id => $values)
 		if(count($IPP[$ip]) > 0)
 			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
 		else
-			$core->page->redirect('../../view.php?id='.$_POST['nid'].'&error=ip_port&disp=ip_port_space');
+			Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ip_port&disp=ip_port_space');
 			
 	}
 
@@ -84,6 +84,6 @@ $update->execute(array(
 	':ports' => $IPP,
 	':nid' => $_POST['nid']
 ));
-$core->page->redirect('../../view.php?id='.$_POST['nid']);
+Page\components::redirect('../../view.php?id='.$_POST['nid']);
 
 ?>

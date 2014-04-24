@@ -20,10 +20,12 @@ session_start();
 require_once('core/framework/framework.core.php');
 $error = '';
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
-	$core->page->redirect('index.php', $core->page->genRedirect());
-	exit();
-}
+//if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
+//	Page\components::redirect('index.php', $core->page->genRedirect());
+//	exit();
+//}
+
+$core->auth->init();
 
 /*
  * Redirect

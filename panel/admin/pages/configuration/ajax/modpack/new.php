@@ -20,7 +20,7 @@ session_start();
 require_once('../../../../../core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	$core->page->redirect('../../../../index.php');
+	Page\components::redirect('../../../../index.php');
 }
 
 //Cookies :3
@@ -30,50 +30,50 @@ setcookie("__TMP_pp_admin_newmodpack", json_encode($_POST), time() + 120, '/', $
  * All Posted?
  */
 if(!isset($_POST['pack_name'], $_POST['pack_version'], $_POST['pack_minram'], $_POST['pack_permgen'], $_FILES['pack_jar']))
-	$core->page->redirect('../../modpacks.php?disp=missing_args&tab=install');
+	Page\components::redirect('../../modpacks.php?disp=missing_args&tab=install');
 
 /*
  * Validate Modpack Name
  */
 if(!preg_match('/^[\s\w.()-]{1,64}$/', $_POST['pack_name']))
-	$core->page->redirect('../../modpacks.php?error=pack_name&disp=pn_fail&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_name&disp=pn_fail&tab=install');
 	
 /*
  * Validate Modpack Jar Name
  */
 if(!preg_match('/^[\s\w.-]{1,64}$/', $_POST['server_jar']))
-	$core->page->redirect('../../modpacks.php?error=server_jar&disp=pn_fail&tab=install');
+	Page\components::redirect('../../modpacks.php?error=server_jar&disp=pn_fail&tab=install');
 
 /*
  * Validate Min. RAM and Permgen
  */	
 if(!is_numeric($_POST['pack_minram']) || !is_numeric($_POST['pack_permgen']))
-	$core->page->redirect('../../modpacks.php?error=pack_minram|pack_permgen&disp=num_fail&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_minram|pack_permgen&disp=num_fail&tab=install');
 
 /*
  * Validate Version
  */	
 if(!preg_match('/^[\w.-]{1,64}$/', $_POST['pack_version']))
-	$core->page->redirect('../../modpacks.php?error=pack_version&disp=ver_fail&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_version&disp=ver_fail&tab=install');
 
 /*
  * File Validation
  */
 if(!isset($_FILES['pack_jar']['error']) || is_array($_FILES['pack_jar']['error']))
-	$core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_error&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_error&tab=install');
 
 switch ($_FILES['pack_jar']['error']) {
 	
 	case UPLOAD_ERR_OK:
 		break;
 	case UPLOAD_ERR_NO_FILE:
-		$core->page->redirect('../../modpacks.php?error=pack_jar&disp=no_file&tab=install');
+		Page\components::redirect('../../modpacks.php?error=pack_jar&disp=no_file&tab=install');
 	case UPLOAD_ERR_INI_SIZE:
 	case UPLOAD_ERR_FORM_SIZE:
-		$core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_size&tab=install');
+		Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_size&tab=install');
 		break;
 	default:
-		$core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_error&tab=install');
+		Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_error&tab=install');
 		break;
 		
 }
@@ -82,14 +82,14 @@ switch ($_FILES['pack_jar']['error']) {
  * Limit File Size to 35MB
  */
 if($_FILES['pack_jar']['size'] > (1024 * 1024 * 35))
-	$core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_size&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_size&tab=install');
 
 /*
  * Check File Extension
  */
 $finfo = new finfo(FILEINFO_MIME_TYPE);
 if($finfo->file($_FILES['pack_jar']['tmp_name']) != "application/zip")
-    $core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_type&tab=install');
+    Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_type&tab=install');
 
 /*
  * File is Legit, Add Modpack
@@ -122,7 +122,7 @@ if(!move_uploaded_file($_FILES['pack_jar']['tmp_name'], sprintf($core->settings-
 	$mysql->exec("DELETE FROM `modpacks` WHERE `id` = '".$addpackId."' LIMIT 1");
 	
 	//Redirect
-	$core->page->redirect('../../modpacks.php?error=pack_jar&disp=file_nomove&tab=install');
+	Page\components::redirect('../../modpacks.php?error=pack_jar&disp=file_nomove&tab=install');
 	
 }else{
 
@@ -131,6 +131,6 @@ if(!move_uploaded_file($_FILES['pack_jar']['tmp_name'], sprintf($core->settings-
 		$mysql->exec("UPDATE `modpacks` SET `default` = 0 WHERE `id` != '".$addpackId."' LIMIT 1");
 		
 	//Redirect
-	$core->page->redirect('../../edit.php?mid='.$modpackHash);
+	Page\components::redirect('../../edit.php?mid='.$modpackHash);
 
 }
