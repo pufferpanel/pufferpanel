@@ -27,6 +27,13 @@ string.sftp, SFTP
 string.host, Host
 string.username, Username
 string.generate, Generate
+string.description, Description
+string.previous, Previous
+string.next, Next
+string.about, About
+string.version, Version
+string.published, Published
+string.versions, Versions
 footer.license, PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
 footer.version, Running Version %s distributed by <a href="http://kelp.in/">Kelpin' Systems</a>.
 footer.generated, Page Generated in %s seconds.
@@ -90,4 +97,10 @@ node.plugins.welcome_h1, Plugin Installer
 node.plugins.welcome, Welcome to your built-in plugin installer. This installer gathers results and data from Bukget and displays them here in an easy to use manner. The automatic installer can be buggy at times, especially for complex plugins. We recommend downloading plugins to your computer first if possible.
 node.plugins.search_h1, Search Plugin Repository
 node.plugins.plugin_name, Plugin Name
+node.plugins.installed, Your plugin has been installed successfully.
+node.plugins.installing, Please wait while your plugin is installing. This process could take about a minute to complete.
+node.plugins.installing_warning, Do not navigate away from this page!
+node.plugins.error.term, Please enter a valid search term.
+node.plugins.view.author, This plugin is created and maintained by %s.
+node.plugins.view.view, View this plugin <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank">on Bukkit</a>.
 node.ajax.generic_error, An error was encountered with this AJAX request.

@@ -21,11 +21,8 @@ require_once('../../core/framework/framework.core.php');
 
 $filesIncluded = true;
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	Page\components::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-}
 
 if(isset($_GET['slug']) && !empty($_GET['slug'])){
 
@@ -101,47 +98,47 @@ if(isset($_GET['slug']) && !empty($_GET['slug'])){
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Actions</strong></a>
-					<a href="../../account.php" class="list-group-item">Settings</a>
-					<a href="../../servers.php" class="list-group-item">My Servers</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
+					<a href="../../account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
+					<a href="../../servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Actions</strong></a>
-					<a href="../index.php" class="list-group-item">Overview</a>
-					<a href="../console.php" class="list-group-item">Live Console</a>
-					<a href="../files/index.php" class="list-group-item">File Manager</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_acc'); ?></strong></a>
+					<a href="../index.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.overview'); ?></a>
+					<a href="../console.php" class="list-group-item"><?php echo $_l->tpl('sidebar.console'); ?></a>
+					<a href="../files/index.php" class="list-group-item"><?php echo $_l->tpl('sidebar.files'); ?></a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Settings</strong></a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.server_sett'); ?></strong></a>
 					
-					<a href="../settings.php" class="list-group-item">Server Management</a>
-					<a href="index.php" class="list-group-item active">Server Plugins</a>
+					<a href="../settings.php" class="list-group-item"><?php echo $_l->tpl('sidebar.manage'); ?></a>
+					<a href="index.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.plugins'); ?></a>
 				</div>
 			</div>
 			<div class="col-9">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title">About <?php echo $data['plugin_name']; ?></h3>
+						<h3 class="panel-title"><?php echo $_l->tpl('string.about').' '.$data['plugin_name']; ?></h3>
 					</div>
 					<div class="panel-body">
-						<p class="text-muted"><small>This plugin is created and maintained by <?php echo $pluginAuthors; ?>. View this plugin <a href="http://dev.bukkit.org/bukkit-plugins/<?php echo $_GET['slug']; ?>/" target="_blank">on Bukkit</a>.</small></p>
+						<p class="text-muted"><small><?php echo sprintf($_l->tpl('node.plugins.view.author'), $pluginAuthors).' '.sprintf($_l->tpl('node.plugins.view.view'), $_GET['slug']); ?></small></p>
 						<p><?php echo $data['description']; ?></p>
 					</div>
 				</div>
 				<div id="p_install_one" class="alert alert-warning" style="display:none;">
-					<i class="fa fa-spinner fa fa-spin"></i> Please wait while your plugin is installing. This process could take about a minute to complete. <strong>Do not navigate away from this page!</strong>
+					<i class="fa fa-spinner fa fa-spin"></i> <?php echo $_l->tpl('node.plugins.installing'); ?> <strong><?php echo $_l->tpl('node.plugins.installing_warning'); ?></strong>
 				</div>
 				<div id="p_install_two" class="alert alert-success" style="display:none;">
-					Your plugin has been installed successfully.
+					<?php echo $_l->tpl('node.plugins.installed'); ?>
 				</div>
 				<table class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>
 							<th></th>
-							<th>Name</th>
-							<th>Version</th>
-							<th>Published</th>
-							<th>Versions</th>
+							<th><?php echo $_l->tpl('string.name'); ?></th>
+							<th><?php echo $_l->tpl('string.version'); ?></th>
+							<th><?php echo $_l->tpl('string.published'); ?></th>
+							<th><?php echo $_l->tpl('string.versions'); ?></th>
 							<th>MD5</th>
 						</tr>
 					</thead>
