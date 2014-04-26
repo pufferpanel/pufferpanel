@@ -46,4 +46,5 @@ array(
 require_once('functions/api.core.php');
 
 $api->init();
+
 ?>

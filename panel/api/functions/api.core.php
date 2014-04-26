@@ -17,17 +17,14 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 require_once('../core/framework/framework.core.php');
-require_once('api.init.php');
+require_once('modules/module.functions.php');
+require_once('modules/module.validate.php');
 require_once('modules/module.add.php');
 require_once('modules/module.information.php');
+require_once('modules/module.delete.php');
 
-$api = new \API\apiInitializationClass();
-$api->module = new stdClass();
+require_once('api.init.php');
 
-#$api->module->add = new \Modules\Add\apiModuleAddServer();
-$api->module->info = new \Modules\Info\apiModuleGetInformation();
-#$api->auth = new apiAuthenticationClass();
-#$api->process = new apiProcessingClass();
-#$api->run = new apiModuleRunClass();
+$api = new apiInitializationClass();
 
 ?>

@@ -17,11 +17,11 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
  
-namespace Modules\Info;
+namespace Modules;
  
 class apiModuleGetInformation {
  
- 	use \Database\database, \API\functions, \Functions\general;
+ 	use \Database\database, \Functions\general;
  	
  	private $node = array();
  	

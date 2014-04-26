@@ -17,70 +17,70 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
  
- namespace \Modules\Validate;
+namespace Modules;
  
- trait validate {
- 
- 	use \Module\Functions;
- 	
- 	/*
- 	 * Handle Incoming Queries
- 	 */
- 	public static function run() {
- 	
- 		if(!array_key_exists(self::getStoredData()['function'], array(
- 			'add', 'delete', 'info'
- 		))
- 			self::throwResponse("Accessing API in an illegal manner.", false);
- 		else
- 			self::validateData();
- 	
- 	}
- 	
- 	/* 
- 	 * Middle Man for Handing Functions
- 	 */
- 	private function validateData() {
- 	
- 		switch(self::getStoredData()['function']) {
- 		
- 			case 'add':
- 				self::validateAddServerRequest();
- 				break;
- 			case 'delete':
- 				self::validateDeleteServerRequest();
- 				break;
- 			case 'info':
- 				self::validateInformationRequest();
- 				break;
- 			default:
- 				self::throwResponse('Accessing API in an illegal manner.', false);
- 		
- 		}
- 	
- 	}
- 	
- 	/*
- 	 * Validate Request Data for Adding a Server
- 	 */
- 	private function validateAddServerRequest() {
- 	
- 		/*
- 		 * Is all of the data here?
- 		 */
- 		$dataOptions = array(
- 			'server_name', 'node', 'modpack', 'email', 'server_ip', 'server_port', 'alloc_mem', 'alloc_disk', 'sftp_pass', 'sftp_pass_2', 'cpu_limit'
- 		);
- 					
- 		foreach($dataOptions as $dataOption)
- 			if(!array_key_exists($dataOption, $data['data']))
- 				self::throwResponse('Missing required data values in API call.', false);
- 	
- 		/*
- 		 * Run Function
- 		 */
- 		$run = new apiModuleAddServer();
- 	
- 	}
- 
- }
+trait validate {
+	
+	use \Modules\functions;
+	
+	/*
+	 * Handle Incoming Queries
+	 */
+	public static function run() {
+	
+		if(!array_key_exists(self::getStoredData()['function'], array(
+			'add', 'delete', 'info'
+		))) 
+			self::throwResponse("Accessing API in an illegal manner.", false);
+		else
+			self::validateData();
+	
+	}
+	
+	/* 
+	 * Middle Man for Handing Functions
+	 */
+	private function validateData() {
+	
+		switch(self::getStoredData()['function']) {
+		
+			case 'add':
+				self::validateAddServerRequest();
+				break;
+			case 'delete':
+				self::validateDeleteServerRequest();
+				break;
+			case 'info':
+				self::validateInformationRequest();
+				break;
+			default:
+				self::throwResponse('Accessing API in an illegal manner.', false);
+		
+		}
+	
+	}
+	
+	/*
+	 * Validate Request Data for Adding a Server
+	 */
+	private function validateAddServerRequest() {
+	
+		/*
+		 * Is all of the data here?
+		 */
+		$dataOptions = array(
+			'server_name', 'node', 'modpack', 'email', 'server_ip', 'server_port', 'alloc_mem', 'alloc_disk', 'sftp_pass', 'sftp_pass_2', 'cpu_limit'
+		);
+					
+		foreach($dataOptions as $dataOption)
+			if(!array_key_exists($dataOption, $data['data']))
+				self::throwResponse('Missing required data values in API call.', false);
+	
+		/*
+		 * Run Function
+		 */
+		$run = new apiModuleAddServer();
+	
+	}
+	
+}

@@ -17,11 +17,9 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-namespace API;
-
 class apiInitializationClass extends \settings {
 
-	use \Modules\Validate\validate;
+	use \Modules\validate;
 	
 	public function __construct() {
 	
@@ -32,6 +30,7 @@ class apiInitializationClass extends \settings {
 	public function init() {
 		
 		$this->data = self::getStoredData();
+		self::run();
 		
 		/*
 		 * Throw Authentication Errors, otherwise allow script to continue running

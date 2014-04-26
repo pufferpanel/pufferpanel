@@ -17,11 +17,11 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-namespace Modules\Add;
+namespace Modules;
 
-trait server {
+trait add {
 
-	use \Modules\Functions;
+	use \Modules\functions;
 
 	private function validateData() {
 	
@@ -153,7 +153,7 @@ trait server {
 
 class apiModuleAddServer extends \query {
 	
-	use server;
+	use add;
 	
 	public function __construct() {
 	
@@ -175,7 +175,7 @@ class apiModuleAddServer extends \query {
 
 class apiModuleAddServer_Extended extends \ssh {
 
-	use server;
+	use add;
 	
 	public function run() {
 	
