@@ -21,7 +21,7 @@ namespace Modules;
  
 class apiModuleGetInformation {
  
- 	use \Database\database, \Functions\general;
+ 	use \Database\database, \Modules\functions;
  	
  	private $node = array();
  	

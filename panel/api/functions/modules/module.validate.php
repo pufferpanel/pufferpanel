@@ -28,19 +28,27 @@ trait validate {
 	 */
 	public static function run() {
 	
-		if(!array_key_exists(self::getStoredData()['function'], array(
-			'add', 'delete', 'info'
-		))) 
-			self::throwResponse("Accessing API in an illegal manner.", false);
+		if(!in_array(self::getStoredData()['function'], self::allowedAPIFunctions())) 
+			self::throwResponse("Accessing API in an illegal manner (1).", false);
 		else
 			self::validateData();
 	
 	}
 	
+		private static function allowedAPIFunctions() {
+		
+			return array(
+				'add',
+				'delete',
+				'info'
+			);
+			
+		}
+	
 	/* 
 	 * Middle Man for Handing Functions
 	 */
-	private function validateData() {
+	private static function validateData() {
 	
 		switch(self::getStoredData()['function']) {
 		
@@ -54,7 +62,7 @@ trait validate {
 				self::validateInformationRequest();
 				break;
 			default:
-				self::throwResponse('Accessing API in an illegal manner.', false);
+				self::throwResponse('Accessing API in an illegal manner (2).', false);
 		
 		}
 	
@@ -63,7 +71,7 @@ trait validate {
 	/*
 	 * Validate Request Data for Adding a Server
 	 */
-	private function validateAddServerRequest() {
+	private static function validateAddServerRequest() {
 	
 		/*
 		 * Is all of the data here?
@@ -80,6 +88,15 @@ trait validate {
 		 * Run Function
 		 */
 		$run = new apiModuleAddServer();
+	
+	}
+	
+	/*
+	 * Validate Request for Information
+	 */
+	private static function validateInformationRequest() {
+	
+		$run = new apiModuleGetInformation();
 	
 	}
 	

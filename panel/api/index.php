@@ -21,6 +21,7 @@ header('Content-Type: application/json');
 
 //%7B%22auth%22%3A%7B%22key%22%3A%22random_key%22%7D%2C%22function%22%3A%22add%22%2C%22data%22%3A%7B%22server_name%22%3A%22api_test%22%2C%22node%22%3A1%2C%22modpack%22%3A%22default%22%2C%22email%22%3A%22dane%40daneeveritt.com%22%2C%22server_ip%22%3A%22127.0.0.1%22%2C%22server_port%22%3A25570%2C%22alloc_mem%22%3A128%2C%22alloc_disk%22%3A1024%2C%22sftp_pass%22%3A%22password%22%2C%22sftp_pass_2%22%3A%22password%22%2C%22cpu_limit%22%3A0%7D%7D
 
+//%7B%22auth%22%3A%7B%22key%22%3A%22random_key%22%7D%2C%22function%22%3A%22info%22%2C%22data%22%3A%7B%22request%22%3A%22ports%22%7D%7D
 /*
 array(
 	"auth" => array(
@@ -39,6 +40,16 @@ array(
 		"sftp_pass" => "password",
 		"sftp_pass_2" => "password",
 		"cpu_limit" => 0,
+	)
+)
+
+array(
+	"auth" => array(
+		"key" => "random_key"
+	),
+	"function" => "info",
+	"data" => array(
+		"request" => "ports"
 	)
 )
 */
