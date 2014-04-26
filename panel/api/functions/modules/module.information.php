@@ -18,29 +18,11 @@
  */
  
 namespace Modules\Info;
-
-trait validate {
-
-	public static function validateRequest($req) {
-	
-		/*
-		 * Handle Validation
-		 */
-		if($req == "add") {
-		
-			/*
-			 * Handle Validation for Adding Server
-			 */
-		
-		}
-	
-	}
-
-}
  
 class apiModuleGetInformation {
  
  	use \Database\database, \API\functions, \Functions\general;
+ 	
  	private $node = array();
  	
 	public function __construct() {

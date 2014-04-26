@@ -17,16 +17,32 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
  
- namespace Modules\Delete;
- 
- class apiModuleDeleteServer {
- 
- 	public function __construct() {
- 	
- 	
- 	
- 	}
- 
- }
- 
- ?>
+namespace \Module\Functions;
+
+trait functions {
+	
+	use \Functions\general;
+	
+	public static function throwResponse($text, $success = false){
+	
+		exit(json_encode(
+			array(
+				'success' => $success,
+				'info' => $text
+			)
+		));
+	
+	}
+	
+	public static function getStoredData() {
+	
+		if(!isset($_GET['request']))
+			self::throwResponse("No data was sent in the request.");
+		else
+			return json_decode(urldecode($_GET['request']), true);
+	
+	}
+
+}
+
+?>

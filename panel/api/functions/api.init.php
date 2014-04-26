@@ -19,33 +19,9 @@
 
 namespace API;
 
-trait functions {
-	
-	public static function throwResponse($text, $success = false){
-	
-		exit(json_encode(
-			array(
-				'success' => $success,
-				'info' => $text
-			)
-		));
-	
-	}
-	
-	public static function getStoredData() {
-	
-		if(!isset($_GET['request']))
-			self::throwResponse("No data was sent in the request.");
-		else
-			return json_decode(urldecode($_GET['request']), true);
-	
-	}
-
-}
-
 class apiInitializationClass extends \settings {
 
-	use functions;
+	use \Modules\Validate\validate;
 	
 	public function __construct() {
 	
@@ -55,7 +31,7 @@ class apiInitializationClass extends \settings {
 	
 	public function init() {
 		
-		$this->data = $this->getStoredData();
+		$this->data = self::getStoredData();
 		
 		/*
 		 * Throw Authentication Errors, otherwise allow script to continue running

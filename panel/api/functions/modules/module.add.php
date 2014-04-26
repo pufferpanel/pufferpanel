@@ -21,48 +21,8 @@ namespace Modules\Add;
 
 trait server {
 
-	use \API\functions, \Functions\general;
-	
-	private function validateRequest() {
-	
-		$data = self::getStoredData();
-		
-		if(array_key_exists('function', $data) && $data['function'] == 'add'){
-					
-			/*
-			 * Is all of the data here?
-			 */
-			$dataOptions = array(
-				'server_name',
-				'node',
-				'modpack',
-				'email',
-				'server_ip',
-				'server_port',
-				'alloc_mem',
-				'alloc_disk',
-				'sftp_pass',
-				'sftp_pass_2',
-				'cpu_limit'
-			);
-						
-			foreach($dataOptions as $dataOption) {
-			
-				if(!array_key_exists($dataOption, $data['data']))
-					self::throwResponse('Missing required data values in API call.', false);
-			
-			}
-		
-		}else{
-		
-			self::throwResponse('Accessing API in an illegal manner.', false);
-		
-		}
-		
-		$this->validateData();
-	
-	}
-	
+	use \Modules\Functions;
+
 	private function validateData() {
 	
 		/*
@@ -136,16 +96,15 @@ trait server {
 			':ftppass' => $this->password
 		));
 		
-		$this->lastInsert = $this->mysql->lastInsertId();
-		
+		$this->lastInsert = $this->mysql->lastInsertId();	
+	
+	}
+	
+	private function addToGSD() {
+	
 		/*
-		 * Update IP Count
+		 * Add User to GSD
 		 */
-		#$ips[$this->data['server_ip']]['ports_free']--;
-		#$ports[$this->data['server_ip']][$this->data['server_port']]--;
-		
-		#$this->mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
-		#$this->mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));		
 	
 	}
 	
@@ -176,6 +135,19 @@ trait server {
 	
 	
 	}
+	
+	private function updatePorts() {
+	
+		/*
+		 * Update IP Count
+		 */
+		#$ips[$this->data['server_ip']]['ports_free']--;
+		#$ports[$this->data['server_ip']][$this->data['server_port']]--;
+		
+		#$this->mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
+		#$this->mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));	
+	
+	}
 
 }
 
@@ -187,11 +159,9 @@ class apiModuleAddServer extends \query {
 	
 		$this->mysql = parent::connect();
 	
-		$this->validateRequest();
+		$this->validateData();
 		$this->runRequest();
 		#$this->runSSH();
-		
-		#$this->finish();
 	
 	}
 	
@@ -207,20 +177,13 @@ class apiModuleAddServer_Extended extends \ssh {
 
 	use server;
 	
-//	public function run() {
-//	
-//		/*
-//		 * Do Server Making Stuff Here 
-//		 */
-//		
-//			/*
-//			 * Set the Soft Limit
-//			 */
-//			$softLimit = ($data['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
-//			
-//			$this->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$data['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);	
-//	
-//	}
+	public function run() {
+	
+		/*
+		 * Run SSH Function to Add Server
+		 */
+	
+	}
 
 }
 
