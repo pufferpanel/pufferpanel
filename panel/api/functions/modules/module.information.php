@@ -18,39 +18,123 @@
  */
  
 namespace Modules\Info;
+
+trait validate {
+
+	public static function validateRequest($req) {
+	
+		/*
+		 * Handle Validation
+		 */
+		if($req == "add") {
+		
+			/*
+			 * Handle Validation for Adding Server
+			 */
+		
+		}
+	
+	}
+
+}
  
 class apiModuleGetInformation {
  
+ 	use \Database\database, \API\functions, \Functions\general;
+ 	private $node = array();
+ 	
 	public function __construct() {
 	
+		$this->mysql = self::connect();
+		$this->_listNodes();
 		
+		self::throwResponse($this->_listPorts(), true);
 	
 	}
 	
 	/*
 	 * List Nodes
 	 */
-	private function listNode() {
+	private function _listNodes() {
 	
-	
+		/*
+		 * List All Nodes
+		 */
+		$this->query = $this->mysql->prepare("SELECT * FROM `nodes`");
+		$this->query->execute(array());
+
+			while($this->data = $this->query->fetch())
+				$this->node[$this->data['id']] = $this->data;
 	
 	}
 	
 	/*
 	 * List Avaliable IPs
 	 */
-	private function listIP() {
+	private function _listIPs($node = null) {
 	
-	
+		$this->return = null;
+		
+		/*
+		 * List all IPs on all Nodes
+		 */
+		if(is_null($node)) {
+		
+			foreach($this->node as $id => $data)
+				$this->return .= $data['ips'];
+		
+			/*
+			 * Return the Data
+			 */
+			return $this->return;
+		
+		}else{
+		
+			/*
+			 * Validate Node
+			 */
+			if(!array_key_exists($node, $this->node))
+				self::throwResponse("Unable to call listIP() due to an invalid node being passed.", false);
+				
+			return $this->node[$node]['ips'];
+		
+		}
 	
 	}
 	
 	/*
 	 * List Avaliable Ports
 	 */
-	private function listPort() {
+	private function _listPorts($node = null, $ip = null) {
 	
-	
+		$this->ports = array();
+
+		/*
+		 * List all Ports & IPs
+		 */
+		if(is_null($node)){
+		
+			foreach($this->node as $id => $data){
+			
+				/*
+				 * Rebuild Array for Return
+				 */
+				$this->ports = array_merge($this->ports, array("node" => $data['id'], "ports" => json_decode($data['ports'], true)));
+			
+			}
+			
+			/*
+			 * Return as JSON
+			 */
+			return $this->ports;
+		
+		}else{
+		
+			$this->ports = array("node" => $data[$node]['id'], "ports" => json_decode($data['ports'], true));
+			
+			return $this->ports;
+		
+		}
 	
 	}
 
