@@ -53,11 +53,14 @@ array(
 if(!isset($_GET['request'])){
 
 	$b = urlencode(json_encode(array(
-		"auth" => array(),
+		"auth" => array(
+			"key" => "su9hYcMCgt-z0ktD-JIVQ5-JwnzfJUE91yrl"
+		),
 		"function" => "info",
 		"data" => array(
-			"function" => "list_ips",
-			"filter_node" => 3
+			"function" => "list_ports",
+			"filter_node" => 4,
+			"filter_ip" => "10.0.0.4"
 		)
 	)));
 	header('Location: index.php?request='.$b);

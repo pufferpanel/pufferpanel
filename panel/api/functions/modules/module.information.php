@@ -118,8 +118,8 @@ class apiModuleGetInformation {
 			 */
 			if(!array_key_exists($node, $this->node))
 				self::throwResponse("Unable to call listIP() due to an invalid node being passed.", false);
-				
-			return $this->node[$node]['ips'];
+			
+			return json_decode($this->node[$node]['ips']);
 		
 		}
 	
@@ -133,29 +133,25 @@ class apiModuleGetInformation {
 		$this->ports = array();
 
 		/*
-		 * List all Ports & IPs
+		 * List all Ports & IPs on Node
 		 */
-		if(is_null($node)){
+		if(!is_null($node) && is_null($ip)){
 		
-			foreach($this->node as $id => $data){
+			$this->ports = array_merge($this->ports, array("node" => $this->node[$node]['id'], "ports" => json_decode($this->node[$node]['ports'], true)));
 			
-				/*
-				 * Rebuild Array for Return
-				 */
-				$this->ports = array_merge($this->ports, array("node" => $data['id'], "ports" => json_decode($data['ports'], true)));
+			return $this->ports;
+		
+		}else if(!is_null($node) && !is_null($ip)){
+		
+			$this->list = json_decode($this->node[$node]['ports'], true);
 			
-			}
+			$this->ports = array("node" => $this->node[$node]['id'], "ports" => array($ip => $this->list[$ip]));
 			
-			/*
-			 * Return as JSON
-			 */
 			return $this->ports;
 		
 		}else{
 		
-			$this->ports = array("node" => $data[$node]['id'], "ports" => json_decode($data['ports'], true));
-			
-			return $this->ports;
+			self::throwError("You must pass a node in order to list the ports.", false);
 		
 		}
 	
