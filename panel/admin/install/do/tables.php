@@ -48,7 +48,7 @@ if(file_exists('../install.lock'))
                     	
 	                        include('../../../core/framework/framework.database.connect.php');
 	                        $mysql = Database\database::connect();
-	
+							
 	                        /*
 	                         * CREATE TABLE `account_change`
 	                         */
@@ -63,7 +63,19 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "\nTable `account_change` created.\n";
-	
+
+							/*
+							 * CREATE TABLE `api`
+							 */
+							$mysql->exec("CREATE TABLE `api` (
+							  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+							  `key` char(36) NOT NULL DEFAULT '',
+							  `permissions` tinytext NOT NULL,
+							  `request_ips` tinytext NOT NULL,
+							  PRIMARY KEY (`id`)
+							) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
+							echo "Table `api` created.\n";
+
 	                        /*
 	                         * CREATE TABLE `acp_email_templates`
 	                         */
