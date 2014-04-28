@@ -18,57 +18,7 @@
  */
 
 header('Content-Type: application/json');
-
-/*
-array(
-	"auth" => array(
-		"key" => "random_key"
-	),
-	"function" => "add",
-	"data" => array(
-		"server_name" => "api_test",
-		"node" => 1,
-		"modpack" => "default",
-		"email" => "dane@daneeveritt.com",
-		"server_ip" => "127.0.0.1",
-		"server_port" => 25570,
-		"alloc_mem" => 128,
-		"alloc_disk" => 1024,
-		"sftp_pass" => "password",
-		"sftp_pass_2" => "password",
-		"cpu_limit" => 0,
-	)
-)
-
-array(
-	"auth" => array(
-		"key" => "random_key"
-	),
-	"function" => "info",
-	"data" => array(
-		"request" => "ports"
-	)
-)
-*/
-if(!isset($_GET['request'])){
-
-	$b = urlencode(json_encode(array(
-		"auth" => array(
-			"key" => "su9hYcMCgt-z0ktD-JIVQ5-JwnzfJUE91yrl"
-		),
-		"function" => "info",
-		"data" => array(
-			"function" => "list_ports",
-			"filter_node" => 4,
-			"filter_ip" => "10.0.0.4"
-		)
-	)));
-	header('Location: index.php?request='.$b);
-	
-}
-
 require_once('functions/api.core.php');
 
 $api->init();
-
 ?>

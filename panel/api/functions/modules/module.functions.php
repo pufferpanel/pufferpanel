@@ -36,10 +36,10 @@ trait functions {
 	
 	public static function getStoredData() {
 	
-		if(!isset($_GET['request']))
-			self::throwResponse("No data was sent in the request.");
+		if(!isset($_POST['request']))
+			self::throwResponse("No data was sent in the POST request.");
 		else
-			return json_decode(urldecode($_GET['request']), true);
+			return json_decode(urldecode($_POST['request']), true);
 	
 	}
 
