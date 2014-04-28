@@ -28,7 +28,7 @@ trait functions {
 		exit(json_encode(
 			array(
 				'success' => $success,
-				'info' => $text
+				'response' => $text
 			)
 		));
 	
