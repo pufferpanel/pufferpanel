@@ -55,6 +55,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				<?php
 					echo "<p><code>INSERT INTO `api` VALUES(NULL, '".$core->auth->keygen(10).'-'.$core->auth->keygen(5).'-'.$core->auth->keygen(5).'-'.$core->auth->keygen(14)."', '".json_encode(array())."', '".json_encode(array("*"))."');</code></p>";
 				?>
+				<p>If you want to disallow access to the API to all IPs except your own and this server, please run the following command instead.</p>
+				<?php
+					echo "<p><code>INSERT INTO `api` VALUES(NULL, '".$core->auth->keygen(10).'-'.$core->auth->keygen(5).'-'.$core->auth->keygen(5).'-'.$core->auth->keygen(14)."', '".json_encode(array())."', '".json_encode(array($_SERVER["REMOTE_ADDR"], $_SERVER["SERVER_ADDR"]))."');</code></p>";
+				?>
 			</div>
 		</div>
 		<div class="footer">
