@@ -63,6 +63,7 @@ trait validate {
 				break;
 			default:
 				self::throwResponse('Accessing API in an illegal manner (2).', false);
+				break;
 		
 		}
 	
@@ -96,6 +97,9 @@ trait validate {
 	 */
 	private static function validateInformationRequest() {
 	
+		/*
+		 * Run Function
+		 */
 		$run = new apiModuleGetInformation();
 	
 	}

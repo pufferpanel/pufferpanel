@@ -28,16 +28,44 @@ class apiModuleGetInformation {
 	public function __construct() {
 	
 		$this->mysql = self::connect();
-		$this->_listNodes();
 		
-		self::throwResponse($this->_listPorts(), true);
-	
+		/*
+		 * Load the Data
+		 */
+		$this->_getNodes();
+		
+		/*
+		 * Set Values for Functions
+		 */
+		$this->filterNode = (array_key_exists('filter_node', self::getStoredData()['data'])) ? self::getStoredData()['data']['filter_node'] : null;
+		$this->filterIP = (array_key_exists('filter_ip', self::getStoredData()['data'])) ? self::getStoredData()['data']['filter_ip'] : null;
+		
+		/*
+		 * Determine Function to Call
+		 */
+		switch(self::getStoredData()['data']['function']){
+		
+			case 'list_nodes':
+				self::throwResponse($this->_listNodes(), true);
+				break;
+			case 'list_ips':
+				self::throwResponse($this->_listIPs($this->filterNode), true);
+				break;
+			case 'list_ports':
+				self::throwResponse($this->_listPorts($this->filterNode, $this->filterIP), true);
+				break;
+			default:
+				self::throwResponse("No function specified in API request.", false);
+				break;
+			
+		}
+
 	}
 	
 	/*
-	 * List Nodes
+	 * Generate Data for Other Functions
 	 */
-	private function _listNodes() {
+	private function _getNodes() {
 	
 		/*
 		 * List All Nodes
@@ -47,6 +75,25 @@ class apiModuleGetInformation {
 
 			while($this->data = $this->query->fetch())
 				$this->node[$this->data['id']] = $this->data;
+	
+	}
+	
+	/*
+	 * List Nodes
+	 */
+	private function _listNodes() {
+	
+		$this->return = array();
+		
+		foreach($this->node as $id => $data)
+			$this->return = array_merge($this->return, array(array(
+				"id" => $data['id'],
+				"node" => $data['node'],
+				"node_ip" => $data['node_ip'],
+				"sftp_ip" => $data['sftp_ip']
+			)));
+			
+		return $this->return;
 	
 	}
 	
@@ -62,13 +109,7 @@ class apiModuleGetInformation {
 		 */
 		if(is_null($node)) {
 		
-			foreach($this->node as $id => $data)
-				$this->return .= $data['ips'];
-		
-			/*
-			 * Return the Data
-			 */
-			return $this->return;
+			self::throwResponse("No node ID was passed in the request.", false);
 		
 		}else{
 		
