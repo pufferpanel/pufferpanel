@@ -6,3 +6,6 @@
 		<p class="pull-right"><?php echo sprintf($_l->tpl('footer.generated'), number_format((microtime(true) - $pageStartTime), 4)); ?><br /><?php echo sprintf($_l->tpl('footer.queries'), Database\databaseInit::getCount()); ?></p>
 	</div>
 </div>
+<script type="text/javascript">
+if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+</script>

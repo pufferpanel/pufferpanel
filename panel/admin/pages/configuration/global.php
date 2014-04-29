@@ -265,9 +265,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						$("#postmark").hide();
 					}
 			});
-			if($.urlParam('tab') != null){
-				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
-			}
+			
 			if($.urlParam('error') != null){
 				var field = $.urlParam('error');
 				var exploded = field.split('|');

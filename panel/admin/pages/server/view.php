@@ -273,9 +273,7 @@ $select->execute(array(
 						$('[name="' + value + '"]').parent().parent().addClass('has-error');
 					});
 			}
-			if($.urlParam('tab') != null){
-				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
-			}
+			
 			$("#server_ip").change(function() {
 			    var ip = $(this).val().replace(/\./g, "\\.");
 			    $("[id^=node_]").hide();

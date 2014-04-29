@@ -214,9 +214,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						$('[name="' + key + '"]').val(value);
 					});			
 			}
-			if($.urlParam('tab') != null){
-				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
-			}
+			
 		});
 	</script>
 </body>

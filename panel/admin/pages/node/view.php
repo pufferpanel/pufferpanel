@@ -408,9 +408,7 @@ $selectNode->execute(array(
 				else
 					$("#disable_complete_pass").addClass("disabled");
 			});
-			if($.urlParam('tab') != null){
-				$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');
-			}
+			
 		});
 	</script>
 </body>
