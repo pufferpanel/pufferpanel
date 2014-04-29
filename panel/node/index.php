@@ -69,7 +69,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 							</div>
 					</span>
 					<h5><?php echo $_l->tpl('node.overview.players_h5'); ?></h5>
-						<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> <?php echo $_l->tpl('node.overview.collect_players'); ?></div>
+						<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> <?php echo $_l->tpl('node.overview.collect_usage'); ?></div>
 						<span id="toggle_players" style="display:none;">
 							<p class="text-muted"><?php echo $_l->tpl('node.overview.no_players'); ?></p>
 						</span>

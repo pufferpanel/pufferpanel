@@ -27,6 +27,14 @@ string.sftp, SFTP
 string.host, Host
 string.username, Nombre de Usuario
 string.generate, Generar
+string.description, Descripción
+string.previous, Anterior
+string.next, Siguiente
+string.about, Acerca de
+string.version, Versión
+string.published, Publicado
+string.versions, Versiones
+string.save, Guardar
 footer.license, PufferPanel tiene licencia bajo  <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3</a>.
 footer.version, Versión Actual %s distribuida por <a href="http://kelp.in/">Sistemas Kelpin'</a>.
 footer.generated, Pagina Generada en %s segundos.
@@ -59,7 +67,7 @@ settings.notify.no_email_me, No me envíes correos
 settings.update_preferences, Actualizar Preferencias
 node.overview.stats_h1, Resumen de Estadísticas
 node.Overview.collect_usage, Tratando de recopilar información de uso, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
-node.overview.collect_players, Tratando de recopilar información de jugadores, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
+node.Overview.collect_usage, Tratando de recopilar información de jugadores, esto puede tardar unos segundos. Por favor asegúrese de servidor está en línea.
 node.Overview.collect_disk, Recogiendo Información sobre el uso del disco, esto puede tardar unos segundos.
 node.Overview.no_players, No hay jugadores en línea.
 node.overview.disk_h1, Espacio de Disco Utilizado
@@ -68,14 +76,27 @@ node.Overview.information_h1, Información del Servidor
 node.Overview.players_h5, Jugadores en Línea
 node.overview.cpu_h5, Uso de CPU
 node.overview.memory_h5, Uso de Memoria
+node.overview.ajax.no_conn, No se puede conectar con el nodo.
+node.overview.ajax.no_exec, No se puede ejecutar el comando en el servidor.
 node.console.command_help, Escriba el Comando de Consola
 node.Console.scrollstop_alert, Ha seleccionado texto en la consola. La consola no será actualizada automáticamente cuando esto ocurra. Esto permite copiar o seleccionar texto en la consola fácilmente. Para permitir la actualización automática de nuevo, simplemente de-seleccione el texto.
-node.file.loading, Cargando Directorio. Espere, por favor.
 node.console.scrollstop_h1, Scrollstop&trade; Ventana de Consola
 node.Console.Ajax.server_started, El servidor se ha iniciado con éxito.
-node.file.name, Nombre de Archivo
-node.file.size, Tamaño del Archivo
-node.file.modified, Ultima Modificación
+node.files.loading, Cargando directorio. Espere, por favor.
+node.files.name, Nombre del fichero
+node.files.size, Tamaño
+node.files.modified, Última modificación
+node.files.edit.daemon_error, No se puede conectar con el demonio.
+node.files.edit.back, Volver al Gestor de Ficheros
+node.files.edit.type_error, Este tipo de fichero no puede editarse mediante el panel de control.
+node.files.edit.no_file, No se ha especificado un fichero editable.
+node.files.edit.error, Puede volver al gestor de ficheros <a href="index.php">pulsando aquí</a>.
+node.files.ajax.no_dir, No se ha encontrado el directorio que se ha pedido. Error registrado.
+node.files.Ajax.no_dl, No se ha podido conectar al servidor para obtener los archivos. Por favor inténtalo de nuevo.
+node.files.ajax.saved, El archivo ha sido guardado con éxito.
+node.files.ajax.no_save, No se ha podido guardar el archivo.
+node.files.ajax.no_edit, Este tipo de archivo no puede ser editado a través del editor de archivos online. Por favor usa un cliente FTP.
+node.files.ajax.file_404, No se ha podido encontrar el archivo en el servidor.
 node.settings.modpack.modpack_h1, Administración de Servidores con Modpack
 node.settings.modpack.current, Actual Modpack
 node.settings.modpack.install, Instalar Modpack
@@ -90,4 +111,10 @@ node.plugins.welcome_h1, Instalador de Plugins
 node.plugins.welcome, Bienvenido a su instalador de plugins incorporado. Este instalador reúne datos y resultados de Bukget y los muestra aquí de una manera fácil de usar. El instalador automático puede tener errores a veces, especialmente para plugins complejos. Recomendamos descargar los plugins a su ordenador primero si es posible.
 node.plugins.search_h1, Buscar en Repositorio de Plugins
 node.plugins.plugin_name, Nombre del Plugin
+node.plugins.installed, El Plugin se ha instalado correctamente.
+node.plugins.Installing, Por favor espere mientras se instala el Plugin. Este proceso podría tardar en torno a un minuto.
+node.plugins.installing_warning, No salga de esta página!
+node.plugins.error.term, Por favor introduzca un término de búsqueda válido.
+node.plugins.View.Author, Este plugin es creado y actualizado por %s.
+node.plugins.View.View, Ver este plugin <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank"> en Bukkit</a>.
 node.Ajax.generic_error, Se encontró un error con esta petición AJAX.

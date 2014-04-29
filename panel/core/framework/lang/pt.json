@@ -60,7 +60,6 @@
     "settings.update_preferences": "Atualizar Prefer\u00eancias",
     "node.overview.stats_h1": "Vis\u00e3o Geral das Estat\u00edsticas",
     "node.overview.collect_usage": "Tentando coletar informa\u00e7\u00f5es de uso, isto pode demorar alguns segundos. Por favor, certifique-se de que o servidor est\u00e1 online.",
-    "node.overview.collect_players": "Tentando coletar informa\u00e7\u00f5es dos jogadores, isto pode demorar alguns segundos. Por favor, certifique-se de que o servidor est\u00e1 online.",
     "node.overview.collect_disk": "Coletando informa\u00e7\u00f5es de uso de disco, isto pode demorar alguns segundos.",
     "node.overview.no_players": "Nenhum jogador est\u00e1 online neste momento.",
     "node.overview.disk_h1": "Espa\u00e7o em Disco utilizado",

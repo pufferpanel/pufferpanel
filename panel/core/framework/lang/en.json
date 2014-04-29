@@ -68,7 +68,6 @@
     "settings.update_preferences": "Update Preferences",
     "node.overview.stats_h1": "Statistics Overview",
     "node.overview.collect_usage": "Attempting to collect usage information, this could take a few seconds. Please ensure server is online.",
-    "node.overview.collect_players": "Attempting to collect player information, this could take a few seconds. Please ensure server is online.",
     "node.overview.collect_disk": "Collecting disk usage information, this could take a few seconds.",
     "node.overview.no_players": "No players are currently online.",
     "node.overview.disk_h1": "Disk Space Used",

@@ -50,7 +50,6 @@ settings.notify.email_me, 请联络我
 settings.update_preferences, 更新选项
 node.overview.stats_h1, 统计概览
 node.overview.collect_usage, 正在收集使用统计, 该过程可能需要一些时间。 请确保服务器处于联机状态。
-node.overview.collect_players, 正在收集玩家统计, 该过程可能需要一些时间。 请确保服务器处于联机状态。
 node.overview.disk_h1, 该磁盘使用空间
 node.overview.space_used, 您已经用了您所允许的%sMB的%sMB。
 node.overview.information_h1, 服务器资料

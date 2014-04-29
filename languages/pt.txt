@@ -59,7 +59,6 @@ settings.notify.no_email_me, Não envie-me e-mails
 settings.update_preferences, Atualizar Preferências
 node.overview.stats_h1, Visão Geral das Estatísticas
 node.Overview.collect_usage, Tentando coletar informações de uso, isto pode demorar alguns segundos. Por favor, certifique-se de que o servidor está online.
-node.overview.collect_players, Tentando coletar informações dos jogadores, isto pode demorar alguns segundos. Por favor, certifique-se de que o servidor está online.
 node.overview.collect_disk, Coletando informações de uso de disco, isto pode demorar alguns segundos.
 node.overview.no_players, Nenhum jogador está online neste momento.
 node.overview.disk_h1, Espaço em Disco utilizado
