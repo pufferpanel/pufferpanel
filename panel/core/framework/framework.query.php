@@ -87,7 +87,7 @@ class query {
 			)
 		));
 		$this->gatherData = @file_get_contents("http://".$ip.":8003/gameservers/".$id , 0, $this->context);
-		
+
 		$this->raw = json_decode($this->gatherData, true);
 		
 			/*
@@ -97,7 +97,10 @@ class query {
 				return false;
 			else
 				if(json_last_error() == JSON_ERROR_NONE)
-					return true;
+					if($this->raw['status'] == 0)
+						return false;
+					else
+						return true;
 				else
 					return false;
 	
