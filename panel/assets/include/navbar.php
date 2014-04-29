@@ -7,7 +7,7 @@
 	<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a> 
 	<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=se" class="language">Svenska</a> 
 	<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a> 
-	</div>
+</div>
 <div class="navbar navbar-default">
 	<div class="navbar-header">
 		<a class="navbar-brand" href="#"><?php echo $core->settings->get('company_name'); ?></a>
