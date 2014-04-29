@@ -73,7 +73,7 @@ if(file_exists('../install.lock'))
 							  `permissions` tinytext NOT NULL,
 							  `request_ips` tinytext NOT NULL,
 							  PRIMARY KEY (`id`)
-							) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 							echo "Table `api` created.\n";
 
 	                        /*
