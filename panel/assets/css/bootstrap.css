@@ -44,6 +44,27 @@ body {
   margin: 30px 0 0 0;
 }
 
+.highcharts-container {
+	z-index: -1 !important;
+}
+
+.stats_loading_box {
+	width: 200px;
+	height: 180px;
+	margin-top: 10px;
+	float: left;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.8);
+}
+
+	.stats_loading_box i {
+		font-size: 30px;
+		color: rgba(0, 0, 0, 0.6);
+		position: absolute;
+		top: 64px;
+		left: 85px;
+	}
+
 a {
   background: transparent;
 }

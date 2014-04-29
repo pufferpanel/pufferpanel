@@ -42,16 +42,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	if($returnSpacePercent < 1){ $returnSpacePercent = 1; }
 	
 	$spaceUsedH = $core->files->formatSize($getCommandData[0] * 1024);
-	$maxSpaceH = $core->files->formatSize($maxSpace);
 	
-	echo '	<div class="progress">
-	  			<div class="progress-bar" style="width:'.$returnSpacePercent.'%"></div>
-			</div>
-			<p class="text-muted">'.sprintf($_l->tpl('node.overview.space_used'), $spaceUsedH, $core->server->getData('disk_space')).'</p>';
+	echo (int) str_replace(" MB", "", $spaceUsedH);
 			
 }else{
 
-	exit('Invalid Authentication.');
+	exit('NaN');
 
 }
 ?>
