@@ -146,6 +146,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 									<label for="modpack" class="control-label">Server Modpack</label>
 									<div>
 										<select name="modpack"class="form-control">
+											<option value="none">None</option>
 											<?php
 												$packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `deleted` = 0");
 												$packs->execute();

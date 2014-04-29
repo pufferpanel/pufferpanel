@@ -109,24 +109,28 @@ if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) <
 $iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 $_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
-/*
- * Validate Modpack
- */
-$selectPack = $mysql->prepare("SELECT `min_ram`, `server_jar` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
-$selectPack->execute(array(
-	':hash' => $_POST['modpack']
-));
+if($_POST['modpack'] != "none")
 
-	if($selectPack->rowCount() != 1)
-		Page\components::redirect('../../add.php?error=modpack&disp=no_modpack');
-	else
-		$pack = $selectPack->fetch();
-		
-/*
- * Modpack RAM Requirements
- */
-if($pack['min_ram'] > $_POST['alloc_mem'])
-	Page\components::redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
+	/*
+	 * Validate Modpack
+	 */
+	$selectPack = $mysql->prepare("SELECT `min_ram`, `server_jar` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
+	$selectPack->execute(array(
+		':hash' => $_POST['modpack']
+	));
+	
+		if($selectPack->rowCount() != 1)
+			Page\components::redirect('../../add.php?error=modpack&disp=no_modpack');
+		else
+			$pack = $selectPack->fetch();
+			
+	/*
+	 * Modpack RAM Requirements
+	 */
+	if($pack['min_ram'] > $_POST['alloc_mem'])
+		Page\components::redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
+
+}
 
 /*
  * Add Server to Database
@@ -219,22 +223,26 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
 	
-//	/*
-//	 * Install Modpack
-//	 */
-//	
-//		/*
-//		 * Generate URL
-//		 */
-//		$packiv = $core->auth->generate_iv();
-//		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
-//		
-//		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
-//	
-//		/*
-//		 * Execute Commands
-//		 */
-//		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
+	//if($_POST['modpack'] != "none") {
+	//
+	//	/*
+	//	 * Install Modpack
+	//	 */
+	//	
+	//		/*
+	//		 * Generate URL
+	//		 */
+	//		$packiv = $core->auth->generate_iv();
+	//		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
+	//		
+	//		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
+	//	
+	//		/*
+	//		 * Execute Commands
+	//		 */
+	//		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
+	//
+	//}
 
 	/*
 	 * Send User Email
