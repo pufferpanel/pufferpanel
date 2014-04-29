@@ -48,6 +48,16 @@ a {
   background: transparent;
 }
 
+	.language {
+		text-decoration: none !important;
+		color: #999999;
+		font-size: 60%;
+	}
+	
+	.language:hover {
+		color: #5e5e5e;
+	}
+
 a:focus {
   outline: thin dotted;
 }
