@@ -58,6 +58,12 @@ class server extends user {
 				
 						}
 						
+					/*
+					 * Add User ID to array for future
+					 * @TODO: Implement better fix for this
+					 */
+					$this->_data = array_merge($this->_data, array("user.id" => $userid));
+						
 				}else{
 				
 					$this->_s = false;
@@ -151,7 +157,7 @@ class server extends user {
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => $userid,
+				':ownerid' => $this->_data['user.id'],
 				':hash' => $hash
 			));
 			
