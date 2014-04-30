@@ -45,9 +45,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		 * Query Servers
 		 */
 		if($core->gsd->check_status($node['node_ip'], $server['gsd_id'], $node['gsd_secret']) === false)
-			exit('<span class="label label-danger">'.$_l->tpl('string.offline').'</span>');
+			exit('<span class="label label-danger">'.$_l->tpl('string_offline').'</span>');
 		else
-			exit('<span class="label label-success">'.$_l->tpl('string.online').'</span>');
+			exit('<span class="label label-success">'.$_l->tpl('string_online').'</span>');
 		
 	}else{
 	
