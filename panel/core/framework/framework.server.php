@@ -26,8 +26,11 @@ class server extends user {
 
 	use Page\components;
 	
+	private $uID;
+	
 	public function __construct($hash, $userid, $isroot){
 		
+		$uID = $userid;
 		if($userid !== false && !empty($hash)){
 		
 			$this->mysql = self::connect();
@@ -151,7 +154,7 @@ class server extends user {
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => $userid,
+				':ownerid' => $uID,
 				':hash' => $hash
 			));
 			
