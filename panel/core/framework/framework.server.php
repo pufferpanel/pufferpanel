@@ -25,7 +25,7 @@
 class server extends user {
 
 	use Page\components;
-	
+		
 	public function __construct($hash, $userid, $isroot){
 		
 		if($userid !== false && !empty($hash)){
