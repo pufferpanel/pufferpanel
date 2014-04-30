@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head %}
+		{% block scripts %}
+			<meta charset="UTF-8">
+			<link rel="stylesheet" href="{{ assets_url }}css/bootstrap.css">
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+			<script src="{{ assets_url }}javascript/bootstrap.min.js"></script>
+			<script src="{{ assets_url }}javascript/admin.min.js"></script>
+			<script src="{{ assets_url }}javascript/jquery.cookie.js"></script>
+			<script src="{{ assets_url }}javascript/jquery.debounce.js"></script>
+			<script src="{{ assets_url }}javascript/jquery.redirect.min.js"></script>
+			<script src="{{ assets_url }}javascript/socket.io.min.js"></script>
+		{% endblock %}
+		<title>{{ company_name }} - {% block title %}{% endblock %}</title>
+	{% endblock %}
+</head>
+<body>
+	<div class="container">
+		<div class="pull-right" style="margin-top: -26px;">
+			<a href="{{ master_url }}core/ajax/set_language.php?language=de" class="language">Deutsch</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=en" class="language">English</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=se" class="language">Svenska</a> 
+			<a href="{{ master_url }}core/ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a> 
+		</div>
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">{{ company_name }}</a>
+			</div>
+			{% block navdropdown %}{% endblock %}
+		</div>
+		<div class="row">
+			<div class="col-3">
+				{% block sidebar %}{% endblock %}
+			</div>
+			<div class="col-9">
+				{% block content %}{% endblock %}
+			</div>
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-8 ">
+					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format("0.7.0 Alpha RC1")|raw }}</p>
+				</div>
+				<div class="col-4">
+					<p class="pull-right">{{ lang.footer_generated|format(footer.seconds) }}<br />{{ lang.footer_queries|format(footer.queries) }}</p>
+				</div>
+			</div>
+			<script type="text/javascript">
+				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+			</script>
+		</div>
+	</div>
+</body>
+</html>

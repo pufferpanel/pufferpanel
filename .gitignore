@@ -2,12 +2,12 @@
 .DS_Store
 profile
 PufferPan.esproj/*
-panel/public/node/tmp/*
+panel/node/tmp/*
 *HASHFILE*
 *configuration.php
 *.lock*
 SETUP
 languages/build/index.php
-panel/public/api/index2.php
+panel/api/index2.php
 vendor
 composer.phar
