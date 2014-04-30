@@ -27,12 +27,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 /*
  * Redirect
  */
-if(isset($_GET['goto']) && !empty($_GET['goto'])){
-
+if(isset($_GET['goto']) && !empty($_GET['goto']))
 	$core->server->nodeRedirect($_GET['goto'], $core->user->getData('root_admin'));
-	
-}
 
+/*
+ * Get the Servers
+ */
 if($core->user->getData('root_admin') == '1'){
 	$query = $mysql->prepare("SELECT * FROM `servers` ORDER BY `active` DESC");
 	$query->execute();
@@ -42,11 +42,28 @@ if($core->user->getData('root_admin') == '1'){
 }
 
 /*
+ * Build Array
+ */
+$servers = array();
+while($row = $query->fetch()){
+
+	$servers = array_merge($servers, array(
+		"id" => $row['id'],
+		"hash" => $row['hash'],
+		"node" => $core->settings->nodeName($row['node']),
+		"server_ip" => $row['server_ip'],
+		"server_port" => $row['server_port'],
+		"name" => $row['name']
+	));
+
+}
+
+/*
  * List Servers
  */
 echo $twig->render(
 		'panel/servers.html', array(
-			'servers' => array($query->fetch()),
+			'servers' => array($servers),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

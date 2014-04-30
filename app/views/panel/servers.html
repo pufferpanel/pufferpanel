@@ -15,6 +15,7 @@
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
+				<th>{{ lang.string_node }}</th>
 				<th>{{ lang.string_name }}</th>
 				<th>{{ lang.string_connect }}</th>
 				<th style="width:5%;">{{ lang.string_status }}</th>
@@ -23,6 +24,7 @@
 		<tbody>
 			{% for server in servers %}
 				<tr class="dynUpdate" id="{{ server.id }}">
+					<td>{{ server.node }}</td>
 					<td><a href="servers.php?goto={{ server.hash }}">{{ server.name }}</a></td>
 					<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 					<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i></span></td>
