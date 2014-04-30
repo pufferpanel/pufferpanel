@@ -124,6 +124,7 @@ Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem('../app/views/');
 $twig = new Twig_Environment($loader, array(
     'cache' => false,
+    'debug' => true
 ));
 $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());

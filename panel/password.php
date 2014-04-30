@@ -19,10 +19,18 @@
 session_start();
 require_once('core/framework/framework.core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
 	Page\components::redirect('servers.php');
-}
 
+if(!isset($_GET['do']) || $_GET['do'] != 'login')
+	echo $twig->render(
+			'panel/password.html', array(
+				'footer' => array(
+					'queries' => Database\databaseInit::getCount(),
+					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+				)
+		));
+		
 require_once("core/captcha/recaptchalib.php");
 $statusMessage = ''; $noShow = false;
 
@@ -128,84 +136,3 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php include('assets/include/header.php'); ?>
-	<title><?php echo $core->settings->get('company_name'); ?> - Reset Password</title>
-	<script type="text/javascript">
-		var RecaptchaOptions = {
-			theme : 'custom',
-			custom_theme_widget: 'recaptcha_widget'
-		};
-	</script>
-</head>
-<body>
-	<div class="container">
-		<div class="pull-right" style="margin-top: -26px;">
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=de" class="language">Deutsch</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=en" class="language">English</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=se" class="language">Svenska</a> 
-			<a href="<?php echo $core->settings->get('master_url'); ?>core/ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a> 
-		</div>
-		<div class="navbar navbar-default">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="<?php echo $core->settings->get('master_url'); ?>"><?php echo $core->settings->get('company_name'); ?></a>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-3">&nbsp;</div>
-			<div class="col-6">
-				<form action="password.php?do=recover" method="POST" id="login-form">
-					<legend><?php echo $_l->tpl('reset.reset_h1'); ?></legend>
-					<fieldset>
-						<?php 
-							echo $statusMessage;
-							if($noShow === false){
-						?>
-						<div class="form-group">
-							<label for="email" class="control-label"><?php echo $_l->tpl('string.email'); ?></label>
-							<div>
-								<input type="text" class="form-control" name="email" placeholder="<?php echo $_l->tpl('string.email'); ?>" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="recaptcha_response_field" class="control-label"><?php echo $_l->tpl('string.spam_protection'); ?> <a href="javascript:Recaptcha.reload()"><?php echo $_l->tpl('string.refresh'); ?></a></label>
-							<div>
-								<div class="col-4" style="padding-left: 0;">
-									<input type="text" class="form-control" id="recaptcha_response_field" name="recaptcha_response_field"/>
-								</div>
-								<div class="col-8">
-									<div id="recaptcha_image"></div>
-								</div>
-								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo $core->settings->get('captcha_pub'); ?>"></script>
-								<noscript>
-									<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo $core->settings->get('captcha_pub'); ?>"
-								height="300" width="500" frameborder="0"></iframe><br>
-									<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-									<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-								</noscript>
-							</div>
-						</div>
-						<div class="form-group">
-							<div>
-								<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('string.reset_password'); ?>" />
-								<button class="btn btn-default" onclick="window.location='index.php';return false;"><?php echo $_l->tpl('string.login'); ?></button>
-							</div>
-						</div>
-						<?php } ?>
-					</fieldset>
-				</form>
-			</div>
-			<div class="col-3">&nbsp;</div>
-		</div>
-		<div class="footer">
-			<?php include('assets/include/footer.php'); ?>
-		</div>
-	</div>
-</body>
-</html>
