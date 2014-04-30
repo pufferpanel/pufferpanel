@@ -9,3 +9,5 @@ panel/public/node/tmp/*
 SETUP
 languages/build/index.php
 panel/public/api/index2.php
+vendor
+composer.phar
