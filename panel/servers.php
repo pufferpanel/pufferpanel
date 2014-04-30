@@ -58,59 +58,12 @@ while($row = $query->fetch()){
 
 }
 
+echo $twig->render(
+		'panel/servers.html', array(
+			'servers' => $listServers,
+			'footer' => array(
+				'queries' => Database\databaseInit::getCount(),
+				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+			)
+	));
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php include('assets/include/header.php'); ?>
-	<title>PufferPanel - Your Servers</title>
-</head>
-<body>
-	<div class="container">
-		<?php include('assets/include/navbar.php'); ?>
-		<div class="row">
-			<div class="col-3">
-				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
-					<a href="account.php" class="list-group-item"><?php echo $_l->tpl('sidebar.settings'); ?></a>
-					<a href="servers.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.servers'); ?></a>
-				</div>
-			</div>
-			<div class="col-9">
-				<table class="table table-striped table-bordered table-hover">
-					<thead>
-						<tr>
-							<th><?php echo $_l->tpl('string.node'); ?></th>
-							<th><?php echo $_l->tpl('string.name'); ?></th>
-							<th><?php echo $_l->tpl('string.connect'); ?></th>
-							<th style="width:5%;"><?php echo $_l->tpl('string.status'); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php echo $listServers; ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="footer">
-			<?php include('assets/include/footer.php'); ?>
-		</div>
-	</div>
-	<script type="text/javascript">
-		$(document).ready(function(){
-				$(".dynUpdate").each(function(index, data){
-				    var connection = $(this).attr("id");
-				    var element = $(this);
-				    $.ajax({
-				    	type: "POST",
-				    	url: "core/ajax/get_status.php",
-				    	data: { server: connection },
-				      		success: function(data) {
-				    			element.find(".applyUpdate").html(data);
-				     		}
-				    });
-				});
-		});
-	</script>
-</body>
-</html>

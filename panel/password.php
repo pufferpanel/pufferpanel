@@ -21,18 +21,11 @@ require_once('core/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
 	Page\components::redirect('servers.php');
-
-if(!isset($_GET['do']) || $_GET['do'] != 'login')
-	echo $twig->render(
-			'panel/password.html', array(
-				'footer' => array(
-					'queries' => Database\databaseInit::getCount(),
-					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-				)
-		));
 		
 require_once("core/captcha/recaptchalib.php");
-$statusMessage = ''; $noShow = false;
+
+$statusMessage = null;
+$noShow = false;
 
 if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
@@ -134,5 +127,15 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		}
 		
 }
+
+echo $twig->render(
+		'panel/password.html', array(
+			'status' => $statusMessage,
+			'noshow' => $noShow,
+			'footer' => array(
+				'queries' => Database\databaseInit::getCount(),
+				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+			)
+	));
 
 ?>

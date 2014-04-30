@@ -1,9 +1,38 @@
 {% extends "panel/base.html" %}
 
-{% block title %}View all Servers{% endblock %}
+{% block title %}Your Servers{% endblock %}
 {% block content %}
-    <h1>Index</h1>
-    <p class="important">
-        Welcome to my awesome homepage.
-    </p>
+<div class="col-9">
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>{{ lang.string_node }}</th>
+				<th>{{ lang.string_name }}</th>
+				<th>{{ lang.string_connect }}</th>
+				<th style="width:5%;">{{ lang.string_status }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if servers %}
+				{{ servers|raw }}
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+			$(".dynUpdate").each(function(index, data){
+			    var connection = $(this).attr("id");
+			    var element = $(this);
+			    $.ajax({
+			    	type: "POST",
+			    	url: "core/ajax/get_status.php",
+			    	data: { server: connection },
+			      		success: function(data) {
+			    			element.find(".applyUpdate").html(data);
+			     		}
+			    });
+			});
+	});
+</script>
 {% endblock %}

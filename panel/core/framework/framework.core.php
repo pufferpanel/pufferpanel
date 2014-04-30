@@ -23,14 +23,14 @@
 $pageStartTime = microtime(true);
 
 /*
- * Cloduflare IP Fix
+ * Cloudflare IP Fix
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
 
 /*
  * Include Dependency Libs
  */
-require_once('../vendor/autoload.php');
+require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
 require_once('lib/password.lib.php');
 
 /* 
@@ -113,15 +113,27 @@ function pdo_exception_handler($exception) {
         
     } else {
     
-    	die(nl2br($exception));
-    	//die('Exception handler from unknown source.');
+       	exit('<!DOCTYPE html>
+    	<html lang="en">
+    	<head>
+    		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    	</head>
+    	<body>
+    		<div class="container">
+    			<h1>Database Error</h1>
+    				<div class="col-12">
+    					<div class="alert alert-danger">'.nl2br($exception).'</div>
+    				</div>
+    		</div>
+    	</body>
+    	</html>');
     
     }
 }
 
 Twig_Autoloader::register();
 
-$loader = new Twig_Loader_Filesystem('../app/views/');
+$loader = new Twig_Loader_Filesystem(dirname(dirname(dirname(__DIR__))).'/app/views/');
 $twig = new Twig_Environment($loader, array(
     'cache' => false,
     'debug' => true
