@@ -44,23 +44,9 @@ if($core->user->getData('root_admin') == '1'){
 /*
  * List Servers
  */
-$listServers = '';
-while($row = $query->fetch()){
-	
-	$listServers .= '
-					<tr class="dynUpdate" id="'.$row['id'].'">
-						<td>'.$core->settings->nodeName($row['node']).'</td>
-						<td><a href="servers.php?goto='.$row['hash'].'">'.$row['name'].'</a></td>
-						<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-						<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i> </span></td>
-					</tr>
-					';
-
-}
-
 echo $twig->render(
 		'panel/servers.html', array(
-			'servers' => $listServers,
+			'servers' => array($query->fetch()),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
