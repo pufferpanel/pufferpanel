@@ -25,12 +25,9 @@
 class server extends user {
 
 	use Page\components;
-	
-	private $uID;
-	
+		
 	public function __construct($hash, $userid, $isroot){
 		
-		$uID = $userid;
 		if($userid !== false && !empty($hash)){
 		
 			$this->mysql = self::connect();
@@ -60,6 +57,12 @@ class server extends user {
 							$this->_data = array_merge($this->_data, array($this->id => $this->val));
 				
 						}
+						
+					/*
+					 * Add User ID to array for future
+					 * @TODO: Implement better fix for this
+					 */
+					$this->_data = array_merge($this->_data, array("user.id" => $userid));
 						
 				}else{
 				
@@ -154,7 +157,7 @@ class server extends user {
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => $uID,
+				':ownerid' => $this->_data['user.id'],
 				':hash' => $hash
 			));
 			
