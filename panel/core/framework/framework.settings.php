@@ -46,10 +46,13 @@ class settings {
 		
 		}
 		
-	public function get($setting)
+	public function get($setting = null)
 		{
 		
-			return (array_key_exists($setting, $this->_data)) ? $this->_data[$setting] : '_notfound_';
+			if(is_null($setting))
+				return $this->_data;
+			else
+				return (array_key_exists($setting, $this->_data)) ? $this->_data[$setting] : '_notfound_';
 		
 		}
 		

@@ -4,33 +4,33 @@
 	{% block head %}
 		{% block scripts %}
 			<meta charset="UTF-8">
-			<link rel="stylesheet" href="{{ assets_url }}css/bootstrap.css">
+			<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap.css">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-			<script src="{{ assets_url }}javascript/bootstrap.min.js"></script>
-			<script src="{{ assets_url }}javascript/admin.min.js"></script>
-			<script src="{{ assets_url }}javascript/jquery.cookie.js"></script>
-			<script src="{{ assets_url }}javascript/jquery.debounce.js"></script>
-			<script src="{{ assets_url }}javascript/jquery.redirect.min.js"></script>
-			<script src="{{ assets_url }}javascript/socket.io.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/bootstrap.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/admin.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.cookie.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.debounce.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/socket.io.min.js"></script>
 		{% endblock %}
-		<title>{{ company_name }} - {% block title %}{% endblock %}</title>
+		<title>{{ settings.company_name }} - {% block title %}{% endblock %}</title>
 	{% endblock %}
 </head>
 <body>
 	<div class="container">
 		<div class="pull-right" style="margin-top: -26px;">
-			<a href="{{ master_url }}core/ajax/set_language.php?language=de" class="language">Deutsch</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=en" class="language">English</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=se" class="language">Svenska</a> 
-			<a href="{{ master_url }}core/ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=de" class="language">Deutsch</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=en" class="language">English</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=se" class="language">Svenska</a> 
+			<a href="{{ settings.master_url }}core/ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a> 
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">{{ company_name }}</a>
+				<a class="navbar-brand" href="#">{{ settings.company_name }}</a>
 			</div>
 			{% block navdropdown %}{% endblock %}
 		</div>

@@ -25,13 +25,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_GET['do']) || $_GET['do'] != 'login')
 	echo $twig->render(
 			'panel/servers.html', array(
-			'company_name' => 'Kelpin Demo',
-			'master_url' => 'http://localhost/PufferPan/panel/',
-			'assets_url' => 'http://localhost/PufferPan/panel/assets/',
-			'footer' => array(
-				'queries' => 3,
-				'seconds' => 3
-			)
+				'footer' => array(
+					'queries' => Database\databaseInit::getCount(),
+					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+				)
 		));
 
 if(isset($_GET['do']) && $_GET['do'] == 'login'){

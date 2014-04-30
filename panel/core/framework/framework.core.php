@@ -127,5 +127,8 @@ $twig = new Twig_Environment($loader, array(
 ));
 $twig->addGlobal(
 	'lang', $_l->loadTemplates()
-)
+);
+$twig->addGlobal(
+	'settings', $core->settings->get()
+);
 ?>
