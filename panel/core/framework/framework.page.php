@@ -40,6 +40,25 @@ trait components {
         return $https.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         
     }
+    
+    /*
+     * Fixes issue with twig not accepting empty array values
+     */
+    public static function twigGET() {
+    
+    	$vars = $_GET;
+    	$return = array();
+    	foreach($vars as $id => $value){
+    	
+    		if(empty($value))
+    			$value = true;
+    		
+    		$return[$id] = $value;
+    	}
+    	
+    	return $return;
+    
+    }
     		
 }
 

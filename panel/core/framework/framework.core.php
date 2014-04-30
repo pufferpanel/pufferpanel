@@ -125,10 +125,7 @@ $loader = new Twig_Loader_Filesystem('../app/views/');
 $twig = new Twig_Environment($loader, array(
     'cache' => false,
 ));
-$twig->addGlobal(
-	'lang', $_l->loadTemplates()
-);
-$twig->addGlobal(
-	'settings', $core->settings->get()
-);
+$twig->addGlobal('lang', $_l->loadTemplates());
+$twig->addGlobal('settings', $core->settings->get());
+$twig->addGlobal('get', Page\components::twigGET());
 ?>

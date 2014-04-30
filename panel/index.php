@@ -24,7 +24,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 if(!isset($_GET['do']) || $_GET['do'] != 'login')
 	echo $twig->render(
-			'panel/servers.html', array(
+			'panel/index.html', array(
 				'footer' => array(
 					'queries' => Database\databaseInit::getCount(),
 					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
