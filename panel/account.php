@@ -129,7 +129,7 @@ if(isset($_GET['action'])){
 				
 				}else{
                     
-					$outputMessage = '<div class="alert alert-danger">Your passowrds did not match.</div>';
+					$outputMessage = '<div class="alert alert-danger">Your passwords did not match.</div>';
 				
 				}
 			
