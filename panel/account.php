@@ -66,32 +66,40 @@ if(isset($_GET['action'])){
 		$emailKey = $core->auth->keygen('30');
 		$expire = time() + 14400;
 		
-		if($_POST['newemail'] == $core->user->getData('email')){
+		if(!isset($_POST['newemail'], $_POST['password'])){
 		
-			$outputMessage = '<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
+			$outputMessage = '<div class="alert alert-danger">Not all variables were passed to the script.</div>';
 		
 		}else{
 		
-			if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
-					
-				$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
-				$updateEmail->execute(array(
-					':email' => $_POST['newemail'],
-					':id' => $core->user->getData('id')
-				));
-				
-                $core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
-                
-				$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
-				
+			if($_POST['newemail'] == $core->user->getData('email')){
+			
+				$outputMessage = '<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
+			
 			}else{
 			
-                $core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
-                
-				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
-			
-			}
+				if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
+						
+					$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
+					$updateEmail->execute(array(
+						':email' => $_POST['newemail'],
+						':id' => $core->user->getData('id')
+					));
+					
+	                $core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
+	                
+					$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
+					
+				}else{
 				
+	                $core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
+	                
+					$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
+				
+				}
+					
+			}
+			
 		}
 	
 	}else if($_GET['action'] == 'password'){
