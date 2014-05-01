@@ -7,7 +7,6 @@ panel/node/tmp/*
 *configuration.php
 *.lock*
 SETUP
-app/languages/build/index.php
 panel/api/index2.php
 vendor
 composer.phar
