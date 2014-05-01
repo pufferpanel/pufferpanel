@@ -39,7 +39,7 @@ echo $twig->render(
 				'server_port' => $core->server->getData('server_port')
 			),
 			'node' => array(
-				'gsd_id' => $core->server->nodeData('gsd_secret'),
+				'gsd_secret' => $core->server->nodeData('gsd_secret'),
 				'sftp_ip' => $core->server->nodeData('sftp_ip')
 			),
 			'footer' => array(

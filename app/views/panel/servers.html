@@ -2,6 +2,20 @@
 
 {% block title %}Your Servers{% endblock %}
 
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
 {% block sidebar %}
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
