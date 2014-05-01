@@ -28,7 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 /*
  * Lah-de-dah
  */
-$outputMessage = '';
+$outputMessage = null;
 
 /*
  * Changing Account Details
@@ -158,121 +158,26 @@ if(isset($_GET['action'])){
 /*
  * Get Notification Preferences
  */
-$core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'));
 if($core->user->getData('notify_login_s') == 1){ $ns1 = 'checked="checked"'; $ns0 = ''; }else{ $ns0 = 'checked="checked"'; $ns1 = ''; }
 if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf0 = ''; }else{ $nf0 = 'checked="checked"'; $nf1 = ''; }
 
+/*
+ * Display Page
+ */
+echo $twig->render(
+		'panel/account.html', array(
+			'output' => $outputMessage,
+			'failed_login' => array(
+				'e_f' => array("value" => 1, "checked" => $ns1),
+				'e_f_2' => array("value" => 0, "checked" => $ns0)
+			),
+			'success_login' => array(
+				'e_s' => array("value" => 1, "checked" => $nf1),
+				'e_s_2' => array("value" => 0, "checked" => $nf0)
+			),
+			'footer' => array(
+				'queries' => Database\databaseInit::getCount(),
+				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+			)
+	));
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php include('assets/include/header.php'); ?>
-	<title>PufferPanel - Your Settings</title>
-</head>
-<body>
-	<div class="container">
-		<?php include('assets/include/navbar.php'); ?>
-		<div class="row">
-			<div class="col-3">
-				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong><?php echo $_l->tpl('sidebar.acc_actions'); ?></strong></a>
-					<a href="account.php" class="list-group-item active"><?php echo $_l->tpl('sidebar.settings'); ?></a>
-					<a href="servers.php" class="list-group-item"><?php echo $_l->tpl('sidebar.servers'); ?></a>
-				</div>
-			</div>
-			<div class="col-9">
-				<?php echo $outputMessage; ?>
-				<div class="row">
-					<div class="col-6">
-						<h3 style="margin-top:0;"><?php echo $_l->tpl('settings.change_pass'); ?></h3><hr />
-							<form action="account.php?action=password" method="post">
-								<div class="form-group">
-									<label for="p_password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
-									<div>
-										<input type="password" class="form-control" name="p_password" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="p_password_new" class="control-label"><?php echo $_l->tpl('settings.new_pass'); ?></label>
-									<div>
-										<input type="password" class="form-control" name="p_password_new" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="p_password_new_2" class="control-label"><?php echo $_l->tpl('settings.new_pass').' '.$_l->tpl('string.again'); ?></label>
-									<div>
-										<input type="password" class="form-control" name="p_password_new_2" />
-									</div>
-								</div>
-								<div class="form-group">
-									<div>
-										<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.change_pass'); ?>" />
-									</div>
-								</div>
-							</form>
-					</div>
-					<div class="col-6">
-						<h3 style="margin-top:0;"><?php echo $_l->tpl('settings.update_email'); ?></h3><hr />
-							<form action="account.php?action=email" method="post">
-								<div class="form-group">
-									<label for="email" class="control-label"><?php echo $_l->tpl('settings.new_email'); ?></label>
-									<div>
-										<input type="text" class="form-control" name="email" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
-									<div>
-										<input type="password" class="form-control" name="password" />
-									</div>
-								</div>
-								<div class="form-group">
-									<div>
-										<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.update_email'); ?>" />
-									</div>
-								</div>
-							</form>
-					</div>
-				</div>
-				<h3><?php echo $_l->tpl('settings.update_preferences'); ?></h3><hr />
-				<form action="account.php?action=notifications" method="post">
-					<div class="col-6 nopad">
-						<div class="form-group">
-							<h4><?php echo $_l->tpl('settings.login_success'); ?></h4>
-							<div class="radio">
-		                        <label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>/><?php echo $_l->tpl('settings.notify.email_me'); ?></label>
-							</div>
-							<div class="radio">
-							    <label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>/><?php echo $_l->tpl('settings.notify.no_email_me'); ?></label>
-							</div>
-						</div>
-						<div class="form-group">
-							<h4><?php echo $_l->tpl('settings.failed_login'); ?></h4>
-							<div class="radio">
-						        <label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>/><?php echo $_l->tpl('settings.notify.email_me'); ?></label>
-							</div>
-							<div class="radio">
-							    <label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>/><?php echo $_l->tpl('settings.notify.no_email_me'); ?></label>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="password" class="control-label"><?php echo $_l->tpl('settings.current_pass'); ?></label>
-							<div>
-								<input type="password" class="form-control" name="password" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div>
-								<input type="submit" class="btn btn-primary" value="<?php echo $_l->tpl('settings.update_preferences'); ?>" />
-							</div>
-						</div>
-					</div>
-				</form>	
-			</div>
-		</div>
-		<div class="footer">
-			<?php include('assets/include/footer.php'); ?>
-		</div>
-	</div>
-</body>
-</html>

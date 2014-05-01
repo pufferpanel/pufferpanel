@@ -2,16 +2,31 @@
 
 {% block title %}Account Settings{% endblock %}
 
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
 {% block sidebar %}
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="servers.php" class="list-group-item active">{{ lang.sidebar_servers }}</a>
+	<a href="account.php" class="list-group-item active">{{ lang.sidebar_settings }}</a>
+	<a href="servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="col-9">
+	{{ output|raw }}
 	<div class="row">
 		<div class="col-6">
 			<h3 style="margin-top:0;">{{ lang.settings_change_pass }}</h3><hr />
@@ -69,21 +84,19 @@
 		<div class="col-6 nopad">
 			<div class="form-group">
 				<h4>{{ lang.settings_login_success }}</h4>
+				{% for key, notify in success_login %}
 				<div class="radio">
-                    <label for="e_s" class="alt-label"><input type="radio" id="e_s" name="e_s" value="1" <?php echo $ns1; ?>{{ lang.settings_notify_email_me }}</label>
+				    <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_s" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
 				</div>
-				<div class="radio">
-				    <label for="e_s_2" class="alt-label"><input type="radio" id="e_s_2" name="e_s" value="0" <?php echo $ns0; ?>{{ lang.settings_notify_no_email_me }}</label>
-				</div>
+				{% endfor %}
 			</div>
 			<div class="form-group">
 				<h4>{{ lang.settings_failed_login }}</h4>
+				{% for key, notify in failed_login %}
 				<div class="radio">
-			        <label for="e_f" class="alt-label"><input type="radio" id="e_f" name="e_f" value="1" <?php echo $nf1; ?>{{ lang.settings_notify_email_me }}</label>
+			        <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_f" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
 				</div>
-				<div class="radio">
-				    <label for="e_f_2" class="alt-label"><input type="radio" id="e_f_2" name="e_f" value="0" <?php echo $nf0; ?>{{ lang.settings_notify_no_email_me }}</label>
-				</div>
+				{% endfor %}
 			</div>
 			<div class="form-group">
 				<label for="password" class="control-label">{{ lang.settings_current_pass }}</label>

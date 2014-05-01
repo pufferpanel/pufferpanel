@@ -120,7 +120,7 @@ function pdo_exception_handler($exception) {
     	</head>
     	<body>
     		<div class="container">
-    			<h1>Database Error</h1>
+    			<h1>Error</h1>
     				<div class="col-12">
     					<div class="alert alert-danger">'.nl2br($exception).'</div>
     				</div>
@@ -141,4 +141,5 @@ $twig = new Twig_Environment($loader, array(
 $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());
 $twig->addGlobal('get', Page\components::twigGET());
+if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
 ?>
