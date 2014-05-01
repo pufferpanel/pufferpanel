@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Server Console{% endblock %}
+
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+	<a href="../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
+	<a href="../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+	<a href="index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
+	<a href="console.php" class="list-group-item">{{ lang.sidebar_console }}</a>
+	<a href="files/index.php" class="list-group-item">{{ lang.sidebar_files }}</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
+	
+	<a href="settings.php" class="list-group-item active">{{ lang.sidebar_manage }}</a>
+	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<ul class="nav nav-tabs" id="config_tabs">
+		<li class="active"><a href="#server_sett" data-toggle="tab">{{ lang.string_modpacks }}</a></li>
+		<li class=""><a href="#sftp_sett" data-toggle="tab">{{ lang.string_sftp }}</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane active" id="server_sett">
+		<br>
+		<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
+			<form action="#" method="post" id="updateModpack">
+				<fieldset>
+					<div class="row" id="installingModpack" style="display:none;"></div>
+					<div class="row">
+						<div class="well well-sm">
+							<small>{{ lang.node_settings_modpack_current }}: <strong>{{ modpack.current }}</strong></small>
+						</div>
+					</div>
+					<div class="form-group col-8 nopad">
+						<div>
+							<select class="form-control" name="new_pack">
+								<option disabled="disabled">{{ lang.node_settings_modpack_select }}</option>
+								{% for pack in modpack.packs %}
+									<option value="{{ pack.hash }}" {% if pack.hash == server.modpack %}disabled="disabled"{% endif %}>{{ pack.name }} ({{ pack.version }})</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-4 nopad-right">
+						<div>
+							<input type="submit" id="install_modpack_submit" value="{{ lang.node_settings_modpack_install }}" class="btn btn-primary" />
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			<div class="row">
+				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
+					<div class="well">
+						<form action="ajax/settings/jarname.php" method="post">
+							<fieldset>
+							<div class="form-group">
+								<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
+								<div class="input-group">
+									<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
+									<span class="input-group-addon">.jar</span>
+									<span class="input-group-btn">
+										<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
+									</span>
+								</div>
+							</div>
+							</fieldset>
+						</form>
+					</div>
+			</div>
+		</div>
+		<div class="tab-pane" id="sftp_sett">
+			<h3>{{ lang.node_settings_jar_update }}</h3><hr />
+			<form action="ajax/settings/sftp.php" method="post">
+				<fieldset>
+					<div class="form-group">
+						<label for="sftp_host" class="control-label">{{ lang.string_host }}</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ node.sftp_ip }}" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="sftp_user" class="control-label">{{ lang.string_username }}</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ server.ftp_user }}" class="form-control" />
+						</div>
+					</div>
+					<div class="well">
+						<div class="row">
+							<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+							<div class="form-group col-6 nopad">
+								<label for="sftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
+								<div class="input-group">
+									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+									<span class="input-group-btn">
+										<button class="btn btn-success" id="gen_pass_bttn" type="button">{{ lang.string_generate }}</button>
+									</span>
+								</div>
+							</div>
+							<div class="form-group col-6 nopad-right">
+								<label for="sftp_pass_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
+								<div>
+									<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<input type="submit" value="{{ lang.settings_change_pass }}" class="btn btn-primary btn-sm" />
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$("#updateModpack").submit(function(e){
+		e.preventDefault();
+		var pack = $('select[name="new_pack"]').val();
+		
+		if(pack != null){
+			$('#install_modpack_submit').addClass('disabled');
+			$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_settings_ajax_installing_modpack }}</div>').show();
+			$.ajax({
+				type: "POST",
+				url: 'ajax/settings/modpack.php',
+				data: { new_pack: pack },
+		  		success: function(data) {
+		    		$("#installingModpack").hide().html(data).show();
+		    		$('#install_modpack_submit').removeClass('disabled');
+		 		}
+			});
+		}else
+			alert('{{ lang.node_settings_ajax_modpack_error }}');
+	});
+	$("#gen_pass_bttn").click(function(){
+			$.ajax({
+				type: "GET",
+				url: "settings.php?do=generate_password",
+				success: function(data) {
+					$("#gen_pass").html('<strong>{{ lang.string_generated_pass }}:</strong> '+data);
+					$("#gen_pass").slideDown();
+					$('input[name="sftp_pass"]').val(data);
+					$('input[name="sftp_pass_2"]').val(data);
+					return false;
+				}
+			});
+			return false;
+		});
+</script>
+{% endblock %}
