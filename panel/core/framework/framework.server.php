@@ -28,9 +28,9 @@ class server extends user {
 		
 	public function __construct($hash, $userid, $isroot){
 		
-		if($userid !== false && !empty($hash)){
+		$this->mysql = self::connect();
 		
-			$this->mysql = self::connect();
+		if($userid !== false && !empty($hash)){
 			
 			$this->_data = array();
 			$this->_s = true;
@@ -57,13 +57,7 @@ class server extends user {
 							$this->_data = array_merge($this->_data, array($this->id => $this->val));
 				
 						}
-						
-					/*
-					 * Add User ID to array for future
-					 * @TODO: Implement better fix for this
-					 */
-					$this->_data = array_merge($this->_data, array("user.id" => $userid));
-						
+												
 				}else{
 				
 					$this->_s = false;
@@ -141,10 +135,10 @@ class server extends user {
         
     }
     
-    public function nodeRedirect($hash, $rootAdmin) {
+    public function nodeRedirect($hash, $userid, $rootAdmin) {
     	
     	//@TODO: Solve this bug
-    	$this->mysql = self::connect();
+    	//$this->mysql = self::connect();
     	
 		if($rootAdmin == 1){
 		
@@ -157,7 +151,7 @@ class server extends user {
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => $this->_data['user.id'],
+				':ownerid' => $userid,
 				':hash' => $hash
 			));
 			

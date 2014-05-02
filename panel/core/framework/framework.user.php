@@ -22,9 +22,9 @@
  */
 
 class user extends Auth\auth {
-
-	public function __construct($ip, $session, $serverhash = null){
 	
+	public function __construct($ip, $session, $serverhash = null){
+
 		//Re-Initalize the MySQL PDO Class
 		$this->mysql = self::connect();
 		
