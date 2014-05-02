@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Editing File{% endblock %}
+
+{% block scripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
+{% endblock %}
+
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+	<a href="../../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
+	<a href="../../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+	<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
+	<a href="../console.php" class="list-group-item">{{ lang.sidebar_console }}</a>
+	<a href="index.php" class="list-group-item active">{{ lang.sidebar_files }}</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
+	<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
+	<a href="../plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="col-9" id="load_files">
+	<span id="save_status" style="display:none;width: 100%;"></span>
+	{% if error %}
+		{{ error|raw }}
+	{% else %}
+	<form method="post" id="editing_file">
+		<div class="form-group">
+			<label for="email" class="control-label">{{ file_name }}</label>
+			<div>
+				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">{{ contents }}</textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<div>
+				<input type="hidden" name="file" value="{{ file }}" />
+				<button class="btn btn-primary btn-sm" id="save_file">{{ lang.string_save }}</button>
+				<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={{ directory|url_encode }}';return false;">{{ lang.node_files_edit_back }}</button>
+			</div>
+		</div>
+    </form>
+    {% endif %}
+</div>
+<script type="text/javascript">
+$(window).load(function(){ 
+    $("#save_file").click(function(event){
+		event.preventDefault();
+		var file = $("input[name='file']").val();
+		var content = $("#live_console").val();
+		$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
+		
+		$.ajax({
+			type: "POST",
+			url: '../ajax/files/save.php',
+			data: {'file': file, 'file_contents': content},
+			success: function(data) {
+				$("#save_status").html(data);
+				$("#save_file").html('Save').removeClass('disabled');
+				$("#save_status").slideDown();
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

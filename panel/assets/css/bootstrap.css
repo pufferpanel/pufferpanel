@@ -65,6 +65,20 @@ body {
 		left: 85px;
 	}
 
+.files_loading_box {
+	position: absolute;
+	background: rgba(255, 255, 255, 0.8);
+	width: 100%;
+	z-index: 9999;
+	display: none;
+}
+
+	.files_loading_box i {
+		font-size: 30px;
+		color: rgba(0, 0, 0, 0.6);
+		position: absolute;
+	}
+
 a {
   background: transparent;
 }

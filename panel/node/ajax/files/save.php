@@ -63,22 +63,22 @@ if(isset($_POST['file'])){
 
         if(empty($response)){
         
-        	exit('<div class="alert alert-success">'.$_l->tpl('node.files.ajax.saved').'</div>');
+        	exit('<div class="alert alert-success">'.$_l->tpl('node_files_ajax_saved').'</div>');
         
         }else{
         
-        	exit('<div class="alert alert-danger">'.$_l->tpl('node.files.ajax.no_save').'</div>');
+        	exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_no_save').'</div>');
         
         }
     
     }else{
     
-        exit('<div class="alert alert-warning">'.$_l->tpl('node.files.ajax.no_edit').'</div>');
+        exit('<div class="alert alert-warning">'.$_l->tpl('node_files_ajax_no_edit').'</div>');
     
     }
 
 }else{
 
-    exit('<div class="alert alert-danger">'.$_l->tpl('node.files.ajax.file_404').'</div>');
+    exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_file_404').'</div>');
 
 }
