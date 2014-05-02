@@ -28,9 +28,8 @@ class server extends user {
 		
 	public function __construct($hash, $userid, $isroot){
 		
+		$this->mysql = self::connect();
 		if($userid !== false && !empty($hash)){
-		
-			$this->mysql = self::connect();
 			
 			$this->_data = array();
 			$this->_s = true;
@@ -141,11 +140,8 @@ class server extends user {
         
     }
     
-    public function nodeRedirect($hash, $rootAdmin) {
-    	
-    	//@TODO: Solve this bug
-    	$this->mysql = self::connect();
-    	
+    public function nodeRedirect($hash, $userid, $rootAdmin) {
+
 		if($rootAdmin == 1){
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
@@ -157,7 +153,7 @@ class server extends user {
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
 			$query->execute(array(
-				':ownerid' => $this->_data['user.id'],
+				':ownerid' => $userid,
 				':hash' => $hash
 			));
 			
