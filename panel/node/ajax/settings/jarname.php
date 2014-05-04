@@ -42,7 +42,7 @@ require_once('../../../core/framework/framework.core.php');
 	$data = http_build_query(array(
 		"variables" => array(
 			"-jar" => $_POST['jarfile'].'.jar',
-			"-xmx" => $core->server->getData('max_ram').'M'
+			"-Xmx" => $core->server->getData('max_ram').'M'
 		)
 	));
 	$context_options = array (
