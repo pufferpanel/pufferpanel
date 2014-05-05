@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-require_once('../core/framework/framework.core.php');
+require_once('../../src/framework/framework.core.php');
 require_once('modules/module.functions.php');
 require_once('modules/module.validate.php');
 require_once('modules/module.add.php');

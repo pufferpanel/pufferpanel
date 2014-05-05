@@ -30,7 +30,7 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 /*
  * Include Dependency Libs
  */
-require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
+require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
 
 /* 
  * Include Required Global Framework Files
@@ -130,15 +130,4 @@ function pdo_exception_handler($exception) {
     }
 }
 
-Twig_Autoloader::register();
-
-$loader = new Twig_Loader_Filesystem(dirname(dirname(dirname(__DIR__))).'/app/views/');
-$twig = new Twig_Environment($loader, array(
-    'cache' => false,
-    'debug' => true
-));
-$twig->addGlobal('lang', $_l->loadTemplates());
-$twig->addGlobal('settings', $core->settings->get());
-$twig->addGlobal('get', Page\components::twigGET());
-if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
 ?>

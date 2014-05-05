@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-require_once('../core/framework/framework.database.connect.php');
+require_once('../../src/framework/framework.database.connect.php');
 
 /*
  * MySQL PDO Connection Engine

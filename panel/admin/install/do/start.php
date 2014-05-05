@@ -55,7 +55,7 @@ if(file_exists('../install.lock'))
                         
                                 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                                                                 
-                                    $fp = fopen('../../../core/framework/configuration.php.dist', 'w+');
+                                    $fp = fopen('../../../../src/configuration.php.dist', 'w+');
                                     fwrite($fp, "<?php
 \$_INFO['sql_u'] = '".$_POST['sql_u']."';
 \$_INFO['sql_p'] = '".$_POST['sql_p']."';
@@ -67,7 +67,7 @@ if(file_exists('../install.lock'))
 \$_INFO['sql_ssl_ca-cert'] = '/path/to/ca-cert.pem';");
                                     fclose($fp);
                                 
-                                    if(!rename('../../../core/framework/configuration.php.dist', '../../../core/framework/configuration.php')){
+                                    if(!rename('../../../../src/configuration.php.dist', '../../../../src/configuration.php')){
                                     
                                     	echo '<div class="alert alert-danger">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>'; 
                                     

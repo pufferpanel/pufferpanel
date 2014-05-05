@@ -6,10 +6,10 @@
    	<form action="index.php?do=login" method="POST" id="login-form">
     	<legend>{{ lang.login_login_h1 }}</legend>
     	<fieldset>
-    		{% if get.error %}
+    		{% if get.error is defined %}
     			<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>
     		{% endif %}
-    		{% if get.login %}
+    		{% if get.login is defined %}
     			<div class="alert alert-danger">You are not authorized to access that page. Please log in.</div>
     		{% endif %}
     		<div class="form-group">

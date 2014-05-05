@@ -44,13 +44,13 @@ if(file_exists('../install.lock'))
 					
 					    if(isset($_POST['do_account'])){
 					    
-					        include('../../../core/framework/framework.database.connect.php');
+					        include('../../../../src/framework.database.connect.php');
 					        $mysql = Database\database::connect();
 					        
 					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
 					        
-					        include('../../../core/framework/configuration.php');
-					        include('../../../core/framework/lib/password.lib.php');
+					        include('../../../../src/configuration.php');
+					        include('../../../../src/lib/password.lib.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 					        
 					        $prepare->execute(array(
