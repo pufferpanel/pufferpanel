@@ -114,7 +114,7 @@ $(window).load(function(){
 	    		$("#sending_command").removeClass('disabled');
 	    		$("#sending_command").html('&rarr;');
 	    		$("#ccmd").val('');
-	    			if(data !== true){
+	    			if(data != ""){
 	    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
 	    			}
 	 		 }
