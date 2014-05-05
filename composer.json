@@ -1,5 +1,12 @@
 {
     "require": {
-        "twig/twig": "1.*"
+    	"php": ">=5.5",
+    	"ext-ssh2": "*",
+    	"ext-pdo": "*",
+    	"ext-mcrypt": "*",
+        "twig/twig": "1.*",
+        "znarkus/postmark": "dev-master",
+        "mandrill/mandrill": "dev-master",
+        "ircmaxell/password-compat": "dev-master"
     }
 }

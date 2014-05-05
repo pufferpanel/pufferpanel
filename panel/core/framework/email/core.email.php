@@ -56,7 +56,6 @@ class tplMail {
 			else if($this->getDispatchSystem == 'postmark')
 				{
 				
-					include('postmark/Mail.php');
 					Postmark\Mail::compose($this->settings->get('postmark_api_key'))
 					    ->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
 					    ->addTo($email, $email)
@@ -67,9 +66,7 @@ class tplMail {
 				}
 			else if($this->getDispatchSystem == 'mandrill')
 				{
-				
-					include('mandrill/Mandrill.php');
-					
+
 					try {
 					
 					    $mandrill = new Mandrill($this->settings->get('mandrill_api_key'));
