@@ -25,6 +25,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 }
 
 /*
+ * Redirect
+ */
+if(isset($_GET['goto']) && !empty($_GET['goto']))
+	$core->server->nodeRedirect($_GET['goto'], $core->user->getData('id'), $core->user->getData('root_admin'));
+
+/*
  * Get the Servers
  */
 if($core->user->getData('root_admin') == '1'){
