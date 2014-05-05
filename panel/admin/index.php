@@ -83,11 +83,9 @@ echo "=================[ PufferPanel Debug Output ]=================
 "\rLoaded PHP Extentions: ".rtrim($extensions, ", ").
 "\r\r=====[ Panel Information ]=====
 \rPanel Version: ".file_get_contents('../assets/versions/current').
-"\rCurrent Directory: ".__DIR__.
-"\rCurrent URL: http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].
+"\rBase Directory: ".dirname(__DIR__).
 "\rMaster URL: ".$core->settings->get('master_url').
 "\rAssets URL: ".$core->settings->get('assets_url').
-"\rCookie Domain: ".str_replace("_notfound_", "NULL", $core->settings->get('cookie_domain')).
 "\rModpack Directory: ".$core->settings->get('modpack_dir')
 					?></pre>
 			</div>
