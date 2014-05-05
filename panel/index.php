@@ -16,21 +16,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../src/framework/framework.core.php');
-
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
-	Page\components::redirect('servers.php');
-
-if(!isset($_GET['do']) || $_GET['do'] != 'login')
-	echo $twig->render(
-			'panel/index.html', array(
-				'footer' => array(
-					'queries' => Database\databaseInit::getCount(),
-					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-				)
-		));
-
+//session_start();
+//require_once('../src/framework/framework.core.php');
+//
+//if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
+//	Page\components::redirect('servers.php');
+//
+//if(!isset($_GET['do']) || $_GET['do'] != 'login')
+//	echo $twig->render(
+//			'panel/index.html', array(
+//				'footer' => array(
+//					'queries' => Database\databaseInit::getCount(),
+//					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+//				)
+//		));
 if(isset($_GET['do']) && $_GET['do'] == 'login'){
 	
         if(isset($_POST['redirect']) && !empty($_POST['redirect']))

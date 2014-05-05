@@ -130,4 +130,18 @@ function pdo_exception_handler($exception) {
     }
 }
 
+/*
+ * Twig Setup
+ */
+Twig_Autoloader::register();
+
+$loader = new Twig_Loader_Filesystem(dirname(dirname(__DIR__)).'/app/views/');
+$twig = new Twig_Environment($loader, array(
+    'cache' => false,
+    'debug' => true
+));
+$twig->addGlobal('lang', $_l->loadTemplates());
+$twig->addGlobal('settings', $core->settings->get());
+$twig->addGlobal('get', Page\components::twigGET());
+if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
 ?>
