@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../assets/include/header.php'); ?>
+	<?php include('../../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -48,7 +48,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<ul class="nav nav-tabs" id="config_tabs">
 					<li class="active"><a href="#view" data-toggle="tab">List Keys</a></li>
@@ -139,7 +139,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		}
 		</script>
 		<div class="footer">
-			<?php include('../../../assets/include/footer.php'); ?>
+			<?php include('../../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 </body>

@@ -6,7 +6,6 @@
 	<a href="<?php echo $core->settings->get('master_url'); ?>admin/pages/configuration/global.php" id="sidenav_configuration-global" class="list-group-item">Global Settings</a>
 	<a href="<?php echo $core->settings->get('master_url'); ?>admin/pages/configuration/modpacks.php" id="sidenav_configuration-modpacks" class="list-group-item">Modpack Settings</a>
 	<a href="<?php echo $core->settings->get('master_url'); ?>admin/pages/api/view.php" id="sidenav_api-view" class="list-group-item">API Settings</a>
-	<a href="#" class="list-group-item">Action Logs</a>
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>

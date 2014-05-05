@@ -57,7 +57,7 @@ $selectNode->execute(array(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../assets/include/header.php'); ?>
+	<?php include('../../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -79,7 +79,7 @@ $selectNode->execute(array(
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<ul class="nav nav-tabs" id="config_tabs">
 					<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
@@ -346,7 +346,7 @@ $selectNode->execute(array(
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../../../assets/include/footer.php'); ?>
+			<?php include('../../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">

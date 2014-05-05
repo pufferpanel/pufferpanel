@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../assets/include/header.php'); ?>
+	<?php include('../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -48,14 +48,14 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../assets/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<?php
 				    if(is_dir('install'))
 				        echo '<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>';
 				?>
 					<h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
-					<p>Welcome to the most advanced, lightweight, and user-friendly control panel for Minecraft. You are currently running version <code><?php echo file_get_contents('../assets/versions/current'); ?></code>.</p>
+					<p>Welcome to the most advanced, lightweight, and user-friendly control panel for Minecraft. You are currently running version <code><?php echo file_get_contents('../../src/versions/current'); ?></code>.</p>
 					
 					<p>Please include the following information in any bug reports that you submit:</p>
 					<pre><?php
@@ -82,7 +82,7 @@ echo "=================[ PufferPanel Debug Output ]=================
 "\rZend Engine Version: ".zend_version().
 "\rLoaded PHP Extentions: ".rtrim($extensions, ", ").
 "\r\r=====[ Panel Information ]=====
-\rPanel Version: ".file_get_contents('../assets/versions/current').
+\rPanel Version: ".file_get_contents('../../src/versions/current').
 "\rBase Directory: ".dirname(__DIR__).
 "\rMaster URL: ".$core->settings->get('master_url').
 "\rAssets URL: ".$core->settings->get('assets_url').
@@ -91,7 +91,7 @@ echo "=================[ PufferPanel Debug Output ]=================
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../assets/include/footer.php'); ?>
+			<?php include('../../src/include/footer.php'); ?>
 		</div>
 	</div>
 </body>

@@ -35,7 +35,7 @@ else
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../assets/include/header.php'); ?>
+	<?php include('../../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -57,7 +57,7 @@ else
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../assets/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<h3>Modpack: <strong><?php echo $pack['name'].' ('.$pack['version'].')'; ?></strong></h3>
 				<h5>Modpack File Name: <strong><?php echo $pack['hash']; ?>.zip</strong></h5><hr />
@@ -257,7 +257,7 @@ else
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../../../assets/include/footer.php'); ?>
+			<?php include('../../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
