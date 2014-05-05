@@ -108,12 +108,6 @@ class databaseInit extends \PDO {
 	public static function getCount(){
 		return self::$queryCounter;
 	}
-	
-	public static function returnStartTime(){
-	
-		return microtime(true);
-	
-	}
 
 }
 ?>

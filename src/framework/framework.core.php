@@ -18,12 +18,9 @@
  */
  
 /*
- * Initalize Global Framework
+ * Initalize Start Time
  */
-$core = new stdClass();
-$core->startTime = microtime(true);
-$_l = new stdClass();
-set_exception_handler('pdo_exception_handler');
+$pageStartTime = microtime(true);
 
 /*
  * Cloudflare IP Fix
@@ -55,6 +52,13 @@ require_once('framework.functions.php');
  * Include Email Sending Files
  */
 require_once('email/core.email.php');
+
+/*
+ * Initalize Global Framework
+ */
+$core = new stdClass();
+$_l = new stdClass();
+set_exception_handler('pdo_exception_handler');
 
 /*
  * Initalize Frameworks
@@ -140,11 +144,4 @@ $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());
 $twig->addGlobal('get', Page\components::twigGET());
 if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
-
-/*
- * Klein Setup
- */
-$base = dirname($_SERVER['PHP_SELF']);
-if(ltrim($base, '/'))
-	$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
 ?>

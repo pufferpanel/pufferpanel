@@ -5,7 +5,6 @@
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
         "twig/twig": "1.*",
-        "klein/klein": ">=2.0",
         "znarkus/postmark": "dev-master",
         "mandrill/mandrill": "dev-master",
         "ircmaxell/password-compat": "dev-master"
