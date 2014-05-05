@@ -26,11 +26,19 @@ $pageStartTime = microtime(true);
  * Cloudflare IP Fix
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
+$_INFO['debug'] = 0;
 
 /*
  * Include Dependency Libs
  */
 require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
+
+/*
+ * Debug
+ */
+use Tracy\Debugger;
+($_INFO['debug'] == 1) ? Debugger::enable(Debugger::DEVELOPMENT) : Debugger::enable(Debugger::PRODUCTION, dirname(__DIR__).'/logs');
+Debugger::$strictMode = TRUE;
 
 /* 
  * Include Required Global Framework Files
@@ -58,7 +66,6 @@ require_once('email/core.email.php');
  */
 $core = new stdClass();
 $_l = new stdClass();
-set_exception_handler('pdo_exception_handler');
 
 /*
  * Initalize Frameworks
@@ -88,47 +95,6 @@ else
  * MySQL PDO Connection Engine
  */
 $mysql = Database\database::connect();
-
-
-function pdo_exception_handler($exception) {
-    
-    if($exception instanceof PDOException) {
-        
-        error_log($exception);
-        exit('<!DOCTYPE html>
-        <html lang="en">
-        <head>
-        	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-        </head>
-        <body>
-        	<div class="container">
-        		<h1>Database Error</h1>
-        			<div class="col-12">
-        				<div class="alert alert-danger"><strong>Error:</strong> An unexpected MySQL Error was encountered with this request. Please try again in a few minutes.</div>
-        			</div>
-        	</div>
-        </body>
-        </html>');
-        
-    } else {
-    
-       	exit('<!DOCTYPE html>
-    	<html lang="en">
-    	<head>
-    		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    	</head>
-    	<body>
-    		<div class="container">
-    			<h1>Error</h1>
-    				<div class="col-12">
-    					<div class="alert alert-danger">'.nl2br($exception).'</div>
-    				</div>
-    		</div>
-    	</body>
-    	</html>');
-    
-    }
-}
 
 /*
  * Twig Setup

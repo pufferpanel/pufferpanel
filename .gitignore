@@ -9,3 +9,5 @@ SETUP
 panel/api/index2.php
 vendor
 composer.phar
+src/logs/*.log
+src/logs/*.html
