@@ -37,9 +37,10 @@ require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
  * Debug
  */
 use Tracy\Debugger;
-($_INFO['debug'] == 1) ? Debugger::enable(Debugger::DEVELOPMENT) : Debugger::enable(Debugger::PRODUCTION, dirname(__DIR__).'/logs');
+(isset($_INFO['debug']) && $_INFO['debug'] == 1) ? Debugger::enable(Debugger::DEVELOPMENT) : Debugger::enable(Debugger::PRODUCTION, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
+debugd();
 /* 
  * Include Required Global Framework Files
  */
