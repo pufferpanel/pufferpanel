@@ -26,7 +26,6 @@ $pageStartTime = microtime(true);
  * Cloudflare IP Fix
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
-$_INFO['debug'] = 0;
 
 /*
  * Include Dependency Libs
@@ -37,7 +36,7 @@ require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
  * Debug
  */
 use Tracy\Debugger;
-(isset($_INFO['debug']) && $_INFO['debug'] == 1) ? Debugger::enable(Debugger::DEVELOPMENT) : Debugger::enable(Debugger::PRODUCTION, dirname(__DIR__).'/logs');
+Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
 debugd();
