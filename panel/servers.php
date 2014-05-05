@@ -16,19 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../src/framework/framework.core.php');
-
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
-	Page\components::redirect('index.php?login');
-	exit();
-}
-
-/*
- * Redirect
- */
-if(isset($_GET['goto']) && !empty($_GET['goto']))
-	$core->server->nodeRedirect($_GET['goto'], $core->user->getData('id'), $core->user->getData('root_admin'));
+//session_start();
+//require_once('../src/framework/framework.core.php');
+//
+//if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
+//	Page\components::redirect('index.php?login');
+//	exit();
+//}
 
 /*
  * Get the Servers
@@ -58,15 +52,15 @@ while($row = $query->fetch()){
 
 }
 
-/*
- * List Servers
- */
-echo $twig->render(
-		'panel/servers.html', array(
-			'servers' => array($servers),
-			'footer' => array(
-				'queries' => Database\databaseInit::getCount(),
-				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-			)
-	));
+//
+// * List Servers
+// 
+//echo $twig->render(
+//		'panel/servers.html', array(
+//			'servers' => array($servers),
+//			'footer' => array(
+//				'queries' => Database\databaseInit::getCount(),
+//				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+//			)
+//	));
 ?>
