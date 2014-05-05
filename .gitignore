@@ -2,7 +2,6 @@
 .DS_Store
 profile
 PufferPan.esproj/*
-panel/node/tmp/*
 *HASHFILE*
 *configuration.php
 *.lock*
