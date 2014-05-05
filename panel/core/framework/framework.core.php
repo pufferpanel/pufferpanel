@@ -31,7 +31,6 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
  * Include Dependency Libs
  */
 require_once(dirname(dirname(dirname(__DIR__))).'/vendor/autoload.php');
-require_once('lib/password.lib.php');
 
 /* 
  * Include Required Global Framework Files
