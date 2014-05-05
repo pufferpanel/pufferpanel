@@ -34,7 +34,7 @@
 	            <td><i class="fa fa-folder-open"></i></td>
 	            <td><a href="index.php?dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="load_new">{{ folder.entry }}</a></td>
 	            <td>{{ folder.size }}</td>
-	            <td>{{ folder.date }}</td>
+	            <td>{{ folder.date|date("m/d/y H:i:s") }}</td>
 	            <td class="center"></td>
 	        </tr>
     	{% endfor %}
@@ -49,7 +49,7 @@
                 	{% endif %}
                 </td>
                 <td>{{ file.size }}</td>
-                <td>{{ file.date }}</td>
+                <td>{{ file.date|date("m/d/y H:i:s") }}</td>
                 <td style="text-align:center;"><a href="index.php?do=download&file={{ file.directory|url_encode }}{{ file.entry|url_encode }}"><i class="fa fa-download"></i></a></td>
             </tr>
         {% endfor %}

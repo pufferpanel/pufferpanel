@@ -123,7 +123,7 @@ foreach($entries as $entry) {
         		"entry" => $entry,
         		"directory" => $_POST['dir'],
         		"size" => $core->files->formatSize($stat['size']),
-        		"date" => date('m/d/y H:i:s', $stat['mtime'])
+        		"date" => $stat['mtime']
         	)));
 
         }else{
@@ -133,7 +133,7 @@ foreach($entries as $entry) {
         		"directory" => $_POST['dir'],
         		"extension" => pathinfo($entry, PATHINFO_EXTENSION),
         		"size" => $core->files->formatSize($stat['size']),
-        		"date" => date('m/d/y H:i:s', $stat['mtime'])
+        		"date" => $stat['mtime']
         	)));
         
         }
