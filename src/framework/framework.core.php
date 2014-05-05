@@ -34,6 +34,7 @@ require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
 
 /*
  * Debug
+ * To debug on a non-local environment (do ot do this publicly!) change Debugger::DETECT to Debugger::PRODUCTION
  */
 use Tracy\Debugger;
 Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
