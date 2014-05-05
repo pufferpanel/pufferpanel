@@ -30,7 +30,7 @@ $displayFiles = array();
 $entries = array();
 $previousDir = array();
 
-if(isset($_POST['dir']))
+if(isset($_POST['dir']) && !empty($_POST['dir']))
     $_POST['dir'] = str_replace('..', '', urldecode(rtrim($_POST['dir'], '/')));
 else
 	$_POST['dir'] = null;
@@ -51,7 +51,6 @@ $handle = opendir("ssh2.sftp://$sftp/server/".$_POST['dir']);
 while (false != ($entries[] = readdir($handle)));
 sort($entries);
 closedir($handle);
- 
 /*
  * Handle Directory
  */
