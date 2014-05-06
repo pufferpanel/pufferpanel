@@ -19,6 +19,11 @@
 session_start();
 require_once('../src/framework/framework.core.php');
 
+use Tracy\Debugger;
+Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
+Debugger::$strictMode = TRUE;
+
+
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
 	Page\components::redirect('index.php?login');
 	exit();
