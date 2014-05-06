@@ -55,7 +55,7 @@ if(file_exists('../install.lock'))
                             
                             if(fopen($_POST['hash'], 'r')){
                                 
-                                $fp = fopen('../../../../src/configuration.php', 'a+');
+                                $fp = fopen('../../../../src/framework/configuration.php', 'a+');
                                 fwrite($fp, "
                                 
 if(!defined('HASH'))
