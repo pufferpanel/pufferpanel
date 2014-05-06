@@ -26,7 +26,7 @@ $router = $router_factory->newInstance();
 /*
  * Base Panel Routes
  */
-$router->add(null, '/{controller}/{action}{/do}/?')->addValues(array(
+$router->add(null, '/core/{action}{/do}/?')->addValues(array(
 	'controller' => 'core'
 ));
 
