@@ -40,6 +40,12 @@ use Tracy\Debugger;
 Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
+/*
+ * Has Installer been run?
+ */
+if(!file_exists(__DIR__.'/configuration.php'))
+	throw new Exception("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
+
 /* 
  * Include Required Global Framework Files
  */
