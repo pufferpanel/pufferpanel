@@ -4,7 +4,7 @@ profile
 PufferPan.esproj/*
 *HASHFILE*
 *configuration.php
-*.lock*
+*.lock
 SETUP
 panel/api/index2.php
 vendor
