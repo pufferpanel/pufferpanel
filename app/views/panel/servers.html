@@ -39,7 +39,7 @@
 			{% for server in servers %}
 				<tr class="dynUpdate" id="{{ server.id }}">
 					<td>{{ server.node }}</td>
-					<td><a href="servers.php?goto={{ server.hash }}">{{ server.name }}</a></td>
+					<td><a href="servers/{{ server.hash }}">{{ server.name }}</a></td>
 					<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 					<td class="applyUpdate" style="width:5%;"><span class="label label-warning"> <i class="fa fa-refresh fa-spin"></i></span></td>
 				</tr>
@@ -54,7 +54,7 @@
 			    var element = $(this);
 			    $.ajax({
 			    	type: "POST",
-			    	url: "ajax/get_status.php",
+			    	url: "../ajax/status",
 			    	data: { server: connection },
 			      		success: function(data) {
 			    			element.find(".applyUpdate").html(data);

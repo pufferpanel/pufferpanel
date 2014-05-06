@@ -13,7 +13,7 @@
 {% block title %}Reset Password{% endblock %}
 {% block content %}
 <div class="col-6">
-	<form action="password.php?do=recover" method="POST" id="login-form">
+	<form action="do.recover" method="POST" id="login-form">
 		<legend>{{ lang.reset_reset_h1 }}</legend>
 		<fieldset>
 			{% if status %}
@@ -47,7 +47,7 @@
 				<div class="form-group">
 					<div>
 						<input type="submit" class="btn btn-primary" value="{{ lang.string_reset_password }}" />
-						<button class="btn btn-default" onclick="window.location='index.php';return false;">{{ lang.string_login }}</button>
+						<button class="btn btn-default" onclick="window.location='core/login';return false;">{{ lang.string_login }}</button>
 					</div>
 				</div>
 			{% endif %}

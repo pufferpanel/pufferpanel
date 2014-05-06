@@ -16,13 +16,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../src/framework/framework.core.php');
-
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
-	Page\components::redirect('servers.php');
+	Page\components::redirect('servers');
 		
-require_once("core/captcha/recaptchalib.php");
+require_once("../src/captcha/recaptchalib.php");
 
 $statusMessage = null;
 $noShow = false;
@@ -129,7 +126,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 }
 
 echo $twig->render(
-		'panel/password.html', array(
+		'panel/reset.html', array(
 			'status' => $statusMessage,
 			'noshow' => $noShow,
 			'footer' => array(

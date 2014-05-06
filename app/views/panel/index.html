@@ -3,10 +3,10 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 <div class="col-6">
-   	<form action="index.php?do=login" method="POST" id="login-form">
+   	<form action="do.login" method="POST" id="login-form">
     	<legend>{{ lang.login_login_h1 }}</legend>
     	<fieldset>
-    		{% if get.error is defined %}
+    		{% if error is defined and error == "do.error" %}
     			<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>
     		{% endif %}
     		{% if get.login is defined %}
@@ -27,7 +27,7 @@
     		<div class="form-group">
     			<div>
     				<input type="submit" class="btn btn-primary" value="Login" />
-    				<button class="btn btn-default" onclick="window.location='password.php';return false;">{{ lang.string_reset_password }}</button>
+    				<button class="btn btn-default" onclick="window.location='reset';return false;">{{ lang.string_reset_password }}</button>
     			</div>
     		</div>
     	</fieldset>
