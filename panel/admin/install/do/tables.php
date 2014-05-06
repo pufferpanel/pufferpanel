@@ -50,11 +50,11 @@ if(file_exists('../install.lock'))
 					<pre>
                     <?php
                     
-                    	if(!file_exists('../../../../src/configuration.php'))
+                    	if(!file_exists('../../../../src/framework/configuration.php'))
                     		echo '<div class="alert alert-danger">The configuration file was not found.</div>';	
                     	else {
                     	
-	                        include('../../../../src/framework.database.connect.php');
+	                        include('../../../../src/framework/framework.database.connect.php');
 	                        $mysql = Database\database::connect();
 							
 	                        /*
