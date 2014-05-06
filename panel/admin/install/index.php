@@ -16,14 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-/*
- * Debug
- * To debug on a non-local environment (do ot do this publicly!) change Debugger::DETECT to Debugger::PRODUCTION
- */
-use Tracy\Debugger;
-Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
-Debugger::$strictMode = TRUE;
-
 if(file_exists('install.lock'))
 	exit('Installer is Locked.');
 ?>
