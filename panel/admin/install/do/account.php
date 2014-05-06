@@ -52,12 +52,13 @@ if(file_exists('../install.lock'))
 					
 					    if(isset($_POST['do_account'])){
 					    
-					        include('../../../../src/framework.database.connect.php');
+					        include('../../../../src/framework/framework.database.connect.php');
 					        $mysql = Database\database::connect();
 					        
 					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
 					        
-					        include('../../../../src/configuration.php');
+					        include('../../../../src/framework/configuration.php');
+					        //THIS IS BAD! BUT I DON'T KNOW WHERE IS THIS FILE!
 					        include('../../../../src/lib/password.lib.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 					        
