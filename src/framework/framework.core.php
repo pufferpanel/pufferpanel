@@ -40,7 +40,6 @@ use Tracy\Debugger;
 Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
-debugd();
 /* 
  * Include Required Global Framework Files
  */
