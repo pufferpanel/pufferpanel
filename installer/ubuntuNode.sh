@@ -18,6 +18,14 @@
 if [ -n "$0" ] && [ -n "$1" ] ; then
 # Good. Let's get to work!
 
+# Create folders!
+mkdir /srv/modpacks/
+mkdir /srv/scripts/
+mkdir /srv/servers/
+
+# Modpack directory chmod
+chmod 755 /srv/modpacks/
+
 # Curl install
 apt-get -y install curl
 
