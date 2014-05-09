@@ -89,7 +89,9 @@ npm install
 service sshd restart
 
 # End data
-echo "type 'npm start' to start GSD!"
+echo "Copy scripts folder content to /srv/scripts/"
+echo "and then..."
+echo "type 'cd /srv/gsd && npm start' to start GSD!"
 
 else
 
