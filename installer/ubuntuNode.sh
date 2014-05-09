@@ -6,13 +6,17 @@
 #                                                           #
 #               Ubuntu installer by Chomiciak               #
 #                                                           #
-#            Use on the same license as Panel's             #
+# Use on the same license as Panel's (and on your own risk!)#
 #                                                           #
 #############################################################
 #                                                           #
 #                  This is Node installer                   #
 #                                                           #
 #############################################################
+
+# All specified?
+if [ -n "$0" ] && [ -n "$1" ] ; then
+# Good. Let's get to work!
 
 # Curl install
 apt-get -y install curl
@@ -38,21 +42,19 @@ apt-get -y install make
 # NodeJS install
 apt-get -y install nodejs
 
-
 # CPUlimit install
 git clone https://github.com/DaneEveritt/cpulimit.git
 cd cpulimit/
-gmake
 make
 cp cpulimit /usr/bin
 
 # Add user and user's password. Authorization mode = password, not key
-useradd $1
-passwd $1
-$2
+useradd $0
+passwd $0
+$1
 
 # Add "some_username ALL=(ALL) NOPASSWD: ALL" line to visudo file
-# how?
+echo $0" ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # RSSH setup
 groupadd rsshusers
@@ -65,7 +67,7 @@ echo " AllowTcpForwarding no" >> /etc/ssh/sshd_config
 echo " ForceCommand internal-sftp" >> /etc/ssh/sshd_config
 
 #Change Subsystem sftp /usr/libexec/openssh/sftp-server to Subsystem sftp internal-sftp 
-# (how???)
+sed -i 's/Subsystem sftp \/usr\/libexec\/openssh\/sftp-server/Subsystem sftp internal-sftp/' /etc/ssh/sshd_config
 
 #The default action for rssh to lock down everything. Granting access sftp open to the RSSH.
 echo "allowsftp" >> /etc/rssh.conf
@@ -74,8 +76,20 @@ echo "allowsftp" >> /etc/rssh.conf
 cd /srv/ && git clone https://github.com/gametainers/gsd.git
 cd /srv/gsd
 npm install
+
+# Restart SSHD
+service sshd restart
+
+# End data
 echo "type 'npm start' to start GSD!"
 
+else
 
-#restart sshd
-service sshd restart
+# Notification when params not specified
+echo "Please specify User and Password:"
+echo "Add following params: (after this filename, eg. ./ubuntuNode.sh USER PASSWORD)"
+echo "USER PASSWORD"
+echo ""
+echo "And remember: you must start this as ROOT!!!"
+
+fi
