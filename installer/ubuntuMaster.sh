@@ -44,7 +44,7 @@ apt-get install libssh2-1-dev libssh2-php
 pecl install pdo
 
 # mcrypt-php
-pecl install
+pecl install mcrypt
 
 # Apache restart
 /etc/init.d/apache2 restart
