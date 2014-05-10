@@ -128,7 +128,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.0 Alpha RC1 distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.0 Alpha RC2 distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
 		</div>
 	</div>
 </body>
