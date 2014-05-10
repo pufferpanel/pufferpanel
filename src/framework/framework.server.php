@@ -137,6 +137,9 @@ class server extends user {
     
     public function nodeRedirect($hash, $userid, $rootAdmin) {
     	
+    	//@TODO: Solve this bug
+    	//$this->mysql = self::connect();
+    	
 		if($rootAdmin == 1){
 		
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
@@ -160,11 +163,11 @@ class server extends user {
 				
 					setcookie('pp_server_hash', $row['hash'], 0, '/');
 				
-					$this->redirect('node/index');
+					$this->redirect('node/index.php');
 			
 			}else{
 			
-				$this->redirect('core/servers');
+				$this->redirect('servers.php?error=error');
 			
 			}
 	

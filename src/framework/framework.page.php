@@ -24,28 +24,20 @@ namespace Page;
 
 trait components {
 	
-	public static function redirect($url, $manual = false) {
-		
-		/*
-		 * Generate URL
-		 */
-		if(!headers_sent()){
-			header('Location: '.urldecode(self::appendToURL($manual).$url));
+	public static function redirect($url) {
+                
+        if(!headers_sent()){
+			header('Location: '.urldecode($url));
 			exit();
 		}else
-			exit('<meta http-equiv="refresh" content="0;url='.urldecode(self::appendToURL($manual).$url).'"/>');
-		
+			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
+			
 	}
     
-    public static function appendToURL($manual){
+    public static function genRedirect(){
         
-        if($manual === false){
-        
-	        $https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
-        	return $https.$_SERVER['HTTP_HOST'].str_replace("index.php", "", $_SERVER['PHP_SELF']);
-        
-        }else
-        	return null;
+        $https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+        return $https.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         
     }
     
