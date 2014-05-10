@@ -44,7 +44,7 @@ if(file_exists('install.lock'))
 					<p><?php
 					
 						/* Permissions Checking */
-						echo (substr(sprintf('%o', fileperms('../../../src/configuration.php.dist')), -4) == "0666") ? '<small class="text-success">/src/framework/configuration.php.dist is correctly CHMOD\'d 0666</small><br />' : '<small class="text-danger">/src/framework/configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4).' and should be 0666.</small><br />';
+						echo (substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4) == "0666") ? '<small class="text-success">/src/framework/configuration.php.dist is correctly CHMOD\'d 0666</small><br />' : '<small class="text-danger">/src/framework/configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4).' and should be 0666.</small><br />';
 						
 						echo (substr(sprintf('%o', fileperms('../../../src/framework')), -4) == "0777") ? '<small class="text-success">/src/framework is correctly CHMOD\'d 0777</small><br />' : '<small class="text-danger">/src/framework is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../../src/framework')), -4).' and should be 0777.</small><br />';
 						
