@@ -48,7 +48,9 @@ require_once('../../../../src/framework/framework.core.php');
 	$context_options = array (
 		'http' => array (
 			'method' => 'PUT',
-			'header'=> "X-Access-Token: ".$core->server->nodeData('gsd_secret'),
+			'header'=>
+				"Content-Type: application/x-www-form-urlencoded \r\n".
+				"X-Access-Token: ".$core->server->nodeData('gsd_secret'),
 			'content' => $data
 		)
 	);
