@@ -5,9 +5,8 @@
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
         "twig/twig": "1.*",
-        "tracy/tracy": "2.3.*@dev",
+        "tracy/tracy": "2.2.0",
         "znarkus/postmark": "dev-master",
-        "mandrill/mandrill": "dev-master",
-        "ircmaxell/password-compat": "dev-master"
+        "mandrill/mandrill": "1.0.52"
     }
 }
