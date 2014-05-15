@@ -132,7 +132,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									 * Select Current Email Method
 									 */
 									$method = $core->settings->get('sendmail_method');
-									$marray = array('php' => '', 'postmark' => '', 'mandrill' => '', 'mailgun' => '');
+									$marray = array('php' => '', 'postmark' => '', 'mandrill' => '', 'mailgun' => '', 'sendgrid' => '');
 									
 										foreach($marray as $id => $value){
 										
@@ -151,6 +151,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 											<option value="postmark" <?php echo $marray['postmark']; ?>>Postmark</option>
 											<option value="mandrill" <?php echo $marray['mandrill']; ?>>Mandrill</option>
 											<option value="mailgun" <?php echo $marray['mailgun']; ?>>Mailgun</option>
+											<option value="sendgrid" <?php echo $marray['sendgrid']; ?>>Sendgrid</option>
 										</select>
 									</div>
 								</div>
@@ -180,6 +181,13 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									<div>
 										<input type="text" name="mailgun_api_key" class="form-control" value="<?php echo $core->settings->get('mailgun_api_key'); ?>"/>
 										<p><small class="text-muted"><em>The API key generated on <a href="https://mailgun.com/">Mailgun</a>. Leave blank if not using.</em></small></p>
+									</div>
+								</div>
+								<div class="form-group" id="sendgrid">
+									<label for="sendgrid_api_key" class="control-label">Sendgrid API Key</label>
+									<div>
+										<input type="text" name="sendgrid_api_key" class="form-control" value="<?php echo $core->settings->get('sendgrid_api_key'); ?>"/>
+										<p><small class="text-muted"><em>The API information generated on <a href="https://sendgrid.com/">Sendgrid</a>. Please enter the information as <code>username|password</code>. This field may look different after submitting the information as it is stored in an encrypted manner to protect your password. Leave blank if not using.</em></small></p>
 									</div>
 								</div>
 								<div class="form-group">
@@ -228,16 +236,24 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			if(method == "postmark"){
 				$("#mandrill").hide();
 				$("#mailgun").hide();
+				$("#sendgrid").hide();
 			}else if(method == "mandrill"){
 				$("#postmark").hide();
 				$("#mailgun").hide();
+				$("#sendgrid").hide();
 			}else if(method == "mailgun"){
 				$("#mandrill").hide();
 				$("#postmark").hide();
+				$("#sendgrid").hide();
+			}else if(method == "sendgrid"){
+				$("#mandrill").hide();
+				$("#postmark").hide();
+				$("#mailgun").hide();
 			}else{
 				$("#mandrill").hide();
 				$("#postmark").hide();
 				$("#mailgun").hide();
+				$("#sendgrid").hide();
 			}
 			$("#smail_method").change(function(){
 					var method = $("#smail_method :selected").val();
@@ -245,24 +261,35 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						if($("#postmark").not(':visible')){
 							$("#mandrill").hide();
 							$("#mailgun").hide();
+							$("#sendgrid").hide();
 							$("#postmark").show();
 						}
 					}else if(method == "mandrill"){
 						if($("#mandrill").not(':visible')){
 							$("#postmark").hide();
 							$("#mailgun").hide();
+							$("#sendgrid").hide();
 							$("#mandrill").show();
 						}
 					}else if(method == "mailgun"){
 						if($("#mailgun").not(':visible')){
 							$("#postmark").hide();
 							$("#mandrill").hide();
+							$("#sendgrid").hide();
 							$("#mailgun").show();
+						}
+					}else if(method == "sendgrid"){
+						if($("#sendgrid").not(':visible')){
+							$("#postmark").hide();
+							$("#mandrill").hide();
+							$("#mailgun").hide();
+							$("#sendgrid").show();
 						}
 					}else{
 						$("#mandrill").hide();
 						$("#mailgun").hide();
 						$("#postmark").hide();
+						$("#sendgrid").hide();
 					}
 			});
 			

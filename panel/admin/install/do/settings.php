@@ -54,6 +54,7 @@ if(file_exists('../install.lock'))
 					            ('postmark_api_key', NULL),
 					            ('mandrill_api_key', NULL),
 					            ('mailgun_api_key', NULL),
+					            ('sendgrid_api_key', NULL),
 					            ('sendmail_email', :smail),
 					            ('main_website', :mwebsite),
 					            ('sendmail_method','php'),

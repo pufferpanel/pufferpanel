@@ -24,6 +24,7 @@
 class tplMail {
 
 	use Database\database;
+	use Auth\components;
     private $message;
     
 	public function __construct($settings)
@@ -117,6 +118,26 @@ class tplMail {
 					curl_exec($ch);
 									
 					curl_close($ch);
+					
+				}
+			else if($this->getDispatchSystem == 'sendgrid')
+				{
+			
+					/*
+					 * Decrypt Key Information
+					 */
+					list($iv, $hash) = explode('.', $this->settings->get('sendgrid_api_key'));
+					list($username, $password) = explode('|', components::decrypt($hash, $iv));
+					
+					$sendgrid = new SendGrid($username, $password);
+					$email = new SendGrid\Email();
+					
+					$email->addTo($email)->
+					       setFrom($this->settings->get('sendmail_email'))->
+					       setSubject($subject)->
+					       setHtml($this->message);
+					
+					$sendgrid->send($email);
 					
 				}
 			else 

@@ -8,6 +8,6 @@
         "tracy/tracy": "2.3.*@dev",
         "znarkus/postmark": "dev-master",
         "mandrill/mandrill": "dev-master",
-        "ircmaxell/password-compat": "dev-master"
+        "sendgrid/sendgrid": "2.0.5"
     }
 }

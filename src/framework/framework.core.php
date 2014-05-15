@@ -61,11 +61,7 @@ require_once('framework.log.php');
 require_once('framework.query.php');
 require_once('framework.language.php');
 require_once('framework.functions.php');
-
-/*
- * Include Email Sending Files
- */
-require_once('email/core.email.php');
+require_once('framework.email.php');
 
 /*
  * Initalize Global Framework
