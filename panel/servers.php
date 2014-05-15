@@ -47,14 +47,14 @@ if($core->user->getData('root_admin') == '1'){
 $servers = array();
 while($row = $query->fetch()){
 
-	$servers = array_merge($servers, array(
+	$servers = array_merge($servers, array(array(
 		"id" => $row['id'],
 		"hash" => $row['hash'],
 		"node" => $core->settings->nodeName($row['node']),
 		"server_ip" => $row['server_ip'],
 		"server_port" => $row['server_port'],
 		"name" => $row['name']
-	));
+	)));
 
 }
 
@@ -63,7 +63,7 @@ while($row = $query->fetch()){
  */
 echo $twig->render(
 		'panel/servers.html', array(
-			'servers' => array($servers),
+			'servers' => $servers,
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
