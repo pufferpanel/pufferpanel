@@ -95,7 +95,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 								switch($_GET['disp']){
 								
 									case 'missing_args':
-										echo '<div class="alert alert-danger">Not all arguments were passed by the script.</div>';
+										echo '<div class="alert alert-danger">You must enable PHP file uploads in order for this mechanism to work.</div>';
 										break;
 									case 'pn_fail':
 										echo '<div class="alert alert-danger">Invalid pack name was provided. Names must be at least one character, and no more than sixty-four characters. Allowed characters: <strong>a-zA-Z0-9._-()</strong> and <strong>[space]</strong></div>';
