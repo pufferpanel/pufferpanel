@@ -98,7 +98,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									<label for="node_name" class="control-label">Node Short Name</label>
 									<div>
 										<input type="text" name="node_name" placeholder="shortname" class="form-control" />
-										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.). The short name should match the subdomain for the node.</em></small></p>
+										<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.).</em></small></p>
 									</div>
 								</div>
 								<div class="form-group col-6 nopad-right">
@@ -160,7 +160,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									</div>
 								</div>
 							</div>
-							<p class="text-muted"><small>If you would prefer to use password based SSH authentication please follow the instructions found <a href="https://github.com/DaneEveritt/PufferPanel/wiki/Using-password-based-SSH-authentication">here</a>.</small></p>
+							<p class="text-muted"><small>If you would prefer to use password based SSH authentication please follow the instructions found <a href="#" data-toggle="modal" data-target="#usePassword">here</a>.</small></p>
 						</div>
 						<div class="well">
 							<div class="row">
@@ -173,12 +173,30 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 								</div>
 							</div>
 						</div>
-						
 						<div class="alert alert-danger"><input type="checkbox" name="read_warning" /> By checking this box you are confirming that you have correctly set up your node to handle Minecraft&trade; servers created from this system. Do not add this node until you have correctly done so. Please consult the <a href="https://github.com/DaneEveritt/PufferPanel/wiki/Setting-up-a-New-Node" target="_blank">documentation</a> for how to do this if you are unsure.</div>
 						<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
-						
 					</fieldset>
 				</form>
+			</div>
+		</div>
+		<div class="modal fade" id="usePassword" tabindex="-1" role="dialog" aria-labelledby="UsePassword" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="UsePassword">Use Password Based Authentication</h4>
+					</div>
+					<div class="modal-body">
+						<div class="col-12">
+							<p>In order to disable SSH key-based authentication and switch to password authentication you will need to modify the database. Open <code>acp_settings</code> in your database manager, and find the row called <code>use_ssh_keys</code>. Set this value to <code>0</code> to use password based authentication.</p>
+							<p>Once you have done this you will need to modify any nodes that exist already. For all nodes (new or old), you only need to provide a valid path for SSH keys, they do not need to exist. You can use <code>/dev/null/.ssh/public.pub</code> and <code>/dev/null/.ssh/private</code> if you would like. The SSH secret setting should be the password that you have set for the user.</p>
+							<div class="alert alert-warning">Please ensure that you set strong passwords. <strong>SSH key-based authentication should be used on live environments, using password based authentication is not recommended.</strong></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="footer">
