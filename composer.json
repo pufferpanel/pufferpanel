@@ -7,11 +7,7 @@
         "twig/twig": "1.*",
         "tracy/tracy": "2.2.0",
         "znarkus/postmark": "dev-master",
-<<<<<<< HEAD
-        "mandrill/mandrill": "dev-master",
         "sendgrid/sendgrid": "2.0.5"
-=======
         "mandrill/mandrill": "1.0.52"
->>>>>>> FETCH_HEAD
     }
 }
