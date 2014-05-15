@@ -142,7 +142,7 @@ $selectNode->execute(array(
 									<label for="name" class="control-label">GSD Secret Token</label>
 									<div>
 										<input type="text" readonly="readonly" value="<?php echo $node['gsd_secret']; ?>" class="form-control" />
-										<p><small>Please update your GSD configuration file and add this as a token that can connect and use it.</small></p>
+										<p class="text-muted"><small>Please update your GSD configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this.</small></p>
 									</div>
 								</div>
 								<div class="form-group">
