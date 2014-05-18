@@ -1,3 +1,6 @@
+# Summer Status Update
+PufferPanel development will be halted until late August 2014.
+
 **DO NOT INSTALL THE REPO VERSION OF PUFFERPANEL ON YOUR SERVER. IT IS UNSTABLE, PLEASE USE A RELEASE VERSION.**
 
 [![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel)
