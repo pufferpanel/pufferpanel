@@ -102,7 +102,7 @@
     "node_settings_modpack_install": "Installeer Modpack",
     "node_settings_modpack_select": "\u2014- Selecteer een Modpack",
     "node_settings_jar_jar_h1": "Server .jar Naam",
-    "node_settings_jar_jarfile_name": "Jarbestand naam",
+    "node_settings_jar_jarfile_name": "Naam .jar bestand",
     "node_settings_jar_update": "Bewerk Naam",
     "node_settings_sftp_sftp_h1": "SFTP Instellingen",
     "node_settings_ajax_installing_modpack": "Modpack installeren",
