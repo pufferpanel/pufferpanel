@@ -164,7 +164,7 @@ motd=A Minecraft Server';
 		)
 	));
 	$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
-	
+
 	if($gatherData != "\"ok\"")
 		exit("An error was encountered with this AJAX request. ($gatherData)");
 			
@@ -174,18 +174,18 @@ motd=A Minecraft Server';
 	 *
 	 * This is super buggy.
 	 */
-	if($core->server->getData('cpu_limit') > 0){
-	
-		$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id'), 0, $context);
-		
-		$data = json_decode($gatherData, true);
-		
-			if(!array_key_exists('pid', $data))
-				exit("Unable to get PID. Server has been started.");
-		
-			$core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->server->getData('cpu_limit').' -d');
-					
-	}
+//	if($core->server->getData('cpu_limit') > 0){
+//	
+//		$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id'), 0, $context);
+//		
+//		$data = json_decode($gatherData, true);
+//		
+//			if(!array_key_exists('pid', $data))
+//				exit("Unable to get PID. Server has been started.");
+//		
+//			$core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo cpulimit -p '.$data['pid'].' -l '.$core->server->getData('cpu_limit').' -d');
+//					
+//	}
 	
 	echo 'ok';
 		
