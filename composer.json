@@ -5,9 +5,9 @@
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
         "twig/twig": "1.*",
-        "tracy/tracy": "2.2.0",
+        "tracy/tracy": "2.2.2",
         "znarkus/postmark": "dev-master",
-        "sendgrid/sendgrid": "2.0.5",
+        "sendgrid/sendgrid": "2.0.6",
         "mandrill/mandrill": "1.0.52"
     }
 }
