@@ -50,8 +50,15 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 if(!filter_var($_POST['node_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['node_sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
 	Page\components::redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
 
+/*
+ * GSD Handles this now
+ *
+
 if(!preg_match('/^[a-zA-Z0-9_\.\/-]+[^\/]\/$/', $_POST['s_dir']))
-	Page\components::redirect('../../add.php?error=s_dir|s_dir_backup&disp=dir_fail');
+	Page\components::redirect('../../add.php?error=s_dir&disp=dir_fail');
+
+ *
+ */
 		
 if(strlen($_POST['ssh_user']) < 1 || $_POST['ssh_user'] == 'root')
 	Page\components::redirect('../../add.php?error=ssh_user&disp=user_fail');
@@ -112,12 +119,11 @@ foreach($lines as $id => $values)
 $IPA = json_encode($IPA);
 $IPP = json_encode($IPP);
 
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :sdir, :suser, :gsd_secret, :ssh_pub, :ssh_priv, :ssh_secret, :ssh_secret_iv, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :suser, :gsd_secret, :ssh_pub, :ssh_priv, :ssh_secret, :ssh_secret_iv, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
 	':ip' => $_POST['node_ip'],
 	':sftp_ip' => $_POST['node_sftp_ip'],
-	':sdir' => $_POST['s_dir'],
 	':suser' => $_POST['ssh_user'],
 	':gsd_secret' => $core->auth->keygen(16).$core->auth->keygen(16),
 	':ssh_pub' => $_POST['ssh_pub_key'],
