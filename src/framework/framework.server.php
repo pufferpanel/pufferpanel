@@ -67,7 +67,7 @@ class server extends user {
 	        /*
 	         * Grab Node Information
 	         */
-	        if($this->_data['node'] !== false){
+	        if(isset($this->_data['node']) && $this->_data['node'] !== false){
 	            
 	            $this->_ndata = array();
 	            $this->_n = true;
