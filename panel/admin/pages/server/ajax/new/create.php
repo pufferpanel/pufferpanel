@@ -136,6 +136,7 @@ if($_POST['modpack'] != "none"){
  * Add Server to Database
  */
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->auth->keygen(5) : $_POST['server_name'].'_'.$core->auth->keygen((11 - strlen($_POST['server_name'])));
+$ftpUser = "mc-".$ftpUser;
 
 $serverHash = $core->auth->keygen(42);
 $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar';
@@ -182,7 +183,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 		"name" => $serverHash,
         "user" => $ftpUser,
         "overide_command_line" => "",
-        "path" => $node['server_dir'].$ftpUser."/server/",
+        "path" => "/home/".$ftpUser,
         "variables" => array(
         	"-jar" => $pack['server_jar'],
             "-Xmx" => $_POST['alloc_mem']."M"
@@ -219,9 +220,9 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	/*
 	 * Create the User
 	 */
-	$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
-	
-	$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
+	//$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
+	//
+	//$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
 	
 	
 	//if($_POST['modpack'] != "none") {
