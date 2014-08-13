@@ -48,7 +48,9 @@
             </tbody>
         </table>
     {% else %}
-        {{ lang.string_noservers }}
+        <div class="alert alert-info">
+            {{ lang.string_noservers }}
+        </div>
     {% endif %}
 </div>
 <script type="text/javascript">
