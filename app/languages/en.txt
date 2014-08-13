@@ -4,6 +4,7 @@ string.login, Login
 string.reset_password, Reset Password
 string.spam_protection, Spam Protection
 string.again, (Again)
+string.noservers, No servers have been assigned to your account yet
 string.node, Node
 string.name, Name
 string.connect, Connect
