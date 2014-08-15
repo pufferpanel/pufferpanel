@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
 	Page\components::redirect('../../list.php');
 
-if(!isset($_POST['name'], $_POST['link'], $_POST['ip']))
+if(!isset($_POST['name'], $_POST['ip']))
 	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
 
 /*
