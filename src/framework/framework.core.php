@@ -58,35 +58,6 @@ $bugsnag->setFilters(array('password', 'ssh_user', 'ssh_secret', 'ssh_pub_key', 
 set_error_handler(array($bugsnag, "errorHandler"));
 set_exception_handler(array($bugsnag, "exceptionHandler"));
 
-	/*
-	 * Presnag!
-	 * Uses the default 500 Error from netty/tracy.
-	 */	 
-	function before_bugsnag_notify(Bugsnag_Error $error) {
-	
-		if(!defined('BUGSNAG_IS_SHOWN')){
-		
-			define('BUGSNAG_IS_SHOWN', 'true');
-			echo '<html><head><title>Server Error</title>
-				 <style>
-				 	body { color: #333; background: white; width: 500px; margin: 100px auto; }
-				 	h1 { font: bold 47px/1.5 sans-serif; margin: .6em 0 }
-				 	p { font: 21px/1.5 Georgia,serif; margin: 1.5em 0 }
-				 	small { font-size: 70%; color: gray }
-				 </style>
-				 
-				 </head><body><h1>Server Error</h1>
-				 
-				 <p>We\'re sorry! The server encountered an internal error and
-				 was unable to complete your request. Please try again later.</p>
-				 
-				 <p><small>error 500</small></p>
-				 </body></html>';
-				 
-		}
-		 
-	}
-
 /*
  * Other Debugging Options
  * To use a local-only debugging option please uncomment the lines
