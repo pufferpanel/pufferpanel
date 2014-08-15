@@ -36,10 +36,25 @@ require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
  * Report Errors to Bugsnag
  * If you do not want to help us with automatic error
  * reporting please comment out these lines.
+ *
+ * For security purposes PLEASE COMMENT THIS DEBUGGING CODE
+ * OUT BEFORE RUNNING ON A LIVE ENVIRONMENT. This debugging
+ * sends data to Bugsnag servers which allow us to track errors
+ * that are occuring in the code and see stacktraces and other
+ * information. If you are running the panel to test it out
+ * and look for bugs you can leave it uncommented as it will
+ * help us track bugs and find them quicker. Please comment out
+ * the code if you are adding new features to the panel since
+ * we do not want to be recieving your bugs.
  */
 $bugsnag = new Bugsnag_Client("97e324dd278d7b4b19eab9c6d63c380b");
 $bugsnag->setAppVersion('0.7.0-beta');
 $bugsnag->setBeforeNotifyFunction('before_bugsnag_notify');
+
+/*
+ * Tell Bugsnag to Ingore these and handle exceptions and errors
+ */
+$bugsnag->setFilters(array('password', 'ssh_user', 'ssh_secret', 'ssh_pub_key', 'ssh_priv_key'));
 set_error_handler(array($bugsnag, "errorHandler"));
 set_exception_handler(array($bugsnag, "exceptionHandler"));
 
@@ -75,7 +90,8 @@ set_exception_handler(array($bugsnag, "exceptionHandler"));
 /*
  * Other Debugging Options
  * To use a local-only debugging option please uncomment the lines
- * below and comment out the bugsnag lines.
+ * below and comment out the bugsnag lines. This debugging can be 
+ * used on a live environment if you wish.
  */
 //use Tracy\Debugger;
 //Debugger::enable(Debugger::PRODUCTION, dirname(__DIR__).'/logs');
