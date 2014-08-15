@@ -112,9 +112,11 @@ motd=A Minecraft Server';
 					$newContents = str_replace('server-port='.$var[1], "server-port=".$core->server->getData('server_port')."\n", $newContents);
 					$rewrite = true;
 				}else if($var[0] == 'online-mode' && $var[1] == 'false'){
-					//Force Online Mode
-					$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
-					$rewrite = true;
+					if($core->settings->get('force_online') == 1){
+						//Force Online Mode
+						$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
+						$rewrite = true;
+					}
 				}else if($var[0] == 'enable-query' && $var[1] != 'true'){
 					//Reset Query Port
 					$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
