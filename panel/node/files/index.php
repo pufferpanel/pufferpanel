@@ -39,6 +39,16 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
     
     if(file_exists("ssh2.sftp://$sftp/server/".$_GET['file'])){
         
+        $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
+        $context = stream_context_create(array(
+        	"http" => array(
+        		"method" => "GET",
+        		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+        		"timeout" => 3
+        	)
+        ));
+        $content = file_get_contents($url, 0, $context);
+        
         /*
          * Download a File
          */
@@ -48,9 +58,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
         header("Content-Type: application/force-download");
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
-        header("Content-Length: ".filesize("ssh2.sftp://$sftp/server/".$_GET['file']));
-           
-        $core->files->download("ssh2.sftp://$sftp/server/".$_GET['file']);
+        header("Content-Length: ".filesize($content));
+        
+        $core->files->download($content);
         exit();
         
     }else{
