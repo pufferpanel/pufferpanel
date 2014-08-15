@@ -47,7 +47,6 @@ if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
 $mysql->prepare("UPDATE `nodes` SET `node` = :name, `node_ip` = :ip WHERE `id` = :nid")->execute(array(
 	':nid' => $_POST['nid'],
 	':name' => $_POST['name'],
-	':link' => $_POST['link'],
 	':ip' => $_POST['ip']
 ));
 
