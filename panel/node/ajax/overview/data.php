@@ -25,8 +25,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		
 		/*
 		 * Run Command
+		 * 
 		 */
-		$getCommandData = $core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
+		$getCommandData = false;
+		//$getCommandData = $core->ssh->generateSSH2Connection($core->server->nodeData('id'), true)->executeSSH2Command('sudo du -s '.$core->server->nodeData('server_dir').$core->server->getData('ftp_user').'/server', true);
 					
 		if($getCommandData === false)
 			exit('<div class="alert alert-danger">'.$_l->tpl('node.overview.ajax.no_conn').'</div>');
