@@ -26,13 +26,23 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit();
 }
 
+$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
+$context = stream_context_create(array(
+	"http" => array(
+		"method" => "GET",
+		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+		"timeout" => 3
+	)
+));
+$content = json_decode(@file_get_contents($url, 0, $context), true);
 /*
  * Display Page
  */
 echo $twig->render(
 		'node/console.html', array(
 			'server' => array(
-				'gsd_id' => $core->server->getData('gsd_id')
+				'gsd_id' => $core->server->getData('gsd_id'),
+				'console_inner' => $content['contents']
 			),
 			'node' => array(
 				'gsd_secret' => $core->server->nodeData('gsd_secret'),
