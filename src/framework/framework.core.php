@@ -33,6 +33,15 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
 
 /*
+ * Report Errors to Bugsnag
+ * If you do not want to help us with automatic error
+ * reporting please comment out these lines.
+ */
+$bugsnag = new Bugsnag_Client("97e324dd278d7b4b19eab9c6d63c380b");
+set_error_handler(array($bugsnag, "errorHandler"));
+set_exception_handler(array($bugsnag, "exceptionHandler"));
+
+/*
  * Debug
  * To debug on a non-local environment (do ot do this publicly!) change Debugger::DETECT to Debugger::DEVELOPMENT
  */
