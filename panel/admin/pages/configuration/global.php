@@ -104,7 +104,35 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					</div>
 					<div class="tab-pane" id="general">
 						<h3>General Settings</h3><hr />
-						<div class="alert alert-info">This feature is still currently in the works and will be released in future versions.</div>
+						<form action="actions/general.php" method="POST">
+							<fieldset>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="list_nodes" /> Force Online Mode</label><br />
+											<p><small class="text-muted"><em>Checking this box will force servers to be run in <code>online-mode=true</code>. Checking this box will prevent Bungeecord servers from being able to run on the panel.</em></small></p>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="list_nodes" /> Use SSH Keys for Authentication</label><br />
+											<p><small class="text-muted"><em>Checking this box will force this panel to only connect to servers using key-based authentication rather than password-based authentication.</em></small></p>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="list_nodes" disabled="disabled"/> Enable API System</label><br />
+											<p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div>
+										<input type="submit" value="Update Settings" class="btn btn-primary" />
+									</div>
+								</div>
+							</fieldset>
+						</form>
 					</div>
 					<div class="tab-pane" id="2fa">
 						<h3>2-Factor Authentication</h3><hr />
