@@ -51,10 +51,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<ul class="nav nav-tabs" id="config_tabs">
-					<li class="active"><a href="#company" data-toggle="tab">Company Name</a></li>
-					<li><a href="#url" data-toggle="tab">URL Settings</a></li>
-					<li><a href="#cookies" data-toggle="tab">Cookies</a></li>
+					<li class="active"><a href="#company" data-toggle="tab">Name &amp; URLs</a></li>
+					<li><a href="#general" data-toggle="tab">General Settings</a></li>
 					<li><a href="#email" data-toggle="tab">Email Settings</a></li>
+					<li><a href="#2fa" data-toggle="tab">2FA</a></li>
 					<li><a href="#captcha" data-toggle="tab">reCAPTCHA</a></li>
 				</ul>
 				<div class="tab-content">
@@ -70,8 +70,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 								</div>
 							</fieldset>
 						</form>
-					</div>
-					<div class="tab-pane" id="url">
 						<h3>URL Settings</h3><span class="label label-warning">Trailing Slashes Required</span><hr />
 						<form action="actions/url.php" method="POST">
 							<fieldset>
@@ -104,24 +102,13 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 							</fieldset>
 						</form>
 					</div>
-					<div class="tab-pane" id="cookies">
-						<h3>Cookie Settings</h3><hr />
-						<form action="actions/cookies.php" method="POST">
-							<fieldset>
-								<div class="form-group">
-									<label for="cookie_website" class="control-label">Cookie Website</label>
-									<div>
-										<input type="text" name="cookie_website" class="form-control" value="<?php echo $core->settings->get('cookie_website'); ?>"/>
-										<p><small class="text-muted"><em>This should be the website that PufferPanel is running on (but can be left blank). <strong>Setting this to the wrong value will lock you and all other users out of the panel.</strong></em></small></p>
-									</div>
-								</div>
-								<div class="form-group">
-									<div>
-										<input type="submit" value="Update Cookie Settings" class="btn btn-primary" />
-									</div>
-								</div>
-							</fieldset>
-						</form>
+					<div class="tab-pane" id="general">
+						<h3>General Settings</h3><hr />
+						<div class="alert alert-info">This feature is still currently in the works and will be released in future versions.</div>
+					</div>
+					<div class="tab-pane" id="2fa">
+						<h3>2-Factor Authentication</h3><hr />
+						<div class="alert alert-info">This feature is still currently in the works and will be released in future versions.</div>
 					</div>
 					<div class="tab-pane" id="email">
 						<h3>Email Settings</h3><hr />
