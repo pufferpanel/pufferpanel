@@ -52,6 +52,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `account_change`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `account_change`");
 	                        $mysql->exec("CREATE TABLE `account_change` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `user_id` int(11) DEFAULT NULL,
@@ -67,6 +68,7 @@ if(file_exists('../install.lock'))
 							/*
 							 * CREATE TABLE `api`
 							 */
+							$mysql->exec("DROP TABLE IF EXISTS `api`");
 							$mysql->exec("CREATE TABLE `api` (
 							  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 							  `key` char(36) NOT NULL DEFAULT '',
@@ -79,6 +81,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `acp_email_templates`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `acp_email_templates`");
 	                        $mysql->exec("CREATE TABLE `acp_email_templates` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `tpl_name` char(30) DEFAULT NULL,
@@ -105,6 +108,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `acp_settings`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `acp_settings`");
 	                        $mysql->exec("CREATE TABLE `acp_settings` (
 	                          `setting_ref` char(25) NOT NULL DEFAULT '',
 	                          `setting_val` tinytext
@@ -114,6 +118,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `actions_log`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `actions_log`");
 	                        $mysql->exec("CREATE TABLE `actions_log` (
 	                          `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `priority` int(1) NOT NULL,
@@ -131,6 +136,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `modpacks`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `modpacks`");
 	                        $mysql->exec("CREATE TABLE `modpacks` (
 	                          `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `hash` char(16) NOT NULL DEFAULT '',
@@ -150,12 +156,12 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `nodes`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `nodes`");
 	                        $mysql->exec("CREATE TABLE `nodes` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `node` char(15) NOT NULL DEFAULT '',
 	                          `node_ip` tinytext NOT NULL,
 	                          `sftp_ip` tinytext NOT NULL,
-	                          `server_dir` tinytext NOT NULL,
 	                          `username` tinytext NOT NULL,
 	                          `gsd_secret` char(32) DEFAULT NULL,
 	                          `ssh_pub` tinytext NOT NULL,
@@ -171,6 +177,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `servers`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `severs`");
 	                        $mysql->exec("CREATE TABLE `servers` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `gsd_id` int(11) DEFAULT NULL,
@@ -199,6 +206,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `users`
 	                         */
+	                        $mysql->exec("DROP TABLE IF EXISTS `users`");
 	                        $mysql->exec("CREATE TABLE `users` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                           `whmcs_id` int(11) DEFAULT NULL,

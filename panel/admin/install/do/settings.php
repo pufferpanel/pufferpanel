@@ -63,7 +63,8 @@ if(file_exists('../install.lock'))
 					            ('assets_url', :aurl),
 					            ('modpack_dir',:mpackdir),
 					            ('use_ssh_keys', 1),
-					            ('default_language', 'en')");
+					            ('default_language', 'en'),
+					            ('force_online', 1)");
 					        
 					        $prepare->execute(array(
 					            ':cname' => $_POST['company_name'],
