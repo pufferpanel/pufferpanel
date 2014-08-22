@@ -53,6 +53,9 @@ foreach($lines as $id => $values)
 		$IPP = array_merge($IPP, array($ip => array()));
 		
 		$ports = explode(',', $ports);
+
+		for($l=0; $l<count($ports); $l++)
+			$IPP[$ip][$ports[$l]] = 1;
 			
 		/*
 		 * Make sure Ports are in the array
