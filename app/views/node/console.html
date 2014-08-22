@@ -153,7 +153,7 @@ $(window).load(function(){
 					},
 			  		success: function(data) {
 		    			if(data == "ok"){
-		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been "+command+"ed successfully.").slideDown().delay(5000).slideUp();
+		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
 		    				can_run = true;
 		    				if(command == "restart"){
 		    					start_server();
