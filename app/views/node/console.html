@@ -93,14 +93,14 @@
 </div>
 <script type="text/javascript">
 $(window).load(function(){
-	var socket = io.connect('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}');
+	var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ node.gsd_secret }}'});
 	$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 	$("#console_command").submit(function(){
 		$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 		var ccmd = $("#ccmd").val();
 		$.ajax({
 			type: "POST",
-			headers: {"X-Access-Token": "{{ node.gsd_secret }}"},
+			headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
 			url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/console',
 			timeout: 5000,
 			data: { command: ccmd },
@@ -139,7 +139,7 @@ $(window).load(function(){
 				$(this).toggleClass('disabled');
 				$.ajax({
 					type: "GET",
-					headers: {"X-Access-Token": "{{ node.gsd_secret }}"},
+					headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
 					url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {

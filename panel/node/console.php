@@ -35,6 +35,7 @@ $context = stream_context_create(array(
 	)
 ));
 $content = json_decode(@file_get_contents($url, 0, $context), true);
+
 /*
  * Display Page
  */
@@ -42,6 +43,7 @@ echo $twig->render(
 		'node/console.html', array(
 			'server' => array(
 				'gsd_id' => $core->server->getData('gsd_id'),
+				'gsd_secret' => $core->server->getData('gsd_secret'),
 				'console_inner' => $content['contents']
 			),
 			'node' => array(

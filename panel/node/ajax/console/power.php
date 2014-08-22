@@ -161,7 +161,7 @@ motd=A Minecraft Server';
 	$context = stream_context_create(array(
 		"http" => array(
 			"method" => "GET",
-			"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
 			"timeout" => 3
 		)
 	));
