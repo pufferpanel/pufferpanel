@@ -87,7 +87,7 @@
 </div>
 <script type="text/javascript">
 	$(window).load(function(){
-		var socket = io.connect('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}');
+		var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ node.gsd_secret }}'});
 		socket.on('process', function (data) {
 			if($("#container-cpu-loading").is(":visible")){
 				$("#container-cpu-loading").fadeOut();
