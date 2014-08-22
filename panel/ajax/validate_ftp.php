@@ -16,9 +16,60 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
- session_start();
- require_once('../../src/framework/framework.core.php');
+session_start();
+require_once('../../src/framework/framework.core.php');
  
- http_response_code(200);
- 
- ?>
+/*
+ * Illegally Accessed File
+ */
+if(!isset($_POST['username'] || !isset($_POST['password'])){
+
+	http_response_code(403);
+	exit();
+	
+}
+
+if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$', $_POST['username'], $matches)){
+
+	http_response_code(403);
+	exit();
+
+}else{
+
+	$username = $matches[0].$matches[1];
+	$serverid = $matches[2];
+
+}
+
+/*
+ * Varify Identity
+ */
+$query = $mysql->prepare("SELECT `encryption_iv`, `ftp_pass` FROM `servers` WHERE `gsd_id` = :gsdid AND `ftp_user` = :username");
+$query->execute(array(
+	'gsdid' => $serverid,
+	'username' => $username
+));
+
+	if($query->rowCount() != 1){
+	
+		http_response_code(403);
+		exit();
+	
+	}else{
+	
+		$server = $mysql->fetch();
+		if($core->auth->encrypt($_POST['password'], $server['encryption_iv']) != $server['ftp_pass']){
+		
+			http_response_code(403);
+			exit();
+		
+		}else{
+		
+			http_response_code(200);
+			exit();
+		
+		}
+	
+	}
+
+?>
