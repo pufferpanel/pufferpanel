@@ -58,6 +58,7 @@ while($row = $packs->fetch()){
 echo $twig->render(
 		'node/settings.html', array(
 			'server' => array(
+				'gsd_id' => $core->server->getData('gsd_id'),
 				'server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))),
 				'ftp_user' => $core->server->getData('ftp_user'),
 				'modpack' => $core->server->getData('modpack')
