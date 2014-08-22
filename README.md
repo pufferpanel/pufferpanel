@@ -1,16 +1,11 @@
-# Summer Status Update
-PufferPanel development will be halted until late August 2014.
-
-**DO NOT INSTALL THE REPO VERSION OF PUFFERPANEL ON YOUR SERVER. IT IS UNSTABLE, PLEASE USE A RELEASE VERSION.**
-
 [![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel)
 
 # About PufferPanel
 PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/DaneEveritt/PufferPanel/master/LICENSE).
 
-Downloads of PufferPanel can be found [here](https://github.com/DaneEveritt/PufferPanel/releases). You can contact us on IRC (irc.esper.net) in #pufferpanel.
+Downloads of PufferPanel can be found [here](https://github.com/DaneEveritt/PufferPanel/releases). You can contact us on IRC (irc.esper.net) in #pufferpanel, please read the wiki first, and be descriptive when you ask for help.
 
-If you want to see what PufferPanel looks like you can check out our topic on the [Bukkit Forums](http://forums.bukkit.org/threads/web-admn-pufferpanel-an-open-source-alternative-to-multicraft.189325/).
+If you want to see what PufferPanel looks like you can check out our topic on the [Minecraft Forums](http://www.minecraftforum.net/forums/servers/minecraft-server-hosting/hosting-discussion/569432-introducing-pufferpanel-the-open-source-multicraft/).
 
 # Support & Installing
 If you need help at in point with PufferPanel you can contact us in IRC, or you can get help on our [Official Support Forums](http://kelp.in/index.php).
