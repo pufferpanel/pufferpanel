@@ -38,7 +38,12 @@
 
 {% block content %}
 <div class="col-9">
-	<div class="panel panel-primary">
+	<div class="row">
+		<div class="alert alert-danger">
+			<i class="fa fa-warning"></i> The automatic plugin installer has been temporarily disabled.
+		</div>
+	</div>
+	<!--<div class="panel panel-primary">
 		<div class="panel-heading">
 			<h3 class="panel-title">{{ lang.node_plugins_welcome_h1 }}</h3>
 		</div>
@@ -62,6 +67,6 @@
 				</div>
 			</div>
 		</fieldset>
-	</form>
+	</form>-->
 </div>
 {% endblock %}

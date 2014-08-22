@@ -217,7 +217,7 @@ $select->execute(array(
 								<div class="form-group">
 									<label for="sftp_user" class="control-label">Username</label>
 									<div>
-										<input type="text" readonly="readonly" value="<?php echo $server['ftp_user']; ?>" class="form-control" />
+										<input type="text" readonly="readonly" value="<?php echo $server['ftp_user'].'-'.$server['gsd_id']; ?>" class="form-control" />
 									</div>
 								</div>
 								<div class="well">

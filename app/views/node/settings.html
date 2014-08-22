@@ -46,7 +46,12 @@
 		<div class="tab-pane active" id="server_sett">
 		<br>
 		<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
-			<form action="#" method="post" id="updateModpack">
+			<div class="row">
+				<div class="alert alert-danger">
+					<i class="fa fa-warning"></i> Changing modpacks has been temporarily disabled.
+				</div>
+			</div>
+			<!--<form action="#" method="post" id="updateModpack">
 				<fieldset>
 					<div class="row" id="installingModpack" style="display:none;"></div>
 					<div class="row">
@@ -70,25 +75,25 @@
 						</div>
 					</div>
 				</fieldset>
-			</form>
+			</form>-->
 			<div class="row">
 				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
-					<div class="well">
-						<form action="ajax/settings/jarname.php" method="post">
-							<fieldset>
-							<div class="form-group">
-								<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
-								<div class="input-group">
-									<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
-									<span class="input-group-addon">.jar</span>
-									<span class="input-group-btn">
-										<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
-									</span>
-								</div>
+				<div class="well">
+					<form action="ajax/settings/jarname.php" method="post">
+						<fieldset>
+						<div class="form-group">
+							<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
+							<div class="input-group">
+								<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
+								<span class="input-group-addon">.jar</span>
+								<span class="input-group-btn">
+									<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
+								</span>
 							</div>
-							</fieldset>
-						</form>
-					</div>
+						</div>
+						</fieldset>
+					</form>
+				</div>
 			</div>
 		</div>
 		<div class="tab-pane" id="sftp_sett">
