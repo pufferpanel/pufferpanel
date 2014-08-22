@@ -53,17 +53,6 @@ foreach($lines as $id => $values)
 		$IPP = array_merge($IPP, array($ip => array()));
 		
 		$ports = explode(',', $ports);
-
-		for($l=0; $l<count($ports); $l++)
-			{
-				
-				/*
-				 * Validate Port Spacing
-				 */
-				if(!array_key_exists($l - 1, $IPP[$ip]) && !array_key_exists($l + 1, $IPP[$ip]))
-					$IPP[$ip][$ports[$l]] = 1;
-			
-			}
 			
 		/*
 		 * Make sure Ports are in the array

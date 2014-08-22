@@ -167,7 +167,6 @@ $selectNode->execute(array(
 										<button class="btn btn-primary" type="submit">&rarr;</button>
 									</span>
 								</div>
-								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please leave at least one empty port between each that you allocate (e.g If you allocate 25565, do not allocate 25566, you can allocate 25567 though).</em></small>
 							</div>
 						</form>
 						<table class="table table-striped table-bordered table-hover">
@@ -322,7 +321,7 @@ $selectNode->execute(array(
 											<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
 											<div>
 												<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25567,25569,25571,25573,25575"></textarea>
-												<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas. <strong>Please leave at least one empty port between each that you allocate. (e.g If you allocate 25565, do not allocate 25566, you can allocate 25567 though)</strong></em></small></p>
+												<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Enter one IP address per line, followed by a pipe (|) and then a list of each available port separated with commas.</em></small></p>
 											</div>
 										</div>
 									</div>

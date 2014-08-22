@@ -46,12 +46,8 @@ foreach($ports as $id => $port)
 
 		if(strlen($port) < 6 && strlen($port) > 0 && array_key_exists($_POST['add_ports_ip'], $saveports) && !array_key_exists($port, $saveports[$_POST['add_ports_ip']])){
 		
-			if(!array_key_exists($port + 1, $saveports[$_POST['add_ports_ip']]) && !array_key_exists($port - 1, $saveports[$_POST['add_ports_ip']])){
-			
-				$saveports[$_POST['add_ports_ip']][$port] = 1;
-				$saveips[$_POST['add_ports_ip']]['ports_free']++;
-				
-			}
+			$saveports[$_POST['add_ports_ip']][$port] = 1;
+			$saveips[$_POST['add_ports_ip']]['ports_free']++;
 			
 		}
 
