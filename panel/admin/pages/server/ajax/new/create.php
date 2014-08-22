@@ -215,15 +215,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	$update->execute(array(
 		':gsdid' => $content['id'],
 		':hash' => $serverHash
-	));
-	
-	/*
-	 * Create the User
-	 */
-	//$softLimit = ($_POST['alloc_disk'] <= 512) ? 0 : ($_POST['alloc_disk'] - 512);
-	//
-	//$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./create_user.sh '.$ftpUser.' '.$_POST['sftp_pass_2'].' '.$softLimit.' '.$_POST['alloc_disk'], false);
-	
+	));	
 	
 	//if($_POST['modpack'] != "none") {
 	//
@@ -251,8 +243,8 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	 */
 	$core->email->buildEmail('admin_new_server', array(
 	        'NAME' => $_POST['server_name'],
-	        'CONNECT' => $_POST['server_ip'].':'.$_POST['server_port'],
-	        'USER' => $ftpUser,
+	        'CONNECT' => $node['sftp_ip'].':21',
+	        'USER' => $ftpUser.'-'.$content['id'],
 	        'PASS' => $_POST['sftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 	
