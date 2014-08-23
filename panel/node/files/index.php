@@ -32,43 +32,31 @@ if(isset($_GET['dir']))
     $_GET['dir'] = str_replace('..', '', urldecode($_GET['dir']));
     
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
-    
-    $connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
-    
-    $sftp = ssh2_sftp($connection);
-    
-    if(file_exists("ssh2.sftp://$sftp/server/".$_GET['file'])){
         
-        $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
-        $context = stream_context_create(array(
-        	"http" => array(
-        		"method" => "GET",
-        		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
-        		"timeout" => 3
-        	)
-        ));
-        $content = file_get_contents($url, 0, $context);
-        
-        /*
-         * Download a File
-         */
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Content-Type: application/force-download");
-        header("Content-Description: File Transfer");
-        header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
-        header("Content-Length: ".filesize($content));
-        
-        $core->files->download($content);
-        exit();
-        
-    }else{
-    
-    	exit();
-    
-    }
+    $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
+    $context = stream_context_create(array(
+    	"http" => array(
+    		"method" => "GET",
+    		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+    		"timeout" => 3
+    	)
+    ));
+    $content = json_decode(file_get_contents($url, 0, $context), true);
 
+    /*
+     * Download a File
+     */
+    header("Pragma: public");
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("Content-Type: application/octet-stream");
+    header("Content-Description: File Transfer");
+    header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
+    header("Content-Length: ".mb_strlen($content['contents']));
+    
+    print( $content['contents'] );
+    exit();
+        
 }
 
 /*
