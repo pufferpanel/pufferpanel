@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+//[{"name":"banned-ips.json","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":2,"filetype":"file"},{"name":"banned-players.json","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":2,"filetype":"file"},{"name":"bukkit.yml","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":1491,"filetype":"file"},{"name":"commands.yml","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":623,"filetype":"file"},{"name":"crash-reports","ctime":"2014-08-15T14:52:31.000Z","mtime":"2014-08-15T14:52:31.000Z","size":4096,"filetype":"folder"},{"name":"help.yml","ctime":"2014-08-15T14:59:19.000Z","mtime":"2014-08-15T14:59:19.000Z","size":2576,"filetype":"file"},{"name":"logs","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":4096,"filetype":"folder"},{"name":"ops.json","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":2,"filetype":"file"},{"name":"permissions.yml","ctime":"2014-08-15T14:59:33.000Z","mtime":"2014-08-15T14:59:33.000Z","size":0,"filetype":"file"},{"name":"plugins","ctime":"2014-08-15T14:59:19.000Z","mtime":"2014-08-15T14:59:19.000Z","size":4096,"filetype":"folder"},{"name":"server.jar","ctime":"2014-08-12T19:28:02.000Z","mtime":"2014-08-12T19:28:02.000Z","size":20453584,"filetype":"file"},{"name":"server.properties","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":705,"filetype":"file"},{"name":"usercache.json","ctime":"2014-08-23T15:07:09.000Z","mtime":"2014-08-23T15:07:09.000Z","size":2,"filetype":"file"},{"name":"whitelist.json","ctime":"2014-08-15T14:59:19.000Z","mtime":"2014-08-15T14:59:19.000Z","size":2,"filetype":"file"},{"name":"world","ctime":"2014-08-23T15:32:12.000Z","mtime":"2014-08-23T15:32:12.000Z","size":4096,"filetype":"folder"},{"name":"world_nether","ctime":"2014-08-23T15:32:12.000Z","mtime":"2014-08-23T15:32:12.000Z","size":4096,"filetype":"folder"},{"name":"world_the_end","ctime":"2014-08-23T15:32:12.000Z","mtime":"2014-08-23T15:32:12.000Z","size":4096,"filetype":"folder"}]
+
 session_start();
 require_once('../../../../src/framework/framework.core.php');
 
@@ -38,19 +40,33 @@ else
 /*
  * Gather Files and Folders
  */
-$connection = $core->ssh->generateSSH2Connection($core->server->getData('id'), false, true);
-$sftp = ssh2_sftp($connection);
+$getDirectory = (is_null($_POST['dir'])) ? "/" : $_POST['dir'];
+$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/folder/".$getDirectory;
 
-	if(!$sftp)
-		exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_no_dl').'</div>');
+$context = stream_context_create(array(
+	"http" => array(
+		"method" => "GET",
+		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+		"ignore_errors" => true,
+		"timeout" => 3
+	)
+));
+
+$rawcontent = file_get_contents($url, 0, $context);
+$content = json_decode($rawcontent, true);
+
+	if(json_last_error() != JSON_ERROR_NONE)
+		exit('<div class="alert alert-danger">GSD ERROR: '.$rawcontent.'</div>');
+	
+	if(!$content || empty($content))
+		exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_no_dl').' This usually occurs because of a networking error.</div>');
 
 /*
  * Parse Through Files
  */
-$handle = opendir("ssh2.sftp://$sftp/server/".$_POST['dir']);
-while (false != ($entries[] = readdir($handle)));
-sort($entries);
-closedir($handle);
+if(isset($content['code']) && isset($content['message']))
+	exit('<div class="alert alert-danger">GSD ERROR: '.$content['message'].'</div>');
+
 /*
  * Handle Directory
  */
@@ -70,12 +86,6 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 		$_POST['dir'] = $_POST['dir'].'/';
 
 }
-	
-/*
- * Validate Directory
- */
-if(!is_dir("ssh2.sftp://$sftp/server/".$_POST['dir']))
-    exit('<div class="error-box round">'.$_l->tpl('node_files_ajax_no_dir').'</a>');
 	
 /*
  * Inside a Directory
@@ -105,41 +115,32 @@ elseif(array_key_exists('link', $previousDir))
 /*
  * Loop Through
  */	
-foreach($entries as $entry) {
-	    
-    if($entry != '.' && $entry != '..' && $entry != ''){
-    
-        /*
-         * Get Stats on File
-         */
-        $stat = ssh2_sftp_stat($sftp, '/server/'.$_POST['dir'].$entry);
-        
-		 /*
-         * Iterate into Arrays
-         */
-        if(is_dir("ssh2.sftp://$sftp/server/".$_POST['dir'].$entry)){
-        
-        	$displayFolders = array_merge($displayFolders, array(array(
-        		"entry" => $entry,
-        		"directory" => $_POST['dir'],
-        		"size" => $core->files->formatSize($stat['size']),
-        		"date" => $stat['mtime']
-        	)));
-
-        }else{
-        
-        	$displayFiles = array_merge($displayFiles, array(array(
-        		"entry" => $entry,
-        		"directory" => $_POST['dir'],
-        		"extension" => pathinfo($entry, PATHINFO_EXTENSION),
-        		"size" => $core->files->formatSize($stat['size']),
-        		"date" => $stat['mtime']
-        	)));
-        
-        }
-        
-	}
+foreach($content as $value) {    
             
+	 /*
+     * Iterate into Arrays
+     */
+    if($value['filetype'] == 'folder'){
+    
+    	$displayFolders = array_merge($displayFolders, array(array(
+    		"entry" => $value['name'],
+    		"directory" => $_POST['dir'],
+    		"size" => $core->files->formatSize($value['size']),
+    		"date" => strtotime($value['mtime'])
+    	)));
+
+    }else{
+    
+    	$displayFiles = array_merge($displayFiles, array(array(
+    		"entry" => $value['name'],
+    		"directory" => $_POST['dir'],
+    		"extension" => pathinfo($value['name'], PATHINFO_EXTENSION),
+    		"size" => $core->files->formatSize($value['size']),
+    		"date" => strtotime($value['mtime'])
+    	)));
+    
+    }
+                    
 }
 
 /*

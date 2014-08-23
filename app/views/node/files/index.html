@@ -43,11 +43,8 @@
 
 {% block content %}
 <div class="col-9" id="internal_alert">
-<!--	<div class="alert alert-info">
+	<div class="alert alert-info">
 		<i class="fa fa-spinner fa-spin"></i> {{ lang.node_files_loading }}
-	</div>-->
-	<div class="alert alert-danger">
-		<i class="fa fa-warning"></i> The file manager has been temporarily disabled.
 	</div>
 </div>
 <div class="row">
@@ -57,112 +54,112 @@
 	<div class="col-9" id="load_files"></div>
 </div>
 <script type="text/javascript">
-//$(window).load(function(){
-//    $.urlParam = function(name, url){
-//		 var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
-//		 if (results==null){
-//		     return null;
-//         }else{
-//		     return results[1] || 0;
-//		 }
-//    }
-//    var doneLoad = false;
-//    function handleLoader(show){
-//    
-//    	if(show === true){
-//    		var height = $("#get_height").height();
-//    		var width = $(".files_loading_box").width();
-//    		var center_height = (height / 2) - 15;
-//    		var center_width = (width / 2) - 15;
-//    		$("#position_me").css({"top": center_height, "left": center_width});
-//    		$(".files_loading_box").css("height", (height + 5)).fadeIn();
-//    	}else{
-//    		$(".files_loading_box").fadeOut();
-//    	}
-//    	
-//    }
-//    function newLoad(){
-//        $("a.load_new").click(function(event){
-//            event.preventDefault();
-//            handleLoader(true);
-//	        if($.urlParam('dir', $(this).attr("href")) != null){
-//	            var dir = $.urlParam('dir', $(this).attr("href"));
-//	            $.ajax({
-//	                type: "POST",
-//	                url: '../ajax/files/list_dir.php',
-//	                data: {'dir': dir},
-//	                success: function(data) {
-//	                    $("#load_files").slideUp(function(){
-//	                        $("#load_files").html(data);
-//	                        handleLoader(false);
-//	                        $("#load_files").slideDown();
-//	                        newLoad();
-//	                    });
-//	                }
-//	            });
-//	        }else{
-//	            $.ajax({
-//	                type: "POST",
-//	                url: '../ajax/files/list_dir.php',
-//	                data: {},
-//	                success: function(data) {
-//	                    $("#load_files").slideUp(function(){
-//	                        $("#load_files").html(data);
-//	                        handleLoader(false);
-//	                        $("#load_files").slideDown();
-//	                        newLoad();
-//	                    });
-//	            	}
-//	            });
-//	        }
-//        });
-//        $("a.edit_file").click(function(event){
-//            event.preventDefault();
-//            var file = $.urlParam('file', $(this).attr("href"));
-//            $().redirect('edit.php', {'file': file});
-//        });
-//    }
-//    function firstLoad() {
-//    	$("#loading_dir").fadeIn(200);
-//		$("#internal_alert").slideDown();
-//        if($.urlParam('dir', $(location).attr('href')) != null && doneLoad === false){
-//        	var dir = $.urlParam('dir', $(location).attr('href'));
-//			$("#loading_dir").fadeIn(200);
-//        	$.ajax({
-//        	    type: "POST",
-//        	    url: '../ajax/files/list_dir.php',
-//        	    data: {'dir': dir},
-//        	    success: function(data) {
-//        	        $("#load_files").slideUp(function(){
-//        	            $("#load_files").html(data);
-//        	            $("#internal_alert").slideUp();
-//        	            $("#load_files").slideDown();
-//        	            $("#loading_dir").fadeOut(200);
-//        	            doneLoad = true;
-//        	            newLoad();
-//        	        });
-//        	    }
-//        	});
-//        }else{
-//	        $("#loading_dir").fadeIn(200);
-//	        $.ajax({
-//	            type: "POST",
-//	            url: '../ajax/files/list_dir.php',
-//	            data: {},
-//	            success: function(data) {
-//	                $("#load_files").slideUp(function(){
-//	                    $("#load_files").html(data);
-//	                    $("#internal_alert").slideUp();
-//	                    $("#load_files").slideDown();
-//	                    $("#loading_dir").fadeOut(200);
-//	                    doneLoad = true;
-//	                    newLoad();
-//	                });
-//	            }
-//	        });
-//        }
-//    }
-//    firstLoad();
-//});
+$(window).load(function(){
+    $.urlParam = function(name, url){
+		 var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
+		 if (results==null){
+		     return null;
+         }else{
+		     return results[1] || 0;
+		 }
+    }
+    var doneLoad = false;
+    function handleLoader(show){
+    
+    	if(show === true){
+    		var height = $("#get_height").height();
+    		var width = $(".files_loading_box").width();
+    		var center_height = (height / 2) - 15;
+    		var center_width = (width / 2) - 15;
+    		$("#position_me").css({"top": center_height, "left": center_width});
+    		$(".files_loading_box").css("height", (height + 5)).fadeIn();
+    	}else{
+    		$(".files_loading_box").fadeOut();
+    	}
+    	
+    }
+    function newLoad(){
+        $("a.load_new").click(function(event){
+            event.preventDefault();
+            handleLoader(true);
+	        if($.urlParam('dir', $(this).attr("href")) != null){
+	            var dir = $.urlParam('dir', $(this).attr("href"));
+	            $.ajax({
+	                type: "POST",
+	                url: '../ajax/files/list_dir.php',
+	                data: {'dir': dir},
+	                success: function(data) {
+	                    $("#load_files").slideUp(function(){
+	                        $("#load_files").html(data);
+	                        handleLoader(false);
+	                        $("#load_files").slideDown();
+	                        newLoad();
+	                    });
+	                }
+	            });
+	        }else{
+	            $.ajax({
+	                type: "POST",
+	                url: '../ajax/files/list_dir.php',
+	                data: {},
+	                success: function(data) {
+	                    $("#load_files").slideUp(function(){
+	                        $("#load_files").html(data);
+	                        handleLoader(false);
+	                        $("#load_files").slideDown();
+	                        newLoad();
+	                    });
+	            	}
+	            });
+	        }
+        });
+        $("a.edit_file").click(function(event){
+            event.preventDefault();
+            var file = $.urlParam('file', $(this).attr("href"));
+            $().redirect('edit.php', {'file': file});
+        });
+    }
+    function firstLoad() {
+    	$("#loading_dir").fadeIn(200);
+		$("#internal_alert").slideDown();
+        if($.urlParam('dir', $(location).attr('href')) != null && doneLoad === false){
+        	var dir = $.urlParam('dir', $(location).attr('href'));
+			$("#loading_dir").fadeIn(200);
+        	$.ajax({
+        	    type: "POST",
+        	    url: '../ajax/files/list_dir.php',
+        	    data: {'dir': dir},
+        	    success: function(data) {
+        	        $("#load_files").slideUp(function(){
+        	            $("#load_files").html(data);
+        	            $("#internal_alert").slideUp();
+        	            $("#load_files").slideDown();
+        	            $("#loading_dir").fadeOut(200);
+        	            doneLoad = true;
+        	            newLoad();
+        	        });
+        	    }
+        	});
+        }else{
+	        $("#loading_dir").fadeIn(200);
+	        $.ajax({
+	            type: "POST",
+	            url: '../ajax/files/list_dir.php',
+	            data: {},
+	            success: function(data) {
+	                $("#load_files").slideUp(function(){
+	                    $("#load_files").html(data);
+	                    $("#internal_alert").slideUp();
+	                    $("#load_files").slideDown();
+	                    $("#loading_dir").fadeOut(200);
+	                    doneLoad = true;
+	                    newLoad();
+	                });
+	            }
+	        });
+        }
+    }
+    firstLoad();
+});
 </script>
 {% endblock %}
