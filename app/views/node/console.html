@@ -105,7 +105,7 @@ $(window).load(function(){
 			timeout: 5000,
 			data: { command: ccmd },
 			error: function(jqXHR, textStatus, errorThrown) {
-			   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').slideDown().delay(5000).slideUp();
+			   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
 			   	$("#sending_command").removeClass('disabled');
 			   	$("#sending_command").html('&rarr;');
 			   	$("#ccmd").val('');
@@ -115,7 +115,7 @@ $(window).load(function(){
 	    		$("#sending_command").html('&rarr;');
 	    		$("#ccmd").val('');
 	    			if(data != ""){
-	    				$("#sc_resp").html(data).slideDown().delay(5000).slideUp();
+	    				$("#sc_resp").html(data).fadeIn().delay(5000).fadeOut();
 	    			}
 	 		 }
 		});
@@ -143,7 +143,7 @@ $(window).load(function(){
 					url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
-					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').slideDown().delay(5000).slideUp();
+					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
 					   	$("#off").removeClass('disabled');
 					   	$("#off").html('Stop');
 					   	$("#restart").removeClass('disabled');
@@ -153,15 +153,13 @@ $(window).load(function(){
 					},
 			  		success: function(data) {
 		    			if(data == "ok"){
-		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").slideDown().delay(5000).slideUp();
+		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
 		    				can_run = true;
 		    				if(command == "restart"){
-		    					start_server();
+		    					setTimeout(function() { start_server(); }, 5000)
 		    				}
 		    				$("#off").removeClass('disabled');
 		    				$("#off").html('{{ lang.string_stop }}');
-		    				$("#restart").removeClass('disabled');
-		    				$("#restart").html('{{ lang.string_restart }}');
 		    				return false;
 		    			}
 			 		 }
@@ -176,6 +174,8 @@ $(window).load(function(){
 	function start_server() {
 		if(can_run === true){
 			can_run = false;
+			$("#restart").removeClass('disabled');
+			$("#restart").html('{{ lang.string_restart }}');
 			$("#on").append(' <i class="fa fa-refresh fa-spin"></i>');
 			$("#on").toggleClass('disabled');
 			$.ajax({
@@ -183,7 +183,7 @@ $(window).load(function(){
 				url: "ajax/console/power.php",
 				timeout: 5000,
 				error: function(jqXHR, textStatus, errorThrown) {
-				   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').slideDown().delay(5000).slideUp();
+				   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
 				   	$("#on").removeClass('disabled');
 				   	$("#on").html('Start');
 				   	can_run = true;
@@ -191,10 +191,10 @@ $(window).load(function(){
 				},
 		  		success: function(data) {
 	    			if(data == "ok"){
-	    				$("#pw_resp").attr('class', 'alert alert-success').html("{{ lang.node_console_ajax_server_started }}").slideDown().delay(5000).slideUp();
+		    			$("#pw_resp").attr('class', 'alert alert-success').html("{{ lang.node_console_ajax_server_started }}").fadeIn().delay(5000).fadeOut();
 	    				can_run = true;
 	    			}else{
-	    				$("#pw_resp").attr('class', 'alert alert-danger').html(data).slideDown().delay(5000).slideUp();
+	    				$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
 	    				can_run = true;
 	    			}
 	    			$("#on").toggleClass('disabled');
