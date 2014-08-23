@@ -178,7 +178,7 @@ class auth {
 	
 							$this->updateUsers = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
 							$this->updateUsers->execute(array(
-								':sesexp' => time() + 1800,
+								':sesexp' => (time() + 1800),
 								':sesip' => $ip,
 								':sesid' => $session
 	
