@@ -125,7 +125,7 @@ foreach($content as $value) {
     	$displayFolders = array_merge($displayFolders, array(array(
     		"entry" => $value['name'],
     		"directory" => $_POST['dir'],
-    		"size" => $core->files->formatSize($value['size']),
+    		"size" => null,
     		"date" => strtotime($value['mtime'])
     	)));
 
