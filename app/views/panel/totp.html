@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Your Servers{% endblock %}
+
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+	<a href="account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
+	<a href="totp.php" class="list-group-item active">TOTP {{ lang.sidebar_settings }}</a>
+	<a href="servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<h3 style="margin-top:0;">Two-Factor Authentication</h3><hr />
+	{% if totp.enabled == 1 %}
+		<div class="alert alert-success"><strong>Congratulations, you have enabled Two-Factor authentication (2FA)! You will need to use this every time you login, if you loose your application, you want it disabled, or something stops working you will need to contact support to have 2FA disabled on your account.</strong></div>
+	{% else %}
+		<p>It appears that you do not have Two-Factor authentication enabled. This method of authentication adds an additional barrier preventing unauthorized entry to your account. If you enable it you will be required to input a code generated on your phone or other TOTP supporting device before finishing your login. <strong>You must have a TOTP supporting application (e.g Google Authenticator, Authy, or DUO Mobile) to use this option.</strong></p>
+		<form action="#" id="do_totp" method="post">
+			<div class="form-group">
+				<div>
+					<input type="submit" id="enable_totp" class="btn btn-success" name="enable_totp" value="Enable Two-Factor Authentication" />
+				</div>
+			</div>
+		</form>
+	{% endif %}
+</div>
+<div class="modal fade" id="openTOTP" tabindex="-1" role="dialog" aria-labelledby="openTOTP" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">TOTP QR Code</h4>
+			</div>
+			<div class="modal-body" id="modal_insert_content">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="close_reload">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#close_reload").click(function(){
+		location.reload();
+	});
+	$("#do_totp").submit(function(event){
+		$.ajax({
+			type: "POST",
+			url: "ajax/account/totp.php",
+			data: { action : "generate" },
+			timeout: 5000,
+			success: function(data){
+				$("#modal_insert_content").html(data);
+				$('#openTOTP').modal('show');
+				run_totp_popup();
+			}
+		});
+		event.preventDefault();
+	});
+	function run_totp_popup(){
+		$("#totp_token_verify").submit(function(event){
+			$.ajax({
+				type: "POST",
+				url: "ajax/account/totp.php?action=verify",
+				data: { token: $("#totp_token").val() },
+				timeout: 5000,
+				success: function(data){
+					$("#notice_box_totp").html(data);
+					$('#notice_box_totp').fadeIn();
+				}
+			});
+			event.preventDefault();
+		});
+	}
+});
+</script>
+{% endblock %}

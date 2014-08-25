@@ -225,6 +225,8 @@ if(file_exists('../install.lock'))
 	                           `root_admin` int(1) NOT NULL DEFAULT '0',
 	                           `notify_login_s` int(1) DEFAULT '1',
 	                           `notify_login_f` int(1) DEFAULT '1',
+	                           `use_totp` int(1) NOT NULL DEFAULT '0',
+	                           `totp_secret` tinytext,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `users` created.\n";

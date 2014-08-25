@@ -18,6 +18,13 @@
  */
 namespace Auth;
 
+/*
+ * TOTP Class
+ */
+use Otp\Otp;
+use Otp\GoogleAuthenticator;
+use Base32\Base32;
+
 trait components {
 
 	public function hash($raw){
@@ -93,6 +100,30 @@ class auth {
 			$this->settings = $settings;
 		
 		}
+		
+	public function validateTOTP($key, $secret){
+			
+		/*
+		 * Check Key
+		 */
+		$otp = new Otp();
+		
+			if($otp->checkTotp(Base32::decode($secret), $key)){
+				
+				/*
+				 * Prevent TOTP-replay attack
+				 */
+				//@TODO
+				
+				/*
+				 * Return Success
+				 */
+				return true;
+				
+			}else
+				return false;
+	
+	}
 	
 	public function verifyPassword($email, $raw){
 	
