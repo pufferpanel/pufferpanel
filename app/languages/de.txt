@@ -36,7 +36,7 @@ string.published, Veröffentlicht
 string.versions, Versionen
 string.save, Speichern
 footer.license, PufferPanel ist unter der <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 Lizenz</a> lizensiert.
-footer.version, Die momentane Version %s wurde bereitgestellt von <a href="http://kelp.in/">Kelpin' Systems</a>.
+footer.version, Die momentane Version %s wurde bereitgestellt von <a href="http://pufferpanel.com/">PufferPanel Development</a>.
 footer.generated, Seite in %s Sekunden erstellt.
 footer.queries, %s ausgeführte Datenbank-Anfragen.
 Sidebar.acc_actions, Konto-Aktionen

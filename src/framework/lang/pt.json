@@ -29,7 +29,7 @@
     "string_username": "Usu\u00e1rio",
     "string_generate": "Gerar",
     "footer_license": "PufferPanel est\u00e1 licenciado por <a href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\">GPL-v3 License</a>.",
-    "footer_version": "Vers\u00e3o atual %s distribu\u00edda por <a href=\"http://kelp.in/\">Kelpin' Systems</a>.",
+    "footer_version": "Vers\u00e3o atual %s distribu\u00edda por <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
     "footer_generated": "P\u00e1gina gerada em %s segundos.",
     "footer_queries": "Executado %s consultas no banco de dados.",
     "sidebar_acc_actions": "A\u00e7\u00f5es da Conta",

@@ -36,7 +36,7 @@ string.published, Publiserad
 string.versions, Versioner
 string.save, Spara
 footer.license, PufferPanel är licensierat under en <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 Licens</a>.
-footer.version, Kör version %s distribuerat utav <a href="http://kelp.in/">Kelpin' Systems</a>.
+footer.version, Kör version %s distribuerat utav <a href="http://pufferpanel.com/">PufferPanel Development</a>.
 footer.generated, Sida genererad på %s sekunder.
 footer.queries, Genomförde %s databasförfrågningar.
 sidebar.acc_actions, Konto åtgärder
