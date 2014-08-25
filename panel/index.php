@@ -39,7 +39,30 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
             $postLoginURL = 'servers.php';
     
 			if($core->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
-			
+				
+				/*
+				 * Get the Account Details
+				 */
+				$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
+				$selectAccount->execute(array($_POST['email']));
+				
+				$row = $selectAccount->fetch();
+				
+				/*
+				 * Validate TOTP Key
+				 */
+				if($row['use_totp'] == 1){
+				
+					if($core->auth->validateTOTP($_POST['totp_token'], $row['totp_secret']) !== true){
+					
+						$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail_totp', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'. The login failed due to TOTP 2FA mis-match.'));
+						
+						Page\components::redirect('index.php?totp=error');
+					
+					}
+				
+				}
+				
 				/*
 				 * Account Exists
 				 * Set Cookies and List Servers
@@ -61,10 +84,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 					/*
 					 * Send Email if Set
 					 */
-					$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
-					$selectAccount->execute(array($_POST['email']));
-					
-					$row = $selectAccount->fetch();
 					if($row['notify_login_s'] == 1){
 						
 						/*

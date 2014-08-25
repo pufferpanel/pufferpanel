@@ -9,6 +9,9 @@
     		{% if get.error is defined %}
     			<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>
     		{% endif %}
+    		{% if get.totp is defined %}
+    			<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>
+    		{% endif %}
     		{% if get.login is defined %}
     			<div class="alert alert-danger">You are not authorized to access that page. Please log in.</div>
     		{% endif %}
@@ -22,6 +25,13 @@
     			<label for="login-password" class="control-label">{{ lang.string_password }}</label>
     			<div>
     				<input type="password" class="form-control" name="password" placeholder="{{ lang.string_password }}" />
+    			</div>
+    		</div>
+    		<div class="form-group">
+    			<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
+    			<div>
+    				<input type="text" class="form-control" name="totp_token" placeholder="000111" />
+    				<p><small class="text-muted"><em>If you have not enabled 2FA please leave this blank.</em></small></p>
     			</div>
     		</div>
     		<div class="form-group">
