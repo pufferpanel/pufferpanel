@@ -4,11 +4,12 @@
     	"ext-ssh2": "*",
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
+    	"bugsnag/bugsnag": "2.*",
+    	"christian-riesen/otp": "1.*",
+    	"mandrill/mandrill": "1.0.52",
+    	"sendgrid/sendgrid": "2.0.6",
+    	"tracy/tracy": "2.2.2",
         "twig/twig": "1.*",
-        "tracy/tracy": "2.2.2",
-        "znarkus/postmark": "dev-master",
-        "sendgrid/sendgrid": "2.0.6",
-        "mandrill/mandrill": "1.0.52",
-        "bugsnag/bugsnag": "2.*"
+        "znarkus/postmark": "dev-master"
     }
 }
