@@ -138,13 +138,13 @@ if($_POST['modpack'] != "none"){
 $ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->auth->keygen(5) : $_POST['server_name'].'_'.$core->auth->keygen((11 - strlen($_POST['server_name'])));
 $ftpUser = "mc-".$ftpUser;
 
-$serverHash = $core->auth->keygen(42);
+$serverHash = $core->auth->gen_UUID();
 $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar';
 
 $add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
 	':hash' => $serverHash,
-	':gsd_secret' => $core->auth->keygen(16).$core->auth->keygen(16),
+	':gsd_secret' => $core->auth->gen_UUID(),
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
