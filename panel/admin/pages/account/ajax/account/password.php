@@ -49,7 +49,7 @@ $update->execute(array(
 	
 	if(isset($_POST['clear_session'])){
 	
-		$update = $mysql->prepare("UPDATE `users` SET `session_id` = '', `session_ip` = '', `session_expires` = '0' WHERE `id` = :uid");
+		$update = $mysql->prepare("UPDATE `users` SET `session_id` = '', `session_ip` = '' WHERE `id` = :uid");
 		$update->execute(array(
 			':uid' => $_POST['uid']
 		));

@@ -32,8 +32,8 @@ class user extends Auth\auth {
 		
 			$this->_l = true;
 			
-				$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid AND `session_expires` >  :time");
-				$this->query->execute(array(':sesip' => $ip, ':sesid' => $session, ':time' => time()));
+				$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid");
+				$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
 			
 					$this->row = $this->query->fetch();
 					foreach($this->row as $this->id => $this->val){

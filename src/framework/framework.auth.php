@@ -60,16 +60,31 @@ trait components {
 	
 	}
 	
+	/*
+	 * Generate RFC 4122 Compliant v4 UUIDs
+	 */
+	public function gen_UUID(){
+	
+		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+						mt_rand(0, 0xffff),
+						mt_rand(0, 0x0fff) | 0x4000,
+						mt_rand(0, 0x3fff) | 0x8000,
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+	
+	}
+	
 	public function keygen($amount){
+		
 		
 		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
 		
 		$randkey = null;
+		$maxLength = (strlen($keyset) - 1);
 		
-		for ($i=0; $i<$amount; $i++)
-			$randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
+		for ($i=0; $i < $amount; $i++)
+			$randkey .= $keyset[mt_rand(0, $maxLength)];
 		
-		return $randkey;
+		return str_shuffle($randkey);
 					
 	}
 	
@@ -144,11 +159,10 @@ class auth {
 	
 	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
 
-		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session AND `session_expires` > :sesexp");
+		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session");
 		$this->query->execute(array(
 			':sessip' => $ip,
-			':session' => $session,
-			':sesexp' => time()
+			':session' => $session
 		));
 
 			if($this->query->rowCount() == 1){
@@ -178,23 +192,10 @@ class auth {
 									':ownerid' => $this->row['id']
 								));
 		
-									if($this->_validateServer->rowCount() == 1){
-		
-										$this->updateUsers = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-										$this->updateUsers->execute(array(
-											':sesexp' => time() + 1800,
-											':sesip' => $ip,
-											':sesid' => $session
-		
-										));
-		
-											return true;
-		
-									}else{
-		
+									if($this->_validateServer->rowCount() == 1)
+										return true;
+									else
 										return false;
-		
-									}
 							
 							/*
 							 * Just Check if they are Logged In
@@ -207,15 +208,7 @@ class auth {
 	
 						}else{
 	
-							$this->updateUsers = $this->mysql->prepare("UPDATE `users` SET `session_expires` = :sesexp WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-							$this->updateUsers->execute(array(
-								':sesexp' => (time() + 1800),
-								':sesip' => $ip,
-								':sesid' => $session
-	
-							));
-	
-								return true;
+							return true;
 	
 						}
 						

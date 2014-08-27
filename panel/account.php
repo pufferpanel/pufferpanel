@@ -115,7 +115,7 @@ if(isset($_GET['action'])){
 						/*
 						 * Change Password
 						 */
-						$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL, `session_expires` = NULL WHERE `id` = :uid");
+						$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL WHERE `id` = :uid");
 						$updatePassword->execute(array(
 							':password' => $core->auth->hash($_POST['p_password_new']),
 							':uid' => $core->user->getData('id')
