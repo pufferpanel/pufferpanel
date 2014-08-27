@@ -18,20 +18,13 @@
     		<div class="form-group">
     			<label for="email" class="control-label">{{ lang.string_email }}</label>
     			<div>
-    				<input type="text" class="form-control" name="email" placeholder="{{ lang.string_email }}" />
+    				<input type="text" class="form-control" name="email" id="email" placeholder="{{ lang.string_email }}" />
     			</div>
     		</div>
     		<div class="form-group">
     			<label for="login-password" class="control-label">{{ lang.string_password }}</label>
     			<div>
-    				<input type="password" class="form-control" name="password" placeholder="{{ lang.string_password }}" />
-    			</div>
-    		</div>
-    		<div class="form-group">
-    			<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
-    			<div>
-    				<input type="text" class="form-control" name="totp_token" placeholder="000111" />
-    				<p><small class="text-muted"><em>If you have not enabled 2FA please leave this blank.</em></small></p>
+    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ lang.string_password }}" />
     			</div>
     		</div>
     		<div class="form-group">
@@ -48,5 +41,55 @@
     	</fieldset>
     </form>
 </div>
+<div class="modal fade" id="openTOTP" tabindex="-1" role="dialog">
+	<div class="modal-dialog" style="width:400px;">
+		<form action="index.php?do=login" method="POST" id="totp-form">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Two-Factor Authentication Checkpoint</h4>
+				</div>
+				<div class="modal-body" id="modal_insert_content">
+					<div class="form-group">
+						<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
+						<div>
+							<input class="form-control input-lg" type="text" placeholder="000111" name="totp_token" id="totp_token" style="font-size:30px;" />
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="submit" class="btn btn-default" value="Continue" />
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
 <div class="col-3"></div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#login-form").submit(function(event){
+		var check_email = $("#email").val();
+		$.ajax({
+			type: "POST",
+			url: "index.php",
+			async:false,
+			data: { totp: true, check: check_email },
+			success: function(data){
+				if(data == 1){
+					event.preventDefault();
+					$("#openTOTP").modal('show');
+					$('#openTOTP').on('shown.bs.modal', function(){
+						$("#totp_token").focus();
+					})
+				}else{
+					$(this).submit();
+				}
+			}
+		});
+	});
+	$("#totp-form").submit(function(){
+		$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
+		return true;
+	});
+});
+</script>
 {% endblock %}

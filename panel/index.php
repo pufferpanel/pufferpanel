@@ -22,16 +22,33 @@ require_once('../src/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
 	Page\components::redirect('servers.php');
 
-if(!isset($_GET['do']) || $_GET['do'] != 'login')
-	echo $twig->render(
-			'panel/index.html', array(
-				'footer' => array(
-					'queries' => Database\databaseInit::getCount(),
-					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-				)
-		));
+/*
+ * jQuery Call for TOTP
+ */
+if(isset($_POST['totp']) && isset($_POST['check'])){
 
-if(isset($_GET['do']) && $_GET['do'] == 'login'){
+	if(empty($_POST['totp']) || empty($_POST['check']))
+		echo false;
+	else{
+	
+		$checkTOTP = $mysql->prepare("SELECT `use_totp` FROM `users` WHERE `email` = :email");
+		$checkTOTP->execute(array(
+			'email' => $_POST['check']
+		));
+		
+			if($checkTOTP->rowCount() != 1)
+				echo false;
+			else{
+			
+				$row = $checkTOTP->fetch();
+				
+				echo ($row['use_totp'] == 1) ? true : false;
+			
+			}
+			
+	}
+
+}else if(isset($_GET['do']) && $_GET['do'] == 'login'){
 	
         if(isset($_POST['redirect']) && !empty($_POST['redirect']))
             $postLoginURL = $_GET['redirect'];
@@ -68,16 +85,14 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 				 * Set Cookies and List Servers
 				 */
 				$token = $core->auth->keygen('12');
-				$expires = (isset($_POST['remember_me'])) ? time() + 604800 : time() + 1800;
-				$cookieExpire = (isset($_POST['remember_me'])) ? time() + 604800 : 0;
+				$expires = (isset($_POST['remember_me'])) ? (time() + 604800) : 0;
 				
-					setcookie("pp_auth_token", $token, $cookieExpire, '/', $core->settings->get('cookie_website'));
+					setcookie("pp_auth_token", $token, $expires, '/', $core->settings->get('cookie_website'));
 				
-					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr, `session_expires` = :expires WHERE `email` = :email");
+					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr WHERE `email` = :email");
 					$updateUsers->execute(array(
 						':token' => $token,
 						':ipaddr' => $_SERVER['REMOTE_ADDR'],
-						':expires' => $expires,
 						':email' => $_POST['email']
 					));
 				
@@ -134,6 +149,16 @@ if(isset($_GET['do']) && $_GET['do'] == 'login'){
 				Page\components::redirect('index.php?error=true');
 			
 			}
+	
+}else{
+
+	echo $twig->render(
+			'panel/index.html', array(
+				'footer' => array(
+					'queries' => Database\databaseInit::getCount(),
+					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+				)
+		));
 	
 }
 ?>
