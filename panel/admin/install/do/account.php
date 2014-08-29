@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -41,17 +41,17 @@ if(file_exists('../install.lock'))
 				<div class="col-8">
 					<p>You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC <code>(irc.esper.net/#pufferpanel)</code> if you encounter any problems or have questions, comments, or concerns.</p>
 					<?php
-					
+
 					    if(isset($_POST['do_account'])){
-					    
+
 					        include('../../../../src/framework/framework.database.connect.php');
 					        $mysql = Database\database::connect();
-					        
-					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, NULL, 1, 0, 1)");
-					        
+
+					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, NULL, 1, 0, 1, 0, NULL)");
+
 					        include('../../../../src/framework/configuration.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-					        
+
 					        $prepare->execute(array(
 					            ':username' => $_POST['username'],
 					            ':email' => $_POST['email'],
@@ -59,13 +59,13 @@ if(file_exists('../install.lock'))
 					            ':language' => 'en',
 					            ':time' => time()
 					        ));
-					        
+
 					        rename('../install.lock.dist', '../install.lock');
-					        
+
 					        exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
-					        
+
 					    }
-					
+
 					?>
 					<form action="account.php" method="post">
 					    <div class="form-group">
