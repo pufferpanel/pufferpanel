@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -27,7 +27,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
 
 	$select = $mysql->prepare("SELECT `id` FROM `nodes` WHERE `node` = :name");
 	$select->execute(array(':name' => $_GET['node']));
-	
+
 	if($select->rowCount() == 1) {
 		$n = $select->fetch();
 		Page\components::redirect('view.php?id='.$n['id']);
@@ -86,13 +86,13 @@ $selectNode->execute(array(
 					<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
 					<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
 				</ul>
-				<?php 
-					
+				<?php
+
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){
-					
+
 						echo '<div class="alert alert-danger" style="margin-top:15px;">';
 						switch($_GET['disp']){
-							
+
 							case 'missing_warn':
 								echo 'You must agree to the warning before updating the information.';
 								break;
@@ -114,12 +114,12 @@ $selectNode->execute(array(
 							case 'add_port_fail':
 								echo 'The port list entered was invalid.';
 								break;
-						
+
 						}
 						echo '</div>';
-					
+
 					}
-				
+
 				?>
 				<div class="tab-content">
 					<div class="tab-pane active" id="info">
@@ -179,36 +179,36 @@ $selectNode->execute(array(
 							</thead>
 							<tbody>
 								<?php
-								
+
 									foreach(json_decode($node['ports'], true) as $ip => $ports)
 										{
-								
+
 											echo "<tr><td style=\"vertical-align:top;\">{$ip}<br /><a href=\"#/add/{$ip}/{$node['id']}\" class=\"clickToAdd\" onclick=\"return false;\">Add Port(s)</a></td>";
 											$counter = 1;
 											$row1 = null; $row2 = null;
 											foreach($ports as $port => $avaliable)
 												{
-										
+
 													if($counter & 1)
 														{
-														
-															$row1 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+
+															$row1 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-toggle-off\"></i></a>" : "<i class=\"fa fa-toggle-on\"></i>";
 															$row1 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
-															
+
 														}else{
-														
-															$row2 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-circle-o\"></i></a>" : "<i class=\"fa fa-dot-circle-o\"></i>";
+
+															$row2 .= ($avaliable == 1) ? "<span><a href=\"#/delete/{$ip}/{$port}/{$node['id']}\" class=\"deletePort\" onclick=\"return false;\"><i class=\"fa fa-toggle-off\"></i></a>" : "<i class=\"fa fa-toggle-on\"></i>";
 															$row2 .= "&nbsp;&nbsp;&nbsp; {$port}<br /></span>";
-														
+
 														}
-													
+
 													$counter++;
-									
+
 												}
 											echo "<td style=\"vertical-align:top;\">{$row1}</td><td style=\"vertical-align:top;\">{$row2}</td></tr>";
-								
+
 										}
-								
+
 								?>
 								<tr>
 									<td><a href="#" data-toggle="modal" data-target="#toggle_popup" id="t_popup">Add New IP Address</a></td>
@@ -220,7 +220,7 @@ $selectNode->execute(array(
 						<div class="panel panel-default">
 							<div class="panel-heading">Key</div>
 							<div class="panel-body">
-								<p><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-dot-circle-o"></i> (Port Used; Cannot Delete)</p>
+								<p><i class="fa fa-toggle-off"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-toggle-on"></i> (Port Used; Cannot Delete)</p>
 							</div>
 						</div>
 					</div>
@@ -365,14 +365,14 @@ $selectNode->execute(array(
 				});
 			});
 			$(".deletePort").click(function(){
-				
+
 				var rawUrl = $(this).attr("href");
 				var exploded = rawUrl.split('/');
 				var ip = exploded[2];
 				var port = exploded[3];
 				var node_id = exploded[4];
 				var conf = confirm("Are you sure you want to delete "+ip+":"+port);
-				
+
 					if(conf == true)
 						{
 							$.ajax({
@@ -386,7 +386,7 @@ $selectNode->execute(array(
 						}else{
 							return false;
 						}
-				
+
 			});
 			if($.urlParam('error') != null){
 				var field = $.urlParam('error');
@@ -407,7 +407,7 @@ $selectNode->execute(array(
 				else
 					$("#disable_complete_pass").addClass("disabled");
 			});
-			
+
 		});
 	</script>
 </body>
