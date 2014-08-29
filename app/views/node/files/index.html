@@ -36,7 +36,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-	
+
 	<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="../plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -66,7 +66,7 @@ $(window).load(function(){
     }
     var doneLoad = false;
     function handleLoader(show){
-    
+
     	if(show === true){
     		var height = $("#get_height").height();
     		var width = $(".files_loading_box").width();
@@ -77,7 +77,7 @@ $(window).load(function(){
     	}else{
     		$(".files_loading_box").fadeOut();
     	}
-    	
+
     }
     function newLoad(){
         $("a.load_new").click(function(event){
