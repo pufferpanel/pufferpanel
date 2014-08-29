@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -39,25 +39,90 @@ if(file_exists('install.lock'))
 			<div class="row">
 				<div class="col-2"></div>
 				<div class="col-8">
-					<div class="alert alert-danger">When this installer finishes please manually change the permissions back to 0755 for the /src/framework folder, and delete this installer. Please set the permissions on the global_configuration.php file to 0444.</div>
-					<p>This script will guide you through the process for setting up PufferPanel on your server. Please ensure that you have installed all of the dependencies required or this install will fail.</p>
-					<p><?php
-					
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Installer Information</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/framework</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
+                        </div>
+                    </div>
+					<?php
+
 						/* Permissions Checking */
-						echo (substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4) == "0666") ? '<small class="text-success">/src/framework/configuration.php.dist is correctly CHMOD\'d 0666</small><br />' : '<small class="text-danger">/src/framework/configuration.php.dist is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4).' and should be 0666.</small><br />';
-						
-						echo (substr(sprintf('%o', fileperms('../../../src/framework')), -4) == "0777") ? '<small class="text-success">/src/framework is correctly CHMOD\'d 0777</small><br />' : '<small class="text-danger">/src/framework is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../../../src/framework')), -4).' and should be 0777.</small><br />';
-						
-						echo (substr(sprintf('%o', fileperms('../install')), -4) == "0777") ? '<small class="text-success">/panel/admin/install is correctly CHMOD\'d 0777</small><br />' : '<small class="text-danger">/panel/admin/install is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('../install')), -4).' and should be 0777.</small><br />';
-						
-						echo (substr(sprintf('%o', fileperms('do')), -4) == "0777") ? '<small class="text-success">/panel/admin/install/do is correctly CHMOD\'d 0777</small>' : '<small class="text-danger">/panel/admin/install/do is improperly CHMOD\'d. It is '.substr(sprintf('%o', fileperms('do')), -4).' and should be 0777.</small>';
-						
-					?></p>
+                        $successList = null; $failedList = null;
+
+                        /*
+                         * Check Configuration File
+                         */
+						if(substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4) == "0666")
+                            $successList .= '<p class="text-success"><code>/src/framework/configuration.php.dist</code> is correctly CHMOD\'d.</p>';
+                        else
+                            $failedList .= '<p class="text-danger"><code>/src/framework/configuration.php.dist</code> is improperly CHMOD\'d. It should be 0666.</p>';
+
+
+                        /*
+                         * Check Framework Folder
+                         */
+                        if(substr(sprintf('%o', fileperms('../../../src/framework')), -4) == "0777")
+                            $successList .= '<p class="text-success"><code>/src/framework</code> is correctly CHMOD\'d.</p>';
+                        else
+                            $failedList .= '<p class="text-danger"><code>/src/framework</code> is improperly CHMOD\'d. It should be 0777.</p>';
+
+                        /*
+                         * Check Installer Folder
+                         */
+                        if(substr(sprintf('%o', fileperms('../install')), -4) == "0777")
+                            $successList .= '<p class="text-success"><code>/panel/admin/install</code> is correctly CHMOD\'d.</p>';
+                        else
+                            $failedList .= '<p class="text-danger"><code>/panel/admin/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
+
+                        /*
+                         * Check Installer Process Folder
+                         */
+                        if(substr(sprintf('%o', fileperms('do')), -4) == "0777")
+                            $successList .= '<p class="text-success"><code>/panel/admin/install/do</code> is correctly CHMOD\'d.</p><br />';
+                        else
+                            $failedList .= '<p class="text-danger"><code>/panel/admin/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
+
+                        /*
+                         * Output
+                         */
+                        if(!is_null($failedList)){
+
+                            echo '<div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Failed CHMOD Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$failedList.'
+                                </div>
+                            </div>';
+
+                        }
+
+                        if(!is_null($successList)){
+
+                            echo '<div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Passed CHMOD Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$successList.'
+                                </div>
+                            </div>';
+
+                        }
+
+					?>
+
 					<hr />
 					<p><?php
 
 						$continue = true;
-                        /* Check for Required Dependencies */
+                        $successList = null; $failedList = null;
+
+                        /* List of Required Dependencies */
                         $list = array(
                             'curl',
                             'hash',
@@ -67,19 +132,57 @@ if(file_exists('install.lock'))
                             'pdo_mysql',
                             'ssh2'
                         );
-                        echo "\n";
+
+                        /*
+                         * Check for the Dependencies
+                         */
                         foreach($list as $ext) {
-                            
-                            echo (extension_loaded($ext)) ? '<small class="text-success">The php-'.$ext.' extension was loaded.</small><br />' : '<small class="text-danger"><strong>The php-'.$ext.' extension was not loaded.</strong></small><br />';
-                            
-                            if(!extension_loaded($ext))
-                            	$continue = false;
-                            
+
+                            if(extension_loaded($ext))
+                                $successList .= '<p class="text-success">The php-'.$ext.' extension was loaded.</p>';
+                            else {
+                                $failedList .= '<p class="text-danger"><strong>The php-'.$ext.' extension was not loaded.</strong></p>';
+                                $continue = false;
+                            }
+
                         }
+
+                        /*
+                         * Output
+                         */
+                        if(!is_null($failedList)){
+
+                            echo '<div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Failed Dependencies Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$failedList.'
+                                </div>
+                            </div>';
+
+                        }
+
+                        if(!is_null($successList)){
+
+                            echo '<div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Passed Dependencies Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$successList.'
+                                </div>
+                            </div>';
+
+                        }
+
 					?></p>
 					<hr />
 					<p><?php
-					
+
+                        $successList = null; $failedList = null;
+
+                        /* List of Required Functions */
                         $functions = array(
                         	'fopen',
                         	'fclose',
@@ -94,19 +197,53 @@ if(file_exists('install.lock'))
                         	'crypt',
                         	'hash'
                         );
-                        
+
+                        /*
+                         * Check for the Functions
+                         */
                         foreach($functions as $fct) {
-                            
-                            echo (function_exists($fct)) ? '<small class="text-success">'.$fct.'() is enabled.</small><br />' : '<small class="text-danger"><strong>'.$fct.'() is not enabled.</strong></small><br />';
-                            
-                            if(!function_exists($fct))
-                            	$continue = false;
-                            
+
+                            if(function_exists($fct))
+                                $successList .= '<p class="text-success">'.$fct.'() is enabled.</p>';
+                            else {
+                                $failedList .= '<p class="text-danger"><strong>'.$fct.'() is not enabled.</strong></p>';
+                                $continue = false;
+                            }
+
+                        }
+
+                        /*
+                         * Output
+                         */
+                        if(!is_null($failedList)){
+
+                            echo '<div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Failed Function Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$failedList.'
+                                </div>
+                            </div>';
+
+                        }
+
+                        if(!is_null($successList)){
+
+                            echo '<div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Passed Function Checks</h3>
+                                </div>
+                                <div class="panel-body">
+                                    '.$successList.'
+                                </div>
+                            </div>';
+
                         }
 
                     ?></p>
                     <hr />
-                    <?php echo ($continue === true) ? '<a href="do/start.php">Continue &rarr;</a>' : '<p>Please fix missing extensions and functions before continuing.</p>'; ?>
+                    <?php echo ($continue === true) ? '<a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix missing extensions and functions before continuing.</div>'; ?>
 				</div>
 				<div class="col-2"></div>
 			</div>
