@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -41,12 +41,12 @@ if(file_exists('../install.lock'))
 				<div class="col-8">
 					<p>This information can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.</p>
 					<?php
-					
+
 					    if(isset($_POST['do_settings'])){
-					    
+
 					        include('../../../../src/framework/framework.database.connect.php');
 					        $mysql = Database\database::connect();
-					        
+
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),
 					            ('master_url', :murl),
@@ -65,7 +65,7 @@ if(file_exists('../install.lock'))
 					            ('use_ssh_keys', 1),
 					            ('default_language', 'en'),
 					            ('force_online', 1)");
-					        
+
 					        $prepare->execute(array(
 					            ':cname' => $_POST['company_name'],
 					            ':murl' => $_POST['master_url'],
@@ -74,11 +74,11 @@ if(file_exists('../install.lock'))
 					            ':aurl' => $_POST['assets_url'],
 					            ':mpackdir' => $_POST['modpack_dir']
 					        ));
-					        
+
 					        exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
-					        
+
 					    }
-					
+
 					?>
 					<form action="settings.php" method="post">
 						<fieldset>
@@ -130,7 +130,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.1 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.2 Beta distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>

@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -44,24 +44,24 @@ if(file_exists('../install.lock'))
 					<?php
 
                         if(isset($_POST['hash_do'])){
-                            
+
                             if(fopen($_POST['hash'], 'r')){
-                                
+
                                 $fp = fopen('../../../../src/framework/configuration.php', 'a+');
                                 fwrite($fp, "
-                                
+
 if(!defined('HASH'))
 	define('HASH', '".$_POST['hash']."');");
                                 fclose($fp);
-                                
+
                                 exit('<meta http-equiv="refresh" content="0;url=account.php"/>');
-                                
+
                             }else{
-                             
+
                                 echo '<div class="alert alert-danger">We were unable to access that file location.</div>';
-                                
+
                             }
-                            
+
                         }
 
                     ?>
@@ -71,11 +71,11 @@ if(!defined('HASH'))
 						/* Make File */
 						$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*-=+";
 						$randkey = "";
-						
+
 						for ($i=0; $i<64; $i++){
 						    $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
 						}
-						
+
 						echo $randkey;
 					?>
 					</code>
@@ -98,7 +98,7 @@ if(!defined('HASH'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.1 Beta distributed by <a href="http://kelp.in">Kelpin' Systems</a>.</p></div>
+            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.2 Beta distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>
