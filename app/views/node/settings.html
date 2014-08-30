@@ -31,7 +31,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-	
+
 	<a href="settings.php" class="list-group-item active">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -49,34 +49,9 @@
 		<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
 			<div class="row">
 				<div class="alert alert-danger">
-					<i class="fa fa-warning"></i> Changing modpacks has been temporarily disabled.
+					<i class="fa fa-warning"></i> Online modpack management has been disabled in this version of PufferPanel.
 				</div>
 			</div>
-			<!--<form action="#" method="post" id="updateModpack">
-				<fieldset>
-					<div class="row" id="installingModpack" style="display:none;"></div>
-					<div class="row">
-						<div class="well well-sm">
-							<small>{{ lang.node_settings_modpack_current }}: <strong>{{ modpack.current }}</strong></small>
-						</div>
-					</div>
-					<div class="form-group col-8 nopad">
-						<div>
-							<select class="form-control" name="new_pack">
-								<option disabled="disabled">{{ lang.node_settings_modpack_select }}</option>
-								{% for pack in modpack.packs %}
-									<option value="{{ pack.hash }}" {% if pack.hash == server.modpack %}disabled="disabled"{% endif %}>{{ pack.name }} ({{ pack.version }})</option>
-								{% endfor %}
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-4 nopad-right">
-						<div>
-							<input type="submit" id="install_modpack_submit" value="{{ lang.node_settings_modpack_install }}" class="btn btn-primary" />
-						</div>
-					</div>
-				</fieldset>
-			</form>-->
 			<div class="row">
 				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
 				<div class="well">
@@ -143,7 +118,7 @@
 	$("#updateModpack").submit(function(e){
 		e.preventDefault();
 		var pack = $('select[name="new_pack"]').val();
-		
+
 		if(pack != null){
 			$('#install_modpack_submit').addClass('disabled');
 			$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_settings_ajax_installing_modpack }}</div>').show();
