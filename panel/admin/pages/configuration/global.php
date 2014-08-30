@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -109,19 +109,13 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 								<div class="row">
 									<div class="form-group col-6 nopad">
 										<div>
-											<label><input type="checkbox" name="permissions[]" value="list_nodes" /> Force Online Mode</label><br />
+											<label><input type="checkbox" name="permissions[]" value="force_online" <?php echo ($core->settings->get('force_online') == 1) ? 'checked="checked"' : null; ?>/> Force Online Mode</label><br />
 											<p><small class="text-muted"><em>Checking this box will force servers to be run in <code>online-mode=true</code>. Checking this box will prevent Bungeecord servers from being able to run on the panel.</em></small></p>
 										</div>
 									</div>
 									<div class="form-group col-6 nopad">
 										<div>
-											<label><input type="checkbox" name="permissions[]" value="list_nodes" /> Use SSH Keys for Authentication</label><br />
-											<p><small class="text-muted"><em>Checking this box will force this panel to only connect to servers using key-based authentication rather than password-based authentication.</em></small></p>
-										</div>
-									</div>
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="list_nodes" disabled="disabled"/> Enable API System</label><br />
+											<label><input type="checkbox" name="permissions[]" value="use_api" <?php echo ($core->settings->get('use_api') == 1) ? 'checked="checked"' : null; ?>/> Enable API System</label><br />
 											<p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p>
 										</div>
 									</div>
@@ -148,15 +142,15 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									 */
 									$method = $core->settings->get('sendmail_method');
 									$marray = array('php' => '', 'postmark' => '', 'mandrill' => '', 'mailgun' => '', 'sendgrid' => '');
-									
+
 										foreach($marray as $id => $value){
-										
+
 											if($method == $id){
 												$marray[$id] = 'selected="selected"';
 											}
-										
+
 										}
-									
+
 								?>
 								<div class="form-group col-6 nopad">
 									<label for="smail_method" class="control-label">Sendmail Method</label>
@@ -307,7 +301,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						$("#sendgrid").hide();
 					}
 			});
-			
+
 			if($.urlParam('error') != null){
 				var field = $.urlParam('error');
 				var exploded = field.split('|');
@@ -317,7 +311,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 				var obj = $.parseJSON($.cookie('__TMP_pp_admin_updateglobal'));
 					$.each(obj, function(key, value) {
 						$('[name="' + key + '"]').val(value);
-					});			
+					});
 			}
 		});
 	</script>
