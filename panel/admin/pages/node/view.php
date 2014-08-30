@@ -102,9 +102,6 @@ $selectNode->execute(array(
 							case 'ip_fail':
 								echo 'The IP address provided for SFTP was invalid.';
 								break;
-							case 'user_fail':
-								echo 'SFTP users must not be blank, and may not be \'root\'.';
-								break;
 							case 'n_fail':
 								echo 'The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).';
 								break;
@@ -236,65 +233,9 @@ $selectNode->execute(array(
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="sftp_user" class="control-label">SSH Username</label>
-										<div>
-											<input type="text" name="sftp_user" value="<?php echo $node['username']; ?>" class="form-control" />
-										</div>
-									</div>
-									<div class="form-group">
-										<div>
-											<div class="alert alert-warning">Editing your username will require that you also update the account SSH keys below.</div>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" id="warning_1" name="warning" /> I have read and understand the above statement.
-											</label>
-										</div>
-									</div>
-									<div class="form-group">
 										<div>
 											<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-											<input type="submit" value="Update SFTP Information" id="disable_complete" class="btn btn-primary disabled" />
-										</div>
-									</div>
-								</fieldset>
-							</form>
-						</div>
-						<div class="well">
-							<form action="ajax/update/sftp.php?do=pass" method="post">
-								<fieldset>
-									<div class="form-group">
-										<label for="ssh_pub_key" class="control-label">SSH Public Key</label>
-										<div>
-											<input type="text" name="ssh_pub_key" value="<?php echo $node['ssh_pub']; ?>" autocomplete="off" class="form-control" />
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
-										<div>
-											<input type="text" name="ssh_priv_key" value="<?php echo $node['ssh_priv']; ?>" class="form-control" autocomplete="off"/>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="ssh_secret" class="control-label">SSH Secret (optional)</label>
-										<div>
-											<input type="password" name="ssh_secret" autocomplete="off" class="form-control" />
-										</div>
-									</div>
-									<div class="form-group">
-										<div>
-											<div class="alert alert-warning">Please ensure that you have entered the above information correctly. Changing this wrongly could result in multiple clients being unable to access their server(s).</div>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" id="warning_2" name="warning" /> I have read and understand the above statement.
-											</label>
-										</div>
-									</div>
-									<div class="form-group">
-										<div>
-											<input type="hidden" name="nid" value="<?php echo $_GET['id']; ?>" />
-											<input type="submit" value="Update SSH Keys" id="disable_complete_pass" class="btn btn-primary disabled" />
+											<input type="submit" value="Update FTP Address" class="btn btn-primary" />
 										</div>
 									</div>
 								</fieldset>

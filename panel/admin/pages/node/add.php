@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -51,12 +51,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<h3 class="nopad">Add New Node</h3><hr />
-				<?php 
-					
+				<?php
+
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){
-					
+
 						switch($_GET['disp']){
-							
+
 							case 'agree_warn':
 								echo '<div class="alert alert-danger">You must agree to the node warning before we can create the node.</div>';
 								break;
@@ -78,17 +78,14 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 							case 'user_fail':
 								echo '<div class="alert alert-danger">SSH users must not be blank, and may not be \'root\'.</div>';
 								break;
-							case 'key_fail':
-								echo '<div class="alert alert-danger">The SSH Keys you entered were not in a valid format.</div>';
-								break;
 							case 'ip_port_space':
-								echo '<div class="alert alert-danger">Unable to allocate the ports you inputted. This is most likely due to a spacing issue.</div>';
+								echo '<div class="alert alert-danger">Unable to allocate the ports you inputted.</div>';
 								break;
-						
+
 						}
-					
+
 					}
-				
+
 				?>
 				<form action="ajax/new/create.php" method="POST">
 					<fieldset>
@@ -102,7 +99,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 									</div>
 								</div>
 								<div class="form-group col-6 nopad-right">
-									
+
 								</div>
 							</div>
 							<div class="row">
@@ -123,47 +120,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						</div>
 						<div class="well">
 							<div class="row">
-								<div class="form-group col-6 nopad">
-									<label for="s_dir" class="control-label">Server Directory</label>
-									<div>
-										<input type="text" name="s_dir" value="/srv/servers/" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="well">
-							<div class="row">
-								<div class="form-group col-6 nopad">
-									<label for="ssh_user" class="control-label">SSH Username</label>
-									<div>
-										<input type="text" autocomplete="off" name="ssh_user" class="form-control" />
-									</div>
-								</div>
-								<div class="form-group col-6 nopad-right">
-									<label for="ssh_secret" class="control-label">SSH Key Secret (optional)</label>
-									<div>
-										<input type="password" autocomplete="off" name="ssh_secret" class="form-control" />
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="form-group col-6 nopad">
-									<label for="ssh_pub_key" class="control-label">SSH Public Key</label>
-									<div>
-										<input type="text" placeholder="~/.ssh/id_rsa.pub" autocomplete="off" name="ssh_pub_key" class="form-control" />
-									</div>
-								</div>
-								<div class="form-group col-6 nopad-right">
-									<label for="ssh_priv_key" class="control-label">SSH Private Key</label>
-									<div>
-										<input type="text" placeholder="~/.ssh/id_rsa" autocomplete="off" name="ssh_priv_key" class="form-control" />
-									</div>
-								</div>
-							</div>
-							<p class="text-muted"><small>If you would prefer to use password based SSH authentication please follow the instructions found <a href="#" data-toggle="modal" data-target="#usePassword">here</a>.</small></p>
-						</div>
-						<div class="well">
-							<div class="row">
 								<div class="form-group">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
 									<div>
@@ -177,26 +133,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
 					</fieldset>
 				</form>
-			</div>
-		</div>
-		<div class="modal fade" id="usePassword" tabindex="-1" role="dialog" aria-labelledby="UsePassword" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="UsePassword">Use Password Based Authentication</h4>
-					</div>
-					<div class="modal-body">
-						<div class="col-12">
-							<p>In order to disable SSH key-based authentication and switch to password authentication you will need to modify the database. Open <code>acp_settings</code> in your database manager, and find the row called <code>use_ssh_keys</code>. Set this value to <code>0</code> to use password based authentication.</p>
-							<p>Once you have done this you will need to modify any nodes that exist already. For all nodes (new or old), you only need to provide a valid path for SSH keys, they do not need to exist. You can use <code>/dev/null/.ssh/public.pub</code> and <code>/dev/null/.ssh/private</code> if you would like. The SSH secret setting should be the password that you have set for the user.</p>
-							<div class="alert alert-warning">Please ensure that you set strong passwords. <strong>SSH key-based authentication should be used on live environments, using password based authentication is not recommended.</strong></div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
 			</div>
 		</div>
 		<div class="footer">
