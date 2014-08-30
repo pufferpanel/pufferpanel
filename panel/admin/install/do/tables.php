@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -44,14 +44,14 @@ if(file_exists('../install.lock'))
 				<div class="col-8">
 					<pre>
                     <?php
-                    
+
                     	if(!file_exists('../../../../src/framework/configuration.php'))
-                    		echo '<div class="alert alert-danger">The configuration file was not found.</div>';	
+                    		echo '<div class="alert alert-danger">The configuration file was not found.</div>';
                     	else {
-                    	
+
 	                        include('../../../../src/framework/framework.database.connect.php');
 	                        $mysql = Database\database::connect();
-							
+
 	                        /*
 	                         * CREATE TABLE `account_change`
 	                         */
@@ -92,8 +92,8 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `acp_email_templates` created.\n";
-	
-	                            /* 
+
+	                            /*
 	                             * Add Email Templates
 	                             */
 	                             $mysql->exec("INSERT INTO `acp_email_templates` (`id`, `tpl_name`, `tpl_content`) VALUES
@@ -107,7 +107,7 @@ if(file_exists('../install.lock'))
 	                                (9,'admin_new_sftppass','<html>\n	<head>\n		<title><%HOST_NAME%> - SFTP Password Changed</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - SFTP Password Changed </h1></center>\n		<p>Hello there! This email is to inform you that the SFTP password for <%SERVER%> has been changed by an administrator.</p>\n		<p><strong>New Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>'),
 	                                (10,'admin_new_server','<html>\n	<head>\n		<title><%HOST_NAME%> - New Server Added</title>\n	</head>\n	<body>\n		<center><h1><%HOST_NAME%> - New Server Added </h1></center>\n		<p>Hello there! This email is to inform you that a new server (<%NAME%>) has been created for you.</p>\n		<p><strong>Connect:</strong> <%CONNECT%><br />\n		<p><strong>SFTP Username:</strong> <%USER%><br />\n		<p><strong>SFTP Password:</strong> <%PASS%><br />\n		<p>Thanks!<br /><%HOST_NAME%></p>\n	</body>\n</html>')");
 	                            echo "Table `acp_email_templates` was populated with template data.\n";
-	
+
 	                        /*
 	                         * CREATE TABLE `acp_settings`
 	                         */
@@ -117,7 +117,7 @@ if(file_exists('../install.lock'))
 	                          `setting_val` tinytext
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `acp_settings` created.\n";
-	
+
 	                        /*
 	                         * CREATE TABLE `actions_log`
 	                         */
@@ -135,27 +135,12 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `actions_log` created.\n";
-		                        
+
 	                        /*
-	                         * CREATE TABLE `modpacks`
+	                         * DROP TABLE `modpacks`
 	                         */
 	                        $mysql->exec("DROP TABLE IF EXISTS `modpacks`");
-	                        $mysql->exec("CREATE TABLE `modpacks` (
-	                          `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
-	                          `hash` char(16) NOT NULL DEFAULT '',
-	                          `download_hash` char(16) DEFAULT NULL,
-	                          `name` char(64) NOT NULL DEFAULT '',
-	                          `server_jar` tinytext,
-	                          `version` char(32) NOT NULL DEFAULT '',
-	                          `min_ram` int(1) NOT NULL,
-	                          `permgen` int(1) NOT NULL,
-	                          `added` int(11) NOT NULL,
-	                          `default` int(1) NOT NULL,
-	                          `deleted` int(1) NOT NULL DEFAULT '0',
-	                          PRIMARY KEY (`id`)
-	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-	                        echo "Table `modpacks` created.\n";
-	
+
 	                        /*
 	                         * CREATE TABLE `nodes`
 	                         */
@@ -165,18 +150,13 @@ if(file_exists('../install.lock'))
 	                          `node` char(15) NOT NULL DEFAULT '',
 	                          `node_ip` tinytext NOT NULL,
 	                          `sftp_ip` tinytext NOT NULL,
-	                          `username` tinytext NOT NULL,
 	                          `gsd_secret` char(32) DEFAULT NULL,
-	                          `ssh_pub` tinytext NOT NULL,
-	                          `ssh_priv` tinytext NOT NULL,
-	                          `ssh_secret` tinytext,
-	                          `ssh_secret_iv` tinytext,
 	                          `ips` text NOT NULL,
 	                          `ports` text NOT NULL,
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `nodes` created.\n";
-	
+
 	                        /*
 	                         * CREATE TABLE `servers`
 	                         */
@@ -205,7 +185,7 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `servers` created.\n";
-	
+
 	                        /*
 	                         * CREATE TABLE `users`
 	                         */
@@ -229,7 +209,7 @@ if(file_exists('../install.lock'))
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `users` created.\n";
-		                        
+
 						}
 
                     ?>
