@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -34,7 +34,7 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
 	Page\components::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
@@ -42,7 +42,7 @@ if(!isset($_POST['server_name'], $_POST['node'], $_POST['modpack'], $_POST['emai
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 	Page\components::redirect('../../add.php?error=server_name&disp=s_fail');
-	
+
 /*
  * Determine if Node (IP & Port) is Avaliable
  */
@@ -64,16 +64,16 @@ else
 
 	if(!array_key_exists($_POST['server_ip'], $ips))
 		Page\components::redirect('../../add.php?error=server_ip&disp=ip_fail');
-		
+
 	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
 		Page\components::redirect('../../add.php?error=server_port&disp=port_fail');
-		
+
 	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
 		Page\components::redirect('../../add.php?error=server_port&disp=port_full');
-	
+
 /*
  * Validate Email
- */	
+ */
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 	Page\components::redirect('../../add.php?error=email&disp=e_fail');
 
@@ -89,13 +89,13 @@ $selectEmail->execute(array($_POST['email']));
 
 /*
  * Validate Disk & Memory
- */	
+ */
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 	Page\components::redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
 
 /*
  * Validate CPU Limit
- */	
+ */
 if(!is_numeric($_POST['cpu_limit']))
 	Page\components::redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
 
@@ -104,33 +104,10 @@ if(!is_numeric($_POST['cpu_limit']))
  * Validate SFTP Password
  */
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
-	Page\components::redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');				
+	Page\components::redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');
 
-$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-$_POST['sftp_pass'] = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
-
-if($_POST['modpack'] != "none"){
-
-	/*
-	 * Validate Modpack
-	 */
-	$selectPack = $mysql->prepare("SELECT `min_ram`, `server_jar` FROM `modpacks` WHERE `hash` = :hash AND `deleted` = 0");
-	$selectPack->execute(array(
-		':hash' => $_POST['modpack']
-	));
-	
-		if($selectPack->rowCount() != 1)
-			Page\components::redirect('../../add.php?error=modpack&disp=no_modpack');
-		else
-			$pack = $selectPack->fetch();
-			
-	/*
-	 * Modpack RAM Requirements
-	 */
-	if($pack['min_ram'] > $_POST['alloc_mem'])
-		Page\components::redirect('../../add.php?error=modpack|alloc_mem&disp=modpack_ram&min_ram='.$pack['min_ram']);
-
-}
+$iv = $core->auth->generate_iv();
+$_POST['sftp_pass'] = $core->auth->encrypt($_POST['sftp_pass'], $iv);
 
 /*
  * Add Server to Database
@@ -148,7 +125,7 @@ $add->execute(array(
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
-	':modpack' => $_POST['modpack'],
+	':modpack' => '0000-0000-0000-0',
 	':sjar' => $modpack,
 	':oid' => $oid,
 	':ram' => $_POST['alloc_mem'],
@@ -173,7 +150,7 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json
 $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
 
 /*
- * Do Server Making Stuff Here 
+ * Do Server Making Stuff Here
  */
 
 	/*
@@ -185,22 +162,23 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
         "overide_command_line" => "",
         "path" => "/home/".$ftpUser,
         "variables" => array(
-        	"-jar" => $pack['server_jar'],
+        	"-jar" => $modpack,
             "-Xmx" => $_POST['alloc_mem']."M"
         ),
         "gameport" => $_POST['server_port'],
         "gamehost" => "",
-        "plugin" => "minecraft"
+        "plugin" => "minecraft",
+        "autoon" => false
 	);
 
 	$data = json_encode($data);
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://'.$node['sftp_ip'].':8003/gameservers');
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 	    'X-Access-Token: '.$node['gsd_secret']
 	));
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); 
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, "settings=".$data);
@@ -215,28 +193,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	$update->execute(array(
 		':gsdid' => $content['id'],
 		':hash' => $serverHash
-	));	
-	
-	//if($_POST['modpack'] != "none") {
-	//
-	//	/*
-	//	 * Install Modpack
-	//	 */
-	//	
-	//		/*
-	//		 * Generate URL
-	//		 */
-	//		$packiv = $core->auth->generate_iv();
-	//		$packEncryptedHash = $core->auth->encrypt($pack['download_hash'], $packiv);
-	//		
-	//		$modpack_request = $core->settings->get('master_url').'modpacks/get.php?pack='.rawurlencode($packEncryptedHash.'.'.$iv);
-	//	
-	//		/*
-	//		 * Execute Commands
-	//		 */
-	//		$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./install_modpack.sh "'.$ftpUser.'" "'.$modpack_request.'" "'.$pack['hash'].'.zip"', false);
-	//
-	//}
+	));
 
 	/*
 	 * Send User Email
@@ -247,7 +204,7 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' =
 	        'USER' => $ftpUser.'-'.$content['id'],
 	        'PASS' => $_POST['sftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
-	
+
 	Page\components::redirect('../../view.php?id='.$lastInsert);
 
 ?>

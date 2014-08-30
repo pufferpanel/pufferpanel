@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -54,12 +54,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<h3 class="nopad">Create New Server</h3><hr />
-				<?php 
-					
+				<?php
+
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){
-					
+
 						switch($_GET['disp']){
-						
+
 							case 'missing_args':
 								echo '<div class="alert alert-danger">Not all arguments were passed by the script.</div>';
 								break;
@@ -68,12 +68,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 								break;
 							case 'n_fail':
 								echo '<div class="alert alert-danger">The node selected does not seem to exist.</div>';
-								break;
-							case 'no_modpack':
-								echo '<div class="alert alert-danger">The modpack hash passed is not valid.</div>';
-								break;
-							case 'modpack_ram':
-								echo '<div class="alert alert-danger">The modpack selected requires more RAM be allocated to it. Miimum amount of RAM that can be allocated: '.$_GET['min_ram'].' MB.</div>';
 								break;
 							case 'ip_fail':
 								echo '<div class="alert alert-danger">The selected IP does not exist.</div>';
@@ -99,11 +93,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 							case 'b_fail':
 								echo '<div class="alert alert-danger">You entered a non-number for Backup Files and/or Disk Space.</div>';
 								break;
-						
+
 						}
-					
+
 					}
-				
+
 				?>
 				<form action="ajax/new/create.php" method="POST">
 					<fieldset>
@@ -134,26 +128,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 												$selectData = $mysql->prepare("SELECT * FROM `nodes`");
 												$selectData->execute(array());
 												while($node = $selectData->fetch()){
-												
+
 													echo '<option value="'.$node['id'].'">'.$node['node'].'</option>';
-												
-												}
-											?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group col-6 nopad-right">
-									<label for="modpack" class="control-label">Server Modpack</label>
-									<div>
-										<select name="modpack"class="form-control">
-											<option value="none">None</option>
-											<?php
-												$packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `deleted` = 0");
-												$packs->execute();
-												while($pack = $packs->fetch()){
-												
-													echo '<option value="'.$pack['hash'].'">'.$pack['name'].' ('.$pack['version'].')</option>';
-												
+
 												}
 											?>
 										</select>
@@ -282,24 +259,24 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 				updateList();
 			});
 			if($.urlParam('error') != null){
-			
+
 				var field = $.urlParam('error');
 				var exploded = field.split('|');
-				
+
 					$.each(exploded, function(key, value) {
-						
+
 						$('[name="' + value + '"]').parent().parent().addClass('has-error');
-						
+
 					});
-					
+
 				var obj = $.parseJSON($.cookie('__TMP_pp_admin_newserver'));
-				
+
 					$.each(obj, function(key, value) {
-						
+
 						$('[name="' + key + '"]').val(value);
-						
+
 					});
-			
+
 			}
 		});
 	</script>
