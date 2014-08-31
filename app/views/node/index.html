@@ -37,7 +37,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-	
+
 	<a href="settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -111,7 +111,7 @@
 				}
 			}
 		});
-		socket.on('query', function (data) {
+		socket.on('query', function(data){
 			if($("#players_notice").is(":visible")){
 				$("#players_notice").hide();
 				$("#toggle_players").show();
@@ -162,7 +162,7 @@
 			        },
 		            labels: {
 		                y: 16
-		            }        
+		            }
 			    },
 		        plotOptions: {
 		            solidgauge: {
@@ -183,7 +183,7 @@
 		            },
 		            labels: {
 		            	enabled: false
-		            }    
+		            }
 		        },
 		        credits: {
 		        	enabled: false
@@ -192,8 +192,8 @@
 		            name: 'CPU',
 		            data: [0],
 		            dataLabels: {
-		            	format: '<div style="text-align:center"><span style="font-size:16px;color:' + 
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} %</span><br/>' + 
+		            	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
+		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} %</span><br/>' +
 		                   	'</div>'
 		            }
 		        }]
@@ -216,12 +216,12 @@
 			        name: 'Memory',
 			        data: [0],
 			        dataLabels: {
-			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' + 
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' + 
+			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
+		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' +
 		                   	'<span style="font-size:10px;color:silver">/ 128 MB</span></div>'
 			        }
 			    }]
-			
+
 			}));
 			$('#container-disk').highcharts(Highcharts.merge(gaugeOptions, {
 			    yAxis: {
@@ -241,12 +241,12 @@
 			        name: 'Disk',
 			        data: [0],
 			        dataLabels: {
-			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' + 
-			                ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' + 
+			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
+			                ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' +
 			               	'<span style="font-size:10px;color:silver">/ {{ server.disk_space }} MB</span></div>'
 			        }
 			    }]
-			
+
 			}));
 		});
 		$.ajax({
