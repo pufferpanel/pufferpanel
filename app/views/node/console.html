@@ -31,7 +31,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-	
+
 	<a href="settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -55,7 +55,7 @@
 					<span class="input-group-btn">
 						<button id="sending_command" class="btn btn-primary">&rarr;</button>
 						<button class="btn btn-link" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-						
+
 					</span>
 				</div>
 			</fieldset>
@@ -96,31 +96,33 @@
 $(window).load(function(){
 	var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ node.gsd_secret }}'});
 	$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-	$("#console_command").submit(function(){
-		$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
+	$("#console_command").submit(function(event){
+		event.preventDefault();
 		var ccmd = $("#ccmd").val();
-		$.ajax({
-			type: "POST",
-			headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-			url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/console',
-			timeout: 5000,
-			data: { command: ccmd },
-			error: function(jqXHR, textStatus, errorThrown) {
-			   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
-			   	$("#sending_command").removeClass('disabled');
-			   	$("#sending_command").html('&rarr;');
-			   	$("#ccmd").val('');
-			},
-	  		success: function(data) {
-	    		$("#sending_command").removeClass('disabled');
-	    		$("#sending_command").html('&rarr;');
-	    		$("#ccmd").val('');
-	    			if(data != ""){
-	    				$("#sc_resp").html(data).fadeIn().delay(5000).fadeOut();
-	    			}
-	 		 }
-		});
-		return false;
+		if(ccmd != ""){
+			$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
+			$.ajax({
+				type: "POST",
+				headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
+				url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/console',
+				timeout: 5000,
+				data: { command: ccmd },
+				error: function(jqXHR, textStatus, errorThrown) {
+				   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
+				   	$("#sending_command").removeClass('disabled');
+				   	$("#sending_command").html('&rarr;');
+				   	$("#ccmd").val('');
+				},
+		  		success: function(data) {
+		    		$("#sending_command").removeClass('disabled');
+		    		$("#sending_command").html('&rarr;');
+		    		$("#ccmd").val('');
+		    			if(data != ""){
+		    				$("#sc_resp").html(data).fadeIn().delay(5000).fadeOut();
+		    			}
+		 		 }
+			});
+		}
 	});
 	socket.on('console', function (data) {
 		$("#live_console").val($("#live_console").val() + data.l);
