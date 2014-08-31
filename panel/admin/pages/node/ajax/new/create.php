@@ -96,7 +96,7 @@ foreach($lines as $id => $values)
 /*
  * Add Node to Database
  */
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :gsd_secret, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
 	':ip' => $_POST['node_ip'],
