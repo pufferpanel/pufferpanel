@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -41,7 +41,7 @@ $selectServers->execute(array(
 		Page\components::redirect('find.php?error=no_server');
 	else
 		$server = $selectServers->fetch();
-		
+
 $select = $mysql->prepare("SELECT * FROM `users` WHERE `id` = :oid");
 $select->execute(array(
 	':oid' => $server['owner_id']
@@ -110,23 +110,23 @@ $select->execute(array(
 									<div>
 										<select name="server_ip" id="server_ip" class="form-control">
 										    <?php
-											
+
 												$ips = json_decode($node['ips'], true);
 												foreach($ips as $ip => $internal){
-												
+
 										            if($server['server_ip'] == $ip)
 										                echo '<option value="'.$ip.'" selected="selected">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
 										            else{
-										            
+
 										                if($internal['ports_free'] > 0)
 														  echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
 										                else
 														  echo '<option disabled="disabled">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-										            
+
 										            }
-										            												
+
 												}
-											
+
 											?>
 										</select>
 									</div>
@@ -135,35 +135,35 @@ $select->execute(array(
 									<label for="server_ip" class="control-label">Server Port</label>
 									<div>
 										<?php
-										
+
 										    $ports = json_decode($node['ports'], true);
 
 										    foreach($ports as $ip => $internal){
-										    
+
 										        if($server['server_ip'] == $ip)
 										            echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
 										        else
 										            echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
-										        
+
 										            foreach($internal as $port => $avaliable){
-										            
+
 										                if($server['server_port'] == $port)
 										                    echo '<option value="'.$port.'" selected="selected">'.$port.'</option>';
 										                else{
-										                    
+
 										                        if($avaliable == 1)
-										                            echo '<option value="'.$port.'">'.$port.'</option>';   
+										                            echo '<option value="'.$port.'">'.$port.'</option>';
 										                        else
 										                            echo '<option disabled="disabled">'.$port.'</option>';
-										                    
+
 										                }
-										                
+
 										            }
-										        
+
 										        echo '</select></span>';
-										    
+
 										    }
-																							
+
 										?>
 									</div>
 								</div>
@@ -183,6 +183,12 @@ $select->execute(array(
 										<input type="text" readonly="readonly" value="<?php echo $user['username']; ?> (<?php echo $user['email']; ?>)" class="form-control" />
 									</div>
 								</div>
+                                <div class="form-group">
+                                    <label class="control-label">GSD Token</label>
+                                    <div>
+                                        <input type="text" readonly="readonly" value="<?php echo $server['gsd_secret']; ?>" class="form-control" />
+                                    </div>
+                                </div>
 								<div class="row">
 									<div class="form-group col-6 nopad">
 										<label for="alloc_mem" class="control-label">Allocate RAM</label>
@@ -273,7 +279,7 @@ $select->execute(array(
 						$('[name="' + value + '"]').parent().parent().addClass('has-error');
 					});
 			}
-			
+
 			$("#server_ip").change(function() {
 			    var ip = $(this).val().replace(/\./g, "\\.");
 			    $("[id^=node_]").hide();
