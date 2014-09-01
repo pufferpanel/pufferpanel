@@ -112,8 +112,7 @@ $_POST['sftp_pass'] = $core->auth->encrypt($_POST['sftp_pass'], $iv);
 /*
  * Add Server to Database
  */
-$ftpUser = (strlen($_POST['server_name']) > 6) ? substr($_POST['server_name'], 0, 6).'_'.$core->auth->keygen(5) : $_POST['server_name'].'_'.$core->auth->keygen((11 - strlen($_POST['server_name'])));
-$ftpUser = "mc-".$ftpUser;
+$ftpUser = Functions\general::generateFTPUsername($_POST['server_name']);
 
 $serverHash = $core->auth->gen_UUID();
 $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar';
