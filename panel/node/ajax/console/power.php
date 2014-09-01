@@ -164,7 +164,8 @@ motd=A Minecraft Server';
 		"http" => array(
 			"method" => "GET",
 			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
-			"timeout" => 3
+			"timeout" => 3,
+			"ignore_errors" => true
 		)
 	));
 	$gatherData = @file_get_contents("http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
