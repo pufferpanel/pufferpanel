@@ -17,11 +17,9 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-namespace Modules;
-
 trait add {
 
-	use \Modules\functions;
+	use \Database\database, functions;
 
 	private function validateData() {
 
@@ -39,131 +37,228 @@ trait add {
 		/*
 		 * Validate Email
 		 */
-		if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+		if(!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL))
 			self::throwResponse('Invalid email was provided.', false);
+
+        /*
+         * Validate Node
+         */
+        self::validateNode();
 
 		/*
 		 * Validate Disk & Memory
 		 */
-		if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
+		if(!is_numeric($this->data['alloc_mem']) || !is_numeric($this->data['alloc_disk']))
 			self::throwResponse('Invalid memory or disk allocation.', false);
 
 		/*
 		 * Validate CPU Limit
 		 */
-		if(!is_numeric($_POST['cpu_limit']))
+		if(!is_numeric($this->data['cpu_limit']))
 			self::throwResponse('Invalid CPU limit.', false);
+
+        /*
+         * Validate Server IP & Port
+         */
+        /*
+         * Determine if Node (IP & Port) is Avaliable
+         */
+        $this->validateServerIP();
 
 		/*
 		 * Validate User Exists
 		 */
-		$this->validateUserbyEmail();
+		self::validateUserbyEmail();
 
 	}
 
 	private function runRequest() {
 
-		$this->data = self::getStoredData()['data'];
+        /*
+         * Run Functions
+         */
+        $this->addToDatabase();
+        $this->handlePorts();
+        $this->handleModpack();
+        $this->addToGSD();
 
-		/*
-		 * Generate Variables
-		 */
-		$this->ftpUser = self::generateFTPUsername($this->data['server_name']);
-		$this->iv = $this->generate_iv();
-		$this->password = $this->encrypt($this->data['sftp_pass'], $this->iv);
+        /*
+         * Send User Email
+         */
+        $this->email = new tplMail();
+        $this->settings = new settings();
 
-		/*
-		 * Add Server to Database
-		 */
-		$this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
+        $this->email->buildEmail('admin_new_server', array(
+                'NAME' => $this->data['server_name'],
+                'CONNECT' => $this->node['sftp_ip'].':21',
+                'USER' => $this->ftpUser.'-'.$this->gsdContent['id'],
+                'PASS' => $this->rawPassword
+        ))->dispatch($this->data['email'], $this->settings->get('company_name').' - New Server Added');
 
-		$this->add->execute(array(
-			':hash' => self::keygen(42),
-			':gsd_secret' => self::keygen(16).self::keygen(16),
-			':e_iv' => $this->iv,
-			':node' => $this->data['node'],
-			':sname' => $this->data['server_name'],
-			':modpack' => $this->data['modpack'],
-			':sjar' => "server",
-			':oid' => $this->oid,
-			':ram' => $this->data['alloc_mem'],
-			':disk' => $this->data['alloc_disk'],
-			':cpu' => $this->data['cpu_limit'],
-			':date' => time(),
-			':sip' => $this->data['server_ip'],
-			':sport' => $this->data['server_port'],
-			':ftpuser' => $this->ftpUser,
-			':ftppass' => $this->password
-		));
-
-		$this->lastInsert = $this->mysql->lastInsertId();
+        self::throwResponse('Server Added.', true);
 
 	}
+
+    private function addToDatabase() {
+
+        /*
+         * Generate Variables
+         */
+        $this->ftpUser = self::generateFTPUsername($this->data['server_name']);
+        $this->serverHash = self::gen_UUID();
+
+        /*
+         * Password Handling
+         */
+        $this->iv = $this->generate_iv();
+
+        if(is_null($this->data['sftp_pass']))
+            $this->rawPassword = self::keygen(14);
+        else
+            $this->rawPassword = $this->data['sftp_pass'];
+
+        $this->password = $this->encrypt($this->rawPassword, $this->iv);
+
+        /*
+         * Add Server to Database
+         */
+        $this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
+
+        $this->add->execute(array(
+            ':hash' => $this->serverHash,
+            ':gsd_secret' => self::gen_UUID(),
+            ':e_iv' => $this->iv,
+            ':node' => $this->data['node'],
+            ':sname' => $this->data['server_name'],
+            ':modpack' => '0000-0000-0000-0',
+            ':sjar' => "server.jar",
+            ':oid' => $this->oid,
+            ':ram' => $this->data['alloc_mem'],
+            ':disk' => $this->data['alloc_disk'],
+            ':cpu' => $this->data['cpu_limit'],
+            ':date' => time(),
+            ':sip' => $this->data['server_ip'],
+            ':sport' => $this->data['server_port'],
+            ':ftpuser' => $this->ftpUser,
+            ':ftppass' => $this->password
+        ));
+
+    }
 
 	private function addToGSD() {
 
 		/*
 		 * Add User to GSD
-		 */
+         */
+        $data = json_encode(array(
+            "name" => $this->serverHash,
+            "user" => $this->ftpUser,
+            "overide_command_line" => "",
+            "path" => "/home/".$this->ftpUser,
+            "variables" => array(
+                "-jar" => "server.jar",
+                "-Xmx" => $this->data['alloc_mem']."M"
+            ),
+            "gameport" => $this->data['server_port'],
+            "gamehost" => "",
+            "plugin" => "minecraft",
+            "autoon" => false
+        ));
 
-	}
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->node['sftp_ip'].':8003/gameservers');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'X-Access-Token: '.$this->node['gsd_secret']
+        ));
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "settings=".$data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $this->gsdContent = json_decode(curl_exec($ch), true);
+        curl_close($ch);
 
-	private function validateUserbyEmail() {
-
-		$this->email = self::getStoredData()['data']['email'];
-
-		$this->select = $this->mysql->prepare("SELECT `id` FROM `users` WHERE `email` = :email");
-		$this->select->execute(array(
-			':email' => $this->email
-		));
-
-			if($this->select->rowCount() != 1)
-				self::throwResponse('No user is associated with that email.', false);
-			else
-				$this->oid = $this->select->fetch()['id'];
+        /*
+         * Update MySQL
+         */
+        $this->update = $this->mysql->prepare("UPDATE `servers` SET `gsd_id` = :gsdid WHERE `hash` = :hash");
+        $this->update->execute(array(
+            ':gsdid' => $this->gsdContent['id'],
+            ':hash' => $this->serverHash
+        ));
 
 	}
 
 	private function handlePorts() {
 
+        /*
+         * Update Port Information
+         */
+        $this->ips[$this->data['server_ip']]['ports_free']--;
+        $this->ports[$this->data['server_ip']][$this->data['server_port']]--;
 
+        $this->mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = :id")->execute(array(
+            ':ips' => json_encode($this->ips),
+            ':ports' => json_encode($this->ports),
+            ':id' => $this->data['node']
+        ));
 
 	}
 
 	private function handleModpack() {
 
-
-
-	}
-
-	private function updatePorts() {
-
-		/*
-		 * Update IP Count
-		 */
-		#$ips[$this->data['server_ip']]['ports_free']--;
-		#$ports[$this->data['server_ip']][$this->data['server_port']]--;
-
-		#$this->mysql->prepare("UPDATE `nodes` SET `ips` = :ips")->execute(array(':ips' => json_encode($ips)));
-		#$this->mysql->prepare("UPDATE `nodes` SET `ports` = :ports")->execute(array(':ports' => json_encode($ports)));
+        /*
+         * Handle Modpack Information
+         * @TODO: Await GSD implementation
+         */
 
 	}
+
+    private function validateServerIP() {
+
+        /*
+         * Validates Selected IP and Port
+         */
+        $this->select = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
+        $this->select->execute(array(
+            ':id' => $this->data['node']
+        ));
+
+        if($this->select->rowCount() == 1)
+            $this->node = $this->select->fetch();
+        else
+            self::throwResponse('Unable to query database for the node provided.', false);
+
+            /*
+             * Validate IP & Port
+             */
+            $this->ips = json_decode($this->node['ips'], true);
+            $this->ports = json_decode($this->node['ports'], true);
+
+            if(!array_key_exists($this->data['server_ip'], $this->ips))
+                self::throwResponse('Invalid server ip provided.', false);
+
+            if(!array_key_exists($this->data['server_port'], $this->ports[$this->data['server_ip']]))
+                self::throwResponse('Invalid server port provided.', false);
+
+            if($this->ports[$this->data['server_ip']][$this->data['server_port']] == 0)
+                self::throwResponse('The specified port is currently in use.', false);
+
+    }
 
 }
 
-class apiModuleAddServer extends \query {
+class apiModuleAddServer {
 
-	use add;
+    use add;
 
-	public function __construct() {
+    public function __construct() {
 
-		$this->mysql = parent::connect();
+        $this->mysql = self::connect();
 
-		$this->validateData();
-		$this->runRequest();
+        $this->validateData();
+        $this->runRequest();
 
-	}
-	
+    }
+
 }
-
-?>
