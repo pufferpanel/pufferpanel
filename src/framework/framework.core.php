@@ -57,7 +57,6 @@ require_once('framework.files.php');
 require_once('framework.user.php');
 require_once('framework.server.php');
 require_once('framework.settings.php');
-require_once('framework.ssh2.php');
 require_once('framework.log.php');
 require_once('framework.query.php');
 require_once('framework.language.php');
