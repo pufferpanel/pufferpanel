@@ -108,11 +108,11 @@ class auth {
 
 	use \Database\database, \Auth\components, \Page\components;
 
-	public function __construct($settings)
+	public function __construct()
 		{
 
 			$this->mysql = self::connect();
-			$this->settings = new settings();
+			$this->settings = new \settings();
 
 		}
 
