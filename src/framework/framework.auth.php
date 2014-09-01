@@ -112,7 +112,7 @@ class auth {
 		{
 
 			$this->mysql = self::connect();
-			$this->settings = $settings;
+			$this->settings = new settings();
 
 		}
 

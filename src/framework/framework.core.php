@@ -2,21 +2,21 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
- 
+
 /*
  * Initalize Start Time
  */
@@ -34,7 +34,7 @@ require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
 
 /*
  * To use a local-only debugging option please uncomment the lines
- * below and comment out the bugsnag lines. This debugging can be 
+ * below and comment out the bugsnag lines. This debugging can be
  * used on a live environment if you wish.
  */
 use Tracy\Debugger;
@@ -47,7 +47,7 @@ Debugger::$strictMode = TRUE;
 if(!file_exists(__DIR__.'/configuration.php'))
 	throw new Exception("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
 
-/* 
+/*
  * Include Required Global Framework Files
  */
 require_once('framework.database.connect.php');
@@ -74,10 +74,10 @@ $_l = new stdClass();
  * Initalize Frameworks
  */
 $core->settings = new settings();
-$core->auth = new \Auth\auth($core->settings);
+$core->auth = new \Auth\auth();
 $core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
 $core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
-$core->email = new tplMail($core->settings);
+$core->email = new tplMail();
 $core->log = new log($core->user->getData('id'));
 $core->gsd = new query($core->server->getData('id'));
 $core->files = new files();
@@ -92,7 +92,7 @@ if($core->user->getData('language') === false)
 		$_l = new Language\lang($_COOKIE['pp_language']);
 else
 	$_l = new Language\lang($core->user->getData('language'));
-	
+
 /*
  * MySQL PDO Connection Engine
  */
