@@ -95,7 +95,7 @@ trait add {
                 'PASS' => $this->rawPassword
         ))->dispatch($this->data['email'], $this->settings->get('company_name').' - New Server Added');
 
-        self::throwResponse('Server Added.', true);
+        self::throwResponse('added', true);
 
 	}
 
