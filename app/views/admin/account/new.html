@@ -1,0 +1,81 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Add New User{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<h3 class="nopad">Create New Account</h3><hr />
+	{% if get.error is defined and get.error != 1 %}
+		<div class="alert alert-danger"><i class="fa fa-warning"></i>
+		{% if get.error == 'u_fail' %}
+			The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-
+		{% elseif get.error == 'e_fail' %}
+			The email you entered is invalid.
+		{% elseif get.error == 'p_fail' %}
+			The passwords you entered did not match or were not at least 8 characters.
+		{% elseif get.error == 'a_fail' %}
+			Account with that username or email already exists in the system.
+		{% else %}
+			Undefined error occured.
+		{% endif %}
+		</div>
+	{% endif %}
+	<form action="ajax/new/create.php" method="post">
+		<fieldset>
+			<div class="form-group">
+				<label for="username" class="control-label">Username</label>
+				<div>
+					<input type="text" autocomplete="off" name="username" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="email" class="control-label">Email</label>
+				<div>
+					<input type="text" autocomplete="off" name="email" class="form-control" />
+				</div>
+			</div>
+			<div id="gen_pass" class="alert alert-success" style="display:none;margin-bottom: 10px;"></div>
+			<div class="form-group col-6 nopad">
+				<label for="pass" class="control-label">Password</label>
+				<div>
+					<input type="password" name="pass" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group col-6 nopad-right">
+				<label for="pass_2" class="control-label">Password Again</label>
+				<div>
+					<input type="password" name="pass_2" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<button class="btn btn-primary" type="submit">Create Account</button>
+					<button class="btn btn-default" id="gen_pass_bttn" type="button">Generate Password</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#gen_pass_bttn").click(function(e){
+			e.preventDefault();
+			$.ajax({
+				type: "GET",
+				url: "new.php?do=generate_password",
+				success: function(data) {
+					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+					$("#gen_pass").slideDown();
+					$('input[name="pass"]').val(data);
+					$('input[name="pass_2"]').val(data);
+					return false;
+				}
+			});
+			return false;
+		});
+	});
+</script>
+{% endblock %}

@@ -13,7 +13,7 @@
 			<script src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
 			<script src="{{ settings.assets_url }}javascript/socket.io.min.js"></script>
 		{% endblock %}
-		<title>{{ settings.company_name }} - {% block title %}{% endblock %}</title>
+		<title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
 	{% endblock %}
 </head>
 <body>
@@ -60,8 +60,8 @@
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-					<a href="{{ settings.master_url }}admin/pages/account/find.php" id="sidenav_account-find" class="list-group-item">Find Account</a>
-					<a href="{{ settings.master_url }}admin/pages/account/new.php" id="sidenav_account-new" class="list-group-item">New Account</a>
+					<a href="{{ settings.master_url }}admin/account/find.php" id="sidenav_account-find" class="list-group-item">Find Account</a>
+					<a href="{{ settings.master_url }}admin/account/new.php" id="sidenav_account-new" class="list-group-item">New Account</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
@@ -90,6 +90,6 @@
 			</script>
 		</div>
 	</div>
-	{% block scripts %}{% endblock %}
+	{% block javascript %}{% endblock %}
 </body>
 </html>
