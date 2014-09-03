@@ -2,33 +2,33 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../../src/framework/framework.core.php');
+require_once('../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../../index.php');
+	Page\components::redirect('../../../../../index.php?login');
 }
 
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
 	Page\components::redirect('../../new.php?disp=u_fail');
-	
+
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 	Page\components::redirect('../../new.php?disp=e_fail');
-	
+
 if(strlen($_POST['pass']) < 8 || $_POST['pass'] != $_POST['pass_2'])
 	Page\components::redirect('../../new.php?disp=p_fail');
 

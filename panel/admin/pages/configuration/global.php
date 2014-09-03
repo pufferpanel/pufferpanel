@@ -120,6 +120,42 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="enable_custom_domain" <?php echo ($core->settings->get('enable_custom_domain') == 1) ? 'checked="checked"' : null; ?>/> Enable Subdomain Manager</label><br />
+											<p><small class="text-muted"><em>Checking this box will allow for users to set a custom domain name from the settings that you provide on the <a href="#">subdomain management page</a>.</em></small></p>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="enable_plugin_manager" <?php echo ($core->settings->get('enable_plugin_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Plugin Manager</label><br />
+											<p><small class="text-muted"><em>Checking this box will enable the plugin manager for users. This allows for automatic installiation of plugins from the Bukkit Repo.</em></small></p>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="enable_modpack_manager" <?php echo ($core->settings->get('enable_modpack_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Modpack Manager</label><br />
+											<p><small class="text-muted"><em>Checking this box will allow for users to select a custom modpack from their server management page, and allows for admins to specifiy modpacks that are avaliable for use.</em></small></p>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="enable_backup_manager" <?php echo ($core->settings->get('enable_backup_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Backup Manager</label><br />
+											<p><small class="text-muted"><em>Checking this box will enable users to make backups of their server at will. You can specify per-server limits for backups, or set global limits.</em></small></p>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-6 nopad">
+										<div>
+											<label><input type="checkbox" name="permissions[]" value="enable_subusers" <?php echo ($core->settings->get('enable_subusers') == 1) ? 'checked="checked"' : null; ?>/> Enable Sub-Users</label><br />
+											<p><small class="text-muted"><em>Checking this box will allow for users to manually add users to their servers who can access certain settings of the panel to control their server.</em></small></p>
+										</div>
+									</div>
+								</div>
 								<div class="form-group">
 									<div>
 										<input type="submit" value="Update Settings" class="btn btn-primary" />
@@ -130,7 +166,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 					</div>
 					<div class="tab-pane" id="2fa">
 						<h3>2-Factor Authentication</h3><hr />
-						<div class="alert alert-info">This feature is still currently in the works and will be released in future versions.</div>
+						<div class="alert alert-info">This feature is implemented and can only be controlled by users. 2FA is not required for users, but they all have the option to enable it per-account. If a user looses their 2FA device you will have to manually change their settings in the database.</div>
 					</div>
 					<div class="tab-pane" id="email">
 						<h3>Email Settings</h3><hr />

@@ -2,25 +2,25 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../src/framework/framework.core.php');
+require_once('../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php?login');
+	Page\components::redirect('../../index.php?login');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
@@ -41,7 +41,7 @@ $selectUser->execute(array(
 		Page\components::redirect('find.php?error=no_user');
 	else
 		$user = $selectUser->fetch();
-		
+
 /*
  * Select Servers Owned by the User
  */
@@ -54,7 +54,7 @@ $selectServers->execute(array(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../../src/include/header.php'); ?>
+	<?php include('../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -76,27 +76,27 @@ $selectServers->execute(array(
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<div class="row">
 					<h3 class="nopad">Viewing User: <?php echo $user['username']; ?></h3><hr />
-					<?php 
-						
+					<?php
+
 						if(isset($_GET['disp']) && !empty($_GET['disp'])){
-						
+
 							switch($_GET['disp']){
-							
+
 								case 'p_updated':
 									echo '<div class="alert alert-success">Account password has been updated.</div>';
 									break;
 								case 'd_updated':
 									echo '<div class="alert alert-success">Account email & administrator status updated.</div>';
 									break;
-							
+
 							}
-						
+
 						}
-					
+
 					?>
 					<div class="col-6 nopad">
 						<form action="ajax/account/update.php" method="POST">
@@ -115,12 +115,12 @@ $selectServers->execute(array(
 								</div>
 								<div class="form-group">
 									<?php
-									
+
 										$date1 = new DateTime(date('Y-m-d', $user['register_time']));
 										$date2 = new DateTime(date('Y-m-d', time()));
-										
+
 										$totalDays = $date2->diff($date1)->format("%a Days Ago");
-									
+
 									?>
 									<label for="registered" class="control-label">Registered</label>
 									<div>
@@ -129,11 +129,11 @@ $selectServers->execute(array(
 								</div>
 								<div class="form-group">
 									<?php
-									
+
 										$isSelected = array();
 										$isSelected['no'] = ($user['root_admin'] == 0) ? 'selected="selected"' : '';
 										$isSelected['yes'] = ($user['root_admin'] == 1) ? 'selected="selected"' : '';
-									
+
 									?>
 									<label for="email" class="control-label">Root Administrator</label>
 									<div>
@@ -199,20 +199,20 @@ $selectServers->execute(array(
 					<h3>Account Servers</h3><hr />
 					<?php
 						$listServers = '';
-						
+
 						while($row = $selectServers->fetch()){
-						
+
 							($row['active'] == '1') ? $isActive = '<span class="label label-success">Enabled</span>' : $isActive = '<span class="label label-danger">Disabled</span>';
 							$listServers .= '
 											<tr>
-												<td><a href="../../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
-												<td><a href="../server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
+												<td><a href="../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
+												<td><a href="server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
 												<td>'.$core->settings->nodeName($row['node']).'</td>
 												<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 												<td>'.$isActive.'</td>
 											</tr>
 											';
-						
+
 						}
 					?>
 					<table class="table table-striped table-bordered table-hover">
@@ -229,12 +229,12 @@ $selectServers->execute(array(
 							<?php echo $listServers; ?>
 						</tbody>
 					</table>
-					<button onclick="location.href='../server/add.php?email=<?php echo $user['email']; ?>';" class="btn btn-success btn-sm">Add New Server</button>
+					<button onclick="location.href='server/add.php?email=<?php echo $user['email']; ?>';" class="btn btn-success btn-sm">Add New Server</button>
 				</div>
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../../../../src/include/footer.php'); ?>
+			<?php include('../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">

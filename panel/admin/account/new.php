@@ -2,22 +2,22 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../src/framework/framework.core.php');
+require_once('../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
 	Page\components::redirect('../../../index.php?login');
@@ -29,7 +29,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../../src/include/header.php'); ?>
+	<?php include('../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -51,15 +51,15 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<h3 class="nopad">Create New Account</h3><hr />
-				<?php 
-					
+				<?php
+
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){
-					
+
 						switch($_GET['disp']){
-						
+
 							case 'u_fail':
 								echo '<div class="alert alert-danger">The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-</div>';
 								break;
@@ -72,11 +72,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 							case 'a_fail':
 								echo '<div class="alert alert-danger">Account with that username or email already exists in the system.</div>';
 								break;
-						
+
 						}
-					
+
 					}
-				
+
 				?>
 				<form action="ajax/new/create.php" method="post">
 					<fieldset>
@@ -116,7 +116,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../../../../src/include/footer.php'); ?>
+			<?php include('../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
