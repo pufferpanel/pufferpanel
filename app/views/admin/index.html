@@ -1,0 +1,15 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	{% if installer == true %}
+		<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>
+	{% endif %}
+	<h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
+	<p>Welcome to the most advanced, lightweight, and user-friendly control panel for Minecraft. You are currently running version <code>{{ version }}</code>.</p>
+</div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}
