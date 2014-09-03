@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head %}
+		{% block scripts %}
+			<meta charset="UTF-8">
+			<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap.css">
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/bootstrap.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/admin.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.cookie.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.debounce.js"></script>
+			<script src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
+			<script src="{{ settings.assets_url }}javascript/socket.io.min.js"></script>
+		{% endblock %}
+		<title>{{ settings.company_name }} - {% block title %}{% endblock %}</title>
+	{% endblock %}
+</head>
+<body>
+	<div class="container">
+		<div class="pull-right" style="margin-top: -26px;">
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=de" class="language">Deutsch</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=en" class="language">English</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=se" class="language">Svenska</a>
+			<a href="{{ settings.master_url }}ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a>
+		</div>
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">{{ settings.company_name }}</a>
+			</div>
+			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="{{ settings.master_url }}servers.php">View All Servers</a></li>
+								<li><a href="{{ settings.master_url }}logout.php">Logout</a></li>
+							</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-3">
+				<div class="list-group">
+					<a href="{{ settings.master_url }}admin/index.php" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+					<a href="{{ settings.master_url }}admin/account/permissions/perms.php" id="sidenav_permissions-perms" class="list-group-item">Admin Permissions</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Configuration</strong></a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/global.php" id="sidenav_configuration-global" class="list-group-item">Global Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/subdomains.php" id="sidenav_configuration-subdomains" class="list-group-item">Subdomain Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/modpacks.php" id="sidenav_configuration-modpacks" class="list-group-item">Subdomain Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/backups.php" id="sidenav_configuration-backups" class="list-group-item">Subdomain Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/api/view.php" id="sidenav_api-view" class="list-group-item">API Settings</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
+					<a href="{{ settings.master_url }}admin/pages/account/find.php" id="sidenav_account-find" class="list-group-item">Find Account</a>
+					<a href="{{ settings.master_url }}admin/pages/account/new.php" id="sidenav_account-new" class="list-group-item">New Account</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
+					<a href="{{ settings.master_url }}admin/pages/server/find.php" id="sidenav_server-find" class="list-group-item">Find Server</a>
+					<a href="{{ settings.master_url }}admin/pages/server/add.php" id="sidenav_server-add" class="list-group-item">New Server</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
+					<a href="{{ settings.master_url }}admin/pages/node/list.php" id="sidenav_node-list" class="list-group-item">List Nodes</a>
+					<a href="{{ settings.master_url }}admin/pages/node/add.php" id="sidenav_node-add" class="list-group-item">Add Node</a>
+				</div>
+			</div>
+			{% block content %}{% endblock %}
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-8 ">
+					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format("0.7.2 Beta")|raw }}</p>
+				</div>
+				<div class="col-4">
+					<p class="pull-right">{{ lang.footer_generated|format(footer.seconds) }}<br />{{ lang.footer_queries|format(footer.queries) }}</p>
+				</div>
+			</div>
+			<script type="text/javascript">
+				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+			</script>
+		</div>
+	</div>
+</body>
+</html>
