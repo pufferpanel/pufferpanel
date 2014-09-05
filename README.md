@@ -8,7 +8,7 @@ Downloads of PufferPanel can be found [here](https://github.com/DaneEveritt/Puff
 If you want to see what PufferPanel looks like you can check out our topic on the [Minecraft Forums](http://www.minecraftforum.net/forums/servers/minecraft-server-hosting/hosting-discussion/569432-introducing-pufferpanel-the-open-source-multicraft/).
 
 # Support & Installing
-If you need help at in point with PufferPanel you can contact us in IRC, or you can get help on our [Official Support Forums](http://kelp.in/index.php).
+If you need help at in point with PufferPanel you can contact us in IRC, or you can get help on our [Official Support Forums](http://pufferpanel.com).
 
 Check out our [wiki](https://github.com/DaneEveritt/PufferPanel/wiki) for guides to set up PufferPanel.
 
