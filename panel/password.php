@@ -22,7 +22,7 @@ require_once('../src/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
 	Page\components::redirect('servers.php');
 
-require_once("core/captcha/recaptchalib.php");
+require_once("../src/captcha/recaptchalib.php");
 
 $statusMessage = null;
 $noShow = false;
