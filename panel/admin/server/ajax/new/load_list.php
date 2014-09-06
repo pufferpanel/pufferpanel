@@ -67,25 +67,29 @@ $node = $selectData->fetch();
 
 	        $ports = json_decode($node['ports'], true);
 
-	        foreach($ports as $ip => $internal){
+	        if(!empty($ports)){
 
-	            if($firstIP == $ip)
-	                echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
-	            else
-	                echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
+                foreach($ports as $ip => $internal){
 
-	                foreach($internal as $port => $avaliable){
+    	            if($firstIP == $ip)
+    	                echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
+    	            else
+    	                echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
 
-                        if($avaliable == 1)
-                            echo '<option value="'.$port.'">'.$port.'</option>';
-                        else
-                            echo '<option disabled="disabled">'.$port.'</option>';
+    	                foreach($internal as $port => $avaliable){
 
-	                }
+                            if($avaliable == 1)
+                                echo '<option value="'.$port.'">'.$port.'</option>';
+                            else
+                                echo '<option disabled="disabled">'.$port.'</option>';
 
-	            echo '</select></span>';
+    	                }
 
-	        }
+    	            echo '</select></span>';
+
+    	        }
+
+            }
 
   		?>
   		</div>
