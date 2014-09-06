@@ -3,9 +3,181 @@
 {% block title %}Viewing User{% endblock %}
 
 {% block content %}
+<div class="col-9">
+	<div class="row">
+		<h3 class="nopad">Viewing User: <?php echo $user['username']; ?></h3><hr />
+		<?php
 
+			if(isset($_GET['disp']) && !empty($_GET['disp'])){
+
+				switch($_GET['disp']){
+
+					case 'p_updated':
+						echo '<div class="alert alert-success">Account password has been updated.</div>';
+						break;
+					case 'd_updated':
+						echo '<div class="alert alert-success">Account email & administrator status updated.</div>';
+						break;
+
+				}
+
+			}
+
+		?>
+		<div class="col-6 nopad">
+			<form action="ajax/account/update.php" method="POST">
+				<fieldset>
+					<div class="form-group">
+						<label for="username" class="control-label">Username</label>
+						<div>
+							<input type="text" name="username" value="<?php echo $user['username']; ?>" readonly="readonly" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="control-label">Email</label>
+						<div>
+							<input type="text" name="email" value="<?php echo $user['email']; ?>" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<?php
+
+							$date1 = new DateTime(date('Y-m-d', $user['register_time']));
+							$date2 = new DateTime(date('Y-m-d', time()));
+
+							$totalDays = $date2->diff($date1)->format("%a Days Ago");
+
+						?>
+						<label for="registered" class="control-label">Registered</label>
+						<div>
+							<input type="text" name="registered" value="<?php echo date('F j, Y g:ia', $user['register_time']); ?> (<?php echo $totalDays; ?>)" readonly="readonly" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<?php
+
+							$isSelected = array();
+							$isSelected['no'] = ($user['root_admin'] == 0) ? 'selected="selected"' : '';
+							$isSelected['yes'] = ($user['root_admin'] == 1) ? 'selected="selected"' : '';
+
+						?>
+						<label for="email" class="control-label">Root Administrator</label>
+						<div>
+							<select name="root_admin" class="form-control">
+								<option value="0" <?php echo $isSelected['no']; ?>>No</option>
+								<option value="1" <?php echo $isSelected['yes']; ?>>Yes</option>
+							</select>
+							<p><small class="text-muted"><em><strong>Warning:</strong> Setting this to "Yes" gives a user full administrative access to PufferPanel.</em></small></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<div>
+							<input type="hidden" name="uid" value="<?php echo $_GET['id']; ?>" />
+							<input type="hidden" name="action" value="details" />
+							<input type="submit" value="Update User" class="btn btn-primary" />
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="col-6 nopad-right">
+			<div class="well">
+				<h5 class="nopad">Update Password</h5><hr />
+				<form action="ajax/account/password.php" method="post">
+					<fieldset>
+						<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
+						<div class="form-group">
+							<label for="pass" class="control-label">New Password</label>
+							<div>
+								<input type="password" name="pass" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="pass_2" class="control-label">New Password (Again)</label>
+							<div>
+								<input type="password" name="pass_2" class="form-control" />
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="email_user" /> Email new password to user.
+									</label>
+								</div>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="clear_session" /> Clear the user's session.
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div>
+								<input type="hidden" name="uid" value="<?php echo $_GET['id']; ?>" />
+								<input type="hidden" name="email" value="<?php echo $user['email']; ?>" />
+								<button class="btn btn-primary" type="submit">Change Password</button>
+								<button class="btn btn-default" id="gen_pass_bttn" type="button">Generate Password</button>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<h3>Account Servers</h3><hr />
+		<?php
+			$listServers = '';
+
+			while($row = $selectServers->fetch()){
+
+				($row['active'] == '1') ? $isActive = '<span class="label label-success">Enabled</span>' : $isActive = '<span class="label label-danger">Disabled</span>';
+				$listServers .= '
+								<tr>
+									<td><a href="../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
+									<td><a href="server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
+									<td>'.$core->settings->nodeName($row['node']).'</td>
+									<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
+									<td>'.$isActive.'</td>
+								</tr>
+								';
+
+			}
+		?>
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th style="width:2%;"></th>
+					<th>Server Name</th>
+					<th>Node</th>
+					<th>Connection</th>
+					<th style="width:10%;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php echo $listServers; ?>
+			</tbody>
+		</table>
+		<button onclick="location.href='server/add.php?email=<?php echo $user['email']; ?>';" class="btn btn-success btn-sm">Add New Server</button>
+	</div>
+</div>
 {% endblock %}
 
 {% block javascript %}
-
+<script type="text/javascript">
+	$(document).ready(function(){
+		setActiveOption('account-find');
+		$("#gen_pass_bttn").click(function(){
+			$.ajax({
+				type: "GET",
+				url: "view.php?do=generate_password",
+				success: function(data) {
+					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+					$("#gen_pass").slideDown();
+					$('input[name="pass"]').val(data);
+					$('input[name="pass_2"]').val(data);
+					return false;
+				}
+			});
+			return false;
+		});
+	});
+</script>
 {% endblock %}

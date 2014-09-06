@@ -65,13 +65,13 @@
     {% endif %}
 </div>
 <script type="text/javascript">
-$(window).load(function(){ 
+$(window).load(function(){
     $("#save_file").click(function(event){
 		event.preventDefault();
 		var file = $("input[name='file']").val();
 		var content = $("#live_console").val();
 		$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
-		
+
 		$.ajax({
 			type: "POST",
 			url: '../ajax/files/save.php',
