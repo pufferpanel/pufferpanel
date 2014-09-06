@@ -5,74 +5,48 @@
 {% block content %}
 <div class="col-9">
 	<div class="row">
-		<h3 class="nopad">Viewing User: <?php echo $user['username']; ?></h3><hr />
-		<?php
-
-			if(isset($_GET['disp']) && !empty($_GET['disp'])){
-
-				switch($_GET['disp']){
-
-					case 'p_updated':
-						echo '<div class="alert alert-success">Account password has been updated.</div>';
-						break;
-					case 'd_updated':
-						echo '<div class="alert alert-success">Account email & administrator status updated.</div>';
-						break;
-
-				}
-
-			}
-
-		?>
+		<h3 class="nopad">Viewing User: {{ user.username }}</h3><hr />
+		{% if get.disp is defined and get.disp != 1 %}
+			{% if get.disp == 'p_updated' %}
+				<div class="alert alert-success">Account password has been updated.</div>
+			{% elseif get.disp == 'd_updated' %}
+				<div class="alert alert-success">Account email & administrator status updated.</div>
+			{% endif %}
+		{% endif %}
 		<div class="col-6 nopad">
 			<form action="ajax/account/update.php" method="POST">
 				<fieldset>
 					<div class="form-group">
 						<label for="username" class="control-label">Username</label>
 						<div>
-							<input type="text" name="username" value="<?php echo $user['username']; ?>" readonly="readonly" class="form-control" />
+							<input type="text" name="username" value="{{ user.username }}" readonly="readonly" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="email" class="control-label">Email</label>
 						<div>
-							<input type="text" name="email" value="<?php echo $user['email']; ?>" class="form-control" />
+							<input type="text" name="email" value="{{ user.email }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
-						<?php
-
-							$date1 = new DateTime(date('Y-m-d', $user['register_time']));
-							$date2 = new DateTime(date('Y-m-d', time()));
-
-							$totalDays = $date2->diff($date1)->format("%a Days Ago");
-
-						?>
 						<label for="registered" class="control-label">Registered</label>
 						<div>
-							<input type="text" name="registered" value="<?php echo date('F j, Y g:ia', $user['register_time']); ?> (<?php echo $totalDays; ?>)" readonly="readonly" class="form-control" />
+							<input type="text" name="registered" value="{{ user.register_time }}" readonly="readonly" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
-						<?php
-
-							$isSelected = array();
-							$isSelected['no'] = ($user['root_admin'] == 0) ? 'selected="selected"' : '';
-							$isSelected['yes'] = ($user['root_admin'] == 1) ? 'selected="selected"' : '';
-
-						?>
 						<label for="email" class="control-label">Root Administrator</label>
 						<div>
 							<select name="root_admin" class="form-control">
-								<option value="0" <?php echo $isSelected['no']; ?>>No</option>
-								<option value="1" <?php echo $isSelected['yes']; ?>>Yes</option>
+								<option value="0">No</option>
+								<option value="1" {% if user.root_admin == 1 %}selected="selected"{% endif %}>Yes</option>
 							</select>
-							<p><small class="text-muted"><em><strong>Warning:</strong> Setting this to "Yes" gives a user full administrative access to PufferPanel.</em></small></p>
+							<p><small class="text-muted"><em><strong><i class="fa fa-warning"></i></strong> Setting this to "Yes" gives a user full administrative access to PufferPanel.</em></small></p>
 						</div>
 					</div>
 					<div class="form-group">
 						<div>
-							<input type="hidden" name="uid" value="<?php echo $_GET['id']; ?>" />
+							<input type="hidden" name="uid" value="{{ get.id }}" />
 							<input type="hidden" name="action" value="details" />
 							<input type="submit" value="Update User" class="btn btn-primary" />
 						</div>
@@ -110,8 +84,8 @@
 						</div>
 						<div class="form-group">
 							<div>
-								<input type="hidden" name="uid" value="<?php echo $_GET['id']; ?>" />
-								<input type="hidden" name="email" value="<?php echo $user['email']; ?>" />
+								<input type="hidden" name="uid" value="{{ get.id }}" />
+								<input type="hidden" name="email" value="{{ user.email }}" />
 								<button class="btn btn-primary" type="submit">Change Password</button>
 								<button class="btn btn-default" id="gen_pass_bttn" type="button">Generate Password</button>
 							</div>
@@ -123,24 +97,6 @@
 	</div>
 	<div class="row">
 		<h3>Account Servers</h3><hr />
-		<?php
-			$listServers = '';
-
-			while($row = $selectServers->fetch()){
-
-				($row['active'] == '1') ? $isActive = '<span class="label label-success">Enabled</span>' : $isActive = '<span class="label label-danger">Disabled</span>';
-				$listServers .= '
-								<tr>
-									<td><a href="../../servers.php?goto='.$row['hash'].'"><i class="fa fa-tachometer"></i></a></td>
-									<td><a href="server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
-									<td>'.$core->settings->nodeName($row['node']).'</td>
-									<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
-									<td>'.$isActive.'</td>
-								</tr>
-								';
-
-			}
-		?>
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
@@ -152,10 +108,24 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php echo $listServers; ?>
+				{% if servers[0]|length > 0 %}
+					{% for server in servers %}
+						<tr>
+							<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+							<td><a href="server/view.php?id={{ server.id }}">{{ server.name }}</a></td>
+							<td>{{ server.node }}</td>
+							<td>{{ server.ip }}:{{ server.port }}</td>
+							<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
+						</tr>
+					{% endfor %}
+				{% else %}
+					<div class="alert alert-info">
+						<div class="alert alert-info">There are no servers associated with this account.</div>
+					</div>
+				{% endif %}
 			</tbody>
 		</table>
-		<button onclick="location.href='server/add.php?email=<?php echo $user['email']; ?>';" class="btn btn-success btn-sm">Add New Server</button>
+		<button onclick="location.href='server/add.php?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
 	</div>
 </div>
 {% endblock %}
