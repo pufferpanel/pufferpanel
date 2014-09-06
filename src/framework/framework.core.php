@@ -28,9 +28,17 @@ $pageStartTime = microtime(true);
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
 
 /*
+ * Define Directories
+ */
+define('BASE_DIR', dirname(dirname(__DIR__)).'/');
+define('APP_DIR', dirname(dirname(__DIR__)).'/app/');
+define('PANEL_DIR', dirname(dirname(__DIR__)).'/panel/');
+define('SRC_DIR', dirname(dirname(__DIR__)).'/src/');
+
+/*
  * Include Dependency Libs
  */
-require_once(dirname(dirname(__DIR__)).'/vendor/autoload.php');
+require_once(BASE_DIR.'vendor/autoload.php');
 
 /*
  * To use a local-only debugging option please uncomment the lines
@@ -102,7 +110,7 @@ $mysql = Database\database::connect();
  */
 Twig_Autoloader::register();
 
-$loader = new Twig_Loader_Filesystem(dirname(dirname(__DIR__)).'/app/views/');
+$loader = new Twig_Loader_Filesystem(APP_DIR.'views/');
 $twig = new Twig_Environment($loader, array(
     'cache' => false,
     'debug' => true

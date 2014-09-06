@@ -146,7 +146,7 @@ $(window).load(function(){
 					url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
-					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
+					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 					   	$("#off").removeClass('disabled');
 					   	$("#off").html('Stop');
 					   	$("#restart").removeClass('disabled');
@@ -186,7 +186,7 @@ $(window).load(function(){
 				url: "ajax/console/power.php",
 				timeout: 5000,
 				error: function(jqXHR, textStatus, errorThrown) {
-				   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
+				   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 				   	$("#on").removeClass('disabled');
 				   	$("#on").html('Start');
 				   	can_run = true;
