@@ -56,7 +56,7 @@ $select->execute(array(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php include('../../../../src/include/header.php'); ?>
+	<?php include('../../../src/include/header.php'); ?>
 	<title>PufferPanel Admin Control Panel</title>
 </head>
 <body>
@@ -78,14 +78,14 @@ $select->execute(array(
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"><?php include('../../../../src/include/admin.php'); ?></div>
+			<div class="col-3"><?php include('../../../src/include/admin.php'); ?></div>
 			<div class="col-9">
 				<ul class="nav nav-tabs" id="config_tabs">
 					<li class="active"><a href="#info" data-toggle="tab">Connection</a></li>
 					<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
 					<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 					<li><a href="#delete" data-toggle="tab">Delete</a></li>
-					<li><a href="../../../servers.php?goto=<?php echo $server['hash']; ?>">Server Control</a></li>
+					<li><a href="../../servers.php?goto=<?php echo $server['hash']; ?>">Server Control</a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="info">
@@ -266,7 +266,7 @@ $select->execute(array(
 			</div>
 		</div>
 		<div class="footer">
-			<?php include('../../../../src/include/footer.php'); ?>
+			<?php include('../../../src/include/footer.php'); ?>
 		</div>
 	</div>
 	<script type="text/javascript">
