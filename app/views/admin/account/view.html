@@ -97,34 +97,32 @@
 	</div>
 	<div class="row">
 		<h3>Account Servers</h3><hr />
-		<table class="table table-striped table-bordered table-hover">
-			<thead>
-				<tr>
-					<th style="width:2%;"></th>
-					<th>Server Name</th>
-					<th>Node</th>
-					<th>Connection</th>
-					<th style="width:10%;"></th>
-				</tr>
-			</thead>
-			<tbody>
-				{% if servers[0]|length > 0 %}
-					{% for server in servers %}
-						<tr>
-							<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-							<td><a href="server/view.php?id={{ server.id }}">{{ server.name }}</a></td>
-							<td>{{ server.node }}</td>
-							<td>{{ server.ip }}:{{ server.port }}</td>
-							<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
-						</tr>
-					{% endfor %}
-				{% else %}
-					<div class="alert alert-info">
-						<div class="alert alert-info">There are no servers associated with this account.</div>
-					</div>
-				{% endif %}
-			</tbody>
-		</table>
+		{% if servers[0]|length > 0 %}
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th style="width:2%;"></th>
+						<th>Server Name</th>
+						<th>Node</th>
+						<th>Connection</th>
+						<th style="width:10%;"></th>
+					</tr>
+				</thead>
+				<tbody>
+						{% for server in servers %}
+							<tr>
+								<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+								<td><a href="server/view.php?id={{ server.id }}">{{ server.name }}</a></td>
+								<td>{{ server.node }}</td>
+								<td>{{ server.ip }}:{{ server.port }}</td>
+								<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
+							</tr>
+						{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<div class="alert alert-info">There are no servers associated with this account.</div>
+		{% endif %}
 		<button onclick="location.href='server/add.php?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
 	</div>
 </div>
