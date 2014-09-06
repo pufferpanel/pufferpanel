@@ -2,40 +2,40 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../../src/framework/framework.core.php');
+require_once('../../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 if(!isset($_POST['sid']) || !isset($_POST['nid']))
 	Page\components::redirect('../../find.php');
-	
+
 if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['nid']))
 	Page\components::redirect('../../view.php?id='.$_POST['sid']);
-	
+
 if(strlen($_POST['sftp_pass']) < 8)
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_len');
-	
+
 if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_match');
 
-/* 
+/*
  * Select Node, User, & Server Information
  */
 $select = $mysql->prepare("SELECT `ftp_user`, `name`, `owner_id` FROM `servers` WHERE `id` = ?");
@@ -61,7 +61,7 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
     ':pass' => $pass,
     ':iv' => $iv
 ));
-	
+
 /*
  * Connect to Node and Execute Password Update
  */
@@ -71,12 +71,12 @@ $core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /s
  * Send the User an Email
  */
 if(isset($_POST['email_user'])){
-    
+
     $core->email->buildEmail('admin_new_sftppass', array(
         'PASS' => $_POST['sftp_pass'],
         'SERVER' => $server['name']
     ))->dispatch($user['email'], $core->settings->get('company_name').' - Your SFTP Password was Reset');
-    
+
 }
 
 Page\components::redirect('../../view.php?id='.$_POST['sid']);
