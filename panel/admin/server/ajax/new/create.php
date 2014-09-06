@@ -17,10 +17,10 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../../src/framework/framework.core.php');
+require_once('../../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+	Page\components::redirect('../../../index.php');
 }
 
 //Cookies :3
@@ -120,7 +120,7 @@ $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar
 $add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
 	':hash' => $serverHash,
-	':gsd_secret' => $core->auth->gen_UUID(),
+	':gsd_secret' => $node['gsd_secret'],
 	':e_iv' => $iv,
 	':node' => $_POST['node'],
 	':sname' => $_POST['server_name'],
