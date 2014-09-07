@@ -24,6 +24,10 @@ class server extends user {
 
 	use Page\components;
 
+    public $_data = array();
+    public $_ndata = array();
+    public $_sdata = array();
+
     /**
      * Constructor class for building server data.
      *
@@ -145,8 +149,8 @@ class server extends user {
      */
     private function _rebuildData($userid){
 
-        $this->query->server = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :value");
-        $this->query->server->execute(array(
+        $this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :value");
+        $this->query->execute(array(
             ':value' => $userid
         ));
 
@@ -165,7 +169,6 @@ class server extends user {
          */
         if(isset($this->_data['node']) && $this->_data['node'] !== false){
 
-            $this->_ndata = array();
             $this->_n = true;
 
             $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
@@ -198,7 +201,6 @@ class server extends user {
      */
     private function _buildData($hash, $userid, $isroot){
 
-        $this->_data = array();
         $this->_s = true;
 
             if($isroot == '1'){
@@ -233,7 +235,6 @@ class server extends user {
          */
         if(isset($this->_data['node']) && $this->_data['node'] !== false){
 
-            $this->_ndata = array();
             $this->_n = true;
 
             $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
