@@ -24,10 +24,11 @@ class server extends user {
 
 	use Page\components;
 
-    public $_data = array();
-    public $_ndata = array();
-    public $_sdata = array();
-    public $_s = true;
+    private $_data = array();
+    private $_ndata = array();
+    private $_sdata = array();
+    private $_s = true;
+	private $_n = true;
 
     /**
      * Constructor class for building server data.
@@ -48,11 +49,12 @@ class server extends user {
         $this->_ndata = array();
         $this->_sdata = array();
         $this->_s = true;
+		$this->_n = true;
 
         /*
          * Make Calls
          */
-		if(!is_null($userid) && $userid === true && !is_null($hash))
+		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
         else if(!is_null($userid) && is_null($hash) && is_null($isroot))
             $this->_rebuildData($userid);
@@ -85,7 +87,7 @@ class server extends user {
             if($this->_s === true)
                 return $this->_data;
             else
-                return $this->_s;
+                return false;
         else
             if($this->_s === true && array_key_exists($id, $this->_data))
                 return $this->_data[$id];
@@ -111,7 +113,7 @@ class server extends user {
             if($this->_n === true && array_key_exists($id, $this->_ndata))
                 return $this->_ndata[$id];
             else
-                return null;
+                return false;
 
     }
 
@@ -180,8 +182,6 @@ class server extends user {
          * Grab Node Information
          */
         if(isset($this->_data['node']) && $this->_data['node'] !== false){
-
-            $this->_n = true;
 
             $this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
             $this->query->node->execute(array(

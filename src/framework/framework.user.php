@@ -23,8 +23,8 @@
 
 class user extends Auth\auth {
 
-	public $_data = array();
-	public $_l = true;
+	private $_data;
+	private $_l;
 
 	public function __construct($ip, $session = null, $hash = null){
 
