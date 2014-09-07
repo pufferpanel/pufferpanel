@@ -27,7 +27,7 @@ class settings {
     /**
      * Constructor class for building settings data.
      *
-     * @return array Returns an array of all current panel settings from the database.
+     * @return void
      */
 	public function __construct()
 		{

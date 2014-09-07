@@ -24,10 +24,24 @@ class server extends user {
 
 	use Page\components;
 
+	/**
+	 * @param array $_data Implements a blank array for the functions to write to.
+	 */
     private $_data = array();
+
+	/**
+	 * @param array $_ndata Implements a blank array for the functions to write to. This variable is used for the node part of the code.
+	 */
     private $_ndata = array();
-    private $_sdata = array();
+
+	/**
+	 * @param array $_s Defaults to true and will be changed to false if there is an error. This variable is used for the server portion of the code.
+	 */
     private $_s = true;
+
+	/**
+	 * @param array $_n Defaults to true and will be changed to false if there is an error. This variable is used for the node part of the code.
+	 */
 	private $_n = true;
 
     /**
@@ -36,7 +50,7 @@ class server extends user {
      * @param string $hash The server hash.
      * @param int $userid The ID of the user who is requesting the server information.
      * @param int $isroot The root administrator status of the user requesting the server information.
-     * @return array|bool Returns an array on success or false on failure.
+     * @return void
      */
 	public function __construct($hash = null, $userid = null, $isroot = null){
 
@@ -47,7 +61,6 @@ class server extends user {
          */
         $this->_data = array();
         $this->_ndata = array();
-        $this->_sdata = array();
         $this->_s = true;
 		$this->_n = true;
 
@@ -78,7 +91,7 @@ class server extends user {
     /**
      * Provides the corresponding value for the id provided from the MySQL Database.
      *
-     * @param string $id The column value for the data you need (e.g. email).
+     * @param string $id The column value for the data you need (e.g. server_name).
      * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
      */
 	public function getData($id = null){

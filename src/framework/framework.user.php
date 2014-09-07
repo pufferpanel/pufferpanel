@@ -17,15 +17,29 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/*
- * PufferPanel User Class File
+/**
+ * PufferPanel Core User Class File
  */
-
 class user extends Auth\auth {
 
+	/**
+	 * @param array $_data Implements a blank array for the functions to write to.
+	 */
 	private $_data;
+
+	/**
+	 * @param bool $_l Defaults to true and will be changed to false if there is an error.
+	 */
 	private $_l;
 
+	/**
+	 * Constructor Class responsible for filling in arrays with the data from a specified user.
+	 *
+	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
+	 * @param string|null $session The value of the pp_auth_token cookie.
+	 * @param string|null $hash The server hash of the requesting user which is used when they are viewing node pages.
+	 * @return void
+	 */
 	public function __construct($ip, $session = null, $hash = null){
 
 		$this->mysql = self::connect();
@@ -65,12 +79,24 @@ class user extends Auth\auth {
 
 	}
 
+	/**
+	 * Re-runs the __construct() class with a defined ID for the admin control panel.
+	 *
+	 * @param string $id The ID of a user requested in the Admin CP.
+	 * @return void
+	 */
     public function rebuildData($id){
 
         $this->__construct($id);
 
     }
 
+	/**
+	 * Provides the corresponding value for the id provided from the MySQL Database.
+	 *
+	 * @param string|null $id The column value for the data you need (e.g. email).
+	 * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+	 */
 	public function getData($id = null){
 
         if(is_null($id))
