@@ -53,9 +53,9 @@ if(file_exists('../install.lock'))
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
 					        $prepare->execute(array(
-					            ':username' => $_POST['username'],
+					            ':user' => $_POST['username'],
 					            ':email' => $_POST['email'],
-					            ':password' => $password,
+					            ':pass' => $password,
 					            ':language' => 'en',
 					            ':time' => time()
 					        ));
