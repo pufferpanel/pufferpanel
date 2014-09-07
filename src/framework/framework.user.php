@@ -23,12 +23,20 @@
 
 class user extends Auth\auth {
 
+	public $_data = array();
+	public $_l = true;
+
 	public function __construct($ip, $session = null, $hash = null){
 
 		$this->mysql = self::connect();
-        if(!is_null($session) && !is_null($hash) && self::isLoggedIn($ip, $session, $hash) === true){
 
-            $this->_l = true;
+		/*
+		 * Reset Values
+		 */
+		$this->_data = array();
+		$this->_l = true;
+
+        if(self::isLoggedIn($ip, $session, $hash) === true){
 
             $this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid");
             $this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
@@ -42,8 +50,6 @@ class user extends Auth\auth {
 
         }else if(is_null($session) && is_null($hash) && is_numeric($ip)){
 
-            $this->_l = true;
-
             $this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `id` = :id");
             $this->query->execute(array(':id' => $ip));
 
@@ -54,11 +60,8 @@ class user extends Auth\auth {
 
                 }
 
-        }else{
-
+        }else
             $this->_l = false;
-
-        }
 
 	}
 
