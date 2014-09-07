@@ -52,13 +52,13 @@ $context = stream_context_create(array(
 	)
 ));
 
-$rawcontent = file_get_contents($url, 0, $context);
+$rawcontent = @file_get_contents($url, 0, $context);
 $content = json_decode($rawcontent, true);
 
 	if(json_last_error() != JSON_ERROR_NONE)
 		exit('<div class="alert alert-danger">GSD ERROR: '.$rawcontent.'</div>');
 
-	if(!$content || empty($content))
+	if(!is_array($content))
 		exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_no_dl').' This usually occurs because of a networking error.</div>');
 
 /*
