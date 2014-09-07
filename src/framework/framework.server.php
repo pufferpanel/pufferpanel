@@ -27,17 +27,17 @@ class server extends user {
 	/**
 	 * @param array $_data Implements a blank array for the functions to write to.
 	 */
-    private $_data = array();
+	private $_data = array();
 
 	/**
 	 * @param array $_ndata Implements a blank array for the functions to write to. This variable is used for the node part of the code.
 	 */
-    private $_ndata = array();
+	private $_ndata = array();
 
 	/**
 	 * @param array $_s Defaults to true and will be changed to false if there is an error. This variable is used for the server portion of the code.
 	 */
-    private $_s = true;
+	private $_s = true;
 
 	/**
 	 * @param array $_n Defaults to true and will be changed to false if there is an error. This variable is used for the node part of the code.
