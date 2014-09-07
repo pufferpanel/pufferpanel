@@ -32,34 +32,9 @@ if(!isset($_GET['id']))
 $core->server->rebuildData($_GET['id']);
 $core->user->rebuildData($core->server->getData('owner_id'));
 
-	/*foreach($ports as $ip => $internal){
-
-		if($server['server_ip'] == $ip)
-			echo '<span id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
-		else
-			echo '<span style="display:none;" id="node_'.$ip.'"><select name="server_port_'.$ip.'" class="form-control">';
-
-			foreach($internal as $port => $avaliable){
-
-				if($server['server_port'] == $port)
-					echo '<option value="'.$port.'" selected="selected">'.$port.'</option>';
-				else{
-
-						if($avaliable == 1)
-							echo '<option value="'.$port.'">'.$port.'</option>';
-						else
-							echo '<option disabled="disabled">'.$port.'</option>';
-
-				}
-
-			}
-
-		echo '</select></span>';
-
-	}*/
-
 echo $twig->render('admin/server/view.html', array(
 		'node' => $core->server->nodeData(),
+		'decoded' => array('ips' => json_decode($core->server->nodeData('ips'), true), 'ports' => json_decode($core->server->nodeData('ports'), true)),
 		'server' => $core->server->getData(),
 		'user' => $core->user->getData(),
 		'footer' => array(
