@@ -11,3 +11,4 @@ vendor
 composer.phar
 src/logs/*.log
 src/logs/*.html
+phpdoc_base/*
