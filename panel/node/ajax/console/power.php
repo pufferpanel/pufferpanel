@@ -31,7 +31,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
 	curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-	    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+	    'X-Access-Token: '.$core->server->getData('gsd_secret')
 	));
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	$response = curl_exec($curl);
@@ -62,7 +62,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-		    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+		    'X-Access-Token: '.$core->server->getData('gsd_secret')
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -113,7 +113,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-		    'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+		    'X-Access-Token: '.$core->server->getData('gsd_secret')
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));

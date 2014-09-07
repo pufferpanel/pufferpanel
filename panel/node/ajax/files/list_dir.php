@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -46,7 +46,7 @@ $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->
 $context = stream_context_create(array(
 	"http" => array(
 		"method" => "GET",
-		"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+		"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
 		"ignore_errors" => true,
 		"timeout" => 3
 	)
@@ -57,7 +57,7 @@ $content = json_decode($rawcontent, true);
 
 	if(json_last_error() != JSON_ERROR_NONE)
 		exit('<div class="alert alert-danger">GSD ERROR: '.$rawcontent.'</div>');
-	
+
 	if(!$content || empty($content))
 		exit('<div class="alert alert-danger">'.$_l->tpl('node_files_ajax_no_dl').' This usually occurs because of a networking error.</div>');
 
@@ -76,7 +76,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 	 * In dir, show first arrow in display
 	 */
 	$previousDir['first'] = true;
-	
+
     /*
      * Check First Character
      */
@@ -86,7 +86,7 @@ if(isset($_POST['dir']) && !empty($_POST['dir'])){
 		$_POST['dir'] = $_POST['dir'].'/';
 
 }
-	
+
 /*
  * Inside a Directory
  */
@@ -98,10 +98,10 @@ if(array_key_exists(1, $goBack) && !empty($goBack[1])){
 	 */
 	if(!empty($goBack[1]))
 		$previousDir['show'] = true;
-		
+
     unset($goBack[count($goBack) - 2]);
     $previousDir['link'] = rtrim(implode('/', $goBack), '/');
-    
+
 }
 
 /*
@@ -114,14 +114,14 @@ elseif(array_key_exists('link', $previousDir))
 
 /*
  * Loop Through
- */	
-foreach($content as $value) {    
-            
+ */
+foreach($content as $value) {
+
 	 /*
      * Iterate into Arrays
      */
     if($value['filetype'] == 'folder'){
-    
+
     	$displayFolders = array_merge($displayFolders, array(array(
     		"entry" => $value['name'],
     		"directory" => $_POST['dir'],
@@ -130,7 +130,7 @@ foreach($content as $value) {
     	)));
 
     }else{
-    
+
     	$displayFiles = array_merge($displayFiles, array(array(
     		"entry" => $value['name'],
     		"directory" => $_POST['dir'],
@@ -138,9 +138,9 @@ foreach($content as $value) {
     		"size" => $core->files->formatSize($value['size']),
     		"date" => strtotime($value['mtime'])
     	)));
-    
+
     }
-                    
+
 }
 
 /*

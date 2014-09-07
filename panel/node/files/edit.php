@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -23,7 +23,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 	Page\components::redirect($core->settings->get('master_url').'index.php?login');
 	exit();
-    
+
 }
 
 $canEdit = array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang');
@@ -35,7 +35,7 @@ if(isset($_POST['dir']))
     $_POST['dir'] = str_replace('..', '', urldecode($_POST['dir']));
 
 $error = null;
-    
+
 if(!isset($_POST['file']))
 	$error = '<div class="alert alert-warning">'.$_l->tpl('node_files_edit_no_file').'</div>';
 else {
@@ -43,13 +43,13 @@ else {
     if(!in_array(pathinfo($_POST['file'], PATHINFO_EXTENSION), $canEdit))
     	$error = '<div class="alert alert-danger">'.$_l->tpl('node_files_edit_type_error').'</div>';
     else{
-                
+
         /*
          * Create File Path
          */
         $file = pathinfo($_POST['file'], PATHINFO_BASENAME);
         $directory = dirname($_POST['file']).'/';
-        
+
         /*
          * Directory Cleaning
          */
@@ -58,24 +58,24 @@ else {
 
         if(substr($directory, 0, 1) == '/')
             $directory = substr($directory, 1);
-    	                    
+
 		$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
-		
+
 		$context = stream_context_create(array(
 			"http" => array(
 				"method" => "GET",
-				"header" => 'X-Access-Token: '.$core->server->nodeData('gsd_secret'),
+				"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
 				"timeout" => 3
 			)
 		));
-		
+
 		$content = file_get_contents($url, 0, $context);
-		
+
 			if(!$content)
 				$error = '<div class="alert alert-danger">'.$_l->tpl('node_files_edit_daemon_error').'</div>';
 			else
 				$json = json_decode($content, true);
-				
+
 				if(!array_key_exists('contents', $json))
 					$error = '<div class="alert alert-danger">'.$_l->tpl('node_files_edit_daemon_error').'</div>';
     }
