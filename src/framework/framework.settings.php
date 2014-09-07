@@ -1,20 +1,20 @@
 <?php
 /*
-    PufferPanel - A Minecraft Server Management Panel
-    Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
 /**
@@ -24,11 +24,11 @@ class settings {
 
 	use Database\database;
 
-    /**
-     * Constructor class for building settings data.
-     *
-     * @return void
-     */
+	/**
+	 * Constructor class for building settings data.
+	 *
+	 * @return void
+	 */
 	public function __construct()
 		{
 
@@ -54,12 +54,12 @@ class settings {
 
 		}
 
-    /**
-     * Function to retrieve various panel settings.
-     *
-     * @param string $setting The name of the setting for which you want the value.
-     * @return array|string This will return the column data for the setting, or if $setting was left blank all settings in an array.
-     */
+	/**
+	 * Function to retrieve various panel settings.
+	 *
+	 * @param string $setting The name of the setting for which you want the value.
+	 * @return array|string This will return the column data for the setting, or if $setting was left blank all settings in an array.
+	 */
 	public function get($setting = null)
 		{
 
@@ -70,12 +70,12 @@ class settings {
 
 		}
 
-    /**
-     * Convert a node ID into a name for the node.
-     *
-     * @param int $id The ID of the node you want the name for.
-     * @return string The name of the node.
-     */
+	/**
+	 * Convert a node ID into a name for the node.
+	 *
+	 * @param int $id The ID of the node you want the name for.
+	 * @return string The name of the node.
+	 */
 	public function nodeName($id)
 		{
 
