@@ -129,8 +129,7 @@ if(file_exists('install.lock'))
                             'openssl',
                             'mcrypt',
                             'PDO',
-                            'pdo_mysql',
-                            'ssh2'
+                            'pdo_mysql'
                         );
 
                         /*
