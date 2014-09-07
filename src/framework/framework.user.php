@@ -68,17 +68,18 @@ class user extends Auth\auth {
 
     }
 
-	public function getData($id){
+	public function getData($id = null){
 
-		if($this->_l === true){
-
-			return $this->_data[$id];
-
-		}else{
-
-			return false;
-
-		}
+        if(is_null($id))
+            if($this->_l === true)
+                return $this->_data;
+            else
+                return false;
+        else
+            if($this->_l === true && array_key_exists($id, $this->_data))
+                return $this->_data[$id];
+            else
+                return false;
 
 	}
 

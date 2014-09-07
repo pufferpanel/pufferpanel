@@ -61,14 +61,20 @@ class server extends user {
      * Provides the corresponding value for the id provided from the MySQL Database.
      *
      * @param string $id The column value for the data you need (e.g. email).
-     * @return string|bool A string is returned on success, if the command fails 'false' is returned.
+     * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
      */
-	public function getData($id){
+	public function getData($id = null){
 
-		if($this->_s === true && array_key_exists($id, $this->_data))
-			return $this->_data[$id];
-		else
-			return false;
+        if(is_null($id))
+            if($this->_s === true)
+                return $this->_data;
+            else
+                return false;
+        else
+            if($this->_s === true && array_key_exists($id, $this->_data))
+                return $this->_data[$id];
+            else
+                return false;
 
 	}
 
@@ -78,12 +84,18 @@ class server extends user {
      * @param string $id The column value for the data you need (e.g. sftp_ip).
      * @return string|bool A string is returned on success, if the command fails 'false' is returned.
      */
-    public function nodeData($id) {
+    public function nodeData($id = null) {
 
-        if($this->_n === true && array_key_exists($id, $this->_ndata))
-			return $this->_ndata[$id];
-		else
-			return null;
+        if(is_null($id))
+            if($this->_n === true)
+                return $this->_ndata;
+            else
+                return false;
+        else
+            if($this->_n === true && array_key_exists($id, $this->_ndata))
+                return $this->_ndata[$id];
+            else
+                return null;
 
     }
 
