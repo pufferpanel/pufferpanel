@@ -81,8 +81,8 @@ class server extends user {
     /**
      * Returns data about the node in which the server selected is running.
      *
-     * @param string $id The column value for the data you need (e.g. sftp_ip).
-     * @return string|bool A string is returned on success, if the command fails 'false' is returned.
+     * @param string|nukk $id The column value for the data you need (e.g. sftp_ip).
+     * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
      */
     public function nodeData($id = null) {
 
