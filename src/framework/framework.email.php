@@ -1,20 +1,20 @@
 <?php
 /*
-    PufferPanel - A Minecraft Server Management Panel
-    Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
 /*
@@ -23,7 +23,7 @@
 class tplMail  {
 
 	use Auth\components, \Database\database;
-    private $message;
+	private $message;
 
 	public function __construct()
 		{
@@ -45,8 +45,8 @@ class tplMail  {
 
 					$headers = 'From: '. $this->settings->get('sendmail_email') . "\r\n" .
 					    'Reply-To: '. $this->settings->get('sendmail_email') . "\r\n" .
-                        'MIME-Version: 1.0' . "\r\n" .
-                        'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
+						'MIME-Version: 1.0' . "\r\n" .
+						'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
 					    'X-Mailer: PHP/' . phpversion();
 
 					mail($email, $subject, $this->message, $headers);
@@ -204,7 +204,7 @@ class tplMail  {
 					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
-                    return $this;
+					return $this;
 
 				}
 			else if($type == 'success')
@@ -214,7 +214,7 @@ class tplMail  {
 					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
-                    return $this;
+					return $this;
 
 				}
 			else
@@ -226,21 +226,21 @@ class tplMail  {
 
 		}
 
-    /*
-     * Read email template and compile data to send
-     */
-    public function buildEmail($tpl, $data = array())
-        {
+	/*
+	 * Read email template and compile data to send
+	 */
+	public function buildEmail($tpl, $data = array())
+		{
 
-            $this->message = $this->readTemplate($tpl);
-            $this->message = str_replace(array('<%HOST_NAME%>', '<%MASTER_URL%>', '<%DATE%>'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
+			$this->message = $this->readTemplate($tpl);
+			$this->message = str_replace(array('<%HOST_NAME%>', '<%MASTER_URL%>', '<%DATE%>'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
 
-                foreach($data as $key => $val)
-                    $this->message  = str_replace('<%'.$key.'%>', $val, $this->message);
+				foreach($data as $key => $val)
+					$this->message  = str_replace('<%'.$key.'%>', $val, $this->message);
 
-                return $this;
+				return $this;
 
-        }
+		}
 
 }
 
