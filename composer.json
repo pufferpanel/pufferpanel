@@ -1,7 +1,6 @@
 {
     "require": {
     	"php": ">=5.5",
-    	"ext-ssh2": "*",
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
     	"bugsnag/bugsnag": "2.*",
