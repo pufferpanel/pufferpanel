@@ -52,7 +52,6 @@ echo $twig->render(
 				'console_inner' => $content['contents']
 			),
 			'node' => array(
-				'gsd_secret' => $core->server->nodeData('gsd_secret'),
 				'sftp_ip' => $core->server->nodeData('sftp_ip')
 			),
 			'footer' => array(
