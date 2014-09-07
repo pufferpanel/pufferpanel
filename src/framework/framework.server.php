@@ -27,6 +27,7 @@ class server extends user {
     public $_data = array();
     public $_ndata = array();
     public $_sdata = array();
+    public $_s = true;
 
     /**
      * Constructor class for building server data.
@@ -40,6 +41,17 @@ class server extends user {
 
 		$this->mysql = self::connect();
 
+        /*
+         * Reset Values
+         */
+        $this->_data = array();
+        $this->_ndata = array();
+        $this->_sdata = array();
+        $this->_s = true;
+
+        /*
+         * Make Calls
+         */
 		if(!is_null($userid) && $userid === true && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
         else if(!is_null($userid) && is_null($hash) && is_null($isroot))
@@ -73,7 +85,7 @@ class server extends user {
             if($this->_s === true)
                 return $this->_data;
             else
-                return false;
+                return $this->_s;
         else
             if($this->_s === true && array_key_exists($id, $this->_data))
                 return $this->_data[$id];
@@ -201,34 +213,32 @@ class server extends user {
      */
     private function _buildData($hash, $userid, $isroot){
 
-        $this->_s = true;
+        if($isroot == '1'){
 
-            if($isroot == '1'){
+            $this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
+            $this->query->execute(array(
+                ':hash' => $hash
+            ));
 
-                $this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
-                $this->query->execute(array(
-                    ':hash' => $hash
-                ));
+        }else{
 
-            }else{
+            $this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :ownerid AND `active` = 1");
+            $this->query->execute(array(
+                ':hash' => $hash,
+                ':ownerid' => $userid
+            ));
 
-                $this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :ownerid AND `active` = 1");
-                $this->query->execute(array(
-                    ':hash' => $hash,
-                    ':ownerid' => $userid
-                ));
+        }
 
-            }
+        if($this->query->rowCount() == 1){
 
-            if($this->query->rowCount() == 1){
+            $this->row = $this->query->fetch();
 
-                $this->row = $this->query->fetch();
+            foreach($this->row as $this->id => $this->val)
+                $this->_data = array_merge($this->_data, array($this->id => $this->val));
 
-                foreach($this->row as $this->id => $this->val)
-                    $this->_data = array_merge($this->_data, array($this->id => $this->val));
-
-            }else
-                $this->_s = false;
+        }else
+            $this->_s = false;
 
         /*
          * Grab Node Information
