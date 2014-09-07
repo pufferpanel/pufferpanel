@@ -47,11 +47,11 @@
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Configuration</strong></a>
-					<a href="{{ settings.master_url }}admin/configuration/global.php" id="sidenav_configuration-global" class="list-group-item">Global Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/subdomains.php" id="sidenav_configuration-subdomains" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/modpacks.php" id="sidenav_configuration-modpacks" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/backups.php" id="sidenav_configuration-backups" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/api/view.php" id="sidenav_api-view" class="list-group-item">API Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/global.php" id="sidenav_configuration-global" class="list-group-item">Global Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/subdomains.php" id="sidenav_configuration-subdomains" class="list-group-item">Subdomain Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/modpacks.php" id="sidenav_configuration-modpacks" class="list-group-item">ModPacks Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/configuration/backups.php" id="sidenav_configuration-backups" class="list-group-item">Backups Settings</a>
+					<a href="{{ settings.master_url }}admin/pages/api/view.php" id="sidenav_api-view" class="list-group-item">API Settings</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
@@ -65,8 +65,8 @@
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-					<a href="{{ settings.master_url }}admin/node/list.php" id="sidenav_node-list" class="list-group-item">List Nodes</a>
-					<a href="{{ settings.master_url }}admin/node/add.php" id="sidenav_node-add" class="list-group-item">Add Node</a>
+					<a href="{{ settings.master_url }}admin/pages/node/list.php" id="sidenav_node-list" class="list-group-item">List Nodes</a>
+					<a href="{{ settings.master_url }}admin/pages/node/add.php" id="sidenav_node-add" class="list-group-item">Add Node</a>
 				</div>
 			</div>
 			{% block content %}{% endblock %}
