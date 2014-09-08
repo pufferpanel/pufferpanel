@@ -17,12 +17,18 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/*
- * PufferPanel Folder Management Class
+/**
+ * PufferPanel Core File Management Class
  */
-
 class files {
 
+	/**
+	 * Converts from bytes into the largest possible size that is still readable.
+	 *
+	 * @param int $bytes
+	 * @param int $decimals Defaults to 2 decimal places.
+	 * @return string
+	 */
 	public function formatSize($bytes, $decimals = 2) {
 
 		  $sz = explode(',', 'B,KB,MB,GB');
@@ -32,6 +38,13 @@ class files {
 
 	}
 
+	/**
+	 * Formats the size to a certain precision.
+	 *
+	 * @param int $size
+	 * @param int $precision
+	 * @return int
+	 */
 	public function format($size, $precision = 0){
 
 		$base = log($size) / log(1024);
@@ -40,91 +53,26 @@ class files {
 
 	}
 
-	public function readLines($filename, $lines)
-	{
+	/**
+	 * Reads a specified number of lines from a given file.
+	 *
+	 * @todo Remove function.
+	 * @param string $filename
+	 * @param int $lines
+	 * @return void
+	 */
+	public function readLines($filename, $lines){ }
 
-		$r = '';
-		$file = file($filename);
-
-			if(count($file) < $lines){
-
-				$lines = count($file);
-
-			}
-
-				for ($i = count($file)-$lines; $i < count($file); $i++) {
-
-		 			 $r .= $file[$i];
-
-				}
-
-		return $r;
-
-	}
-
-	function last_lines($path, $line_count, $block_size = 512){
-
-	    if(!is_file($path)) {
-
-	    	echo('Could not locate server.log!');
-	    	return false;
-
-	    }else{
-
-		    $lines = array();
-			    $leftover = "";
-		    $fh = fopen($path, 'r');
-		    fseek($fh, 0, SEEK_END);
-
-		    do{
-
-		        $can_read = $block_size;
-		        if(ftell($fh) < $block_size){
-		            $can_read = ftell($fh);
-		        }
-
-		        fseek($fh, -$can_read, SEEK_CUR);
-		        $data = fread($fh, $can_read);
-		        $data .= $leftover;
-		        fseek($fh, -$can_read, SEEK_CUR);
-
-		        $split_data = array_reverse(explode("\n", $data));
-		        $new_lines = array_slice($split_data, 0, -1);
-		        $lines = array_merge($lines, $new_lines);
-		        $leftover = $split_data[count($split_data) - 1];
-
-		    }
-		    while(count($lines) < $line_count && ftell($fh) != 0);
-
-		    if(ftell($fh) == 0){
-		        $lines[] = $leftover;
-		    }
-
-		    fclose($fh);
-
-			/*
-			 * Return in Readbale Format
-			 */
-			$a = array_reverse(array_slice($lines, 0, $line_count));
-
-		    	$output = '';
-		    	$total = count($a);
-		    	foreach($a as $id => $line){
-
-		    		if($id == ($total - 2))
-		    			$output .= $line;
-					else if($id == ($total - 1))
-						$output .= '';
-		    		else
-		    			$output .= $line."\n";
-
-		    	}
-
-		    return $output;
-
-		}
-
-	}
+	/**
+	 * Reads a specified number of lines from a given file beginning at the end of the file.
+	 *
+	 * @todo Remove function.
+	 * @param string $path
+	 * @param int $line_count
+	 * @param int $block_size
+	 * @return void
+	 */
+	function last_lines($path, $line_count, $block_size = 512){ }
 
 }
 

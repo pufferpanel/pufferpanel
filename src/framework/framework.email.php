@@ -17,14 +17,23 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/*
- * Core Email Sending Class
+/**
+ * PufferPanel Core Email Sending Class
  */
 class tplMail  {
 
 	use Auth\components, \Database\database;
+
+	/**
+	 * @param string $message
+	 */
 	private $message;
 
+	/**
+	 * Constructor for email sending
+	 *
+	 * @return void
+	 */
 	public function __construct()
 		{
 
@@ -33,8 +42,12 @@ class tplMail  {
 
 		}
 
-	/*
-	 * Email Sending
+	/**
+	 * Sends an email that has been formatted.
+	 *
+	 * @param string $email The email address to send to.
+	 * @param string $subject The subject of the email.
+	 * @return void
 	 */
 	public function dispatch($email, $subject)
 		{
@@ -151,6 +164,11 @@ class tplMail  {
 
 		}
 
+	/**
+	 * Gets the Email System to send with from the settings.
+	 *
+	 * @return string
+	 */
 	private function getDispatchSystemFunct()
 		{
 
@@ -163,10 +181,12 @@ class tplMail  {
 
 		}
 
-	/*
-	 * Email Creation & Templates
+	/**
+	 * Finds and outputs a given email template.
+	 *
+	 * @param string $template
+	 * @return string
 	 */
-
 	private function readTemplate($template)
 		{
 
@@ -190,9 +210,12 @@ class tplMail  {
 
 		}
 
-	/*
-	 * Generate the Email Message from the Templates for Login Notifications.
-	 * This does not send the email, simply generates the email message.
+	/**
+	 * Generates a Login Notification Email (does not send it).
+	 *
+	 * @param string $type What type of login notification are we sending?
+	 * @param array $vars
+	 * @return void
 	 */
 	public function generateLoginNotification($type, $vars)
 		{
@@ -226,8 +249,12 @@ class tplMail  {
 
 		}
 
-	/*
-	 * Read email template and compile data to send
+	/**
+	 * Reads an email template and compiles the necessary data into it.
+	 *
+	 * @param string $tpl The email template to use.
+	 * @param array $data
+	 * @return void
 	 */
 	public function buildEmail($tpl, $data = array())
 		{
