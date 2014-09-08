@@ -19,10 +19,19 @@
 
 namespace Functions;
 
+/**
+ * General Functions Trait
+ */
 trait general {
 
 	use \Auth\components;
 
+	/**
+	 * Generates a unique FTP username
+	 *
+	 * @param string $base The base text to use for the username.
+	 * @return string Returns the unique username beginning with mc-.
+	 */
 	public static function generateFTPUsername($base) {
 
 		$username = (strlen($base) > 6) ? substr($base, 0, 6).'_'.self::keygen(5) : $base.'_'.self::keygen((11 - strlen($base)));
