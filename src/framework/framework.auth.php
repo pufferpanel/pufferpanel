@@ -25,14 +25,30 @@ use Otp\Otp;
 use Otp\GoogleAuthenticator;
 use Base32\Base32;
 
+/**
+ * PufferPanel Core Components Trait
+ */
 trait components {
 
+	/**
+	 * Returns a hashed version of the raw string that is passed. Use for password hashing.
+	 *
+	 * @param string $raw The raw password.
+	 * @return string The hashed password.
+	 */
 	public function hash($raw){
 
 		return password_hash($raw, PASSWORD_BCRYPT);
 
 	}
 
+	/**
+	 * Compares a password to the hashed version to see if they match.
+	 *
+	 * @param string $raw The raw password.
+	 * @param string $hashed The hashed password.
+	 * @return bool Returns true if the password matches.
+	 */
 	private function password_compare($raw, $hashed){
 
 		if(password_verify($raw, $hashed))
@@ -42,26 +58,52 @@ trait components {
 
 	}
 
+	/**
+	 * Generates an OpenSSL Encryption initalization vector.
+	 *
+	 * @return string
+	 */
 	public function generate_iv(){
 
 		return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
 
 	}
 
+	/**
+	 * Encrypts a given string using an IV and defined method.
+	 *
+	 * @param string $raw The raw string to be encrypted.
+	 * @param string $iv The initalization vector to use.
+	 * @param string $method Defaults to AES-256-CBC but you can define any other valid encryption method.
+	 * @return string
+	 * @static
+	 */
 	public static function encrypt($raw, $iv, $method = 'AES-256-CBC'){
 
 		return openssl_encrypt($raw, $method, file_get_contents(HASH), false, base64_decode($iv));
 
 	}
 
+	/**
+	 * Decrypts a given string using an IV and defined method.
+	 *
+	 * @param string $encrypted The encrypted string that you want decrypted.
+	 * @param string $iv The initalization vector to use.
+	 * @param string $method Defaults to AES-256-CBC but you can define any other valid encryption method.
+	 * @return string
+	 * @static
+	 */
 	public static function decrypt($encrypted, $iv, $method = 'AES-256-CBC'){
 
 		return openssl_decrypt($encrypted, $method, file_get_contents(HASH), 0, base64_decode($iv));
 
 	}
 
-	/*
+	/**
 	 * Generate RFC 4122 Compliant v4 UUIDs
+	 *
+	 * @return string Returns a RFC 412 compliant UUID in the format XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+	 * @static
 	 */
 	public static function gen_UUID(){
 
@@ -73,8 +115,14 @@ trait components {
 
 	}
 
+	/**
+	 * Generates a random string of characters.
+	 *
+	 * @param int $amount
+	 * @return string
+	 * @static
+	 */
 	public static function keygen($amount){
-
 
 		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
 
@@ -88,6 +136,12 @@ trait components {
 
 	}
 
+	/**
+	 * Returns the specified cookie.
+	 *
+	 * @param string $cookie
+	 * @return mixed
+	 */
 	public function getCookie($cookie){
 
 		if(isset($_COOKIE[$cookie])){
@@ -104,10 +158,18 @@ trait components {
 
 }
 
+/**
+ * PufferPanel Core Authentication Class
+ */
 class auth {
 
 	use \Database\database, \Auth\components, \Page\components;
 
+	/**
+	 * Authentcation constructor class.
+	 *
+	 * @return void
+	 */
 	public function __construct()
 		{
 
@@ -116,30 +178,32 @@ class auth {
 
 		}
 
+	/**
+	 * Validates a TOTP request.
+	 *
+	 * @todo Prevent TOTP replay attack.
+	 * @param string $key The TOTP token sent in.
+	 * @param string $secret The TOTP secret.
+	 * @return bool
+	 */
 	public function validateTOTP($key, $secret){
 
-		/*
-		 * Check Key
-		 */
 		$otp = new Otp();
 
-			if($otp->checkTotp(Base32::decode($secret), $key)){
-
-				/*
-				 * Prevent TOTP-replay attack
-				 */
-				//@TODO
-
-				/*
-				 * Return Success
-				 */
-				return true;
-
-			}else
-				return false;
+		if($otp->checkTotp(Base32::decode($secret), $key))
+			return true;
+		else
+			return false;
 
 	}
 
+	/**
+	 * Verifys the a user is entering the correct password for their account.
+	 *
+	 * @param string $email
+	 * @param string $raw The raw password.
+	 * @return bool
+	 */
 	public function verifyPassword($email, $raw){
 
 		$this->get = $this->mysql->prepare("SELECT `password` FROM `users` WHERE `email` = :email");
@@ -157,6 +221,15 @@ class auth {
 
 	}
 
+	/**
+	 * Checks if a user is currently logged in or if their session is expired.
+	 *
+	 * @param string $ip
+	 * @param string $session
+	 * @param string $serverhash
+	 * @param int $acp
+	 * @return bool
+	 */
 	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
 
 		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session");
@@ -165,60 +238,39 @@ class auth {
 			':session' => $session
 		));
 
-			if($this->query->rowCount() == 1){
+		if($this->query->rowCount() == 1){
 
-				$this->row = $this->query->fetch();
+			$this->row = $this->query->fetch();
 
-					/*
-					 * Accessing Admin Directory
-					 */
-					if($this->row['root_admin'] != 1 && $acp === true)
-						return false;
-					else{
-
-						/*
-						 * Allow Admins Access to any Server
-						 */
-						if($this->row['root_admin'] != '1'){
-
-							/*
-							 * Validate User is Owner of Server
-							 */
-							if(!is_null($serverhash)){
-
-								$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :shash AND `owner_id` = :ownerid AND `active` = 1");
-								$this->_validateServer->execute(array(
-									':shash' => $serverhash,
-									':ownerid' => $this->row['id']
-								));
-
-									if($this->_validateServer->rowCount() == 1)
-										return true;
-									else
-										return false;
-
-							/*
-							 * Just Check if they are Logged In
-							 */
-							}else{
-
-								return true;
-
-							}
-
-						}else{
-
-							return true;
-
-						}
-
-					}
-
-			}else{
-
+			if($this->row['root_admin'] != 1 && $acp === true)
 				return false;
+			else{
+
+				if($this->row['root_admin'] != '1'){
+
+					if(!is_null($serverhash)){
+
+						$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :shash AND `owner_id` = :ownerid AND `active` = 1");
+						$this->_validateServer->execute(array(
+							':shash' => $serverhash,
+							':ownerid' => $this->row['id']
+						));
+
+							if($this->_validateServer->rowCount() == 1)
+								return true;
+							else
+								return false;
+
+					}else
+						return true;
+
+				}else
+					return true;
 
 			}
+
+		}else
+			return false;
 
 	}
 
