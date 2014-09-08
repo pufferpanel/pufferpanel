@@ -36,8 +36,8 @@ class user extends Auth\auth {
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
 	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
-	 * @param string|null $session The value of the pp_auth_token cookie.
-	 * @param string|null $hash The server hash of the requesting user which is used when they are viewing node pages.
+	 * @param mixed $session The value of the pp_auth_token cookie.
+	 * @param mixed $hash The server hash of the requesting user which is used when they are viewing node pages.
 	 * @return void
 	 */
 	public function __construct($ip, $session = null, $hash = null){
@@ -94,8 +94,8 @@ class user extends Auth\auth {
 	/**
 	 * Provides the corresponding value for the id provided from the MySQL Database.
 	 *
-	 * @param string|null $id The column value for the data you need (e.g. email).
-	 * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+	 * @param mixed $id The column value for the data you need (e.g. email).
+	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
 	public function getData($id = null){
 

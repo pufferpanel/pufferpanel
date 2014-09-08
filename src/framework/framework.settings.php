@@ -58,7 +58,7 @@ class settings {
 	 * Function to retrieve various panel settings.
 	 *
 	 * @param string $setting The name of the setting for which you want the value.
-	 * @return array|string This will return the column data for the setting, or if $setting was left blank all settings in an array.
+	 * @return mixed This will return the column data for the setting, or if $setting was left blank all settings in an array.
 	 */
 	public function get($setting = null)
 		{
