@@ -17,11 +17,24 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+/**
+ * PufferPanel Core Error Logging Class
+ *
+ * @extends user
+ */
 class log extends user {
 
-	//use Database\database;
+	/**
+	 * @param string $url
+	 */
 	private $url;
 
+	/**
+	 * Constructor class for logging
+	 *
+	 * @param int $uid The user ID.
+	 * @return void
+	 */
 	public function __construct($uid)
 		{
 
@@ -30,15 +43,16 @@ class log extends user {
 
 		}
 
-	/*
-	 * Call as Such:
-	 * $core->log->getUrl()->addLog(priority, viewable, array(action, desc, uid*));
-	 *
-	 * priority: 0 - None, 1 - Low, 2 - Medium, 3 - High, 4 - Urgent
-	 * viewable: 0 - Admin Only, 1 - User & Admin
+	/**
+	 * Logging Function
 	 * action: (example) user.login, user.start_server, admin.remove_server, admin.node_add_port, system.unknown_error
 	 * desc: Description of the Error
 	 * uid: Sent from login commands where $user is not yet defined. Optional.
+	 *
+	 * @param int $priority The priority of the error on a sale of 0 to 4.
+	 * @param int $viewable Set to 0 to only be viewable by administrators, 1 to be viewed by the user who caused the error.
+	 * @param array $data An array of the data that caused the error. Should be in the form Array(action, desc, uid).
+	 * @return void
 	 */
 	public function addLog($priority, $viewable, $data = array())
 		{
@@ -60,6 +74,11 @@ class log extends user {
 
 		}
 
+	/**
+	 * Get the current page URL where the log action is called.
+	 *
+	 * @return string
+	 */
 	public function getUrl()
 		{
 

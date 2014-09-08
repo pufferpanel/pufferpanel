@@ -18,61 +18,69 @@
  */
 namespace Language;
 
+/**
+ * PufferPanel Core Language Class
+ */
 class lang {
 
- 	public function __construct($language){
+	/**
+	 * Constructor class for language
+	 *
+	 * @param string $language The language to load.
+	 * @return void
+	 */
+	public function __construct($language){
 
- 		$this->_language = $language;
+		$this->_language = $language;
 
-		/*
-		 * Get Current Language
-		 */
 		if(!file_exists(__DIR__.'/lang/'.$language.'.json'))
 			exit('Unable to load the required language file! lang/'.$language.'.json');
 
 		$this->loaded_language = json_decode(file_get_contents(__DIR__.'/lang/'.$language.'.json'), true);
 
- 	}
+	}
 
- 	public function tpl($template){
+	/**
+	 * Returns the language value associated with a key. Graceful fallback to English if translated version doesn't exist.
+	 *
+	 * @param string $template The language key.
+	 * @return string
+	 */
+	public function tpl($template){
 
-		/*
-		 * Template Changes
-		 */
 		$template = str_replace(".", "_", $template);
 
-		/*
-		 * Return Language Value
-		 */
- 		if(array_key_exists($template, $this->loaded_language))
- 			return $this->loaded_language[$template];
- 		else{
+		if(array_key_exists($template, $this->loaded_language))
+			return $this->loaded_language[$template];
+		else{
 
- 			/*
- 			 * Check if Key exists in the English Version
- 			 */
- 			if($this->_language == "en")
- 				return $template;
- 			else{
+			if($this->_language == "en")
+				return $template;
+			else{
 
- 				$this->load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
+				$this->load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
 
- 					if(array_key_exists($template, $this->load_english))
- 						return $this->load_english[$template];
- 					else
- 						return $template;
+					if(array_key_exists($template, $this->load_english))
+						return $this->load_english[$template];
+					else
+						return $template;
 
- 			}
+			}
 
- 		}
+		}
 
- 	}
+	}
 
- 	public function loadTemplates() {
+	/**
+	 * Returns the loaded langauge as an array.
+	 *
+	 * @return array
+	 */
+	public function loadTemplates() {
 
- 		return $this->loaded_language;
+		return $this->loaded_language;
 
- 	}
+	}
 
  }
 
