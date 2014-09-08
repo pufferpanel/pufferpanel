@@ -22,8 +22,17 @@
  */
 namespace Page;
 
+/**
+ * Page components trait to allow access in other classes and functions easily.
+ */
 trait components {
 
+	/**
+	 * Redirects the user to a specified page automatically depending on headers.
+	 *
+	 * @param string $url The URL to redirect the user to.
+	 * @return void
+	 */
 	public static function redirect($url) {
 
 		if(!headers_sent()){
@@ -34,6 +43,11 @@ trait components {
 
 	}
 
+	/**
+	 * Generates a URL.
+	 *
+	 * @return string
+	 */
 	public static function genRedirect(){
 
 		$https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
@@ -41,8 +55,10 @@ trait components {
 
 	}
 
-	/*
+	/**
 	 * Fixes issue with twig not accepting empty array values
+	 *
+	 * @return array
 	 */
 	public static function twigGET() {
 
@@ -57,16 +73,6 @@ trait components {
 		}
 
 		return $return;
-
-	}
-
-}
-
-trait CURL {
-
-	public function makeConnection() {
-
-		return false;
 
 	}
 
