@@ -17,10 +17,29 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+/**
+ * PufferPanel Core GSD Implementation Class
+ */
 class query {
 
 	use Database\database;
 
+	/**
+	 * @param array $_nodeData
+	 */
+	private $_nodeData = array();
+
+	/**
+	* @param array $_queryData
+	*/
+	private $_queryData = array();
+
+	/**
+	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
+	 *
+	 * @param int $serverid The ID of the server that will be implementing this class.
+	 * @return array Returns an array on success or false on failure.
+	 */
 	public function __construct($serverid){
 
 		if($serverid === false)
@@ -29,8 +48,6 @@ class query {
 
 			$this->mysql = self::connect();
 			$this->gsid = (int)$serverid;
-			$this->_queryData = array();
-			$this->_nodeData = array();
 
 			/*
 			 * Load Information into Script
@@ -65,17 +82,20 @@ class query {
 					 foreach($this->node as $this->id => $this->val)
 					 	$this->_nodeData = array_merge($this->_nodeData, array($this->id => $this->val));
 
-				}else{
+				}else
 					$this->_nodeData = false;
-					exit('here');
-				}
 
 		}
 
 	}
 
-	/*
-	 * Get status of any specificed server
+	/**
+	 * Gets the status of any specified server given an IP address.
+	 *
+	 * @param string $ip The IP address of the main GSD server to check aganist.
+	 * @param int $id The GSD ID of the server to check.
+	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
+	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
 	public function check_status($ip, $id, $secret){
 
@@ -90,9 +110,6 @@ class query {
 
 		$this->raw = json_decode($this->gatherData, true);
 
-			/*
-			 * Valid Data was Returned
-			 */
 			if(!$this->gatherData)
 				return false;
 			else
@@ -106,8 +123,11 @@ class query {
 
 	}
 
-	/*
-	 * Get status of currently selected server
+	/**
+	 * Gets the status of any specified server given an IP address.
+	 *
+	 * @param int $override If an ID is provided this function will check that specific server, otherwise it is assumed to be the loaded server.
+	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
 	public function online($override = false) {
 
@@ -115,9 +135,6 @@ class query {
 			return false;
 		else {
 
-			/*
-			 * Allow Override of Specific Server (used for pinging)
-			 */
 			$this->_queryData['gsd_id'] = ($override !== false) ? (int)$override : $this->_queryData['gsd_id'];
 
 			$this->context = stream_context_create(array(
@@ -159,6 +176,11 @@ class query {
 
 	}
 
+	/**
+	 * Returns the process ID of the last server query.
+	 *
+	 * @return int
+	 */
 	public function pid() {
 
 		if($this->online() === true)
@@ -168,6 +190,12 @@ class query {
 
 	}
 
+	/**
+	 * Returns process information for the last server query.
+	 *
+	 * @param string $element A specific part of the JSON to return, if not provided the entire array is returned.
+	 * @return mixed
+	 */
 	public function retrieve_process($element = null) {
 
 		if($this->online() === true)
@@ -180,6 +208,12 @@ class query {
 
 	}
 
+	/**
+	* Returns data about the last server query.
+	*
+	* @param string $element A specific part of the JSON to return, if not provided the entire array is returned.
+	* @return mixed
+	*/
 	public function retrieve($element = null) {
 
 		if($this->online() === true)
