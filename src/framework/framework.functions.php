@@ -31,6 +31,7 @@ trait general {
 	 *
 	 * @param string $base The base text to use for the username.
 	 * @return string Returns the unique username beginning with mc-.
+	 * @static
 	 */
 	public static function generateFTPUsername($base) {
 

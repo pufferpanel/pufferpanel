@@ -16,18 +16,31 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-
-/*
- *Database Connection
- */
-
 namespace Database;
 
+/**
+ * PufferPanel Core Database Trait
+ */
 trait database {
 
+	/**
+	 * @param mixed $db
+	 * @static
+	 */
 	protected static $db;
+
+	/**
+	* @param string $salt
+	* @static
+	*/
 	public static $salt;
 
+	/**
+	 * Builds the database connection and allows it to be called multiple times.
+	 *
+	 * @return void
+	 * @static
+	 */
 	public static function buildConnection(){
 
 		require('configuration.php');
@@ -67,6 +80,12 @@ trait database {
 
 	}
 
+	/**
+	 * Connects to the database by calling the builder function.
+	 *
+	 * @return object
+	 * @static
+	 */
 	public static function connect() {
 
 		if (!self::$db) {
@@ -81,32 +100,62 @@ trait database {
 
 }
 
+/**
+ * Core PufferPanel Database Class.
+ * Designed to keep track of the number of queries and allow for advanced debugging if necessary.
+ */
 class databaseInit extends \PDO {
 
 	use database;
 
+	/**
+	* @param int $queryCounter
+	* @static
+	*/
 	private static $queryCounter = 0;
 
-	public function query($query)
-	{
+	/**
+	* @param string $query
+	* @return object
+	*/
+	public function query($query) {
+
 	    ++self::$queryCounter;
 	    return parent::query($query);
+
 	}
 
-	public function prepare($statement, $options = array())
-	{
+	/**
+	 * @param string $statement
+	 * @param array $options
+	 * @return object
+	 */
+	public function prepare($statement, $options = array()){
+
 	    ++self::$queryCounter;
 	    return parent::prepare($statement, $options);
+
 	}
 
-	public function exec($statement)
-	{
+	/**
+	 * @param string $statement
+	 * @return object
+	 */
+	public function exec($statement) {
+
 	    ++self::$queryCounter;
 	    return parent::exec($statement);
+
 	}
 
+	/**
+	 * @return int Returns the total number of queries executed on a page.
+	 * @static
+	 */
 	public static function getCount(){
+
 		return self::$queryCounter;
+
 	}
 
 }

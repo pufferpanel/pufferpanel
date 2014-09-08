@@ -32,6 +32,7 @@ trait components {
 	 *
 	 * @param string $url The URL to redirect the user to.
 	 * @return void
+	 * @static
 	 */
 	public static function redirect($url) {
 
@@ -47,6 +48,7 @@ trait components {
 	 * Generates a URL.
 	 *
 	 * @return string
+	 * @static
 	 */
 	public static function genRedirect(){
 
@@ -59,6 +61,7 @@ trait components {
 	 * Fixes issue with twig not accepting empty array values
 	 *
 	 * @return array
+	 * @static
 	 */
 	public static function twigGET() {
 
