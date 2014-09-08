@@ -92,7 +92,7 @@ class server extends user {
 	 * Provides the corresponding value for the id provided from the MySQL Database.
 	 *
 	 * @param string $id The column value for the data you need (e.g. server_name).
-	 * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
 	public function getData($id = null){
 
@@ -112,8 +112,8 @@ class server extends user {
 	/**
 	 * Returns data about the node in which the server selected is running.
 	 *
-	 * @param string|nukk $id The column value for the data you need (e.g. sftp_ip).
-	 * @return string|array|bool A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+	 * @param string $id The column value for the data you need (e.g. sftp_ip).
+	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
 	public function nodeData($id = null) {
 
@@ -172,7 +172,7 @@ class server extends user {
 	 * Rebuilds server data using a specified ID. Useful for Admin CP applications.
 	 *
 	 * @param int $userid The server ID.
-	 * @return array|bool Returns an array on success or false on failure.
+	 * @return mixed Returns an array on success or false on failure.
 	 */
 	private function _rebuildData($userid){
 
@@ -222,7 +222,7 @@ class server extends user {
 	 * @param string $hash The server hash.
 	 * @param int $userid The ID of the user who is requesting the server information.
 	 * @param int $isroot The root administrator status of the user requesting the server information.
-	 * @return array|bool Returns an array on success or false on failure.
+	 * @return mixed Returns an array on success or false on failure.
 	 */
 	private function _buildData($hash, $userid, $isroot){
 
