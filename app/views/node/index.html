@@ -218,7 +218,7 @@
 			        dataLabels: {
 			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
 		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' +
-		                   	'<span style="font-size:10px;color:silver">/ 128 MB</span></div>'
+		                   	'<span style="font-size:10px;color:silver">/ {{ server.max_ram }} MB</span></div>'
 			        }
 			    }]
 
