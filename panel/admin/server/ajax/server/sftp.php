@@ -38,23 +38,14 @@ if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
 /*
  * Select Node, User, & Server Information
  */
-$select = $mysql->prepare("SELECT `ftp_user`, `name`, `owner_id` FROM `servers` WHERE `id` = ?");
-$select->execute(array($_POST['sid']));
-    $server = $select->fetch();
-
-$selectUser = $mysql->prepare("SELECT `email` FROM `users` WHERE `id` = ?");
-$selectUser->execute(array($server['owner_id']));
-    $user = $selectUser->fetch();
-
-$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = ?");
-$selectNode->execute(array($_POST['nid']));
-    $node = $selectNode->fetch();
+$core->server->rebuildData($_POST['sid']);
+$core->user->rebuildData($core->server->getData('owner_id'));
 
 /*
  * Update Server SFTP Information
  */
-$iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
-$pass = openssl_encrypt($_POST['sftp_pass'], 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+$iv = $core->auth->generate_iv();
+$pass = $core->auth->encrypt($_POST['sftp_pass'], $core->auth->generate_iv());
 
 $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
     ':sid' => $_POST['sid'],
@@ -63,19 +54,14 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
 ));
 
 /*
- * Connect to Node and Execute Password Update
- */
-$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./update_pass.sh "'.$server['ftp_user'].'" "'.$_POST['sftp_pass'].'"', false);
-
-/*
  * Send the User an Email
  */
 if(isset($_POST['email_user'])){
 
     $core->email->buildEmail('admin_new_sftppass', array(
         'PASS' => $_POST['sftp_pass'],
-        'SERVER' => $server['name']
-    ))->dispatch($user['email'], $core->settings->get('company_name').' - Your SFTP Password was Reset');
+        'SERVER' => $core->server->getData('name')
+    ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Your FTP Password was Reset');
 
 }
 

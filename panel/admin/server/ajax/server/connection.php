@@ -31,16 +31,11 @@ $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['serv
 if(!isset($_POST['server_ip'], $_POST['server_port'], $_POST['nid']))
 	Page\components::redirect('../../view.php?id='.$_POST['sid']);
 
-$select = $mysql->prepare("SELECT `ports`, `ips` FROM `nodes` WHERE `id` = :nid");
-$select->execute(array(':nid' => $_POST['nid']));
-$node = $select->fetch();
+$core->server->rebuildData($_POST['sid']);
+$core->user->rebuildData($core->server->getData('owner_id'));
 
-$select = $mysql->prepare("SELECT `server_port`, `server_ip` FROM `servers` WHERE `id` = :sid");
-$select->execute(array(':sid' => $_POST['sid']));
-$server = $select->fetch();
-
-$ports = json_decode($node['ports'], true);
-$ips = json_decode($node['ips'], true);
+$ports = json_decode($core->server->nodeData('ports'), true);
+$ips = json_decode($core->server->nodeData('ips'), true);
 
 if(!array_key_exists($_POST['server_ip'], $ports))
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
@@ -48,7 +43,7 @@ if(!array_key_exists($_POST['server_ip'], $ports))
 if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
 
-if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $server['server_port'])
+if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $core->server->getData('server_port'))
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
 
 $mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port WHERE `id` = :sid")->execute(array(
@@ -60,8 +55,8 @@ $mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port W
 /*
  * Update Old
  */
-$ports[$server['server_ip']][$server['server_port']] = 1;
-$ips[$server['server_ip']]['ports_free']++;
+$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')] = 1;
+$ips[$core->server->getData('server_ip')]['ports_free']++;
 
 /*
  * Update Old
@@ -74,5 +69,25 @@ $mysql->prepare("UPDATE `nodes` SET `ports` = :ports, `ips` = :ips WHERE `id` = 
 	':ips' => json_encode($ips),
 	':nid' => $_POST['nid']
 ));
+
+/*
+* Build the Data
+*/
+$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id');
+$data = json_encode(array(
+	"gameport" => (int)$_POST['server_port'],
+	"gamehost" => $_POST['server_ip']
+));
+
+/*
+* Run Query Aganist GSD
+*/
+$curl = curl_init($url);
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+	'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+));
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
 Page\components::redirect('../../view.php?id='.$_POST['sid']);
