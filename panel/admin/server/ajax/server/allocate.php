@@ -26,6 +26,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_POST['sid']))
 	Page\components::redirect('../../find.php');
 
+$core->server->rebuildData($_POST['sid']);
+$core->user->rebuildData($core->server->getData('owner_id'));
+
 /*
  * Validate Disk & Memory
  */
@@ -33,13 +36,31 @@ if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
 
 $mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHERE `id` = :sid")->execute(array(
-    ':sid' => $_POST['sid'],
+    ':sid' => $core->server->getData('id'),
     ':ram' => $_POST['alloc_mem'],
     ':disk' => $_POST['alloc_disk']
 ));
 
 /*
+ * Build the Data
+ */
+$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id');
+$data = json_encode(array(
+	"variables" => array(
+		"-Xmx" => (int)$_POST['alloc_mem']
+	)
+));
+
+/*
  * Run Query Aganist GSD
  */
+$curl = curl_init($url);
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+	'X-Access-Token: '.$core->server->nodeData('gsd_secret')
+));
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
 Page\components::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
+?>
