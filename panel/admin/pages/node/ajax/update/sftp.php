@@ -38,13 +38,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 	$mysql->prepare("UPDATE `nodes` SET `sftp_ip` = :ip WHERE `id` = :nid")->execute(array(':ip' => $_POST['sftp_ip'], ':nid' => $_POST['nid']));
 	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
 
-		':ssh_priv' => $_POST['ssh_priv_key'],
-		':ssh_secret' => $ssh_secret,
-		':ssh_secret_iv' => $ssh_secret_iv,
-		':nid' => $_POST['nid']
-	));
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
-
 }
 
 ?>
