@@ -39,19 +39,7 @@ $mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHE
 ));
 
 /*
- * Select Node, User, & Server Information
+ * Run Query Aganist GSD
  */
-$select = $mysql->prepare("SELECT `ftp_user`, `node` FROM `servers` WHERE `id` = ?");
-$select->execute(array($_POST['sid']));
-    $server = $select->fetch();
-
-$selectNode = $mysql->prepare("SELECT `password`, `encryption_iv` FROM `nodes` WHERE `id` = ?");
-$selectNode->execute(array($server['node']));
-    $node = $selectNode->fetch();
-
-/*
- * Update Disk Space
- */
-$core->ssh->generateSSH2Connection($node['id'], true)->executeSSH2Command('cd /srv/scripts; sudo ./update_disk.sh '.$server['ftp_user'].' '.($_POST['alloc_disk'] - 1024).' '.$_POST['alloc_disk'], false);
 
 Page\components::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
