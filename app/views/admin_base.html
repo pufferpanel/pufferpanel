@@ -43,15 +43,21 @@
 			<div class="col-3">
 				<div class="list-group">
 					<a href="{{ settings.master_url }}admin/index.php" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
-					<a href="{{ settings.master_url }}admin/account/permissions/perms.php" id="sidenav_permissions-perms" class="list-group-item">Admin Permissions</a>
 				</div>
 				<div class="list-group">
-					<a href="#" class="list-group-item list-group-item-heading"><strong>Configuration</strong></a>
-					<a href="{{ settings.master_url }}admin/configuration/global.php" id="sidenav_configuration-global" class="list-group-item">Global Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/subdomains.php" id="sidenav_configuration-subdomains" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/modpacks.php" id="sidenav_configuration-modpacks" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/configuration/backups.php" id="sidenav_configuration-backups" class="list-group-item">Subdomain Settings</a>
-					<a href="{{ settings.master_url }}admin/api/view.php" id="sidenav_api-view" class="list-group-item">API Settings</a>
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
+					<a href="{{ settings.master_url }}admin/config/global.php" id="sidenav_config-global" class="list-group-item">Global Settings</a>
+					<a href="{{ settings.master_url }}admin/config/urls.php" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
+					<a href="{{ settings.master_url }}admin/config/email.php" id="sidenav_config-email" class="list-group-item">Email Settings</a>
+					<a href="{{ settings.master_url }}admin/config/captcha.php" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Modules</strong></a>
+					<a href="#admin/modules/permissions/index.php" id="sidenav_permissions-index" class="list-group-item">Admin Permissions</a>
+					<a href="#admin/modules/modpacks/index.php" id="sidenav_modpacks-index" class="list-group-item">Modpack Manager</a>
+					<a href="#admin/modules/backups/index.php" id="sidenav_backups-index" class="list-group-item">Backup Manager</a>
+					<a href="#admin/modules/plugins/index.php" id="sidenav_plugins-index" class="list-group-item">Plugin Installer</a>
+					<a href="#admin/modules/subaccounts/index.php" id="sidenav_subaccounts-index" class="list-group-item">Subaccounts</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
@@ -86,5 +92,8 @@
 		</div>
 	</div>
 	{% block javascript %}{% endblock %}
+	<script type="text/javascript">
+		if($.urlParam("error")!=null){var field=$.urlParam("error");var exploded=field.split("|");$.each(exploded,function(key,value){$('[name="'+value+'"]').parent().parent().addClass("has-error")});var obj=$.parseJSON($.cookie("__TMP_pp_admin_updateglobal"));$.each(obj,function(key,value){$('[name="'+key+'"]').val(value)})};
+	</script>
 </body>
 </html>

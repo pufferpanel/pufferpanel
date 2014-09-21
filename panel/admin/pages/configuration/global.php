@@ -103,66 +103,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 						</form>
 					</div>
 					<div class="tab-pane" id="general">
-						<h3>General Settings</h3><hr />
-						<form action="actions/general.php" method="POST">
-							<fieldset>
-								<div class="row">
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="force_online" <?php echo ($core->settings->get('force_online') == 1) ? 'checked="checked"' : null; ?>/> Force Online Mode</label><br />
-											<p><small class="text-muted"><em>Checking this box will force servers to be run in <code>online-mode=true</code>. Checking this box will prevent Bungeecord servers from being able to run on the panel.</em></small></p>
-										</div>
-									</div>
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="use_api" <?php echo ($core->settings->get('use_api') == 1) ? 'checked="checked"' : null; ?>/> Enable API System</label><br />
-											<p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="enable_custom_domain" <?php echo ($core->settings->get('enable_custom_domain') == 1) ? 'checked="checked"' : null; ?>/> Enable Subdomain Manager</label><br />
-											<p><small class="text-muted"><em>Checking this box will allow for users to set a custom domain name from the settings that you provide on the <a href="#">subdomain management page</a>.</em></small></p>
-										</div>
-									</div>
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="enable_plugin_manager" <?php echo ($core->settings->get('enable_plugin_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Plugin Manager</label><br />
-											<p><small class="text-muted"><em>Checking this box will enable the plugin manager for users. This allows for automatic installiation of plugins from the Bukkit Repo.</em></small></p>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="enable_modpack_manager" <?php echo ($core->settings->get('enable_modpack_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Modpack Manager</label><br />
-											<p><small class="text-muted"><em>Checking this box will allow for users to select a custom modpack from their server management page, and allows for admins to specifiy modpacks that are avaliable for use.</em></small></p>
-										</div>
-									</div>
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="enable_backup_manager" <?php echo ($core->settings->get('enable_backup_manager') == 1) ? 'checked="checked"' : null; ?>/> Enable Backup Manager</label><br />
-											<p><small class="text-muted"><em>Checking this box will enable users to make backups of their server at will. You can specify per-server limits for backups, or set global limits.</em></small></p>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-6 nopad">
-										<div>
-											<label><input type="checkbox" name="permissions[]" value="enable_subusers" <?php echo ($core->settings->get('enable_subusers') == 1) ? 'checked="checked"' : null; ?>/> Enable Sub-Users</label><br />
-											<p><small class="text-muted"><em>Checking this box will allow for users to manually add users to their servers who can access certain settings of the panel to control their server.</em></small></p>
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<div>
-										<input type="submit" value="Update Settings" class="btn btn-primary" />
-									</div>
-								</div>
-							</fieldset>
-						</form>
+
 					</div>
 					<div class="tab-pane" id="2fa">
 						<h3>2-Factor Authentication</h3><hr />
@@ -276,80 +217,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		</div>
 	</div>
 	<script type="text/javascript">
-		$(document).ready(function(){
-			var method = $("#smail_method :selected").val();
-			if(method == "postmark"){
-				$("#mandrill").hide();
-				$("#mailgun").hide();
-				$("#sendgrid").hide();
-			}else if(method == "mandrill"){
-				$("#postmark").hide();
-				$("#mailgun").hide();
-				$("#sendgrid").hide();
-			}else if(method == "mailgun"){
-				$("#mandrill").hide();
-				$("#postmark").hide();
-				$("#sendgrid").hide();
-			}else if(method == "sendgrid"){
-				$("#mandrill").hide();
-				$("#postmark").hide();
-				$("#mailgun").hide();
-			}else{
-				$("#mandrill").hide();
-				$("#postmark").hide();
-				$("#mailgun").hide();
-				$("#sendgrid").hide();
-			}
-			$("#smail_method").change(function(){
-					var method = $("#smail_method :selected").val();
-					if(method == "postmark"){
-						if($("#postmark").not(':visible')){
-							$("#mandrill").hide();
-							$("#mailgun").hide();
-							$("#sendgrid").hide();
-							$("#postmark").show();
-						}
-					}else if(method == "mandrill"){
-						if($("#mandrill").not(':visible')){
-							$("#postmark").hide();
-							$("#mailgun").hide();
-							$("#sendgrid").hide();
-							$("#mandrill").show();
-						}
-					}else if(method == "mailgun"){
-						if($("#mailgun").not(':visible')){
-							$("#postmark").hide();
-							$("#mandrill").hide();
-							$("#sendgrid").hide();
-							$("#mailgun").show();
-						}
-					}else if(method == "sendgrid"){
-						if($("#sendgrid").not(':visible')){
-							$("#postmark").hide();
-							$("#mandrill").hide();
-							$("#mailgun").hide();
-							$("#sendgrid").show();
-						}
-					}else{
-						$("#mandrill").hide();
-						$("#mailgun").hide();
-						$("#postmark").hide();
-						$("#sendgrid").hide();
-					}
-			});
 
-			if($.urlParam('error') != null){
-				var field = $.urlParam('error');
-				var exploded = field.split('|');
-					$.each(exploded, function(key, value) {
-						$('[name="' + value + '"]').parent().parent().addClass('has-error');
-					});
-				var obj = $.parseJSON($.cookie('__TMP_pp_admin_updateglobal'));
-					$.each(obj, function(key, value) {
-						$('[name="' + key + '"]').val(value);
-					});
-			}
-		});
 	</script>
 </body>
 </html>

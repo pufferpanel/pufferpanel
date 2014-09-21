@@ -2,17 +2,17 @@
 /*
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
- 
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
- 
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
@@ -61,12 +61,12 @@ else
 			<div class="col-9">
 				<h3>Modpack: <strong><?php echo $pack['name'].' ('.$pack['version'].')'; ?></strong></h3>
 				<h5>Modpack File Name: <strong><?php echo $pack['hash']; ?>.zip</strong></h5><hr />
-				<?php 
-					
+				<?php
+
 					if(isset($_GET['disp']) && !empty($_GET['disp'])){
-					
+
 						switch($_GET['disp']){
-						
+
 							case 'missing_args':
 								echo '<div class="alert alert-danger">Not all arguments were passed by the script.</div>';
 								break;
@@ -78,15 +78,15 @@ else
 								break;
 							case 'ver_fail':
 								echo '<div class="alert alert-danger">Invalid pack version was provided. Versions must be at least one character, and no more than thirty-two characters. Allowed characters: <strong>a-zA-Z0-9._-</strong></div>';
-								break;						
+								break;
 						}
-					
+
 					}else if(isset($_GET['success'])){
-					
+
 						echo '<div class="alert alert-success">Successfully updated the Modpack settings.</div>';
-					
+
 					}
-				
+
 				?>
 				<form action="ajax/modpack/update.php" method="post">
 					<fieldset>
@@ -146,22 +146,22 @@ else
 					</thead>
 					<tbody>
 						<?php
-							
+
 							$servers = $mysql->prepare("SELECT * FROM `servers` WHERE `modpack` = :mpack");
 							$servers->execute(array(
 								':mpack' => $pack['hash']
 							));
-							
+
 							while($row = $servers->fetch()){
-								
+
 								echo '<tr>
 										<td><a href="../server/view.php?id='.$row['id'].'">'.$row['name'].'</a></td>
 										<td>'.$core->settings->nodeName($row['node']).'</td>
 										<td>'.$row['server_ip'].':'.$row['server_port'].'</td>
 									</tr>';
-							
+
 							}
-						
+
 						?>
 					</tbody>
 				</table>
@@ -175,12 +175,12 @@ else
 								<h4 class="modal-title" id="DeleteModpack">Delete Modpack</h4>
 							</div>
 							<div class="modal-body">
-								<?php 
-									
+								<?php
+
 									if(isset($_GET['error']) && $_GET['error'] == "pack_delete" && isset($_GET['disp']) && !empty($_GET['disp'])){
-									
+
 										switch($_GET['disp']){
-										
+
 											case 'missing_params':
 												echo '<div class="alert alert-danger">Not all arguments were passed. This is often caused by not setting a new default pack. You must set a new default pack if deleting the current default pack. If there are no packs to select please upload a new one and set it as default.</div>';
 												break;
@@ -195,11 +195,11 @@ else
 												break;
 											case 'new_default_noexist':
 												echo '<div class="alert alert-danger">The new default pack you selected does not exist in the system.  If there are no packs to select please upload a new one and set it as default.</div>';
-												break;						
+												break;
 										}
-									
+
 									}
-								
+
 								?>
 								<div class="alert alert-danger">Deleting this Modpack is <strong>irreversible</strong>, all servers currently using it will be moved to the Modpack that you define below.</div>
 								<?php if($pack['default'] == 1){ ?>
@@ -210,18 +210,18 @@ else
 											<select class="form-control" name="pack_newdefault">
 												<option value="no-continue" disabled="disbaled">-- Select a Modpack</option>
 												<?php
-												
+
 													$packs = $mysql->prepare("SELECT * FROM `modpacks` WHERE `hash` != :mid");
 													$packs->execute(array(':mid' => $_GET['mid']));
-													
+
 													if($packs->rowCount() > 0){
-														
+
 														while($row = $packs->fetch())
 															echo '<option value="'.$row['hash'].'">'.$row['name'].' ('.$row['version'].')</option>';
-															
+
 													}else
 														echo '<option value="no-continue" disabled="disbaled">No Avaliable Modpacks</option>';
-												
+
 												?>
 											</select>
 										</div>
@@ -275,7 +275,7 @@ else
 				var obj = $.parseJSON($.cookie('__TMP_pp_admin_updatemodpack'));
 					$.each(obj, function(key, value) {
 						$('[name="' + key + '"]').val(value);
-					});			
+					});
 			}
 		});
 	</script>

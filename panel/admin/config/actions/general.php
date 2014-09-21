@@ -17,17 +17,21 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../src/framework/framework.core.php');
+require_once('../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+    Page\components::redirect('../../../index.php?login');
 }
 
-if(!isset($_POST['pub_key'], $_POST['priv_key']))
-	Page\components::redirect('../global.php?error=pub_key|priv_key&tab=captcha');
+if(!isset($_POST['permissions']))
+    Page\components::redirect('../global.php?error=general_setting');
 
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_pub'")->execute(array($_POST['pub_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_priv'")->execute(array($_POST['priv_key']));
+$enableAPI = (!in_array('use_api', $_POST['permissions'])) ? 0 : 1;
+$forceOnline = (!in_array('force_online', $_POST['permissions'])) ? 0 : 1;
 
-Page\components::redirect('../global.php?tab=captcha');
+$mysql->exec("UPDATE `acp_settings` SET `setting_val` = $enableAPI WHERE `setting_ref` = 'use_api'");
+$mysql->exec("UPDATE `acp_settings` SET `setting_val` = $forceOnline WHERE `setting_ref` = 'force_online'");
+
+Page\components::redirect('../global.php');
+
 ?>

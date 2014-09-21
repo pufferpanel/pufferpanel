@@ -1,0 +1,82 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Global Settings{% endblock %}
+
+{% block content %}
+<div class="col-9">
+<h3>Company Name</h3><hr />
+	<form action="actions/cname.php" method="POST">
+		<fieldset>
+			<div class="input-group">
+				<input type="text" name="company_name" class="form-control" value="{{ settings.company_name }}" />
+				<span class="input-group-btn">
+					<input type="submit" value="Update" class="btn btn-primary" />
+				</span>
+			</div>
+		</fieldset>
+	</form>
+	<br />
+	<h3>General Settings</h3><hr />
+	<form action="actions/general.php" method="POST">
+		<fieldset>
+			<div class="row">
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="force_online" {% if settings.force_online == 1 %}checked="checked"{% endif %}/> Force Online Mode</label><br />
+						<p><small class="text-muted"><em>Checking this box will force servers to be run in <code>online-mode=true</code>. Checking this box will prevent Bungeecord servers from being able to run on the panel.</em></small></p>
+					</div>
+				</div>
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="use_api" {% if settings.use_api == 1 %}checked="checked"{% endif %}/> Enable API System</label><br />
+						<p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="enable_custom_domain" {% if settings.enable_custom_domain == 1 %}checked="checked"{% endif %}/> Enable Subdomain Manager</label><br />
+						<p><small class="text-muted"><em>Checking this box will allow for users to set a custom domain name from the settings that you provide on the <a href="#">subdomain management page</a>.</em></small></p>
+					</div>
+				</div>
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="enable_plugin_manager" {% if settings.enable_plugin_manager == 1 %}checked="checked"{% endif %}/> Enable Plugin Manager</label><br />
+						<p><small class="text-muted"><em>Checking this box will enable the plugin manager for users. This allows for automatic installiation of plugins from the Bukkit Repo.</em></small></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="enable_modpack_manager" {% if settings.enable_modpack_manager == 1 %}checked="checked"{% endif %}/> Enable Modpack Manager</label><br />
+						<p><small class="text-muted"><em>Checking this box will allow for users to select a custom modpack from their server management page, and allows for admins to specifiy modpacks that are avaliable for use.</em></small></p>
+					</div>
+				</div>
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="enable_backup_manager" {% if settings.enable_backup_manager == 1 %}checked="checked"{% endif %}/> Enable Backup Manager</label><br />
+						<p><small class="text-muted"><em>Checking this box will enable users to make backups of their server at will. You can specify per-server limits for backups, or set global limits.</em></small></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-6 nopad">
+					<div>
+						<label><input type="checkbox" name="permissions[]" value="enable_subusers" {% if settings.enable_subusers == 1 %}checked="checked"{% endif %}/> Enable Sub-Users</label><br />
+						<p><small class="text-muted"><em>Checking this box will allow for users to manually add users to their servers who can access certain settings of the panel to control their server.</em></small></p>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<input type="submit" value="Update Settings" class="btn btn-primary" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}{% endblock %}

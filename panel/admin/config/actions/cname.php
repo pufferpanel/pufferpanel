@@ -17,17 +17,18 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../src/framework/framework.core.php');
+require_once('../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+	Page\components::redirect('../../../index.php?login');
 }
 
-if(!isset($_POST['pub_key'], $_POST['priv_key']))
-	Page\components::redirect('../global.php?error=pub_key|priv_key&tab=captcha');
+if(!isset($_POST['company_name']))
+	Page\components::redirect('../global.php?error=company_name');
 
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_pub'")->execute(array($_POST['pub_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_priv'")->execute(array($_POST['priv_key']));
+$query = $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'company_name'");
+$query->execute(array($_POST['company_name']));
 
-Page\components::redirect('../global.php?tab=captcha');
+Page\components::redirect('../global.php');
+
 ?>
