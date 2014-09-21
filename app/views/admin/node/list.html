@@ -1,0 +1,48 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Add a New Node{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Node Name</th>
+				<th>IP Address</th>
+				<th>FTP Address</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for id, node in nodes %}
+				<tr class="dynUpdate" id="{{ node.node_ip }}">
+					<td><a href="view.php?id={{ node.id }}">{{ node.node }}</a></td>
+					<td>{{ node.node_ip }}</td>
+					<td>{{ node.sftp_ip }}</td>
+					<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	$(document).ready(function(){
+			$(".dynUpdate").each(function(index, data){
+				var connection = $(this).attr("id");
+				var element = $(this);
+				$.ajax({
+					type: "POST",
+					url: "ajax/get_status.php",
+					data: { ip: connection },
+						success: function(data) {
+							element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+							element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+						}
+				});
+			});
+	});
+</script>
+{% endblock %}

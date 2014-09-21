@@ -20,7 +20,7 @@ session_start();
 require_once('../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php?login');
+	Page\components::redirect('../../index.php?login');
 }
 
 echo $twig->render(
