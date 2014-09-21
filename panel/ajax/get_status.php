@@ -45,19 +45,19 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		 * Query Servers
 		 */
 		if($core->gsd->check_status($node['node_ip'], $server['gsd_id'], $node['gsd_secret']) === false)
-			exit('#d9534f');
+			exit('#E33200');
 		else
-			exit('#93c54b');
+			exit('#53B30C');
 
 	}else{
 
-		exit('#f47c3c');
+		exit('#FF9900');
 
 	}
 
 }else{
 
-	exit('#f47c3c');
+	exit('#FF9900');
 
 }
 ?>
