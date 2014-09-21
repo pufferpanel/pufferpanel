@@ -45,6 +45,7 @@ if(file_exists('install.lock'))
 						</div>
 						<div class="panel-body">
 							<p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/framework</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
+							<p>You are installing version <code>git-<?php echo trim(file_get_contents('../../../.git/refs/heads/master')); ?></code>. Please keep track of this information as we may request it when you report bugs.</p>
 						</div>
 					</div>
 					<?php
@@ -266,7 +267,7 @@ if(file_exists('install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.7.2 Beta distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../src/versions/current')).' ('.substr(trim(file_get_contents('../../../.git/refs/heads/master')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>
