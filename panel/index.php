@@ -50,110 +50,110 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
 }else if(isset($_GET['do']) && $_GET['do'] == 'login'){
 
-        if(isset($_POST['redirect']) && !empty($_POST['redirect']))
-            $postLoginURL = $_GET['redirect'];
-        else
-            $postLoginURL = 'servers.php';
+	/* XSRF Check */
+	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
+		Page\components::redirect('index.php?error=token');
 
-			if($core->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
+	if($core->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
+
+		/*
+		 * Get the Account Details
+		 */
+		$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
+		$selectAccount->execute(array($_POST['email']));
+
+		$row = $selectAccount->fetch();
+
+		/*
+		 * Validate TOTP Key
+		 */
+		if($row['use_totp'] == 1){
+
+			if($core->auth->validateTOTP($_POST['totp_token'], $row['totp_secret']) !== true){
+
+				$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail_totp', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'. The login failed due to TOTP 2FA mis-match.'));
+
+				Page\components::redirect('index.php?totp=error');
+
+			}
+
+		}
+
+		/*
+		 * Account Exists
+		 * Set Cookies and List Servers
+		 */
+		$token = $core->auth->keygen('12');
+		$expires = (isset($_POST['remember_me'])) ? (time() + 604800) : null;
+
+			setcookie("pp_auth_token", $token, $expires, '/');
+
+			$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr WHERE `email` = :email");
+			$updateUsers->execute(array(
+				':token' => $token,
+				':ipaddr' => $_SERVER['REMOTE_ADDR'],
+				':email' => $_POST['email']
+			));
+
+			/*
+			 * Send Email if Set
+			 */
+			if($row['notify_login_s'] == 1){
 
 				/*
-				 * Get the Account Details
+				 * Send Email
 				 */
-				$selectAccount = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
-				$selectAccount->execute(array($_POST['email']));
+				$core->email->generateLoginNotification('success', array(
+                    'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                    'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login  Notification');
 
-				$row = $selectAccount->fetch();
+            }
+
+            $core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
+
+			Page\components::redirect('servers.php');
+
+	}else{
+
+		/*
+		 * Spam Prevention
+		 * This makes sure that the email is even in our system so we don't randomly email a user who doesn't have an account.
+		 */
+		$selectUser = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
+		$selectUser->execute(array($_POST['email']));
+
+			if($selectUser->rowCount() == 1){
 
 				/*
-				 * Validate TOTP Key
+				 * Send Email if Set
 				 */
-				if($row['use_totp'] == 1){
+				$row = $selectUser->fetch();
+				if($row['notify_login_f'] == 1){
 
-					if($core->auth->validateTOTP($_POST['totp_token'], $row['totp_secret']) !== true){
-
-						$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail_totp', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'. The login failed due to TOTP 2FA mis-match.'));
-
-						Page\components::redirect('index.php?totp=error');
-
-					}
+					/*
+					 * Send Email
+					 */
+					$core->email->generateLoginNotification('failed', array(
+                        'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+                        'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                    ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login Failure Notification');
 
 				}
 
-				/*
-				 * Account Exists
-				 * Set Cookies and List Servers
-				 */
-				$token = $core->auth->keygen('12');
-				$expires = (isset($_POST['remember_me'])) ? (time() + 604800) : null;
-
-					setcookie("pp_auth_token", $token, $expires, '/', $core->settings->get('cookie_website'));
-
-					$updateUsers = $mysql->prepare("UPDATE `users` SET `session_id` = :token, `session_ip` = :ipaddr WHERE `email` = :email");
-					$updateUsers->execute(array(
-						':token' => $token,
-						':ipaddr' => $_SERVER['REMOTE_ADDR'],
-						':email' => $_POST['email']
-					));
-
-					/*
-					 * Send Email if Set
-					 */
-					if($row['notify_login_s'] == 1){
-
-						/*
-						 * Send Email
-						 */
-						$core->email->generateLoginNotification('success', array(
-                            'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
-                            'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                        ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login  Notification');
-
-                    }
-
-                    $core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
-
-					Page\components::redirect($postLoginURL);
-
-			}else{
-
-				/*
-				 * Spam Prevention
-				 * This makes sure that the email is even in our system so we don't randomly email a user who doesn't have an account.
-				 */
-				$selectUser = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
-				$selectUser->execute(array($_POST['email']));
-
-					if($selectUser->rowCount() == 1){
-
-						/*
-						 * Send Email if Set
-						 */
-						$row = $selectUser->fetch();
-						if($row['notify_login_f'] == 1){
-
-							/*
-							 * Send Email
-							 */
-							$core->email->generateLoginNotification('failed', array(
-                                'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
-                                'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-                            ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Login Failure Notification');
-
-						}
-
-					}
-
-                $core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
-
-				Page\components::redirect('index.php?error=true');
-
 			}
+
+        $core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
+
+		Page\components::redirect('index.php?error=true');
+
+	}
 
 }else{
 
 	echo $twig->render(
 			'panel/index.html', array(
+				'xsrf' => $core->auth->XSRF(),
 				'footer' => array(
 					'queries' => Database\databaseInit::getCount(),
 					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
