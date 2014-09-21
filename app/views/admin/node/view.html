@@ -89,7 +89,7 @@
 						{% for port, avaliable in ports %}
 							{% if loop.index is odd %}
 								{% if avaliable == 1 %}
-									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}\" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
+									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
 								{% else %}
 									<i class="fa fa-toggle-on"></i>
 								{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
@@ -99,7 +99,7 @@
 						{% for port, avaliable in ports %}
 							{% if loop.index is even %}
 								{% if avaliable == 1 %}
-									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}\" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
+									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
 								{% else %}
 									<i class="fa fa-toggle-on"></i>
 								{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
