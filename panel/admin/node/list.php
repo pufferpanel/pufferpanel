@@ -26,7 +26,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 $query = $mysql->prepare("SELECT * FROM `nodes`");
 $query->execute();
 
-//print_r($query->fetch());
 echo $twig->render(
     'admin/node/list.html', array(
         'nodes' => array($query->fetch()),
