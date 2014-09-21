@@ -29,6 +29,10 @@ $noShow = false;
 
 if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
+	/* XSRF Check */
+	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
+		Page\components::redirect('password.php?error=token');
+
 	$resp = recaptcha_check_answer($core->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
 
 	if($resp->is_valid){
@@ -131,6 +135,7 @@ echo $twig->render(
 		'panel/password.html', array(
 			'status' => $statusMessage,
 			'noshow' => $noShow,
+			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
