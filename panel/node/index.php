@@ -33,6 +33,7 @@ echo $twig->render(
 			'server' => array(
 				'node' => $core->server->nodeData('node'),
 				'gsd_id' => $core->server->getData('gsd_id'),
+				'gsd_secret' => $core->server->getData('gsd_secret'),
 				'max_ram' => $core->server->getData('max_ram'),
 				'disk_space' => $core->server->getData('disk_space'),
 				'server_ip' => $core->server->getData('server_ip'),
