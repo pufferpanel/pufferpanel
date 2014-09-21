@@ -12,7 +12,7 @@
 	{% if get.disp is defined and get.disp != 1 %}
 		<div class="alert alert-danger">
 			{% if get.disp == 'missing_warn' %}
-					echo 'You must agree to the warning before updating the information.
+				You must agree to the warning before updating the information.
 			{% elseif get.disp == 'missing_args' %}
 				Not all arguments were passed by the script.
 			{% elseif get.disp == 'ip_fail' %}
