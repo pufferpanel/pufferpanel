@@ -51,6 +51,7 @@ if(file_exists('install.lock'))
 
 						/* Permissions Checking */
 						$successList = null; $failedList = null;
+						$continue = true;
 
 						/*
 						 * Check to make sure PHP is at least 5.5.0
@@ -137,7 +138,6 @@ if(file_exists('install.lock'))
 					<hr />
 					<p><?php
 
-						$continue = true;
 						$successList = null; $failedList = null;
 
 						/* List of Required Dependencies */
