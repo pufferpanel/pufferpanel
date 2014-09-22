@@ -38,6 +38,12 @@ if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server
 	Page\components::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
+* GSD Must Be Online!
+*/
+if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
+	Page\components::redirect('../../add.php?disp=gsd_offline');
+
+/*
  * Validate Server Name
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))

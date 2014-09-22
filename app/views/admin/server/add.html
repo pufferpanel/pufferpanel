@@ -8,6 +8,8 @@
 	{% if get.disp is defined and get.disp != 1 %}
 		{% if get.disp == 'missing_args' %}
 			<div class="alert alert-danger">Not all arguments were passed by the script.</div>
+		{% elseif get.disp == 'gsd_offline' %}
+			<div class="alert alert-danger">The GSD daemon running on the server is not on or is blocked by your firewall. Please make sure it is accessable before creating a server.</div>
 		{% elseif get.disp == 's_fail' %}
 			<div class="alert alert-danger">The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-</div>
 		{% elseif get.disp == 'n_fail' %}
