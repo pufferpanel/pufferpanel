@@ -116,6 +116,27 @@ trait components {
 	}
 
 	/**
+	* Returns a valid UUID that is not currently in use.
+	*
+	* @param string $database
+	* @param string @column
+	* @return string
+	*/
+	public function generateUniqueUUID($database, $column){
+
+		$this->hash = $this->gen_UUID();
+
+		$this->query = $this->mysql->prepare("SELECT COUNT(*) FROM `{$database}` WHERE `{$column}` = :value");
+		$this->query->execute(array(':value' => $this->hash));
+
+			if($this->query->fetchColumn() > 0)
+				$this->generateServerUUID();
+			else
+				return $this->hash;
+
+	}
+
+	/**
 	 * Generates a random string of characters.
 	 *
 	 * @param int $amount

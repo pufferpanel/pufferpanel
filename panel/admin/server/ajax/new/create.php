@@ -27,9 +27,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
 /*
- * Set Values
- */
-$_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
+* Set Values
+*/
+@$_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
 
 /*
  * Are they all Posted?
@@ -113,9 +113,13 @@ $_POST['sftp_pass'] = $core->auth->encrypt($_POST['sftp_pass'], $iv);
  * Add Server to Database
  */
 $ftpUser = Functions\general::generateFTPUsername($_POST['server_name']);
-
-$serverHash = $core->auth->gen_UUID();
 $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar';
+
+/*
+ * Create Unique Values
+ */
+$serverHash = $core->auth->generateUniqueUUID('servers', 'hash');
+$gsdSecret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
 
 $add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
