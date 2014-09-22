@@ -2,9 +2,8 @@
 
 {% block scripts %}
 	{{ parent() }}
-	<script src="http://code.highcharts.com/highcharts.js"></script>
-	<script src="http://code.highcharts.com/highcharts-more.js"></script>
-	<script src="http://code.highcharts.com/modules/solid-gauge.src.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.line.js"></script>
 {% endblock %}
 {% block title %}Manage your Server{% endblock %}
 
@@ -46,14 +45,15 @@
 {% block content %}
 <div class="col-9">
 	<div class="col-12">
-		<h3 class="nopad">{{ lang.node_overview_stats_h1 }}</h3><hr />
-		<div class="row" style="margin: -30px auto -30px auto;width: 600px;">
-			<div id="container-cpu-loading" class="stats_loading_box"><i class="fa fa-refresh fa-spin"></i></div>
-			<div id="container-memory-loading" class="stats_loading_box" style="left: 255px;"><i class="fa fa-refresh fa-spin"></i></div>
-			<div id="container-disk-loading" class="stats_loading_box" style="left: 455px;"><i class="fa fa-refresh fa-spin"></i></div>
-			<div id="container-cpu" style="width: 200px; height: 200px; float: left"></div>
-			<div id="container-memory" style="width: 200px; height: 200px; float: left"></div>
-			<div id="container-disk" style="width: 200px; height: 200px; float: left"></div>
+		<h3 class="nopad">Memory Usage (Mb)</h3><hr />
+		<div class="row">
+			<canvas id="memoryChart" width="600" height="150"></canvas>
+		</div>
+	</div>
+	<div class="col-12">
+		<h3 class="nopad">CPU Usage (Percentage)</h3><hr />
+		<div class="row">
+			<canvas id="cpuChart" width="600" height="150"></canvas>
 		</div>
 	</div>
 	<div class="col-12">
@@ -87,29 +87,20 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$(window).load(function(){
+	$(document).ready(function(){
+		Date.prototype.timeNow = function () {
+			return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+		}
 		var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
+		var ctx = $("#memoryChart").get(0).getContext("2d");
+		var cty = $("#cpuChart").get(0).getContext("2d");
+		var memoryChartData={labels:["","","","","","","","","",""],datasets:[{label:"Memory Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};var cpuChartData={labels:["","","","","","","","","",""],datasets:[{label:"CPU Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};
+		var memoryChart = new Chart(ctx).Line(memoryChartData, {tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %}});
+		var cpuChartData = new Chart(cty).Line(cpuChartData, {tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %}});
 		socket.on('process', function (data) {
-			if($("#container-cpu-loading").is(":visible")){
-				$("#container-cpu-loading").fadeOut();
-			}
-			if($("#container-memory-loading").is(":visible")){
-				$("#container-memory-loading").fadeOut();
-			}
-			var chart = $('#container-cpu').highcharts();
-			if(chart){
-				var point = chart.series[0].points[0];
-				point.update(data.process.cpu);
-			}
-			var chart = $('#container-memory').highcharts();
-			if(chart){
-				var point = chart.series[0].points[0];
-				if(parseInt(data.process.memory / (1024 * 1024)) > {{ server.max_ram }}){
-					point.update(parseInt({{ server.max_ram }}));
-				}else{
-					point.update(parseInt(data.process.memory / (1024 * 1024)));
-				}
-			}
+			var currentTime = new Date();
+			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], currentTime.timeNow());memoryChart.removeData();
+			cpuChartData.addData([data.process.cpu], currentTime.timeNow());cpuChartData.removeData();
 		});
 		socket.on('query', function(data){
 			if($("#players_notice").is(":visible")){
@@ -125,142 +116,6 @@
 				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
 			}
 			$("img[data-toggle='tooltip']").tooltip();
-		});
-		$(function () {
-		    var gaugeOptions = {
-			    chart: {
-			        type: 'solidgauge'
-			    },
-			    title: null,
-			    pane: {
-			    	center: ['50%', '85%'],
-			    	size: '100%',
-			        startAngle: -90,
-			        endAngle: 90,
-		            background: {
-		                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-		                innerRadius: '60%',
-		                outerRadius: '100%',
-		                shape: 'arc'
-		            }
-			    },
-			    tooltip: {
-			    	enabled: false
-			    },
-			    yAxis: {
-					stops: [
-						[0.3, '#06BA00'], // green
-			        	[0.6, '#DBC200'], // yellow
-			        	[0.9, '#BA0000'] // red
-					],
-					lineWidth: 0,
-		            minorTickInterval: null,
-		            tickPixelInterval: 400,
-		            tickWidth: 0,
-			        title: {
-		                y: -70
-			        },
-		            labels: {
-		                y: 16
-		            }
-			    },
-		        plotOptions: {
-		            solidgauge: {
-		                dataLabels: {
-		                    y: -30,
-		                    borderWidth: 0,
-		                    useHTML: true
-		                }
-		            }
-		        }
-		    };
-		    $('#container-cpu').highcharts(Highcharts.merge(gaugeOptions, {
-		        yAxis: {
-		        	min: 0,
-		        	max: 100,
-		            title: {
-		                text: 'CPU Usage'
-		            },
-		            labels: {
-		            	enabled: false
-		            }
-		        },
-		        credits: {
-		        	enabled: false
-		        },
-		        series: [{
-		            name: 'CPU',
-		            data: [0],
-		            dataLabels: {
-		            	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} %</span><br/>' +
-		                   	'</div>'
-		            }
-		        }]
-		    }));
-		    $('#container-memory').highcharts(Highcharts.merge(gaugeOptions, {
-		        yAxis: {
-			        min: 0,
-			        max: parseInt({{ server.max_ram }}),
-			        title: {
-			            text: 'Memory Usage'
-			        },
-			        labels: {
-			        	enabled: false
-			        }
-			    },
-			    credits: {
-			    	enabled: false
-			    },
-			    series: [{
-			        name: 'Memory',
-			        data: [0],
-			        dataLabels: {
-			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' +
-		                   	'<span style="font-size:10px;color:silver">/ {{ server.max_ram }} MB</span></div>'
-			        }
-			    }]
-
-			}));
-			$('#container-disk').highcharts(Highcharts.merge(gaugeOptions, {
-			    yAxis: {
-			        min: 0,
-			        max: parseInt({{ server.disk_space }}),
-			        title: {
-			            text: 'Disk Usage'
-			        },
-			        labels: {
-			        	enabled: false
-			        }
-			    },
-			    credits: {
-			    	enabled: false
-			    },
-			    series: [{
-			        name: 'Disk',
-			        data: [0],
-			        dataLabels: {
-			        	format: '<div style="text-align:center"><span style="font-size:16px;color:' +
-			                ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y} MB</span><br/>' +
-			               	'<span style="font-size:10px;color:silver">/ {{ server.disk_space }} MB</span></div>'
-			        }
-			    }]
-
-			}));
-		});
-		$.ajax({
-			type: "POST",
-			url: "ajax/overview/data.php",
-			data: { command: 'stats' },
-		  		success: function(data) {
-					var chart = $('#container-disk').highcharts();
-					if(chart){
-						$("#container-disk-loading").fadeOut();
-						var point = chart.series[0].points[0];
-						point.update(parseInt(data));
-					}
-		 		}
 		});
 	});
 </script>
