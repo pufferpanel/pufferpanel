@@ -1,0 +1,121 @@
+{
+     "string_email": "إرسال"، 
+     "string_password": "كلمة المرور"، 
+     "string_login": "تسجيل الدخول"، 
+     "string_reset_password": "إعادة تعيين كلمة المرور"، 
+     "string_spam_protection": "حماية البريد المزعج" 
+     "string_again": "(مرة أخرى)"، 
+     "string_node": "العقدة" 
+     "string_name": "الاسم"، 
+     "string_connect": "الاتصال"، 
+     "string_status": "الحالة"، 
+     "string_offline": "غير متصل" 
+     "string_online": "أون لاين"، 
+     "string_connection": "اتصال"، 
+     "string_mem_alloc": "الذاكرة المخصصة" 
+     "string_disk_alloc": "القرص المخصصة" 
+     "string_start": "ابدأ"، 
+     "string_restart": "إعادة تشغيل"، 
+     "string_stop": "إيقاف"، 
+     "string_options": "الخيارات"، 
+     "string_search": "بحث"، 
+     "string_clear": "واضح" 
+     "string_refresh": "تحديث" 
+     "string_close": "إغلاق"، 
+     "string_generated_pass": "ولدت كلمة المرور"، 
+     "string_modpacks": "Modpacks" 
+     "string_sftp": "SFTP" 
+     "string_host": "المضيف"، 
+     "string_username": "اسم المستخدم"، 
+     "string_generate": "إنشاء"، 
+     "string_description": "الوصف"، 
+     "string_previous": "السابق"، 
+     "string_next": "التالي"، 
+     "string_about": "عن" 
+     "string_version": "النسخة" 
+     "string_published": "نشرت" 
+     "string_versions": "إصدارات" 
+     "string_save": "حفظ"، 
+     "footer_license": "مرخص PufferPanel تحت <a </A> href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\">-V3 GPL ترخيص." 
+     "footer_version": "</a> وتشغيل النسخة٪ ق زعتها <a href=\"http://pufferpanel.com/\"> PufferPanel التنمية." 
+     "footer_generated": "ولدت في الصفحة٪ s ثانية." 
+     "footer_queries": "المنفذة٪ ق استعلامات قاعدة البيانات." 
+     "sidebar_acc_actions": "الإجراءات الحساب"، 
+     "sidebar_server_acc": "تطبيقات خادم" 
+     "sidebar_server_sett": "إعدادات الخادم"، 
+     "sidebar_settings": "إعدادات"، 
+     "sidebar_servers": "يا خوادم" 
+     "sidebar_overview": "نظرة عامة"، 
+     "sidebar_console": "وحدة التحكم لايف"، 
+     "sidebar_files": "إدارة الملفات"، 
+     "sidebar_manage": "ملقم إدارة" 
+     "sidebar_plugins": "الإضافات خادم" 
+     "header_account": "الحساب"، 
+     "header_logout": "خروج"، 
+     "header_admin": "المسؤول CP" 
+     "login_login_h1": "تسجيل الدخول إلى PufferPanel" 
+     "reset_reset_h1": "إعادة تعيين كلمة المرور"، 
+     "settings_change_pass": "تغيير كلمة المرور"، 
+     "settings_update_email": "تحديث البريد الإلكتروني"، 
+     "settings_current_pass": "كلمة المرور الحالية"، 
+     "settings_new_pass": "كلمة المرور الجديدة"، 
+     "settings_new_email": "جديد إرسال"، 
+     "settings_notifications_h1": "تحديث تفضيلات الإخطار"، 
+     "settings_login_success": "نجاح تسجيل الدخول"، 
+     "settings_failed_login": "فشل تسجيل الدخول"، 
+     "settings_notify_email_me": "الرجاء مراسلتي"، 
+     "settings_notify_no_email_me": "لا مراسلتي"، 
+     "settings_update_preferences": "تفضيلات تحديث" 
+     "node_overview_stats_h1": "الاحصائيات نظرة عامة"، 
+     "node_overview_collect_usage": "محاولة لجمع معلومات الاستخدام، وهذا قد يستغرق بضع ثوان الرجاء التأكد الخادم على الانترنت." 
+     "node_overview_collect_disk": "جمع ​​المعلومات استخدام القرص، وهذا قد يستغرق بضع ثوان." 
+     "node_overview_no_players": "لا يوجد حاليا اعبين على الانترنت." 
+     "node_overview_disk_h1": "مساحة القرص المستخدمة" 
+     "node_overview_space_used": "أنت تستخدم٪ ق MB من الحد الأقصى ل٪ ق ميغابايت من مساحة القرص"، 
+     "node_overview_information_h1": "ملقم معلومات" 
+     "node_overview_players_h5": "اللاعبون أون لاين"، 
+     "node_overview_cpu_h5": "استخدام وحدة المعالجة المركزية"، 
+     "node_overview_memory_h5": "استخدام الذاكرة"، 
+     "node_overview_ajax_no_conn": "غير قادر على الاتصال العقدة." 
+     "node_overview_ajax_no_exec": "غير قادر على تنفيذ الأوامر على الملقم"، 
+     "node_console_command_help": "أدخل قيادة وحدة التحكم"، 
+     "node_console_scrollstop_alert": "لقد اخترت النص في وحدة لن التحديث التلقائي عندما يحدث هذا ويتم التحكم هذا للسماح لك بسهولة نسخ أو تحديد النص في وحدة التحكم للسماح منعش التلقائي مرة أخرى ببساطة حدد برنامج الأمم المتحدة لل. النص. "
+     "node_console_scrollstop_h1": "Scrollstop والتجارة؛ وحدة التحكم النافذة"، 
+     "node_console_ajax_server_started": "لقد بدأ Server بنجاح." 
+     "node_files_loading": "دليل تحميل الرجاء الانتظار." 
+     "node_files_name": "اسم الملف"، 
+     "node_files_size": "حجم الملف"، 
+     "node_files_modified": "آخر تعديل" 
+     "node_files_edit_daemon_error": "غير قادر على الاتصال الخفي." 
+     "node_files_edit_back": "عودة إلى إدارة الملفات"، 
+     "node_files_edit_type_error": "هذا النوع من الملفات لا يمكن تحريرها من خلال لوحة التحكم لدينا." 
+     "node_files_edit_no_file": "لم يتم تحديد الملفات التي يمكن تحريرها." 
+     "node_files_edit_error": "يمكنك العودة إلى مدير الملفات بواسطة <a href=\"index.php\"> بالضغط هنا </a>." 
+     "node_files_ajax_no_dir": "غير قادر على تحديد موقع الدليل طلب تسجيل خطأ." 
+     "node_files_ajax_no_dl": "غير قادر على الاتصال بالخادم للحصول على الملفات يرجى المحاولة مرة أخرى"، 
+     "node_files_ajax_saved": "تم حفظ الملف بنجاح." 
+     "node_files_ajax_no_save": "غير قادر على حفظ الملف"، 
+     "node_files_ajax_no_edit": "هذا النوع من الملفات لا يمكن تحريرها عبر مدير الملفات على الانترنت يرجى استخدام عميل FTP." 
+     "node_files_ajax_file_404": "الملف المحدد تعذر العثور على الخادم." 
+     "node_settings_modpack_modpack_h1": "ملقم إدارة Modpack" 
+     "node_settings_modpack_current": "Modpack الحالي"، 
+     "node_settings_modpack_install": "تثبيت Modpack" 
+     "node_settings_modpack_select": "\ u2014- اختر Modpack" 
+     "node_settings_jar_jar_h1": "ملقم جرة اسم" 
+     "node_settings_jar_jarfile_name": "اسم Jarfile" 
+     "node_settings_jar_update": "اسم التحديث"، 
+     "node_settings_sftp_sftp_h1": "إعدادات SFTP" 
+     "node_settings_ajax_installing_modpack": "تثبيت Modpack" 
+     "node_settings_ajax_modpack_error": "لا يمكنك استخدام تعطيل مدخلات النموذج باعتباره modpack" 
+     "node_plugins_welcome_h1": "البرنامج المساعد المثبت" 
+     "node_plugins_welcome":. "مرحبا بك في المدمج في المثبت المساعد يجمع هذا المثبت النتائج والبيانات من Bukget ويعرضها هنا في وسيلة سهلة لاستخدام الطريقة المثبت التلقائي يمكن أن يكون عربات التي تجرها الدواب في بعض الأحيان، وخاصة بالنسبة الإضافات المعقدة نوصي تحميل المحمول إلى جهاز الكمبيوتر الخاص بك أولا إذا أمكن. "
+     "node_plugins_search_h1": "البحث المساعد مستودع" 
+     "node_plugins_plugin_name": "اسم البرنامج المساعد"، 
+     "node_plugins_installed": "تم تثبيت البرنامج المساعد الخاص بك بنجاح." 
+     "node_plugins_installing": "الرجاء الانتظار بينما يتم تثبيت البرنامج المساعد الخاص بك هذه العملية قد تستغرق حوالي دقيقة واحدة لإكمال." 
+     "node_plugins_installing_warning": "لا تنقل بعيدا عن هذه الصفحة!" 
+     "node_plugins_error_term": "الرجاء إدخال مصطلح البحث صالح." 
+     "node_plugins_view_author": "يتم إنشاء هذا البرنامج المساعد والتي تحتفظ بها٪ ق." 
+     "node_plugins_view_view": "عرض هذا البرنامج المساعد المحول href=\"http://dev.bukkit.org/bukkit plugins/٪s/\" target=\"_blank\"> على Bukkit </A>." 
+     "node_ajax_generic_error": "تمت مصادفة خطأ مع هذا الطلب AJAX." 
+}

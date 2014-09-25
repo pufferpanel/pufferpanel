@@ -1,0 +1,121 @@
+{
+     "string_email" "ای میل"، 
+     "string_password": "پاس ورڈ"، 
+     "string_login": "لاگ ان"، 
+     "string_reset_password": "پاس ورڈ ری سیٹ کریں"، 
+     "string_spam_protection": "سپیم تحفظ"، 
+     "string_again": "(پھر)"، 
+     "string_node": "نوڈ"، 
+     "string_name": "نام"، 
+     "string_connect": "مربوط"، 
+     "string_status" "کی حیثیت"، 
+     "string_offline": "آف لائن"، 
+     "string_online": "آن لائن"، 
+     "string_connection": "کنکشن"، 
+     "string_mem_alloc": "میموری مختص"، 
+     "string_disk_alloc": "ڈسک مختص"، 
+     "string_start": "شروع کریں"، 
+     "string_restart" "دوبارہ شروع کریں"، 
+     "string_stop": "بند کرو"، 
+     "string_options": "اختیارات"، 
+     "string_search": "تلاش"، 
+     "string_clear" "صاف"، 
+     "string_refresh": "تازہ کریں"، 
+     "string_close" "بند"، 
+     "string_generated_pass": "پیدا پاس ورڈ"، 
+     "string_modpacks": "Modpacks"، 
+     "string_sftp": "SFTP"، 
+     "string_host": "میزبان"، 
+     "string_username": "صارف کا نام"، 
+     "string_generate": "بنائیں"، 
+     "string_description": "تفصیل"، 
+     "پچھلا"، "string_previous" 
+     "string_next": "اگلا"، 
+     "string_about": "کے بارے میں"، 
+     "string_version": "ورژن"، 
+     "شائع"، "string_published" 
+     "string_versions" "ورژن"، 
+     "string_save": "محفوظ کریں"، 
+     "footer_license": "PufferPanel ایک <a href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\"> GPL-V3 لائسنس </a> کے تحت لائسنس یافتہ ہے."، 
+     "footer_version": "چل رہا ورژن ہے٪ s <a href=\"http://pufferpanel.com/\"> PufferPanel ترقی کی طرف سے تقسیم کریں </a>."، 
+     "footer_generated": "صفحہ٪ s کو سیکنڈ میں پیدا."، 
+     "footer_queries": "٪ s کو ڈیٹا بیس سوالات پھانسی."، 
+     "sidebar_acc_actions": "اکاؤنٹ عوامل"، 
+     "sidebar_server_acc": "سرور عوامل"، 
+     "sidebar_server_sett": "سرور کی ترتیبات"، 
+     "sidebar_settings": "ترتیبات"، 
+     "sidebar_servers": "میرے سرور"، 
+     "sidebar_overview": "جائزہ"، 
+     "sidebar_console": "لائیو کنسول"، 
+     "sidebar_files": "فائل مینیجر"، 
+     "sidebar_manage": "سرور مینجمنٹ"، 
+     "sidebar_plugins": "سرور پلگ انز"، 
+     "header_account": "اکاؤنٹ"، 
+     "header_logout": "آؤٹ"، 
+     "header_admin": "ایڈمن CP"، 
+     "login_login_h1": "PufferPanel میں لاگ ان کریں"، 
+     "reset_reset_h1": "آپ کے پاس ورڈ ری سیٹ"، 
+     "settings_change_pass": "پاس ورڈ تبدیل کریں"، 
+     "settings_update_email": "اپ ڈیٹ ای میل"، 
+     "settings_current_pass": "موجودہ پاس ورڈ"، 
+     "settings_new_pass": "نیا پاس ورڈ"، 
+     "settings_new_email": "نیا ای میل"، 
+     "settings_notifications_h1": "اہم اطلاع ترجیحات اپ ڈیٹ"، 
+     "settings_login_success": "کامیاب لاگ ان"، 
+     "settings_failed_login": "لاگ ان ناکام ہوگیا"، 
+     "settings_notify_email_me": "مجھے ای میل کریں"، 
+     "settings_notify_no_email_me": "مجھے ای میل کریں"، 
+     "settings_update_preferences": "اپ ڈیٹ ترجیحات"، 
+     "node_overview_stats_h1": "اعداد و شمار کا جائزہ"، 
+     "node_overview_collect_usage": ". استعمال کے بارے میں معلومات جمع کرنے کے لئے کی کوشش، یہ ایک چند سیکنڈ لگیں سرور آن لائن ہے کو یقینی بنانے کے براہ مہربانی کر سکتے."، 
+     "node_overview_collect_disk": "ڈسک استعمال کے بارے میں معلومات جمع، یہ ایک چند سیکنڈ لگ سکتا ہے."، 
+     "node_overview_no_players": "کھلاڑی آن لائن ہیں."، 
+     "node_overview_disk_h1": "ڈسک استعمال کی جگہ"، 
+     "node_overview_space_used": ". آپ ڈسک کی جگہ کی زیادہ سے زیادہ٪ s کو MB فیصد کی MB استعمال کر رہے ہیں"، 
+     "node_overview_information_h1": "سرور کی معلومات"، 
+     "node_overview_players_h5": "کھلاڑیوں"، 
+     "node_overview_cpu_h5": "CPU استعمال"، 
+     "node_overview_memory_h5": "میموری استعمال"، 
+     "node_overview_ajax_no_conn": "قاصر نوڈ مربوط کرنے کے لئے."، 
+     "node_overview_ajax_no_exec": ". سرور پر کمانڈ پھانسی کرنے کے قابل نہیں"، 
+     "node_console_command_help": "کنسول کمانڈ درج کریں"، 
+     "node_console_scrollstop_alert". اس وقت ہوتی ہے جب "آپ کنسول میں متن کو منتخب کیا ہے کنسول نہیں آٹو اپ ڈیٹ کو یہ آپ کو آسانی سے کاپی یا کنسول میں متن کو منتخب کرنے کے لئے اجازت دینے کے لئے کیا جاتا ہے گا صرف غیر منتخب کریں پھر خود کار طریقے سے تازہ کاری کے لئے اجازت دینے کے لئے. متن. "، 
+     "node_console_scrollstop_h1": "Scrollstop اینڈ ٹریڈ، کنسول ونڈو"، 
+     "node_console_ajax_server_started": "سرور کی کامیابی کے شروع کیا گیا ہے."، 
+     "node_files_loading": ". لوڈنگ ڈائریکٹری براہ مہربانی انتظار کریں."، 
+     "node_files_name": "فائل کا نام"، 
+     "node_files_size": "فائل کا سائز"، 
+     "node_files_modified": "میں آخری بار ترمیم"، 
+     "node_files_edit_daemon_error": "ڈیمان سے رابطہ قائم کرنے کے قابل نہیں."، 
+     "node_files_edit_back": "واپس مینیجر فائل"، 
+     "node_files_edit_type_error": "اس قسم کی فائل ہمارے کنٹرول پینل کے ذریعے ترمیم نہیں کیا جا سکتا."، 
+     "node_files_edit_no_file": "کوئی فائل اس میں ترمیم کی جا سکتا ہے کی وضاحت کی گئی تھی."، 
+     "node_files_edit_error": "تم یہاں </a> پر کلک href=\"index.php\"> <a فائل منیجر واپس آ سکتے ہیں."، 
+     "node_files_ajax_no_dir": ". درخواست ڈائریکٹری کو تلاش کرنے سے قاصر خرابی کرنا."، 
+     "node_files_ajax_no_dl": ".. فائلوں دوبارہ کوشش کریں حاصل کرنے کے لئے سرور سے رابطہ کرنے کے قابل نہیں"، 
+     "node_files_ajax_saved": "فائل کامیابی بچ گیا."، 
+     "node_files_ajax_no_save": ". فائل کو بچانے کے کرنے کے قابل نہیں"، 
+     "node_files_ajax_no_edit": "اس قسم کی فائل ہمارے آن لائن فائل مینیجر کے ذریعے ترمیم نہیں کیا جا سکتا ایک FTP کلائنٹ کا استعمال کریں." 
+     "node_files_ajax_file_404": "مخصوص فائل سرور پر نہیں مل سکا."، 
+     "node_settings_modpack_modpack_h1": "سرور Modpack مینجمنٹ"، 
+     "node_settings_modpack_current": "موجودہ Modpack"، 
+     "node_settings_modpack_install": "Modpack انسٹال"، 
+     "node_settings_modpack_select": \ "ایک Modpack کریں u2014-"، 
+     "node_settings_jar_jar_h1": "سرور کا نام جار"، 
+     "node_settings_jar_jarfile_name": "Jarfile نام"، 
+     "node_settings_jar_update": "اپ ڈیٹ کریں"، 
+     "node_settings_sftp_sftp_h1": "SFTP ترتیبات"، 
+     "node_settings_ajax_installing_modpack": "نصب Modpack"، 
+     "node_settings_ajax_modpack_error": "آپ کو ایک modpack کے طور پر ایک غیر فعال فارم ان پٹ کا استعمال نہیں کر سکتے ہیں"، 
+     "node_plugins_welcome_h1": "پلگ ان انسٹالر"، 
+     "node_plugins_welcome". "آپ کی تعمیر میں پلگ ان انسٹالر میں خوش آمدید یہ انسٹالر Bukget سے نتائج اور اعداد و شمار جمع اور طریقے استعمال کرنے کا ایک آسان میں ان کو دکھاتا ہے خود کار طریقے سے انسٹالر خاص طور پر پیچیدہ پلگ ان کے لئے، اوقات میں چھوٹی گاڑی ہو سکتا ہے ہم ڈاؤن لوڈ کی سفارش سب سے پہلے اگر ممکن ہو تو آپ کے کمپیوٹر پر پلگ ان. "، 
+     "node_plugins_search_h1": "پلگ ان مخزن تلاش"، 
+     "node_plugins_plugin_name": "پلگ ان کا نام"، 
+     "node_plugins_installed": "آپ پلگ ان کی کامیابی کے ساتھ نصب کیا گیا ہے."، 
+     "node_plugins_installing": "آپ پلگ ان نصب ہے جبکہ براہ مہربانی انتظار کریں اس عمل کو مکمل کرنے کے لئے ایک منٹ کے بارے میں لے سکتا ہے."، 
+     "اس صفحے سے دور تشریف لے نہ کرو!"، "node_plugins_installing_warning" 
+     "node_plugins_error_term": "ایک درست اصطلاح درج کریں."، 
+     "node_plugins_view_author": "یہ پلگ ان کو پیدا کیا اور٪ کی طرف سے برقرار رکھا ہے."، 
+     "node_plugins_view_view": "Bukkit </a> پر اس پلگ ان <a href=\"http://dev.bukkit.org/bukkit-plugins/٪s/\" target=\"_blank\"> دیکھیں."، 
+     "node_ajax_generic_error": "ایک خرابی یہ AJAX کی درخواست کے ساتھ کا سامنا کرنا پڑا تھا." 
+}
