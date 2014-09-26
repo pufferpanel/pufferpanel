@@ -1,0 +1,120 @@
+﻿string.email, ईमेल 
+string.password, पासवर्ड 
+string.login, लॉगिन 
+string.reset_password, पासवर्ड रीसेट 
+string.spam_protection, स्पैम संरक्षण 
+string.again, (फिर) 
+string.noservers, कोई सर्वर अभी तक अपने खाते में आवंटित किया गया है. 
+string.node, नोड 
+string.name, नाम 
+string.connect, कनेक्ट 
+string.status, स्थिति 
+string.offline, ऑफ़लाइन 
+string.online, ऑनलाइन 
+string.connection, कनेक्शन 
+string.mem_alloc, स्मृति आवंटित 
+string.disk_alloc, डिस्क आवंटित 
+string.start, प्रारंभ 
+string.restart, पुनः प्रारंभ 
+string.stop, बंद करो 
+string.options, विकल्प 
+string.search, खोज 
+string.clear, साफ 
+ताज़ा करे, string.refresh 
+string.close, बंद 
+string.generated_pass उत्पन्न पासवर्ड 
+string.modpacks, Modpacks 
+string.sftp, SFTP 
+string.host, मेजबान 
+string.username, उपयोगकर्ता नाम 
+string.generate, उत्पन्न 
+string.description, विवरण 
+string.previous, पिछला 
+string.next, अगला 
+string.about, के बारे में 
+string.version, संस्करण 
+string.published, प्रकाशित 
+string.versions, संस्करण 
+string.save, सहेजें 
+footer.license, PufferPanel एक <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE"> जीपीएल-V3 लाइसेंस </a> अंतर्गत लाइसेंस प्राप्त है. 
+footer.version, <a द्वारा वितरित रनिंग संस्करण% s PufferPanel विकास </a> href="http://pufferpanel.com/">. 
+footer.generated, पृष्ठ% s सेकंड में उत्पन्न. 
+footer.queries निष्पादित% डेटाबेस प्रश्नों. 
+sidebar.acc_actions, खाता प्रक्रिया 
+sidebar.server_acc, सर्वर प्रक्रिया 
+sidebar.server_sett, सर्वर सेटिंग्स 
+sidebar.settings, सेटिंग 
+sidebar.servers, मेरा सर्वर 
+sidebar.overview, अवलोकन 
+sidebar.console, लाइव कंसोल 
+sidebar.files, फ़ाइल प्रबंधक 
+sidebar.manage, सर्वर प्रबंधन 
+sidebar.plugins, सर्वर प्लगइन्स 
+header.account, खाता 
+header.logout, लॉगआउट 
+header.admin एचआर सी.पी. 
+login.login_h1, PufferPanel के लिए लॉगिन 
+reset.reset_h1 अपना पासवर्ड रीसेट 
+settings.change_pass, पासवर्ड बदलें 
+settings.update_email, अद्यतन ईमेल 
+settings.current_pass, वर्तमान पासवर्ड 
+settings.new_pass, नया पासवर्ड 
+settings.new_email, नया ईमेल 
+settings.notifications_h1, अद्यतन सूचना प्राथमिकताएं 
+settings.login_success, सफल प्रवेश 
+settings.failed_login, विफल लॉगिन 
+settings.notify.email_me, कृपया मुझे ईमेल 
+settings.notify.no_email_me, मुझे ईमेल मत 
+settings.update_preferences, अद्यतन पसंद 
+node.overview.stats_h1, सांख्यिकी अवलोकन 
+node.overview.collect_usage, उपयोग की जानकारी एकत्र करने के लिए प्रयास कर रहा है, यह एक कुछ सेकंड ले सकता है. सर्वर ऑनलाइन है कृपया सुनिश्चित करें. 
+node.overview.collect_disk, डिस्क उपयोग की जानकारी एकत्रित, यह एक कुछ सेकंड ले सकता है.
+node.overview.no_players, कोई खिलाड़ियों ऑनलाइन वर्तमान में कर रहे हैं. 
+node.overview.disk_h1, डिस्क स्पेस प्रयुक्त 
+node.overview.space_used, आप डिस्क स्थान की अपनी अधिकतम% s एमबी ने% s MB का उपयोग कर रहे हैं. 
+node.overview.information_h1, सर्वर जानकारी 
+node.overview.players_h5, खिलाड़ियों ऑनलाइन 
+node.overview.cpu_h5, CPU उपयोग 
+node.overview.memory_h5, मेमोरी उपयोग 
+node.overview.ajax.no_conn, असमर्थ नोड के लिए कनेक्ट करने के लिए. 
+node.overview.ajax.no_exec, सर्वर पर आदेश पर अमल करने में असमर्थ. 
+node.console.command_help, कंसोल कमांड दर्ज 
+node.console.scrollstop_alert, आप कंसोल में पाठ का चयन किया है. सांत्वना नहीं ऑटो अद्यतन जब यह होता होगा. यह आप आसानी से कॉपी या कंसोल में पाठ का चयन करने के लिए अनुमति देने के लिए किया जाता है. बस पाठ संयुक्त राष्ट्र का चयन फिर से स्वत: ताज़ा के लिए अनुमति देने के लिए. 
+node.console.scrollstop_h1, Scrollstop और व्यापार; कंसोल विंडो 
+node.console.ajax.server_started, सर्वर सफलतापूर्वक शुरू कर दिया गया है. 
+node.files.loading, निर्देशिका लोड. कृपया प्रतीक्षा करें. 
+node.files.name, फ़ाइल का नाम 
+node.files.size, फ़ाइल का आकार 
+node.files.modified, अंतिम संशोधन 
+node.files.edit.daemon_error, असमर्थ डेमॉन को कनेक्ट करने के लिए. 
+node.files.edit.back, वापस प्रबंधक फाइल करने के लिए 
+node.files.edit.type_error, इस प्रकार की फ़ाइल हमारे नियंत्रण कक्ष के माध्यम से संपादित नहीं किया जा सकता है. 
+node.files.edit.no_file, कोई फ़ाइल संपादित किया जा सकता है कि निर्दिष्ट किया गया था. 
+node.files.edit.error, आप यहाँ </a> क्लिक <a href="index.php"> द्वारा फाइल प्रबंधक पर लौट सकते हैं. 
+node.files.ajax.no_dir, अनुरोध निर्देशिका खोजने में असमर्थ. त्रुटि लॉग इन किया. 
+node.files.ajax.no_dl, असमर्थ फ़ाइलों को प्राप्त करने के लिए सर्वर से कनेक्ट करने के लिए. पुन: प्रयास करें. 
+node.files.ajax.saved, फ़ाइल सफलतापूर्वक बचा लिया गया था. 
+node.files.ajax.no_save, असमर्थ फ़ाइल को बचाने के लिए. 
+node.files.ajax.no_edit, इस प्रकार की फ़ाइल हमारे ऑनलाइन फाइल प्रबंधक के माध्यम से संपादित नहीं किया जा सकता है. एक एफ़टीपी ग्राहक का उपयोग करें. 
+node.files.ajax.file_404, निर्दिष्ट फ़ाइल सर्वर पर नहीं पाया जा सका. 
+node.settings.modpack.modpack_h1, सर्वर Modpack प्रबंधन 
+node.settings.modpack.current, वर्तमान Modpack 
+node.settings.modpack.install, स्थापित करें Modpack 
+node.settings.modpack.select, - एक Modpack का चयन करें 
+node.settings.jar.jar_h1, सर्वर .jar नाम 
+node.settings.jar.jarfile_name, Jarfile नाम 
+node.settings.jar.update, अद्यतन नाम 
+node.settings.sftp.sftp_h1, SFTP सेटिंग 
+node.settings.ajax.installing_modpack, Modpack का अधिष्ठापन 
+node.settings.ajax.modpack_error, आप एक modpack के रूप में एक विकलांग फार्म इनपुट का उपयोग नहीं कर सकते हैं! 
+node.plugins.welcome_h1, प्लगइन इंस्टालर 
+node.plugins.welcome, अपने में निर्मित प्लगइन इंस्टॉलर में आपका स्वागत है. इस इंस्टॉलर Bukget से परिणाम और डेटा तुलना और तरीके से उपयोग करने के लिए एक आसान में उन्हें यहां प्रदर्शित करता है. स्वचालित इंस्टॉलर विशेष रूप से जटिल प्लगइन्स के लिए, कई बार छोटी गाड़ी हो सकता है. हम पहले यदि संभव हो तो अपने कंप्यूटर को डाउनलोड करने प्लगइन्स की सलाह देते हैं. 
+node.plugins.search_h1, प्लगइन रिपोजिटरी खोजें 
+node.plugins.plugin_name, प्लगइन नाम 
+node.plugins.installed, अपने प्लगइन सफलतापूर्वक स्थापित कर दिया गया है. 
+अपने प्लगइन स्थापित कर रहा है, जबकि node.plugins.installing, कृपया प्रतीक्षा करें. इस प्रक्रिया को पूरा करने के लिए एक मिनट के बारे में ले सकता है. 
+node.plugins.installing_warning, इस पेज से दूर नेविगेट मत करो! 
+node.plugins.error.term, एक वैध खोज शब्द दर्ज करें. 
+node.plugins.view.author, इस प्लगइन बनाया और% द्वारा बनाए रखा है. 
+node.plugins.view.view, Bukkit </a> पर इस प्लगइन <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank"> देखें. 
+node.ajax.generic_error, एक त्रुटि यह AJAX अनुरोध के साथ सामना करना पड़ा था.

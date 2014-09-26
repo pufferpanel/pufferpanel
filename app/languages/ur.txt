@@ -1,0 +1,120 @@
+﻿string.email, ای میل 
+string.password, پاس ورڈ 
+string.login, لاگ ان 
+string.reset_password, پاس ورڈ ری سیٹ کریں 
+string.spam_protection, سپیم تحفظ 
+string.again, (پھر) 
+string.noservers, کوئی سرورز ابھی تک آپ کے اکاؤنٹ کے لئے مقرر کیا گیا ہے. 
+string.node, نوڈ 
+string.name, نام 
+string.connect, کنیکٹ 
+string.status, رتبہ 
+string.offline, حاضر 
+string.online, آن لائن 
+string.connection, کنکشن 
+string.mem_alloc, میموری مختص 
+string.disk_alloc, ڈسک مختص 
+string.start, شروع 
+string.restart, دوبارہ چالو کریں 
+string.stop, بند کرو 
+string.options, اختیارات 
+string.search, تلاش 
+string.clear, صاف 
+تازہ, string.refresh 
+string.close, بند 
+string.generated_pass پیدا پاس ورڈ 
+string.modpacks, Modpacks 
+string.sftp, SFTP 
+string.host, میزبان 
+string.username, رکنیت 
+string.generate, بنائیں 
+string.description, تفصیل 
+string.previous, پچھلا 
+string.next, اگلا 
+string.about, کے بارے میں 
+string.version, ورژن 
+string.published شائع 
+string.versions, ورژن 
+string.save, محفوظ 
+footer.license, PufferPanel ایک <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE"> GPL-V3 لائسنس </a> کے تحت لائسنس یافتہ ہے. 
+footer.version, <a سے تقسیم چل رہا ورژن٪ s کو PufferPanel ترقی کریں </a> href="http://pufferpanel.com/">. 
+footer.generated, صفحہ٪ s کو سیکنڈ میں پیدا. 
+footer.queries, پھانسی٪ کی ڈیٹا بیس سوالات. 
+sidebar.acc_actions اکاؤنٹ کے اعمال 
+sidebar.server_acc, سرور عوامل 
+sidebar.server_sett, سرور کی ترتیبات 
+sidebar.settings, ترتیبات 
+sidebar.servers, میرا سرور 
+sidebar.overview, جائزہ 
+sidebar.console, لائیو کنسول 
+sidebar.files, فائل منیجر 
+sidebar.manage, سرور کے انتظام 
+sidebar.plugins, سرور پلگ انز 
+header.account, اکاؤنٹ 
+header.logout, لاگ آؤٹ 
+header.admin, ایڈمن CP 
+login.login_h1, PufferPanel لاگ ان 
+reset.reset_h1, آپ کا پاس ورڈ دوبارہ ترتیب دیں 
+settings.change_pass, پاس ورڈ تبدیل کریں 
+settings.update_email, اپ ڈیٹ ای میل 
+settings.current_pass, موجودہ پاس ورڈ 
+settings.new_pass, نیا پاس ورڈ 
+settings.new_email, نیا ای میل 
+settings.notifications_h1, اپ ڈیٹ نوٹیفکیشن کی ترجیحات 
+settings.login_success, کامیاب لاگ ان 
+settings.failed_login ناکام لاگ ان 
+settings.notify.email_me, مجھے ای میل کریں 
+settings.notify.no_email_me, مجھے ای میل کریں 
+settings.update_preferences, اپ ڈیٹ کی ترجیحات 
+node.overview.stats_h1, اعداد و شمار کا جائزہ 
+node.overview.collect_usage, استعمال کے بارے میں معلومات جمع کرنے کے لئے کی کوشش, یہ ایک چند سیکنڈ لگ سکتا ہے. سرور آن لائن ہے براہ کرم یقینی بنائیں. 
+node.overview.collect_disk, ڈسک استعمال کے بارے میں معلومات جمع, یہ ایک چند سیکنڈ لگ سکتا ہے. 
+node.overview.no_players, کھلاڑی آن لائن ہیں. 
+node.overview.disk_h1, ڈسک کی جگہ استعمال کیا جاتا ہے 
+node.overview.space_used, آپ ڈسک کی جگہ کی زیادہ سے زیادہ٪ s کو MB فیصد کی MB استعمال کر رہے ہیں. 
+node.overview.information_h1, سرور کی معلومات 
+node.overview.players_h5, کھلاڑیوں 
+node.overview.cpu_h5, CPU استعمال 
+node.overview.memory_h5, میموری استعمال 
+node.overview.ajax.no_conn, قاصر نوڈ مربوط کرنے کے لئے. 
+node.overview.ajax.no_exec, سرور پر کمانڈ پھانسی کرنے سے قاصر ہے. 
+node.console.command_help, کنسول کمانڈ درج کریں 
+node.console.scrollstop_alert, آپ کنسول میں متن کو منتخب کیا ہے. کنسول نہیں آٹو اپ ڈیٹ کو اس وقت ہوتی ہے جب ہو جائے گا. یہ آپ کو آسانی سے کاپی یا کنسول میں متن کو منتخب کرنے کے لئے اجازت دینے کے لئے کیا جاتا ہے. صرف متن کے غیر منتخب پھر خود کار طریقے سے تازہ کاری کے لئے اجازت دینے کے لئے. 
+node.console.scrollstop_h1, Scrollstop اینڈ ٹریڈ؛ کنسول ونڈو 
+node.console.ajax.server_started, سرور کامیابی سے شروع کیا گیا ہے. 
+node.files.loading, ڈائریکٹری لوڈ ہو رہا ہے. براہ مہربانی انتظار کریں. 
+node.files.name, فائل کا نام 
+node.files.size, فائل کا سائز 
+node.files.modified, میں آخری بار ترمیم 
+node.files.edit.daemon_error, قاصر ڈیمان کے لئے مربوط کرنے کے لئے. 
+node.files.edit.back, واپس مینیجر فائل 
+node.files.edit.type_error, اس قسم کی فائل ہمارے کنٹرول پینل کے ذریعے ترمیم نہیں کیا جا سکتا. 
+node.files.edit.no_file, کوئی فائل میں ترمیم کیا جا سکتا ہے کی وضاحت کی گئی تھی. 
+node.files.edit.error, تم یہاں </a> پر کلک <a href="index.php"> فائل منیجر کو واپس کر سکتے ہیں. 
+node.files.ajax.no_dir, درخواست ڈائریکٹری کو تلاش کرنے سے قاصر ہے. خرابی کرنا. 
+node.files.ajax.no_dl, قاصر فائلوں کو حاصل کرنے کے لئے سرور سے رابطہ کرنے کے لئے. دوبارہ کوشش کریں. 
+node.files.ajax.saved, فائل کامیابی بچ گیا. 
+node.files.ajax.no_save, قاصر فائل کو بچانے کے لئے. 
+node.files.ajax.no_edit, اس قسم کی فائل ہمارے آن لائن فائل مینیجر کے ذریعے ترمیم نہیں کیا جا سکتا. ایک FTP کلائنٹ کا استعمال کریں. 
+node.files.ajax.file_404, مخصوص فائل سرور پر نہیں مل سکا. 
+node.settings.modpack.modpack_h1, سرور Modpack مینجمنٹ 
+node.settings.modpack.current, موجودہ Modpack 
+node.settings.modpack.install, انسٹال Modpack 
+node.settings.modpack.select, - ایک Modpack منتخب کریں 
+node.settings.jar.jar_h1, سرور جار نام 
+node.settings.jar.jarfile_name, Jarfile نام 
+node.settings.jar.update, اپ ڈیٹ کریں 
+node.settings.sftp.sftp_h1, SFTP ترتیبات 
+node.settings.ajax.installing_modpack, Modpack نصب 
+node.settings.ajax.modpack_error, آپ کو ایک modpack کے طور پر ایک غیر فعال فارم ان پٹ کا استعمال نہیں کر سکتے ہیں! 
+node.plugins.welcome_h1, پلگ ان انسٹالر 
+node.plugins.welcome, آپ کی تعمیر میں پلگ ان انسٹالر میں خوش آمدید. یہ انسٹالر Bukget سے نتائج اور اعداد و شمار جمع اور طریقے استعمال کرنے کا ایک آسان میں ان کو دکھاتا ہے. خود کار طریقے سے انسٹالر خاص طور پر پیچیدہ پلگ ان کے لئے, اوقات میں چھوٹی گاڑی جا سکتا ہے. ہم سب سے پہلے اگر ممکن ہو تو آپ کے کمپیوٹر پر ڈاؤن لوڈ پلگ ان کی سفارش. 
+node.plugins.search_h1, پلگ ان مخزن تلاش 
+node.plugins.plugin_name, پلگ ان کا نام 
+node.plugins.installed, آپ کو پلگ ان کو کامیابی سے نصب کیا گیا ہے. 
+آپ کے پلگ ان نصب ہے جبکہ node.plugins.installing, براہ مہربانی انتظار کریں. اس عمل کو مکمل کرنے کے لئے ایک منٹ کے بارے میں لے سکتا ہے. 
+node.plugins.installing_warning, اس صفحے سے دور تشریف کریں! 
+node.plugins.error.term, ایک درست اصطلاح درج کریں. 
+node.plugins.view.author, یہ پلگ ان کو پیدا کیا اور٪ کی طرف سے برقرار رکھا ہے. 
+node.plugins.view.view, Bukkit </a> پر اس پلگ ان <a href="http://dev.bukkit.org/bukkit-plugins/٪s/" target="_blank"> دیکھیں. 
+node.ajax.generic_error, ایک خرابی یہ AJAX کی درخواست کے ساتھ کا سامنا کرنا پڑا تھا.
