@@ -193,7 +193,7 @@ trait components {
 				return false;
 		else {
 			$xsrfToken = $this->keygen(10);
-			setcookie("pp_xsrf_token".$identifier, $xsrfToken, (time() + 3600), '/');
+			setcookie("pp_xsrf_token".$identifier, $xsrfToken, (time() + 3600), '/', null, null, true);
 			return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
 		}
 
