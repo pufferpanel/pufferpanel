@@ -52,6 +52,7 @@
 					</div>
 					<div class="form-group">
 						<div>
+							{{ xsrf.pass|raw }}
 							<input type="submit" class="btn btn-primary" value="{{ lang.settings_change_pass }}" />
 						</div>
 					</div>
@@ -74,6 +75,7 @@
 					</div>
 					<div class="form-group">
 						<div>
+							{{ xsrf.email|raw }}
 							<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_email }}" />
 						</div>
 					</div>
@@ -107,6 +109,7 @@
 			</div>
 			<div class="form-group">
 				<div>
+					{{ xsrf.notify|raw }}
 					<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_preferences }}" />
 				</div>
 			</div>
