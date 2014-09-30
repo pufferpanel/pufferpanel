@@ -6,31 +6,21 @@
 <div class="col-9">
 	<h3 class="nopad">Create New Server</h3><hr />
 	{% if get.disp is defined and get.disp != 1 %}
-		{% if get.disp == 'missing_args' %}
-			<div class="alert alert-danger">Not all arguments were passed by the script.</div>
-		{% elseif get.disp == 'gsd_offline' %}
-			<div class="alert alert-danger">The GSD daemon running on the server is not on or is blocked by your firewall. Please make sure it is accessable before creating a server.</div>
-		{% elseif get.disp == 's_fail' %}
-			<div class="alert alert-danger">The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-</div>
-		{% elseif get.disp == 'n_fail' %}
-			<div class="alert alert-danger">The node selected does not seem to exist.</div>
-		{% elseif get.disp == 'ip_fail' %}
-			<div class="alert alert-danger">The selected IP does not exist.</div>
-		{% elseif get.disp == 'port_fail' %}
-			<div class="alert alert-danger">The selected port does not exist.</div>
-		{% elseif get.disp == 'port_full' %}
-			<div class="alert alert-danger">The selected port is already in use.</div>
-		{% elseif get.disp == 'e_fail' %}
-			<div class="alert alert-danger">The email you entered is invalid.</div>
-		{% elseif get.disp == 'p_fail' %}
-			<div class="alert alert-danger">The passwords you entered did not match or were not at least 8 characters.</div>
-		{% elseif get.disp == 'a_fail' %}
-			<div class="alert alert-danger">Account with that email does not exist in the system.</div>
-		{% elseif get.disp == 'm_fail' %}
-			<div class="alert alert-danger">You entered a non-number for Disk and/or Memory.</div>
-		{% elseif get.disp == 'b_fail' %}
-			<div class="alert alert-danger">You entered a non-number for Backup Files and/or Disk Space.</div>
-		{% endif %}
+		<div class="alert alert-danger">
+			{% if get.disp == 'missing_args' %} Not all arguments were passed by the script.
+			{% elseif get.disp == 'gsd_offline' %} The GSD daemon running on the server is not on or is blocked by your firewall. Please make sure it is accessible before creating a server.
+			{% elseif get.disp == 's_fail' %} The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-
+			{% elseif get.disp == 'n_fail' %} The node selected does not seem to exist.
+			{% elseif get.disp == 'ip_fail' %} The selected IP does not exist.
+			{% elseif get.disp == 'port_fail' %} The selected port does not exist.
+			{% elseif get.disp == 'port_full' %} The selected port is already in use.
+			{% elseif get.disp == 'e_fail' %} The email you entered is invalid.
+			{% elseif get.disp == 'p_fail' %} The passwords you entered did not match or were not at least 8 characters.
+			{% elseif get.disp == 'a_fail' %} Account with that email does not exist in the system.
+			{% elseif get.disp == 'm_fail' %} You entered a non-number for Disk and/or Memory.
+			{% elseif get.disp == 'b_fail' %} You entered a non-number for Backup Files and/or Disk Space.
+			{% endif %}
+		</div>
 	{% endif %}
 	<form action="ajax/new/create.php" method="POST">
 		<fieldset>
