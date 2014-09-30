@@ -186,14 +186,16 @@ trait components {
 	 */
 	public function XSRF($token = null, $identifier = null){
 
+		$this->tkid = "pp_xsrf_token".$identifier;
+
 		if(!is_null($token))
-			if(!is_null($this->getCookie('pp_xsrf_token'.$identifier)))
+			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token)
 				return true;
 			else
 				return false;
 		else {
-			$xsrfToken = $this->keygen(10);
-			setcookie("pp_xsrf_token".$identifier, $xsrfToken, (time() + 3600), '/', null, null, true);
+			$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
+			$_SESSION[$this->tkid] = $xsrfToken;
 			return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
 		}
 
