@@ -35,12 +35,12 @@ class user extends Auth\auth {
 	/**
 	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
 	 */
-	private $_shash;
+	private static $_shash;
 
 	/**
 	* @param int $_soid Private variable used for keeping track of server owner id for permissions.
 	*/
-	private $_soid;
+	private static $_soid;
 
 	/**
 	* @param string $_perms Private variable used for keeping track of what permissions a user hash.
@@ -166,10 +166,10 @@ class user extends Auth\auth {
 	 * @return void
 	 * @static
 	 */
-	static private function permissionsInit($server, $oid) {
+	static public function permissionsInit($server, $oid) {
 
-		$this->_shash = $server;
-		$this->_soid = $oid;
+		self::$_shash = $server;
+		self::$_soid = $oid;
 
 	}
 
