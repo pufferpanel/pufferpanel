@@ -33,6 +33,21 @@ class user extends Auth\auth {
 	private $_l;
 
 	/**
+	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
+	 */
+	private $_shash;
+
+	/**
+	* @param int $_soid Private variable used for keeping track of server owner id for permissions.
+	*/
+	private $_soid;
+
+	/**
+	* @param string $_perms Private variable used for keeping track of what permissions a user hash.
+	*/
+	private $_perms = null;
+
+	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
 	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
@@ -109,6 +124,97 @@ class user extends Auth\auth {
 				return $this->_data[$id];
 			else
 				return false;
+
+	}
+
+
+	/**
+	 * Collects permissions from the Database given a user id.
+	 *
+	 * @return void
+	 */
+	private function getPermissions() {
+
+		$this->query = $this->mysql->prepare("SELECT `permissions` FROM `permissions` WHERE `id` = :uid");
+		$this->query->execute(array(
+			':uid' => $this->getData('id')
+		));
+
+			if($this->query->rowCount() == 0)
+				return false;
+			else {
+
+				$this->row = $this->query->fetch();
+				if(is_null($this->row['permissions']))
+					return false;
+				else {
+
+					$this->json = json_decode($this->row['permissions'], true);
+					return (!is_int($this->_shash)) ? false : $this->json[$this->_shash];
+
+				}
+
+			}
+
+	}
+
+	/**
+	 * Initiator class for server based on Hash.
+	 *
+	 * @param string $server The hash of the server we are interested in.
+	 * @param int $oid Returns the owner of the server in question
+	 * @return void
+	 * @static
+	 */
+	static private function permissionsInit($server, $oid) {
+
+		$this->_shash = $server;
+		$this->_soid = $oid;
+
+	}
+
+	/**
+	 * Checks if a given user has permission to access a part of the Control Panel. Defaults to true if the user is the owner.
+	 *
+	 * @param string $permission The permission node to check aganist.
+	 * @return bool Returns true if they have permission, false if not.
+	 */
+	public function checkPermissions($permission) {
+
+		if($this->_soid != $this->getData('id')){
+
+			if(is_null($this->_perms))
+				$this->_perms = $this->getPermissions();
+
+			if(is_array($this->_perms)) {
+
+				if(array_key_exists($permission, $this->_perms['permissions']))
+					return true;
+				else
+					return false;
+
+			}else
+				return false;
+
+		}else
+			return true;
+
+	}
+
+	public function checkProtected() {
+
+		if(is_null($this->_perms))
+			$this->_perms = $this->getPermissions();
+
+		if(is_array($this->_perms)) {
+
+			if($this->_perms['protected'] == 1)
+				return true;
+			else
+				return false;
+
+		}else
+			return true;
 
 	}
 

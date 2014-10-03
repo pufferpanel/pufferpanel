@@ -74,6 +74,9 @@ class server extends user {
 		else
 			$this->_s = false;
 
+		if($this->_s !== false)
+			user::permissionsInit($this->_data['hash'], $this->_data['owner_id']);
+
 	}
 
 	/**
