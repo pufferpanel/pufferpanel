@@ -157,6 +157,17 @@ if(file_exists('../install.lock'))
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `nodes` created.\n";
 
+							/*
+							 * CREATE TABLE `permissions`
+							 */
+							$mysql->exec("DROP TABLE IF EXISTS `permissions`");
+							$mysql->exec("CREATE TABLE `permissions` (
+								`id` int(1) NOT NULL,
+								`permissions` text,
+								PRIMARY KEY (`id`)
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+							echo "Table `permissions` created.\n";
+
 	                        /*
 	                         * CREATE TABLE `servers`
 	                         */
@@ -198,7 +209,6 @@ if(file_exists('../install.lock'))
 	                           `password` tinytext NOT NULL,
 	                           `language` tinytext NOT NULL,
 	                           `register_time` int(15) NOT NULL,
-	                           `position` varchar(50) DEFAULT '' COMMENT 'owner,admin,staff',
 	                           `session_id` varchar(12) DEFAULT '',
 	                           `session_ip` varchar(50) DEFAULT '',
 	                           `root_admin` int(1) NOT NULL DEFAULT '0',

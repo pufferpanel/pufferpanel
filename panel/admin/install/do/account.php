@@ -47,7 +47,7 @@ if(file_exists('../install.lock'))
 					        include('../../../../src/framework/framework.database.connect.php');
 					        $mysql = Database\database::connect();
 
-					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, 'owner', NULL, NULL, 1, 0, 1, 0, NULL)");
+					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)");
 
 					        include('../../../../src/framework/configuration.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
