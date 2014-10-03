@@ -49,14 +49,14 @@
 	{% else %}
 	<form method="post" id="editing_file">
 		<div class="form-group">
-			<label for="email" class="control-label">{{ file_name }}</label>
 			<div>
-				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console">{{ contents }}</textarea>
+				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
 		<div class="form-group">
 			<div>
 				<input type="hidden" name="file" value="{{ file }}" />
+				{{ xsrf|raw }}
 				<button class="btn btn-primary btn-sm" id="save_file">{{ lang.string_save }}</button>
 				<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={{ directory|url_encode }}';return false;">{{ lang.node_files_edit_back }}</button>
 			</div>
@@ -70,12 +70,13 @@ $(window).load(function(){
 		event.preventDefault();
 		var file = $("input[name='file']").val();
 		var content = $("#live_console").val();
+		var xsrf = $("input[name='xsrf']").val();
 		$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
 
 		$.ajax({
 			type: "POST",
 			url: '../ajax/files/save.php',
-			data: {'file': file, 'file_contents': content},
+			data: {'file': file, 'file_contents': content, 'xsrf': xsrf},
 			success: function(data) {
 				$("#save_status").html(data);
 				$("#save_file").html('Save').removeClass('disabled');

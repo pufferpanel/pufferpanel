@@ -33,6 +33,9 @@ if(isset($_POST['file']))
 
 if(isset($_POST['file'])){
 
+	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
+		exit('<div class="alert alert-warning">A token was missing from this request.</div>');
+
     if(in_array(pathinfo($_POST['file'], PATHINFO_EXTENSION), $canEdit)){
 
     	/*
