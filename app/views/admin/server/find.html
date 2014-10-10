@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="col-9">
+	{% if error != null %}
+		<div class="alert alert-danger">{{ error }}</div>
+	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#simple" data-toggle="tab">Simple Search</a></li>
 		<li><a href="#advanced" data-toggle="tab">Advanced Search</a></li>

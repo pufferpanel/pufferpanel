@@ -27,10 +27,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(rand(12, 18)));
 
 if(!isset($_GET['id']))
-	Page\components::redirect('find.php');
+	Page\components::redirect('find.php?error=no_id');
 
 $core->server->rebuildData($_GET['id']);
 $core->user->rebuildData($core->server->getData('owner_id'));
+
+if(!$core->server->getData('hash') || $core->server->getData('hash') === false)
+	Page\components::redirect('find.php?error=invalid_id');
 
 echo $twig->render('admin/server/view.html', array(
 		'node' => $core->server->nodeData(),
