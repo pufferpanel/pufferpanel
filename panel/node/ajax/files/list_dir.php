@@ -41,7 +41,7 @@ else
  * Gather Files and Folders
  */
 $getDirectory = (is_null($_POST['dir'])) ? "/" : $_POST['dir'];
-$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/folder/".$getDirectory;
+$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/folder/".$getDirectory;
 
 $context = stream_context_create(array(
 	"http" => array(

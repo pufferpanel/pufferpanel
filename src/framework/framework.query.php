@@ -144,7 +144,7 @@ class query {
 					"header" => "X-Access-Token: ".$this->_nodeData['gsd_secret']
 				)
 			));
-			$this->gatherData = @file_get_contents("http://".$this->_nodeData['sftp_ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
+			$this->gatherData = @file_get_contents("http://".$this->_nodeData['ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
 
 			$this->raw = json_decode($this->gatherData, true);
 

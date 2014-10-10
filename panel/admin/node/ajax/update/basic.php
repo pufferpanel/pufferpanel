@@ -36,18 +36,18 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['name']))
 	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
 
 /*
- * Validate node_ip
+ * Validate IP
  */
-if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail');
+if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=fqdn&disp=ip_fail');
 
 /*
  * Update Record
  */
-$mysql->prepare("UPDATE `nodes` SET `node` = :name, `node_ip` = :ip WHERE `id` = :nid")->execute(array(
+$mysql->prepare("UPDATE `nodes` SET `node` = :name, `fqdn` = :fqdn WHERE `id` = :nid")->execute(array(
 	':nid' => $_POST['nid'],
 	':name' => $_POST['name'],
-	':ip' => $_POST['ip']
+	':fqdn' => $_POST['fqdn']
 ));
 
 Page\components::redirect('../../view.php?id='.$_POST['nid']);

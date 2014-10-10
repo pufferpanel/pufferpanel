@@ -40,7 +40,7 @@ echo $twig->render(
 				'ftp_user' => $core->server->getData('ftp_user')
 			),
 			'node' => array(
-				'sftp_ip' => $core->server->nodeData('sftp_ip')
+				'fqdn' => $core->server->nodeData('fqdn')
 			),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),

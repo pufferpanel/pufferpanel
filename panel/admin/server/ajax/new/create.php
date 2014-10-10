@@ -41,7 +41,7 @@ if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server
 * GSD Must Be Online!
 */
 if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
-	Page\components::redirect('../../add.php?disp=gsd_offline');
+	Page\components::redirect('../../add.php?disp=gsd_offline&error=na');
 
 /*
  * Validate Server Name
@@ -186,7 +186,7 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	$data = json_encode($data);
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://'.$node['sftp_ip'].':8003/gameservers');
+	curl_setopt($ch, CURLOPT_URL, 'http://'.$node['ip'].':8003/gameservers');
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 	    'X-Access-Token: '.$node['gsd_secret']
 	));
@@ -212,7 +212,7 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	 */
 	$core->email->buildEmail('admin_new_server', array(
 	        'NAME' => $_POST['server_name'],
-	        'CONNECT' => $node['sftp_ip'].':21',
+	        'CONNECT' => $node['fqdn'].':21',
 	        'USER' => $ftpUser.'-'.$content['id'],
 	        'PASS' => $_POST['sftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');

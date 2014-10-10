@@ -28,7 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 if($core->gsd->online() === true){
 
-    $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
+    $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
     $context = stream_context_create(array(
     	"http" => array(
     		"method" => "GET",
@@ -52,7 +52,7 @@ echo $twig->render(
 				'console_inner' => $content['contents']
 			),
 			'node' => array(
-				'sftp_ip' => $core->server->nodeData('sftp_ip')
+				'ip' => $core->server->nodeData('ip')
 			),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),

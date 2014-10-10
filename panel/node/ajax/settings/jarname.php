@@ -56,7 +56,7 @@ require_once('../../../../src/framework/framework.core.php');
 	);
 
 	$context = stream_context_create($context_options);
-	file_get_contents('http://'.$core->server->nodeData('sftp_ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
+	file_get_contents('http://'.$core->server->nodeData('ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
 
 	Page\components::redirect('../../settings.php');
 

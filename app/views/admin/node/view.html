@@ -38,9 +38,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="ip" class="control-label">Node IP</label>
+						<label for="ip" class="control-label">Node FQDN</label>
 						<div>
-							<input type="text" name="ip" value="{{ node.node_ip }}" class="form-control" />
+							<input type="text" name="ip" value="{{ node.fqdn }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -128,9 +128,9 @@
 				<form action="ajax/update/sftp.php?do=ipuser" method="post">
 					<fieldset>
 						<div class="form-group">
-							<label for="sftp_ip" class="control-label">SFTP IP</label>
+							<label for="ip" class="control-label">SFTP IP</label>
 							<div>
-								<input type="text" name="sftp_ip" value="{{ node.sftp_ip }}" class="form-control" />
+								<input type="text" name="ip" value="{{ node.ip }}" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">

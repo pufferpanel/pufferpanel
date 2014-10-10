@@ -25,6 +25,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 echo $twig->render(
     'admin/server/find.html', array(
+		'error' => (isset($_GET['error'])) ? 'No server ID was provided or it was invalid.' : null,
         'footer' => array(
             'queries' => Database\databaseInit::getCount(),
             'seconds' => number_format((microtime(true) - $pageStartTime), 4)
