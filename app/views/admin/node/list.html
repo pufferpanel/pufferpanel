@@ -15,10 +15,10 @@
 		</thead>
 		<tbody>
 			{% for id, node in nodes %}
-				<tr class="dynUpdate" id="{{ node.node_ip }}">
+				<tr class="dynUpdate" id="{{ node.fqdn }}">
 					<td><a href="view.php?id={{ node.id }}">{{ node.node }}</a></td>
-					<td>{{ node.node_ip }}</td>
-					<td>{{ node.sftp_ip }}</td>
+					<td>{{ node.fqdn }}</td>
+					<td>{{ node.ip }}</td>
 					<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
 				</tr>
 			{% endfor %}

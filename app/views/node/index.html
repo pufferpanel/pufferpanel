@@ -91,7 +91,7 @@
 		Date.prototype.timeNow = function () {
 			return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
 		}
-		var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
+		var socket = io('http://{{ node.ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
 		var memoryChartData={labels:["","","","","","","","","",""],datasets:[{label:"Memory Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};var cpuChartData={labels:["","","","","","","","","",""],datasets:[{label:"CPU Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};

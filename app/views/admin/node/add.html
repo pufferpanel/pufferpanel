@@ -41,16 +41,17 @@
 				</div>
 				<div class="row">
 					<div class="form-group col-6 nopad">
-						<label for="node_ip" class="control-label">Node IP Address</label>
+						<label for="fqdn" class="control-label">Node <abbr title="Fully Qualified Domain Name">FQDN</abbr></label>
 						<div>
-							<input type="text" name="node_ip" class="form-control" />
+							<input type="text" name="fqdn" class="form-control" placeholder="us1.nodes.example.com" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. (Do not include the http:// or www)</em></small></p>
 						</div>
 					</div>
 					<div class="form-group col-6 nopad-right">
-						<label for="node_sftp_ip" class="control-label">Node SFTP IP Address</label>
+						<label for="ip" class="control-label">Node IP Address</label>
 						<div>
-							<input type="text" name="node_sftp_ip" class="form-control" />
-							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>In most cases this is the same as the Node IP Address.</em></small></p>
+							<input type="text" name="ip" class="form-control" placeholder="255.255.255.0" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the IP address of the node here. This IP must be publicly accessable.</em></small></p>
 						</div>
 					</div>
 				</div>

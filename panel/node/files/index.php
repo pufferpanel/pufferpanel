@@ -33,7 +33,7 @@ if(isset($_GET['dir']))
 
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
 
-    $url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
+    $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
     $context = stream_context_create(array(
     	"http" => array(
     		"method" => "GET",

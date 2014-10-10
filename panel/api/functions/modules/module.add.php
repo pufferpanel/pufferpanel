@@ -90,7 +90,7 @@ trait add {
 
         $this->email->buildEmail('admin_new_server', array(
                 'NAME' => $this->data['server_name'],
-                'CONNECT' => $this->node['sftp_ip'].':21',
+                'CONNECT' => $this->node['ip'].':21',
                 'USER' => $this->ftpUser.'-'.$this->gsdContent['id'],
                 'PASS' => $this->rawPassword
         ))->dispatch($this->data['email'], $this->settings->get('company_name').' - New Server Added');
@@ -166,7 +166,7 @@ trait add {
         ));
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->node['sftp_ip'].':8003/gameservers');
+        curl_setopt($ch, CURLOPT_URL, 'http://'.$this->node['ip'].':8003/gameservers');
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'X-Access-Token: '.$this->node['gsd_secret']
         ));

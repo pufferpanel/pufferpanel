@@ -59,7 +59,7 @@ else {
         if(substr($directory, 0, 1) == '/')
             $directory = substr($directory, 1);
 
-		$url = "http://".$core->server->nodeData('sftp_ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
+		$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
 
 		$context = stream_context_create(array(
 			"http" => array(

@@ -112,7 +112,7 @@ class server extends user {
 	/**
 	 * Returns data about the node in which the server selected is running.
 	 *
-	 * @param string $id The column value for the data you need (e.g. sftp_ip).
+	 * @param string $id The column value for the data you need (e.g. ip).
 	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
 	public function nodeData($id = null) {
@@ -133,7 +133,7 @@ class server extends user {
 	/**
 	 * Handles incoming requests to access a server and redirects to the correct location and sets a cookie.
 	 *
-	 * @param string $id The column value for the data you need (e.g. sftp_ip).
+	 * @param string $id The column value for the data you need (e.g. ip).
 	 * @return void
 	 */
 	public function nodeRedirect($hash, $userid, $rootAdmin) {

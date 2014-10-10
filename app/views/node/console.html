@@ -94,7 +94,7 @@
 </div>
 <script type="text/javascript">
 $(window).load(function(){
-	var socket = io('http://{{ node.sftp_ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
+	var socket = io('http://{{ node.ip }}:8031/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
 	$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 	$("#console_command").submit(function(event){
 		event.preventDefault();
@@ -104,7 +104,7 @@ $(window).load(function(){
 			$.ajax({
 				type: "POST",
 				headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-				url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/console',
+				url: 'http://{{ node.ip }}:8003/gameservers/{{ server.gsd_id }}/console',
 				timeout: 5000,
 				data: { command: ccmd },
 				error: function(jqXHR, textStatus, errorThrown) {
@@ -143,7 +143,7 @@ $(window).load(function(){
 				$.ajax({
 					type: "GET",
 					headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-					url: 'http://{{ node.sftp_ip }}:8003/gameservers/{{ server.gsd_id }}/off',
+					url: 'http://{{ node.ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
 					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();

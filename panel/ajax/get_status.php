@@ -44,7 +44,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		/*
 		 * Query Servers
 		 */
-		if($core->gsd->check_status($node['node_ip'], $server['gsd_id'], $node['gsd_secret']) === false)
+		if($core->gsd->check_status($node['ip'], $server['gsd_id'], $node['gsd_secret']) === false)
 			exit('#E33200');
 		else
 			exit('#53B30C');

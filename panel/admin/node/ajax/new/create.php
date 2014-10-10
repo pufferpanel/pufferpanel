@@ -35,7 +35,7 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['node_ip'], $_POST['node_sftp_ip'], $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port']))
 	Page\components::redirect('../../add.php?disp=missing_args');
 
 /*
@@ -45,10 +45,10 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 	Page\components::redirect('../../add.php?error=node_name&disp=n_fail');
 
 /*
- * Validate node_ip & node_sftp_ip
+ * Validate FQDN & IP
  */
-if(!filter_var($_POST['node_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['node_sftp_ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-	Page\components::redirect('../../add.php?error=node_ip|node_sftp_ip&disp=ip_fail');
+if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+	Page\components::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
 
 /*
  * Process IPs and Ports
@@ -96,11 +96,11 @@ foreach($lines as $id => $values)
 /*
  * Add Node to Database
  */
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :sftp_ip, :gsd_secret, :ips, :ports)");
+$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :ip, :gsd_secret, :ips, :ports)");
 $create->execute(array(
 	':name' => $_POST['node_name'],
-	':ip' => $_POST['node_ip'],
-	':sftp_ip' => $_POST['node_sftp_ip'],
+	':ip' => $_POST['fqdn'],
+	':ip' => $_POST['fqdn'],
 	':gsd_secret' => $core->auth->gen_UUID(),
 	':ips' => json_encode($IPA),
 	':ports' => json_encode($IPP)

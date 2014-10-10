@@ -87,8 +87,8 @@ class apiModuleGetInformation {
 			$this->return = array_merge($this->return, array(array(
 				"id" => $data['id'],
 				"node" => $data['node'],
-				"node_ip" => $data['node_ip'],
-				"sftp_ip" => $data['sftp_ip']
+				"fqdn" => $data['fqdn'],
+				"ip" => $data['ip']
 			)));
 
 		return $this->return;
