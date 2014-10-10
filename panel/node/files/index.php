@@ -64,6 +64,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
  */
 echo $twig->render(
 		'node/files/index.html', array(
+			'server' => array(
+				'name' => $core->server->getData('name')
+			),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

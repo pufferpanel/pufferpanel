@@ -36,6 +36,7 @@ echo $twig->render(
 		'node/settings.html', array(
 			'server' => array(
 				'gsd_id' => $core->server->getData('gsd_id'),
+				'name' => $core->server->getData('name'),
 				'server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))),
 				'ftp_user' => $core->server->getData('ftp_user')
 			),

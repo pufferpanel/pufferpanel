@@ -32,6 +32,7 @@ echo $twig->render(
 		'node/index.html', array(
 			'server' => array(
 				'node' => $core->server->nodeData('node'),
+				'name' => $core->server->getData('name'),
 				'gsd_id' => $core->server->getData('gsd_id'),
 				'gsd_secret' => $core->server->getData('gsd_secret'),
 				'max_ram' => $core->server->getData('max_ram'),

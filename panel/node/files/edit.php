@@ -96,6 +96,9 @@ if(!is_null($error)){
  */
 echo $twig->render(
 		'node/files/edit.html', array(
+			'server' => array(
+				'name' => $core->server->getData('name')
+			),
 			'error' => $error,
 			'xsrf' => $core->auth->XSRF(),
 			'file' => $_POST['file'],
