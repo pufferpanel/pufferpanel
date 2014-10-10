@@ -22,7 +22,7 @@ require_once('../../src/framework/framework.core.php');
 /*
  * Illegally Accessed File
  */
-if(!isset($_POST['username']) || !isset($_POST['password'])){
+if(!isset(@$_POST['username']) || !isset(@$_POST['password'])){
 
 	http_response_code(403);
 
