@@ -41,7 +41,7 @@ if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server
 * GSD Must Be Online!
 */
 if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
-	Page\components::redirect('../../add.php?disp=gsd_offline');
+	Page\components::redirect('../../add.php?disp=gsd_offline&error=na');
 
 /*
  * Validate Server Name
