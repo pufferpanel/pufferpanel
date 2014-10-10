@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
+header('Content-Type: application/json');
 require_once('../../src/framework/framework.core.php');
 
 /*
@@ -25,26 +25,24 @@ require_once('../../src/framework/framework.core.php');
 if(!isset($_POST['username']) || !isset($_POST['password'])){
 
 	http_response_code(403);
-	exit();
 
 }
 
-if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$', $_POST['username'], $matches)){
+if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $matches)){
 
 	http_response_code(403);
-	exit();
 
 }else{
 
-	$username = $matches[0].$matches[1];
-	$serverid = $matches[2];
+	$username = $matches[1].$matches[2];
+	$serverid = $matches[3];
 
 }
 
 /*
  * Varify Identity
  */
-$query = $mysql->prepare("SELECT `encryption_iv`, `ftp_pass` FROM `servers` WHERE `gsd_id` = :gsdid AND `ftp_user` = :username");
+$query = $mysql->prepare("SELECT `encryption_iv`, `ftp_pass`, `gsd_secret` FROM `servers` WHERE `gsd_id` = :gsdid AND `ftp_user` = :username");
 $query->execute(array(
 	'gsdid' => $serverid,
 	'username' => $username
@@ -57,7 +55,7 @@ $query->execute(array(
 
 	}else{
 
-		$server = $mysql->fetch();
+		$server = $query->fetch();
 		if($core->auth->encrypt($_POST['password'], $server['encryption_iv']) != $server['ftp_pass']){
 
 			http_response_code(403);
@@ -66,7 +64,7 @@ $query->execute(array(
 		}else{
 
 			http_response_code(200);
-			exit();
+			die(json_encode(array('authkey' => $server['gsd_secret'])));
 
 		}
 
