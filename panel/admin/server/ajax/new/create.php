@@ -212,7 +212,7 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	 */
 	$core->email->buildEmail('admin_new_server', array(
 	        'NAME' => $_POST['server_name'],
-	        'CONNECT' => $node['ip'].':21',
+	        'CONNECT' => $node['fqdn'].':21',
 	        'USER' => $ftpUser.'-'.$content['id'],
 	        'PASS' => $_POST['sftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
