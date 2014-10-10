@@ -550,7 +550,7 @@ textarea.input-group-sm>.form-control,textarea.input-group-sm>.input-group-addon
 }
 .navbar-fixed-top{top:0;border-width:0 0 1px}
 .navbar-fixed-bottom{bottom:0;margin-bottom:0;border-width:1px 0 0}
-.navbar-brand{float:left;padding:12px 15px;font-size:19px;line-height:21px}
+.navbar-brand{float:left;padding:11px 15px;font-size:19px;line-height:21px}
 .navbar-brand:hover,.navbar-brand:focus{text-decoration:none}
 @media(min-width:768px){.navbar>.container .navbar-brand{margin-left:-15px}
 }
