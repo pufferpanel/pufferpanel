@@ -16,8 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-header('Content-Type: application/json');
-require_once('../../src/framework/api/api.core.php');
+  class apiModuleDeleteServer {
 
-$api->init();
-?>
+ 	public function __construct() {
+
+
+
+ 	}
+
+ }
+
+ ?>
