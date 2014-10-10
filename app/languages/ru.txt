@@ -23,7 +23,7 @@ String.Refresh, обновления
 String.Close, закрыть
 String.generated_pass, сгенерированный пароль
 String.modpacks, Modpacks
-String.SFTP, SFTP
+String.ftp, ftp
 String.Host, принимающей
 String.username, имя пользователя
 String.Generate, формирования
@@ -103,7 +103,7 @@ Node.Settings.modpack.SELECT, —-выберите Пака
 Node.Settings.jar.jar_h1, .jar имя сервера
 Node.Settings.jar.jarfile_name, имя Jarfile
 Node.Settings.jar.Update, имя обновления
-Node.Settings.SFTP.sftp_h1, параметры SFTP
+Node.Settings.ftp.ftp_h1, параметры ftp
 Node.Settings.AJAX.installing_modpack, установка Пака
 Node.Settings.AJAX.modpack_error, вы не можете использовать инвалидов формы ввода как Пака!
 Node.plugins.welcome_h1, плагин установки

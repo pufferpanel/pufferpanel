@@ -23,7 +23,7 @@ string.refresh, Actualiser
 string.close, Fermer
 string.generated_pass, Mot de passe généré
 string.modpacks, Modpacks
-string.sftp, SFTP
+string.ftp, ftp
 string.host, Hôte
 string.username, Nom d'utilisateur
 string.generate, Générer
@@ -103,7 +103,7 @@ node.settings.modpack.select, \u2014- Sélectionnez un Modpack
 node.settings.jar.jar_h1, Server .jar Name
 node.settings.jar.jarfile_name, Nom du .jar
 node.settings.jar.update, Mettre a jour le nom
-node.settings.sftp.sftp_h1, Options SFTP
+node.settings.ftp.ftp_h1, Options ftp
 node.settings.ajax.installing_modpack, Installation du Modpack
 node.settings.ajax.modpack_error, Vous ne pouvez pas utiliser un modpack désactivé !
 node.plugins.welcome_h1, Installateur de plugin

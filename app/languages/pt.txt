@@ -23,7 +23,7 @@ string.refresh, Atualizar
 string.close, Fechar
 string.generated_pass, Gerar Senha
 string.modpacks, Modpacks
-string.sftp, SFTP
+string.ftp, ftp
 string.host, Servidor
 string.username, Usuário
 string.generate, Gerar
@@ -82,7 +82,7 @@ node.settings.modpack.select, —- Selecione um Modpack
 node.settings.jar.jar_h1, Nome do .jar do Servidor
 node.settings.jar.jarfile_name, Nome do Arquivo .jar
 node.settings.jar.update, Atualizar Nome
-node.settings.sftp.sftp_h1, Configurações do SFTP
+node.settings.ftp.ftp_h1, Configurações do ftp
 node.settings.ajax.installing_modpack, Instalando Modpack
 node.settings.ajax.modpack_error, Você não pode utilizar um campo desabilitado como um modpack!
 node.plugins.welcome_h1, Instalador de Plugin

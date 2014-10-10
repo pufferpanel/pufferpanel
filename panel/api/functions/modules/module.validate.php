@@ -75,7 +75,7 @@ trait validate {
 		 * Is all of the data here?
 		 */
 		$dataOptions = array(
-			'server_name', 'node', 'email', 'server_ip', 'server_port', 'alloc_mem', 'alloc_disk', 'sftp_pass', 'cpu_limit'
+			'server_name', 'node', 'email', 'server_ip', 'server_port', 'alloc_mem', 'alloc_disk', 'ftp_pass', 'cpu_limit'
 		);
 
 		foreach($dataOptions as $dataOption)

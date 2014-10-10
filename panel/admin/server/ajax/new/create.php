@@ -34,7 +34,7 @@ setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $co
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['cpu_limit']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['cpu_limit']))
 	Page\components::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
@@ -107,13 +107,13 @@ if(!is_numeric($_POST['cpu_limit']))
 
 
 /*
- * Validate SFTP Password
+ * Validate ftp Password
  */
-if($_POST['sftp_pass'] != $_POST['sftp_pass_2'] || strlen($_POST['sftp_pass']) < 8)
-	Page\components::redirect('../../add.php?error=sftp_pass|sftp_pass_2&disp=p_fail');
+if($_POST['ftp_pass'] != $_POST['ftp_pass_2'] || strlen($_POST['ftp_pass']) < 8)
+	Page\components::redirect('../../add.php?error=ftp_pass|ftp_pass_2&disp=p_fail');
 
 $iv = $core->auth->generate_iv();
-$_POST['sftp_pass'] = $core->auth->encrypt($_POST['sftp_pass'], $iv);
+$_POST['ftp_pass'] = $core->auth->encrypt($_POST['ftp_pass'], $iv);
 
 /*
  * Add Server to Database
@@ -144,7 +144,7 @@ $add->execute(array(
 	':sip' => $_POST['server_ip'],
 	':sport' => $_POST['server_port'],
 	':ftpuser' => $ftpUser,
-	':ftppass' => $_POST['sftp_pass']
+	':ftppass' => $_POST['ftp_pass']
 ));
 
 $lastInsert = $mysql->lastInsertId();
@@ -214,7 +214,7 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	        'NAME' => $_POST['server_name'],
 	        'CONNECT' => $node['fqdn'].':21',
 	        'USER' => $ftpUser.'-'.$content['id'],
-	        'PASS' => $_POST['sftp_pass_2']
+	        'PASS' => $_POST['ftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 
 	Page\components::redirect('../../view.php?id='.$lastInsert);

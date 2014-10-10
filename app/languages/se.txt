@@ -23,7 +23,7 @@ string.refresh, Uppdatera
 string.close, Stäng
 string.generated_pass, Genererat lösenord
 string.modpacks, Modpacket
-string.sftp, SFTP
+string.ftp, ftp
 string.host, Host
 string.username, Användarnamn
 string.generate, Generera
@@ -104,7 +104,7 @@ node.settings.modpack.select, —- Välj ett modpacket
 node.settings.jar.jar_h1, Server .jar namn
 node.settings.jar.jarfile_name, Jarfils namn
 node.settings.jar.update, Uppdatera namn
-node.settings.sftp.sftp_h1, SFTP inställningar
+node.settings.ftp.ftp_h1, ftp inställningar
 node.settings.ajax.installing_modpack, Installerar modpacket
 node.settings.ajax.modpack_error, Du kan inte använda ett avstängt val som modpacket!
 node.plugins.welcome_h1, Plugin installerare

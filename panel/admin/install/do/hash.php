@@ -40,7 +40,7 @@ if(file_exists('../install.lock'))
 				<div class="col-2"></div>
 				<div class="col-8">
 					<div class="alert alert-danger">Do not move on to the next step until you have done so, and have entered the specific file location for this hash.</div>
-					<p>PufferPanel encrypts sensitive SFTP password information with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key on all of the servers running PufferPanel. You can generate a key below that should be placed in a file that PHP can access, but is outside of the public web root. We suggest <code>/etc/hashfile.txt</code>.</p>
+					<p>PufferPanel encrypts sensitive ftp password information with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key on all of the servers running PufferPanel. You can generate a key below that should be placed in a file that PHP can access, but is outside of the public web root. We suggest <code>/etc/hashfile.txt</code>.</p>
 					<?php
 
                         if(isset($_POST['hash_do'])){

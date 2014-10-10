@@ -26,14 +26,14 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_POST['sid']) || !isset($_POST['nid']))
 	Page\components::redirect('../../find.php');
 
-if(!isset($_POST['sftp_pass'], $_POST['sftp_pass_2'], $_POST['nid']))
+if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['nid']))
 	Page\components::redirect('../../view.php?id='.$_POST['sid']);
 
-if(strlen($_POST['sftp_pass']) < 8)
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_len');
+if(strlen($_POST['ftp_pass']) < 8)
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_len');
 
-if($_POST['sftp_pass'] != $_POST['sftp_pass_2'])
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=sftp_pass|sftp_pass_2&disp=pass_match');
+if($_POST['ftp_pass'] != $_POST['ftp_pass_2'])
+	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_match');
 
 /*
  * Select Node, User, & Server Information
@@ -42,10 +42,10 @@ $core->server->rebuildData($_POST['sid']);
 $core->user->rebuildData($core->server->getData('owner_id'));
 
 /*
- * Update Server SFTP Information
+ * Update Server ftp Information
  */
 $iv = $core->auth->generate_iv();
-$pass = $core->auth->encrypt($_POST['sftp_pass'], $core->auth->generate_iv());
+$pass = $core->auth->encrypt($_POST['ftp_pass'], $core->auth->generate_iv());
 
 $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
     ':sid' => $_POST['sid'],
@@ -58,8 +58,8 @@ $mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv 
  */
 if(isset($_POST['email_user'])){
 
-    $core->email->buildEmail('admin_new_sftppass', array(
-        'PASS' => $_POST['sftp_pass'],
+    $core->email->buildEmail('admin_new_ftppass', array(
+        'PASS' => $_POST['ftp_pass'],
         'SERVER' => $core->server->getData('name')
     ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Your FTP Password was Reset');
 

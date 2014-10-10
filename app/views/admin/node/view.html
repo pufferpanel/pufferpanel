@@ -7,7 +7,7 @@
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
 		<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
-		<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
+		<li><a href="#ftp" data-toggle="tab">FTP</a></li>
 	</ul>
 	{% if get.disp is defined and get.disp != 1 %}
 		<div class="alert alert-danger">
@@ -16,7 +16,7 @@
 			{% elseif get.disp == 'missing_args' %}
 				Not all arguments were passed by the script.
 			{% elseif get.disp == 'ip_fail' %}
-				The IP address provided for SFTP was invalid.
+				The IP address provided for ftp was invalid.
 			{% elseif get.disp == 'n_fail' %}
 				The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).
 			{% elseif get.disp == 'key_fail' %}
@@ -122,13 +122,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane" id="sftp">
-			<h3>SFTP Settings</h3><hr />
+		<div class="tab-pane" id="ftp">
+			<h3>FTP Settings</h3><hr />
 			<div class="well">
-				<form action="ajax/update/sftp.php?do=ipuser" method="post">
+				<form action="ajax/update/ftp.php?do=ipuser" method="post">
 					<fieldset>
 						<div class="form-group">
-							<label for="ip" class="control-label">SFTP IP</label>
+							<label for="ip" class="control-label">FTP IP</label>
 							<div>
 								<input type="text" name="ip" value="{{ node.ip }}" class="form-control" />
 							</div>

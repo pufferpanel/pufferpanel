@@ -116,7 +116,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 										<label><input type="checkbox" name="permissions[]" value="add_node" /> Add New Node</label><br />
 										<hr />
 										<label><input type="checkbox" name="permissions[]" value="update_server" /> Update Server Information</label><br />
-										<label><input type="checkbox" name="permissions[]" value="update_sftp_pass" /> Update SFTP Password for Server</label><br />
+										<label><input type="checkbox" name="permissions[]" value="update_ftp_pass" /> Update ftp Password for Server</label><br />
 										<label><input type="checkbox" name="permissions[]" value="update_user_pass" /> Update User Password</label><br />
 										<hr />
 										<label><input type="checkbox" name="permissions[]" value="delete_user" /> Delete User</label><br />
