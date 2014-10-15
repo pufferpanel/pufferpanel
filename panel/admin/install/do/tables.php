@@ -160,7 +160,7 @@ if(file_exists('../install.lock'))
 	                        /*
 	                         * CREATE TABLE `servers`
 	                         */
-	                        $mysql->exec("DROP TABLE IF EXISTS `severs`");
+	                        $mysql->exec("DROP TABLE IF EXISTS `servers`");
 	                        $mysql->exec("CREATE TABLE `servers` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                          `gsd_id` int(11) DEFAULT NULL,
