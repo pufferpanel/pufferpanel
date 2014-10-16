@@ -146,7 +146,7 @@ $(window).load(function(){
 					   	can_run = true;
 					   	return false;
 					},
-			  		success: function(data) {
+					success: function(data) {
 		    			if(data == "ok"){
 		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
 		    				can_run = true;
