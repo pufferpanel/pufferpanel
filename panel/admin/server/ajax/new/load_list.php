@@ -52,9 +52,10 @@ $node = $selectData->fetch();
 
 		            if($internal['ports_free'] > 0){
 		            	$hasFree = true;
-						echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+						$append = ($internal['ports_free'] > 1) ? "s" : null;
+						echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Port'.$append.')</option>';
 		            }else
-					  echo '<option disabled="disabled">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
+					  echo '<option disabled="disabled">'.$ip.' (no ports avaliable)</option>';
 	                $i++;
 
 				}
@@ -86,7 +87,7 @@ $node = $selectData->fetch();
                             if($avaliable == 1)
                                 echo '<option value="'.$port.'">'.$port.'</option>';
                             else
-                                echo '<option disabled="disabled">'.$port.'</option>';
+                                echo '<option disabled="disabled">'.$port.' (in use)</option>';
 
     	                }
 
