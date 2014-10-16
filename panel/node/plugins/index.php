@@ -29,9 +29,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
  */
 echo $twig->render(
 		'node/plugins/index.html', array(
-            'server' => array(
-                'name' => $core->server->getData('name')
-            ),
+            'server' => $core->server->getData(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

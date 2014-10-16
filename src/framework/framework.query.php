@@ -102,7 +102,7 @@ class query {
 		$this->context = stream_context_create(array(
 			"http" => array(
 				"method" => "GET",
-				"timeout" => 3,
+				"timeout" => 1,
 				"header" => "X-Access-Token: ".$secret
 			)
 		));
@@ -140,7 +140,7 @@ class query {
 			$this->context = stream_context_create(array(
 				"http" => array(
 					"method" => "GET",
-					"timeout" => 3,
+					"timeout" => 1,
 					"header" => "X-Access-Token: ".$this->_nodeData['gsd_secret']
 				)
 			));
