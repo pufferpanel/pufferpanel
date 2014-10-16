@@ -100,7 +100,7 @@ $(window).load(function(){
 				timeout: 5000,
 				data: { command: ccmd },
 				error: function(jqXHR, textStatus, errorThrown) {
-				   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
+				   	$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
 				   	$("#sending_command").removeClass('disabled');
 				   	$("#sending_command").html('&rarr;');
 				   	$("#ccmd").val('');
@@ -138,7 +138,7 @@ $(window).load(function(){
 					url: 'http://{{ node.ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
-					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+					   	$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 					   	$("#off").removeClass('disabled');
 					   	$("#off").html('Stop');
 					   	$("#restart").removeClass('disabled');
