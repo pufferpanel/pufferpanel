@@ -123,6 +123,20 @@ class user extends Auth\auth {
 
 	}
 
+	/**
+	 * Initiator class for server based on Hash.
+	 *
+	 * @param string $server The hash of the server we are interested in.
+	 * @param int $oid Returns the owner of the server in question
+	 * @return void
+	 * @static
+	 */
+	static public function permissionsInit($server, $oid) {
+
+		self::$_shash = $server;
+		self::$_soid = $oid;
+
+	}
 
 	/**
 	 * Collects permissions from the Database given a user id.
@@ -155,27 +169,12 @@ class user extends Auth\auth {
 	}
 
 	/**
-	 * Initiator class for server based on Hash.
-	 *
-	 * @param string $server The hash of the server we are interested in.
-	 * @param int $oid Returns the owner of the server in question
-	 * @return void
-	 * @static
-	 */
-	static public function permissionsInit($server, $oid) {
-
-		self::$_shash = $server;
-		self::$_soid = $oid;
-
-	}
-
-	/**
 	 * Checks if a given user has permission to access a part of the Control Panel. Defaults to true if the user is the owner.
 	 *
 	 * @param string $permission The permission node to check aganist.
 	 * @return bool Returns true if they have permission, false if not.
 	 */
-	public function checkPermissions($permission) {
+	public function checkPermission($permission) {
 
 		if($this->_soid != $this->getData('id')){
 
@@ -197,6 +196,11 @@ class user extends Auth\auth {
 
 	}
 
+	/**
+	 * Check if a user has a protected permissions class.
+	 *
+	 * @return bool
+	 */
 	public function checkProtected() {
 
 		if(is_null($this->_perms))
