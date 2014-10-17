@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 session_start();
-require_once('../../../../../../src/framework/framework.core.php');
+require_once('../../../../../src/framework/framework.core.php');
 
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
@@ -30,13 +30,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 		Page\components::redirect('../../list.php');
 
 	if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
-		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail&tab=sftp');
+		Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail&tab=ftp');
 
 	/*
 	 * Run Update on Node Table
 	 */
 	$mysql->prepare("UPDATE `nodes` SET `ip` = :ip WHERE `id` = :nid")->execute(array(':ip' => $_POST['ip'], ':nid' => $_POST['nid']));
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=sftp');
+	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&tab=ftp');
 
 }
 

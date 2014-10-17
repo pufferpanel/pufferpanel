@@ -112,10 +112,10 @@ trait add {
          */
         $this->iv = $this->generate_iv();
 
-        if(is_null($this->data['sftp_pass']))
+        if(is_null($this->data['ftp_pass']))
             $this->rawPassword = self::keygen(14);
         else
-            $this->rawPassword = $this->data['sftp_pass'];
+            $this->rawPassword = $this->data['ftp_pass'];
 
         $this->password = $this->encrypt($this->rawPassword, $this->iv);
 

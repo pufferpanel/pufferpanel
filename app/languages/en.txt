@@ -24,7 +24,7 @@ string.refresh, Refresh
 string.close, Close
 string.generated_pass, Generated Password
 string.modpacks, Modpacks
-string.sftp, SFTP
+string.ftp, ftp
 string.host, Host
 string.username, Username
 string.generate, Generate
@@ -104,7 +104,7 @@ node.settings.modpack.select, —- Select a Modpack
 node.settings.jar.jar_h1, Server .jar Name
 node.settings.jar.jarfile_name, Jarfile Name
 node.settings.jar.update, Update Name
-node.settings.sftp.sftp_h1, SFTP Settings
+node.settings.ftp.ftp_h1, ftp Settings
 node.settings.ajax.installing_modpack, Installing Modpack
 node.settings.ajax.modpack_error, You can not use a disabled form input as a modpack!
 node.plugins.welcome_h1, Plugin Installer

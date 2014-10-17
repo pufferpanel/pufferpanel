@@ -190,23 +190,11 @@ class tplMail  {
 	private function readTemplate($template)
 		{
 
-			$this->tpl = $this->mysql->prepare("SELECT * FROM `acp_email_templates` WHERE `tpl_name` = ?");
-			$this->tpl->execute(array($template));
-
-			if($this->tpl->rowCount() == 1)
-				{
-
-					$row = $this->tpl->fetch();
-					return $row['tpl_content'];
-
-				}
+			$this->getTemplate = @file_get_contents(APP_DIR.'templates/email/'.$template.'.tpl');
+			if(!$this->getTemplate)
+				die('Requested template `'.$template.'` could not be found.');
 			else
-				{
-
-					die('Requested template `'.$template.'` could not be found.');
-
-				}
-
+				return $this->getTemplate;
 
 		}
 
@@ -223,7 +211,7 @@ class tplMail  {
 			if($type == 'failed')
 				{
 
-					$this->find = array('<%HOST_NAME%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>', '<%MASTER_URL%>');
+					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
@@ -233,7 +221,7 @@ class tplMail  {
 			else if($type == 'success')
 				{
 
-					$this->find = array('<%HOST_NAME%>', '<%IP_ADDRESS%>', '<%GETHOSTBY_IP_ADDRESS%>', '<%DATE%>', '<%MASTER_URL%>');
+					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
@@ -260,10 +248,10 @@ class tplMail  {
 		{
 
 			$this->message = $this->readTemplate($tpl);
-			$this->message = str_replace(array('<%HOST_NAME%>', '<%MASTER_URL%>', '<%DATE%>'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
+			$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
 
 				foreach($data as $key => $val)
-					$this->message  = str_replace('<%'.$key.'%>', $val, $this->message);
+					$this->message  = str_replace('{{ '.$key.' }}', $val, $this->message);
 
 				return $this;
 

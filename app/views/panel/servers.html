@@ -54,21 +54,4 @@
 		</div>
 	{% endif %}
 </div>
-<script type="text/javascript">
-	$(document).ready(function(){
-			$(".dynUpdate").each(function(index, data){
-			    var connection = $(this).attr("id");
-			    var element = $(this);
-			    $.ajax({
-			    	type: "POST",
-			    	url: "ajax/get_status.php",
-			    	data: { server: connection },
-					success: function(data) {
-			    			element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-							element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
-					}
-			    });
-			});
-	});
-</script>
 {% endblock %}

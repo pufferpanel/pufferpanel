@@ -2,18 +2,10 @@
 
 {% block title %}Server Console{% endblock %}
 
-{% block navdropdown %}
-<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-	<ul class="nav navbar-nav navbar-right">
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
-				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
-				</ul>
-		</li>
-	</ul>
-</div>
+{% block servername %}
+<ul class="nav navbar-nav">
+	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i> {{ server.name }}</a></li>
+</ul>
 {% endblock %}
 
 {% block sidebar %}
@@ -41,7 +33,7 @@
 <div class="col-9">
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#server_sett" data-toggle="tab">{{ lang.string_modpacks }}</a></li>
-		<li class=""><a href="#sftp_sett" data-toggle="tab">{{ lang.string_sftp }}</a></li>
+		<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }}</a></li>
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active" id="server_sett">
@@ -72,18 +64,18 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane" id="sftp_sett">
+		<div class="tab-pane" id="ftp_sett">
 			<h3>{{ lang.node_settings_jar_update }}</h3><hr />
-			<form action="ajax/settings/sftp.php" method="post">
+			<form action="ajax/settings/ftp.php" method="post">
 				<fieldset>
 					<div class="form-group">
-						<label for="sftp_host" class="control-label">{{ lang.string_host }}</label>
+						<label for="ftp_host" class="control-label">{{ lang.string_host }}</label>
 						<div>
 							<input type="text" readonly="readonly" value="{{ node.fqdn }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="sftp_user" class="control-label">{{ lang.string_username }}</label>
+						<label for="ftp_user" class="control-label">{{ lang.string_username }}</label>
 						<div>
 							<input type="text" readonly="readonly" value="{{ server.ftp_user }}-{{ server.gsd_id }}" class="form-control" />
 						</div>
@@ -92,18 +84,18 @@
 						<div class="row">
 							<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
 							<div class="form-group col-6 nopad">
-								<label for="sftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
+								<label for="ftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
 								<div class="input-group">
-									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+									<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
 									<span class="input-group-btn">
 										<button class="btn btn-success" id="gen_pass_bttn" type="button">{{ lang.string_generate }}</button>
 									</span>
 								</div>
 							</div>
 							<div class="form-group col-6 nopad-right">
-								<label for="sftp_pass_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
+								<label for="ftp_pass_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
 								<div>
-									<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
+									<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />
 								</div>
 							</div>
 						</div>
@@ -141,8 +133,8 @@
 				success: function(data) {
 					$("#gen_pass").html('<strong>{{ lang.string_generated_pass }}:</strong> '+data);
 					$("#gen_pass").slideDown();
-					$('input[name="sftp_pass"]').val(data);
-					$('input[name="sftp_pass_2"]').val(data);
+					$('input[name="ftp_pass"]').val(data);
+					$('input[name="ftp_pass_2"]').val(data);
 					return false;
 				}
 			});

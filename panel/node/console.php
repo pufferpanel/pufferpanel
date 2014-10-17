@@ -46,11 +46,7 @@ if($core->gsd->online() === true){
  */
 echo $twig->render(
 		'node/console.html', array(
-			'server' => array(
-				'gsd_id' => $core->server->getData('gsd_id'),
-				'gsd_secret' => $core->server->getData('gsd_secret'),
-				'console_inner' => $content['contents']
-			),
+			'server' => array_merge($core->server->getData(), array('console_inner' => $content['contents'])),
 			'node' => array(
 				'ip' => $core->server->nodeData('ip')
 			),

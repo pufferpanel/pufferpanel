@@ -32,6 +32,7 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#">{{ settings.company_name }}</a>
 			</div>
+			{% block servername %}{% endblock %}
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
 					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php"><i class="fa fa-cogs"></i></a></li>{% endif %}
@@ -55,7 +56,22 @@
 				</div>
 			</div>
 			<script type="text/javascript">
+			$(document).ready(function(){
 				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+				$(".dynUpdate").each(function(index, data){
+					var connection = $(this).attr("id");
+					var element = $(this);
+					$.ajax({
+						type: "POST",
+						url: "{{ settings.master_url }}ajax/get_status.php",
+						data: { server: connection },
+						success: function(data) {
+								element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+								element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+						}
+					});
+				});
+			});
 			</script>
 		</div>
 	</div>

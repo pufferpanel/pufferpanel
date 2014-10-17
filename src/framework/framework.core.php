@@ -41,13 +41,28 @@ define('SRC_DIR', dirname(dirname(__DIR__)).'/src/');
 require_once(BASE_DIR.'vendor/autoload.php');
 
 /*
+* Bugsnag Settings
+*
+* Bugsnag is an Cloud-based Error collection system. This system allows
+* us to collect error information directly from your panel when they
+* occur. This allows us to patch errors that you may not notice, or that
+* are hard to track down. To enable this, please uncomment the lines below.
+*/
+$bugsnag = new Bugsnag_Client("0745694bcbeaab273d7e0095e7947a0d");
+$bugsnag->setAppVersion(trim(file_get_contents(SRC_DIR.'versions/current')));
+$bugsnag->setMetaData(array('git' => substr(trim(file_get_contents(BASE_DIR.'.git/refs/heads/master')), 0, 8)));
+$bugsnag->setFilters(array('pass', 'password', 'hash', 'token')); // Prevent accidental sending of this (filters anything containing that string)
+set_error_handler(array($bugsnag, "errorHandler"));
+set_exception_handler(array($bugsnag, "exceptionHandler"));
+
+/*
  * To use a local-only debugging option please uncomment the lines
- * below and comment out the bugsnag lines. This debugging can be
+ * below and comment out the bugsnag lines above. This debugging can be
  * used on a live environment if you wish.
  */
-use Tracy\Debugger;
-Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
-Debugger::$strictMode = TRUE;
+//use Tracy\Debugger;
+//Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
+//Debugger::$strictMode = TRUE;
 
 /*
  * Has Installer been run?

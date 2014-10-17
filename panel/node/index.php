@@ -30,15 +30,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
  */
 echo $twig->render(
 		'node/index.html', array(
-			'server' => array(
-				'node' => $core->server->nodeData('node'),
-				'gsd_id' => $core->server->getData('gsd_id'),
-				'gsd_secret' => $core->server->getData('gsd_secret'),
-				'max_ram' => $core->server->getData('max_ram'),
-				'disk_space' => $core->server->getData('disk_space'),
-				'server_ip' => $core->server->getData('server_ip'),
-				'server_port' => $core->server->getData('server_port')
-			),
+			'server' => array_merge($core->server->getData(), array('node' => $core->server->nodeData('node'))),
 			'node' => array(
 				'ip' => $core->server->nodeData('ip')
 			),

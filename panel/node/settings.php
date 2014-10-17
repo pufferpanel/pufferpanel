@@ -34,11 +34,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
  */
 echo $twig->render(
 		'node/settings.html', array(
-			'server' => array(
-				'gsd_id' => $core->server->getData('gsd_id'),
-				'server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))),
-				'ftp_user' => $core->server->getData('ftp_user')
-			),
+			'server' => array_merge($core->server->getData(), array('server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))))),
 			'node' => array(
 				'fqdn' => $core->server->nodeData('fqdn')
 			),

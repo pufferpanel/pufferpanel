@@ -2,18 +2,10 @@
 
 {% block title %}Server Console{% endblock %}
 
-{% block navdropdown %}
-<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-	<ul class="nav navbar-nav navbar-right">
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
-				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
-				</ul>
-		</li>
-	</ul>
-</div>
+{% block servername %}
+<ul class="nav navbar-nav">
+	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i> {{ server.name }}</a></li>
+</ul>
 {% endblock %}
 
 {% block sidebar %}
@@ -108,7 +100,7 @@ $(window).load(function(){
 				timeout: 5000,
 				data: { command: ccmd },
 				error: function(jqXHR, textStatus, errorThrown) {
-				   	$("#sc_resp").html('{{ lang.node_ajax_generic_error }}').fadeIn().delay(5000).fadeOut();
+				   	$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
 				   	$("#sending_command").removeClass('disabled');
 				   	$("#sending_command").html('&rarr;');
 				   	$("#ccmd").val('');
@@ -146,7 +138,7 @@ $(window).load(function(){
 					url: 'http://{{ node.ip }}:8003/gameservers/{{ server.gsd_id }}/off',
 					timeout: 5000,
 					error: function(jqXHR, textStatus, errorThrown) {
-					   	$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+					   	$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 					   	$("#off").removeClass('disabled');
 					   	$("#off").html('Stop');
 					   	$("#restart").removeClass('disabled');
@@ -154,7 +146,7 @@ $(window).load(function(){
 					   	can_run = true;
 					   	return false;
 					},
-			  		success: function(data) {
+					success: function(data) {
 		    			if(data == "ok"){
 		    				$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
 		    				can_run = true;

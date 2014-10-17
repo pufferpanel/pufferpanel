@@ -26,10 +26,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		/*
 		 * Query Database
 		 */
-		$select = $mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id AND `owner_id` = :oid");
+		$select = $mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id");
 		$select->execute(array(
-			':id' => $_POST['server'],
-			':oid' => $core->user->getData('id')
+			':id' => $_POST['server']
 		));
 
 			$server = $select->fetch();

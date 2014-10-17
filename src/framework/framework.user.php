@@ -71,11 +71,9 @@ class user extends Auth\auth {
 			$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
 
 				$this->row = $this->query->fetch();
-				foreach($this->row as $this->id => $this->val){
-
-					$this->_data[$this->id] = $this->val;
-
-				}
+				if(is_array($this->row))
+					foreach($this->row as $this->id => $this->val)
+						$this->_data[$this->id] = $this->val;
 
 		}else if(is_null($session) && is_null($hash) && is_numeric($ip)){
 
@@ -83,11 +81,9 @@ class user extends Auth\auth {
 			$this->query->execute(array(':id' => $ip));
 
 				$this->row = $this->query->fetch();
-				foreach($this->row as $this->id => $this->val){
-
-					$this->_data[$this->id] = $this->val;
-
-				}
+				if(is_array($this->row))
+					foreach($this->row as $this->id => $this->val)
+						$this->_data[$this->id] = $this->val;
 
 		}else
 			$this->_l = false;
@@ -120,7 +116,7 @@ class user extends Auth\auth {
 			else
 				return false;
 		else
-			if($this->_l === true && array_key_exists($id, $this->_data))
+			if($this->_l === true && is_array($this->_data) && array_key_exists($id, $this->_data))
 				return $this->_data[$id];
 			else
 				return false;

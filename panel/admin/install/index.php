@@ -55,6 +55,23 @@ if(file_exists('install.lock'))
 						$continue = true;
 
 						/*
+						 * Fail if not installed with git
+						 */
+						if(!@file_get_contents('../../../src/versions/current')){
+
+							echo '<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Incompatable Install Method</h3>
+								</div>
+								<div class="panel-body">
+									<p class="text-danger">This panel <strong>must</strong> be installed using `git clone` on your server. Please re-read the wiki and follow the directions correctly.</p>
+								</div>
+							</div><hr />';
+							$continue = false;
+
+						}
+
+						/*
 						 * Check to make sure PHP is at least 5.5.0
 						 */
 						if(version_compare(PHP_VERSION, "5.5.0") < 0){
@@ -67,7 +84,7 @@ if(file_exists('install.lock'))
 									<p class="text-danger">Minimum Required Version: <code>5.5.0</code><br />
 									Currently Installed: <code>'.PHP_VERSION.'</code></p>
 								</div>
-							</div>';
+							</div><hr />';
 							$continue = false;
 
 						}
@@ -117,7 +134,7 @@ if(file_exists('install.lock'))
 								<div class="panel-body">
 									'.$failedList.'
 								</div>
-							</div>';
+							</div><hr />';
 
 						}
 

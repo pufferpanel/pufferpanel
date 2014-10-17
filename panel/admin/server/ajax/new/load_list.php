@@ -42,17 +42,23 @@ $node = $selectData->fetch();
 			$ips = json_decode($node['ips'], true);
 			$i = 0;
 			$hasFree = false;
-			foreach($ips as $ip => $internal){
 
-				if($i == 0)
-					$firstIP = $ip;
+			if(is_array($ips)){
 
-	            if($internal['ports_free'] > 0){
-	            	$hasFree = true;
-					echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-	            }else
-				  echo '<option disabled="disabled">'.$ip.' ('.$internal['ports_free'].' Avaliable Ports)</option>';
-                $i++;
+				foreach($ips as $ip => $internal){
+
+					if($i == 0)
+						$firstIP = $ip;
+
+		            if($internal['ports_free'] > 0){
+		            	$hasFree = true;
+						$append = ($internal['ports_free'] > 1) ? "s" : null;
+						echo '<option value="'.$ip.'">'.$ip.' ('.$internal['ports_free'].' Avaliable Port'.$append.')</option>';
+		            }else
+					  echo '<option disabled="disabled">'.$ip.' (no ports avaliable)</option>';
+	                $i++;
+
+				}
 
 			}
 
@@ -81,7 +87,7 @@ $node = $selectData->fetch();
                             if($avaliable == 1)
                                 echo '<option value="'.$port.'">'.$port.'</option>';
                             else
-                                echo '<option disabled="disabled">'.$port.'</option>';
+                                echo '<option disabled="disabled">'.$port.' (in use)</option>';
 
     	                }
 

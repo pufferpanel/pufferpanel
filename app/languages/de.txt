@@ -23,7 +23,7 @@ String.Refresh, Aktualisieren
 string.close, Schließen
 string.generated_pass, Passwort generieren
 string.modpacks, Modpacks
-string.sftp, SFTP
+string.ftp, ftp
 string.host, Host
 string.username, Nutzername
 string.generate, Generieren
@@ -104,7 +104,7 @@ node.settings.modpack.select, —- Wähle ein Modpack
 node.settings.jar.jar_h1, Name der Server .jar
 node.settings.jar.jarfile_name, Name der Jar-Datei
 node.settings.jar.update, Name des Updates
-node.settings.sftp.sftp_h1, SFTP Einstellungen
+node.settings.ftp.ftp_h1, ftp Einstellungen
 node.settings.ajax.installing_modpack, Installiere Modpack
 node.settings.ajax.modpack_error, Du kannst eine deaktivierte Eingabemaske nicht als Modpack nutzen!
 node.plugins.welcome_h1, Plugin Manager
