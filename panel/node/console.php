@@ -26,6 +26,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit();
 }
 
+if($core->user->hasPermission('console.view') !== true)
+	Page\components::redirect('index.php?error=no_permission');
+
 if($core->gsd->online() === true){
 
     $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
@@ -46,6 +49,10 @@ if($core->gsd->online() === true){
  */
 echo $twig->render(
 		'node/console.html', array(
+			'permission' => array(
+				'commands' => $core->user->hasPermission('console.commands'),
+				'power' => $core->user->hasPermission('console.power')
+			),
 			'server' => array_merge($core->server->getData(), array('console_inner' => $content['contents'])),
 			'node' => array(
 				'ip' => $core->server->nodeData('ip')
