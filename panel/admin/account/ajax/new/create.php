@@ -41,7 +41,7 @@ $query->execute(array(
 if($query->rowCount() > 0)
 	Page\components::redirect('../../new.php?disp=a_fail');
 
-$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
+$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, NULL, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
 $insert->execute(array(
 	':user' => $_POST['username'],
 	':email' => $_POST['email'],
