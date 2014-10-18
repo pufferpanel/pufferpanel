@@ -37,8 +37,13 @@ if($core->user->getData('root_admin') == '1'){
 	$query = $mysql->prepare("SELECT * FROM `servers` ORDER BY `active` DESC");
 	$query->execute();
 }else{
-	$query = $mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid ORDER BY `active` DESC");
-	$query->execute(array(':oid' => $core->user->getData('id')));
+
+	$hashes = array_map(array($mysql, 'quote'), $core->user->listServerPermissions());
+	$query = $mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $hashes).") AND `active` = '1'");
+	$query->execute(array(
+		':oid' => $core->user->getData('id')
+	));
+
 }
 
 /*
