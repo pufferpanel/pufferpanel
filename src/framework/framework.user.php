@@ -161,7 +161,7 @@ class user extends Auth\auth {
 				else {
 
 					$this->json = json_decode($this->row['permissions'], true);
-					return ($list === false) ? ((!is_int($this->_shash)) ? false : $this->json[$this->_shash]) : $this->json;
+					return ($list === false) ? ((!is_int(self::$_shash)) ? false : $this->json[self::$_shash]) : $this->json;
 
 				}
 
