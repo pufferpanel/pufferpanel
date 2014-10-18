@@ -183,9 +183,7 @@ class user extends Auth\auth {
 	 */
 	public function listServerPermissions() {
 
-		if(is_null($this->_perms))
-			$this->_perms = $this->getPermissions(true);
-
+		$this->_perms = $this->getPermissions(true);
 		if(is_array($this->_perms))
 			return array_keys($this->_perms);
 		else
@@ -193,6 +191,12 @@ class user extends Auth\auth {
 
 	}
 
+	/**
+	* Returns a list of all permissions nodes avaliable
+	*
+	* @return array
+	* @static
+	*/
 	private static function listAvaliablePermissions() {
 
 		return array(
@@ -238,8 +242,8 @@ class user extends Auth\auth {
 			if(is_null($this->_perms))
 				$this->_perms = $this->getPermissions();
 
-			if(is_array($this->_perms))
-				if(array_key_exists($permission, array_flip($this->_perms['permissions'])))
+			if(is_array($this->_perms) && array_key_exists('permissions', $this->_perms))
+				if(in_array($permission, $this->_perms['permissions']))
 					return true;
 				else
 					return false;

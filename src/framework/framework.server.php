@@ -70,7 +70,7 @@ class server extends user {
 		user::permissionsInit($hash, $userid, null);
 		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
-		else if(!is_null($userid) && is_null($hash) && is_null($isroot))
+		else if(!is_null($userid) && is_null($hash))
 			$this->_rebuildData($userid);
 		else
 			$this->_s = false;
@@ -145,6 +145,7 @@ class server extends user {
 	 */
 	public function nodeRedirect($hash, $userid, $rootAdmin) {
 
+		$this->__construct($hash, $userid, $rootAdmin);
 		if($rootAdmin == 1){
 
 			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
