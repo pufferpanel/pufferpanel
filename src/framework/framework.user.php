@@ -38,9 +38,14 @@ class user extends Auth\auth {
 	private static $_shash;
 
 	/**
-	* @param int $_soid Private variable used for keeping track of server owner id for permissions.
+	* @param int $_uid Private variable used for keeping track of current user id for permissions.
 	*/
-	private static $_soid;
+	private static $_uid;
+
+	/**
+	* @param int $_oid Private variable used for keeping track of server owner id for permissions.
+	*/
+	private static $_oid;
 
 	/**
 	* @param string $_perms Private variable used for keeping track of what permissions a user hash.
@@ -127,14 +132,16 @@ class user extends Auth\auth {
 	 * Initiator class for server based on Hash.
 	 *
 	 * @param string $server The hash of the server we are interested in.
-	 * @param int $oid Returns the owner of the server in question
+	 * @param int $uid Returns the current user's ID
+	 * @param int $oid Returns the server owner's ID
 	 * @return void
 	 * @static
 	 */
-	static public function permissionsInit($server, $oid) {
+	static public function permissionsInit($server, $uid, $oid = null) {
 
 		self::$_shash = $server;
-		self::$_soid = $oid;
+		self::$_uid = $uid;
+		self::$_oid = $oid;
 
 	}
 
@@ -148,7 +155,7 @@ class user extends Auth\auth {
 
 		$this->query = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
 		$this->query->execute(array(
-			':uid' => self::$_soid
+			':uid' => self::$_uid
 		));
 
 			if($this->query->rowCount() == 0)
@@ -161,7 +168,7 @@ class user extends Auth\auth {
 				else {
 
 					$this->json = json_decode($this->row['permissions'], true);
-					return ($list === false) ? ((!is_int(self::$_shash)) ? false : $this->json[self::$_shash]) : $this->json;
+					return ($list === false) ? ((!array_key_exists(self::$_shash, $this->json)) ? false : $this->json[self::$_shash]) : $this->json;
 
 				}
 
@@ -192,21 +199,19 @@ class user extends Auth\auth {
 	 * @param string $permission The permission node to check aganist.
 	 * @return bool Returns true if they have permission, false if not.
 	 */
-	public function checkPermission($permission) {
+	public function hasPermission($permission) {
 
-		if($this->_soid != $this->getData('id')){
+		if(self::$_oid != $this->getData('id')){
 
 			if(is_null($this->_perms))
 				$this->_perms = $this->getPermissions();
 
-			if(is_array($this->_perms)) {
-
-				if(array_key_exists($permission, $this->_perms['permissions']))
+			if(is_array($this->_perms))
+				if(array_key_exists($permission, array_flip($this->_perms['permissions'])))
 					return true;
 				else
 					return false;
-
-			}else
+			else
 				return false;
 
 		}else
