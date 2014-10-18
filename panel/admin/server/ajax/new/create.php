@@ -127,7 +127,7 @@ $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar
 $serverHash = $core->auth->generateUniqueUUID('servers', 'hash');
 $gsdSecret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
+$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, NULL, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 $add->execute(array(
 	':hash' => $serverHash,
 	':gsd_secret' => $node['gsd_secret'],

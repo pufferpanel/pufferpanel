@@ -142,6 +142,7 @@ if(file_exists('../install.lock'))
 	                          `server_jar` tinytext,
 	                          `active` int(1) DEFAULT '1',
 	                          `owner_id` int(11) NOT NULL,
+							  `subusers` tinytext,
 	                          `max_ram` int(11) NOT NULL,
 	                          `disk_space` int(11) NOT NULL,
 	                          `cpu_limit` int(11) DEFAULT NULL,
