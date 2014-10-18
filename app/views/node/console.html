@@ -23,7 +23,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-
+	{% if permission.users.view == true %}<a href="users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
 	<a href="settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
