@@ -203,7 +203,7 @@ class user extends Auth\auth {
 			'console' => array('view', 'commands', 'power'),
 			'files' => array('view', 'edit', 'save', 'download', 'delete'),
 			'manage' => array('view', 'rename' => array('view', 'jar'), 'ftp' => array('view', 'details', 'password')),
-			'users' => array('view', 'list', 'add', 'modify', 'delete')
+			'users' => array('view')
 		);
 
 	}
