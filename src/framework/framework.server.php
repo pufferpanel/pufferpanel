@@ -147,8 +147,8 @@ class server extends user {
 
 		if($rootAdmin == 1){
 
-			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
-			$query->execute(array($hash));
+			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
+			$this->query->execute(array($hash));
 
 		}else{
 
