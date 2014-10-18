@@ -26,6 +26,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 }
 
+if($core->user->hasPermission('manage.view') !== true)
+	Page\components::redirect('index.php?error=no_permission');
+
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(mt_rand(12, 18)));
 
