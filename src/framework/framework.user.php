@@ -141,13 +141,14 @@ class user extends Auth\auth {
 	/**
 	 * Collects permissions from the Database given a user id.
 	 *
+	 * @param bool $list Set to true to return an array of all servers that a user has permission for. Defaults to false.
 	 * @return void
 	 */
-	private function getPermissions() {
+	public function getPermissions($list = false) {
 
-		$this->query = $this->mysql->prepare("SELECT `permissions` FROM `permissions` WHERE `id` = :uid");
+		$this->query = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
 		$this->query->execute(array(
-			':uid' => $this->getData('id')
+			':uid' => self::$_soid
 		));
 
 			if($this->query->rowCount() == 0)
@@ -155,16 +156,33 @@ class user extends Auth\auth {
 			else {
 
 				$this->row = $this->query->fetch();
-				if(is_null($this->row['permissions']))
+				if(is_null($this->row['permissions']) || empty($this->row['permissions']))
 					return false;
 				else {
 
 					$this->json = json_decode($this->row['permissions'], true);
-					return (!is_int($this->_shash)) ? false : $this->json[$this->_shash];
+					return ($list === false) ? ((!is_int($this->_shash)) ? false : $this->json[$this->_shash]) : $this->json;
 
 				}
 
 			}
+
+	}
+
+	/**
+	 * Lists all servers that a user has permission to view
+	 *
+	 * @return array
+	 */
+	public function listServerPermissions() {
+
+		if(is_null($this->_perms))
+			$this->_perms = $this->getPermissions(true);
+
+		if(is_array($this->_perms))
+			return array_keys($this->_perms);
+		else
+			return array("0" => "0");
 
 	}
 

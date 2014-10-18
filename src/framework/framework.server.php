@@ -48,7 +48,7 @@ class server extends user {
 	 * Constructor class for building server data.
 	 *
 	 * @param string $hash The server hash.
-	 * @param int $userid The ID of the user who is requesting the server information.
+	 * @param int $userid The ID of the user who is requesting the server information or in some cases the ID of the server (if called via rebuildData function).
 	 * @param int $isroot The root administrator status of the user requesting the server information.
 	 * @return void
 	 */
@@ -67,15 +67,13 @@ class server extends user {
 		/*
 		 * Make Calls
 		 */
+		user::permissionsInit($hash, $userid);
 		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
 		else if(!is_null($userid) && is_null($hash) && is_null($isroot))
 			$this->_rebuildData($userid);
 		else
 			$this->_s = false;
-
-		if($this->_s !== false)
-			user::permissionsInit($this->_data['hash'], $this->_data['owner_id']);
 
 	}
 
@@ -87,7 +85,7 @@ class server extends user {
 	 */
 	public function rebuildData($id){
 
-			$this->__construct(null, $id);
+		$this->__construct(null, $id);
 
 	}
 
@@ -136,7 +134,10 @@ class server extends user {
 	/**
 	 * Handles incoming requests to access a server and redirects to the correct location and sets a cookie.
 	 *
-	 * @param string $id The column value for the data you need (e.g. ip).
+	 * @param string $hash The hash of the server you are redirecting to.
+	 * @param array $perms
+	 * @param int $userid
+	 * @param int $rootAdmin
 	 * @return void
 	 */
 	public function nodeRedirect($hash, $userid, $rootAdmin) {
@@ -144,27 +145,24 @@ class server extends user {
 		if($rootAdmin == 1){
 
 			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
-			$query->execute(array(
-				$hash
-			));
+			$query->execute(array($hash));
 
 		}else{
 
-			$query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :ownerid AND `hash` = :hash AND `active` = '1'");
-			$query->execute(array(
-				':ownerid' => $userid,
+			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
+			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
+			$this->query->execute(array(
+				':oid' => $userid,
 				':hash' => $hash
 			));
 
 		}
 
-			if($query->rowCount() == 1){
+			if($this->query->rowCount() == 1){
 
-				$row = $query->fetch();
-
-					setcookie('pp_server_hash', $row['hash'], 0, '/');
-
-					$this->redirect('node/index.php');
+				$this->row = $this->query->fetch();
+				setcookie('pp_server_hash', $this->row['hash'], 0, '/');
+				$this->redirect('node/index.php');
 
 			}else
 				$this->redirect('servers.php?error=error');
@@ -174,14 +172,14 @@ class server extends user {
 	/**
 	 * Rebuilds server data using a specified ID. Useful for Admin CP applications.
 	 *
-	 * @param int $userid The server ID.
+	 * @param int $sid The server ID.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _rebuildData($userid){
+	private function _rebuildData($sid){
 
-		$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :value");
+		$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :sid");
 		$this->query->execute(array(
-			':value' => $userid
+			':sid' => $sid
 		));
 
 		if($this->query->rowCount() == 1){
@@ -238,10 +236,11 @@ class server extends user {
 
 		}else{
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :ownerid AND `active` = 1");
+			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
+			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
 			$this->query->execute(array(
-				':hash' => $hash,
-				':ownerid' => $userid
+				':oid' => $userid,
+				':hash' => $hash
 			));
 
 		}
@@ -249,7 +248,6 @@ class server extends user {
 		if($this->query->rowCount() == 1){
 
 			$this->row = $this->query->fetch();
-
 			foreach($this->row as $this->id => $this->val)
 				$this->_data = array_merge($this->_data, array($this->id => $this->val));
 
