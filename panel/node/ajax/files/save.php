@@ -26,6 +26,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 }
 
+if($core->user->hasPermission('files.save') !== true)
+	exit('<div class="alert alert-danger">You do not have permission to save files.</div>');
+
 $canEdit = array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang');
 
 if(isset($_POST['file']))

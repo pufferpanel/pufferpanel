@@ -25,6 +25,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit();
 }
 
+if($core->user->hasPermission('files.view') !== true)
+	Page\components::redirect('../index.php?error=no_permission');
+
 if(isset($_GET['file']))
     $_GET['file'] = str_replace('..', '', urldecode($_GET['file']));
 

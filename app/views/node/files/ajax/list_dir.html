@@ -43,14 +43,22 @@
                 <td><i class="fa fa-file-text"></i></td>
                 <td>
                 	{% if file.extension in extensions %}
-                		<a href="edit.php?file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="edit_file">{{ file.entry }}</a>
+                		{% if permission.files.edit == true %}
+                            <a href="edit.php?file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="edit_file">{{ file.entry }}</a>
+                        {% else %}
+                            {{ file.entry }}
+                        {% endif %}
                 	{% else %}
                 		{{ file.entry }}
                 	{% endif %}
                 </td>
                 <td>{{ file.size }}</td>
                 <td>{{ file.date|date("m/d/y H:i:s") }}</td>
-                <td style="text-align:center;"><a href="index.php?do=download&file={{ file.directory|url_encode }}{{ file.entry|url_encode }}"><i class="fa fa-download"></i></a></td>
+                <td style="text-align:center;">
+                    {% if permission.files.download == true %}
+                        <a href="index.php?do=download&file={{ file.directory|url_encode }}{{ file.entry|url_encode }}"><i class="fa fa-download"></i></a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </tbody>

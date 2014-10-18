@@ -24,6 +24,9 @@ require_once('../../../../src/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	exit('Invalid authentication passed to script.');
 
+if($core->user->hasPermission('files.view') !== true)
+	exit('<div class="alert alert-danger">You do not have permission to save files.</div>');
+
 /*
  * Set Defaults
  */
