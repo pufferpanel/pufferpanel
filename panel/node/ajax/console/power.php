@@ -21,6 +21,9 @@ require_once('../../../../src/framework/framework.core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
+	if($core->user->hasPermission('console.power') !== true)
+		exit('You do not have the required permissions to perform this function.');
+
 	/*
 	 * Open Stream for Reading/Writing
 	 */
