@@ -193,6 +193,38 @@ class user extends Auth\auth {
 
 	}
 
+	private static function listAvaliablePermissions() {
+
+		return array(
+			'console' => array('view', 'commands', 'power'),
+			'files' => array('view', 'edit', 'save', 'download', 'delete'),
+			'manage' => array('view', 'rename' => array('view', 'jar'), 'ftp' => array('view', 'details', 'password')),
+			'users' => array('view', 'list', 'add', 'modify', 'delete')
+		);
+
+	}
+
+	/**
+	* Returns permissions for a user in a twig friendly format
+	*
+	* @return array
+	*/
+	public function twigListPermissions() {
+
+		$this->buildPermissions = array();
+		$this->allPerms = self::listAvaliablePermissions();
+		foreach($this->allPerms as $permission => $submodule)
+			foreach($submodule as $id => $subpermission)
+				if(!is_array($subpermission))
+					$this->buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission);
+				else
+					foreach($subpermission as $subid => $subsubpermission)
+						$this->buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission);
+
+		return $this->buildPermissions;
+
+	}
+
 	/**
 	 * Checks if a given user has permission to access a part of the Control Panel. Defaults to true if the user is the owner.
 	 *

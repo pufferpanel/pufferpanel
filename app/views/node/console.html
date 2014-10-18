@@ -41,8 +41,7 @@
 	</div>
 	<div class="col-6">
 		<hr />
-		{{ permission.commands }}
-		{% if permission.commands == true %}
+		{% if permission.console.commands == true %}
 			<form action="#" method="post" id="console_command">
 				<fieldset>
 					<div class="input-group">
@@ -58,7 +57,7 @@
 	</div>
 	<div class="col-6" style="text-align:center;">
 		<hr />
-		{% if permission.power == true %}
+		{% if permission.console.power == true %}
 			<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
 			<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
 			<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
