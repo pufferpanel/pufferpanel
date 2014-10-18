@@ -36,6 +36,7 @@
 
 {% block content %}
 <div class="col-9">
+	{% if get.error is defined %}<div class="alert alert-danger">You do not have permission to use that feature.</div>{% endif %}
 	<div class="col-12">
 		<h3 class="nopad">Memory Usage (Mb)</h3><hr />
 		<div class="row">
