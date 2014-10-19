@@ -192,11 +192,11 @@ class user extends Auth\auth {
 	}
 
 	/**
-	* Returns a list of all permissions nodes avaliable
-	*
-	* @return array
-	* @static
-	*/
+	 * Returns a list of all permissions nodes avaliable
+	 *
+	 * @return array
+	 * @static
+	 */
 	private static function listAvaliablePermissions() {
 
 		return array(
@@ -209,21 +209,23 @@ class user extends Auth\auth {
 	}
 
 	/**
-	* Returns permissions for a user in a twig friendly format
-	*
-	* @return array
-	*/
-	public function twigListPermissions() {
+	 * Returns permissions for a user in a twig friendly format
+	 *
+	 * @param array $array
+	 * @return array
+	 */
+	public function twigListPermissions($array = null) {
 
 		$this->buildPermissions = array();
 		$this->allPerms = self::listAvaliablePermissions();
+
 		foreach($this->allPerms as $permission => $submodule)
 			foreach($submodule as $id => $subpermission)
 				if(!is_array($subpermission))
-					$this->buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission);
+					$this->buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission, $array);
 				else
 					foreach($subpermission as $subid => $subsubpermission)
-						$this->buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission);
+						$this->buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission, $array);
 
 		return $this->buildPermissions;
 
@@ -233,15 +235,17 @@ class user extends Auth\auth {
 	 * Checks if a given user has permission to access a part of the Control Panel. Defaults to true if the user is the owner.
 	 *
 	 * @param string $permission The permission node to check aganist.
+	 * @param array $array
 	 * @return bool Returns true if they have permission, false if not.
 	 */
-	public function hasPermission($permission) {
+	public function hasPermission($permission, $array = null) {
 
-		if(self::$_oid != $this->getData('id')){
+		if(is_null($this->_perms) && is_null($array))
+			$this->_perms = $this->getPermissions();
+		else
+			$this->_perms = $array;
 
-			if(is_null($this->_perms))
-				$this->_perms = $this->getPermissions();
-
+		if(self::$_oid != $this->getData('id') && is_null($array))
 			if(is_array($this->_perms))
 				if(in_array($permission, $this->_perms))
 					return true;
@@ -249,9 +253,17 @@ class user extends Auth\auth {
 					return false;
 			else
 				return false;
-
-		}else
-			return true;
+		else
+			if(!is_array($array))
+				return true;
+			else
+				if(is_array($this->_perms))
+					if(in_array($permission, $this->_perms))
+						return true;
+					else
+						return false;
+				else
+					return false;
 
 	}
 
