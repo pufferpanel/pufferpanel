@@ -189,9 +189,10 @@ trait components {
 		$this->tkid = "pp_xsrf_token".$identifier;
 
 		if(!is_null($token))
-			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token)
+			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token){
+				unset($_SESSION[$this->tkid]);
 				return true;
-			else
+			}else
 				return false;
 		else {
 			$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
