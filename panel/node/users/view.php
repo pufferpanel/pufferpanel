@@ -33,6 +33,7 @@ if($core->user->hasPermission('users.view') !== true)
 */
 echo $twig->render(
 		'node/users/view.html', array(
+			'server' => $core->server->getData(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

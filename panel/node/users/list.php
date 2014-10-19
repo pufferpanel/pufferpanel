@@ -71,6 +71,7 @@ if(is_array($access) && !empty($access)){
 echo $twig->render(
 		'node/users/list.html', array(
 			'users' => $users,
+			'server' => $core->server->getData(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
