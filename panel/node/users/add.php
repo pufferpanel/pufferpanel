@@ -33,6 +33,7 @@ if($core->user->hasPermission('users.view') !== true)
 */
 echo $twig->render(
 		'node/users/add.html', array(
+			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

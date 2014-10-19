@@ -28,11 +28,49 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if($core->user->hasPermission('users.view') !== true)
 	Page\components::redirect('../index.php?error=no_permission');
 
+$access = json_decode($core->server->getData('subusers'), true);
+$users = array();
+
+if(is_array($access) && !empty($access)){
+
+	foreach($access as $id => $status) {
+
+		if($status != "verified"){
+
+			$query = $mysql->prepare("SELECT `content` FROM `account_change` WHERE `key` = :key AND `verified` = 0");
+			$query->execute(array(
+				':key' => $core->auth->encrypt($id, $status).".".$status
+			));
+
+			$row = $query->fetch();
+
+			$_perms = json_decode($row['content'], true);
+			$users = array_merge($users, array($id => array("status" => "pending", "permissions" => $_perms[$core->server->getData('hash')])));
+
+		}else{
+
+			$query = $mysql->prepare("SELECT `permissions`, `email`, `uuid` FROM `users` WHERE `id` = :id");
+			$query->execute(array(
+				':id' => $id
+			));
+
+			$row = $query->fetch();
+
+			$_perms = json_decode($row['permissions'], true);
+			$users = array_merge($users, array($row['email'] => array("status" => "verified", "id" => $row['uuid'], "permissions" => $_perms[$core->server->getData('hash')])));
+
+		}
+
+	}
+
+}
+
 /*
 * Display Page
 */
 echo $twig->render(
 		'node/users/list.html', array(
+			'users' => $users,
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)

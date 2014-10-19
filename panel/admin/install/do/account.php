@@ -47,12 +47,18 @@ if(file_exists('../install.lock'))
 					        include('../../../../src/framework/framework.database.connect.php');
 					        $mysql = Database\database::connect();
 
-					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :username, :email, :password, NULL, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)");
+					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :username, :email, :password, NULL, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)");
 
 					        include('../../../../src/framework/configuration.php');
 					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+							$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+											mt_rand(0, 0xffff),
+											mt_rand(0, 0x0fff) | 0x4000,
+											mt_rand(0, 0x3fff) | 0x8000,
+											mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
 
 					        $prepare->execute(array(
+								':uuid' => $uuid,
 					            ':username' => $_POST['username'],
 					            ':email' => $_POST['email'],
 					            ':password' => $password,

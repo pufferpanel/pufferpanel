@@ -242,33 +242,11 @@ class user extends Auth\auth {
 			if(is_null($this->_perms))
 				$this->_perms = $this->getPermissions();
 
-			if(is_array($this->_perms) && array_key_exists('permissions', $this->_perms))
-				if(in_array($permission, $this->_perms['permissions']))
+			if(is_array($this->_perms))
+				if(in_array($permission, $this->_perms))
 					return true;
 				else
 					return false;
-			else
-				return false;
-
-		}else
-			return true;
-
-	}
-
-	/**
-	 * Check if a user has a protected permissions class.
-	 *
-	 * @return bool
-	 */
-	public function checkProtected() {
-
-		if(is_null($this->_perms))
-			$this->_perms = $this->getPermissions();
-
-		if(is_array($this->_perms)) {
-
-			if($this->_perms['protected'] == 1)
-				return true;
 			else
 				return false;
 

@@ -22,7 +22,7 @@ require_once('../src/framework/framework.core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
 	Page\components::redirect('account.php?token='.@$_GET['token']);
 
-if(isset($_POST['do']) && $_POST['do'] == 'register'){
+if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD'] === 'POST'){
 
 	if(!isset($_POST['token']))
 		Page\components::redirect('register.php?error=token');
@@ -58,14 +58,38 @@ if(isset($_POST['do']) && $_POST['do'] == 'register'){
 	else
 		$row = $query->fetch();
 
-	$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :user, :email, :pass, :permissions, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
+	$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :user, :email, :pass, :permissions, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
 	$insert->execute(array(
+		':uuid' => $core->auth->gen_UUID(),
 		':user' => $_POST['username'],
 		':email' => $core->auth->decrypt($encrypted, $iv),
 		':pass' => $core->auth->hash($_POST['password']),
 		':permissions' => $row['content'],
 		':language' => $core->settings->get('default_language'),
 		':time' => time()
+	));
+
+	$userid = $mysql->lastInsertId();
+
+	$query = $mysql->prepare("SELECT `subusers`, `hash` FROM `servers` WHERE `hash` = :hash");
+	$query->execute(array(
+		':hash' => key(json_decode($row['content'], true))
+	));
+
+	$row = $query->fetch();
+	$row['subusers'] = json_decode($row['subusers'], true);
+	unset($row['subusers'][$core->auth->decrypt($encrypted, $iv)]);
+	$row['subusers'][$userid] = "verified";
+
+	$query = $mysql->prepare("UPDATE `servers` SET `subusers` = :subusers WHERE `hash` = :hash");
+	$query->execute(array(
+		':subusers' => json_encode($row['subusers']),
+		':hash' => $row['hash']
+	));
+
+	$query = $mysql->prepare("UPDATE `account_change` SET `verified` = 1 WHERE `key` = :key");
+	$query->execute(array(
+		':key' => $_POST['token']
 	));
 
 	Page\components::redirect('index.php?registered');
