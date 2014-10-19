@@ -45,7 +45,7 @@ if(is_array($access) && !empty($access)){
 			$row = $query->fetch();
 
 			$_perms = json_decode($row['content'], true);
-			$users = array_merge($users, array($id => array("status" => "pending", "permissions" => $_perms[$core->server->getData('hash')])));
+			$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($core->auth->encrypt($id, $status).".".$status), "permissions" => $_perms[$core->server->getData('hash')])));
 
 		}else{
 

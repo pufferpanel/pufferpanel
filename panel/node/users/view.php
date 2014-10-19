@@ -28,12 +28,32 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if($core->user->hasPermission('users.view') !== true)
 	Page\components::redirect('../index.php?error=no_permission');
 
+$query = $mysql->prepare("SELECT `permissions`, `email` FROM `users` WHERE `uuid` = :id LIMIT 1");
+$query->execute(array(
+	':id' => $_GET['id']
+));
+
+	if($query->rowCount() != 1)
+		Page\components::redirect('list.php?error');
+	else
+		$row = $query->fetch();
+
+	if(empty($row['permissions']) || !is_array(json_decode($row['permissions'], true)))
+		Page\components::redirect('list.php?error');
+
+	$permissions = json_decode($row['permissions'], true);
+	if(!array_key_exists($core->server->getData('hash'), $permissions))
+		Page\components::redirect('list.php?error');
+
 /*
 * Display Page
 */
 echo $twig->render(
 		'node/users/view.html', array(
 			'server' => $core->server->getData(),
+			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]),
+			'user' => array('email' => $row['email']),
+			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
 				'queries' => Database\databaseInit::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
