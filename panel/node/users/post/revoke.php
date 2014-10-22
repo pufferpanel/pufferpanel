@@ -26,5 +26,62 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 }
 
+//id means pending, uid means not pending
+if(isset($_GET['id']) && !empty($_GET['id'])){
 
+	$_GET['id'] = urldecode($_GET['id']);
+
+	$query = $mysql->prepare("SELECT * FROM `account_change` WHERE `key` = :key AND `verified` = 0");
+	$query->execute(array(
+		':key' => $_GET['id']
+	));
+
+	if($query->rowCount() != 1)
+		Page\components::redirect('../list.php?error');
+
+	$row = $query->fetch();
+
+	// verify that this user is assigned to this server
+	if(!array_key_exists($core->server->getData('hash'), json_decode($row['content'], true)))
+		Page\components::redirect('../list.php?error=c1');
+
+	// remove verification codes
+	$mysql->exec("DELETE FROM `account_change` WHERE `id` = ".$row['id']);
+
+	// update server in database
+	list($encrypted, $iv) = explode('.', $_GET['id']);
+	$_perms = json_decode($row['subusers'], true);
+	unset($_perms[$core->auth->decrypt($encrypted, $iv)]);
+	$_perms = json_encode($_perms);
+	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
+
+	Page\components::redirect('../list.php?revoked');
+
+}elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
+
+	$_GET['id'] = urldecode($_GET['id']);
+
+	$query = $mysql->query("SELECT * FROM `users` WHERE `uuid` = :uuid");
+	$query->execute(array(
+		':uuid' => $_GET['uid']
+	));
+
+	if($query->rowCount() != 1)
+		Page\components::redirect('../list.php?error');
+
+	$row = $query->fetch();
+
+	// verify that this user is assigned to this server
+	if(!array_key_exists($core->server->getData('hash'), json_decode($row['permissions'], true)))
+		Page\components::redirect('../list.php?error');
+
+	// update server in database
+	$_perms = json_decode($core->server->getData('subusers'), true);
+	unset($_perms[$row['id']]);
+	$_perms = json_encode($_perms);
+	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
+
+	Page\components::redirect('../list.php?revoked');
+
+}
 ?>
