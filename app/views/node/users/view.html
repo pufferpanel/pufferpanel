@@ -132,7 +132,7 @@
 				{{ xsrf|raw }}
 				<input type="hidden" name="uuid" value="{{ get.id }}" />
 				<input type="submit" value="Update Permissions" class="btn btn-primary" />
-				<a href="post/revoke.php?uid={{ get.id }}"><button class="btn btn-sm btn-danger" class="btn btn-primary" />Delete User</button></a>
+				<a href="post/revoke.php?uid={{ get.id }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
 			</div>
 		</div>
 	</form>

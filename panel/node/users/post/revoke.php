@@ -59,9 +59,9 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
 }elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
 
-	$_GET['id'] = urldecode($_GET['id']);
+	$_GET['uid'] = urldecode($_GET['uid']);
 
-	$query = $mysql->query("SELECT * FROM `users` WHERE `uuid` = :uuid");
+	$query = $mysql->prepare("SELECT * FROM `users` WHERE `uuid` = :uuid");
 	$query->execute(array(
 		':uuid' => $_GET['uid']
 	));
