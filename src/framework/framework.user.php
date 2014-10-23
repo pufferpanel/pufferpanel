@@ -157,26 +157,29 @@ class user extends Auth\auth {
 	 */
 	public function getPermissions($list = false) {
 
-		if(!isset($this->json)){
+		if(!isset($this->_permissionJson)){
 
-			$this->query = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
-			$this->query->execute(array(
+			$this->permissionQuery = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
+			$this->permissionQuery->execute(array(
 				':uid' => self::$_uid
 			));
 
-			if($this->query->rowCount() == 0)
-				die('Invalid user ID provided for user permissions. Aborting.');
+			if($this->permissionQuery->rowCount() == 0)
+				$this->permissionRow = null;
 			else
-				$this->row = $this->query->fetch();
+				$this->permissionRow = $this->permissionQuery->fetch();
 
 		}
 
-		if(array_key_exists('permissions', $this->row) && !empty($this->row['permissions']))
-			$this->json = json_decode($this->row['permissions'], true);
+		if(!is_null($this->permissionRow))
+			if(array_key_exists('permissions', $this->permissionRow) && !empty($this->permissionRow['permissions']))
+				$this->_permissionJson = json_decode($this->permissionRow['permissions'], true);
+			else
+				$this->json = null;
 		else
-			$this->json = null;
+			$this->_permissionJson = null;
 
-		return (is_null($this->json)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->json)) ? false : $this->json[self::$_shash]) : $this->json);
+		return (is_null($this->_permissionJson)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->_permissionJson)) ? false : $this->_permissionJson[self::$_shash]) : $this->_permissionJson);
 
 	}
 
