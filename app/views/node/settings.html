@@ -23,7 +23,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-
+	{% if permission.users.view == true %}<a href="users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
 	<a href="settings.php" class="list-group-item active">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -32,42 +32,48 @@
 {% block content %}
 <div class="col-9">
 	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#server_sett" data-toggle="tab">{{ lang.string_modpacks }}</a></li>
-		<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }}</a></li>
+		{% if permission.manage.rename.view == true %}<li class="active"><a href="#server_sett" data-toggle="tab">{{ lang.string_modpacks }}</a></li>{% endif %}
+		{% if permission.manage.ftp.view == true %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }}</a></li>{% endif %}
 	</ul>
 	<div class="tab-content">
-		<div class="tab-pane active" id="server_sett">
-		<br>
-		<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
-			<div class="row">
-				<div class="alert alert-danger">
-					<i class="fa fa-warning"></i> Online modpack management has been disabled in this version of PufferPanel.
+		{% if permission.manage.rename.view == true %}
+			<div class="tab-pane active" id="server_sett">
+				<br>
+				<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
+				<div class="row">
+					<div class="alert alert-danger">
+						<i class="fa fa-warning"></i> Online modpack management has been disabled in this version of PufferPanel.
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
-				<div class="well">
-					<form action="ajax/settings/jarname.php" method="post">
-						<fieldset>
-						<div class="form-group">
-							<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
-							<div class="input-group">
-								<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
-								<span class="input-group-addon">.jar</span>
-								<span class="input-group-btn">
-									<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
-								</span>
-							</div>
+				<div class="row">
+					<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
+					{% if permission.manage.rename.jar == true %}
+						<div class="well">
+							<form action="ajax/settings/jarname.php" method="post">
+								<fieldset>
+								<div class="form-group">
+									<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
+									<div class="input-group">
+										<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
+										<span class="input-group-addon">.jar</span>
+										<span class="input-group-btn">
+											<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
+										</span>
+									</div>
+								</div>
+								</fieldset>
+							</form>
 						</div>
-						</fieldset>
-					</form>
+					{% else %}
+						<div class="alert alert-danger">You do not have permission to perform this function.</div>
+					{% endif %}
 				</div>
 			</div>
-		</div>
-		<div class="tab-pane" id="ftp_sett">
-			<h3>{{ lang.node_settings_jar_update }}</h3><hr />
-			<form action="ajax/settings/ftp.php" method="post">
-				<fieldset>
+		{% endif %}
+		{% if permission.manage.ftp.view == true %}
+			<div class="tab-pane" id="ftp_sett">
+				<h3>Manage FTP Information</h3><hr />
+				{% if permission.manage.ftp.details == true %}
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">{{ lang.string_host }}</label>
 						<div>
@@ -80,30 +86,36 @@
 							<input type="text" readonly="readonly" value="{{ server.ftp_user }}-{{ server.gsd_id }}" class="form-control" />
 						</div>
 					</div>
-					<div class="well">
-						<div class="row">
-							<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
-							<div class="form-group col-6 nopad">
-								<label for="ftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
-								<div class="input-group">
-									<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
-									<span class="input-group-btn">
-										<button class="btn btn-success" id="gen_pass_bttn" type="button">{{ lang.string_generate }}</button>
-									</span>
+				{% endif %}
+				{% if permission.manage.ftp.password == true %}
+					<form action="ajax/settings/ftp.php" method="post">
+						<fieldset>
+							<div class="well">
+								<div class="row">
+									<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+									<div class="form-group col-6 nopad">
+										<label for="ftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
+										<div class="input-group">
+											<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
+											<span class="input-group-btn">
+												<button class="btn btn-success" id="gen_pass_bttn" type="button">{{ lang.string_generate }}</button>
+											</span>
+										</div>
+									</div>
+									<div class="form-group col-6 nopad-right">
+										<label for="ftp_pass_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
+										<div>
+											<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />
+										</div>
+									</div>
 								</div>
 							</div>
-							<div class="form-group col-6 nopad-right">
-								<label for="ftp_pass_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
-								<div>
-									<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<input type="submit" value="{{ lang.settings_change_pass }}" class="btn btn-primary btn-sm" />
-				</fieldset>
-			</form>
-		</div>
+							<input type="submit" value="{{ lang.settings_change_pass }}" class="btn btn-primary btn-sm" />
+						</fieldset>
+					</form>
+				{% endif %}
+			</div>
+		{% endif %}
 	</div>
 </div>
 <script type="text/javascript">

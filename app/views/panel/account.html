@@ -30,7 +30,7 @@
 	{{ output|raw }}
 	<div class="row">
 		<div class="col-6">
-			<h3 style="margin-top:0;">{{ lang.settings_change_pass }}</h3><hr />
+			<h3 class="nopad">{{ lang.settings_change_pass }}</h3><hr />
 				<form action="account.php?action=password" method="post">
 					<div class="form-group">
 						<label for="p_password" class="control-label">{{ lang.settings_current_pass }}</label>
@@ -59,7 +59,7 @@
 				</form>
 		</div>
 		<div class="col-6">
-			<h3 style="margin-top:0;">{{ lang.settings_update_email }}</h3><hr />
+			<h3 class="nopad">{{ lang.settings_update_email }}</h3><hr />
 				<form action="account.php?action=email" method="post">
 					<div class="form-group">
 						<label for="email" class="control-label">{{ lang.settings_new_email }}</label>
@@ -82,38 +82,64 @@
 				</form>
 		</div>
 	</div>
-	<h3>{{ lang.settings_update_preferences }}</h3><hr />
-	<form action="account.php?action=notifications" method="post">
-		<div class="col-6 nopad">
-			<div class="form-group">
-				<h4>{{ lang.settings_login_success }}</h4>
-				{% for key, notify in success_login %}
-				<div class="radio">
-				    <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_s" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+	<div class="row">
+		<div class="col-6">
+			<h3>Login Notification</h3><hr />
+			<form action="account.php?action=notifications" method="post">
+				<div class="row">
+					<div class="col-6 nopad">
+						<div class="form-group">
+							<h4>Success</h4>
+							{% for key, notify in success_login %}
+							<div class="radio">
+							    <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_s" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="form-group">
+							<h4>Failed</h4>
+							{% for key, notify in failed_login %}
+							<div class="radio">
+						        <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_f" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
 				</div>
-				{% endfor %}
-			</div>
-			<div class="form-group">
-				<h4>{{ lang.settings_failed_login }}</h4>
-				{% for key, notify in failed_login %}
-				<div class="radio">
-			        <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_f" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+				<div class="form-group">
+					<label for="password" class="control-label">{{ lang.settings_current_pass }}</label>
+					<div>
+						<input type="password" class="form-control" name="password" />
+					</div>
 				</div>
-				{% endfor %}
-			</div>
-			<div class="form-group">
-				<label for="password" class="control-label">{{ lang.settings_current_pass }}</label>
-				<div>
-					<input type="password" class="form-control" name="password" />
+				<div class="form-group">
+					<div>
+						{{ xsrf.notify|raw }}
+						<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_preferences }}" />
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<div>
-					{{ xsrf.notify|raw }}
-					<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_preferences }}" />
-				</div>
-			</div>
+			</form>
 		</div>
-	</form>
+		<div class="col-6">
+			<h3>Sub-User Token</h3><hr />
+			<div class="well well-sm"><p>If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.</p></div>
+			<form action="account.php?action=subuser" method="post">
+				<div class="form-group">
+					<label for="token" class="control-label">Token</label>
+					<div>
+						<input type="text" class="form-control" name="token" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div>
+						{{ xsrf.notify|raw }}
+						<input type="submit" class="btn btn-primary" value="Validate Token" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock %}

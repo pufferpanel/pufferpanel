@@ -25,6 +25,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit();
 }
 
+if($core->user->hasPermission('files.view') !== true)
+	Page\components::redirect('../index.php?error=no_permission');
+
 if(isset($_GET['file']))
     $_GET['file'] = str_replace('..', '', urldecode($_GET['file']));
 
@@ -32,6 +35,9 @@ if(isset($_GET['dir']))
     $_GET['dir'] = str_replace('..', '', urldecode($_GET['dir']));
 
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
+
+	if($core->user->hasPermission('files.download') !== true)
+		Page\components::redirect('../index.php?error=no_permission');
 
     $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
     $context = stream_context_create(array(

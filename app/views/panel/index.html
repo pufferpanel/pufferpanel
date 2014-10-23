@@ -6,6 +6,9 @@
    	<form action="index.php?do=login" method="POST" id="login-form">
     	<legend>{{ lang.login_login_h1 }}</legend>
     	<fieldset>
+            {% if get.registered is defined %}
+                <div class="alert alert-success">Your account has been created. You may now login and access the server.</div>
+            {% endif %}
     		{% if get.error is defined %}
                 {% if get.error == 'true' %}
                     <div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>

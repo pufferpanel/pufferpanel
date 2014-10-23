@@ -28,6 +28,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
+	{% if permission.users.view == true %}<a href="../users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
 	<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="../plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -45,14 +46,16 @@
 				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
-		<div class="form-group">
-			<div>
-				<input type="hidden" name="file" value="{{ file }}" />
-				{{ xsrf|raw }}
-				<button class="btn btn-primary btn-sm" id="save_file">{{ lang.string_save }}</button>
-				<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={{ directory|url_encode }}';return false;">{{ lang.node_files_edit_back }}</button>
+		{% if permission.files.save == true %}
+			<div class="form-group">
+				<div>
+					<input type="hidden" name="file" value="{{ file }}" />
+					{{ xsrf|raw }}
+					<button class="btn btn-primary btn-sm" id="save_file">{{ lang.string_save }}</button>
+					<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={{ directory|url_encode }}';return false;">{{ lang.node_files_edit_back }}</button>
+				</div>
 			</div>
-		</div>
+		{% endif %}
     </form>
     {% endif %}
 </div>

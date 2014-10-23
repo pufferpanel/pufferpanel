@@ -110,11 +110,6 @@ if(file_exists('../install.lock'))
 	                        echo "Table `actions_log` created.\n";
 
 	                        /*
-	                         * DROP TABLE `modpacks`
-	                         */
-	                        $mysql->exec("DROP TABLE IF EXISTS `modpacks`");
-
-	                        /*
 	                         * CREATE TABLE `nodes`
 	                         */
 	                        $mysql->exec("DROP TABLE IF EXISTS `nodes`");
@@ -147,6 +142,7 @@ if(file_exists('../install.lock'))
 	                          `server_jar` tinytext,
 	                          `active` int(1) DEFAULT '1',
 	                          `owner_id` int(11) NOT NULL,
+							  `subusers` tinytext,
 	                          `max_ram` int(11) NOT NULL,
 	                          `disk_space` int(11) NOT NULL,
 	                          `cpu_limit` int(11) DEFAULT NULL,
@@ -169,9 +165,9 @@ if(file_exists('../install.lock'))
 	                           `username` varchar(50) NOT NULL DEFAULT '',
 	                           `email` tinytext NOT NULL,
 	                           `password` tinytext NOT NULL,
-	                           `language` tinytext NOT NULL,
+							   `permissions` text,
+	                           `language` char(2) NOT NULL DEFAULT 'en',
 	                           `register_time` int(15) NOT NULL,
-	                           `position` varchar(50) DEFAULT '' COMMENT 'owner,admin,staff',
 	                           `session_id` varchar(12) DEFAULT '',
 	                           `session_ip` varchar(50) DEFAULT '',
 	                           `root_admin` int(1) NOT NULL DEFAULT '0',

@@ -122,7 +122,7 @@ trait add {
         /*
          * Add Server to Database
          */
-        $this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
+        $this->add = $this->mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, NULL, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
 
         $this->add->execute(array(
             ':hash' => $this->serverHash,

@@ -28,7 +28,7 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_sett }}</strong></a>
-
+	{% if permission.users.view == true %}<a href="users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
 	<a href="settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
 	<a href="plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
 </div>
@@ -36,6 +36,7 @@
 
 {% block content %}
 <div class="col-9">
+	{% if get.error is defined %}<div class="alert alert-danger">You do not have permission to use that feature.</div>{% endif %}
 	<div class="col-12">
 		<h3 class="nopad">Memory Usage (Mb)</h3><hr />
 		<div class="row">

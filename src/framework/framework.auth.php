@@ -189,9 +189,10 @@ trait components {
 		$this->tkid = "pp_xsrf_token".$identifier;
 
 		if(!is_null($token))
-			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token)
+			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token){
+				unset($_SESSION[$this->tkid]);
 				return true;
-			else
+			}else
 				return false;
 		else {
 			$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
@@ -295,10 +296,19 @@ class auth {
 
 					if(!is_null($serverhash)){
 
-						$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :shash AND `owner_id` = :ownerid AND `active` = 1");
+						/*
+						 * We have to do a mini-permissions building here since we can't call the user function from here
+						 */
+						if(!is_null($this->row['permissions']) && !empty($this->row['permissions']))
+							$this->row['permissions'] = array_keys(json_decode($this->row['permissions'], true));
+						else
+							$this->row['permissions'] = array("0" => "0");
+
+						$this->hashes = array_map(array($this->mysql, 'quote'), $this->row['permissions']);
+						$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `active` = 1");
 						$this->_validateServer->execute(array(
-							':shash' => $serverhash,
-							':ownerid' => $this->row['id']
+							':oid' => $this->row['id'],
+							':hash' => $serverhash
 						));
 
 							if($this->_validateServer->rowCount() == 1)
