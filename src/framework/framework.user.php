@@ -52,6 +52,10 @@ class user extends Auth\auth {
 	*/
 	private $_perms = null;
 
+	private static $_row;
+
+	private static $_json;
+
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
@@ -137,7 +141,7 @@ class user extends Auth\auth {
 	 * @return void
 	 * @static
 	 */
-	static public function permissionsInit($server, $uid, $oid = null) {
+	public static function permissionsInit($server, $uid, $oid = null) {
 
 		self::$_shash = $server;
 		self::$_uid = $uid;
@@ -153,26 +157,26 @@ class user extends Auth\auth {
 	 */
 	public function getPermissions($list = false) {
 
-		$this->query = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
-		$this->query->execute(array(
-			':uid' => self::$_uid
-		));
+		if(!isset($this->json)){
+
+			$this->query = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
+			$this->query->execute(array(
+				':uid' => self::$_uid
+			));
 
 			if($this->query->rowCount() == 0)
-				return false;
-			else {
-
+				die('Invalid user ID provided for user permissions. Aborting.');
+			else
 				$this->row = $this->query->fetch();
-				if(is_null($this->row['permissions']) || empty($this->row['permissions']))
-					return false;
-				else {
 
-					$this->json = json_decode($this->row['permissions'], true);
-					return ($list === false) ? ((!array_key_exists(self::$_shash, $this->json)) ? false : $this->json[self::$_shash]) : $this->json;
+		}
 
-				}
+		if(array_key_exists('permissions', $this->row) && !empty($this->row['permissions']))
+			$this->json = json_decode($this->row['permissions'], true);
+		else
+			$this->json = null;
 
-			}
+		return (is_null($this->json)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->json)) ? false : $this->json[self::$_shash]) : $this->json);
 
 	}
 
@@ -240,17 +244,15 @@ class user extends Auth\auth {
 	 */
 	public function hasPermission($permission, $array = null) {
 
-		if(is_null($this->_perms) && is_null($array))
-			$this->_perms = $this->getPermissions();
-		else
+		if(!is_null($array))
 			$this->_perms = $array;
+		else
+			if(is_null($this->_perms))
+				$this->_perms = $this->getPermissions();
 
 		if(self::$_oid != $this->getData('id') && is_null($array))
 			if(is_array($this->_perms))
-				if(in_array($permission, $this->_perms))
-					return true;
-				else
-					return false;
+				return in_array($permission, $this->_perms);
 			else
 				return false;
 		else
@@ -258,10 +260,7 @@ class user extends Auth\auth {
 				return true;
 			else
 				if(is_array($this->_perms))
-					if(in_array($permission, $this->_perms))
-						return true;
-					else
-						return false;
+					return in_array($permission, $this->_perms);
 				else
 					return false;
 
