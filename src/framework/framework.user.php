@@ -175,11 +175,11 @@ class user extends Auth\auth {
 			if(array_key_exists('permissions', $this->permissionRow) && !empty($this->permissionRow['permissions']))
 				$this->_permissionJson = json_decode($this->permissionRow['permissions'], true);
 			else
-				$this->json = null;
+				$this->_permissionJson = null;
 		else
 			$this->_permissionJson = null;
 
-		return (is_null($this->_permissionJson)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->_permissionJson)) ? false : $this->_permissionJson[self::$_shash]) : $this->_permissionJson);
+		return (is_null($this->_permissionJson) || !isset($this->_permissionJson)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->_permissionJson)) ? false : $this->_permissionJson[self::$_shash]) : $this->_permissionJson);
 
 	}
 
