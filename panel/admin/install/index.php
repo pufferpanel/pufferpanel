@@ -74,7 +74,7 @@ if(file_exists('install.lock'))
 						/*
 						* Fail if not composer hasn't been run
 						*/
-						if(!@file_get_contents('../../../vendor')){
+						if(!@file_get_contents('../../../vendor/autoload.php')){
 
 							echo '<div class="panel panel-danger">
 								<div class="panel-heading">
