@@ -162,6 +162,7 @@ if(file_exists('../install.lock'))
 	                        $mysql->exec("CREATE TABLE `users` (
 	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	                           `whmcs_id` int(11) DEFAULT NULL,
+	                           `uuid` varchar(36) NOT NULL,
 	                           `username` varchar(50) NOT NULL DEFAULT '',
 	                           `email` tinytext NOT NULL,
 	                           `password` tinytext NOT NULL,
