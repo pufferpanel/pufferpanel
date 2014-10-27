@@ -16,19 +16,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+	Components\Page::redirect('../../../../index.php');
 }
 
 if(!isset($_POST['cookie_website']))
-	Page\components::redirect('../global.php?error=cookie_website&tab=cookies');
+	Components\Page::redirect('../global.php?error=cookie_website&tab=cookies');
 
 $query = $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'cookie_website'");
 $query->execute(array($_POST['cookie_website']));
 
-Page\components::redirect('../global.php?tab=cookies');
+Components\Page::redirect('../global.php?tab=cookies');
 
 ?>

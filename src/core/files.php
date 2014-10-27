@@ -16,11 +16,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
 
 /**
  * PufferPanel Core File Management Class
  */
-class files {
+class Files {
 
 	/**
 	 * Converts from bytes into the largest possible size that is still readable.

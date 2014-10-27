@@ -16,24 +16,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php');
+	Components\Page::redirect('../../../index.php');
 }
 
 if(!isset($_POST['sid']) || !isset($_POST['nid']))
-	Page\components::redirect('../../find.php');
+	Components\Page::redirect('../../find.php');
 
 if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['nid']))
-	Page\components::redirect('../../view.php?id='.$_POST['sid']);
+	Components\Page::redirect('../../view.php?id='.$_POST['sid']);
 
 if(strlen($_POST['ftp_pass']) < 8)
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_len');
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_len');
 
 if($_POST['ftp_pass'] != $_POST['ftp_pass_2'])
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_match');
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=ftp_pass|ftp_pass_2&disp=pass_match');
 
 /*
  * Select Node, User, & Server Information
@@ -65,6 +66,6 @@ if(isset($_POST['email_user'])){
 
 }
 
-Page\components::redirect('../../view.php?id='.$_POST['sid']);
+Components\Page::redirect('../../view.php?id='.$_POST['sid']);
 
 ?>

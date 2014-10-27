@@ -16,11 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
-	Page\components::redirect('servers.php');
+	Components\Page::redirect('servers.php');
 
 /*
  * jQuery Call for TOTP
@@ -52,7 +53,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
 	/* XSRF Check */
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Page\components::redirect('index.php?error=token');
+		Components\Page::redirect('index.php?error=token');
 
 	if($core->auth->verifyPassword($_POST['email'], $_POST['password']) === true){
 
@@ -73,7 +74,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
 				$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail_totp', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'. The login failed due to TOTP 2FA mis-match.'));
 
-				Page\components::redirect('index.php?totp=error');
+				Components\Page::redirect('index.php?totp=error');
 
 			}
 
@@ -112,7 +113,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
             $core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from '.$_SERVER['REMOTE_ADDR'].'.', $row['id']));
 
-			Page\components::redirect('servers.php');
+			Components\Page::redirect('servers.php');
 
 	}else{
 
@@ -145,7 +146,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
         $core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from '.$_SERVER['REMOTE_ADDR'].'.'));
 
-		Page\components::redirect('index.php?error=true');
+		Components\Page::redirect('index.php?error=true');
 
 	}
 
@@ -155,7 +156,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 			'panel/index.html', array(
 				'xsrf' => $core->auth->XSRF(),
 				'footer' => array(
-					'queries' => Database\databaseInit::getCount(),
+					'queries' => Database_Initiator::getCount(),
 					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 				)
 		));

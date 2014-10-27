@@ -16,12 +16,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-session_start();
-require_once('../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	Page\components::redirect($core->settings->get('master_url').'index.php?login');
+	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
 	exit();
 
 }
@@ -37,13 +38,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	));
 
 	if($query->rowCount() != 1)
-		Page\components::redirect('../list.php?error');
+		Components\Page::redirect('../list.php?error');
 
 	$row = $query->fetch();
 
 	// verify that this user is assigned to this server
 	if(!array_key_exists($core->server->getData('hash'), json_decode($row['content'], true)))
-		Page\components::redirect('../list.php?error=c1');
+		Components\Page::redirect('../list.php?error=c1');
 
 	// remove verification codes
 	$mysql->exec("DELETE FROM `account_change` WHERE `id` = ".$row['id']);
@@ -55,7 +56,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	$_perms = json_encode($_perms);
 	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
 
-	Page\components::redirect('../list.php?revoked');
+	Components\Page::redirect('../list.php?revoked');
 
 }elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
 
@@ -67,13 +68,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	));
 
 	if($query->rowCount() != 1)
-		Page\components::redirect('../list.php?error');
+		Components\Page::redirect('../list.php?error');
 
 	$row = $query->fetch();
 
 	// verify that this user is assigned to this server
 	if(!array_key_exists($core->server->getData('hash'), json_decode($row['permissions'], true)))
-		Page\components::redirect('../list.php?error');
+		Components\Page::redirect('../list.php?error');
 
 	// update server in database
 	$_perms = json_decode($core->server->getData('subusers'), true);
@@ -81,7 +82,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	$_perms = json_encode($_perms);
 	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
 
-	Page\components::redirect('../list.php?revoked');
+	Components\Page::redirect('../list.php?revoked');
 
 }
 ?>

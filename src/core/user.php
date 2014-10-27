@@ -16,11 +16,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
 
 /**
  * PufferPanel Core User Class File
  */
-class user extends Auth\auth {
+class User extends Authentication {
 
 	/**
 	 * @param array $_data Implements a blank array for the functions to write to.

@@ -16,19 +16,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../src/core/core.php');
 
 	if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	if($core->user->hasPermission('manage.rename.jar') !== true)
-		Page\components::redirect('../../index.php?error=no_permission');
+		Components\Page::redirect('../../index.php?error=no_permission');
 
 	if(!isset($_POST['jarfile']) || empty($_POST['jarfile']))
-		Page\components::redirect('../../settings.php');
+		Components\Page::redirect('../../settings.php');
 
 	if(!preg_match('/^([\w\d_.-]+)$/', $_POST['jarfile']))
-		Page\components::redirect('../../settings.php');
+		Components\Page::redirect('../../settings.php');
 
 	/*
 	 * Update It
@@ -61,6 +62,6 @@ require_once('../../../../src/framework/framework.core.php');
 	$context = stream_context_create($context_options);
 	file_get_contents('http://'.$core->server->nodeData('ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
 
-	Page\components::redirect('../../settings.php');
+	Components\Page::redirect('../../settings.php');
 
 }

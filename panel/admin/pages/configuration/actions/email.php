@@ -16,26 +16,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php');
+	Components\Page::redirect('../../../../index.php');
 }
 
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
 if(!isset($_POST['smail_method'], $_POST['sendmail_email'], $_POST['postmark_api_key'], $_POST['mandrill_api_key'], $_POST['mailgun_api_key'], $_POST['sendgrid_api_key']))
-	Page\components::redirect('../global.php?error=smail_method|sendmail_email|postmark_api_key|mandrill_api_key|mailgun_api_key|sendgrid_api_key&tab=email');
+	Components\Page::redirect('../global.php?error=smail_method|sendmail_email|postmark_api_key|mandrill_api_key|mailgun_api_key|sendgrid_api_key&tab=email');
 
 if(!in_array($_POST['smail_method'], array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid')))
-	Page\components::redirect('../global.php?error=smail_method&tab=email');
+	Components\Page::redirect('../global.php?error=smail_method&tab=email');
 
 if(!filter_var($_POST['sendmail_email'], FILTER_VALIDATE_EMAIL))
-	Page\components::redirect('../global.php?error=sendmail_email&tab=email');
+	Components\Page::redirect('../global.php?error=sendmail_email&tab=email');
 
 if($_POST['smail_method'] != 'php' && empty($_POST[$_POST['smail_method'].'_api_key']))
-	Page\components::redirect('../global.php?error=smail_method|'.$_POST['smail_method'].'_api_key&tab=email');
+	Components\Page::redirect('../global.php?error=smail_method|'.$_POST['smail_method'].'_api_key&tab=email');
 
 /*
  * Handle Sendgrid Information
@@ -51,6 +52,6 @@ $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref`
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'mailgun_api_key'")->execute(array($_POST['mailgun_api_key']));
 $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'sendgrid_api_key'")->execute(array($_POST['sendgrid_api_key']));
 
-Page\components::redirect('../global.php?tab=email');
+Components\Page::redirect('../global.php?tab=email');
 
 ?>

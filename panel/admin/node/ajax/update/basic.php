@@ -16,30 +16,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php?login');
+	Components\Page::redirect('../../../index.php?login');
 }
 
 if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
-	Page\components::redirect('../../list.php');
+	Components\Page::redirect('../../list.php');
 
 if(!isset($_POST['name'], $_POST['ip']))
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
+	Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
 
 /*
  * Validate Node Name
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['name']))
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
+	Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=name&disp=n_fail');
 
 /*
  * Validate IP
  */
 if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE))
-	Page\components::redirect('../../view.php?id='.$_POST['nid'].'&error=fqdn&disp=ip_fail');
+	Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=fqdn&disp=ip_fail');
 
 /*
  * Update Record
@@ -50,6 +51,6 @@ $mysql->prepare("UPDATE `nodes` SET `node` = :name, `fqdn` = :fqdn WHERE `id` = 
 	':fqdn' => $_POST['fqdn']
 ));
 
-Page\components::redirect('../../view.php?id='.$_POST['nid']);
+Components\Page::redirect('../../view.php?id='.$_POST['nid']);
 
 ?>

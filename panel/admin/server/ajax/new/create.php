@@ -16,11 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php');
+	Components\Page::redirect('../../../index.php');
 }
 
 //Cookies :3
@@ -35,19 +36,19 @@ setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $co
  * Are they all Posted?
  */
 if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['cpu_limit']))
-	Page\components::redirect('../../add.php?disp=missing_args&error=na');
+	Components\Page::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
 * GSD Must Be Online!
 */
 if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
-	Page\components::redirect('../../add.php?disp=gsd_offline&error=na');
+	Components\Page::redirect('../../add.php?disp=gsd_offline&error=na');
 
 /*
  * Validate Server Name
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
-	Page\components::redirect('../../add.php?error=server_name&disp=s_fail');
+	Components\Page::redirect('../../add.php?error=server_name&disp=s_fail');
 
 /*
  * Determine if Node (IP & Port) is Avaliable
@@ -60,7 +61,7 @@ $select->execute(array(
 if($select->rowCount() == 1)
 	$node = $select->fetch();
 else
-	Page\components::redirect('../../add.php?error=node&disp=n_fail');
+	Components\Page::redirect('../../add.php?error=node&disp=n_fail');
 
 	/*
 	 * Validate IP & Port
@@ -69,25 +70,25 @@ else
 	$ports = json_decode($node['ports'], true);
 
 	if(!array_key_exists($_POST['server_ip'], $ips))
-		Page\components::redirect('../../add.php?error=server_ip&disp=ip_fail');
+		Components\Page::redirect('../../add.php?error=server_ip&disp=ip_fail');
 
 	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-		Page\components::redirect('../../add.php?error=server_port&disp=port_fail');
+		Components\Page::redirect('../../add.php?error=server_port&disp=port_fail');
 
 	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
-		Page\components::redirect('../../add.php?error=server_port&disp=port_full');
+		Components\Page::redirect('../../add.php?error=server_port&disp=port_full');
 
 /*
  * Validate Email
  */
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	Page\components::redirect('../../add.php?error=email&disp=e_fail');
+	Components\Page::redirect('../../add.php?error=email&disp=e_fail');
 
 $selectEmail = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
 $selectEmail->execute(array($_POST['email']));
 
 	if($selectEmail->rowCount() != 1)
-		Page\components::redirect('../../add.php?error=email&disp=a_fail');
+		Components\Page::redirect('../../add.php?error=email&disp=a_fail');
 	else {
 		$oid = $selectEmail->fetch();
 		$oid = $oid['id'];
@@ -97,20 +98,20 @@ $selectEmail->execute(array($_POST['email']));
  * Validate Disk & Memory
  */
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
-	Page\components::redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
+	Components\Page::redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
 
 /*
  * Validate CPU Limit
  */
 if(!is_numeric($_POST['cpu_limit']))
-	Page\components::redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
+	Components\Page::redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
 
 
 /*
  * Validate ftp Password
  */
 if($_POST['ftp_pass'] != $_POST['ftp_pass_2'] || strlen($_POST['ftp_pass']) < 8)
-	Page\components::redirect('../../add.php?error=ftp_pass|ftp_pass_2&disp=p_fail');
+	Components\Page::redirect('../../add.php?error=ftp_pass|ftp_pass_2&disp=p_fail');
 
 $iv = $core->auth->generate_iv();
 $_POST['ftp_pass'] = $core->auth->encrypt($_POST['ftp_pass'], $iv);
@@ -217,6 +218,6 @@ $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = 
 	        'PASS' => $_POST['ftp_pass_2']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 
-	Page\components::redirect('../../view.php?id='.$lastInsert);
+	Components\Page::redirect('../../view.php?id='.$lastInsert);
 
 ?>

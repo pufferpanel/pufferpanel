@@ -16,18 +16,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../../index.php?login');
+	Components\Page::redirect('../../../../../index.php?login');
 }
 
 if(!isset($_POST['uid']) || !is_numeric($_POST['uid']))
-	Page\components::redirect('../../find.php?error=UPDATE-USER__undefined_user');
+	Components\Page::redirect('../../find.php?error=UPDATE-USER__undefined_user');
 
 if($_POST['pass'] != $_POST['pass_2'])
-	Page\components::redirect('../../view.php?id='.$_POST['uid'].'&error=password');
+	Components\Page::redirect('../../view.php?id='.$_POST['uid'].'&error=password');
 
 $update = $mysql->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :uid");
 $update->execute(array(
@@ -56,6 +57,6 @@ $update->execute(array(
 
 	}
 
-Page\components::redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
+Components\Page::redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
 
 ?>

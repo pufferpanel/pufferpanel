@@ -16,13 +16,14 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
 
 /**
  * PufferPanel Core Server management class.
  */
-class server extends user {
+class Server extends User {
 
-	use Page\components;
+	use Components\Page;
 
 	/**
 	 * @param array $_data Implements a blank array for the functions to write to.
@@ -67,7 +68,7 @@ class server extends user {
 		/*
 		 * Make Calls
 		 */
-		user::permissionsInit($hash, $userid, null);
+		User::permissionsInit($hash, $userid, null);
 		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
 		else if(!is_null($userid) && is_null($hash))
@@ -76,7 +77,7 @@ class server extends user {
 			$this->_s = false;
 
 		//Re-assign values with owner ID
-		user::permissionsInit($hash, $userid, $this->getData('owner_id'));
+		User::permissionsInit($hash, $userid, $this->getData('owner_id'));
 
 	}
 

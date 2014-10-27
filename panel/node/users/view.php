@@ -16,17 +16,18 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-session_start();
-require_once('../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	Page\components::redirect($core->settings->get('master_url').'index.php?login');
+	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
 	exit();
 }
 
 if($core->user->hasPermission('users.view') !== true)
-	Page\components::redirect('../index.php?error=no_permission');
+	Components\Page::redirect('../index.php?error=no_permission');
 
 $query = $mysql->prepare("SELECT `permissions`, `email` FROM `users` WHERE `uuid` = :id LIMIT 1");
 $query->execute(array(
@@ -34,16 +35,16 @@ $query->execute(array(
 ));
 
 	if($query->rowCount() != 1)
-		Page\components::redirect('list.php?error');
+		Components\Page::redirect('list.php?error');
 	else
 		$row = $query->fetch();
 
 	if(empty($row['permissions']) || !is_array(json_decode($row['permissions'], true)))
-		Page\components::redirect('list.php?error');
+		Components\Page::redirect('list.php?error');
 
 	$permissions = json_decode($row['permissions'], true);
 	if(!array_key_exists($core->server->getData('hash'), $permissions))
-		Page\components::redirect('list.php?error');
+		Components\Page::redirect('list.php?error');
 
 /*
 * Display Page
@@ -55,7 +56,7 @@ echo $twig->render(
 			'user' => array('email' => $row['email']),
 			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
-				'queries' => Database\databaseInit::getCount(),
+				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

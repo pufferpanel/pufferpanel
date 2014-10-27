@@ -16,15 +16,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-    Page\components::redirect('../../../../index.php?login');
+    Components\Page::redirect('../../../../index.php?login');
 }
 
 if(!isset($_POST['permissions']))
-    Page\components::redirect('../global.php?error=general_setting');
+    Components\Page::redirect('../global.php?error=general_setting');
 
 $enableAPI = (!in_array('use_api', $_POST['permissions'])) ? 0 : 1;
 $forceOnline = (!in_array('force_online', $_POST['permissions'])) ? 0 : 1;
@@ -32,6 +33,6 @@ $forceOnline = (!in_array('force_online', $_POST['permissions'])) ? 0 : 1;
 $mysql->exec("UPDATE `acp_settings` SET `setting_val` = $enableAPI WHERE `setting_ref` = 'use_api'");
 $mysql->exec("UPDATE `acp_settings` SET `setting_val` = $forceOnline WHERE `setting_ref` = 'force_online'");
 
-Page\components::redirect('../global.php');
+Components\Page::redirect('../global.php');
 
 ?>

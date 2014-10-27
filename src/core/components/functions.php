@@ -17,14 +17,14 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-namespace Functions;
+namespace PufferPanel\Core\Components;
 
 /**
  * General Functions Trait
  */
-trait general {
+trait Functions {
 
-	use \Auth\components;
+	use Authentication;
 
 	/**
 	 * Generates a unique FTP username

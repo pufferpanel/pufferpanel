@@ -16,11 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php');
+	Components\Page::redirect('../../../index.php');
 }
 
 //Cookies :3
@@ -30,25 +31,25 @@ setcookie("__TMP_pp_admin_newnode", json_encode($_POST), time() + 10, '/', $core
  * Agree Warning
  */
 if(!isset($_POST['read_warning']))
-	Page\components::redirect('../../add.php?disp=agree_warn');
+	Components\Page::redirect('../../add.php?disp=agree_warn');
 
 /*
  * Are they all Posted?
  */
 if(!isset($_POST['node_name'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port']))
-	Page\components::redirect('../../add.php?disp=missing_args');
+	Components\Page::redirect('../../add.php?disp=missing_args');
 
 /*
  * Validate Node Name
  */
 if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
-	Page\components::redirect('../../add.php?error=node_name&disp=n_fail');
+	Components\Page::redirect('../../add.php?error=node_name&disp=n_fail');
 
 /*
  * Validate FQDN & IP
  */
 if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP))
-	Page\components::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
+	Components\Page::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
 
 /*
  * Process IPs and Ports
@@ -89,7 +90,7 @@ foreach($lines as $id => $values)
 		if(count($IPP[$ip]) > 0)
 			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
 		else
-			Page\components::redirect('../../add.php?error=ip_port&disp=ip_port_space');
+			Components\Page::redirect('../../add.php?error=ip_port&disp=ip_port_space');
 
 	}
 
@@ -106,6 +107,6 @@ $create->execute(array(
 	':ports' => json_encode($IPP)
 ));
 
-Page\components::redirect('../../view.php?id='.$mysql->lastInsertId());
+Components\Page::redirect('../../view.php?id='.$mysql->lastInsertId());
 
 ?>

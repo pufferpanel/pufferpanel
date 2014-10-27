@@ -16,11 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true)
-	Page\components::redirect('servers.php');
+	Components\Page::redirect('servers.php');
 
 require_once("../src/captcha/recaptchalib.php");
 
@@ -31,7 +32,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
 	/* XSRF Check */
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Page\components::redirect('password.php?error=token');
+		Components\Page::redirect('password.php?error=token');
 
 	$resp = recaptcha_check_answer($core->settings->get('captcha_priv'), $_SERVER["REMOTE_ADDR"], @$_POST["recaptcha_challenge_field"], @$_POST["recaptcha_response_field"]);
 
@@ -137,7 +138,7 @@ echo $twig->render(
 			'noshow' => $noShow,
 			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
-				'queries' => Database\databaseInit::getCount(),
+				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-namespace Language;
+namespace PufferPanel\Core;
 
 /**
  * PufferPanel Core Language Class
  */
-class lang {
+class Language {
 
 	/**
 	 * Constructor class for language
@@ -33,10 +33,10 @@ class lang {
 
 		$this->_language = $language;
 
-		if(!file_exists(__DIR__.'/lang/'.$language.'.json'))
+		if(!file_exists(dirname(__DIR__).'/lang/'.$language.'.json'))
 			exit('Unable to load the required language file! lang/'.$language.'.json');
 
-		$this->loaded_language = json_decode(file_get_contents(__DIR__.'/lang/'.$language.'.json'), true);
+		$this->loaded_language = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$language.'.json'), true);
 
 	}
 

@@ -16,16 +16,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-
-/*
- * PufferPanel Page Actions Function File
- */
-namespace Page;
+namespace PufferPanel\Core\Components;
 
 /**
  * Page components trait to allow access in other classes and functions easily.
  */
-trait components {
+trait Page {
 
 	/**
 	 * Redirects the user to a specified page automatically depending on headers.

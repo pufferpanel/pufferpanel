@@ -16,24 +16,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../index.php?login');
+	Components\Page::redirect('../../index.php?login');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(rand(12, 18)));
 
 if(!isset($_GET['id']))
-	Page\components::redirect('find.php?error=no_id');
+	Components\Page::redirect('find.php?error=no_id');
 
 $core->server->rebuildData($_GET['id']);
 $core->user->rebuildData($core->server->getData('owner_id'));
 
 if(!$core->server->getData('hash') || $core->server->getData('hash') === false)
-	Page\components::redirect('find.php?error=invalid_id');
+	Components\Page::redirect('find.php?error=invalid_id');
 
 echo $twig->render('admin/server/view.html', array(
 		'node' => $core->server->nodeData(),
@@ -41,7 +42,7 @@ echo $twig->render('admin/server/view.html', array(
 		'server' => $core->server->getData(),
 		'user' => $core->user->getData(),
 		'footer' => array(
-			'queries' => Database\databaseInit::getCount(),
+			'queries' => Database_Initiator::getCount(),
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

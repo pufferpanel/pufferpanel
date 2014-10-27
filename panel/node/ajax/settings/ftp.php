@@ -16,22 +16,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
 
 	if($core->user->hasPermission('manage.ftp.password') !== true)
-		Page\components::redirect('../../index.php?error=no_permission');
+		Components\Page::redirect('../../index.php?error=no_permission');
 
 	if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2']))
-		Page\components::redirect('../../settings.php');
+		Components\Page::redirect('../../settings.php');
 
 	if(strlen($_POST['ftp_pass']) < 8)
-		Page\components::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_len');
+		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_len');
 
 	if($_POST['ftp_pass'] != $_POST['ftp_pass_2'])
-		Page\components::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_match');
+		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_match');
 
 	/*
 	 * Update Server ftp Information
@@ -44,7 +45,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	    ':iv' => $iv
 	));
 
-	Page\components::redirect('../../settings.php?success');
+	Components\Page::redirect('../../settings.php?success');
 
 }
 

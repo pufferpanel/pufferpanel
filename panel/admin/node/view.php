@@ -16,11 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../index.php?login');
+	Components\Page::redirect('../../index.php?login');
 }
 
 if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
@@ -30,15 +31,15 @@ if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
 
 	if($select->rowCount() == 1) {
 		$n = $select->fetch();
-		Page\components::redirect('view.php?id='.$n['id']);
+		Components\Page::redirect('view.php?id='.$n['id']);
 	}else{
-		Page\components::redirect('list.php');
+		Components\Page::redirect('list.php');
 	}
 
 }
 
 if(!isset($_GET['id']))
-	Page\components::redirect('list.php');
+	Components\Page::redirect('list.php');
 
 /*
  * Select Node Information
@@ -49,7 +50,7 @@ $selectNode->execute(array(
 ));
 
 	if($selectNode->rowCount() != 1)
-		Page\components::redirect('list.php?error=no_node');
+		Components\Page::redirect('list.php?error=no_node');
 	else
 		$node = $selectNode->fetch();
 
@@ -58,7 +59,7 @@ echo $twig->render(
 		'node' => $node,
 		'portlisting' => json_decode($node['ports'], true),
 		'footer' => array(
-			'queries' => Database\databaseInit::getCount(),
+			'queries' => Database_Initiator::getCount(),
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

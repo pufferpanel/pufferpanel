@@ -16,6 +16,8 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
+session_start();
 
 /*
  * Initalize Start Time
@@ -41,22 +43,6 @@ define('SRC_DIR', dirname(dirname(__DIR__)).'/src/');
 require_once(BASE_DIR.'vendor/autoload.php');
 
 /*
-* Bugsnag Settings
-*
-* Bugsnag is an Cloud-based Error collection system. This system allows
-* us to collect error information directly from your panel when they
-* occur. This allows us to patch errors that you may not notice, or that
-* are hard to track down. To enable this, please uncomment the lines below.
-*/
-// $bugsnag = new Bugsnag_Client("0745694bcbeaab273d7e0095e7947a0d");
-// $bugsnag->setAppVersion(trim(file_get_contents(SRC_DIR.'versions/current')));
-// $bugsnag->setMetaData(array('git' => substr(trim(file_get_contents(BASE_DIR.'.git/refs/heads/master')), 0, 8)));
-// $bugsnag->setFilters(array('pass', 'password', 'hash', 'token')); // Prevent accidental sending of this (filters anything containing that string)
-// $bugsnag->setProjectRoot(BASE_DIR);
-// set_error_handler(array($bugsnag, "errorHandler"));
-// set_exception_handler(array($bugsnag, "exceptionHandler"));
-
-/*
  * To use a local-only debugging option please uncomment the lines
  * below and comment out the bugsnag lines above. This debugging can be
  * used on a live environment if you wish.
@@ -72,68 +58,73 @@ if(!file_exists(__DIR__.'/configuration.php'))
 	exit("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
 
 /*
- * Include Required Global Framework Files
+* Include Required Global Component Files
+*/
+require_once('components/authentication.php');
+require_once('components/database.php');
+require_once('components/functions.php');
+require_once('components/page.php');
+
+/*
+ * Include Required Global Class Files
  */
-require_once('framework.database.connect.php');
-require_once('framework.page.php');
-require_once('framework.auth.php');
-require_once('framework.files.php');
-require_once('framework.user.php');
-require_once('framework.server.php');
-require_once('framework.settings.php');
-require_once('framework.log.php');
-require_once('framework.query.php');
-require_once('framework.language.php');
-require_once('framework.functions.php');
-require_once('framework.email.php');
+require_once('authentication.php');
+require_once('database.php');
+require_once('email.php');
+require_once('files.php');
+require_once('language.php');
+require_once('user.php');
+require_once('log.php');
+require_once('query.php');
+require_once('server.php');
+require_once('settings.php');
 
 /*
  * Initalize Global Framework
  */
-$core = new stdClass();
-$_l = new stdClass();
+$core = new \stdClass();
+$_l = new \stdClass();
 
 /*
  * Initalize Frameworks
  */
-$core->settings = new settings();
-$core->auth = new \Auth\auth();
-$core->user = new user($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
-$core->server = new server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
-$core->email = new tplMail();
-$core->log = new log($core->user->getData('id'));
-$core->gsd = new query($core->server->getData('id'));
-$core->files = new files();
+$core->settings = new Settings();
+$core->auth = new Authentication();
+$core->user = new User($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
+$core->server = new Server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
+$core->email = new Email();
+$core->log = new Log($core->user->getData('id'));
+$core->gsd = new Query($core->server->getData('id'));
+$core->files = new Files();
 
 /*
  * Check Language Settings
  */
 if($core->user->getData('language') === false)
 	if(!isset($_COOKIE['pp_language']) || empty($_COOKIE['pp_language']))
-		$_l = new Language\lang($core->settings->get('default_language'));
+		$_l = new Language($core->settings->get('default_language'));
 	else
-		$_l = new Language\lang($_COOKIE['pp_language']);
+		$_l = new Language($_COOKIE['pp_language']);
 else
-	$_l = new Language\lang($core->user->getData('language'));
+	$_l = new Language($core->user->getData('language'));
 
 /*
  * MySQL PDO Connection Engine
  */
-$mysql = Database\database::connect();
+$mysql = Components\Database::connect();
 
 /*
  * Twig Setup
  */
-Twig_Autoloader::register();
-
-$loader = new Twig_Loader_Filesystem(APP_DIR.'views/');
-$twig = new Twig_Environment($loader, array(
+\Twig_Autoloader::register();
+$loader = new \Twig_Loader_Filesystem(APP_DIR.'views/');
+$twig = new \Twig_Environment($loader, array(
 	'cache' => false,
 	'debug' => true
 ));
 $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());
-$twig->addGlobal('get', Page\components::twigGET());
+$twig->addGlobal('get', Components\Page::twigGET());
 $twig->addGlobal('permission', $core->user->twigListPermissions());
 $twig->addGlobal('fversion', trim(file_get_contents(dirname(__DIR__).'/versions/current')));
 if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }

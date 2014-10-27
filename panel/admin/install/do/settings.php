@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
+
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
 ?>
@@ -44,8 +46,8 @@ if(file_exists('../install.lock'))
 
 					    if(isset($_POST['do_settings'])){
 
-					        include('../../../../src/framework/framework.database.connect.php');
-					        $mysql = Database\database::connect();
+					        include('../../../../src/core/database.php');
+					        $mysql = Components\Database::connect();
 
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),

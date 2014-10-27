@@ -16,20 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../index.php');
+	Components\Page::redirect('../../../index.php');
 }
 
 if(!isset($_POST['sid']))
-	Page\components::redirect('../../find.php');
+	Components\Page::redirect('../../find.php');
 
 $_POST['server_port'] = $_POST['server_port_'.str_replace('.', '_', $_POST['server_ip'])];
 
 if(!isset($_POST['server_ip'], $_POST['server_port'], $_POST['nid']))
-	Page\components::redirect('../../view.php?id='.$_POST['sid']);
+	Components\Page::redirect('../../view.php?id='.$_POST['sid']);
 
 $core->server->rebuildData($_POST['sid']);
 $core->user->rebuildData($core->server->getData('owner_id'));
@@ -38,13 +39,13 @@ $ports = json_decode($core->server->nodeData('ports'), true);
 $ips = json_decode($core->server->nodeData('ips'), true);
 
 if(!array_key_exists($_POST['server_ip'], $ports))
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=server_ip&disp=no_ip');
 
 if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=no_port');
 
 if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $core->server->getData('server_port'))
-	Page\components::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
 
 $mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port WHERE `id` = :sid")->execute(array(
 	':ip' => $_POST['server_ip'],
@@ -90,4 +91,4 @@ curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
-Page\components::redirect('../../view.php?id='.$_POST['sid']);
+Components\Page::redirect('../../view.php?id='.$_POST['sid']);

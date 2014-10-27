@@ -16,27 +16,28 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-session_start();
-require_once('../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	Page\components::redirect($core->settings->get('master_url').'index.php?login');
+	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
 	exit();
 
 }
 
 if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-	Page\components::redirect('../add.php?error=token');
+	Components\Page::redirect('../add.php?error=token');
 
 if(!isset($_POST['email'], $_POST['permissions']))
-	Page\components::redirect('../add.php?error=missing_required');
+	Components\Page::redirect('../add.php?error=missing_required');
 
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	Page\components::redirect('../add.php?error=email');
+	Components\Page::redirect('../add.php?error=email');
 
 if(empty($_POST['permissions']))
-	Page\components::redirect('../add.php?error=permissions_empty');
+	Components\Page::redirect('../add.php?error=permissions_empty');
 
 $permissions = array(
 	$core->server->getData('hash') => $_POST['permissions']
@@ -70,6 +71,6 @@ $core->email->buildEmail('new_subuser', array(
 	'EMAIL' => $_POST['email']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
 
-Page\components::redirect('../list.php?success');
+Components\Page::redirect('../list.php?success');
 
 ?>

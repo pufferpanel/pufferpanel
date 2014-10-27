@@ -16,24 +16,25 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-session_start();
-require_once('../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	Page\components::redirect($core->settings->get('master_url').'index.php?login');
+	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
 	exit();
 
 }
 
 	if(!isset($_POST['uuid'], $_POST['permissions']))
-		Page\components::redirect('../list.php');
+		Components\Page::redirect('../list.php');
 
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Page\components::redirect('../list.php?id='.$_POST['uuid'].'&error');
+		Components\Page::redirect('../list.php?id='.$_POST['uuid'].'&error');
 
 	if(empty($_POST['permissions']))
-		Page\components::redirect('../view.php?id='.$_POST['uuid'].'&error');
+		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
 
 	$query = $mysql->prepare("SELECT `permissions` FROM `users` WHERE `uuid` = :uid");
 	$query->execute(array(
@@ -41,13 +42,13 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	));
 
 		if($query->rowCount() != 1)
-			Page\components::redirect('../list.php?error');
+			Components\Page::redirect('../list.php?error');
 		else
 			$row = $query->fetch();
 
 		$permissions = @json_decode($row['permissions'], true);
 		if(!is_array($permissions) || !array_key_exists($core->server->getData('hash'), $permissions))
-			Page\components::redirect('../view.php?id='.$_POST['uuid'].'&error');
+			Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
 
 		$permissions[$core->server->getData('hash')] = $_POST['permissions'];
 
@@ -57,6 +58,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		':uid' => $_POST['uuid']
 	));
 
-	Page\components::redirect('../view.php?id='.$_POST['uuid']);
+	Components\Page::redirect('../view.php?id='.$_POST['uuid']);
 
 ?>

@@ -16,13 +16,14 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+namespace PufferPanel\Core;
 
 /**
  * PufferPanel Core Email Sending Class
  */
-class tplMail  {
+class Email {
 
-	use Auth\components, \Database\database;
+	use Components\Authentication, Components\Database;
 
 	/**
 	 * @param string $message
@@ -38,7 +39,7 @@ class tplMail  {
 		{
 
 			$this->mysql = self::connect();
-			$this->settings = new settings();
+			$this->settings = new Settings();
 
 		}
 

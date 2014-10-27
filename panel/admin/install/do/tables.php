@@ -16,8 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+namespace PufferPanel\Core;
 
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
@@ -49,8 +48,8 @@ if(file_exists('../install.lock'))
                     		echo '<div class="alert alert-danger">The configuration file was not found.</div>';
                     	else {
 
-	                        include('../../../../src/framework/framework.database.connect.php');
-	                        $mysql = Database\database::connect();
+	                        include('../../../../src/core/database.php');
+	                        $mysql = Components\Database::connect();
 
 	                        /*
 	                         * CREATE TABLE `account_change`

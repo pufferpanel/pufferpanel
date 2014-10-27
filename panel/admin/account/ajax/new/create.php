@@ -16,21 +16,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-session_start();
-require_once('../../../../../src/framework/framework.core.php');
+namespace PufferPanel\Core;
+
+require_once('../../../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
-	Page\components::redirect('../../../../index.php?login');
+	Components\Page::redirect('../../../../index.php?login');
 }
 
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
-	Page\components::redirect('../../new.php?disp=u_fail');
+	Components\Page::redirect('../../new.php?disp=u_fail');
 
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	Page\components::redirect('../../new.php?disp=e_fail');
+	Components\Page::redirect('../../new.php?disp=e_fail');
 
 if(strlen($_POST['pass']) < 8 || $_POST['pass'] != $_POST['pass_2'])
-	Page\components::redirect('../../new.php?disp=p_fail');
+	Components\Page::redirect('../../new.php?disp=p_fail');
 
 $query = $mysql->prepare("SELECT * FROM `users` WHERE `username` = :user OR `email` = :email");
 $query->execute(array(
@@ -39,7 +40,7 @@ $query->execute(array(
 ));
 
 if($query->rowCount() > 0)
-	Page\components::redirect('../../new.php?disp=a_fail');
+	Components\Page::redirect('../../new.php?disp=a_fail');
 
 $insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :user, :email, :pass, NULL, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
 $insert->execute(array(
@@ -59,6 +60,6 @@ $core->email->buildEmail('admin_newaccount', array(
     'EMAIL' => $_POST['email']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Created');
 
-Page\components::redirect('../../view.php?id='.$mysql->lastInsertId());
+Components\Page::redirect('../../view.php?id='.$mysql->lastInsertId());
 
 ?>
