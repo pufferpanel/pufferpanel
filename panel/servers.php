@@ -35,7 +35,10 @@ if(isset($_GET['goto']) && !empty($_GET['goto']))
  * Get the Servers
  */
 if($core->user->getData('root_admin') == '1')
-	$servers = ORM::forTable('servers')->orderByDesc('active')->findArray();
+	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->orderByDesc('active')
+				->findArray();
 else
 	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
