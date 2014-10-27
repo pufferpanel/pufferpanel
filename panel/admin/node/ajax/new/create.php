@@ -47,7 +47,7 @@ if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
 /*
  * Validate FQDN & IP
  */
-if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP))
 	Page\components::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
 
 /*
