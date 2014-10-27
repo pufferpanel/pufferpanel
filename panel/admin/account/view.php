@@ -80,7 +80,7 @@ echo $twig->render(
 			'user' => $user,
 			'servers' => $servers,
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
+				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 		));

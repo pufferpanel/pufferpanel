@@ -37,7 +37,7 @@ echo $twig->render(
 				'ip' => $core->server->nodeData('ip')
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
+				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

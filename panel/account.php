@@ -276,7 +276,6 @@ echo $twig->render(
 				'e_s_2' => array("value" => 0, "checked" => $nf0)
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

@@ -28,7 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 echo $twig->render(
         'admin/account/find.html', array(
             'footer' => array(
-                'queries' => Database_Initiator::getCount(),
+                
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

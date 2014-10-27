@@ -157,7 +157,6 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 			'panel/index.html', array(
 				'xsrf' => $core->auth->XSRF(),
 				'footer' => array(
-					'queries' => Database_Initiator::getCount(),
 					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 				)
 		));

@@ -43,7 +43,7 @@ echo $twig->render('admin/server/view.html', array(
 		'server' => $core->server->getData(),
 		'user' => $core->user->getData(),
 		'footer' => array(
-			'queries' => Database_Initiator::getCount(),
+			
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

@@ -139,7 +139,6 @@ echo $twig->render(
 			'noshow' => $noShow,
 			'xsrf' => $core->auth->XSRF(),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

@@ -60,7 +60,7 @@ echo $twig->render(
 		'node' => $node,
 		'portlisting' => json_decode($node['ports'], true),
 		'footer' => array(
-			'queries' => Database_Initiator::getCount(),
+			
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

@@ -108,7 +108,7 @@ echo $twig->render(
 			'directory' => $directory,
 			'contents' => $json['contents'],
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
+				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

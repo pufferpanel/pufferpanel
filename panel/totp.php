@@ -36,7 +36,6 @@ echo $twig->render(
 				'enabled' => $core->user->getData('use_totp')
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

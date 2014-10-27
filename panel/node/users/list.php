@@ -75,7 +75,7 @@ echo $twig->render(
 			'users' => $users,
 			'server' => $core->server->getData(),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
+				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

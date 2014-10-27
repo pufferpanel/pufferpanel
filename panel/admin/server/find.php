@@ -29,7 +29,7 @@ echo $twig->render(
     'admin/server/find.html', array(
 		'error' => (isset($_GET['error'])) ? 'No server ID was provided or it was invalid.' : null,
         'footer' => array(
-            'queries' => Database_Initiator::getCount(),
+            
             'seconds' => number_format((microtime(true) - $pageStartTime), 4)
         )
     ));

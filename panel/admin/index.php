@@ -30,7 +30,7 @@ echo $twig->render(
             'version' => trim(file_get_contents('../../src/versions/current')).' ('.substr(trim(file_get_contents('../../.git/refs/heads/master')), 0, 8).')',
             'installer' => (is_dir('install')) ? true : false,
             'footer' => array(
-                'queries' => Database_Initiator::getCount(),
+                
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

@@ -44,7 +44,7 @@ echo $twig->render(
 				'fqdn' => $core->server->nodeData('fqdn')
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
+				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

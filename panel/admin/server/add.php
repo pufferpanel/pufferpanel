@@ -35,7 +35,7 @@ echo $twig->render(
 	'admin/server/add.html', array(
 		'nodes' => array($select->fetch()),
 		'footer' => array(
-			'queries' => Database_Initiator::getCount(),
+			
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

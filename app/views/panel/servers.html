@@ -41,7 +41,7 @@
 			<tbody>
 				{% for server in servers %}
 					<tr class="dynUpdate" id="{{ server.id }}">
-						<td>{{ server.node }}</td>
+						<td>{{ server.node_name }}</td>
 						<td><a href="servers.php?goto={{ server.hash }}">{{ server.name }}</a></td>
 						<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 						<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>

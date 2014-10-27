@@ -29,7 +29,7 @@ echo $twig->render(
 	'admin/config/captcha.html', array(
 		'settings' => $core->settings->get(),
 		'footer' => array(
-			'queries' => Database_Initiator::getCount(),
+			
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));
