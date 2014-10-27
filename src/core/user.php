@@ -17,16 +17,12 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core User Class File
  */
 class User extends Authentication {
-
-	/**
-	 * @param array $_data Implements a blank array for the functions to write to.
-	 */
-	private $_data;
 
 	/**
 	 * @param bool $_l Defaults to true and will be changed to false if there is an error.
@@ -67,35 +63,16 @@ class User extends Authentication {
 	 */
 	public function __construct($ip, $session = null, $hash = null){
 
-		$this->mysql = self::connect();
-
 		/*
 		 * Reset Values
 		 */
-		$this->_data = array();
 		$this->_l = true;
 
-		if(self::isLoggedIn($ip, $session, $hash) === true){
-
-			$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-			$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
-
-				$this->row = $this->query->fetch();
-				if(is_array($this->row))
-					foreach($this->row as $this->id => $this->val)
-						$this->_data[$this->id] = $this->val;
-
-		}else if(is_null($session) && is_null($hash) && is_numeric($ip)){
-
-			$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `id` = :id");
-			$this->query->execute(array(':id' => $ip));
-
-				$this->row = $this->query->fetch();
-				if(is_array($this->row))
-					foreach($this->row as $this->id => $this->val)
-						$this->_data[$this->id] = $this->val;
-
-		}else
+		if(self::isLoggedIn($ip, $session, $hash) === true)
+			$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
+		else if(is_null($session) && is_null($hash) && is_numeric($ip))
+			$this->user = ORM::forTable('users')->findOne($ip);
+		else
 			$this->_l = false;
 
 	}
@@ -122,12 +99,12 @@ class User extends Authentication {
 
 		if(is_null($id))
 			if($this->_l === true)
-				return $this->_data;
+				return $this->user;
 			else
 				return false;
 		else
-			if($this->_l === true && is_array($this->_data) && array_key_exists($id, $this->_data))
-				return $this->_data[$id];
+			if($this->_l === true && isset($this->user->{$id}))
+				return $this->user->{$id};
 			else
 				return false;
 
@@ -158,23 +135,12 @@ class User extends Authentication {
 	 */
 	public function getPermissions($list = false) {
 
-		if(!isset($this->_permissionJson)){
+		if(!isset($this->_permissionJson))
+			$this->perms = ORM::forTable('users')->select('permissions')->where('id', self::$_uid)->findOne();
 
-			$this->permissionQuery = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
-			$this->permissionQuery->execute(array(
-				':uid' => self::$_uid
-			));
-
-			if($this->permissionQuery->rowCount() == 0)
-				$this->permissionRow = null;
-			else
-				$this->permissionRow = $this->permissionQuery->fetch();
-
-		}
-
-		if(!is_null($this->permissionRow))
-			if(array_key_exists('permissions', $this->permissionRow) && !empty($this->permissionRow['permissions']))
-				$this->_permissionJson = json_decode($this->permissionRow['permissions'], true);
+		if($this->perms !== false)
+			if(!empty($this->perms->permissions))
+				$this->_permissionJson = json_decode($this->perms->permissions, true);
 			else
 				$this->_permissionJson = null;
 		else

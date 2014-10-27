@@ -23,7 +23,7 @@ namespace PufferPanel\Core;
  */
 class Email {
 
-	use Components\Authentication, Components\Database;
+	use Components\Authentication;
 
 	/**
 	 * @param string $message
@@ -38,7 +38,7 @@ class Email {
 	public function __construct()
 		{
 
-			$this->mysql = self::connect();
+			$this->mysql = null;
 			$this->settings = new Settings();
 
 		}

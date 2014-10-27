@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core Server management class.
@@ -54,8 +55,6 @@ class Server extends User {
 	 * @return void
 	 */
 	public function __construct($hash = null, $userid = null, $isroot = null){
-
-		$this->mysql = self::connect();
 
 		/*
 		 * Reset Values
@@ -103,12 +102,12 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_s === true)
-				return $this->_data;
+				return $this->server;
 			else
 				return false;
 		else
-			if($this->_s === true && array_key_exists($id, $this->_data))
-				return $this->_data[$id];
+			if($this->_s === true && isset($this->user->{$id}))
+				return $this->server->{$id};
 			else
 				return false;
 
@@ -232,53 +231,24 @@ class Server extends User {
 	 */
 	private function _buildData($hash, $userid, $isroot){
 
-		if($isroot == '1'){
+		if($isroot == '1')
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
+		else
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
-			$this->query->execute(array(
-				':hash' => $hash
-			));
-
-		}else{
-
-			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
-			$this->query->execute(array(
-				':oid' => $userid,
-				':hash' => $hash
-			));
-
-		}
-
-		if($this->query->rowCount() == 1){
-
-			$this->row = $this->query->fetch();
-			foreach($this->row as $this->id => $this->val)
-				$this->_data = array_merge($this->_data, array($this->id => $this->val));
-
-		}else
+		if($this->server === false)
 			$this->_s = false;
 
 		/*
 		 * Grab Node Information
 		 */
-		if(isset($this->_data['node']) && $this->_data['node'] !== false){
+		if($this->_s !== false){
 
 			$this->_n = true;
 
-			$this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-			$this->query->node->execute(array(
-				':node' => $this->_data['node']
-			));
+			$this->node = ORM::forTable('nodes')->where(array('id' => $this->server->node))->findOne();
 
-			if($this->query->node->rowCount() == 1){
-
-				$this->node = $this->query->node->fetch();
-
-				foreach($this->node as $this->nid => $this->nval)
-				$this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-
-			}else
+			if($this->node === false)
 				$this->_n = false;
 
 		}else

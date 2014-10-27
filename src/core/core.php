@@ -30,6 +30,12 @@ $pageStartTime = microtime(true);
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
 
 /*
+* Has Installer been run?
+*/
+if(!file_exists(__DIR__.'/configuration.php'))
+	exit("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
+
+/*
  * Define Directories
  */
 define('BASE_DIR', dirname(dirname(__DIR__)).'/');
@@ -40,6 +46,7 @@ define('SRC_DIR', dirname(dirname(__DIR__)).'/src/');
 /*
  * Include Dependency Libs
  */
+require_once(SRC_DIR.'core/configuration.php');
 require_once(BASE_DIR.'vendor/autoload.php');
 
 /*
@@ -52,16 +59,24 @@ Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
 /*
- * Has Installer been run?
- */
-if(!file_exists(__DIR__.'/configuration.php'))
-	exit("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
+* MySQL PDO Connection Engine
+*/
+use \ORM as ORM;
+use \PDO as PDO;
+ORM::configure(array(
+	'connection_string' => 'mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'],
+	'username' => $_INFO['sql_u'],
+	'password' => $_INFO['sql_p'],
+	'driver_options' => array(
+		PDO::ATTR_PERSISTENT => true,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+	)
+));
 
 /*
 * Include Required Global Component Files
 */
 require_once('components/authentication.php');
-require_once('components/database.php');
 require_once('components/functions.php');
 require_once('components/page.php');
 
@@ -69,7 +84,6 @@ require_once('components/page.php');
  * Include Required Global Class Files
  */
 require_once('authentication.php');
-require_once('database.php');
 require_once('email.php');
 require_once('files.php');
 require_once('language.php');
@@ -107,11 +121,6 @@ if($core->user->getData('language') === false)
 		$_l = new Language($_COOKIE['pp_language']);
 else
 	$_l = new Language($core->user->getData('language'));
-
-/*
- * MySQL PDO Connection Engine
- */
-$mysql = Components\Database::connect();
 
 /*
  * Twig Setup

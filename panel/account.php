@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../src/core/core.php');
 $error = '';

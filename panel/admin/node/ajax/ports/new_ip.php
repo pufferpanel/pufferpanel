@@ -18,6 +18,7 @@
  */
 
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 

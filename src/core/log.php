@@ -17,6 +17,8 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
+
 /**
  * PufferPanel Core Error Logging Class
  *
@@ -39,7 +41,6 @@ class Log extends User {
 		{
 
 			$this->uid = ($uid !== false) ? $uid : null;
-			$this->mysql = self::connect();
 
 		}
 
@@ -57,20 +58,19 @@ class Log extends User {
 	public function addLog($priority, $viewable, $data = array())
 		{
 
-			$this->query = $this->mysql->prepare("INSERT INTO `actions_log` VALUES(NULL, :priority, :viewable, :user, :time, :ip, :url, :action, :desc)");
-
 			$this->uid = (!array_key_exists(2, $data)) ? $this->uid : $data[2];
+			$this->logger = ORM::forTable('actions_log')->create();
 
-			$this->query->execute(array(
-				':priority' => $priority,
-				':viewable' => $viewable,
-				':user' => $this->uid,
-				':time' => time(),
-				':ip' => $_SERVER['REMOTE_ADDR'],
-				':url' => $this->url,
-				':action' => $data[0],
-				':desc' => $data[1]
-			));
+			$this->logger->priority = $priority;
+			$this->logger->viewable = $viewable;
+			$this->logger->user = $this->uid;
+			$this->logger->time = time();
+			$this->logger->ip = $_SERVER['REMOTE_ADDR'];
+			$this->logger->url = $this->url;
+			$this->logger->action = $data[0];
+			$this->logger->desc = $data[1];
+
+			$this->logger->save();
 
 		}
 

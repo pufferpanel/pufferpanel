@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 require_once('../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
@@ -33,35 +34,14 @@ if(isset($_GET['goto']) && !empty($_GET['goto']))
 /*
  * Get the Servers
  */
-if($core->user->getData('root_admin') == '1'){
-	$query = $mysql->prepare("SELECT * FROM `servers` ORDER BY `active` DESC");
-	$query->execute();
-}else{
-
-	$hashes = array_map(array($mysql, 'quote'), $core->user->listServerPermissions());
-	$query = $mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $hashes).") AND `active` = '1'");
-	$query->execute(array(
-		':oid' => $core->user->getData('id')
-	));
-
-}
-
-/*
- * Build Array
- */
-$servers = array();
-while($row = $query->fetch()){
-
-	$servers = array_merge($servers, array(array(
-		"id" => $row['id'],
-		"hash" => $row['hash'],
-		"node" => $core->settings->nodeName($row['node']),
-		"server_ip" => $row['server_ip'],
-		"server_port" => $row['server_port'],
-		"name" => $row['name']
-	)));
-
-}
+if($core->user->getData('root_admin') == '1')
+	$servers = ORM::forTable('servers')->orderByDesc('active')->findArray();
+else
+	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
+				->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($userid, join(',', $core->user->listServerPermissions())))
+				->findArray();
 
 /*
  * List Servers
@@ -70,7 +50,6 @@ echo $twig->render(
 		'panel/servers.html', array(
 			'servers' => $servers,
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

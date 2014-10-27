@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
 ?>

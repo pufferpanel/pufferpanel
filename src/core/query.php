@@ -23,8 +23,6 @@ namespace PufferPanel\Core;
  */
 class Query {
 
-	use Components\Database;
-
 	/**
 	 * @param array $_nodeData
 	 */
@@ -47,7 +45,7 @@ class Query {
 			$this->_queryData = false;
 		else {
 
-			$this->mysql = self::connect();
+			$this->mysql = null;
 			$this->gsid = (int)$serverid;
 
 			/*
