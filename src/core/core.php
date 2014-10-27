@@ -126,6 +126,6 @@ $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());
 $twig->addGlobal('get', Components\Page::twigGET());
 $twig->addGlobal('permission', $core->user->twigListPermissions());
-$twig->addGlobal('fversion', trim(file_get_contents(dirname(__DIR__).'/versions/current')));
+$twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
 ?>
