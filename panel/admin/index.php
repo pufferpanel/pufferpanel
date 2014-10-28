@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 echo $twig->render(
         'admin/index.html', array(
-            'version' => trim(file_get_contents('../../src/versions/current')).' ('.substr(trim(file_get_contents('../../.git/refs/heads/master')), 0, 8).')',
+            'version' => trim(file_get_contents('../../src/versions/current')).' ('.substr(trim(file_get_contents('../../.git/HEAD')), 0, 8).')',
             'installer' => (is_dir('install')) ? true : false,
             'footer' => array(
                 'queries' => Database_Initiator::getCount(),
