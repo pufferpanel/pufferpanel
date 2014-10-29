@@ -73,18 +73,12 @@ class Authentication {
 	 */
 	public function verifyPassword($email, $raw){
 
-		$this->get = $this->mysql->prepare("SELECT `password` FROM `users` WHERE `email` = :email");
-		$this->get->execute(array(
-			':email' => $email
-		));
+		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-			if($this->get->rowCount() == 1){
-
-				$this->row = $this->get->fetch();
-				return $this->password_compare($raw, $this->row['password']);
-
-			}else
-				return false;
+		if($this->get !== false)
+			return $this->password_compare($raw, $this->get->password);
+		else
+			return false;
 
 	}
 
