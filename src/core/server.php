@@ -106,7 +106,7 @@ class Server extends User {
 			else
 				return false;
 		else
-			if($this->_s === true && isset($this->user->{$id}))
+			if($this->_s === true && isset($this->server->{$id}))
 				return $this->server->{$id};
 			else
 				return false;
@@ -123,12 +123,12 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_n === true)
-				return $this->_ndata;
+				return $this->node;
 			else
 				return false;
 		else
-			if($this->_n === true && array_key_exists($id, $this->_ndata))
-				return $this->_ndata[$id];
+			if($this->_n === true && isset($this->node->{$id}))
+				return $this->node->{$id};
 			else
 				return false;
 
@@ -181,39 +181,19 @@ class Server extends User {
 	 */
 	private function _rebuildData($sid){
 
-		$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :sid");
-		$this->query->execute(array(
-			':sid' => $sid
-		));
+		$this->server = ORM::forTable('servers')->findOne($sid);
 
-		if($this->query->rowCount() == 1){
-
-			$this->row = $this->query->fetch();
-
-			foreach($this->row as $this->id => $this->val)
-				$this->_data = array_merge($this->_data, array($this->id => $this->val));
-
-		}else
+		if($this->server === false)
 			$this->_s = false;
 
 		/*
 		 * Grab Node Information
 		 */
-		if(isset($this->_data['node']) && $this->_data['node'] !== false){
+		if($this->_s !== false){
 
-			$this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-			$this->query->node->execute(array(
-				':node' => $this->_data['node']
-			));
+			$this->node = ORM::forTable('nodes')->findOne($this->_data->node);
 
-			if($this->query->node->rowCount() == 1){
-
-				$this->node = $this->query->node->fetch();
-
-				foreach($this->node as $this->nid => $this->nval)
-				$this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-
-			}else
+			if($this->node === false)
 				$this->_n = false;
 
 		}else
