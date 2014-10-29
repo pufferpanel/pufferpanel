@@ -49,51 +49,39 @@ if(isset($_GET['action'])){
 				$outputMessage = '<div class="alert alert-danger">The token you entered is invalid.</div>';
 			else {
 
-				$query = $mysql->prepare("SELECT `content` FROM `account_change` WHERE `key` = :key AND `verified` = 0");
-				$query->execute(array(
-					':key' => $_POST['token']
-				));
+				$query = ORM::forTable('account_change')->select('content')->where(array('key' => $_POST['token'], 'verified' => 0))->findOne();
 
-				if($query->rowCount() != 1)
+				if($query === false)
 					$outputMessage = '<div class="alert alert-danger">The token you entered is invalid.</div>';
 				else {
 
 					// build permissions
-					$row = $query->fetch();
-					$_perms = json_decode($row['content'], true);
+					$_perms = json_decode($query->content, true);
 
-					$query = $mysql->prepare("SELECT `subusers`, `hash`, `name` FROM `servers` WHERE `hash` = :hash");
-					$query->execute(array(
-						':hash' => key(json_decode($row['content'], true))
-					));
+					$info = ORM::forTable('servers')
+							->select_many('servers.subusers', 'servers.hash', 'servers.name', 'users.permissions')
+							->join('users', array('servers.owner_id', '=', 'users.id'))
+							->where('hash', key(json_decode($row['content'], true)))
+							->findOne();
 
-					$userPermissions = $mysql->prepare("SELECT `permissions` FROM `users` WHERE `uuid` = :uuid");
-					$userPermissions->execute(array(
-						':uuid' => $core->user->getData('uuid')
-					));
+					$subusers = json_decode($info->subusers, true);
+					unset($subusers[$core->user->getData('email')]);
+					$subusers[$core->user->getData('id')] = "verified";
 
-					// update server information
-					$row = $query->fetch();
-					$row['subusers'] = json_decode($row['subusers'], true);
-					unset($row['subusers'][$core->user->getData('email')]);
-					$row['subusers'][$core->user->getData('id')] = "verified";
-
-					// build the permissions array
-					$urow = $userPermissions->fetch();
-					$permissions = @json_decode($urow['permissions'], true);
+					$permissions = @json_decode($info->permissions, true);
 					$permissions = (is_array($permissions)) ? $permissions : array();
-					$permissions[$row['hash']] = $_perms[$row['hash']];
+					$permissions[$info->hash] = $_perms[$info->hash];
 
-					$query = $mysql->prepare("UPDATE servers, account_change, users SET users.permissions = :permissions, servers.subusers = :subusers, account_change.verified = 1 WHERE users.uuid = :uuid AND servers.hash = :hash AND account_change.key = :key");
-					$query->execute(array(
-						':subusers' => json_encode($row['subusers']),
-						':permissions' => json_encode($permissions),
-						':uuid' => $core->user->getData('uuid'),
-						':hash' => $row['hash'],
-						':key' => $_POST['token']
-					));
+					// set permissions
+					$info->permissions = json_encode($permissions);
+					$info->subusers = json_encode($subusers);
+					$query->verified = 1;
 
-					$outputMessage = '<div class="alert alert-success">You have been added as a subuser for <em>'.$row['name'].'</em>!</div>';
+					// save
+					$info->save();
+					$query->save();
+
+					$outputMessage = '<div class="alert alert-success">You have been added as a subuser for <em>'.$info->name.'</em>!</div>';
 
 				}
 
@@ -110,21 +98,17 @@ if(isset($_GET['action'])){
 
 			if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
 
-				$updateUsers = $mysql->prepare("UPDATE `users` SET `notify_login_s` = :e_s, `notify_login_f` = :e_f WHERE `id` = :uid");
-				$updateUsers->execute(array(
-					':e_s' => $_POST['e_s'],
-					':e_f' => $_POST['e_f'],
-					':uid' => $core->user->getData('id')
-				));
+				$account = ORM::forTable('users')->findOne($core->user->getData('id'));
+				$account->notify_login_s = $_POST['e_s'];
+				$account->notify_login_f = $_POST['e_f'];
+				$account->save();
 
 	            $core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
-
 				$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
 
 			}else{
 
 	            $core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
-
 				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 
 			}
@@ -144,34 +128,26 @@ if(isset($_GET['action'])){
 			$emailKey = $core->auth->keygen('30');
 			$expire = time() + 14400;
 
-			if(!isset($_POST['newemail'], $_POST['password'])){
-
+			if(!isset($_POST['newemail'], $_POST['password']))
 				$outputMessage = '<div class="alert alert-danger">Not all variables were passed to the script.</div>';
+			else{
 
-			}else{
-
-				if($_POST['newemail'] == $core->user->getData('email')){
-
+				if($_POST['newemail'] == $core->user->getData('email'))
 					$outputMessage = '<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>';
-
-				}else{
+				else{
 
 					if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
 
-						$updateEmail = $mysql->prepare("UPDATE `users` SET `email` = :email WHERE `id` = :id");
-						$updateEmail->execute(array(
-							':email' => $_POST['newemail'],
-							':id' => $core->user->getData('id')
-						));
+						$account = ORM::forTable('users')->findOne($core->user->getData('id'));
+						$account->email = $_POST['newemail'];
+						$account->save();
 
 		                $core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
-
 						$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
 
 					}else{
 
 		                $core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
-
 						$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 
 					}
@@ -200,12 +176,11 @@ if(isset($_GET['action'])){
 							/*
 							 * Change Password
 							 */
-							$updatePassword = $mysql->prepare("UPDATE `users` SET `password` = :password, `session_id` = NULL, `session_ip` = NULL WHERE `id` = :uid");
-							$updatePassword->execute(array(
-								':password' => $core->auth->hash($_POST['p_password_new']),
-								':uid' => $core->user->getData('id')
-							));
-
+							$account = ORM::forTable('users')->findOne($core->user->getData('id'));
+							$account->password = $core->auth->hash($_POST['p_password_new']);
+							$account->session_id = null;
+							$account->session_ip = null;
+							$account->save();
 
 							/*
 							 * Send Email
@@ -216,37 +191,25 @@ if(isset($_GET['action'])){
 	                        ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Password Change Notification');
 
 	                    $core->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
-
 						$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 
-
-					}else{
-
+					}else
 						$outputMessage = '<div class="alert alert-danger">Your passwords did not match.</div>';
 
-					}
-
-				}else{
-
+				}else
 					$outputMessage = '<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
-
-				}
 
 			}else{
 
 	            $core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
-
 				$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
 
 			}
 
 		}
 
-	}else{
-
+	}else
 		$outputMessage = '<div class="alert alert-danger">Invalid parameters passed. Did you fill out all required fields?</div>';
-
-	}
 
 }
 
