@@ -268,12 +268,12 @@ echo $twig->render(
                 'notify' => $core->auth->XSRF(null, '_notify')
             ),
 			'failed_login' => array(
-				'e_f' => array("value" => 1, "checked" => $ns1),
-				'e_f_2' => array("value" => 0, "checked" => $ns0)
+				'e_f' => array("value" => 1, "checked" => $nf1),
+				'e_f_2' => array("value" => 0, "checked" => $nf0)
 			),
 			'success_login' => array(
-				'e_s' => array("value" => 1, "checked" => $nf1),
-				'e_s_2' => array("value" => 0, "checked" => $nf0)
+				'e_s' => array("value" => 1, "checked" => $ns1),
+				'e_s_2' => array("value" => 0, "checked" => $ns0)
 			),
 			'footer' => array(
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
