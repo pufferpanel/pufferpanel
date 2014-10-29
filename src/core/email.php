@@ -38,7 +38,6 @@ class Email {
 	public function __construct()
 		{
 
-			$this->mysql = null;
 			$this->settings = new Settings();
 
 		}
@@ -173,12 +172,8 @@ class Email {
 	private function getDispatchSystemFunct()
 		{
 
-			$this->selectSystem = $this->mysql->prepare("SELECT * FROM `acp_settings` WHERE `setting_ref` = 'sendmail_method'");
-			$this->selectSystem->execute();
-
-				$this->selectRow = $this->selectSystem->fetch();
-
-				return $this->selectRow['setting_val'];
+			$this->selectSystem = ORM::forTable('acp_settings')->where('setting_ref', 'sendmail_method')->findOne();
+			return $this->selectSystem->setting_val;
 
 		}
 
