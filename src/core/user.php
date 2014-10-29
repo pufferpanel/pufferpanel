@@ -25,11 +25,6 @@ use \ORM as ORM;
 class User extends Authentication {
 
 	/**
-	 * @param bool $_l Defaults to true and will be changed to false if there is an error.
-	 */
-	private $_l;
-
-	/**
 	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
 	 */
 	private static $_shash;
@@ -43,15 +38,6 @@ class User extends Authentication {
 	* @param int $_oid Private variable used for keeping track of server owner id for permissions.
 	*/
 	private static $_oid;
-
-	/**
-	* @param string $_perms Private variable used for keeping track of what permissions a user hash.
-	*/
-	private $_perms = null;
-
-	private static $_row;
-
-	private static $_json;
 
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
