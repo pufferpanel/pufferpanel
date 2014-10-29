@@ -140,36 +140,25 @@ class Server extends User {
 	 * @param string $hash The hash of the server you are redirecting to.
 	 * @param array $perms
 	 * @param int $userid
-	 * @param int $rootAdmin
+	 * @param int $isRoot
 	 * @return void
 	 */
-	public function nodeRedirect($hash, $userid, $rootAdmin) {
+	public function nodeRedirect($hash, $userid, $isRoot) {
 
-		$this->__construct($hash, $userid, $rootAdmin);
-		if($rootAdmin == 1){
+		$this->__construct($hash, $userid, $isRoot);
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
-			$this->query->execute(array($hash));
+		if($isroot == '1')
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
+		else
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
 
-		}else{
+		if($this->server !== false){
 
-			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
-			$this->query->execute(array(
-				':oid' => $userid,
-				':hash' => $hash
-			));
+			setcookie('pp_server_hash', $this->server->hash, 0, '/');
+			$this->redirect('node/index.php');
 
-		}
-
-			if($this->query->rowCount() == 1){
-
-				$this->row = $this->query->fetch();
-				setcookie('pp_server_hash', $this->row['hash'], 0, '/');
-				$this->redirect('node/index.php');
-
-			}else
-				$this->redirect('servers.php?error=error');
+		}else
+			$this->redirect('servers.php?error=error');
 
 	}
 
