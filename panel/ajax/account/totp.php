@@ -37,11 +37,11 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		 */
 		$secret = GoogleAuthenticator::generateRandom();
 
-		$updateTOTPSettings = $mysql->prepare("UPDATE `users` SET `use_totp` = 0, `totp_secret` = :secret WHERE `id` = :uid");
-		$updateTOTPSettings->execute(array(
-			'secret' => $secret,
-			'uid' => $core->user->getData('id')
+		$account = ORM::forTable('users')->findOne($core->user->getData('id'));
+		$account->set(array(
+			'totp_secret' => $secret
 		));
+		$account->save();
 
 		/*
 		 * Generate QR Code
@@ -75,26 +75,21 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
         /* XSRF Check */
         if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-            die('<div class="alert alert-danger"><strong>Unable to verify the token. PLease reload the page and try again.</strong></div>');
+            exit('<div class="alert alert-danger"><strong>Unable to verify the token. PLease reload the page and try again.</strong></div>');
 
 		if($core->auth->validateTOTP($_POST['token'], $core->user->getData('totp_secret')) === true){
 
-			$updateTOTPSettings = $mysql->prepare("UPDATE `users` SET `use_totp` = 1 WHERE `id` = :uid");
-			$updateTOTPSettings->execute(array(
-				'uid' => $core->user->getData('id')
-			));
+			$account = ORM::forTable('users')->findOne($core->user->getData('id'));
+			$account->set('use_totp', 1);
+			$account->save();
 
-			echo '<div class="alert alert-success"><strong>Your account has been enabled with TOTP verification. Please click the close button on this box to finish.</strong></div>';
-			exit();
+			exit('<div class="alert alert-success"><strong>Your account has been enabled with TOTP verification. Please click the close button on this box to finish.</strong></div>');
 
-		}else{
+		}else
+			exit('<div class="alert alert-danger"><strong>Unable to verify your TOTP token. Please try again.</strong></div>');
 
-			echo '<div class="alert alert-danger"><strong>Unable to verify your TOTP token. Please try again.</strong></div>';
-			exit();
-
-		}
-
-	}else{ exit('<div class="alert alert-danger"><strong>Invalid access to this page.</strong></div>'); }
+	}else
+		exit('<div class="alert alert-danger"><strong>Invalid access to this page.</strong></div>');
 
 }
 
