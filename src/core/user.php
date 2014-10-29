@@ -25,6 +25,11 @@ use \ORM as ORM;
 class User extends Authentication {
 
 	/**
+	* @param int $_uid Private variable used for keeping track of current user permissions.
+	*/
+	private $_perms;
+
+	/**
 	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
 	 */
 	private static $_shash;
