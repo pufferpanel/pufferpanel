@@ -119,7 +119,7 @@ class User extends Authentication {
 	 * @return void
 	 * @static
 	 */
-	public static function permissionsInit($server, $uid, $oid = null) {
+	public static function initalizePermissions($server, $uid, $oid = null) {
 
 		self::$_shash = $server;
 		self::$_uid = $uid;

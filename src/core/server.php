@@ -67,7 +67,7 @@ class Server extends User {
 		/*
 		 * Make Calls
 		 */
-		User::permissionsInit($hash, $userid, null);
+		User::initalizePermissions($hash, $userid, null);
 		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
 		else if(!is_null($userid) && is_null($hash))
@@ -76,7 +76,7 @@ class Server extends User {
 			$this->_s = false;
 
 		//Re-assign values with owner ID
-		User::permissionsInit($hash, $userid, $this->getData('owner_id'));
+		User::initalizePermissions($hash, $userid, $this->getData('owner_id'));
 
 	}
 
