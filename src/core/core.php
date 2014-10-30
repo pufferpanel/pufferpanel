@@ -39,9 +39,9 @@ if(!file_exists(__DIR__.'/configuration.php'))
  * Define Directories
  */
 define('BASE_DIR', dirname(dirname(__DIR__)).'/');
-define('APP_DIR', dirname(dirname(__DIR__)).'/app/');
-define('PANEL_DIR', dirname(dirname(__DIR__)).'/panel/');
-define('SRC_DIR', dirname(dirname(__DIR__)).'/src/');
+define('APP_DIR', BASE_DIR.'app/');
+define('PANEL_DIR', BASE_DIR.'panel/');
+define('SRC_DIR', BASE_DIR.'src/');
 
 /*
  * Include Dependency Libs
@@ -76,22 +76,22 @@ ORM::configure(array(
 /*
 * Include Required Global Component Files
 */
-require_once('components/authentication.php');
-require_once('components/functions.php');
-require_once('components/page.php');
+require_once(__DIR__.'/components/authentication.php');
+require_once(__DIR__.'/components/functions.php');
+require_once(__DIR__.'/components/page.php');
 
 /*
  * Include Required Global Class Files
  */
-require_once('authentication.php');
-require_once('email.php');
-require_once('files.php');
-require_once('language.php');
-require_once('user.php');
-require_once('log.php');
-require_once('query.php');
-require_once('server.php');
-require_once('settings.php');
+require_once(__DIR__.'/authentication.php');
+require_once(__DIR__.'/email.php');
+require_once(__DIR__.'/files.php');
+require_once(__DIR__.'/language.php');
+require_once(__DIR__.'/user.php');
+require_once(__DIR__.'/log.php');
+require_once(__DIR__.'/query.php');
+require_once(__DIR__.'/server.php');
+require_once(__DIR__.'/settings.php');
 
 /*
  * Initalize Global Framework
