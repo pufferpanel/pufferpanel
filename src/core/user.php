@@ -90,7 +90,7 @@ class User extends Authentication {
 
 		if(is_null($id))
 			if($this->_l === true)
-				return $this->user;
+				return ($this->user_array = (array) $this->user) ? $this->user_array["\0*\0_data"] : false;
 			else
 				return false;
 		else

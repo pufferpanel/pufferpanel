@@ -92,7 +92,7 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_s === true)
-				return $this->server;
+				return ($this->server_array = (array) $this->server) ? $this->server_array["\0*\0_data"] : false;
 			else
 				return false;
 		else
@@ -113,7 +113,7 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_n === true)
-				return $this->node;
+				return ($this->node_array = (array) $this->node) ? $this->node_array["\0*\0_data"] : false;
 			else
 				return false;
 		else
