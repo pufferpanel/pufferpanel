@@ -40,63 +40,47 @@ if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD']
 	if(strlen($_POST['password']) < 8 || $_POST['password'] != $_POST['password_2'])
 		Components\Page::redirect('register.php?error=p_fail&token='.urlencode($_POST['token']));
 
-	$query = $mysql->prepare("SELECT * FROM `users` WHERE `username` = :user OR `email` = :email");
-	$query->execute(array(
-		':user' => $_POST['username'],
-		':email' => $core->auth->decrypt($encrypted, $iv)
-	));
-
-	if($query->rowCount() > 0)
+	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $core->auth->decrypt($encrypted, $iv))))->findOne();
+	if($user !== false)
 		Components\Page::redirect('register.php?error=a_fail&token='.$_POST['token']);
 
-	$query = $mysql->prepare("SELECT * FROM `account_change` WHERE `type` = 'subuser' AND `key` = :key AND `verified` = 0");
-	$query->execute(array(
-		':key' => $_POST['token']
-	));
+	$query = ORM::forTable('account_change')
+			->where(array(
+				'type' => 'subuser',
+				'key' => $_POST['token'],
+				'verified' => 0
+			))
+			->findOne();
 
-	if($query->rowCount() != 1)
+	if($query === false)
 		Components\Page::redirect('register.php?error=t_fail&token='.$_POST['token']);
-	else
-		$row = $query->fetch();
 
-	$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :user, :email, :pass, :permissions, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
-	$insert->execute(array(
-		':uuid' => $core->auth->gen_UUID(),
-		':user' => $_POST['username'],
-		':email' => $core->auth->decrypt($encrypted, $iv),
-		':pass' => $core->auth->hash($_POST['password']),
-		':permissions' => $row['content'],
-		':language' => $core->settings->get('default_language'),
-		':time' => time()
+	$user = ORM::forTable('users')->create();
+	$user->set(array(
+		'uuid' => $core->auth->gen_UUID(),
+		'username' => $_POST['username'],
+		'email' => $core->auth->decrypt($encrypted, $iv),
+		'password' => $core->auth->hash($_POST['password']),
+		'permissions' => $row['content'],
+		'language' => $core->settings->get('default_language'),
+		'time' => time()
 	));
+	$user->save();
 
-	$userid = $mysql->lastInsertId();
+	$server = ORM::forTable('servers')->selectMany('subusers', 'hash')->where('hash', key(json_decode($row['content'], true)))->findOne();
+	$subusers = json_decode($server->subusers, true);
+	unset($subusers[$core->auth->decrypt($encrypted, $iv)]);
+	$subusers[$user->id()] = "verified";
 
-	$query = $mysql->prepare("SELECT `subusers`, `hash` FROM `servers` WHERE `hash` = :hash");
-	$query->execute(array(
-		':hash' => key(json_decode($row['content'], true))
-	));
+	$server->subusers = json_encode($subusers);
+	$query->verified = 1;
 
-	$row = $query->fetch();
-	$row['subusers'] = json_decode($row['subusers'], true);
-	unset($row['subusers'][$core->auth->decrypt($encrypted, $iv)]);
-	$row['subusers'][$userid] = "verified";
-
-	$query = $mysql->prepare("UPDATE `servers` SET `subusers` = :subusers WHERE `hash` = :hash");
-	$query->execute(array(
-		':subusers' => json_encode($row['subusers']),
-		':hash' => $row['hash']
-	));
-
-	$query = $mysql->prepare("UPDATE `account_change` SET `verified` = 1 WHERE `key` = :key");
-	$query->execute(array(
-		':key' => $_POST['token']
-	));
+	$server->save();
+	$query->save();
 
 	Components\Page::redirect('index.php?registered');
 
-}else{
-
+}else
 	echo $twig->render(
 			'panel/register.html', array(
 				'xsrf' => $core->auth->XSRF(),
@@ -104,6 +88,4 @@ if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD']
 					'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 				)
 		));
-
-}
 ?>

@@ -42,19 +42,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		/*
 		 * Find User
 		 */
-		$query = $mysql->prepare("SELECT * FROM `users` WHERE `email` = ?");
-		$query->execute(array($_POST['email']));
+		$query = ORM::forTable('users')->where('email', $_POST['email'])->findOne();
 
-			if($query->rowCount() == 1){
+			if($query !== false){
 
-				$pKey = $core->auth->keygen('30');
+				$key = $core->auth->keygen('30');
 
-				$accountChangeInsert = $mysql->prepare("INSERT INTO `account_change` VALUES(NULL, NULL, 'password', :email, :pkey, :expires, 0)");
-				$accountChangeInsert->execute(array(
-					':email' => $_POST['email'],
-					':pkey' => $pKey,
-					':expires' => time() + 14400
+				$account = ORM::forTable('account_change')->create();
+				$account->set(array(
+					'type' => 'password',
+					'content' => $_POST['email'],
+					'key' => $key,
+					'time' => time() + 14400
 				));
+				$account->save();
 
 					/*
 					 * Send Email
@@ -62,7 +63,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 					$core->email->buildEmail('password_reset', array(
                         'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
                         'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR']),
-                        'PKEY' => $pKey
+                        'PKEY' => $key
                     ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Reset Your Password');
 
                 $core->log->getUrl()->addLog(0, 1, array('auth.password_reset_email', 'A password reset was requested and confimation emailed to your account email.'));
@@ -72,7 +73,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 
 			}else{
 
-        $core->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
+        		$core->log->getUrl()->addLog(1, 0, array('auth.password_reset_email_fail', 'A password reset request was attempted but the email used was not found in the database. The email attempted was `'.$_POST['email'].'`.'));
 				$statusMessage = '<div class="alert alert-danger">We couldn\'t find that email in our database.</div>';
 
 			}
@@ -89,26 +90,18 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 	 * Change Password
 	 */
 	$key = $_GET['key'];
-	$query = $mysql->prepare("SELECT * FROM `account_change` WHERE `key` = :key AND `verified` = '0' AND `time` > :time");
-	$query->execute(array(
-		':key' => $_GET['key'],
-		':time' => time()
-	));
+	$query = ORM::forTable('account_change')->where(array('key' => $_GET['key'], 'verified' => 0))->where_gt('time', time())->findOne();
 
-		if($query->rowCount() ==  1){
+		if($query !== false){
 
-			$row = $query->fetch();
+			$password = $core->auth->keygen('12');
+			$query->verified = 1;
 
-			$raw_newpassword = $core->auth->keygen('12');
+			$user = ORM::forTable('users')->where('email', $query->content)->findOne();
+			$user->password = $password;
 
-			$updateAccountChange = $mysql->prepare("UPDATE `account_change` SET `verified` = 1 WHERE `key` = ?");
-			$updateAccountChange->execute(array($key));
-
-			$updateUsers = $mysql->prepare("UPDATE `users` SET `password` = :newpass WHERE `email` = :email");
-			$updateUsers->execute(array(
-				':newpass' => $core->auth->hash($raw_newpassword),
-				':email' => $row['content']
-			));
+			$user->save();
+			$query->save();
 
             $core->log->getUrl()->addLog(0, 1, array('auth.password_reset', 'Your account password was successfull reset from the password reset form.'));
 
@@ -126,7 +119,6 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 		}else{
 
             $core->log->getUrl()->addLog(1, 0, array('auth.password_reset_fail', 'A password reset request was attempted but failed to be verified.'));
-
 			$statusMessage = '<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>';
 
 		}

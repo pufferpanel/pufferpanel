@@ -21,26 +21,24 @@ use \ORM as ORM;
 
 require_once('../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
-
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true)
 	Components\Page::redirect('index.php');
-	exit();
-
-}else{
+else{
 
 	/*
 	 * Expire Session and Clear Database Details
 	 */
-	setcookie("pp_auth_token", null, time()-86400, '/', $core->settings->get('cookie_website'));
-	setcookie("pp_server_node", null, time()-86400, '/', $core->settings->get('cookie_website'));
-	setcookie("pp_server_hash", null, time()-86400, '/', $core->settings->get('cookie_website'));
+	setcookie("pp_auth_token", null, time()-86400, '/');
+	setcookie("pp_server_node", null, time()-86400, '/');
+	setcookie("pp_server_hash", null, time()-86400, '/');
 
-	$logoutUser = $mysql->prepare("UPDATE `users` SET `session_id` = NULL, `session_ip` = NULL WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-	$logoutUser->execute(array(':sesip' => $_SERVER['REMOTE_ADDR'], ':sesid' => $_COOKIE['pp_auth_token']));
+	$logout = ORM::forTable('users')->where(aray('session_id' => $_COOKIE['pp_auth_token'], 'session_ip' => $_SERVER['REMOTE_ADDR']))->findOne();
+	$logout->session_id = null;
+	$logout->session_ip = null;
+	$logout->save();
 
     $core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from '.$_SERVER['REMOTE_ADDR'].'.'));
 	Components\Page::redirect('index.php');
-	exit();
 
 }
 ?>
