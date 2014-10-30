@@ -130,12 +130,12 @@ class Server extends User {
 	 * @param string $hash The hash of the server you are redirecting to.
 	 * @param array $perms
 	 * @param int $userid
-	 * @param int $isRoot
+	 * @param int $isroot
 	 * @return void
 	 */
-	public function nodeRedirect($hash, $userid, $isRoot) {
+	public function nodeRedirect($hash, $userid, $isroot) {
 
-		$this->__construct($hash, $userid, $isRoot);
+		$this->__construct($hash, $userid, $isroot);
 
 		if($isroot == '1')
 			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
