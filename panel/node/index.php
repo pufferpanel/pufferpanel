@@ -21,11 +21,8 @@ use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-}
 
 /*
  * Display Page
@@ -37,7 +34,6 @@ echo $twig->render(
 				'ip' => $core->server->nodeData('ip')
 			),
 			'footer' => array(
-				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));
