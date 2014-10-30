@@ -39,27 +39,15 @@ if(is_array($access) && !empty($access)){
 
 		if($status != "verified"){
 
-			$query = $mysql->prepare("SELECT `content` FROM `account_change` WHERE `key` = :key AND `verified` = 0");
-			$query->execute(array(
-				':key' => $core->auth->encrypt($id, $status).".".$status
-			));
-
-			$row = $query->fetch();
-
-			$_perms = json_decode($row['content'], true);
+			$user = ORM::forTable('account_change')->select('content')->where(array('key' => $core->auth->encrypt($id, $status).".".$status, 'verified' => 0))->findOne();
+			$_perms = json_decode($user->content, true);
 			$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($core->auth->encrypt($id, $status).".".$status), "permissions" => $_perms[$core->server->getData('hash')])));
 
 		}else{
 
-			$query = $mysql->prepare("SELECT `permissions`, `email`, `uuid` FROM `users` WHERE `id` = :id");
-			$query->execute(array(
-				':id' => $id
-			));
-
-			$row = $query->fetch();
-
-			$_perms = json_decode($row['permissions'], true);
-			$users = array_merge($users, array($row['email'] => array("status" => "verified", "id" => $row['uuid'], "permissions" => $_perms[$core->server->getData('hash')])));
+			$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id' => $id)->findOne();
+			$user = json_decode($user->permissions, true);
+			$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')])));
 
 		}
 
@@ -75,7 +63,7 @@ echo $twig->render(
 			'users' => $users,
 			'server' => $core->server->getData(),
 			'footer' => array(
-				
+
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));
