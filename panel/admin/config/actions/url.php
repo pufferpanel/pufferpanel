@@ -21,9 +21,8 @@ use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php');
-}
 
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
@@ -31,16 +30,17 @@ if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
 	Components\Page::redirect('../urls.php?error=main_url|master_url|assets_url');
 
 foreach($_POST as $id => $val)
-	{
+	if(!filter_var($val, FILTER_VALIDATE_URL))
+		Components\Page::redirect('../urls.php?error='.$id);
 
-		if(!filter_var($val, FILTER_VALIDATE_URL))
-			Components\Page::redirect('../urls.php?error='.$id);
-
-	}
-
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'main_website'")->execute(array($_POST['main_url']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'master_url'")->execute(array($_POST['master_url']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'assets_url'")->execute(array($_POST['assets_url']));
+$query = ORM::forTable('acp_settings')->raw_query("
+UPDATE table SET setting_val = CASE setting_ref
+	WHEN 'main_website' THEN '".$_POST['main_website']."'
+	WHEN 'master_url' THEN '".$_POST['master_url']."'
+	WHEN 'assets_url' THEN '".$_POST['assets_url']."'
+	ELSE setting_val
+END
+");
 
 Components\Page::redirect('../urls.php');
 

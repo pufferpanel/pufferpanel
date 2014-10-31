@@ -21,16 +21,15 @@ use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../index.php?login');
-}
+
 
 echo $twig->render(
         'admin/index.html', array(
             'version' => trim(file_get_contents('../../src/versions/current')).' ('.substr(trim(file_get_contents('../../.git/refs/heads/master')), 0, 8).')',
             'installer' => (is_dir('install')) ? true : false,
             'footer' => array(
-                
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

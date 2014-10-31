@@ -21,9 +21,8 @@ use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php?login');
-}
 
 setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
@@ -46,12 +45,17 @@ $iv = $core->auth->generate_iv();
 if(strpos($_POST['sendgrid_api_key'], '|') !== false)
 	$_POST['sendgrid_api_key'] = $iv.'.'.$core->auth->encrypt($_POST['sendgrid_api_key'], $iv);
 
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'sendmail_method'")->execute(array($_POST['smail_method']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'sendmail_email'")->execute(array($_POST['sendmail_email']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'postmark_api_key'")->execute(array($_POST['postmark_api_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'mandrill_api_key'")->execute(array($_POST['mandrill_api_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'mailgun_api_key'")->execute(array($_POST['mailgun_api_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'sendgrid_api_key'")->execute(array($_POST['sendgrid_api_key']));
+$query = ORM::forTable('acp_settings')->raw_query("
+UPDATE table SET setting_val = CASE setting_ref
+	WHEN 'sendmail_method' THEN '".$_POST['sendmail_method']."'
+	WHEN 'sendmail_email' THEN '".$_POST['sendmail_email']."'
+	WHEN 'postmark_api_key' THEN '".$_POST['postmark_api_key']."'
+	WHEN 'mandrill_api_key' THEN '".$_POST['mandrill_api_key']."'
+	WHEN 'mailgun_api_key' THEN '".$_POST['mailgun_api_key']."'
+	WHEN 'sendgrid_api_key' THEN '".$_POST['sendgrid_api_key']."'
+	ELSE setting_val
+END
+");
 
 Components\Page::redirect('../email.php');
 

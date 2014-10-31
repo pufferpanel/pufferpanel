@@ -27,7 +27,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		Components\Page::redirect('../../index.php?error=no_permission');
 
 	if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2']))
-		Components\Page::redirect('../../settings.php');
+		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=no_pass');
 
 	if(strlen($_POST['ftp_pass']) < 8)
 		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_len');
