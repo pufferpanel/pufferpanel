@@ -86,6 +86,7 @@ if(file_exists('../install.lock'))
 	                         */
 	                        $mysql->exec("DROP TABLE IF EXISTS `acp_settings`");
 	                        $mysql->exec("CREATE TABLE `acp_settings` (
+							  `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `setting_ref` char(25) NOT NULL DEFAULT '',
 	                          `setting_val` tinytext
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
