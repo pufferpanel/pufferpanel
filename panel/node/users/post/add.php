@@ -40,27 +40,23 @@ if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 if(empty($_POST['permissions']))
 	Components\Page::redirect('../add.php?error=permissions_empty');
 
-$permissions = array(
-	$core->server->getData('hash') => $_POST['permissions']
-);
-
 $iv = $core->auth->generate_iv();
 
-$query = $mysql->prepare("INSERT INTO account_change(`type`, `content`, `key`, `time`, `verified`) VALUES('subuser', :permissions, :key, :time, 0)");
-$query->execute(array(
-	':permissions' => json_encode($permissions),
-	':key' => $core->auth->encrypt($_POST['email'], $iv).".".$iv,
-	':time' => time()
+$account = ORM::forTable('account_change')->create();
+$account->set(array(
+	'type' => 'subuser',
+	'content' => array($core->server->getData('hash') => $_POST['permissions']),
+	'key' => $core->auth->encrypt($_POST['email'], $iv).".".$iv,
+	'time' => time()
 ));
+$account->save();
 
 $subusers = (!is_null($core->server->getData('subusers')) && !empty($core->server->getData('subusers'))) ? json_decode($core->server->getData('subusers'), true) : array();
 $subusers[$_POST['email']] = $iv;
 
-$query = $mysql->prepare("UPDATE `servers` SET `subusers` = :subusers WHERE `hash` = :hash");
-$query->execute(array(
-	':subusers' => json_encode($subusers),
-	':hash' => $core->server->getData('hash')
-));
+$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+$server->subusers = json_encode($subusers);
+$server->save();
 
 /*
 * Send Email
