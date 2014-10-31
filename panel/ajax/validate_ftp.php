@@ -22,7 +22,7 @@ require_once('../../src/core/core.php');
 /*
  * Illegally Accessed File
  */
-if(!isset(@$_POST['username']) || !isset(@$_POST['password'])){
+if(!isset($_POST['username']) || !isset($_POST['password'])){
 
 	http_response_code(403);
 
@@ -42,32 +42,27 @@ if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $ma
 /*
  * Varify Identity
  */
-$query = $mysql->prepare("SELECT `encryption_iv`, `ftp_pass`, `gsd_secret` FROM `servers` WHERE `gsd_id` = :gsdid AND `ftp_user` = :username");
-$query->execute(array(
-	'gsdid' => $serverid,
-	'username' => $username
-));
+$server = ORM::forTable('servers')
+			->selectMany('encryption_iv', 'ftp_pass', 'gsd_secret')
+			->where(array('gsd_id' => $serverid, 'ftp_user' => $username))
+			->findOne();
 
-	if($query->rowCount() != 1){
+	if($server === false){
 
 		http_response_code(403);
-		exit();
 
 	}else{
 
-		$server = $query->fetch();
-		if($core->auth->encrypt($_POST['password'], $server['encryption_iv']) != $server['ftp_pass']){
+		if($core->auth->encrypt($_POST['password'], $server->encryption_iv) != $server->ftp_pass){
 
 			http_response_code(403);
-			exit();
 
 		}else{
 
 			http_response_code(200);
-			die(json_encode(array('authkey' => $server['gsd_secret'])));
+			die(json_encode(array('authkey' => $server->gsd_secret)));
 
 		}
 
 	}
-
 ?>
