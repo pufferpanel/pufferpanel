@@ -45,7 +45,7 @@ if(is_array($access) && !empty($access)){
 
 		}else{
 
-			$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id' => $id)->findOne();
+			$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
 			$user = json_decode($user->permissions, true);
 			$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')])));
 

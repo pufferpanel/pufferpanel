@@ -40,11 +40,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	 */
 	$iv = $core->auth->generate_iv();
 
-	$mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
-	    ':sid' => $core->server->getData('id'),
-	    ':pass' => $core->auth->encrypt($_POST['ftp_pass'], $iv),
-	    ':iv' => $iv
-	));
+	$ftp = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$ftp->ftp_pass = $core->auth->encrypt($_POST['ftp_pass'], $iv);
+	$ftp->encryption_iv = $iv;
+	$ftp->save();
 
 	Components\Page::redirect('../../settings.php?success');
 
