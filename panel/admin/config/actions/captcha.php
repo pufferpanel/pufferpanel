@@ -27,7 +27,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_POST['pub_key'], $_POST['priv_key']) || empty($_POST['pub_key']) || empty($_POST['priv_key']))
 	Components\Page::redirect('../captcha.php?error=pub_key|priv_key');
 
-$update = ORM::forTable('acp_settings')->rawQuery("UPDATE acp_settings SET setting_val = IF(setting_ref='captcha_pub', '".$_POST['pub_key']."','".$_POST['priv_key']."') WHERE setting_ref IN ('captcha_pub', 'captcha_priv')");
+$update = ORM::forTable('acp_settings')
+			->rawExecute("UPDATE acp_settings SET setting_val = IF(setting_ref='captcha_pub', :pub, :priv) WHERE setting_ref IN ('captcha_pub', 'captcha_priv')",
+			array(
+				'pub' => $_POST['pub_key'],
+				'priv' => $_POST['priv_key']
+			));
 
 Components\Page::redirect('../captcha.php');
 ?>

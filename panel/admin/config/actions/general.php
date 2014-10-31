@@ -30,7 +30,7 @@ if(!isset($_POST['permissions']))
 $enableAPI = (!in_array('use_api', $_POST['permissions'])) ? 0 : 1;
 $forceOnline = (!in_array('force_online', $_POST['permissions'])) ? 0 : 1;
 
-$query = ORM::forTable('acp_settings')->raw_query("
+$query = ORM::forTable('acp_settings')->rawExecute("
 UPDATE table SET setting_val = CASE setting_ref
     WHEN 'use_api' THEN ".$enableAPI."
     WHEN 'force_online' THEN ".$forceOnline."

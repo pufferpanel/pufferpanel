@@ -45,17 +45,24 @@ $iv = $core->auth->generate_iv();
 if(strpos($_POST['sendgrid_api_key'], '|') !== false)
 	$_POST['sendgrid_api_key'] = $iv.'.'.$core->auth->encrypt($_POST['sendgrid_api_key'], $iv);
 
-$query = ORM::forTable('acp_settings')->raw_query("
-UPDATE table SET setting_val = CASE setting_ref
-	WHEN 'sendmail_method' THEN '".$_POST['sendmail_method']."'
-	WHEN 'sendmail_email' THEN '".$_POST['sendmail_email']."'
-	WHEN 'postmark_api_key' THEN '".$_POST['postmark_api_key']."'
-	WHEN 'mandrill_api_key' THEN '".$_POST['mandrill_api_key']."'
-	WHEN 'mailgun_api_key' THEN '".$_POST['mailgun_api_key']."'
-	WHEN 'sendgrid_api_key' THEN '".$_POST['sendgrid_api_key']."'
+$query = ORM::forTable('acp_settings')->rawExecute("
+UPDATE acp_settings SET setting_val = CASE setting_ref
+	WHEN 'sendmail_method' THEN :sendmail_method
+	WHEN 'sendmail_email' THEN :sendmail_email
+	WHEN 'postmark_api_key' THEN :postmark_api_key
+	WHEN 'mandrill_api_key' THEN :mandrill_api_key
+	WHEN 'mailgun_api_key' THEN :mailgun_api_key
+	WHEN 'sendgrid_api_key' THEN :sendgrid_api_key
 	ELSE setting_val
 END
-");
+", array(
+	'sendmail_method' => $_POST['smail_method'],
+	'sendmail_email' => $_POST['sendmail_email'],
+	'postmark_api_key' => $_POST['postmark_api_key'],
+	'mandrill_api_key' => $_POST['mandrill_api_key'],
+	'mailgun_api_key' => $_POST['mailgun_api_key'],
+	'sendgrid_api_key' => $_POST['sendgrid_api_key'],
+));
 
 Components\Page::redirect('../email.php');
 

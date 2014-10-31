@@ -33,7 +33,7 @@ foreach($_POST as $id => $val)
 	if(!filter_var($val, FILTER_VALIDATE_URL))
 		Components\Page::redirect('../urls.php?error='.$id);
 
-$query = ORM::forTable('acp_settings')->raw_query("
+$query = ORM::forTable('acp_settings')->rawExecute("
 UPDATE table SET setting_val = CASE setting_ref
 	WHEN 'main_website' THEN '".$_POST['main_website']."'
 	WHEN 'master_url' THEN '".$_POST['master_url']."'

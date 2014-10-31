@@ -21,9 +21,8 @@ use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../../index.php?login');
-}
 
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
 	Components\Page::redirect('../../new.php?disp=u_fail');
@@ -34,24 +33,21 @@ if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 if(strlen($_POST['pass']) < 8 || $_POST['pass'] != $_POST['pass_2'])
 	Components\Page::redirect('../../new.php?disp=p_fail');
 
-$query = $mysql->prepare("SELECT * FROM `users` WHERE `username` = :user OR `email` = :email");
-$query->execute(array(
-	':user' => $_POST['username'],
-	':email' => $_POST['email']
-));
+$query = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $_POST['email'])))->findOne();
 
-if($query->rowCount() > 0)
+if($query === false)
 	Components\Page::redirect('../../new.php?disp=a_fail');
 
-$insert = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :user, :email, :pass, NULL, :language, :time, NULL, NULL, 0, 0, 0, 0, NULL)");
-$insert->execute(array(
-	':uuid' => $core->auth->gen_UUID(),
-	':user' => $_POST['username'],
-	':email' => $_POST['email'],
-	':pass' => $core->auth->hash($_POST['pass']),
-	':language' => $core->settings->get('default_language'),
-	':time' => time()
+$user = ORM::forTable('users')->create();
+$user->set(array(
+	'uuid' => $core->auth->gen_UUID(),
+	'username' => $_POST['username'],
+	'email' => $_POST['email'],
+	'password' => $core->auth->hash($_POST['pass']),
+	'language' => $core->settings->get('default_language'),
+	'register_time' => time()
 ));
+$user->save();
 
 /*
  * Send Email

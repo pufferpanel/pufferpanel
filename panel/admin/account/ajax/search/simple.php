@@ -70,13 +70,10 @@ if($_POST['operator'] == 'starts_w'){
 }
 
 
-$find = $mysql->prepare("SELECT * FROM `users` WHERE `".$_POST['field']."` ".$useOperator." :term");
-$find->execute(array(
-	':term' => $searchTerm
-));
+$find = ORM::forTable('users')->rawQuery("SELECT * FROM `users` WHERE `".$_POST['field']."` ".$useOperator." :term", array('term' => $searchTerm))->findMany();
 
 	$returnRows = '';
-	while($row = $find->fetch()){
+	foreach($find as &$row){
 
 		$isRoot = ($row['root_admin'] == 1) ? '<span class="label label-danger">Admin</span>' : '<span class="label label-success">User</span>';
 
