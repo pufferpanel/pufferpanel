@@ -25,12 +25,14 @@ require_once('../../src/core/core.php');
 if(!isset($_POST['username']) || !isset($_POST['password'])){
 
 	http_response_code(403);
+	exit();
 
 }
 
-if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $matches)){
+if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$', $_POST['username'], $matches)){
 
 	http_response_code(403);
+	exit();
 
 }else{
 
@@ -50,12 +52,14 @@ $server = ORM::forTable('servers')
 	if($server === false){
 
 		http_response_code(403);
+		exit();
 
 	}else{
 
 		if($core->auth->encrypt($_POST['password'], $server->encryption_iv) != $server->ftp_pass){
 
 			http_response_code(403);
+			exit();
 
 		}else{
 
