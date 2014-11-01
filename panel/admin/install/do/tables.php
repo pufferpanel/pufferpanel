@@ -45,7 +45,7 @@ if(file_exists('../install.lock'))
 					<pre>
                     <?php
 
-                    	if(!file_exists('../../../../src/framework/configuration.php'))
+                    	if(!file_exists('../../../../src/core/configuration.php'))
                     		echo '<div class="alert alert-danger">The configuration file was not found.</div>';
                     	else {
 

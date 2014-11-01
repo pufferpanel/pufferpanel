@@ -33,7 +33,7 @@ foreach($content as $line => $string){
 
 }
 
-$fp = fopen('../../../src/framework/lang/'.$_GET['l'].'.json', 'w+');
+$fp = fopen('../../../src/core/lang/'.$_GET['l'].'.json', 'w+');
 fwrite($fp, json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 fclose($fp);
 

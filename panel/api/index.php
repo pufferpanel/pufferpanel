@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 header('Content-Type: application/json');
-require_once('../../src/framework/api/api.core.php');
+require_once('../../src/core/api/api.core.php');
 
 $api->init();
 ?>

@@ -109,10 +109,10 @@ if(file_exists('install.lock'))
 						/*
 						 * Check Configuration File
 						 */
-						if(substr(sprintf('%o', fileperms('../../../src/framework/configuration.php.dist')), -4) == "0666")
-							$successList .= '<p class="text-success"><code>/src/framework/configuration.php.dist</code> is correctly CHMOD\'d.</p>';
+						if(substr(sprintf('%o', fileperms('../../../src/core/configuration.php.dist')), -4) == "0666")
+							$successList .= '<p class="text-success"><code>/src/core/configuration.php.dist</code> is correctly CHMOD\'d.</p>';
 						else
-							$failedList .= '<p class="text-danger"><code>/src/framework/configuration.php.dist</code> is improperly CHMOD\'d. It should be 0666.</p>';
+							$failedList .= '<p class="text-danger"><code>/src/core/configuration.php.dist</code> is improperly CHMOD\'d. It should be 0666.</p>';
 
 
 						/*
