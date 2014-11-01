@@ -67,12 +67,10 @@ if(file_exists('../install.lock'))
 \$_INFO['sql_ssl_ca-cert'] = '/path/to/ca-cert.pem';");
                                     fclose($fp);
 
-                                    if(!rename('../../../../src/framework/configuration.php.dist', '../../../../src/framework/configuration.php')){
-
+                                    if(!rename('../../../../src/framework/configuration.php.dist', '../../../../src/framework/configuration.php'))
                                     	echo '<div class="alert alert-danger">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>';
-
-                                    }
-                                    exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
+                                    else
+                                    	exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
 
                             }catch (PDOException $e) {
 
