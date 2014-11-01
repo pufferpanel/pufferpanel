@@ -31,7 +31,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 echo $twig->render(
         'admin/account/new.html', array(
             'footer' => array(
-                
+
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

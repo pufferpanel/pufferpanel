@@ -49,11 +49,10 @@ $core->user->rebuildData($core->server->getData('owner_id'));
 $iv = $core->auth->generate_iv();
 $pass = $core->auth->encrypt($_POST['ftp_pass'], $core->auth->generate_iv());
 
-$mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
-    ':sid' => $_POST['sid'],
-    ':pass' => $pass,
-    ':iv' => $iv
-));
+$server = ORM::forTable('servers')->findOne($_POST['sid']);
+$server->ftp_pass = $pass;
+$server->encryption_iv = $iv;
+$server->save();
 
 /*
  * Send the User an Email

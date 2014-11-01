@@ -25,42 +25,23 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 }
 
-if(isset($_GET['do']) && $_GET['do'] == 'redirect' && isset($_GET['node'])){
-
-	$select = $mysql->prepare("SELECT `id` FROM `nodes` WHERE `node` = :name");
-	$select->execute(array(':name' => $_GET['node']));
-
-	if($select->rowCount() == 1) {
-		$n = $select->fetch();
-		Components\Page::redirect('view.php?id='.$n['id']);
-	}else{
-		Components\Page::redirect('list.php');
-	}
-
-}
-
 if(!isset($_GET['id']))
 	Components\Page::redirect('list.php');
 
 /*
  * Select Node Information
  */
-$selectNode = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
-$selectNode->execute(array(
-	':id' => $_GET['id']
-));
+$node = ORM::forTable('nodes')->findOne($_GET['id']);
 
-	if($selectNode->rowCount() != 1)
-		Components\Page::redirect('list.php?error=no_node');
-	else
-		$node = $selectNode->fetch();
+if($node === false)
+	Components\Page::redirect('list.php?error=no_node');
 
 echo $twig->render(
 	'admin/node/view.html', array(
 		'node' => $node,
-		'portlisting' => json_decode($node['ports'], true),
+		'portlisting' => json_decode($node->ports, true),
 		'footer' => array(
-			
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));
+?>

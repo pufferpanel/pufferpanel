@@ -31,39 +31,26 @@ if(!isset($_POST['node'], $_POST['port'], $_POST['ip']))
 /*
  * Verify port is Real & Not in Use
  */
-$select = $mysql->prepare("SELECT `ips`, `ports` FROM `nodes` WHERE `id` = :nid");
-$select->execute(array(
-	':nid' => $_POST['node']
-));
+$node = ORM::forTable('nodes')->findOne($_POST['node']);
 
-if($select->rowCount() != 1)
+if($node === false)
 	exit('Invalid Node');
 
-
-$data = $select->fetch();
-
-$ips = json_decode($data['ips'], true);
-$ports = json_decode($data['ports'], true);
+$ips = json_decode($node->ips, true);
+$ports = json_decode($node->ports, true);
 
 if(array_key_exists($_POST['ip'], $ports) && array_key_exists($_POST['port'], $ports[$_POST['ip']]) && $ports[$_POST['ip']][$_POST['port']] == 1){
 
 	unset($ports[$_POST['ip']][$_POST['port']]);
 	$ips[$_POST['ip']]['ports_free'] = ($ips[$_POST['ip']]['ports_free'] - 1);
 
-}else{
-
+}else
 	exit('No Port/IP or Port in Use');
 
-}
+$node->ips = json_encode($ips);
+$node->ports = json_encode($ports);
+$node->save();
 
-
-$update = $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = :nid");
-$update->execute(array(
-	':nid' => $_POST['node'],
-	':ips' => json_encode($ips),
-	':ports' => json_encode($ports)
-));
-
-echo 'Done';
+die('Done');
 
 ?>

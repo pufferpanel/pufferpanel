@@ -37,9 +37,11 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 	/*
 	 * Run Update on Node Table
 	 */
-	$mysql->prepare("UPDATE `nodes` SET `ip` = :ip WHERE `id` = :nid")->execute(array(':ip' => $_POST['ip'], ':nid' => $_POST['nid']));
+	$node = ORM::forTable('nodes')->findOne($_PSOT['nid']);
+	$node->ip = $_POST['ip'];
+	$node->save();
+
 	Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&tab=ftp');
 
 }
-
 ?>

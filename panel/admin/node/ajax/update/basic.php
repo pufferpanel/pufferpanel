@@ -46,11 +46,10 @@ if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP, FILTER_FLAG_NO
 /*
  * Update Record
  */
-$mysql->prepare("UPDATE `nodes` SET `node` = :name, `fqdn` = :fqdn WHERE `id` = :nid")->execute(array(
-	':nid' => $_POST['nid'],
-	':name' => $_POST['name'],
-	':fqdn' => $_POST['fqdn']
-));
+$node = ORM::forTable('nodes')->findOne($_POST['nid']);
+$node->node = $_POST['name'];
+$node->fqdn = $_POST['fqdn'];
+$node->save();
 
 Components\Page::redirect('../../view.php?id='.$_POST['nid']);
 

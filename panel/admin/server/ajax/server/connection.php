@@ -48,11 +48,10 @@ if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
 if($ports[$_POST['server_ip']][$_POST['server_port']] == 0 && $_POST['server_port'] != $core->server->getData('server_port'))
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=server_port&disp=port_in_use');
 
-$mysql->prepare("UPDATE `servers` SET `server_ip` = :ip, `server_port` = :port WHERE `id` = :sid")->execute(array(
-	':ip' => $_POST['server_ip'],
-	':port' => $_POST['server_port'],
-	':sid' => $_POST['sid']
-));
+$server = ORM::forTable('servers')->findOne($_POST['sid']);
+$server->server_ip = $_POST['server_ip'];
+$server->server_port = $_POST['server_port'];
+$server->save();
 
 /*
  * Update Old
@@ -66,11 +65,10 @@ $ips[$core->server->getData('server_ip')]['ports_free']++;
 $ports[$_POST['server_ip']][$_POST['server_port']] = 0;
 $ips[$_POST['server_ip']]['ports_free']--;
 
-$mysql->prepare("UPDATE `nodes` SET `ports` = :ports, `ips` = :ips WHERE `id` = :nid")->execute(array(
-	':ports' => json_encode($ports),
-	':ips' => json_encode($ips),
-	':nid' => $_POST['nid']
-));
+$node = ORM::forTable('nodes')->findOne($_POST['nid']);
+$node->ports = json_encode($ports);
+$node->ips = json_encode($ips);
+$node->save();
 
 /*
 * Build the Data
@@ -93,3 +91,5 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 
 Components\Page::redirect('../../view.php?id='.$_POST['sid']);
+
+?>

@@ -170,7 +170,7 @@ class Server extends User {
 		 */
 		if($this->_s !== false){
 
-			$this->node = ORM::forTable('nodes')->findOne($this->_data->node);
+			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
 
 			if($this->node === false)
 				$this->_n = false;

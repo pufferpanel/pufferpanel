@@ -4,135 +4,33 @@
 
 {% block content %}
 <div class="col-9">
-	{% if error != null %}
-		<div class="alert alert-danger">{{ error }}</div>
-	{% endif %}
-	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#simple" data-toggle="tab">Simple Search</a></li>
-		<li><a href="#advanced" data-toggle="tab">Advanced Search</a></li>
-		<li><a href="#list_all" id="list_all_tab" data-toggle="tab">All Servers</a></li>
-	</ul>
-	<div class="tab-content">
-		<div class="tab-pane active" id="simple">
-			<h3>Simple Search</h3><hr />
-			<form id="ss_form" onsubmit="return false">
-				<fieldset>
-					<div class="form-group col-3 nopad">
-						<div>
-							<select class="form-control" name="field">
-								<option value="name" selected="selected">Server Name</option>
-								<option value="server_ip">Server IP</option>
-								<option value="server_port">Server Port</option>
-								<option value="owner_email">Owner Email</option>
-								<option value="active">Active</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-2">
-						<div>
-							<select class="form-control" name="operator">
-								<option value="equal">Equals</option>
-								<option value="not_equal">Not Equal</option>
-								<option value="like" selected="selected">Like</option>
-								<option value="starts_w">Starts With</option>
-								<option value="ends_w">Ends With</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-7 nopad-right">
-						<div class="input-group">
-							<input type="text" class="form-control" name="term" />
-							<span class="input-group-btn">
-								<button class="btn btn-primary" id="ss_active_spin" type="submit">&rarr;</button>
-							</span>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-		<div class="tab-pane" id="advanced">
-			<h3>Advanced Search</h3><hr />
-			<form id="as_form" onsubmit="return false">
-				<fieldset>
-					<div class="form-group col-3 nopad">
-						<div>
-							<select class="form-control" name="field_1">
-								<option value="name" selected="selected">Server Name</option>
-								<option value="server_ip">Server IP</option>
-								<option value="server_port">Server Port</option>
-								<option value="owner_email">Owner Email</option>
-								<option value="active">Active</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-2">
-						<div>
-							<select class="form-control" name="operator_1">
-								<option value="equal">Equals</option>
-								<option value="not_equal">Not Equal</option>
-								<option value="like" selected="selected">Like</option>
-								<option value="starts_w">Starts With</option>
-								<option value="ends_w">Ends With</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-7 nopad-right">
-						<div class="input-group">
-							<input type="text" class="form-control" name="term_1" />
-							<span class="input-group-btn">
-								<div class="btn-group">
-								<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-								<ul class="dropdown-menu" id="special_case_dropdown">
-									<li><a href="and" id="radio_and"><input type="radio" name="middle_operator" value="and" checked="checked"/> AND</a></li>
-									<li><a href="or" id="radio_or"><input type="radio" name="middle_operator" value="or"/> OR</a></li>
-								</ul>
-								</div>
-							</span>
-						</div>
-					</div>
-					<div class="form-group col-3 nopad">
-						<div>
-							<select class="form-control" name="field_2">
-								<option value="name">Server Name</option>
-								<option value="server_ip">Server IP</option>
-								<option value="server_port">Server Port</option>
-								<option value="owner_email" selected="selected">Owner Email</option>
-								<option value="active">Active</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-2">
-						<div>
-							<select class="form-control" name="operator_2">
-								<option value="equal">Equals</option>
-								<option value="not_equal">Not Equal</option>
-								<option value="like" selected="selected">Like</option>
-								<option value="starts_w">Starts With</option>
-								<option value="ends_w">Ends With</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-7 nopad-right">
-						<div class="input-group">
-							<input type="text" class="form-control" name="term_2" />
-							<span class="input-group-btn">
-								<button class="btn btn-primary" id="as_active_spin" type="submit">&rarr;</button>
-							</span>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-		<div class="tab-pane" id="list_all">
-			<h3>All Servers</h3><hr />
-		</div>
+	{% if error != null %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+	<div class="tab-pane" id="list_all">
+		<h3>All Servers</h3><hr />
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th style="width:2%"></th>
+					<th>Server Name</th>
+					<th>Node</th>
+					<th>Connection Address</th>
+					<th>Owner Information</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for server in servers %}
+					<tr>
+						<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+						<td><a href="view.php?id={{ server.id }}">{{ server.name }}</a></td>
+						<td><a href="../node/view.php?id={{ server.node }}">{{ server.node_name }}</a></td>
+						<td>{{ server.server_ip }}:{{ server.server_port }}</td>
+						<td><a href="../account/view.php?id={{ server.owner_id }}">{{ server.user_email }}</a></td>
+						<td style="text-align:center;">{% if server.active == 1 %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
-	<div id="search_results"></div>
 </div>
-{% endblock %}
-
-{% block javascript %}
-<script type="text/javascript">
-	$(document).ready(function(){function e(){$("#list_all_tab").append(' <i class="fa fa-refresh fa-spin"></i>'),$.ajax({type:"POST",url:"ajax/search/getall.php",success:function(e){$("#search_results").slideUp(function(){$("#search_results").html(e),$("#search_results").fadeIn(function(){return $("#list_all_tab").html("All Servers"),!1})})}})}$("#ss_form").submit(function(){$("#ss_active_spin").html('<i class="fa fa-refresh fa-spin"></i>');var e=$('select[name="field"] :selected').val(),a=$('select[name="operator"] :selected').val(),t=$('input[name="term"]').val();$.ajax({type:"POST",url:"ajax/search/simple.php",data:{method:"simple",field:e,operator:a,term:t},success:function(e){$("#search_results").slideUp(function(){$("#search_results").html(e),$("#search_results").fadeIn(function(){return $("#ss_active_spin").html("&rarr;"),!1})})}})}),$("#as_form").submit(function(){$("#as_active_spin").html('<i class="fa fa-refresh fa-spin"></i>');var e=$('select[name="field_1"] :selected').val(),a=$('select[name="operator_1"] :selected').val(),t=$('input[name="term_1"]').val(),s=$('input[name="middle_operator"]:checked').val(),l=$('select[name="field_2"] :selected').val(),r=$('select[name="operator_2"] :selected').val(),c=$('input[name="term_2"]').val();$.ajax({type:"POST",url:"ajax/search/advanced.php",data:{method:"advanced",field_1:e,operator_1:a,term_1:t,mid_op:s,field_2:l,operator_2:r,term_2:c},success:function(e){$("#search_results").slideUp(function(){$("#search_results").html(e),$("#search_results").fadeIn(function(){return $("#as_active_spin").html("&rarr;"),!1})})}})}),$("#list_all_tab").click(function(){e()}),$.urlParam("tab")&&"list_all"==$.urlParam("tab")&&e(),$("#special_case_dropdown a").click(function(e){var a=$(this).attr("href");$("input[value='"+a+"']").prop("checked",!0),e.preventDefault(),e.stopPropagation()})});
-</script>
 {% endblock %}

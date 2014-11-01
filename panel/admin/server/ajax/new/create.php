@@ -54,21 +54,16 @@ if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 /*
  * Determine if Node (IP & Port) is Avaliable
  */
-$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
-$select->execute(array(
-	':id' => $_POST['node']
-));
+$node = ORM::forTable('nodes')->findOne($_POST['node']);
 
-if($select->rowCount() == 1)
-	$node = $select->fetch();
-else
+if($node === false)
 	Components\Page::redirect('../../add.php?error=node&disp=n_fail');
 
 	/*
 	 * Validate IP & Port
 	 */
-	$ips = json_decode($node['ips'], true);
-	$ports = json_decode($node['ports'], true);
+	$ips = json_decode($node->ips, true);
+	$ports = json_decode($node->ports, true);
 
 	if(!array_key_exists($_POST['server_ip'], $ips))
 		Components\Page::redirect('../../add.php?error=server_ip&disp=ip_fail');
@@ -85,15 +80,10 @@ else
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 	Components\Page::redirect('../../add.php?error=email&disp=e_fail');
 
-$selectEmail = $mysql->prepare("SELECT `id` FROM `users` WHERE `email` = ?");
-$selectEmail->execute(array($_POST['email']));
+$user = ORM::forTable('users')->select('id')->where('email', $_POST['email'])->findOne();
 
-	if($selectEmail->rowCount() != 1)
+	if($user === false)
 		Components\Page::redirect('../../add.php?error=email&disp=a_fail');
-	else {
-		$oid = $selectEmail->fetch();
-		$oid = $oid['id'];
-	}
 
 /*
  * Validate Disk & Memory
@@ -120,7 +110,7 @@ $_POST['ftp_pass'] = $core->auth->encrypt($_POST['ftp_pass'], $iv);
 /*
  * Add Server to Database
  */
-$ftpUser = Functions\general::generateFTPUsername($_POST['server_name']);
+$ftpUser = Components\Functions::generateFTPUsername($_POST['server_name']);
 $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar';
 
 /*
@@ -129,96 +119,85 @@ $modpack = (isset($pack) && is_array($pack)) ? $pack['server_jar'] : 'server.jar
 $serverHash = $core->auth->generateUniqueUUID('servers', 'hash');
 $gsdSecret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
 
-$add = $mysql->prepare("INSERT INTO `servers` VALUES(NULL, NULL, NULL, :hash, :gsd_secret, :e_iv, :node, :sname, :modpack, :sjar, 1, :oid, NULL, :ram, :disk, :cpu, :date, :sip, :sport, :ftpuser, :ftppass)");
-$add->execute(array(
-	':hash' => $serverHash,
-	':gsd_secret' => $node['gsd_secret'],
-	':e_iv' => $iv,
-	':node' => $_POST['node'],
-	':sname' => $_POST['server_name'],
-	':modpack' => '0000-0000-0000-0',
-	':sjar' => $modpack,
-	':oid' => $oid,
-	':ram' => $_POST['alloc_mem'],
-	':disk' => $_POST['alloc_disk'],
-	':cpu' => $_POST['cpu_limit'],
-	':date' => time(),
-	':sip' => $_POST['server_ip'],
-	':sport' => $_POST['server_port'],
-	':ftpuser' => $ftpUser,
-	':ftppass' => $_POST['ftp_pass']
-));
+/*
+ * Build Call
+ */
+$data = array(
+	"name" => $serverHash,
+    "user" => $ftpUser,
+    "overide_command_line" => "",
+    "path" => "/home/".$ftpUser,
+    "variables" => array(
+    	"-jar" => $modpack,
+        "-Xmx" => $_POST['alloc_mem']."M"
+    ),
+    "gameport" => $_POST['server_port'],
+    "gamehost" => "",
+    "plugin" => "minecraft",
+    "autoon" => false
+);
 
-$lastInsert = $mysql->lastInsertId();
+$data = json_encode($data);
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':8003/gameservers');
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'X-Access-Token: '.$node['gsd_secret']
+));
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, "settings=".$data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$content = json_decode(curl_exec($ch), true);
+curl_close($ch);
 
 /*
- * Update IP Count
+ * Update MySQL
  */
+$server = ORM::forTable('servers')->create();
+$server->set(array(
+	'gsd_id' => $content['id'],
+	'hash' => $serverHash,
+	'gsd_secret' => $node->gsd_secret,
+	'encryption_iv' => $iv,
+	'node' => $_POST['node'],
+	'name' => $_POST['server_name'],
+	'modpack' => '0000-0000-0000-0',
+	'server_jar' => $modpack,
+	'owner_id' => $user->id,
+	'max_ram' => $_POST['alloc_mem'],
+	'disk_space' => $_POST['alloc_disk'],
+	'cpu_limit' => $_POST['cpu_limit'],
+	'date_added' => time(),
+	'server_ip' => $_POST['server_ip'],
+	'server_port' => $_POST['server_port'],
+	'ftp_user' => $ftpUser,
+	'ftp_pass' => $_POST['ftp_pass']
+));
+$add->save();
+
+/*
+* Update IP Count
+*/
 $ips[$_POST['server_ip']]['ports_free']--;
 $ports[$_POST['server_ip']][$_POST['server_port']]--;
 
-$mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = :id")->execute(array(
-	':ips' => json_encode($ips),
-	':ports' => json_encode($ports),
-	':id' => $_POST['node']
-));
+$node->ips = json_encode($ips);
+$node->ports = json_encode($ports);
+$node->save();
 
 /*
- * Do Server Making Stuff Here
+ * Send User Email
  */
+$core->email->buildEmail('admin_new_server', array(
+        'NAME' => $_POST['server_name'],
+        'FTP' => $node->fqdn.':21',
+		'MINECRAFT' => $node->fqdn.':'.$_POST['server_port'],
+        'USER' => $ftpUser.'-'.$content['id'],
+        'PASS' => $_POST['ftp_pass_2']
+))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 
-	/*
-	 * Build Call
-	 */
-	$data = array(
-		"name" => $serverHash,
-        "user" => $ftpUser,
-        "overide_command_line" => "",
-        "path" => "/home/".$ftpUser,
-        "variables" => array(
-        	"-jar" => $modpack,
-            "-Xmx" => $_POST['alloc_mem']."M"
-        ),
-        "gameport" => $_POST['server_port'],
-        "gamehost" => "",
-        "plugin" => "minecraft",
-        "autoon" => false
-	);
-
-	$data = json_encode($data);
-
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://'.$node['ip'].':8003/gameservers');
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-	    'X-Access-Token: '.$node['gsd_secret']
-	));
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "settings=".$data);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$content = json_decode(curl_exec($ch), true);
-	curl_close($ch);
-
-	/*
-	 * Update MySQL
-	 */
-	$update = $mysql->prepare("UPDATE `servers` SET `gsd_id` = :gsdid WHERE `hash` = :hash");
-	$update->execute(array(
-		':gsdid' => $content['id'],
-		':hash' => $serverHash
-	));
-
-	/*
-	 * Send User Email
-	 */
-	$core->email->buildEmail('admin_new_server', array(
-	        'NAME' => $_POST['server_name'],
-	        'CONNECT' => $node['fqdn'].':21',
-	        'USER' => $ftpUser.'-'.$content['id'],
-	        'PASS' => $_POST['ftp_pass_2']
-	))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
-
-	Components\Page::redirect('../../view.php?id='.$lastInsert);
+Components\Page::redirect('../../view.php?id='.$add->id());
 
 ?>

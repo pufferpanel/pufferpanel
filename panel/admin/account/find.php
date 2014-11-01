@@ -21,14 +21,12 @@ use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php?login');
-}
 
 echo $twig->render(
         'admin/account/find.html', array(
             'footer' => array(
-                
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

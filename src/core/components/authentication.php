@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Components;
+use \ORM as ORM;
 
 /**
 * PufferPanel Core Components Trait
@@ -119,13 +120,11 @@ trait Authentication {
 
 		$this->hash = $this->gen_UUID();
 
-		$this->query = $this->mysql->prepare("SELECT COUNT(*) FROM `{$database}` WHERE `{$column}` = :value");
-		$this->query->execute(array(':value' => $this->hash));
-
-			if($this->query->fetchColumn() > 0)
-				$this->generateServerUUID();
-			else
-				return $this->hash;
+		$this->checkUUID = ORM::forTable($database)->where($column, $this->hash)->findOne();
+		if($this->checkUUID !== false)
+			$this->generateServerUUID();
+		else
+			return $this->hash;
 
 	}
 
