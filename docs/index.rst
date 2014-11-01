@@ -5,11 +5,11 @@ PufferPanel was created to be an open-source replacement for Multicraft. We are 
 If you want to see what PufferPanel looks like you can check out our topic on the `Minecraft Forums <http://www.minecraftforum.net/forums/servers/minecraft-server-hosting/hosting-discussion/569432-introducing-pufferpanel-the-open-source-multicraft/>`_.
 
 What is PufferPanel
--------------------
+^^^^^^^^^^^^^^^^^^^
 PufferPanel is a new game management panel built from the ground up to be flexible, secure, and allow for hosts to customize the panel to their own specific needs. Built on an open-source philosophy, PufferPanel can be edited by anyone without restrictions, and you can even build your own version of the panel that functions as you want it to.
 
 The License
------------
+^^^^^^^^^^^
 To put it simply, our license says the following.
 
 .. code-block::
