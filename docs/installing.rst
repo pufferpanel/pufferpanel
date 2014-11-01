@@ -5,7 +5,7 @@ Please be aware that PufferPanel has not been tested with Windows based environm
 Dependencies
 ------------
 * Git
-* PHP (version 5.5 or higher with the following modules: ``php-pear``, ``php-cli``, ``php-curl``, ``php-mcrypt``)
+* PHP (version 5.5 or higher with the following modules: ``php-pear``, ``php-cli``, ``php-curl``, ``php-mcrypt``, ``php-pdo``)
 * Apache or Nginx
 * MySQL
   * Version 5.5 or higher is required. MariaDB should work as well.
@@ -45,7 +45,7 @@ After running composer we need to setup the other folders for the installer so t
 
 Configuring MySQL
 -----------------
-You will need to add a non-root MySQL user for the panel to operate. Please run the command below in your MySQL terminal, replacing ``database`` and ``user`` with the name of the database you are using for puffer panel, and the name of the user who will have access to it respectively. You may need to restart MySQL after running the following commands.
+You will need to add a non-root MySQL user for the panel to operate. Please run the command below in your MySQL terminal, replacing ``database`` and ``user`` with the name of the database you are using for PufferPanel, and the name of the user who will have access to it respectively. You may need to restart MySQL after running the following commands.
 
 .. code-block:: sh
 
@@ -56,7 +56,7 @@ You will need to add a non-root MySQL user for the panel to operate. Please run 
 
 Running the Installer
 ---------------------
-Point your browser to the panel, and go to ``/admin/install`` following the instructions from there. This will set up the MySQL database, general settings, hashing information, and the root administrator account.
+Point your browser to ``http://<ip>/admin/install`` and follow the instructions. This will set up the MySQL database, general settings, hashing information, and the root administrator account.
 
 Cleaning Up
 -----------
