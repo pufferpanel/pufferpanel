@@ -71,8 +71,11 @@ if(file_exists('../install.lock'))
 
                                     	echo '<div class="alert alert-danger">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>';
 
+                                    } else {
+                                    
+                                	exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
+                                    
                                     }
-                                    exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
 
                             }catch (PDOException $e) {
 
