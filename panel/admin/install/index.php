@@ -44,7 +44,7 @@ if(file_exists('install.lock'))
 							<h3 class="panel-title">Installer Information</h3>
 						</div>
 						<div class="panel-body">
-							<p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/framework</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
+							<p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/core</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
 							<p>You are installing version <code><?php echo trim(@file_get_contents('../../../.git/HEAD')); ?></code>. Please keep track of this information as we may request it when you report bugs.</p>
 						</div>
 					</div>
@@ -116,12 +116,12 @@ if(file_exists('install.lock'))
 
 
 						/*
-						 * Check Framework Folder
+						 * Check core Folder
 						 */
-						if(substr(sprintf('%o', fileperms('../../../src/framework')), -4) == "0777")
-							$successList .= '<p class="text-success"><code>/src/framework</code> is correctly CHMOD\'d.</p>';
+						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) == "0777")
+							$successList .= '<p class="text-success"><code>/src/core</code> is correctly CHMOD\'d.</p>';
 						else
-							$failedList .= '<p class="text-danger"><code>/src/framework</code> is improperly CHMOD\'d. It should be 0777.</p>';
+							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
 						/*
 						 * Check Installer Folder

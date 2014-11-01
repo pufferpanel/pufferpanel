@@ -94,13 +94,13 @@ require_once(__DIR__.'/server.php');
 require_once(__DIR__.'/settings.php');
 
 /*
- * Initalize Global Framework
+ * Initalize Global core
  */
 $core = new \stdClass();
 $_l = new \stdClass();
 
 /*
- * Initalize Frameworks
+ * Initalize cores
  */
 $core->settings = new Settings();
 $core->auth = new Authentication();
