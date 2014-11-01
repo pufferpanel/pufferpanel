@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
@@ -24,14 +25,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 }
 
-$query = $mysql->prepare("SELECT * FROM `nodes`");
-$query->execute();
+$nodes = ORM::forTable('nodes')->findMany();
 
 echo $twig->render(
     'admin/node/list.html', array(
-        'nodes' => array($query->fetch()),
+        'nodes' => $nodes,
         'footer' => array(
-            'queries' => Database_Initiator::getCount(),
             'seconds' => number_format((microtime(true) - $pageStartTime), 4)
         )
     ));

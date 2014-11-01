@@ -17,19 +17,25 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../index.php?login');
-}
+
+$head = trim(file_get_contents('../../.git/HEAD'));
+if(is_array(explode('/', $head))){
+	list($ignore, $path) =  explode(" ", $head);
+	$git = '('.$head.') (sha: '.substr(trim(file_get_contents('../../.git/'.$path)), 0 ,8).')';
+}else
+	$git = $head;
 
 echo $twig->render(
         'admin/index.html', array(
-            'version' => trim(file_get_contents('../../src/versions/current')).' ('.substr(trim(file_get_contents('../../.git/refs/heads/master')), 0, 8).')',
+            'version' => trim(file_get_contents('../../src/versions/current')).' '.$git,
             'installer' => (is_dir('install')) ? true : false,
             'footer' => array(
-                'queries' => Database_Initiator::getCount(),
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

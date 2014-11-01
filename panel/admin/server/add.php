@@ -17,24 +17,22 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../index.php?login');
-}
 
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(12));
 
-$select = $mysql->prepare("SELECT id, node FROM `nodes`");
-$select->execute(array());
+$nodes = ORM::forTable('nodes')->selectMany('id', 'node')->findMany();
 
 echo $twig->render(
 	'admin/server/add.html', array(
-		'nodes' => array($select->fetch()),
+		'nodes' => $nodes,
 		'footer' => array(
-			'queries' => Database_Initiator::getCount(),
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));

@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core User Class File
@@ -24,14 +25,9 @@ namespace PufferPanel\Core;
 class User extends Authentication {
 
 	/**
-	 * @param array $_data Implements a blank array for the functions to write to.
-	 */
-	private $_data;
-
-	/**
-	 * @param bool $_l Defaults to true and will be changed to false if there is an error.
-	 */
-	private $_l;
+	* @param int $_uid Private variable used for keeping track of current user permissions.
+	*/
+	private $_perms;
 
 	/**
 	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
@@ -49,15 +45,6 @@ class User extends Authentication {
 	private static $_oid;
 
 	/**
-	* @param string $_perms Private variable used for keeping track of what permissions a user hash.
-	*/
-	private $_perms = null;
-
-	private static $_row;
-
-	private static $_json;
-
-	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
 	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
@@ -67,35 +54,16 @@ class User extends Authentication {
 	 */
 	public function __construct($ip, $session = null, $hash = null){
 
-		$this->mysql = self::connect();
-
 		/*
 		 * Reset Values
 		 */
-		$this->_data = array();
 		$this->_l = true;
 
-		if(self::isLoggedIn($ip, $session, $hash) === true){
-
-			$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sesip AND `session_id` = :sesid");
-			$this->query->execute(array(':sesip' => $ip, ':sesid' => $session));
-
-				$this->row = $this->query->fetch();
-				if(is_array($this->row))
-					foreach($this->row as $this->id => $this->val)
-						$this->_data[$this->id] = $this->val;
-
-		}else if(is_null($session) && is_null($hash) && is_numeric($ip)){
-
-			$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `id` = :id");
-			$this->query->execute(array(':id' => $ip));
-
-				$this->row = $this->query->fetch();
-				if(is_array($this->row))
-					foreach($this->row as $this->id => $this->val)
-						$this->_data[$this->id] = $this->val;
-
-		}else
+		if(self::isLoggedIn($ip, $session, $hash) === true)
+			$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
+		else if(is_null($session) && is_null($hash) && is_numeric($ip))
+			$this->user = ORM::forTable('users')->findOne($ip);
+		else
 			$this->_l = false;
 
 	}
@@ -122,12 +90,12 @@ class User extends Authentication {
 
 		if(is_null($id))
 			if($this->_l === true)
-				return $this->_data;
+				return ($this->user_array = (array) $this->user) ? $this->user_array["\0*\0_data"] : false;
 			else
 				return false;
 		else
-			if($this->_l === true && is_array($this->_data) && array_key_exists($id, $this->_data))
-				return $this->_data[$id];
+			if($this->_l === true && isset($this->user->{$id}))
+				return $this->user->{$id};
 			else
 				return false;
 
@@ -142,7 +110,7 @@ class User extends Authentication {
 	 * @return void
 	 * @static
 	 */
-	public static function permissionsInit($server, $uid, $oid = null) {
+	public static function initalizePermissions($server, $uid, $oid = null) {
 
 		self::$_shash = $server;
 		self::$_uid = $uid;
@@ -158,23 +126,12 @@ class User extends Authentication {
 	 */
 	public function getPermissions($list = false) {
 
-		if(!isset($this->_permissionJson)){
+		if(!isset($this->_permissionJson))
+			$this->perms = ORM::forTable('users')->select('permissions')->where('id', self::$_uid)->findOne();
 
-			$this->permissionQuery = $this->mysql->prepare("SELECT `permissions` FROM `users` WHERE `id` = :uid");
-			$this->permissionQuery->execute(array(
-				':uid' => self::$_uid
-			));
-
-			if($this->permissionQuery->rowCount() == 0)
-				$this->permissionRow = null;
-			else
-				$this->permissionRow = $this->permissionQuery->fetch();
-
-		}
-
-		if(!is_null($this->permissionRow))
-			if(array_key_exists('permissions', $this->permissionRow) && !empty($this->permissionRow['permissions']))
-				$this->_permissionJson = json_decode($this->permissionRow['permissions'], true);
+		if($this->perms !== false)
+			if(!empty($this->perms->permissions))
+				$this->_permissionJson = json_decode($this->perms->permissions, true);
 			else
 				$this->_permissionJson = null;
 		else

@@ -17,15 +17,12 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-
-}
 
 if($core->user->hasPermission('manage.view') !== true)
 	Components\Page::redirect('index.php?error=no_permission');
@@ -43,7 +40,6 @@ echo $twig->render(
 				'fqdn' => $core->server->nodeData('fqdn')
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

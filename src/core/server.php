@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core Server management class.
@@ -24,16 +25,6 @@ namespace PufferPanel\Core;
 class Server extends User {
 
 	use Components\Page;
-
-	/**
-	 * @param array $_data Implements a blank array for the functions to write to.
-	 */
-	private $_data;
-
-	/**
-	 * @param array $_ndata Implements a blank array for the functions to write to. This variable is used for the node part of the code.
-	 */
-	private $_ndata;
 
 	/**
 	 * @param array $_s Defaults to true and will be changed to false if there is an error. This variable is used for the server portion of the code.
@@ -55,8 +46,6 @@ class Server extends User {
 	 */
 	public function __construct($hash = null, $userid = null, $isroot = null){
 
-		$this->mysql = self::connect();
-
 		/*
 		 * Reset Values
 		 */
@@ -68,7 +57,7 @@ class Server extends User {
 		/*
 		 * Make Calls
 		 */
-		User::permissionsInit($hash, $userid, null);
+		User::initalizePermissions($hash, $userid, null);
 		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
 			$this->_buildData($hash, $userid, $isroot);
 		else if(!is_null($userid) && is_null($hash))
@@ -77,7 +66,7 @@ class Server extends User {
 			$this->_s = false;
 
 		//Re-assign values with owner ID
-		User::permissionsInit($hash, $userid, $this->getData('owner_id'));
+		User::initalizePermissions($hash, $userid, $this->getData('owner_id'));
 
 	}
 
@@ -103,12 +92,12 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_s === true)
-				return $this->_data;
+				return ($this->server_array = (array) $this->server) ? $this->server_array["\0*\0_data"] : false;
 			else
 				return false;
 		else
-			if($this->_s === true && array_key_exists($id, $this->_data))
-				return $this->_data[$id];
+			if($this->_s === true && isset($this->server->{$id}))
+				return $this->server->{$id};
 			else
 				return false;
 
@@ -124,12 +113,12 @@ class Server extends User {
 
 		if(is_null($id))
 			if($this->_n === true)
-				return $this->_ndata;
+				return ($this->node_array = (array) $this->node) ? $this->node_array["\0*\0_data"] : false;
 			else
 				return false;
 		else
-			if($this->_n === true && array_key_exists($id, $this->_ndata))
-				return $this->_ndata[$id];
+			if($this->_n === true && isset($this->node->{$id}))
+				return $this->node->{$id};
 			else
 				return false;
 
@@ -141,36 +130,25 @@ class Server extends User {
 	 * @param string $hash The hash of the server you are redirecting to.
 	 * @param array $perms
 	 * @param int $userid
-	 * @param int $rootAdmin
+	 * @param int $isroot
 	 * @return void
 	 */
-	public function nodeRedirect($hash, $userid, $rootAdmin) {
+	public function nodeRedirect($hash, $userid, $isroot) {
 
-		$this->__construct($hash, $userid, $rootAdmin);
-		if($rootAdmin == 1){
+		$this->__construct($hash, $userid, $isroot);
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = ? AND `active` = '1'");
-			$this->query->execute(array($hash));
+		if($isroot == '1')
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
+		else
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
 
-		}else{
+		if($this->server !== false){
 
-			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
-			$this->query->execute(array(
-				':oid' => $userid,
-				':hash' => $hash
-			));
+			setcookie('pp_server_hash', $this->server->hash, 0, '/');
+			$this->redirect('node/index.php');
 
-		}
-
-			if($this->query->rowCount() == 1){
-
-				$this->row = $this->query->fetch();
-				setcookie('pp_server_hash', $this->row['hash'], 0, '/');
-				$this->redirect('node/index.php');
-
-			}else
-				$this->redirect('servers.php?error=error');
+		}else
+			$this->redirect('servers.php?error=error');
 
 	}
 
@@ -182,39 +160,19 @@ class Server extends User {
 	 */
 	private function _rebuildData($sid){
 
-		$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :sid");
-		$this->query->execute(array(
-			':sid' => $sid
-		));
+		$this->server = ORM::forTable('servers')->findOne($sid);
 
-		if($this->query->rowCount() == 1){
-
-			$this->row = $this->query->fetch();
-
-			foreach($this->row as $this->id => $this->val)
-				$this->_data = array_merge($this->_data, array($this->id => $this->val));
-
-		}else
+		if($this->server === false)
 			$this->_s = false;
 
 		/*
 		 * Grab Node Information
 		 */
-		if(isset($this->_data['node']) && $this->_data['node'] !== false){
+		if($this->_s !== false){
 
-			$this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-			$this->query->node->execute(array(
-				':node' => $this->_data['node']
-			));
+			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
 
-			if($this->query->node->rowCount() == 1){
-
-				$this->node = $this->query->node->fetch();
-
-				foreach($this->node as $this->nid => $this->nval)
-				$this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-
-			}else
+			if($this->node === false)
 				$this->_n = false;
 
 		}else
@@ -232,53 +190,24 @@ class Server extends User {
 	 */
 	private function _buildData($hash, $userid, $isroot){
 
-		if($isroot == '1'){
+		if($isroot == '1')
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
+		else
+			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `active` = 1");
-			$this->query->execute(array(
-				':hash' => $hash
-			));
-
-		}else{
-
-			$this->hashes = array_map(array($this->mysql, 'quote'), parent::listServerPermissions());
-			$this->query = $this->mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `hash` = :hash AND `active` = '1'");
-			$this->query->execute(array(
-				':oid' => $userid,
-				':hash' => $hash
-			));
-
-		}
-
-		if($this->query->rowCount() == 1){
-
-			$this->row = $this->query->fetch();
-			foreach($this->row as $this->id => $this->val)
-				$this->_data = array_merge($this->_data, array($this->id => $this->val));
-
-		}else
+		if($this->server === false)
 			$this->_s = false;
 
 		/*
 		 * Grab Node Information
 		 */
-		if(isset($this->_data['node']) && $this->_data['node'] !== false){
+		if($this->_s !== false){
 
 			$this->_n = true;
 
-			$this->query->node = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :node LIMIT 1");
-			$this->query->node->execute(array(
-				':node' => $this->_data['node']
-			));
+			$this->node = ORM::forTable('nodes')->where(array('id' => $this->server->node))->findOne();
 
-			if($this->query->node->rowCount() == 1){
-
-				$this->node = $this->query->node->fetch();
-
-				foreach($this->node as $this->nid => $this->nval)
-				$this->_ndata = array_merge($this->_ndata, array($this->nid => $this->nval));
-
-			}else
+			if($this->node === false)
 				$this->_n = false;
 
 		}else

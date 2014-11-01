@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
@@ -36,27 +37,18 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	if(empty($_POST['permissions']))
 		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
 
-	$query = $mysql->prepare("SELECT `permissions` FROM `users` WHERE `uuid` = :uid");
-	$query->execute(array(
-		':uid' => $_POST['uuid']
-	));
+	$query = ORM::forTable('users')->select('permissions')->where('uuid', $_POST['uuid'])->findOne();
 
-		if($query->rowCount() != 1)
-			Components\Page::redirect('../list.php?error');
-		else
-			$row = $query->fetch();
+	if($query === false)
+		Components\Page::redirect('../list.php?error');
 
-		$permissions = @json_decode($row['permissions'], true);
-		if(!is_array($permissions) || !array_key_exists($core->server->getData('hash'), $permissions))
-			Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
+	$permissions = @json_decode($query->permissions, true);
+	if(!is_array($permissions) || !array_key_exists($core->server->getData('hash'), $permissions))
+		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
 
-		$permissions[$core->server->getData('hash')] = $_POST['permissions'];
-
-	$query = $mysql->prepare("UPDATE `users` SET `permissions` = :permissions WHERE `uuid` = :uid");
-	$query->execute(array(
-		':permissions' => json_encode($permissions),
-		':uid' => $_POST['uuid']
-	));
+	$permissions[$core->server->getData('hash')] = $_POST['permissions'];
+	$query->permissions = json_encode($permissions);
+	$query->save();
 
 	Components\Page::redirect('../view.php?id='.$_POST['uuid']);
 

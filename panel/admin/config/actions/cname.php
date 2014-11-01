@@ -17,18 +17,19 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php?login');
-}
 
 if(!isset($_POST['company_name']))
 	Components\Page::redirect('../global.php?error=company_name');
 
-$query = $mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'company_name'");
-$query->execute(array($_POST['company_name']));
+$query = ORM::forTable('acp_settings')->where('setting_ref', 'company_name')->findOne();
+$query->setting_val = $_POST['company_name'];
+$query->save();
 
 Components\Page::redirect('../global.php');
 

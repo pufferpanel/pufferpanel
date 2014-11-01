@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
@@ -27,37 +28,19 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		/*
 		 * Query Database
 		 */
-		$select = $mysql->prepare("SELECT * FROM `servers` WHERE `id` = :id");
-		$select->execute(array(
-			':id' => $_POST['server']
-		));
+		$status = ORM::forTable('servers')->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')
+					->join('nodes', array('servers.node', '=', 'nodes.id'))
+					->where('servers.id', $_POST['server'])
+					->findOne();
 
-			$server = $select->fetch();
-
-		$select = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :id");
-		$select->execute(array(
-			':id' => $server['node'],
-		));
-
-			$node = $select->fetch();
-
-		/*
-		 * Query Servers
-		 */
-		if($core->gsd->check_status($node['ip'], $server['gsd_id'], $node['gsd_secret']) === false)
+		if($core->gsd->check_status($status->ip, $status->gsd_id, $status->gsd_secret) === false)
 			exit('#E33200');
 		else
 			exit('#53B30C');
 
-	}else{
-
+	}else
 		exit('#FF9900');
 
-	}
-
-}else{
-
+}else
 	exit('#FF9900');
-
-}
 ?>

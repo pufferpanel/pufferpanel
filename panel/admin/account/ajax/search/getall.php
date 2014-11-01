@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -24,11 +25,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	exit('<div class="error-box round">Failed to Authenticate Account.</div>');
 }
 
-$find = $mysql->prepare("SELECT * FROM `users`");
-$find->execute();
+$users = ORM::forTable('users')->findMany();
 
 	$returnRows = '';
-	while($row = $find->fetch()){
+	foreach($users as &$row){
 
 		$isRoot = ($row['root_admin'] == 1) ? '<span class="label label-danger">Admin</span>' : '<span class="label label-success">User</span>';
 

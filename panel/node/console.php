@@ -17,15 +17,14 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../src/core/core.php');
 
 $filesIncluded = true;
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-}
 
 if($core->user->hasPermission('console.view') !== true)
 	Components\Page::redirect('index.php?error=no_permission');
@@ -43,7 +42,7 @@ if($core->gsd->online() === true){
     $content = json_decode(@file_get_contents($url, 0, $context), true);
 
 }else
-    $content = array('contents' => '');
+    $content = array('contents' => 'Server is currently offline.');
 
 /*
  * Display Page
@@ -55,7 +54,6 @@ echo $twig->render(
 				'ip' => $core->server->nodeData('ip')
 			),
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
@@ -30,7 +31,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 echo $twig->render(
         'admin/account/new.html', array(
             'footer' => array(
-                'queries' => Database_Initiator::getCount(),
+
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
         ));

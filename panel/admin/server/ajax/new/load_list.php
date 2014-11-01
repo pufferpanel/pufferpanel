@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -27,11 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(!isset($_POST['node']))
 	exit('No Node was Defined');
 
-$selectData = $mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :name");
-$selectData->execute(array(
-	':name' => $_POST['node']
-));
-$node = $selectData->fetch();
+$node = ORM::forTable('nodes')->findOne($_POST['node']);
 ?>
 
 <div class="form-group col-6 nopad">
@@ -40,7 +37,7 @@ $node = $selectData->fetch();
 		<select name="server_ip" id="server_ip" class="form-control">
         <?php
 
-			$ips = json_decode($node['ips'], true);
+			$ips = json_decode($node->ips, true);
 			$i = 0;
 			$hasFree = false;
 
@@ -72,7 +69,7 @@ $node = $selectData->fetch();
 		<div>
   		<?php
 
-	        $ports = json_decode($node['ports'], true);
+	        $ports = json_decode($node->ports, true);
 
 	        if(!empty($ports)){
 

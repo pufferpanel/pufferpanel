@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
@@ -48,8 +49,13 @@ if(file_exists('../install.lock'))
                     		echo '<div class="alert alert-danger">The configuration file was not found.</div>';
                     	else {
 
-	                        include('../../../../src/core/database.php');
-	                        $mysql = Components\Database::connect();
+	                        include('../../../../src/core/configuration.php');
+	                        $mysql = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
+								PDO::ATTR_PERSISTENT => true,
+								PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+							));
+
+							$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	                        /*
 	                         * CREATE TABLE `account_change`
@@ -85,6 +91,7 @@ if(file_exists('../install.lock'))
 	                         */
 	                        $mysql->exec("DROP TABLE IF EXISTS `acp_settings`");
 	                        $mysql->exec("CREATE TABLE `acp_settings` (
+							  `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `setting_ref` char(25) NOT NULL DEFAULT '',
 	                          `setting_val` tinytext
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
@@ -191,7 +198,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../../src/versions/current')).' ('.substr(trim(file_get_contents('../../../../.git/refs/heads/master')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
+            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../../src/versions/current')).' ('.substr(trim(file_get_contents('../../../../.git/HEAD')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>

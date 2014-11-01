@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -35,12 +36,10 @@ if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']))
 
 $ports = explode(',', str_replace(" ", "", $_POST['add_ports']));
 
-$select = $mysql->prepare("SELECT `ips`, `ports` FROM `nodes` WHERE `id` = :nid");
-$select->execute(array(':nid' => $_POST['add_ports_node']));
-$data = $select->fetch();
+$node = ORM::forTable('nodes')->findOne($_POST['add_ports_node']);
 
-$saveips = json_decode($data['ips'], true);
-$saveports = json_decode($data['ports'], true);
+$saveips = json_decode($node->ips, true);
+$saveports = json_decode($node->ports, true);
 
 foreach($ports as $id => $port)
 	{
@@ -54,11 +53,9 @@ foreach($ports as $id => $port)
 
 	}
 
-$mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = :nid")->execute(array(
-	':nid' => $_POST['add_ports_node'],
-	':ips' => json_encode($saveips),
-	':ports' => json_encode($saveports)
-));
-Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
+$node->ips = json_encode($saveips);
+$node->ports = json_encode($saveports);
+$node->save();
 
+Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 ?>

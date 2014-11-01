@@ -17,13 +17,12 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core Settings Class File
  */
 class Settings {
-
-	use Components\Database;
 
 	/**
 	 * Constructor class for building settings data.
@@ -33,25 +32,15 @@ class Settings {
 	public function __construct()
 		{
 
-			$this->mysql = self::connect();
+			$this->settings = ORM::forTable('acp_settings')->findMany();
 
-			$this->query = $this->mysql->prepare("SELECT * FROM `acp_settings`");
-			$this->query->execute();
+			foreach($this->settings as $this->setting)
+				$this->_data[$this->setting->setting_ref] = $this->setting->setting_val;
 
-				while($this->row = $this->query->fetch()){
+			$this->nodes = ORM::forTable('nodes')->select('id')->select('node')->findMany();
 
-					$this->_data[$this->row['setting_ref']] = $this->row['setting_val'];
-
-				}
-
-			$this->queryNode = $this->mysql->prepare("SELECT `id`, `node` FROM `nodes`");
-			$this->queryNode->execute();
-
-				while($this->rowNode = $this->queryNode->fetch()){
-
-					$this->_dataNode[$this->rowNode['id']] = $this->rowNode['node'];
-
-				}
+			foreach($this->nodes as $this->node)
+					$this->_dataNode[$this->node->id] = $this->node->node;
 
 		}
 

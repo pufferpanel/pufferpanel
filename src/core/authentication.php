@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /*
  * TOTP Class
@@ -30,7 +31,7 @@ use Base32\Base32;
  */
 class Authentication {
 
-	use Components\Database, Components\Authentication, Components\Page;
+	use Components\Authentication, Components\Page;
 
 	/**
 	 * Authentcation constructor class.
@@ -40,7 +41,6 @@ class Authentication {
 	public function __construct()
 		{
 
-			$this->mysql = self::connect();
 			$this->settings = new Settings();
 
 		}
@@ -73,18 +73,12 @@ class Authentication {
 	 */
 	public function verifyPassword($email, $raw){
 
-		$this->get = $this->mysql->prepare("SELECT `password` FROM `users` WHERE `email` = :email");
-		$this->get->execute(array(
-			':email' => $email
-		));
+		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-			if($this->get->rowCount() == 1){
-
-				$this->row = $this->get->fetch();
-				return $this->password_compare($raw, $this->row['password']);
-
-			}else
-				return false;
+		if($this->get !== false)
+			return $this->password_compare($raw, $this->get->password);
+		else
+			return false;
 
 	}
 
@@ -99,40 +93,29 @@ class Authentication {
 	 */
 	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
 
-		$this->query = $this->mysql->prepare("SELECT * FROM `users` WHERE `session_ip` = :sessip AND `session_id` = :session");
-		$this->query->execute(array(
-			':sessip' => $ip,
-			':session' => $session
-		));
+		$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
 
-		if($this->query->rowCount() == 1){
+		if($this->user !== false){
 
-			$this->row = $this->query->fetch();
-
-			if($this->row['root_admin'] != 1 && $acp === true)
+			if($this->user->root_admin != 1 && $acp === true)
 				return false;
 			else{
 
-				if($this->row['root_admin'] != '1'){
+				if($this->user->root_admin != 1){
 
 					if(!is_null($serverhash)){
 
 						/*
 						 * We have to do a mini-permissions building here since we can't call the user function from here
 						 */
-						if(!is_null($this->row['permissions']) && !empty($this->row['permissions']))
-							$this->row['permissions'] = array_keys(json_decode($this->row['permissions'], true));
+						if(!is_null($this->user->permissions) && !empty($this->user->permissions))
+							$this->permissions = array_keys(json_decode($this->user->permissions, true));
 						else
-							$this->row['permissions'] = array("0" => "0");
+							$this->permissions = array("0" => "0");
 
-						$this->hashes = array_map(array($this->mysql, 'quote'), $this->row['permissions']);
-						$this->_validateServer = $this->mysql->prepare("SELECT * FROM `servers` WHERE `hash` = :hash AND `owner_id` = :oid OR `hash` IN(".join(',', $this->hashes).") AND `active` = 1");
-						$this->_validateServer->execute(array(
-							':oid' => $this->row['id'],
-							':hash' => $serverhash
-						));
+						$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->user->id, join(',', $this->permissions)))->findOne();
 
-							if($this->_validateServer->rowCount() == 1)
+							if($this->server !== false)
 								return true;
 							else
 								return false;

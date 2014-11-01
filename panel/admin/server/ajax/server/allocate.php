@@ -17,12 +17,12 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php');
-}
 
 if(!isset($_POST['sid']))
 	Components\Page::redirect('../../find.php');
@@ -36,11 +36,10 @@ $core->user->rebuildData($core->server->getData('owner_id'));
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
 
-$mysql->prepare("UPDATE `servers` SET `max_ram` = :ram, `disk_space` = :disk WHERE `id` = :sid")->execute(array(
-    ':sid' => $core->server->getData('id'),
-    ':ram' => $_POST['alloc_mem'],
-    ':disk' => $_POST['alloc_disk']
-));
+$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+$server->max_ram = $_POST['alloc_mem'];
+$server->disk_space = $_POST['alloc_disk'];
+$server->save();
 
 /*
  * Build the Data

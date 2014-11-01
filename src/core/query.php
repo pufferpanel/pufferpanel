@@ -17,23 +17,12 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core GSD Implementation Class
  */
 class Query {
-
-	use Components\Database;
-
-	/**
-	 * @param array $_nodeData
-	 */
-	private $_nodeData = array();
-
-	/**
-	* @param array $_queryData
-	*/
-	private $_queryData = array();
 
 	/**
 	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
@@ -47,44 +36,17 @@ class Query {
 			$this->_queryData = false;
 		else {
 
-			$this->mysql = self::connect();
 			$this->gsid = (int)$serverid;
 
 			/*
 			 * Load Information into Script
 			 */
-			$this->executeQuery = $this->mysql->prepare("SELECT * FROM `servers` WHERE `id` = :sid");
-			$this->executeQuery->execute(array(
-				':sid' => $this->gsid
-			));
-
-				if($this->executeQuery->rowCount() == 1){
-
-					 $this->row = $this->executeQuery->fetch();
-
-					 foreach($this->row as $this->id => $this->val)
-					 	$this->_queryData = array_merge($this->_queryData, array($this->id => $this->val));
-
-				}else
-					$this->_queryData = false;
+			$this->server = ORM::forTable('servers')->findOne($this->gsid);
 
 			/*
 			 * Load Node Information into Script
 			 */
-			$this->executeNodeQuery = $this->mysql->prepare("SELECT * FROM `nodes` WHERE `id` = :nid");
-			$this->executeNodeQuery->execute(array(
-				':nid' => $this->_queryData['node']
-			));
-
-				if($this->executeNodeQuery->rowCount() == 1){
-
-					 $this->node = $this->executeNodeQuery->fetch();
-
-					 foreach($this->node as $this->id => $this->val)
-					 	$this->_nodeData = array_merge($this->_nodeData, array($this->id => $this->val));
-
-				}else
-					$this->_nodeData = false;
+			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
 
 		}
 
@@ -132,20 +94,20 @@ class Query {
 	 */
 	public function online($override = false) {
 
-		if($this->_queryData === false)
+		if($this->server === false)
 			return false;
 		else {
 
-			$this->_queryData['gsd_id'] = ($override !== false) ? (int)$override : $this->_queryData['gsd_id'];
+			$this->server->gsd_id = ($override !== false) ? (int)$override : $this->server->gsd_id;
 
 			$this->context = stream_context_create(array(
 				"http" => array(
 					"method" => "GET",
 					"timeout" => 1,
-					"header" => "X-Access-Token: ".$this->_nodeData['gsd_secret']
+					"header" => "X-Access-Token: ".$this->node->gsd_secret
 				)
 			));
-			$this->gatherData = @file_get_contents("http://".$this->_nodeData['ip'].":8003/gameservers/".$this->_queryData['gsd_id'] , 0, $this->context);
+			$this->gatherData = @file_get_contents("http://".$this->node->ip.":8003/gameservers/".$this->server->gsd_id , 0, $this->context);
 
 			$this->raw = json_decode($this->gatherData, true);
 
@@ -228,3 +190,4 @@ class Query {
 	}
 
 }
+?>

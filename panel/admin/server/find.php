@@ -17,18 +17,24 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../index.php?login');
-}
+
+$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')->select('users.email', 'user_email')
+			->join('users', array('servers.owner_id', '=', 'users.id'))
+			->join('nodes', array('servers.node', '=', 'nodes.id'))
+			->orderByDesc('active')
+			->findArray();
 
 echo $twig->render(
     'admin/server/find.html', array(
 		'error' => (isset($_GET['error'])) ? 'No server ID was provided or it was invalid.' : null,
+		'servers' => $servers,
         'footer' => array(
-            'queries' => Database_Initiator::getCount(),
             'seconds' => number_format((microtime(true) - $pageStartTime), 4)
         )
     ));

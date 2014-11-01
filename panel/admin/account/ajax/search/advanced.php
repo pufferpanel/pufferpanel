@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -100,14 +101,10 @@ else
 	$middleOperator = 'OR';
 
 
-$find = $mysql->prepare("SELECT * FROM `users` WHERE `".$_POST['field_1']."` ".$useOperator." :term ".$middleOperator." `".$_POST['field_2']."` ".$useOperator_2." :term_2");
-$find->execute(array(
-	':term' => $searchTerm,
-	':term_2' => $searchTerm_2
-));
+$find = ORM::forTable('users')->rawQuery("SELECT * FROM `users` WHERE `".$_POST['field_1']."` ".$useOperator." '".$searchTerm."' ".$middleOperator." `".$_POST['field_2']."` ".$useOperator_2." '".$searchTerm_2."'")->findMany();
 
 	$returnRows = '';
-	while($row = $find->fetch()){
+	foreach($find as &$row){
 
 		$isRoot = ($row['root_admin'] == 1) ? '<span class="label label-danger">Admin</span>' : '<span class="label label-success">User</span>';
 

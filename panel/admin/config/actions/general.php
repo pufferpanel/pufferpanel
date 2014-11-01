@@ -17,12 +17,12 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
     Components\Page::redirect('../../../index.php?login');
-}
 
 if(!isset($_POST['permissions']))
     Components\Page::redirect('../global.php?error=general_setting');
@@ -30,8 +30,13 @@ if(!isset($_POST['permissions']))
 $enableAPI = (!in_array('use_api', $_POST['permissions'])) ? 0 : 1;
 $forceOnline = (!in_array('force_online', $_POST['permissions'])) ? 0 : 1;
 
-$mysql->exec("UPDATE `acp_settings` SET `setting_val` = $enableAPI WHERE `setting_ref` = 'use_api'");
-$mysql->exec("UPDATE `acp_settings` SET `setting_val` = $forceOnline WHERE `setting_ref` = 'force_online'");
+$query = ORM::forTable('acp_settings')->rawExecute("
+UPDATE table SET setting_val = CASE setting_ref
+    WHEN 'use_api' THEN ".$enableAPI."
+    WHEN 'force_online' THEN ".$forceOnline."
+    ELSE setting_val
+END
+");
 
 Components\Page::redirect('../global.php');
 

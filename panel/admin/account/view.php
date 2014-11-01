@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../src/core/core.php');
 
@@ -33,53 +34,30 @@ if(!isset($_GET['id']))
 /*
  * Select User Information
  */
-$select = $mysql->prepare("SELECT * FROM `users` WHERE `id` = :id LIMIT 1");
-$select->execute(array(
-	':id' => $_GET['id']
-));
+$core->user->rebuildData($_GET['id']);
 
-	if($select->rowCount() != 1)
-		Components\Page::redirect('find.php?error=no_user');
-	else
-		$user = $select->fetch();
+if(!$core->user->getData('id') || $core->user->getData('id') === false)
+	Components\Page::redirect('find.php?error=no_user');
 
-$date1 = new DateTime(date('Y-m-d', $user['register_time']));
-$date2 = new DateTime(date('Y-m-d', time()));
+$date1 = new \DateTime(date('Y-m-d', $core->user->getData('register_time')));
+$date2 = new \DateTime(date('Y-m-d', time()));
 
-$user['register_time'] = date('F j, Y g:ia', $user['register_time']).' ('.$date2->diff($date1)->format("%a Days Ago").')';
+$user = $core->user->getData();
+$user['register_time'] = date('F j, Y g:ia', $core->user->getData('register_time')).' ('.$date2->diff($date1)->format("%a Days Ago").')';
 
 /*
  * Select Servers Owned by the User
  */
-$select = $mysql->prepare("SELECT * FROM `servers` WHERE `owner_id` = :id ORDER BY `active` DESC");
-$select->execute(array(
-	':id' => $user['id']
-));
-
-/*
- * Iterate through Servers
- */
-$servers = array();
-while($row = $select->fetch()){
-
-	$servers = array_merge($servers, array(array(
-		"id" => $row['id'],
-		"hash" => $row['hash'],
-		"node" => $core->settings->nodeName($row['node']),
-		"ip" => $row['server_ip'],
-		"port" => $row['server_port'],
-		"name" => $row['name'],
-		"active" => ($row['active'] == '1') ? true : false,
-	)));
-
-}
+$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+			->join('nodes', array('servers.node', '=', 'nodes.id'))
+			->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
+			->findArray();
 
 echo $twig->render(
 		'admin/account/view.html', array(
 			'user' => $user,
 			'servers' => $servers,
 			'footer' => array(
-				'queries' => Database_Initiator::getCount(),
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 		));

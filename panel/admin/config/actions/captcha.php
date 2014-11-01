@@ -17,18 +17,22 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php');
-}
 
 if(!isset($_POST['pub_key'], $_POST['priv_key']) || empty($_POST['pub_key']) || empty($_POST['priv_key']))
 	Components\Page::redirect('../captcha.php?error=pub_key|priv_key');
 
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_pub'")->execute(array($_POST['pub_key']));
-$mysql->prepare("UPDATE `acp_settings` SET `setting_val` = ? WHERE `setting_ref` = 'captcha_priv'")->execute(array($_POST['priv_key']));
+$update = ORM::forTable('acp_settings')
+			->rawExecute("UPDATE acp_settings SET setting_val = IF(setting_ref='captcha_pub', :pub, :priv) WHERE setting_ref IN ('captcha_pub', 'captcha_priv')",
+			array(
+				'pub' => $_POST['pub_key'],
+				'priv' => $_POST['priv_key']
+			));
 
 Components\Page::redirect('../captcha.php');
 ?>

@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
@@ -46,8 +47,13 @@ if(file_exists('../install.lock'))
 
 					    if(isset($_POST['do_settings'])){
 
-					        include('../../../../src/core/database.php');
-					        $mysql = Components\Database::connect();
+					        include('../../../../src/core/configuration.php');
+							$mysql = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
+								PDO::ATTR_PERSISTENT => true,
+								PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+							));
+
+							$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),
@@ -132,7 +138,7 @@ if(file_exists('../install.lock'))
 			</div>
 		</div>
 		<div class="footer">
-            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../../src/versions/current')).' ('.substr(trim(file_get_contents('../../../../.git/refs/heads/master')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
+            <div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../../src/versions/current')).' ('.substr(trim(file_get_contents('../../../../.git/HEAD')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>

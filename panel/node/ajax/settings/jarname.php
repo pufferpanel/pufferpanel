@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
@@ -34,11 +35,9 @@ require_once('../../../../src/core/core.php');
 	/*
 	 * Update It
 	 */
-	$update = $mysql->prepare("UPDATE `servers` SET `server_jar` = :jar WHERE `id` = :sid");
-	$update->execute(array(
-		':jar' => $_POST['jarfile'],
-		':sid' => $core->server->getData('id')
-	));
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->server_jar = $_POST['jar_file'];
+	$server->save();
 
 	/*
 	 * Update GSD Setting

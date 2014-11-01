@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -30,11 +31,8 @@ if(!isset($_POST['uid']) || !is_numeric($_POST['uid']))
 if($_POST['pass'] != $_POST['pass_2'])
 	Components\Page::redirect('../../view.php?id='.$_POST['uid'].'&error=password');
 
-$update = $mysql->prepare("UPDATE `users` SET `password` = :password WHERE `id` = :uid");
-$update->execute(array(
-	':password' => $core->auth->hash($_POST['pass']),
-	':uid' => $_POST['uid']
-));
+$user = ORM::forTable('users')->findOne($_POST['uid']);
+$user->password = $core->auth->hash($_POST['pass']);
 
 	if(isset($_POST['email_user'])){
 
@@ -50,12 +48,12 @@ $update->execute(array(
 
 	if(isset($_POST['clear_session'])){
 
-		$update = $mysql->prepare("UPDATE `users` SET `session_id` = '', `session_ip` = '' WHERE `id` = :uid");
-		$update->execute(array(
-			':uid' => $_POST['uid']
-		));
+		$user->session_id = null;
+		$user->session_ip = null;
 
 	}
+
+$user->save();
 
 Components\Page::redirect('../../view.php?id='.$_POST['uid'].'&disp=p_updated');
 

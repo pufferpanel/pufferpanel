@@ -112,9 +112,9 @@
 						{% for server in servers %}
 							<tr>
 								<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-								<td><a href="server/view.php?id={{ server.id }}">{{ server.name }}</a></td>
-								<td>{{ server.node }}</td>
-								<td>{{ server.ip }}:{{ server.port }}</td>
+								<td><a href="../server/view.php?id={{ server.id }}">{{ server.name }}</a></td>
+								<td>{{ server.node_name }}</td>
+								<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 								<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
 							</tr>
 						{% endfor %}

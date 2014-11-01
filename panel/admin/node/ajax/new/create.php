@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -97,16 +98,16 @@ foreach($lines as $id => $values)
 /*
  * Add Node to Database
  */
-$create = $mysql->prepare("INSERT INTO `nodes` VALUES(NULL, :name, :ip, :ip, :gsd_secret, :ips, :ports)");
-$create->execute(array(
-	':name' => $_POST['node_name'],
-	':ip' => $_POST['fqdn'],
-	':ip' => $_POST['fqdn'],
-	':gsd_secret' => $core->auth->gen_UUID(),
-	':ips' => json_encode($IPA),
-	':ports' => json_encode($IPP)
+$node = ORM::forTable('nodes')->create();
+$node->set(array(
+	'node' => $_POST['node_name'],
+	'fqdn' => $_POST['fqdn'],
+	'ip' => $_POST['ip'],
+	'gsd_secret' => $core->auth->generateUniqueUUID('nodes', 'gsd_secret'),
+	'ips' => json_encode($IPA),
+	'ports' => json_encode($IPP)
 ));
+$node->save();
 
-Components\Page::redirect('../../view.php?id='.$mysql->lastInsertId());
-
+Components\Page::redirect('../../view.php?id='.$node->id());
 ?>

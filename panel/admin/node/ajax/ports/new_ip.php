@@ -18,6 +18,7 @@
  */
 
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -38,12 +39,10 @@ $lines = explode("\r\n", $_POST['ip_port']);
 	/*
 	 * Unpack Variables
 	 */
-	$select = $mysql->prepare("SELECT `ips`, `ports` FROM `nodes` WHERE `id` = :nid");
-	$select->execute(array(':nid' => $_POST['nid']));
-	$data = $select->fetch();
+	$node = ORM::forTable('nodes')->findOne($_POST['nid']);
 
-	$IPA = json_decode($data['ips'], true);
-	$IPP = json_decode($data['ports'], true);
+	$IPA = json_decode($node->ips, true);
+	$IPP = json_decode($node->ports, true);
 
 foreach($lines as $id => $values)
 	{
@@ -68,15 +67,9 @@ foreach($lines as $id => $values)
 
 	}
 
-$IPA = json_encode($IPA);
-$IPP = json_encode($IPP);
+$node->ips = json_encode($IPA);
+$node->ports = json_encode($IPP);
+$node->save();
 
-$update = $mysql->prepare("UPDATE `nodes` SET `ips` = :ips, `ports` = :ports WHERE `id` = :nid");
-$update->execute(array(
-	':ips' => $IPA,
-	':ports' => $IPP,
-	':nid' => $_POST['nid']
-));
 Components\Page::redirect('../../view.php?id='.$_POST['nid']);
-
 ?>

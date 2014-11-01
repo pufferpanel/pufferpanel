@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
@@ -29,12 +30,12 @@ if(!isset($_POST['uid']) || !is_numeric($_POST['uid']))
 
 if($_POST['action'] == 'details'){
 
-	$update = $mysql->prepare("UPDATE `users` SET `email` = :email, `root_admin` = :root WHERE `id` = :uid");
-	$update->execute(array(
-		':email' => $_POST['email'],
-		':root' => $_POST['root_admin'],
-		':uid' => $_POST['uid']
+	$user = ORM::forTable('users')->findOne($_POST['uid']);
+	$user->set(array(
+		'email' => $_POST['email'],
+		'root_admin' => $_POST['root_admin']
 	));
+	$user->save();
 
 	Components\Page::redirect('../../view.php?id='.$_POST['uid'].'&disp=d_updated');
 

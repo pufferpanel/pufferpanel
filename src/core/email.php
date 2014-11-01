@@ -17,13 +17,14 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 /**
  * PufferPanel Core Email Sending Class
  */
 class Email {
 
-	use Components\Authentication, Components\Database;
+	use Components\Authentication;
 
 	/**
 	 * @param string $message
@@ -38,7 +39,6 @@ class Email {
 	public function __construct()
 		{
 
-			$this->mysql = self::connect();
 			$this->settings = new Settings();
 
 		}
@@ -69,7 +69,7 @@ class Email {
 			else if($this->getDispatchSystem == 'postmark')
 				{
 
-					Postmark\Mail::compose($this->settings->get('postmark_api_key'))
+					\Postmark\Mail::compose($this->settings->get('postmark_api_key'))
 					    ->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
 					    ->addTo($email, $email)
 					    ->subject($subject)
@@ -82,7 +82,7 @@ class Email {
 
 					try {
 
-					    $mandrill = new Mandrill($this->settings->get('mandrill_api_key'));
+					    $mandrill = new \Mandrill($this->settings->get('mandrill_api_key'));
 					    $mandrillMessage = array(
 					        'html' => $this->message,
 					        'subject' => $subject,
@@ -101,7 +101,7 @@ class Email {
 					    $ip_pool = 'Main Pool';
 					    $result = $mandrill->messages->send($mandrillMessage, $async, $ip_pool);
 
-					} catch(Mandrill_Error $e) {
+					} catch(\Mandrill_Error $e) {
 
 					    echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
 					    throw $e;
@@ -139,10 +139,10 @@ class Email {
 					 * Decrypt Key Information
 					 */
 					list($iv, $hash) = explode('.', $this->settings->get('sendgrid_api_key'));
-					list($username, $password) = explode('|', components::decrypt($hash, $iv));
+					list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
 
-					$sendgrid = new SendGrid($username, $password);
-					$email = new SendGrid\Email();
+					$sendgrid = new \SendGrid($username, $password);
+					$email = new \SendGrid\Email();
 
 					$email->addTo($email)->
 					       setFrom($this->settings->get('sendmail_email'))->
@@ -173,12 +173,8 @@ class Email {
 	private function getDispatchSystemFunct()
 		{
 
-			$this->selectSystem = $this->mysql->prepare("SELECT * FROM `acp_settings` WHERE `setting_ref` = 'sendmail_method'");
-			$this->selectSystem->execute();
-
-				$this->selectRow = $this->selectSystem->fetch();
-
-				return $this->selectRow['setting_val'];
+			$this->selectSystem = ORM::forTable('acp_settings')->where('setting_ref', 'sendmail_method')->findOne();
+			return $this->selectSystem->setting_val;
 
 		}
 

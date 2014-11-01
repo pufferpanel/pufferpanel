@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
@@ -26,7 +27,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		Components\Page::redirect('../../index.php?error=no_permission');
 
 	if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2']))
-		Components\Page::redirect('../../settings.php');
+		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=no_pass');
 
 	if(strlen($_POST['ftp_pass']) < 8)
 		Components\Page::redirect('../../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_len');
@@ -39,11 +40,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	 */
 	$iv = $core->auth->generate_iv();
 
-	$mysql->prepare("UPDATE `servers` SET `ftp_pass` = :pass, `encryption_iv` = :iv WHERE `id` = :sid")->execute(array(
-	    ':sid' => $core->server->getData('id'),
-	    ':pass' => $core->auth->encrypt($_POST['ftp_pass'], $iv),
-	    ':iv' => $iv
-	));
+	$ftp = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$ftp->ftp_pass = $core->auth->encrypt($_POST['ftp_pass'], $iv);
+	$ftp->encryption_iv = $iv;
+	$ftp->save();
 
 	Components\Page::redirect('../../settings.php?success');
 

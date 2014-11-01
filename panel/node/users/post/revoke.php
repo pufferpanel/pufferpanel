@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
+use \ORM as ORM;
 
 require_once('../../../../src/core/core.php');
 
@@ -32,29 +33,27 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
 	$_GET['id'] = urldecode($_GET['id']);
 
-	$query = $mysql->prepare("SELECT * FROM `account_change` WHERE `key` = :key AND `verified` = 0");
-	$query->execute(array(
-		':key' => $_GET['id']
-	));
+	$query = ORM::forTable('account_change')->where(array('key' => $_GET['id'], 'verified' => 0))->findOne();
 
-	if($query->rowCount() != 1)
+	if($query === false)
 		Components\Page::redirect('../list.php?error');
 
-	$row = $query->fetch();
-
 	// verify that this user is assigned to this server
-	if(!array_key_exists($core->server->getData('hash'), json_decode($row['content'], true)))
+	if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true)))
 		Components\Page::redirect('../list.php?error=c1');
 
 	// remove verification codes
-	$mysql->exec("DELETE FROM `account_change` WHERE `id` = ".$row['id']);
+	$query->delete();
 
 	// update server in database
 	list($encrypted, $iv) = explode('.', $_GET['id']);
 	$_perms = json_decode($row['subusers'], true);
 	unset($_perms[$core->auth->decrypt($encrypted, $iv)]);
 	$_perms = json_encode($_perms);
-	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
+
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->subusers = $_perms;
+	$server->save();
 
 	Components\Page::redirect('../list.php?revoked');
 
@@ -62,25 +61,23 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
 	$_GET['uid'] = urldecode($_GET['uid']);
 
-	$query = $mysql->prepare("SELECT * FROM `users` WHERE `uuid` = :uuid");
-	$query->execute(array(
-		':uuid' => $_GET['uid']
-	));
+	$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
 
-	if($query->rowCount() != 1)
+	if($user === false)
 		Components\Page::redirect('../list.php?error');
 
-	$row = $query->fetch();
-
 	// verify that this user is assigned to this server
-	if(!array_key_exists($core->server->getData('hash'), json_decode($row['permissions'], true)))
+	if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true)))
 		Components\Page::redirect('../list.php?error');
 
 	// update server in database
 	$_perms = json_decode($core->server->getData('subusers'), true);
 	unset($_perms[$row['id']]);
 	$_perms = json_encode($_perms);
-	$mysql->exec("UPDATE `servers` SET `subusers` = '".$_perms."' WHERE `hash` = '".$core->server->getData('hash')."'");
+
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->subusers = $_perms;
+	$server->save();
 
 	Components\Page::redirect('../list.php?revoked');
 
