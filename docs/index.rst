@@ -12,7 +12,7 @@ The License
 ^^^^^^^^^^^
 To put it simply, our license says the following.
 
-.. code-block::
+.. code-block:: text
 
     PufferPanel - A Minecraft Server Management Panel
     Copyright (c) 2013 Dane Everitt
