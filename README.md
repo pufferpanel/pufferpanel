@@ -1,4 +1,4 @@
-[![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel)
+[![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel) [![Docs Status](https://readthedocs.org/projects/pufferpanel/badge/?version=latest)](http://docs.pffr.me/en/latest/)
 
 # About PufferPanel
 PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/DaneEveritt/PufferPanel/master/LICENSE).
@@ -10,7 +10,7 @@ If you want to see what PufferPanel looks like you can check out our topic on th
 # Support & Installing
 If you need help at in point with PufferPanel you can contact us in IRC, or you can get help on our [Official Support Forums](http://pufferpanel.com).
 
-Check out our [wiki](https://github.com/DaneEveritt/PufferPanel/wiki) for guides to set up PufferPanel.
+Check out our [documentation](http://docs.pffr.me/en/latest/) for guides to set up PufferPanel.
 
 ### A Word of Warning
 **PufferPanel has not been throughly tested for security holes**. While we endeavour to ensure that all code we push is secure, we can not promise that something may have been missed. Due to the open-source nature of PufferPanel it is possible for others to see the code and look for holes. We encourage anyone who finds a hole to immediately report it to us so we can do everything in our power to fix it.
