@@ -18,6 +18,7 @@
  */
 namespace PufferPanel\Core;
 use \ORM as ORM;
+use \PDO as PDO;
 
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
@@ -93,7 +94,8 @@ if(file_exists('../install.lock'))
 	                        $mysql->exec("CREATE TABLE `acp_settings` (
 							  `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
 	                          `setting_ref` char(25) NOT NULL DEFAULT '',
-	                          `setting_val` tinytext
+	                          `setting_val` tinytext,
+                                  PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `acp_settings` created.\n";
 
