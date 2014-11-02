@@ -212,10 +212,13 @@ class User extends Authentication {
 				$this->_perms = $this->getPermissions();
 
 		if(self::$_oid != $this->getData('id') && is_null($array))
-			if(is_array($this->_perms))
-				return in_array($permission, $this->_perms);
+			if($this->getData('root_admin') == 1)
+				return true;
 			else
-				return false;
+				if(is_array($this->_perms))
+					return in_array($permission, $this->_perms);
+				else
+					return false;
 		else
 			if(!is_array($array))
 				return true;
