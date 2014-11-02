@@ -18,8 +18,8 @@ Please follow the instructions below for adding NodeJS (thanks to `@gametainers/
 .. code-block:: sh
 
 	sudo add-apt-repository ppa:chris-lea/node.js
-	apt-get update
-	apt-get install nodejs make g++ git
+	sudo apt-get update
+	sudo apt-get install nodejs make g++ git
 
 Create a Node
 -------------
@@ -70,7 +70,7 @@ Your ``config.json`` file should look similar to the code below. Please make sur
 	    "servers": []
 	}
 
-After editing your config file, open ``gsd.js`` and modify it so that it looks like the code below.
+After editing your config file, open ``gsd.js`` and uncomment ``require('./interfaces/ftp.js');``. It should then look like the one below
 
 .. code-block:: js
 
@@ -82,12 +82,18 @@ After editing your config file, open ``gsd.js`` and modify it so that it looks l
 
 	var servers = require('./services');
 
-Once all of that is complete run the commands below to start GSD.
+Once all of that is complete run the commands below to complete the install of GSD.
 
 .. code-block:: sh
 
 	[$]~ cd /srv/gsd
 	[$]~ npm install
+	
+In order to start GSD, execute the command below in a new screen
+
+..code-block::sh
+
 	[$]~ npm start
+      
 
 Congratulations! Your first node is configured.
