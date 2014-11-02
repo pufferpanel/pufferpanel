@@ -25,18 +25,18 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../../../index.php?login');
 
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
-	Components\Page::redirect('../../new.php?disp=u_fail');
+	Components\Page::redirect('../../new.php?error=u_fail');
 
 if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	Components\Page::redirect('../../new.php?disp=e_fail');
+	Components\Page::redirect('../../new.php?error=e_fail');
 
 if(strlen($_POST['pass']) < 8 || $_POST['pass'] != $_POST['pass_2'])
-	Components\Page::redirect('../../new.php?disp=p_fail');
+	Components\Page::redirect('../../new.php?error=p_fail');
 
 $query = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $_POST['email'])))->findOne();
 
-if($query === false)
-	Components\Page::redirect('../../new.php?disp=a_fail');
+if($query !== false)
+	Components\Page::redirect('../../new.php?error=a_fail');
 
 $user = ORM::forTable('users')->create();
 $user->set(array(
