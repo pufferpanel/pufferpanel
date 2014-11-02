@@ -113,7 +113,7 @@ class Authentication {
 						else
 							$this->permissions = array("0" => "0");
 
-						$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->user->id, join(',', $this->permissions)))->findOne();
+						$this->server = ORM::forTable('servers')->where(array('hash' => $serverhash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->user->id, join(',', $this->permissions)))->findOne();
 
 							if($this->server !== false)
 								return true;
