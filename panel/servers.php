@@ -43,7 +43,7 @@ else
 	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
-				->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($userid, join(',', $core->user->listServerPermissions())))
+				->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($core->user->getData('id'), join(',', $core->user->listServerPermissions())))
 				->findArray();
 
 /*
