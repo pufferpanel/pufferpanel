@@ -18,6 +18,7 @@
  */
 namespace PufferPanel\Core;
 use \ORM as ORM;
+use \PDO as PDO;
 if(file_exists('../install.lock'))
 	exit('Installer is Locked.');
 ?>
