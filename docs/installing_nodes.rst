@@ -18,8 +18,8 @@ Please follow the instructions below for adding NodeJS (thanks to `@gametainers/
 .. code-block:: sh
 
 	sudo add-apt-repository ppa:chris-lea/node.js
-	apt-get update
-	apt-get install nodejs make g++ git
+	sudo apt-get update
+	sudo apt-get install nodejs make g++ git
 
 Create a Node
 -------------
