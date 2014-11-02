@@ -82,12 +82,18 @@ After editing your config file, open ``gsd.js`` and uncomment ``require('./inter
 
 	var servers = require('./services');
 
-Once all of that is complete run the commands below to start GSD.
+Once all of that is complete run the commands below to complete the install of GSD.
 
 .. code-block:: sh
 
 	[$]~ cd /srv/gsd
 	[$]~ npm install
+	
+In order to start GSD, execute the command below in a new screen
+
+..code-block::sh
+
 	[$]~ npm start
+      
 
 Congratulations! Your first node is configured.
