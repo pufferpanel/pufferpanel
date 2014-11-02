@@ -98,7 +98,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 			$query->verified = 1;
 
 			$user = ORM::forTable('users')->where('email', $query->content)->findOne();
-			$user->password = $password;
+			$user->password = $core->auth->hash($password);
 
 			$user->save();
 			$query->save();
@@ -112,9 +112,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'recover'){
 				 * Send Email
 				 */
 				$core->email->buildEmail('new_password', array(
-                    'NEW_PASS' => $raw_newpassword,
-                    'EMAIL' => $row['content']
-                ))->dispatch($row['content'], $core->settings->get('company_name').' - New Password');
+                    'NEW_PASS' => $password,
+                    'EMAIL' => $query->content
+                ))->dispatch($query->content, $core->settings->get('company_name').' - New Password');
 
 		}else{
 
