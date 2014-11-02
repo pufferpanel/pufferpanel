@@ -88,7 +88,7 @@ $(document).ready(function(){
 			$.ajax({
 				type: "POST",
 				url: "ajax/account/totp.php?action=verify",
-				data: { token: $("#totp_token").val() },
+				data: { token: $("#totp_token").val(), xsrf: $('input[name="xsrf"]').val() },
 				timeout: 5000,
 				success: function(data){
 					$("#notice_box_totp").html(data);

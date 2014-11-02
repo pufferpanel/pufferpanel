@@ -22,10 +22,8 @@ use \ORM as ORM;
 require_once('../src/core/core.php');
 $error = '';
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true)
 	Components\Page::redirect('index.php?login');
-	exit();
-}
 
 /*
  * Display Page
