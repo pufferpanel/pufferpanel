@@ -32,7 +32,7 @@ else{
 	setcookie("pp_server_node", null, time()-86400, '/');
 	setcookie("pp_server_hash", null, time()-86400, '/');
 
-	$logout = ORM::forTable('users')->where(aray('session_id' => $_COOKIE['pp_auth_token'], 'session_ip' => $_SERVER['REMOTE_ADDR']))->findOne();
+	$logout = ORM::forTable('users')->where(array('session_id' => $_COOKIE['pp_auth_token'], 'session_ip' => $_SERVER['REMOTE_ADDR']))->findOne();
 	$logout->session_id = null;
 	$logout->session_ip = null;
 	$logout->save();
