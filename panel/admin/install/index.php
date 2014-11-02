@@ -81,7 +81,7 @@ if(file_exists('install.lock'))
 									<h3 class="panel-title">Run Composer</h3>
 								</div>
 								<div class="panel-body">
-									<p class="text-danger">This panel <strong>must</strong> has composer run before being installed. Please double check the wiki for instructions on doing this.</p>
+									<p class="text-danger">This panel <strong>must</strong> have composer run before being installed. Please double check the wiki for instructions on doing this.</p>
 								</div>
 							</div><hr />';
 							$continue = false;
