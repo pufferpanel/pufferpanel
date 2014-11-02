@@ -70,7 +70,7 @@ Your ``config.json`` file should look similar to the code below. Please make sur
 	    "servers": []
 	}
 
-After editing your config file, open ``gsd.js`` and modify it so that it looks like the code below.
+After editing your config file, open ``gsd.js`` and uncomment ``require('./interfaces/ftp.js');``. It should then look like the one below
 
 .. code-block:: js
 
