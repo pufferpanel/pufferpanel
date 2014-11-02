@@ -57,6 +57,6 @@ $core->email->buildEmail('admin_newaccount', array(
     'EMAIL' => $_POST['email']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - Account Created');
 
-Components\Page::redirect('../../view.php?id='.$mysql->lastInsertId());
+Components\Page::redirect('../../view.php?id='.$user->id());
 
 ?>
