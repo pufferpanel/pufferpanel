@@ -23,20 +23,49 @@ Errors & Status Codes
 
 Users
 -----
+``GET /users``
+^^^^^^^^^^^^^^
+Returns a list of all users who have an account on the panel.
+
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users
+  
+.. code-block:: json
+
+  HTTP/1.x 200 OK
+  {
+    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
+      "id": 1,
+      "username": "demoaccount",
+      "email": "some@example.com"
+    },
+    "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy": {
+      "id": 2,
+      "username": "demoaccount2",
+      "email":"two@example.com"
+    }
+  }
+
 ``GET /users/[:uuid]``
 ^^^^^^^^^^^^^^^^^^^^^^
-Returns information about the requested user ID.
+Returns information about the requested user.
 
 .. code-block:: curl
   
-  curl -X GET -i -H "X-Authorization: demo-1233-23445566-2343" http://example.com/api/users/1
+  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
   
 .. code-block:: json
 
   HTTP/1.x 200 OK
   {
     "id": 1,
-    "email": some@example.com
+    "username": "demoaccount",
+    "email": some@example.com,
+    "servers": [
+      "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa",
+      "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
+    ]
   }
     
 
@@ -48,9 +77,17 @@ Creates a new user based on data sent in a JSON request.
 ^^^^^^^^^^^^^^^^^^^^^^
 Updates user information.
 
-``DELETE  /users/[:hash]``
+``DELETE  /users/[:uuid]``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Deletes a server given a specified ID.
+Deletes a user given a specified ID.
+
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+  
+.. code-block
+
+  HTTP/1.x 200 OK
 
 Servers
 -------
