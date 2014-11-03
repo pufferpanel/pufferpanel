@@ -35,5 +35,6 @@ User Documentation
 .. toctree::
     :maxdepth: 2
 
+    api
     installing
     installing_nodes
