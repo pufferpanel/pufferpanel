@@ -33,7 +33,6 @@ Returns a list of all users who have an account on the panel.
   
 .. code-block:: json
 
-  HTTP/1.x 200 OK
   {
     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
       "id": 1,
@@ -57,7 +56,6 @@ Returns information about the requested user.
   
 .. code-block:: json
 
-  HTTP/1.x 200 OK
   {
     "id": 1,
     "username": "demoaccount",
