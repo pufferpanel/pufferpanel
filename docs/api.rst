@@ -10,49 +10,49 @@ Requests must also include an API key sent in the request using the ``X-Authoriz
 Users
 -----
 ``GET /users/[:uuid]``
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 Returns information about the requested user ID.
 
-POST /users
-^^^^^^^^^^^^^^^^^^
+``POST /users``
+^^^^^^^^^^^^^^^
 Creates a new user based on data sent in a JSON request.
 
-PUT /users/[:uuid]
-^^^^^^^^^^^^^^^^^^^^^^^
+``PUT /users/[:uuid]``
+^^^^^^^^^^^^^^^^^^^^^^
 Updates user information.
 
-DELETE  /users/[:hash]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``DELETE  /users/[:hash]``
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 Deletes a server given a specified ID.
 
 Servers
 -------
-GET /servers/[:hash]
+``GET /servers/[:hash]``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 Returns information about the requested server.
 
-POST /servers
-^^^^^^^^^^^^^^^^^^
+``POST /servers``
+^^^^^^^^^^^^^^^^^
 Creates a new server based on data sent in a JSON request.
 
-PUT /servers/[:hash]
-^^^^^^^^^^^^^^^^^^^^^^^
+``PUT /servers/[:hash]``
+^^^^^^^^^^^^^^^^^^^^^^^^
 Updates server information.
 
-DELETE  /servers/[:hash]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``DELETE  /servers/[:hash]``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Deletes a server given a specified hash.
 
 Nodes
 -----
-GET /nodes/[:id]
-^^^^^^^^^^^^^^^^^^^^^^^^
+``GET /nodes/[:id]``
+^^^^^^^^^^^^^^^^^^^^
 Returns information about the requested node.
 
-POST /nodes
+``POST /nodes``
 ^^^^^^^^^^^^^^^^^^
 Creates a new node based on data sent in a JSON request.
 
-PUT /nodes/[:id]
-^^^^^^^^^^^^^^^^^^^^^^^
+``PUT /nodes/[:id]``
+^^^^^^^^^^^^^^^^^^^^
 Updates node information.
