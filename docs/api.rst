@@ -59,7 +59,7 @@ Returns information about the requested user.
   {
     "id": 1,
     "username": "demoaccount",
-    "email": some@example.com,
+    "email": "some@example.com",
     "servers": [
       "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa",
       "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
