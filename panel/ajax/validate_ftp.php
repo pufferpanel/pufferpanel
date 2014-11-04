@@ -29,7 +29,7 @@ if(!isset($_POST['username']) || !isset($_POST['password'])){
 
 }
 
-if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$', $_POST['username'], $matches)){
+if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $matches)){
 
 	http_response_code(403);
 	exit();
