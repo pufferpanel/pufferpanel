@@ -151,7 +151,11 @@
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
-				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> This feature is currently not avaliable.</div>
+				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> Deleting a server is an irreversiable action. Proceede with caution. This server will be removed from the database along with all files on the server.</div>
+				<form action="ajax/server/delete.php" method="POST">
+					<input type="hidden" name="sid" value="{{ get.id }}" />
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Server" />
+				</form>
 		</div>
 	</div>
 </div>
