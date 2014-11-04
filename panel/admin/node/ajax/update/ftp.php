@@ -37,7 +37,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 	/*
 	 * Run Update on Node Table
 	 */
-	$node = ORM::forTable('nodes')->findOne($_PSOT['nid']);
+	$node = ORM::forTable('nodes')->findOne($_POST['nid']);
 	$node->ip = $_POST['ip'];
 	$node->save();
 
