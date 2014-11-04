@@ -21,6 +21,37 @@ Errors & Status Codes
 
 ``500 Server Error`` - Something went wrong on the server.
 
+Single Sign On
+--------------
+``POST /sso``
+^^^^^^^^^^^^^
+Allows you to use PufferPanel as a single sign on system. Posting an email and password returns either a HTTP error, or a JSON string containing the users login token.
+In order to allow a seamless login to the panel you will need to set a cookie on your end named ``pp_auth_token`` with a value of the token returned.
+
+Setting the ``sso`` value to be ``false`` allows for you to simply check if the email and password combination is valid, it does not return any JSON data, only a HTTP status code.
+
+.. code-block:: json
+
+  {
+    "email": "some@example.com",
+    "password": "somepassword",
+    "sso": true
+  }
+
+.. code-block:: curl
+
+  curl -X POST -i \
+    -H "X-Authorization: demo1111-2222-3333-4444-55556666" \
+    -H "Content-Type: application/json" \
+    -d '{"email":"some@example.com","password":"somepassword","sso":true}'
+    http://example.com/api/sso
+  
+.. code-block:: json
+
+  {
+    "token": "XyZ"
+  }
+
 Users
 -----
 ``GET /users``
@@ -81,7 +112,7 @@ Deletes a user given a specified ID.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+  curl -X DELETE -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
   
 .. code-block
 
