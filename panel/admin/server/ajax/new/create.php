@@ -40,9 +40,17 @@ if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server
 	Components\Page::redirect('../../add.php?disp=missing_args&error=na');
 
 /*
+* Determine if Node (IP & Port) is Avaliable
+*/
+$node = ORM::forTable('nodes')->findOne($_POST['node']);
+
+if($node === false)
+	Components\Page::redirect('../../add.php?error=node&disp=n_fail');
+
+/*
 * GSD Must Be Online!
 */
-if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
+if(!@fsockopen($node->ip, 8003, $num, $error, 3))
 	Components\Page::redirect('../../add.php?disp=gsd_offline&error=na');
 
 /*
@@ -50,14 +58,6 @@ if(!@fsockopen($_POST['server_ip'], 8003, $num, $error, 3))
  */
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 	Components\Page::redirect('../../add.php?error=server_name&disp=s_fail');
-
-/*
- * Determine if Node (IP & Port) is Avaliable
- */
-$node = ORM::forTable('nodes')->findOne($_POST['node']);
-
-if($node === false)
-	Components\Page::redirect('../../add.php?error=node&disp=n_fail');
 
 	/*
 	 * Validate IP & Port
