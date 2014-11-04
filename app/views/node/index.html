@@ -37,6 +37,16 @@
 {% block content %}
 <div class="col-9">
 	{% if get.error is defined %}<div class="alert alert-danger">You do not have permission to use that feature.</div>{% endif %}
+    <div class="col-12" style="text-align:center;">
+        {% if permission.console.power == true %}
+            <button class="btn btn-primary btn-lg start" id="on">{{ lang.string_start }}</button>
+            <button class="btn btn-primary btn-lg poke" id="restart">{{ lang.string_restart }}</button>
+            <button class="btn btn-danger btn-lg poke" id="off">{{ lang.string_stop }}</button>
+            <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+        {% endif %}
+        <br>
+        <br>
+    </div>
 	<div class="col-12">
 		<h3 class="nopad">Memory Usage (Mb)</h3><hr />
 		<div class="row">
@@ -110,6 +120,82 @@
 			}
 			$("img[data-toggle='tooltip']").tooltip();
 		});
+        var can_run = true;
+        $(".poke").click(function(){
+            var command = $(this).attr("id");
+            if(command == 'off'){ uCommand = 'Stopping'; }else{ uCommand = 'Restarting';}
+                if(can_run === true){
+                    can_run = false;
+                    $(this).append(' <i class="fa fa-refresh fa-spin"></i>');
+                    $(this).toggleClass('disabled');
+                    $.ajax({
+                        type: "GET",
+                        headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
+                        url: 'http://{{ node.ip }}:8003/gameservers/{{ server.gsd_id }}/off',
+                        timeout: 5000,
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                            $("#off").removeClass('disabled');
+                            $("#off").html('Stop');
+                            $("#restart").removeClass('disabled');
+                            $("#restart").html('Restart');
+                            can_run = true;
+                            return false;
+                        },
+                        success: function(data) {
+                            if(data == "ok"){
+                                $("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+                                can_run = true;
+                                if(command == "restart"){
+                                    setTimeout(function() { start_server(); }, 5000)
+                                }
+                                $("#off").removeClass('disabled');
+                                $("#off").html('{{ lang.string_stop }}');
+                                return false;
+                            }
+                         }
+                    });
+                }else{
+                    return false;
+                }
+        });
+        $("#on").click(function(){
+            start_server();
+        });
+        function start_server() {
+            if(can_run === true){
+                can_run = false;
+                $("#restart").removeClass('disabled');
+                $("#restart").html('{{ lang.string_restart }}');
+                $("#on").append(' <i class="fa fa-refresh fa-spin"></i>');
+                $("#on").toggleClass('disabled');
+                $.ajax({
+                    type: "GET",
+                    url: "ajax/console/power.php",
+                    timeout: 5000,
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                        $("#on").removeClass('disabled');
+                        $("#on").html('Start');
+                        can_run = true;
+                        return false;
+                    },
+                    success: function(data) {
+                        if(data == "ok"){
+                            $("#pw_resp").attr('class', 'alert alert-success').html("{{ lang.node_console_ajax_server_started }}").fadeIn().delay(5000).fadeOut();
+                            can_run = true;
+                        }else{
+                            $("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
+                            can_run = true;
+                        }
+                        $("#on").toggleClass('disabled');
+                        $("#on").html('{{ lang.string_start }}');
+                     }
+                });
+            }else{
+                return false;
+            }
+        }
 	});
 </script>
 {% endblock %}
