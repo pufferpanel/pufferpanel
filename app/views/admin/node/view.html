@@ -10,17 +10,16 @@
 		<li><a href="#ftp" data-toggle="tab">FTP</a></li>
 	</ul>
 	{% if get.disp is defined and get.disp != 1 %}
+		<br />
 		<div class="alert alert-danger">
 			{% if get.disp == 'missing_warn' %}
 				You must agree to the warning before updating the information.
 			{% elseif get.disp == 'missing_args' %}
 				Not all arguments were passed by the script.
 			{% elseif get.disp == 'ip_fail' %}
-				The IP address provided for ftp was invalid.
+				The IP address provided for FTP or the node FQDN was invalid.
 			{% elseif get.disp == 'n_fail' %}
 				The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).
-			{% elseif get.disp == 'key_fail' %}
-				The SSH keys you entered were not in a valid format.
 			{% elseif get.disp == 'add_port_fail' %}
 				The port list entered was invalid.
 			{% endif %}
