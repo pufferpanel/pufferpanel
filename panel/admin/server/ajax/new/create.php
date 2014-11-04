@@ -175,7 +175,7 @@ $server->set(array(
 	'ftp_user' => $ftpUser,
 	'ftp_pass' => $_POST['ftp_pass']
 ));
-$add->save();
+$server->save();
 
 /*
 * Update IP Count
@@ -198,6 +198,6 @@ $core->email->buildEmail('admin_new_server', array(
         'PASS' => $_POST['ftp_pass_2']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 
-Components\Page::redirect('../../view.php?id='.$add->id());
+Components\Page::redirect('../../view.php?id='.$server->id());
 
 ?>
