@@ -118,7 +118,7 @@ address{margin-bottom:21px;font-style:normal;line-height:1.428571429}
 .footer{color:#6f6f6f;font-size:80%;border-top:1px solid #ddd;margin:15px 0 0 0;padding:10px 0 0 0}
 code,kbd,pre,samp{font-family:Menlo,Monaco,Consolas,"Courier New",monospace}
 code{padding:2px 4px;font-size:90%;color:#c7254e;white-space:nowrap;background-color:#f9f2f4;border-radius:0}
-pre{display:block;padding:10px;margin:0 0 10.5px;font-size:14px;line-height:1.428571429;color:#333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #ccc;border-radius:0}
+pre{display:block;padding:12px 12px;margin:0;font-size:12px;color:#c7254e;background-color:#f9f2f4;border:1px solid #c7254e;border-radius:0;white-space:pre}
 pre code{padding:0;font-size:inherit;color:inherit;white-space:pre-wrap;background-color:transparent;border-radius:0}
 .pre-scrollable{max-height:340px;overflow-y:scroll}
 .container{padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}

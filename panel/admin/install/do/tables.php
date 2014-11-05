@@ -127,6 +127,9 @@ if(file_exists('../install.lock'))
 	                          `fqdn` tinytext NOT NULL,
 	                          `ip` tinytext NOT NULL,
 	                          `gsd_secret` char(32) DEFAULT NULL,
+							  `gsd_listen` int(1) DEFAULT '8003',
+							  `gsd_console` int(1) DEFAULT '8031',
+							  `gsd_server_dir` tinytext,
 	                          `ips` text NOT NULL,
 	                          `ports` text NOT NULL,
 	                          PRIMARY KEY (`id`)

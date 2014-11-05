@@ -57,6 +57,25 @@
 					</div>
 				</fieldset>
 			</form>
+			<hr />
+			<h6>Sample GSD Configuration File</h6>
+			<pre>{
+    "daemon": {
+        "listenport": {{ node.gsd_listen }},
+        "consoleport": {{ node.gsd_console }}
+    },
+    "tokens": ["{{ node.gsd_secret }}"],
+    "interfaces":{
+      "rest":{},
+      "console":{},
+      "ftp":{
+            "authurl": "{{ settings.master_url }}ajax/validate_ftp.php",
+            "port": 21,
+            "host": "127.0.0.1"
+      }
+    },
+    "servers": []
+}</pre>
 		</div>
 		<div class="tab-pane" id="allocation">
 			<h3>IP &amp; Port Allocation</h3><hr />
