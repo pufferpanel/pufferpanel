@@ -45,9 +45,7 @@ if($core->gsd->online() === true){
 echo $twig->render(
 		'node/index.html', array(
 			'server' => array_merge($core->server->getData(), array('node' => $core->server->nodeData('node'), 'console_inner' => $content['contents'])),
-			'node' => array(
-				'ip' => $core->server->nodeData('ip')
-			),
+			'node' => $core->server->nodeData(),
 			'footer' => array(
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)

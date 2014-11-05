@@ -46,7 +46,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	 * Typically Means Server is Off
 	 */
 	if(empty($response))
-		exit($errorMessage."<!--Empty Response-->");
+		exit($errorMessage." Empty Response");
 
 	$json = json_decode($response, true);
 
@@ -62,7 +62,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		 * Create server.properties
 		 */
 		if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(file_get_contents(APP_DIR.'templates/server.properties.tpl')))
-			exit($errorMessage."<!--No Template Avaliable for server.properties-->");
+			exit($errorMessage." No Template Avaliable for server.properties");
 
 		$data = array("contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $core->server->getData('server_port'), $core->server->getData('server_ip')));
 		$curl = curl_init($url);
@@ -75,7 +75,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		$response = curl_exec($curl);
 
 	        if(!empty($response))
-	        	exit($errorMessage."<!--Unable to make server.properties-->");
+	        	exit($errorMessage." Unable to make server.properties");
 
 		$core->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
 
@@ -126,7 +126,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		$response = curl_exec($curl);
 
 		    if(!empty($response))
-		    	exit($errorMessage."<!--Unable to update server.properties-->");
+		    	exit($errorMessage." Unable to update server.properties");
 
         $core->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
 
@@ -146,7 +146,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$gatherData = @file_get_contents("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
 
 	if($gatherData != "\"ok\"")
-		exit($errorMessage."<!--Unable to start server (".$gatherData.")-->");
+		exit($errorMessage." Unable to start server (".$gatherData.")");
 
 	echo 'ok';
 

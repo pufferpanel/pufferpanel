@@ -125,7 +125,7 @@ class Query {
 						else{
 							$this->_jsonData = $this->raw['query'];
 							$this->_serverPID = $this->raw['pid'];
-							$this->_jsonProcess = $this->raw['process'];
+							$this->_jsonProcess = (array_key_exists('process', $this->raw)) ? $this->raw['process'] : array();
 							return true;
 						}
 
