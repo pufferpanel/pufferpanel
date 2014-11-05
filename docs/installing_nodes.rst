@@ -83,6 +83,17 @@ To ensure a secure connection to your servers GSD uses FTPS by default. In order
 	
 Running the command above will ask you a series of questions, you should fill them out as accurately as you can.
 
+Firewall
+^^^^^^^^
+If you are running a firewall on your server you will need to open up the following ports by default.
+
+.. code-block:: sh
+
+	21 (FTP)
+	8003 (GSD Listening Port)
+	8031 (GSD Console Port)
+	4000 - 5000 (FTP Passive Ports)
+
 Once all of that is complete run the commands below to complete the install of GSD.
 
 .. code-block:: sh
