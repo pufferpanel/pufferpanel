@@ -44,7 +44,7 @@ $server->save();
 /*
  * Build the Data
  */
-$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id');
+$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id');
 $data = json_encode(array(
 	"variables" => array(
 		"-Xmx" => (int)$_POST['alloc_mem']

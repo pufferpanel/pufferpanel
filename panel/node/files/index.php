@@ -41,7 +41,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	if($core->user->hasPermission('files.download') !== true)
 		Components\Page::redirect('../index.php?error=no_permission');
 
-    $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
+    $url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
     $context = stream_context_create(array(
     	"http" => array(
     		"method" => "GET",

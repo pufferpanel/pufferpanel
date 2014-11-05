@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 if($core->gsd->online() === true){
 
-	$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
+	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
 	$context = stream_context_create(array(
 		"http" => array(
 			"method" => "GET",

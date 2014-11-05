@@ -18,11 +18,11 @@
 			{% elseif get.disp == 'ip_fail' %}
 				The IP addresses provided were not valid.
 			{% elseif get.disp == 'dir_fail' %}
-				The directories you entered were not valid. They must end with a trailing slash.
-			{% elseif get.disp == 'user_fail' %}
-				SSH users must not be blank, and may not be \'root\'.
+				The directory you entered was not valid. Must end with a trailing slash.
 			{% elseif get.disp == 'ip_port_space' %}
 				Unable to allocate the ports you inputted.
+			{% elseif get.disp == 'port_fail' %}
+				The ports you entered were not in a valid format.
 			{% endif %}
 		</div>
 	{% endif %}
@@ -59,13 +59,13 @@
 			<div class="well">
 				<div class="row">
 					<div class="form-group col-6 nopad">
-						<label for="fqdn" class="control-label">GSD Listening Port</label>
+						<label for="gsd_listen" class="control-label">GSD Listening Port</label>
 						<div>
 							<input type="text" name="gsd_listen" class="form-control" value="8003" />
 						</div>
 					</div>
 					<div class="form-group col-6 nopad-right">
-						<label for="fqdn" class="control-label">GSD Console Port</label>
+						<label for="gsd_console" class="control-label">GSD Console Port</label>
 						<div>
 							<input type="text" name="gsd_console" class="form-control" value="8031" />
 						</div>
@@ -73,10 +73,10 @@
 				</div>
 				<div class="row">
 					<div class="form-group col-6 nopad">
-						<label for="fqdn" class="control-label">GSD Server Directory</label>
+						<label for="gsd_server_dir" class="control-label">GSD Server Directory</label>
 						<div>
-							<input type="text" name="gsd_server_dir" class="form-control" value="/home" />
-							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Do not include a trailing slash.</em></small></p>
+							<input type="text" name="gsd_server_dir" class="form-control" value="/home/" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Include a trailing slash. Please make sure that this directory exists on the server.</em></small></p>
 						</div>
 					</div>
 				</div>

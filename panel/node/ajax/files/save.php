@@ -58,7 +58,7 @@ if(isset($_POST['file'])){
         if(substr($directory, 0, 1) == '/')
             $directory = substr($directory, 1);
 
-		$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
+		$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
 
 		$data = array("contents" => $_POST['file_contents']);
 

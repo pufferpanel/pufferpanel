@@ -126,7 +126,7 @@ $data = array(
 	"name" => $serverHash,
     "user" => $ftpUser,
     "overide_command_line" => "",
-    "path" => "/home/".$ftpUser,
+    "path" => $node->gsd_server_dir.$ftpUser,
     "variables" => array(
     	"-jar" => $modpack,
         "-Xmx" => $_POST['alloc_mem']."M"
@@ -140,7 +140,7 @@ $data = array(
 $data = json_encode($data);
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':8003/gameservers');
+curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':'.$node->gsd_listen.'/gameservers');
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'X-Access-Token: '.$node['gsd_secret']
 ));

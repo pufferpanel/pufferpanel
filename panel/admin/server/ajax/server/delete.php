@@ -35,7 +35,7 @@ if(!@fsockopen($node->ip, 8003, $num, $error, 3))
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=gsd_offline');
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':8003/gameservers/'.$core->server->getData('gsd_id'));
+curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':'.$node->gsd_listen.'/gameservers/'.$core->server->getData('gsd_id'));
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 	'X-Access-Token: '.$node->gsd_secret
 ));

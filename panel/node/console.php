@@ -31,7 +31,7 @@ if($core->user->hasPermission('console.view') !== true)
 
 if($core->gsd->online() === true){
 
-    $url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
+    $url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
     $context = stream_context_create(array(
     	"http" => array(
     		"method" => "GET",

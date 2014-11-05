@@ -60,7 +60,7 @@ class Query {
 	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
-	public function check_status($ip, $id, $secret){
+	public function check_status($ip, $port, $id, $secret){
 
 		$this->context = stream_context_create(array(
 			"http" => array(
@@ -69,7 +69,7 @@ class Query {
 				"header" => "X-Access-Token: ".$secret
 			)
 		));
-		$this->gatherData = @file_get_contents("http://".$ip.":8003/gameservers/".$id , 0, $this->context);
+		$this->gatherData = @file_get_contents("http://".$ip.":".$port."/gameservers/".$id , 0, $this->context);
 
 		$this->raw = json_decode($this->gatherData, true);
 
@@ -107,7 +107,7 @@ class Query {
 					"header" => "X-Access-Token: ".$this->node->gsd_secret
 				)
 			));
-			$this->gatherData = @file_get_contents("http://".$this->node->ip.":8003/gameservers/".$this->server->gsd_id , 0, $this->context);
+			$this->gatherData = @file_get_contents("http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id , 0, $this->context);
 
 			$this->raw = json_decode($this->gatherData, true);
 

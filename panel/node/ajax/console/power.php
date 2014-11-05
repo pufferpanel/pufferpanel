@@ -32,7 +32,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$rewrite = false;
 	$errorMessage = "Unable to process your request. Please try again.";
 
-	$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/server.properties";
+	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties";
 
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
@@ -143,7 +143,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 			"ignore_errors" => true
 		)
 	));
-	$gatherData = @file_get_contents("http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
+	$gatherData = @file_get_contents("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
 
 	if($gatherData != "\"ok\"")
 		exit($errorMessage."<!--Unable to start server (".$gatherData.")-->");

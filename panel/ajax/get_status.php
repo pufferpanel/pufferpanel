@@ -28,12 +28,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		/*
 		 * Query Database
 		 */
-		$status = ORM::forTable('servers')->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')
+		$status = ORM::forTable('servers')->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
 					->join('nodes', array('servers.node', '=', 'nodes.id'))
 					->where('servers.id', $_POST['server'])
 					->findOne();
 
-		if($core->gsd->check_status($status->ip, $status->gsd_id, $status->gsd_secret) === false)
+		if($core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret) === false)
 			exit('#E33200');
 		else
 			exit('#53B30C');

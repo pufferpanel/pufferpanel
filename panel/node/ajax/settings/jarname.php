@@ -59,7 +59,7 @@ require_once('../../../../src/core/core.php');
 	);
 
 	$context = stream_context_create($context_options);
-	file_get_contents('http://'.$core->server->nodeData('ip').':8003/gameservers/'.$core->server->getData('gsd_id'), false, $context);
+	file_get_contents('http://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'), false, $context);
 
 	Components\Page::redirect('../../settings.php');
 

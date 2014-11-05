@@ -37,8 +37,20 @@ if(!isset($_POST['read_warning']))
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port']))
+if(!isset($_POST['node_name'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port'], $_POST['gsd_listen'], $_POST['gsd_console'], $_POST['gsd_server_dir']))
 	Components\Page::redirect('../../add.php?disp=missing_args');
+
+/*
+ * Validate Ports
+ */
+if(!is_numeric($_POST['gsd_listen']) || !is_numeric($_POST['gsd_console']))
+	Components\Page::redirect('../../add.php?error=gsd_listen|gsd_console&disp=port_fail');
+
+/*
+ * Validate Directory
+ */
+if(!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $_POST['gsd_server_dir']))
+	Components\Page::redirect('../../add.php?error=gsd_server_dir&disp=dir_fail');
 
 /*
  * Validate Node Name
@@ -104,6 +116,9 @@ $node->set(array(
 	'fqdn' => $_POST['fqdn'],
 	'ip' => $_POST['ip'],
 	'gsd_secret' => $core->auth->generateUniqueUUID('nodes', 'gsd_secret'),
+	'gsd_listen' => $_POST['gsd_listen'],
+	'gsd_console' => $_POST['gsd_console'],
+	'gsd_server_dir' => $_POST['gsd_server_dir'],
 	'ips' => json_encode($IPA),
 	'ports' => json_encode($IPP)
 ));
