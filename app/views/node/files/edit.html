@@ -56,25 +56,5 @@
     {% endif %}
 </div>
 <script type="text/javascript">
-$(window).load(function(){
-    $("#save_file").click(function(event){
-		event.preventDefault();
-		var file = $("input[name='file']").val();
-		var content = $("#live_console").val();
-		var xsrf = $("input[name='xsrf']").val();
-		$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
-
-		$.ajax({
-			type: "POST",
-			url: '../ajax/files/save.php',
-			data: {'file': file, 'file_contents': content, 'xsrf': xsrf},
-			success: function(data) {
-				$("#save_status").html(data);
-				$("#save_file").html('Save').removeClass('disabled');
-				$("#save_status").slideDown();
-			}
-		});
-	});
-});
-</script>
+$(window).load(function(){$("#save_file").click(function(a){a.preventDefault();var e=$("input[name='file']").val(),s=$("#live_console").val(),l=$("input[name='xsrf']").val();$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"),$.ajax({type:"POST",url:"../ajax/files/save.php",data:{file:e,file_contents:s,xsrf:l},success:function(a){$("#save_status").html(a),$("#save_file").html("Save").removeClass("disabled"),$("#save_status").slideDown()}})})});</script>
 {% endblock %}

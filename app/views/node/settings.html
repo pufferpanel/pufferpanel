@@ -115,38 +115,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$("#updateModpack").submit(function(e){
-		e.preventDefault();
-		var pack = $('select[name="new_pack"]').val();
-
-		if(pack != null){
-			$('#install_modpack_submit').addClass('disabled');
-			$("#installingModpack").html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_settings_ajax_installing_modpack }}</div>').show();
-			$.ajax({
-				type: "POST",
-				url: 'ajax/settings/modpack.php',
-				data: { new_pack: pack },
-		  		success: function(data) {
-		    		$("#installingModpack").hide().html(data).show();
-		    		$('#install_modpack_submit').removeClass('disabled');
-		 		}
-			});
-		}else
-			alert('{{ lang.node_settings_ajax_modpack_error }}');
-	});
-	$("#gen_pass_bttn").click(function(){
-			$.ajax({
-				type: "GET",
-				url: "settings.php?do=generate_password",
-				success: function(data) {
-					$("#gen_pass").html('<strong>{{ lang.string_generated_pass }}:</strong> '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="ftp_pass"]').val(data);
-					$('input[name="ftp_pass_2"]').val(data);
-					return false;
-				}
-			});
-			return false;
-		});
-</script>
+$("#gen_pass_bttn").click(function(){return $.ajax({type:"GET",url:"settings.php?do=generate_password",success:function(s){return $("#gen_pass").html("<strong>{{ lang.string_generated_pass }}:</strong> "+s),$("#gen_pass").slideDown(),$('input[name="ftp_pass"]').val(s),$('input[name="ftp_pass_2"]').val(s),!1}}),!1});</script>
 {% endblock %}
