@@ -24,12 +24,27 @@ require_once('../../src/core/core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false)
 	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
 
+if($core->gsd->online() === true){
+
+	$url = "http://".$core->server->nodeData('ip').":8003/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
+	$context = stream_context_create(array(
+		"http" => array(
+			"method" => "GET",
+			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
+			"timeout" => 3
+		)
+	));
+	$content = json_decode(@file_get_contents($url, 0, $context), true);
+
+}else
+	$content = array('contents' => 'Server is currently offline.');
+
 /*
  * Display Page
  */
 echo $twig->render(
 		'node/index.html', array(
-			'server' => array_merge($core->server->getData(), array('node' => $core->server->nodeData('node'))),
+			'server' => array_merge($core->server->getData(), array('node' => $core->server->nodeData('node'), 'console_inner' => $content['contents'])),
 			'node' => array(
 				'ip' => $core->server->nodeData('ip')
 			),
