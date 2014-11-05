@@ -108,3 +108,10 @@ In order to start GSD, execute the command below in a new screen
 	[$]~ npm start
 
 Congratulations! Your first node is configured.
+
+Connecting to FTP
+-----------------
+In order to connect to the FTP server you will need to connect using ``FTP with TLS/SSL`` and ``Passive Mode``. Please
+consider writing your own documentation for users to help them out as this can be confusing if they've never done it before.
+
+On your first connect you will be asked if you trust the server certificate, click Accept.
