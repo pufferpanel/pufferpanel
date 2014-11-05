@@ -91,7 +91,7 @@ Once all of that is complete run the commands below to complete the install of G
 	
 In order to start GSD, execute the command below in a new screen
 
-..code-block::sh
+.. code-block::sh
 
 	[$]~ npm start
       
