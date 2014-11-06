@@ -22,11 +22,11 @@ class Initalize {
 
 	public function __construct() { }
 
-	public function loadModule($module) {
+	public function loadModule($module, $namespace = "PufferPanel\Core\API\\") {
 
 		require __DIR__ . '/' . strtolower($module) . '.php';
-		$controller = "PufferPanel\Core\API\\$module";
 
+		$controller = $namespace.$module;
 		return new $controller;
 
 	}
