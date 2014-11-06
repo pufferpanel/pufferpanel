@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 use \ORM as ORM;
 header('Content-Type: application/json');
 require_once '../../src/core/core.php';
-require_once '../../src/core/api/core.php';
+require_once '../../src/core/api/initalize.php';
 
 $klein = new \Klein\Klein();
 $base  = dirname($_SERVER['PHP_SELF']);
@@ -47,9 +47,7 @@ if(ltrim($base, '/'))
 //
 // }
 
-//begin API functions
-//$api = new \stdClass();
-$api = new \PufferPanel\Core\API\Initalize();
+$api = new API\Initalize();
 
 $klein->respond('GET', '/users/[i:id]?', function ($request, $response) use ($api) {
 

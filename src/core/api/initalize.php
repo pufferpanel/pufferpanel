@@ -25,9 +25,9 @@ class Initalize {
 	public function loadModule($module) {
 
 		require __DIR__ . '/' . strtolower($module) . '.php';
+		$controller = "PufferPanel\Core\API\\$module";
 
-		// this is buggy and won't accept $module, says class doesn't exist
-		return new Users();
+		return new $controller;
 
 	}
 
