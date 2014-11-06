@@ -1,11 +1,11 @@
-PufferPanel API Documentation
-=============================
+API Documentation
+=================
 This documentation is for the purpose of building the API, it is not currently functional.
 
 Authentication
 --------------
 Requests to the PufferPanel API should ideally be made over a secure (HTTPS) connection to prevent man in the middle attacks, and protect sensitive client data.
-Requests must also include an API key sent in the request using the ``X-Authorization`` header.
+Requests must also include an API key sent in the request using the ``X-Access-Token`` header.
 
 Errors & Status Codes
 ^^^^^^^^^^^^^^^^^^^^^
@@ -45,7 +45,7 @@ Setting the ``sso`` value to be ``false`` allows for you to simply check if the 
     -H "Content-Type: application/json" \
     -d '{"email":"some@example.com","password":"somepassword","sso":true}'
     http://example.com/api/sso
-  
+
 .. code-block:: json
 
   {
@@ -61,7 +61,7 @@ Returns a list of all users who have an account on the panel.
 .. code-block:: curl
 
   curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users
-  
+
 .. code-block:: json
 
   {
@@ -82,9 +82,9 @@ Returns a list of all users who have an account on the panel.
 Returns information about the requested user.
 
 .. code-block:: curl
-  
+
   curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-  
+
 .. code-block:: json
 
   {
@@ -96,7 +96,7 @@ Returns information about the requested user.
       "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
     ]
   }
-    
+
 
 ``POST /users``
 ^^^^^^^^^^^^^^^
@@ -113,7 +113,7 @@ Deletes a user given a specified ID.
 .. code-block:: curl
 
   curl -X DELETE -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-  
+
 .. code-block
 
   HTTP/1.x 200 OK
