@@ -76,4 +76,6 @@ After doing that, we need to change some permissions for our MySQL user for secu
     mysql> REVOKE DROP ON database.* FROM 'user'@'localhost';
     mysql> FLUSH PRIVILEGES;
 
-Congratulations! You should have PufferPanel running smoothly at this point. From here, you should move on to `setting up your first node <installing_nodes/>`_.
+Congratulations! You should have PufferPanel running smoothly at this point, enjoy the image below to celebrate your successes. From here, you should move on to `setting up your first node <installing_nodes/>`_.
+
+.. image:: https://i.imgur.com/AAr6Gi7.jpg
