@@ -20,6 +20,7 @@ namespace PufferPanel\Core;
 use \ORM as ORM;
 header('Content-Type: application/json');
 require_once '../../src/core/core.php';
+require_once '../../src/core/api/core.php';
 
 $klein = new \Klein\Klein();
 $base  = dirname($_SERVER['PHP_SELF']);
@@ -47,14 +48,13 @@ if(ltrim($base, '/'))
 // }
 
 //begin API functions
-//use PufferPanel\API;
+//$api = new \stdClass();
+$api = new \PufferPanel\Core\API\Initalize();
 
-$klein->respond('GET', '/users/[i:id]?', function ($request, $response) {
+$klein->respond('GET', '/users/[i:id]?', function ($request, $response) use ($api) {
 
-	if($request->param('id'))
-		return json_encode(array('message' => 'You have reached the test point with ID: '.$request->param('id').'.'));
-	else
-		return json_encode(array('message' => 'You have reached the test point.'));
+	$users = $api->loadModule('Users');
+    echo $users->listUsers();
 
 });
 
