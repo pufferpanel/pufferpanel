@@ -41,7 +41,7 @@ Setting the ``sso`` value to be ``false`` allows for you to simply check if the 
 .. code-block:: curl
 
   curl -X POST -i \
-    -H "X-Authorization: demo1111-2222-3333-4444-55556666" \
+    -H "X-Access-Token: demo1111-2222-3333-4444-55556666" \
     -H "Content-Type: application/json" \
     -d '{"email":"some@example.com","password":"somepassword","sso":true}'
     http://example.com/api/sso
@@ -60,7 +60,7 @@ Returns a list of all users who have an account on the panel.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users
 
 .. code-block:: json
 
@@ -83,7 +83,7 @@ Returns information about the requested user.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 .. code-block:: json
 
@@ -112,7 +112,7 @@ Deletes a user given a specified ID.
 
 .. code-block:: curl
 
-  curl -X DELETE -i -H "X-Authorization: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+  curl -X DELETE -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 .. code-block
 
