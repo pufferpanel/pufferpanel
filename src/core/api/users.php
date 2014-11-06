@@ -18,10 +18,22 @@
 */
 namespace PufferPanel\Core\API;
 
+/**
+* PufferPanel API User Class
+*/
 class Users {
 
+	/**
+	* Constructor Class
+	* @return void
+	*/
 	public function __construct() { }
 
+	/**
+	* Lists all users in the system as an array
+	*
+	* @return array
+	*/
 	public function listUsers() {
 
 		return 'listUsers() called';

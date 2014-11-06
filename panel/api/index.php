@@ -51,7 +51,7 @@ $api = new API\Initalize();
 
 $klein->respond('GET', '/users/[i:id]?', function ($request, $response) use ($api) {
 
-	$users = $api->loadModule('Users');
+	$users = $api->loadClass('Users');
     echo $users->listUsers();
 
 });
