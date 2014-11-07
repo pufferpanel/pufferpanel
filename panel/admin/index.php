@@ -34,7 +34,7 @@ if(is_array(explode('/', $head))){
 echo $twig->render(
         'admin/index.html', array(
             'version' => trim(file_get_contents('../../src/versions/current')).' '.$git,
-            'installer' => (is_dir('install')) ? true : false,
+            'installer' => (is_dir('../install')) ? true : false,
             'footer' => array(
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)
             )
