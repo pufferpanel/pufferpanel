@@ -96,7 +96,28 @@ $klein->respond(function($request, $response, $service, $app, $matched) {
 	if ($matched < 1) {
 
 		$response->code(404);
-		return json_encode(array('message' => 'You have reached an invalid API point.'));
+		return json_encode(array(
+            'endpoints' => array(
+                '/users' => array(
+                    'GET' => array(
+                        '/' => 'List all users on the system.',
+                        '/:uuid' => 'List information about a specific user including servers they own.'
+                    ),
+                    'POST' => array(),
+                    'DELETE' => array(),
+                    'PUT' => array()
+                ),
+                '/servers' => array(
+                    'GET' => array(
+                        '/' => 'List all servers on the system.',
+                        '/:hash' => 'List detailed information about a specific server.'
+                    ),
+                    'POST' => array(),
+                    'DELETE' => array(),
+                    'PUT' => array()
+                )
+            )
+        ), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 	}
 
