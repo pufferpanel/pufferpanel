@@ -21,6 +21,8 @@ use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
+$ports = [];
+
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
 	Components\Page::redirect('../../../index.php');
 }
@@ -31,23 +33,42 @@ if(!isset($_POST['add_ports_node']))
 if(!isset($_POST['add_ports'], $_POST['add_ports_ip']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 
-if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']) && !preg_match('/^[\d- ]+$/', $_POST['add_ports']))
+if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']) && !preg_match('/^[\d- ]+$/', $_POST['add_ports']) && !preg_match('/^[\d-, ]+$/', $_POST['add_ports']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
 
-if(preg_match('/^[\d- ]+$/', $_POST['add_ports']))
+if(preg_match('/^[\d-, ]+$/', $_POST['add_ports']))
 {
-	$ports = explode('-', $_POST['add_ports']);
-	$rangeOne = intval($ports[0]);
-	$rangeTwo = intval($ports[1]);
-	$i = 0;
+	$portsSplit = explode(',', $_POST['add_ports']);
+	for($i = 0; $i < count($portsSplit); $i++)
+	{
+		if(preg_match('/^[\d- ]+$/', $portsSplit[$i]) && !preg_match('/^[\d ]+$/',$portsSplit[$i]))
+		{
+			$a = explode('-', $portsSplit[$i]);
+			$rangeOne = intval($a[0]);
+			$rangeTwo = intval($a[1]);
+			while($rangeOne <= $rangeTwo)
+			{
+				$ports[] = $rangeOne;
+				$rangeOne++;
+			}
+		}
+		else
+		{
+			$ports[] = $portsSplit[$i];
+		}
+	}
+}
+elseif(preg_match('/^[\d- ]+$/', $_POST['add_ports']))
+{
+	$portsSplit = explode('-', str_replace(" ", "", $_POST['add_ports']));
+	$rangeOne = intval($portsSplit[0]);
+	$rangeTwo = intval($portsSplit[1]);
 	while($rangeOne <= $rangeTwo)
 	{
-		$ports[$i] = $rangeOne;
-		$i++;
+		$ports[] = $rangeOne;
 		$rangeOne++;
 	}
-} else
-{
+} else {
 	$ports = explode(',', str_replace(" ", "", $_POST['add_ports']));
 }
 
