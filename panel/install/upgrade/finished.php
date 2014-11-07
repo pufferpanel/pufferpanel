@@ -16,8 +16,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-if(isset($_POST['version']) && file_exists('do/'.$_POST['version'].'.php'))
-	header('Location: do/'.$_POST['version'].'.php');
 ?>
 <html lang="en">
 <head>
@@ -33,28 +31,8 @@ if(isset($_POST['version']) && file_exists('do/'.$_POST['version'].'.php'))
 		</div>
 		<div class="row">
 			<div class="col-10">
-				<h1 class="nopad">PufferPanel Upgrader</h1>
-				<p>Please select the option below that reflects which verison of PufferPanel you are upgrading from. This will run you through the upgrade process.</p>
-				<form action="index.php" method="POST">
-					<div>
-						<label><input type="checkbox" name="version" disabled="disabled" value="0.7.2-beta"/> 0.7.2 Beta [Disabled]</label><br />
-					</div>
-					<div>
-						<label><input type="checkbox" name="version" disabled="disabled" value="0.7.2-beta-bugfix"/> 0.7.2 Beta (Bugfix) [Disabled]</label><br />
-					</div>
-					<div>
-						<label><input type="checkbox" name="version" value="0.7.3-beta"/> 0.7.3 Beta</label><br />
-					</div>
-					<div>
-						<label><input type="checkbox" name="version" value="0.7.4-beta"/> 0.7.4 Beta</label><br />
-					</div>
-					<div>
-						<label><input type="checkbox" name="version" value="0.7.4.1-beta"/> 0.7.4.1 Beta</label><br />
-					</div>
-					<div>
-						<input type="submit" name="do" value="Run Upgrader" class="btn btn-sm btn-primary" />
-					</div>
-				</form>
+				<h1 class="nopad">PufferPanel Upgrader has Finished</h1>
+				<p>Your panel has been successfully upgraded to the latest version of PufferPanel.</p>
 			</div>
 		</div>
 		<div class="footer">
