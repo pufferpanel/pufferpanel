@@ -28,6 +28,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 }
 
+	if($core->settings->get('allow_subusers') != 1)
+		Components\Page::redirect('../list.php?error=not_enabled');
+
 	if(!isset($_POST['uuid'], $_POST['permissions']))
 		Components\Page::redirect('../list.php');
 

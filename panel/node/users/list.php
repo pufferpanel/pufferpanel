@@ -33,21 +33,25 @@ if($core->user->hasPermission('users.view') !== true)
 $access = json_decode($core->server->getData('subusers'), true);
 $users = array();
 
-if(is_array($access) && !empty($access)){
+if($core->settings->get('allow_subusers') == 1){
 
-	foreach($access as $id => $status) {
+	if(is_array($access) && !empty($access)){
 
-		if($status != "verified"){
+		foreach($access as $id => $status) {
 
-			$user = ORM::forTable('account_change')->select('content')->where(array('key' => $core->auth->encrypt($id, $status).".".$status, 'verified' => 0))->findOne();
-			$_perms = json_decode($user->content, true);
-			$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($core->auth->encrypt($id, $status).".".$status), "permissions" => $_perms[$core->server->getData('hash')])));
+			if($status != "verified"){
 
-		}else{
+				$user = ORM::forTable('account_change')->select('content')->where(array('key' => $core->auth->encrypt($id, $status).".".$status, 'verified' => 0))->findOne();
+				$_perms = json_decode($user->content, true);
+				$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($core->auth->encrypt($id, $status).".".$status), "permissions" => $_perms[$core->server->getData('hash')])));
 
-			$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
-			$user = json_decode($user->permissions, true);
-			$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')])));
+			}else{
+
+				$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
+				$user = json_decode($user->permissions, true);
+				$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')])));
+
+			}
 
 		}
 
@@ -62,8 +66,8 @@ echo $twig->render(
 		'node/users/list.html', array(
 			'users' => $users,
 			'server' => $core->server->getData(),
+			'allow_subusers' => $core->settings->get('allow_subusers'),
 			'footer' => array(
-
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

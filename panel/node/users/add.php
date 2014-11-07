@@ -37,8 +37,8 @@ echo $twig->render(
 		'node/users/add.html', array(
 			'xsrf' => $core->auth->XSRF(),
 			'server' => $core->server->getData(),
+			'allow_subusers' => $core->settings->get('allow_subusers'),
 			'footer' => array(
-				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

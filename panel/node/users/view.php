@@ -51,6 +51,7 @@ echo $twig->render(
 			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]),
 			'user' => array('email' => $user->email),
 			'xsrf' => $core->auth->XSRF(),
+			'allow_subusers' => $core->settings->get('allow_subusers'),
 			'footer' => array(
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)

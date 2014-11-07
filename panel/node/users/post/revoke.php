@@ -28,6 +28,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 }
 
+if($core->settings->get('allow_subusers') != 1)
+	Components\Page::redirect('../list.php?error=not_enabled');
+
 //id means pending, uid means not pending
 if(isset($_GET['id']) && !empty($_GET['id'])){
 

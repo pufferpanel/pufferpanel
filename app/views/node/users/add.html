@@ -27,111 +27,115 @@
 
 {% block content %}
 <div class="col-9">
-	<form action="post/add.php" method="post">
-		<h3 class="nopad">Permissions</h3>
-		<div class="list-group">
-			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="console.view"/> View Console</label>
-				<p class="list-group-item-text">Gives user permission to view the console page.</p>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="console.commands"/> Send Commands</label>
-						<p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
+	{% if allow_subusers == 1 %}
+		<form action="post/add.php" method="post">
+			<h3 class="nopad">Permissions</h3>
+			<div class="list-group">
+				<a href="#" class="list-group-item">
+					<label><input type="checkbox" name="permissions[]" value="console.view"/> View Console</label>
+					<p class="list-group-item-text">Gives user permission to view the console page.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="console.commands"/> Send Commands</label>
+							<p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="console.power"/> Control Power</label>
-						<p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="console.power"/> Control Power</label>
+							<p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
+						</div>
 					</div>
-				</div>
-			</a>
-			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="files.view"/> View Files</label>
-				<p class="list-group-item-text">Gives user permission to view the file listing.</p>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="files.edit"/> Edit File</label>
-						<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
+				</a>
+				<a href="#" class="list-group-item">
+					<label><input type="checkbox" name="permissions[]" value="files.view"/> View Files</label>
+					<p class="list-group-item-text">Gives user permission to view the file listing.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="files.edit"/> Edit File</label>
+							<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="files.save"/> Save Modifications</label>
-						<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="files.save"/> Save Modifications</label>
+							<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
-						<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
+							<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="files.delete"/> Delete Files <span class="label label-danger">Danger</span></label>
-						<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="files.delete"/> Delete Files <span class="label label-danger">Danger</span></label>
+							<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
+						</div>
 					</div>
-				</div>
-			</a>
-			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="manage.view"/> View Manager</label>
-				<p class="list-group-item-text">Gives user permission to view the server management page.</p>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="manage.rename.view"/> View Server Jar Tab</label>
-						<p class="list-group-item-text">Gives user permission to view the Server Jar Tab.</p>
+				</a>
+				<a href="#" class="list-group-item">
+					<label><input type="checkbox" name="permissions[]" value="manage.view"/> View Manager</label>
+					<p class="list-group-item-text">Gives user permission to view the server management page.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="manage.rename.view"/> View Server Jar Tab</label>
+							<p class="list-group-item-text">Gives user permission to view the Server Jar Tab.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
-						<label><input type="checkbox" name="permissions[]" value="manage.rename.jar"/> Modify Jar File Name</label>
-						<p class="list-group-item-text">Gives user permission modify the jar file name for a server.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-2"><br /><br /></div>
+						<div class="col-10">
+							<label><input type="checkbox" name="permissions[]" value="manage.rename.jar"/> Modify Jar File Name</label>
+							<p class="list-group-item-text">Gives user permission modify the jar file name for a server.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp.view"/> View FTP Tab</label>
-						<p class="list-group-item-text">Gives user permission to view the FTP tab.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="manage.ftp.view"/> View FTP Tab</label>
+							<p class="list-group-item-text">Gives user permission to view the FTP tab.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp.details"/> View FTP Details</label>
-						<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-2"><br /><br /></div>
+						<div class="col-10">
+							<label><input type="checkbox" name="permissions[]" value="manage.ftp.details"/> View FTP Details</label>
+							<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
+						</div>
 					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp.password"/> Modify FTP Password <span class="label label-danger">Danger</span></label>
-						<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-2"><br /><br /></div>
+						<div class="col-10">
+							<label><input type="checkbox" name="permissions[]" value="manage.ftp.password"/> Modify FTP Password <span class="label label-danger">Danger</span></label>
+							<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+						</div>
 					</div>
-				</div>
-			</a>
-		</div>
-		<div class="form-group">
-			<label>Email of User to Invite</label>
-			<div>
-				<input type="text" autocomplete="off" name="email" class="form-control" />
+				</a>
 			</div>
-		</div>
-		<div class="form-group">
-			<div>
-				{{ xsrf|raw }}
-				<input type="submit" value="Invite Subuser" class="btn btn-primary" />
+			<div class="form-group">
+				<label>Email of User to Invite</label>
+				<div>
+					<input type="text" autocomplete="off" name="email" class="form-control" />
+				</div>
 			</div>
-		</div>
-	</form>
+			<div class="form-group">
+				<div>
+					{{ xsrf|raw }}
+					<input type="submit" value="Invite Subuser" class="btn btn-primary" />
+				</div>
+			</div>
+		</form>
+	{% else %}
+		<div class="alert alert-danger">This function has not been enabled by your host.</div>
+	{% endif %}
 </div>
 {% endblock %}
