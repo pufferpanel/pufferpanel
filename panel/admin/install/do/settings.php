@@ -100,19 +100,19 @@ if(file_exists('../install.lock'))
 							<div class="form-group">
 								<label for="main_website" class="control-label">Main Website URL</label>
 								<div>
-									<input type="text" class="form-control" name="main_website" value="http://<?php echo $_SERVER['HTTP_HOST']; ?>/" autocomplete="off" />
+									<input type="text" class="form-control" name="main_website" value="//<?php echo $_SERVER['HTTP_HOST']; ?>/" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="master_url" class="control-label">PufferPanel Master URL</label>
 								<div>
-									<input type="text" class="form-control" name="master_url" value="<?php echo str_replace("admin/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>" autocomplete="off" />
+									<input type="text" class="form-control" name="master_url" value="<?php echo str_replace("admin/install/do/settings.php", "", '//'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="assets_url" class="control-label">PufferPanel Assets URL</label>
 								<div>
-									<input type="text" class="form-control" name="assets_url" value="<?php echo str_replace("admin/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']).'assets/'; ?>" autocomplete="off" />
+									<input type="text" class="form-control" name="assets_url" value="<?php echo str_replace("admin/install/do/settings.php", "", '//'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']).'assets/'; ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
