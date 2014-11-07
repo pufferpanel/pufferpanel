@@ -50,7 +50,7 @@ You will need to add a non-root MySQL user for the panel to operate. Please run 
 
     [$]~ mysql -u root -p
     mysql> CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
-    mysql> GRANT CREATE, INSERT, SELECT, UPDATE, DELETE, DROP ON database.* TO 'user'@'localhost';
+    mysql> GRANT CREATE, INSERT, SELECT, UPDATE, DELETE, DROP, ALTER ON database.* TO 'user'@'localhost';
     mysql> FLUSH PRIVILEGES;
 
 Running the Installer
