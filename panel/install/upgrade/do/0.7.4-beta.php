@@ -52,5 +52,5 @@ foreach($row as &$row){
 
 }
 
-header('Location: ../0.7.4.1-beta.php');
+header('Location: 0.7.4.1-beta.php');
 ?>

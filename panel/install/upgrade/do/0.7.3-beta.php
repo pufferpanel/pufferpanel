@@ -41,5 +41,5 @@ $mysql->exec("ALTER TABLE users MODIFY language char(2) NOT NULL DEFAULT 'en'");
 $mysql->exec("ALTER TABLE users ADD COLUMN permissions text AFTER password");
 $mysql->exec("ALTER TABLE users DROP COLUMN position");
 
-header('Location: ../0.7.4-beta.php');
+header('Location: 0.7.4-beta.php');
 ?>
