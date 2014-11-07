@@ -25,7 +25,7 @@ require_once '../../src/core/api/initalize.php';
 $klein = new \Klein\Klein();
 $base  = dirname($_SERVER['PHP_SELF']);
 if(ltrim($base, '/'))
-    $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
+	$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
 
 // check all requests for a header
 // $headers = getallheaders();
@@ -53,41 +53,41 @@ $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($a
 
 	$users = $api->loadClass('Users');
 
-        if($request->param('uuid')){
+		if($request->param('uuid')){
 
-            $data = $users->listUsers($request->param('uuid'));
-            if($data === false){
+			$data = $users->listUsers($request->param('uuid'));
+			if($data === false){
 
-                $response->code(404);
-                return json_encode(array('message' => 'The requested user does not exist in the system.'));
+				$response->code(404);
+				return json_encode(array('message' => 'The requested user does not exist in the system.'));
 
-            }else
-                return json_encode($data, JSON_PRETTY_PRINT);
+			}else
+				return json_encode($data, JSON_PRETTY_PRINT);
 
 
-        }else
-            return json_encode($users->listUsers(), JSON_PRETTY_PRINT);
+		}else
+			return json_encode($users->listUsers(), JSON_PRETTY_PRINT);
 
 });
 
 $klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use ($api) {
 
-    $servers = $api->loadClass('Servers');
+	$servers = $api->loadClass('Servers');
 
-        if($request->param('hash')){
+		if($request->param('hash')){
 
-            $data = $servers->listServers($request->param('hash'));
-            if($data === false){
+			$data = $servers->listServers($request->param('hash'));
+			if($data === false){
 
-                $response->code(404);
-                return json_encode(array('message' => 'The requested server does not exist in the system.'));
+				$response->code(404);
+				return json_encode(array('message' => 'The requested server does not exist in the system.'));
 
-            }else
-                return json_encode($data, JSON_PRETTY_PRINT);
+			}else
+				return json_encode($data, JSON_PRETTY_PRINT);
 
 
-        }else
-            return json_encode($servers->listServers(), JSON_PRETTY_PRINT);
+		}else
+			return json_encode($servers->listServers(), JSON_PRETTY_PRINT);
 
 });
 
@@ -97,27 +97,27 @@ $klein->respond(function($request, $response, $service, $app, $matched) {
 
 		$response->code(404);
 		return json_encode(array(
-            'endpoints' => array(
-                '/users' => array(
-                    'GET' => array(
-                        '/' => 'List all users on the system.',
-                        '/:uuid' => 'List information about a specific user including servers they own.'
-                    ),
-                    'POST' => array(),
-                    'DELETE' => array(),
-                    'PUT' => array()
-                ),
-                '/servers' => array(
-                    'GET' => array(
-                        '/' => 'List all servers on the system.',
-                        '/:hash' => 'List detailed information about a specific server.'
-                    ),
-                    'POST' => array(),
-                    'DELETE' => array(),
-                    'PUT' => array()
-                )
-            )
-        ), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+			'endpoints' => array(
+				'/users' => array(
+					'GET' => array(
+						'/' => 'List all users on the system.',
+						'/:uuid' => 'List information about a specific user including servers they own.'
+					),
+					'POST' => array(),
+					'DELETE' => array(),
+					'PUT' => array()
+				),
+				'/servers' => array(
+					'GET' => array(
+						'/' => 'List all servers on the system.',
+						'/:hash' => 'List detailed information about a specific server.'
+					),
+					'POST' => array(),
+					'DELETE' => array(),
+					'PUT' => array()
+				)
+			)
+		), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 	}
 
