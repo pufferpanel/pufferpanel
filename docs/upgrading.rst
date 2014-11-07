@@ -1,0 +1,33 @@
+Upgrading PufferPanel
+=====================
+Starting in version ``0.7.5 Beta`` we now support running an upgrader rather than having to re-install the entire panel. Please be aware that this upgrader is still very much beta software, and may still cause issues. Use at your own risk.
+
+Update MySQL User
+-----------------
+If you are running this upgrader and are updating from versions prior to ``0.7.5`` you will first need to update your MySQL user to have the correct permissions for the database. Please run the command below to update the user.
+
+.. code-block:: mysql
+
+  GRANT ALTER, DROP ON database.* TO 'user'@'localhost';
+  
+Running the Upgrader
+--------------------
+Running the upgrader is a very simple step and often requires no extra dependencies to be installed on your server.
+
+First, we need to run composer again and check for any upgrades or new software.
+
+.. code-block:: sh
+
+  php composer.phar self-update
+  php composer.phar update
+  
+After that, you should navigate to your PufferPanel install in your browser, and go to ``http://example.com/install/upgrade/index.php``. After doing that, select the version that you are upgrading from, and click start. The upgrader will update all of the tables necessary, and let you know when it finished.
+
+Finishing
+---------
+When finished run the command below to remove the install and upgrader.
+
+.. code-block:: sh
+
+  [$]~ cd /var/www/example.com
+  [$]~ rm -rf panel/install
