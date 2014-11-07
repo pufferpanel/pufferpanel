@@ -11,6 +11,14 @@
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 		<li><a href="../../servers.php?goto={{ server.hash }}">Server Control</a></li>
 	</ul>
+	{% if get.disp is defined and get.disp != 1 %}
+		<br />
+		<div class="alert alert-danger">
+			{% if get.disp == 'n_fail' %}
+				The server name does not meet the requirements (4-35 characters, a-z A-Z 0-9 _ -).
+			{% endif %}
+		</div>
+	{% endif %}
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Connection Information</h3><hr />
@@ -69,6 +77,12 @@
 			<h3>Server Settings</h3><hr />
 			<form action="ajax/server/allocate.php" method="post">
 				<fieldset>
+					<div class="form-group">
+						<label class="control-label">Server Name</label>
+						<div>
+							<input type="text" name="server_name" value="{{ server.name }}" class="form-control" />
+						</div>
+					</div>
 					<div class="form-group">
 						<label class="control-label">Owner Email</label>
 						<div>
