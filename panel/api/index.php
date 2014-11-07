@@ -27,6 +27,13 @@ $base  = dirname($_SERVER['PHP_SELF']);
 if(ltrim($base, '/'))
 	$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
 
+if($core->settings->get('use_api') != 1) {
+
+	http_response_code(404);
+	echo json_encode(array('message' => 'This API is not enabled.'));
+	exit();
+
+}
 // check all requests for a header
 // $headers = getallheaders();
 // if(array_key_exists('X-Access-Token', $headers)){
