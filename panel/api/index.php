@@ -56,10 +56,10 @@ $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($a
         if($request->param('uuid')){
 
             $data = $users->listUsers($request->param('uuid'));
-            if(!$data){
+            if($data === false){
 
                 $response->code(404);
-                return json_encode(array('message' => 'The requested UUID does not exist in the system.'));
+                return json_encode(array('message' => 'The requested user does not exist in the system.'));
 
             }else
                 return json_encode($data, JSON_PRETTY_PRINT);
@@ -67,6 +67,27 @@ $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($a
 
         }else
             return json_encode($users->listUsers(), JSON_PRETTY_PRINT);
+
+});
+
+$klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use ($api) {
+
+    $servers = $api->loadClass('Servers');
+
+        if($request->param('hash')){
+
+            $data = $servers->listServers($request->param('hash'));
+            if($data === false){
+
+                $response->code(404);
+                return json_encode(array('message' => 'The requested server does not exist in the system.'));
+
+            }else
+                return json_encode($data, JSON_PRETTY_PRINT);
+
+
+        }else
+            return json_encode($servers->listServers(), JSON_PRETTY_PRINT);
 
 });
 

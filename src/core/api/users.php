@@ -55,18 +55,19 @@ class Users {
 	 */
 	protected function singleUserData($uuid) {
 
-		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users JOIN servers ON servers.owner_id = users.id WHERE users.uuid = :uuid", array('uuid' => $uuid))->findOne();
+		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id WHERE users.uuid = :uuid AND servers.active = 1 LIMIT 1", array('uuid' => $uuid))->findOne();
 
-		if(!$this->user)
+		if(is_null($this->user->id))
 			return false;
 		else {
 
-			return array($this->user->uuid => array(
+			return array(
+				"id" => (int) $this->user->id,
 				"email" => $this->user->email,
 				"username" => $this->user->username,
-				"admin" => $this->user->root_admin,
-				"servers" => explode(',', $this->user->s_hash)
-			));
+				"admin" => (int) $this->user->root_admin,
+				"servers" => (!empty($this->user->s_hash)) ? explode(',', $this->user->s_hash) : array()
+			);
 
 		}
 
@@ -75,7 +76,6 @@ class Users {
 	/**
 	 * Collects and returns data about all users in the system.
 	 *
-	 * @param string $uuid UUID of user to return data about.
 	 * @return array
 	 */
 	protected function allUserData() {
@@ -86,9 +86,10 @@ class Users {
 
 			$this->usersData = array_merge($this->usersData, array(
 				$this->user->uuid => array(
+					"id" => (int) $this->user->id,
 					"email" => $this->user->email,
 					"username" => $this->user->username,
-					"admin" => $this->user->root_admin
+					"admin" => (int) $this->user->root_admin
 				)
 			));
 
