@@ -65,16 +65,18 @@ Returns a list of all users who have an account on the panel.
 .. code-block:: json
 
   {
-    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
-      "id": 1,
-      "username": "demoaccount",
-      "email": "some@example.com"
-    },
-    "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy": {
-      "id": 2,
-      "username": "demoaccount2",
-      "email":"two@example.com"
-    }
+     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
+       "id": 1,
+       "username": "demoaccount",
+       "email": "some@example.com",
+       "admin": 1
+     },
+     "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy": {
+       "id": 2,
+       "username": "demoaccount2",
+       "email":"two@example.com",
+       "admin": 0
+     }
   }
 
 ``GET /users/[:uuid]``
@@ -91,6 +93,7 @@ Returns information about the requested user.
     "id": 1,
     "username": "demoaccount",
     "email": "some@example.com",
+    "admin": 1,
     "servers": [
       "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa",
       "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
@@ -110,19 +113,63 @@ Updates user information.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Deletes a user given a specified ID.
 
-.. code-block:: curl
-
-  curl -X DELETE -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-
 .. code-block
 
   HTTP/1.x 200 OK
 
 Servers
 -------
+``GET /servers``
+^^^^^^^^^^^^^^^^
+Returns a list of all servers that are on the system.
+
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/servers
+
+.. code-block:: json
+
+    {
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa": {
+            "id": 1,
+            "owner": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx",
+            "name": "MY_ADMIN_SERVER",
+            "node": 1,
+            "active": 1
+        },
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb": {
+            "id": 2,
+            "owner": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy",
+            "name": "STEVES_SERVER",
+            "node": 1,
+            "active": 1
+        }
+    }
+
 ``GET /servers/[:hash]``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 Returns information about the requested server.
+
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/servers/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa
+
+.. code-block:: json
+
+    {
+        "id": 1,
+        "node": 1,
+        "owner": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx",
+        "name": "MY_ADMIN_SERVER",
+        "server_jar": "server.jar",
+        "active": 1,
+        "ram": 512,
+        "disk": 1024,
+        "cpu": 30,
+        "ip": "192.168.1.2",
+        "port": 25565,
+        "ftp_user": "mc-MY_DEMO_XyZab"
+    }
 
 ``POST /servers``
 ^^^^^^^^^^^^^^^^^

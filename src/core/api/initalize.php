@@ -18,15 +18,46 @@
 */
 namespace PufferPanel\Core\API;
 
+/**
+* PufferPanel API Initalization Class
+*/
 class Initalize {
 
+	/**
+	* Constructor class
+	*
+	* @return void
+	*/
 	public function __construct() { }
 
-	public function loadModule($module, $namespace = "PufferPanel\Core\API\\") {
+	/**
+	* Dynamically loads a given class into the API as needed.
+	*
+	* @param string $class The name of the API class to initalize.
+	* @return object
+	*/
+	public function loadClass($class) {
 
-		require __DIR__ . '/' . strtolower($module) . '.php';
+		require __DIR__ . '/' . strtolower($class) . '.php';
+		$controller = "PufferPanel\Core\API\\$class";
 
-		$controller = $namespace.$module;
+		return new $controller;
+
+	}
+
+	/**
+	* Dynamically loads a given class into the API as needed from an external source.
+	*
+	* @param string $class The name of the API class to initalize.
+	* @param string $namespace If a namespace is used for the class it must be defined. Set to "null" for a global namespace.
+	* @param string $location The location to the file containing the class.
+	* @return object
+	*/
+	public function loadExternalClass($class, $namespace, $location) {
+
+		require $location;
+		$controller = $namespace.$class;
+
 		return new $controller;
 
 	}

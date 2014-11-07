@@ -66,6 +66,7 @@ Delete the ``/panel/admin/install`` directory and fix the file permissions in ot
 
     [$]~ rm -rf panel/admin/install
     [$]~ chmod -R 0755 src/framework
+    [$]~ chmod -R 0755 src/logs
     [$]~ chmod 0444 src/framework/configuration.php
 
 After doing that, we need to change some permissions for our MySQL user for security purposes. You should restart MySQL after running the following command.
