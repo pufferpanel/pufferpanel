@@ -36,35 +36,13 @@
 			<div class="row">
 				<div class="form-group col-6 nopad">
 					<div>
-						<label><input type="checkbox" name="permissions[]" disabled="disabled" value="enable_custom_domain" {% if settings.enable_custom_domain == 1 %}checked="checked"{% endif %}/> Enable Subdomain Manager</label><br />
-						<p><small class="text-muted"><em>Checking this box will allow for users to set a custom domain name from the settings that you provide on the <a href="#">subdomain management page</a>.</em></small></p>
+						<label><input type="checkbox" name="permissions[]" value="https" {% if settings.https == 1 %}checked="checked"{% endif %}/> Require Secure Connection</label><br />
+						<p><small class="text-muted"><em>Checking this box will require that all connections to the panel and API be made over a secure (https) connection. Any requests to the panel from a non-secure conenction will redirect, and non-secure API connections will fail.</em></small></p>
 					</div>
 				</div>
 				<div class="form-group col-6 nopad">
 					<div>
-						<label><input type="checkbox" name="permissions[]" disabled="disabled" value="enable_plugin_manager" {% if settings.enable_plugin_manager == 1 %}checked="checked"{% endif %}/> Enable Plugin Manager</label><br />
-						<p><small class="text-muted"><em>Checking this box will enable the plugin manager for users. This allows for automatic installiation of plugins from the Bukkit Repo.</em></small></p>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-6 nopad">
-					<div>
-						<label><input type="checkbox" name="permissions[]" disabled="disabled" value="enable_modpack_manager" {% if settings.enable_modpack_manager == 1 %}checked="checked"{% endif %}/> Enable Modpack Manager</label><br />
-						<p><small class="text-muted"><em>Checking this box will allow for users to select a custom modpack from their server management page, and allows for admins to specifiy modpacks that are avaliable for use.</em></small></p>
-					</div>
-				</div>
-				<div class="form-group col-6 nopad">
-					<div>
-						<label><input type="checkbox" name="permissions[]" disabled="disabled" value="enable_backup_manager" {% if settings.enable_backup_manager == 1 %}checked="checked"{% endif %}/> Enable Backup Manager</label><br />
-						<p><small class="text-muted"><em>Checking this box will enable users to make backups of their server at will. You can specify per-server limits for backups, or set global limits.</em></small></p>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-6 nopad">
-					<div>
-						<label><input type="checkbox" name="permissions[]" disabled="disabled" value="enable_subusers" {% if settings.enable_subusers == 1 %}checked="checked"{% endif %}/> Enable Sub-Users</label><br />
+						<label><input type="checkbox" name="permissions[]" value="allow_subusers" {% if settings.allow_subusers == 1 %}checked="checked"{% endif %}/> Allow Sub-Users</label><br />
 						<p><small class="text-muted"><em>Checking this box will allow for users to manually add users to their servers who can access certain settings of the panel to control their server.</em></small></p>
 					</div>
 				</div>

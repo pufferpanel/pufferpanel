@@ -59,21 +59,21 @@ if(file_exists('../install.lock'))
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),
 					            ('master_url', :murl),
-					            ('cookie_website', NULL),
+								('assets_url', :aurl),
+								('main_website', :mwebsite),
 					            ('postmark_api_key', NULL),
 					            ('mandrill_api_key', NULL),
 					            ('mailgun_api_key', NULL),
 					            ('sendgrid_api_key', NULL),
 					            ('sendmail_email', :smail),
-					            ('main_website', :mwebsite),
 					            ('sendmail_method','php'),
 					            ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
 					            ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
-					            ('assets_url', :aurl),
-					            ('modpack_dir',:mpackdir),
-					            ('use_ssh_keys', 1),
 					            ('default_language', 'en'),
-					            ('force_online', 1)");
+					            ('force_online', 1),
+								('https', 0),
+								('use_api', 0),
+								('allow_subusers', 0)");
 
 					        $prepare->execute(array(
 					            ':cname' => $_POST['company_name'],

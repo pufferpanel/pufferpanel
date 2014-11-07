@@ -112,6 +112,15 @@ $core->gsd = new Query($core->server->getData('id'));
 $core->files = new Files();
 
 /*
+ * Require HTTPS Connection
+ */
+if($core->settings->get('https') == 1)
+	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
+		http_response_code(302);
+		header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	}
+
+/*
  * Check Language Settings
  */
 if($core->user->getData('language') === false)

@@ -47,6 +47,18 @@ if(ltrim($base, '/'))
 //
 // }
 
+if($core->settings->get('https') == 1) {
+
+	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
+
+		http_response_code(403);
+		echo json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.'));
+		exit();
+
+	}
+
+}
+
 $api = new API\Initalize();
 
 $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
