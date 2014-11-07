@@ -70,7 +70,7 @@ if(file_exists('../install.lock'))
 					            ('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
 					            ('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
 					            ('default_language', 'en'),
-					            ('force_online', 1),
+					            ('force_online', 0),
 								('https', 0),
 								('use_api', 0),
 								('allow_subusers', 0)");
