@@ -30,8 +30,10 @@ if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
 	Components\Page::redirect('../urls.php?error=main_url|master_url|assets_url');
 
 foreach($_POST as $id => $val)
-	if(!filter_var($val, FILTER_VALIDATE_URL))
+	if(!preg_match('/^((https?:){0,1})(\/\/){1}([-\d\w\/.]*)$/', $val))
 		Components\Page::redirect('../urls.php?error='.$id);
+	else
+		$_POST[$id] = preg_replace('/^(http:|https:)(.*)?$/', '$2', $val);
 
 $query = ORM::forTable('acp_settings')->rawExecute("
 UPDATE acp_settings SET setting_val = CASE setting_ref
