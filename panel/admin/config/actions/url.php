@@ -34,8 +34,8 @@ foreach($_POST as $id => $val)
 		Components\Page::redirect('../urls.php?error='.$id);
 
 $query = ORM::forTable('acp_settings')->rawExecute("
-UPDATE table SET setting_val = CASE setting_ref
-	WHEN 'main_website' THEN '".$_POST['main_website']."'
+UPDATE acp_settings SET setting_val = CASE setting_ref
+	WHEN 'main_website' THEN '".$_POST['main_url']."'
 	WHEN 'master_url' THEN '".$_POST['master_url']."'
 	WHEN 'assets_url' THEN '".$_POST['assets_url']."'
 	ELSE setting_val
