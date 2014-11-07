@@ -49,10 +49,24 @@ if(ltrim($base, '/'))
 
 $api = new API\Initalize();
 
-$klein->respond('GET', '/users/[i:id]?', function ($request, $response) use ($api) {
+$klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
 
 	$users = $api->loadClass('Users');
-    echo $users->listUsers();
+
+        if($request->param('uuid')){
+
+            $data = $users->listUsers($request->param('uuid'));
+            if(!$data){
+
+                $response->code(404);
+                return json_encode(array('message' => 'The requested UUID does not exist in the system.'));
+
+            }else
+                return json_encode($data, JSON_PRETTY_PRINT);
+
+
+        }else
+            return json_encode($users->listUsers(), JSON_PRETTY_PRINT);
 
 });
 
