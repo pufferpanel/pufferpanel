@@ -1,20 +1,20 @@
 <?php
 /*
-    PufferPanel - A Minecraft Server Management Panel
-    Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
 use \ORM as ORM;
@@ -36,7 +36,14 @@ $core->user->rebuildData($core->server->getData('owner_id'));
 if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
 
+/*
+ *	Validate Server Name
+ */
+if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
+	Components\Page::redirect('../../view.php?id=1&error=server_name&disp=n_fail&tab=server_sett');
+
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+$server->name = $_POST['server_name'];
 $server->max_ram = $_POST['alloc_mem'];
 $server->disk_space = $_POST['alloc_disk'];
 $server->save();
