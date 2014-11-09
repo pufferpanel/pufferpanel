@@ -16,6 +16,8 @@
 		<div class="alert alert-danger">
 			{% if get.disp == 'n_fail' %}
 				The server name does not meet the requirements (4-35 characters, a-z A-Z 0-9 _ -).
+			{% elseif get.disp == 'o_fail' %}
+				The node daemon must be online before updating servers!
 			{% endif %}
 		</div>
 	{% endif %}
