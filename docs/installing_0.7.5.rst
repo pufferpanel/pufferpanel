@@ -59,7 +59,7 @@ Point your browser to ``http://<ip>/install/install`` and follow the instruction
 
 Cleaning Up
 -----------
-Delete the ``/panel/install/install`` directory and fix the file permissions in other directories.
+Delete the ``/panel/install`` directory and fix the file permissions in other directories.
 
 .. code-block:: sh
 
