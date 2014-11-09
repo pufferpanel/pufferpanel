@@ -55,11 +55,11 @@ You will need to add a non-root MySQL user for the panel to operate. Please run 
 
 Running the Installer
 ---------------------
-Point your browser to ``http://<ip>/admin/install`` and follow the instructions. This will set up the MySQL database, general settings, hashing information, and the root administrator account.
+Point your browser to ``http://<ip>/install`` and follow the instructions. This will set up the MySQL database, general settings, hashing information, and the root administrator account.
 
 Cleaning Up
 -----------
-Delete the ``/panel/admin/install`` directory and fix the file permissions in other directories.
+Delete the ``/panel/install`` directory and fix the file permissions in other directories.
 
 .. code-block:: sh
 
