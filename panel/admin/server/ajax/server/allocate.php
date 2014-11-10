@@ -42,6 +42,14 @@ if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 	Components\Page::redirect('../../view.php?id=1&error=server_name&disp=n_fail&tab=server_sett');
 
+error_log($core->server->nodeData('ip'),0);
+
+/*
+ * Check to see if GSD is online
+ */
+if(!fsockopen($core->server->nodeData('ip'),8003,$errCode,$errStr,3))
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=o_fail&tab=server_sett');
+
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 $server->name = $_POST['server_name'];
 $server->max_ram = $_POST['alloc_mem'];
