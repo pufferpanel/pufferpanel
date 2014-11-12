@@ -40,7 +40,7 @@ if(file_exists('../install.lock'))
 				<div class="col-2"></div>
 				<div class="col-8">
 					<div class="alert alert-info">For security reasons ensure it has a strong password and <strong>do not</strong> run this database under root credentials.</div>
-					<p>Please fill out the database connection information that you will be using. This database user only needs the following permissions: <code>CREATE</code>, <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>. This database user must be accessible from other servers.</p>
+					<p>Please fill out the database connection information that you will be using. This database user only needs the following permissions: <code>CREATE</code>, <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>DROP</code>, and <code>ALTER</code>. This database user must be accessible from other servers.</p>
 					<?php
 
                         /* Check Connection Information */
@@ -55,8 +55,8 @@ if(file_exists('../install.lock'))
 
                                 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                                    $fp = fopen('../../../../src/core/configuration.php.dist', 'w+');
-                                    fwrite($fp, "<?php
+                                $fp = fopen('../../../../src/core/configuration.php', 'w+');
+                                fwrite($fp, "<?php
 \$_INFO['sql_u'] = '".$_POST['sql_u']."';
 \$_INFO['sql_p'] = '".$_POST['sql_p']."';
 \$_INFO['sql_h'] = '".$_POST['sql_h']."';
@@ -65,12 +65,9 @@ if(file_exists('../install.lock'))
 \$_INFO['sql_ssl_client-key'] = '/path/to/client-key.pem';
 \$_INFO['sql_ssl_client-cert'] = '/path/to/client-cert.pem';
 \$_INFO['sql_ssl_ca-cert'] = '/path/to/ca-cert.pem';");
-                                    fclose($fp);
+                                fclose($fp);
 
-                                    if(!rename('../../../../src/core/configuration.php.dist', '../../../../src/core/configuration.php'))
-                                    	echo '<div class="alert alert-danger">Permission error encountered when trying to rename your configuration file. Please ensure its directory is 0777.</div>';
-                                    else
-                                    	exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
+                                exit('<meta http-equiv="refresh" content="0;url=tables.php"/>');
 
                             }catch (PDOException $e) {
 

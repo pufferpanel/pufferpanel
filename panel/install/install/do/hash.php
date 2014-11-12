@@ -40,18 +40,18 @@ if(file_exists('../install.lock'))
 				<div class="col-2"></div>
 				<div class="col-8">
 					<div class="alert alert-danger">Do not move on to the next step until you have done so, and have entered the specific file location for this hash.</div>
-					<p>PufferPanel encrypts sensitive ftp password information with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key on all of the servers running PufferPanel. You can generate a key below that should be placed in a file that PHP can access, but is outside of the public web root. We suggest <code>/etc/hashfile.txt</code>.</p>
+					<p>PufferPanel encrypts some sensitive information (not account passwords) with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key that PufferPanel can use. Please execute the command below to create this encryption key.</p>
 					<?php
 
                         if(isset($_POST['hash_do'])){
 
-                            if(fopen($_POST['hash'], 'r')){
+                            if(fopen('/etc/HASHFILE', 'r')){
 
                                 $fp = fopen('../../../../src/core/configuration.php', 'a+');
                                 fwrite($fp, "
 
 if(!defined('HASH'))
-	define('HASH', '".$_POST['hash']."');");
+	define('HASH', '/etc/HASHFILE');");
                                 fclose($fp);
 
                                 exit('<meta http-equiv="refresh" content="0;url=account.php"/>');
@@ -64,29 +64,21 @@ if(!defined('HASH'))
 
                         }
 
-                    ?>
-					<h5><strong>Here is a randomly generated encryption key you can use:</strong></h5>
-					<code>
-					<?php
 						/* Make File */
 						$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*-=+";
 						$randkey = "";
 
-						for ($i=0; $i<64; $i++){
+						for ($i=0; $i<48; $i++){
 						    $randkey .= substr($keyset, rand(0, strlen($keyset)-1), 1);
 						}
 
-						echo $randkey;
 					?>
-					</code>
+					<div class="well">
+						<h5>Execute the Command Below on your Server:</h5>
+						<p><code>sudo echo "<?php echo $randkey; ?>" > /etc/HASHFILE</code></p>
+					</div>
 					<hr />
 					<form action="hash.php" method="post">
-					    <div class="form-group">
-					    	<label for="hash" class="control-label">Hash File Location</label>
-					    	<div>
-					    		<input type="text" class="form-control" name="hash" placeholder="/etc/hashfile.txt" autocomplete="off" />
-					    	</div>
-					    </div>
 					    <div class="form-group">
 					    	<div>
 					    		<input type="submit" class="btn btn-primary" name="hash_do" value="Continue &rarr;" />

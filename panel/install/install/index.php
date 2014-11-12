@@ -39,34 +39,45 @@ if(file_exists('install.lock'))
 			<div class="row">
 				<div class="col-2"></div>
 				<div class="col-8">
-					<div class="panel panel-info">
-						<div class="panel-heading">
-							<h3 class="panel-title">Installer Information</h3>
-						</div>
-						<div class="panel-body">
-							<p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/core</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
-							<p>You are installing version <code><?php echo trim(@file_get_contents('../../../.git/HEAD')); ?></code>. Please keep track of this information as we may request it when you report bugs.</p>
-						</div>
+					<div class="well">
+						<p>When this installer finishes please manually change the permissions back to <code>0755</code> for the <code>/src/core</code> folder, and delete this installer. Please set the permissions on the <code>configuration.php</code> file to <code>0444</code>.</p>
 					</div>
+					<h3>Detailed Version Information</h3>
+					<div class="well well-sm">
+						<?php
+
+							if(is_dir('../../../.git')){
+
+								$head = trim(file_get_contents('../../../.git/HEAD'));
+								if(is_array(explode('/', $head))){
+									list($ignore, $path) =  explode(" ", $head);
+									$version = trim(file_get_contents('../../../src/versions/current')).' ('.$head.') (sha: '.substr(trim(file_get_contents('../../../.git/'.$path)), 0 ,8).')';
+								}else
+									$version = trim(file_get_contents('../../../src/versions/current')).' ('.$head.')';
+
+							}else
+								$version = 'Must Install using Git';
+
+						?>
+						<code><?php echo $version; ?></code>
+					</div>
+					<h3>Installer Comments</h3>
 					<?php
 
-						/* Permissions Checking */
-						$successList = null; $failedList = null;
 						$continue = true;
-
 						/*
-						 * Fail if not installed with git
+						 * Fail if not Installed with Git
 						 */
-						if(!@is_dir('../../../.git')){
+						if(!is_dir('../../../.git')){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">Incompatable Install Method</h3>
-								</div>
-								<div class="panel-body">
-									<p class="text-danger">This panel <strong>must</strong> be installed using `git clone` on your server. Please re-read the wiki and follow the directions correctly.</p>
-								</div>
-							</div><hr />';
+									<div class="panel-heading">
+										<h3 class="panel-title">Incompatable Install Method</h3>
+									</div>
+									<div class="panel-body">
+										<p class="text-danger">This panel <strong>must</strong> be installed using <code>git clone</code> on your server. Please re-read the documentatioin and follow the directions correctly.</p>
+									</div>
+								</div>';
 							$continue = false;
 
 						}
@@ -74,16 +85,16 @@ if(file_exists('install.lock'))
 						/*
 						* Fail if not composer hasn't been run
 						*/
-						if(!@is_dir('../../../vendor')){
+						if(!is_dir('../../../vendor')){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">Run Composer</h3>
-								</div>
-								<div class="panel-body">
-									<p class="text-danger">This panel <strong>must</strong> have composer run before being installed. Please double check the wiki for instructions on doing this.</p>
-								</div>
-							</div><hr />';
+									<div class="panel-heading">
+										<h3 class="panel-title">Run Composer</h3>
+									</div>
+									<div class="panel-body">
+										<p class="text-danger">This panel <strong>must</strong> have composer run before being installed. Please double check the documentation for instructions on doing this.</p>
+									</div>
+								</div>';
 							$continue = false;
 
 						}
@@ -94,208 +105,89 @@ if(file_exists('install.lock'))
 						if(version_compare(PHP_VERSION, "5.5.0") < 0){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">PHP version is not compatible</h3>
-								</div>
-								<div class="panel-body">
-									<p class="text-danger">Minimum Required Version: <code>5.5.0</code><br />
-									Currently Installed: <code>'.PHP_VERSION.'</code></p>
-								</div>
-							</div><hr />';
+									<div class="panel-heading">
+										<h3 class="panel-title">PHP Version too Low</h3>
+									</div>
+									<div class="panel-body">
+										<p class="text-danger">Minimum Required Version: <code>5.5.0</code><br />
+										Currently Installed: <code>'.PHP_VERSION.'</code></p>
+									</div>
+								</div>';
 							$continue = false;
 
 						}
 
 						/*
-						 * Check Configuration File
+						 * Check Folder CHMOD Permissions
 						 */
-						if(substr(sprintf('%o', fileperms('../../../src/core/configuration.php.dist')), -4) == "0666")
-							$successList .= '<p class="text-success"><code>/src/core/configuration.php.dist</code> is correctly CHMOD\'d.</p>';
-						else
-							$failedList .= '<p class="text-danger"><code>/src/core/configuration.php.dist</code> is improperly CHMOD\'d. It should be 0666.</p>';
+						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) < "0755")
+							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0755.</p>';
 
+						if(substr(sprintf('%o', fileperms('../install')), -4) < "0755")
+							$failedList .= '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0755.</p>';
 
-						/*
-						 * Check core Folder
-						 */
-						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) == "0777")
-							$successList .= '<p class="text-success"><code>/src/core</code> is correctly CHMOD\'d.</p>';
-						else
-							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						if(substr(sprintf('%o', fileperms('do')), -4) < "0755")
+							$failedList .= '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0755.</p>';
 
-						/*
-						 * Check Installer Folder
-						 */
-						if(substr(sprintf('%o', fileperms('../install')), -4) == "0777")
-							$successList .= '<p class="text-success"><code>/panel/admin/install</code> is correctly CHMOD\'d.</p>';
-						else
-							$failedList .= '<p class="text-danger"><code>/panel/admin/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
-
-						/*
-						 * Check Installer Process Folder
-						 */
-						if(substr(sprintf('%o', fileperms('do')), -4) == "0777")
-							$successList .= '<p class="text-success"><code>/panel/admin/install/do</code> is correctly CHMOD\'d.</p><br />';
-						else
-							$failedList .= '<p class="text-danger"><code>/panel/admin/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
-
-						/*
-						 * Output
-						 */
 						if(!is_null($failedList)){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">Failed CHMOD Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$failedList.'
-								</div>
-							</div><hr />';
+									<div class="panel-heading">
+										<h3 class="panel-title">Failed CHMOD Checks</h3>
+									</div>
+									<div class="panel-body">
+										'.$failedList.'
+									</div>
+								</div>';
+
+							$continue = false;
 
 						}
 
-						if(!is_null($successList)){
+						/* Check for Required Dependencies */
+						$failedList = null;
+						$list = array('curl', 'hash', 'openssl', 'mcrypt', 'PDO', 'pdo_mysql');
+						foreach($list as $extension)
+							if(!extension_loaded($extension))
+								$failedList .= '<p class="text-danger">The <code>php-'.$extension.'</code> extension was not able to be loaded.</p>';
 
-							echo '<div class="panel panel-success">
-								<div class="panel-heading">
-									<h3 class="panel-title">Passed CHMOD Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$successList.'
-								</div>
-							</div>';
-
-						}
-
-					?>
-
-					<hr />
-					<p><?php
-
-						$successList = null; $failedList = null;
-
-						/* List of Required Dependencies */
-						$list = array(
-							'curl',
-							'hash',
-							'openssl',
-							'mcrypt',
-							'PDO',
-							'pdo_mysql'
-						);
-
-						/*
-						 * Check for the Dependencies
-						 */
-						foreach($list as $ext) {
-
-							if(extension_loaded($ext))
-								$successList .= '<p class="text-success">The php-'.$ext.' extension was loaded.</p>';
-							else {
-								$failedList .= '<p class="text-danger"><strong>The php-'.$ext.' extension was not loaded.</strong></p>';
-								$continue = false;
-							}
-
-						}
-
-						/*
-						 * Output
-						 */
 						if(!is_null($failedList)){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">Failed Dependencies Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$failedList.'
-								</div>
-							</div>';
+									<div class="panel-heading">
+										<h3 class="panel-title">Failed Dependencies Checks</h3>
+									</div>
+									<div class="panel-body">
+										'.$failedList.'
+									</div>
+								</div>';
 
 						}
 
-						if(!is_null($successList)){
+						/* Check for Required Functions */
+						$failedList = null;
+						$functions = array('fopen', 'fclose', 'fwrite', 'session_start', 'socket_set_option', 'socket_send', 'socket_connect', 'socket_create', 'stream_set_timeout', 'fsockopen', 'crypt', 'hash', 'curl_init', 'curl_setopt', 'curl_exec', 'curl_close');
+						foreach($functions as $function)
+							if(!function_exists($function))
+								$failedList .= '<p class="text-danger"><code>'.$function.'()</code> is not enabled.</p>';
 
-							echo '<div class="panel panel-success">
-								<div class="panel-heading">
-									<h3 class="panel-title">Passed Dependencies Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$successList.'
-								</div>
-							</div>';
-
-						}
-
-					?></p>
-					<hr />
-					<p><?php
-
-						$successList = null; $failedList = null;
-
-						/* List of Required Functions */
-						$functions = array(
-							'fopen',
-							'fclose',
-							'fwrite',
-							'session_start',
-							'socket_set_option',
-							'socket_send',
-							'socket_connect',
-							'socket_create',
-							'stream_set_timeout',
-							'fsockopen',
-							'crypt',
-							'hash'
-						);
-
-						/*
-						 * Check for the Functions
-						 */
-						foreach($functions as $fct) {
-
-							if(function_exists($fct))
-								$successList .= '<p class="text-success">'.$fct.'() is enabled.</p>';
-							else {
-								$failedList .= '<p class="text-danger"><strong>'.$fct.'() is not enabled.</strong></p>';
-								$continue = false;
-							}
-
-						}
-
-						/*
-						 * Output
-						 */
 						if(!is_null($failedList)){
 
 							echo '<div class="panel panel-danger">
-								<div class="panel-heading">
-									<h3 class="panel-title">Failed Function Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$failedList.'
-								</div>
-							</div>';
+									<div class="panel-heading">
+										<h3 class="panel-title">Failed Function Checks</h3>
+									</div>
+									<div class="panel-body">
+										'.$failedList.'
+									</div>
+								</div>';
+
+							$continue = false;
 
 						}
 
-						if(!is_null($successList)){
-
-							echo '<div class="panel panel-success">
-								<div class="panel-heading">
-									<h3 class="panel-title">Passed Function Checks</h3>
-								</div>
-								<div class="panel-body">
-									'.$successList.'
-								</div>
-							</div>';
-
-						}
-
-					?></p>
-					<hr />
-					<?php echo ($continue === true) ? '<a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix missing extensions and functions before continuing.</div>'; ?>
+					echo ($continue === true) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captian!</p></div><a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
+				?>
 				</div>
 				<div class="col-2"></div>
 			</div>

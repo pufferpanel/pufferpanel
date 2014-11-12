@@ -56,6 +56,13 @@ if(file_exists('../install.lock'))
 
 							$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+							foreach($_POST as $id => $val)
+								if(in_array($id, array('master_url', 'main_website', 'assets_url')))
+									if(!preg_match('/^((https?:){0,1})(\/\/){1}([-\d\w\/.]*)$/', $val))
+										Components\Page::redirect('../urls.php?error='.$id);
+									else
+										$_POST[$id] = preg_replace('/^(http:|https:)(.*)?$/', '$2', $val);
+
 					        $prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					            ('company_name', :cname),
 					            ('master_url', :murl),
@@ -81,7 +88,6 @@ if(file_exists('../install.lock'))
 					            ':smail' => $_POST['sendmail_email'],
 					            ':mwebsite' => $_POST['main_website'],
 					            ':aurl' => $_POST['assets_url'],
-					            ':mpackdir' => $_POST['modpack_dir']
 					        ));
 
 					        exit('<meta http-equiv="refresh" content="0;url=hash.php"/>');
@@ -100,31 +106,25 @@ if(file_exists('../install.lock'))
 							<div class="form-group">
 								<label for="main_website" class="control-label">Main Website URL</label>
 								<div>
-									<input type="text" class="form-control" name="main_website" value="//<?php echo $_SERVER['HTTP_HOST']; ?>/" autocomplete="off" />
+									<input type="text" class="form-control" name="main_website" value="http://<?php echo $_SERVER['HTTP_HOST']; ?>/" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="master_url" class="control-label">PufferPanel Master URL</label>
 								<div>
-									<input type="text" class="form-control" name="master_url" value="<?php echo str_replace("admin/install/do/settings.php", "", '//'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>" autocomplete="off" />
+									<input type="text" class="form-control" name="master_url" value="<?php echo str_replace("install/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="assets_url" class="control-label">PufferPanel Assets URL</label>
 								<div>
-									<input type="text" class="form-control" name="assets_url" value="<?php echo str_replace("admin/install/do/settings.php", "", '//'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']).'assets/'; ?>" autocomplete="off" />
+									<input type="text" class="form-control" name="assets_url" value="<?php echo str_replace("install/install/do/settings.php", "", 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']).'assets/'; ?>" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="sendmail_email" class="control-label">Sendmail Email</label>
 								<div>
 									<input type="text" class="form-control" name="sendmail_email" autocomplete="off" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="modpack_dir" class="control-label">Modpack Directory</label>
-								<div>
-									<input type="text" class="form-control" name="modpack_dir" value="/srv/modpacks/" autocomplete="off" />
 								</div>
 							</div>
 							<div class="form-group">

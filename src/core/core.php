@@ -116,7 +116,6 @@ $core->files = new Files();
  */
 if($core->settings->get('https') == 1)
 	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
-		http_response_code(302);
 		header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	}
 
