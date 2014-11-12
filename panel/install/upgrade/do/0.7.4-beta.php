@@ -37,9 +37,7 @@ function gen_UUID(){
 }
 
 // update acp_settings table
-$mysql->exec("ALTER TABLE users
-				ADD COLUMN uuid varchar(36) NOT NULL AFTER whmcs_id
-			");
+$mysql->exec("ALTER TABLE users ADD COLUMN uuid varchar(36) NOT NULL AFTER whmcs_id");
 
 // set a uuid for each user
 $results = $mysql->prepare("SELECT * FROM `users`");
