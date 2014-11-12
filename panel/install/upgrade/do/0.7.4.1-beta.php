@@ -28,16 +28,16 @@ $mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // update acp_settings table
 $mysql->exec("ALTER TABLE acp_settings
-				ADD COLUMN id int(1) unsigned NOT NULL AUTO_INCREMENT FIRST,
-				ADD PRIMARY KEY (id)
-			");
+		ADD COLUMN id int(1) unsigned NOT NULL AUTO_INCREMENT FIRST,
+		ADD PRIMARY KEY (id)
+	");
 
 // update nodes table
-$mysql->exec("ALTER TABLE acp_settings
-				ADD COLUMN gsd_listen int(1) DEFAULT '8003' AFTER gsd_secret,
-				ADD COLUMN gsd_console int(1) DEFAULT '8031' AFTER gsd_listen,
-				ADD COLUMN gsd_server_dir tinytext DEFAULT '/home/' AFTER gsd_console
-			");
+$mysql->exec("ALTER TABLE nodes
+		ADD COLUMN gsd_listen int(1) DEFAULT '8003' AFTER gsd_secret,
+		ADD COLUMN gsd_console int(1) DEFAULT '8031' AFTER gsd_listen,
+		ADD COLUMN gsd_server_dir tinytext DEFAULT '/home/' AFTER gsd_console
+	");
 
 header('Location: ../finished.php');
 ?>
