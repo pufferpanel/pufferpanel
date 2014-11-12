@@ -58,19 +58,25 @@
 			<script type="text/javascript">
 			$(document).ready(function(){
 				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
-				$(".dynUpdate").each(function(index, data){
-					var connection = $(this).attr("id");
-					var element = $(this);
-					$.ajax({
-						type: "POST",
-						url: "{{ settings.master_url }}ajax/get_status.php",
-						data: { server: connection },
-						success: function(data) {
-								element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-								element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
-						}
+				function updateServerStatus() {
+					$(".dynUpdate").each(function(index, data){
+						$("#applyUpdate").removeClass("fa-circle");
+						$("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
+						var connection = $(this).attr("id");
+						var element = $(this);
+						$.ajax({
+							type: "POST",
+							url: "{{ settings.master_url }}ajax/get_status.php",
+							data: { server: connection },
+							success: function(data) {
+									element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+									element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+							}
+						});
 					});
-				});
+				}
+				updateServerStatus();
+				setInterval(updateServerStatus, 15000);
 			});
 			</script>
 		</div>

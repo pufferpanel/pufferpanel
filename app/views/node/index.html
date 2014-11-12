@@ -38,23 +38,19 @@
 	</ul><br />
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
-			<div class="col-12">
-				<h3 class="nopad">Memory Usage (Mb)</h3><hr />
-				<div class="row">
-					<canvas id="memoryChart" width="600" height="150"></canvas>
+			<div class="row">
+				<div class="col-6">
+					<h3 class="nopad">Memory Usage</h3><hr />
+					<div class="row">
+						<canvas id="memoryChart" width="300" height="150"></canvas>
+					</div>
 				</div>
-			</div>
-			<div class="col-12">
-				<h3 class="nopad">CPU Usage (Percentage)</h3><hr />
-				<div class="row">
-					<canvas id="cpuChart" width="600" height="150"></canvas>
+				<div class="col-6">
+					<h3 class="nopad">CPU Usage</h3><hr />
+					<div class="row">
+						<canvas id="cpuChart" width="300" height="150"></canvas>
+					</div>
 				</div>
-			</div>
-			<div class="col-12">
-				<h3>{{ lang.node_overview_players_h5 }}</h3><hr />
-				<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_overview_collect_usage }}</div>
-				<span id="toggle_players" style="display:none;">
-					<p class="text-muted">{{ lang.node_overview_no_players }}</p>
 			</div>
 			<div class="col-12">
 				<h3>{{ lang.node_overview_information_h1 }}</h3><hr />
@@ -139,9 +135,6 @@
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
-		Date.prototype.timeNow = function () {
-			return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
-		}
 		var socket = io('http://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
@@ -150,24 +143,24 @@
 		var cpuChartData = new Chart(cty).Line(cpuChartData, {tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %}});
 		socket.on('process', function (data) {
 			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], currentTime.timeNow());memoryChart.removeData();
-			cpuChartData.addData([data.process.cpu], currentTime.timeNow());cpuChartData.removeData();
+			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");memoryChart.removeData();
+			cpuChartData.addData([data.process.cpu], "");cpuChartData.removeData();
 		});
-		socket.on('query', function(data){
-			if($("#players_notice").is(":visible")){
-				$("#players_notice").hide();
-				$("#toggle_players").show();
-			}
-			if(data.query.players.length !== 0){
-				$("#toggle_players").html("");
-				$.each(data.query.players, function(id, name) {
-					$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
-				});
-			}else{
-				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-			}
-			$("img[data-toggle='tooltip']").tooltip();
-		});
+		// socket.on('query', function(data){
+		// 	if($("#players_notice").is(":visible")){
+		// 		$("#players_notice").hide();
+		// 		$("#toggle_players").show();
+		// 	}
+		// 	if(data.query.players.length !== 0){
+		// 		$("#toggle_players").html("");
+		// 		$.each(data.query.players, function(id, name) {
+		// 			$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
+		// 		});
+		// 	}else{
+		// 		$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
+		// 	}
+		// 	$("img[data-toggle='tooltip']").tooltip();
+		// });
 		{% if permission.console.view == true %}
 			socket.on('console', function (data) {
 				$("#live_console").val($("#live_console").val() + data.l);
