@@ -6,7 +6,7 @@
     	"bugsnag/bugsnag": "2.*",
     	"christian-riesen/otp": "1.*",
         "j4mie/idiorm": "1.5.1",
-        "klein/klein": "2.0.2",
+        "klein/klein": "2.1.*",
     	"mandrill/mandrill": "1.0.52",
     	"sendgrid/sendgrid": "2.0.6",
     	"tracy/tracy": "2.2.*",
