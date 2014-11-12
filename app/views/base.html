@@ -60,7 +60,7 @@
 				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
 				function updateServerStatus() {
 					$(".dynUpdate").each(function(index, data){
-						$("#applyUpdate").removeClass("fa-circle");
+						$("#applyUpdate").removeClass("fa-circle").css('color', '#fff');
 						$("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 						var connection = $(this).attr("id");
 						var element = $(this);
