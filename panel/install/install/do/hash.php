@@ -65,7 +65,7 @@ if(!defined('HASH'))
                         }
 
 						/* Make File */
-						$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*-=+";
+						$keyset  = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~@#$%^&*-=+";
 						$randkey = "";
 
 						for ($i=0; $i<48; $i++){
