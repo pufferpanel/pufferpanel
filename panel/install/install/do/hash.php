@@ -40,12 +40,12 @@ if(file_exists('../install.lock'))
 				<div class="col-2"></div>
 				<div class="col-8">
 					<div class="alert alert-danger">Do not move on to the next step until you have done so, and have entered the specific file location for this hash.</div>
-					<p>PufferPanel encrypts some sensitive information (not account passwords) with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this encryption you must provide an encryption key that PufferPanel can use. Please execute the command below to create this encryption key.</p>
+					<p>PufferPanel encrypts some sensitive information (not account passwords) with <code>AES-CBC-256</code> encryption prior to storing it in the database. In order to do this you must provide an encryption key that PufferPanel can use. Please execute the command below to create this.</p>
 					<?php
 
                         if(isset($_POST['hash_do'])){
 
-                            if(fopen('/etc/HASHFILE', 'r')){
+                            if(@fopen('/etc/HASHFILE', 'r')){
 
                                 $fp = fopen('../../../../src/core/configuration.php', 'a+');
                                 fwrite($fp, "
