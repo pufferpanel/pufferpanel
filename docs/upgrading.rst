@@ -10,6 +10,21 @@ If you are running this upgrader and are updating from versions prior to ``0.7.5
 
   GRANT ALTER, DROP ON database.* TO 'user'@'localhost';
   
+Update the Code Base
+--------------------
+Thanks to git updating the code is a very simple process. Simply run the commands below to update the code.
+
+.. code-block:: sh
+
+  [$]~ git fetch --tags
+  [$]~ git checkout tags/<version>
+  
+If you don't know what version is the latest simply run the command below to list them all and find the most recent.
+
+.. code-block:: sh
+
+  [$]~ git tags -l
+  
 Running the Upgrader
 --------------------
 Running the upgrader is a very simple step and often requires no extra dependencies to be installed on your server.
