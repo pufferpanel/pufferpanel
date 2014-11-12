@@ -75,7 +75,7 @@ if(!defined('HASH'))
 					?>
 					<div class="well">
 						<h5>Execute the Command Below on your Server:</h5>
-						<p><code>sudo echo "<?php echo $randkey; ?>" > /etc/HASHFILE</code></p>
+						<p><code>sudo echo "<?php echo escapeshellcmd($randkey); ?>" > /etc/HASHFILE</code></p>
 					</div>
 					<hr />
 					<form action="hash.php" method="post">
