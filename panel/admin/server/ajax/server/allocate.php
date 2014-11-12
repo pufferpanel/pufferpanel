@@ -60,11 +60,11 @@ $server->save();
  * Build the Data
  */
 $url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id');
-$data = json_encode(array(
-	"variables" => array(
-		"-Xmx" => (int)$_POST['alloc_mem']
-	)
-));
+$data = array(
+	"variables" => json_encode(array(
+		"-Xmx" => $_POST['alloc_mem']."M"
+	))
+);
 
 /*
  * Run Query Aganist GSD
@@ -76,6 +76,8 @@ curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 ));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+curl_exec($curl);
+curl_close($curl);
 
 Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
 ?>
