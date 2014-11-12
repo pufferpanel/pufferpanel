@@ -81,33 +81,80 @@ foreach($lines as $id => $values)
 
 		list($ip, $ports) = explode('|', $values);
 
+		$portList = array();
 		$IPA = array_merge($IPA, array($ip => array()));
 		$IPP = array_merge($IPP, array($ip => array()));
 
-		if(explode('-',$ports) != false){
-			$ports = explode('-', $ports);
-			$rangeOne = intval($ports[0]);
-			$rangeTwo = intval($ports[1]);
-			$i = 0;
-			while($rangeOne <= $rangeTwo)
-			{
-				$ports[$i] = $rangeOne;
-				$i++;
-				$rangeOne++;
+		if(!strpos($ports, ",")){
+
+			// Possible a Range, or a Single Port
+			if(!strpos($ports, "-")) {
+
+				$portList[$ports] = 1;
+
+			}else{
+
+				// Range of Ports
+				$portRange = explode('-', $ports);
+				$r1 = intval($portRange[0]);
+				$r2 = intval($portRange[1]);
+
+				$i = 0;
+				while($r1 <= $r2) {
+
+					$portList[$i] = $r1;
+					$i++;
+					$r1++;
+
+				}
+
 			}
-		} else {
-			$ports = explode(',', $ports);
+
+
+		}else{
+
+			// Possible Mix of Ranges and Single Ports
+			if(!strpos($ports, "-")){
+
+				// No ranges
+				$portList = array_merge($portList, explode(",", $ports));
+
+			}else{
+
+				// Singles Mixed with Range
+				foreach(explode(",", $ports) as $id => $range){
+
+					if(!strpos($range, "-")) {
+
+						$portList = array_merge($portList, array($range));
+
+					}else{
+
+						// Range of Ports
+						$portRange = explode('-', $range);
+						$r1 = intval($portRange[0]);
+						$r2 = intval($portRange[1]);
+
+						$i = 0;
+						while($r1 <= $r2) {
+
+							$portList = array_merge($portList, array($r1));
+							$i++;
+							$r1++;
+
+						}
+
+					}
+
+				}
+
+			}
+
 		}
-		for($l=0; $l<count($ports); $l++)
-			{
 
-				/*
-				 * Validate Port Spacing
-				 */
-				if(!array_key_exists($l, $IPP[$ip]))
-					$IPP[$ip][$ports[$l]] = 1;
-
-			}
+		for($l=0; $l<count($portList); $l++)
+			if(!array_key_exists($l, $IPP[$ip]))
+				$IPP[$ip][$portList[$l]] = 1;
 
 		/*
 		 * Make sure Ports are in the array
