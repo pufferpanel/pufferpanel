@@ -69,7 +69,7 @@
 		"rest":{},
 		"console":{},
 		"ftp":{
-			"authurl": "{{ settings.master_url }}ajax/validate_ftp.php",
+			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",
 			"port": 21,
 			"host": "127.0.0.1"
 		}
