@@ -39,8 +39,8 @@ After running composer we need to setup the other folders for the installer so t
 .. code-block:: sh
 
     [$]~ chmod -R 0755 panel/install/install
-    [$]~ chmod -R 0755 src/core
-    [$]~ chmod -R 0755 src/logs
+    [$]~ chmod -R 0777 src/core
+    [$]~ chmod -R 0777 src/logs
 
 Configuring MySQL
 -----------------
@@ -64,6 +64,7 @@ Delete the ``/panel/install`` directory and fix the file permissions in other di
 .. code-block:: sh
 
     [$]~ rm -rf panel/install
+    [$]~ chmod -R 0755 src/core
     [$]~ chmod 0444 src/core/configuration.php
 
 Congratulations! You should have PufferPanel running smoothly at this point, enjoy the image below to celebrate your successes. From here, you should move on to `setting up your first node <installing_nodes/>`_.
