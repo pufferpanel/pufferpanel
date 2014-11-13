@@ -110,6 +110,27 @@ $klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use (
 
 });
 
+$klein->respond('GET', '/nodes/[:id]?', function ($request, $response) use ($api) {
+
+	$nodes = $api->loadClass('Nodes');
+
+		if($request->param('id')){
+
+			$data = $nodes->listNodes($request->param('id'));
+			if($data === false){
+
+				$response->code(404);
+				return json_encode(array('message' => 'The requested node does not exist in the system.'));
+
+			}else
+				return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+
+		}else
+			return json_encode($nodes->listNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+});
+
 $klein->onHttpError(function() {
 
 	http_response_code(404);
