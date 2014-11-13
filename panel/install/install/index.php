@@ -121,13 +121,13 @@ if(file_exists('install.lock'))
 						 * Check Folder CHMOD Permissions
 						 */
 						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0755.</p>';
+							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
 						if(substr(sprintf('%o', fileperms('../install')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0755.</p>';
+							$failedList .= '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
 						if(substr(sprintf('%o', fileperms('do')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0755.</p>';
+							$failedList .= '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
 						if(!is_null($failedList)){
 
