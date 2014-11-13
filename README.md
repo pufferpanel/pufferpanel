@@ -1,4 +1,4 @@
-[![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel) [![Docs Status](https://readthedocs.org/projects/pufferpanel/badge/?version=latest)](http://docs.pffr.me/en/latest/)
+[![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel) [![Documentation Status](https://readthedocs.org/projects/pufferpanel/badge/?version=latest)](https://docs.pufferpanel.com/en/latest/)
 
 # About PufferPanel
 PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/DaneEveritt/PufferPanel/master/LICENSE).
