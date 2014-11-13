@@ -80,7 +80,6 @@
 			<div class="tab-pane" id="console">
 				<div class="col-12">
 					<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
-					<button class="btn btn-link" data-toggle="modal" data-target="#pauseConsole" id="pause_console" style="position:absolute;bottom: 75px;right: 0;"><small><i class="fa fa-pause"></i></small></button>
 				</div>
 				<div class="col-6">
 					<hr />
@@ -104,6 +103,7 @@
 						<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
 						<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
 						<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
+						<button class="btn btn-primary btn-sm poke" data-toggle="modal" data-target="#pauseConsole" id="pause_console" style="position:absolute;bottom: 75px;right: 0;"><small><i class="fa fa-pause"></i></small></button>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
 				</div>
