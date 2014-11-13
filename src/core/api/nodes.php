@@ -24,20 +24,33 @@ use \ORM;
 */
 class Nodes {
 
+	/**
+	 * @param array $nodesData Empty array to initalize listig of all nodes.
+	 */
 	protected $nodesData = array();
 
 	/**
-	* Constructor Class
-	* @return void
-	*/
+	 * @param array $_requiredAddFields Array containing the names of all fields required to be included when adding a node.
+	 */
+	protected $_requiredAddFields = array('node', 'ip', 'ips', 'ports');
+
+	/**
+	 * @param array $_optionalAddFields Array containing the names of all fields that are optional when adding a node.
+	 */
+	protected $_optionalAddFields = array('fqdn', 'gsd_listen', 'gsd_console', 'gsd_server_dir');
+
+	/**
+	 * Constructor Class
+	 * @return void
+	 */
 	public function __construct() { }
 
 	/**
-	* Intermediate class for handling node data listing data calls.
-	*
-	* @param string $uuid UUID of user to return data about.
-	* @return array
-	*/
+	 * Intermediate class for handling node data listing data calls.
+	 *
+	 * @param string $uuid UUID of user to return data about.
+	 * @return array
+	 */
 	public function listNodes($id = null) {
 
 		if(is_null($id) || !is_numeric($id))
@@ -48,11 +61,11 @@ class Nodes {
 	}
 
 	/**
-	* Collects and returns data about a single node.
-	*
-	* @param string $id ID of the node to return data about.
-	* @return array
-	*/
+	 * Collects and returns data about a single node.
+	 *
+	 * @param string $id ID of the node to return data about.
+	 * @return array
+	 */
 	protected function singleNodeData($id) {
 
 		$this->node = ORM::forTable('users')->rawQuery("SELECT nodes.*, GROUP_CONCAT(servers.hash) AS servers FROM nodes LEFT JOIN servers ON servers.node = nodes.id WHERE nodes.id = :id LIMIT 1", array('id' => $id))->findOne();
@@ -78,10 +91,10 @@ class Nodes {
 	}
 
 	/**
-	* Collects and returns data about all servers in the system.
-	*
-	* @return array
-	*/
+	 * Collects and returns data about all servers in the system.
+	 *
+	 * @return array
+	 */
 	protected function allNodeData() {
 
 		$this->nodes = ORM::forTable('nodes')->findMany();
@@ -98,6 +111,18 @@ class Nodes {
 		}
 
 		return $this->nodesData;
+
+	}
+
+	/**
+	 * Collects and returns data about all servers in the system.
+	 *
+	 * @param array $data An array of all data to use to add the node to the database.
+	 * @return bool
+	 */
+	public function addNode($data = array()) {
+
+
 
 	}
 
