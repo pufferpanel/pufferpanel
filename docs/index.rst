@@ -37,6 +37,5 @@ User Documentation
 
     api
     installing
-    installing_0.7.5
     installing_nodes
     upgrading
