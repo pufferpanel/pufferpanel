@@ -1,6 +1,6 @@
 Installing PufferPanel 0.7.5+
 =============================
-This documentation has been wwritten for versions ``0.7.5`` and higher of PufferPanel. Please be aware that PufferPanel has not been tested with Windows based environments. The documentation on this wiki is written for unix systems, and has been tested on Ubuntu 14.04 LTS.
+This documentation has been written for versions ``0.7.5`` and higher of PufferPanel. Please be aware that PufferPanel has not been tested with Windows based environments. The documentation on this wiki is written for unix systems, and has been tested on Ubuntu 14.04 LTS.
 
 Dependencies
 ------------
