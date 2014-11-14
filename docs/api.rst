@@ -15,42 +15,13 @@ Errors & Status Codes
 
 ``401 Unauthorized`` - No valid API key provided.
 
-``402 Request Failed`` - Parameters were valid but request failed.
+``403 Forbidden`` - Request must be made using a secure connection.
 
 ``404 Not Found`` - The requested item doesn't exist.
 
+``409 Conflict`` - Conflict occured in the request.
+
 ``500 Server Error`` - Something went wrong on the server.
-
-Single Sign On
---------------
-``POST /sso``
-^^^^^^^^^^^^^
-Allows you to use PufferPanel as a single sign on system. Posting an email and password returns either a HTTP error, or a JSON string containing the users login token.
-In order to allow a seamless login to the panel you will need to set a cookie on your end named ``pp_auth_token`` with a value of the token returned.
-
-Setting the ``sso`` value to be ``false`` allows for you to simply check if the email and password combination is valid, it does not return any JSON data, only a HTTP status code.
-
-.. code-block:: json
-
-  {
-    "email": "some@example.com",
-    "password": "somepassword",
-    "sso": true
-  }
-
-.. code-block:: curl
-
-  curl -X POST -i \
-    -H "X-Access-Token: demo1111-2222-3333-4444-55556666" \
-    -H "Content-Type: application/json" \
-    -d '{"email":"some@example.com","password":"somepassword","sso":true}'
-    http://example.com/api/sso
-
-.. code-block:: json
-
-  {
-    "token": "XyZ"
-  }
 
 Users
 -----
@@ -60,7 +31,7 @@ Returns a list of all users who have an account on the panel.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/users
 
 .. code-block:: json
 
@@ -85,7 +56,7 @@ Returns information about the requested user.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 .. code-block:: json
 
@@ -115,7 +86,7 @@ Deletes a user given a specified ID.
 
 .. code-block
 
-  HTTP/1.x 200 OK
+  https/1.x 200 OK
 
 Servers
 -------
@@ -125,7 +96,7 @@ Returns a list of all servers that are on the system.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/servers
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/servers
 
 .. code-block:: json
 
@@ -152,7 +123,7 @@ Returns information about the requested server.
 
 .. code-block:: curl
 
-  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" http://example.com/api/servers/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/servers/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa
 
 .. code-block:: json
 
@@ -185,13 +156,122 @@ Deletes a server given a specified hash.
 
 Nodes
 -----
+``GET /nodes``
+^^^^^^^^^^^^^^^^^^^^
+Returns a list of all nodes that are on the system.
+
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/nodes
+
+.. code-block:: json
+
+    {
+        "1": {
+            "node": "My_First_Node",
+            "fqdn": "ec2-255-255-255-0.us-west-2.compute.amazonaws.com",
+            "ip": "255.255.255.0",
+            "ports": {
+                "255.255.255.1": {
+                    "ports_free": 5
+                },
+                "255.255.255.2": {
+                    "ports_free": 3
+                },
+                "255.255.255.3": {
+                    "ports_free": 6
+                }
+            }
+        },
+        "2": {
+            "node": "My_Second_Node",
+            "fqdn": "192.168.1.1",
+            "ip": "192.168.1.1",
+            "ports": {
+                "192.168.1.1": {
+                    "ports_free": 5
+                }
+            }
+        }
+    }
+
 ``GET /nodes/[:id]``
 ^^^^^^^^^^^^^^^^^^^^
 Returns information about the requested node.
 
+.. code-block:: curl
+
+  curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/nodes/1
+
+.. code-block:: json
+
+    {
+        "id": 1,
+        "node": "My_First_Node",
+        "fqdn": "ec2-255-255-255-0.us-west-2.compute.amazonaws.com",
+        "ip": "255.255.255.0",
+        "gsd_listen": 8003,
+        "gsd_console": 8031,
+        "gsd_server_dir": "/home/",
+        "ports": {
+            "255.255.255.1": {
+                "25565": 1,
+                "25566": 1,
+                "25567": 1
+            },
+            "255.255.255.2": {
+                "25565": 1,
+                "25566": 1,
+                "25567": 1,
+                "25568": 0,
+                "25569": 1,
+                "25570": 1
+            },
+            "255.255.255.3": {
+                "25565": 1,
+                "25566": 1,
+                "25567": 1,
+                "25568": 1,
+                "25569": 1,
+                "25570": 1
+            }
+        },
+        "servers": [
+            "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx"
+        ]
+    }
+
 ``POST /nodes``
 ^^^^^^^^^^^^^^^^^^
 Creates a new node based on data sent in a JSON request.
+
+.. code-block:: json
+
+    {
+        "node": "My_Third_Node",
+        "ip": "10.0.1.1",
+        "ips": "10.0.1.1|25565-25580\n10.0.1.2|25565,25570-25580,25590\n10.0.1.2|25565",
+        "(OPTIONAL) fqdn": "example.com",
+        "(OPTIONAL) gsd_listen": 8003,
+        "(OPTIONAL) gsd_console": 8031,
+        "(OPTIONAL) gsd_server_dir": "/home/",
+    }
+
+.. code-block:: curl
+
+  curl -X POST -i \
+    -H "X-Access-Token: demo1111-2222-3333-4444-55556666" \
+    -H "Content-Type: application/json" \
+    -d '{"node": "My_Third_Node","ip": "10.0.1.1","ips": "10.0.1.1|25565-25580\n10.0.1.2|25565,25570-25580,25590\n10.0.1.2|25565"}'
+    https://example.com/api/nodes
+
+.. code-block:: json
+
+  {
+    "id": 3,
+    "node": "My_Third_Node"
+  }
+
 
 ``PUT /nodes/[:id]``
 ^^^^^^^^^^^^^^^^^^^^
