@@ -91,8 +91,8 @@ class Nodes {
 				"node" => $this->node->node,
 				"fqdn" => $this->node->fqdn,
 				"ip" => $this->node->ip,
-				"gsd_listen" => $this->node->gsd_listen,
-				"gsd_console" => $this->node->gsd_console,
+				"gsd_listen" => (int) $this->node->gsd_listen,
+				"gsd_console" => (int) $this->node->gsd_console,
 				"gsd_server_dir" => $this->node->gsd_server_dir,
 				"ports" => json_decode($this->node->ports, true),
 				"servers" => (!empty($this->node->servers)) ? explode(',', $this->node->servers) : array()
