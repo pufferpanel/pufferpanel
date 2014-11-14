@@ -146,7 +146,7 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 
 		if(json_last_error() != "JSON_ERROR_NONE"){
 
-			$response->code(402);
+			$response->code(409);
 			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
 
 		}
