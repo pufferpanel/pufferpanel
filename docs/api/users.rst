@@ -139,6 +139,7 @@ The parameters below do not all have to be sent, you can send whichever one(s) y
 +------------+------------------------------------------------------------------------------------+
 | admin      | Wether or not this user is an administrator. Send ``1`` for yes, ``0`` for false.  |
 +------------+------------------------------------------------------------------------------------+
+
 .. code-block:: json
 
 	{
