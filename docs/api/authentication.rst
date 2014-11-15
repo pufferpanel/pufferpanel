@@ -1,6 +1,15 @@
 API Documentation
 =================
 
+Table of Contents
+-----------------
+.. toctree::
+    :maxdepth: 2
+
+    nodes
+    servers
+    users
+
 Authentication
 --------------
 Requests to the PufferPanel API should ideally be made over a secure (HTTPS) connection to prevent man in the middle attacks, and protect sensitive client data.

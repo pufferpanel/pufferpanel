@@ -35,7 +35,7 @@ User Documentation
 .. toctree::
     :maxdepth: 2
 
-    api
+    api/authentication
     installing
     installing_nodes
     upgrading
