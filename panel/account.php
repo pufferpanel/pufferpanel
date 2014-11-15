@@ -1,20 +1,20 @@
 <?php
 /*
-    PufferPanel - A Minecraft Server Management Panel
-    Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
 use \ORM as ORM;
@@ -91,9 +91,9 @@ if(isset($_GET['action'])){
 
 	}else if($_GET['action'] == 'notifications' && isset($_POST['password'])){
 
-        /* XSRF Check */
-        if($core->auth->XSRF(@$_POST['xsrf_notify'], '_notify') !== true)
-            $outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		/* XSRF Check */
+		if($core->auth->XSRF(@$_POST['xsrf_notify'], '_notify') !== true)
+			$outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
 		else {
 
 			if($core->auth->verifyPassword($core->user->getData('email'), $_POST['password']) === true){
@@ -103,12 +103,12 @@ if(isset($_GET['action'])){
 				$account->notify_login_f = $_POST['e_f'];
 				$account->save();
 
-	            $core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
+				$core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
 				$outputMessage = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
 
 			}else{
 
-	            $core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
+				$core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
 				$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 
 			}
@@ -117,9 +117,9 @@ if(isset($_GET['action'])){
 
 	}else if($_GET['action'] == 'email'){
 
-        /* XSRF Check */
-        if($core->auth->XSRF(@$_POST['xsrf_email'], '_email') !== true)
-        	$outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		/* XSRF Check */
+		if($core->auth->XSRF(@$_POST['xsrf_email'], '_email') !== true)
+			$outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
 		else {
 
 			/*
@@ -142,12 +142,12 @@ if(isset($_GET['action'])){
 						$account->email = $_POST['newemail'];
 						$account->save();
 
-		                $core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
+						$core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
 						$outputMessage = '<div class="alert alert-success">Your email has been updated successfully.</div>';
 
 					}else{
 
-		                $core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
+						$core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
 						$outputMessage = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
 
 					}
@@ -160,9 +160,9 @@ if(isset($_GET['action'])){
 
 	}else if($_GET['action'] == 'password'){
 
-        /* XSRF Check */
-        if($core->auth->XSRF(@$_POST['xsrf_pass'], '_pass') !== true)
-            $outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		/* XSRF Check */
+		if($core->auth->XSRF(@$_POST['xsrf_pass'], '_pass') !== true)
+			$outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
 		else {
 
 			if($core->auth->verifyPassword($core->user->getData('email'), $_POST['p_password']) === true){
@@ -186,11 +186,11 @@ if(isset($_GET['action'])){
 							 * Send Email
 							 */
 							$message = $core->email->buildEmail('password_changed', array(
-	                            'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
-	                            'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-	                        ))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Password Change Notification');
+								'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
+								'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
+							))->dispatch($core->user->getData('email'), $core->settings->get('company_name').' - Password Change Notification');
 
-	                    $core->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
+						$core->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
 						$outputMessage = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
 
 					}else
@@ -201,7 +201,7 @@ if(isset($_GET['action'])){
 
 			}else{
 
-	            $core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
+				$core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
 				$outputMessage = '<div class="alert alert-danger">Current account password is not correct.</div>';
 
 			}
@@ -225,11 +225,11 @@ if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf
 echo $twig->render(
 		'panel/account.html', array(
 			'output' => $outputMessage,
-            'xsrf' => array(
-                'pass' => $core->auth->XSRF(null, '_pass'),
-                'email' => $core->auth->XSRF(null, '_email'),
-                'notify' => $core->auth->XSRF(null, '_notify')
-            ),
+			'xsrf' => array(
+				'pass' => $core->auth->XSRF(null, '_pass'),
+				'email' => $core->auth->XSRF(null, '_email'),
+				'notify' => $core->auth->XSRF(null, '_notify')
+			),
 			'failed_login' => array(
 				'e_f' => array("value" => 1, "checked" => $nf1),
 				'e_f_2' => array("value" => 0, "checked" => $nf0)
