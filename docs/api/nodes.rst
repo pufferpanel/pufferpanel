@@ -1,7 +1,9 @@
-API: Nodes
-==========
+Nodes
+#####
 
-``GET`` /nodes
+List All Nodes
+==============
+``GET /nodes``
 --------------
 Returns a list of all nodes that are on the system.
 
@@ -44,8 +46,10 @@ Response
 		}
 	}
 
-``GET`` /nodes/[:id]
---------------------
+List Specific Node
+==================
+``GET /nodes/:id``
+------------------
 Returns information about the requested node.
 
 Parameters
@@ -102,7 +106,9 @@ Response
 		]
 	}
 
-``POST`` /nodes
+Create a New Node
+=================
+``POST /nodes``
 ---------------
 Creates a new node based on data sent in a JSON request.
 
@@ -152,7 +158,8 @@ Response
 		"node": "My_Third_Node"
 	}
 
-
-``PUT /nodes/[:id]``
-^^^^^^^^^^^^^^^^^^^^
+Update Node Information
+=======================
+``PUT /nodes/:id``
+------------------
 Updates node information.

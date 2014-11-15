@@ -36,6 +36,7 @@ User Documentation
     :maxdepth: 2
 
     api
+    api/*
     installing
     installing_nodes
     upgrading

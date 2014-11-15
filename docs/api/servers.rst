@@ -1,7 +1,9 @@
-API: Servers
-============
+Servers
+#######
 
-``GET`` /servers
+List All Servers
+================
+``GET /servers``
 ----------------
 Returns a list of all servers that are on the system.
 
@@ -32,8 +34,10 @@ Response
 		}
 	}
 
-``GET`` /servers/[:hash]
-------------------------
+List a Specific Server
+======================
+``GET /servers/:hash``
+----------------------
 Returns information about the requested server.
 
 Parameters
@@ -69,11 +73,17 @@ Response
 		"ftp_user": "mc-MY_DEMO_XyZab"
 	}
 
-``POST`` /servers
+Create a New Server
+===================
+``POST /servers``
 -----------------
 
-``PUT`` /servers/[:hash]
-------------------------
+Create a Server
+===============
+``PUT /servers/:hash``
+----------------------
 
-``DELETE``  /servers/[:hash]
-----------------------------
+Delete a Server
+===============
+``DELETE  /servers/:hash``
+--------------------------

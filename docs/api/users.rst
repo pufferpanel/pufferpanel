@@ -1,7 +1,9 @@
-API: Users
-==========
+Users
+#####
 
-``GET`` /users
+List All Users
+==============
+``GET /users``
 --------------
 Returns a list of all users who have an account on the panel.
 
@@ -30,8 +32,10 @@ Response
 		}
 	}
 
-``GET`` /users/[:uuid]
-----------------------
+List a Specific User
+====================
+``GET /users/:uuid``
+--------------------
 Returns information about the requested user.
 
 Parameters
@@ -63,7 +67,9 @@ Response
 		]
 	}
 
-``POST`` /users
+Create a New User
+=================
+``POST /users``
 ---------------
 Creates a new user based on data sent in a JSON request.
 
@@ -113,8 +119,10 @@ Response
 
 	HTTP/1.x 204 No Content
 
-``PUT`` /users/[:uuid]
-----------------------
+Update a User
+=============
+``PUT /users/:uuid``
+--------------------
 Updates user information.
 
 Parameters
@@ -155,8 +163,10 @@ Response
 
 	HTTP/1.x 204 No Content
 
-``DELETE``  /users/[:uuid]
---------------------------
+Delete a User
+=============
+``DELETE  /users/:uuid``
+------------------------
 Deletes a user given a specified UUID. This currently only disables the account and any associated servers.
 
 Parameters
