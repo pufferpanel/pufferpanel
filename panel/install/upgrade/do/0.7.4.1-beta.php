@@ -39,12 +39,12 @@ $mysql->exec("ALTER TABLE nodes
 		ADD COLUMN gsd_server_dir tinytext AFTER gsd_console
 	");
 
-$select = $mysql->prepare("SELECT `gsd_server_dir` FROM `nodes`");
+$select = $mysql->prepare("SELECT `id`, `gsd_server_dir` FROM `nodes`");
 $select->execute();
 
 while($row = $select->fetch()){
 	
-	$mysql->exec("UPDATE nodes SET `gsd_server_dir` = '/home/' WHERE `id` = ".$row['id'])
+	$mysql->exec("UPDATE nodes SET `gsd_server_dir` = '/home/' WHERE `id` = ".$row['id']);
 	
 }
 
