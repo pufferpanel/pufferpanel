@@ -8,7 +8,7 @@ Request
 ^^^^^^^
 .. code-block:: curl
 
-curl -X GET -i -H "X-Access-Token: ABCDEFGH-1234-5678-0000-abcdefgh" https://example.com/api/users
+	curl -X GET -i -H "X-Access-Token: ABCDEFGH-1234-5678-0000-abcdefgh" https://example.com/api/users
 
 Response
 ^^^^^^^^
@@ -96,7 +96,7 @@ Request
 ^^^^^^^
 .. code-block:: curl
 
-curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+	curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 Response
 ^^^^^^^^
