@@ -67,6 +67,6 @@ Delete the ``/panel/install`` directory and fix the file permissions in other di
     [$]~ chmod -R 0755 src/core
     [$]~ chmod 0444 src/core/configuration.php
 
-Congratulations! You should have PufferPanel running smoothly at this point, enjoy the image below to celebrate your successes. From here, you should move on to `setting up your first node <installing_nodes/>`_.
+Congratulations! You should have PufferPanel running smoothly at this point, enjoy the image below to celebrate your successes. From here, you should move on to `setting up your first node <../installing_nodes/>`_.
 
 .. image:: https://i.imgur.com/AAr6Gi7.jpg
