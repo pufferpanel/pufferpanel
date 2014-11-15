@@ -207,6 +207,17 @@ $klein->onHttpError(function() {
 				'POST' => array(),
 				'DELETE' => array(),
 				'PUT' => array()
+			),
+			'/nodes' => array(
+				'GET' => array(
+					'/' => 'List all nodes on the system.',
+					'/:id' => 'List detailed information about a specific node.'
+				),
+				'POST' => array(
+					'/' => 'Add a new node to the system.'
+				),
+				'DELETE' => array(),
+				'PUT' => array()
 			)
 		)
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
