@@ -58,27 +58,12 @@ class Nodes {
 	public function __construct() { }
 
 	/**
-	 * Intermediate class for handling node data listing data calls.
-	 *
-	 * @param string $uuid UUID of user to return data about.
-	 * @return array
-	 */
-	public function listNodes($id = null) {
-
-		if(is_null($id) || !is_numeric($id))
-			return $this->allNodeData();
-		else
-			return $this->singleNodeData($id);
-
-	}
-
-	/**
 	 * Collects and returns data about a single node.
 	 *
 	 * @param string $id ID of the node to return data about.
 	 * @return array
 	 */
-	protected function singleNodeData($id) {
+	public function getNode($id) {
 
 		$this->node = ORM::forTable('users')->rawQuery("SELECT nodes.*, GROUP_CONCAT(servers.hash) AS servers FROM nodes LEFT JOIN servers ON servers.node = nodes.id WHERE nodes.id = :id LIMIT 1", array('id' => $id))->findOne();
 
@@ -107,7 +92,7 @@ class Nodes {
 	 *
 	 * @return array
 	 */
-	protected function allNodeData() {
+	public function getNodes() {
 
 		$this->nodes = ORM::forTable('nodes')->findMany();
 

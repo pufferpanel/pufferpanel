@@ -71,21 +71,20 @@ $api = new API\Initalize();
 $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
 
 	$users = $api->loadClass('Users');
+	if($request->param('uuid')){
 
-		if($request->param('uuid')){
+		$data = $users->getUser($request->param('uuid'));
+		if($data === false){
 
-			$data = $users->listUsers($request->param('uuid'));
-			if($data === false){
-
-				$response->code(404);
-				return json_encode(array('message' => 'The requested user does not exist in the system.'));
-
-			}else
-				return json_encode($data, JSON_PRETTY_PRINT);
-
+			$response->code(404);
+			return json_encode(array('message' => 'The requested user does not exist in the system.'));
 
 		}else
-			return json_encode($users->listUsers(), JSON_PRETTY_PRINT);
+			return json_encode($data, JSON_PRETTY_PRINT);
+
+
+	}else
+		return json_encode($users->getUsers(), JSON_PRETTY_PRINT);
 
 });
 
@@ -95,7 +94,7 @@ $klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use (
 
 		if($request->param('hash')){
 
-			$data = $servers->listServers($request->param('hash'));
+			$data = $servers->getServer($request->param('hash'));
 			if($data === false){
 
 				$response->code(404);
@@ -106,7 +105,7 @@ $klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use (
 
 
 		}else
-			return json_encode($servers->listServers(), JSON_PRETTY_PRINT);
+			return json_encode($servers->getServers(), JSON_PRETTY_PRINT);
 
 });
 
@@ -116,7 +115,7 @@ $klein->respond('GET', '/nodes/[i:id]?', function ($request, $response) use ($ap
 
 		if($request->param('id')){
 
-			$data = $nodes->listNodes($request->param('id'));
+			$data = $nodes->getNode($request->param('id'));
 			if($data === false){
 
 				$response->code(404);
@@ -127,7 +126,7 @@ $klein->respond('GET', '/nodes/[i:id]?', function ($request, $response) use ($ap
 
 
 		}else
-			return json_encode($nodes->listNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+			return json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 });
 
@@ -159,13 +158,13 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 				case 1:
 					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
 					break;
-				case 1:
+				case 2:
 					return json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}'));
 					break;
-				case 1:
+				case 3:
 					return json_encode(array('message' => 'Invalid node IP provided.'));
 					break;
-				case 1:
+				case 4:
 					return json_encode(array('message' => 'Missing or invalid IP and Port information.'));
 					break;
 				default:

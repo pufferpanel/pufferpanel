@@ -33,27 +33,12 @@ class Users {
 	public function __construct() { }
 
 	/**
-	 * Intermediate class for handling user listing data calls.
-	 *
-	 * @param string $uuid UUID of user to return data about.
-	 * @return array
-	 */
-	public function listUsers($uuid = null) {
-
-		if(is_null($uuid))
-			return $this->allUserData();
-		else
-			return $this->singleUserData($uuid);
-
-	}
-
-	/**
 	 * Collects and returns data about a single user. Also provides detailed informaation about which servers the user owns.
 	 *
 	 * @param string $uuid UUID of user to return data about.
 	 * @return array
 	 */
-	protected function singleUserData($uuid) {
+	public function getUser($uuid) {
 
 		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id WHERE users.uuid = :uuid AND servers.active = 1 LIMIT 1", array('uuid' => $uuid))->findOne();
 
@@ -78,7 +63,7 @@ class Users {
 	 *
 	 * @return array
 	 */
-	protected function allUserData() {
+	public function getUsers() {
 
 		$this->users = ORM::forTable('users')->findMany();
 

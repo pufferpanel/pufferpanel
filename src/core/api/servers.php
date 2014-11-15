@@ -33,27 +33,12 @@ class Servers {
 	public function __construct() { }
 
 	/**
-	* Intermediate class for handling server data listing data calls.
-	*
-	* @param string $uuid UUID of user to return data about.
-	* @return array
-	*/
-	public function listServers($hash = null) {
-
-		if(is_null($hash))
-			return $this->allServerData();
-		else
-			return $this->singleServerData($hash);
-
-	}
-
-	/**
 	* Collects and returns data about a single server.
 	*
 	* @param string $hash Hash of server to return data about.
 	* @return array
 	*/
-	protected function singleServerData($hash) {
+	public function getServer($hash) {
 
 		$this->server = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->where('hash', $hash)->findOne();
 
@@ -85,7 +70,7 @@ class Servers {
 	*
 	* @return array
 	*/
-	protected function allServerData() {
+	public function getServers() {
 
 		$this->servers = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->findMany();
 

@@ -23,6 +23,8 @@ namespace PufferPanel\Core\API;
 */
 class Initalize {
 
+	const PP_NAMESPACE = 'PufferPanel\Core\API\\';
+
 	/**
 	* Constructor class
 	*
@@ -39,7 +41,7 @@ class Initalize {
 	public function loadClass($class) {
 
 		require __DIR__ . '/' . strtolower($class) . '.php';
-		$controller = "PufferPanel\Core\API\\$class";
+		$controller = self::PP_NAMESPACE.$class;
 
 		return new $controller;
 
