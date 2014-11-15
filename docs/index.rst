@@ -36,9 +36,6 @@ User Documentation
     :maxdepth: 2
 
     api
-    api/users
-    api/servers
-    api/nodes
     installing
     installing_nodes
     upgrading

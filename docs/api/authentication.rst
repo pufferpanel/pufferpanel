@@ -21,12 +21,3 @@ Errors & Status Codes
 ``409 Conflict`` - Conflict occured in the request.
 
 ``500 Server Error`` - Something went wrong on the server.
-
-Additional Documentation
-------------------------
-.. toctree::
-    :maxdepth: 2
-
-    api/nodes
-    api/servers
-    api/users
