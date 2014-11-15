@@ -14,20 +14,20 @@ Response
 ^^^^^^^^
 .. code-block:: json
 
-{
-	"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
-		"id": 1,
-		"username": "demoaccount",
-		"email": "some@example.com",
-		"admin": 1
-	},
-	"yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy": {
-		"id": 2,
-		"username": "demoaccount2",
-		"email":"two@example.com",
-		"admin": 0
+	{
+		"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx": {
+			"id": 1,
+			"username": "demoaccount",
+			"email": "some@example.com",
+			"admin": 1
+		},
+		"yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyy": {
+			"id": 2,
+			"username": "demoaccount2",
+			"email":"two@example.com",
+			"admin": 0
+		}
 	}
-}
 
 ``POST /users``
 ===============
