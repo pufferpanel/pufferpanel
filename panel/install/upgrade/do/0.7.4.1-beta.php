@@ -36,8 +36,17 @@ $mysql->exec("ALTER TABLE acp_settings
 $mysql->exec("ALTER TABLE nodes
 		ADD COLUMN gsd_listen int(1) DEFAULT '8003' AFTER gsd_secret,
 		ADD COLUMN gsd_console int(1) DEFAULT '8031' AFTER gsd_listen,
-		ADD COLUMN gsd_server_dir tinytext DEFAULT '/home/' AFTER gsd_console
+		ADD COLUMN gsd_server_dir tinytext AFTER gsd_console
 	");
+
+$select = $mysql->prepare("SELECT `gsd_server_dir` FROM `nodes`");
+$select->execute();
+
+while($row = $select->fetch()){
+	
+	$mysql->exec("UPDATE nodes SET `gsd_server_dir` = '/home/' WHERE `id` = ".$row['id'])
+	
+}
 
 header('Location: ../finished.php');
 ?>
