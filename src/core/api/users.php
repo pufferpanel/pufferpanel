@@ -24,6 +24,8 @@ use \ORM;
 */
 class Users {
 
+	protected $_allowedUpdateColumns = array();
+
 	protected $usersData = array();
 
 	/**
@@ -35,7 +37,8 @@ class Users {
 	/**
 	 * Collects and returns data about a single user. Also provides detailed informaation about which servers the user owns.
 	 *
-	 * @param string $uuid UUID of user to return data about.
+	 * @param string $uuid
+	 *		The UUID of user to return data about.
 	 * @return array
 	 */
 	public function getUser($uuid) {
@@ -81,6 +84,24 @@ class Users {
 		}
 
 		return $this->usersData;
+
+	}
+
+	/**
+	 * Updates information about a user given an array.
+	 *
+	 * @param string $uuid
+	 * 		The UUID of the user whom you are trying to update.
+	 * @param array $data
+	 * 		An array containing the coulmn names to update as keys and their value being the data you wish to replace it with.
+	 * @return bool|int
+	 * 		- Returns true if the operation was successful and all of the data was updated.
+	 * 		- Returns an integer if the operation failed which is then matched to an error in the API.
+	 */
+	public function updateUser($uuid, $data) {
+
+		$this->uuid = $uuid;
+		$this->data = $data;
 
 	}
 
