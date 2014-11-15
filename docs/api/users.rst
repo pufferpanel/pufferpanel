@@ -1,6 +1,7 @@
-# Users
+API: Users
+==========
 
-``GET /users``
+``GET`` /users
 ==============
 Returns a list of all users who have an account on the panel.
 
@@ -29,7 +30,40 @@ Response
 		}
 	}
 
-``POST /users``
+``GET`` /users/[:uuid]
+======================
+Returns information about the requested user.
+
+Parameters
+^^^^^^^^^^
++--------+------------+-----------+----------------------------------------------------------+
+| Method | Parameter  | Required  | Description                                              |
++========+============+===========+==========================================================+
+| GET    | uuid       | yes       | The UUID of the user that you wish to return data about. |
++--------+------------+-----------+----------------------------------------------------------+
+
+Request
+^^^^^^^
+.. code-block:: curl
+
+	curl -X GET -i -H "X-Access-Token: ABCDEFGH-1234-5678-0000-abcdefgh" https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+
+Response
+^^^^^^^^
+.. code-block:: json
+
+	{
+		"id": 1,
+		"username": "demoaccount",
+		"email": "some@example.com",
+		"admin": 1,
+		"servers": [
+			"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa",
+			"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
+		]
+	}
+
+``POST`` /users
 ===============
 Creates a new user based on data sent in a JSON request.
 
@@ -75,45 +109,11 @@ Request
 
 Response
 ^^^^^^^^
-.. code-block
+.. code-block::
 
 	HTTP/1.x 204 No Content
 
-
-``GET /users/[:uuid]``
-======================
-Returns information about the requested user.
-
-Parameters
-^^^^^^^^^^
-+--------+------------+-----------+----------------------------------------------------------+
-| Method | Parameter  | Required  | Description                                              |
-+========+============+===========+==========================================================+
-| GET    | uuid       | yes       | The UUID of the user that you wish to return data about. |
-+--------+------------+-----------+----------------------------------------------------------+
-
-Request
-^^^^^^^
-.. code-block:: curl
-
-	curl -X GET -i -H "X-Access-Token: demo1111-2222-3333-4444-55556666" https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-
-Response
-^^^^^^^^
-.. code-block:: json
-
-	{
-		"id": 1,
-		"username": "demoaccount",
-		"email": "some@example.com",
-		"admin": 1,
-		"servers": [
-			"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa",
-			"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbb"
-		]
-	}
-
-``PUT /users/[:uuid]``
+``PUT`` /users/[:uuid]
 ======================
 Updates user information.
 
@@ -141,13 +141,6 @@ The parameters below do not all have to be sent, you can send whichever one(s) y
 | admin      | Wether or not this user is an administrator. Send ``1`` for yes, ``0`` for false.  |
 +------------+------------------------------------------------------------------------------------+
 
-.. code-block:: json
-
-	{
-		"email": "new@example.com",
-		"admin": 0
-	}
-
 .. code-block:: curl
 
 	curl -X PUT -i \
@@ -158,11 +151,11 @@ The parameters below do not all have to be sent, you can send whichever one(s) y
 
 Response
 ^^^^^^^^
-.. code-block
+.. code-block::
 
 	HTTP/1.x 204 No Content
 
-``DELETE  /users/[:uuid]``
+``DELETE``  /users/[:uuid]
 ==========================
 Deletes a user given a specified UUID. This currently only disables the account and any associated servers.
 
@@ -182,6 +175,6 @@ Request
 
 Response
 ^^^^^^^^
-.. code-block
+.. code-block::
 
 	HTTP/1.x 204 No Content
