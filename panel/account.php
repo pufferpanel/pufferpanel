@@ -17,11 +17,12 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-$klein->respond('POST', '*', function($request, $response, $service) {
+$klein->respond('*', function($request, $response, $service, $app) {
+	$core = $app->core;
 	$loggedIn = $core->auth->isLoggedIn($request->server()['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true;
 	$service->sharedData()['loggedIn'] = $loggedIn;
 	if ($loggedIn) {
-		$response->redirect('index.php?login', 302);
+		$response->redirect('/index?login', 302);
 	}
 });
 
@@ -30,21 +31,21 @@ $klein->respond('POST', '/subuser', function($request, $reponse, $service, $app)
 		return;
 	}
 	if ($request->param('token') === null) {
-		$service->sharedData()['output'] = '<div class="alert alert-danger">The token you entered is invalid.</div>';
+		$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 	} else {
 		$core = $app->core;
 		if ($core->auth->XSRF($request->param('xsrf_notify'), '_notify') !== true) {
-			$service->sharedData()['output'] = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+			$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
 		} else {
 			list($encrypted, $iv) = explode('.', $request->param('token'));
 
 			if ($core->auth->decrypt($encrypted, $iv) != $core->user->getData('email')) {
-				$service->sharedData()['output'] = '<div class="alert alert-danger">The token you entered is invalid.</div>';
+				$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 			} else {
 				$query = ORM::forTable('account_change')->select('content')->where(array('key' => $request->param('token'), 'verified' => 0))->findOne();
 
 				if ($query === false) {
-					$service->sharedData()['output'] = '<div class="alert alert-danger">The token you entered is invalid.</div>';
+					$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 				} else {
 					$_perms = json_decode($query->content, true);
 
@@ -69,7 +70,7 @@ $klein->respond('POST', '/subuser', function($request, $reponse, $service, $app)
 					$info->save();
 					$query->save();
 
-					$service->sharedData()['output'] = '<div class="alert alert-success">You have been added as a subuser for <em>' . $info->name . '</em>!</div>';
+					$service->flash('<div class="alert alert-success">You have been added as a subuser for <em>' . $info->name . '</em>!</div>');
 				}
 			}
 		}
@@ -82,9 +83,9 @@ $klein->respond('POST', '/notifications', function($request, $reponse, $service,
 	}
 	$core = $app->core;
 	if ($request->param('password') === null) {
-		$service->sharedData()['output'] = '<div class="alert alert-danger">The password you entered is invalid.</div>';
+		$service->flash('<div class="alert alert-danger">The password you entered is invalid.</div>');
 	} else if ($core->auth->XSRF($request->param('xsrf_notify'), '_notify') !== true) {
-		$service->sharedData()['output'] = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		$service->flash('<div class="alert alert-danger">Unable to veriy the token. Please reload the page and try again.</div>');
 	} else {
 		if ($core->auth->verifyPassword($core->user->getData('email'), $request->param('password')) === true) {
 			$account = ORM::forTable('users')->findOne($core->user->getData('id'));
@@ -93,10 +94,10 @@ $klein->respond('POST', '/notifications', function($request, $reponse, $service,
 			$account->save();
 
 			$core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
-			$service->sharedData()['output'] = '<div class="alert alert-success">Your notification preferences have been updated.</div>';
+			$service->flash('<div class="alert alert-success">Your notification preferences have been updated.</div>');
 		} else {
 			$core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
-			$service->sharedData()['output'] = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
+			$service->flash('<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>');
 		}
 	}
 });
@@ -107,10 +108,10 @@ $klein->respond('POST', '/email', function($request, $reponse, $service, $app) {
 	}
 	$core = $app->core;
 	if (!$core->auth->XSRF($request->param('xsrf_email'), '_email')) {
-		$service->sharedData()['output'] = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
 	} else {
 		if ($request->param('newemail') === null || $request->param('password') === null) {
-			$service->sharedData()['output'] = '<div class="alert alert-danger">Not all variables were passed to the script.</div>';
+			$service->flash('<div class="alert alert-danger">Not all variables were passed to the script.</div>');
 		} else {
 			if ($core->auth->verifyPassword($core->user->getData('email'), $request->param('password')) === true) {
 				$account = ORM::forTable('users')->findOne($core->user->getData('id'));
@@ -118,10 +119,10 @@ $klein->respond('POST', '/email', function($request, $reponse, $service, $app) {
 				$account->save();
 
 				$core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
-				$service->sharedData()['output'] = '<div class="alert alert-success">Your email has been updated successfully.</div>';
+				$service->flash('<div class="alert alert-success">Your email has been updated successfully.</div>');
 			} else {
 				$core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
-				$service->sharedData()['output'] = '<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>';
+				$service->flash('<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>');
 			}
 		}
 	}
@@ -133,7 +134,7 @@ $klein->respond('POST', '/password', function($request, $reponse, $service, $app
 	}
 	$core = $app->core;
 	if ($core->auth->XSRF($request->param('xsrf_pass'), '_pass') !== true) {
-		$service->sharedData()['output'] = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
+		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
 	} else {
 
 		if ($core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))) {
@@ -153,22 +154,26 @@ $klein->respond('POST', '/password', function($request, $reponse, $service, $app
 					))->dispatch($core->user->getData('email'), $core->settings->get('company_name') . ' - Password Change Notification');
 
 					$core->log->getUrl()->addLog(0, 1, array('user.password_updated', 'Your account password was changed.'));
-					$service->sharedData()['output'] = '<div class="alert alert-success">Your password has been sucessfully changed!</div>';
+					$service->flash('<div class="alert alert-success">Your password has been sucessfully changed!</div>');
 				} else {
-					$service->sharedData()['output'] = '<div class="alert alert-danger">Your passwords did not match.</div>';
+					$service->flash('<div class="alert alert-danger">Your passwords did not match.</div>');
 				}
 			} else {
-				$service->sharedData()['output'] = '<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>';
+				$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case.</div>');
 			}
 		} else {
 
 			$core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
-			$service->sharedData()['output'] = '<div class="alert alert-danger">Current account password is not correct.</div>';
+			$service->flash('<div class="alert alert-danger">Current account password is not correct.</div>');
 		}
 	}
 });
 
-$klein->respond('POST', '*', function($request, $response, $service, $app) {
+$klein->respond('POST', '*', function($request, $response) {
+	$response->redirect('/account', 302);
+});
+
+$klein->respond('GET', '*', function($request, $response, $service, $app) {
 	$core = $app->core;
 	if ($core->user->getData('notify_login_s') == 1) {
 		$ns1 = 'checked="checked"';
@@ -204,7 +209,7 @@ $klein->respond('POST', '*', function($request, $response, $service, $app) {
 	}
 
 	return $app->twig->render('panel/account.html', array(
-				'output' => $service->sharedData()['output'],
+				'output' => $service->flashes(),
 				'xsrf' => array(
 					'pass' => $core->auth->XSRF(null, '_pass'),
 					'email' => $core->auth->XSRF(null, '_email'),
