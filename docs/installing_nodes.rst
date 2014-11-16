@@ -44,7 +44,7 @@ Install Game Server Daemon
 .. code-block:: sh
 
 	[$]~ cd /srv
-	[$]~ git clone https://github.com/DaneEveritt/gsd.git
+	[$]~ git clone https://github.com/PufferPanel/gsd.git
 
 This will download all of the files necessary and place them into the correct directory.
 
