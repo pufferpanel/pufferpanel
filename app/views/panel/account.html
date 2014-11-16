@@ -90,21 +90,23 @@
 					<div class="col-6 nopad">
 						<div class="form-group">
 							<h4>Success</h4>
-							{% for key, notify in success_login %}
 							<div class="radio">
-							    <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_s" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+							    <label class="alt-label"><input type="radio" name="e_s" value="1" {% if notify_login_s == '1' %}checked="checked"{% endif %} />{{ lang.settings_notify_email_me }}</label>
 							</div>
-							{% endfor %}
+							<div class="radio">
+								<labelclass="alt-label"><input type="radio" name="e_s" value="0" {% if notify_login_s == '0' %}checked="checked"{% endif %} />{{ lang.settings_notify_no_email_me }}</label>
+							</div>
 						</div>
 					</div>
 					<div class="col-6">
 						<div class="form-group">
 							<h4>Failed</h4>
-							{% for key, notify in failed_login %}
 							<div class="radio">
-						        <label for="{{ key }}" class="alt-label"><input type="radio" id="{{ key }}" name="e_f" value="{{ notify.value }}" {{ notify.checked }} />{% if notify.value == 1 %}{{ lang.settings_notify_email_me }}{% else %}{{ lang.settings_notify_no_email_me }}{% endif %}</label>
+								<label class="alt-label"><input type="radio" name="e_f" value="1" {% if notify_login_f == '1' %}checked="checked"{% endif %} />{{ lang.settings_notify_email_me }}</label>
 							</div>
-							{% endfor %}
+							<div class="radio">
+								<labelclass="alt-label"><input type="radio" name="e_f" value="0" {% if notify_login_f == '0' %}checked="checked"{% endif %} />{{ lang.settings_notify_no_email_me }}</label>
+							</div>
 						</div>
 					</div>
 				</div>

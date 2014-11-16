@@ -214,12 +214,6 @@ if(isset($_GET['action'])){
 }
 
 /*
- * Get Notification Preferences
- */
-if($core->user->getData('notify_login_s') == 1){ $ns1 = 'checked="checked"'; $ns0 = ''; }else{ $ns0 = 'checked="checked"'; $ns1 = ''; }
-if($core->user->getData('notify_login_f') == 1){ $nf1 = 'checked="checked"'; $nf0 = ''; }else{ $nf0 = 'checked="checked"'; $nf1 = ''; }
-
-/*
  * Display Page
  */
 echo $twig->render(
@@ -230,14 +224,8 @@ echo $twig->render(
 				'email' => $core->auth->XSRF(null, '_email'),
 				'notify' => $core->auth->XSRF(null, '_notify')
 			),
-			'failed_login' => array(
-				'e_f' => array("value" => 1, "checked" => $nf1),
-				'e_f_2' => array("value" => 0, "checked" => $nf0)
-			),
-			'success_login' => array(
-				'e_s' => array("value" => 1, "checked" => $ns1),
-				'e_s_2' => array("value" => 0, "checked" => $ns0)
-			),
+			'notify_login_s' => $core->user->getData('notify_login_s'),
+			'notify_login_f' => $core->user->getData('notify_login_f'),
 			'footer' => array(
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
