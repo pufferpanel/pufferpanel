@@ -203,8 +203,7 @@ $klein->respond('POST', '*', function($request, $response, $service, $app) {
 		$nf1 = '';
 	}
 
-	return $app->twig->render(
-					'panel/account.html', array(
+	return $app->twig->render('panel/account.html', array(
 				'output' => $service->sharedData()['output'],
 				'xsrf' => array(
 					'pass' => $core->auth->XSRF(null, '_pass'),
