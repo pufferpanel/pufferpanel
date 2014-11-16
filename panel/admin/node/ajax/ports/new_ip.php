@@ -22,12 +22,17 @@ use \ORM as ORM;
 
 require_once('../../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true) {
+
 	Components\Page::redirect('../../../index.php');
+
 }
 
-if(!isset($_POST['ip_port']))
+if(!isset($_POST['ip_port'])) {
+
 	Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&disp=missing_args');
+
+}
 
 /*
  * Clean Inputs
@@ -36,36 +41,44 @@ $_POST['ip_port'] = str_replace(" ", "", $_POST['ip_port']);
 
 $lines = explode("\r\n", $_POST['ip_port']);
 
-	/*
-	 * Unpack Variables
-	 */
-	$node = ORM::forTable('nodes')->findOne($_POST['nid']);
+/*
+ * Unpack Variables
+ */
+$node = ORM::forTable('nodes')->findOne($_POST['nid']);
 
-	$IPA = json_decode($node->ips, true);
-	$IPP = json_decode($node->ports, true);
+$IPA = json_decode($node->ips, true);
+$IPP = json_decode($node->ports, true);
 
-foreach($lines as $id => $values)
-	{
+foreach($lines as $id => $values) {
 
-		list($ip, $ports) = explode('|', $values);
+	list($ip, $ports) = explode('|', $values);
 
-		$IPA = array_merge($IPA, array($ip => array()));
-		$IPP = array_merge($IPP, array($ip => array()));
+	$IPA = array_merge($IPA, array($ip => array()));
+	$IPP = array_merge($IPP, array($ip => array()));
 
-		$ports = explode(',', $ports);
+	$portList = [];
+	$portList = Components\Functions::processPorts($ports);
 
-		for($l=0; $l<count($ports); $l++)
-			$IPP[$ip][$ports[$l]] = 1;
+	for($l=0; $l<count($portList); $l++) {
 
-		/*
-		 * Make sure Ports are in the array
-		 */
-		if(count($IPP[$ip]) > 0)
-			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
-		else
-			Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=ip_port&disp=ip_port_space');
+			$IPP[$ip][$portList[$l]] = 1;
 
 	}
+
+	/*
+	 * Make sure Ports are in the array
+	 */
+	if(count($IPP[$ip]) > 0) {
+
+		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
+
+	} else {
+
+		Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=ip_port&disp=ip_port_space');
+
+	}
+
+}
 
 $node->ips = json_encode($IPA);
 $node->ports = json_encode($IPP);

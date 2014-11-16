@@ -1,20 +1,20 @@
 <?php
 /*
-    PufferPanel - A Minecraft Server Management Panel
-    Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
 use \ORM as ORM;
@@ -124,17 +124,17 @@ $gsdSecret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
  */
 $data = array(
 	"name" => $serverHash,
-    "user" => $ftpUser,
-    "overide_command_line" => "",
-    "path" => $node->gsd_server_dir.$ftpUser,
-    "variables" => array(
-    	"-jar" => $modpack,
-        "-Xmx" => $_POST['alloc_mem']."M"
-    ),
-    "gameport" => $_POST['server_port'],
-    "gamehost" => "",
-    "plugin" => "minecraft",
-    "autoon" => false
+	"user" => $ftpUser,
+	"overide_command_line" => "",
+	"path" => $node->gsd_server_dir.$ftpUser,
+	"variables" => array(
+		"-jar" => $modpack,
+		"-Xmx" => $_POST['alloc_mem']."M"
+	),
+	"gameport" => $_POST['server_port'],
+	"gamehost" => "",
+	"plugin" => "minecraft",
+	"autoon" => false
 );
 
 $data = json_encode($data);
@@ -142,7 +142,7 @@ $data = json_encode($data);
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, 'http://'.$node->ip.':'.$node->gsd_listen.'/gameservers');
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'X-Access-Token: '.$node['gsd_secret']
+	'X-Access-Token: '.$node['gsd_secret']
 ));
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 curl_setopt($ch, CURLOPT_TIMEOUT, 5);
@@ -191,11 +191,11 @@ $node->save();
  * Send User Email
  */
 $core->email->buildEmail('admin_new_server', array(
-        'NAME' => $_POST['server_name'],
-        'FTP' => $node->fqdn.':21',
+		'NAME' => $_POST['server_name'],
+		'FTP' => $node->fqdn.':21',
 		'MINECRAFT' => $node->fqdn.':'.$_POST['server_port'],
-        'USER' => $ftpUser.'-'.$content['id'],
-        'PASS' => $_POST['ftp_pass_2']
+		'USER' => $ftpUser.'-'.$content['id'],
+		'PASS' => $_POST['ftp_pass_2']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - New Server Added');
 
 Components\Page::redirect('../../view.php?id='.$server->id());

@@ -76,95 +76,36 @@ $IPA = array();
 $_POST['ip_port'] = str_replace(" ", "", $_POST['ip_port']);
 
 $lines = explode("\r\n", $_POST['ip_port']);
-foreach($lines as $id => $values)
-	{
+foreach($lines as $id => $values) {
 
-		list($ip, $ports) = explode('|', $values);
+	list($ip, $ports) = explode('|', $values);
 
-		$portList = array();
-		$IPA = array_merge($IPA, array($ip => array()));
-		$IPP = array_merge($IPP, array($ip => array()));
+	$IPA = array_merge($IPA, array($ip => array()));
+	$IPP = array_merge($IPP, array($ip => array()));
 
-		if(!strpos($ports, ",")){
+	$portList = [];
+	$portList = Components\Functions::processPorts($ports);
 
-			// Possible a Range, or a Single Port
-			if(!strpos($ports, "-")) {
+	for($l=0; $l<count($portList); $l++) {
 
-				$portList[$ports] = 1;
-
-			}else{
-
-				// Range of Ports
-				$portRange = explode('-', $ports);
-				$r1 = intval($portRange[0]);
-				$r2 = intval($portRange[1]);
-
-				$i = 0;
-				while($r1 <= $r2) {
-
-					$portList[$i] = $r1;
-					$i++;
-					$r1++;
-
-				}
-
-			}
-
-
-		}else{
-
-			// Possible Mix of Ranges and Single Ports
-			if(!strpos($ports, "-")){
-
-				// No ranges
-				$portList = array_merge($portList, explode(",", $ports));
-
-			}else{
-
-				// Singles Mixed with Range
-				foreach(explode(",", $ports) as $id => $range){
-
-					if(!strpos($range, "-")) {
-
-						$portList = array_merge($portList, array($range));
-
-					}else{
-
-						// Range of Ports
-						$portRange = explode('-', $range);
-						$r1 = intval($portRange[0]);
-						$r2 = intval($portRange[1]);
-
-						$i = 0;
-						while($r1 <= $r2) {
-
-							$portList = array_merge($portList, array($r1));
-							$i++;
-							$r1++;
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-		for($l=0; $l<count($portList); $l++)
-			if(!array_key_exists($l, $IPP[$ip]))
-				$IPP[$ip][$portList[$l]] = 1;
-
-		/*
-		 * Make sure Ports are in the array
-		 */
-		if(count($IPP[$ip]) > 0)
-			$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
-		else
-			Components\Page::redirect('../../add.php?error=ip_port&disp=ip_port_space');
+			$IPP[$ip][$portList[$l]] = 1;
 
 	}
+
+	/*
+	 * Make sure Ports are in the array
+	 */
+	if(count($IPP[$ip]) > 0) {
+
+		$IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
+
+	} else {
+
+		Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=ip_port&disp=ip_port_space');
+
+	}
+
+}
 
 /*
  * Add Node to Database

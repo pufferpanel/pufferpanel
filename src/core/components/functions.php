@@ -40,6 +40,94 @@ trait Functions {
 
 	}
 
+	/**
+	 * Returns an array of ports from a 'range' seperated by '-'.
+	 *
+	 * @param string $range String of two ports using '-' to seperate.
+	 * @return array Returns an array of integers. Returns null if first port is smaller than next.
+	 */
+	public static function processPorts($ports) {
+
+		$portList = [];
+
+		if(!strpos($ports, ",")) {
+
+			// Possible a Range, or a Single Port
+			if(!strpos($ports, "-")) {
+
+				$portList[] = $ports;
+
+			} else {
+
+				$split = explode("-",$ports);
+				$rangeA = intval($split[0]);
+				$rangeB = intval($split[1]);
+
+				if($rangeA < $rangeB) {
+
+					while($rangeA <= $rangeB) {
+						$portList[] = $rangeA;
+						$rangeA++;
+					}
+
+				} else {
+
+					error_log('Ports are in wrong order! Range 1 must be a number > Range 2.',0);
+					error_log('Port Range 1: ' . $rangeA . ' Port Range 2: ' . $rangeB,0);
+					return null;
+
+				}
+
+			}
+
+		} else {
+
+			// Possible Mix of Ranges and Single Ports
+			if(!strpos($ports, "-")) {
+
+				// No ranges
+				$portList = array_merge($portList, explode(",", $ports));
+
+			} else {
+
+				// Singles Mixed with Range
+				foreach(explode(",", $ports) as $id => $range) {
+
+					if(!strpos($range, "-")) {
+
+						$portList = array_merge($portList, array($range));
+
+					} else {
+
+						$split = explode("-",$range);
+						$rangeA = intval($split[0]);
+						$rangeB = intval($split[1]);
+
+						if($rangeA < $rangeB) {
+
+							while($rangeA <= $rangeB) {
+								$portList[] = $rangeA;
+								$rangeA++;
+							}
+
+						} else {
+
+							error_log('Ports are in wrong order! Range 1 must be a number > Range 2.',0);
+							error_log('Port Range 1: ' . $rangeA . ' Port Range 2: ' . $rangeB,0);
+							return null;
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $portList;
+	}
 }
 
 ?>
