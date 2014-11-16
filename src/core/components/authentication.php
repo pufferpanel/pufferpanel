@@ -122,7 +122,7 @@ trait Authentication {
 
 		$this->checkUUID = ORM::forTable($database)->where($column, $this->hash)->findOne();
 		if($this->checkUUID !== false)
-			$this->generateServerUUID();
+			$this->generateUniqueUUID($database, $column);
 		else
 			return $this->hash;
 
