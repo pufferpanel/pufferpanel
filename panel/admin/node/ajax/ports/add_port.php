@@ -33,7 +33,7 @@ if(!isset($_POST['add_ports_node']))
 if(!isset($_POST['add_ports'], $_POST['add_ports_ip']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 
-if(!preg_match('/^[\d,]+$/', $_POST['add_ports']) && !preg_match('/^[\d-]+$/', $_POST['add_ports']) && !preg_match('/^[\d-,]+$/', $_POST['add_ports']))
+if(!preg_match('/^[\d-,]+$/', $_POST['add_ports']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
 
 if(preg_match('/^[\d-,]+$/', $_POST['add_ports']))
