@@ -47,8 +47,9 @@ class My_Foobar_Class {
 
 ## Indenting & Spacing
 * Indents should be tabs, **no spaces**.
+* Statements should not have a space before the opening parenthesis (``if(!$this) {`` is good, ``if (!$this) {`` is bad).
 * Curly brackets should **always** be on the same line as the statement they are being used for.
-* All functions should have a space after the closing parenthesis and before the curly brackets ``{ }``.
+* All functions should have a space after the closing parenthesis and before the curly brackets ``{ }``. Additionally, any function using curly brackets should have a space between the function and the bracket.
 * For single line ``if/else`` statements, curly brackets **are required**. This change was implemented after a lot of previous code was written, so do not simply copy what is already there.
 
 ### Good Code
@@ -99,4 +100,23 @@ if(!$something)
 	echo 'Foo';
 else
 	echo 'Bar';
+```
+
+## Switch Statements
+* Code should be indented for each new level of the case, see the example below for acceptable code.
+
+```php
+switch($foo) {
+
+	case 1:
+		echo 'Case One';
+		break;
+	case 2:
+		echo 'Case Two';
+		break;
+	default:
+		echo 'Default Case';
+		break;
+
+}
 ```
