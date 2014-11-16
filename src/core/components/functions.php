@@ -36,7 +36,7 @@ trait Functions {
 	public static function generateFTPUsername($base) {
 
 		$username = (strlen($base) > 6) ? substr($base, 0, 6).'_'.self::keygen(5) : $base.'_'.self::keygen((11 - strlen($base)));
-	    return "mc-".$username;
+	    return "mc-".strtolower($username);
 
 	}
 
