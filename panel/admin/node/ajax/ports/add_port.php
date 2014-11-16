@@ -33,15 +33,15 @@ if(!isset($_POST['add_ports_node']))
 if(!isset($_POST['add_ports'], $_POST['add_ports_ip']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&tab=allocation');
 
-if(!preg_match('/^[\d, ]+$/', $_POST['add_ports']) && !preg_match('/^[\d- ]+$/', $_POST['add_ports']) && !preg_match('/^[\d-, ]+$/', $_POST['add_ports']))
+if(!preg_match('/^[\d,]+$/', $_POST['add_ports']) && !preg_match('/^[\d-]+$/', $_POST['add_ports']) && !preg_match('/^[\d-,]+$/', $_POST['add_ports']))
 	Components\Page::redirect('../../view.php?id='.$_POST['add_ports_node'].'&disp=add_port_fail&tab=allocation');
 
-if(preg_match('/^[\d-, ]+$/', $_POST['add_ports']))
+if(preg_match('/^[\d-,]+$/', $_POST['add_ports']))
 {
 	$portsSplit = explode(',', $_POST['add_ports']);
 	for($i = 0; $i < count($portsSplit); $i++)
 	{
-		if(preg_match('/^[\d- ]+$/', $portsSplit[$i]) && !preg_match('/^[\d ]+$/',$portsSplit[$i]))
+		if(preg_match('/^[\d-]+$/', $portsSplit[$i]) && !preg_match('/^[\d ]+$/',$portsSplit[$i]))
 		{
 			$a = explode('-', $portsSplit[$i]);
 			$rangeOne = intval($a[0]);
@@ -58,7 +58,7 @@ if(preg_match('/^[\d-, ]+$/', $_POST['add_ports']))
 		}
 	}
 }
-elseif(preg_match('/^[\d- ]+$/', $_POST['add_ports']))
+elseif(preg_match('/^[\d-]+$/', $_POST['add_ports']))
 {
 	$portsSplit = explode('-', str_replace(" ", "", $_POST['add_ports']));
 	$rangeOne = intval($portsSplit[0]);
