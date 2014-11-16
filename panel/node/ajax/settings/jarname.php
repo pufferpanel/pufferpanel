@@ -36,7 +36,7 @@ require_once('../../../../src/core/core.php');
 	 * Update It
 	 */
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->server_jar = $_POST['jar_file'];
+	$server->server_jar = $_POST['jarfile'];
 	$server->save();
 
 	/*
