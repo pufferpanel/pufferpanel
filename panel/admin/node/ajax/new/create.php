@@ -65,6 +65,12 @@ if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP) || !filter_var
 	Components\Page::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
 
 /*
+ * Validate Avaliable Ports
+ */
+if(!preg_match('/^[\d,]+$/', $_POST['ip_port']) && !preg_match('/^[\d-]+$/', $_POST['ip_port']) && !preg_match('/^[\d-,]+$/', $_POST['ip_port']))
+	Components\Page::redirect('../../add.php?error=fqdn|ip&disp=port_fail');
+
+/*
  * Process IPs and Ports
  */
 $IPP = array();
