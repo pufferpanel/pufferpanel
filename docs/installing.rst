@@ -16,7 +16,7 @@ You will need to be comfortable with SSH in order to install this panel. PufferP
 .. code-block:: sh
 
     [$]~ cd /var/www/yoursite.com
-    [$]~ git clone https://github.com/DaneEveritt/PufferPanel.git
+    [$]~ git clone https://github.com/PufferPanel/PufferPanel.git
     [$]~ cd PufferPanel && git checkout tags/<version>
     [$]~ cp -R ./ ../
     [$]~ cd ../ && rm -rf PufferPanel/
