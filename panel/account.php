@@ -1,7 +1,8 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+	Copyright (c) 2014 PufferPanel
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -17,20 +18,11 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-$klein->respond('*', function($request, $response, $service) use ($core) {
-	$loggedIn = $core->auth->isLoggedIn($request->server()['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) !== true;
-	$service->sharedData()['loggedIn'] = $loggedIn;
-
-	if($loggedIn) {
-		$response->redirect('/index?login', 302);
-	}
-});
-
-$klein->respond('POST', '/subuser', function($request, $reponse, $service) use ($core) {
-	if(!$service->sharedData()['loggedIn']) {
+$klein->respond('POST', '/subuser', function($request, $response, $service) use ($core) {
+	if($response->isSent()) {
 		return;
 	}
-
+	
 	if($request->param('token') === null) {
 		$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 		return;
@@ -80,8 +72,8 @@ $klein->respond('POST', '/subuser', function($request, $reponse, $service) use (
 	$service->flash('<div class="alert alert-success">You have been added as a subuser for <em>' . $info->name . '</em>!</div>');
 });
 
-$klein->respond('POST', '/notifications', function($request, $reponse, $service) use ($core) {
-	if(!$service->sharedData()['loggedIn']) {
+$klein->respond('POST', '/notifications', function($request, $response, $service) use ($core) {
+	if($response->isSent()) {
 		return;
 	}
 
@@ -102,19 +94,18 @@ $klein->respond('POST', '/notifications', function($request, $reponse, $service)
 
 		$core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
 		$service->flash('<div class="alert alert-success">Your notification preferences have been updated.</div>');
-
 	} else {
 
 		$core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
 		$service->flash('<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>');
-
 	}
 });
 
-$klein->respond('POST', '/email', function($request, $reponse, $service) use ($core) {
-	if(!$service->sharedData()['loggedIn']) {
-		return;	}
-
+$klein->respond('POST', '/email', function($request, $response, $service) use ($core) {
+	if($response->isSent()) {
+		return;
+	}
+	
 	if(!$core->auth->XSRF($request->param('xsrf_email'), '_email')) {
 		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
 		return;
@@ -133,7 +124,7 @@ $klein->respond('POST', '/email', function($request, $reponse, $service) use ($c
 
 		$core->log->getUrl()->addLog(0, 1, array('user.email_updated', 'Your account email was updated.'));
 		$service->flash('<div class="alert alert-success">Your email has been updated successfully.</div>');
-
+		
 	} else {
 
 		$core->log->getUrl()->addLog(1, 1, array('user.email_update_fail', 'Your email was unable to be updated due to an incorrect password provided.'));
@@ -142,8 +133,8 @@ $klein->respond('POST', '/email', function($request, $reponse, $service) use ($c
 	}
 });
 
-$klein->respond('POST', '/password', function($request, $reponse, $service) use ($core) {
-	if(!$service->sharedData()['loggedIn']) {
+$klein->respond('POST', '/password', function($request, $response, $service) use ($core) {
+	if($response->isSent()) {
 		return;
 	}
 
@@ -157,7 +148,7 @@ $klein->respond('POST', '/password', function($request, $reponse, $service) use 
 		$core->log->getUrl()->addLog(1, 1, array('user.password_update_fail', 'Your password was unable to be changed because the current password was not entered correctly.'));
 		$service->flash('<div class="alert alert-danger">Current account password is not correct.</div>');
 		return;
-
+		
 	}
 
 	if(!preg_match("#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#", $request->param('p_password_new'))) {
@@ -186,10 +177,14 @@ $klein->respond('POST', '/password', function($request, $reponse, $service) use 
 });
 
 $klein->respond('POST', '*', function($request, $response) {
-	$response->redirect('/account', 302);
+	$response->redirect('/account', 302)->send();
 });
 
 $klein->respond('GET', '*', function($request, $response, $service) use ($core, $twig, $startTime) {
+	if($response->isSent()) {
+		return;
+	}
+
 	return $twig->render('panel/account.html', array(
 				'output' => $service->flashes(),
 				'xsrf' => array(
