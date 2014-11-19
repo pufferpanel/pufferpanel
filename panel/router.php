@@ -26,8 +26,7 @@ require_once('../src/core/core.php');
 
 $klein = new \Klein\Klein();
 
-$klein->respond('GET', '!@\.(php)', function($request, $response) {
-    error_log('Triggered');
+$klein->respond('GET', '@!\.(php)', function($request, $response) {
     if (file_exists($request->uri())) {
         $response->file('../' . $request->uri());
     } else {
@@ -53,9 +52,9 @@ $klein->respond(function($request, $response, $service, $app) use ($core, $twig,
     });
 });
 
-$klein->respond('!(logout|login|register|password)', function($request, $response, $service, $app) {
+$klein->respond('!(logout|index|register|password)', function($request, $response, $service, $app) {
     if (!$app->loggedIn) {
-        $response->redirect('/login')->send();
+        $response->redirect('/index')->send();
         throw new Exception("Not logged in");
     }
 });
