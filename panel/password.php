@@ -24,18 +24,19 @@ use \ORM as ORM;
 
 require_once("../src/captcha/recaptchalib.php");
 
-$klein->respond(function($request, $response, $service, $app) {
+$this->respond(function($request, $response, $service, $app) {
 	if($app->isLoggedIn) {
 		$response->redirect('/servers')->send();
 	}
 });
 
-$klein->respond('POST', '*', function ($request, $response, $service, $app) use ($core) {
+$this->respond('POST', '*', function ($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
 
 	$noShow = false;
+	$core = $app->core;
 
 	if($request->param('do') === null) {
 
@@ -142,10 +143,14 @@ $klein->respond('POST', '*', function ($request, $response, $service, $app) use 
 	}
 });
 
-$klein->respond('GET', '*', function($request, $response, $service) use ($core, $twig, $pageStartTime) {
+$this->respond('GET', '*', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
+
+	$core = $app->core;
+	$twig = $app->twig;
+	$pageStartTime = $app->pageStartTime;
 	
 	return $twig->render('panel/password.html', array(
 				'status' => $service->flash(),

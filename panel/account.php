@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-$klein->respond('POST', '/subuser', function($request, $response, $service) use ($core) {
+$this->respond('POST', '/subuser', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
@@ -27,6 +27,8 @@ $klein->respond('POST', '/subuser', function($request, $response, $service) use 
 		$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 		return;
 	}
+
+	$core = $app->core;
 
 	if(!$core->auth->XSRF($request->param('xsrf_notify'), '_notify')) {
 		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
@@ -75,10 +77,12 @@ $klein->respond('POST', '/subuser', function($request, $response, $service) use 
 	$service->flash('<div class="alert alert-success">You have been added as a subuser for <em>' . $info->name . '</em>!</div>');
 });
 
-$klein->respond('POST', '/notifications', function($request, $response, $service) use ($core) {
+$this->respond('POST', '/notifications', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
+
+	$core = $app->core;
 
 	if($request->param('password') === null) {
 		$service->flash('<div class="alert alert-danger">The password you entered is invalid.</div>');
@@ -106,10 +110,12 @@ $klein->respond('POST', '/notifications', function($request, $response, $service
 	}
 });
 
-$klein->respond('POST', '/email', function($request, $response, $service) use ($core) {
+$this->respond('POST', '/email', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
+
+	$core = $app->core;
 	
 	if(!$core->auth->XSRF($request->param('xsrf_email'), '_email')) {
 		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
@@ -138,10 +144,12 @@ $klein->respond('POST', '/email', function($request, $response, $service) use ($
 	}
 });
 
-$klein->respond('POST', '/password', function($request, $response, $service) use ($core) {
+$this->respond('POST', '/password', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
+
+	$core = $app->core;
 
 	if($core->auth->XSRF($request->param('xsrf_pass'), '_pass') !== true) {
 		$service->flash('<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>');
@@ -181,14 +189,18 @@ $klein->respond('POST', '/password', function($request, $response, $service) use
 	$service->flash('<div class="alert alert-success">Your password has been sucessfully changed!</div>');
 });
 
-$klein->respond('POST', '*', function($request, $response) {
+$this->respond('POST', '*', function($request, $response) {
 	$response->redirect('/account', 302)->send();
 });
 
-$klein->respond('GET', '*', function($request, $response, $service) use ($core, $twig, $startTime) {
+$this->respond('GET', '*', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
+
+	$core = $app->core;
+	$twig = $app->twig;
+	$startTime = $app->pageStartTime;
 
 	return $twig->render('panel/account.html', array(
 				'output' => $service->flashes(),

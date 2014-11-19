@@ -22,16 +22,17 @@ namespace PufferPanel\Core;
 
 use \ORM as ORM;
 
-$klein->respond('*', function($request, $response) use ($core) {
-	if($core->auth->isLoggedIn($request->server()['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token')) === true) {
-		$response->redirect('/servers', 302)->send();
-	}
-});
-
-$klein->respond('GET', '/', function($request, $response) use ($core, $twig, $pageStartTime) {
+$this->respond('GET', '/index', function($request, $response, $service, $app)  {
 	if($response->isSent()) {
+		throw new Exception("test");
 		return;
 	}
+
+	
+
+	$core = $app->core;
+	$twig = $app->twig;
+	$pageStartTime = $app->pageStartTime;
 
 	echo $twig->render('panel/index.html', array(
 		'xsrf' => $core->auth->XSRF(),
@@ -41,23 +42,12 @@ $klein->respond('GET', '/', function($request, $response) use ($core, $twig, $pa
 	));
 });
 
-$klein->respond('GET', '/index', function($request, $response) use ($core, $twig, $pageStartTime) {
+$this->respond('POST', '/index', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
 
-	echo $twig->render('panel/index.html', array(
-		'xsrf' => $core->auth->XSRF(),
-		'footer' => array(
-			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-		)
-	));
-});
-
-$klein->respond('POST', '/index', function($request, $response) use ($core) {
-	if($response->isSent()) {
-		return;
-	}
+	$core = $app->core;
 
 	if($request->param('totp') !== null && $request->param('check') !== null) {
 
@@ -146,10 +136,12 @@ $klein->respond('POST', '/index', function($request, $response) use ($core) {
 					))->dispatch($request->param('email'), $core->settings->get('company_name') . ' - Account Login Failure Notification');
 
 				}
+				
 			}
 
 			$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from ' . $request->server()['REMOTE_ADDR'] . '.'));
 			$request->param('/index?error=true', 302)->send();
+			
 		}
 	}
 });
