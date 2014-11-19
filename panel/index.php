@@ -24,11 +24,8 @@ use \ORM as ORM;
 
 $this->respond('GET', '/index', function($request, $response, $service, $app)  {
 	if($response->isSent()) {
-		throw new Exception("test");
 		return;
-	}
-
-	
+	}	
 
 	$core = $app->core;
 	$twig = $app->twig;
