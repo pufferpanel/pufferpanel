@@ -57,16 +57,21 @@ $klein->respond('GET', '/logout', function($request, $response, $service, $app) 
 		$core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from ' . $_SERVER['REMOTE_ADDR'] . '.'));
 
 	}
+
 	$response->redirect('/index');
 });
 
 $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
+$klein->with('/', 'index.php');
+
 
 $klein->onError(function ($klein, $err) {
-	if($err->getMessage() !== "Not logged in" && !$response->isSent()) {
+	if($err->getMessage() !== "Not logged in" && !$klein->response()->isSent()) {
+
 		//fatal error occurred somewhere, logging
 		error_log($err);
+
 	}
 });
 

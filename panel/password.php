@@ -92,13 +92,14 @@ $klein->respond('POST', '*', function ($request, $response, $service, $app) use 
 				$service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
 				
 			}
+
 		} else {
 
 			$statusMessage = '<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>';
 
 		}
 
-	} else if(isset($request->param('key'))) {
+	} else if($request->param('key') !== null) {
 
 		/*
 		 * Change Password
@@ -136,6 +137,7 @@ $klein->respond('POST', '*', function ($request, $response, $service, $app) use 
 			$service->flash('<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>');
 			
 		}
+		
 		$response->redirect('/password?success=' . $noShow, 302)->send();
 	}
 });

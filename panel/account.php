@@ -40,7 +40,10 @@ $klein->respond('POST', '/subuser', function($request, $response, $service) use 
 		return;
 	}
 
-	$query = ORM::forTable('account_change')->select('content')->where(array('key' => $request->param('token'), 'verified' => 0))->findOne();
+	$query = ORM::forTable('account_change')
+			->select('content')
+			->where(array('key' => $request->param('token'), 'verified' => 0))
+			->findOne();
 
 	if(!$query) {
 		$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
@@ -94,10 +97,12 @@ $klein->respond('POST', '/notifications', function($request, $response, $service
 
 		$core->log->getUrl()->addLog(0, 1, array('user.notifications_updated', 'The notification preferences for this account were updated.'));
 		$service->flash('<div class="alert alert-success">Your notification preferences have been updated.</div>');
+
 	} else {
 
 		$core->log->getUrl()->addLog(1, 1, array('user.notifications_update_fail', 'The notification preferences for this account were unable to be updated because the supplied password was wrong.'));
 		$service->flash('<div class="alert alert-danger">We were unable to verify your password. Please try again.</div>');
+
 	}
 });
 
