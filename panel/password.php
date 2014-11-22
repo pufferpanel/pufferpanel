@@ -144,6 +144,7 @@ $this->respond('POST', '*', function ($request, $response, $service, $app) {
 		}
 		
 		$response->redirect('/password?success=' . $noShow, 302)->send();
+		
 	}
 });
 
@@ -156,7 +157,7 @@ $this->respond('GET', '*', function($request, $response, $service, $app) {
 	$twig = $app->twig;
 	$pageStartTime = $app->pageStartTime;
 	
-	return $twig->render('panel/password.html', array(
+	echo $twig->render('panel/password.html', array(
 				'status' => $service->flash(),
 				'noshow' => $request->param('success', false),
 				'xsrf' => $core->auth->XSRF(),

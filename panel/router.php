@@ -28,7 +28,9 @@ $klein = new \Klein\Klein();
 
 $klein->respond('GET', '/assets/[**:trail]', function($request, $response, $service) {
 	$path = 'assets/' . $request->param('trail');
+
 	if(file_exists($path)) {
+
 		//This is a workaround to klein sending files not working
 		//It is advised the web server handles the /assets/ route instead
 		$ext = pathinfo($path)['extension'];
@@ -49,8 +51,11 @@ $klein->respond('GET', '/assets/[**:trail]', function($request, $response, $serv
 		$response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
 		$response->body(readFile($path));
 		$response->send();
+
 	} else {
+
 		$response->code('404');
+
 	}
 });
 
@@ -103,6 +108,7 @@ $klein->onError(function ($klein, $err) {
 
 		//fatal error occurred somewhere, logging
 		error_log($err);
+		
 	}
 });
 

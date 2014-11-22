@@ -42,6 +42,7 @@ $this->respond('GET', '/logout', function($request, $response, $service, $app) {
 		$logout->save();
 
 		$app->core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from ' . $request->server()['REMOTE_ADDR'] . '.'));
+	
 	}
 
 	$response->redirect('/index');
@@ -52,7 +53,7 @@ $this->respond('GET', '/[index]', function($request, $response, $service, $app) 
 		return;
 	}
 
-	return $app->twig->render('panel/index.html', array(
+	echo $app->twig->render('panel/index.html', array(
 				'xsrf' => $app->core->auth->XSRF(),
 				'footer' => array(
 					'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
@@ -80,7 +81,9 @@ $this->respond('POST', '/index', function($request, $response, $service, $app) {
 			} else {
 				echo ($totp->use_totp == 1) ? true : false;
 			}
+
 		}
+
 	} else if($request->param('do') == 'login') {
 
 		/* XSRF Check */
@@ -107,6 +110,7 @@ $this->respond('POST', '/index', function($request, $response, $service, $app) {
 					$response->redirect('/index?totp=error', 302)->send();
 					return;
 				}
+
 			}
 
 			/*
@@ -130,10 +134,12 @@ $this->respond('POST', '/index', function($request, $response, $service, $app) {
 					'IP_ADDRESS' => $request->server()['REMOTE_ADDR'],
 					'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->server()['REMOTE_ADDR'])
 				))->dispatch($request->param('email'), $core->settings->get('company_name') . ' - Account Login Notification');
+
 			}
 
 			$core->log->getUrl()->addLog(0, 1, array('auth.account_login', 'Account was logged in from ' . $request->server()['REMOTE_ADDR'] . '.', $account->id));
 			$response->redirect('/servers', 302)->send();
+
 		} else {
 
 			if($account !== false) {
@@ -152,7 +158,9 @@ $this->respond('POST', '/index', function($request, $response, $service, $app) {
 
 			$core->log->getUrl()->addLog(0, 1, array('auth.account_login_fail', 'A failed attempt to login to the account was made from ' . $request->server()['REMOTE_ADDR'] . '.'));
 			$response->redirect('/index?error=true', 302)->send();
+
 		}
+
 	}
 });
 
@@ -174,16 +182,20 @@ $this->respond('GET', '/servers', function($request, $response, $service, $app) 
 	 * Get the Servers
 	 */
 	if($core->user->getData('root_admin') == '1') {
+
 		$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->orderByDesc('active')
 				->findArray();
+
 	} else {
+
 		$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
 				->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($core->user->getData('id'), join(',', $core->user->listServerPermissions())))
 				->findArray();
+
 	}
 
 	/*
