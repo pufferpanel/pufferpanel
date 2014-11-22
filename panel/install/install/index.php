@@ -186,7 +186,7 @@ if(file_exists('install.lock'))
 
 						}
 
-					echo ($continue === true) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captian!</p></div><a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
+					echo ($continue === true) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captain!</p></div><a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
 				?>
 				</div>
 				<div class="col-2"></div>
