@@ -29,7 +29,7 @@ class Nodes {
 	/**
 	 * @param array $nodesData
 	 */
-	protected $nodesData = array();
+	protected $_nodesData = array();
 
 	/**
 	* @param array $_IPArray
@@ -96,9 +96,9 @@ class Nodes {
 
 		$this->nodes = ORM::forTable('nodes')->findMany();
 
-		foreach($this->nodes as &$this->node){
+		foreach($this->nodes as &$this->node) {
 
-			$this->nodesData[$this->node->id] = array(
+			$this->_nodesData[$this->node->id] = array(
 				"node" => $this->node->node,
 				"fqdn" => $this->node->fqdn,
 				"ip" => $this->node->ip,
@@ -107,7 +107,7 @@ class Nodes {
 
 		}
 
-		return $this->nodesData;
+		return $this->_nodesData;
 
 	}
 
@@ -205,14 +205,14 @@ class Nodes {
 			$this->_this->_IPArray = array_merge($this->_IPArray, array($ip => array()));
 			$this->_PortArray = array_merge($this->_PortArray, array($ip => array()));
 
-			if(!strpos($ports, ",")){
+			if(!strpos($ports, ",")) {
 
 				// Possible a Range, or a Single Port
 				if(!strpos($ports, "-")) {
 
 					$portList[$ports] = 1;
 
-				}else{
+				} else {
 
 					// Range of Ports
 					$portRange = explode('-', $ports);
@@ -230,15 +230,15 @@ class Nodes {
 
 				}
 
-			}else{
+			} else {
 
 				// Possible Mix of Ranges and Single Ports
-				if(!strpos($ports, "-")){
+				if(!strpos($ports, "-")) {
 
 					// No ranges
 					$portList = array_merge($portList, explode(",", $ports));
 
-				}else{
+				} else {
 
 					// Singles Mixed with Range
 					foreach(explode(",", $ports) as $id => $range){
@@ -247,7 +247,7 @@ class Nodes {
 
 							$portList = array_merge($portList, array($range));
 
-						}else{
+						} else {
 
 							// Range of Ports
 							$portRange = explode('-', $range);
@@ -271,14 +271,19 @@ class Nodes {
 
 			}
 
-			for($l=0; $l<count($portList); $l++)
-				if(!array_key_exists($l, $this->_PortArray[$ip]))
-					$this->_PortArray[$ip][$portList[$l]] = 1;
+			for($l=0; $l<count($portList); $l++) {
 
-			if(count($this->_PortArray[$ip]) > 0)
+				if(!array_key_exists($l, $this->_PortArray[$ip])) {
+					$this->_PortArray[$ip][$portList[$l]] = 1;
+				}
+
+			}
+
+			if(count($this->_PortArray[$ip]) > 0) {
 				$this->_IPArray[$ip] = array_merge($this->_IPArray[$ip], array("ports_free" => count($this->_PortArray[$ip])));
-			else
+			} else {
 				$this->_IPArray = false;
+			}
 
 		}
 

@@ -26,7 +26,7 @@ class Users {
 
 	protected $_allowedUpdateColumns = array();
 
-	protected $usersData = array();
+	protected $_usersData = array();
 
 	/**
 	* Constructor Class
@@ -45,9 +45,9 @@ class Users {
 
 		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id WHERE users.uuid = :uuid AND servers.active = 1 LIMIT 1", array('uuid' => $uuid))->findOne();
 
-		if(is_null($this->user->id))
+		if(is_null($this->user->id)) {
 			return false;
-		else {
+		} else {
 
 			return array(
 				"id" => (int) $this->user->id,
@@ -70,9 +70,9 @@ class Users {
 
 		$this->users = ORM::forTable('users')->findMany();
 
-		foreach($this->users as &$this->user){
+		foreach($this->users as &$this->user) {
 
-			$this->usersData = array_merge($this->usersData, array(
+			$this->_usersData = array_merge($this->_usersData, array(
 				$this->user->uuid => array(
 					"id" => (int) $this->user->id,
 					"email" => $this->user->email,
@@ -83,7 +83,7 @@ class Users {
 
 		}
 
-		return $this->usersData;
+		return $this->_usersData;
 
 	}
 

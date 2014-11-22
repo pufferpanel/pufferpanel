@@ -24,7 +24,7 @@ use \ORM;
 */
 class Servers {
 
-	protected $serversData = array();
+	protected $_serversData = array();
 
 	/**
 	* Constructor Class
@@ -42,9 +42,9 @@ class Servers {
 
 		$this->server = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->where('hash', $hash)->findOne();
 
-		if(is_null($this->server->id))
+		if(is_null($this->server->id)) {
 			return false;
-		else {
+		} else {
 
 			return array(
 				"id" => (int) $this->server->id,
@@ -74,9 +74,9 @@ class Servers {
 
 		$this->servers = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->findMany();
 
-		foreach($this->servers as &$this->server){
+		foreach($this->servers as &$this->server) {
 
-			$this->serversData = array_merge($this->serversData, array(
+			$this->_serversData = array_merge($this->_serversData, array(
 				$this->server->hash => array(
 					"id" => (int) $this->server->id,
 					"owner" => $this->server->uuid,
@@ -88,7 +88,7 @@ class Servers {
 
 		}
 
-		return $this->serversData;
+		return $this->_serversData;
 
 	}
 
