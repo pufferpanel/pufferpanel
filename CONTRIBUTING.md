@@ -73,6 +73,14 @@ else
 	echo 'Bar';
 ```
 
+## Requires and Includes
+* Parenthesis should not be used for including or requiring outside files.
+```php
+<?php
+include 'something.php';
+require_once 'some/other/file.php';
+```
+
 ## Naming Classes and Functions
 * Classes should be named using ``UpperCamelCase`` and functions should be named using ``lowerCamelCase``.
 * ``static`` function naming should be done after declaring the visibility of the function (``public static`` vs ``static public``).
