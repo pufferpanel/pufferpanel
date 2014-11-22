@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 header('Content-Type: application/json');
-require_once('../../src/core/core.php');
+require_once('../src/core/core.php');
 
 /*
  * Illegally Accessed File

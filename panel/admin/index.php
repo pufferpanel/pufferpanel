@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM as ORM;
 
-require_once('../../src/core/core.php');
+require_once('../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../index.php?login');
@@ -33,7 +33,7 @@ if(is_array(explode('/', $head))){
 
 echo $twig->render(
         'admin/index.html', array(
-            'version' => trim(file_get_contents('../../src/versions/current')).' '.$git,
+            'version' => trim(file_get_contents('../src/versions/current')).' '.$git,
             'installer' => (is_dir('../install')) ? true : false,
             'footer' => array(
                 'seconds' => number_format((microtime(true) - $pageStartTime), 4)

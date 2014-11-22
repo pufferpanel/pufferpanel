@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM as ORM;
 
-require_once('../../../../src/core/core.php');
+require_once('../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php');

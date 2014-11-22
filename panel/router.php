@@ -87,6 +87,32 @@ $klein->respond('/!(logout|index|register|password)', function($request, $respon
 	}
 });
 
+$klein->respond('/ajax/[**:trail]', function($request, $response, $service, $app) {
+	$path = 'ajax/' . $request->param('trail');
+
+	if(file_exists($path)) {
+		$core = $app->core;
+		$twig = $app->twig;
+
+		include($path);
+	} else {
+		$response->code(404);
+	}
+});
+
+$klein->respond('/admin/[**:trail]', function($request, $response, $service, $app) {
+	$path = 'admin/' . $request->param('trail');
+
+	if(file_exists($path)) {
+		$core = $app->core;
+		$twig = $app->twig;
+
+		include($path);
+	} else {
+		$response->code(404);
+	}
+});
+
 $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
 $klein->with('', 'root.php');

@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM as ORM;
 
-require_once('../../../../../src/core/core.php');
+require_once('../src/core/core.php');
 
 $ports = [];
 
