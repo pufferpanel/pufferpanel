@@ -25,6 +25,10 @@ use \ORM as ORM;
 require_once("../src/captcha/recaptchalib.php");
 
 $this->respond(function($request, $response, $service, $app) {
+	if($response->isSent()) {
+		return;
+	}
+	
 	if($app->isLoggedIn) {
 		$response->redirect('/servers')->send();
 	}

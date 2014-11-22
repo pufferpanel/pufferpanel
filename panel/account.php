@@ -190,6 +190,10 @@ $this->respond('POST', '/password', function($request, $response, $service, $app
 });
 
 $this->respond('POST', '*', function($request, $response) {
+	if($response->isSent()) {
+		return;
+	}
+	
 	$response->redirect('/account', 302)->send();
 });
 
@@ -202,7 +206,7 @@ $this->respond('GET', '*', function($request, $response, $service, $app) {
 	$twig = $app->twig;
 	$startTime = $app->pageStartTime;
 
-	return $twig->render('panel/account.html', array(
+	echo $twig->render('panel/account.html', array(
 				'output' => $service->flashes(),
 				'xsrf' => array(
 					'pass' => $core->auth->XSRF(null, '_pass'),
