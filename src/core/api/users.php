@@ -129,9 +129,6 @@ class Users {
 					}
 					break;
 				case 'password':
-					if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
-						return false;
-					}
 					if(strlen($this->data['password']) < 8) {
 						return false;
 					} else {

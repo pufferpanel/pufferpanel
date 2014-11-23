@@ -101,6 +101,13 @@ $klein->with('/users', function() use ($klein, $api) {
 
 		}
 
+		if(isset($data['password']) && !$request->isSecure()) {
+
+			$response->code(403);
+			return json_encode(array('message' => 'Updating a password must occur over a secure connection.'));
+
+		}
+
 		if(!$users->updateUser($request->param('uuid'), $data)) {
 
 			$response->code(400);
