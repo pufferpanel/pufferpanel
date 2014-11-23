@@ -117,6 +117,10 @@ $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
 $klein->with('', 'root.php');
 
+$klein->respond('/api/[**]', function() {
+	include('api/index.php');
+});
+
 $klein->respond('GET', '/', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
