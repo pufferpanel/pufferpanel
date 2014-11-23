@@ -188,11 +188,11 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 
 	}
 
-	$runNodeAddition = $node->addNode($decodedData);
-	if(is_numeric($decodedData)) {
+	$addNode = $node->addNode($json);
+	if(is_numeric($addNode)) {
 
 		$response->code(400);
-		switch($decodedData) {
+		switch($addNode) {
 			case 1:
 				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
 				break;
@@ -212,7 +212,7 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 		}
 
 	} else {
-		return json_encode($decodedData, JSON_PRETTY_PRINT);
+		return json_encode($addNode, JSON_PRETTY_PRINT);
 	}
 
 });
