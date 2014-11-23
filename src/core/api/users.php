@@ -24,7 +24,9 @@ use \ORM;
 */
 class Users {
 
-	protected $_allowedUpdateColumns = array();
+	use \PufferPanel\Core\Components\Authentication;
+
+	private $__allowedUpdateColumns = array('whmcs_id', 'username', 'email', 'password', 'language', 'root_admin', 'notify_login_s', 'notify_login_f');
 
 	protected $_usersData = array();
 
@@ -102,6 +104,65 @@ class Users {
 
 		$this->uuid = $uuid;
 		$this->data = $data;
+
+		foreach($this->data as $key => $value) {
+
+			if(!in_array($key, $__allowedUpdateColumns)) {
+				return false;
+			}
+
+			switch($key) {
+
+				case 'username':
+					if(!is_numeric($this->data['whmcs_id'])) {
+						return false;
+					}
+					break;
+				case 'username':
+					if(!preg_match('/^[\w-]{4,35}$/', $this->data['username'])) {
+						return false;
+					}
+					break;
+				case 'email':
+					if(!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
+						return false;
+					}
+					break;
+				case 'password':
+					if(strlen($this->data['password']) < 8) {
+						return false;
+					} else {
+						$this->data['password'] = $this->hash($this->data['password']);
+					}
+					break;
+				case 'root_admin':
+					if($this->data['root_admin'] > 1 || $this->data['root_admin'] < 0) {
+						return false;
+					}
+					break;
+				case 'notify_login_s':
+					if($this->data['notify_login_s'] > 1 || $this->data['notify_login_s'] < 0) {
+						return false;
+					}
+					break;
+				case 'notify_login_f':
+					if($this->data['notify_login_f'] > 1 || $this->data['notify_login_f'] < 0) {
+						return false;
+					}
+					break
+				default:
+					return false;
+					break;
+
+			}
+
+		}
+
+		$this->user = ORM::forTable('users')->where('uuid', $this->uuid)->findOne();
+		$this->user->set($this->data);
+		$this->user->save();
+
+		return true;
 
 	}
 
