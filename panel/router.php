@@ -123,7 +123,8 @@ $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
 $klein->with('', 'root.php');
 
-$klein->respond('/api/[**]', function() {
+$klein->respond('/api/[**]', function($request, $response, $service, $app) {
+	$core = $app->core;
 	include('api/index.php');
 });
 
@@ -140,12 +141,10 @@ $klein->respond('GET', '/', function($request, $response, $service, $app) {
 });
 
 $klein->onError(function ($klein, $err) {
+	//If this is not an expected exception (from not logged in)
+	//then we need to rethrow that error because something broke
 	if($err !== "Not logged in" && !$klein->response()->isSent()) {
-
-		//fatal error occurred somewhere, logging
-		error_log($err);
-		Debugger::log($err);
-		
+		throw $err;		
 	}
 });
 
