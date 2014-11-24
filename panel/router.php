@@ -77,7 +77,7 @@ $klein->respond(function($request, $response, $service, $app) use ($core, $twig,
 	});
 });
 
-$klein->respond('/!(logout|index|register|password)', function($request, $response, $service, $app) {
+$klein->respond('/!(logout|index|register|password|api)', function($request, $response, $service, $app) {
 	if($response->isSent()) {
 		return;
 	}
@@ -123,7 +123,7 @@ $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
 $klein->with('', 'root.php');
 
-$klein->respond('/api/[**]', function($request, $response, $service, $app) {
+$klein->respond('/api?[**]', function($request, $response, $service, $app) {
 	$core = $app->core;
 	include('api/index.php');
 });
@@ -144,7 +144,7 @@ $klein->onError(function ($klein, $err) {
 	//If this is not an expected exception (from not logged in)
 	//then we need to rethrow that error because something broke
 	if($err !== "Not logged in" && !$klein->response()->isSent()) {
-		throw $err;		
+		\Tracy\Debugger::log($err);
 	}
 });
 
