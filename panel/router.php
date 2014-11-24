@@ -26,7 +26,7 @@ require_once('../src/core/core.php');
 
 $klein = new \Klein\Klein();
 
-$klein->respond('GET', '/assets/[**:trail]', function($request, $response, $service) {
+$klein->respond('GET', '/assets/[**:trail]', function($request, $response) {
 	$path = 'assets/' . $request->param('trail');
 
 	if(file_exists($path)) {
@@ -91,12 +91,15 @@ $klein->respond('/ajax/[**:trail]', function($request, $response, $service, $app
 	$path = 'ajax/' . $request->param('trail');
 
 	if(file_exists($path)) {
+
 		$core = $app->core;
 		$twig = $app->twig;
-
 		include($path);
+
 	} else {
+
 		$response->code(404);
+
 	}
 });
 
@@ -104,12 +107,15 @@ $klein->respond('/admin/[**:trail]', function($request, $response, $service, $ap
 	$path = 'admin/' . $request->param('trail');
 
 	if(file_exists($path)) {
+
 		$core = $app->core;
 		$twig = $app->twig;
-
 		include($path);
+
 	} else {
+
 		$response->code(404);
+
 	}
 });
 
@@ -138,6 +144,7 @@ $klein->onError(function ($klein, $err) {
 
 		//fatal error occurred somewhere, logging
 		error_log($err);
+		Debugger::log($err);
 		
 	}
 });
