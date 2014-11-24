@@ -211,3 +211,101 @@ $this->respond('GET', '/totp', function($request, $response, $service, $app) {
 		)
 	));
 });
+
+$this->respond('GET', '/register', function($request, $response, $service, $app) {
+	echo $app->twig->render(
+		'panel/register.html', array(
+			'xsrf' => $app->core->auth->XSRF(),
+			'footer' => array(
+				'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
+			)
+	));
+});
+
+$this->respond('POST', '/register', function($request, $response, $service, $app) {
+	if($request->param('do') !== 'register') {
+		
+		$response->redirect('/register', 302);
+		$response->send();
+		return;
+
+	}
+
+	$token = $request->param('token');
+
+	if($token == null || empty($token)) {
+		$response->redirect('register?error=token', 302)->send();
+		return;
+	}
+
+	list($encrypted, $iv) = explode('.', $request->param('token'));
+
+	$core = $app->core;
+
+	/* XSRF Check */
+	if($core->auth->XSRF($request->param('xsrf')) !== true) {
+		$response->redirect('index?error=xsrf&token=' . urlencode($token), 302)->send();
+	}
+
+	if(!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {
+		$response->redirect('register?error=u_fail&token=' . urlencode($token), 302)->send();
+		return;
+	}
+
+	if(strlen($request->param('password')) < 8 || $request->param('password') != $request->param('password_2')) {
+		$response->redirect('register?error=p_fail&token=' . urlencode($token))->send();
+		return;
+	}
+
+	$user = ORM::forTable('users')
+			->where_any_is(array(
+				array('username' => $request->param('username')),
+				array('email' => $core->auth->decrypt($encrypted, $iv))))
+			->findOne();
+
+	if($user !== false) {
+		$response->redirect('register?error=a_fail&token=' . $token, 302)->send();
+		return;
+	}
+
+	$query = ORM::forTable('account_change')
+			->where(array(
+				'type' => 'subuser',
+				'key' => $token,
+				'verified' => 0
+			))
+			->findOne();
+
+	if($query === false) {
+		$response->redirect('register?error=t_fail&token=' . $token)->send();
+		return;
+	}
+
+	$user = ORM::forTable('users')->create();
+	$user->set(array(
+		'uuid' => $core->auth->gen_UUID(),
+		'username' => $request->param('username'),
+		'email' => $core->auth->decrypt($encrypted, $iv),
+		'password' => $core->auth->hash($request->param('password')),
+		'permissions' => $row['content'],
+		'language' => $core->settings->get('default_language'),
+		'time' => time()
+	));
+	$user->save();
+
+	$server = ORM::forTable('servers')
+			->selectMany('subusers', 'hash')
+			->where('hash', key(json_decode($row['content'], true)))
+			->findOne();
+	$subusers = json_decode($server->subusers, true);
+	unset($subusers[$core->auth->decrypt($encrypted, $iv)]);
+	$subusers[$user->id()] = "verified";
+
+	$server->subusers = json_encode($subusers);
+	$query->verified = 1;
+
+	$server->save();
+	$query->save();
+
+	$response->redirect('index?registered', 302)->send();
+});
