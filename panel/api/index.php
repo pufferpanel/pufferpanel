@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 
 header('Content-Type: application/json');
 
-require_once('../src/core/api/initalize.php');
+require_once '../src/core/api/initalize.php';
 
 if($core->settings->get('use_api') != 1) {
 
