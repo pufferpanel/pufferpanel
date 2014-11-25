@@ -226,7 +226,7 @@ if(isset($request)) {
 
 	$serverConverted = $request->server();
 	//Converts the old request into one relative to the api index
-	$serverConverted['REQUEST_URI'] = $request->uri()->subtr(3);
+	$serverConverted['REQUEST_URI'] = $request->uri()->substr(4);
 	$convertedRequest = new \Klein\Request($request->paramsGet(), $request->paramsPost(), $request->cookies(), $serverConverted, $request->files());
 	$klein->dispatch($convertedRequest, $response);
 	
