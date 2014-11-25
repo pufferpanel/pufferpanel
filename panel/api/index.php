@@ -55,13 +55,14 @@ if($core->settings->get('https') == 1) {
 
 		http_response_code(403);
 		echo json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.'));
-		exit();
+		return;
 
 	}
 
 }
 
 $api = new API\Initalize();
+$klein = new \Klein\Klein();
 
 $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
 
@@ -226,8 +227,8 @@ if(isset($request)) {
 
 	$serverConverted = $request->server();
 	//Converts the old request into one relative to the api index
-	$serverConverted['REQUEST_URI'] = $request->uri()->substr(4);
-	$convertedRequest = new \Klein\Request($request->paramsGet(), $request->paramsPost(), $request->cookies(), $serverConverted, $request->files());
+	$serverConverted['REQUEST_URI'] = substr($request->uri(), 4);
+	$convertedRequest = new \Klein\Request($request->paramsGet()->all(), $request->paramsPost()->all(), $request->cookies()->all(), $serverConverted->all(), $request->files()->all());
 	$klein->dispatch($convertedRequest, $response);
 	
 } else {
