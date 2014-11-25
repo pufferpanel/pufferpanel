@@ -221,4 +221,15 @@ $klein->onHttpError(function() {
 
 });
 
-$klein->dispatch();
+//This is a check to see if the API is going through the existing klein service
+if(isset($request)) {
+
+	$serverConverted = $request->server();
+	//Converts the old request into one relative to the api index
+	$serverConverted['REQUEST_URI'] = $request->uri()->subtr(3);
+	$convertedRequest = new \Klein\Request($request->paramsGet(), $request->paramsPost(), $request->cookies(), $serverConverted, $request->files());
+	$klein->dispatch($convertedRequest, $response);
+	
+} else {
+	$klein->dispatch();
+}
