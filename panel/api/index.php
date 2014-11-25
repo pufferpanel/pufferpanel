@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 
 header('Content-Type: application/json');
 
-require_once '../src/core/api/initalize.php';
+require_once('../src/core/api/initalize.php');
 
 if($core->settings->get('use_api') != 1) {
 
@@ -62,7 +62,6 @@ if($core->settings->get('https') == 1) {
 }
 
 $api = new API\Initalize();
-$klein = new \Klein\Klein();
 
 $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
 
@@ -221,16 +220,3 @@ $klein->onHttpError(function() {
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 });
-
-//This is a check to see if the API is going through the existing klein service
-if(isset($request)) {
-
-	$serverConverted = $request->server();
-	//Converts the old request into one relative to the api index
-	$serverConverted['REQUEST_URI'] = substr($request->uri(), 4);
-	$convertedRequest = new \Klein\Request($request->paramsGet()->all(), $request->paramsPost()->all(), $request->cookies()->all(), $serverConverted->all(), $request->files()->all());
-	$klein->dispatch($convertedRequest, $response);
-	
-} else {
-	$klein->dispatch();
-}

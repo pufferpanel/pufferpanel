@@ -123,8 +123,7 @@ $klein->with('/account', 'account.php');
 $klein->with('/password', 'password.php');
 $klein->with('', 'root.php');
 
-$klein->respond('/api?[**]', function($request, $response, $service, $app) {
-	$core = $app->core;
+$klein->with('/api', function() use ($klein, $core) {
 	include('api/index.php');
 });
 
