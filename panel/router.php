@@ -26,7 +26,7 @@ require_once('../src/core/core.php');
 
 $klein = new \Klein\Klein();
 
-$klein->respond('GET', '/assets/[**:trail]', function($request, $response) {
+$klein->respond('GET', '/assets/[**:trail]', function($request, $response) use ($klein) {
 	$path = 'assets/' . $request->param('trail');
 
 	if(file_exists($path)) {
@@ -57,71 +57,55 @@ $klein->respond('GET', '/assets/[**:trail]', function($request, $response) {
 		$response->code('404');
 
 	}
+
+	$klein->skipRemaining();
 });
 
-$klein->respond(function($request, $response, $service, $app) use ($core, $twig, $pageStartTime) {
+$klein->respond(function($request, $response, $service, $app) use ($core) {
 	$app->register('isLoggedIn', function() use ($core, $request) {
 		return $core->auth->isLoggedIn($request->server()['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'));
 	});
-
-	$app->register('core', function() use ($core) {
-		return $core;
-	});
-
-	$app->register('twig', function() use ($twig) {
-		return $twig;
-	});
-
-	$app->register('pageStartTime', function() use ($pageStartTime) {
-		return $pageStartTime;
-	});
 });
 
-$klein->respond('/!(logout|index|register|password|api)', function($request, $response, $service, $app) {
-	if($response->isSent()) {
-		return;
-	}
-
+$klein->respond('/!(logout|index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
 	if(!$app->isLoggedIn) {
 		$response->redirect('/index')->send();
+		$klein->skipRemaining();
 	}
 });
 
-$klein->respond('/ajax/[**:trail]', function($request, $response, $service, $app) {
+$klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $core, $twig){
 	$path = 'ajax/' . $request->param('trail');
 
 	if(file_exists($path)) {
-
-		$core = $app->core;
-		$twig = $app->twig;
 		include($path);
-
 	} else {
-
 		$response->code(404);
-
 	}
+
+	$klein->skipRemaining();
 });
 
-$klein->respond('/admin/[**:trail]', function($request, $response, $service, $app) {
+$klein->respond('/admin/[**:trail]', function($request, $response) use ($klein, $core, $twig, $pageStartTime) {
 	$path = 'admin/' . $request->param('trail');
 
 	if(file_exists($path)) {
-
-		$core = $app->core;
-		$twig = $app->twig;
 		include($path);
-
 	} else {
-
 		$response->code(404);
-
 	}
+	$klein->skipRemaining();
 });
 
-$klein->with('/account', 'account.php');
-$klein->with('/password', 'password.php');
-$klein->with('', 'root.php');
+$klein->with('/account', function() use ($klein, $core, $twig, $pageStartTime) {
+	include('account.php');
+});
+$klein->with('/password', function() use ($klein, $core, $twig, $pageStartTime) {
+	include('password.php');
+});
+$klein->with('', function() use ($klein, $core, $twig, $pageStartTime) {
+	include('root.php');
+});
 
 $klein->with('/api', function() use ($klein, $core) {
 	include('api/index.php');

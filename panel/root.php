@@ -22,11 +22,7 @@ namespace PufferPanel\Core;
 
 use \ORM as ORM;
 
-$this->respond('GET', '/logout', function($request, $response, $service, $app) {
-	if($response->isSent()) {
-		return;
-	}
-
+$klein->respond('GET', '/logout', function($request, $response, $service, $app) use ($klein, $core) {
 	if($app->isLoggedIn) {
 
 		/*
@@ -41,32 +37,24 @@ $this->respond('GET', '/logout', function($request, $response, $service, $app) {
 		$logout->session_ip = null;
 		$logout->save();
 
-		$app->core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from ' . $request->server()['REMOTE_ADDR'] . '.'));
+		$core->log->getUrl()->addLog(0, 1, array('auth.user_logout', 'Account logged out from ' . $request->server()['REMOTE_ADDR'] . '.'));
 	}
 
 	$response->redirect('/index');
+	$klein->skipRemaining();
 });
 
-$this->respond('GET', '/[index]', function($request, $response, $service, $app) {
-	if($response->isSent()) {
-		return;
-	}
-
-	echo $app->twig->render('panel/index.html', array(
-		'xsrf' => $app->core->auth->XSRF(),
+$klein->respond('GET', '/[index]', function() use ($klein, $core, $twig, $pageStartTime) {
+	echo $twig->render('panel/index.html', array(
+		'xsrf' => $core->auth->XSRF(),
 		'footer' => array(
-			'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
+			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));
+	$klein->skipRemaining();
 });
 
-$this->respond('POST', '/index', function($request, $response, $service, $app) {
-	if($response->isSent()) {
-		return;
-	}
-
-	$core = $app->core;
-
+$klein->respond('POST', '/index', function($request, $response, $service, $app) use ($klein, $core) {
 	if($request->param('totp') !== null && $request->param('check') !== null) {
 
 		if(empty($request->param('totp')) || empty($request->param('check'))) {
@@ -156,12 +144,7 @@ $this->respond('POST', '/index', function($request, $response, $service, $app) {
 	}
 });
 
-$this->respond('GET', '/servers', function($request, $response, $service, $app) {
-	if($response->isSent()) {
-		return;
-	}
-
-	$core = $app->core;
+$klein->respond('GET', '/servers', function($request, $response) use ($core, $twig, $pageStartTime) {
 
 	/*
 	 * Redirect
@@ -191,38 +174,38 @@ $this->respond('GET', '/servers', function($request, $response, $service, $app) 
 	/*
 	 * List Servers
 	 */
-	echo $app->twig->render(
+	echo $twig->render(
 			'panel/servers.html', array(
 		'servers' => $servers,
 		'footer' => array(
-			'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
+			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));
 });
 
-$this->respond('GET', '/totp', function($request, $response, $service, $app) {
-	echo $app->twig->render(
+$klein->respond('GET', '/totp', function($request, $response, $service, $app) use ($twig, $pageStartTime) {
+	echo $twig->render(
 			'panel/totp.html', array(
 		'totp' => array(
 			'enabled' => $app->core->user->getData('use_totp')
 		),
 		'footer' => array(
-			'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
+			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
 	));
 });
 
-$this->respond('GET', '/register', function($request, $response, $service, $app) {
-	echo $app->twig->render(
-		'panel/register.html', array(
+$klein->respond('GET', '/register', function($request, $response, $service, $app) use ($twig, $pageStartTime) {
+	echo $twig->render(
+			'panel/register.html', array(
 			'xsrf' => $app->core->auth->XSRF(),
 			'footer' => array(
-				'seconds' => number_format((microtime(true) - $app->pageStartTime), 4)
-			)
+				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+		)
 	));
 });
 
-$this->respond('POST', '/register', function($request, $response, $service, $app) {
+$klein->respond('POST', '/register', function($request, $response, $service, $app) use ($core) {
 	if($request->param('do') !== 'register') {
 		
 		$response->redirect('/register', 302);
@@ -240,7 +223,7 @@ $this->respond('POST', '/register', function($request, $response, $service, $app
 
 	list($encrypted, $iv) = explode('.', $request->param('token'));
 
-	$core = $app->core;
+	
 
 	/* XSRF Check */
 	if($core->auth->XSRF($request->param('xsrf')) !== true) {
