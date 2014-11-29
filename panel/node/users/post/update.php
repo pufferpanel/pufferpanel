@@ -1,4 +1,5 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
 	Copyright (c) 2013 Dane Everitt
@@ -15,19 +16,11 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+ */
+ 
 namespace PufferPanel\Core;
-use \ORM as ORM;
 
-require_once('../../../../src/core/core.php');
-
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-
-}
-
+$klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
 	if($core->settings->get('allow_subusers') != 1)
 		Components\Page::redirect('../list.php?error=not_enabled');
 
@@ -54,5 +47,4 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$query->save();
 
 	Components\Page::redirect('../view.php?id='.$_POST['uuid']);
-
-?>
+});

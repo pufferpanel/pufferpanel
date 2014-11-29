@@ -1,4 +1,5 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
 	Copyright (c) 2013 Dane Everitt
@@ -15,22 +16,15 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+ */
+ 
 namespace PufferPanel\Core;
-use \ORM as ORM;
 
-require_once('../../../src/core/core.php');
+$klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
+	if($core->user->hasPermission('users.view') !== true)
+		Components\Page::redirect('../index.php?error=no_permission');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-}
-
-if($core->user->hasPermission('users.view') !== true)
-	Components\Page::redirect('../index.php?error=no_permission');
-
-$user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid', $_GET['id'])->findOne();
+	user = ORM::forTable('users')->selectMany('permissions', 'email')->wh	ere('uuid', $_GET['id'])->findOne();
 
 	if($user === false)
 		Components\Page::redirect('list.php?error');
@@ -42,18 +36,17 @@ $user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid'
 	if(!array_key_exists($core->server->getData('hash'), $permissions))
 		Components\Page::redirect('list.php?error');
 
-/*
-* Display Page
-*/
-echo $twig->render(
-		'node/users/view.html', array(
-			'server' => $core->server->getData(),
-			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]),
-			'user' => array('email' => $user->email),
-			'xsrf' => $core->auth->XSRF(),
-			'allow_subusers' => $core->settings->get('allow_subusers'),
-			'footer' => array(
-				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-			)
+	/*
+	* Display Page
+	*/
+	echo $twig->render('node/users/view.html', array(
+		'server' => $core->server->getData(),
+		'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]),
+		'user' => array('email' => $user->email),
+		'xsrf' => $core->auth->XSRF(),
+		'allow_subusers' => $core->settings->get('allow_subusers'),
+		'footer' => array(
+			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+		)
 	));
-?>
+});

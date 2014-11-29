@@ -1,4 +1,5 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
 	Copyright (c) 2013 Dane Everitt
@@ -15,74 +16,66 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+ */
+ 
 namespace PufferPanel\Core;
-use \ORM as ORM;
 
-require_once('../../../../src/core/core.php');
+$klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
+	if($core->settings->get('allow_subusers') != 1)
+		Components\Page::redirect('../list.php?error=not_enabled');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
+	//id means pending, uid means not pending
+	if(isset($_GET['id']) && !empty($_GET['id'])){
 
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
+		$_GET['id'] = urldecode($_GET['id']);
 
-}
+		$query = ORM::forTable('account_change')->where(array('key' => $_GET['id'], 'verified' => 0))->findOne();
 
-if($core->settings->get('allow_subusers') != 1)
-	Components\Page::redirect('../list.php?error=not_enabled');
+		if($query === false)
+			Components\Page::redirect('../list.php?error');
 
-//id means pending, uid means not pending
-if(isset($_GET['id']) && !empty($_GET['id'])){
+		// verify that this user is assigned to this server
+		if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true)))
+			Components\Page::redirect('../list.php?error=c1');
 
-	$_GET['id'] = urldecode($_GET['id']);
+		// remove verification codes
+		$query->delete();
 
-	$query = ORM::forTable('account_change')->where(array('key' => $_GET['id'], 'verified' => 0))->findOne();
+		// update server in database
+		list($encrypted, $iv) = explode('.', $_GET['id']);
+		$_perms = json_decode($row['subusers'], true);
+		unset($_perms[$core->auth->decrypt($encrypted, $iv)]);
+		$_perms = json_encode($_perms);
 
-	if($query === false)
-		Components\Page::redirect('../list.php?error');
+		$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+		$server->subusers = $_perms;
+		$server->save();
 
-	// verify that this user is assigned to this server
-	if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true)))
-		Components\Page::redirect('../list.php?error=c1');
+		Components\Page::redirect('../list.php?revoked');
 
-	// remove verification codes
-	$query->delete();
+	}elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
 
-	// update server in database
-	list($encrypted, $iv) = explode('.', $_GET['id']);
-	$_perms = json_decode($row['subusers'], true);
-	unset($_perms[$core->auth->decrypt($encrypted, $iv)]);
-	$_perms = json_encode($_perms);
+		$_GET['uid'] = urldecode($_GET['uid']);
 
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->subusers = $_perms;
-	$server->save();
+		$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
 
-	Components\Page::redirect('../list.php?revoked');
+		if($user === false)
+			Components\Page::redirect('../list.php?error');
 
-}elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
+		// verify that this user is assigned to this server
+		if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true)))
+			Components\Page::redirect('../list.php?error');
 
-	$_GET['uid'] = urldecode($_GET['uid']);
+		// update server in database
+		$_perms = json_decode($core->server->getData('subusers'), true);
+		unset($_perms[$row['id']]);
+		$_perms = json_encode($_perms);
 
-	$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
+		$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+		$server->subusers = $_perms;
+		$server->save();
 
-	if($user === false)
-		Components\Page::redirect('../list.php?error');
+		Components\Page::redirect('../list.php?revoked');
 
-	// verify that this user is assigned to this server
-	if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true)))
-		Components\Page::redirect('../list.php?error');
-
-	// update server in database
-	$_perms = json_decode($core->server->getData('subusers'), true);
-	unset($_perms[$row['id']]);
-	$_perms = json_encode($_perms);
-
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->subusers = $_perms;
-	$server->save();
-
-	Components\Page::redirect('../list.php?revoked');
-
-}
-?>
+	}
+});
