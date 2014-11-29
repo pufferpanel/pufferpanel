@@ -119,6 +119,54 @@ $klein->with('/users', function() use ($klein, $api) {
 
 	});
 
+	$klein->respond('POST', '/', function($request, $response) use ($users) {
+
+		$json = json_decode(file_get_contents('php://input'), true);
+		if(json_last_error() != "JSON_ERROR_NONE") {
+
+			$response->code(409);
+			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+
+		}
+
+		if(isset($json['password']) && !$request->isSecure()) {
+
+			$response->code(403);
+			return json_encode(array('message' => 'Using a password that you define must occur over a secure connection.'));
+
+		}
+
+		$addUser = $user->createUser($json);
+		if(is_numeric($addUser)) {
+
+			$response->code(400);
+			switch($addUser) {
+
+				case 1:
+				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+				break;
+				case 2:
+				return json_encode(array('message' => 'Invalid username was provided. Matching using '));
+				break;
+				case 3:
+				return json_encode(array('message' => 'Invalid email was provided.'));
+				break;
+				case 4:
+				return json_encode(array('message' => 'A user with that email or username already exists in the system.'));
+				break;
+				default:
+				$response->code(500);
+				return json_encode(array('message' => 'An unhandled error occured when trying to add the user.'));
+				break;
+
+			}
+
+		} else {
+			return json_encode($addUser, JSON_PRETTY_PRINT);
+		}
+
+	});
+
 });
 
 $klein->with('/servers', function() use ($klein, $api) {

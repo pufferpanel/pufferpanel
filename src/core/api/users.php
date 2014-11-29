@@ -32,6 +32,11 @@ class Users {
 	private $__allowedUpdateColumns = array('whmcs_id', 'username', 'email', 'password', 'language', 'root_admin', 'notify_login_s', 'notify_login_f');
 
 	/**
+	* @param array $__requiredUserFields An array containing all of the fields that must be sent in a request for creating a user.
+	*/
+	private $__requiredUserFields = array('username', 'email', 'password', 'admin', 'options');
+
+	/**
 	* @param array $_usersData
 	*/
 	protected $_usersData = array();
@@ -92,6 +97,67 @@ class Users {
 		}
 
 		return $this->_usersData;
+
+	}
+
+	/**
+	 * Create a new user for PufferPanel.
+	 *
+	 * @param array $data
+	 *		An array containing all of the posted JSON data.
+	 * @return string|bool
+	 * 		- Returns the UUID of the user that was just created.
+	 *		- Returns an integer if the operation failed which is then matched to an error in the API.
+	 */
+	public function createUser(array $data) {
+
+		$this->data = $data;
+
+		if(count(array_intersect_key(array_flip($__requiredUserFields), $this->data)) !== count($__requiredUserFields)) {
+			return 1;
+		}
+
+		if(!preg_match('/^[\w-]{4,35}$/', $this->data['username'])) {
+			return 2;
+		}
+
+		if(!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
+			return 3;
+		}
+
+		if(!filter_var($this->data['admin'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0, 'max_range' => 1)))) {
+			$this->data['admin'] = 0;
+		}
+
+		$this->findExisting = ORM::forTable('users')->where_any_is(array(array('username' => $this->data['username']), array('email' => $this->data['email'])))->findOne();
+		if($this->findExisiting) {
+			return 4;
+		}
+
+		if(array_key_exists('password', $this->data['options']) && $this->data['options']['password'] === true) {
+
+			$this->data['password_raw'] = self::keygen(12);
+			$this->data['password'] = $this->hash($this->data['password_raw']);
+
+		} else {
+
+			$this->data['password'] = $this->hash($this->data['password']);
+
+		}
+
+		$this->data['uuid'] = $this->generateUniqueUUID('users', 'uuid');
+		$this->user = ORM::forTable('users')->create();
+		$this->user->set(array(
+			'uuid' => $this->data['uuid'],
+			'username' => $this->data['username'],
+			'email' => $this->data['email'],
+			'password' => $this->data['password'],
+			'language' => 'en',
+			'register_time' => time()
+		));
+		$this->user->save();
+
+		return array('uuid' => $this->data['uuid']);
 
 	}
 
