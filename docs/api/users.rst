@@ -103,8 +103,12 @@ Request
 	{
 		"username": "someusername",
 		"email": "new@example.com",
-		"password": "rawPassword1",
-		"admin": 0
+		"password": null,
+		"admin": 0,
+		"options": {
+			"email": false,
+			"password": true
+		}
 	}
 
 .. code-block:: curl
@@ -112,7 +116,7 @@ Request
 	curl -X PUT -i \
 		-H "X-Access-Token: ABCDEFGH-1234-5678-0000-abcdefgh" \
 		-H "Content-Type: application/json" \
-		-d '{"email": "new@example.com","admin": 0}' \
+		-d '{"username":"someusername","email":"new@example.com","password":null,"admin":0,"options":{"email":false,"password":true}}' \
 		https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 
 Response
