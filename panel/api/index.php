@@ -143,21 +143,21 @@ $klein->with('/users', function() use ($klein, $api) {
 			switch($addUser) {
 
 				case 1:
-				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
-				break;
+					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					break;
 				case 2:
-				return json_encode(array('message' => 'Invalid username was provided. Matching using '));
-				break;
+					return json_encode(array('message' => 'Invalid username was provided. Matching using '));
+					break;
 				case 3:
-				return json_encode(array('message' => 'Invalid email was provided.'));
-				break;
+					return json_encode(array('message' => 'Invalid email was provided.'));
+					break;
 				case 4:
-				return json_encode(array('message' => 'A user with that email or username already exists in the system.'));
-				break;
+					return json_encode(array('message' => 'A user with that email or username already exists in the system.'));
+					break;
 				default:
-				$response->code(500);
-				return json_encode(array('message' => 'An unhandled error occured when trying to add the user.'));
-				break;
+					$response->code(500);
+					return json_encode(array('message' => 'An unhandled error occured when trying to add the user.'));
+					break;
 
 			}
 
@@ -284,7 +284,9 @@ $klein->onHttpError(function() {
 					'/' => 'List all users on the system.',
 					'/:uuid' => 'List information about a specific user including servers they own.'
 				),
-				'POST' => array(),
+				'POST' => array(
+					'/' => 'Create a user given the correct JSON structure.'
+				),
 				'DELETE' => array(),
 				'PUT' => array(
 					'/:uuid' => 'Update information for a user.'
