@@ -26,8 +26,14 @@ class Users {
 
 	use \PufferPanel\Core\Components\Authentication;
 
+	/**
+	 * @param array $__allowedUpdateColumns An array containing all of the fields that can be updated through a PUT request.
+	 */
 	private $__allowedUpdateColumns = array('whmcs_id', 'username', 'email', 'password', 'language', 'root_admin', 'notify_login_s', 'notify_login_f');
 
+	/**
+	* @param array $_usersData
+	*/
 	protected $_usersData = array();
 
 	/**
