@@ -1,34 +1,25 @@
 <?php
+
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+  PufferPanel - A Minecraft Server Management Panel
+  Copyright (c) 2013 Dane Everitt
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
 namespace PufferPanel\Core;
 
-header('Content-Type: application/json');
-
-require_once '../src/core/api/initalize.php';
-
-if($core->settings->get('use_api') != 1) {
-
-	http_response_code(404);
-	echo json_encode(array('message' => 'This API is not enabled.'));
-	return;
-
-}
 // check all requests for a header
 // $headers = getallheaders();
 // if(array_key_exists('X-Access-Token', $headers)){
@@ -49,110 +40,117 @@ if($core->settings->get('use_api') != 1) {
 //
 // }
 
-if($core->settings->get('https') == 1) {
+$api = new API\Initalize();
 
-	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
+$klein->respond(function($request) use ($klein, $core) {
+	header('Content-Type: application/json');
 
-		http_response_code(403);
-		echo json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.'));
+	require_once '../src/core/api/initalize.php';
+
+	if($core->settings->get('use_api') != 1) {
+
+		http_response_code(404);
+		echo json_encode(array('message' => 'This API is not enabled.'));
+		$klein->skipRemaining();
 		return;
-
+		
 	}
 
-}
 
-$api = new API\Initalize();
+	if($core->settings->get('https') == 1) {
+
+		if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
+
+			http_response_code(403);
+			echo json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.'));
+			$klein->skipRemaining();
+			return;
+
+		}
+
+	}
+});
 
 $klein->respond('GET', '/users/[:uuid]?', function ($request, $response) use ($api) {
 
 	$users = $api->loadClass('Users');
-	if($request->param('uuid')){
+	if($request->param('uuid') !== null) {
 
 		$data = $users->getUser($request->param('uuid'));
-		if($data === false){
-
+		if($data === false) {
 			$response->code(404);
 			echo json_encode(array('message' => 'The requested user does not exist in the system.'));
-
 		} else {
 			echo json_encode($data, JSON_PRETTY_PRINT);
 		}
-
+		
 	} else {
 		echo json_encode($users->getUsers(), JSON_PRETTY_PRINT);
 	}
-
 });
 
 $klein->respond('GET', '/servers/[:hash]?', function ($request, $response) use ($api) {
 
 	$servers = $api->loadClass('Servers');
 
-		if($request->param('hash')){
+	if($request->param('hash')) {
 
-			$data = $servers->getServer($request->param('hash'));
-			if($data === false){
+		$data = $servers->getServer($request->param('hash'));
+		if($data === false) {
 
-				$response->code(404);
-				echo json_encode(array('message' => 'The requested server does not exist in the system.'));
-
-			} else {
-				echo json_encode($data, JSON_PRETTY_PRINT);
-			}
-
+			$response->code(404);
+			echo json_encode(array('message' => 'The requested server does not exist in the system.'));
 		} else {
-			echo json_encode($servers->getServers(), JSON_PRETTY_PRINT);
+			echo json_encode($data, JSON_PRETTY_PRINT);
 		}
 
+	} else {
+		echo json_encode($servers->getServers(), JSON_PRETTY_PRINT);
+	}
 });
 
 $klein->respond('GET', '/nodes/[i:id]?', function ($request, $response) use ($api) {
 
 	$nodes = $api->loadClass('Nodes');
 
-		if($request->param('id')){
+	if($request->param('id')) {
 
-			$data = $nodes->getNode($request->param('id'));
-			if($data === false){
+		$data = $nodes->getNode($request->param('id'));
+		if($data === false) {
 
-				$response->code(404);
-				echo json_encode(array('message' => 'The requested node does not exist in the system.'));
-
-			} else {
-				echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-			}
-
+			$response->code(404);
+			echo json_encode(array('message' => 'The requested node does not exist in the system.'));
 		} else {
-			echo json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+			echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 		}
 
+	} else {
+		echo json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+	}
 });
 
 $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 
 	$node = $api->loadClass('Nodes');
 
-	if($request->param('data') == null){
-
+	if($request->param('data') == null) {
 		$response->code(400);
-		echo json_encode(array('message' => 'You did not pass the required POST parameters.'));
-
+		echo json_encode(array('message' => 'You did not pass the required POST parameters.'));		
 	} else {
 
 		$decodedData = json_decode($request->param('data'), true);
 
-		if(json_last_error() != "JSON_ERROR_NONE"){
+		if(json_last_error() != "JSON_ERROR_NONE") {
 
 			$response->code(409);
-			echo json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
-
+			echo json_encode(array('message' => 'The JSON provided was invalid. (' . json_last_error() . ')'));
 		}
 
 		$runNodeAddition = $node->addNode($decodedData);
-		if(is_numeric($decodedData)){
+		if(is_numeric($decodedData)) {
 
 			$response->code(400);
-			switch($decodedData){
+			switch ($decodedData) {
 				case 1:
 					echo json_encode(array('message' => 'Missing a required parameter in your JSON.'));
 					break;
@@ -170,20 +168,15 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 					echo json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
 					break;
 			}
-
-		}else{
-
+			
+		} else {
 			$response->code(200);
 			echo json_encode($decodedData, JSON_PRETTY_PRINT);
-
 		}
-
 	}
-
 });
 
 $klein->onHttpError(function() {
-
 	http_response_code(404);
 	echo json_encode(array(
 		'endpoints' => array(
@@ -216,7 +209,5 @@ $klein->onHttpError(function() {
 				'DELETE' => array(),
 				'PUT' => array()
 			)
-		)
-	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
+		)), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 });

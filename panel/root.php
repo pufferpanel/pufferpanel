@@ -174,8 +174,7 @@ $klein->respond('GET', '/servers', function($request, $response) use ($core, $tw
 	/*
 	 * List Servers
 	 */
-	echo $twig->render(
-			'panel/servers.html', array(
+	echo $twig->render('panel/servers.html', array(
 		'servers' => $servers,
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
@@ -184,8 +183,7 @@ $klein->respond('GET', '/servers', function($request, $response) use ($core, $tw
 });
 
 $klein->respond('GET', '/totp', function($request, $response, $service, $app) use ($twig, $pageStartTime) {
-	echo $twig->render(
-			'panel/totp.html', array(
+	echo $twig->render('panel/totp.html', array(
 		'totp' => array(
 			'enabled' => $app->core->user->getData('use_totp')
 		),
@@ -196,8 +194,7 @@ $klein->respond('GET', '/totp', function($request, $response, $service, $app) us
 });
 
 $klein->respond('GET', '/register', function($request, $response, $service, $app) use ($twig, $pageStartTime) {
-	echo $twig->render(
-			'panel/register.html', array(
+	echo $twig->render('panel/register.html', array(
 			'xsrf' => $app->core->auth->XSRF(),
 			'footer' => array(
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
@@ -206,12 +203,9 @@ $klein->respond('GET', '/register', function($request, $response, $service, $app
 });
 
 $klein->respond('POST', '/register', function($request, $response, $service, $app) use ($core) {
-	if($request->param('do') !== 'register') {
-		
-		$response->redirect('/register', 302);
-		$response->send();
+	if($request->param('do') !== 'register') {		
+		$response->redirect('/register', 302)->send();
 		return;
-
 	}
 
 	$token = $request->param('token');
@@ -221,13 +215,12 @@ $klein->respond('POST', '/register', function($request, $response, $service, $ap
 		return;
 	}
 
-	list($encrypted, $iv) = explode('.', $request->param('token'));
-
-	
+	list($encrypted, $iv) = explode('.', $request->param('token'));	
 
 	/* XSRF Check */
 	if($core->auth->XSRF($request->param('xsrf')) !== true) {
 		$response->redirect('index?error=xsrf&token=' . urlencode($token), 302)->send();
+		return;
 	}
 
 	if(!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {

@@ -74,7 +74,7 @@ $klein->respond('/!(logout|index|register|password|api)', function($request, $re
 	}
 });
 
-$klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $core, $twig){
+$klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $core){
 	$path = 'ajax/' . $request->param('trail');
 
 	if(file_exists($path)) {
@@ -120,14 +120,6 @@ $klein->respond('GET', '/', function($request, $response, $service, $app) {
 		$response->redirect('/servers', 302)->send();
 	} else {
 		$response->redirect('/index')->send();
-	}
-});
-
-$klein->onError(function ($klein, $err) {
-	//If this is not an expected exception (from not logged in)
-	//then we need to rethrow that error because something broke
-	if($err !== "Not logged in" && !$klein->response()->isSent()) {
-		\Tracy\Debugger::log($err);
 	}
 });
 
