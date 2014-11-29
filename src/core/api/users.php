@@ -100,7 +100,7 @@ class Users {
 	 * 		- Returns true if the operation was successful and all of the data was updated.
 	 * 		- Returns an integer if the operation failed which is then matched to an error in the API.
 	 */
-	public function updateUser($uuid, $data) {
+	public function updateUser($uuid, array $data) {
 
 		$this->uuid = $uuid;
 		$this->data = $data;
@@ -136,7 +136,7 @@ class Users {
 					}
 					break;
 				case 'root_admin':
-					if($this->data['root_admin'] > 1 || $this->data['root_admin'] < 0) {
+					if(!filter_var($this->data['root_admin'], FILTER_VALIDATE_INT, array('options' => array('min_range' => 0, 'max_range' => 1)))) {
 						return false;
 					}
 					break;
