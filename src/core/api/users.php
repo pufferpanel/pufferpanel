@@ -149,7 +149,7 @@ class Users {
 					if($this->data['notify_login_f'] > 1 || $this->data['notify_login_f'] < 0) {
 						return false;
 					}
-					break
+					break;
 				default:
 					return false;
 					break;
