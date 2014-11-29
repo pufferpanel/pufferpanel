@@ -20,7 +20,7 @@
  
 namespace PufferPanel\Core;
 
-$klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
+$klein->respond('*', function($request, $response) use ($core) {
 	if($core->settings->get('allow_subusers') != 1)
 		Components\Page::redirect('../list.php?error=not_enabled');
 
