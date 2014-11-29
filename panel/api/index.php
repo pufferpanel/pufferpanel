@@ -200,6 +200,7 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 
 		$response->code(400);
 		switch($addNode) {
+
 			case 1:
 				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
 				break;
@@ -216,6 +217,7 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 				$response->code(500);
 				return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
 				break;
+
 		}
 
 	} else {
