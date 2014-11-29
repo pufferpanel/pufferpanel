@@ -1,5 +1,0 @@
-RewriteBase /
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
-RewriteRule ^.*$ %2index.php [QSA,L]
