@@ -1,4 +1,5 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
 	Copyright (c) 2013 Dane Everitt
@@ -15,44 +16,35 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+ */
+ 
 namespace PufferPanel\Core;
-use \ORM as ORM;
 
-require_once('../../../../src/core/core.php');
-
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-
-}
-
+$klein->respond('*', function($request, $response) use ($core) {
 	if($core->settings->get('allow_subusers') != 1)
-		Components\Page::redirect('../list.php?error=not_enabled');
+		$response->redirect('/list.php?error=not_enabled', 302)->send();
 
 	if(!isset($_POST['uuid'], $_POST['permissions']))
-		Components\Page::redirect('../list.php');
+		$response->redirect('/list.php', 302)->send();
 
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Components\Page::redirect('../list.php?id='.$_POST['uuid'].'&error');
+		$response->redirect('/list.php?id='.$_POST['uuid'].'&error', 302)->send();
 
 	if(empty($_POST['permissions']))
-		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
+		$response->redirect('/view.php?id='.$_POST['uuid'].'&error', 302)->send();
 
 	$query = ORM::forTable('users')->select('permissions')->where('uuid', $_POST['uuid'])->findOne();
 
 	if($query === false)
-		Components\Page::redirect('../list.php?error');
+		$response->redirect('/list.php?error', 302)->send();
 
 	$permissions = @json_decode($query->permissions, true);
 	if(!is_array($permissions) || !array_key_exists($core->server->getData('hash'), $permissions))
-		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
+		$response->redirect('/view.php?id='.$_POST['uuid'].'&error', 302)->send();
 
 	$permissions[$core->server->getData('hash')] = $_POST['permissions'];
 	$query->permissions = json_encode($permissions);
 	$query->save();
 
-	Components\Page::redirect('../view.php?id='.$_POST['uuid']);
-
-?>
+	$response->redirect('/view.php?id='.$_POST['uuid'], 302)->send();
+});

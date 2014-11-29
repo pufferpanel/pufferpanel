@@ -1,4 +1,5 @@
 <?php
+
 /*
 	PufferPanel - A Minecraft Server Management Panel
 	Copyright (c) 2013 Dane Everitt
@@ -15,31 +16,23 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+ */
+ 
 namespace PufferPanel\Core;
-use \ORM as ORM;
 
-require_once('../../../src/core/core.php');
+$klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
+	if($core->user->hasPermission('users.view') !== true)
+		$response->redirect('/index.php?error=no_permission', 302)->send();
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
-}
-
-if($core->user->hasPermission('users.view') !== true)
-	Components\Page::redirect('../index.php?error=no_permission');
-
-/*
-* Display Page
-*/
-echo $twig->render(
-		'node/users/add.html', array(
-			'xsrf' => $core->auth->XSRF(),
-			'server' => $core->server->getData(),
-			'allow_subusers' => $core->settings->get('allow_subusers'),
-			'footer' => array(
-				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
-			)
+	/*
+	* Display Page
+	*/
+	echo $twig->render('node/users/add.html', array(
+		'xsrf' => $core->auth->XSRF(),
+		'server' => $core->server->getData(),
+		'allow_subusers' => $core->settings->get('allow_subusers'),
+		'footer' => array(
+			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
+		)
 	));
-?>
+});
