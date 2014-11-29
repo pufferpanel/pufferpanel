@@ -22,19 +22,19 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
 	if($core->user->hasPermission('users.view') !== true)
-		Components\Page::redirect('../index.php?error=no_permission');
+		$response->redirect('/index.php?error=no_permission', 302)->send();
 
 	user = ORM::forTable('users')->selectMany('permissions', 'email')->wh	ere('uuid', $_GET['id'])->findOne();
 
 	if($user === false)
-		Components\Page::redirect('list.php?error');
+		$response->redirect('/index.php?error', 302)->send();
 
 	if(empty($user->permissions) || !is_array(json_decode($user->permissions, true)))
-		Components\Page::redirect('list.php?error');
+		$response->redirect('/index.php?error', 302)->send();
 
 	$permissions = json_decode($user->permissions, true);
 	if(!array_key_exists($core->server->getData('hash'), $permissions))
-		Components\Page::redirect('list.php?error');
+		$response->redirect('/index.php?error', 302)->send();
 
 	/*
 	* Display Page

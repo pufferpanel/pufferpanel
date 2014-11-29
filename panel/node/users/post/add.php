@@ -22,19 +22,19 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core) {
 	if($core->settings->get('allow_subusers') != 1)
-		Components\Page::redirect('../add.php?error=not_enabled');
+		$response->redirect('/add.php?error=not_enabled', 302)->send();
 
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Components\Page::redirect('../add.php?error=token');
+		$response->redirect('/add.php?error=token', 302)->send();
 
 	if(!isset($_POST['email'], $_POST['permissions']))
-		Components\Page::redirect('../add.php?error=missing_required');
+		$response->redirect('/add.php?error=missing_required', 302)->send();
 
 	if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-		Components\Page::redirect('../add.php?error=email');
+		$response->redirect('/add.php?error=email', 302)->send();
 
 	if(empty($_POST['permissions']))
-		Components\Page::redirect('../add.php?error=permissions_empty');
+		$response->redirect('/add.php?error=permissions_empty', 302)->send();
 
 	$iv = $core->auth->generate_iv();
 
@@ -64,5 +64,5 @@ $klein->respond('*', function($request, $response) use ($core) {
 		'EMAIL' => $_POST['email']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
 
-	Components\Page::redirect('../list.php?success');
+	$response->redirect(('/list.php?success', 302)->send();
 });

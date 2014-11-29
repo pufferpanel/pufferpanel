@@ -22,7 +22,7 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core) {
 	if($core->settings->get('allow_subusers') != 1)
-		Components\Page::redirect('../list.php?error=not_enabled');
+		$response->redirect('/list.php?error=not_enabled', 302)->send();
 
 	//id means pending, uid means not pending
 	if(isset($_GET['id']) && !empty($_GET['id'])){
@@ -32,11 +32,11 @@ $klein->respond('*', function($request, $response) use ($core) {
 		$query = ORM::forTable('account_change')->where(array('key' => $_GET['id'], 'verified' => 0))->findOne();
 
 		if($query === false)
-			Components\Page::redirect('../list.php?error');
+			$response->redirect('/list.php?error', 302)->send();
 
 		// verify that this user is assigned to this server
 		if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true)))
-			Components\Page::redirect('../list.php?error=c1');
+			$response->redirect('/list.php?error=c1', 302)->send();
 
 		// remove verification codes
 		$query->delete();
@@ -51,7 +51,7 @@ $klein->respond('*', function($request, $response) use ($core) {
 		$server->subusers = $_perms;
 		$server->save();
 
-		Components\Page::redirect('../list.php?revoked');
+		$response->redirect('/list.php?revoked', 302)->send();
 
 	}elseif(isset($_GET['uid']) && !empty($_GET['uid'])){
 
@@ -60,11 +60,11 @@ $klein->respond('*', function($request, $response) use ($core) {
 		$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
 
 		if($user === false)
-			Components\Page::redirect('../list.php?error');
+			$response->redirect('/list.php?error', 302)->send();
 
 		// verify that this user is assigned to this server
 		if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true)))
-			Components\Page::redirect('../list.php?error');
+			$response->redirect('/list.php?error', 302)->send();
 
 		// update server in database
 		$_perms = json_decode($core->server->getData('subusers'), true);
@@ -75,7 +75,7 @@ $klein->respond('*', function($request, $response) use ($core) {
 		$server->subusers = $_perms;
 		$server->save();
 
-		Components\Page::redirect('../list.php?revoked');
+		$response->redirect('/list.php?revoked', 302)->send();
 
 	}
 });
