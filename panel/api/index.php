@@ -236,7 +236,9 @@ $klein->onHttpError(function() {
 				),
 				'POST' => array(),
 				'DELETE' => array(),
-				'PUT' => array()
+				'PUT' => array(
+					'/:uuid' => 'Update information for a user.'
+				)
 			),
 			'/servers' => array(
 				'GET' => array(
