@@ -78,8 +78,6 @@ Parameters
 +--------+------------+-----------+---------------------------------------------------------------------+
 | Method | Parameter  | Required  | Description                                                         |
 +========+============+===========+=====================================================================+
-| GET    | uuid       | yes       | The UUID of the user that you wish to return data about.            |
-+--------+------------+-----------+---------------------------------------------------------------------+
 | POST   |            | yes       | A JSON formatted array containing the information for the new user. |
 +--------+------------+-----------+---------------------------------------------------------------------+
 
@@ -113,17 +111,20 @@ Request
 
 .. code-block:: curl
 
-	curl -X PUT -i \
+	curl -X POST -i \
 		-H "X-Access-Token: ABCDEFGH-1234-5678-0000-abcdefgh" \
 		-H "Content-Type: application/json" \
 		-d '{"username":"someusername","email":"new@example.com","password":null,"admin":0,"options":{"email":false,"password":true}}' \
-		https://example.com/api/users/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
+		https://example.com/api/users
 
 Response
 ^^^^^^^^
-.. code-block::
+.. code-block:: json
 
-	HTTP/1.x 204 No Content
+	{
+		"uuid": "gggggggg-gggg-gggg-gggg-ggggghggg"
+	}
+
 
 Update a User
 =============
@@ -175,7 +176,7 @@ The parameters below do not all have to be sent, you can send whichever one(s) y
 
 Response
 ^^^^^^^^
-.. code-block::
+.. code-block:: text
 
 	HTTP/1.x 204 No Content
 
