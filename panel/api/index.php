@@ -119,7 +119,7 @@ $klein->with('/users', function() use ($klein, $api) {
 
 	});
 
-	$klein->respond('POST', '/', function($request, $response) use ($users) {
+	$klein->respond('POST', '/?', function($request, $response) use ($users) {
 
 		$json = json_decode(file_get_contents('php://input'), true);
 		if(json_last_error() != "JSON_ERROR_NONE") {
@@ -219,7 +219,7 @@ $klein->with('/nodes', function() use ($klein, $api) {
 
 	});
 
-	$klein->respond('POST', '/', function ($request, $response) use ($nodes) {
+	$klein->respond('POST', '/?', function ($request, $response) use ($nodes) {
 
 		$json = json_decode(file_get_contents('php://input'), true);
 		if(json_last_error() != "JSON_ERROR_NONE") {
