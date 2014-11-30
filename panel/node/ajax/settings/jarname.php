@@ -63,4 +63,4 @@ $klein->respond('*', function($request, $response) use ($core) {
 	file_get_contents('http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'), false, $context);
 
 	$response->redirect('../settings.php', 302)->send();
-
+});

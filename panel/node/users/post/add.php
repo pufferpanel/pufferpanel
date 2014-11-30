@@ -69,5 +69,5 @@ $klein->respond('*', function($request, $response) use ($core) {
 		'EMAIL' => $_POST['email']
 	))->dispatch($_POST['email'], $core->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
 
-	$response->redirect(('/list.php?success', 302)->send();
+	$response->redirect('/list.php?success', 302)->send();
 });

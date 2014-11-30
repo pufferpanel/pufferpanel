@@ -25,7 +25,7 @@ $klein->respond('*', function($request, $response) use ($core, $twig, $pageStart
 		$response->redirect('/index.php?error=no_permission', 302)->send();
 	}
 
-	user = ORM::forTable('users')->selectMany('permissions', 'email')->wh	ere('uuid', $_GET['id'])->findOne();
+	$user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid', $_GET['id'])->findOne();
 
 	if($user === false) {
 		$response->redirect('/index.php?error', 302)->send();
