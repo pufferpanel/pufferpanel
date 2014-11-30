@@ -197,13 +197,18 @@ $klein->with('/servers', function() use ($klein, $api) {
 
 });
 
-$klein->respond('GET', '/nodes/[i:id]?', function ($request, $response) use ($api) {
+$klein->with('/nodes', function() use ($klein, $api) {
 
 	$nodes = $api->loadClass('Nodes');
-	if($request->param('id')) {
+
+	$klein->respond('GET', '/?', function($request, $response) use ($nodes) {
+		return json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+	});
+
+	$klein->respond('GET', '/[i:id]', function($request, $response) use ($nodes) {
 
 		$data = $nodes->getNode($request->param('id'));
-		if($data === false) {
+		if(!$data) {
 
 			$response->code(404);
 			return json_encode(array('message' => 'The requested node does not exist in the system.'));
@@ -212,65 +217,48 @@ $klein->respond('GET', '/nodes/[i:id]?', function ($request, $response) use ($ap
 			return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 		}
 
+	});
 
-	} else {
-		return json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-	}
+	$klein->respond('POST', '/', function ($request, $response) use ($nodes) {
 
-});
+		$json = json_decode(file_get_contents('php://input'), true);
+		if(json_last_error() != "JSON_ERROR_NONE") {
 
-/*
-$data_string = json_encode($data);
+			$response->code(409);
+			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
 
-$ch = curl_init('http://webservice.local/');
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-	'Content-Type: application/json',
-	'Content-Length: ' . strlen($data_string))
-);
-*/
-$klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
+		}
 
-	$node = $api->loadClass('Nodes');
+		$addNode = $nodes->addNode($json);
+		if(is_numeric($addNode)) {
 
-	$json = json_decode(file_get_contents('php://input'), true);
-	if(json_last_error() != "JSON_ERROR_NONE") {
+			$response->code(400);
+			switch($addNode) {
 
-		$response->code(409);
-		return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
-
-	}
-
-	$addNode = $node->addNode($json);
-	if(is_numeric($addNode)) {
-
-		$response->code(400);
-		switch($addNode) {
-
-			case 1:
+				case 1:
 				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
 				break;
-			case 2:
+				case 2:
 				return json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}'));
 				break;
-			case 3:
+				case 3:
 				return json_encode(array('message' => 'Invalid node IP provided.'));
 				break;
-			case 4:
+				case 4:
 				return json_encode(array('message' => 'Missing or invalid IP and Port information.'));
 				break;
-			default:
+				default:
 				$response->code(500);
 				return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
 				break;
 
+			}
+
+		} else {
+			return json_encode($addNode, JSON_PRETTY_PRINT);
 		}
 
-	} else {
-		return json_encode($addNode, JSON_PRETTY_PRINT);
-	}
+	});
 
 });
 
