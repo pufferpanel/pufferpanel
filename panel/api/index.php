@@ -236,21 +236,21 @@ $klein->with('/nodes', function() use ($klein, $api) {
 			switch($addNode) {
 
 				case 1:
-				return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
-				break;
+					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					break;
 				case 2:
-				return json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}'));
-				break;
+					return json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}'));
+					break;
 				case 3:
-				return json_encode(array('message' => 'Invalid node IP provided.'));
-				break;
+					return json_encode(array('message' => 'Invalid node IP provided.'));
+					break;
 				case 4:
-				return json_encode(array('message' => 'Missing or invalid IP and Port information.'));
-				break;
+					return json_encode(array('message' => 'Missing or invalid IP and Port information.'));
+					break;
 				default:
-				$response->code(500);
-				return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
-				break;
+					$response->code(500);
+					return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
+					break;
 
 			}
 
