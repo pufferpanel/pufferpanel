@@ -24,7 +24,7 @@ use \ORM;
 */
 class Servers {
 
-	use \PufferPanel\Core\Components\Authentication, \PufferPanel\Core\Components\Functions;
+	use \PufferPanel\Core\Components\Functions;
 
 	protected $_serversData = array();
 
