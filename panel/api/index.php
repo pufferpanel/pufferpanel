@@ -191,6 +191,66 @@ $klein->with('/servers', function() use ($klein, $api) {
 
 	});
 
+	$klein->respond('POST', '/?', function($request, $response) use ($servers) {
+
+		if(!$request->isSecure()) {
+
+			$response->code(403);
+			return json_encode(array('message' => 'Creating a new server must occur over a secure connection.'));
+
+		}
+
+		$json = json_decode(file_get_contents('php://input'), true);
+		if(json_last_error() != "JSON_ERROR_NONE") {
+
+			$response->code(409);
+			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+
+		}
+
+		$addServer = $servers->addServer($json);
+		if(is_numeric($addServer)) {
+
+			$response->code(400);
+			switch($addServer) {
+
+				case 1:
+					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					break;
+				case 2:
+					return json_encode(array('message' => 'Unable to locate that node or user.'));
+					break;
+				case 3:
+					return json_encode(array('message' => 'Unable to connect to the server running GSD. Is it online?'));
+					break;
+				case 4:
+					return json_encode(array('message' => 'Invalid server name. Validated using ^[\w-]{4,35}$.'));
+					break;
+				case 5:
+					return json_encode(array('message' => 'Invalid server IP or Port provided, or they are not assigned to this node.'));
+					break;
+				case 6:
+					return json_encode(array('message' => 'The selected port is currently in use.'));
+					break;
+				case 7:
+					return json_encode(array('message' => 'Invalid user email provided.'));
+					break;
+				case 8:
+					return json_encode(array('message' => 'Non-numeric value provided for memory, disk, or cpu.'));
+					break;
+				default:
+					$response->code(500);
+					return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
+					break;
+
+			}
+
+		} else {
+			return json_encode($addServer, JSON_PRETTY_PRINT);
+		}
+
+	});
+
 	$klein->respond('PUT', '/[:hash]', function($request, $response) use ($servers) {
 
 	});
