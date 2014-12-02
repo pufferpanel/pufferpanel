@@ -25,6 +25,13 @@ session_start();
 $pageStartTime = microtime(true);
 
 /*
+* Stop Timezone Errors
+*/
+if(!ini_get('date.timezone')) {
+	date_default_timezone_set('UTC');
+}
+
+/*
  * Cloudflare IP Fix
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
