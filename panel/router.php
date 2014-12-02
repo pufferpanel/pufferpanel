@@ -20,8 +20,6 @@
 
 namespace PufferPanel\Core;
 
-session_start();
-
 require_once('../src/core/core.php');
 
 $klein = new \Klein\Klein();
@@ -103,9 +101,9 @@ $klein->with('/account', function() use ($klein, $core, $twig, $pageStartTime) {
 $klein->with('/password', function() use ($klein, $core, $twig, $pageStartTime) {
 	include('password.php');
 });
-$klein->with('', function() use ($klein, $core, $twig, $pageStartTime) {
-	include('root.php');
-});
+
+include('root.php');
+
 
 $klein->with('/api', function() use ($klein, $core) {
 	include('api/index.php');

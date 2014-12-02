@@ -40,12 +40,14 @@ namespace PufferPanel\Core;
 //
 // }
 
-$api = new API\Initalize();
+$api = null;
 
-$klein->respond(function($request) use ($klein, $core) {
+$klein->respond(function($request) use ($klein, $core, $api) {
 	header('Content-Type: application/json');
 
 	require_once '../src/core/api/initalize.php';
+
+	$api = new API\Initalize();
 
 	if($core->settings->get('use_api') != 1) {
 
@@ -176,7 +178,10 @@ $klein->respond('POST', '/nodes', function ($request, $response) use ($api) {
 	}
 });
 
-$klein->onHttpError(function() {
+$klein->onHttpError(function($httpCode, $klein) {
+	if(preg_match("#^/api/?#",$klein->request()->uri()) !== 1) {
+		return;
+	}
 	http_response_code(404);
 	echo json_encode(array(
 		'endpoints' => array(
