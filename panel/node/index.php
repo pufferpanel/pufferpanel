@@ -26,15 +26,13 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 if($core->gsd->online() === true){
 
-	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log";
-	$context = stream_context_create(array(
-		"http" => array(
-			"method" => "GET",
-			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
-			"timeout" => 3
+	$response = \Unirest::get(
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log",
+		array(
+			"X-Access-Token" => $core->server->getData('gsd_secret')
 		)
-	));
-	$content = json_decode(@file_get_contents($url, 0, $context), true);
+	);
+	$content = json_decode($response->body, true);
 
 }else
 	$content = array('contents' => 'Server is currently offline.');

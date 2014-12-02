@@ -263,6 +263,7 @@
 								return false;
 							},
 							success: function(data) {
+								$("#live_console").val("");
 								if(data == "ok"){
 									$("#pw_resp").attr('class', 'alert alert-success').html("{{ lang.node_console_ajax_server_started }}").fadeIn().delay(5000).fadeOut();
 									can_run = true;
