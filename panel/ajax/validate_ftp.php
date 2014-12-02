@@ -17,24 +17,24 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 header('Content-Type: application/json');
-require_once('../../src/core/core.php');
+require_once '../../src/core/core.php';
 
 /*
  * Illegally Accessed File
  */
-if(!isset($_POST['username']) || !isset($_POST['password'])){
+if(!isset($_POST['username'], $_POST['password'])) {
 
 	http_response_code(403);
 	exit();
 
 }
 
-if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $matches)){
+if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $matches)) {
 
 	http_response_code(403);
 	exit();
 
-}else{
+} else {
 
 	$username = $matches[1].$matches[2];
 	$serverid = $matches[3];
@@ -42,26 +42,26 @@ if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $_POST['username'], $ma
 }
 
 /*
- * Varify Identity
+ * Verify Identity
  */
 $server = ORM::forTable('servers')
 			->selectMany('encryption_iv', 'ftp_pass', 'gsd_secret')
 			->where(array('gsd_id' => $serverid, 'ftp_user' => $username))
 			->findOne();
 
-	if($server === false){
+	if(!$server) {
 
 		http_response_code(403);
 		exit();
 
-	}else{
+	} else {
 
-		if($core->auth->encrypt($_POST['password'], $server->encryption_iv) != $server->ftp_pass){
+		if($core->auth->encrypt($_POST['password'], $server->encryption_iv) != $server->ftp_pass) {
 
 			http_response_code(403);
 			exit();
 
-		}else{
+		} else {
 
 			http_response_code(200);
 			die(json_encode(array('authkey' => $server->gsd_secret)));
