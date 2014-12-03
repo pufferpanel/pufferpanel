@@ -22,35 +22,35 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core) {
 	if($core->settings->get('allow_subusers') != 1) {
-		$response->redirect('/list.php?error=not_enabled', 302)->send();
+		$response->redirect('list?error=not_enabled', 302)->send();
 	}
 
 	if(!isset($_POST['uuid'], $_POST['permissions'])) {
-		$response->redirect('/list.php', 302)->send();
+		$response->redirect('list', 302)->send();
 	}
 
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true) {
-		$response->redirect('/list.php?id='.$_POST['uuid'].'&error', 302)->send();
+		$response->redirect('list?id='.$_POST['uuid'].'&error', 302)->send();
 	}
 
 	if(empty($_POST['permissions'])) {
-		$response->redirect('/view.php?id='.$_POST['uuid'].'&error', 302)->send();
+		$response->redirect('view?id='.$_POST['uuid'].'&error', 302)->send();
 	}
 
 	$query = ORM::forTable('users')->select('permissions')->where('uuid', $_POST['uuid'])->findOne();
 
 	if($query === false) {
-		$response->redirect('/list.php?error', 302)->send();
+		$response->redirect('list?error', 302)->send();
 	}
 
 	$permissions = @json_decode($query->permissions, true);
 	if(!is_array($permissions) || !array_key_exists($core->server->getData('hash'), $permissions)) {
-		$response->redirect('/view.php?id='.$_POST['uuid'].'&error', 302)->send();
+		$response->redirect('view?id='.$_POST['uuid'].'&error', 302)->send();
 	}
 
 	$permissions[$core->server->getData('hash')] = $_POST['permissions'];
 	$query->permissions = json_encode($permissions);
 	$query->save();
 
-	$response->redirect('/view.php?id='.$_POST['uuid'], 302)->send();
+	$response->redirect('view?id='.$_POST['uuid'], 302)->send();
 });

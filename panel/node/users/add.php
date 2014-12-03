@@ -22,7 +22,7 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
 	if(!$core->user->hasPermission('users.view')) {
-		$response->redirect('/index.php?error=no_permission', 302)->send();
+		$response->redirect('index?error=no_permission', 302)->send();
 	}
 
 	/*

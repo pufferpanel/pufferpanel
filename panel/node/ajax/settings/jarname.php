@@ -22,15 +22,15 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core) {
 	if(!$core->user->hasPermission('manage.rename.jar')) {
-		$response->redirect('../index.php?error=no_permission', 302)->send();
+		$response->redirect('../index?error=no_permission', 302)->send();
 	}
 
 	if(!isset($_POST['jarfile']) || empty($_POST['jarfile'])) {
-		$response->redirect('../settings.php', 302)->send();
+		$response->redirect('../settings', 302)->send();
 	}
 
 	if(!preg_match('/^([\w\d_.-]+)$/', $_POST['jarfile'])) {
-		$response->redirect('../settings.php', 302)->send();
+		$response->redirect('../settings', 302)->send();
 	}
 
 	/*
@@ -62,5 +62,5 @@ $klein->respond('*', function($request, $response) use ($core) {
 	$context = stream_context_create($context_options);
 	file_get_contents('http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'), false, $context);
 
-	$response->redirect('../settings.php', 302)->send();
+	$response->redirect('../settings', 302)->send();
 });

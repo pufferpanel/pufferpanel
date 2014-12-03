@@ -22,7 +22,7 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core, $twig, $pageStartTime) {
 	if(!$core->user->hasPermission('files.view')) {
-		$response->redirect('/index.php?error=no_permission', 302)->send();
+		$response->redirect('index?error=no_permission', 302)->send();
 	}
 
 	if(isset($_GET['file'])) {
@@ -36,7 +36,7 @@ $klein->respond('*', function($request, $response) use ($core, $twig, $pageStart
 	if(isset($_GET['do']) && $_GET['do'] == 'download') {
 
 		if(!$core->user->hasPermission('files.download')) {
-			$response->redirect('/index.php?error=no_permission', 302)->send();
+			$response->redirect('index?error=no_permission', 302)->send();
 		}
 
 		$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];

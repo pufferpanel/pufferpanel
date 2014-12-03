@@ -22,19 +22,19 @@ namespace PufferPanel\Core;
 
 $klein->respond('*', function($request, $response) use ($core) {
 	if(!$core->user->hasPermission('manage.ftp.password')) {
-		$response->redirect('../index.php?error=no_permission', 302)->send();
+		$response->redirect('../index?error=no_permission', 302)->send();
 	}
 
 	if(!isset($_POST['ftp_pass'], $_POST['ftp_pass_2'])) {
-		$response->redirect('../settings.php?error=ftp_pass|ftp_pass_2&disp=no_pass', 302)->send();
+		$response->redirect('../settings?error=ftp_pass|ftp_pass_2&disp=no_pass', 302)->send();
 	}
 
 	if(strlen($_POST['ftp_pass']) < 8) {
-		$response->redirect('../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_len', 302)->send();
+		$response->redirect('../settings?error=ftp_pass|ftp_pass_2&disp=pass_len', 302)->send();
 	}
 
 	if($_POST['ftp_pass'] != $_POST['ftp_pass_2']) {
-		$response->redirect('../settings.php?error=ftp_pass|ftp_pass_2&disp=pass_match', 302)->send();
+		$response->redirect('../settings?error=ftp_pass|ftp_pass_2&disp=pass_match', 302)->send();
 	}
 
 	/*
@@ -47,5 +47,5 @@ $klein->respond('*', function($request, $response) use ($core) {
 	$ftp->encryption_iv = $iv;
 	$ftp->save();
 
-	$response->redirect('../settings.php?success', 302)->send();
+	$response->redirect('../settings?success', 302)->send();
 });
