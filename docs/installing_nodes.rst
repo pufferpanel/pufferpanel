@@ -100,6 +100,7 @@ Once all of that is complete run the commands below to complete the install of G
 
 	[$]~ cd /srv/gsd
 	[$]~ npm install
+	[$]~ sudo npm install gamedig -g
 	
 In order to start GSD, execute the command below in a new screen
 
