@@ -36,6 +36,7 @@
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		{% if permission.console.view == true %}<li><a href="#console" data-toggle="tab">Control Server</a></li>{% endif %}
 	</ul><br />
+	<div class="alert alert-danger" id="socket_error" style="display:none;"><i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
@@ -147,6 +148,12 @@
 		var memoryChartData={labels:["","","","","","","","","",""],datasets:[{label:"Memory Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};var cpuChartData={labels:["","","","","","","","","",""],datasets:[{label:"CPU Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};
 		var memoryChart = new Chart(ctx).Line(memoryChartData, {tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %}});
 		var cpuChartData = new Chart(cty).Line(cpuChartData, {tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %}});
+		socket.io.on('connect_error', function(err) {
+			$("#socket_error:hidden").show();
+		});
+		socket.on('connect', function (){
+			$("#socket_error:visible").hide();
+		});
 		socket.on('process', function (data) {
 			var currentTime = new Date();
 			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");memoryChart.removeData();
