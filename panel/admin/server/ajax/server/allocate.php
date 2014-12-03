@@ -33,20 +33,23 @@ $core->user->rebuildData($core->server->getData('owner_id'));
 /*
  * Validate Disk & Memory
  */
-if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
+if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk'])) {
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
+}
 
 /*
  *	Validate Server Name
  */
-if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
+if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name'])) {
 	Components\Page::redirect('../../view.php?id=1&error=server_name&disp=n_fail&tab=server_sett');
+}
 
 /*
  * Check to see if GSD is online
  */
-if(!fsockopen($core->server->nodeData('ip'),8003,$errCode,$errStr,3))
+if(!fsockopen($core->server->nodeData('ip'), 8003, $errCode, $errStr, 3)) {
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=o_fail&tab=server_sett');
+}
 
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 $server->name = $_POST['server_name'];
@@ -60,11 +63,11 @@ $server->save();
 $request = Unirest::put(
 	"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 	array(
-		"X-Access-Token": $core->server->nodeData('gsd_secret')
+		"X-Access-Token" => $core->server->nodeData('gsd_secret')
 	),
 	array(
 		"variables" => json_encode(array(
-			"-jar" => $core->server->getData('server_jar'),
+			"-jar" => $core->server->getData('server_jar').".jar",
 			"-Xmx" => $_POST['alloc_mem']."M"
 		))
 	)
