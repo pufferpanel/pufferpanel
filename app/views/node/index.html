@@ -111,6 +111,7 @@
 						<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
 						<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
+						<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
 				</div>
@@ -254,6 +255,27 @@
 			{% endif %}
 			{% if permission.console.power == true %}
 				var can_run = true;
+				$("#kill_proc").click(function(){
+					var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
+					if(killConfirm) {
+						$.ajax({
+							type: "GET",
+							headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
+							url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/kill',
+							timeout: 5000,
+							error: function(jqXHR, textStatus, errorThrown) {
+								$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+								return false;
+							},
+							success: function(data) {
+								if(data == "ok"){
+									$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+									return false;
+								}
+							}
+						});
+					}
+				});
 				$(".poke").click(function(){
 					var command = $(this).attr("id");
 					if(command == 'off'){ uCommand = 'Stopping'; }else{ uCommand = 'Restarting';}
