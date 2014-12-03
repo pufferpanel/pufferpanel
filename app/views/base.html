@@ -78,6 +78,7 @@
 				updateServerStatus();
 				setInterval(updateServerStatus, 15000);
 			});
+			for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
 			</script>
 		</div>
 	</div>
