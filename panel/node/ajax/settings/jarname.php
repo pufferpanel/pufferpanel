@@ -51,10 +51,10 @@ if ($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_
 			"X-Access-Token" => $core->server->nodeData('gsd_secret')
 		),
 		array(
-			"variables" => array(
+			"variables" => json_encode(array(
 				"-jar" => $_POST['jarfile'] . '.jar',
 				"-Xmx" => $core->server->getData('max_ram') . 'M'
-			)
+			))
 		)
 	);
 
