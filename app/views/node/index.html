@@ -3,7 +3,7 @@
 {% block scripts %}
 	{{ parent() }}
 	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
-	<script src="{{ settings.assets_url }}javascript/chartjs/chart.line.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
 {% endblock %}
 {% block title %}Manage your Server{% endblock %}
 
@@ -145,19 +145,55 @@
 		var socket = io('http://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
-		var memoryChartData={labels:["","","","","","","","","",""],datasets:[{label:"Memory Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};var cpuChartData={labels:["","","","","","","","","",""],datasets:[{label:"CPU Usage",fillColor:"rgba(220,220,220,0.2)",strokeColor:"rgba(220,220,220,1)",pointColor:"rgba(220,220,220,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(220,220,220,1)",data:[0,0,0,0,0,0,0,0,0,0]}]};
-		var memoryChart = new Chart(ctx).Line(memoryChartData, {tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %}});
-		var cpuChartData = new Chart(cty).Line(cpuChartData, {tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %}});
+		var memoryChartData = {
+			labels: ["", "", "", "", "", "", "", "", "", ""],
+			datasets: [{
+				label: "Memory",
+				fillColor: "#008cba",
+				strokeColor: "#00b2ed",
+				highlightFill: "#008cba",
+				highlightStroke: "#00b2ed",
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			}]
+		};
+		var cpuChartData = {
+			labels: ["", "", "", "", "", "", "", "", "", ""],
+			datasets: [{
+				label: "CPU",
+				fillColor: "#008cba",
+				strokeColor: "#00b2ed",
+				highlightFill: "#008cba",
+				highlightStroke: "#00b2ed",
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			}]
+		};
+		var memoryChart = new Chart(ctx).Bar(memoryChartData, {
+			tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %},
+			barShowStroke: true,
+			barStrokeWidth: 1,
+			scaleShowGridLines: false,
+			barValueSpacing: 2
+		});
+		var cpuChart = new Chart(cty).Bar(cpuChartData, {
+			tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %},
+			barShowStroke: true,
+			barStrokeWidth: 1,
+			scaleShowGridLines: false,
+			barValueSpacing: 2
+		});
 		socket.io.on('connect_error', function(err) {
 			$("#socket_error:hidden").show();
 		});
 		socket.on('connect', function (){
 			$("#socket_error:visible").hide();
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		socket.on('process', function (data) {
 			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");memoryChart.removeData();
-			cpuChartData.addData([data.process.cpu], "");cpuChartData.removeData();
+			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");
+			memoryChart.removeData();
+			cpuChart.addData([data.process.cpu], "");
+			cpuChart.removeData();
 		});
 		socket.on('query', function(data){
 			if($("#players_notice").is(":visible")){
@@ -186,7 +222,6 @@
 				$("#paused_console").val();
 				$("#paused_console").val($("#live_console").val());
 			});
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 			{% if permission.console.commands == true %}
 				$("#console_command").submit(function(event){
 					event.preventDefault();
