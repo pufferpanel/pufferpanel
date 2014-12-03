@@ -108,8 +108,6 @@ echo $twig->render(
 			'directory' => $directory,
 			'contents' => $json['contents'],
 			'footer' => array(
-				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));
-?>

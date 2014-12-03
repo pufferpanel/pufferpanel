@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Add New File{% endblock %}
+
+{% block scripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
+{% endblock %}
+
+{% block servername %}
+<ul class="nav navbar-nav">
+	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i> {{ server.name }}</a></li>
+</ul>
+{% endblock %}
+
+{% block sidebar %}
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+	<a href="../../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
+	<a href="../../totp.php" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+	<a href="../../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
+</div>
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+	<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
+	<a href="index.php" class="list-group-item active">{{ lang.sidebar_files }}</a>
+	{% if permission.users.view == true %}<a href="../users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
+	<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
+	<a href="../plugins/index.php" class="list-group-item">{{ lang.sidebar_plugins }}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="col-9" id="load_files">
+	<span id="write_status" style="display:none;width: 100%;"></span>
+	<form method="post" id="new_file">
+		<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+		<div class="form-group">
+			<div>
+				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
+			</div>
+		</div>
+		{% if permission.files.create == true %}
+			<div class="form-group">
+				<div>
+					<button class="btn btn-primary btn-sm" id="create_file">{{ lang.string_save }}</button>
+					<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={% if get.dir != 1 %}{{ get.dir }}{% endif %}';return false;">{{ lang.node_files_edit_back }}</button>
+				</div>
+			</div>
+		{% endif %}
+    </form>
+</div>
+<script type="text/javascript">
+var newFilePath;
+var newFileContents;
+$(window).load(function() {
+	$("textarea").keydown(function(e) {
+		if(e.keyCode === 9) {
+			var start = this.selectionStart;
+			var end = this.selectionEnd;
+			var $this = $(this);
+			var value = $this.val();
+			$this.val(value.substring(0, start)
+			+ "\t"
+			+ value.substring(end));
+			this.selectionStart = this.selectionEnd = start + 1;
+			e.preventDefault();
+		}
+	});
+	$("#create_file").click(function(e) {
+		e.preventDefault();
+		$("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
+		$.ajax({
+			type: "POST",
+			url: "../ajax/files/new.php",
+			data: {
+				newFilePath: "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val(),
+				newFileContents: $("#live_console").val()
+			},
+			success: function(data) {
+				if(data != "ok"){
+					$("#write_status").html(data);
+					$("#create_file").html("Save").removeClass("disabled");
+					$("#write_status").slideDown();
+				} else {
+					$().redirect('edit.php', {'file': "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val()});
+				}
+			}
+		});
+	});
+});
+</script>
+{% endblock %}
