@@ -17,6 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \Unirest;
 
 require_once '../../src/core/core.php';
 

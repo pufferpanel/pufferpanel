@@ -17,14 +17,15 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
-require_once('../../../../src/core/core.php');
+require_once '../../../../src/core/core.php';
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === true) {
 
-	if($core->user->hasPermission('console.power') !== true)
+	if(!$core->user->hasPermission('console.power')) {
 		exit('You do not have the required permissions to perform this function.');
+	}
 
 	/*
 	 * Open Stream for Reading/Writing
@@ -32,31 +33,30 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$rewrite = false;
 	$errorMessage = "Unable to process your request. Please try again.";
 
-	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties";
-
-	$curl = curl_init($url);
-	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-	curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-	    'X-Access-Token: '.$core->server->getData('gsd_secret')
-	));
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($curl);
+	$response = Unirest::get(
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
+		array(
+			"X-Access-Token" => $core->server->getData('gsd_secret')
+		)
+	);
 
 	/*
 	 * Typically Means Server is Off
 	 */
-	if(empty($response))
-		exit($errorMessage." Empty Response");
+	if($response->code != 200) {
+		switch($response->code) {
 
-	$json = json_decode($response, true);
+			case 403:
+				exit($errorMessage." Authentication error encountered.");
+				break;
+			default:
+				exit($errorMessage." HTTP/$response->code. Invalid response was recieved.");
+				break;
 
-	/*
-	 * Usually Occurs when there is an authentication error.
-	 */
-	if(json_last_error() != "JSON_ERROR_NONE")
-		exit("An error was encountered with this AJAX request. (Invalid JSON Response - ".json_last_error_msg().")");
+		}
+	}
 
-	if(!array_key_exists('contents', $json)) {
+	if(!isset($response->body->contents) || empty($response->body->contents)) {
 
 		/*
 		 * Create server.properties
@@ -64,47 +64,57 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(file_get_contents(APP_DIR.'templates/server.properties.tpl')))
 			exit($errorMessage." No Template Avaliable for server.properties");
 
-		$data = array("contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $core->server->getData('server_port'), $core->server->getData('server_ip')));
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-		    'X-Access-Token: '.$core->server->getData('gsd_secret')
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-		$response = curl_exec($curl);
+		$put = Unirest::put(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
+			array(
+				"X-Access-Token" => $core->server->getData('gsd_secret')
+			),
+			array(
+				"contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $core->server->getData('server_port'), $core->server->getData('server_ip'))
+			)
+		);
 
-	        if(!empty($response))
-	        	exit($errorMessage." Unable to make server.properties");
+        if(!empty($put->body)) {
+        	exit($errorMessage." Unable to make server.properties");
+		}
 
 		$core->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
 
-	}else{
+	} else {
 
-		$lines = explode("\n", $json['contents']);
-		$newContents = $json['contents'];
-		foreach($lines as $line){
+		$lines = explode("\n", $response->body->contents);
+		$newContents = $response->body->contents;
+
+		foreach($lines as $line) {
 
 			$var = explode('=', $line);
 
-				if($var[0] == 'server-port' && $var[1] != $core->server->getData('server_port')){
-					$newContents = str_replace('server-port='.$var[1], "server-port=".$core->server->getData('server_port')."\n", $newContents);
-					$rewrite = true;
-				}else if($var[0] == 'online-mode' && $var[1] == 'false'){
-					if($core->settings->get('force_online') == 1){
-						$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
-						$rewrite = true;
-					}
-				}else if($var[0] == 'enable-query' && $var[1] != 'true'){
-					$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
-					$rewrite = true;
-				}else if($var[0] == 'query.port' && $var[1] != $core->server->getData('server_port')){
-					$newContents = str_replace('query.port='.$var[1], "query.port=".$core->server->getData('server_port')."\n", $newContents);
-					$rewrite = true;
-				}else if($var[0] == 'server-ip' && $var[1] != $core->server->getData('server_ip')){
-					$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->server->getData('server_ip')."\n", $newContents);
-					$rewrite = true;
-				}
+			if($var[0] == 'server-port' && $var[1] != $core->server->getData('server_port')) {
+
+				$newContents = str_replace('server-port='.$var[1], "server-port=".$core->server->getData('server_port')."\n", $newContents);
+				$rewrite = true;
+
+			} else if($var[0] == 'online-mode' && $var[1] == 'false' && $core->settings->get('force_online') == 1) {
+
+				$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
+				$rewrite = true;
+
+			} else if($var[0] == 'enable-query' && $var[1] != 'true') {
+
+				$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
+				$rewrite = true;
+
+			} else if($var[0] == 'query.port' && $var[1] != $core->server->getData('server_port')) {
+
+				$newContents = str_replace('query.port='.$var[1], "query.port=".$core->server->getData('server_port')."\n", $newContents);
+				$rewrite = true;
+
+			} else if($var[0] == 'server-ip' && $var[1] != $core->server->getData('server_ip')) {
+
+				$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->server->getData('server_ip')."\n", $newContents);
+				$rewrite = true;
+
+			}
 
         }
 
@@ -113,20 +123,21 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	/*
 	 * Write New Data
 	 */
-	if($rewrite === true){
+	if($rewrite) {
 
-		$data = array("contents" => $newContents);
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-		    'X-Access-Token: '.$core->server->getData('gsd_secret')
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-		$response = curl_exec($curl);
+		$put = Unirest::put(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
+			array(
+				"X-Access-Token" => $core->server->getData('gsd_secret')
+			),
+			array(
+				"contents" => $newContents
+			)
+		);
 
-		    if(!empty($response))
-		    	exit($errorMessage." Unable to update server.properties");
+		if(!empty($put->body)) {
+	    	exit($errorMessage." Unable to update server.properties");
+		}
 
         $core->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
 
@@ -135,22 +146,19 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
     /*
 	 * Connect and Run Function
 	 */
-	$context = stream_context_create(array(
-		"http" => array(
-			"method" => "GET",
-			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
-			"timeout" => 3,
-			"ignore_errors" => true
+	$get = Unirest::get(
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/on",
+		array(
+			"X-Access-Token" => $core->server->getData('gsd_secret')
 		)
-	));
-	$gatherData = @file_get_contents("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/on", 0, $context);
+	);
 
-	if($gatherData != "\"ok\"")
-		exit($errorMessage." Unable to start server (".$gatherData.")");
+	if($get->body != "ok")
+		exit($errorMessage." Unable to start server (".$get->body.")");
 
 	echo 'ok';
 
-}else{
+} else {
 
 	die('Invalid Authentication.');
 
