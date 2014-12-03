@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \Unirest;
+use \ORM, \Unirest, \Tracy;
 
 require_once '../../../../src/core/core.php';
 
@@ -33,12 +33,21 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$rewrite = false;
 	$errorMessage = "Unable to process your request. Please try again.";
 
-	$response = Unirest::get(
-		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
-		array(
-			"X-Access-Token" => $core->server->getData('gsd_secret')
-		)
-	);
+	try {
+
+		$response = Unirest::get(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
+			array(
+				"X-Access-Token" => $core->server->getData('gsd_secret')
+			)
+		);
+
+	} catch(\Exception $e) {
+
+		Tracy\Debugger::log($e);
+		exit($errorMessage." Unable to connect to remote host.");
+
+	}
 
 	/*
 	 * Typically Means Server is Off
