@@ -147,21 +147,9 @@
 			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");memoryChart.removeData();
 			cpuChartData.addData([data.process.cpu], "");cpuChartData.removeData();
 		});
-		// socket.on('query', function(data){
-		// 	if($("#players_notice").is(":visible")){
-		// 		$("#players_notice").hide();
-		// 		$("#toggle_players").show();
-		// 	}
-		// 	if(data.query.players.length !== 0){
-		// 		$("#toggle_players").html("");
-		// 		$.each(data.query.players, function(id, name) {
-		// 			$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
-		// 		});
-		// 	}else{
-		// 		$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-		// 	}
-		// 	$("img[data-toggle='tooltip']").tooltip();
-		// });
+		socket.on('query', function(data){
+			console.dir(data);
+		});
 		{% if permission.console.view == true %}
 			socket.on('console', function (data) {
 				$("#live_console").val($("#live_console").val() + data.l);
