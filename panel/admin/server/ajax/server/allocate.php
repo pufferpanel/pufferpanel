@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 require_once('../../../../../src/core/core.php');
 
@@ -42,8 +42,6 @@ if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
 if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 	Components\Page::redirect('../../view.php?id=1&error=server_name&disp=n_fail&tab=server_sett');
 
-error_log($core->server->nodeData('ip'),0);
-
 /*
  * Check to see if GSD is online
  */
@@ -59,25 +57,18 @@ $server->save();
 /*
  * Build the Data
  */
-$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id');
-$data = array(
-	"variables" => json_encode(array(
-		"-Xmx" => $_POST['alloc_mem']."M"
-	))
+$request = Unirest::put(
+	"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+	array(
+		"X-Access-Token": $core->server->nodeData('gsd_secret')
+	),
+	array(
+		"variables" => json_encode(array(
+			"-jar" => $core->server->getData('server_jar'),
+			"-Xmx" => $_POST['alloc_mem']."M"
+		))
+	)
 );
-
-/*
- * Run Query Aganist GSD
- */
-$curl = curl_init($url);
-curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-	'X-Access-Token: '.$core->server->nodeData('gsd_secret')
-));
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-curl_exec($curl);
-curl_close($curl);
 
 Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
 ?>
