@@ -16,10 +16,8 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-
 namespace PufferPanel\Core;
-
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 require_once('../../../../src/core/core.php');
 
@@ -47,24 +45,19 @@ if ($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_
 	/*
 	 * Update GSD Setting
 	 */
-	$data = http_build_query(array(
-		"variables" => array(
-			"-jar" => $_POST['jarfile'] . '.jar',
-			"-Xmx" => $core->server->getData('max_ram') . 'M'
-		)
-	));
-	$context_options = array(
-		'http' => array(
-			'method' => 'PUT',
-			'header' =>
-			"Content-Type: application/x-www-form-urlencoded \r\n" .
-			"X-Access-Token: " . $core->server->nodeData('gsd_secret'),
-			'content' => $data
+	$request = Unirest::put(
+		'http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'),
+		array(
+			"X-Access-Token" => $core->server->nodeData('gsd_secret')
+		),
+		array(
+			"variables" => array(
+				"-jar" => $_POST['jarfile'] . '.jar',
+				"-Xmx" => $core->server->getData('max_ram') . 'M'
+			)
 		)
 	);
 
-	$context = stream_context_create($context_options);
-	file_get_contents('http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'), false, $context);
+	Components\Page::redirect('../../settings.php?code='.$request->code);
 
-	Components\Page::redirect('../../settings.php');
 }
