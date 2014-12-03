@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM;
 
 require_once('../../../src/core/core.php');
 
@@ -74,7 +74,6 @@ echo $twig->render(
 		'node/files/index.html', array(
 			'server' => $core->server->getData(),
 			'footer' => array(
-				
 				'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 			)
 	));

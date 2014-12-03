@@ -156,6 +156,7 @@ echo $twig->render(
 			'files' => $displayFiles,
 			'folders' => $displayFolders,
 			'extensions' => array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang'),
-			'directory' => $previousDir
+			'directory' => $previousDir,
+			'header_dir' => $_POST['dir']
 	));
 ?>

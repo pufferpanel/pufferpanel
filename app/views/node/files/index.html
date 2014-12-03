@@ -43,6 +43,140 @@
 	<div class="col-9" id="load_files"></div>
 </div>
 <script type="text/javascript">
-$(window).load(function(){function i(i){if(i===!0){var l=$("#get_height").height(),e=$(".files_loading_box").width(),a=l/2-15,t=e/2-15;$("#position_me").css({top:a,left:t}),$(".files_loading_box").css("height",l+5).fadeIn()}else $(".files_loading_box").fadeOut()}function l(){$("a.load_new").click(function(e){if(e.preventDefault(),i(!0),null!=$.urlParam("dir",$(this).attr("href"))){var a=$.urlParam("dir",$(this).attr("href"));$.ajax({type:"POST",url:"../ajax/files/list_dir.php",data:{dir:a},success:function(e){$("#load_files").slideUp(function(){$("#load_files").html(e),i(!1),$("#load_files").slideDown(),l()})}})}else $.ajax({type:"POST",url:"../ajax/files/list_dir.php",data:{},success:function(e){$("#load_files").slideUp(function(){$("#load_files").html(e),i(!1),$("#load_files").slideDown(),l()})}})}),$("a.edit_file").click(function(i){i.preventDefault();var l=$.urlParam("file",$(this).attr("href"));$().redirect("edit.php",{file:l})})}function e(){if($("#loading_dir").fadeIn(200),$("#internal_alert").slideDown(),null!=$.urlParam("dir",$(location).attr("href"))&&a===!1){var i=$.urlParam("dir",$(location).attr("href"));$("#loading_dir").fadeIn(200),$.ajax({type:"POST",url:"../ajax/files/list_dir.php",data:{dir:i},success:function(i){$("#load_files").slideUp(function(){$("#load_files").html(i),$("#internal_alert").slideUp(),$("#load_files").slideDown(),$("#loading_dir").fadeOut(200),a=!0,l()})}})}else $("#loading_dir").fadeIn(200),$.ajax({type:"POST",url:"../ajax/files/list_dir.php",data:{},success:function(i){$("#load_files").slideUp(function(){$("#load_files").html(i),$("#internal_alert").slideUp(),$("#load_files").slideDown(),$("#loading_dir").fadeOut(200),a=!0,l()})}})}$.urlParam=function(i,l){var e=new RegExp("[\\?&]"+i+"=([^&#]*)").exec(decodeURIComponent(l));return null==e?null:e[1]||0};var a=!1;e()});
+$(window).load(function(){
+	$.urlParam = function(name, url){
+		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
+		if (results==null){
+			return null;
+		}else{
+			return results[1] || 0;
+		}
+	}
+	var doneLoad = false;
+	function handleLoader(show){
+		if(show === true){
+			var height = $("#get_height").height();
+			var width = $(".files_loading_box").width();
+			var center_height = (height / 2) - 15;
+			var center_width = (width / 2) - 15;
+			$("#position_me").css({"top": center_height, "left": center_width});
+			$(".files_loading_box").css("height", (height + 5)).fadeIn();
+		}else{
+			$(".files_loading_box").fadeOut();
+		}
+	}
+	function newLoad(){
+		$("a.load_new").click(function(event){
+			event.preventDefault();
+			handleLoader(true);
+			if($.urlParam('dir', $(this).attr("href")) != null){
+				var dir = $.urlParam('dir', $(this).attr("href"));
+				$.ajax({
+					type: "POST",
+					url: '../ajax/files/list_dir.php',
+					data: {'dir': dir},
+					success: function(data) {
+						$("#load_files").slideUp(function(){
+							$("#load_files").html(data);
+							handleLoader(false);
+							$("#load_files").slideDown();
+							newLoad();
+						});
+					}
+				});
+			}else{
+				$.ajax({
+					type: "POST",
+					url: '../ajax/files/list_dir.php',
+					data: {},
+					success: function(data) {
+						$("#load_files").slideUp(function(){
+							$("#load_files").html(data);
+							handleLoader(false);
+							$("#load_files").slideDown();
+							newLoad();
+						});
+					}
+				});
+			}
+		});
+		$("a.edit_file").click(function(event){
+			event.preventDefault();
+			var file = $.urlParam('file', $(this).attr("href"));
+			$().redirect('edit.php', {'file': file});
+		});
+		$("a.delete_file").click(function(e){
+			e.preventDefault();
+			var clicked = $(this); //Fixes some strange bug going on
+			if($.urlParam('dir', $(this).attr("href")) != null){
+				var deleteItemType = 'dir';
+				var deleteItemPath = $.urlParam('dir', $(this).attr("href"));
+			}
+			if($.urlParam('file', $(this).attr("href")) != null){
+				var deleteItemType = 'file';
+				var deleteItemPath = $.urlParam('file', $(this).attr("href"));
+			}
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/delete.php',
+				data: {
+					'deleteItemType': deleteItemType,
+					'deleteItemPath': deleteItemPath
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(errorThrown);
+				},
+				success: function(data) {
+					if(data != "ok") {
+						alert(data);
+					}else{
+						clicked.parent().parent().fadeOut();
+					}
+				}
+			});
+		});
+	}
+	function firstLoad() {
+		$("#loading_dir").fadeIn(200);
+		$("#internal_alert").slideDown();
+		if($.urlParam('dir', $(location).attr('href')) != null && doneLoad === false){
+			var dir = $.urlParam('dir', $(location).attr('href'));
+			$("#loading_dir").fadeIn(200);
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/list_dir.php',
+				data: {'dir': dir},
+				success: function(data) {
+					$("#load_files").slideUp(function(){
+						$("#load_files").html(data);
+						$("#internal_alert").slideUp();
+						$("#load_files").slideDown();
+						$("#loading_dir").fadeOut(200);
+						doneLoad = true;
+						newLoad();
+					});
+				}
+			});
+		}else{
+			$("#loading_dir").fadeIn(200);
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/list_dir.php',
+				data: {},
+				success: function(data) {
+					$("#load_files").slideUp(function(){
+						$("#load_files").html(data);
+						$("#internal_alert").slideUp();
+						$("#load_files").slideDown();
+						$("#loading_dir").fadeOut(200);
+						doneLoad = true;
+						newLoad();
+					});
+				}
+			});
+		}
+	}
+	firstLoad();
+});
 </script>
 {% endblock %}

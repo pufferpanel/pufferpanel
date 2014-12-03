@@ -7,6 +7,7 @@
     	"christian-riesen/otp": "1.*",
         "j4mie/idiorm": "1.5.1",
         "klein/klein": "2.1.*",
+        "league/flysystem": "0.6.*@dev",
     	"mandrill/mandrill": "1.0.52",
         "mashape/unirest-php" : "1.2.1",
     	"sendgrid/sendgrid": "2.0.6",
