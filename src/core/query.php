@@ -123,7 +123,7 @@ class Query {
 						if($this->raw['status'] == 0)
 							return false;
 						else{
-							$this->_jsonData = $this->raw['query'];
+							$this->_jsonData = (array_key_exists('query', $this->raw)) ? $this->raw['query'] : null;
 							$this->_serverPID = $this->raw['pid'];
 							$this->_jsonProcess = (array_key_exists('process', $this->raw)) ? $this->raw['process'] : array();
 							return true;
