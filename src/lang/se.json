@@ -36,7 +36,7 @@
     "string_published": "Publiserad",
     "string_versions": "Versioner",
     "string_save": "Spara",
-    "footer_license": "PufferPanel \u00e4r licensierat under en <a href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\">GPL-v3 Licens</a>.",
+    "footer_license": "PufferPanel \u00e4r licensierat under en <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3 Licens</a>.",
     "footer_version": "K\u00f6r version %s distribuerat utav <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
     "footer_generated": "Sida genererad p\u00e5 %s sekunder.",
     "footer_queries": "Genomf\u00f6rde %s databasf\u00f6rfr\u00e5gningar.",

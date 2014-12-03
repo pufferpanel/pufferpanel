@@ -35,7 +35,7 @@ string.version, Version
 string.published, Publié
 string.versions, Versions
 string.save, Sauvegarder
-footer.license, PufferPanel est licencié sous une licence <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.license, PufferPanel est licencié sous une licence <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
 footer.version, Version courante %s distribué par <a href="http://pufferpanel.com/">PufferPanel Development</a>.
 footer.generated, Page générée en %s secondes.
 footer.queries,  %s requêtes de base de données exécutées.

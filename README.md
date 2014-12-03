@@ -1,7 +1,7 @@
-[![Dependency Status](https://gemnasium.com/DaneEveritt/PufferPanel.svg)](https://gemnasium.com/DaneEveritt/PufferPanel)
+[![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
 
 # About PufferPanel
-PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/DaneEveritt/PufferPanel/master/LICENSE).
+PufferPanel was created to be an open-source replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/PufferPanel/PufferPanel/master/LICENSE).
 
 If you want to see what PufferPanel looks like you can check out our topic on the [Minecraft Forums](http://www.minecraftforum.net/forums/servers/minecraft-server-hosting/hosting-discussion/569432-introducing-pufferpanel-the-open-source-multicraft/).
 

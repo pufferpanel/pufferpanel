@@ -27,7 +27,7 @@ string.ftp, ftp
 string.host, Servidor
 string.username, Usuário
 string.generate, Gerar
-footer.license, PufferPanel está licenciado por <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.license, PufferPanel está licenciado por <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
 footer.version, Versão atual %s distribuída por <a href="http://pufferpanel.com/">PufferPanel Development</a>.
 footer.generated, Página gerada em %s segundos.
 footer.queries, Executado %s consultas no banco de dados.

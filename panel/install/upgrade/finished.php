@@ -38,7 +38,7 @@
 		<div class="footer">
 			<div class="row">
 				<div class="col-8">
-					<p>PufferPanel is licensed under a <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />
+					<p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />
 						Running <?php echo trim(file_get_contents('../../../src/versions/current')).' ('.substr(trim(@file_get_contents('../../../.git/HEAD')), 0, 8).')'; ?>
 						distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.
 					</p>

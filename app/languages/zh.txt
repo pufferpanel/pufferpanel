@@ -19,7 +19,7 @@ string.stop, 停止
 string.options, 设置
 string.search, 搜索
 string.clear, 清除
-footer.license, PufferPanel 是以<a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">GPL-v3 许可证</a>以下授权。
+footer.license, PufferPanel 是以<a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 许可证</a>以下授权。
 footer.version, 现行版本（%s）是由 <a href="http://pufferpanel.com/">PufferPanel Development</a> 分发。
 footer.generated, 在%s秒内生成此页。
 footer.queries, 已执行%s数据库查询。

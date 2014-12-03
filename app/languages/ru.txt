@@ -34,7 +34,7 @@ String.about, О
 String.Version, Версия
 String.published, Опубликовано
 String.Save, Сохранить
-Footer.License, PufferPanel лицензируется под <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE">лицензией GPL v3</a>.
+Footer.License, PufferPanel лицензируется под <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">лицензией GPL v3</a>.
 Footer.Version, Версия %s, реализовано на основе <a href="http://pufferpanel.com">PufferPanel</a>.
 Footer.Generated, Страница создана за %s секунд.
 Footer.Queries, Выполнено %s запросов в БД.
