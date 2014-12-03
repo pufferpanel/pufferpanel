@@ -80,7 +80,7 @@ To ensure a secure connection to your servers GSD uses FTPS by default. In order
 
 	[$]~ cd /srv/gsd
 	[$]~ openssl req -x509 -days 365 -newkey rsa:4096 -keyout ftps.key -out ftps.pem -nodes
-	
+
 Running the command above will ask you a series of questions, you should fill them out as accurately as you can.
 
 Firewall
@@ -100,8 +100,7 @@ Once all of that is complete run the commands below to complete the install of G
 
 	[$]~ cd /srv/gsd
 	[$]~ npm install
-	[$]~ sudo npm install gamedig -g
-	
+
 In order to start GSD, execute the command below in a new screen
 
 .. code-block:: sh
