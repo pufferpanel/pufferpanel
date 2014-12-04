@@ -137,7 +137,7 @@ $(window).load(function(){
 		});
 		$("a.zip_file").click(function(e){
 			e.preventDefault();
-			var clicked = $(this); //Fixes some strange bug going on
+			clicked = $(this); //Fixes some strange bug going on
 			if($.urlParam('dir', $(this).attr("href")) != null){
 				var zipItemPath = $.urlParam('dir', $(this).attr("href"));
 			}

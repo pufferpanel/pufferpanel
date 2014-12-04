@@ -17,16 +17,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \League\Flysystem\Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
+use \ORM, \Unirest;
 
 require_once '../../../../src/core/core.php';
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
+
 	exit('Not authenticated.');
+
 }
 
 if($core->user->hasPermission('files.zip') !== true) {
+
 	exit('You do not have permission to zip files.');
+
+}
+
+if(!isset($_POST['zipItemPath'])) {
+
+	exit('Not enough variables were passed.');
+
 }
 
 /*
@@ -34,12 +44,16 @@ if($core->user->hasPermission('files.zip') !== true) {
  */
 if(!empty($_POST['zipItemPath'])) {
 
-	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		exit('<div class="alert alert-warning">A token was missing from this request.</div>');
+	//if($core->auth->XSRF(@$_POST['xsrf']) !== true)
+	//	exit('<div class="alert alert-warning">A token was missing from this request.</div>');
 
-	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$directory.$file;
+	$_POST['zipItemPath'] = urldecode($_POST['zipItemPath']);
 
-	$data = array("zip" => $_POST['file_path']);
+	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['zipItemPath'];
+	error_log($url,0);
+
+	$data = array("zip" => $_POST['zipItemPath']);
+	error_log($data,0);
 
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -47,6 +61,7 @@ if(!empty($_POST['zipItemPath'])) {
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
 	$response = curl_exec($curl);
+	error_log($response,0);
 
 } else {
 	var_dump($_POST);

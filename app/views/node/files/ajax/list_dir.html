@@ -38,7 +38,7 @@
 	            <td>{{ folder.date|date("m/d/y H:i:s") }}</td>
 	            <td style="text-align:center;">
 					{% if permission.files.zip == true %}
-						<a href="index.php?do=zip&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}"><i class="fa fa-file-archive-o"></i></a>
+						<a href="index.php?do=zip&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="zip_file"><i class="fa fa-file-archive-o"></i></a>
 					{% endif %}
 						&nbsp;&nbsp;&nbsp;&nbsp;
 					{% if permission.files.delete == true %}
