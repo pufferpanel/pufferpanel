@@ -77,7 +77,7 @@ $(window).load(function() {
 			$this.val(value.substring(0, start)
 			+ {% if (extension == "yaml") or (extension == "yml") %}Array(yamlSpaces + 1).join(" "){% else %}"\t"{% endif %}
 			+ value.substring(end));
-			this.selectionStart = this.selectionEnd = start + {% if (extension == "yaml") or (extension == "yml") %}4{% else %}1{% endif %};
+			this.selectionStart = this.selectionEnd = start + {% if (extension == "yaml") or (extension == "yml") %}yamlSpaces{% else %}1{% endif %};
 			e.preventDefault();
 		}
 	});
