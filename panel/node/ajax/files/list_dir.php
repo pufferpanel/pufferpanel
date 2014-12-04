@@ -155,6 +155,7 @@ echo $twig->render(
 			'files' => $displayFiles,
 			'folders' => $displayFolders,
 			'extensions' => array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang'),
+			'zip_extensions' => array('zip', 'tar.gz', 'tar', 'gz'),
 			'directory' => $previousDir,
 			'header_dir' => $_POST['dir']
 	));

@@ -105,7 +105,7 @@ $(window).load(function(){
 			var file = $.urlParam('file', $(this).attr("href"));
 			$().redirect('edit.php', {'file': file});
 		});
-		$("a.delete_file").click(function(e){
+		$(".delete_file").click(function(e){
 			e.preventDefault();
 			var clicked = $(this); //Fixes some strange bug going on
 			if($.urlParam('dir', $(this).attr("href")) != null){
@@ -132,6 +132,46 @@ $(window).load(function(){
 					}else{
 						clicked.parent().parent().fadeOut();
 					}
+				}
+			});
+		});
+		$(".zip_file").click(function(e){
+			e.preventDefault();
+			clicked = $(this); //Fixes some strange bug going on
+			if($.urlParam('dir', $(this).attr("href")) != null){
+				var zipItemPath = $.urlParam('dir', $(this).attr("href"));
+			}
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/zip.php',
+				data: {
+					'zipItemPath': zipItemPath
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(errorThrown);
+				},
+				success: function(data) {
+					location.reload();
+				}
+			});
+		});
+		$(".unzip_file").click(function(e){
+			e.preventDefault();
+			clicked = $(this); //Fixes some strange bug going on
+			if($.urlParam('file', $(this).attr("href")) != null){
+				var unzipItemPath = $.urlParam('file', $(this).attr("href"));
+			}
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/zip.php',
+				data: {
+					'unzipItemPath': unzipItemPath
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(errorThrown);
+				},
+				success: function(data) {
+					location.reload();
 				}
 			});
 		});

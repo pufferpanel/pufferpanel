@@ -166,7 +166,7 @@ class User extends Authentication {
 
 		return array(
 			'console' => array('view', 'commands', 'power'),
-			'files' => array('view', 'edit', 'save', 'download', 'delete', 'create', 'upload'),
+			'files' => array('view', 'edit', 'save', 'download', 'delete', 'create', 'upload', 'zip'),
 			'manage' => array('view', 'rename' => array('view', 'jar'), 'ftp' => array('view', 'details', 'password')),
 			'users' => array('view')
 		);
