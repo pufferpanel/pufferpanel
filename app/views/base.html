@@ -4,6 +4,7 @@
 	{% block head %}
 		{% block scripts %}
 			<meta charset="UTF-8">
+			<script type="text/javascript">var pageRenderStart = new Date().getTime();</script>
 			<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap.css">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 			<script src="{{ settings.assets_url }}javascript/bootstrap.min.js"></script>
@@ -52,7 +53,7 @@
 					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format(fversion)|raw }}</p>
 				</div>
 				<div class="col-4">
-					<p class="pull-right">{{ lang.footer_generated|format(footer.seconds) }}</p>
+					<p class="pull-right">{{ lang.footer_generated|format(footer.seconds) }}<br />Page Rendered in <span id="p_render_time">...</span> seconds.</p>
 				</div>
 			</div>
 			<script type="text/javascript">
@@ -79,6 +80,10 @@
 				setInterval(updateServerStatus, 15000);
 			});
 			for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
+			$(window).load(function() {
+				var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
+				$("#p_render_time").html(elapsed);
+			});
 			</script>
 		</div>
 	</div>
