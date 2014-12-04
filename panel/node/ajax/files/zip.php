@@ -33,13 +33,7 @@ if($core->user->hasPermission('files.zip') !== true) {
 
 }
 
-if(!isset($_POST['zipItemPath'])) {
-
-	exit('Not enough variables were passed.');
-
-}
-
-if(!empty($_POST['zipItemPath'])) {
+if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 
 	$request = Unirest::put(
 		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['zipItemPath'],
@@ -53,7 +47,23 @@ if(!empty($_POST['zipItemPath'])) {
 
 	print_r($request->body);
 
+} elseif(isset($_POST['unzipItemPath']) && !empty($_POST['unzipItemPath'])) {
+
+	$request = Unirest::put(
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['unzipItemPath'],
+		array(
+			"X-Access-Token" => $core->server->getData('gsd_secret')
+		),
+		array(
+			"unzip" => $_POST['unzipItemPath']
+		)
+	);
+
+	print_r($request->body);
+
 } else {
+
+	error_log("Made it",0);
 
 	var_dump($_POST);
 	echo 'Nothing was matched in the script.';

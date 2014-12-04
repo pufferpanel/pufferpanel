@@ -37,19 +37,19 @@
 	            <td>{{ folder.size }}</td>
 	            <td>{{ folder.date|date("m/d/y H:i:s") }}</td>
 	            <td style="text-align:center;">
-                    <div class="row" style="text-align:center;margin-left:8px;">
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
-                        {% if ( permission.files.zip == true ) and ( file.extension not in zip_extensions ) %}
-                            <button href="index.php?do=zip&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
-                        {% endif %}
-                        </div>
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;"></div>
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
-                            {% if permission.files.delete == true %}
-                                <button href="index.php?do=delete&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
-                            {% endif %}
-                        </div>
-                    </div>
+					<div class="row" style="text-align:center;margin-left:8px;">
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
+						{% if ( permission.files.zip == true ) and ( file.extension not in zip_extensions ) %}
+							<button href="index.php?do=zip&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
+						{% endif %}
+						</div>
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;"></div>
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
+							{% if permission.files.delete == true %}
+								<button href="index.php?do=delete&amp;dir={{ folder.directory|url_encode }}{{ folder.entry|url_encode }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+							{% endif %}
+						</div>
+					</div>
 				</td>
 	        </tr>
 		{% endfor %}
@@ -70,23 +70,23 @@
 				<td>{{ file.size }}</td>
 				<td>{{ file.date|date("m/d/y H:i:s") }}</td>
 				<td style="text-align:center;">
-                    <div class="row" style="text-align:center;margin-left:8px;">
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
-                        {% if ( permission.files.zip == true ) and ( file.extension in zip_extensions ) %}
-                            <button href="index.php?do=unzip&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
-                        {% endif %}
-                        </div>
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
-                        {% if permission.files.download == true %}
-                            <a href="index.php?do=download&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-download"></i></button></a>
-                        {% endif %}
-                        </div>
-                        <div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
-    					{% if permission.files.delete == true %}
-    						<button href="index.php?do=delete&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
-    					{% endif %}
-                        </div>
-                    </div>
+					<div class="row" style="text-align:center;margin-left:8px;">
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
+						{% if ( permission.files.zip == true ) and ( file.extension in zip_extensions ) %}
+							<button href="index.php?do=unzip&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="unzip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
+						{% endif %}
+						</div>
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
+						{% if permission.files.download == true %}
+							<a href="index.php?do=download&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-download"></i></button></a>
+						{% endif %}
+						</div>
+						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
+						{% if permission.files.delete == true %}
+							<button href="index.php?do=delete&amp;file={{ file.directory|url_encode }}{{ file.entry|url_encode }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+						{% endif %}
+						</div>
+					</div>
 				</td>
 			</tr>
 		{% endfor %}
