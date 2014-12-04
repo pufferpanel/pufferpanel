@@ -152,7 +152,7 @@ $(window).load(function(){
 				},
 				success: function(data) {
 					if(data != "ok") {
-						alert(data);
+						location.reload();
 					}else{
 						clicked.parent().parent().fadeOut();
 					}

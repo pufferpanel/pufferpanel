@@ -40,8 +40,6 @@ if(!isset($_POST['zipItemPath'])) {
 }
 
 if(!empty($_POST['zipItemPath'])) {
-	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		exit('<div class="alert alert-warning">A token was missing from this request.</div>');
 
 	$request = Unirest::put(
 		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['zipItemPath'],
@@ -53,13 +51,11 @@ if(!empty($_POST['zipItemPath'])) {
 		)
 	);
 
-	if($request->code == 200) {
-		echo 'ok'
-	} else {
-		echo $request->body;
-	}
+	print_r($request->body);
 
 } else {
+
 	var_dump($_POST);
 	echo 'Nothing was matched in the script.';
+
 }
