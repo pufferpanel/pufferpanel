@@ -5,6 +5,7 @@
     	"ext-mcrypt": "*",
     	"bugsnag/bugsnag": "2.*",
     	"christian-riesen/otp": "1.*",
+        "flowjs/flow-php-server": "dev-master",
         "j4mie/idiorm": "1.5.1",
         "klein/klein": "2.1.*",
         "league/flysystem": "0.6.*@dev",

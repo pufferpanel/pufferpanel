@@ -5,6 +5,7 @@
 {% block scripts %}
 	{{ parent() }}
 	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
+	<script type="text/javascript" src="{{ settings.assets_url }}javascript/flow/flow.js"></script>
 {% endblock %}
 
 {% block servername %}
@@ -31,29 +32,54 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-9" id="load_files">
-	<span id="write_status" style="display:none;width: 100%;"></span>
-	<form method="post" id="new_file">
-		<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-		<div class="form-group">
-			<div>
-				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
-			</div>
-		</div>
+<div class="col-9">
+	<ul class="nav nav-tabs" id="config_tabs">
+		{% if permission.files.create == true %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
+		{% if permission.files.upload == true %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
+	</ul>
+	<div class="tab-content">
 		{% if permission.files.create == true %}
-			<div class="form-group">
-				<div>
-					<button class="btn btn-primary btn-sm" id="create_file">{{ lang.string_save }}</button>
-					<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={% if get.dir != 1 %}{{ get.dir }}{% endif %}';return false;">{{ lang.node_files_edit_back }}</button>
+		<div class="tab-pane active" id="create">
+			<span id="write_status" style="display:none;width: 100%;"></span>
+			<form method="post" id="new_file">
+				<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+				<div class="form-group">
+					<div>
+						<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
+					</div>
+				</div>
+				{% if permission.files.create == true %}
+					<div class="form-group">
+						<div>
+							<button class="btn btn-primary btn-sm" id="create_file">{{ lang.string_save }}</button>
+							<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={% if get.dir != 1 %}{{ get.dir }}{% endif %}';return false;">{{ lang.node_files_edit_back }}</button>
+						</div>
+					</div>
+				{% endif %}
+		    </form>
+		</div>
+		{% endif %}
+		{% if permission.files.upload == true %}
+		<div class="tab-pane" id="upload">
+			<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+			<div class="well well-sm"><p class="text-muted" style="margin-bottom:0;"><i class="fa fa-warning"></i> Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/server/</code> and begin typing. Once you have done this please click the button below to initalize the uploader.</p></div>
+			<button id="init_uploader" class="btn btn-primary btn-sm">Initalize Uploader</button>
+			<div id="initUploaderDiv" style="display:none;">
+				<div class="well" id="dropFiles">
+					<button class="btn btn-sm btn-primary" id="browseFiles">Upload Files</button> <span class="text-muted"><strong>OR</strong> drag and drop files here.</span>
+				</div>
+				<div class="flow-list">
+
 				</div>
 			</div>
+		</div>
 		{% endif %}
-    </form>
+	</div>
 </div>
 <script type="text/javascript">
 var newFilePath;
 var newFileContents;
-$(window).load(function() {
+$(document).ready(function() {
 	$("textarea").keydown(function(e) {
 		if(e.keyCode === 9) {
 			var start = this.selectionStart;
@@ -66,6 +92,132 @@ $(window).load(function() {
 			this.selectionStart = this.selectionEnd = start + 1;
 			e.preventDefault();
 		}
+	});
+	function readablizeBytes(bytes) {
+		var s = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+		var e = Math.floor(Math.log(bytes) / Math.log(1024));
+		return (bytes / Math.pow(1024, e)).toFixed(2) + " " + s[e];
+	}
+	function secondsToStr (temp) {
+		function numberEnding (number) {
+			return (number > 1) ? 's' : '';
+		}
+		var years = Math.floor(temp / 31536000);
+		if (years) {
+			return years + ' year' + numberEnding(years);
+		}
+		var days = Math.floor((temp %= 31536000) / 86400);
+		if (days) {
+			return days + ' day' + numberEnding(days);
+		}
+		var hours = Math.floor((temp %= 86400) / 3600);
+		if (hours) {
+			return hours + ' hour' + numberEnding(hours);
+		}
+		var minutes = Math.floor((temp %= 3600) / 60);
+		if (minutes) {
+			return minutes + ' minute' + numberEnding(minutes);
+		}
+		var seconds = temp % 60;
+		return seconds + ' second' + numberEnding(seconds);
+	}
+	$("#init_uploader").click(function(){
+		$(this).hide();
+		$("#initUploaderDiv").show();
+		var flow = new Flow({
+			target: '../ajax/files/upload.php',
+			testChunks: false,
+			query: {
+				newFilePath: "{% if get.dir != 1 %}{{ get.tab }}{% endif %}" + $("#u_file_name").val()
+			}
+		});
+		flow.assignBrowse(document.getElementById('browseFiles'));
+		flow.assignDrop(document.getElementById('dropFiles'));
+		flow.on('filesSubmitted', function(file) {
+			flow.upload();
+		});
+		flow.on('fileAdded', function(file, event){
+			// Show progress bar
+			$('.flow-progress, .flow-list').show();
+			// Add the file to the list
+			$('.flow-list').append('<div class="well well-sm flow-file flow-file-'+ file.uniqueIdentifier +'"> \
+				<div class="row"> \
+					<div class="col-8"> \
+						<h6>Uploading <span class="flow-file-name"></span> <span class="flow-file-size"></span></h6> \
+						<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;"></span> \
+						<div class="progress progress-striped active"> \
+							<div class="progress-bar progress-bar-info" style="width: 0%"></div> \
+						</div> \
+					</div> \
+					<div class="col-4"> \
+						<p style="padding-top:32px;"> \
+							<button class="flow-file-pause btn btn-xs btn-primary"><i class="fa fa-pause"></i> Pause</button> \
+							<button class="flow-file-resume btn btn-xs btn-primary" style="display:none;"><i class="fa fa-play"></i> Resume</button> \
+							<button class="flow-file-cancel btn btn-xs btn-danger"><i class="fa fa-remove"></i> Cancel</button> \
+						</p> \
+					</div> \
+				</div> \
+			</div>');
+			var $self = $('.flow-file-'+file.uniqueIdentifier);
+				$self.find('.flow-file-name').text(file.name);
+				$self.find('.flow-file-size').text("(" + readablizeBytes(file.size) + ")");
+				$self.find('.flow-file-pause').on('click', function () {
+					file.pause();
+					$self.find('.flow-file-pause').hide();
+					$self.find('.flow-file-resume').show();
+				});
+				$self.find('.flow-file-resume').on('click', function () {
+					file.resume();
+					$self.find('.flow-file-pause').show();
+					$self.find('.flow-file-resume').hide();
+				});
+				$self.find('.flow-file-cancel').on('click', function () {
+					file.cancel();
+					$self.remove();
+				});
+		});
+		window.flow = {
+			pause: function () {
+				flow.pause();
+				$('.flow-file-resume').show();
+				$('.flow-file-pause').hide();
+				$('.flow-progress .progress-resume-link').show();
+				$('.flow-progress .progress-pause-link').hide();
+			},
+			cancel: function() {
+				flow.cancel();
+				$('.flow-file').remove();
+			},
+			upload: function() {
+				$('.flow-file-pause').show();
+				$('.flow-file-resume').hide();
+				flow.resume();
+			},
+			flow: flow
+		};
+		flow.on('fileProgress', function(file){
+			$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress')
+			.html(Math.floor(file.progress()*100) + '% '
+			+ readablizeBytes(file.averageSpeed) + '/s '
+			+ secondsToStr(file.timeRemaining()) + ' remaining') ;
+			$('.progress-bar').css({width:Math.floor(flow.progress()*100) + '%'});
+		});
+		flow.on('complete', function(){
+			$('.flow-progress .progress-resume-link, .flow-progress .progress-pause-link').hide();
+		});
+		flow.on('fileSuccess', function(file, message){
+			var $self = $('.flow-file-'+file.uniqueIdentifier);
+			$self.find('.flow-file-progress').text('Upload Completed');
+			$self.find('.flow-file-pause, .flow-file-resume').remove();
+		});
+		flow.on('fileError', function(file, message){
+			// Reflect that the file upload has resulted in error
+			$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress').html('(file could not be uploaded: '+message+')');
+		});
+		flow.on('uploadStart', function(){
+			$('.flow-progress .progress-resume-link').hide();
+			$('.flow-progress .progress-pause-link').show();
+		});
 	});
 	$("#create_file").click(function(e) {
 		e.preventDefault();

@@ -11,4 +11,6 @@ vendor
 composer.phar
 src/logs/*.log
 src/logs/*.html
+src/uploads/*
 phpdoc_base/*
+!src/uploads/.githold
