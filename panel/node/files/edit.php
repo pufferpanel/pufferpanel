@@ -105,6 +105,7 @@ echo $twig->render(
 			'error' => $error,
 			'xsrf' => $core->auth->XSRF(),
 			'file' => $_POST['file'],
+			'extension' => pathinfo($_POST['file'], PATHINFO_EXTENSION),
 			'directory' => $directory,
 			'contents' => $json['contents'],
 			'footer' => array(

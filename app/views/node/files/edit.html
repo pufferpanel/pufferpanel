@@ -39,6 +39,16 @@
 	<form method="post" id="editing_file">
 		<div class="form-group">
 			<div>
+				<div class="alert alert-info">
+					You are currently editing a YAML file. These files do not accept tabs, they must use spaces.
+					We've gone ahead and made it so that hitting tab will insert
+					<select id="space_yaml">
+						<option value="2">2</option>
+						<option value="4" selected="selected">4</option>
+						<option value="8">8</option>
+					</select>
+					spaces.
+				</div>
 				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
@@ -56,5 +66,39 @@
     {% endif %}
 </div>
 <script type="text/javascript">
-$(window).load(function(){$("#save_file").click(function(a){a.preventDefault();var e=$("input[name='file']").val(),s=$("#live_console").val(),l=$("input[name='xsrf']").val();$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"),$.ajax({type:"POST",url:"../ajax/files/save.php",data:{file:e,file_contents:s,xsrf:l},success:function(a){$("#save_status").html(a),$("#save_file").html("Save").removeClass("disabled"),$("#save_status").slideDown()}})})});</script>
+$(window).load(function() {
+	$("textarea").keydown(function(e) {
+		if(e.keyCode === 9) {
+			var start = this.selectionStart;
+			var end = this.selectionEnd;
+			var $this = $(this);
+			var value = $this.val();
+			{% if (extension == "yaml") or (extension == "yml") %}var yamlSpaces = parseInt($("#space_yaml").val());{% endif %}
+			$this.val(value.substring(0, start)
+			+ {% if (extension == "yaml") or (extension == "yml") %}Array(yamlSpaces + 1).join(" "){% else %}"\t"{% endif %}
+			+ value.substring(end));
+			this.selectionStart = this.selectionEnd = start + {% if (extension == "yaml") or (extension == "yml") %}4{% else %}1{% endif %};
+			e.preventDefault();
+		}
+	});
+	$("#save_file").click(function(a) {
+		a.preventDefault();
+		var e = $("input[name='file']").val(),
+		s = $("#live_console").val(),
+		l = $("input[name='xsrf']").val();
+		$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"), $.ajax({
+			type: "POST",
+			url: "../ajax/files/save.php",
+			data: {
+				file: e,
+				file_contents: s,
+				xsrf: l
+			},
+			success: function(a) {
+				$("#save_status").html(a), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
+			}
+		})
+	})
+});
+</script>
 {% endblock %}
