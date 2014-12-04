@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \Flow, \Tracy, \League\Flysystem\Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
+use \ORM, \Flow, \Tracy, \League\Flysystem\Filesystem as Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
 
 require_once '../../../../src/core/core.php';
 
