@@ -40,7 +40,7 @@
 	<div class="tab-content">
 		{% if permission.files.create == true %}
 		<div class="tab-pane active" id="create">
-			<span id="write_status" style="display:none;width: 100%;"></span>
+			<div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
 			<form method="post" id="new_file">
 				<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
 				<div class="form-group">
@@ -228,6 +228,10 @@ $(document).ready(function() {
 			data: {
 				newFilePath: "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val(),
 				newFileContents: $("#live_console").val()
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				$("#write_status").html('<div class="alert alert-danger">'+errorThrown+'</div>').show();
+				$("#create_file").html("Save").removeClass("disabled");
 			},
 			success: function(data) {
 				if(data != "ok"){

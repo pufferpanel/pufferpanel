@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \League\Flysystem\Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
+use \ORM, \Tracy, \League\Flysystem\Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
 
 require_once '../../../../src/core/core.php';
 
@@ -46,12 +46,28 @@ try {
 	)));
 
 } catch(\Exception $e) {
-	\Tracy\Debugger::log($e);
+
+	http_response_code(500);
+	Tracy\Debugger::log($e);
 	exit('<div class="alert alert-danger">An execption occured when trying to connect to the server.</div>');
+
 }
 
-if(!$filesystem->write(urldecode($_POST['newFilePath']), $_POST['newFileContents'])) {
-	exit('<div class="alert alert-danger">An error occured when trying to write this file to the system.</div>');
-} else {
-	exit('ok');
+try {
+
+	if(!$filesystem->write(urldecode($_POST['newFilePath']), $_POST['newFileContents'])) {
+
+		http_response_code(500);
+		exit('<div class="alert alert-danger">An error occured when trying to write this file to the system.</div>');
+
+	} else {
+		exit('ok');
+	}
+
+} catch(\Exception $e) {
+
+	http_response_code(500);
+	Tracy\Debugger::log($e);
+	exit('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>');
+
 }
