@@ -52,20 +52,20 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	/*
 	 * Typically Means Server is Off
 	 */
-	if($response->code != 200) {
+	if(!in_array($response->code, array(200, 500))) {
 		switch($response->code) {
 
 			case 403:
 				exit($errorMessage." Authentication error encountered.");
 				break;
 			default:
-				exit($errorMessage." HTTP/$response->code. Invalid response was recieved.");
+				exit("$errorMessage HTTP/$response->code. Invalid response was recieved. ($response->raw_body)");
 				break;
 
 		}
 	}
 
-	if(!isset($response->body->contents) || empty($response->body->contents)) {
+	if($response->code == 500 || !isset($response->body->contents) || empty($response->body->contents)) {
 
 		/*
 		 * Create server.properties
@@ -163,7 +163,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	);
 
 	if($get->body != "ok")
-		exit($errorMessage." Unable to start server (".$get->body.")");
+		exit($errorMessage." Unable to start server (".$get->raw_body.")");
 
 	echo 'ok';
 
