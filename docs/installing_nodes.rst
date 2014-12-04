@@ -111,7 +111,9 @@ Congratulations! Your first node is configured.
 
 Connecting to FTP
 -----------------
-In order to connect to the FTP server you will need to connect using ``FTP with TLS/SSL`` and ``Passive Mode``. Please
-consider writing your own documentation for users to help them out as this can be confusing if they've never done it before.
+If you try to login to the FTP server like you would a normal FTP server, you will probably see an error message similar to: ``This server does not permit login over a non-secure connection; connect using FTP-SSL with explicit AUTH TLS``.
 
-On your first connect you will be asked if you trust the server certificate, click Accept.
+In order to connect to the FTP server you will need to connect using ``FTP with TLS/SSL`` (sometimes called ``FTP Explicit SSL/TLS`` or similar) and ``Passive Mode`` enabled.
+Do not select ``FTP with Implicit SSL`` as that will not work. On your first connect you will be asked if you trust the server certificate, click Accept.
+
+Please consider writing your own documentation for users to help them out as this can be confusing if they've never done it before.

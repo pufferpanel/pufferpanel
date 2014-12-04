@@ -71,7 +71,8 @@
 		"ftp":{
 			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",
 			"port": 21,
-			"host": "127.0.0.1"
+			"host": "127.0.0.1",
+			"use_ssl": true
 		}
 	},
 	"servers": []

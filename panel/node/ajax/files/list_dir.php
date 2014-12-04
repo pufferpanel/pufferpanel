@@ -112,10 +112,9 @@ if(array_key_exists(1, $goBack) && !empty($goBack[1])){
 /*
  * Setting More Variables
  */
-if(array_key_exists('link', $previousDir) && strpos(rtrim($previousDir['link'], '/'), '/'))
-	$previousDir['link_show'] = end(explode('/', $previousDir['link']));
-elseif(array_key_exists('link', $previousDir))
+if(array_key_exists('link', $previousDir)) {
 	$previousDir['link_show'] = $previousDir['link'];
+}
 
 /*
  * Loop Through
