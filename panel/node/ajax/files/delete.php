@@ -41,7 +41,12 @@ if($_POST['deleteItemType'] == 'file' && !empty($_POST['deleteItemPath'])) {
 	try {
 
 		$cid = ftp_ssl_connect($core->server->nodeData('ip'));
-		$login = ftp_login($cid, $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'), $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')));
+		$login = @ftp_login($cid, $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'), $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')));
+
+		// What idiot designed this function like this?
+		if(!$login) {
+			throw new \Exception("Unable to login to the FTP server!");
+		}
 
 		$_POST['deleteItemPath'] = urldecode($_POST['deleteItemPath']);
 
@@ -49,19 +54,9 @@ if($_POST['deleteItemType'] == 'file' && !empty($_POST['deleteItemPath'])) {
 		ftp_close($cid);
 		echo 'ok';
 
-	} catch(\FtpException $e) {
+	} catch(\Exception $e) {
 		exit('Error occured trying to delete that file! '.$e->getMessage());
 	}
-
-	// try {
-	//
-	// 	$_POST['deleteItemPath'] = urldecode($_POST['deleteItemPath']);
-	// 	$filesystem->delete('1417640539.txt');
-	// 	echo 'ok';
-	//
-	// } catch(\League\Flysystem\FileNotFoundException $e){
-	// 	exit('Error occured trying to delete that file! '.$e->getMessage());
-	// }
 
 } else if($_POST['deleteItemType'] == 'dir' && !empty($_POST['deleteItemPath'])) {
 
