@@ -135,6 +135,30 @@ $(window).load(function(){
 				}
 			});
 		});
+		$("a.zip_file").click(function(e){
+			e.preventDefault();
+			var clicked = $(this); //Fixes some strange bug going on
+			if($.urlParam('dir', $(this).attr("href")) != null){
+				var zipItemPath = $.urlParam('dir', $(this).attr("href"));
+			}
+			$.ajax({
+				type: "POST",
+				url: '../ajax/files/zip.php',
+				data: {
+					'zipItemPath': zipItemPath
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(errorThrown);
+				},
+				success: function(data) {
+					if(data != "ok") {
+						alert(data);
+					}else{
+						clicked.parent().parent().fadeOut();
+					}
+				}
+			});
+		});
 	}
 	function firstLoad() {
 		$("#loading_dir").fadeIn(200);
