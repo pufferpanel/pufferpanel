@@ -23,17 +23,17 @@ require_once '../../../../src/core/core.php';
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
 	http_response_code(403);
-	return;
+	return 'not authenticated.';
 }
 
 if($core->user->hasPermission('files.delete') !== true) {
 	http_response_code(403);
-	return;
+	return 'you don\'t have permission to do that.';
 }
 
 if(!isset($_POST['newFilePath'])) {
 	http_response_code(404);
-	return;
+	return 'missing parameters.';
 }
 
 try {
@@ -52,7 +52,7 @@ try {
 
 	http_response_code(500);
 	Tracy\Debugger::log($e);
-	exit();
+	exit('unable to connect to FTP server.');
 
 }
 
@@ -78,7 +78,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 	} else {
 
 		http_response_code(404);
-		return;
+		return 'unable to work with chunk.';
 
 	}
 
@@ -89,7 +89,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 	} else {
 
 		http_response_code(400);
-		return;
+		return 'an error occured.';
 
 	}
 
@@ -98,10 +98,18 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 
 	$stream = file_get_contents($uploadPath.$_POST['flowFilename']);
-	if(!$filesystem->write(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream)) {
-		http_response_code(500);
-	} else {
+
+	try {
+
+		$filesystem->write(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
 		http_response_code(200);
+
+	} catch(\Exception $e) {
+
+		http_response_code(500);
+		Tracy\Debugger::log($e);
+		exit('unable to write file to server.');
+
 	}
 
 }else{
