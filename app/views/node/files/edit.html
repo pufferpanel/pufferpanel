@@ -39,6 +39,7 @@
 	<form method="post" id="editing_file">
 		<div class="form-group">
 			<div>
+				{% if (extension == "yaml") or (extension == "yml") %}
 				<div class="alert alert-info">
 					You are currently editing a YAML file. These files do not accept tabs, they must use spaces.
 					We've gone ahead and made it so that hitting tab will insert
@@ -49,6 +50,7 @@
 					</select>
 					spaces.
 				</div>
+				{% endif %}
 				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
