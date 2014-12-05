@@ -41,7 +41,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 ));
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DEL");
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 curl_setopt($ch, CURLOPT_HEADER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_exec($ch);

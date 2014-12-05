@@ -62,7 +62,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
 	header("Content-Length: ".mb_strlen($content['contents']));
 
-	print( $content['contents'] );
+	print($content['contents']);
 	exit();
 
 }

@@ -127,12 +127,20 @@ $data = array(
 	"user" => $ftpUser,
 	"overide_command_line" => "",
 	"path" => $node->gsd_server_dir.$ftpUser,
+	"build" => array(
+		"install_dir" => '/mnt/MC/CraftBukkit/',
+		"disk" => array(
+			"hard" => ($_POST['alloc_disk'] < 32) ? 32 : (int) $_POST['alloc_disk'],
+			"soft" => ($_POST['alloc_disk'] > 2048) ? (int) $_POST['alloc_disk'] - 1024 : 32
+		),
+		"cpu" => (int) $_POST['cpu_limit']
+	),
 	"variables" => array(
 		"-jar" => $modpack,
 		"-Xmx" => $_POST['alloc_mem']."M"
 	),
-	"gameport" => $_POST['server_port'],
-	"gamehost" => "",
+	"gameport" => (int) $_POST['server_port'],
+	"gamehost" => $_POST['server_ip'],
 	"plugin" => "minecraft",
 	"autoon" => false
 );

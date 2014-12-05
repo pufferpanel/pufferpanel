@@ -41,7 +41,7 @@ if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 			"X-Access-Token" => $core->server->getData('gsd_secret')
 		),
 		array(
-			"zip" => $_POST['file_path']
+			"zip" => $_POST['zipItemPath']
 		)
 	);
 
