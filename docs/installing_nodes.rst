@@ -33,6 +33,7 @@ Before we can begin installing a node, you must first create some directories th
 
 .. code-block:: sh
 
+	[$]~ groupadd gsdusers
 	[$]~ mkdir -p /srv/gsd
 	[$]~ mkdir -p /mnt/MC/CraftBukkit
 
@@ -45,6 +46,9 @@ Install Game Server Daemon
 
 	[$]~ cd /srv
 	[$]~ git clone https://github.com/PufferPanel/gsd.git
+	[$]~ cd /tmp
+	[$]~ git clone https://github.com/PufferPanel/cpulimit.git
+	[$]~ cp cpulimit/cpulimit /usr/bin
 
 This will download all of the files necessary and place them into the correct directory.
 
@@ -66,7 +70,8 @@ If you are running version ``0.7.5`` or higher simply copy and paste the configu
 			"ftp":{
 				"authurl": "http://www.example.com/ajax/validate_ftp.php",
 				"port": 21,
-				"host": "127.0.0.1"
+				"host": "127.0.0.1",
+				"use_ssl": true
 			}
 		},
 		"servers": []
