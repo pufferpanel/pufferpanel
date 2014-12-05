@@ -17,15 +17,14 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM;
 
 require_once('../../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true) {
 	Components\Page::redirect('../../../index.php');
 }
 
-//Cookies :3
 setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
 
 /*
@@ -36,28 +35,32 @@ setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $co
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['cpu_limit']))
+if(!isset($_POST['server_name'], $_POST['node'], $_POST['email'], $_POST['server_ip'], $_POST['server_port'], $_POST['alloc_mem'], $_POST['alloc_disk'], $_POST['ftp_pass'], $_POST['ftp_pass_2'], $_POST['cpu_limit'])) {
 	Components\Page::redirect('../../add.php?disp=missing_args&error=na');
+}
 
 /*
 * Determine if Node (IP & Port) is Avaliable
 */
 $node = ORM::forTable('nodes')->findOne($_POST['node']);
 
-if($node === false)
+if(!$node) {
 	Components\Page::redirect('../../add.php?error=node&disp=n_fail');
+}
 
 /*
 * GSD Must Be Online!
 */
-if(!@fsockopen($node->ip, 8003, $num, $error, 3))
+if(!@fsockopen($node->ip, 8003, $num, $error, 3)) {
 	Components\Page::redirect('../../add.php?disp=gsd_offline&error=na');
+}
 
 /*
  * Validate Server Name
  */
-if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
+if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name'])) {
 	Components\Page::redirect('../../add.php?error=server_name&disp=s_fail');
+}
 
 	/*
 	 * Validate IP & Port
@@ -65,44 +68,52 @@ if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name']))
 	$ips = json_decode($node->ips, true);
 	$ports = json_decode($node->ports, true);
 
-	if(!array_key_exists($_POST['server_ip'], $ips))
+	if(!array_key_exists($_POST['server_ip'], $ips)) {
 		Components\Page::redirect('../../add.php?error=server_ip&disp=ip_fail');
+	}
 
-	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']]))
+	if(!array_key_exists($_POST['server_port'], $ports[$_POST['server_ip']])) {
 		Components\Page::redirect('../../add.php?error=server_port&disp=port_fail');
+	}
 
-	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0)
+	if($ports[$_POST['server_ip']][$_POST['server_port']] == 0) {
 		Components\Page::redirect('../../add.php?error=server_port&disp=port_full');
+	}
 
 /*
  * Validate Email
  */
-if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 	Components\Page::redirect('../../add.php?error=email&disp=e_fail');
+}
 
 $user = ORM::forTable('users')->select('id')->where('email', $_POST['email'])->findOne();
 
-	if($user === false)
+	if(!$user) {
 		Components\Page::redirect('../../add.php?error=email&disp=a_fail');
+	}
 
 /*
  * Validate Disk & Memory
  */
-if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk']))
+if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk'])) {
 	Components\Page::redirect('../../add.php?error=alloc_mem|alloc_disk&disp=m_fail');
+}
 
 /*
  * Validate CPU Limit
  */
-if(!is_numeric($_POST['cpu_limit']))
+if(!is_numeric($_POST['cpu_limit'])) {
 	Components\Page::redirect('../../add.php?error=cpu_limit&disp=cpu_limit');
+}
 
 
 /*
  * Validate ftp Password
  */
-if($_POST['ftp_pass'] != $_POST['ftp_pass_2'] || strlen($_POST['ftp_pass']) < 8)
+if($_POST['ftp_pass'] != $_POST['ftp_pass_2'] || strlen($_POST['ftp_pass']) < 8) {
 	Components\Page::redirect('../../add.php?error=ftp_pass|ftp_pass_2&disp=p_fail');
+}
 
 $iv = $core->auth->generate_iv();
 $_POST['ftp_pass'] = $core->auth->encrypt($_POST['ftp_pass'], $iv);
@@ -139,6 +150,9 @@ $data = array(
 		"-jar" => $modpack,
 		"-Xmx" => $_POST['alloc_mem']."M"
 	),
+	"keys" => array(
+		$gsdSecret => array("service:get", "service:update", "service:power", "service:files", "service:query", "service:console")
+	),
 	"gameport" => (int) $_POST['server_port'],
 	"gamehost" => $_POST['server_ip'],
 	"plugin" => "minecraft",
@@ -167,7 +181,7 @@ $server = ORM::forTable('servers')->create();
 $server->set(array(
 	'gsd_id' => $content['id'],
 	'hash' => $serverHash,
-	'gsd_secret' => $node->gsd_secret,
+	'gsd_secret' => $gsdSecret,
 	'encryption_iv' => $iv,
 	'node' => $_POST['node'],
 	'name' => $_POST['server_name'],
