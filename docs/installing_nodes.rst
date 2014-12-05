@@ -46,6 +46,7 @@ Install Game Server Daemon
 
 	[$]~ cd /srv
 	[$]~ git clone https://github.com/PufferPanel/gsd.git
+	[$]~ git checkout tags/0.1
 	[$]~ cd /tmp
 	[$]~ git clone https://github.com/PufferPanel/cpulimit.git
 	[$]~ cp cpulimit/cpulimit /usr/bin
