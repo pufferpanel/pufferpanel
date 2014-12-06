@@ -34,7 +34,6 @@ Before we can begin installing a node, you must first create some directories th
 .. code-block:: sh
 
 	[$]~ groupadd gsdusers
-	[$]~ mkdir -p /srv/gsd
 	[$]~ mkdir -p /mnt/MC/CraftBukkit
 
 You will need to upload a file called ``server.jar`` into the ``/mnt/MC/CraftBukkit`` directory. You can also upload any other miscelaneous files that you want to be added to each server upon creation.
