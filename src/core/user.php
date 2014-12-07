@@ -126,18 +126,39 @@ class User extends Authentication {
 	 */
 	public function getPermissions($list = false) {
 
-		if(!isset($this->_permissionJson))
+		if(!isset($this->_permissionJson)) {
 			$this->perms = ORM::forTable('users')->select('permissions')->where('id', self::$_uid)->findOne();
+		}
 
-		if($this->perms !== false)
-			if(!empty($this->perms->permissions))
+		if($this->perms !== false) {
+
+			if(!empty($this->perms->permissions)) {
 				$this->_permissionJson = json_decode($this->perms->permissions, true);
-			else
+			} else {
 				$this->_permissionJson = null;
-		else
-			$this->_permissionJson = null;
+			}
 
-		return (is_null($this->_permissionJson) || !isset($this->_permissionJson)) ? false : (($list === false) ? ((!array_key_exists(self::$_shash, $this->_permissionJson)) ? false : $this->_permissionJson[self::$_shash]) : $this->_permissionJson);
+		} else {
+			$this->_permissionJson = null;
+		}
+
+		if(is_null($this->_permissionJson) || !isset($this->_permissionJson)) {
+			return false;
+		} else {
+
+			if(!$list) {
+
+				if(!array_key_exists(self::$_shash, $this->_permissionJson)) {
+					return false;
+				} else {
+					return $this->_permissionJson[self::$_shash]['perms'];
+				}
+
+			} else {
+				return $this->_permissionJson;
+			}
+
+		}
 
 	}
 
@@ -149,10 +170,7 @@ class User extends Authentication {
 	public function listServerPermissions() {
 
 		$this->_perms = $this->getPermissions(true);
-		if(is_array($this->_perms))
-			return array_keys($this->_perms);
-		else
-			return array("0" => "0");
+		return (is_array($this->_perms)) ? array_keys($this->_perms) : array("0" => "0");
 
 	}
 
@@ -184,13 +202,23 @@ class User extends Authentication {
 		$this->buildPermissions = array();
 		$this->allPerms = self::listAvaliablePermissions();
 
-		foreach($this->allPerms as $permission => $submodule)
-			foreach($submodule as $id => $subpermission)
-				if(!is_array($subpermission))
+		foreach($this->allPerms as $permission => $submodule) {
+
+			foreach($submodule as $id => $subpermission) {
+
+				if(!is_array($subpermission)) {
 					$this->buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission, $array);
-				else
-					foreach($subpermission as $subid => $subsubpermission)
+				} else {
+
+					foreach($subpermission as $subid => $subsubpermission) {
 						$this->buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission, $array);
+					}
+
+				}
+
+			}
+
+		}
 
 		return $this->buildPermissions;
 

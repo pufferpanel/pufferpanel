@@ -41,19 +41,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD']
 		Components\Page::redirect('register.php?error=p_fail&token='.urlencode($_POST['token']));
 
 	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $core->auth->decrypt($encrypted, $iv))))->findOne();
-	if($user !== false)
+	if($user) {
 		Components\Page::redirect('register.php?error=a_fail&token='.$_POST['token']);
+	}
 
 	$query = ORM::forTable('account_change')
 			->where(array(
-				'type' => 'subuser',
+				'type' => 'user_register',
 				'key' => $_POST['token'],
 				'verified' => 0
-			))
-			->findOne();
+			))->findOne();
 
-	if($query === false)
+	if(!$query) {
 		Components\Page::redirect('register.php?error=t_fail&token='.$_POST['token']);
+	}
 
 	$user = ORM::forTable('users')->create();
 	$user->set(array(
@@ -61,21 +62,13 @@ if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD']
 		'username' => $_POST['username'],
 		'email' => $core->auth->decrypt($encrypted, $iv),
 		'password' => $core->auth->hash($_POST['password']),
-		'permissions' => $row['content'],
+		'permissions' => null,
 		'language' => $core->settings->get('default_language'),
 		'time' => time()
 	));
 	$user->save();
 
-	$server = ORM::forTable('servers')->selectMany('subusers', 'hash')->where('hash', key(json_decode($row['content'], true)))->findOne();
-	$subusers = json_decode($server->subusers, true);
-	unset($subusers[$core->auth->decrypt($encrypted, $iv)]);
-	$subusers[$user->id()] = "verified";
-
-	$server->subusers = json_encode($subusers);
 	$query->verified = 1;
-
-	$server->save();
 	$query->save();
 
 	Components\Page::redirect('index.php?registered');

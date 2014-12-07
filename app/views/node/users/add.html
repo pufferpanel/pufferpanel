@@ -32,8 +32,8 @@
 			<h3 class="nopad">Permissions</h3>
 			<div class="list-group">
 				<a href="#" class="list-group-item">
-					<label><input type="checkbox" name="permissions[]" value="console.view"/> View Console</label>
-					<p class="list-group-item-text">Gives user permission to view the console page.</p>
+					<label><input type="checkbox" name="permissions[]" value="console.view" checked="checked" disabled/> View Console</label>
+					<p class="list-group-item-text">Gives user permission to view the console page. This must be enabled in order to add a subuser to the server. They will be able to view the server statistics as well as the server console.</p>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-1"><br /><br /></div>
 						<div class="col-11">
@@ -71,6 +71,13 @@
 						<div class="col-11">
 							<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
 							<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+						</div>
+					</div>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-1"><br /><br /></div>
+						<div class="col-11">
+							<label><input type="checkbox" name="permissions[]" value="files.zip"/> Compress and Decompress Files</label>
+							<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">

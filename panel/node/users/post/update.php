@@ -40,6 +40,8 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	if(empty($_POST['permissions']))
 		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
 
+	// @TODO: Is GSD online?
+
 	$query = ORM::forTable('users')->select('permissions')->where('uuid', $_POST['uuid'])->findOne();
 
 	if($query === false)
@@ -52,6 +54,8 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	$permissions[$core->server->getData('hash')] = $_POST['permissions'];
 	$query->permissions = json_encode($permissions);
 	$query->save();
+
+	// @TODO: Update GSD with new permissions!
 
 	Components\Page::redirect('../view.php?id='.$_POST['uuid']);
 

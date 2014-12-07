@@ -17,45 +17,96 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 require_once('../../../../src/core/core.php');
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
-
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
 	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
-	exit();
+}
+
+if($core->settings->get('allow_subusers') != 1) {
+	Components\Page::redirect('../add.php?error=not_enabled');
+}
+
+if($core->auth->XSRF(@$_POST['xsrf']) !== true) {
+	Components\Page::redirect('../add.php?error=token');
+}
+
+if(!isset($_POST['email'], $_POST['permissions'])) {
+	Components\Page::redirect('../add.php?error=missing_required');
+}
+
+if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+	Components\Page::redirect('../add.php?error=email');
+}
+
+if(empty($_POST['permissions'])) {
+	Components\Page::redirect('../add.php?error=permissions_empty');
+}
+
+/*
+ * Does user exist already? If not we need to have them register first.
+ */
+$iv = $core->auth->generate_iv();
+$registerKey = $core->auth->encrypt($_POST['email'], $iv).".".$iv;
+$findUser = ORM::forTable('users')->where('email', $_POST['email'])->findOne();
+if(!$findUser) {
+
+	$account = ORM::forTable('account_change')->create();
+	$account->set(array(
+		'type' => 'user_register',
+		'content' => null,
+		'key' => $registerKey,
+		'time' => time()
+	));
+	$account->save();
 
 }
 
-if($core->settings->get('allow_subusers') != 1)
-	Components\Page::redirect('../add.php?error=not_enabled');
+$gsdPermissions = array("s:console", "s:query");
+foreach($_POST['permissions'] as $id => $permission) {
 
-if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-	Components\Page::redirect('../add.php?error=token');
+	switch($permission) {
 
-if(!isset($_POST['email'], $_POST['permissions']))
-	Components\Page::redirect('../add.php?error=missing_required');
+		case "console.power":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:power"));
+		break;
+		case "console.command":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:console:command"));
+		break;
+		case "files.view":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:files"));
+		break;
+		case "files.edit":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:files:get"));
+		break;
+		case "files.save":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:files:put"));
+		break;
+		case "files.zip":
+		$gsdPermissions = array_merge($gsdPermissions, array("s:files:zip"));
+		break;
 
-if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	Components\Page::redirect('../add.php?error=email');
+	}
 
-if(empty($_POST['permissions']))
-	Components\Page::redirect('../add.php?error=permissions_empty');
+}
 
-$iv = $core->auth->generate_iv();
-
+/*
+ * Add subuser key. They will enter this on the account.php page so that we can handle any issues in a clener format.
+ */
+$subuserToken = $core->auth->keygen(32);
 $account = ORM::forTable('account_change')->create();
 $account->set(array(
 	'type' => 'subuser',
-	'content' => array($core->server->getData('hash') => $_POST['permissions']),
-	'key' => $core->auth->encrypt($_POST['email'], $iv).".".$iv,
+	'content' => json_encode(array($core->server->getData('hash') => array('key' => $core->auth->generateUniqueUUID('servers', 'gsd_secret'), 'perms' => $_POST['permissions'], 'perms_gsd' => $gsdPermissions))),
+	'key' => $subuserToken,
 	'time' => time()
 ));
 $account->save();
 
 $subusers = (!is_null($core->server->getData('subusers')) && !empty($core->server->getData('subusers'))) ? json_decode($core->server->getData('subusers'), true) : array();
-$subusers[$_POST['email']] = $iv;
+$subusers[$_POST['email']] = $subuserToken;
 
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 $server->subusers = json_encode($subusers);
@@ -65,8 +116,9 @@ $server->save();
 * Send Email
 */
 $core->email->buildEmail('new_subuser', array(
-	'TOKEN' => $core->auth->encrypt($_POST['email'], $iv).".".$iv,
-	'URLENCODE_TOKEN' => urlencode($core->auth->encrypt($_POST['email'], $iv).".".$iv),
+	'REGISTER_TOKEN' => $registerKey,
+	'SUBUSER_TOKEN' => $subuserToken,
+	'URLENCODE_TOKEN' => urlencode($registerKey),
 	'SERVER' => $core->server->getData('name'),
 	'EMAIL' => $_POST['email']
 ))->dispatch($_POST['email'], $core->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');

@@ -37,9 +37,9 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	$_GET['id'] = urldecode($_GET['id']);
 
 	$query = ORM::forTable('account_change')->where(array('key' => $_GET['id'], 'verified' => 0))->findOne();
-
-	if($query === false)
+	if(!$query) {
 		Components\Page::redirect('../list.php?error');
+	}
 
 	// verify that this user is assigned to this server
 	if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true)))
@@ -49,9 +49,8 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	$query->delete();
 
 	// update server in database
-	list($encrypted, $iv) = explode('.', $_GET['id']);
-	$_perms = json_decode($row['subusers'], true);
-	unset($_perms[$core->auth->decrypt($encrypted, $iv)]);
+	$_perms = json_decode($core->server->getData('subusers'), true);
+	unset($_perms[$_GET['id']]);
 	$_perms = json_encode($_perms);
 
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));

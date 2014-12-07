@@ -41,9 +41,14 @@ if($core->settings->get('allow_subusers') == 1){
 
 			if($status != "verified"){
 
-				$user = ORM::forTable('account_change')->select('content')->where(array('key' => $core->auth->encrypt($id, $status).".".$status, 'verified' => 0))->findOne();
-				$_perms = json_decode($user->content, true);
-				$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($core->auth->encrypt($id, $status).".".$status), "permissions" => $_perms[$core->server->getData('hash')])));
+				$user = ORM::forTable('account_change')->select('content')->where(array('key' => $status, 'verified' => 0))->findOne();
+
+				if($user) {
+
+					$_perms = json_decode($user->content, true);
+					$users = array_merge($users, array($id => array("status" => "pending", "revoke" => urlencode($status), "permissions" => $_perms[$core->server->getData('hash')]['perms'])));
+
+				}
 
 			}else{
 

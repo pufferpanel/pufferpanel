@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 require_once('../src/core/core.php');
 $error = '';
@@ -31,6 +31,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
  * Lah-de-dah
  */
 $outputMessage = null;
+$exception = false;
 
 /*
  * Changing Account Details
@@ -44,25 +45,43 @@ if(isset($_GET['action'])){
 			$outputMessage = '<div class="alert alert-danger">Unable to verify the token. Please reload the page and try again.</div>';
 		else {
 
-			list($encrypted, $iv) = explode('.', $_POST['token']);
-			if($core->auth->decrypt($encrypted, $iv) != $core->user->getData('email'))
+			$query = ORM::forTable('account_change')->select_many('id', 'verified', 'content')->where(array('key' => $_POST['token'], 'verified' => 0))->findOne();
+
+			if(!$query) {
 				$outputMessage = '<div class="alert alert-danger">The token you entered is invalid.</div>';
-			else {
+			} else {
 
-				$query = ORM::forTable('account_change')->select('content')->where(array('key' => $_POST['token'], 'verified' => 0))->findOne();
+				$_perms = json_decode($query->content, true);
+				$info = ORM::forTable('servers')
+					->select_many('servers.*', 'users.permissions', array('uid' => 'users.id'), 'nodes.ip', array('node_gsd_secret' => 'nodes.gsd_secret'), 'nodes.gsd_listen')
+					->join('users', array('servers.owner_id', '=', 'users.id'))
+					->join('nodes', array('servers.node', '=', 'nodes.id'))
+					->where('hash', key($_perms))
+					->findOne();
 
-				if($query === false)
-					$outputMessage = '<div class="alert alert-danger">The token you entered is invalid.</div>';
-				else {
+				try {
 
-					// build permissions
-					$_perms = json_decode($query->content, true);
+					$request = Unirest::put(
+						'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
+						array(
+							"X-Access-Token" => $info->node_gsd_secret
+						),
+						array(
+							"keys" => json_encode(array(
+								$_perms[$info->hash]['key'] => $_perms[$info->hash]['perms_gsd']
+							))
+						)
+					);
 
-					$info = ORM::forTable('servers')
-							->select_many('servers.subusers', 'servers.hash', 'servers.name', 'users.permissions')
-							->join('users', array('servers.owner_id', '=', 'users.id'))
-							->where('hash', key(json_decode($row['content'], true)))
-							->findOne();
+				} catch(\Exception $e) {
+
+					\Tracy\Debugger::log($e);
+					$exception = true;
+					$outputMessage = '<div class="alert alert-danger">The server management daemon is not responding, we were unable to add your permissions. Please try again later.</div>';
+
+				}
+
+				if($exception === false) {
 
 					$subusers = json_decode($info->subusers, true);
 					unset($subusers[$core->user->getData('email')]);
@@ -72,13 +91,19 @@ if(isset($_GET['action'])){
 					$permissions = (is_array($permissions)) ? $permissions : array();
 					$permissions[$info->hash] = $_perms[$info->hash];
 
-					// set permissions
-					$info->permissions = json_encode($permissions);
+					// set permissions for user
+					$user = ORM::forTable('users')->findOne($info->uid);
+					$user->permissions = json_encode($permissions);
+
+					//set server subusers
 					$info->subusers = json_encode($subusers);
+
+					// expire key
 					$query->verified = 1;
 
 					// save
 					$info->save();
+					$user->save();
 					$query->save();
 
 					$outputMessage = '<div class="alert alert-success">You have been added as a subuser for <em>'.$info->name.'</em>!</div>';
