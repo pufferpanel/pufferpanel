@@ -56,7 +56,7 @@ class Users {
 	 */
 	public function getUser($uuid) {
 
-		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id WHERE users.uuid = :uuid AND servers.active = 1 LIMIT 1", array('uuid' => $uuid))->findOne();
+		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id AND servers.active = 1 WHERE users.uuid = :uuid LIMIT 1", array('uuid' => $uuid))->findOne();
 
 		if(is_null($this->user->id)) {
 			return false;
@@ -113,7 +113,7 @@ class Users {
 
 		$this->data = $data;
 
-		if(count(array_intersect_key(array_flip($__requiredUserFields), $this->data)) !== count($__requiredUserFields)) {
+		if(count(array_intersect_key(array_flip($this->__requiredUserFields), $this->data)) !== count($this->__requiredUserFields)) {
 			return 1;
 		}
 
@@ -130,7 +130,7 @@ class Users {
 		}
 
 		$this->findExisting = ORM::forTable('users')->where_any_is(array(array('username' => $this->data['username']), array('email' => $this->data['email'])))->findOne();
-		if($this->findExisiting) {
+		if($this->findExisting) {
 			return 4;
 		}
 
@@ -179,13 +179,13 @@ class Users {
 
 		foreach($this->data as $key => $value) {
 
-			if(!in_array($key, $__allowedUpdateColumns)) {
+			if(!in_array($key, $this->__allowedUpdateColumns)) {
 				return false;
 			}
 
 			switch($key) {
 
-				case 'username':
+				case 'whmcs_id':
 					if(!is_numeric($this->data['whmcs_id'])) {
 						return false;
 					}

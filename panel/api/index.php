@@ -136,7 +136,7 @@ $klein->with('/users', function() use ($klein, $api) {
 
 		}
 
-		$addUser = $user->createUser($json);
+		$addUser = $users->createUser($json);
 		if(is_numeric($addUser)) {
 
 			$response->code(400);
