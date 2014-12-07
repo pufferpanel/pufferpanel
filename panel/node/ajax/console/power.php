@@ -162,8 +162,9 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 		)
 	);
 
-	if($get->body != "ok")
-		exit($errorMessage." Unable to start server (".$get->raw_body.")");
+	if($get->body != "ok") {
+		exit($errorMessage." Unable to start server (".$get->body->message.")");
+	}
 
 	echo 'ok';
 
