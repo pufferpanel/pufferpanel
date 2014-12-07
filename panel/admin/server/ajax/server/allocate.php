@@ -44,34 +44,34 @@ if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name'])) {
 	Components\Page::redirect('../../view.php?id=1&error=server_name&disp=n_fail&tab=server_sett');
 }
 
-/*
- * Check to see if GSD is online
- */
-if(!fsockopen($core->server->nodeData('ip'), 8003, $errCode, $errStr, 3)) {
-	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=o_fail&tab=server_sett');
-}
-
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 $server->name = $_POST['server_name'];
 $server->max_ram = $_POST['alloc_mem'];
 $server->disk_space = $_POST['alloc_disk'];
+//$server->cpu_limit = $_POST['cpu_limit'];
 $server->save();
 
 /*
  * Build the Data
  */
-$request = Unirest::put(
-	"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
-	array(
-		"X-Access-Token" => $core->server->nodeData('gsd_secret')
-	),
-	array(
-		"variables" => json_encode(array(
-			"-jar" => $core->server->getData('server_jar').".jar",
-			"-Xmx" => $_POST['alloc_mem']."M"
-		))
-	)
-);
+try {
+
+	$request = Unirest::put(
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+		array(
+			"X-Access-Token" => $core->server->nodeData('gsd_secret')
+		),
+		array(
+			"variables" => json_encode(array(
+				"-jar" => $core->server->getData('server_jar').".jar",
+				"-Xmx" => $_POST['alloc_mem']."M"
+			))
+		)
+	);
+
+} catch(\Exception $e) {
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=o_fail&tab=server_sett');
+}
 
 Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&tab=server_sett');
 ?>

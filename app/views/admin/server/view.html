@@ -98,20 +98,28 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="form-group col-6 nopad">
+						<div class="form-group col-4 nopad">
 							<label for="alloc_mem" class="control-label">Allocate RAM</label>
 							<div class="input-group">
 								<input type="text" autocomplete="off" name="alloc_mem" value="{{ server.max_ram }}" class="form-control" />
 								<span class="input-group-addon">MB</span>
 							</div>
 						</div>
-						<div class="form-group col-6 nopad-right">
+						<div class="form-group col-4 nopad-right">
 							<label for="alloc_disk" class="control-label">Disk Space</label>
 							<div class="input-group">
 								<input type="text" name="alloc_disk" value="{{ server.disk_space }}" class="form-control" />
 								<span class="input-group-addon">MB</span>
 							</div>
 						</div>
+						<div class="form-group col-4 nopad-right">
+							<label for="cpu_limit" class="control-label">CPU Limit</label>
+							<div class="input-group">
+								<input type="text" name="cpu_limit" disabled="disabled" value="{{ server.cpu_limit }}" class="form-control" />
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+						<div class="row"><p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p></div>
 					</div>
 					<input type="hidden" name="sid" value="{{ get.id }}" />
 					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
