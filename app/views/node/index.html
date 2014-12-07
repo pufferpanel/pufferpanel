@@ -34,7 +34,7 @@
 <div class="col-9">
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
-		{% if permission.console.view == true %}<li><a href="#console" data-toggle="tab">Control Server</a></li>{% endif %}
+		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
 	<div class="alert alert-danger" id="socket_error" style="display:none;"><i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.</div>
 	<div class="tab-content">
@@ -83,40 +83,38 @@
 				</table>
 			</div>
 		</div>
-		{% if permission.console.view == true %}
-			<div class="tab-pane" id="console">
-				<div class="col-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
-				</div>
-				<div class="col-6">
-					<hr />
-					{% if permission.console.commands == true %}
-						<form action="#" method="post" id="console_command">
-							<fieldset>
-								<div class="input-group">
-									<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ lang.node_console_command_help }}" />
-									<span class="input-group-btn">
-										<button id="sending_command" class="btn btn-primary">&rarr;</button>
-									</span>
-								</div>
-							</fieldset>
-						</form>
-						<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-					{% endif %}
-				</div>
-				<div class="col-6" style="text-align:center;">
-					<hr />
-					{% if permission.console.power == true %}
-						<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
-						<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
-						<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
-						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-						<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
-						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
-					{% endif %}
-				</div>
+		<div class="tab-pane" id="console">
+			<div class="col-12">
+				<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
 			</div>
-		{% endif %}
+			<div class="col-6">
+				<hr />
+				{% if permission.console.commands == true %}
+					<form action="#" method="post" id="console_command">
+						<fieldset>
+							<div class="input-group">
+								<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ lang.node_console_command_help }}" />
+								<span class="input-group-btn">
+									<button id="sending_command" class="btn btn-primary">&rarr;</button>
+								</span>
+							</div>
+						</fieldset>
+					</form>
+					<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+				{% endif %}
+			</div>
+			<div class="col-6" style="text-align:center;">
+				<hr />
+				{% if permission.console.power == true %}
+					<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
+					<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
+					<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
+					<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
+					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+				{% endif %}
+			</div>
+		</div>
 	</div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
