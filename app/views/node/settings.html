@@ -28,22 +28,22 @@
 {% block content %}
 <div class="col-9">
 	<ul class="nav nav-tabs" id="config_tabs">
-		{% if permission.manage.rename.view == true %}<li class="active"><a href="#server_sett" data-toggle="tab">{{ lang.string_modpacks }}</a></li>{% endif %}
-		{% if permission.manage.ftp.view == true %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }}</a></li>{% endif %}
+		{% if permission.manage.rename.view == true %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
+		{% if permission.manage.ftp.view == true %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }} Information</a></li>{% endif %}
 	</ul>
 	<div class="tab-content">
 		{% if permission.manage.rename.view == true %}
 			<div class="tab-pane active" id="server_sett">
-				<br>
-				<h3 class="nopad">{{ lang.node_settings_modpack_modpack_h1 }}</h3><hr />
-				<div class="row">
-					<div class="alert alert-danger">
-						<i class="fa fa-warning"></i> Online modpack management has been disabled in this version of PufferPanel.
-					</div>
-				</div>
 				<div class="row">
 					<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
 					{% if permission.manage.rename.jar == true %}
+						{% if (get.code is defined) and (get.code != 1) %}
+							{% if get.code == 200 %}
+								<div class="alert alert-success">Your server jarfile name as been updated successfully.</div>
+							{% else %}
+								<div class="alert alert-danger">We encountered an error when trying to update your server jarfile name. [Response: HTTP/1.1 {{ get.code }}]</div>
+							{% endif %}
+						{% endif %}
 						<div class="well">
 							<form action="ajax/settings/jarname.php" method="post">
 								<fieldset>
