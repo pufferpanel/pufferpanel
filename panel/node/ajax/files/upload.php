@@ -102,12 +102,14 @@ if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 	try {
 
 		$filesystem->write(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
+		unlink($uploadPath.$_POST['flowFilename']);
 		http_response_code(200);
 
 	} catch(\Exception $e) {
 
 		http_response_code(500);
 		Tracy\Debugger::log($e);
+		unlink($uploadPath.$_POST['flowFilename']);
 		exit('unable to write file to server.');
 
 	}
