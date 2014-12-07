@@ -114,22 +114,13 @@ class Email {
 
 					list($name, $domain) = explode('@', $this->settings->get('sendmail_email'));
 
-					$ch = curl_init();
-					curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/'.$domain.'/messages');
-					curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-					curl_setopt($ch, CURLOPT_USERPWD, 'api:'.$this->settings->get('mailgun_api_key'));
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 0);
-					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-					curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+                    $mail = new \Mailgun\Mailgun($this->settings->get('mailgun_api_key'));
+                    $mail->sendMessage($domain, array(
 						'from' => $this->settings->get('company_name').' <'.$this->settings->get('sendmail_email').'>',
 						'to' => $email.' <'.$email.'>',
 						'subject' => $subject,
 						'html' => $this->message
 					));
-
-					curl_exec($ch);
-
-					curl_close($ch);
 
 				}
 			else if($this->getDispatchSystem == 'sendgrid')

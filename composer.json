@@ -8,12 +8,13 @@
         "flowjs/flow-php-server": "dev-master",
         "j4mie/idiorm": "1.5.1",
         "klein/klein": "2.1.*",
-        "league/flysystem": "0.6.*@dev",
+        "league/flysystem": "0.5.12",
     	"mandrill/mandrill": "1.0.52",
         "mashape/unirest-php" : "1.2.1",
     	"sendgrid/sendgrid": "2.0.6",
     	"tracy/tracy": "2.2.*",
         "twig/twig": "1.*",
-        "znarkus/postmark": "dev-master"
+        "znarkus/postmark": "dev-master",
+        "mailgun/mailgun-php": "~1.7.2"
     }
 }
