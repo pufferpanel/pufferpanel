@@ -53,7 +53,7 @@ if(isset($_GET['action'])){
 
 				$_perms = json_decode($query->content, true);
 				$info = ORM::forTable('servers')
-					->select_many('servers.*', 'users.permissions', array('uid' => 'users.id'), 'nodes.ip', array('node_gsd_secret' => 'nodes.gsd_secret'), 'nodes.gsd_listen')
+					->select_many('servers.*', 'users.permissions', 'nodes.ip', array('node_gsd_secret' => 'nodes.gsd_secret'), 'nodes.gsd_listen')
 					->join('users', array('servers.owner_id', '=', 'users.id'))
 					->join('nodes', array('servers.node', '=', 'nodes.id'))
 					->where('hash', key($_perms))
@@ -92,7 +92,7 @@ if(isset($_GET['action'])){
 					$permissions[$info->hash] = $_perms[$info->hash];
 
 					// set permissions for user
-					$user = ORM::forTable('users')->findOne($info->uid);
+					$user = ORM::forTable('users')->findOne($core->user->getData('id'));
 					$user->permissions = json_encode($permissions);
 
 					//set server subusers
