@@ -39,8 +39,16 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 /*
 * Has Installer been run?
 */
-if(!file_exists(__DIR__.'/configuration.php'))
-	exit("Installer has not yet been run. Please navigate to the installer and run through the steps to use this software.");
+if(!file_exists(__DIR__.'/configuration.php')) {
+
+	if(!headers_sent()){
+		header('Location: '.urldecode('install/install'));
+		exit();
+	} else {
+		exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
+	}
+
+}
 
 /*
  * Define Directories
