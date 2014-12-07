@@ -53,8 +53,8 @@ if($core->settings->get('allow_subusers') == 1){
 			}else{
 
 				$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
-				$user = json_decode($user->permissions, true);
-				$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')])));
+				$_perms = json_decode($user->permissions, true);
+				$users = array_merge($users, array($user->email => array("status" => "verified", "id" => $user->uuid, "permissions" => $_perms[$core->server->getData('hash')]['perms'])));
 
 			}
 

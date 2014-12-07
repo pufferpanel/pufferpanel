@@ -48,7 +48,7 @@ $user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid'
 echo $twig->render(
 		'node/users/view.html', array(
 			'server' => $core->server->getData(),
-			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]),
+			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]['perms']),
 			'user' => array('email' => $user->email),
 			'xsrf' => $core->auth->XSRF(),
 			'allow_subusers' => $core->settings->get('allow_subusers'),
