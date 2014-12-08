@@ -24,7 +24,7 @@ require_once('../../../../src/core/core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php?login');
 
-setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/');
 
 if(!isset($_POST['smail_method'], $_POST['sendmail_email'], $_POST['postmark_api_key'], $_POST['mandrill_api_key'], $_POST['mailgun_api_key'], $_POST['sendgrid_api_key']))
 	Components\Page::redirect('../email.php?error=smail_method|sendmail_email|postmark_api_key|mandrill_api_key|mailgun_api_key|sendgrid_api_key');

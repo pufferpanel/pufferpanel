@@ -26,7 +26,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 }
 
 //Cookies :3
-setcookie("__TMP_pp_admin_newnode", json_encode($_POST), time() + 10, '/', $core->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_newnode", json_encode($_POST), time() + 30, '/');
 
 /*
  * Agree Warning

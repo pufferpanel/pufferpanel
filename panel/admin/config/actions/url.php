@@ -24,7 +24,7 @@ require_once('../../../../src/core/core.php');
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) !== true)
 	Components\Page::redirect('../../../index.php');
 
-setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_updateglobal", json_encode($_POST), time() + 30, '/');
 
 if(!isset($_POST['main_url'], $_POST['master_url'], $_POST['assets_url']))
 	Components\Page::redirect('../urls.php?error=main_url|master_url|assets_url');
