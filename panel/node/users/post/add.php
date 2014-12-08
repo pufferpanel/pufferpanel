@@ -56,7 +56,7 @@ if(!$findUser) {
 	$account = ORM::forTable('account_change')->create();
 	$account->set(array(
 		'type' => 'user_register',
-		'content' => null,
+		'content' => 'null',
 		'key' => $registerKey,
 		'time' => time()
 	));
