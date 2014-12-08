@@ -41,7 +41,7 @@ After running composer we need to setup the other folders for the installer so t
     [$]~ chmod -R 0777 panel/install/install
     [$]~ chmod -R 0777 src/core
     [$]~ chmod -R 0777 src/logs
-    [$]~ chmod -R 0777 src/uploads
+    [$]~ chmod -R 0777 src/cache
 
 Configuring MySQL
 -----------------

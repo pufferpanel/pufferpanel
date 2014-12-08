@@ -63,7 +63,7 @@ try {
 }
 
 $tempDir = '/tmp/'.$core->server->getData('hash');
-$uploadPath = SRC_DIR . 'uploads/' . $core->server->getData('hash') . '/';
+$uploadPath = SRC_DIR . 'cache/uploads/' . $core->server->getData('hash') . '/';
 
 if(!is_dir($tempDir)) {
 	mkdir($tempDir, 0777);

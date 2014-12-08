@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM, \Unirest, \League\Flysystem\Filesystem as Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
 
 require_once('../../../src/core/core.php');
 
@@ -38,18 +38,31 @@ if(isset($_GET['dir']))
 
 if(isset($_GET['do']) && $_GET['do'] == 'download'){
 
+	// prevent output buffering
+	set_time_limit(0);
+	if(ob_get_level()) {
+		ob_end_clean();
+	}
+
 	if($core->user->hasPermission('files.download') !== true)
 		Components\Page::redirect('../index.php?error=no_permission');
 
-	$url = "http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file'];
-	$context = stream_context_create(array(
-		"http" => array(
-			"method" => "GET",
-			"header" => 'X-Access-Token: '.$core->server->getData('gsd_secret'),
-			"timeout" => 3
-		)
+	$downloadPath = SRC_DIR.'cache/downloads/'.$core->server->getData('hash');
+	if(!is_dir($downloadPath)) {
+		mkdir($downloadPath, 0777, true);
+	}
+
+	$fp = fopen($downloadPath.'/'.$_GET['file'], 'w+');
+	$ch = curl_init("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file']);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+	curl_setopt($ch, CURLOPT_FILE, $fp);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'X-Access-Token: '.$core->server->getData('gsd_secret')
 	));
-	$content = json_decode(file_get_contents($url, 0, $context), true);
+	curl_exec($ch); // get curl response
+	curl_close($ch);
+	fclose($fp);
 
 	/*
 	* Download a File
@@ -60,9 +73,9 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	header("Content-Type: application/octet-stream");
 	header("Content-Description: File Transfer");
 	header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
-	header("Content-Length: ".mb_strlen($content['contents']));
+	header("Content-Length: ".filesize($downloadPath.'/'.$_GET['file']));
 
-	print($content['contents']);
+	readfile($downloadPath.'/'.$_GET['file']);
 	exit();
 
 }
