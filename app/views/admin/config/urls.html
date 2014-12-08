@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="col-9">
+	{{ output|raw }}
 	<h3>URL Settings</h3><span class="label label-warning">Trailing Slashes Required</span><hr />
 	<form action="actions/url.php" method="POST">
 		<fieldset>

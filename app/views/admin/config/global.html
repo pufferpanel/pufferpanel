@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="col-9">
-<h3>Company Name</h3><hr />
+{{ output|raw }}
+<h3>Company Name</h3><hr />	
 	<form action="actions/cname.php" method="POST">
 		<fieldset>
 			<div class="input-group">

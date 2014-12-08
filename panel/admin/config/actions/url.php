@@ -44,6 +44,6 @@ UPDATE acp_settings SET setting_val = CASE setting_ref
 END
 ");
 
-Components\Page::redirect('../urls.php');
+Components\Page::redirect('../urls.php?success=true');
 
 ?>

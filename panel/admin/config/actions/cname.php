@@ -31,6 +31,6 @@ $query = ORM::forTable('acp_settings')->where('setting_ref', 'company_name')->fi
 $query->setting_val = $_POST['company_name'];
 $query->save();
 
-Components\Page::redirect('../global.php');
+Components\Page::redirect('../global.php?success=true');
 
 ?>

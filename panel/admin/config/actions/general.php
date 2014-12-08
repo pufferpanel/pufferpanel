@@ -42,6 +42,6 @@ END
     'allow_subusers' => (!in_array('allow_subusers', $_POST['permissions'])) ? 0 : 1
 ));
 
-Components\Page::redirect('../global.php');
+Components\Page::redirect('../global.php?success=true');
 
 ?>

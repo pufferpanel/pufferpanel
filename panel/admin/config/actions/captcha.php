@@ -34,5 +34,5 @@ $update = ORM::forTable('acp_settings')
 				'priv' => $_POST['priv_key']
 			));
 
-Components\Page::redirect('../captcha.php');
+Components\Page::redirect('../captcha.php?success=true');
 ?>

@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="col-9">
+	{{ output|raw }}
 	<h3>reCAPTCHA Settings</h3><hr />
 	<form action="actions/captcha.php" method="POST">
 		<fieldset>

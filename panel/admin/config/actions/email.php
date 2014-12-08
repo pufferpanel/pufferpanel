@@ -64,6 +64,6 @@ END
 	'sendgrid_api_key' => $_POST['sendgrid_api_key'],
 ));
 
-Components\Page::redirect('../email.php');
+Components\Page::redirect('../email.php?success=true');
 
 ?>
