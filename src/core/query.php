@@ -53,6 +53,23 @@ class Query {
 	}
 
 	/**
+	 * Checks if the GSD server is runnning.
+	 *
+	 * @param string $ip The IP to query
+	 * @param int $port The port to query
+	 * @return bool
+	 */
+	public function avaliable($ip, $port = 8003) {
+
+		if(!@fsockopen($ip, $port, $num, $error, 3)) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
 	 * Gets the status of any specified server given an IP address.
 	 *
 	 * @param string $ip The IP address of the main GSD server to check aganist.

@@ -25,16 +25,37 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 }
 
-if(!isset($_GET['id']))
+if(!isset($_GET['id'])) {
 	Components\Page::redirect('list.php');
+}
 
 /*
  * Select Node Information
  */
 $node = ORM::forTable('nodes')->findOne($_GET['id']);
 
-if($node === false)
-	Components\Page::redirect('list.php?error=no_node');
+if(!$node) {
+
+	if(!isset($_POST['gsd_reset'])) {
+		Components\Page::redirect('list.php?error=no_node');
+	} else {
+		exit('Invalid data provided to function.');
+	}
+
+}
+
+if(isset($_POST['gsd_reset'])) {
+
+	if(!$core->gsd->avaliable($node->ip, $node->gsd_listen)) {
+		$node->gsd_secret = $core->auth->generateUniqueUUID('nodes', 'gsd_secret');
+		$node->save();
+		exit($node->gsd_secret);
+	} else {
+		exit('You must stop GSD before performing this command.');
+	}
+
+}
+
 
 echo $twig->render(
 	'admin/node/view.html', array(

@@ -21,6 +21,7 @@
 			{% endif %}
 		</div>
 	{% endif %}
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The GSD Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Connection Information</h3><hr />
@@ -92,9 +93,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label">GSD Token</label>
+						<label class="control-label">GSD Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 						<div>
-							<input type="text" readonly="readonly" value="{{ server.gsd_secret }}" class="form-control" />
+							<input type="text" readonly="readonly" id="form_gsd_token" value="{{ server.gsd_secret }}" class="form-control" />
 						</div>
 					</div>
 					<div class="row">
@@ -189,6 +190,22 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		setActiveOption('server-find');
+		$("#reset_token").click(function(e){
+			e.preventDefault();
+			$.ajax({
+				type: "POST",
+				url: "ajax/server/token.php?id={{ get.id }}",
+				data: { gsd_reset: true},
+				success: function(data) {
+					if(data.indexOf(' ') > 0) {
+						alert(data);
+					} else {
+						$("#reset_token_warn").show();
+						$("#form_gsd_token").val(data);
+					}
+				}
+			});
+		});
 		if($.urlParam('error') != null){
 			var field = $.urlParam('error');
 			var exploded = field.split('|');
