@@ -162,6 +162,8 @@ if(file_exists('install.lock'))
 									</div>
 								</div>';
 
+							$continue = false;
+
 						}
 
 						/* Check for Required Functions */
