@@ -163,6 +163,7 @@ class Nodes {
 		$this->gsd_listen = (array_key_exists('gsd_listen', $data) && is_numeric($data['gsd_listen'])) ? $data['gsd_listen'] : 8003;
 		$this->gsd_console = (array_key_exists('gsd_console', $data) && is_numeric($data['gsd_console'])) ? $data['gsd_console'] : 8031;
 		$this->gsd_server_dir = (array_key_exists('gsd_server_dir', $data) && preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $data['gsd_server_dir'])) ? $data['gsd_server_dir'] : '/home/';
+		$this->gsd_secret = $this->generateUniqueUUID('nodes', 'gsd_secret');
 
 		// Add to Database
 		$this->insert = ORM::forTable('nodes')->create();
@@ -170,7 +171,7 @@ class Nodes {
 			'node' => $this->node,
 			'fqdn' => $this->fqdn,
 			'ip' => $this->ip,
-			'gsd_secret' => $this->generateUniqueUUID('nodes', 'gsd_secret'),
+			'gsd_secret' => $this->gsd_secret,
 			'gsd_listen' => $this->gsd_listen,
 			'gsd_console' => $this->gsd_console,
 			'gsd_server_dir' => $this->gsd_server_dir,
@@ -181,6 +182,7 @@ class Nodes {
 
 		return array(
 			"id" => $this->insert->id(),
+			"token" => $this->gsd_secret,
 			"node" => $this->node
 		);
 
