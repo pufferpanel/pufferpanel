@@ -146,38 +146,40 @@
 		var memoryChartData = {
 			labels: ["", "", "", "", "", "", "", "", "", ""],
 			datasets: [{
-				label: "Memory",
-				fillColor: "#008cba",
-				strokeColor: "#00b2ed",
-				highlightFill: "#008cba",
-				highlightStroke: "#00b2ed",
+				fillColor : "rgba(239,241,245,1)",
+				strokeColor : "rgba(0,0,0,0)",
+				highlightFill: "rgba(230,233,240,1)",
 				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			}]
 		};
 		var cpuChartData = {
 			labels: ["", "", "", "", "", "", "", "", "", ""],
 			datasets: [{
-				label: "CPU",
-				fillColor: "#008cba",
-				strokeColor: "#00b2ed",
-				highlightFill: "#008cba",
-				highlightStroke: "#00b2ed",
+				fillColor : "rgba(239,241,245,1)",
+				strokeColor : "rgba(0,0,0,0)",
+				highlightFill: "rgba(230,233,240,1)",
 				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			}]
 		};
-		var memoryChart = new Chart(ctx).Bar(memoryChartData, {
+		memoryChart = new Chart(ctx).Bar(memoryChartData, {
+			animation: true,
+			showScale: true,
+			barShowStroke: false,
+			scaleOverride: false,
 			tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %},
-			barShowStroke: true,
+			barValueSpacing: 2,
 			barStrokeWidth: 1,
-			scaleShowGridLines: false,
-			barValueSpacing: 2
+			scaleShowGridLines: false
 		});
-		var cpuChart = new Chart(cty).Bar(cpuChartData, {
+		cpuChart = new Chart(cty).Bar(cpuChartData, {
+			animation: true,
+			showScale: true,
+			barShowStroke: false,
+			scaleOverride: false,
 			tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %},
-			barShowStroke: true,
+			barValueSpacing: 2,
 			barStrokeWidth: 1,
-			scaleShowGridLines: false,
-			barValueSpacing: 2
+			scaleShowGridLines: false
 		});
 		socket.io.on('connect_error', function(err) {
 			$("#socket_error:hidden").show();
