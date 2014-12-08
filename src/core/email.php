@@ -36,12 +36,12 @@ class Email {
 	 *
 	 * @return void
 	 */
-	public function __construct()
-		{
+	public function __construct() {
 
 			$this->settings = new Settings();
+			$this->masterurl = ($this->settings->get('https') == 1) ? 'https:'.$this->settings->get('master_url') : 'http:'.$this->settings->get('master_url');
 
-		}
+	}
 
 	/**
 	 * Sends an email that has been formatted.
@@ -200,7 +200,7 @@ class Email {
 				{
 
 					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
+					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
 					return $this;
@@ -210,7 +210,7 @@ class Email {
 				{
 
 					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->settings->get('master_url'));
+					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
 
 					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
 					return $this;
@@ -236,7 +236,7 @@ class Email {
 		{
 
 			$this->message = $this->readTemplate($tpl);
-			$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->settings->get('master_url'), date('j/F/Y H:i', time())), $this->message);
+			$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->masterurl, date('j/F/Y H:i', time())), $this->message);
 
 				foreach($data as $key => $val)
 					$this->message  = str_replace('{{ '.$key.' }}', $val, $this->message);
