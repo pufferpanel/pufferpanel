@@ -65,21 +65,30 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
 	$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
 
-	if($user === false)
+	if(!$user) {
 		Components\Page::redirect('../list.php?error');
+	}
 
 	// verify that this user is assigned to this server
-	if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true)))
+	if(!array_key_exists($core->server->getData('hash'), json_decode($user->permissions, true))) {
 		Components\Page::redirect('../list.php?error');
+	}
 
 	// update server in database
 	$_perms = json_decode($core->server->getData('subusers'), true);
-	unset($_perms[$row['id']]);
+	unset($_perms[$user->id]);
 	$_perms = json_encode($_perms);
 
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 	$server->subusers = $_perms;
 	$server->save();
+
+	// update user
+	$_uperms = json_decode($user->permissions);
+	unset($_uperms[$core->server->getData('hash')]);
+
+	$user->permissions = json_encode($_uperms);
+	$user->save();
 
 	Components\Page::redirect('../list.php?revoked');
 
