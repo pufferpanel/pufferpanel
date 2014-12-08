@@ -25,12 +25,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 
 if(isset($_GET['success']) && $_GET['success']) {
-	$outputMessage = '<div class="alert alert-success">URL settings saved</div>';
+	$outputMessage = '<div class="alert alert-success">URL settings saved.</div>';
 }
 
 echo $twig->render(
 	'admin/config/urls.html', array(
-		'output' => $outputMessage,
+		'output' => (isset($outputMessage)) ? $outputMessage : null,
 		'settings' => $core->settings->get(),
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
