@@ -25,7 +25,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../../index.php');
 }
 
-setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/', $core->settings->get('cookie_website'));
+setcookie("__TMP_pp_admin_newserver", json_encode($_POST), time() + 30, '/');
 
 /*
 * Set Values
