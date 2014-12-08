@@ -22,6 +22,7 @@ use \ORM, \Flow, \Tracy, \League\Flysystem\Filesystem as Filesystem, \League\Fly
 require_once '../../../../src/core/core.php';
 
 // prevent output buffering
+set_time_limit(0);
 if(ob_get_level()) {
 	ob_end_clean();
 }
