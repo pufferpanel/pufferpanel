@@ -47,23 +47,26 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	if($core->user->hasPermission('files.download') !== true)
 		Components\Page::redirect('../index.php?error=no_permission');
 
+	$_GET['file'] = str_replace("../", "", $_GET['file']);
 	$downloadPath = SRC_DIR.'cache/downloads/'.$core->server->getData('hash');
 	if(!is_dir($downloadPath)) {
 		mkdir($downloadPath, 0777, true);
 	}
 
 	$fp = fopen($downloadPath.'/'.$_GET['file'], 'w+');
-	$ch = curl_init("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_GET['file']);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+	$ch = curl_init("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$_GET['file']);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 	curl_setopt($ch, CURLOPT_FILE, $fp);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		'X-Access-Token: '.$core->server->getData('gsd_secret')
 	));
-	curl_exec($ch); // get curl response
+	curl_exec($ch);
 	curl_close($ch);
+	fflush($fp);
 	fclose($fp);
 
+	clearstatcache();
 	/*
 	* Download a File
 	*/
@@ -72,10 +75,12 @@ if(isset($_GET['do']) && $_GET['do'] == 'download'){
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Content-Type: application/octet-stream");
 	header("Content-Description: File Transfer");
-	header('Content-Disposition: attachment; filename="'.$_GET['file'].'"');
+	header("Content-Transfer-Encoding: binary");
+	header('Content-Disposition: attachment; filename="'.basename($_GET['file']).'"');
 	header("Content-Length: ".filesize($downloadPath.'/'.$_GET['file']));
 
 	readfile($downloadPath.'/'.$_GET['file']);
+	unlink($downloadPath.'/'.$_GET['file']);
 	exit();
 
 }
