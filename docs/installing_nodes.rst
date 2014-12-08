@@ -50,7 +50,7 @@ Install Game Server Daemon
 	[$]~ git clone https://github.com/PufferPanel/cpulimit.git
 	[$]~ cp cpulimit/cpulimit /usr/bin
 
-This will download all of the files necessary and place them into the correct directory. To checkout the lastest version of ``GSD`` please `<https://github.com/PufferPanel/gsd/releases> check the releases`_ and input the version that the release is titled. For example, ``0.1.3``.
+This will download all of the files necessary and place them into the correct directory. To checkout the lastest version of ``GSD`` please `check the releases <https://github.com/PufferPanel/gsd/releases>`_ and input the version that the release is titled. For example, ``0.1.3``.
 
 You will need to make ``config.json`` and it should look similar to the code below. Please make sure to update the ```authurl`` value to link to your panel correctly. Update ``YOUR_NODE_TOKEN_HERE`` to be the code that is displayed in PufferPanel for your node, it is called ``gsd_secret`` in the panel.
 
