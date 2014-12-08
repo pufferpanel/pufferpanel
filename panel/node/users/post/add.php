@@ -48,15 +48,14 @@ if(empty($_POST['permissions'])) {
 /*
  * Does user exist already? If not we need to have them register first.
  */
-$iv = $core->auth->generate_iv();
-$registerKey = $core->auth->encrypt($_POST['email'], $iv).".".$iv;
+$registerKey = $core->auth->keygen(32);
 $findUser = ORM::forTable('users')->where('email', $_POST['email'])->findOne();
 if(!$findUser) {
 
 	$account = ORM::forTable('account_change')->create();
 	$account->set(array(
 		'type' => 'user_register',
-		'content' => 'null',
+		'content' => $_POST['email'],
 		'key' => $registerKey,
 		'time' => time()
 	));

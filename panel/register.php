@@ -25,14 +25,24 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD'] === 'POST'){
 
-	if(!isset($_POST['token']))
+	if(!isset($_POST['token'])) {
 		Components\Page::redirect('register.php?error=token');
-	else
-		list($encrypted, $iv) = explode('.', $_POST['token']);
+	}
 
 	/* XSRF Check */
 	if($core->auth->XSRF(@$_POST['xsrf']) !== true)
-		Components\Page::redirect('index.php?error=xsrf&token='.urlencode($_POST['token']));
+		Components\Page::redirect('register.php?error=xsrf&token='.urlencode($_POST['token']));
+
+	$query = ORM::forTable('account_change')
+		->where(array(
+			'type' => 'user_register',
+			'key' => $_POST['token'],
+			'verified' => 0
+		))->findOne();
+
+	if(!$query) {
+		Components\Page::redirect('register.php?error=t_fail&token='.$_POST['token']);
+	}
 
 	if(!preg_match('/^[\w-]{4,35}$/', $_POST['username']))
 		Components\Page::redirect('register.php?error=u_fail&token='.urlencode($_POST['token']));
@@ -40,31 +50,20 @@ if(isset($_GET['do']) && $_GET['do'] == 'register' && $_SERVER['REQUEST_METHOD']
 	if(strlen($_POST['password']) < 8 || $_POST['password'] != $_POST['password_2'])
 		Components\Page::redirect('register.php?error=p_fail&token='.urlencode($_POST['token']));
 
-	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $core->auth->decrypt($encrypted, $iv))))->findOne();
+	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $query->content)))->findOne();
 	if($user) {
 		Components\Page::redirect('register.php?error=a_fail&token='.$_POST['token']);
-	}
-
-	$query = ORM::forTable('account_change')
-			->where(array(
-				'type' => 'user_register',
-				'key' => $_POST['token'],
-				'verified' => 0
-			))->findOne();
-
-	if(!$query) {
-		Components\Page::redirect('register.php?error=t_fail&token='.$_POST['token']);
 	}
 
 	$user = ORM::forTable('users')->create();
 	$user->set(array(
 		'uuid' => $core->auth->gen_UUID(),
 		'username' => $_POST['username'],
-		'email' => $core->auth->decrypt($encrypted, $iv),
+		'email' => $query->content,
 		'password' => $core->auth->hash($_POST['password']),
 		'permissions' => null,
 		'language' => $core->settings->get('default_language'),
-		'time' => time()
+		'register_time' => time()
 	));
 	$user->save();
 
