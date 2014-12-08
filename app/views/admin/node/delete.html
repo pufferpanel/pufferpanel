@@ -1,0 +1,44 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Add a New Node{% endblock %}
+
+{% block content %}
+<div class="col-9">
+    <h3 class="nopad">Delete Node</h3><hr />
+    {{ output|raw }}
+    <form action="ajax/delete/delete.php" method="POST">
+	<fieldset>
+	    <div class="well">
+		<div class="row">
+		    <div class="form-group col-6 nopad">
+			<div class="alert alert-warning">Only nodes which have no servers can be deleted</div>
+			<label for="server_name" class="control-label">Server Node</label>
+			<div>
+			    <select name="node" id="getNode" class="form-control">
+				{% for node in nodes %}
+				<option value="{{ node.id }}">{{ node.node }}</option>
+				{% endfor %}
+			    </select>
+			</div>
+		    </div>
+		</div>
+	    </div>
+	    <div class="alert alert-danger"><input type="checkbox" name="read_warning" /> I understand deleting a node is non-reversible</div>
+	    <input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
+	</fieldset>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $(document).ready(function () {
+	$("input[name='read_warning']").click(function () {
+	    if ($("input[name='read_warning']").is(":checked"))
+		$("#disable_complete").removeClass("disabled");
+	    else
+		$("#disable_complete").addClass("disabled");
+	});
+    });
+</script>
+{% endblock %}
