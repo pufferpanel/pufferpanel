@@ -37,12 +37,16 @@ foreach($_POST as $id => $val)
 
 $query = ORM::forTable('acp_settings')->rawExecute("
 UPDATE acp_settings SET setting_val = CASE setting_ref
-	WHEN 'main_website' THEN '".$_POST['main_url']."'
-	WHEN 'master_url' THEN '".$_POST['master_url']."'
-	WHEN 'assets_url' THEN '".$_POST['assets_url']."'
+	WHEN 'main_website' THEN :main_url
+	WHEN 'master_url' THEN :master_url
+	WHEN 'assets_url' THEN :assets_url
 	ELSE setting_val
 END
-");
+", array(
+	'main_url' => $_POST['main_url'],
+	'master_url' => $_POST['master_url'],
+	'assets_url' => $_POST['assets_url']
+));
 
 Components\Page::redirect('../urls.php?success=true');
 
