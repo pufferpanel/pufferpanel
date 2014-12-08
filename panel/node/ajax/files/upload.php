@@ -21,6 +21,11 @@ use \ORM, \Flow, \Tracy, \League\Flysystem\Filesystem as Filesystem, \League\Fly
 
 require_once '../../../../src/core/core.php';
 
+// prevent output buffering
+if(ob_get_level()) {
+	ob_end_clean();
+}
+
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
 	http_response_code(403);
 	return 'not authenticated.';
@@ -97,11 +102,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 
-	$stream = file_get_contents($uploadPath.$_POST['flowFilename']);
-
 	try {
 
-		$filesystem->write(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
+		$stream = fopen($uploadPath.$_POST['flowFilename'], 'r');
+		$filesystem->writeStream(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
 		unlink($uploadPath.$_POST['flowFilename']);
 		http_response_code(200);
 
@@ -110,7 +114,7 @@ if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 		http_response_code(500);
 		Tracy\Debugger::log($e);
 		unlink($uploadPath.$_POST['flowFilename']);
-		exit('unable to write file to server.');
+		exit("unable to write file to server.");
 
 	}
 
