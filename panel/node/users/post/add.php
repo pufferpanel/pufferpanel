@@ -66,15 +66,15 @@ if(!$findUser) {
 foreach($_POST['permissions'] as $id => $permission) {
 
 	if(in_array($permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', $_POST['permissions'])) {
-		$_POST['permissions'] = array_merge($_POST['permissions'], array("files.view");
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("files.view"));
 	}
 
 	if(in_array($permission, array('manage.rename.jar') && !in_array('manage.rename.view', $_POST['permissions'])) {
-		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.rename.view");
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.rename.view"));
 	}
 
 	if(in_array($permission, array('manage.ftp.details', 'manage.ftp.password') && !in_array('manage.ftp.view', $_POST['permissions'])) {
-		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.ftp.view");
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.ftp.view"));
 	}
 
 }
