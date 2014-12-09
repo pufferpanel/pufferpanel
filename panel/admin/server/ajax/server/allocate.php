@@ -33,8 +33,8 @@ $core->user->rebuildData($core->server->getData('owner_id'));
 /*
  * Validate Disk & Memory
  */
-if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['alloc_disk'])) {
-	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|alloc_disk&disp=m_fail&tab=server_sett');
+if(!is_numeric($_POST['alloc_mem']) || !is_numeric($_POST['cpu_limit'])) {
+	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&error=alloc_mem|cpu_limit&disp=m_fail&tab=server_sett');
 }
 
 /*
@@ -47,8 +47,8 @@ if(!preg_match('/^[\w-]{4,35}$/', $_POST['server_name'])) {
 $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 $server->name = $_POST['server_name'];
 $server->max_ram = $_POST['alloc_mem'];
-$server->disk_space = $_POST['alloc_disk'];
-//$server->cpu_limit = $_POST['cpu_limit'];
+//$server->disk_space = $_POST['alloc_disk'];
+$server->cpu_limit = $_POST['cpu_limit'];
 $server->save();
 
 /*
@@ -65,6 +65,9 @@ try {
 			"variables" => json_encode(array(
 				"-jar" => $core->server->getData('server_jar'),
 				"-Xmx" => $_POST['alloc_mem']."M"
+			)),
+			"build" => json_encode(array(
+				"cpu" => (int) $_POST['cpu_limit']
 			))
 		)
 	);
