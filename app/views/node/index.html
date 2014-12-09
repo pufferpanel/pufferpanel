@@ -31,6 +31,9 @@
 
 {% block content %}
 <div class="col-9">
+	{% if (get.error is defined) and (get.error == "no_permission") %}
+		<div class="alert alert-danger">You do not have permission to perform that action!</div>
+	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
