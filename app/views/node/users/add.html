@@ -49,96 +49,100 @@
 					</div>
 				</a>
 				<a href="#" class="list-group-item">
-					<label><input type="checkbox" name="permissions[]" value="files.view"/> View Files</label>
+					<label><input id="toggle_files" type="checkbox" name="permissions[]" value="files.view"/> View Files</label>
 					<p class="list-group-item-text">Gives user permission to view the file listing.</p>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.edit"/> Edit File</label>
-							<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
+					<span id="toggle_files_list" style="display:none;">
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.edit"/> Edit File</label>
+								<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.save"/> Save Modifications</label>
-							<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.save"/> Save Modifications</label>
+								<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
-							<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
+								<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.zip"/> Compress and Decompress Files</label>
-							<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.zip"/> Compress and Decompress Files</label>
+								<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.create"/> Create Files</label>
-							<p class="list-group-item-text">Gives user permission to create files on the server.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.create"/> Create Files</label>
+								<p class="list-group-item-text">Gives user permission to create files on the server.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.upload"/> Upload Files</label>
-							<p class="list-group-item-text">Gives user permission to upload files to the server.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.upload"/> Upload Files</label>
+								<p class="list-group-item-text">Gives user permission to upload files to the server.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="files.delete"/> Delete Files <span class="label label-danger">Danger</span></label>
-							<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="files.delete"/> Delete Files <span class="label label-danger">Danger</span></label>
+								<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
+							</div>
 						</div>
-					</div>
+					</span>
 				</a>
 				<a href="#" class="list-group-item">
-					<label><input type="checkbox" name="permissions[]" value="manage.view"/> View Manager</label>
+					<label><input id="toggle_manage" type="checkbox" name="permissions[]" value="manage.view"/> View Manager</label>
 					<p class="list-group-item-text">Gives user permission to view the server management page.</p>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="manage.rename.view"/> View Server Jar Tab</label>
-							<p class="list-group-item-text">Gives user permission to view the Server Jar Tab.</p>
+					<span id="toggle_manage_list" style="display:none;">
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="manage.rename.view"/> View Server Jar Tab</label>
+								<p class="list-group-item-text">Gives user permission to view the Server Jar Tab.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-2"><br /><br /></div>
-						<div class="col-10">
-							<label><input type="checkbox" name="permissions[]" value="manage.rename.jar"/> Modify Jar File Name</label>
-							<p class="list-group-item-text">Gives user permission modify the jar file name for a server.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-2"><br /><br /></div>
+							<div class="col-10">
+								<label><input type="checkbox" name="permissions[]" value="manage.rename.jar"/> Modify Jar File Name</label>
+								<p class="list-group-item-text">Gives user permission modify the jar file name for a server.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-1"><br /><br /></div>
-						<div class="col-11">
-							<label><input type="checkbox" name="permissions[]" value="manage.ftp.view"/> View FTP Tab</label>
-							<p class="list-group-item-text">Gives user permission to view the FTP tab.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-1"><br /><br /></div>
+							<div class="col-11">
+								<label><input type="checkbox" name="permissions[]" value="manage.ftp.view"/> View FTP Tab</label>
+								<p class="list-group-item-text">Gives user permission to view the FTP tab.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-2"><br /><br /></div>
-						<div class="col-10">
-							<label><input type="checkbox" name="permissions[]" value="manage.ftp.details"/> View FTP Details</label>
-							<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-2"><br /><br /></div>
+							<div class="col-10">
+								<label><input type="checkbox" name="permissions[]" value="manage.ftp.details"/> View FTP Details</label>
+								<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
+							</div>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-2"><br /><br /></div>
-						<div class="col-10">
-							<label><input type="checkbox" name="permissions[]" value="manage.ftp.password"/> Modify FTP Password <span class="label label-danger">Danger</span></label>
-							<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-2"><br /><br /></div>
+							<div class="col-10">
+								<label><input type="checkbox" name="permissions[]" value="manage.ftp.password"/> Modify FTP Password <span class="label label-danger">Danger</span></label>
+								<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+							</div>
 						</div>
-					</div>
+					</span>
 				</a>
 			</div>
 			<div class="form-group">
@@ -158,4 +162,22 @@
 		<div class="alert alert-danger">This function has not been enabled by your host.</div>
 	{% endif %}
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#toggle_manage").click(function() {
+		if($("#toggle_manage").is(":checked")) {
+			$("#toggle_manage_list").slideDown();
+		} else {
+			$("#toggle_manage_list").slideUp();
+		}
+	});
+	$("#toggle_files").click(function() {
+		if($("#toggle_files").is(":checked")) {
+			$("#toggle_files_list").slideDown();
+		} else {
+			$("#toggle_files_list").slideUp();
+		}
+	});
+});
+</script>
 {% endblock %}

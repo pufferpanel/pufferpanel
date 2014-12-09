@@ -63,29 +63,45 @@ if(!$findUser) {
 
 }
 
+foreach($_POST['permissions'] as $id => $permission) {
+
+	if(in_array($permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', $_POST['permissions'])) {
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("files.view");
+	}
+
+	if(in_array($permission, array('manage.rename.jar') && !in_array('manage.rename.view', $_POST['permissions'])) {
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.rename.view");
+	}
+
+	if(in_array($permission, array('manage.ftp.details', 'manage.ftp.password') && !in_array('manage.ftp.view', $_POST['permissions'])) {
+		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.ftp.view");
+	}
+
+}
+
 $gsdPermissions = array("s:console", "s:query");
 foreach($_POST['permissions'] as $id => $permission) {
 
 	switch($permission) {
 
 		case "console.power":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:power"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:power"));
+			break;
 		case "console.command":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:console:command"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:console:command"));
+			break;
 		case "files.view":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:files"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:files"));
+			break;
 		case "files.edit":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:files:get"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:files:get"));
+			break;
 		case "files.save":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:files:put"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:files:put"));
+			break;
 		case "files.zip":
-		$gsdPermissions = array_merge($gsdPermissions, array("s:files:zip"));
-		break;
+			$gsdPermissions = array_merge($gsdPermissions, array("s:files:zip"));
+			break;
 
 	}
 
