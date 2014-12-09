@@ -17,10 +17,10 @@
 </div>
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-	<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
-	<a href="../files/index.php" class="list-group-item">{{ lang.sidebar_files }}</a>
+	{% if permission.console.view == true %}<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>{% endif %}
+	{% if permission.files.view == true %}<a href="../files/index.php" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
 	{% if permission.users.view == true %}<a href="list.php" class="list-group-item active">Manage Subusers</a>{% endif %}
-	<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>
+	{% if permission.manage.view == true %}<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
 </div>
 {% endblock %}
 
