@@ -59,54 +59,60 @@ if(isset($_GET['action'])){
 					->where('hash', key($_perms))
 					->findOne();
 
-				try {
+				$subusers = json_decode($info->subusers, true);
+				if(!array_key_exists($core->user->getData('email'), $subusers)) {
+					$outputMessage = "<div class='alert alert-danger'>You do not have permission to use this key.</div>";
+				} else {
 
-					$request = Unirest::put(
-						'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
-						array(
-							"X-Access-Token" => $info->node_gsd_secret
-						),
-						array(
-							"keys" => json_encode(array(
-								$_perms[$info->hash]['key'] => $_perms[$info->hash]['perms_gsd']
-							))
-						)
-					);
+					try {
 
-				} catch(\Exception $e) {
+						$request = Unirest::put(
+							'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
+							array(
+								"X-Access-Token" => $info->node_gsd_secret
+							),
+							array(
+								"keys" => json_encode(array(
+									$_perms[$info->hash]['key'] => $_perms[$info->hash]['perms_gsd']
+								))
+							)
+						);
 
-					\Tracy\Debugger::log($e);
-					$exception = true;
-					$outputMessage = '<div class="alert alert-danger">The server management daemon is not responding, we were unable to add your permissions. Please try again later.</div>';
+					} catch(\Exception $e) {
 
-				}
+						\Tracy\Debugger::log($e);
+						$exception = true;
+						$outputMessage = '<div class="alert alert-danger">The server management daemon is not responding, we were unable to add your permissions. Please try again later.</div>';
 
-				if($exception === false) {
+					}
 
-					$subusers = json_decode($info->subusers, true);
-					unset($subusers[$core->user->getData('email')]);
-					$subusers[$core->user->getData('id')] = "verified";
+					if($exception === false) {
 
-					$permissions = @json_decode($info->permissions, true);
-					$permissions = (is_array($permissions)) ? $permissions : array();
-					$permissions[$info->hash] = $_perms[$info->hash];
+						unset($subusers[$core->user->getData('email')]);
+						$subusers[$core->user->getData('id')] = "verified";
 
-					// set permissions for user
-					$user = ORM::forTable('users')->findOne($core->user->getData('id'));
-					$user->permissions = json_encode($permissions);
+						$permissions = @json_decode($info->permissions, true);
+						$permissions = (is_array($permissions)) ? $permissions : array();
+						$permissions[$info->hash] = $_perms[$info->hash];
 
-					//set server subusers
-					$info->subusers = json_encode($subusers);
+						// set permissions for user
+						$user = ORM::forTable('users')->findOne($core->user->getData('id'));
+						$user->permissions = json_encode($permissions);
 
-					// expire key
-					$query->verified = 1;
+						//set server subusers
+						$info->subusers = json_encode($subusers);
 
-					// save
-					$info->save();
-					$user->save();
-					$query->save();
+						// expire key
+						$query->verified = 1;
 
-					$outputMessage = '<div class="alert alert-success">You have been added as a subuser for <em>'.$info->name.'</em>!</div>';
+						// save
+						$info->save();
+						$user->save();
+						$query->save();
+
+						$outputMessage = '<div class="alert alert-success">You have been added as a subuser for <em>'.$info->name.'</em>!</div>';
+
+					}
 
 				}
 

@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 require_once('../../../../src/core/core.php');
 
@@ -63,6 +63,10 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
 	$_GET['uid'] = urldecode($_GET['uid']);
 
+	if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData('gsd_listen'))) {
+		Components\Page::redirect('../view.php?id='.$_POST['uuid'].'&error');
+	}
+
 	$user = ORM::forTable('users')->where('uuid', $_GET['uid'])->findOne();
 
 	if(!$user) {
@@ -84,7 +88,30 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 	$server->save();
 
 	// update user
-	$_uperms = json_decode($user->permissions);
+	$_uperms = json_decode($user->permissions, true);
+
+	try {
+
+		$request = Unirest::put(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+			array(
+				"X-Access-Token" => $core->server->nodeData('gsd_secret')
+			),
+			array(
+				"keys" => json_encode(array(
+					$_uperms[$core->server->getData('hash')]['key'] => array()
+				))
+			)
+		);
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$exception = true;
+		$outputMessage = '<div class="alert alert-danger">The server management daemon is not responding, we were unable to add your permissions. Please try again later.</div>';
+
+	}
+
 	unset($_uperms[$core->server->getData('hash')]);
 
 	$user->permissions = json_encode($_uperms);

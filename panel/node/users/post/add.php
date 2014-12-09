@@ -41,6 +41,10 @@ if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 	Components\Page::redirect('../add.php?error=email');
 }
 
+if($_POST['email'] == $core->user->getData('email')) {
+	Components\Page::redirect('../add.php?error=itsyou');
+}
+
 if(empty($_POST['permissions'])) {
 	Components\Page::redirect('../add.php?error=permissions_empty');
 }
