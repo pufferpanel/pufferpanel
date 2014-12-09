@@ -87,6 +87,19 @@ if(file_exists('../install.lock'))
 							) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 							echo "Table `api` created.\n";
 
+							/*
+							 * CREATE TABLE `downloads`
+							 */
+							$mysql->exec("DROP TABLE IF EXISTS `downloads`");
+							$mysql->exec("CREATE TABLE `downloads` (
+								`id` int(1) unsigned NOT NULL AUTO_INCREMENT,
+								`server` int(1) NOT NULL,
+								`token` char(32) NOT NULL DEFAULT '',
+								`path` varchar(5000) NOT NULL DEFAULT '',
+								PRIMARY KEY (`id`)
+							) ENGINE=MEMORY DEFAULT CHARSET=latin1;");
+							echo "Table `downloads` created.\n";
+
 	                        /*
 	                         * CREATE TABLE `acp_settings`
 	                         */
