@@ -36,52 +36,28 @@ if(isset($_GET['file']))
 if(isset($_GET['dir']))
 	$_GET['dir'] = str_replace('..', '', urldecode($_GET['dir']));
 
-if(isset($_GET['do']) && $_GET['do'] == 'download'){
+if(isset($_GET['do'], $_GET['file']) && $_GET['do'] == 'download' && !empty($_GET['file'])){
 
-	// prevent output buffering
-	set_time_limit(0);
-	if(ob_get_level()) {
-		ob_end_clean();
+	if($core->user->hasPermission('files.download') !== true) {
+		Components\Page::redirect('../index.php?error=no_permission');
 	}
 
-	if($core->user->hasPermission('files.download') !== true)
-		Components\Page::redirect('../index.php?error=no_permission');
+	if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData('gsd_listen'))) {
+		Components\Page::redirect('index.php');
+	}
 
 	$_GET['file'] = str_replace("../", "", $_GET['file']);
-	$downloadPath = SRC_DIR.'cache/downloads/'.$core->server->getData('hash');
-	if(!is_dir($downloadPath)) {
-		mkdir($downloadPath, 0777, true);
-	}
+	$downloadToken = $core->auth->keygen(32);
 
-	$fp = fopen($downloadPath.'/'.$_GET['file'], 'w+');
-	$ch = curl_init("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$_GET['file']);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-	curl_setopt($ch, CURLOPT_FILE, $fp);
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		'X-Access-Token: '.$core->server->getData('gsd_secret')
+	$download = ORM::forTable('downloads')->create();
+	$download->set(array(
+		'server' => $core->server->getData('gsd_id'),
+		'token' => $downloadToken,
+		'path' => $_GET['file']
 	));
-	curl_exec($ch);
-	curl_close($ch);
-	fflush($fp);
-	fclose($fp);
+	$download->save();
 
-	clearstatcache();
-	/*
-	* Download a File
-	*/
-	header("Pragma: public");
-	header("Expires: 0");
-	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-	header("Content-Type: application/octet-stream");
-	header("Content-Description: File Transfer");
-	header("Content-Transfer-Encoding: binary");
-	header('Content-Disposition: attachment; filename="'.basename($_GET['file']).'"');
-	header("Content-Length: ".filesize($downloadPath.'/'.$_GET['file']));
-
-	readfile($downloadPath.'/'.$_GET['file']);
-	unlink($downloadPath.'/'.$_GET['file']);
-	exit();
+	Components\Page::redirect("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$downloadToken);
 
 }
 

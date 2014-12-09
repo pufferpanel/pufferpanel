@@ -67,7 +67,9 @@
 	},
 	"tokens": ["{{ node.gsd_secret }}"],
 	"interfaces":{
-		"rest":{},
+		"rest":{
+			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_download.php"
+		},
 		"console":{},
 		"ftp":{
 			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",
