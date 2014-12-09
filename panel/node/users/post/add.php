@@ -69,11 +69,11 @@ foreach($_POST['permissions'] as $id => $permission) {
 		$_POST['permissions'] = array_merge($_POST['permissions'], array("files.view"));
 	}
 
-	if(in_array($permission, array('manage.rename.jar') && !in_array('manage.rename.view', $_POST['permissions'])) {
+	if(in_array($permission, array('manage.rename.jar')) && !in_array('manage.rename.view', $_POST['permissions'])) {
 		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.rename.view"));
 	}
 
-	if(in_array($permission, array('manage.ftp.details', 'manage.ftp.password') && !in_array('manage.ftp.view', $_POST['permissions'])) {
+	if(in_array($permission, array('manage.ftp.details', 'manage.ftp.password')) && !in_array('manage.ftp.view', $_POST['permissions'])) {
 		$_POST['permissions'] = array_merge($_POST['permissions'], array("manage.ftp.view"));
 	}
 
