@@ -52,7 +52,7 @@ if ($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_
 		),
 		array(
 			"variables" => json_encode(array(
-				"-jar" => $_POST['jarfile'] . '.jar',
+				"-jar" => rtrim($_POST['jarfile'], ".jar") . '.jar',
 				"-Xmx" => $core->server->getData('max_ram') . 'M'
 			))
 		)
