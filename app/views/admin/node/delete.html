@@ -7,25 +7,24 @@
     <h3 class="nopad">Delete Node</h3><hr />
     {{ output|raw }}
     <form action="ajax/delete/delete.php" method="POST">
-	<fieldset>
-	    <div class="well">
-		<div class="row">
-		    <div class="form-group col-6 nopad">
-			<div class="alert alert-warning">Only nodes which have no servers can be deleted</div>
-			<label for="server_name" class="control-label">Server Node</label>
-			<div>
-			    <select name="node" id="getNode" class="form-control">
-				{% for node in nodes %}
-				<option value="{{ node.id }}">{{ node.node }}</option>
-				{% endfor %}
-			    </select>
-			</div>
-		    </div>
-		</div>
-	    </div>
-	    <div class="alert alert-danger"><input type="checkbox" name="read_warning" /> I understand deleting a node is non-reversible</div>
-	    <input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
-	</fieldset>
+        <fieldset>
+            <div class="well">
+                <div class="row">
+                    <label for="server_name" class="control-label">Server Node</label>
+                    {% if nodes[0]|length > 0 %}
+                        <select name="node" id="getNode" class="form-control col-6">
+                            {% for node in nodes %}
+                                <option value="{{ node.id }}">{{ node.node }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <div class="alert alert-info">There are currently no nodes that can be deleted. Only nodes which have no servers attached to them can be removed from the panel.</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="alert alert-danger"><input type="checkbox" name="read_warning" /> I understand deleting a node is non-reversible and I will be unable to undo this action.</div>
+            <input type="submit" value="Delete Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
+        </fieldset>
     </form>
 </div>
 {% endblock %}
