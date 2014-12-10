@@ -33,7 +33,7 @@ if($core->gsd->online() === true) {
 			"X-Access-Token" => $core->server->getData('gsd_secret')
 		)
 	);
-	$content = array('contents' => $response->body->contents);
+	$content = array('contents' => $response->body);
 
 } else {
 	$content = array('contents' => 'Server is currently offline.');
