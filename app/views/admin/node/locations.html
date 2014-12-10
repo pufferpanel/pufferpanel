@@ -1,0 +1,83 @@
+{% extends "admin_base.html" %}
+
+{% block title %}List All Nodes{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<h3 class="nopad">Node Locations</h3>
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Shortcode</th>
+				<th>Location</th>
+				<th>Total Nodes</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for location in locations %}
+			<tr class="dynUpdate" id="{{ node.fqdn }}">
+				<td>{{ location.short }}</a></td>
+				<td>{{ location.long }}</td>
+				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<h3>Add New Location</h3>
+	{% if get.error is defined and get.error != 1 %}
+		<div class="alert alert-danger">
+			{% if get.error == "missing_args" %} Not all arguments were passed to the script.
+			{% elseif get.error == "shortcode" %} The shortcode provided was invalid.
+			{% elseif get.error == "location" %} The location provided cannot be empty. {% endif %}
+		</div>
+	{% endif %}
+	{% if get.success is defined %}
+		<div class="alert alert-success">You have successfully added a new location.</div>
+	{% endif %}
+	<form action="ajax/locations/add.php" method="POST">
+		<div class="well well-sm">
+			<div class="row">
+				<div class="form-group col-6">
+					<label for="shortcode" class="control-label">Shortcode</label>
+					<div>
+						<input type="text" class="form-control" name="shortcode" placeholder="atl" />
+						<p><small class="text-muted"><em>Must be between 1 and 10 characters long. (a-zA-Z0-9-)</em></small></p>
+					</div>
+				</div>
+				<div class="form-group col-6">
+					<label for="location" class="control-label">Location</label>
+					<div>
+						<input type="text" class="form-control" name="location" placeholder="U.S. (Atlanta)" />
+						<p><small class="text-muted"><em>Enter a descriptive value for the location of this node.</em></small></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-6">
+					<div>
+						<input type="submit" value="Add Location" class="btn btn-primary btn-sm" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function(){
+	if($.urlParam('error') != null){
+		var field = $.urlParam('error');
+		var exploded = field.split('|');
+		$.each(exploded, function(key, value) {
+			$('[name="' + value + '"]').parent().parent().addClass('has-error');
+		});
+		var obj = $.parseJSON($.cookie('__TMP_pp_admin_newlocation'));
+		$.each(obj, function(key, value) {
+			$('[name="' + key + '"]').val(value);
+		});
+	}
+});
+</script>
+{% endblock %}

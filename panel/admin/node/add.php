@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM;
 
 require_once('../../../src/core/core.php');
 
@@ -25,8 +25,11 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 }
 
+$locations = ORM::forTable('locations')->findMany();
+
 echo $twig->render(
 	'admin/node/add.html', array(
+		'locations' => $locations,
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)

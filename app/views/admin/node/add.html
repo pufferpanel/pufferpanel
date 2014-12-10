@@ -37,7 +37,16 @@
 							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.).</em></small></p>
 						</div>
 					</div>
-					<div class="form-group col-6 nopad-right"></div>
+					<div class="form-group col-6 nopad-right">
+						<label for="location" class="control-label">Location</label>
+						<div>
+							<select name="location" class="form-control">
+								{% for location in locations %}
+									<option value="{{ location.short }}">{{ location.long }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="form-group col-6 nopad">
@@ -52,6 +61,24 @@
 						<div>
 							<input type="text" name="ip" class="form-control" placeholder="255.255.255.0" />
 							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the IP address of the node here. This IP should be publicly accessable. Using a private IP address will make servers inaccessable from an outside network.</em></small></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="well">
+				<div class="row">
+					<div class="form-group col-6 nopad">
+						<label for="allocate_memory" class="control-label">Allocatable Memory</label>
+						<div>
+							<input type="text" name="allocate_memory" class="form-control" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the amount of avaliable memory on this server in megabytes.</em></small></p>
+						</div>
+					</div>
+					<div class="form-group col-6 nopad-right">
+						<label for="allocate_disk" class="control-label">Node IP Address</label>
+						<div>
+							<input type="text" name="allocate_disk" class="form-control" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the amount of avaliable disk space on this server in megabytes.</em></small></p>
 						</div>
 					</div>
 				</div>

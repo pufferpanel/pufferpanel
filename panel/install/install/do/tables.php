@@ -130,21 +130,37 @@ if(file_exists('../install.lock'))
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `actions_log` created.\n";
 
+							/*
+							* CREATE TABLE `locations`
+							*/
+							$mysql->exec("DROP TABLE IF EXISTS `locations`");
+							$mysql->exec("CREATE TABLE `locations` (
+								`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+								`short` varchar(10) NOT NULL DEFAULT '',
+								`long` varchar(500) NOT NULL DEFAULT '',
+								PRIMARY KEY (`id`)
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+							echo "Table `locations` created.\n";
+
 	                        /*
 	                         * CREATE TABLE `nodes`
 	                         */
 	                        $mysql->exec("DROP TABLE IF EXISTS `nodes`");
 	                        $mysql->exec("CREATE TABLE `nodes` (
-	                          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-	                          `node` char(15) NOT NULL DEFAULT '',
-	                          `fqdn` tinytext NOT NULL,
-	                          `ip` tinytext NOT NULL,
-	                          `gsd_secret` char(32) DEFAULT NULL,
-							  `gsd_listen` int(1) DEFAULT '8003',
-							  `gsd_console` int(1) DEFAULT '8031',
-							  `gsd_server_dir` tinytext,
-	                          `ips` text NOT NULL,
-	                          `ports` text NOT NULL,
+								`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+								`node` char(15) NOT NULL DEFAULT '',
+								`location` varchar(500) NOT NULL,
+								`allocate_memory` int(11) NOT NULL,
+								`allocate_disk` int(11) DEFAULT NULL,
+								`fqdn` tinytext NOT NULL,
+								`ip` tinytext NOT NULL,
+								`gsd_secret` char(32) DEFAULT NULL,
+								`gsd_listen` int(1) DEFAULT '8003',
+								`gsd_console` int(1) DEFAULT '8031',
+								`gsd_server_dir` tinytext,
+								`ips` text NOT NULL,
+								`ports` text NOT NULL,
+								`public` int(1) NOT NULL DEFAULT '1',
 	                          PRIMARY KEY (`id`)
 	                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	                        echo "Table `nodes` created.\n";
