@@ -195,7 +195,7 @@
 			var currentTime = new Date();
 			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");
 			memoryChart.removeData();
-			cpuChart.addData([data.process.cpu], "");
+			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.process.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.process.cpu], ""); }
 			cpuChart.removeData();
 		});
 		socket.on('query', function(data){
@@ -217,6 +217,9 @@
 			$("img[data-toggle='tooltip']").tooltip();
 		});
 		{% if permission.console.view == true %}
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+			});
 			socket.on('console', function (data) {
 				$("#live_console").val($("#live_console").val() + data.l);
 				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
