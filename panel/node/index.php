@@ -28,7 +28,7 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if($core->gsd->online() === true) {
 
 	$response = \Unirest::get(
-		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/logs/latest.log",
+		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/log/750",
 		array(
 			"X-Access-Token" => $core->server->getData('gsd_secret')
 		)
