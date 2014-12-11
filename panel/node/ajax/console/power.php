@@ -89,67 +89,6 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 
 		$core->log->getUrl()->addLog(0, 1, array('system.create_serverprops', 'A new server.properties file was created for your server.'));
 
-	} else {
-
-		$lines = explode("\n", $response->body->contents);
-		$newContents = $response->body->contents;
-
-		foreach($lines as $line) {
-
-			$var = explode('=', $line);
-
-			if($var[0] == 'server-port' && $var[1] != $core->server->getData('server_port')) {
-
-				$newContents = str_replace('server-port='.$var[1], "server-port=".$core->server->getData('server_port')."\n", $newContents);
-				$rewrite = true;
-
-			} else if($var[0] == 'online-mode' && $var[1] == 'false' && $core->settings->get('force_online') == 1) {
-
-				$newContents = str_replace('online-mode='.$var[1], "online-mode=true\n", $newContents);
-				$rewrite = true;
-
-			} else if($var[0] == 'enable-query' && $var[1] != 'true') {
-
-				$newContents = str_replace('enable-query='.$var[1], "enable-query=true\n", $newContents);
-				$rewrite = true;
-
-			} else if($var[0] == 'query.port' && $var[1] != $core->server->getData('server_port')) {
-
-				$newContents = str_replace('query.port='.$var[1], "query.port=".$core->server->getData('server_port')."\n", $newContents);
-				$rewrite = true;
-
-			} else if($var[0] == 'server-ip' && $var[1] != $core->server->getData('server_ip')) {
-
-				$newContents = str_replace('server-ip='.$var[1], "server-ip=".$core->server->getData('server_ip')."\n", $newContents);
-				$rewrite = true;
-
-			}
-
-        }
-
-	}
-
-	/*
-	 * Write New Data
-	 */
-	if($rewrite) {
-
-		$put = Unirest::put(
-			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/server.properties",
-			array(
-				"X-Access-Token" => $core->server->getData('gsd_secret')
-			),
-			array(
-				"contents" => $newContents
-			)
-		);
-
-		if(!empty($put->body)) {
-	    	exit($errorMessage." Unable to update server.properties");
-		}
-
-        $core->log->getUrl()->addLog(0, 0, array('system.serverprops_updated', 'The server properties file was updated to match the assigned information.'));
-
 	}
 
     /*
