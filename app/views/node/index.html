@@ -45,18 +45,22 @@
 				<div class="col-6">
 					<h3 class="nopad">Memory Usage</h3><hr />
 					<div class="row">
-						<canvas id="memoryChart" width="300" height="150"></canvas>
+						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (10s Increments)</small></p>
+						<p class="graph-yaxis text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
 					</div>
 				</div>
 				<div class="col-6">
 					<h3 class="nopad">CPU Usage</h3><hr />
 					<div class="row">
-						<canvas id="cpuChart" width="300" height="150"></canvas>
+						<canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (10s Increments)</small></p>
+						<p class="graph-yaxis text-muted" style="margin-top:-65px !important;"><small>CPU Usage (%)</small></p>
 					</div>
 				</div>
 			</div>
 			<div class="col-12">
-				<h3>{{ lang.node_overview_players_h5 }}</h3><hr />
+				<h3 class="nopad">{{ lang.node_overview_players_h5 }}</h3><hr />
 				<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_overview_collect_usage }}</div>
 				<span id="toggle_players" style="display:none;">
 					<p class="text-muted">{{ lang.node_overview_no_players }}</p>
