@@ -63,7 +63,7 @@ try {
 		),
 		array(
 			"variables" => json_encode(array(
-				"-jar" => rtrim($core->server->getData('server_jar'), ".jar").".jar",
+				"-jar" => str_replace(".jar", "", $core->server->getData('server_jar')) . '.jar',
 				"-Xmx" => $_POST['alloc_mem']."M"
 			)),
 			"build" => json_encode(array(
