@@ -31,38 +31,44 @@ setcookie("__TMP_pp_admin_newnode", json_encode($_POST), time() + 30, '/');
 /*
  * Agree Warning
  */
-if(!isset($_POST['read_warning']))
-	Components\Page::redirect('../../add.php?disp=agree_warn');
+if(!isset($_POST['read_warning'])) {
+	Components\Page::redirect('../../add.php?error=agree_warn&disp=agree_warn');
+}
 
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port'], $_POST['gsd_listen'], $_POST['gsd_console'], $_POST['gsd_server_dir']))
+if(!isset($_POST['node_name'], $_POST['location'], $_POST['allocate_memory'], $_POST['allocate_disk'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port'], $_POST['gsd_listen'], $_POST['gsd_console'], $_POST['gsd_server_dir'])) {
 	Components\Page::redirect('../../add.php?disp=missing_args');
+}
 
 /*
  * Validate Ports
  */
-if(!is_numeric($_POST['gsd_listen']) || !is_numeric($_POST['gsd_console']))
-	Components\Page::redirect('../../add.php?error=gsd_listen|gsd_console&disp=port_fail');
+if(!is_numeric($_POST['gsd_listen']) || !is_numeric($_POST['gsd_console']) || !is_numeric($_POST['allocate_memory']) || !is_numeric($_POST['allocate_disk'])) {
+	Components\Page::redirect('../../add.php?error=gsd_listen|gsd_console|allocate_memory|allocate_disk&disp=port_fail');
+}
 
 /*
  * Validate Directory
  */
-if(!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $_POST['gsd_server_dir']))
+if(!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $_POST['gsd_server_dir'])) {
 	Components\Page::redirect('../../add.php?error=gsd_server_dir&disp=dir_fail');
+}
 
 /*
  * Validate Node Name
  */
-if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name']))
+if(!preg_match('/^[\w.-]{1,15}$/', $_POST['node_name'])) {
 	Components\Page::redirect('../../add.php?error=node_name&disp=n_fail');
+}
 
 /*
  * Validate FQDN & IP
  */
-if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP))
+if(!filter_var(gethostbyname($_POST['fqdn']), FILTER_VALIDATE_IP) || !filter_var($_POST['ip'] , FILTER_VALIDATE_IP)) {
 	Components\Page::redirect('../../add.php?error=fqdn|ip&disp=ip_fail');
+}
 
 /*
  * Process IPs and Ports
@@ -83,7 +89,7 @@ foreach($lines as $id => $values) {
 	$IPA = array_merge($IPA, array($ip => array()));
 	$IPP = array_merge($IPP, array($ip => array()));
 
-	$portList = [];
+	$portList = array();
 	$portList = Components\Functions::processPorts($ports);
 
 	for($l=0; $l<count($portList); $l++) {
@@ -113,6 +119,9 @@ foreach($lines as $id => $values) {
 $node = ORM::forTable('nodes')->create();
 $node->set(array(
 	'node' => $_POST['node_name'],
+	'location' => $_POST['location'],
+	'allocate_memory' => $_POST['allocate_memory'],
+	'allocate_disk' => $_POST['allocate_disk'],
 	'fqdn' => $_POST['fqdn'],
 	'ip' => $_POST['ip'],
 	'gsd_secret' => $core->auth->generateUniqueUUID('nodes', 'gsd_secret'),
@@ -120,7 +129,8 @@ $node->set(array(
 	'gsd_console' => $_POST['gsd_console'],
 	'gsd_server_dir' => $_POST['gsd_server_dir'],
 	'ips' => json_encode($IPA),
-	'ports' => json_encode($IPP)
+	'ports' => json_encode($IPP),
+	'public' => (isset($_POST['is_public'])) ? 0 : 1
 ));
 $node->save();
 

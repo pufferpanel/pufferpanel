@@ -43,16 +43,27 @@
 			</div>
 			<div class="well">
 				<div class="row">
+					<div class="alert alert-warning" id="noNodes" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This node does not have any nodes available. Please select a different location.</div>
 					<div class="form-group col-6 nopad">
-						<label for="server_name" class="control-label">Server Node</label>
+						<label for="location" class="control-label">Server Location</label>
 						<div>
-							<select name="node" id="getNode" class="form-control">
-								{% for node in nodes %}
-									<option value="{{ node.id }}">{{ node.node }}</option>
+							<select name="location" id="getLocation" class="form-control">
+								{% for location in locations %}
+									<option value="{{ location.short }}">{{ location.long }}</option>
 								{% endfor %}
 							</select>
 						</div>
 					</div>
+					<span id="updateNodeList">
+						<div class="form-group col-6 nopad">
+							<label for="server_name" class="control-label">Location Node</label>
+							<div>
+								<select name="node" id="getNode" class="form-control">
+									<option value="---">Select a Location</option>
+								</select>
+							</div>
+						</div>
+					</span>
 				</div>
 				<div class="alert alert-warning" id="noPorts" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This node does not have any free ports available. Please select another node.</div>
 				<div class="row">
@@ -69,11 +80,14 @@
 							<label for="server_port" class="control-label">Server Port</label>
 							<div>
 								<select name="server_port" class="form-control">
-									<option value="---">Select a Node</option>
+									<option value="---">Select an IP</option>
 								</select>
 							</div>
 						</div>
 					</span>
+				</div>
+				<div class="row" style="margin-bottom:-15px;">
+					<div class="alert alert-info"><input type="checkbox" class="disabled" name="assign_random"> Check this box to assign this server to a random public node in this location.</div>
 				</div>
 			</div>
 			<div class="well">
@@ -141,7 +155,6 @@
 	}
 	function updateList(){
 		var activeNode = $('#getNode').val();
-		$("#noPorts").hide();
 		$.ajax({
 			type: "POST",
 			url: "ajax/new/load_list.php",
@@ -154,8 +167,22 @@
 		});
 		return false;
 	}
+	function updateNodeList(){
+		var activeLocation = $('#getLocation').val();
+		$.ajax({
+			type: "POST",
+			url: "ajax/new/load_nodelist.php",
+			data: {'location' : activeLocation},
+			success: function(data) {
+				$('#updateNodeList').html(data);
+				updateList();
+				return false;
+			}
+		});
+		return false;
+	}
 	$(document).ready(function(){
-		updateList();
+		updateNodeList();
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
@@ -172,6 +199,16 @@
 		});
 		$('#getNode').change(function(){
 			updateList();
+		});
+		$('#getLocation').change(function(){
+			updateNodeList();
+		});
+		$('[name="assign_random"]').click(function(){
+			if($(this).is(':checked')) {
+				$("#updateList, #updateNodeList").hide();
+			} else {
+				$("#updateList, #updateNodeList").show();
+			}
 		});
 		if($.urlParam('error') != null){
 

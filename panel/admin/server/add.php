@@ -27,11 +27,11 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 if(isset($_GET['do']) && $_GET['do'] == 'generate_password')
 	exit($core->auth->keygen(12));
 
-$nodes = ORM::forTable('nodes')->selectMany('id', 'node')->findMany();
+$locations = ORM::forTable('locations')->findMany();
 
 echo $twig->render(
 	'admin/server/add.html', array(
-		'nodes' => $nodes,
+		'locations' => $locations,
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
