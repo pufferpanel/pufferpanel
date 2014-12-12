@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-9">
 {{ output|raw }}
-<h3>Company Name</h3><hr />	
+<h3>Company Name</h3><hr />
 	<form action="actions/cname.php" method="POST">
 		<fieldset>
 			<div class="input-group">
@@ -29,8 +29,9 @@
 				</div>
 				<div class="form-group col-6 nopad">
 					<div>
-						<label><input type="checkbox" name="permissions[]" value="use_api" {% if settings.use_api == 1 %}checked="checked"{% endif %}/> Enable API System</label><br />
-						<p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p>
+						<label><input type="checkbox" name="permissions[]" value="use_api" disabled {% if settings.use_api == 1 %}checked="checked"{% endif %}/> Enable API System</label><br />
+						<!-- <p><small class="text-muted"><em>Checking this box will enable the API. If you will not be integrating with billing software it is best to uncheck this for security.</em></small></p> -->
+						<p><small class="text-muted"><em>For security purposes it is not possible to enable the API in this version of PufferPanel. The API will be avaliable in version <code>0.8.0 Beta</code>.</em></small></p>
 					</div>
 				</div>
 			</div>
