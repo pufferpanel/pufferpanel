@@ -35,13 +35,17 @@ if(isset($_GET['goto']) && !empty($_GET['goto']))
  * Get the Servers
  */
 if($core->user->getData('root_admin') == '1')
-	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+	$servers = ORM::forTable('servers')
+				->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->join('locations', array('nodes.location', '=', 'locations.short'))
 				->orderByDesc('active')
 				->findArray();
 else
-	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+	$servers = ORM::forTable('servers')
+				->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->join('locations', array('nodes.location', '=', 'locations.short'))
 				->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
 				->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($core->user->getData('id'), join(',', $core->user->listServerPermissions())))
 				->findArray();
