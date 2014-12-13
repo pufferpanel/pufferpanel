@@ -8,6 +8,7 @@
 		<thead>
 			<tr>
 				<th>Node Name</th>
+				<th>Location</th>
 				<th>IP Address</th>
 				<th>FTP Address</th>
 				<th></th>
@@ -17,6 +18,7 @@
 			{% for id, node in nodes %}
 				<tr class="dynUpdate" id="{{ node.fqdn }}">
 					<td><a href="view.php?id={{ node.id }}">{{ node.node }}</a></td>
+					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>
 					<td>{{ node.ip }}</td>
 					<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>

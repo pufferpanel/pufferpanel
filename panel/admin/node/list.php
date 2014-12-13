@@ -25,7 +25,10 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../../index.php?login');
 }
 
-$nodes = ORM::forTable('nodes')->findMany();
+$nodes = ORM::forTable('nodes')
+		->select('nodes.*')->select('locations.long', 'l_location')
+		->join('locations', array('nodes.location', '=', 'locations.short'))
+		->findMany();
 
 echo $twig->render(
     'admin/node/list.html', array(
