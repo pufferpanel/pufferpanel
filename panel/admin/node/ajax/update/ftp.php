@@ -31,7 +31,7 @@ if(isset($_GET['do']) && $_GET['do'] == 'ipuser') {
 	if(!isset($_POST['nid']) || !is_numeric($_POST['nid']))
 		Components\Page::redirect('../../list.php');
 
-	if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+	if(!filter_var($_POST['ip'] , FILTER_VALIDATE_IP))
 		Components\Page::redirect('../../view.php?id='.$_POST['nid'].'&error=ip&disp=ip_fail&tab=ftp');
 
 	/*
