@@ -17,7 +17,9 @@
 			{% if get.disp == 'n_fail' %}
 				The server name does not meet the requirements (4-35 characters, a-z A-Z 0-9 _ -).
 			{% elseif get.disp == 'o_fail' %}
-				The node daemon must be online before updating servers!
+				GSD must be online and running before updating servers!
+			{% elseif get.disp == 'gsd_error' %}
+				GSD returned an error code and we were unable to process your request.
 			{% endif %}
 		</div>
 	{% endif %}
