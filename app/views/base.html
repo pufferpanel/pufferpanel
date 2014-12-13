@@ -61,10 +61,11 @@
 				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
 				function updateServerStatus() {
 					$(".dynUpdate").each(function(index, data){
-						$("#applyUpdate").removeClass("fa-circle").css('color', '#fff');
-						$("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
-						var connection = $(this).attr("id");
 						var element = $(this);
+						var connection = element.attr("id");
+						if(element.find("#applyUpdate").hasClass("spin-light")){var c = {"color": "#fff"};} else {var c = {"color": "#000"};}
+						element.find("#applyUpdate").removeClass("fa-circle").css(c);
+						element.find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 						$.ajax({
 							type: "POST",
 							url: "{{ settings.master_url }}ajax/get_status.php",
