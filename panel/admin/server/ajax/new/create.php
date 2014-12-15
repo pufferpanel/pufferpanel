@@ -151,7 +151,7 @@ $data = array(
 		"-Xmx" => $_POST['alloc_mem']."M"
 	),
 	"keys" => array(
-		$gsdSecret => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:query", "s:console", "s:console:send")
+		$gsdSecret => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:files:zip", "s:query", "s:console", "s:console:send")
 	),
 	"gameport" => (int) $_POST['server_port'],
 	"gamehost" => $_POST['server_ip'],
