@@ -52,6 +52,11 @@ if(isset($_POST['version']) && file_exists('do/'.$_POST['version'].'.php'))
 						<label><input type="checkbox" name="version" value="0.7.4.1-beta"/> 0.7.4.1 Beta</label><br />
 					</div>
 					<div>
+						<label><input type="checkbox" name="version" value="0.7.5-beta"/> 0.7.5 Beta</label><br />
+						<div class="alert alert-info"><i class="fa fa-warning"></i> Please be aware that upgrading from 0.7.5 Beta (and prior) to 0.7.6 Beta <strong>requires</strong> modification of your core GSD configuration files! You must have version <code>0.1.4</code> of GSD running on all of your nodes, and <strong>it must be on</strong>.</div>
+						<div class="alert alert-danger"><i class="fa fa-warning"></i> Please be aware that upgrading from 0.7.5 Beta (and prior) to 0.7.6 Beta will result in subuser permissions being deleted from PufferPanel due to changes to their core setup. User accounts will not be affected! We apologize for this inconvience.</div>
+					</div>
+					<div>
 						<input type="submit" name="do" value="Run Upgrader" class="btn btn-sm btn-primary" />
 					</div>
 				</form>
