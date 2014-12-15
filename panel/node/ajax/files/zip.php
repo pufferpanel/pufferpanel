@@ -21,15 +21,13 @@ use \ORM, \Unirest;
 
 require_once '../../../../src/core/core.php';
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
-
+if(!$core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'))) {
 	exit('Not authenticated.');
-
 }
 
 if($core->user->hasPermission('files.zip') !== true) {
 
-	exit('You do not have permission to zip files.');
+	exit('You do not have permission to zip or unzip files.');
 
 }
 
@@ -45,7 +43,11 @@ if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 		)
 	);
 
-	print_r($request->body);
+	if($request->code !== 200) {
+
+		exit("An error was enocuntered trying to process your request. Server returned the following data\n\n[HTTP/1.1 {$request->code}] {$request->raw_body}");
+
+	}
 
 } elseif(isset($_POST['unzipItemPath']) && !empty($_POST['unzipItemPath'])) {
 
@@ -59,13 +61,14 @@ if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 		)
 	);
 
-	print_r($request->body);
+	if($request->code !== 200) {
+
+		exit("An error was enocuntered trying to process your request. Server returned the following data\n\n[HTTP/1.1 {$request->code}] {$request->raw_body}");
+
+	}
 
 } else {
 
-	error_log("Made it",0);
-
-	var_dump($_POST);
-	echo 'Nothing was matched in the script.';
+	exit("Error trying to handle an unknown function.");
 
 }

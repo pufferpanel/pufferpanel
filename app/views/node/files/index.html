@@ -150,7 +150,11 @@ $(window).load(function(){
 					alert(errorThrown);
 				},
 				success: function(data) {
-					location.reload();
+					if(data != "") {
+						alert(data);
+					} else {
+						firstLoad();
+					}
 				}
 			});
 		});
@@ -170,7 +174,11 @@ $(window).load(function(){
 					alert(errorThrown);
 				},
 				success: function(data) {
-					location.reload();
+					if(data != "") {
+						alert(data);
+					} else {
+						firstLoad();
+					}
 				}
 			});
 		});
@@ -188,11 +196,12 @@ $(window).load(function(){
 				success: function(data) {
 					$("#load_files").slideUp(function(){
 						$("#load_files").html(data);
-						$("#internal_alert").slideUp();
-						$("#load_files").slideDown();
-						$("#loading_dir").fadeOut(200);
-						doneLoad = true;
-						newLoad();
+						$("#internal_alert").delay(50).slideUp(function() {
+							$("#load_files").slideDown();
+							$("#loading_dir").fadeOut(200);
+							doneLoad = true;
+							newLoad();
+						});
 					});
 				}
 			});
@@ -205,11 +214,12 @@ $(window).load(function(){
 				success: function(data) {
 					$("#load_files").slideUp(function(){
 						$("#load_files").html(data);
-						$("#internal_alert").slideUp();
-						$("#load_files").slideDown();
-						$("#loading_dir").fadeOut(200);
-						doneLoad = true;
-						newLoad();
+						$("#internal_alert").delay(50).slideUp(function() {
+							$("#load_files").slideDown();
+							$("#loading_dir").fadeOut(200);
+							doneLoad = true;
+							newLoad();
+						});
 					});
 				}
 			});
