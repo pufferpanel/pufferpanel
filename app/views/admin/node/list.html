@@ -16,7 +16,7 @@
 		</thead>
 		<tbody>
 			{% for id, node in nodes %}
-				<tr class="dynUpdate" id="{{ node.fqdn }}">
+				<tr class="dynUpdate" id="{{ node.ip }}+{{ node.gsd_listen }}">
 					<td><a href="view.php?id={{ node.id }}">{{ node.node }}</a></td>
 					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>

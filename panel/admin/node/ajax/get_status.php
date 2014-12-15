@@ -17,32 +17,33 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM;
 
-require_once('../../../../src/core/core.php');
+require_once '../../../../src/core/core.php';
 
-if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true) === true){
+if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), null, true)) {
 
 	if(isset($_POST['ip'])){
 
 		/*
 		 * Query Servers
 		 */
-		if(!@fsockopen($_POST['ip'], 8003, $num, $error, 3))
-			exit('#E33200');
-		else
-			exit('#53B30C');
+		list($ip, $port) = explode('+', $_POST['ip']);
 
-	}else{
+		if(!$core->gsd->avaliable($ip, $port)) {
+			exit('#E33200');
+		} else {
+			exit('#53B30C');
+		}
+
+	} else {
 
 		exit('#FF9900');
 
 	}
 
-}else{
+} else {
 
 	exit('#FF9900');
 
 }
-
-?>
