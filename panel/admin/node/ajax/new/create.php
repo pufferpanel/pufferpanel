@@ -38,7 +38,7 @@ if(!isset($_POST['read_warning'])) {
 /*
  * Are they all Posted?
  */
-if(!isset($_POST['node_name'], $_POST['location'], $_POST['allocate_memory'], $_POST['allocate_disk'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port'], $_POST['gsd_listen'], $_POST['gsd_console'], $_POST['gsd_server_dir'])) {
+if(!isset($_POST['node_name'], $_POST['location'], $_POST['allocate_memory'], $_POST['allocate_disk'], $_POST['disk_selector'], $_POST['mem_selector'], $_POST['fqdn'], $_POST['ip'], $_POST['ip_port'], $_POST['gsd_listen'], $_POST['gsd_console'], $_POST['gsd_server_dir'])) {
 	Components\Page::redirect('../../add.php?disp=missing_args');
 }
 
@@ -120,8 +120,8 @@ $node = ORM::forTable('nodes')->create();
 $node->set(array(
 	'node' => $_POST['node_name'],
 	'location' => $_POST['location'],
-	'allocate_memory' => $_POST['allocate_memory'],
-	'allocate_disk' => $_POST['allocate_disk'],
+	'allocate_memory' => ($_POST['mem_selector'] == 1) ? ($_POST['allocate_memory'] * 1024) : $_POST['allocate_memory'],
+	'allocate_disk' => ($_POST['disk_selector'] == 1) ? ($_POST['allocate_disk'] * 1024) : $_POST['allocate_disk'],
 	'fqdn' => $_POST['fqdn'],
 	'ip' => $_POST['ip'],
 	'gsd_secret' => $core->auth->generateUniqueUUID('nodes', 'gsd_secret'),
