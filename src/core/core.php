@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM, \PDO, \Tracy\Debugger;
 session_start();
 
 /*
@@ -69,15 +70,12 @@ require_once(BASE_DIR.'vendor/autoload.php');
  * below and comment out the bugsnag lines above. This debugging can be
  * used on a live environment if you wish.
  */
-use Tracy\Debugger;
 Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
 
 /*
 * MySQL PDO Connection Engine
 */
-use \ORM as ORM;
-use \PDO as PDO;
 ORM::configure(array(
 	'connection_string' => 'mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'],
 	'username' => $_INFO['sql_u'],
@@ -129,21 +127,24 @@ $core->files = new Files();
 /*
  * Require HTTPS Connection
  */
-if($core->settings->get('https') == 1)
+if($core->settings->get('https') == 1) {
 	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
 		header("Location: https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	}
+}
 
 /*
  * Check Language Settings
  */
-if($core->user->getData('language') === false)
-	if(!isset($_COOKIE['pp_language']) || empty($_COOKIE['pp_language']))
+if(!$core->user->getData('language')) {
+	if(!isset($_COOKIE['pp_language']) || empty($_COOKIE['pp_language'])) {
 		$_l = new Language($core->settings->get('default_language'));
-	else
+	} else {
 		$_l = new Language($_COOKIE['pp_language']);
-else
+	}
+} else {
 	$_l = new Language($core->user->getData('language'));
+}
 
 /*
  * Twig Setup
