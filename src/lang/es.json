@@ -37,7 +37,7 @@
     "string_versions": "Versiones",
     "string_save": "Guardar",
     "footer_license": "PufferPanel tiene licencia bajo  <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3</a>.",
-    "footer_version": "Versi\u00f3n Actual %s distribuida por <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
+    "footer_version": "Versi\u00f3n Actual %s distribuida por <a href=\"https://github.com/PufferPanel/PufferPanel/\">PufferPanel Development</a>.",
     "footer_generated": "Pagina Generada en %s segundos.",
     "footer_queries": "Ejecutadas %s consultas a base de datos.",
     "sidebar_acc_actions": "Acciones de la Cuenta",

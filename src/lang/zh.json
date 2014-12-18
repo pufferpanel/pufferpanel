@@ -21,7 +21,7 @@
     "string_search": "\u641c\u7d22",
     "string_clear": "\u6e05\u9664",
     "footer_license": "PufferPanel \u662f\u4ee5<a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3 \u8bb8\u53ef\u8bc1</a>\u4ee5\u4e0b\u6388\u6743\u3002",
-    "footer_version": "\u73b0\u884c\u7248\u672c\uff08%s\uff09\u662f\u7531 <a href=\"http://pufferpanel.com/\">PufferPanel Development</a> \u5206\u53d1\u3002",
+    "footer_version": "\u73b0\u884c\u7248\u672c\uff08%s\uff09\u662f\u7531 <a href=\"https://github.com/PufferPanel/PufferPanel/\">PufferPanel Development</a> \u5206\u53d1\u3002",
     "footer_generated": "\u5728%s\u79d2\u5185\u751f\u6210\u6b64\u9875\u3002",
     "footer_queries": "\u5df2\u6267\u884c%s\u6570\u636e\u5e93\u67e5\u8be2\u3002",
     "sidebar_acc_actions": "\u8d26\u6237\u64cd\u4f5c",
