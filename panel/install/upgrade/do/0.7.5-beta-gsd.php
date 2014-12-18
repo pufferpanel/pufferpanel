@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 // upgrader for version 0.7.5 Beta to 0.7.6 Beta
 require '../../../../src/core/configuration.php';
-require '../../../../vendor/mashape/unirest-php/lib/Unirest/Unirest.php';
+require '../../../../vendor/autoload.php';
 
 use \Unirest;
 
