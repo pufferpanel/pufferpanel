@@ -64,7 +64,7 @@ $mysql->exec("ALTER TABLE nodes
 	ADD COLUMN location varchar(500) NOT NULL AFTER node,
 	ADD COLUMN allocate_memory int(11) NOT NULL AFTER location,
 	ADD COLUMN allocate_disk int(11) NOT NULL AFTER allocate_memory
-	ADD COLUMN public int(11) int(1) NOT NULL DEFAULT '1' AFTER ports");
+	ADD COLUMN public int(1) NOT NULL DEFAULT '1' AFTER ports");
 
 $select = $mysql->prepare("SELECT * FROM `nodes`");
 $select->execute();
