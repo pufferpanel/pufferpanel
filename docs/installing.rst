@@ -16,10 +16,8 @@ You will need to be comfortable with SSH in order to install this panel. PufferP
 .. code-block:: sh
 
     [$]~ cd /var/www/yoursite.com
-    [$]~ git clone https://github.com/PufferPanel/PufferPanel.git
-    [$]~ cd PufferPanel && git checkout tags/<version>
-    [$]~ cp -R ./ ../
-    [$]~ cd ../ && rm -rf PufferPanel/
+    [$]~ git clone https://github.com/PufferPanel/PufferPanel.git .
+    [$]~ git checkout tags/<version>
 
 Replace ``<version>`` with whichever version of the panel you wish to install. We highly recommend using the latest release when possible. As of the last update, the latest release is ``0.7.5-beta``. You must checkout a branch in order to use the panel, running the ``master`` repo is hghly unstable and should not be used.
 
