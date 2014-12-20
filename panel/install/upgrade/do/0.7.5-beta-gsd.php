@@ -72,8 +72,8 @@ while($row = $select->fetch()){
 			$config['servers'][$id]['build'] = array(
 				"install_dir" => '/mnt/MC/CraftBukkit/',
 				"disk" => array(
-					"hard" => ($s['alloc_disk'] < 32) ? 32 : (int) $s['alloc_disk'],
-					"soft" => ($s['alloc_disk'] > 2048) ? (int) $s['alloc_disk'] - 1024 : 32
+					"hard" => ($s['disk_space'] < 32) ? 32 : (int) $s['disk_space'],
+					"soft" => ($s['disk_space'] > 2048) ? (int) $s['disk_space'] - 1024 : 32
 				),
 				"cpu" => (int) $s['cpu_limit']
 			);
