@@ -4,7 +4,7 @@ Starting in version ``0.7.5 Beta`` we now support running an upgrader rather tha
 
 .. warning::
 
-    Please be aware that upgrading from 0.7.5 Beta (and prior) to 0.7.6 Beta requires modification of your core GSD configuration files! **You must be running GSD version ``0.1.4`` on each node before upgrading! GSD MUST BE ON.**
+    Please be aware that upgrading from 0.7.5 Beta (and prior) to 0.7.6 Beta requires modification of your core GSD configuration files! **You must be running GSD version 0.1.4 on each node before upgrading! GSD MUST BE ON.**
 
 Update MySQL User
 -----------------
@@ -18,10 +18,15 @@ Update the Code Base
 --------------------
 Thanks to git updating the code is a very simple process. Simply run the commands below to update the code.
 
+.. warning::
+
+    Running *git reset --hard HEAD* will delete any changes you made to PufferPanel files (except for your config file). In most cases this should not pose a problem, but any customizations will be overwitten. You should back these up to a secure location before running this.
+
 .. code-block:: sh
 
+  [$]~ git reset --hard HEAD
   [$]~ git fetch --tags
-  [$]~ git checkout tag/<version>
+  [$]~ git checkout tags/<version>
 
 If you don't know what version is the latest simply run the command below to list them all and find the most recent.
 
@@ -33,7 +38,13 @@ Running the Upgrader
 --------------------
 Running the upgrader is a very simple step and often requires no extra dependencies to be installed on your server.
 
-First, we need to run composer again and check for any upgrades or new software.
+First we need to update some new folders to have the correct permissions.
+
+.. code-block:: sh
+
+    chmod -R 0777 src/cache
+
+Then we need to run composer again and check for any upgrades or new software.
 
 .. code-block:: sh
 
