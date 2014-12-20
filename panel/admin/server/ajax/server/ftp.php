@@ -44,10 +44,10 @@ $core->server->rebuildData($_POST['sid']);
 $core->user->rebuildData($core->server->getData('owner_id'));
 
 /*
- * Update Server ftp Information
+ * Update Server FTP Information
  */
 $iv = $core->auth->generate_iv();
-$pass = $core->auth->encrypt($_POST['ftp_pass'], $core->auth->generate_iv());
+$pass = $core->auth->encrypt($_POST['ftp_pass'], $iv);
 
 $server = ORM::forTable('servers')->findOne($_POST['sid']);
 $server->ftp_pass = $pass;
