@@ -25,11 +25,12 @@ if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_a
 	Components\Page::redirect('../index.php?login');
 
 $head = trim(file_get_contents('../../.git/HEAD'));
-if(is_array(explode('/', $head))){
+if(strpos($head, '/')) {
 	list($ignore, $path) =  explode(" ", $head);
 	$git = '('.$head.') (sha: '.substr(trim(file_get_contents('../../.git/'.$path)), 0 ,8).')';
-}else
+} else {
 	$git = $head;
+}
 
 echo $twig->render(
         'admin/index.html', array(
