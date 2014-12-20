@@ -101,24 +101,24 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 }
 
-if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
+try {
 
-	try {
+	if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 
-		$stream = fopen($uploadPath.$_POST['flowFilename'], 'r');
-		$filesystem->writeStream(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
-		unlink($uploadPath.$_POST['flowFilename']);
-		http_response_code(200);
+			$stream = fopen($uploadPath.$_POST['flowFilename'], 'r');
+			$filesystem->writeStream(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
+			unlink($uploadPath.$_POST['flowFilename']);
+			http_response_code(200);
 
-	} catch(\Exception $e) {
-
-		http_response_code(500);
-		Tracy\Debugger::log($e);
-		unlink($uploadPath.$_POST['flowFilename']);
-		exit("unable to write file to server.");
+	}else{
 
 	}
 
-}else{
+} catch(\Exception $e) {
+
+	http_response_code(500);
+	Tracy\Debugger::log($e);
+	unlink($uploadPath.$_POST['flowFilename']);
+	exit("unable to write file to server.");
 
 }
