@@ -25,6 +25,27 @@ Configure and Prepare the Panel
 -------------------------------
 Edit your Apache or Nginx settings to make ``panel`` the home folder. If you do not want to have ``panel/`` as the home folder, please consider either using a subdomain for the panel, or make completely sure that none of the other included files or folders can be accessed through a browser.
 
+Beginning in ``0.7.6`` file uploads are possible. Because of this you will need to modify Apache or Nginx to allow for file uploads of up to 100MB. PufferPanel sets a hard limit of ``100MB`` per file which is handled through the code for PHP (so you do not need to update your ``php.ini`` file).
+
+Configuring Apache Uploads
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+You should not need to change anything in your Apache configuration for file uploads to work.
+
+Configuring Nginx Uploads
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Add the lines below to your ``nginx.conf`` file in the ``http`` block and then restart nginx using ``service nginx restart``.
+
+.. code-block:: text
+
+    http {
+
+        [...]
+
+        client_max_body_size 100m;
+        client_body_timeout 120s;
+
+    }
+
 After setting up Apache/Nginx you will need to run composer which will install the dependencies for the panel. This is a very simple step, but is often the reason most installs fail. To download composer run the command below in the PufferPanel directory (this directory should have ``src``, ``app``, and ``panel`` folders in it).
 
 .. code-block:: sh

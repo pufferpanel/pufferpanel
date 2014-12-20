@@ -34,6 +34,34 @@ If you don't know what version is the latest simply run the command below to lis
 
   [$]~ git tag -l
 
+Handle File Uploads
+-------------------
+
+.. info::
+
+    You only need to do this if you are upgrading from 0.7.5 to 0.7.6.
+
+Beginning in ``0.7.6`` file uploads are possible. Because of this you will need to modify Apache or Nginx to allow for file uploads of up to 100MB. PufferPanel sets a hard limit of ``100MB`` per file which is handled through the code for PHP (so you do not need to update your ``php.ini`` file).
+
+Configuring Apache Uploads
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+You should not need to change anything in your Apache configuration for file uploads to work.
+
+Configuring Nginx Uploads
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Add the lines below to your ``nginx.conf`` file in the ``http`` block and then restart nginx using ``service nginx restart``.
+
+.. code-block:: text
+
+    http {
+
+    [...]
+
+    client_max_body_size 100m;
+    client_body_timeout 120s;
+
+    }
+
 Running the Upgrader
 --------------------
 Running the upgrader is a very simple step and often requires no extra dependencies to be installed on your server.
