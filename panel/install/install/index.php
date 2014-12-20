@@ -123,6 +123,9 @@ if(file_exists('install.lock'))
 						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) != "0777")
 							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
+						if(substr(sprintf('%o', fileperms('../../../src/cache')), -4) != "0777")
+							$failedList .= '<p class="text-danger"><code>/src/cache</code> is improperly CHMOD\'d. It should be 0777.</p>';
+
 						if(substr(sprintf('%o', fileperms('../install')), -4) != "0777")
 							$failedList .= '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
 
