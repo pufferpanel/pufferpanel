@@ -22,10 +22,9 @@ use \ORM, \Flow, \Tracy, \League\Flysystem\Filesystem as Filesystem, \League\Fly
 require_once '../../../../src/core/core.php';
 
 // prevent output buffering
+ini_set('upload_max_filesize', '100M');
+ini_set('post_max_size', '110M');
 set_time_limit(0);
-if(ob_get_level()) {
-	ob_end_clean();
-}
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false) {
 	http_response_code(403);
@@ -40,6 +39,15 @@ if($core->user->hasPermission('files.delete') !== true) {
 if(!isset($_POST['newFilePath'])) {
 	http_response_code(404);
 	return 'missing parameters.';
+}
+
+if(($_POST['flowTotalSize'] / (1024 * 1024)) > 100) {
+	http_response_code(500);
+	return 'this file is too large to upload (max size: 100MB)';
+}
+
+if(ob_get_level()) {
+	ob_end_clean();
 }
 
 try {
@@ -105,10 +113,10 @@ try {
 
 	if($file->validateFile() && $file->save($uploadPath.$_POST['flowFilename'])) {
 
+			http_response_code(200);
 			$stream = fopen($uploadPath.$_POST['flowFilename'], 'r');
 			$filesystem->writeStream(rtrim($_POST['newFilePath'], '/').'/'.$_POST['flowFilename'], $stream);
 			unlink($uploadPath.$_POST['flowFilename']);
-			http_response_code(200);
 
 	}else{
 

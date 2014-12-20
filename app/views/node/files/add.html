@@ -62,6 +62,7 @@
 		<div class="tab-pane" id="upload">
 			<h4>/server/{% if get.dir != 1 %}{{ get.dir }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
 			<div class="well well-sm"><p class="text-muted" style="margin-bottom:0;"><i class="fa fa-warning"></i> Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/server/</code> and begin typing. Once you have done this please click the button below to initalize the uploader.</p></div>
+			<div class="alert alert-info">After a file is completed uploading it may appear that the page hangs and that the file is stuck with 0 seconds remaining. This is because we are playing with bits in the background and depending on the size of the file this might take some time. For very large files we highly suggest using your FTP client to upload files as it will be much quicker.</div>
 			<button id="init_uploader" class="btn btn-primary btn-sm">Initalize Uploader</button>
 			<div id="initUploaderDiv" style="display:none;">
 				<div class="well" id="dropFiles">
@@ -99,7 +100,7 @@ $(document).ready(function() {
 	}
 	function secondsToStr (temp) {
 		function numberEnding (number) {
-			return (number > 1) ? 's' : '';
+			return (number != 1) ? 's' : '';
 		}
 		var years = Math.floor(temp / 31536000);
 		if (years) {
@@ -143,7 +144,7 @@ $(document).ready(function() {
 				<div class="row"> \
 					<div class="col-8"> \
 						<h6>Uploading <span class="flow-file-name"></span> <span class="flow-file-size"></span></h6> \
-						<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;"></span> \
+						<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
 						<div class="progress progress-striped active"> \
 							<div class="progress-bar progress-bar-info" style="width: 0%"></div> \
 						</div> \
@@ -199,7 +200,7 @@ $(document).ready(function() {
 			.html(Math.floor(file.progress()*100) + '% '
 			+ readablizeBytes(file.averageSpeed) + '/s '
 			+ secondsToStr(file.timeRemaining()) + ' remaining') ;
-			$('.progress-bar').css({width:Math.floor(flow.progress()*100) + '%'});
+			$('.flow-file-'+file.uniqueIdentifier+' .progress .progress-bar').css('width', Math.floor(file.progress()*100) + '%');
 		});
 		flow.on('complete', function(){
 			$('.flow-progress .progress-resume-link, .flow-progress .progress-pause-link').hide();
