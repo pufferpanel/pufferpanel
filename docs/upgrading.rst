@@ -37,7 +37,7 @@ If you don't know what version is the latest simply run the command below to lis
 Handle File Uploads
 -------------------
 
-.. info::
+.. note::
 
     You only need to do this if you are upgrading from 0.7.5 to 0.7.6.
 
