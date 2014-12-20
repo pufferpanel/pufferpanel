@@ -42,39 +42,22 @@ Install Game Server Daemon
 
 .. code-block:: sh
 
-	[$]~ cd /srv
-	[$]~ git clone https://github.com/PufferPanel/gsd.git
+	[$]~ cd /srv && git clone https://github.com/PufferPanel/gsd.git
 	[$]~ git checkout tags/<version>
-	[$]~ cd /tmp
-	[$]~ git clone https://github.com/PufferPanel/cpulimit.git
-	[$]~ cp cpulimit/cpulimit /usr/bin
+	[$]~ cd /tmp && git clone https://github.com/PufferPanel/cpulimit.git
+	[$]~ sudo cp cpulimit/cpulimit /usr/bin
 
 This will download all of the files necessary and place them into the correct directory. To checkout the lastest version of ``GSD`` please `check the releases <https://github.com/PufferPanel/gsd/releases>`_ and input the version that the release is titled. For example, ``0.1.4``.
 
-You will need to make ``config.json`` and it should look similar to the code below. Please make sure to update the ```authurl`` value to link to your panel correctly. Update ``YOUR_NODE_TOKEN_HERE`` to be the code that is displayed in PufferPanel for your node, it is called ``gsd_secret`` in the panel.
+You will need to make ``config.json`` in ``/srv/gsd``. The contents of this file are shown after you create a node in the panel. Simply copy and paste this into the file and save it.
 
-If you are running version ``0.7.5`` or higher simply copy and paste the configuration shown when viewing this node in your panel.
+.. code-block:: sh
 
-.. code-block:: json
+	[$]~ cd /srv/gsd && vi config.json
+	
+.. note::
 
-	{
-		"daemon": {
-			"listenport": 8003,
-			"consoleport": 8031
-		},
-		"tokens": ["YOUR_NODE_TOKEN_HERE"],
-		"interfaces":{
-			"rest":{},
-			"console":{},
-			"ftp":{
-				"authurl": "http://www.example.com/ajax/validate_ftp.php",
-				"port": 21,
-				"host": "127.0.0.1",
-				"use_ssl": true
-			}
-		},
-		"servers": []
-	}
+	When using *vi* you can save and close the file by pressing: *ESC* and then typing *:wq*.
 
 FTPS Configuration
 ^^^^^^^^^^^^^^^^^^
