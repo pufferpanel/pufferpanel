@@ -6,6 +6,16 @@ Starting in version ``0.7.5 Beta`` we now support running an upgrader rather tha
 
     Please be aware that upgrading from 0.7.5 Beta (and prior) to 0.7.6 Beta requires modification of your core GSD configuration files! **You must be running GSD version 0.1.4 on each node before upgrading! GSD MUST BE ON.**
 
+Update GSD Code Base
+--------------------
+
+.. code-block:: sh
+
+    [$]~ git reset --hard HEAD
+    [$]~ git fetch --tags
+    [$]~ git checkout tags/<version>
+    [$]~ npm update && npm start
+
 Update MySQL User
 -----------------
 If you are running this upgrader and are updating from versions prior to ``0.7.5`` you will first need to update your MySQL user to have the correct permissions for the database. Please run the command below to update the user.
@@ -14,8 +24,8 @@ If you are running this upgrader and are updating from versions prior to ``0.7.5
 
   GRANT ALTER, DROP ON database.* TO 'user'@'localhost';
 
-Update the Code Base
---------------------
+Update the PufferPanel Code Base
+--------------------------------
 Thanks to git updating the code is a very simple process. Simply run the commands below to update the code.
 
 .. warning::
