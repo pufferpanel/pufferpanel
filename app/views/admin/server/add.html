@@ -179,7 +179,6 @@
 				return false;
 			}
 		});
-		return false;
 	}
 	$(document).ready(function(){
 		updateNodeList();
@@ -197,11 +196,11 @@
 			});
 			return false;
 		});
-		$('#getNode').change(function(){
-			updateList();
+		$(document).on('change', '#getNode', function() {
+			updateList()
 		});
-		$('#getLocation').change(function(){
-			updateNodeList();
+		$(document).on('change', '#getLocation', function() {
+			updateNodeList()
 		});
 		// $('[name="assign_random"]').click(function(){
 		// 	if($(this).is(':checked')) {
