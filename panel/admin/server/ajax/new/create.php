@@ -51,7 +51,7 @@ if(!$node) {
 /*
 * GSD Must Be Online!
 */
-if(!@fsockopen($node->ip, 8003, $num, $error, 3)) {
+if(!@fsockopen($node->ip, $node->gsd_listen, $num, $error, 3)) {
 	Components\Page::redirect('../../add.php?disp=gsd_offline&error=na');
 }
 
