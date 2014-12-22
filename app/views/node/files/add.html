@@ -121,129 +121,133 @@ $(document).ready(function() {
 		var seconds = temp % 60;
 		return seconds + ' second' + numberEnding(seconds);
 	}
-	$("#init_uploader").click(function(){
-		$(this).hide();
-		$("#initUploaderDiv").show();
-		var flow = new Flow({
-			target: '../ajax/files/upload.php',
-			testChunks: false,
-			query: {
-				newFilePath: "{% if get.dir != 1 %}{{ get.tab }}{% endif %}" + $("#u_file_name").val()
-			}
-		});
-		flow.assignBrowse(document.getElementById('browseFiles'));
-		flow.assignDrop(document.getElementById('dropFiles'));
-		flow.on('filesSubmitted', function(file) {
-			flow.upload();
-		});
-		flow.on('fileAdded', function(file, event){
-			// Show progress bar
-			$('.flow-progress, .flow-list').show();
-			// Add the file to the list
-			$('.flow-list').append('<div class="well well-sm flow-file flow-file-'+ file.uniqueIdentifier +'"> \
-				<div class="row"> \
-					<div class="col-8"> \
-						<h6>Uploading <span class="flow-file-name"></span> <span class="flow-file-size"></span></h6> \
-						<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
-						<div class="progress progress-striped active"> \
-							<div class="progress-bar progress-bar-info" style="width: 0%"></div> \
+	{% if permission.files.upload == true %}
+		$("#init_uploader").click(function(){
+			$(this).hide();
+			$("#initUploaderDiv").show();
+			var flow = new Flow({
+				target: '../ajax/files/upload.php',
+				testChunks: false,
+				query: {
+					newFilePath: "{% if get.dir != 1 %}{{ get.tab }}{% endif %}" + $("#u_file_name").val()
+				}
+			});
+			flow.assignBrowse(document.getElementById('browseFiles'));
+			flow.assignDrop(document.getElementById('dropFiles'));
+			flow.on('filesSubmitted', function(file) {
+				flow.upload();
+			});
+			flow.on('fileAdded', function(file, event){
+				// Show progress bar
+				$('.flow-progress, .flow-list').show();
+				// Add the file to the list
+				$('.flow-list').append('<div class="well well-sm flow-file flow-file-'+ file.uniqueIdentifier +'"> \
+					<div class="row"> \
+						<div class="col-8"> \
+							<h6>Uploading <span class="flow-file-name"></span> <span class="flow-file-size"></span></h6> \
+							<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
+							<div class="progress progress-striped active"> \
+								<div class="progress-bar progress-bar-info" style="width: 0%"></div> \
+							</div> \
+						</div> \
+						<div class="col-4"> \
+							<p style="padding-top:32px;"> \
+								<button class="flow-file-pause btn btn-xs btn-primary"><i class="fa fa-pause"></i> Pause</button> \
+								<button class="flow-file-resume btn btn-xs btn-primary" style="display:none;"><i class="fa fa-play"></i> Resume</button> \
+								<button class="flow-file-cancel btn btn-xs btn-danger"><i class="fa fa-remove"></i> Cancel</button> \
+							</p> \
 						</div> \
 					</div> \
-					<div class="col-4"> \
-						<p style="padding-top:32px;"> \
-							<button class="flow-file-pause btn btn-xs btn-primary"><i class="fa fa-pause"></i> Pause</button> \
-							<button class="flow-file-resume btn btn-xs btn-primary" style="display:none;"><i class="fa fa-play"></i> Resume</button> \
-							<button class="flow-file-cancel btn btn-xs btn-danger"><i class="fa fa-remove"></i> Cancel</button> \
-						</p> \
-					</div> \
-				</div> \
-			</div>');
-			var $self = $('.flow-file-'+file.uniqueIdentifier);
-				$self.find('.flow-file-name').text(file.name);
-				$self.find('.flow-file-size').text("(" + readablizeBytes(file.size) + ")");
-				$self.find('.flow-file-pause').on('click', function () {
-					file.pause();
-					$self.find('.flow-file-pause').hide();
-					$self.find('.flow-file-resume').show();
-				});
-				$self.find('.flow-file-resume').on('click', function () {
-					file.resume();
-					$self.find('.flow-file-pause').show();
-					$self.find('.flow-file-resume').hide();
-				});
-				$self.find('.flow-file-cancel').on('click', function () {
-					file.cancel();
-					$self.remove();
-				});
+				</div>');
+				var $self = $('.flow-file-'+file.uniqueIdentifier);
+					$self.find('.flow-file-name').text(file.name);
+					$self.find('.flow-file-size').text("(" + readablizeBytes(file.size) + ")");
+					$self.find('.flow-file-pause').on('click', function () {
+						file.pause();
+						$self.find('.flow-file-pause').hide();
+						$self.find('.flow-file-resume').show();
+					});
+					$self.find('.flow-file-resume').on('click', function () {
+						file.resume();
+						$self.find('.flow-file-pause').show();
+						$self.find('.flow-file-resume').hide();
+					});
+					$self.find('.flow-file-cancel').on('click', function () {
+						file.cancel();
+						$self.remove();
+					});
+			});
+			window.flow = {
+				pause: function () {
+					flow.pause();
+					$('.flow-file-resume').show();
+					$('.flow-file-pause').hide();
+					$('.flow-progress .progress-resume-link').show();
+					$('.flow-progress .progress-pause-link').hide();
+				},
+				cancel: function() {
+					flow.cancel();
+					$('.flow-file').remove();
+				},
+				upload: function() {
+					$('.flow-file-pause').show();
+					$('.flow-file-resume').hide();
+					flow.resume();
+				},
+				flow: flow
+			};
+			flow.on('fileProgress', function(file){
+				$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress')
+				.html(Math.floor(file.progress()*100) + '% '
+				+ readablizeBytes(file.averageSpeed) + '/s '
+				+ secondsToStr(file.timeRemaining()) + ' remaining') ;
+				$('.flow-file-'+file.uniqueIdentifier+' .progress .progress-bar').css('width', Math.floor(file.progress()*100) + '%');
+			});
+			flow.on('complete', function(){
+				$('.flow-progress .progress-resume-link, .flow-progress .progress-pause-link').hide();
+			});
+			flow.on('fileSuccess', function(file, message){
+				var $self = $('.flow-file-'+file.uniqueIdentifier);
+				$self.find('.flow-file-progress').text('Upload Completed');
+				$self.find('.flow-file-pause, .flow-file-resume').remove();
+			});
+			flow.on('fileError', function(file, message){
+				// Reflect that the file upload has resulted in error
+				$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress').html('(file could not be uploaded: '+message+')');
+			});
+			flow.on('uploadStart', function(){
+				$('.flow-progress .progress-resume-link').hide();
+				$('.flow-progress .progress-pause-link').show();
+			});
 		});
-		window.flow = {
-			pause: function () {
-				flow.pause();
-				$('.flow-file-resume').show();
-				$('.flow-file-pause').hide();
-				$('.flow-progress .progress-resume-link').show();
-				$('.flow-progress .progress-pause-link').hide();
-			},
-			cancel: function() {
-				flow.cancel();
-				$('.flow-file').remove();
-			},
-			upload: function() {
-				$('.flow-file-pause').show();
-				$('.flow-file-resume').hide();
-				flow.resume();
-			},
-			flow: flow
-		};
-		flow.on('fileProgress', function(file){
-			$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress')
-			.html(Math.floor(file.progress()*100) + '% '
-			+ readablizeBytes(file.averageSpeed) + '/s '
-			+ secondsToStr(file.timeRemaining()) + ' remaining') ;
-			$('.flow-file-'+file.uniqueIdentifier+' .progress .progress-bar').css('width', Math.floor(file.progress()*100) + '%');
-		});
-		flow.on('complete', function(){
-			$('.flow-progress .progress-resume-link, .flow-progress .progress-pause-link').hide();
-		});
-		flow.on('fileSuccess', function(file, message){
-			var $self = $('.flow-file-'+file.uniqueIdentifier);
-			$self.find('.flow-file-progress').text('Upload Completed');
-			$self.find('.flow-file-pause, .flow-file-resume').remove();
-		});
-		flow.on('fileError', function(file, message){
-			// Reflect that the file upload has resulted in error
-			$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress').html('(file could not be uploaded: '+message+')');
-		});
-		flow.on('uploadStart', function(){
-			$('.flow-progress .progress-resume-link').hide();
-			$('.flow-progress .progress-pause-link').show();
-		});
-	});
-	$("#create_file").click(function(e) {
-		e.preventDefault();
-		$("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
-		$.ajax({
-			type: "POST",
-			url: "../ajax/files/new.php",
-			data: {
-				newFilePath: "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val(),
-				newFileContents: $("#live_console").val()
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				$("#write_status").html('<div class="alert alert-danger">'+errorThrown+'</div>').show();
-				$("#create_file").html("Save").removeClass("disabled");
-			},
-			success: function(data) {
-				if(data != "ok"){
-					$("#write_status").html(data);
+	{% endif %}
+	{% if permission.files.create == true %}
+		$("#create_file").click(function(e) {
+			e.preventDefault();
+			$("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
+			$.ajax({
+				type: "POST",
+				url: "../ajax/files/new.php",
+				data: {
+					newFilePath: "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val(),
+					newFileContents: $("#live_console").val()
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#write_status").html('<div class="alert alert-danger">'+errorThrown+'</div>').show();
 					$("#create_file").html("Save").removeClass("disabled");
-					$("#write_status").slideDown();
-				} else {
-					$().redirect('edit.php', {'file': "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val()});
+				},
+				success: function(data) {
+					if(data != "ok"){
+						$("#write_status").html(data);
+						$("#create_file").html("Save").removeClass("disabled");
+						$("#write_status").slideDown();
+					} else {
+						$().redirect('edit.php', {'file': "{% if get.dir != 1 %}{{ get.dir }}{% endif %}" + $("#file_name").val()});
+					}
 				}
-			}
+			});
 		});
-	});
+	{% endif %}
 });
 </script>
 {% endblock %}

@@ -39,12 +39,19 @@ if($core->gsd->online() === true) {
 	$content = array('contents' => 'Server is currently offline.');
 }
 
+if($core->user->getData('id') != $core->server->getData('owner_id')) {
+
+	$permissionJson = json_decode($core->user->getData('permissions'), true);
+	$gsdSecret = $permissionJson[$core->server->getData('hash')]['key'];
+
+}
+
 /*
  * Display Page
  */
 echo $twig->render(
 	'node/index.html', array(
-		'server' => array_merge($core->server->getData(), array('node' => $core->server->nodeData('node'), 'console_inner' => $content['contents'])),
+		'server' => array_merge($core->server->getData(), array('gsd_secret' => (isset($gsdSecret)) ? $gsdSecret : $core->server->getData('gsd_secret'), 'node' => $core->server->nodeData('node'), 'console_inner' => $content['contents'])),
 		'node' => $core->server->nodeData(),
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
