@@ -64,6 +64,8 @@ define('SRC_DIR', BASE_DIR.'src/');
 require_once(SRC_DIR.'core/configuration.php');
 require_once(BASE_DIR.'vendor/autoload.php');
 
+\Twig_Autoloader::register();
+
 /*
  * To use a local-only debugging option please uncomment the lines
  * below and comment out the bugsnag lines above. This debugging can be
@@ -104,7 +106,6 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/query.php');
 require_once(__DIR__.'/server.php');
 require_once(__DIR__.'/settings.php');
-require_once(__DIR__.'/render.php');
 
 /*
  * Initalize Global core
@@ -123,7 +124,11 @@ $core->email = new Email();
 $core->log = new Log($core->user->getData('id'));
 $core->gsd = new Query($core->server->getData('id'));
 $core->files = new Files();
-$core->render = new Render();
+$core->twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR.'views/'), array(
+	'cache' => false,
+	'debug' => true
+));
+
 
 /*
  * Require HTTPS Connection
@@ -150,16 +155,11 @@ if(!$core->user->getData('language')) {
 /*
  * Twig Setup
  */
-\Twig_Autoloader::register();
-$loader = new \Twig_Loader_Filesystem(APP_DIR.'views/');
-$twig = new \Twig_Environment($loader, array(
-	'cache' => false,
-	'debug' => true
-));
 $twig->addGlobal('lang', $_l->loadTemplates());
 $twig->addGlobal('settings', $core->settings->get());
 $twig->addGlobal('get', Components\Page::twigGET());
 $twig->addGlobal('permission', $core->user->twigListPermissions());
 $twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
-if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
-$core->render->setRender($twig);
+if($core->user->getData('root_admin') == 1) {
+	$twig->addGlobal('admin', true); 
+}
