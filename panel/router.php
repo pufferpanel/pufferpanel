@@ -18,8 +18,6 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-namespace PufferPanel\Core;
-
 session_start();
 
 require_once('../src/core/core.php');
@@ -86,7 +84,7 @@ $klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $
 	$klein->skipRemaining();
 });
 
-$klein->respond('/admin/[**:trail]', function($request, $response) use ($klein, $core, $twig, $pageStartTime) {
+$klein->respond('/admin/[**:trail]', function($request, $response) use ($klein, $core, $pageStartTime) {
 	$path = 'admin/' . $request->param('trail');
 
 	if(file_exists($path)) {

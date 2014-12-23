@@ -104,6 +104,7 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/query.php');
 require_once(__DIR__.'/server.php');
 require_once(__DIR__.'/settings.php');
+require_once(__DIR__.'/render.php');
 
 /*
  * Initalize Global core
@@ -122,6 +123,7 @@ $core->email = new Email();
 $core->log = new Log($core->user->getData('id'));
 $core->gsd = new Query($core->server->getData('id'));
 $core->files = new Files();
+$core->render = new Render();
 
 /*
  * Require HTTPS Connection
@@ -160,4 +162,4 @@ $twig->addGlobal('get', Components\Page::twigGET());
 $twig->addGlobal('permission', $core->user->twigListPermissions());
 $twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 if($core->user->getData('root_admin') == 1){ $twig->addGlobal('admin', true); }
-?>
+$core->render->setRender($twig);
