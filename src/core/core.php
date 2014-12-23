@@ -18,7 +18,6 @@
  */
 namespace PufferPanel\Core;
 use \ORM, \PDO, \Tracy\Debugger;
-session_start();
 
 /*
  * Initalize Start Time
