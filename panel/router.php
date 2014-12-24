@@ -17,47 +17,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-
+namespace PufferPanel\Core;
 session_start();
 
-require_once('../src/core/core.php');
+require '../src/core/core.php';
 
 $klein = new \Klein\Klein();
-
-$klein->respond('GET', '/assets/[**:trail]', function($request, $response) use ($klein) {
-	$path = 'assets/' . $request->param('trail');
-
-	if(file_exists($path)) {
-
-		//This is a workaround to klein sending files not working
-		//It is advised the web server handles the /assets/ route instead
-		$ext = pathinfo($path)['extension'];
-		switch ($ext) {
-			case 'js': $mimetype = 'text/javascript';
-				break;
-
-			case 'css': $mimetype = 'text/css';
-				break;
-
-			default: $mimetype = 'text/plain';
-				break;
-		}
-
-		$filename = basename($path);
-		$response->header('Content-type', $mimetype);
-		$response->header('Content-length', filesize($path));
-		$response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-		$response->body(readFile($path));
-		$response->send();
-
-	} else {
-
-		$response->code('404');
-
-	}
-
-	$klein->skipRemaining();
-});
 
 $klein->respond(function($request, $response, $service, $app) use ($core) {
 	$app->register('isLoggedIn', function() use ($core, $request) {
@@ -72,33 +37,14 @@ $klein->respond('/!(logout|index|register|password|api)', function($request, $re
 	}
 });
 
-$klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $core){
-	$path = 'ajax/' . $request->param('trail');
-
-	if(file_exists($path)) {
-		include($path);
-	} else {
-		$response->code(404);
-	}
-
-	$klein->skipRemaining();
-});
-
-$klein->respond('/admin/[**:trail]', function($request, $response) use ($klein, $core, $pageStartTime) {
-	$path = 'admin/' . $request->param('trail');
-
-	if(file_exists($path)) {
-		include($path);
-	} else {
-		$response->code(404);
-	}
-	$klein->skipRemaining();
-});
-
-include('root.php');
-include('api/index.php');
+include(SRC_DIR.'routes/assets/routes.php');
+include(SRC_DIR.'routes/admin/routes.php');
+include(SRC_DIR.'routes/ajax/routes.php');
+include(SRC_DIR.'routes/base/routes.php');
+include(SRC_DIR.'routes/api/routes.php');
 
 $klein->respond('GET', '/', function($request, $response, $service, $app) {
+
 	if($response->isSent()) {
 		return;
 	}

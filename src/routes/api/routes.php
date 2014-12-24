@@ -18,12 +18,12 @@
 */
 namespace PufferPanel\Core;
 
-header('Content-Type: application/json');
-
 require SRC_DIR.'core/api/initalize.php';
 $api = new API\Initalize();
 
-$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/[*:trailing]/?', function() use ($core, $api) {
+$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/[*:trailing]/?', function($request, $response) use ($core, $api) {
+
+	$response->header('Content-Type', 'application/json');
 
 	if($core->settings->get('use_api') != 1) {
 
@@ -50,10 +50,13 @@ $klein->with('/api/users', function() use ($klein, $api) {
 	$users = $api->loadClass('Users');
 
 	$klein->respond('GET', '/?', function($request, $response) use ($users) {
+		$response->header('Content-Type', 'application/json');
 		return json_encode($users->getUsers(), JSON_PRETTY_PRINT);
 	});
 
 	$klein->respond('GET', '/[:uuid]', function($request, $response) use ($users) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$data = $users->getUser($request->param('uuid'));
 		if(!$data) {
@@ -68,6 +71,8 @@ $klein->with('/api/users', function() use ($klein, $api) {
 	});
 
 	$klein->respond('PUT', '/[:uuid]', function($request, $response) use ($users) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$data = json_decode(file_get_contents('php://input'), true);
 		if(json_last_error() != "JSON_ERROR_NONE") {
@@ -96,6 +101,8 @@ $klein->with('/api/users', function() use ($klein, $api) {
 	});
 
 	$klein->respond('POST', '/?', function($request, $response) use ($users) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$json = json_decode(file_get_contents('php://input'), true);
 		if(json_last_error() != "JSON_ERROR_NONE") {
@@ -150,10 +157,13 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 	$servers = $api->loadClass('Servers');
 
 	$klein->respond('GET', '/?', function($request, $response) use ($servers) {
+		$response->header('Content-Type', 'application/json');
 		return json_encode($servers->getServers(), JSON_PRETTY_PRINT);
 	});
 
 	$klein->respond('GET', '/[:hash]', function($request, $response) use ($servers) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$data = $servers->getServer($request->param('hash'));
 		if(!$data) {
@@ -168,6 +178,8 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 	});
 
 	$klein->respond('POST', '/?', function($request, $response) use ($servers) {
+
+		$response->header('Content-Type', 'application/json');
 
 		if(!$request->isSecure()) {
 
@@ -238,10 +250,13 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 	$nodes = $api->loadClass('Nodes');
 
 	$klein->respond('GET', '/?', function($request, $response) use ($nodes) {
+		$response->header('Content-Type', 'application/json');
 		return json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 	});
 
 	$klein->respond('GET', '/[i:id]', function($request, $response) use ($nodes) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$data = $nodes->getNode($request->param('id'));
 		if(!$data) {
@@ -256,6 +271,8 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 	});
 
 	$klein->respond('POST', '/?', function ($request, $response) use ($nodes) {
+
+		$response->header('Content-Type', 'application/json');
 
 		$json = json_decode(file_get_contents('php://input'), true);
 		if(json_last_error() != "JSON_ERROR_NONE") {
@@ -298,10 +315,12 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 
 });
 
-$klein->onHttpError(function() {
+$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/?', function($request, $response) {
 
-	http_response_code(200);
-	echo json_encode(array(
+	$response->header('Content-Type', 'application/json');
+	$response->code(200);
+	return json_encode(array(
+		'message' => 'You have reached an invalid API endpoint.',
 		'endpoints' => array(
 			'/users' => array(
 				'GET' => array(
