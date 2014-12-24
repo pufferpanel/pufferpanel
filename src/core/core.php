@@ -155,11 +155,11 @@ if(!$core->user->getData('language')) {
 /*
  * Twig Setup
  */
-$twig->addGlobal('lang', $_l->loadTemplates());
-$twig->addGlobal('settings', $core->settings->get());
-$twig->addGlobal('get', Components\Page::twigGET());
-$twig->addGlobal('permission', $core->user->twigListPermissions());
-$twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
+$core->twig->addGlobal('lang', $_l->loadTemplates());
+$core->twig->addGlobal('settings', $core->settings->get());
+$core->twig->addGlobal('get', Components\Page::twigGET());
+$core->twig->addGlobal('permission', $core->user->twigListPermissions());
+$core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 if($core->user->getData('root_admin') == 1) {
-	$twig->addGlobal('admin', true); 
+	$core->twig->addGlobal('admin', true);
 }
