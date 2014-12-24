@@ -95,9 +95,8 @@ $klein->respond('/admin/[**:trail]', function($request, $response) use ($klein, 
 	$klein->skipRemaining();
 });
 
-$klein->with('/api', function() use ($klein, $core) {
-	include('api/index.php');
-});
+include('root.php');
+include('api/index.php');
 
 $klein->respond('GET', '/', function($request, $response, $service, $app) {
 	if($response->isSent()) {
@@ -109,8 +108,7 @@ $klein->respond('GET', '/', function($request, $response, $service, $app) {
 	} else {
 		$response->redirect('/index')->send();
 	}
-});
 
-include('root.php');
+});
 
 $klein->dispatch();

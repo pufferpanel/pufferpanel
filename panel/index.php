@@ -121,7 +121,7 @@ if(isset($_POST['totp']) && isset($_POST['check'])){
 
 }else{
 
-	echo $twig->render(
+	echo $core->twig->render(
 			'panel/index.html', array(
 				'xsrf' => $core->auth->XSRF(),
 				'footer' => array(

@@ -20,56 +20,32 @@ namespace PufferPanel\Core;
 
 header('Content-Type: application/json');
 
-require_once '../../src/core/core.php';
-require_once '../../src/core/api/initalize.php';
+require SRC_DIR.'core/api/initalize.php';
+$api = new API\Initalize();
 
-$klein = new \Klein\Klein();
-$base  = dirname($_SERVER['PHP_SELF']);
+$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/[*:trailing]/?', function() use ($core, $api) {
 
-if(ltrim($base, '/')) {
-	$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
-}
+	if($core->settings->get('use_api') != 1) {
 
-if($core->settings->get('use_api') != 1) {
-
-	http_response_code(404);
-	exit(json_encode(array('message' => 'This API is not enabled.')));
-
-}
-// check all requests for a header
-// $headers = getallheaders();
-// if(array_key_exists('X-Access-Token', $headers)){
-//
-// 	$authenticate = ORM::forTable('api')->where('key', $headers['X-Access-Token'])->findOne();
-//
-// 	if(!$authenticate){
-//
-// 		http_response_code(401);
-// 		exit();
-//
-// 	}
-//
-// }else{
-//
-// 	http_response_code(401);
-// 	exit();
-//
-// }
-
-if($core->settings->get('https') == 1) {
-
-	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
-
-		http_response_code(403);
-		exit(json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.')));
+		http_response_code(404);
+		exit(json_encode(array('message' => 'This API is not enabled.')));
 
 	}
 
-}
+	if($core->settings->get('https') == 1) {
 
-$api = new API\Initalize();
+		if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
 
-$klein->with('/users', function() use ($klein, $api) {
+			http_response_code(403);
+			exit(json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.')));
+
+		}
+
+	}
+
+});
+
+$klein->with('/api/users', function() use ($klein, $api) {
 
 	$users = $api->loadClass('Users');
 
@@ -169,7 +145,7 @@ $klein->with('/users', function() use ($klein, $api) {
 
 });
 
-$klein->with('/servers', function() use ($klein, $api) {
+$klein->with('/api/servers', function() use ($klein, $api) {
 
 	$servers = $api->loadClass('Servers');
 
@@ -257,7 +233,7 @@ $klein->with('/servers', function() use ($klein, $api) {
 
 });
 
-$klein->with('/nodes', function() use ($klein, $api) {
+$klein->with('/api/nodes', function() use ($klein, $api) {
 
 	$nodes = $api->loadClass('Nodes');
 
@@ -324,7 +300,7 @@ $klein->with('/nodes', function() use ($klein, $api) {
 
 $klein->onHttpError(function() {
 
-	http_response_code(404);
+	http_response_code(200);
 	echo json_encode(array(
 		'endpoints' => array(
 			'/users' => array(
@@ -364,5 +340,3 @@ $klein->onHttpError(function() {
 	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 });
-
-$klein->dispatch();
