@@ -30,7 +30,7 @@
     			<div>
                     {{ xsrf|raw }}
     				<input type="submit" class="btn btn-primary" value="Login" />
-    				<button class="btn btn-default" onclick="window.location='password.php';return false;">{{ lang.string_reset_password }}</button>
+    				<button class="btn btn-default" onclick="window.location='password';return false;">{{ lang.string_reset_password }}</button>
     			</div>
     		</div>
     	</fieldset>
@@ -38,7 +38,7 @@
 </div>
 <div class="modal fade" id="openTOTP" tabindex="-1" role="dialog">
 	<div class="modal-dialog" style="width:400px;">
-		<form action="index.php?do=login" method="POST" id="totp-form">
+		<form action="index" method="POST" id="totp-form">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title">Two-Factor Authentication Checkpoint</h4>

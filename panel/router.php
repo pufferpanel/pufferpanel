@@ -30,7 +30,7 @@ $klein->respond(function($request, $response, $service, $app) use ($core) {
 	});
 });
 
-$klein->respond('!@^/(index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
+$klein->respond('!@^/(index|register|password|api|language)', function($request, $response, $service, $app) use ($klein) {
 	if(!$app->isLoggedIn) {
 		$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 		$response->redirect('/index')->send();
@@ -38,12 +38,18 @@ $klein->respond('!@^/(index|register|password|api)', function($request, $respons
 	}
 });
 
-include(SRC_DIR.'routes/assets/routes.php');
-include(SRC_DIR.'routes/admin/routes.php');
-include(SRC_DIR.'routes/ajax/routes.php');
+// include(SRC_DIR.'routes/assets/routes.php');
+// include(SRC_DIR.'routes/admin/routes.php');
+// include(SRC_DIR.'routes/ajax/routes.php');
 include(SRC_DIR.'routes/base/routes.php');
 include(SRC_DIR.'routes/api/routes.php');
 
-// @TODO 404 Handler
+try {
 
-$klein->dispatch();
+	$klein->dispatch();
+
+} catch(\Exception $e) {
+
+	echo 'An exception occured while trying to render this page.';
+
+}

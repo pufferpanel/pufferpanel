@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap.css">
+	<title>404 File Not Found</title>
+</head>
+<body>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{{ settings.master_url }}">404 Not Found</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<h1 style="text-align:center;">404 - File Not Found</h1>
+				<p>&nbsp;</p>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-8 ">
+					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format(fversion)|raw }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -8,7 +8,7 @@
 		<p><strong>IP Address:</strong> {{ IP_ADDRESS }}<br />
 			<strong>Hostname:</strong> {{ GETHOSTBY_IP_ADDRESS }}<br />
 			<strong>Time:</strong> {{ DATE }}</p>
-		<p>This email is intended to keep you aware of any possible malicious account activity. You can change your notification preferences by <a href="{{ MASTER_URL }}accounts.php">clicking here</a>.</p>
+		<p>This email is intended to keep you aware of any possible malicious account activity. You can change your notification preferences by <a href="{{ MASTER_URL }}account">clicking here</a>.</p>
 		<p>Thanks!<br />{{ HOST_NAME }}</p>
 	</body>
 </html>
