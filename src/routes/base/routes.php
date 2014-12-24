@@ -18,7 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 use PufferPanel\Core, \ORM;
 
-$klein->respond('GET', '/', function($request, $response, $service, $app) {
+$klein->respond('GET', '/?', function($request, $response, $service, $app) {
 
 	if($response->isSent()) {
 		return;
