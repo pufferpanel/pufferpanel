@@ -26,11 +26,11 @@ $klein = new \Klein\Klein();
 
 $klein->respond(function($request, $response, $service, $app) use ($core) {
 	$app->register('isLoggedIn', function() use ($core, $request) {
-		return $core->auth->isLoggedIn($request->server()['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'));
+		return $core->auth->isLoggedIn($request->ip(), $request->cookies()['pp_auth_token']);
 	});
 });
 
-$klein->respond('/!(logout|index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
+$klein->respond('!@^/(logout|index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
 	if(!$app->isLoggedIn) {
 		$response->redirect('/index')->send();
 		$klein->skipRemaining();
@@ -43,18 +43,6 @@ include(SRC_DIR.'routes/ajax/routes.php');
 include(SRC_DIR.'routes/base/routes.php');
 include(SRC_DIR.'routes/api/routes.php');
 
-$klein->respond('GET', '/', function($request, $response, $service, $app) {
-
-	if($response->isSent()) {
-		return;
-	}
-
-	if($app->isLoggedIn) {
-		$response->redirect('/servers', 302)->send();
-	} else {
-		$response->redirect('/index')->send();
-	}
-
-});
+// @TODO 404 Handler
 
 $klein->dispatch();
