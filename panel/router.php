@@ -30,8 +30,9 @@ $klein->respond(function($request, $response, $service, $app) use ($core) {
 	});
 });
 
-$klein->respond('!@^/(logout|index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
+$klein->respond('!@^/(index|register|password|api)', function($request, $response, $service, $app) use ($klein) {
 	if(!$app->isLoggedIn) {
+		$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 		$response->redirect('/index')->send();
 		$klein->skipRemaining();
 	}

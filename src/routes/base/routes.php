@@ -125,11 +125,20 @@ $klein->with('/index', function() use ($klein, $core) {
 
 });
 
-$klein->respond('GET', '/logout', function() use ($core) {
-	return 'Called /logout';
-});
+$klein->respond('GET', '/logout', function($request, $response) use ($core) {
 
-$klein->respond('POST', '/logout', function() use ($core) {
+
+	$response->cookie("pp_auth_token", null, time() - 86400);
+	$response->cookie("pp_server_node", null, time() - 86400);
+	$response->cookie("pp_server_hash", null, time() - 86400);
+
+	$logout = ORM::forTable('users')->where(array('session_id' => $request->cookies()['pp_auth_token'], 'session_ip' => $request->ip()))->findOne();
+	$logout->session_id = null;
+	$logout->session_ip = null;
+	$logout->save();
+
+	$response->redirect('/index')->send();
+
 });
 
 $klein->respond('GET', '/password', function() use ($core) {
