@@ -3,25 +3,12 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 <div class="col-6">
-   	<form action="index.php?do=login" method="POST" id="login-form">
+   	<form action="index" method="POST" id="login-form">
     	<legend>{{ lang.login_login_h1 }}</legend>
     	<fieldset>
-            {% if get.registered is defined %}
-                <div class="alert alert-success">Your account has been created. You may now login and access the server.</div>
+            {% if flash.info is defined %}
+                {{ flash.info.0|raw }}
             {% endif %}
-    		{% if get.error is defined %}
-                {% if get.error == 'true' %}
-                    <div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>
-                {% else %}
-                    <div class="alert alert-warning">Please ensure that you have cookies enabled. We were unable to verify the token sent.</div>
-                {% endif %}
-    		{% endif %}
-    		{% if get.totp is defined %}
-    			<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>
-    		{% endif %}
-    		{% if get.login is defined %}
-    			<div class="alert alert-danger">You are not authorized to access that page. Please log in.</div>
-    		{% endif %}
     		<div class="form-group">
     			<label for="email" class="control-label">{{ lang.string_email }}</label>
     			<div>
@@ -78,7 +65,7 @@ $(document).ready(function(){
 		var check_email = $("#email").val();
 		$.ajax({
 			type: "POST",
-			url: "index.php",
+			url: "index/totp",
 			async:false,
 			data: { totp: true, check: check_email },
 			success: function(data){
