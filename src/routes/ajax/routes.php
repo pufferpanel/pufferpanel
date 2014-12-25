@@ -17,15 +17,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
+use \ORM;
 
-$klein->respond('/ajax/[**:trail]', function($request, $response) use ($klein, $core){
-	$path = 'ajax/' . $request->param('trail');
+$klein->respond('POST', '/ajax/status', function($request, $response, $service, $app) use ($core){
 
-	if(file_exists($path)) {
-		include($path);
+	if(!$app->isLoggedIn) {
+		$response->body('#FF9900')->send();
 	} else {
-		$response->code(404);
+
+		if($request->param('server')) {
+
+			$status = ORM::forTable('servers')
+				->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
+				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->where('servers.id', $_POST['server'])
+				->findOne();
+
+			if(!$core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret)) {
+				$response->body('#E33200')->send();
+			} else {
+				$response->body('#53B30C')->send();
+			}
+
+		} else {
+			$response->body('#FF9900')->send();
+		}
+
 	}
 
-	$klein->skipRemaining();
 });

@@ -53,11 +53,10 @@ $klein->respond('@^/auth/', function($request, $response, $service, $app) use ($
 
 });
 
-// include(SRC_DIR.'routes/assets/routes.php');
-// include(SRC_DIR.'routes/admin/routes.php');
-// include(SRC_DIR.'routes/ajax/routes.php');
-//include(SRC_DIR.'routes/panel/routes.php');
+include(SRC_DIR.'routes/admin/routes.php');
+include(SRC_DIR.'routes/ajax/routes.php');
 include(SRC_DIR.'routes/auth/routes.php');
+include(SRC_DIR.'routes/panel/routes.php');
 include(SRC_DIR.'routes/api/routes.php');
 
 $klein->respond('*', function($request, $response, $service) use ($core) {

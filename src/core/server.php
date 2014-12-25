@@ -137,18 +137,13 @@ class Server extends User {
 
 		$this->__construct($hash, $userid, $isroot);
 
-		if($isroot == '1')
+		if($isroot == '1') {
 			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
-		else
+		} else {
 			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
+		}
 
-		if($this->server !== false){
-
-			setcookie('pp_server_hash', $this->server->hash, 0, '/');
-			$this->redirect('node/index.php');
-
-		}else
-			$this->redirect('servers.php?error=error');
+		return (!$this->server) ? false : true;
 
 	}
 

@@ -17,6 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
+use \ORM;
 
 require SRC_DIR.'core/api/initalize.php';
 $api = new API\Initalize();
