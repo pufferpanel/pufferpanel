@@ -176,20 +176,28 @@ trait Authentication {
 	* @param mixed $identifier
 	* @return mixed
 	*/
-	public function XSRF($token = null, $identifier = null){
+	public function XSRF($token = null, $identifier = null, $reset = false){
 
 		$this->tkid = "pp_xsrf_token".$identifier;
 
-		if(!is_null($token))
-			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token){
-				unset($_SESSION[$this->tkid]);
-				return true;
-			}else
-				return false;
-		else {
-			$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
-			$_SESSION[$this->tkid] = $xsrfToken;
-			return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
+		if(!is_null($token)) {
+
+			return (isset($_COOKIE[$this->tkid]) && $_COOKIE[$this->tkid] == $token) ? true : false;
+
+		} else {
+
+			if(!isset($_COOKIE[$this->tkid]) || $reset === true) {
+
+				$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
+				setcookie($this->tkid, $xsrfToken, 0, '/');
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
+
+			} else {
+
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$_COOKIE[$this->tkid].'" />';
+
+			}
+
 		}
 
 	}

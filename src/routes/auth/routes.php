@@ -1,36 +1,30 @@
 <?php
 /*
-PufferPanel - A Minecraft Server Management Panel
-Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Minecraft Server Management Panel
+	Copyright (c) 2013 Dane Everitt
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 use PufferPanel\Core, \ORM;
-
-$klein->respond('GET', '/account', function() use ($core) {
-});
-
-$klein->respond('POST', '/account', function() use ($core) {
-});
 
 $klein->respond('GET', '/auth/login', function($request, $response, $service, $app) use ($core) {
 
 	if($app->isLoggedIn) {
-		$response->redirect('/servers')->send();
+		$response->redirect('/index')->send();
 	}
 
-	$response->body($core->twig->render('panel/index.html', array(
+	$response->body($core->twig->render('auth/login.html', array(
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
 	)));
@@ -42,7 +36,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 	if(!$core->auth->XSRF($request->param('xsrf'))) {
 
 		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-		$response->redirect('/index')->send();
+		$response->redirect('/auth/login')->send();
 
 	}
 
@@ -60,13 +54,13 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 		}
 
 		$service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>');
-		$response->redirect('/index')->send();
+		$response->redirect('/auth/login')->send();
 
 	} else {
 
 		if($account->use_totp == 1 && !$core->auth->validateTOTP($request->param('totp_token'), $account->totp_secret)){
 			$service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>');
-			$response->redirect('/index')->send();
+			$response->redirect('/auth/login')->send();
 		}
 
 		$cookie = (object) array('token' => $core->auth->keygen('12'), 'expires' => ($request->param('remember_me')) ? (time() + 604800) : null);
@@ -87,13 +81,13 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 		}
 
 		$response->cookie('pp_auth_token', $cookie->token, $cookie->expires);
-		$response->redirect('/servers')->send();
+		$response->redirect('/index')->send();
 
 	}
 
 });
 
-$klein->respond('POST', '/auth/index/totp', function($request, $response) use ($core) {
+$klein->respond('POST', '/auth/login/totp', function($request, $response) use ($core) {
 
 	if(!$request->param('totp') || !$request->param('check')) {
 		$response->body(false);
@@ -111,51 +105,29 @@ $klein->respond('POST', '/auth/index/totp', function($request, $response) use ($
 
 });
 
-$klein->respond('GET', '/language/[:language]', function($request, $response, $service, $app) use ($core) {
+$klein->respond('GET', '/auth/logout', function($request, $response, $service, $app) use ($core) {
 
-	if(file_exists(SRC_DIR.'lang/'.$request->param('language').'.json')) {
+	if($app->isLoggedIn) {
 
-		if($app->isLoggedIn) {
+		$response->cookie("pp_auth_token", null, time() - 86400);
+		$response->cookie("pp_server_node", null, time() - 86400);
+		$response->cookie("pp_server_hash", null, time() - 86400);
 
-			$account = ORM::forTable('users')->findOne($core->user->getData('id'));
-			$account->set(array(
-				'language' => $request->param('language')
-			));
-			$account->save();
-
-		}
-
-		$response->cookie("pp_language", $request->param('language'), time() + 2678400);
-		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/servers')->send();
-
-	} else {
-
-		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/servers')->send();
+		$logout = ORM::forTable('users')->where(array('session_id' => $request->cookies()['pp_auth_token'], 'session_ip' => $request->ip()))->findOne();
+		$logout->session_id = null;
+		$logout->session_ip = null;
+		$logout->save();
 
 	}
 
-});
-
-$klein->respond('GET', '/logout', function($request, $response) use ($core) {
-
-
-	$response->cookie("pp_auth_token", null, time() - 86400);
-	$response->cookie("pp_server_node", null, time() - 86400);
-	$response->cookie("pp_server_hash", null, time() - 86400);
-
-	$logout = ORM::forTable('users')->where(array('session_id' => $request->cookies()['pp_auth_token'], 'session_ip' => $request->ip()))->findOne();
-	$logout->session_id = null;
-	$logout->session_ip = null;
-	$logout->save();
-
-	$response->redirect('/index')->send();
+	$response->redirect('/auth/login')->send();
 
 });
 
 
 $klein->respond('GET', '/auth/password', function($request, $response, $service) use ($core) {
 
-	$response->body($core->twig->render('panel/password.html', array(
+	$response->body($core->twig->render('auth/password.html', array(
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
 	)));
@@ -164,7 +136,7 @@ $klein->respond('GET', '/auth/password', function($request, $response, $service)
 
 $klein->respond('GET', '/auth/password/[:action]', function($request, $response, $service) use ($core) {
 
-	$response->body($core->twig->render('panel/password.html', array(
+	$response->body($core->twig->render('auth/password.html', array(
 		'flash' => $service->flashes(),
 		'noshow' => true
 	)));
@@ -178,7 +150,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 	if(!$query) {
 
 		$service->flash('<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>');
-		$response->redirect('/password')->send();
+		$response->redirect('/auth/password')->send();
 
 	} else {
 
@@ -200,7 +172,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 		))->dispatch($query->content, $core->settings->get('company_name').' - New Password');
 
 		$service->flash('<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
-		$response->redirect('/password/updated')->send();
+		$response->redirect('/auth/password/updated')->send();
 
 	}
 
@@ -211,7 +183,7 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 	if($core->auth->XSRF($request->param('xsrf')) !== true) {
 
 		$service->flash('<div class="alert alert-warning">The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-		$response->redirect('/password')->send();
+		$response->redirect('/auth/password')->send();
 
 	}
 
@@ -224,65 +196,38 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
 		if($query){
 
-			// Make sure there isn't a pending request already
-			// $findPrevious = ORM::forTable('account_change')->where(array(
-			// 	'email' => $request->param('email'),
-			// 	'verified' => 0
-			// ))->where_gt('time', time())->find_one();
+			$key = $core->auth->keygen('30');
 
-			// if(!$findPrevious) {
+			$account = ORM::forTable('account_change')->create();
+			$account->set(array(
+				'type' => 'password',
+				'content' => $request->param('email'),
+				'key' => $key,
+				'time' => time() + 14400
+			));
+			$account->save();
 
-				$key = $core->auth->keygen('30');
+			$core->email->buildEmail('password_reset', array(
+				'IP_ADDRESS' => $request->ip(),
+				'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip()),
+				'PKEY' => $key
+			))->dispatch($request->param('email'), $core->settings->get('company_name').' - Reset Your Password');
 
-				$account = ORM::forTable('account_change')->create();
-				$account->set(array(
-					'type' => 'password',
-					'content' => $request->param('email'),
-					'key' => $key,
-					'time' => time() + 14400
-				));
-				$account->save();
-
-				$core->email->buildEmail('password_reset', array(
-					'IP_ADDRESS' => $request->ip(),
-					'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip()),
-					'PKEY' => $key
-				))->dispatch($request->param('email'), $core->settings->get('company_name').' - Reset Your Password');
-
-				$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
-				$response->redirect('/password/pending')->send();
-
-			// } else {
-			//
-			// 	$service->flash('<div class="alert alert-danger">A password change request has already been initiated for this account.</div>');
-			// 	$response->redirect('/password')->send();
-			//
-			// }
+			$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
+			$response->redirect('/auth/password/pending')->send();
 
 		}else{
 
 			$service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
-			$response->redirect('/password')->send();
+			$response->redirect('/auth/password')->send();
 
 		}
 
 	}else{
 
 		$service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
-		$response->redirect('/password')->send();
+		$response->redirect('/auth/password')->send();
 
 	}
 
-});
-
-$klein->respond('GET', '/auth/register', function() use ($core) {
-});
-
-$klein->respond('POST', '/auth/register', function() use ($core) {
-});
-
-$klein->respond('GET', '/servers', function() use ($core) {
-});
-
-$klein->respond('POST', '/servers', function() use ($core) {
 });
