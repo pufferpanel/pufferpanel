@@ -20,10 +20,6 @@ use PufferPanel\Core, \ORM;
 
 $klein->respond('GET', '/auth/login', function($request, $response, $service, $app) use ($core) {
 
-	if($app->isLoggedIn) {
-		$response->redirect('/index')->send();
-	}
-
 	$response->body($core->twig->render('auth/login.html', array(
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
@@ -172,7 +168,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 		))->dispatch($query->content, $core->settings->get('company_name').' - New Password');
 
 		$service->flash('<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
-		$response->redirect('/auth/password/updated')->send();
+		$response->redirect('/auth/login')->send();
 
 	}
 
@@ -229,5 +225,15 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 		$response->redirect('/auth/password')->send();
 
 	}
+
+});
+
+$klein->respond('GET', '/register', function($request, $response, $service) use ($core) {
+
+
+});
+
+$klein->respond('POST', '/register', function($request, $response, $service) use ($core) {
+
 
 });

@@ -42,6 +42,17 @@ $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $s
 
 });
 
+$klein->respond('@^/auth/', function($request, $response, $service, $app) use ($klein) {
+
+	if($app->isLoggedIn && $request->pathname() != "/auth/logout") {
+
+		$response->redirect('/index')->send();
+		$klein->skipRemaining();
+
+	}
+
+});
+
 // include(SRC_DIR.'routes/assets/routes.php');
 // include(SRC_DIR.'routes/admin/routes.php');
 // include(SRC_DIR.'routes/ajax/routes.php');
