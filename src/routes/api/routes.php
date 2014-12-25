@@ -21,25 +21,21 @@ namespace PufferPanel\Core;
 require SRC_DIR.'core/api/initalize.php';
 $api = new API\Initalize();
 
-$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/[*:trailing]/?', function($request, $response) use ($core, $api) {
+$klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/*', function($request, $response) use ($core, $api) {
 
 	$response->header('Content-Type', 'application/json');
 
 	if($core->settings->get('use_api') != 1) {
 
-		http_response_code(404);
-		exit(json_encode(array('message' => 'This API is not enabled.')));
+		$response->code(404);
+		$response->body(json_encode(array('message' => 'This API is not enabled.')))->send();
 
 	}
 
-	if($core->settings->get('https') == 1) {
+	if($core->settings->get('https') == 1 && !$request->isSecure()) {
 
-		if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "") {
-
-			http_response_code(403);
-			exit(json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.')));
-
-		}
+		$response->code(403);
+		$response->body(json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.')))->send();
 
 	}
 
@@ -51,7 +47,7 @@ $klein->with('/api/users', function() use ($klein, $api) {
 
 	$klein->respond('GET', '/?', function($request, $response) use ($users) {
 		$response->header('Content-Type', 'application/json');
-		return json_encode($users->getUsers(), JSON_PRETTY_PRINT);
+		$response->body(json_encode($users->getUsers(), JSON_PRETTY_PRINT))->send();
 	});
 
 	$klein->respond('GET', '/[:uuid]', function($request, $response) use ($users) {
@@ -62,10 +58,10 @@ $klein->with('/api/users', function() use ($klein, $api) {
 		if(!$data) {
 
 			$response->code(404);
-			return json_encode(array('message' => 'The requested user does not exist in the system.'));
+			$response->body(json_encode(array('message' => 'The requested user does not exist in the system.')))->send();
 
 		} else {
-			return json_encode($data, JSON_PRETTY_PRINT);
+			$response->body(json_encode($data, JSON_PRETTY_PRINT))->send();
 		}
 
 	});
@@ -78,21 +74,21 @@ $klein->with('/api/users', function() use ($klein, $api) {
 		if(json_last_error() != "JSON_ERROR_NONE") {
 
 			$response->code(409);
-			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+			$response->body(json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')')))->send();
 
 		}
 
 		if(isset($data['password']) && !$request->isSecure()) {
 
 			$response->code(403);
-			return json_encode(array('message' => 'Updating a password must occur over a secure connection.'));
+			$response->body(json_encode(array('message' => 'Updating a password must occur over a secure connection.')))->send();
 
 		}
 
 		if(!$users->updateUser($request->param('uuid'), $data)) {
 
 			$response->code(400);
-			return json_encode(array('message' => 'An error occured when trying to process this data.'));
+			$response->body(json_encode(array('message' => 'An error occured when trying to process this data.')))->send();
 
 		} else {
 			$response->code(204);
@@ -108,14 +104,14 @@ $klein->with('/api/users', function() use ($klein, $api) {
 		if(json_last_error() != "JSON_ERROR_NONE") {
 
 			$response->code(409);
-			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+			$response->body(json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')')))->send();
 
 		}
 
 		if(isset($json['password']) && !$request->isSecure()) {
 
 			$response->code(403);
-			return json_encode(array('message' => 'Using a password that you define must occur over a secure connection.'));
+			$response->body(json_encode(array('message' => 'Using a password that you define must occur over a secure connection.')))->send();
 
 		}
 
@@ -126,26 +122,26 @@ $klein->with('/api/users', function() use ($klein, $api) {
 			switch($addUser) {
 
 				case 1:
-					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					$response->body(json_encode(array('message' => 'Missing a required parameter in your JSON.')))->send();
 					break;
 				case 2:
-					return json_encode(array('message' => 'Invalid username was provided. Matching using '));
+					$response->body(json_encode(array('message' => 'Invalid username was provided. Matching using ')))->send();
 					break;
 				case 3:
-					return json_encode(array('message' => 'Invalid email was provided.'));
+					$response->body(json_encode(array('message' => 'Invalid email was provided.')))->send();
 					break;
 				case 4:
-					return json_encode(array('message' => 'A user with that email or username already exists in the system.'));
+					$response->body(json_encode(array('message' => 'A user with that email or username already exists in the system.')))->send();
 					break;
 				default:
 					$response->code(500);
-					return json_encode(array('message' => 'An unhandled error occured when trying to add the user.'));
+					$response->body(json_encode(array('message' => 'An unhandled error occured when trying to add the user.')))->send();
 					break;
 
 			}
 
 		} else {
-			return json_encode($addUser, JSON_PRETTY_PRINT);
+			$response->body(json_encode($addUser, JSON_PRETTY_PRINT))->send();
 		}
 
 	});
@@ -158,7 +154,7 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 
 	$klein->respond('GET', '/?', function($request, $response) use ($servers) {
 		$response->header('Content-Type', 'application/json');
-		return json_encode($servers->getServers(), JSON_PRETTY_PRINT);
+		$response->body(json_encode($servers->getServers(), JSON_PRETTY_PRINT))->send();
 	});
 
 	$klein->respond('GET', '/[:hash]', function($request, $response) use ($servers) {
@@ -169,10 +165,10 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 		if(!$data) {
 
 			$response->code(404);
-			return json_encode(array('message' => 'The requested server does not exist in the system.'));
+			$response->body(json_encode(array('message' => 'The requested server does not exist in the system.')))->send();
 
 		} else {
-			return json_encode($data, JSON_PRETTY_PRINT);
+			$response->body(json_encode($data, JSON_PRETTY_PRINT))->send();
 		}
 
 	});
@@ -184,7 +180,7 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 		if(!$request->isSecure()) {
 
 			$response->code(403);
-			return json_encode(array('message' => 'Creating a new server must occur over a secure connection.'));
+			$response->body(json_encode(array('message' => 'Creating a new server must occur over a secure connection.')))->send();
 
 		}
 
@@ -192,7 +188,7 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 		if(json_last_error() != "JSON_ERROR_NONE") {
 
 			$response->code(409);
-			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+			$response->body(json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')')))->send();
 
 		}
 
@@ -203,38 +199,38 @@ $klein->with('/api/servers', function() use ($klein, $api) {
 			switch($addServer) {
 
 				case 1:
-					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					$response->body(json_encode(array('message' => 'Missing a required parameter in your JSON.')))->send();
 					break;
 				case 2:
-					return json_encode(array('message' => 'Unable to locate that node or user.'));
+					$response->body(json_encode(array('message' => 'Unable to locate that node or user.')))->send();
 					break;
 				case 3:
-					return json_encode(array('message' => 'Unable to connect to the server running GSD. Is it online?'));
+					$response->body(json_encode(array('message' => 'Unable to connect to the server running GSD. Is it online?')))->send();
 					break;
 				case 4:
-					return json_encode(array('message' => 'Invalid server name. Validated using ^[\w-]{4,35}$.'));
+					$response->body(json_encode(array('message' => 'Invalid server name. Validated using ^[\w-]{4,35}$.')))->send();
 					break;
 				case 5:
-					return json_encode(array('message' => 'Invalid server IP or Port provided, or they are not assigned to this node.'));
+					$response->body(json_encode(array('message' => 'Invalid server IP or Port provided, or they are not assigned to this node.')))->send();
 					break;
 				case 6:
-					return json_encode(array('message' => 'The selected port is currently in use.'));
+					$response->body(json_encode(array('message' => 'The selected port is currently in use.')))->send();
 					break;
 				case 7:
-					return json_encode(array('message' => 'Invalid user email provided.'));
+					$response->body(json_encode(array('message' => 'Invalid user email provided.')))->send();
 					break;
 				case 8:
-					return json_encode(array('message' => 'Non-numeric value provided for memory, disk, or cpu.'));
+					$response->body(json_encode(array('message' => 'Non-numeric value provided for memory, disk, or cpu.')))->send();
 					break;
 				default:
 					$response->code(500);
-					return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
+					$response->body(json_encode(array('message' => 'An unhandled error occured when trying to add the node.')))->send();
 					break;
 
 			}
 
 		} else {
-			return json_encode($addServer, JSON_PRETTY_PRINT);
+			$response->body(json_encode($addServer, JSON_PRETTY_PRINT))->send();
 		}
 
 	});
@@ -251,7 +247,7 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 
 	$klein->respond('GET', '/?', function($request, $response) use ($nodes) {
 		$response->header('Content-Type', 'application/json');
-		return json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		$response->body(json_encode($nodes->getNodes(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))->send();
 	});
 
 	$klein->respond('GET', '/[i:id]', function($request, $response) use ($nodes) {
@@ -262,10 +258,10 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 		if(!$data) {
 
 			$response->code(404);
-			return json_encode(array('message' => 'The requested node does not exist in the system.'));
+			$response->body(json_encode(array('message' => 'The requested node does not exist in the system.')))->send();
 
 		} else {
-			return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+			$response->body(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))->send();
 		}
 
 	});
@@ -278,7 +274,7 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 		if(json_last_error() != "JSON_ERROR_NONE") {
 
 			$response->code(409);
-			return json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')'));
+			$response->body(json_encode(array('message' => 'The JSON provided was invalid. ('.json_last_error().')')))->send();
 
 		}
 
@@ -289,26 +285,26 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 			switch($addNode) {
 
 				case 1:
-					return json_encode(array('message' => 'Missing a required parameter in your JSON.'));
+					$response->body(json_encode(array('message' => 'Missing a required parameter in your JSON.')))->send();
 					break;
 				case 2:
-					return json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}'));
+					$response->body(json_encode(array('message' => 'Invalid node name was provided. Matching using [\w.-]{1,15}')))->send();
 					break;
 				case 3:
-					return json_encode(array('message' => 'Invalid node IP provided.'));
+					$response->body(json_encode(array('message' => 'Invalid node IP provided.')))->send();
 					break;
 				case 4:
-					return json_encode(array('message' => 'Missing or invalid IP and Port information.'));
+					$response->body(json_encode(array('message' => 'Missing or invalid IP and Port information.')))->send();
 					break;
 				default:
 					$response->code(500);
-					return json_encode(array('message' => 'An unhandled error occured when trying to add the node.'));
+					$response->body(json_encode(array('message' => 'An unhandled error occured when trying to add the node.')))->send();
 					break;
 
 			}
 
 		} else {
-			return json_encode($addNode, JSON_PRETTY_PRINT);
+			$response->body(json_encode($addNode, JSON_PRETTY_PRINT))->send();
 		}
 
 	});
@@ -319,7 +315,7 @@ $klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/?', function($reque
 
 	$response->header('Content-Type', 'application/json');
 	$response->code(200);
-	return json_encode(array(
+	$response->body(json_encode(array(
 		'message' => 'You have reached an invalid API endpoint.',
 		'endpoints' => array(
 			'/users' => array(
@@ -356,6 +352,18 @@ $klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/?', function($reque
 				'PUT' => array()
 			)
 		)
-	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+	), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))->send();
+
+});
+
+$klein->respond('/api/[*]', function($request, $response, $service) use ($core) {
+
+	if(!$response->isSent()) {
+
+		$response->header('Content-Type', 'application/json');
+		$response->code(404);
+		$response->body(json_encode(array('message' => 'Invalid API Endpoint.')))->send();
+
+	}
 
 });

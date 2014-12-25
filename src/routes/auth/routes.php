@@ -23,7 +23,7 @@ $klein->respond('GET', '/auth/login', function($request, $response, $service, $a
 	$response->body($core->twig->render('auth/login.html', array(
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
-	)));
+	)))->send();
 
 });
 
@@ -86,15 +86,15 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 $klein->respond('POST', '/auth/login/totp', function($request, $response) use ($core) {
 
 	if(!$request->param('totp') || !$request->param('check')) {
-		$response->body(false);
+		$response->body(false)->send();
 	} else {
 
 		$totp = ORM::forTable('users')->select('use_totp')->where('email', $request->param('check'))->findOne();
 
 		if(!$totp) {
-			$response->body(false);
+			$response->body(false)->send();
 		} else {
-			$response->body(($totp->use_totp == 1) ? true : false);
+			$response->body(($totp->use_totp == 1) ? true : false)->send();
 		}
 
 	}
@@ -126,7 +126,7 @@ $klein->respond('GET', '/auth/password', function($request, $response, $service)
 	$response->body($core->twig->render('auth/password.html', array(
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
-	)));
+	)))->send();
 
 });
 
@@ -135,7 +135,7 @@ $klein->respond('GET', '/auth/password/[:action]', function($request, $response,
 	$response->body($core->twig->render('auth/password.html', array(
 		'flash' => $service->flashes(),
 		'noshow' => true
-	)));
+	)))->send();
 
 });
 
