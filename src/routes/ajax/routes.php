@@ -46,3 +46,5 @@ $klein->respond('POST', '/ajax/status', function($request, $response, $service, 
 	}
 
 });
+
+include 'account/routes.php';

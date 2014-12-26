@@ -30,12 +30,22 @@ $klein->respond(function($request, $response, $service, $app) use ($core) {
 	});
 });
 
-$klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app) use ($klein) {
+$klein->respond('!@^(/auth/|/langauge/|/api/|/ajax/)', function($request, $response, $service, $app) use ($klein) {
 
 	if(!$app->isLoggedIn) {
 
-		$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
-		$response->redirect('/auth/login')->send();
+		if(!strpos($request->pathname(), "/ajax/")) {
+
+			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
+			$response->redirect('/auth/login')->send();
+
+		} else {
+
+			$response->code(403);
+			$response->body('Not Authenticated.')->send();
+
+		}
+
 		$klein->skipRemaining();
 
 	}
@@ -53,11 +63,11 @@ $klein->respond('@^/auth/', function($request, $response, $service, $app) use ($
 
 });
 
-include(SRC_DIR.'routes/admin/routes.php');
-include(SRC_DIR.'routes/ajax/routes.php');
-include(SRC_DIR.'routes/auth/routes.php');
-include(SRC_DIR.'routes/panel/routes.php');
-include(SRC_DIR.'routes/api/routes.php');
+include SRC_DIR.'routes/admin/routes.php';
+include SRC_DIR.'routes/ajax/routes.php';
+include SRC_DIR.'routes/auth/routes.php';
+include SRC_DIR.'routes/panel/routes.php';
+include SRC_DIR.'routes/api/routes.php';
 
 $klein->respond('*', function($request, $response, $service) use ($core) {
 
