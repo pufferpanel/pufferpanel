@@ -29,7 +29,9 @@ class Email {
 	/**
 	 * @param string $message
 	 */
-	private $message;
+	protected $message;
+
+	protected $masterurl;
 
 	/**
 	 * Constructor for email sending

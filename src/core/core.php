@@ -106,6 +106,7 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/query.php');
 require_once(__DIR__.'/server.php');
 require_once(__DIR__.'/settings.php');
+require_once(__DIR__.'/routes.php');
 
 /*
  * Initalize Global core
