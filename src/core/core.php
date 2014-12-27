@@ -65,6 +65,7 @@ require_once(SRC_DIR.'core/configuration.php');
 require_once(BASE_DIR.'vendor/autoload.php');
 
 \Twig_Autoloader::register();
+\Unirest::timeout(5);
 
 /*
  * To use a local-only debugging option please uncomment the lines

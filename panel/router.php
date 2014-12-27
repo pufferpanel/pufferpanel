@@ -30,7 +30,7 @@ $klein->respond(function($request, $response, $service, $app) use ($core) {
 	});
 });
 
-$klein->respond('!@^(/auth/|/langauge/|/api/|/ajax/)', function($request, $response, $service, $app) use ($klein) {
+$klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app) use ($klein) {
 
 	if(!$app->isLoggedIn) {
 
@@ -67,6 +67,7 @@ include SRC_DIR.'routes/admin/routes.php';
 include SRC_DIR.'routes/ajax/routes.php';
 include SRC_DIR.'routes/auth/routes.php';
 include SRC_DIR.'routes/panel/routes.php';
+include SRC_DIR.'routes/node/routes.php';
 include SRC_DIR.'routes/api/routes.php';
 
 $klein->respond('*', function($request, $response, $service) use ($core) {
@@ -86,6 +87,7 @@ try {
 
 } catch(\Exception $e) {
 
+	\Tracy\Debugger::log($e);
 	echo 'An exception occured while trying to render this page.';
 
 }

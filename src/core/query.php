@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Unirest;
 
 /**
  * PufferPanel Core GSD Implementation Class
@@ -203,6 +203,160 @@ class Query {
 				return (array_key_exists($element, $this->_jsonData)) ? $this->_jsonData[$element] : null;
 		else
 			return null;
+
+	}
+
+	/**
+	 * Returns the last x lines from the server log for a server.
+	 *
+	 * @param int $lines The number of lines from the server log to return.
+	 * @return array
+	 */
+	public function serverLog($lines = 750) {
+
+		if($this->online()) {
+
+			try {
+
+				$response = Unirest::get(
+					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/log/".$lines,
+					array(
+						"X-Access-Token" => $this->server->gsd_secret
+					)
+				);
+
+			} catch(\Exception $e) {
+
+				\Tracy\Debugger::log($e);
+				return "Daemon error occured.";
+
+			}
+
+			return $response->body->content;
+
+		} else {
+			return 'Server is currently offline.';
+		}
+
+	}
+
+	/**
+	 * Generates a server.properties file from a given template if it does not already exist.
+	 *
+	 * @return bool|string
+	 */
+	public function generateServerProperties() {
+
+		$this->response = $this->_getServerProperties();
+
+		if(!$this->response) {
+			return "Unable to connect to the GSD Daemon running on the node.";
+		}
+
+		if(!in_array($this->response->code, array(200, 500))) {
+
+			switch($this->response->code) {
+
+				case 403:
+					return "Authentication error encountered.";
+					break;
+				default:
+					return "[HTTP/{$this->response->code}] Invalid response was recieved. ({$this->response->raw_body})";
+					break;
+
+			}
+
+		}
+
+		if($this->response->code == 500 || !isset($this->response->body->contents) || empty($this->response->body->contents)) {
+
+			/*
+			* Create server.properties
+			*/
+			if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(@file_get_contents(APP_DIR.'templates/server.properties.tpl'))) {
+
+				return "No Template Avaliable for server.properties";
+
+			}
+
+			try {
+
+				$this->put = Unirest::put(
+					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+					array(
+						"X-Access-Token" => $this->server->gsd_secret
+					),
+					array(
+						"contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $this->server->server_port, $this->server->server_ip)
+					)
+				);
+
+			} catch(\Exception $e) {
+
+				\Tracy\Debugger::log($e);
+				return "An error occured when trying to write a server.properties file.";
+
+			}
+
+			if(!empty($this->put->body)) {
+				return "Unable to process request to create server.properties file.";
+			}
+
+		}
+
+		return true;
+
+	}
+
+	/**
+	* Turns on a server.
+	*
+	* @return bool
+	*/
+	public function powerOn() {
+
+		try {
+
+			$this->get = Unirest::get(
+				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
+				array(
+					"X-Access-Token" => $this->server->gsd_secret
+				)
+			);
+
+		} catch(\Exception $e) {
+
+			\Tracy\Debugger::log($e);
+			return false;
+
+		}
+
+		return ($this->get->body != "ok") ? false : true;
+
+	}
+
+	/**
+	 * Returns the contents of server.properties as a \Unirest object or false if the file doesn't exist.
+	 *
+	 * @return bool|object
+	 */
+	public function _getServerProperties() {
+
+		try {
+
+			return Unirest::get(
+				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+				array(
+					"X-Access-Token" => $this->server->gsd_secret
+				)
+			);
+
+		} catch(\Exception $e) {
+
+			\Tracy\Debugger::log($e);
+			return false;
+
+		}
 
 	}
 
