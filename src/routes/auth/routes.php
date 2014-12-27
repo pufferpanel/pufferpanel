@@ -229,12 +229,86 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
 });
 
-$klein->respond('GET', '/register', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/auth/register/[:token]?', function($request, $response, $service, $app) use ($core) {
 
+	$response->body($core->twig->render('auth/register.html', array(
+		'xsrf' => $core->auth->XSRF(),
+		'token' => $request->param('token'),
+		'flash' => $service->flashes()
+	)))->send();
 
 });
 
-$klein->respond('POST', '/register', function($request, $response, $service) use ($core) {
+$klein->respond('POST', '/auth/register', function($request, $response, $service) use ($core) {
 
+	if(!$request->param('token')) {
+
+		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> No token was submitted with the request.</div>');
+		$response->redirect('/auth/register')->send();
+
+	}
+
+	/* XSRF Check */
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
+
+		$service->flash('<div class="alert alert-warning"><i class="fa fa-warning"></i> Invalid XSRF token submitted with the form.</div>');
+		$response->redirect('/auth/register/'.$request->param('token'))->send();
+
+	}
+
+	$query = ORM::forTable('account_change')
+		->where(array(
+			'type' => 'user_register',
+			'key' => $request->param('token'),
+			'verified' => 0
+		))->findOne();
+
+	if(!$query) {
+
+		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The token you provided appears to be invalid.</div>');
+		$response->redirect('/auth/register/'.$request->param('token'))->send();
+
+	}
+
+	if(!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {
+
+		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain the following characters: a-zA-Z0-9_-</div>');
+		$response->redirect('/auth/register/'.$request->param('token'))->send();
+
+	}
+
+	if(!$core->auth->validatePasswordRequirements($request->param('password'))) {
+
+		$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
+		$response->redirect('/auth/register/'.$request->param('token'))->send();
+
+	}
+
+	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $query->content)))->findOne();
+
+	if($user) {
+
+		$service->flash('<div class="alert alert-danger">Account with that username or email already exists in the system.</div>');
+		$response->redirect('/auth/register/'.$request->param('token'))->send();
+
+	}
+
+	$user = ORM::forTable('users')->create();
+	$user->set(array(
+		'uuid' => $core->auth->gen_UUID(),
+		'username' => $_POST['username'],
+		'email' => $query->content,
+		'password' => $core->auth->hash($_POST['password']),
+		'permissions' => null,
+		'language' => $core->settings->get('default_language'),
+		'register_time' => time()
+	));
+	$user->save();
+
+	$query->verified = 1;
+	$query->save();
+
+	$service->flash('<div class="alert alert-danger">Your account has been created successfully, you may now login and add a server to your account.</div>');
+	$response->redirect('/auth/login')->send();
 
 });

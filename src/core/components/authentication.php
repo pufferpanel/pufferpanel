@@ -150,6 +150,19 @@ trait Authentication {
 	}
 
 	/**
+	* Handles validating that a user's password meets the requirements for being changed.
+	*
+	* @param string $password
+	* @param string $regex Optional parameter to define your own regex for checking password requirements.
+	* @return bool
+	*/
+	public function validatePasswordRequirements($password, $regex = "#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#") {
+
+		return (preg_match($regex, $password)) ? true : false;
+
+	}
+
+	/**
 	* Returns the specified cookie.
 	*
 	* @param string $cookie

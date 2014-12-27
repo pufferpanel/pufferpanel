@@ -99,7 +99,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		}
 
-		if(!$core->routes->validatePasswordRequirements($request->param('p_password_new'))) {
+		if(!$core->auth->validatePasswordRequirements($request->param('p_password_new'))) {
 
 			$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
 			$response->redirect('/account')->send();
