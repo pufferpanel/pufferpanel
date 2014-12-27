@@ -1,0 +1,120 @@
+﻿string.email, E-mail
+string.password, Password
+string.login, Inloggen
+string.reset_password, Reset Password
+string.spam_protection, Spam bescherming
+string.again, (opnieuw)
+string.noservers, geen servers zijn aan uw account toegewezen.
+string.node, Node
+string.name, Naam
+string.connect, Sluit
+string.status, Status
+string.offline, Offline
+string.online, Online
+string.connection, Verbinding
+string.mem_alloc, Memory Toegewezen
+string.disk_alloc, Disk Toegewezen
+string.start, Start
+string.restart, Restart
+string.stop, Stop
+string.options, Opties
+string.search, zoeken
+string.clear, Clear
+string.refresh, Vernieuwen
+string.close, Sluiten
+string.generated_pass, gegenereerd wachtwoord
+string.modpacks, Modpacks
+string.ftp, ftp
+string.host, Host
+string.username, Gebruikersnaam
+string.generate, Genereer
+string.description, Beschrijving
+string.previous, Vorige
+string.next, Volgende
+string.about, Over
+string.version, Versie
+string.published, Gepubliceerd
+string.versions, Versies
+string.save, Opslaan
+footer.license, PufferPanel is gelicenseerd onder een <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE"> GPL v3 licentie </a>.
+footer.version, Hardlopen versie% s gedistribueerd door <a href="http://pufferpanel.com/"> PufferPanel Development </a>.
+footer.generated, Pagina gegenereerd in% s seconden.
+footer.queries, Uitgevoerd% s database queries.
+sidebar.acc_actions, Accountacties
+sidebar.server_acc, Server Acties
+sidebar.server_sett, Server Settings
+sidebar.settings, Instellingen
+sidebar.servers, Mijn Servers
+sidebar.overview, Overzicht
+sidebar.console, Live Console
+sidebar.files, File Manager
+sidebar.manage, Server Management
+sidebar.plugins, Server Plugins
+header.account, Account
+header.logout, Afmelden
+header.admin, Admin CP
+login.login_h1, Meld u aan PufferPanel
+reset.reset_h1, Reset Uw wachtwoord
+settings.change_pass, Wachtwoord wijzigen
+settings.update_email, Pas E-
+settings.current_pass, Huidig wachtwoord
+settings.new_pass, Nieuw wachtwoord
+settings.new_email, Nieuw-mail
+settings.notifications_h1, bijwerken Berichtgevingsvoorkeuren
+settings.login_success, Succesvolle Inloggen
+settings.failed_login, mislukt Inloggen
+settings.notify.email_me, mail me
+settings.notify.no_email_me, Do not E-mail Me
+settings.update_preferences, bijwerken Voorkeuren
+node.overview.stats_h1, Statistiek Overzicht
+node.overview.collect_usage, Proberen om het gebruik van informatie te verzamelen, dit kan enkele seconden duren. Zorg ervoor server is online.
+node.overview.collect_disk, verzamelen schijfgebruik informatie, dit kan enkele seconden duren.
+node.overview.no_players, Geen spelers zijn nu online.
+node.overview.disk_h1, gebruikte schijfruimte
+node.overview.space_used, gebruikt u% s MB van uw maximale% s MB schijfruimte.
+node.overview.information_h1, Server Informatie
+node.overview.players_h5, Spelers Online
+node.overview.cpu_h5, CPU-gebruik
+node.overview.memory_h5, geheugengebruik
+node.overview.ajax.no_conn, geen verbinding maken met het knooppunt.
+node.overview.ajax.no_exec, Niet in staat om commando uit te voeren op de server.
+node.console.command_help, Enter Console Command
+node.console.scrollstop_alert, Je hebt de tekst in de console geselecteerd. De console zal niet automatisch worden bijgewerkt wanneer dit gebeurt. Dit wordt gedaan zodat u eenvoudig kopiëren of selecteer tekst in de console. Om voor automatische verfrissende weer gewoon un-selecteer de tekst.
+node.console.scrollstop_h1, Scrollstop & trade; console Window
+node.console.ajax.server_started, Server is met succes gestart.
+node.files.loading, Laden Directory. Wacht alstublieft.
+node.files.name, Bestandsnaam
+node.files.size, File Size
+node.files.modified, Laatst gewijzigd op
+node.files.edit.daemon_error, geen verbinding maken met de daemon.
+node.files.edit.back, Terug naar Manager File
+node.files.edit.type_error, Dit type bestand kan niet worden bewerkt via ons controle paneel.
+node.files.edit.no_file, Geen bestand werd gespecificeerd dat kan worden bewerkt.
+node.files.edit.error, kunt u terugkeren naar de file manager door <a href="index.php"> hier </a> klikken.
+node.files.ajax.no_dir, Kan verzoek niet directory te vinden. Fout ingelogd.
+node.files.ajax.no_dl, geen verbinding maken met de server om de bestanden te krijgen. Gelieve opnieuw te proberen.
+node.files.ajax.saved, Bestand werd met succes opgeslagen.
+node.files.ajax.no_save, niet in staat om het bestand op te slaan.
+node.files.ajax.no_edit, Dit type bestand kan niet worden bewerkt via onze online file manager. Gebruik een FTP-client.
+node.files.ajax.file_404, Het opgegeven bestand kan niet worden gevonden op de server.
+node.settings.modpack.modpack_h1, Server Modpack management
+node.settings.modpack.current, Huidige Modpack
+node.settings.modpack.install, Install Modpack
+node.settings.modpack.select, - Selecteer een Modpack
+node.settings.jar.jar_h1, Server .jar Naam
+node.settings.jar.jarfile_name, Jarfile Naam
+node.settings.jar.update, Naam bijwerken
+node.settings.ftp.ftp_h1, ftp-instellingen
+node.settings.ajax.installing_modpack, Installeren Modpack
+node.settings.ajax.modpack_error, Je kunt niet een handicap vormen ingang te gebruiken als een modpack!
+node.plugins.welcome_h1, Plugin Installer
+node.plugins.welcome, Welkom op uw ingebouwde plugin installer. Dit installatieprogramma verzamelt de resultaten en gegevens van Bukget en geeft ze hier in een eenvoudig te gebruiken manier. Het automatische installatieprogramma kan worden buggy soms, vooral voor complexe plugins. Wij raden downloaden plugins op uw computer eerst, indien mogelijk.
+node.plugins.search_h1, Search Plugin Repository
+node.plugins.plugin_name, Plugin Naam
+node.plugins.installed, heeft Uw plugin met succes geïnstalleerd.
+node.plugins.installing, geduld aub uw plugin installeren. Dit proces kan ongeveer een minuut duren om te voltooien.
+node.plugins.installing_warning, niet weg te navigeren van deze pagina!
+node.plugins.error.term, Vul een geldig zoekterm.
+node.plugins.view.author, Deze plugin wordt gemaakt en onderhouden door% s.
+node.plugins.view.view, Bekijk deze plugin <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank"> op Bukkit </a>.
+node.ajax.generic_error, is een fout opgetreden met dit AJAX verzoek.
