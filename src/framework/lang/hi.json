@@ -1,0 +1,121 @@
+﻿{
+     "string_email": "ईमेल", 
+     "string_password": "पासवर्ड", 
+     "string_login": "लॉगिन" 
+     "string_reset_password": "पासवर्ड रीसेट" 
+     "string_spam_protection": "स्पैम संरक्षण", 
+     "string_again": "(फिर)", 
+     "string_node": "नोड", 
+     "string_name": "नाम", 
+     "string_connect": "कनेक्ट" 
+     "string_status": "स्थिति", 
+     "string_offline": "ऑफ़लाइन", 
+     "string_online": "ऑनलाइन" 
+     "string_connection": "कनेक्शन", 
+     "string_mem_alloc": "स्मृति आवंटित" 
+     "string_disk_alloc": "डिस्क आवंटित" 
+     "string_start": "प्रारंभ", 
+     "string_restart": "पुनः प्रारंभ" 
+     "string_stop": "बंद करो", 
+     "string_options": "विकल्प", 
+     "string_search": "खोज", 
+     "string_clear": "स्पष्ट" 
+     "string_refresh": "ताज़ा" 
+     "string_close": "बंद", 
+     "string_generated_pass": "उत्पन्न पासवर्ड" 
+     "string_modpacks": "Modpacks" 
+     "string_sftp": "SFTP" 
+     "string_host": "मेजबान" 
+     "string_username": "उपयोगकर्ता नाम", 
+     "string_generate": "उत्पन्न", 
+     "string_description": "विवरण" 
+     "पिछला", "string_previous" 
+     "string_next": "अगली", 
+     "string_about": "के बारे में", 
+     "string_version": "संस्करण" 
+     "प्रकाशित", "string_published" 
+     "string_versions": "संस्करण" 
+     "string_save": "सहेजें", 
+     "footer_license": "PufferPanel एक <a href=\"https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE\"> जीपीएल-V3 लाइसेंस </a> अंतर्गत लाइसेंस प्राप्त है." 
+     "footer_version": "रनिंग संस्करण% s <a href=\"http://pufferpanel.com/\"> PufferPanel विकास द्वारा वितरित </a>." 
+     "footer_generated": "पृष्ठ% s सेकंड में उत्पन्न." 
+     "footer_queries": "% s डेटाबेस प्रश्नों मार डाला." 
+     "sidebar_acc_actions": "खाता प्रक्रिया", 
+     "sidebar_server_acc": "सर्वर प्रक्रिया", 
+     "sidebar_server_sett": "सर्वर सेटिंग्स" 
+     "sidebar_settings": "सेटिंग", 
+     "sidebar_servers": "मेरी सर्वर", 
+     "sidebar_overview": "सारांश", 
+     "sidebar_console": "लाइव कंसोल", 
+     "sidebar_files": "फ़ाइल प्रबंधक", 
+     "sidebar_manage": "सर्वर प्रबंधन", 
+     "sidebar_plugins": "सर्वर प्लगइन्स" 
+     "header_account": "खाता", 
+     "header_logout": "लॉगआउट" 
+     "header_admin": "एडमिन सी.पी." 
+     "login_login_h1": "PufferPanel लॉगइन करने के लिए", 
+     "reset_reset_h1": "आपका पासवर्ड रीसेट" 
+     "settings_change_pass": "पासवर्ड बदलें", 
+     "settings_update_email": "अपडेट ईमेल", 
+     "settings_current_pass": "वर्तमान पासवर्ड" 
+     "settings_new_pass": "नया पासवर्ड" 
+     "settings_new_email": "नया ईमेल", 
+     "settings_notifications_h1": "सूचना प्राथमिकताएं अपडेट" 
+     "settings_login_success": "सफल लॉगिन" 
+     "settings_failed_login": "लॉगिन विफल", 
+     "settings_notify_email_me": "कृपया मुझे ईमेल", 
+     "settings_notify_no_email_me": "मुझे ईमेल मत करो", 
+     "settings_update_preferences": "अपडेट वरीयता", 
+     "node_overview_stats_h1": "सांख्यिकी अवलोकन", 
+     "node_overview_collect_usage": ". उपयोग की जानकारी एकत्र करने के लिए प्रयास कर रहा है, यह एक कुछ सेकंड ले सर्वर ऑनलाइन है कृपया सुनिश्चित कर सकता है." 
+     "node_overview_collect_disk": "डिस्क उपयोग की जानकारी एकत्रित, यह एक कुछ सेकंड ले सकता है." 
+     "node_overview_no_players": "नहीं खिलाड़ियों ऑनलाइन वर्तमान में कर रहे हैं." 
+     "node_overview_disk_h1": "प्रयुक्त डिस्क स्थान" 
+     "node_overview_space_used": ". आप डिस्क स्थान की अपनी अधिकतम% s एमबी ने% s MB का उपयोग कर रहे हैं", 
+     "node_overview_information_h1": "सर्वर जानकारी" 
+     "node_overview_players_h5": "खिलाड़ियों ऑनलाइन" 
+     "node_overview_cpu_h5": "CPU उपयोग" 
+     "node_overview_memory_h5": "मेमोरी उपयोग" 
+     "node_overview_ajax_no_conn": "असमर्थ नोड के लिए कनेक्ट करने के लिए." 
+     "node_overview_ajax_no_exec": ". सर्वर पर आदेश पर अमल करने में असमर्थ", 
+     "node_console_command_help": "कंसोल कमांड दर्ज" 
+     "node_console_scrollstop_alert".. यह तब होता है जब "आप कंसोल में पाठ का चयन किया है सांत्वना नहीं ऑटो अद्यतन यह आप आसानी से कॉपी या कंसोल में पाठ का चयन करने के लिए अनुमति देने के लिए किया जाता है होगा सिर्फ संयुक्त राष्ट्र का चयन करें फिर स्वचालित ताज़ा करने के लिए अनुमति देने के लिए. पाठ. "
+     "node_console_scrollstop_h1": "Scrollstop और व्यापार, कंसोल विंडो", 
+     "node_console_ajax_server_started": "सर्वर सफलतापूर्वक शुरू कर दिया गया है." 
+     "node_files_loading": ". लोड हो रहा निर्देशिका कृपया प्रतीक्षा करें." 
+     "node_files_name": "फाइल का नाम", 
+     "node_files_size": "फाइल साइज" 
+     "node_files_modified": "अंतिम बार संशोधित" 
+     "node_files_edit_daemon_error": "डेमन से कनेक्ट करने में असमर्थ." 
+     "node_files_edit_back": "वापस प्रबंधक फाइल करने के लिए", 
+     "node_files_edit_type_error": "इस प्रकार की फ़ाइल हमारे नियंत्रण कक्ष के माध्यम से संपादित नहीं किया जा सकता." 
+     "node_files_edit_no_file": "कोई फ़ाइल है कि संपादित किया जा सकता निर्दिष्ट किया गया था." 
+     "node_files_edit_error": "आप यहाँ </a> क्लिक href=\"index.php\"> <a द्वारा फाइल प्रबंधक पर लौट सकते हैं." 
+     "node_files_ajax_no_dir": ". अनुरोध निर्देशिका पता लगाने में असमर्थ त्रुटि लॉग इन किया." 
+     "node_files_ajax_no_dl": ".. फाइलें पुन: प्रयास करें पाने के लिए सर्वर से कनेक्ट करने में असमर्थ", 
+     "node_files_ajax_saved": "फ़ाइल सफलतापूर्वक बचा लिया गया था." 
+     "node_files_ajax_no_save": ". फ़ाइल सहेजने में अक्षम" 
+     "node_files_ajax_no_edit": "इस प्रकार की फ़ाइल हमारे ऑनलाइन फाइल प्रबंधक के माध्यम से संपादित नहीं किया जा सकता है एक एफ़टीपी ग्राहक का उपयोग करें.." 
+     "node_files_ajax_file_404": "निर्दिष्ट फ़ाइल सर्वर पर नहीं पाया जा सका." 
+     "node_settings_modpack_modpack_h1": "सर्वर Modpack प्रबंधन", 
+     "node_settings_modpack_current": "वर्तमान Modpack" 
+     "node_settings_modpack_install": "Modpack स्थापित करें", 
+     "node_settings_modpack_select": "\ एक Modpack चयन करें u2014-" 
+     "node_settings_jar_jar_h1": "सर्वर नाम .jar" 
+     "node_settings_jar_jarfile_name": "Jarfile नाम", 
+     "node_settings_jar_update": "अद्यतन नाम", 
+     "node_settings_sftp_sftp_h1": "SFTP सेटिंग्स" 
+     "node_settings_ajax_installing_modpack": "अगर इस समस्या Modpack" 
+     "node_settings_ajax_modpack_error": "आप एक modpack के रूप में एक विकलांग फार्म इनपुट का उपयोग नहीं कर सकते हैं", 
+     "node_plugins_welcome_h1": "प्लगइन इंस्टालर" 
+     "node_plugins_welcome"... "अपने में निर्मित प्लगइन इंस्टॉलर में आपका स्वागत है इस इंस्टॉलर Bukget से परिणाम और डेटा तुलना और तरीके से उपयोग करने के लिए एक आसान में उन्हें यहां प्रदर्शित करता है स्वचालित इंस्टॉलर विशेष रूप से जटिल प्लगइन्स के लिए, कई बार छोटी गाड़ी हो सकता है हम डाउनलोड करने की सिफारिश पहले यदि संभव हो तो अपने कंप्यूटर को प्लगइन्स. "
+     "node_plugins_search_h1": "प्लगइन भंडार खोज", 
+     "node_plugins_plugin_name": "प्लगइन का नाम", 
+     "node_plugins_installed": "अपने प्लगइन सफलतापूर्वक स्थापित कर दिया गया है." 
+     "node_plugins_installing": ". अपने प्लगइन स्थापित होने तक प्रतीक्षा करें इस प्रक्रिया को पूरा करने के लिए एक मिनट के बारे में ले सकता है." 
+     "इस पेज से दूर नेविगेट मत करो!", "node_plugins_installing_warning" 
+     "node_plugins_error_term": "एक वैध खोज शब्द दर्ज करें." 
+     "node_plugins_view_author": "यह प्लगइन बनाया और% द्वारा बनाए रखा है." 
+     "node_plugins_view_view": "Bukkit </a> पर इस प्लगइन <a href=\"http://dev.bukkit.org/bukkit-plugins/%s/\" target=\"_blank\"> देखें." 
+     "node_ajax_generic_error": "एक त्रुटि यह AJAX अनुरोध के साथ सामना करना पड़ा था." 
+}

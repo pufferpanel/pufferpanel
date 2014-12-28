@@ -1,0 +1,120 @@
+﻿string.email, البريد الإلكتروني 
+string.password, كلمة المرور 
+string.login, تسجيل الدخول 
+string.reset_password, إعادة تعيين كلمة المرور 
+string.spam_protection, الحماية من البريد المزعج 
+string.again, (مرة أخرى) 
+string.noservers, تم تعيينها لا الملقمات لحسابك بعد. 
+string.node, عقدة 
+string.name, اسم 
+string.connect, كونكت 
+string.status, الحالة 
+string.offline, غير متصل 
+string.online, الانترنت 
+string.connection, اتصال 
+string.mem_alloc, الذاكرة المخصصة 
+string.disk_alloc, خصصت القرص 
+string.start, تشغيل 
+string.restart, إعادة تشغيل 
+string.stop, إيقاف 
+string.options, خيارات 
+string.search, بحث 
+string.clear, واضح 
+string.refresh, تحميل 
+string.close, إغلاق 
+string.generated_pass, ولدت كلمة المرور 
+string.modpacks, Modpacks 
+string.sftp, SFTP 
+string.host, المضيف 
+string.username, اسم المستخدم 
+string.generate, توليد 
+string.description, الوصف 
+string.previous, السابق 
+string.next, التالي 
+string.about, معلومات 
+string.version, الإصدار 
+string.published, نشرت 
+string.versions, إصدارات 
+string.save, حفظ 
+footer.license, مرخص PufferPanel تحت <a href="https://github.com/DaneEveritt/PufferPanel/blob/master/LICENSE"> GPL-V3 </A> الترخيص. 
+footer.version, تشغيل النسخة التي وزعتها <a٪ ق href="http://pufferpanel.com/"> الموقع </a> التنمية PufferPanel. 
+footer.generated, ولدت في الصفحة٪ s ثانية. 
+footer.queries,٪ المنفذة ق استعلامات قاعدة البيانات. 
+sidebar.acc_actions, تطبيقات حساب 
+sidebar.server_acc, تطبيقات الخادم 
+sidebar.server_sett, إعدادات الخادم 
+sidebar.settings, إعدادات 
+sidebar.servers, بلدي خوادم 
+sidebar.overview, نظرة عامة 
+sidebar.console, وحدة التحكم لايف 
+sidebar.files, إدارة الملفات 
+sidebar.manage, ملقم إدارة 
+sidebar.plugins, الإضافات خادم 
+header.account, حساب 
+header.logout, تسجيل الخروج 
+header.admin, CP الادارية 
+login.login_h1, تسجيل الدخول إلى PufferPanel 
+reset.reset_h1, إعادة تعيين كلمة السر الخاصة بك 
+settings.change_pass, تغيير كلمة المرور 
+settings.update_email, تحديث البريد الإلكتروني 
+settings.current_pass, كلمة المرور الحالية 
+settings.new_pass, كلمة السر الجديدة 
+settings.new_email, جديد البريد الإلكتروني 
+settings.notifications_h1, تحديث تفضيلات الإخطار 
+settings.login_success, الناجح الدخول 
+settings.failed_login, فشل تسجيل الدخول 
+settings.notify.email_me, يرجى الكتابة لي 
+settings.notify.no_email_me, لا مراسلتي 
+settings.update_preferences تفضيلات تحديث 
+node.overview.stats_h1, نظرة عامة الاحصائيات 
+node.overview.collect_usage, محاولة جمع معلومات الاستخدام, وهذا قد يستغرق بضع ثوان. يرجى التأكد الخادم على الانترنت. 
+node.overview.collect_disk, جمع المعلومات استخدام القرص, وهذا قد يستغرق بضع ثوان. 
+node.overview.no_players, لا اللاعبين حاليا على الانترنت. 
+node.overview.disk_h1, مساحة القرص المستخدمة 
+node.overview.space_used, أنت تستخدم٪ ق MB من الحد الأقصى لق٪ ميغابايت من مساحة القرص. 
+node.overview.information_h1, ملقم معلومات 
+node.overview.players_h5, ومشغلات على الإنترنت 
+node.overview.cpu_h5, وحدة المعالجة المركزية الاستخدام 
+node.overview.memory_h5, استخدام الذاكرة 
+node.overview.ajax.no_conn, غير قادر على الاتصال العقدة. 
+node.overview.ajax.no_exec, غير قادر على تنفيذ الأوامر على الملقم. 
+node.console.command_help, أدخل قيادة وحدة التحكم 
+node.console.scrollstop_alert, لقد اخترت النص في وحدة التحكم. وحدة التحكم سوف لا التحديث التلقائي عندما يحدث هذا. يتم ذلك للسماح لك بسهولة نسخ أو تحديد نص في وحدة التحكم. للسماح منعش التلقائي مرة أخرى ببساطة الامم المتحدة حدد النص. 
+node.console.scrollstop_h1, Scrollstop والتجارة؛ إطار وحدة التحكم 
+node.console.ajax.server_started, وقد بدأ Server بنجاح. 
+node.files.loading, تحميل الدليل. الرجاء الانتظار. 
+node.files.name, اسم الملف 
+node.files.size, حجم الملف 
+node.files.modified, آخر تعديل 
+node.files.edit.daemon_error, غير قادر على الاتصال الخفي. 
+node.files.edit.back, والعودة إلى إدارة الملفات 
+node.files.edit.type_error, وهذا النوع من الملفات لا يمكن تحريرها من خلال لوحة التحكم لدينا. 
+node.files.edit.no_file, لم يتم تحديد الملفات التي يمكن تحريرها. 
+node.files.edit.error, يمكنك العودة الى مدير الملفات بواسطة <a href="index.php"> بالضغط هنا </a>. 
+node.files.ajax.no_dir, غير قادر على تحديد موقع طلب الدليل. تسجيل الخطأ. 
+node.files.ajax.no_dl, غير قادر على الاتصال بالخادم للحصول على الملفات. يرجى المحاولة مرة أخرى. 
+node.files.ajax.saved, تم حفظ الملف بنجاح. 
+node.files.ajax.no_save, غير قادر على حفظ الملف. 
+node.files.ajax.no_edit, وهذا النوع من الملفات لا يمكن تحريرها عبر مدير الملفات على الانترنت. يرجى استخدام عميل FTP. 
+node.files.ajax.file_404, الملف المحدد تعذر العثور على الخادم. 
+node.settings.modpack.modpack_h1, ملقم إدارة Modpack 
+node.settings.modpack.current, Modpack الحالي 
+node.settings.modpack.install, قم بتثبيت Modpack 
+node.settings.modpack.select, - إختر Modpack 
+node.settings.jar.jar_h1, خادم جرة اسم 
+node.settings.jar.jarfile_name, اسم Jarfile 
+node.settings.jar.update, اسم التحديث 
+node.settings.sftp.sftp_h1, إعدادات SFTP 
+node.settings.ajax.installing_modpack, تركيب Modpack 
+node.settings.ajax.modpack_error, لا يمكنك استخدام تعطيل مدخلات النموذج باعتباره modpack! 
+node.plugins.welcome_h1, المساعد المثبت 
+node.plugins.welcome, مرحبا بك في المدمج في المثبت المساعد. هذا المثبت يجمع النتائج والبيانات من Bukget ويعرضها هنا في وسيلة سهلة لاستخدام الطريقة. يمكن عربات التي تجرها الدواب المثبت التلقائي في بعض الأحيان, وخاصة بالنسبة الإضافات المعقدة. نوصي الإضافات تحميل لجهاز الكمبيوتر الخاص بك أولا إذا أمكن. 
+node.plugins.search_h1, بحث البرنامج المساعد مستودع 
+node.plugins.plugin_name, اسم البرنامج المساعد 
+node.plugins.installed, تم تثبيت البرنامج المساعد الخاص بك بنجاح. 
+node.plugins.installing, الرجاء الانتظار بينما يتم تثبيت البرنامج المساعد الخاص بك. هذه العملية قد تستغرق حوالي دقيقة واحدة لإكمال. 
+node.plugins.installing_warning, لا تبحر بعيدا عن هذه الصفحة! 
+node.plugins.error.term, يرجى إدخال عبارة بحث صالح. 
+node.plugins.view.author, يتم إنشاء هذا البرنامج المساعد والتي تحتفظ بها٪ ق. 
+node.plugins.view.view, عرض هذا البرنامج المساعد المحول href="http://dev.bukkit.org/bukkit plugins/٪s/" target="_blank"> لفي Bukkit </A>. 
+node.ajax.generic_error, تمت مصادفة خطأ مع هذا الطلب AJAX.
