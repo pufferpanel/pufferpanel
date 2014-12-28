@@ -33,7 +33,13 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="{{ settings.master_url }}">{{ settings.company_name }}</a>
 			</div>
-			{% block servername %}{% endblock %}
+			{% block servername %}
+				{% if server.name is defined %}
+				<ul class="nav navbar-nav">
+					<li class="active dynUpdate" id="{{ server.id }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+				</ul>
+				{% endif %}
+			{% endblock %}
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
 					{% if admin %}<li><a href="{{ settings.master_url }}admin"><i class="fa fa-cogs"></i></a></li>{% endif %}
@@ -42,8 +48,22 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3">
-				{% block sidebar %}{% endblock %}
+			<div class="col-3" id="sidebar_links">
+				{% block sidebar %}
+					<div class="list-group">
+						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+						<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
+						<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+						<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
+					</div>
+					<div class="list-group">
+						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+						<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
+						{% if permission.files.view == true %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
+						{% if permission.users.view == true %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
+						{% if permission.manage.view == true %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
+					</div>
+				{% endblock %}
 			</div>
 			{% block content %}{% endblock %}
 		</div>
