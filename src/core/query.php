@@ -232,7 +232,7 @@ class Query {
 
 			}
 
-			return $response->body->content;
+			return $response->body;
 
 		} else {
 			return 'Server is currently offline.';
