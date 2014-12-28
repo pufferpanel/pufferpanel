@@ -26,6 +26,6 @@ An additional shout-out to the folks below who have provided countless hours of 
 # Copyright Notices
 Some images used within PufferPanel are Copyright (c) their respective owners.
 
-`/panel/assets/images/404.jpg` is licensed under [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
+`/panel/assets/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
 
-`/panel/assets/images/404.jpg` is licensed under [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
+`/panel/assets/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
