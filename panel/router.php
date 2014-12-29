@@ -81,13 +81,4 @@ $klein->respond('*', function($request, $response, $service) use ($core) {
 
 });
 
-try {
-
-	$klein->dispatch();
-
-} catch(\Exception $e) {
-
-	\Tracy\Debugger::log($e);
-	echo 'An exception occured while trying to render this page.';
-
-}
+$klein->dispatch();

@@ -50,19 +50,21 @@
 		<div class="row">
 			<div class="col-3" id="sidebar_links">
 				{% block sidebar %}
-					<div class="list-group">
-						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-						<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
-						<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-						<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
-					</div>
-					<div class="list-group">
-						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-						<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
-						{% if permission.files.view == true %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
-						{% if permission.users.view == true %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
-						{% if permission.manage.view == true %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
-					</div>
+					{% if server.name is defined %}
+						<div class="list-group">
+							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+							<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
+							<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+							<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
+						</div>
+						<div class="list-group">
+							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+							<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
+							{% if permission.files.view == true %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
+							{% if permission.users.view == true %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
+							{% if permission.manage.view == true %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
+						</div>
+					{% endif %}
 				{% endblock %}
 			</div>
 			{% block content %}{% endblock %}

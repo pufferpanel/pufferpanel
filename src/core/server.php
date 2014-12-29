@@ -210,6 +210,58 @@ class Server extends User {
 
 	}
 
+	/**
+	 * Returns an array of users with access to currently active server and their current status.
+	 *
+	 * @return array
+	 */
+	public function listAffiliatedUsers() {
+
+		$this->affiliated = json_decode($this->getData('subusers'), true);
+		$this->userdata = array();
+
+		if(is_array($this->affiliated) && !empty($this->affiliated)) {
+
+			foreach($this->affiliated as $id => $status) {
+
+				if($status != "verified") {
+
+					$this->selectUser = ORM::forTable('account_change')->select('content')->where(array('key' => $status, 'verified' => 0))->findOne();
+					if($this->selectUser) {
+
+						$this->selectUser->content = json_decode($this->selectUser->content, true);
+						$this->userdata[$id] = array(
+							"status" => "pending",
+							"revoke" => urlencode($status),
+							"permissions" => $this->selectUser->content[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				} else {
+
+					$this->selectUser = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
+					if($this->selectUser) {
+
+						$this->selectUser->permissions = json_decode($this->selectUser->permissions, true);
+						$this->userdata[$this->selectUser->email] = array(
+							"status" => "verified",
+							"id" => $this->selectUser->uuid,
+							"permissions" => $this->selectUser->permissions[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $this->userdata;
+
+	}
+
 }
 
 ?>

@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Tracy\Debugger;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass;
 
 /*
  * Initalize Start Time
@@ -64,13 +64,13 @@ define('SRC_DIR', BASE_DIR.'src/');
 require_once(SRC_DIR.'core/configuration.php');
 require_once(BASE_DIR.'vendor/autoload.php');
 
-\Twig_Autoloader::register();
-\Unirest::timeout(5);
+Twig_Autoloader::register();
+Unirest::timeout(5);
 
 /*
- * To use a local-only debugging option please uncomment the lines
- * below and comment out the bugsnag lines above. This debugging can be
- * used on a live environment if you wish.
+ * Set Debugger::DETECT to Debugger::DEVELOPMENT to force errors to be displayed.
+ * This should NEVER be done on a live environment. In most cases Debugger is smart
+ * enough to figure out if it is a local or development environment.
  */
 Debugger::enable(Debugger::DETECT, dirname(__DIR__).'/logs');
 Debugger::$strictMode = TRUE;
@@ -112,8 +112,8 @@ require_once(__DIR__.'/routes.php');
 /*
  * Initalize Global core
  */
-$core = new \stdClass();
-$_l = new \stdClass();
+$core = new stdClass();
+$_l = new stdClass();
 
 /*
  * Initalize cores
@@ -126,7 +126,7 @@ $core->email = new Email();
 $core->log = new Log($core->user->getData('id'));
 $core->gsd = new Query($core->server->getData('id'));
 $core->files = new Files();
-$core->twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR.'views/'), array(
+$core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'), array(
 	'cache' => false,
 	'debug' => true
 ));
