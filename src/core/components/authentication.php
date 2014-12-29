@@ -150,6 +150,19 @@ trait Authentication {
 	}
 
 	/**
+	* Handles validating that a user's password meets the requirements for being changed.
+	*
+	* @param string $password
+	* @param string $regex Optional parameter to define your own regex for checking password requirements.
+	* @return bool
+	*/
+	public function validatePasswordRequirements($password, $regex = "#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#") {
+
+		return (preg_match($regex, $password)) ? true : false;
+
+	}
+
+	/**
 	* Returns the specified cookie.
 	*
 	* @param string $cookie
@@ -176,20 +189,28 @@ trait Authentication {
 	* @param mixed $identifier
 	* @return mixed
 	*/
-	public function XSRF($token = null, $identifier = null){
+	public function XSRF($token = null, $identifier = null, $reset = false){
 
 		$this->tkid = "pp_xsrf_token".$identifier;
 
-		if(!is_null($token))
-			if(isset($_SESSION[$this->tkid]) && $_SESSION[$this->tkid] == $token){
-				unset($_SESSION[$this->tkid]);
-				return true;
-			}else
-				return false;
-		else {
-			$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
-			$_SESSION[$this->tkid] = $xsrfToken;
-			return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
+		if(!is_null($token)) {
+
+			return (isset($_COOKIE[$this->tkid]) && $_COOKIE[$this->tkid] == $token) ? true : false;
+
+		} else {
+
+			if(!isset($_COOKIE[$this->tkid]) || $reset === true) {
+
+				$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
+				setcookie($this->tkid, $xsrfToken, 0, '/');
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
+
+			} else {
+
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$_COOKIE[$this->tkid].'" />';
+
+			}
+
 		}
 
 	}

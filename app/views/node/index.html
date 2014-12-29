@@ -9,30 +9,14 @@
 
 {% block servername %}
 <ul class="nav navbar-nav">
-	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+	<li class="active dynUpdate" id="{{ server.id }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
 </ul>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="../totp.php" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
-</div>
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-	<a href="index.php" class="list-group-item active">{{ lang.sidebar_overview }}</a>
-	{% if permission.files.view == true %}<a href="files/index.php" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
-	{% if permission.users.view == true %}<a href="users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
-	{% if permission.manage.view == true %}<a href="settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
-</div>
 {% endblock %}
 
 {% block content %}
 <div class="col-9">
-	{% if (get.error is defined) and (get.error == "no_permission") %}
-		<div class="alert alert-danger">You do not have permission to perform that action!</div>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
@@ -147,6 +131,7 @@
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
 		var socket = io('http://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
@@ -333,8 +318,8 @@
 					$("#on").append(' <i class="fa fa-refresh fa-spin"></i>');
 					$("#on").toggleClass('disabled');
 					$.ajax({
-						type: "GET",
-						url: "ajax/console/power.php",
+						type: "POST",
+						url: "/node/ajax/console/power",
 						timeout: 5000,
 						error: function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();

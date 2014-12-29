@@ -46,7 +46,7 @@ class Servers {
 
 		$this->server = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->where('hash', $hash)->findOne();
 
-		if(is_null($this->server->id)) {
+		if(!$this->server || is_null($this->server->id)) {
 			return false;
 		} else {
 

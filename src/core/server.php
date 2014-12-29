@@ -137,18 +137,13 @@ class Server extends User {
 
 		$this->__construct($hash, $userid, $isroot);
 
-		if($isroot == '1')
+		if($isroot == '1') {
 			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
-		else
+		} else {
 			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
+		}
 
-		if($this->server !== false){
-
-			setcookie('pp_server_hash', $this->server->hash, 0, '/');
-			$this->redirect('node/index.php');
-
-		}else
-			$this->redirect('servers.php?error=error');
+		return (!$this->server) ? false : true;
 
 	}
 
@@ -212,6 +207,58 @@ class Server extends User {
 
 		}else
 			$this->_n = false;
+
+	}
+
+	/**
+	 * Returns an array of users with access to currently active server and their current status.
+	 *
+	 * @return array
+	 */
+	public function listAffiliatedUsers() {
+
+		$this->affiliated = json_decode($this->getData('subusers'), true);
+		$this->userdata = array();
+
+		if(is_array($this->affiliated) && !empty($this->affiliated)) {
+
+			foreach($this->affiliated as $id => $status) {
+
+				if($status != "verified") {
+
+					$this->selectUser = ORM::forTable('account_change')->select('content')->where(array('key' => $status, 'verified' => 0))->findOne();
+					if($this->selectUser) {
+
+						$this->selectUser->content = json_decode($this->selectUser->content, true);
+						$this->userdata[$id] = array(
+							"status" => "pending",
+							"revoke" => urlencode($status),
+							"permissions" => $this->selectUser->content[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				} else {
+
+					$this->selectUser = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
+					if($this->selectUser) {
+
+						$this->selectUser->permissions = json_decode($this->selectUser->permissions, true);
+						$this->userdata[$this->selectUser->email] = array(
+							"status" => "verified",
+							"id" => $this->selectUser->uuid,
+							"permissions" => $this->selectUser->permissions[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $this->userdata;
 
 	}
 

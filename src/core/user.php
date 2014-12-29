@@ -27,22 +27,22 @@ class User extends Authentication {
 	/**
 	* @param int $_uid Private variable used for keeping track of current user permissions.
 	*/
-	private $_perms;
+	protected $_perms;
 
 	/**
 	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
 	 */
-	private static $_shash;
+	protected static $_shash;
 
 	/**
 	* @param int $_uid Private variable used for keeping track of current user id for permissions.
 	*/
-	private static $_uid;
+	protected static $_uid;
 
 	/**
 	* @param int $_oid Private variable used for keeping track of server owner id for permissions.
 	*/
-	private static $_oid;
+	protected static $_oid;
 
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
@@ -97,7 +97,7 @@ class User extends Authentication {
 			if($this->_l === true && isset($this->user->{$id}))
 				return $this->user->{$id};
 			else
-				return false;
+				return $this->_l;
 
 	}
 
