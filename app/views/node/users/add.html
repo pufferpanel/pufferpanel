@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="col-9">
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<form action="/node/users/add" method="post">
 		<h3 class="nopad">Permissions</h3>
 		<div class="list-group">

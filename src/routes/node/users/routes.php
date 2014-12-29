@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM;
 
-$klein->respond('GET', '/node/users/[*]?', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if($core->settings->get('allow_subusers') != 1) {
 
@@ -89,15 +89,44 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 
 $klein->respond('POST', '/node/users/add', function($request, $response, $service) use ($core) {
 
-	// new \PufferPanel\Core\Router\Node\Users();
-	$core->routes = new Router\Router_Controller('Node\Users', $core->user);
+	$core->routes = new Router\Router_Controller('Node\Users', $core->server);
 	$core->routes = $core->routes->loadClass();
 
-	if(!$core->routes->addSubuser($_POST)) {
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
 
-		$service->flash($core->routes->retrieveLastError());
-		$response->redirect('/node/users')->send();
-		return;
+		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
+		$response->redirect('/account')->send();
+
+	}
+
+	if(!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
+
+		$service->flash('<div class="alert alert-danger">The email provided is invalid.</div>');
+		$response->redirect('/node/users/add')->send();
+
+	}
+
+	if($_POST['email'] == $core->user->getData('email')) {
+
+		$service->flash('<div class="alert alert-danger">You cannot add yourself as a subuser.</div>');
+		$response->redirect('/node/users/add')->send();
+
+	}
+
+	if(!$response->isLocked()) {
+
+		if(!$core->routes->addSubuser($_POST)) {
+
+			$service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to add this subuser. Please try again.</div>');
+			$response->redirect('/node/users/add')->send();
+			return;
+
+		} else {
+
+			$service->flash('<div class="alert alert-success">Successfully added subuser.</div>');
+			$response->redirect('/node/users')->send();
+
+		}
 
 	}
 

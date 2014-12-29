@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM, \Unirest;
 
 $klein->respond('GET', '/account', function($request, $response, $service) use ($core) {
 

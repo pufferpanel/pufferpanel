@@ -21,9 +21,14 @@ use \ORM;
 
 class Users extends \PufferPanel\Core\Email {
 
-	protected $_server;
+	use \PufferPanel\Core\Components\Authentication;
 
-	protected static $_error = null;
+	protected static $_data;
+	protected static $_gsd;
+	protected static $_id;
+	protected static $_permission;
+	protected static $_permissionNode;
+	protected $_server;
 
 	/**
 	 * Constructor class for \PufferPanel\Core\Router\Node_Users
@@ -33,6 +38,7 @@ class Users extends \PufferPanel\Core\Email {
 	public function __construct($server) {
 
 		$this->_server = $server;
+		$this->settings = new \PufferPanel\Core\Settings();
 
 	}
 
@@ -43,32 +49,131 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function addSubuser($data = array()) {
 
-		self::_setError('This function is not currently functional.');
+		$this->registerToken = $this->keygen(32);
 
-		return false;
+		$this->find = ORM::forTable('users')->where('email', $data['email'])->findOne();
+		if(!$this->find) {
+
+			$this->newAccount = ORM::forTable('account_change')->create();
+			$this->newAccount->set(array(
+				'type' => 'user_register',
+				'content' => $data['email'],
+				'key' => $this->registerToken,
+				'time' => time()
+			));
+			$this->newAccount->save();
+
+		}
+
+		$this->subuserToken = $this->keygen(32);
+		$this->addToken = ORM::forTable('account_change')->create();
+		$this->addToken->set(array(
+			'type' => 'subuser',
+			'content' => json_encode(array(
+				$this->_server->getData('hash') => array(
+					'key' => $this->generateUniqueUUID('servers', 'gsd_secret'),
+					'perms' => self::_rebuildUserPermissions($data['permissions']),
+					'perms_gsd' => self::_buildGSDPermissions($data['permissions'])
+				)
+			)),
+			'key' => $this->subuserToken,
+			'time' => time()
+		));
+		$this->addToken->save();
+
+		$this->subusers = (!empty($this->_server->getData('subusers'))) ? json_decode($this->_server->getData('subusers'), true) : array();
+		$this->subusers[$data['email']] = $this->subuserToken;
+
+		$this->updateServer = ORM::forTable('servers')->findOne($this->_server->getData('id'));
+		$this->updateServer->subusers = json_encode($this->subusers);
+		$this->updateServer->save();
+
+		/*
+		* Send Email
+		*/
+		$this->buildEmail('new_subuser', array(
+			'REGISTER_TOKEN' => $this->registerToken,
+			'SUBUSER_TOKEN' => $this->subuserToken,
+			'URLENCODE_TOKEN' => urlencode($this->registerToken),
+			'SERVER' => $this->_server->getData('name'),
+			'EMAIL' => $data['email']
+		))->dispatch($data['email'], $this->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
+
+		return true;
 
 	}
 
 	/**
-	 * Controller for setting the last error that occured. Called when addSubuser() returns false.
+	 * Rebuilds user permissions to include the parent .view permission.
 	 *
-	 * @return void
+	 * @param array $data
+	 * @return array
+	 * @static
 	 */
-	protected final static function _setError($error) {
+	protected final static function _rebuildUserPermissions($data = array()) {
 
-		self::$_error = $error;
+		self::$_data = $data;
+
+		foreach(self::$_data as self::$_id => self::$_permission) {
+
+			if(in_array(self::$_permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', self::$_data)) {
+				self::$_data = array_merge(self::$_data, array("files.view"));
+			}
+
+			if(in_array(self::$_permission, array('manage.rename.jar')) && !in_array('manage.rename.view', self::$_data)) {
+				self::$_data = array_merge(self::$_data, array("manage.rename.view"));
+			}
+
+			if(in_array(self::$_permission, array('manage.ftp.details', 'manage.ftp.password')) && !in_array('manage.ftp.view', self::$_data)) {
+				self::$_data = array_merge(self::$_data, array("manage.ftp.view"));
+			}
+
+		}
+
+		return self::$_data;
 
 	}
 
 	/**
-	 * Controller for retrieving the last error that occured. Used when addSubuser() returns false.
+	 * Builds an array of equivalent GSD permissions for each panel permission.
 	 *
-	 * @param bool $wrapped If set to false will return the error not wrapped in <div> error tags.
-	 * @return string
+	 * @param array $data
+	 * @return array
+	 * @static
 	 */
-	public function retrieveLastError($wrapped = true) {
+	protected final static function _buildGSDPermissions($data = array()) {
 
-		return (!$wrapped) ? self::$_error : '<div class="alert alert-danger">'.self::$_error.'</div>';
+		self::$_data = $data;
+		self::$_gsd = array("s:console", "s:query");
+
+		foreach(self::$_data as self::$_id => self::$_permissionNode) {
+
+			switch(self::$_permissionNode) {
+
+				case "console.power":
+					self::$_gsd = array_merge(self::$_gsd, array("s:power"));
+					break;
+				case "console.commands":
+					self::$_gsd = array_merge(self::$_gsd, array("s:console:command"));
+					break;
+				case "files.view":
+					self::$_gsd = array_merge(self::$_gsd, array("s:files"));
+					break;
+				case "files.edit":
+					self::$_gsd = array_merge(self::$_gsd, array("s:files:get"));
+					break;
+				case "files.save":
+					self::$_gsd = array_merge(self::$_gsd, array("s:files:put"));
+					break;
+				case "files.zip":
+					self::$_gsd = array_merge(self::$_gsd, array("s:files:zip"));
+					break;
+
+			}
+
+		}
+
+		return self::$_gsd;
 
 	}
 
