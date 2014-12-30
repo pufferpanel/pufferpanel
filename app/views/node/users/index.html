@@ -18,7 +18,7 @@
 	{% for email, info in users %}
 		<a {% if info.status != "pending" %}href="/node/users/edit/{{ info.id }}"{% endif %} class="list-group-item">
 			<h4 class="list-group-item-heading">{{ email }}</h4>
-			{% if info.status == "pending" %}<p><span class="label label-default">Pending</span>&nbsp;<span class="label label-danger" style="cursor:pointer;" onclick="window.location='/node/users/revoke/{{ info.revoke }};'">Revoke</span></p>{% endif %}
+			{% if info.status == "pending" %}<p><span class="label label-default">Pending</span>&nbsp;<span class="label label-danger" style="cursor:pointer;" onclick="window.location='/node/users/revoke/{{ info.revoke }}'">Revoke</span></p>{% endif %}
 			<p class="list-group-item-text"><strong>Permission Nodes:</strong>
 				{% for id, perms in info.permissions %}
 					{{ perms }}{% if loop.last != true %},{% endif %}

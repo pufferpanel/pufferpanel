@@ -92,7 +92,9 @@ ORM::configure(array(
 * Include Required Global Component Files
 */
 require_once(__DIR__.'/components/authentication.php');
+require_once(__DIR__.'/components/errorhandler.php');
 require_once(__DIR__.'/components/functions.php');
+require_once(__DIR__.'/components/gsd.php');
 require_once(__DIR__.'/components/page.php');
 
 /*

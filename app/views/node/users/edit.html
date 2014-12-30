@@ -13,7 +13,7 @@
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="post/update.php" method="post">
+	<form action="/node/users/edit" method="post">
 		<h3 class="nopad">Viewing Perissions for: {{ user.email }}</h3><hr />
 		<div class="list-group">
 			<a href="#" class="list-group-item">
@@ -132,7 +132,7 @@
 				{{ xsrf|raw }}
 				<input type="hidden" name="uuid" value="{{ get.id }}" />
 				<input type="submit" value="Update Permissions" class="btn btn-primary" />
-				<a href="post/revoke.php?uid={{ get.id }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
+				<a href="/node/users/revoke/{{ user.uuid }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
 			</div>
 		</div>
 	</form>

@@ -53,7 +53,7 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 
 	} else if($request->param('action') == 'edit' && $request->param('id')) {
 
-		$user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid', $request->param('id'))->findOne();
+		$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('uuid', $request->param('id'))->findOne();
 
 		if(!$user || empty($user->permissions) || !is_array(json_decode($user->permissions, true))) {
 
@@ -76,12 +76,67 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 			'flash' => $service->flashes(),
 			'server' => $core->server->getData(),
 			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]['perms']),
-			'user' => array('email' => $user->email),
+			'user' => array('email' => $user->email, 'uuid' => $user->uuid),
 			'xsrf' => $core->auth->XSRF()
 		)))->send();
 
 	} else if($request->param('action') == 'revoke' && $request->param('id')) {
 
+		$core->routes = new Router\Router_Controller('Node\Users', $core->server);
+		$core->routes = $core->routes->loadClass();
+
+		$query = ORM::forTable('account_change')->where(array('key' => $request->param('id'), 'verified' => 0))->findOne();
+		if(!$query) {
+
+			$query = ORM::forTable('users')->where('uuid', $request->param('id'))->findOne();
+			if(!$query) {
+
+				$service->flash('<div class="alert alert-danger">Unable to locate the requested user for revoking.</div>');
+				$response->redirect('/node/users')->send();
+				return;
+
+			} else {
+
+				if(!$core->routes->revokeActiveUserPermissions($query)) {
+
+					$service->flash('<div class="alert alert-danger">Unable to revoke permissions for this user. ('.$core->routes->retrieveLastError(false).')</div>');
+					$response->redirect('/node/users')->send();
+					return;
+
+				} else {
+
+					$service->flash('<div class="alert alert-success">Permissions have been successfully revoked for the requested user.</div>');
+					$response->redirect('/node/users')->send();
+
+				}
+
+			}
+
+		} else {
+
+			if(!array_key_exists($core->server->getData('hash'), json_decode($query->content, true))) {
+
+				$service->flash('<div class="alert alert-danger">Unable to locate correct permissions node for this user.</div>');
+				$response->redirect('/node/users')->send();
+				return;
+
+			} else {
+
+				$query->delete();
+
+				$permissions = json_decode($core->server->getData('subusers'), true);
+				unset($permissions[$request->param('id')]);
+
+				$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+				$server->subusers = json_encode($permissions);
+				$server->save();
+
+				$service->flash('<div class="alert alert-success">Permissions have been successfully revoked for the requested user.</div>');
+				$response->redirect('/node/users')->send();
+
+			}
+
+		}
 
 	}
 

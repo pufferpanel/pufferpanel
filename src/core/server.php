@@ -232,7 +232,7 @@ class Server extends User {
 						$this->selectUser->content = json_decode($this->selectUser->content, true);
 						$this->userdata[$id] = array(
 							"status" => "pending",
-							"revoke" => urlencode($status),
+							"revoke" => $status,
 							"permissions" => $this->selectUser->content[$this->getData('hash')]['perms']
 						);
 

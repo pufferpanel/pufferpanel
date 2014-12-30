@@ -24,6 +24,8 @@ use \ORM, \Unirest;
  */
 class Query {
 
+	use Components\GSD;
+
 	/**
 	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
 	 *
@@ -48,23 +50,6 @@ class Query {
 			 */
 			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
 
-		}
-
-	}
-
-	/**
-	 * Checks if the GSD server is runnning.
-	 *
-	 * @param string $ip The IP to query
-	 * @param int $port The port to query
-	 * @return bool
-	 */
-	public function avaliable($ip, $port = 8003) {
-
-		if(!@fsockopen($ip, $port, $num, $error, 3)) {
-			return false;
-		} else {
-			return true;
 		}
 
 	}

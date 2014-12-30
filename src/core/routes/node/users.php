@@ -17,11 +17,11 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Router\Node;
-use \ORM;
+use \ORM, \Unirest;
 
 class Users extends \PufferPanel\Core\Email {
 
-	use \PufferPanel\Core\Components\Authentication;
+	use \PufferPanel\Core\Components\Authentication, \PufferPanel\Core\Components\GSD, \PufferPanel\Core\Components\Error_Handler;
 
 	protected static $_data;
 	protected static $_gsd;
@@ -154,7 +154,7 @@ class Users extends \PufferPanel\Core\Email {
 					self::$_gsd = array_merge(self::$_gsd, array("s:power"));
 					break;
 				case "console.commands":
-					self::$_gsd = array_merge(self::$_gsd, array("s:console:command"));
+					self::$_gsd = array_merge(self::$_gsd, array("s:console:send"));
 					break;
 				case "files.view":
 					self::$_gsd = array_merge(self::$_gsd, array("s:files"));
@@ -174,6 +174,64 @@ class Users extends \PufferPanel\Core\Email {
 		}
 
 		return self::$_gsd;
+
+	}
+
+	/**
+	 * Revokes subuser permissions for a given user that has an active account on the panel.
+	 *
+	 * @param object $orm Database query object.
+	 * @return bool
+	 */
+	public function revokeActiveUserPermissions($orm) {
+
+		if(!$this->avaliable($this->_server->nodeData('ip'), $this->_server->nodeData('gsd_listen'))) {
+			self::_setError("Unable to access the server management daemon.");
+			return false;
+		}
+
+		if(!array_key_exists($this->_server->getData('hash'), json_decode($orm->permissions, true))) {
+			self::_setError("Unable to locate server in user information.");
+			return false;
+		}
+
+		$permissions = json_decode($this->_server->getData('subusers'), true);
+		unset($permissions[$orm->id]);
+
+		$server = ORM::forTable('servers')->findOne($this->_server->getData('id'));
+		$server->subusers = json_encode($permissions);
+
+		$userPermissions = json_decode($orm->permissions, true);
+
+		try {
+
+			$request = Unirest::put(
+				"http://".$this->_server->nodeData('ip').":".$this->_server->nodeData('gsd_listen')."/gameservers/".$this->_server->getData('gsd_id'),
+				array(
+					"X-Access-Token" => $this->_server->nodeData('gsd_secret')
+				),
+				array(
+					"keys" => json_encode(array(
+						$userPermissions[$this->_server->getData('hash')]['key'] => array()
+					))
+				)
+			);
+
+			unset($userPermissions[$this->_server->getData('hash')]);
+
+			$orm->permissions = json_encode($userPermissions);
+			$orm->save();
+			$server->save();
+
+			return true;
+
+		} catch(\Exception $e) {
+
+			\Tracy\Debugger::log($e);
+			self::_setError("An error occured whent trying to update the server information on the daemon.");
+			return false;
+
+		}
 
 	}
 
