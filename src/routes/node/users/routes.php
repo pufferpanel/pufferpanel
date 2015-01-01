@@ -21,7 +21,7 @@ use \ORM;
 
 $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $response, $service, $app, $klein) use ($core) {
 
-	if($core->settings->get('allow_subusers') != 1) {
+	if($core->settings->get('allow_subusers') != 1 || !$core->user->hasPermission('users.view')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -53,7 +53,7 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 
 	} else if($request->param('action') == 'edit' && $request->param('id')) {
 
-		$user = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('uuid', $request->param('id'))->findOne();
+		$user = ORM::forTable('users')->selectMany('permissions', 'email')->where('uuid', $request->param('id'))->findOne();
 
 		if(!$user || empty($user->permissions) || !is_array(json_decode($user->permissions, true))) {
 
@@ -76,7 +76,7 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 			'flash' => $service->flashes(),
 			'server' => $core->server->getData(),
 			'permissions' => $core->user->twigListPermissions($permissions[$core->server->getData('hash')]['perms']),
-			'user' => array('email' => $user->email, 'uuid' => $user->uuid),
+			'user' => array('email' => $user->email, 'uuid' => $request->param('id')),
 			'xsrf' => $core->auth->XSRF()
 		)))->send();
 
@@ -150,7 +150,7 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
 	if(!$core->auth->XSRF($request->param('xsrf'))) {
 
 		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-		$response->redirect('/account')->send();
+		$response->redirect('/node/users')->send();
 
 	}
 
@@ -188,5 +188,32 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
 });
 
 $klein->respond('POST', '/node/users/edit', function($request, $response, $service) use ($core) {
+
+	$core->routes = new Router\Router_Controller('Node\Users', $core->server);
+	$core->routes = $core->routes->loadClass();
+
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
+
+		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
+		$response->redirect('/node/users')->send();
+
+	}
+
+	if(!$response->isLocked()) {
+
+		if(!$core->routes->modifySubuser($_POST)) {
+
+			$service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to modify this subuser. ('.$core->routes->retrieveLastError(false).')</div>');
+			$response->redirect('/node/users')->send();
+			return;
+
+		} else {
+
+			$service->flash('<div class="alert alert-success">Successfully modified subuser.</div>');
+			$response->redirect('/node/users')->send();
+
+		}
+
+	}
 
 });

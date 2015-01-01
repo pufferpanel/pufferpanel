@@ -23,21 +23,24 @@ class Users extends \PufferPanel\Core\Email {
 
 	use \PufferPanel\Core\Components\Authentication, \PufferPanel\Core\Components\GSD, \PufferPanel\Core\Components\Error_Handler;
 
-	protected static $_data;
-	protected static $_gsd;
-	protected static $_id;
-	protected static $_permission;
-	protected static $_permissionNode;
-	protected $_server;
+	/**
+	 * @param object
+	 */
+	protected $server;
 
 	/**
-	 * Constructor class for \PufferPanel\Core\Router\Node_Users
+	 * @param object
+	 */
+	protected $settings;
+
+	/**
+	 * Constructor class for \PufferPanel\Core\Router\Node\Users
 	 *
 	 * @return void
 	 */
-	public function __construct($server) {
+	public function __construct(\PufferPanel\Core\Server $server) {
 
-		$this->_server = $server;
+		$this->server = $server;
 		$this->settings = new \PufferPanel\Core\Settings();
 
 	}
@@ -47,59 +50,111 @@ class Users extends \PufferPanel\Core\Email {
 	 *
 	 * @return bool
 	 */
-	public function addSubuser($data = array()) {
+	public function addSubuser(array $data) {
 
-		$this->registerToken = $this->keygen(32);
+		$registerToken = $this->keygen(32);
 
-		$this->find = ORM::forTable('users')->where('email', $data['email'])->findOne();
-		if(!$this->find) {
+		$find = ORM::forTable('users')->where('email', $data['email'])->findOne();
+		if(!$find) {
 
-			$this->newAccount = ORM::forTable('account_change')->create();
-			$this->newAccount->set(array(
+			$newAccount = ORM::forTable('account_change')->create();
+			$newAccount->set(array(
 				'type' => 'user_register',
 				'content' => $data['email'],
-				'key' => $this->registerToken,
+				'key' => $registerToken,
 				'time' => time()
 			));
-			$this->newAccount->save();
+			$newAccount->save();
 
 		}
 
-		$this->subuserToken = $this->keygen(32);
-		$this->addToken = ORM::forTable('account_change')->create();
-		$this->addToken->set(array(
+		$subuserToken = $this->keygen(32);
+		$addToken = ORM::forTable('account_change')->create();
+		$addToken->set(array(
 			'type' => 'subuser',
 			'content' => json_encode(array(
-				$this->_server->getData('hash') => array(
+				$this->server->getData('hash') => array(
 					'key' => $this->generateUniqueUUID('servers', 'gsd_secret'),
 					'perms' => self::_rebuildUserPermissions($data['permissions']),
 					'perms_gsd' => self::_buildGSDPermissions($data['permissions'])
 				)
 			)),
-			'key' => $this->subuserToken,
+			'key' => $subuserToken,
 			'time' => time()
 		));
-		$this->addToken->save();
+		$addToken->save();
 
-		$this->subusers = (!empty($this->_server->getData('subusers'))) ? json_decode($this->_server->getData('subusers'), true) : array();
-		$this->subusers[$data['email']] = $this->subuserToken;
+		$subusers = (!empty($this->server->getData('subusers'))) ? json_decode($this->server->getData('subusers'), true) : array();
+		$subusers[$data['email']] = $subuserToken;
 
-		$this->updateServer = ORM::forTable('servers')->findOne($this->_server->getData('id'));
-		$this->updateServer->subusers = json_encode($this->subusers);
-		$this->updateServer->save();
+		$updateServer = ORM::forTable('servers')->findOne($this->server->getData('id'));
+		$updateServer->subusers = json_encode($subusers);
+		$updateServer->save();
 
 		/*
 		* Send Email
 		*/
 		$this->buildEmail('new_subuser', array(
-			'REGISTER_TOKEN' => $this->registerToken,
-			'SUBUSER_TOKEN' => $this->subuserToken,
-			'URLENCODE_TOKEN' => urlencode($this->registerToken),
-			'SERVER' => $this->_server->getData('name'),
+			'REGISTER_TOKEN' => $registerToken,
+			'SUBUSER_TOKEN' => $subuserToken,
+			'URLENCODE_TOKEN' => urlencode($registerToken),
+			'SERVER' => $this->server->getData('name'),
 			'EMAIL' => $data['email']
 		))->dispatch($data['email'], $this->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
 
 		return true;
+
+	}
+
+	/**
+	 * Updates information for a subuser.
+	 *
+	 * @param array $data
+	 * @return bool
+	 */
+	public function modifySubuser(array $data) {
+
+		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('gsd_listen'))) {
+			self::_setError("Unable to access the server management daemon.");
+			return false;
+		}
+
+		$select = ORM::forTable('users')->where('uuid', $data['uuid'])->findOne();
+
+		$permissions = @json_decode($select->permissions, true);
+		if(!$select || !array_key_exists($this->server->getData('hash'), $permissions)) {
+			self::_setError("Invalid user was provided.");
+			return false;
+		}
+
+		$permissions[$this->server->getData('hash')]['perms'] = self::_rebuildUserPermissions($data['permissions']);
+		$permissions[$this->server->getData('hash')]['perms_gsd'] = self::_buildGSDPermissions($data['permissions']);
+		$select->permissions = json_encode($permissions);
+		$select->save();
+
+		try {
+
+			$request = Unirest::put(
+				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
+				array(
+					"X-Access-Token" => $this->server->nodeData('gsd_secret')
+				),
+				array(
+					"keys" => json_encode(array(
+						$permissions[$this->server->getData('hash')]['key'] => self::_buildGSDPermissions($data['permissions'])
+					))
+				)
+			);
+
+			return true;
+
+		} catch(\Exception $e) {
+
+			\Tracy\Debugger::log($e);
+			self::_setError("An error occured when trying to update the server information on the daemon.");
+			return false;
+
+		}
 
 	}
 
@@ -110,27 +165,25 @@ class Users extends \PufferPanel\Core\Email {
 	 * @return array
 	 * @static
 	 */
-	protected final static function _rebuildUserPermissions($data = array()) {
+	protected final static function _rebuildUserPermissions(array $data) {
 
-		self::$_data = $data;
+		foreach($data as $id => $permission) {
 
-		foreach(self::$_data as self::$_id => self::$_permission) {
-
-			if(in_array(self::$_permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', self::$_data)) {
-				self::$_data = array_merge(self::$_data, array("files.view"));
+			if(in_array($permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', $data)) {
+				$data = array_merge($data, array("files.view"));
 			}
 
-			if(in_array(self::$_permission, array('manage.rename.jar')) && !in_array('manage.rename.view', self::$_data)) {
-				self::$_data = array_merge(self::$_data, array("manage.rename.view"));
+			if(in_array($permission, array('manage.rename.jar')) && !in_array('manage.rename.view', $data)) {
+				$data = array_merge($data, array("manage.rename.view"));
 			}
 
-			if(in_array(self::$_permission, array('manage.ftp.details', 'manage.ftp.password')) && !in_array('manage.ftp.view', self::$_data)) {
-				self::$_data = array_merge(self::$_data, array("manage.ftp.view"));
+			if(in_array($permission, array('manage.ftp.details', 'manage.ftp.password')) && !in_array('manage.ftp.view', $data)) {
+				$data = array_merge($data, array("manage.ftp.view"));
 			}
 
 		}
 
-		return self::$_data;
+		return $data;
 
 	}
 
@@ -141,39 +194,38 @@ class Users extends \PufferPanel\Core\Email {
 	 * @return array
 	 * @static
 	 */
-	protected final static function _buildGSDPermissions($data = array()) {
+	protected final static function _buildGSDPermissions(array $data) {
 
-		self::$_data = $data;
-		self::$_gsd = array("s:console", "s:query");
+		$gsd = array("s:console", "s:query");
 
-		foreach(self::$_data as self::$_id => self::$_permissionNode) {
+		foreach($data as $id => $permissionNode) {
 
-			switch(self::$_permissionNode) {
+			switch($permissionNode) {
 
 				case "console.power":
-					self::$_gsd = array_merge(self::$_gsd, array("s:power"));
+					$gsd = array_merge($gsd, array("s:power"));
 					break;
 				case "console.commands":
-					self::$_gsd = array_merge(self::$_gsd, array("s:console:send"));
+					$gsd = array_merge($gsd, array("s:console:send"));
 					break;
 				case "files.view":
-					self::$_gsd = array_merge(self::$_gsd, array("s:files"));
+					$gsd = array_merge($gsd, array("s:files"));
 					break;
 				case "files.edit":
-					self::$_gsd = array_merge(self::$_gsd, array("s:files:get"));
+					$gsd = array_merge($gsd, array("s:files:get"));
 					break;
 				case "files.save":
-					self::$_gsd = array_merge(self::$_gsd, array("s:files:put"));
+					$gsd = array_merge($gsd, array("s:files:put"));
 					break;
 				case "files.zip":
-					self::$_gsd = array_merge(self::$_gsd, array("s:files:zip"));
+					$gsd = array_merge($gsd, array("s:files:zip"));
 					break;
 
 			}
 
 		}
 
-		return self::$_gsd;
+		return $gsd;
 
 	}
 
@@ -183,22 +235,22 @@ class Users extends \PufferPanel\Core\Email {
 	 * @param object $orm Database query object.
 	 * @return bool
 	 */
-	public function revokeActiveUserPermissions($orm) {
+	public function revokeActiveUserPermissions(ORM $orm) {
 
-		if(!$this->avaliable($this->_server->nodeData('ip'), $this->_server->nodeData('gsd_listen'))) {
+		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('gsd_listen'))) {
 			self::_setError("Unable to access the server management daemon.");
 			return false;
 		}
 
-		if(!array_key_exists($this->_server->getData('hash'), json_decode($orm->permissions, true))) {
+		if(!array_key_exists($this->server->getData('hash'), json_decode($orm->permissions, true))) {
 			self::_setError("Unable to locate server in user information.");
 			return false;
 		}
 
-		$permissions = json_decode($this->_server->getData('subusers'), true);
+		$permissions = json_decode($this->server->getData('subusers'), true);
 		unset($permissions[$orm->id]);
 
-		$server = ORM::forTable('servers')->findOne($this->_server->getData('id'));
+		$server = ORM::forTable('servers')->findOne($this->server->getData('id'));
 		$server->subusers = json_encode($permissions);
 
 		$userPermissions = json_decode($orm->permissions, true);
@@ -206,18 +258,18 @@ class Users extends \PufferPanel\Core\Email {
 		try {
 
 			$request = Unirest::put(
-				"http://".$this->_server->nodeData('ip').":".$this->_server->nodeData('gsd_listen')."/gameservers/".$this->_server->getData('gsd_id'),
+				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
 				array(
-					"X-Access-Token" => $this->_server->nodeData('gsd_secret')
+					"X-Access-Token" => $this->server->nodeData('gsd_secret')
 				),
 				array(
 					"keys" => json_encode(array(
-						$userPermissions[$this->_server->getData('hash')]['key'] => array()
+						$userPermissions[$this->server->getData('hash')]['key'] => array()
 					))
 				)
 			);
 
-			unset($userPermissions[$this->_server->getData('hash')]);
+			unset($userPermissions[$this->server->getData('hash')]);
 
 			$orm->permissions = json_encode($userPermissions);
 			$orm->save();
@@ -228,7 +280,7 @@ class Users extends \PufferPanel\Core\Email {
 		} catch(\Exception $e) {
 
 			\Tracy\Debugger::log($e);
-			self::_setError("An error occured whent trying to update the server information on the daemon.");
+			self::_setError("An error occured when trying to update the server information on the daemon.");
 			return false;
 
 		}

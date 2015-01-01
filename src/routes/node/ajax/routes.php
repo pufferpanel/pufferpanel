@@ -44,4 +44,4 @@ $klein->respond('POST', '/node/ajax/console/power', function($request, $response
 
 });
 
-//include('files/routes.php');
+include('files/routes.php');

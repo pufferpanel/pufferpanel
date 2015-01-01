@@ -41,5 +41,6 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
 });
 
 include 'ajax/routes.php';
+include 'files/routes.php';
 include 'settings/routes.php';
 include 'users/routes.php';

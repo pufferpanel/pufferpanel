@@ -26,6 +26,8 @@ class Query {
 
 	use Components\GSD;
 
+	protected $server = false;
+
 	/**
 	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
 	 *
