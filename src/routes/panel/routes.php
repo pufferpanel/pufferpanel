@@ -220,7 +220,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 });
 
-$klein->respond('GET', '/index', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/[|index:index]', function($request, $response, $service) use ($core) {
 
 	if($core->auth->isAdmin()) {
 
