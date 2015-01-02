@@ -63,7 +63,11 @@ class Files extends \PufferPanel\Core\Files {
 	public function buildContents(array $params) {
 
 		$this->params = $params;
-		$this->params['dir'] = (!isset($this->params['dir'])) ? "/" : $this->params['dir'];
+		if(isset($this->params['dir']) && !empty($this->params['dir'])) {
+			$this->params['dir'] = rtrim($this->params['dir'], '/');
+		} else {
+			$this->params['dir'] = null;
+		}
 
 		$contents = self::_retrieveFolderListing();
 
@@ -87,7 +91,7 @@ class Files extends \PufferPanel\Core\Files {
 
 				$this->display_folders = array_merge($this->display_folders, array(array(
 					"entry" => $value['name'],
-					"directory" => $this->params['dir'],
+					"directory" => trim($this->params['dir'], "/"),
 					"size" => null,
 					"date" => strtotime($value['mtime'])
 				)));
@@ -96,7 +100,7 @@ class Files extends \PufferPanel\Core\Files {
 
 				$this->display_files = array_merge($this->display_files, array(array(
 					"entry" => $value['name'],
-					"directory" => $this->params['dir'],
+					"directory" => trim($this->params['dir'], "/"),
 					"extension" => pathinfo($value['name'], PATHINFO_EXTENSION),
 					"size" => $this->formatSize($value['size']),
 					"date" => strtotime($value['mtime'])
@@ -141,8 +145,10 @@ class Files extends \PufferPanel\Core\Files {
 
 		try {
 
+			$attached_folder = (!is_null($this->params['dir'])) ? $this->params['dir'] : "/";
+
 			$request = Unirest::get(
-				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id')."/folder/".$this->params['dir'],
+				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id')."/folder/".$attached_folder,
 				array(
 					'X-Access-Token' => $this->server->getData('gsd_secret')
 				)

@@ -37,18 +37,16 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 	}
 
 	$previous_directory = array();
-	if(isset($_POST['dir']) && !empty($_POST['dir'])){
+	if(!empty($request->param('dir'))){
 		$previous_directory['first'] = true;
 	}
 
-	$go_back = explode('/', $request->param('dir'));
-	if(array_key_exists(1, $go_back) && !empty($go_back[1])){
+	$go_back = explode('/', ltrim(rtrim($request->param('dir'), '/'), '/'));
+	if(count($go_back) > 1 && !empty($go_back[1])) {
 
 		$previous_directory['show'] = true;
-
-		unset($go_back[count($go_back) - 2]);
-		$previous_directory['link'] = rtrim(implode('/', $go_back), '/');
-		$previous_directory['link_show'] = $previous_directory['link'];
+		$previous_directory['link'] = str_replace(end($go_back), "", trim(implode('/', $go_back), '/'));
+		$previous_directory['link_show'] = rtrim($previous_directory['link'], "/");
 
 	}
 
@@ -64,7 +62,7 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 			'extensions' => array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang'),
 			'zip_extensions' => array('zip', 'tar.gz', 'tar', 'gz'),
 			'directory' => $previous_directory,
-			'header_dir' => $request->param('dir')
+			'header_dir' => ltrim($request->param('dir'), '/')
 		)))->send();
 
 	}

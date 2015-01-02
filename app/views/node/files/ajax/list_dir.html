@@ -33,7 +33,7 @@
 		{% for folder in folders %}
 			<tr>
 	            <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-	            <td><a href="/node/files?dir={{ folder.directory }}{{ folder.entry }}" class="load_new">{{ folder.entry }}</a></td>
+	            <td><a href="/node/files?dir={{ folder.directory }}/{{ folder.entry }}" class="load_new">{{ folder.entry }}</a></td>
 	            <td>{{ folder.size }}</td>
 	            <td>{{ folder.date|date("m/d/y H:i:s") }}</td>
 	            <td style="text-align:center;">
@@ -41,12 +41,12 @@
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;"></div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if ( permission.files.zip == true ) and ( file.extension not in zip_extensions ) %}
-							<button href="/node/files/compress{{ folder.directory }}{{ folder.entry }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
+							<button href="/node/files/compress/{{ folder.directory }}/{{ folder.entry }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
 						{% endif %}
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if permission.files.delete == true %}
-							<button href="/node/files/delete{{ folder.directory }}{{ folder.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+							<button href="/node/files/delete/{{ folder.directory }}/{{ folder.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
 						{% endif %}
 						</div>
 					</div>
@@ -59,7 +59,7 @@
 				<td>
 					{% if file.extension in extensions %}
 						{% if permission.files.edit == true %}
-							<a href="/node/files/edit{{ file.directory }}{{ file.entry }}" class="edit_file">{{ file.entry }}</a>
+							<a href="/node/files/edit/{{ file.directory }}/{{ file.entry }}" class="edit_file">{{ file.entry }}</a>
 						{% else %}
 							{{ file.entry }}
 						{% endif %}
@@ -73,17 +73,17 @@
 					<div class="row" style="text-align:center;margin-left:8px;">
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if ( permission.files.zip == true ) and ( file.extension in zip_extensions ) %}
-							<button href="/node/files/decompress{{ file.directory }}{{ file.entry }}" class="unzip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
+							<button href="/node/files/decompress/{{ file.directory }}/{{ file.entry }}" class="unzip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
 						{% endif %}
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if permission.files.download == true %}
-							<a href="/node/files/download{{ file.directory }}{{ file.entry }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-download"></i></button></a>
+							<a href="/node/files/download/{{ file.directory }}/{{ file.entry }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-download"></i></button></a>
 						{% endif %}
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if permission.files.delete == true %}
-							<button href="/node/files/delete{{ file.directory }}{{ file.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+							<button href="/node/files/delete/{{ file.directory }}/{{ file.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
 						{% endif %}
 						</div>
 					</div>
