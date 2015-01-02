@@ -122,7 +122,7 @@ $_l = new stdClass();
  */
 $core->settings = new Settings();
 $core->auth = new Authentication();
-$core->user = new User($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash'));
+$core->user = new User();
 $core->server = new Server($core->auth->getCookie('pp_server_hash'), $core->user->getData('id'), $core->user->getData('root_admin'));
 $core->email = new Email();
 $core->log = new Log($core->user->getData('id'));

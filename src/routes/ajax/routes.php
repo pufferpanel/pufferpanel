@@ -19,9 +19,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 namespace PufferPanel\Core;
 use \ORM;
 
-$klein->respond('POST', '/ajax/status', function($request, $response, $service, $app) use ($core){
+$klein->respond('POST', '/ajax/status', function($request, $response, $service) use ($core){
 
-	if(!$app->isLoggedIn) {
+	if(!$core->auth->isLoggedIn()) {
 		$response->body('#FF9900')->send();
 	} else {
 

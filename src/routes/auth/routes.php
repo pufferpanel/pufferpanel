@@ -102,9 +102,9 @@ $klein->respond('POST', '/auth/login/totp', function($request, $response) use ($
 
 });
 
-$klein->respond('GET', '/auth/logout', function($request, $response, $service, $app) use ($core) {
+$klein->respond('GET', '/auth/logout', function($request, $response, $service) use ($core) {
 
-	if($app->isLoggedIn) {
+	if($core->auth->isLoggedIn()) {
 
 		$response->cookie("pp_auth_token", null, time() - 86400);
 		$response->cookie("pp_server_node", null, time() - 86400);

@@ -47,24 +47,25 @@ class User extends Authentication {
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
-	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
-	 * @param mixed $session The value of the pp_auth_token cookie.
-	 * @param mixed $hash The server hash of the requesting user which is used when they are viewing node pages.
+	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
 	 * @return void
 	 */
-	public function __construct($ip, $session = null, $hash = null){
+	public function __construct($rebuild = false){
+
+		parent::__construct();
 
 		/*
 		 * Reset Values
 		 */
 		$this->_l = true;
 
-		if(self::isLoggedIn($ip, $session, $hash) === true)
-			$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
-		else if(is_null($session) && is_null($hash) && is_numeric($ip))
-			$this->user = ORM::forTable('users')->findOne($ip);
-		else
+		if(parent::isLoggedIn() && !$rebuild) {
+			$this->user = $this->select;
+		} else if($rebuild) {
+			$this->user = ORM::forTable('users')->findOne($rebuild);
+		} else {
 			$this->_l = false;
+		}
 
 	}
 
@@ -76,7 +77,7 @@ class User extends Authentication {
 	 */
 	public function rebuildData($id){
 
-		$this->__construct($id);
+		self::__construct($id);
 
 	}
 
@@ -259,5 +260,3 @@ class User extends Authentication {
 	}
 
 }
-
-?>

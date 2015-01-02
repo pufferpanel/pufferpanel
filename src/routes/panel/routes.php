@@ -222,7 +222,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 $klein->respond('GET', '/index', function($request, $response, $service) use ($core) {
 
-	if($core->user->getData('root_admin') == '1') {
+	if($core->auth->isAdmin()) {
 
 		$servers = ORM::forTable('servers')
 			->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
@@ -270,11 +270,11 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response, $service)
 
 });
 
-$klein->respond('GET', '/language/[:language]', function($request, $response, $service, $app) use ($core) {
+$klein->respond('GET', '/language/[:language]', function($request, $response, $service) use ($core) {
 
 	if(file_exists(SRC_DIR.'lang/'.$request->param('language').'.json')) {
 
-		if($app->isLoggedIn) {
+		if($core->auth->isLoggedIn()) {
 
 			$account = ORM::forTable('users')->findOne($core->user->getData('id'));
 			$account->set(array(

@@ -24,3 +24,8 @@ $klein->respond('GET', '/admin/index', function($request, $response, $service) u
 	$response->body($core->twig->render('admin/index.html'))->send();
 
 });
+
+include 'account/routes.php';
+include 'config/routes.php';
+include 'node/routes.php';
+include 'server/routes.php';
