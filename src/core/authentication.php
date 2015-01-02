@@ -85,51 +85,46 @@ class Authentication {
 	/**
 	 * Checks if a user is currently logged in or if their session is expired.
 	 *
-	 * @param string $ip
-	 * @param string $session
-	 * @param string $serverhash
-	 * @param int $acp
+	 * @param bool $admin
+	 * @param string $server
 	 * @return bool
 	 */
-	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
+	public function isLoggedIn($admin = false, $server = null) {
 
-		$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
+		$select = ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 
-		if($this->user !== false){
+		if(!$select) {
+			return false;
+		} else {
 
-			if($this->user->root_admin != 1 && $acp === true)
+			if($select->root_admin != 1 && $admin) {
 				return false;
-			else{
+			} else{
 
-				if($this->user->root_admin != 1){
+				if($select->root_admin != 1) {
 
-					if(!is_null($serverhash)){
+					if(!is_null($server)) {
 
-						/*
-						 * We have to do a mini-permissions building here since we can't call the user function from here
-						 */
-						if(!is_null($this->user->permissions) && !empty($this->user->permissions))
-							$this->permissions = array_keys(json_decode($this->user->permissions, true));
-						else
-							$this->permissions = array("0" => "0");
+						$permissions = (!empty($select->permissions)) ? array_keys(json_decode($select->permissions, true)) : array();
 
-						$this->server = ORM::forTable('servers')->where(array('hash' => $serverhash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->user->id, join(',', $this->permissions)))->findOne();
+						$this->server = ORM::forTable('servers')
+							->where(array('hash' => $server, 'active' => 1))
+							->where_raw('`owner_id` = ? OR `hash` IN(?)', array($select->id, join(',', $permissions)))
+							->findOne();
 
-							if($this->server !== false)
-								return true;
-							else
-								return false;
+						return (!$server) ? false : true;
 
-					}else
+					} else {
 						return true;
+					}
 
-				}else
+				} else {
 					return true;
+				}
 
 			}
 
-		}else
-			return false;
+		}
 
 	}
 
