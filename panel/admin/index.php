@@ -32,7 +32,7 @@ if(strpos($head, '/')) {
 	$git = $head;
 }
 
-echo $twig->render(
+echo $core->$twig->render(
         'admin/index.html', array(
             'version' => trim(file_get_contents('../../src/versions/current')).' '.$git,
             'installer' => (is_dir('../install')) ? true : false,

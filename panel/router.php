@@ -85,6 +85,11 @@ $klein->respond(array('GET', 'POST'), '/node/[*]', function($request, $response,
 });
 
 include SRC_DIR.'routes/admin/routes.php';
+include SRC_DIR.'routes/admin/account/routes.php';
+include SRC_DIR.'routes/admin/account/permissions/routes.php';
+include SRC_DIR.'routes/admin/config/routes.php';
+include SRC_DIR.'routes/admin/node/routes.php';
+include SRC_DIR.'routes/admin/server/routes.php';
 include SRC_DIR.'routes/ajax/routes.php';
 include SRC_DIR.'routes/auth/routes.php';
 include SRC_DIR.'routes/panel/routes.php';

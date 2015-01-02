@@ -31,7 +31,7 @@
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="{{ settings.master_url }}">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="{{ settings.master_url }}index">{{ settings.company_name }}</a>
 			</div>
 			{% block servername %}
 				{% if server.name is defined %}
@@ -42,7 +42,7 @@
 			{% endblock %}
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
-					{% if admin %}<li><a href="{{ settings.master_url }}admin"><i class="fa fa-cogs"></i></a></li>{% endif %}
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index"><i class="fa fa-cogs"></i></a></li>{% endif %}
 					<li><a href="{{ settings.master_url }}auth/logout"><i class="fa fa-power-off"></i></a></li>
 				</ul>
 			</div>
