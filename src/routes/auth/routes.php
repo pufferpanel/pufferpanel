@@ -102,7 +102,7 @@ $klein->respond('POST', '/auth/login/totp', function($request, $response) use ($
 
 });
 
-$klein->respond('GET', '/auth/logout', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/auth/logout', function($request, $response) use ($core) {
 
 	if($core->auth->isLoggedIn()) {
 

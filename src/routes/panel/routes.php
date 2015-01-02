@@ -270,7 +270,7 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response, $service)
 
 });
 
-$klein->respond('GET', '/language/[:language]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/language/[:language]', function($request, $response) use ($core) {
 
 	if(file_exists(SRC_DIR.'lang/'.$request->param('language').'.json')) {
 
