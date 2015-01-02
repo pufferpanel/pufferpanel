@@ -24,7 +24,7 @@ require '../src/core/core.php';
 
 $klein = new \Klein\Klein();
 
-$klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app) use ($core) {
+$klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
