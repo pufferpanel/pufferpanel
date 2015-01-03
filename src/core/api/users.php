@@ -224,7 +224,6 @@ class Users {
 					break;
 				default:
 					return false;
-					break;
 
 			}
 

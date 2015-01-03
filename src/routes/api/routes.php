@@ -17,7 +17,6 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
 
 require SRC_DIR.'core/api/initalize.php';
 $api = new API\Initalize();
@@ -357,7 +356,7 @@ $klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/?', function($reque
 
 });
 
-$klein->respond('/api/[*]', function($request, $response) use ($core) {
+$klein->respond('/api/[*]', function($request, $response) {
 
 	if(!$response->isSent()) {
 

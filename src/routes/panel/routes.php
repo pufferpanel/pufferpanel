@@ -181,7 +181,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		try {
 
-			$request = Unirest::put(
+			Unirest::put(
 				'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
 				array(
 					"X-Access-Token" => $info->node_gsd_secret
@@ -196,7 +196,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 			unset($subusers[$core->user->getData('email')]);
 			$subusers[$core->user->getData('id')] = "verified";
 
-			$permissions = @json_decode($info->permissions, true);
+			$permissions = json_decode($info->permissions, true);
 			$permissions = (is_array($permissions)) ? $permissions : array();
 			$permissions[$info->hash] = $_perms[$info->hash];
 

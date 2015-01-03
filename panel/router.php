@@ -87,7 +87,7 @@ include SRC_DIR.'routes/panel/routes.php';
 include SRC_DIR.'routes/node/routes.php';
 include SRC_DIR.'routes/api/routes.php';
 
-$klein->respond('*', function($request, $response, $service) use ($core) {
+$klein->respond('*', function($request, $response) use ($core) {
 
 	if(!$response->isSent()) {
 

@@ -34,11 +34,11 @@ class Query {
 	 * @param int $serverid The ID of the server that will be implementing this class.
 	 * @return array Returns an array on success or false on failure.
 	 */
-	public function __construct($serverid){
+	public function __construct($serverid) {
 
-		if($serverid === false)
+		if($serverid === false) {
 			$this->_queryData = false;
-		else {
+		} else {
 
 			$this->gsid = (int)$serverid;
 
@@ -73,20 +73,17 @@ class Query {
 				"header" => "X-Access-Token: ".$secret
 			)
 		));
-		$this->gatherData = @file_get_contents("http://".$ip.":".$port."/gameservers/".$id , 0, $this->context);
+		$this->gatherData = file_get_contents("http://".$ip.":".$port."/gameservers/".$id , 0, $this->context);
 
 		$this->raw = json_decode($this->gatherData, true);
 
-			if(!$this->gatherData)
-				return false;
-			else
-				if(json_last_error() == JSON_ERROR_NONE)
-					if($this->raw['status'] == 0)
-						return false;
-					else
-						return true;
-				else
-					return false;
+		if(!$this->gatherData) {
+			return false;
+		} else if(json_last_error() == JSON_ERROR_NONE) {
+			return $this->raw['status'] != 0;
+		} else {
+			return false;
+		}
 
 	}
 
@@ -98,9 +95,9 @@ class Query {
 	 */
 	public function online($override = false) {
 
-		if($this->server === false)
+		if($this->server === false) {
 			return false;
-		else {
+		} else {
 
 			$this->server->gsd_id = ($override !== false) ? (int)$override : $this->server->gsd_id;
 
@@ -111,35 +108,31 @@ class Query {
 					"header" => "X-Access-Token: ".$this->node->gsd_secret
 				)
 			));
-			$this->gatherData = @file_get_contents("http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id , 0, $this->context);
+			$this->gatherData = file_get_contents("http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id , 0, $this->context);
 
 			$this->raw = json_decode($this->gatherData, true);
 
-				/*
+			/*
 				 * Valid Data was Returned
 				 */
-				if(!$this->gatherData)
+			if(!$this->gatherData) {
+				return false;
+			} else if(json_last_error() == JSON_ERROR_NONE) {
+
+				if($this->raw['status'] == 0) {
 					return false;
-				else{
+				} else {
 
-					if(json_last_error() == JSON_ERROR_NONE){
-
-						if($this->raw['status'] == 0)
-							return false;
-						else{
-							$this->_jsonData = (array_key_exists('query', $this->raw)) ? $this->raw['query'] : null;
-							$this->_serverPID = $this->raw['pid'];
-							$this->_jsonProcess = (array_key_exists('process', $this->raw)) ? $this->raw['process'] : array();
-							return true;
-						}
-
-					}else
-						return false;
-
+					$this->_jsonData = (array_key_exists('query', $this->raw)) ? $this->raw['query'] : null;
+					$this->_serverPID = $this->raw['pid'];
+					$this->_jsonProcess = (array_key_exists('process', $this->raw)) ? $this->raw['process'] : array();
+					return true;
+					
 				}
-
+			} else {
+				return false;
+			}
 		}
-
 
 	}
 
@@ -150,10 +143,7 @@ class Query {
 	 */
 	public function pid() {
 
-		if($this->online() === true)
-			return $this->_serverPID;
-		else
-			return null;
+		return $this->online() ? $this->_serverPID : null;
 
 	}
 
@@ -165,13 +155,17 @@ class Query {
 	 */
 	public function retrieve_process($element = null) {
 
-		if($this->online() === true)
-			if(is_null($element))
+		if($this->online()) {
+
+			if(is_null($element)) {
 				return $this->_jsonProcess;
-			else
+			} else {
 				return (array_key_exists($element, $this->_jsonProcess)) ? $this->_jsonProcess[$element] : null;
-		else
+			}
+			
+		} else {
 			return null;
+		}
 
 	}
 
@@ -183,13 +177,17 @@ class Query {
 	*/
 	public function retrieve($element = null) {
 
-		if($this->online() === true)
-			if(is_null($element))
+		if($this->online() === true) {
+			
+			if(is_null($element)) {
 				return $this->_jsonData;
-			else
+			} else {
 				return (array_key_exists($element, $this->_jsonData)) ? $this->_jsonData[$element] : null;
-		else
+			}
+
+		} else {
 			return null;
+		}
 
 	}
 
@@ -246,10 +244,8 @@ class Query {
 
 				case 403:
 					return "Authentication error encountered.";
-					break;
 				default:
 					return "[HTTP/{$this->response->code}] Invalid response was recieved. ({$this->response->raw_body})";
-					break;
 
 			}
 
@@ -260,7 +256,7 @@ class Query {
 			/*
 			* Create server.properties
 			*/
-			if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(@file_get_contents(APP_DIR.'templates/server.properties.tpl'))) {
+			if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(file_get_contents(APP_DIR.'templates/server.properties.tpl'))) {
 
 				return "No Template Avaliable for server.properties";
 
@@ -348,4 +344,3 @@ class Query {
 	}
 
 }
-?>
