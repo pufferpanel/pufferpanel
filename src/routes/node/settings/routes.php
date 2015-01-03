@@ -66,7 +66,7 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 
 		try {
 
-			$unirest = Unirest::put(
+			Unirest::put(
 				'http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'),
 				array(
 					"X-Access-Token" => $core->server->nodeData('gsd_secret')
@@ -136,7 +136,7 @@ $klein->respond('POST', '/node/settings/ftp', function($request, $response, $ser
 
 });
 
-$klein->respond('POST', '/node/settings/password', function($request, $response, $service) use ($core) {
+$klein->respond('POST', '/node/settings/password', function($request, $response) use ($core) {
 
 	$response->body($core->auth->keygen(rand(6,10))."-".$core->auth->keygen(rand(6,14)))->send();
 

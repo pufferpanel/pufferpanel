@@ -17,7 +17,6 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
 
 $klein->respond('POST', '/node/ajax/files/[*]', function() use($core) {
 

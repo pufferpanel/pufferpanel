@@ -30,7 +30,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 			$status = ORM::forTable('servers')
 				->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
-				->where('servers.id', $_POST['server'])
+				->where('servers.id', $request->param('server'))
 				->findOne();
 
 			if(!$core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret)) {

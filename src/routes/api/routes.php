@@ -357,7 +357,7 @@ $klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/?', function($reque
 
 });
 
-$klein->respond('/api/[*]', function($request, $response, $service) use ($core) {
+$klein->respond('/api/[*]', function($request, $response) use ($core) {
 
 	if(!$response->isSent()) {
 

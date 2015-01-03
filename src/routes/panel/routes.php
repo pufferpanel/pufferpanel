@@ -305,7 +305,7 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
 
 });
 
-$klein->respond('GET', '/totp', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/totp', function($request, $response) use ($core) {
 
 	$response->body($core->twig->render('panel/totp.html', array(
 		'totp' => $core->user->getData('use_totp')

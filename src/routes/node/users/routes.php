@@ -161,7 +161,7 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
 
 	}
 
-	if($_POST['email'] == $core->user->getData('email')) {
+	if($request->param('email') == $core->user->getData('email')) {
 
 		$service->flash('<div class="alert alert-danger">You cannot add yourself as a subuser.</div>');
 		$response->redirect('/node/users/add')->send();
@@ -170,7 +170,7 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
 
 	if(!$response->isLocked()) {
 
-		if(!$core->routes->addSubuser($_POST)) {
+		if(!$core->routes->addSubuser($request->paramsPost())) {
 
 			$service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to add this subuser. Please try again.</div>');
 			$response->redirect('/node/users/add')->send();
@@ -201,7 +201,7 @@ $klein->respond('POST', '/node/users/edit', function($request, $response, $servi
 
 	if(!$response->isLocked()) {
 
-		if(!$core->routes->modifySubuser($_POST)) {
+		if(!$core->routes->modifySubuser($request->paramsPost())) {
 
 			$service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to modify this subuser. ('.$core->routes->retrieveLastError(false).')</div>');
 			$response->redirect('/node/users')->send();

@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM;
 
-$klein->respond('GET', '/auth/login', function($request, $response, $service, $app) use ($core) {
+$klein->respond('GET', '/auth/login', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render('auth/login.html', array(
 		'xsrf' => $core->auth->XSRF(),
@@ -84,7 +84,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 });
 
-$klein->respond('POST', '/auth/login/totp', function($request, $response) use ($core) {
+$klein->respond('POST', '/auth/login/totp', function($request, $response) {
 
 	if(!$request->param('totp') || !$request->param('check')) {
 		$response->body(false)->send();
@@ -187,11 +187,11 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 	require SRC_DIR.'captcha/recaptchalib.php';
 	$resp = recaptcha_check_answer($core->settings->get('captcha_priv'), $request->ip(), $request->param('recaptcha_challenge_field'), $request->param('recaptcha_response_field'));
 
-	if($resp->is_valid){
+	if($resp->is_valid) {
 
 		$query = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
 
-		if($query){
+		if($query) {
 
 			$key = $core->auth->keygen('30');
 
@@ -213,14 +213,14 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 			$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
 			$response->redirect('/auth/password/pending')->send();
 
-		}else{
+		} else {
 
 			$service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
 			$response->redirect('/auth/password')->send();
 
 		}
 
-	}else{
+	} else {
 
 		$service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
 		$response->redirect('/auth/password')->send();
@@ -229,7 +229,7 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
 });
 
-$klein->respond('GET', '/auth/register/[:token]?', function($request, $response, $service, $app) use ($core) {
+$klein->respond('GET', '/auth/register/[:token]?', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render('auth/register.html', array(
 		'xsrf' => $core->auth->XSRF(),
@@ -245,6 +245,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> No token was submitted with the request.</div>');
 		$response->redirect('/auth/register')->send();
+		return;
 
 	}
 
@@ -253,6 +254,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-warning"><i class="fa fa-warning"></i> Invalid XSRF token submitted with the form.</div>');
 		$response->redirect('/auth/register/'.$request->param('token'))->send();
+		return;
 
 	}
 
@@ -267,6 +269,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The token you provided appears to be invalid.</div>');
 		$response->redirect('/auth/register/'.$request->param('token'))->send();
+		return;
 
 	}
 
@@ -274,6 +277,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain the following characters: a-zA-Z0-9_-</div>');
 		$response->redirect('/auth/register/'.$request->param('token'))->send();
+		return;
 
 	}
 
@@ -281,6 +285,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
 		$response->redirect('/auth/register/'.$request->param('token'))->send();
+		return;
 
 	}
 
@@ -290,15 +295,16 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 		$service->flash('<div class="alert alert-danger">Account with that username or email already exists in the system.</div>');
 		$response->redirect('/auth/register/'.$request->param('token'))->send();
+		return;
 
 	}
 
 	$user = ORM::forTable('users')->create();
 	$user->set(array(
 		'uuid' => $core->auth->gen_UUID(),
-		'username' => $_POST['username'],
+		'username' => $request->param('username'),
 		'email' => $query->content,
-		'password' => $core->auth->hash($_POST['password']),
+		'password' => $core->auth->hash($request->param('password')),
 		'permissions' => null,
 		'language' => $core->settings->get('default_language'),
 		'register_time' => time()

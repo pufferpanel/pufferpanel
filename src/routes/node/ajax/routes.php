@@ -17,9 +17,8 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
 
-$klein->respond('POST', '/node/ajax/console/power', function($request, $response, $service) use ($core) {
+$klein->respond('POST', '/node/ajax/console/power', function($request, $response) use ($core) {
 
 	if(!$core->user->hasPermission('console.power')) {
 

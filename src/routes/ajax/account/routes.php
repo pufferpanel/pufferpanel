@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \Otp\Otp, \Otp\GoogleAuthenticator, \Base32\Base32;
+use \ORM, \Otp\GoogleAuthenticator;
 
 
 $klein->respond('POST', '/ajax/account/totp', function($request, $response) use ($core) {
