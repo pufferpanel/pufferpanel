@@ -213,14 +213,14 @@ class Query {
 			} catch(\Exception $e) {
 
 				\Tracy\Debugger::log($e);
-				return "Daemon error occured.";
+				return array("Daemon error occured.");
 
 			}
 
 			return $response->body;
 
 		} else {
-			return 'Server is currently offline.';
+			return array('Server is currently offline.');
 		}
 
 	}
