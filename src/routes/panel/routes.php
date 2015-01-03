@@ -39,6 +39,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
 		$response->redirect('/account')->send();
+		return;
 
 	}
 
@@ -49,6 +50,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">Not all variables were passed to the script.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -56,6 +58,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -63,6 +66,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -70,6 +74,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">The email you provided is not valid.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -83,12 +88,13 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	}
 
 	// Update Account Password
-	if($request->param('action') == "password") {
+	else if($request->param('action') == "password") {
 
 		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))){
 
 			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -96,6 +102,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">Your passwords did not match.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -103,6 +110,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -121,12 +129,13 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	}
 
 	// Update Account Notitification Preferences
-	if($request->param('action') == "notifications") {
+	else if($request->param('action') == "notifications") {
 
 		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('password'))) {
 
 			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
@@ -141,7 +150,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	}
 
 	// Add User as a Subuser for a Server
-	if($request->param('action') == "subuser") {
+	else if($request->param('action') == "subuser") {
 
 		$query = ORM::forTable('account_change')->select_many('id', 'verified', 'content')->where(array('key' => $request->param('token'), 'verified' => 0))->findOne();
 
@@ -166,6 +175,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 			$service->flash('<div class="alert alert-danger">The token you entered is not valid for this email address.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
 
