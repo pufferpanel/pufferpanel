@@ -73,7 +73,7 @@ class Query {
 				"header" => "X-Access-Token: ".$secret
 			)
 		));
-		$this->gatherData = file_get_contents("http://".$ip.":".$port."/gameservers/".$id , 0, $this->context);
+		$this->gatherData = @file_get_contents("http://".$ip.":".$port."/gameservers/".$id , 0, $this->context);
 
 		$this->raw = json_decode($this->gatherData, true);
 

@@ -196,7 +196,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 			unset($subusers[$core->user->getData('email')]);
 			$subusers[$core->user->getData('id')] = "verified";
 
-			$permissions = json_decode($info->permissions, true);
+			$permissions = @json_decode($info->permissions, true);
 			$permissions = (is_array($permissions)) ? $permissions : array();
 			$permissions[$info->hash] = $_perms[$info->hash];
 
