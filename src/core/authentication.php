@@ -131,7 +131,7 @@ class Authentication {
 			$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
 
 			$server = ORM::forTable('servers')
-				->where(array('hash' => $_COOKIE['pp_server_token'], 'active' => 1))
+				->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1))
 				->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)))
 				->findOne();
 

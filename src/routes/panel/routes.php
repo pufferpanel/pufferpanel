@@ -266,7 +266,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 
 $klein->respond('GET', '/index/[:goto]', function($request, $response, $service) use ($core) {
 
-	if(!$core->server->nodeRedirect($request->param('goto'), $core->user->getData('id'), $core->user->getData('root_admin'))) {
+	if(!$core->server->nodeRedirect($request->param('goto'))) {
 
 		$service->flash('<div class="alert alert-danger">The requested server or function does not exist, or you do not have permission to access that server or function.</div>');
 		$response->redirect('/index')->send();
