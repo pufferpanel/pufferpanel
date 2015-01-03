@@ -63,19 +63,13 @@ class Server extends User {
 			$reference = $_COOKIE['pp_server_hash'];
 		}
 
-		if(!is_numeric($reference)) {
-
-			$this->_buildData($reference);
-			parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
-
-		} else if(is_numeric($reference)) {
-
+		if(is_numeric($reference)) {
 			$this->_rebuildData($reference);
-			parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
-
 		} else {
-			return false;
+			$this->_buildData($reference);
 		}
+		
+		parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
 
 	}
 
@@ -144,15 +138,13 @@ class Server extends User {
 	 */
 	public function nodeRedirect($hash) {
 
-		self::__construct($hash);
+		$query = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1));
 
-		if($this->isAdmin()) {
-			$redirectable = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
-		} else {
-			$redirectable = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array(parent::getData('id'), join(',', parent::listServerPermissions())))->findOne();
+		if(!$this->isAdmin()) {
+			$query = $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(parent::getData('id'), join(',', parent::listServerPermissions())));
 		}
 
-		return (!$redirectable) ? false : true;
+		return (!$query->findOne()) ? false : true;
 
 	}
 
@@ -188,30 +180,22 @@ class Server extends User {
 	 * @return mixed Returns an array on success or false on failure.
 	 */
 	private function _buildData($hash){
-
-		if($this->isAdmin()) {
-
-			$this->server = ORM::forTable('servers')
-				->where(array(
+		
+		$query =  ORM::forTable('servers')->where(array(
 					'hash' => $hash,
 					'active' => 1
-				))
-				->findOne();
+				));
 
-		} else {
+		if(!$this->isAdmin()) {
 
-			$this->server = ORM::forTable('servers')
-				->where(array(
-					'hash' => $hash,
-					'active' => 1
-				))
-				->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
+			$query= $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
 					parent::getData('id'),
 					join(',', parent::listServerPermissions())
-				))
-				->findOne();
-
+				));
+			
 		}
+
+		$this->server = $query->findOne();
 
 		if(!$this->server) {
 			$this->found_server = false;
@@ -251,11 +235,11 @@ class Server extends User {
 
 					if($selectUser) {
 
-						$selectUser->content = json_decode($selectUser->content, true);
+						$content = json_decode($selectUser->content, true);
 						$userdata[$id] = array(
 							"status" => "pending",
 							"revoke" => $status,
-							"permissions" => $selectUser->content[$this->getData('hash')]['perms']
+							"permissions" => $content[$this->getData('hash')]['perms']
 						);
 
 					}
@@ -263,13 +247,14 @@ class Server extends User {
 				} else {
 
 					$selectUser = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
+
 					if($selectUser) {
 
-						$selectUser->permissions = json_decode($selectUser->permissions, true);
+						$permissions = json_decode($selectUser->permissions, true);
 						$userdata[$selectUser->email] = array(
 							"status" => "verified",
 							"id" => $selectUser->uuid,
-							"permissions" => $selectUser->permissions[$this->getData('hash')]['perms']
+							"permissions" => $permissions[$this->getData('hash')]['perms']
 						);
 
 					}
