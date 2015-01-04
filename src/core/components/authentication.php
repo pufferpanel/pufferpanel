@@ -24,8 +24,6 @@ use \ORM as ORM;
 */
 trait Authentication {
 
-	private $character_set = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
-
 	/**
 	* Returns a hashed version of the raw string that is passed. Use for password hashing.
 	*
@@ -142,11 +140,12 @@ trait Authentication {
 	*/
 	public static function keygen($amount){
 
+		$character_set = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
 		$random = null;
-		$max = (strlen($this->character_set) - 1);
+		$max = (strlen($character_set) - 1);
 
 		for ($i=0; $i < $amount; $i++) {
-			$random .= $this->character_set[mt_rand(0, $max)];
+			$random .= $character_set[mt_rand(0, $max)];
 		}
 
 		return str_shuffle($random);
