@@ -24,6 +24,8 @@ use \ORM as ORM;
 */
 trait Authentication {
 
+	private $character_set = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
+
 	/**
 	* Returns a hashed version of the raw string that is passed. Use for password hashing.
 	*
@@ -45,10 +47,7 @@ trait Authentication {
 	*/
 	private function password_compare($raw, $hashed){
 
-		if(password_verify($raw, $hashed))
-			return true;
-		else
-			return false;
+		return password_verify($raw, $hashed);
 
 	}
 
@@ -64,17 +63,16 @@ trait Authentication {
 	}
 
 	/**
-	* Encrypts a given string using an IV and defined method.
+	* Encrypts a given string using an IV and AES-256-CBC encryption.
 	*
 	* @param string $raw The raw string to be encrypted.
 	* @param string $iv The initalization vector to use.
-	* @param string $method Defaults to AES-256-CBC but you can define any other valid encryption method.
 	* @return string
 	* @static
 	*/
-	public static function encrypt($raw, $iv, $method = 'AES-256-CBC'){
+	public static function encrypt($raw, $iv){
 
-		return openssl_encrypt($raw, $method, file_get_contents(HASH), false, base64_decode($iv));
+		return openssl_encrypt($raw, 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
 
 	}
 
@@ -101,11 +99,16 @@ trait Authentication {
 	*/
 	public static function gen_UUID(){
 
-		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-						mt_rand(0, 0xffff),
-						mt_rand(0, 0x0fff) | 0x4000,
-						mt_rand(0, 0x3fff) | 0x8000,
-						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0x0fff) | 0x4000,
+			mt_rand(0, 0x3fff) | 0x8000,
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff)
+		);
 
 	}
 
@@ -113,18 +116,20 @@ trait Authentication {
 	* Returns a valid UUID that is not currently in use.
 	*
 	* @param string $database
-	* @param string @column
+	* @param string $column
 	* @return string
 	*/
 	public function generateUniqueUUID($database, $column){
 
-		$this->hash = $this->gen_UUID();
+		$uuid = self::gen_UUID();
 
-		$this->checkUUID = ORM::forTable($database)->where($column, $this->hash)->findOne();
-		if($this->checkUUID !== false)
+		$check = ORM::forTable($database)->where($column, $uuid)->findOne();
+
+		if(!$check) {
+			return $uuid;
+		} else {
 			$this->generateUniqueUUID($database, $column);
-		else
-			return $this->hash;
+		}
 
 	}
 
@@ -137,15 +142,14 @@ trait Authentication {
 	*/
 	public static function keygen($amount){
 
-		$keyset  = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
+		$random = null;
+		$max = (strlen($this->character_set) - 1);
 
-		$randkey = null;
-		$maxLength = (strlen($keyset) - 1);
+		for ($i=0; $i < $amount; $i++) {
+			$random .= $this->character_set[mt_rand(0, $max)];
+		}
 
-		for ($i=0; $i < $amount; $i++)
-			$randkey .= $keyset[mt_rand(0, $maxLength)];
-
-		return str_shuffle($randkey);
+		return str_shuffle($random);
 
 	}
 
@@ -171,13 +175,9 @@ trait Authentication {
 	public function getCookie($cookie){
 
 		if(isset($_COOKIE[$cookie])){
-
 			return $_COOKIE[$cookie];
-
 		}else{
-
 			return null;
-
 		}
 
 	}
@@ -191,24 +191,22 @@ trait Authentication {
 	*/
 	public function XSRF($token = null, $identifier = null, $reset = false){
 
-		$this->tkid = "pp_xsrf_token".$identifier;
+		$cookie = "pp_xsrf_token".$identifier;
 
 		if(!is_null($token)) {
 
-			return (isset($_COOKIE[$this->tkid]) && $_COOKIE[$this->tkid] == $token) ? true : false;
+			return (isset($_COOKIE[$cookie]) && $_COOKIE[$cookie] == $token) ? true : false;
 
 		} else {
 
-			if(!isset($_COOKIE[$this->tkid]) || $reset === true) {
+			if(!isset($_COOKIE[$cookie]) || $reset) {
 
-				$xsrfToken = base64_encode(openssl_random_pseudo_bytes(32));
-				setcookie($this->tkid, $xsrfToken, 0, '/');
-				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrfToken.'" />';
+				$xsrf = base64_encode(openssl_random_pseudo_bytes(32));
+				setcookie($cookie, $xsrf, 0, '/');
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$xsrf.'" />';
 
 			} else {
-
-				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$_COOKIE[$this->tkid].'" />';
-
+				return '<input type="hidden" name="xsrf'.$identifier.'" value="'.$_COOKIE[$cookie].'" />';
 			}
 
 		}

@@ -26,6 +26,7 @@ trait Page {
 	/**
 	 * Redirects the user to a specified page automatically depending on headers.
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @param string $url The URL to redirect the user to.
 	 * @return void
 	 * @static
@@ -37,12 +38,14 @@ trait Page {
 			exit();
 		}else
 			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
+		}
 
 	}
 
 	/**
 	 * Generates a URL.
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @return string
 	 * @static
 	 */
@@ -56,6 +59,7 @@ trait Page {
 	/**
 	 * Fixes issue with twig not accepting empty array values
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @return array
 	 * @static
 	 */

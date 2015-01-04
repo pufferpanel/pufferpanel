@@ -16,8 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-
 namespace PufferPanel\Core\Components;
+use \Unirest;
 
 /**
 * General Functions Trait
@@ -31,12 +31,18 @@ trait GSD {
 	 * @param int $port The port to query
 	 * @return bool
 	 */
-	public function avaliable($ip, $port = 8003) {
+	public function avaliable($ip, $port = 8003, $secure = false, $timeout = 3) {
 
-		if(!@fsockopen($ip, $port, $num, $error, 3)) {
-			return false;
-		} else {
+		Unirest::timeout($timeout);
+		$append = (!$secure) ?: "s";
+
+		try {
+
+			$request = Unirest::get("http".$append."://".$ip.":".$port);
 			return true;
+
+		} catch(\Exception $e) {
+			return false;
 		}
 
 	}

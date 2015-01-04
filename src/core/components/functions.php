@@ -18,6 +18,7 @@
  */
 
 namespace PufferPanel\Core\Components;
+use \Exception;
 
 /**
  * General Functions Trait
@@ -35,7 +36,13 @@ trait Functions {
 	 */
 	public static function generateFTPUsername($base) {
 
-		$username = (strlen($base) > 6) ? substr($base, 0, 6).'_'.self::keygen(5) : $base.'_'.self::keygen((11 - strlen($base)));
+		$i = strlen($base);
+		if($i > 6) {
+			$username = substr($base, 0, 6).'_'.self::keygen(5);
+		} else {
+			$username = $base.'_'.self::keygen((11 - $i));
+		}
+
 	    return "mc-".strtolower($username);
 
 	}
@@ -46,88 +53,38 @@ trait Functions {
 	 * @param string $range String of two ports using '-' to seperate.
 	 * @return array Returns an array of integers. Returns null if first port is smaller than next.
 	 */
-	public static function processPorts($ports) {
+	public static function processPorts($input) {
 
-		$portList = [];
+		$port_list = [];
 
-		if(!strpos($ports, ",")) {
+		foreach(explode(',', $input) as $range) {
 
-			// Possible a Range, or a Single Port
-			if(!strpos($ports, "-")) {
+			if(strpos($range, '-')) {
 
-				$portList[] = $ports;
-
-			} else {
-
-				$split = explode("-",$ports);
-				$rangeA = intval($split[0]);
-				$rangeB = intval($split[1]);
-
-				if($rangeA < $rangeB) {
-
-					while($rangeA <= $rangeB) {
-						$portList[] = $rangeA;
-						$rangeA++;
-					}
-
-				} else {
-
-					error_log('Ports are in wrong order! Range 1 must be a number > Range 2.',0);
-					error_log('Port Range 1: ' . $rangeA . ' Port Range 2: ' . $rangeB,0);
-					return null;
-
+				$explode = explode('-', $range);
+				if(!is_numeric($explode[0]) || !is_numeric($explode[1])) {
+					throw new Exception("The range provided for ports in processPorts({$input}) is invalid. The range must be numeric.");
 				}
 
-			}
+				settype($explode[0], "int");
+				settype($explode[1], "int");
 
-		} else {
-
-			// Possible Mix of Ranges and Single Ports
-			if(!strpos($ports, "-")) {
-
-				// No ranges
-				$portList = array_merge($portList, explode(",", $ports));
-
-			} else {
-
-				// Singles Mixed with Range
-				foreach(explode(",", $ports) as $id => $range) {
-
-					if(!strpos($range, "-")) {
-
-						$portList = array_merge($portList, array($range));
-
-					} else {
-
-						$split = explode("-",$range);
-						$rangeA = intval($split[0]);
-						$rangeB = intval($split[1]);
-
-						if($rangeA < $rangeB) {
-
-							while($rangeA <= $rangeB) {
-								$portList[] = $rangeA;
-								$rangeA++;
-							}
-
-						} else {
-
-							error_log('Ports are in wrong order! Range 1 must be a number > Range 2.',0);
-							error_log('Port Range 1: ' . $rangeA . ' Port Range 2: ' . $rangeB,0);
-							return null;
-
-						}
-
-					}
-
+				if($explode[0] > $explode[1]) {
+					throw new Exception("The range provided for ports in processPorts({$input}) is invalid. The start value ({$explode[0]}) can't be higher than the end value ({$explode[1]}).");
 				}
 
+				for($i = $explode[0]; $explode[0] <= $explode[1]; $i++) {
+					$port_list[] = $i;
+				}
+
+			} else {
+				$port_list[] = $range;
 			}
 
 		}
 
-		return $portList;
-	}
-}
+		return $port_list;
 
-?>
+	}
+
+}
