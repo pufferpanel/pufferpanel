@@ -18,11 +18,126 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass;
 session_start();
 
-require '../src/core/core.php';
+if(!ini_get('date.timezone')) {
+	date_default_timezone_set('UTC');
+}
 
+define('BASE_DIR', dirname(__DIR__).'/');
+define('APP_DIR', BASE_DIR.'app/');
+define('PANEL_DIR', BASE_DIR.'panel/');
+define('SRC_DIR', BASE_DIR.'src/');
+
+/*
+ * Handle Cloudflare usage
+ */
+$_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
+
+/*
+* Has Installer been run?
+*/
+if(!file_exists(SRC_DIR.'core/configuration.php')) {
+
+	if(file_exists(BASE_DIR.'vendor/autoload.php')) {
+
+		//pass off processing to the klein router for the installer
+		include(SRC_DIR.'core/routes/install/router.php');
+		
+	} else {
+
+		//render the index page normally so that it shows the failures
+		include(PANEL_DIR.'install/install/index.php');
+		
+	}
+	
+	return;
+
+}
+
+require_once(SRC_DIR.'core/configuration.php');
+require_once(SRC_DIR.'core/autoloader.php');
+
+Twig_Autoloader::register();
+Unirest::timeout(5);
+
+/*
+ * Set Debugger::DETECT to Debugger::DEVELOPMENT to force errors to be displayed.
+ * This should NEVER be done on a live environment. In most cases Debugger is smart
+ * enough to figure out if it is a local or development environment.
+ */
+Debugger::enable(Debugger::DEVELOPMENT, SRC_DIR.'/logs');
+Debugger::$strictMode = TRUE;
+
+/*
+* MySQL PDO Connection Engine
+*/
+ORM::configure(array(
+	'connection_string' => 'mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'],
+	'username' => $_INFO['sql_u'],
+	'password' => $_INFO['sql_p'],
+	'driver_options' => array(
+		PDO::ATTR_PERSISTENT => true,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+	)
+));
+
+/*
+ * Initalize Global core
+ */
+$core = new stdClass();
 $klein = new \Klein\Klein();
+
+/*
+ * Initalize cores
+ */
+$core->settings = new Settings();
+$core->auth = new Authentication();
+$core->user = new User();
+$core->server = new Server();
+$core->email = new Email();
+$core->log = new Log($core->user->getData('id'));
+$core->gsd = new Query($core->server->getData('id'));
+$core->files = new Files();
+$core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'), array(
+	'cache' => false,
+	'debug' => true
+));
+
+/*
+ * Require HTTPS Connection
+ */
+if($core->settings->get('https') == 1) {
+	if(!$klein->request()->isSecure()) {
+		header("Location: https://".$klein->request()->server()['HTTP_HOST'].$klein->request()->server()['REQUEST_URI']);
+	}
+}
+
+/*
+ * Check Language Settings
+ */
+if(!$core->user->getData('language')) {
+	if(empty($klein->request()->cookies()['pp_language'])) {
+		$_l = new Language($core->settings->get('default_language'));
+	} else {
+		$_l = new Language($klein->request()->cookies()['pp_language']);
+	}
+} else {
+	$_l = new Language($core->user->getData('language'));
+}
+
+/*
+ * Twig Setup
+ */
+$core->twig->addGlobal('lang', $_l->loadTemplates());
+$core->twig->addGlobal('settings', $core->settings->get());
+$core->twig->addGlobal('get', Components\Page::twigGET());
+$core->twig->addGlobal('permission', $core->user->twigListPermissions());
+$core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
+if($core->user->getData('root_admin') == 1) {
+	$core->twig->addGlobal('admin', true);
+}
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 
