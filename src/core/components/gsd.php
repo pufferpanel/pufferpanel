@@ -38,7 +38,7 @@ trait GSD {
 
 		try {
 
-			$request = Unirest::get("http".$append."://".$ip.":".$port);
+			Unirest::get("http".$append."://".$ip.":".$port);
 			return true;
 
 		} catch(\Exception $e) {
