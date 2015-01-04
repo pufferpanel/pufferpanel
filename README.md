@@ -1,5 +1,4 @@
-Travis CI: [![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg?branch=klein)](https://travis-ci.org/PufferPanel/PufferPanel)
-Scrutinizer CI: [![Build Status](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/build.png?b=klein)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/build-status/klein) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=klein)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=klein) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
+[![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg?branch=klein)](https://travis-ci.org/PufferPanel/PufferPanel) [![Build Status](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/build.png?b=klein)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/build-status/klein) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=klein)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=klein) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
 # About PufferPanel
 PufferPanel was created to be a free, open-source, replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/PufferPanel/PufferPanel/master/LICENSE).
 
@@ -8,7 +7,7 @@ If you want to see what PufferPanel looks like you can check out our topic on th
 # Installing, Upgrading, and the API
 If you need help at in point with PufferPanel you can contact us in IRC (irc.esper.net #pufferpanel), or you can get help on our [Official Support Forums](http://pufferpanel.com).
 
-Check out our [documentation](http://docs.pffr.me/en/latest/) for guides on how to [install](http://docs.pufferpanel.com/en/latest/installing/), [update](http://docs.pufferpanel.com/en/latest/upgrading/), and manage PufferPanel.
+Check out our [documentation](http://docs.pufferpanel.com/en/latest/) for guides on how to [install](http://docs.pufferpanel.com/en/latest/installing/), [update](http://docs.pufferpanel.com/en/latest/upgrading/), and manage PufferPanel.
 
 # Special Thanks
 * **[GSD](https://github.com/gametainers/gsd)** - Special thanks to Gametainers for creating and licensing GSD for use by PufferPanel. This is the core software daemon that we use to control server actions and quickly display data.
