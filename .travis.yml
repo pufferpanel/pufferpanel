@@ -1,0 +1,10 @@
+language: php
+
+php:
+  - 5.5
+
+install:
+  - composer install
+
+notifications:
+  irc: "irc.exper.net#pufferpanel"
