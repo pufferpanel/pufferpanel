@@ -33,10 +33,10 @@ trait Page {
 	 */
 	public static function redirect($url) {
 
-		if(!headers_sent()){
+		if(!headers_sent()) {
 			header('Location: '.urldecode($url));
 			exit();
-		}else
+		} else {
 			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
 		}
 
@@ -49,7 +49,7 @@ trait Page {
 	 * @return string
 	 * @static
 	 */
-	public static function genRedirect(){
+	public static function genRedirect() {
 
 		$https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
 		return $https.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
