@@ -26,12 +26,7 @@ class Config {
 	 * @param object $config
 	 * @static
 	 */
-	private static $globalConfig;
-
-	/**
-	 * Local instance of this config
-	 */
-	private $config;
+	private static $globalConfig;	
 
 	/**
 	 * Returns config variables from the config.json file.
@@ -41,23 +36,43 @@ class Config {
 	 */
 	final public static function getGlobal($base = null, $array = false) {
 		if(is_null(self::$globalConfig)) {
-			self::$globalConfig = new Config('config.json');
+			self::$globalConfig = new Config('config.json', $array);
 		}
 
 		return (is_null($base)) ? self::$globalConfig : self::$globalConfig->{$base};
 
 	}
 
-	public function __construct($path) {
+	/**
+	 * Local instance of this config
+	 */
+	private $config;
+
+	/**
+	 * Creates a config instance from a json file.
+	 *
+	 * @param string $path
+	 * @param bool $array
+	 */
+	public function __construct($path, $array = false) {
 		if(!file_exists(BASE_DIR.$path)) {
 			throw new Exception("The config file ".$path." does not exist.");
 		}
 
-		$this->config = json_decode(file_get_contents(BASE_DIR.'config.json'));
+		$this->config = json_decode(file_get_contents(BASE_DIR.'config.json'), $array);
 
 		if(json_last_error() != "JSON_ERROR_NONE") {
 			throw new Exception("An error occured when trying decode the config.json file. ".json_last_error());
 		}
+	}
+
+	/**
+	 * Returns config variables from the config.
+	 *
+	 * @param string $base
+	 */
+	public function get($base = null) {
+		return (is_null($base)) ? $this->config : $this->config->{$base};
 	}
 
 }
