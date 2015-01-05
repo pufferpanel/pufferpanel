@@ -391,7 +391,7 @@ $klein->respond('POST', '/auth/gsd/ftp', function($request, $response) use ($cor
 		if($core->auth->encrypt($request->param('password'), $server->encryption_iv) != $server->ftp_pass) {
 
 			$response->code(403);
-			$response->body("invalid password was passed)->send();
+			$response->body("invalid password was passed")->send();
 			return;
 
 		} else {
