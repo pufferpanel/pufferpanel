@@ -124,20 +124,21 @@ class Authentication {
 	 */
 	public final function isServer() {
 
-		if($this->isAdmin()) {
-			return true;
-		} else {
+		if(!isset($_COOKIE['pp_server_hash']) || empty($_COOKIE['pp_server_hash'])) {
+			return false;
+		}
+
+		$query = ORM::forTable('servers')->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1));
+
+		if(!$this->isAdmin()) {
 
 			$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
 
-			$server = ORM::forTable('servers')
-				->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1))
-				->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)))
-				->findOne();
-
-			return (!$server) ? false : true;
+			$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)));
 
 		}
+
+		return (!$query->findOne()) ? false : true;
 
 	}
 
