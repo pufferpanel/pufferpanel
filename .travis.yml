@@ -11,10 +11,12 @@ branches:
 
 before_script:
   - composer self-update
-  - wget -q -O - https://raw.github.com/DaneEveritt/roundsman/master/travis-phing.sh
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - phpenv rehash
 
 script:
-    - ./travis-phing.sh
+    - phing -f build.xml phplint
 
 install:
   - composer install --prefer-source --no-interaction --dev

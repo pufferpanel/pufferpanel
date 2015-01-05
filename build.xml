@@ -8,7 +8,7 @@
 		<phingcall target="phplint" />
 	</target>
 	<target name="phplint">
-		<phplint>
+		<phplint haltonfailure="true">
 			<fileset refid="phpfiles" />
 		</phplint>
 	</target>
