@@ -20,3 +20,5 @@ install:
 
 notifications:
   irc: "irc.esper.net#pufferpanel"
+    on_success: never
+    on_failure: always
