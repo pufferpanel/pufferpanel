@@ -318,3 +318,86 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 	$response->redirect('/auth/login')->send();
 
 });
+
+$klein->respond('POST', '/auth/gsd/download', function($request, $response) use ($core) {
+
+	if(!$request->param('token') || !is_numeric($request->param('server'))) {
+
+		$response->code(500);
+		$response->body("missing tokens")->send();
+		return;
+
+	}
+
+	$download = ORM::forTable('downloads')->where(array(
+		'server' => $request->param('server'),
+		'token' => $request->param('token')
+	))->findOne();
+
+	if(!$download) {
+
+		$response->code(404);
+		$response->body("not found")->send();
+		return;
+
+	} else {
+
+		$download->delete();
+		$response->json(array('path' => $download->path));
+
+	}
+
+});
+
+$klein->respond('POST', '/auth/gsd/ftp', function($request, $response) use ($core) {
+
+	if(!$request->param('username') || !$request->param('password')) {
+
+		$response->code(500);
+		$response->body("failed to pass required vars")->send();
+		return;
+
+	}
+
+	if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $request->param('username'), $matches)) {
+
+		$response->code(403);
+		$response->body("invalid username was passed")->send();
+		return;
+
+	} else {
+
+		$username = $matches[1].$matches[2];
+		$serverid = $matches[3];
+
+	}
+
+	/*
+	* Verify Identity
+	*/
+	$server = ORM::forTable('servers')
+		->selectMany('encryption_iv', 'ftp_pass', 'gsd_secret')
+		->where(array('gsd_id' => $serverid, 'ftp_user' => $username))
+		->findOne();
+
+	if(!$server) {
+
+		$response->code(403);
+		$response->body("unable to locate the requested server")->send();
+		return;
+
+	} else {
+
+		if($core->auth->encrypt($request->param('password'), $server->encryption_iv) != $server->ftp_pass) {
+
+			$response->code(403);
+			$response->body("invalid password was passed)->send();
+			return;
+
+		} else {
+			$response->json(array('authkey' => $server->gsd_secret));
+		}
+
+	}
+
+});

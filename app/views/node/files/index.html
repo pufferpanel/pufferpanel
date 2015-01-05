@@ -8,6 +8,11 @@
 {% endblock %}
 
 {% block content %}
+{% if flash.info is defined %}
+<div class="col-9">
+	{{ flash.info.0|raw }}
+</div>
+{% endif %}
 <div class="col-9" id="internal_alert">
 	<div class="alert alert-info">
 		<i class="fa fa-spinner fa-spin"></i> {{ lang.node_files_loading }}

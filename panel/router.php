@@ -108,10 +108,10 @@ $core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'),
  * Check Language Settings
  */
 if(!$core->user->getData('language')) {
-	if(empty($klein->request()->cookies()['pp_language'])) {
+	if(empty($_COOKIE['pp_language'])) {
 		$_l = new Language($core->settings->get('default_language'));
 	} else {
-		$_l = new Language($klein->request()->cookies()['pp_language']);
+		$_l = new Language($_COOKIE['pp_language']);
 	}
 } else {
 	$_l = new Language($core->user->getData('language'));
@@ -167,7 +167,11 @@ $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $s
 
 $klein->respond('@^/auth/', function($request, $response, $service, $app, $klein) use ($core) {
 
-	if($core->auth->isLoggedIn() && $request->pathname() != "/auth/logout") {
+	if($core->auth->isLoggedIn() && !in_array($request->pathname(), array(
+		"/auth/logout",
+		"/auth/gsd/download",
+		"/auth/gsd/ftp"
+	))) {
 
 		$response->redirect('/index')->send();
 		$klein->skipRemaining();

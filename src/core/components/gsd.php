@@ -27,18 +27,18 @@ trait GSD {
 	/**
 	 * Checks if the GSD server is runnning.
 	 *
-	 * @param string $ip The IP to query
-	 * @param int $port The port to query
+	 * @param string $ip
+	 * @param int $port
+	 * @param int $timeout
 	 * @return bool
 	 */
-	public function avaliable($ip, $port = 8003, $secure = false, $timeout = 3) {
+	public function avaliable($ip, $port = 8003, $timeout = 3) {
 
 		Unirest::timeout($timeout);
-		$append = (!$secure) ?: "s";
 
 		try {
 
-			Unirest::get("http".$append."://".$ip.":".$port);
+			Unirest::get("http://".$ip.":".$port);
 			return true;
 
 		} catch(\Exception $e) {
