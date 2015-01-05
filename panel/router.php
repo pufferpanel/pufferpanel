@@ -73,9 +73,9 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.Config::c('mysql')->host.';dbname='.Config::c('mysql')->database,
-	'username' => Config::c('mysql')->username,
-	'password' => Config::c('mysql')->password,
+	'connection_string' => 'mysql:host='.Config::getGlobal('mysql')->host.';dbname='.Config::getGlobal('mysql')->database,
+	'username' => Config::getGlobal('mysql')->username,
+	'password' => Config::getGlobal('mysql')->password,
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

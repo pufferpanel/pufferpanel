@@ -70,7 +70,7 @@ trait Authentication {
 	*/
 	public static function encrypt($raw, $iv){
 
-		return openssl_encrypt($raw, 'AES-256-CBC', Config::c()->hash, false, base64_decode($iv));
+		return openssl_encrypt($raw, 'AES-256-CBC', Config::getGlobal()->hash, false, base64_decode($iv));
 
 	}
 
@@ -85,7 +85,7 @@ trait Authentication {
 	*/
 	public static function decrypt($encrypted, $iv, $method = 'AES-256-CBC'){
 
-		return openssl_decrypt($encrypted, $method, Config::c()->hash, 0, base64_decode($iv));
+		return openssl_decrypt($encrypted, $method, Config::getGlobal()->hash, 0, base64_decode($iv));
 
 	}
 

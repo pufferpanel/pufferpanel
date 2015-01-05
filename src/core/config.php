@@ -22,10 +22,16 @@ use \Exception;
 class Config {
 
 	/**
+	 * Global config for the panel
 	 * @param object $config
 	 * @static
 	 */
-	private static $config;
+	private static $globalConfig;
+
+	/**
+	 * Local instance of this config
+	 */
+	private $config;
 
 	/**
 	 * Returns config variables from the config.json file.
@@ -33,22 +39,25 @@ class Config {
 	 * @param string $base
 	 * @param bool $array
 	 */
-	final public static function c($base = null, $array = false) {
-
-		if(!file_exists(BASE_DIR.'config.json')) {
-			throw new Exception("The required config.json file does not exist.");
+	final public static function getGlobal($base = null, $array = false) {
+		if(is_null(self::$globalConfig)) {
+			self::$globalConfig = new Config('config.json');
 		}
 
-		if(is_null(self::$config)) {
-			self::$config = json_decode(file_get_contents(BASE_DIR.'config.json'), $array);
+		return (is_null($base)) ? self::$globalConfig : self::$globalConfig->{$base};
+
+	}
+
+	public function __construct($path) {
+		if(!file_exists(BASE_DIR.$path)) {
+			throw new Exception("The config file ".$path." does not exist.");
 		}
+
+		$this->config = json_decode(file_get_contents(BASE_DIR.'config.json'));
 
 		if(json_last_error() != "JSON_ERROR_NONE") {
 			throw new Exception("An error occured when trying decode the config.json file. ".json_last_error());
 		}
-
-		return (is_null($base)) ? self::$config : self::$config->{$base};
-
 	}
 
 }
