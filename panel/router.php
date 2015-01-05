@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\Components\Config;
 session_start();
 
 if(!ini_get('date.timezone')) {
@@ -44,19 +44,18 @@ if(!file_exists(SRC_DIR.'core/configuration.php')) {
 
 		//pass off processing to the klein router for the installer
 		include(SRC_DIR.'core/routes/install/router.php');
-		
+
 	} else {
 
 		//render the index page normally so that it shows the failures
 		include(PANEL_DIR.'install/install/index.php');
-		
+
 	}
-	
+
 	return;
 
 }
 
-require_once(SRC_DIR.'core/configuration.php');
 require_once(SRC_DIR.'core/autoloader.php');
 
 Twig_Autoloader::register();
@@ -74,9 +73,9 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'],
-	'username' => $_INFO['sql_u'],
-	'password' => $_INFO['sql_p'],
+	'connection_string' => 'mysql:host='.Config::c('mysql')->host.';dbname='.Config::c('mysql')->database,
+	'username' => Config::c('mysql')->username,
+	'password' => Config::c('mysql')->password,
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
@@ -84,8 +83,8 @@ ORM::configure(array(
 ));
 
 /*
- * Initalize Global core
- */
+* Initalize Global
+*/
 $core = new stdClass();
 $klein = new \Klein\Klein();
 

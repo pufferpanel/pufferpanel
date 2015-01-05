@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Components;
-use \ORM as ORM;
+use \ORM, \PufferPanel\Core\Components\Config;
 
 /**
 * PufferPanel Core Components Trait
@@ -70,7 +70,7 @@ trait Authentication {
 	*/
 	public static function encrypt($raw, $iv){
 
-		return openssl_encrypt($raw, 'AES-256-CBC', file_get_contents(HASH), false, base64_decode($iv));
+		return openssl_encrypt($raw, 'AES-256-CBC', Config::c()->hash, false, base64_decode($iv));
 
 	}
 
@@ -85,7 +85,7 @@ trait Authentication {
 	*/
 	public static function decrypt($encrypted, $iv, $method = 'AES-256-CBC'){
 
-		return openssl_decrypt($encrypted, $method, file_get_contents(HASH), 0, base64_decode($iv));
+		return openssl_decrypt($encrypted, $method, Config::c()->hash, 0, base64_decode($iv));
 
 	}
 
