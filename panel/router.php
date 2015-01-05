@@ -105,15 +105,6 @@ $core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'),
 ));
 
 /*
- * Require HTTPS Connection
- */
-if($core->settings->get('https') == 1) {
-	if(!$klein->request()->isSecure()) {
-		header("Location: https://".$klein->request()->server()['HTTP_HOST'].$klein->request()->server()['REQUEST_URI']);
-	}
-}
-
-/*
  * Check Language Settings
  */
 if(!$core->user->getData('language')) {
@@ -137,6 +128,20 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 if($core->user->getData('root_admin') == 1) {
 	$core->twig->addGlobal('admin', true);
 }
+
+$klein->respond('/[*]', function($request, $response, $service, $app, $klein) use ($core) {
+
+	/*
+	* Require HTTPS Connection
+	*/
+	if($core->settings->get('https') == 1 && !$request->isSecure()) {
+
+		$response->redirect("https://".$request->server()['HTTP_HOST'].$request->server()['REQUEST_URI'])->send();
+		$klein->skipRemaining();
+
+	}
+
+});
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 
