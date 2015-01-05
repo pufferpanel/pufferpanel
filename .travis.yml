@@ -19,6 +19,9 @@ install:
   - composer install
 
 notifications:
-  irc: "irc.esper.net#pufferpanel"
-    on_success: never
-    on_failure: always
+  irc:
+    channels:
+      - "irc.esper.net#pufferpanel"
+    template:
+      - "%{branch} (%{commit}): %{message} %{build_url}"
+    skip_join: true
