@@ -7,29 +7,12 @@
 	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
 {% endblock %}
 
-{% block servername %}
-<ul class="nav navbar-nav">
-	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
-</ul>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="../../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="../../totp.php" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="../../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
-</div>
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-	<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
-	{% if permission.files.view == true %}<a href="index.php" class="list-group-item active">{{ lang.sidebar_files }}</a>{% endif %}
-	{% if permission.users.view == true %}<a href="../users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
-	{% if permission.manage.view == true %}<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
-</div>
-{% endblock %}
-
 {% block content %}
+{% if flash.info is defined %}
+<div class="col-9">
+	{{ flash.info.0|raw }}
+</div>
+{% endif %}
 <div class="col-9" id="internal_alert">
 	<div class="alert alert-info">
 		<i class="fa fa-spinner fa-spin"></i> {{ lang.node_files_loading }}
@@ -43,6 +26,7 @@
 </div>
 <script type="text/javascript">
 $(window).load(function(){
+	$("#sidebar_links").find("a[href='/node/files']").addClass('active');
 	$.urlParam = function(name, url){
 		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
 		if (results==null){
@@ -72,7 +56,7 @@ $(window).load(function(){
 				var dir = $.urlParam('dir', $(this).attr("href"));
 				$.ajax({
 					type: "POST",
-					url: '../ajax/files/list_dir.php',
+					url: '/node/ajax/files/directory',
 					data: {'dir': dir},
 					success: function(data) {
 						$("#load_files").slideUp(function(){
@@ -86,7 +70,7 @@ $(window).load(function(){
 			}else{
 				$.ajax({
 					type: "POST",
-					url: '../ajax/files/list_dir.php',
+					url: '/node/ajax/files/directory',
 					data: {},
 					success: function(data) {
 						$("#load_files").slideUp(function(){
@@ -117,7 +101,7 @@ $(window).load(function(){
 			}
 			$.ajax({
 				type: "POST",
-				url: '../ajax/files/delete.php',
+				url: '/node/ajax/files/delete',
 				data: {
 					'deleteItemType': deleteItemType,
 					'deleteItemPath': deleteItemPath
@@ -142,7 +126,7 @@ $(window).load(function(){
 			}
 			$.ajax({
 				type: "POST",
-				url: '../ajax/files/zip.php',
+				url: '/node/ajax/files/compress',
 				data: {
 					'zipItemPath': zipItemPath
 				},
@@ -166,7 +150,7 @@ $(window).load(function(){
 			}
 			$.ajax({
 				type: "POST",
-				url: '../ajax/files/zip.php',
+				url: '/node/ajax/files/compress',
 				data: {
 					'unzipItemPath': unzipItemPath
 				},
@@ -191,7 +175,7 @@ $(window).load(function(){
 			$("#loading_dir").fadeIn(200);
 			$.ajax({
 				type: "POST",
-				url: '../ajax/files/list_dir.php',
+				url: '/node/ajax/files/directory',
 				data: {'dir': dir},
 				success: function(data) {
 					$("#load_files").slideUp(function(){
@@ -209,7 +193,7 @@ $(window).load(function(){
 			$("#loading_dir").fadeIn(200);
 			$.ajax({
 				type: "POST",
-				url: '../ajax/files/list_dir.php',
+				url: '/node/ajax/files/directory',
 				data: {},
 				success: function(data) {
 					$("#load_files").slideUp(function(){

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+	{{ parent() }}
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
+{% endblock %}
+
+{% block title %}403: Access Denied{% endblock %}
+
+{% block content %}
+<div class="col-9">
+	<div class="panel panel-danger">
+		<div class="panel-heading">
+			<h3 class="panel-title">HTTP 403: Access Denied</h3>
+		</div>
+		<div class="panel-body">
+			<p style="margin-bottom:0;">You do not have permission to access that function. Please contact your server administrator to request permission.</p>
+		</div>
+	</div>
+	<p style="text-align:center;"><img src="{{ settings.assets_url }}images/403.jpg" /></p>
+</div>
+{% endblock %}

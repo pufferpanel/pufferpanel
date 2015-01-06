@@ -32,10 +32,10 @@ class Files {
 	 */
 	public function formatSize($bytes, $decimals = 2) {
 
-		  $sz = explode(',', 'B,KB,MB,GB');
-		  $factor = floor((strlen($bytes) - 1) / 3);
+		$sz = explode(',', 'B,KB,MB,GB');
+		$factor = floor((strlen($bytes) - 1) / 3);
 
-		  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' '.$sz[$factor];
+		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . $sz[$factor];
 
 	}
 
@@ -46,11 +46,11 @@ class Files {
 	 * @param int $precision
 	 * @return int
 	 */
-	public function format($size, $precision = 0){
+	public function format($size, $precision = 0) {
 
 		$base = log($size) / log(1024);
 
-	    return round(pow(1024, $base - floor($base)), $precision);
+		return round(pow(1024, $base - floor($base)), $precision);
 
 	}
 
@@ -62,7 +62,8 @@ class Files {
 	 * @param int $lines
 	 * @return void
 	 */
-	public function readLines($filename, $lines){ }
+	public function readLines($filename, $lines) {
+	}
 
 	/**
 	 * Reads a specified number of lines from a given file beginning at the end of the file.
@@ -73,8 +74,7 @@ class Files {
 	 * @param int $block_size
 	 * @return void
 	 */
-	function last_lines($path, $line_count, $block_size = 512){ }
+	function last_lines($path, $line_count, $block_size = 512) {
+	}
 
 }
-
-?>

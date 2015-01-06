@@ -16,8 +16,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-if(file_exists('install.lock'))
-	exit('Installer is Locked.');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,17 +44,19 @@ if(file_exists('install.lock'))
 					<div class="well well-sm">
 						<?php
 
-							if(is_dir('../../../.git')){
+							if(is_dir(BASE_DIR.'.git')) {
 
-								$head = trim(file_get_contents('../../../.git/HEAD'));
-								if(is_array(explode('/', $head))){
+								$head = trim(file_get_contents(BASE_DIR.'.git/HEAD'));
+								if(is_array(explode('/', $head))) {
 									list($ignore, $path) =  explode(" ", $head);
-									$version = trim(file_get_contents('../../../src/versions/current')).' ('.$head.') (sha: '.substr(trim(file_get_contents('../../../.git/'.$path)), 0 ,8).')';
-								}else
-									$version = trim(file_get_contents('../../../src/versions/current')).' ('.$head.')';
+									$version = trim(file_get_contents(SRC_DIR.'versions/current')).' ('.$head.') (sha: '.substr(trim(file_get_contents(BASE_DIR.'.git/'.$path)), 0 ,8).')';
+								} else {
+									$version = trim(file_get_contents(SRC_DIR.'versions/current')).' ('.$head.')';
+								}
 
-							}else
+							} else {
 								$version = 'Must Install using Git';
+							}
 
 						?>
 						<code><?php echo $version; ?></code>
@@ -68,7 +68,7 @@ if(file_exists('install.lock'))
 						/*
 						 * Fail if not Installed with Git
 						 */
-						if(!is_dir('../../../.git')){
+						if(!is_dir(BASE_DIR.'.git')) {
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
@@ -85,7 +85,7 @@ if(file_exists('install.lock'))
 						/*
 						* Fail if not composer hasn't been run
 						*/
-						if(!is_dir('../../../vendor')){
+						if(!is_dir(BASE_DIR.'vendor')) {
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
@@ -102,7 +102,7 @@ if(file_exists('install.lock'))
 						/*
 						 * Check to make sure PHP is at least 5.5.0
 						 */
-						if(version_compare(PHP_VERSION, "5.5.0") < 0){
+						if(version_compare(PHP_VERSION, "5.5.0") < 0) {
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
@@ -117,29 +117,35 @@ if(file_exists('install.lock'))
 
 						}
 
+						$failedchmod = array();
+
 						/*
 						 * Check Folder CHMOD Permissions
 						 */
-						if(substr(sprintf('%o', fileperms('../../../src/core')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						if(substr(sprintf('%o', fileperms(SRC_DIR.'core')), -4) != "0777") {
+							$failedchmod[] = '<p class="text-danger"><code>/src/core</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						}
 
-						if(substr(sprintf('%o', fileperms('../../../src/cache')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/src/cache</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						if(substr(sprintf('%o', fileperms(SRC_DIR.'cache')), -4) != "0777") {
+							$failedchmod[] = '<p class="text-danger"><code>/src/cache</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						}
 
-						if(substr(sprintf('%o', fileperms('../install')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						if(substr(sprintf('%o', fileperms(PANEL_DIR.'install/install')), -4) != "0777") {
+							$failedchmod[] = '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						}
 
-						if(substr(sprintf('%o', fileperms('do')), -4) != "0777")
-							$failedList .= '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						if(substr(sprintf('%o', fileperms(PANEL_DIR.'install/install/do')), -4) != "0777") {
+							$failedchmod[] = '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
+						}
 
-						if(!is_null($failedList)){
+						if(!empty($failedchmod)){
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
 										<h3 class="panel-title">Failed CHMOD Checks</h3>
 									</div>
 									<div class="panel-body">
-										'.$failedList.'
+										'.implode("", $failedchmod).'
 									</div>
 								</div>';
 
@@ -148,20 +154,22 @@ if(file_exists('install.lock'))
 						}
 
 						/* Check for Required Dependencies */
-						$failedList = null;
+						$failedextensions = array();
 						$list = array('curl', 'hash', 'openssl', 'mcrypt', 'PDO', 'pdo_mysql');
-						foreach($list as $extension)
-							if(!extension_loaded($extension))
-								$failedList .= '<p class="text-danger">The <code>php-'.$extension.'</code> extension was not able to be loaded.</p>';
+						foreach($list as $extension) {
+							if(!extension_loaded($extension)) {
+								$failedextensions[] = '<p class="text-danger">The <code>php-'.$extension.'</code> extension was not able to be loaded.</p>';
+							}
+						}
 
-						if(!is_null($failedList)){
+						if(!empty($failedextensions)){
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
 										<h3 class="panel-title">Failed Dependencies Checks</h3>
 									</div>
 									<div class="panel-body">
-										'.$failedList.'
+										'.  implode("", $failedextensions).'
 									</div>
 								</div>';
 
@@ -170,20 +178,22 @@ if(file_exists('install.lock'))
 						}
 
 						/* Check for Required Functions */
-						$failedList = null;
+						$failedList = array();
 						$functions = array('fopen', 'fclose', 'fwrite', 'session_start', 'socket_set_option', 'socket_send', 'socket_connect', 'socket_create', 'stream_set_timeout', 'fsockopen', 'crypt', 'hash', 'curl_init', 'curl_setopt', 'curl_exec', 'curl_close');
-						foreach($functions as $function)
-							if(!function_exists($function))
-								$failedList .= '<p class="text-danger"><code>'.$function.'()</code> is not enabled.</p>';
+						foreach($functions as $function) {
+							if(!function_exists($function)) {
+								$failedList[] = '<p class="text-danger"><code>'.$function.'()</code> is not enabled.</p>';
+							}
+						}
 
-						if(!is_null($failedList)){
+						if(!empty($failedList)) {
 
 							echo '<div class="panel panel-danger">
 									<div class="panel-heading">
 										<h3 class="panel-title">Failed Function Checks</h3>
 									</div>
 									<div class="panel-body">
-										'.$failedList.'
+										'.implode("", $failedList).'
 									</div>
 								</div>';
 
@@ -191,7 +201,7 @@ if(file_exists('install.lock'))
 
 						}
 
-					echo ($continue === true) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captain!</p></div><a href="do/start.php">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
+					echo ($continue) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captain!</p></div><a href="install/start">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
 				?>
 				</div>
 				<div class="col-2"></div>

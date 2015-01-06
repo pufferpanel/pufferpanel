@@ -19,6 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM as ORM;
 
+
 /**
  * PufferPanel Core Email Sending Class
  */
@@ -29,7 +30,8 @@ class Email {
 	/**
 	 * @param string $message
 	 */
-	private $message;
+	protected $message;
+	protected $masterurl;
 
 	/**
 	 * Constructor for email sending
@@ -38,8 +40,8 @@ class Email {
 	 */
 	public function __construct() {
 
-			$this->settings = new Settings();
-			$this->masterurl = ($this->settings->get('https') == 1) ? 'https:'.$this->settings->get('master_url') : 'http:'.$this->settings->get('master_url');
+		$this->settings = new Settings();
+		$this->masterurl = ($this->settings->get('https') == 1) ? 'https:' . $this->settings->get('master_url') : 'http:' . $this->settings->get('master_url');
 
 	}
 
@@ -50,124 +52,111 @@ class Email {
 	 * @param string $subject The subject of the email.
 	 * @return void
 	 */
-	public function dispatch($email, $subject)
-		{
+	public function dispatch($email, $subject) {
 
-			$this->getDispatchSystem = $this->getDispatchSystemFunct();
-			if($this->getDispatchSystem == 'php')
-				{
+		$this->getDispatchSystem = $this->getDispatchSystemFunct();
+		if ($this->getDispatchSystem == 'php') {
 
-					$headers = 'From: '. $this->settings->get('sendmail_email') . "\r\n" .
-					    'Reply-To: '. $this->settings->get('sendmail_email') . "\r\n" .
-						'MIME-Version: 1.0' . "\r\n" .
-						'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-					    'X-Mailer: PHP/' . phpversion();
+			$headers = 'From: ' . $this->settings->get('sendmail_email') . "\r\n" .
+					'Reply-To: ' . $this->settings->get('sendmail_email') . "\r\n" .
+					'MIME-Version: 1.0' . "\r\n" .
+					'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
+					'X-Mailer: PHP/' . phpversion();
 
-					mail($email, $subject, $this->message, $headers);
+			mail($email, $subject, $this->message, $headers);
 
-				}
-			else if($this->getDispatchSystem == 'postmark')
-				{
+		} else if ($this->getDispatchSystem == 'postmark') {
 
-					\Postmark\Mail::compose($this->settings->get('postmark_api_key'))
-					    ->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
-					    ->addTo($email, $email)
-					    ->subject($subject)
-					    ->messageHtml($this->message)
-					    ->send();
+			\Postmark\Mail::compose($this->settings->get('postmark_api_key'))
+					->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
+					->addTo($email, $email)
+					->subject($subject)
+					->messageHtml($this->message)
+					->send();
 
-				}
-			else if($this->getDispatchSystem == 'mandrill')
-				{
+		} else if ($this->getDispatchSystem == 'mandrill') {
 
-					try {
+			try {
 
-					    $mandrill = new \Mandrill($this->settings->get('mandrill_api_key'));
-					    $mandrillMessage = array(
-					        'html' => $this->message,
-					        'subject' => $subject,
-					        'from_email' => $this->settings->get('sendmail_email'),
-					        'from_name' => $this->settings->get('company_name'),
-					        'to' => array(
-					            array(
-					                'email' => $email,
-					                'name' => $email
-					            )
-					        ),
-					        'headers' => array('Reply-To' => $this->settings->get('sendmail_email')),
-					        'important' => false
-					    );
-					    $async = true;
-					    $ip_pool = 'Main Pool';
-					    $result = $mandrill->messages->send($mandrillMessage, $async, $ip_pool);
+				$mandrill = new \Mandrill($this->settings->get('mandrill_api_key'));
+				$mandrillMessage = array(
+					'html' => $this->message,
+					'subject' => $subject,
+					'from_email' => $this->settings->get('sendmail_email'),
+					'from_name' => $this->settings->get('company_name'),
+					'to' => array(
+						array(
+							'email' => $email,
+							'name' => $email
+						)
+					),
+					'headers' => array('Reply-To' => $this->settings->get('sendmail_email')),
+					'important' => false
+				);
+				$async = true;
+				$ip_pool = 'Main Pool';
+				$mandrill->messages->send($mandrillMessage, $async, $ip_pool);
 
-					} catch(\Mandrill_Error $e) {
+			} catch (\Mandrill_Error $e) {
 
-					    echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
-					    throw $e;
+				echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
+				throw $e;
 
-					}
+			}
 
-				}
-			else if($this->getDispatchSystem == 'mailgun')
-				{
+		} else if ($this->getDispatchSystem == 'mailgun') {
 
-					list($name, $domain) = explode('@', $this->settings->get('sendmail_email'));
+			list(, $domain) = explode('@', $this->settings->get('sendmail_email'));
 
-                    $mail = new \Mailgun\Mailgun($this->settings->get('mailgun_api_key'));
-                    $mail->sendMessage($domain, array(
-						'from' => $this->settings->get('company_name').' <'.$this->settings->get('sendmail_email').'>',
-						'to' => $email.' <'.$email.'>',
-						'subject' => $subject,
-						'html' => $this->message
-					));
+			$mail = new \Mailgun\Mailgun($this->settings->get('mailgun_api_key'));
+			$mail->sendMessage($domain, array(
+				'from' => $this->settings->get('company_name') . ' <' . $this->settings->get('sendmail_email') . '>',
+				'to' => $email . ' <' . $email . '>',
+				'subject' => $subject,
+				'html' => $this->message
+			));
 
-				}
-			else if($this->getDispatchSystem == 'sendgrid')
-				{
+		} else if ($this->getDispatchSystem == 'sendgrid') {
 
-					/*
-					 * Decrypt Key Information
-					 */
-					list($iv, $hash) = explode('.', $this->settings->get('sendgrid_api_key'));
-					list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
+			/*
+			 * Decrypt Key Information
+			 */
+			list($iv, $hash) = explode('.', $this->settings->get('sendgrid_api_key'));
+			list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
 
-					$sendgrid = new \SendGrid($username, $password);
-					$email = new \SendGrid\Email();
+			$sendgrid = new \SendGrid($username, $password);
+			$email = new \SendGrid\Email();
 
-					$email->addTo($email)->
-					       setFrom($this->settings->get('sendmail_email'))->
-					       setSubject($subject)->
-					       setHtml($this->message);
+			$email->addTo($email)->
+					setFrom($this->settings->get('sendmail_email'))->
+					setSubject($subject)->
+					setHtml($this->message);
 
-					$sendgrid->send($email);
+			$sendgrid->send($email);
 
-				}
-			else
-				{
+		} else {
 
-					$headers = 'From: '. $this->settings->get('sendmail_email') . "\r\n" .
-					    'Reply-To: '. $this->settings->get('sendmail_email') . "\r\n" .
-					    'X-Mailer: PHP/' . phpversion();
+			$headers = 'From: ' . $this->settings->get('sendmail_email') . "\r\n" .
+					'Reply-To: ' . $this->settings->get('sendmail_email') . "\r\n" .
+					'X-Mailer: PHP/' . phpversion();
 
-					mail($email, $subject, $this->message, $headers);
-
-				}
+			mail($email, $subject, $this->message, $headers);
 
 		}
+
+	}
 
 	/**
 	 * Gets the Email System to send with from the settings.
 	 *
 	 * @return string
 	 */
-	private function getDispatchSystemFunct()
-		{
+	private function getDispatchSystemFunct() {
 
-			$this->selectSystem = ORM::forTable('acp_settings')->where('setting_ref', 'sendmail_method')->findOne();
-			return $this->selectSystem->setting_val;
+		$this->selectSystem = ORM::forTable('acp_settings')->where('setting_ref', 'sendmail_method')->findOne();
+		return $this->selectSystem->setting_val;
 
-		}
+	}
 
 	/**
 	 * Finds and outputs a given email template.
@@ -175,16 +164,16 @@ class Email {
 	 * @param string $template
 	 * @return string
 	 */
-	private function readTemplate($template)
-		{
+	private function readTemplate($template) {
 
-			$this->getTemplate = @file_get_contents(APP_DIR.'templates/email/'.$template.'.tpl');
-			if(!$this->getTemplate)
-				die('Requested template `'.$template.'` could not be found.');
-			else
-				return $this->getTemplate;
-
+		$this->getTemplate = file_get_contents(APP_DIR . 'templates/email/' . $template . '.tpl');
+		if (!$this->getTemplate) {
+			throw new \Exception('Requested template `' . $template . '` could not be found.');
+		} else {
+			return $this->getTemplate;
 		}
+
+	}
 
 	/**
 	 * Generates a Login Notification Email (does not send it).
@@ -193,37 +182,31 @@ class Email {
 	 * @param array $vars
 	 * @return void
 	 */
-	public function generateLoginNotification($type, $vars)
-		{
+	public function generateLoginNotification($type, $vars) {
 
-			if($type == 'failed')
-				{
+		if ($type == 'failed') {
 
-					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
+			$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
+			$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
 
-					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
-					return $this;
+			$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
+			return $this;
+			
+		} else if ($type == 'success') {
 
-				}
-			else if($type == 'success')
-				{
+			$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
+			$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
 
-					$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-					$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
+			$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
+			return $this;
 
-					$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_success'));
-					return $this;
+		} else {
 
-				}
-			else
-				{
-
-					die('Invalid email template specified.');
-
-				}
+			throw new \Exception('Invalid email template specified.');
 
 		}
+
+	}
 
 	/**
 	 * Reads an email template and compiles the necessary data into it.
@@ -232,19 +215,17 @@ class Email {
 	 * @param array $data
 	 * @return void
 	 */
-	public function buildEmail($tpl, $data = array())
-		{
+	public function buildEmail($tpl, $data = array()) {
 
-			$this->message = $this->readTemplate($tpl);
-			$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->masterurl, date('j/F/Y H:i', time())), $this->message);
+		$this->message = $this->readTemplate($tpl);
+		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->masterurl, date('j/F/Y H:i', time())), $this->message);
 
-				foreach($data as $key => $val)
-					$this->message  = str_replace('{{ '.$key.' }}', $val, $this->message);
-
-				return $this;
-
+		foreach ($data as $key => $val) {
+			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
 		}
 
-}
+		return $this;
 
-?>
+	}
+
+}

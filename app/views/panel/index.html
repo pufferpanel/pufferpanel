@@ -1,103 +1,62 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Your Servers{% endblock %}
+
+{% block navdropdown %}
+<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
+	<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ settings.master_url }}auth/logout">{{ lang.header_logout }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index">{{ lang.header_admin }}</a></li>{% endif %}
+				</ul>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div class="list-group">
+	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+	<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
+	<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+	<a href="/index" class="list-group-item active">{{ lang.sidebar_servers }}</a>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="col-6">
-   	<form action="index.php?do=login" method="POST" id="login-form">
-    	<legend>{{ lang.login_login_h1 }}</legend>
-    	<fieldset>
-            {% if get.registered is defined %}
-                <div class="alert alert-success">Your account has been created. You may now login and access the server.</div>
-            {% endif %}
-    		{% if get.error is defined %}
-                {% if get.error == 'true' %}
-                    <div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>
-                {% else %}
-                    <div class="alert alert-warning">Please ensure that you have cookies enabled. We were unable to verify the token sent.</div>
-                {% endif %}
-    		{% endif %}
-    		{% if get.totp is defined %}
-    			<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>
-    		{% endif %}
-    		{% if get.login is defined %}
-    			<div class="alert alert-danger">You are not authorized to access that page. Please log in.</div>
-    		{% endif %}
-    		<div class="form-group">
-    			<label for="email" class="control-label">{{ lang.string_email }}</label>
-    			<div>
-    				<input type="text" class="form-control" name="email" id="email" placeholder="{{ lang.string_email }}" />
-    			</div>
-    		</div>
-    		<div class="form-group">
-    			<label for="login-password" class="control-label">{{ lang.string_password }}</label>
-    			<div>
-    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ lang.string_password }}" />
-    			</div>
-    		</div>
-    		<div class="form-group">
-    			<div>
-    				<label><input type="checkbox" name="remember_me" /> Remember Me</label>
-    			</div>
-    		</div>
-    		<div class="form-group">
-    			<div>
-                    {{ xsrf|raw }}
-    				<input type="submit" class="btn btn-primary" value="Login" />
-    				<button class="btn btn-default" onclick="window.location='password.php';return false;">{{ lang.string_reset_password }}</button>
-    			</div>
-    		</div>
-    	</fieldset>
-    </form>
+<div class="col-9">
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	{% if servers[0]|length > 0 %}
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>{{ lang.string_name }}</th>
+					<th>Location</th>
+					<th>{{ lang.string_node }}</th>
+					<th>{{ lang.string_connect }}</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for server in servers %}
+					<tr class="dynUpdate" id="{{ server.id }}">
+						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
+						<td>{{ server.location }}</td>
+						<td>{{ server.node_name }}</td>
+						<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
+						<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="alert alert-info">
+			You do not currently have any servers listed on your account.
+		</div>
+	{% endif %}
 </div>
-<div class="modal fade" id="openTOTP" tabindex="-1" role="dialog">
-	<div class="modal-dialog" style="width:400px;">
-		<form action="index.php?do=login" method="POST" id="totp-form">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Two-Factor Authentication Checkpoint</h4>
-				</div>
-				<div class="modal-body" id="modal_insert_content">
-					<div class="form-group">
-						<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
-						<div>
-							<input class="form-control input-lg" type="text" placeholder="000111" name="totp_token" id="totp_token" style="font-size:30px;" />
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<input type="submit" class="btn btn-default" value="Continue" />
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
-<div class="col-3"></div>
-<script type="text/javascript">
-$(document).ready(function(){
-	$("#login-form").submit(function(event){
-		var check_email = $("#email").val();
-		$.ajax({
-			type: "POST",
-			url: "index.php",
-			async:false,
-			data: { totp: true, check: check_email },
-			success: function(data){
-				if(data == 1){
-					event.preventDefault();
-					$("#openTOTP").modal('show');
-					$('#openTOTP').on('shown.bs.modal', function(){
-						$("#totp_token").focus();
-					})
-				}else{
-					$(this).submit();
-				}
-			}
-		});
-	});
-	$("#totp-form").submit(function(){
-		$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
-		return true;
-	});
-});
-</script>
 {% endblock %}

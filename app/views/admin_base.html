@@ -31,7 +31,7 @@
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="{{ settings.master_url }}">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="{{ settings.master_url }}index">{{ settings.company_name }}</a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
@@ -43,31 +43,31 @@
 		<div class="row">
 			<div class="col-3">
 				<div class="list-group">
-					<a href="{{ settings.master_url }}admin/index.php" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+					<a href="{{ settings.master_url }}admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-					<a href="{{ settings.master_url }}admin/config/global.php" id="sidenav_config-global" class="list-group-item">Global Settings</a>
-					<a href="{{ settings.master_url }}admin/config/urls.php" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
-					<a href="{{ settings.master_url }}admin/config/email.php" id="sidenav_config-email" class="list-group-item">Email Settings</a>
-					<a href="{{ settings.master_url }}admin/config/captcha.php" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
+					<a href="{{ settings.master_url }}admin/config/global" id="sidenav_config-global" class="list-group-item">Global Settings</a>
+					<a href="{{ settings.master_url }}admin/config/urls" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
+					<a href="{{ settings.master_url }}admin/config/email" id="sidenav_config-email" class="list-group-item">Email Settings</a>
+					<a href="{{ settings.master_url }}admin/config/captcha" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-					<a href="{{ settings.master_url }}admin/account/find.php" id="sidenav_account-find" class="list-group-item">Find Account</a>
-					<a href="{{ settings.master_url }}admin/account/new.php" id="sidenav_account-new" class="list-group-item">New Account</a>
+					<a href="{{ settings.master_url }}admin/account/find" id="sidenav_account-find" class="list-group-item">Find Account</a>
+					<a href="{{ settings.master_url }}admin/account/new" id="sidenav_account-new" class="list-group-item">New Account</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-					<a href="{{ settings.master_url }}admin/server/find.php" id="sidenav_server-find" class="list-group-item">Find Server</a>
-					<a href="{{ settings.master_url }}admin/server/add.php" id="sidenav_server-add" class="list-group-item">New Server</a>
+					<a href="{{ settings.master_url }}admin/server/find" id="sidenav_server-find" class="list-group-item">Find Server</a>
+					<a href="{{ settings.master_url }}admin/server/add" id="sidenav_server-add" class="list-group-item">New Server</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-					<a href="{{ settings.master_url }}admin/node/list.php" id="sidenav_node-list" class="list-group-item">List Nodes</a>
-					<a href="{{ settings.master_url }}admin/node/add.php" id="sidenav_node-add" class="list-group-item">Add Node</a>
-					<a href="{{ settings.master_url }}admin/node/locations.php" id="sidenav_node-locations" class="list-group-item">Manage Locations</a>
-					<a href="{{ settings.master_url }}admin/node/delete.php" id="sidenav_node-delete" class="list-group-item">Delete Node</a>
+					<a href="{{ settings.master_url }}admin/node/list" id="sidenav_node-list" class="list-group-item">List Nodes</a>
+					<a href="{{ settings.master_url }}admin/node/add" id="sidenav_node-add" class="list-group-item">Add Node</a>
+					<a href="{{ settings.master_url }}admin/node/locations" id="sidenav_node-locations" class="list-group-item">Manage Locations</a>
+					<a href="{{ settings.master_url }}admin/node/delete" id="sidenav_node-delete" class="list-group-item">Delete Node</a>
 				</div>
 			</div>
 			{% block content %}{% endblock %}

@@ -67,9 +67,9 @@ class Nodes {
 
 		$this->node = ORM::forTable('users')->rawQuery("SELECT nodes.*, GROUP_CONCAT(servers.hash) AS servers FROM nodes LEFT JOIN servers ON servers.node = nodes.id WHERE nodes.id = :id LIMIT 1", array('id' => $id))->findOne();
 
-		if(is_null($this->node->id))
+		if(is_null($this->node->id)) {
 			return false;
-		else {
+		} else {
 
 			return array(
 				"id" => (int) $this->node->id,
@@ -121,25 +121,27 @@ class Nodes {
 
 		foreach($_requiredAddFields as $this->_id) {
 
-			if(!in_array($this->_id, $data))
+			if(!in_array($this->_id, $data)) {
 				return 1;
-			else {
+			} else {
 
 				if($this->_id == 'node') {
 
-					if(!preg_match('/^[\w.-]{1,15}$/', $data['node']))
+					if(!preg_match('/^[\w.-]{1,15}$/', $data['node'])) {
 						return 2;
-					else
+					} else {
 						$this->node = $data['node'];
+					}
 
 				}
 
-				if($this->_id == 'ip'){
+				if($this->_id == 'ip') {
 
-					if(!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP))
+					if(!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
 						return 3;
-					else
+					} else {
 						$this->ip = $data['ip'];
+					}
 
 				}
 
@@ -147,8 +149,9 @@ class Nodes {
 
 					$this->_buildPortArray($data['ips']);
 
-					if($this->_IPArray === false)
+					if($this->_IPArray === false) {
 						return 4;
+					}
 
 					$this->ips = $this->_IPArray;
 					$this->ports = $this->_PortArray;
@@ -191,15 +194,15 @@ class Nodes {
 	/**
 	* Builds IP and Port array for a node given raw data.
 	*
-	* @param string $raw Raw string of IPs and Ports to build into an array
+	* @param string $rawLine Raw string of IPs and Ports to build into an array
 	* @return bool
 	*/
-	protected function _buildPortArray($raw) {
+	protected function _buildPortArray($rawLine) {
 
-		$raw = str_replace(" ", "", $raw);
+		$raw = str_replace(" ", "", $rawLine);
 
 		$lines = explode("\r\n", $raw);
-		foreach($lines as $id => $values) {
+		foreach($lines as $values) {
 
 			list($ip, $ports) = explode('|', $values);
 
@@ -207,70 +210,27 @@ class Nodes {
 			$this->_this->_IPArray = array_merge($this->_IPArray, array($ip => array()));
 			$this->_PortArray = array_merge($this->_PortArray, array($ip => array()));
 
-			if(!strpos($ports, ",")) {
+			foreach(explode(',', $ports) as $portRange) {
 
-				// Possible a Range, or a Single Port
-				if(!strpos($ports, "-")) {
+				//check if range
+				if(strpos($portRange, "-")) {
 
-					$portList[$ports] = 1;
-
-				} else {
-
-					// Range of Ports
-					$portRange = explode('-', $ports);
-					$r1 = intval($portRange[0]);
-					$r2 = intval($portRange[1]);
-
-					$i = 0;
-					while($r1 <= $r2) {
-
-						$portList[$i] = $r1;
-						$i++;
-						$r1++;
-
+					$exploded = explode('-', $portRange);
+					if(!is_numeric($exploded[0]) || !is_numeric($exploded[1])) {
+						throw new \Exception('Invalid port range provided (' . $portRange . ')');
+					}
+					$start = intval($exploded[0]);
+					$end = intval($exploded[1]);
+					if($start > $end) {
+						throw new \Exception('Starting port cannot be less than end port (' . $portRange . ')');
+					}
+					for($i = $start; $start <= $end; $i++) {
+						$portList[] = $i;
 					}
 
-				}
-
-			} else {
-
-				// Possible Mix of Ranges and Single Ports
-				if(!strpos($ports, "-")) {
-
-					// No ranges
-					$portList = array_merge($portList, explode(",", $ports));
-
 				} else {
-
-					// Singles Mixed with Range
-					foreach(explode(",", $ports) as $id => $range){
-
-						if(!strpos($range, "-")) {
-
-							$portList = array_merge($portList, array($range));
-
-						} else {
-
-							// Range of Ports
-							$portRange = explode('-', $range);
-							$r1 = intval($portRange[0]);
-							$r2 = intval($portRange[1]);
-
-							$i = 0;
-							while($r1 <= $r2) {
-
-								$portList = array_merge($portList, array($r1));
-								$i++;
-								$r1++;
-
-							}
-
-						}
-
-					}
-
+					$portList[] = $portRange;
 				}
-
 			}
 
 			for($l=0; $l<count($portList); $l++) {

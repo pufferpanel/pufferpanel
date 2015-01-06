@@ -26,27 +26,30 @@ trait Page {
 	/**
 	 * Redirects the user to a specified page automatically depending on headers.
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @param string $url The URL to redirect the user to.
 	 * @return void
 	 * @static
 	 */
 	public static function redirect($url) {
 
-		if(!headers_sent()){
+		if(!headers_sent()) {
 			header('Location: '.urldecode($url));
 			exit();
-		}else
+		} else {
 			exit('<meta http-equiv="refresh" content="0;url='.urldecode($url).'"/>');
+		}
 
 	}
 
 	/**
 	 * Generates a URL.
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @return string
 	 * @static
 	 */
-	public static function genRedirect(){
+	public static function genRedirect() {
 
 		$https = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
 		return $https.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -56,6 +59,7 @@ trait Page {
 	/**
 	 * Fixes issue with twig not accepting empty array values
 	 *
+	 * @deprecated deprecated since version 0.8.0
 	 * @return array
 	 * @static
 	 */
