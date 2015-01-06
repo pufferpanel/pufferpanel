@@ -23,7 +23,7 @@ interface ConfigInterface {
 	/**
 	 * Gets a specific key from a config, or the entire config if key is null.
 	 *
-	 * @param type $base Key
+	 * @param string $base Key
 	 */
 	public function config($base = null);
 

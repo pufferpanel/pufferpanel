@@ -26,7 +26,7 @@ class Config {
 	/**
 	 * Gets a specific key from the global config, or the entire config if key is null.
 	 *
-	 * @param type $base Key
+	 * @param string $base Key
 	 */
 	public static function config($base = null) {
 
