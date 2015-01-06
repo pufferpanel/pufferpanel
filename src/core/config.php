@@ -16,45 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-namespace PufferPanel\Core\Components;
+namespace PufferPanel\Core;
 use \Exception;
 
 class Config {
 
 	/**
-	 * Global config for the panel
-	 * @param object $config
-	 * @static
-	 */
-	private static $globalConfig;	
-
-	/**
-	 * Returns config variables from the config.json file.
-	 *
-	 * @param string $base
-	 * @param bool $array
-	 */
-	final public static function getGlobal($base = null, $array = false) {
-		if(is_null(self::$globalConfig)) {
-			self::$globalConfig = new Config('config.json', $array);
-		}
-
-		return (is_null($base)) ? self::$globalConfig : self::$globalConfig->{$base};
-
-	}
-
-	/**
-	 * Local instance of this config
-	 */
+	* @param object $config
+	*/
 	private $config;
 
 	/**
-	 * Creates a config instance from a json file.
-	 *
-	 * @param string $path
-	 * @param bool $array
-	 */
+	* Creates a config instance from a json file.
+	*
+	* @param string $path
+	* @param bool $array
+	*/
 	public function __construct($path, $array = false) {
+
 		if(!file_exists(BASE_DIR.$path)) {
 			throw new Exception("The config file ".$path." does not exist.");
 		}
@@ -64,15 +43,24 @@ class Config {
 		if(json_last_error() != "JSON_ERROR_NONE") {
 			throw new Exception("An error occured when trying decode the config.json file. ".json_last_error());
 		}
+
 	}
 
 	/**
-	 * Returns config variables from the config.
+	 * Returns config variables from the config.json file.
+	 * To access the variables as an array rather than an object you need to call
+	 * "new Config(str $path, bool $array)" from the page and then Config::global().
 	 *
 	 * @param string $base
 	 */
-	public function get($base = null) {
+	final public static function global($base = null) {
+
+		if(is_null($this->config)) {
+			new Config('config.json');
+		}
+
 		return (is_null($base)) ? $this->config : $this->config->{$base};
+
 	}
 
 }

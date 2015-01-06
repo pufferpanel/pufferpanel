@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\Components\Config;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\Config;
 session_start();
 
 if(!ini_get('date.timezone')) {
@@ -44,14 +44,14 @@ if(!file_exists(SRC_DIR.'core/configuration.php') || (strpos($_SERVER['REQUEST_U
 
 		//pass off processing to the klein router for the installer
 		include(SRC_DIR.'routes/install/router.php');
-		
+
 	} else {
 
 		//render the index page normally so that it shows the failures
 		include(PANEL_DIR.'install/install/index.php');
-		
+
 	}
-	
+
 	return;
 
 }
@@ -74,9 +74,9 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.Config::getGlobal('mysql')->host.';dbname='.Config::getGlobal('mysql')->database,
-	'username' => Config::getGlobal('mysql')->username,
-	'password' => Config::getGlobal('mysql')->password,
+	'connection_string' => 'mysql:host='.Config::global('mysql')->host.';dbname='.Config::global('mysql')->database,
+	'username' => Config::global('mysql')->username,
+	'password' => Config::global('mysql')->password,
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
@@ -114,7 +114,7 @@ if($core->settings->get('https') == 1) {
 		header("Location: https://".$klein->request()->server()['HTTP_HOST'].$klein->request()->server()['REQUEST_URI']);
 		return;
 	}
-	
+
 }
 
 /*

@@ -20,9 +20,7 @@
 
 namespace PufferPanel\Core;
 
-use \PDO,
-	Components\Config,
-	\PufferPanel\Core\Components\Url;
+use \PDO, \PufferPanel\Core\Config, \PufferPanel\Core\Components\Url;
 
 require_once(BASE_DIR . 'vendor/autoload.php');
 require_once(SRC_DIR . 'core/autoloader.php');
@@ -31,7 +29,7 @@ $klein = new \Klein\Klein();
 $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR . 'views/'), array(
 	'cache' => false,
 	'debug' => true
-		));
+));
 
 $klein->respond('/install/[:progress]', function($request, $response) {
 
@@ -117,7 +115,7 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 	try {
 
 		include(SRC_DIR . 'core/configuration.php');
-		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -299,7 +297,7 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 		if (isset($mysql) && $mysql->inTransaction()) {
 			$mysql->rollBack();
 		}
-		
+
 	}
 });
 
@@ -322,7 +320,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 		$assetsUrl = Url::addTrailing(Url::stripHttp($request->param('assets_url'), true));
 
 		include(SRC_DIR . 'core/configuration.php');
-		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -372,7 +370,7 @@ $klein->respond('POST', '/install/account', function($request, $response) {
 
 	include(SRC_DIR . 'core/configuration.php');
 
-	$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+	$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	));
@@ -400,7 +398,7 @@ $klein->onHttpError(function($code, $klein) {
 	if ($code == '404') {
 		$klein->response()->redirect('/install');
 	}
-	
+
 });
 
 $klein->dispatch();
