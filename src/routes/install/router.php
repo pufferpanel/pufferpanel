@@ -43,7 +43,7 @@ $klein->respond('/install/[:progress]', function($request, $response) {
 });
 
 $klein->respond('GET', '/install', function($request, $response) use ($twig) {
-	include(PANEL_DIR . 'install/install/index.php');
+	include(SRC_DIR . 'installer/install/index.php');
 });
 
 $klein->respond('GET', '/install/start', function($request, $response) use ($twig) {
@@ -75,7 +75,7 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		}
 
 		if (file_exists(BASE_DIR . 'config.json')) {
-			throw \Exception('Cannot override existing config');
+			throw new \Exception('Cannot override existing config');
 		}
 
 		$fp = fopen(BASE_DIR . 'config.json', 'w+');
@@ -104,18 +104,13 @@ $klein->respond('GET', '/install/tables', function($request, $response) use ($tw
 
 $klein->respond('POST', '/install/tables', function($request, $response) {
 
-	if (!file_exists(SRC_DIR . 'core/configuration.php')) {
-
-		echo "The configuration file was not found.\n";
-		echo "false";
-		return;
-
+	if (!file_exists(BASE_DIR . 'config.json')) {
+		throw new \Exception("Unable to locate ".BASE_DIR."config.json.");
 	}
 
 	try {
 
-		include(SRC_DIR . 'core/configuration.php');
-		$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -319,8 +314,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 		$mainWebsite = Url::addTrailing(Url::stripHttp($request->param('main_website'), true));
 		$assetsUrl = Url::addTrailing(Url::stripHttp($request->param('assets_url'), true));
 
-		include(SRC_DIR . 'core/configuration.php');
-		$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -368,9 +362,7 @@ $klein->respond('GET', '/install/account', function($request, $response) use ($t
 
 $klein->respond('POST', '/install/account', function($request, $response) {
 
-	include(SRC_DIR . 'core/configuration.php');
-
-	$mysql = new PDO('mysql:host=' . Config::global('mysql')->host . ';dbname=' . Config::global('mysql')->database, Config::global('mysql')->username, Config::global('mysql')->password, array(
+	$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	));

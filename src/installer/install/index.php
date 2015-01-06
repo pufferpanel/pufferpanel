@@ -130,14 +130,6 @@
 							$failedchmod[] = '<p class="text-danger"><code>/src/cache</code> is improperly CHMOD\'d. It should be 0777.</p>';
 						}
 
-						if(substr(sprintf('%o', fileperms(PANEL_DIR.'install/install')), -4) != "0777") {
-							$failedchmod[] = '<p class="text-danger"><code>/panel/install/install</code> is improperly CHMOD\'d. It should be 0777.</p>';
-						}
-
-						if(substr(sprintf('%o', fileperms(PANEL_DIR.'install/install/do')), -4) != "0777") {
-							$failedchmod[] = '<p class="text-danger"><code>/panel/install/install/do</code> is improperly CHMOD\'d. It should be 0777.</p>';
-						}
-
 						if(!empty($failedchmod)){
 
 							echo '<div class="panel panel-danger">
@@ -208,7 +200,7 @@
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents('../../../src/versions/current')).' ('.substr(trim(@file_get_contents('../../../.git/HEAD')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents(SRC_DIR.'versions/current')).' ('.substr(trim(@file_get_contents(BASE_DIR.'.git/HEAD')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>

@@ -38,26 +38,18 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 /*
 * Has Installer been run?
 */
-if(!file_exists(SRC_DIR.'core/configuration.php') || (strpos($_SERVER['REQUEST_URI'], '/install') == 0 && !file_exists(SRC_DIR.'install.lock'))) {
+if(!file_exists(BASE_DIR.'config.json') || (strpos($_SERVER['REQUEST_URI'], '/install') == 0 && !file_exists(SRC_DIR.'install.lock'))) {
 
 	if(file_exists(BASE_DIR.'vendor/autoload.php')) {
-
-		//pass off processing to the klein router for the installer
-		include(SRC_DIR.'routes/install/router.php');
-
+		include SRC_DIR.'routes/install/router.php';
 	} else {
-
-		//render the index page normally so that it shows the failures
-		include(PANEL_DIR.'install/install/index.php');
-
+		throw new Exception("You must install the dependencies before using PufferPanel.");
 	}
-
 	return;
 
 }
 
-require_once(SRC_DIR.'core/configuration.php');
-require_once(SRC_DIR.'core/autoloader.php');
+require_once SRC_DIR.'core/autoloader.php';
 
 Twig_Autoloader::register();
 Unirest::timeout(5);
@@ -74,9 +66,9 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.Config::global('mysql')->host.';dbname='.Config::global('mysql')->database,
-	'username' => Config::global('mysql')->username,
-	'password' => Config::global('mysql')->password,
+	'connection_string' => 'mysql:host='.Config::getGlobal('mysql')->host.';dbname='.Config::getGlobal('mysql')->database,
+	'username' => Config::getGlobal('mysql')->username,
+	'password' => Config::getGlobal('mysql')->password,
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
@@ -106,18 +98,6 @@ $core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'),
 ));
 
 /*
- * Require HTTPS Connection
- */
-if($core->settings->get('https') == 1) {
-
-	if(!$klein->request()->isSecure()) {
-		header("Location: https://".$klein->request()->server()['HTTP_HOST'].$klein->request()->server()['REQUEST_URI']);
-		return;
-	}
-
-}
-
-/*
  * Check Language Settings
  */
 if(!$core->user->getData('language')) {
@@ -141,6 +121,18 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 if($core->user->getData('root_admin') == 1) {
 	$core->twig->addGlobal('admin', true);
 }
+
+$klein->respond('/[*]', function($request, $response, $service, $app, $klein) use ($core) {
+
+	/*
+	* Require HTTPS Connection
+	*/
+	if($core->settings->get('https') == 1 && !$request->isSecure()) {
+		$response->redirect("https://".$request->server()['HTTP_HOST'].$request->server()['REQUEST_URI'])->send();
+		$klein->skipRemaining();
+	}
+
+});
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 

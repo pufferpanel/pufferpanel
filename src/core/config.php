@@ -24,7 +24,7 @@ class Config {
 	/**
 	* @param object $config
 	*/
-	private $config;
+	private static $config;
 
 	/**
 	* Creates a config instance from a json file.
@@ -38,7 +38,7 @@ class Config {
 			throw new Exception("The config file ".$path." does not exist.");
 		}
 
-		$this->config = json_decode(file_get_contents(BASE_DIR.'config.json'), $array);
+		self::$config = json_decode(file_get_contents(BASE_DIR.'config.json'), $array);
 
 		if(json_last_error() != "JSON_ERROR_NONE") {
 			throw new Exception("An error occured when trying decode the config.json file. ".json_last_error());
@@ -49,17 +49,17 @@ class Config {
 	/**
 	 * Returns config variables from the config.json file.
 	 * To access the variables as an array rather than an object you need to call
-	 * "new Config(str $path, bool $array)" from the page and then Config::global().
+	 * "new Config(str $path, bool $array)" from the page and then Config::getGlobal().
 	 *
 	 * @param string $base
 	 */
-	final public static function global($base = null) {
+	final public static function getGlobal($base = null) {
 
-		if(is_null($this->config)) {
+		if(is_null(self::$config)) {
 			new Config('config.json');
 		}
 
-		return (is_null($base)) ? $this->config : $this->config->{$base};
+		return (is_null($base)) ? self::$config : self::$config->{$base};
 
 	}
 
