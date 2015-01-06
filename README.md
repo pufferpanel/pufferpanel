@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg?branch=master)](https://travis-ci.org/PufferPanel/PufferPanel) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=master) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
+[![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg)](https://travis-ci.org/PufferPanel/PufferPanel) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=master) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
 # About PufferPanel
 PufferPanel was created to be a free, open-source, replacement for Multicraft. We are currently licensed under a [GPL-v3 license](https://raw.github.com/PufferPanel/PufferPanel/master/LICENSE).
 
