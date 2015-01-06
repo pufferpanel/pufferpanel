@@ -19,19 +19,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 namespace PufferPanel\Core;
 use \Exception;
 
-class Config {
+class GlobalConfig implements ConfigInterface {
 
 	/**
-	* @param object $config
-	*/
+	 * @param object $config
+	 */
 	private static $config;
 
 	/**
-	* Creates a config instance from a json file.
-	*
-	* @param string $path
-	* @param bool $array
-	*/
+	 * {@inheritdoc}
+	 */
 	public function __construct($path, $array = false) {
 
 		if(!file_exists(BASE_DIR.$path)) {
@@ -47,16 +44,12 @@ class Config {
 	}
 
 	/**
-	 * Returns config variables from the config.json file.
-	 * To access the variables as an array rather than an object you need to call
-	 * "new Config(str $path, bool $array)" from the page and then Config::getGlobal().
-	 *
-	 * @param string $base
+	 * {@inheritdoc}
 	 */
-	final public static function getGlobal($base = null) {
+	public static function config($base = null) {
 
 		if(is_null(self::$config)) {
-			new Config('config.json');
+			new self('config.json');
 		}
 
 		return (is_null($base)) ? self::$config : self::$config->{$base};

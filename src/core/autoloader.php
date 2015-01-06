@@ -35,7 +35,8 @@ require_once(SRC_DIR.'core/components/url.php');
 /*
  * Include Required Global Class Files
  */
-require_once(SRC_DIR.'core/config.php');
+require_once(SRC_DIR.'core/ConfigInterface.php');
+require_once(SRC_DIR.'core/GlobalConfig.php');
 require_once(SRC_DIR.'core/authentication.php');
 require_once(SRC_DIR.'core/email.php');
 require_once(SRC_DIR.'core/files.php');

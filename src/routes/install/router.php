@@ -20,7 +20,7 @@
 
 namespace PufferPanel\Core;
 
-use \PDO, \PufferPanel\Core\Config, \PufferPanel\Core\Components\Url;
+use \PDO, \PufferPanel\Core\GlobalConfig, \PufferPanel\Core\Components\Url;
 
 require_once(BASE_DIR . 'vendor/autoload.php');
 require_once(SRC_DIR . 'core/autoloader.php');
@@ -110,7 +110,7 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 
 	try {
 
-		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -314,7 +314,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 		$mainWebsite = Url::addTrailing(Url::stripHttp($request->param('main_website'), true));
 		$assetsUrl = Url::addTrailing(Url::stripHttp($request->param('assets_url'), true));
 
-		$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+		$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -362,7 +362,7 @@ $klein->respond('GET', '/install/account', function($request, $response) use ($t
 
 $klein->respond('POST', '/install/account', function($request, $response) {
 
-	$mysql = new PDO('mysql:host=' . Config::getGlobal('mysql')->host . ';dbname=' . Config::getGlobal('mysql')->database, Config::getGlobal('mysql')->username, Config::getGlobal('mysql')->password, array(
+	$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	));
