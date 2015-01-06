@@ -21,15 +21,6 @@ namespace PufferPanel\Core\Config;
 interface ConfigInterface {
 
 	/**
-	 * Constructor class for implementing configuration files from JSON.
-	 *
-	 * @param string $path Configuration file relative to BASE_DIR
-	 * @param bool $array
-	 * @return void
-	 */
-	public function __construct($path, $array = false);
-
-	/**
 	 * Gets a specific key from a config, or the entire config if key is null.
 	 *
 	 * @param type $base Key
