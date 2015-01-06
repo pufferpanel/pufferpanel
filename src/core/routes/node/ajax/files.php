@@ -87,7 +87,7 @@ class Files extends \PufferPanel\Core\Files {
 
 		foreach($contents as $value) {
 
-			if($value['filetype'] == 'folder'){
+			if($value['filetype'] == 'folder') {
 
 				$this->display_folders = array_merge($this->display_folders, array(array(
 					"entry" => $value['name'],
@@ -96,7 +96,7 @@ class Files extends \PufferPanel\Core\Files {
 					"date" => strtotime($value['mtime'])
 				)));
 
-			}else{
+			} else {
 
 				$this->display_files = array_merge($this->display_files, array(array(
 					"entry" => $value['name'],

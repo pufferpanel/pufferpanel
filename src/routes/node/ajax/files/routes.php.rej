@@ -1,0 +1,11 @@
+--- /dev/null
++++ /dev/null
+@@ -36,7 +36,7 @@
+ 	}
+ 
+ 	$previous_directory = array();
+-	if(!empty($request->param('dir'))){
++	if(!empty($request->param('dir'))) {
+ 		$previous_directory['first'] = true;
+ 	}
+ 

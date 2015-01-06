@@ -1,0 +1,11 @@
+--- /dev/null
++++ /dev/null
+@@ -90,7 +90,7 @@
+ 	// Update Account Password
+ 	else if($request->param('action') == "password") {
+ 
+-		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))){
++		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))) {
+ 
+ 			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
+ 			$response->redirect('/account')->send();

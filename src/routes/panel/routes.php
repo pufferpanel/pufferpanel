@@ -90,7 +90,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	// Update Account Password
 	else if($request->param('action') == "password") {
 
-		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))){
+		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))) {
 
 			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
 			$response->redirect('/account')->send();
@@ -182,7 +182,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		try {
 
 			Unirest::put(
-				'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
+				'http://'.$info->ip.':'.$info->gsd_listen.'/gameservers/'.$info->gsd_id,
 				array(
 					"X-Access-Token" => $info->node_gsd_secret
 				),

@@ -36,11 +36,11 @@ trait Url {
 
 		$limit = 1;
 
-		if (stripos($source, "http://") == 0) {
+		if(stripos($source, "http://") == 0) {
 			$source = str_ireplace("http://", "", $source, $limit);
 		}
 
-		if ($stripHttps && stripos($source, "https://") == 0) {
+		if($stripHttps && stripos($source, "https://") == 0) {
 			$source = str_ireplace("https://", "", $source, $limit);
 		}
 
@@ -52,7 +52,7 @@ trait Url {
 	 * Convience method to remove trailing / from URL.
 	 *
 	 * @param type $source
-	 * @return type
+	 * @return string
 	 */
 	public static function stripTrailing($source) {
 		return rtrim($source, '/ ');
@@ -62,10 +62,10 @@ trait Url {
 	 * Convience method to add trailing / to URL, if one does not exist
 	 *
 	 * @param type $source
-	 * @return type
+	 * @return string
 	 */
 	public static function addTrailing($source) {
-		return self::stripTrailing($source) . '/';
+		return self::stripTrailing($source).'/';
 	}
 
 }

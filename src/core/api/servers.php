@@ -31,17 +31,17 @@ class Servers {
 	private $__addServerFields = array('name', 'node', 'owner', 'ip', 'port', 'memory', 'disk', 'cpu');
 
 	/**
-	* Constructor Class
-	* @return void
-	*/
+	 * Constructor Class
+	 * @return void
+	 */
 	public function __construct() { }
 
 	/**
-	* Collects and returns data about a single server.
-	*
-	* @param string $hash Hash of server to return data about.
-	* @return array
-	*/
+	 * Collects and returns data about a single server.
+	 *
+	 * @param string $hash Hash of server to return data about.
+	 * @return array
+	 */
 	public function getServer($hash) {
 
 		$this->server = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->where('hash', $hash)->findOne();
@@ -70,10 +70,10 @@ class Servers {
 	}
 
 	/**
-	* Collects and returns data about all servers in the system.
-	*
-	* @return array
-	*/
+	 * Collects and returns data about all servers in the system.
+	 *
+	 * @return array
+	 */
 	public function getServers() {
 
 		$this->servers = ORM::forTable('servers')->select('servers.*')->select('users.uuid')->join('users', array('users.id', '=', 'servers.owner_id'))->findMany();

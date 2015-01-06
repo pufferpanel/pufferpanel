@@ -66,7 +66,7 @@ class Query {
 	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
-	public function check_status($ip, $port, $id, $secret){
+	public function check_status($ip, $port, $id, $secret) {
 
 		try {
 
@@ -140,11 +140,11 @@ class Query {
 	}
 
 	/**
-	* Returns data about the last server query.
-	*
-	* @param string $element A specific part of the JSON to return, if not provided the entire array is returned.
-	* @return mixed
-	*/
+	 * Returns data about the last server query.
+	 *
+	 * @param string $element A specific part of the JSON to return, if not provided the entire array is returned.
+	 * @return mixed
+	 */
 	public function retrieve($element = null) {
 
 		if($this->online()) {
@@ -262,10 +262,10 @@ class Query {
 	}
 
 	/**
-	* Turns on a server.
-	*
-	* @return bool
-	*/
+	 * Turns on a server.
+	 *
+	 * @return bool
+	 */
 	public function powerOn() {
 
 		try {

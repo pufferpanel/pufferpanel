@@ -266,7 +266,7 @@ $klein->with('/api/nodes', function() use ($klein, $api) {
 
 	});
 
-	$klein->respond('POST', '/?', function ($request, $response) use ($nodes) {
+	$klein->respond('POST', '/?', function($request, $response) use ($nodes) {
 
 		$response->header('Content-Type', 'application/json');
 

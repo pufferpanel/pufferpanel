@@ -1,0 +1,20 @@
+--- /dev/null
++++ /dev/null
+@@ -40,7 +40,7 @@
+ 	 * @param string $language The language to load.
+ 	 * @return void
+ 	 */
+-	public function __construct($language){
++	public function __construct($language) {
+ 
+ 		$this->language = $language;
+ 
+@@ -58,7 +58,7 @@
+ 	 * @param string $template The language key.
+ 	 * @return string
+ 	 */
+-	public function tpl($template){
++	public function tpl($template) {
+ 
+ 		$template = str_replace(".", "_", $template);
+ 

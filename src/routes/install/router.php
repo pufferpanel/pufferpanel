@@ -22,11 +22,11 @@ namespace PufferPanel\Core;
 
 use \PDO, \PufferPanel\Core\GlobalConfig, \PufferPanel\Core\Components\Url;
 
-require_once(BASE_DIR . 'vendor/autoload.php');
-require_once(SRC_DIR . 'core/autoloader.php');
+require_once(BASE_DIR.'vendor/autoload.php');
+require_once(SRC_DIR.'core/autoloader.php');
 
 $klein = new \Klein\Klein();
-$twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR . 'views/'), array(
+$twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR.'views/'), array(
 	'cache' => false,
 	'debug' => true
 ));
@@ -34,8 +34,8 @@ $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(APP_DIR . 'views/'), a
 $klein->respond('/install/[:progress]', function($request, $response) {
 
 	//validate the page the installer should be at is what they are at
-	if (isset($_SESSION['installer_progress']) && $_SESSION['installer_progress'] !== $request->param('progress')) {
-		$response->redirect('/install/' . $_SESSION['installer_progress'])->send();
+	if(isset($_SESSION['installer_progress']) && $_SESSION['installer_progress'] !== $request->param('progress')) {
+		$response->redirect('/install/'.$_SESSION['installer_progress'])->send();
 	} else if(!isset($_SESSION['installer_progress'])) {
 		$response->redirect('/install')->send();
 	}
@@ -43,7 +43,7 @@ $klein->respond('/install/[:progress]', function($request, $response) {
 });
 
 $klein->respond('GET', '/install', function($request, $response) use ($twig) {
-	include(SRC_DIR . 'installer/install/index.php');
+	include(SRC_DIR.'installer/install/index.php');
 });
 
 $klein->respond('GET', '/install/start', function($request, $response) use ($twig) {
@@ -59,7 +59,7 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		$user = $request->param('sql_u');
 		$pass = $request->param('sql_p');
 
-		$database = new PDO('mysql:host=' . $host . ';dbname=' . $db, $user, $pass, array(
+		$database = new PDO('mysql:host='.$host.';dbname='.$db, $user, $pass, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -70,15 +70,15 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		$keyset = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*-=+[]()";
 		$hash = "";
 
-		for ($i = 0; $i < 48; $i++) {
+		for($i = 0; $i < 48; $i++) {
 			$hash .= substr($keyset, rand(0, strlen($keyset) - 1), 1);
 		}
 
-		if (file_exists(BASE_DIR . 'config.json')) {
+		if(file_exists(BASE_DIR.'config.json')) {
 			throw new \Exception('Cannot override existing config');
 		}
 
-		$fp = fopen(BASE_DIR . 'config.json', 'w+');
+		$fp = fopen(BASE_DIR.'config.json', 'w+');
 		fwrite($fp, json_encode(array(
 			'mysql' => array(
 				'host' => $host,
@@ -92,7 +92,7 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		$_SESSION['installer_progress'] = 'tables';
 		$response->body(true)->send();
 
-	} catch (\PDOException $e) {
+	} catch(\PDOException $e) {
 		$response->body($e->getMessage())->send();
 	}
 
@@ -104,13 +104,13 @@ $klein->respond('GET', '/install/tables', function($request, $response) use ($tw
 
 $klein->respond('POST', '/install/tables', function($request, $response) {
 
-	if (!file_exists(BASE_DIR . 'config.json')) {
+	if(!file_exists(BASE_DIR.'config.json')) {
 		throw new \Exception("Unable to locate ".BASE_DIR."config.json.");
 	}
 
 	try {
 
-		$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
+		$mysql = new PDO('mysql:host='.GlobalConfig::config('mysql')->host.';dbname='.GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -285,11 +285,11 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 		$_SESSION['installer_progress'] = 'settings';
 		echo "true";
 
-	} catch (\Exception $ex) {
+	} catch(\Exception $ex) {
 
-		echo $ex->getMessage() . "\n";
+		echo $ex->getMessage()."\n";
 		echo "false";
-		if (isset($mysql) && $mysql->inTransaction()) {
+		if(isset($mysql) && $mysql->inTransaction()) {
 			$mysql->rollBack();
 		}
 
@@ -314,7 +314,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 		$mainWebsite = Url::addTrailing(Url::stripHttp($request->param('main_website'), true));
 		$assetsUrl = Url::addTrailing(Url::stripHttp($request->param('assets_url'), true));
 
-		$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
+		$mysql = new PDO('mysql:host='.GlobalConfig::config('mysql')->host.';dbname='.GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 			PDO::ATTR_PERSISTENT => true,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		));
@@ -350,7 +350,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 		$_SESSION['installer_progress'] = 'account';
 		$response->body(true)->send();
 
-	} catch (\Exception $ex) {
+	} catch(\Exception $ex) {
 		$response->body($ex->getMessage())->send();
 	}
 
@@ -362,7 +362,7 @@ $klein->respond('GET', '/install/account', function($request, $response) use ($t
 
 $klein->respond('POST', '/install/account', function($request, $response) {
 
-	$mysql = new PDO('mysql:host=' . GlobalConfig::config('mysql')->host . ';dbname=' . GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
+	$mysql = new PDO('mysql:host='.GlobalConfig::config('mysql')->host.';dbname='.GlobalConfig::config('mysql')->database, GlobalConfig::config('mysql')->username, GlobalConfig::config('mysql')->password, array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	));
@@ -380,14 +380,14 @@ $klein->respond('POST', '/install/account', function($request, $response) {
 		':language' => 'en',
 		':time' => time()
 	));
-	rename(SRC_DIR . 'install.lock.dist', SRC_DIR . 'install.lock');
+	rename(SRC_DIR.'install.lock.dist', SRC_DIR.'install.lock');
 	$response->redirect('/');
 
 });
 
 $klein->onHttpError(function($code, $klein) {
 
-	if ($code == '404') {
+	if($code == '404') {
 		$klein->response()->redirect('/install');
 	}
 

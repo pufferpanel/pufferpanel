@@ -43,14 +43,13 @@ trait Functions {
 			$username = $base.'_'.self::keygen((11 - $i));
 		}
 
-	    return "mc-".strtolower($username);
+		return "mc-".strtolower($username);
 
 	}
 
 	/**
 	 * Returns an array of ports from a 'range' seperated by '-'.
 	 *
-	 * @param string $range String of two ports using '-' to seperate.
 	 * @return array Returns an array of integers. Returns null if first port is smaller than next.
 	 */
 	public static function processPorts($input) {
