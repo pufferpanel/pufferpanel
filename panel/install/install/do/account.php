@@ -43,43 +43,8 @@ if(file_exists('../install.lock'))
 				<div class="col-2"></div>
 				<div class="col-8">
 					<p>You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC <code>(irc.esper.net/#pufferpanel)</code> if you encounter any problems or have questions, comments, or concerns.</p>
-					<?php
-
-					    if(isset($_POST['do_account'])){
-
-							include('../../../../src/core/configuration.php');
-							$mysql = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_INFO['sql_u'], $_INFO['sql_p'], array(
-								PDO::ATTR_PERSISTENT => true,
-								PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-							));
-
-							$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-					        $prepare = $mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :username, :email, :password, NULL, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)");
-					        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-							$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-											mt_rand(0, 0xffff),
-											mt_rand(0, 0x0fff) | 0x4000,
-											mt_rand(0, 0x3fff) | 0x8000,
-											mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-
-					        $prepare->execute(array(
-								':uuid' => $uuid,
-					            ':username' => $_POST['username'],
-					            ':email' => $_POST['email'],
-					            ':password' => $password,
-					            ':language' => 'en',
-					            ':time' => time()
-					        ));
-
-					        rename('../install.lock.dist', '../install.lock');
-
-					        exit('<meta http-equiv="refresh" content="0;url=../../../index.php"/>');
-
-					    }
-
 					?>
-					<form action="account.php" method="post">
+					<form action="account" method="post">
 					    <div class="form-group">
 					    	<label for="email" class="control-label">Email</label>
 					    	<div>
