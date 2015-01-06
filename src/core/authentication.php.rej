@@ -1,0 +1,53 @@
+--- /dev/null
++++ /dev/null
+@@ -44,7 +44,7 @@
+ 	 *
+ 	 * @return void
+ 	 */
+-	public function __construct(){
++	public function __construct() {
+ 
+ 		$this->settings = new Settings();
+ 
+@@ -62,14 +62,15 @@
+ 	 * @param string $secret The TOTP secret.
+ 	 * @return bool
+ 	 */
+-	public function validateTOTP($key, $secret){
++	public function validateTOTP($key, $secret) {
+ 
+ 		$otp = new Otp();
+ 
+-		if($otp->checkTotp(Base32::decode($secret), $key))
+-			return true;
+-		else
+-			return false;
++		if($otp->checkTotp(Base32::decode($secret), $key)) {
++					return true;
++		} else {
++					return false;
++		}
+ 
+ 	}
+ 
+@@ -80,14 +81,15 @@
+ 	 * @param string $raw The raw password.
+ 	 * @return bool
+ 	 */
+-	public function verifyPassword($email, $raw){
++	public function verifyPassword($email, $raw) {
+ 
+ 		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
+ 
+-		if($this->get !== false)
+-			return $this->password_compare($raw, $this->get->password);
+-		else
+-			return false;
++		if($this->get !== false) {
++					return $this->password_compare($raw, $this->get->password);
++		} else {
++					return false;
++		}
+ 
+ 	}
+ 

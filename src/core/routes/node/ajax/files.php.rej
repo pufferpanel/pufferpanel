@@ -1,0 +1,20 @@
+--- /dev/null
++++ /dev/null
+@@ -87,7 +87,7 @@
+ 
+ 		foreach($contents as $value) {
+ 
+-			if($value['filetype'] == 'folder'){
++			if($value['filetype'] == 'folder') {
+ 
+ 				$this->display_folders = array_merge($this->display_folders, array(array(
+ 					"entry" => $value['name'],
+@@ -96,7 +96,7 @@
+ 					"date" => strtotime($value['mtime'])
+ 				)));
+ 
+-			}else{
++			} else {
+ 
+ 				$this->display_files = array_merge($this->display_files, array(array(
+ 					"entry" => $value['name'],

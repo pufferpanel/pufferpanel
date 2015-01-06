@@ -35,7 +35,7 @@ class Files {
 		$sz = explode(',', 'B,KB,MB,GB');
 		$factor = floor((strlen($bytes) - 1) / 3);
 
-		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . $sz[$factor];
+		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).' '.$sz[$factor];
 
 	}
 
@@ -44,7 +44,7 @@ class Files {
 	 *
 	 * @param int $size
 	 * @param int $precision
-	 * @return int
+	 * @return double
 	 */
 	public function format($size, $precision = 0) {
 

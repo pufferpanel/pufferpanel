@@ -1,0 +1,11 @@
+--- /dev/null
++++ /dev/null
+@@ -62,7 +62,7 @@
+ 		return;
+ 	}
+ 
+-	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))){
++	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))) {
+ 		$response->body('<div class="alert alert-danger">Unable to verify your TOTP token. Please try again.</div>')->send();
+ 		return;
+ 	}

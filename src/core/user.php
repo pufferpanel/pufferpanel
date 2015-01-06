@@ -47,10 +47,10 @@ class User extends Authentication {
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
-	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
+	 * @param string $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
 	 * @return void
 	 */
-	public function __construct($rebuild = false){
+	public function __construct($rebuild = false) {
 
 		parent::__construct();
 
@@ -70,7 +70,7 @@ class User extends Authentication {
 	 * @param string $id The ID of a user requested in the Admin CP.
 	 * @return void
 	 */
-	public function rebuildData($id){
+	public function rebuildData($id) {
 
 		self::__construct($id);
 
@@ -79,10 +79,10 @@ class User extends Authentication {
 	/**
 	 * Provides the corresponding value for the id provided from the MySQL Database.
 	 *
-	 * @param mixed $id The column value for the data you need (e.g. email).
-	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+	 * @param string $id The column value for the data you need (e.g. email).
+	 * @return string A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
-	public function getData($id = null){
+	public function getData($id = null) {
 
 		if($this->user && !is_null($this->user)) {
 

@@ -1,0 +1,98 @@
+--- /dev/null
++++ /dev/null
+@@ -30,7 +30,7 @@
+ 	* @param string $raw The raw password.
+ 	* @return string The hashed password.
+ 	*/
+-	public function hash($raw){
++	public function hash($raw) {
+ 
+ 		return password_hash($raw, PASSWORD_BCRYPT);
+ 
+@@ -43,7 +43,7 @@
+ 	* @param string $hashed The hashed password.
+ 	* @return bool Returns true if the password matches.
+ 	*/
+-	private function password_compare($raw, $hashed){
++	private function password_compare($raw, $hashed) {
+ 
+ 		return password_verify($raw, $hashed);
+ 
+@@ -54,7 +54,7 @@
+ 	*
+ 	* @return string
+ 	*/
+-	public function generate_iv(){
++	public function generate_iv() {
+ 
+ 		return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+ 
+@@ -68,7 +68,7 @@
+ 	* @return string
+ 	* @static
+ 	*/
+-	public static function encrypt($raw, $iv){
++	public static function encrypt($raw, $iv) {
+ 
+ 		return openssl_encrypt($raw, 'AES-256-CBC', GlobalConfig::config()->hash, false, base64_decode($iv));
+ 
+@@ -83,7 +83,7 @@
+ 	* @return string
+ 	* @static
+ 	*/
+-	public static function decrypt($encrypted, $iv, $method = 'AES-256-CBC'){
++	public static function decrypt($encrypted, $iv, $method = 'AES-256-CBC') {
+ 
+ 		return openssl_decrypt($encrypted, $method, GlobalConfig::config()->hash, 0, base64_decode($iv));
+ 
+@@ -95,7 +95,7 @@
+ 	* @return string Returns a RFC 412 compliant UUID in the format XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ 	* @static
+ 	*/
+-	public static function gen_UUID(){
++	public static function gen_UUID() {
+ 
+ 		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+ 			mt_rand(0, 0xffff),
+@@ -117,7 +117,7 @@
+ 	* @param string $column
+ 	* @return string
+ 	*/
+-	public function generateUniqueUUID($database, $column){
++	public function generateUniqueUUID($database, $column) {
+ 
+ 		$uuid = self::gen_UUID();
+ 
+@@ -138,7 +138,7 @@
+ 	* @return string
+ 	* @static
+ 	*/
+-	public static function keygen($amount){
++	public static function keygen($amount) {
+ 
+ 		$character_set = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
+ 		$random = null;
+@@ -171,11 +171,11 @@
+ 	* @param string $cookie
+ 	* @return mixed
+ 	*/
+-	public function getCookie($cookie){
++	public function getCookie($cookie) {
+ 
+-		if(isset($_COOKIE[$cookie])){
++		if(isset($_COOKIE[$cookie])) {
+ 			return $_COOKIE[$cookie];
+-		}else{
++		} else {
+ 			return null;
+ 		}
+ 
+@@ -188,7 +188,7 @@
+ 	* @param mixed $identifier
+ 	* @return mixed
+ 	*/
+-	public function XSRF($token = null, $identifier = null, $reset = false){
++	public function XSRF($token = null, $identifier = null, $reset = false) {
+ 
+ 		$cookie = "pp_xsrf_token".$identifier;
+ 

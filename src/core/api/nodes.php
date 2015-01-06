@@ -32,13 +32,13 @@ class Nodes {
 	protected $_nodesData = array();
 
 	/**
-	* @param array $_IPArray
-	*/
+	 * @param array $_IPArray
+	 */
 	protected $_IPArray = array();
 
 	/**
-	* @param array $_PortArray
-	*/
+	 * @param array $_PortArray
+	 */
 	protected $_PortArray = array();
 
 	/**
@@ -195,7 +195,7 @@ class Nodes {
 	* Builds IP and Port array for a node given raw data.
 	*
 	* @param string $rawLine Raw string of IPs and Ports to build into an array
-	* @return bool
+	* @return boolean|null
 	*/
 	protected function _buildPortArray($rawLine) {
 
@@ -217,12 +217,12 @@ class Nodes {
 
 					$exploded = explode('-', $portRange);
 					if(!is_numeric($exploded[0]) || !is_numeric($exploded[1])) {
-						throw new \Exception('Invalid port range provided (' . $portRange . ')');
+						throw new \Exception('Invalid port range provided ('.$portRange.')');
 					}
 					$start = intval($exploded[0]);
 					$end = intval($exploded[1]);
 					if($start > $end) {
-						throw new \Exception('Starting port cannot be less than end port (' . $portRange . ')');
+						throw new \Exception('Starting port cannot be less than end port ('.$portRange.')');
 					}
 					for($i = $start; $start <= $end; $i++) {
 						$portList[] = $i;
@@ -233,7 +233,7 @@ class Nodes {
 				}
 			}
 
-			for($l=0; $l<count($portList); $l++) {
+			for($l = 0; $l < count($portList); $l++) {
 
 				if(!array_key_exists($l, $this->_PortArray[$ip])) {
 					$this->_PortArray[$ip][$portList[$l]] = 1;

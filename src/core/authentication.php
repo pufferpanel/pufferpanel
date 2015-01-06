@@ -23,7 +23,6 @@ use \ORM as ORM;
  * TOTP Class
  */
 use Otp\Otp;
-use Otp\GoogleAuthenticator;
 use Base32\Base32;
 
 /**
@@ -44,7 +43,7 @@ class Authentication {
 	 *
 	 * @return void
 	 */
-	public function __construct(){
+	public function __construct() {
 
 		$this->settings = new Settings();
 
@@ -62,7 +61,7 @@ class Authentication {
 	 * @param string $secret The TOTP secret.
 	 * @return bool
 	 */
-	public function validateTOTP($key, $secret){
+	public function validateTOTP($key, $secret) {
 
 		$otp = new Otp();
 
@@ -80,7 +79,7 @@ class Authentication {
 	 * @param string $raw The raw password.
 	 * @return bool
 	 */
-	public function verifyPassword($email, $raw){
+	public function verifyPassword($email, $raw) {
 
 		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
@@ -105,7 +104,7 @@ class Authentication {
 	/**
 	 * Returns the admin status of a user.
 	 *
-	 * @return bool
+	 * @return string|boolean
 	 */
 	public final function isAdmin() {
 

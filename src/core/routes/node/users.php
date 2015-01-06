@@ -191,7 +191,7 @@ class Users extends \PufferPanel\Core\Email {
 	 * Builds an array of equivalent GSD permissions for each panel permission.
 	 *
 	 * @param array $data
-	 * @return array
+	 * @return string[]
 	 * @static
 	 */
 	protected final static function _buildGSDPermissions(array $data) {
@@ -232,7 +232,7 @@ class Users extends \PufferPanel\Core\Email {
 	/**
 	 * Revokes subuser permissions for a given user that has an active account on the panel.
 	 *
-	 * @param object $orm Database query object.
+	 * @param ORM $orm Database query object.
 	 * @return bool
 	 */
 	public function revokeActiveUserPermissions(ORM $orm) {

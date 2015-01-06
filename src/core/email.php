@@ -41,7 +41,7 @@ class Email {
 	public function __construct() {
 
 		$this->settings = new Settings();
-		$this->masterurl = ($this->settings->get('https') == 1) ? 'https:' . $this->settings->get('master_url') : 'http:' . $this->settings->get('master_url');
+		$this->masterurl = ($this->settings->get('https') == 1) ? 'https:'.$this->settings->get('master_url') : 'http:'.$this->settings->get('master_url');
 
 	}
 
@@ -55,17 +55,17 @@ class Email {
 	public function dispatch($email, $subject) {
 
 		$this->getDispatchSystem = $this->getDispatchSystemFunct();
-		if ($this->getDispatchSystem == 'php') {
+		if($this->getDispatchSystem == 'php') {
 
-			$headers = 'From: ' . $this->settings->get('sendmail_email') . "\r\n" .
-					'Reply-To: ' . $this->settings->get('sendmail_email') . "\r\n" .
-					'MIME-Version: 1.0' . "\r\n" .
-					'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-					'X-Mailer: PHP/' . phpversion();
+			$headers = 'From: '.$this->settings->get('sendmail_email')."\r\n".
+					'Reply-To: '.$this->settings->get('sendmail_email')."\r\n".
+					'MIME-Version: 1.0'."\r\n".
+					'Content-type: text/html; charset=iso-8859-1'."\r\n".
+					'X-Mailer: PHP/'.phpversion();
 
 			mail($email, $subject, $this->message, $headers);
 
-		} else if ($this->getDispatchSystem == 'postmark') {
+		} else if($this->getDispatchSystem == 'postmark') {
 
 			\Postmark\Mail::compose($this->settings->get('postmark_api_key'))
 					->from($this->settings->get('sendmail_email'), $this->settings->get('company_name'))
@@ -74,7 +74,7 @@ class Email {
 					->messageHtml($this->message)
 					->send();
 
-		} else if ($this->getDispatchSystem == 'mandrill') {
+		} else if($this->getDispatchSystem == 'mandrill') {
 
 			try {
 
@@ -97,26 +97,26 @@ class Email {
 				$ip_pool = 'Main Pool';
 				$mandrill->messages->send($mandrillMessage, $async, $ip_pool);
 
-			} catch (\Mandrill_Error $e) {
+			} catch(\Mandrill_Error $e) {
 
-				echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
+				echo 'A mandrill error occurred: '.get_class($e).' - '.$e->getMessage();
 				throw $e;
 
 			}
 
-		} else if ($this->getDispatchSystem == 'mailgun') {
+		} else if($this->getDispatchSystem == 'mailgun') {
 
 			list(, $domain) = explode('@', $this->settings->get('sendmail_email'));
 
 			$mail = new \Mailgun\Mailgun($this->settings->get('mailgun_api_key'));
 			$mail->sendMessage($domain, array(
-				'from' => $this->settings->get('company_name') . ' <' . $this->settings->get('sendmail_email') . '>',
-				'to' => $email . ' <' . $email . '>',
+				'from' => $this->settings->get('company_name').' <'.$this->settings->get('sendmail_email').'>',
+				'to' => $email.' <'.$email.'>',
 				'subject' => $subject,
 				'html' => $this->message
 			));
 
-		} else if ($this->getDispatchSystem == 'sendgrid') {
+		} else if($this->getDispatchSystem == 'sendgrid') {
 
 			/*
 			 * Decrypt Key Information
@@ -136,9 +136,9 @@ class Email {
 
 		} else {
 
-			$headers = 'From: ' . $this->settings->get('sendmail_email') . "\r\n" .
-					'Reply-To: ' . $this->settings->get('sendmail_email') . "\r\n" .
-					'X-Mailer: PHP/' . phpversion();
+			$headers = 'From: '.$this->settings->get('sendmail_email')."\r\n".
+					'Reply-To: '.$this->settings->get('sendmail_email')."\r\n".
+					'X-Mailer: PHP/'.phpversion();
 
 			mail($email, $subject, $this->message, $headers);
 
@@ -166,9 +166,9 @@ class Email {
 	 */
 	private function readTemplate($template) {
 
-		$this->getTemplate = file_get_contents(APP_DIR . 'templates/email/' . $template . '.tpl');
-		if (!$this->getTemplate) {
-			throw new \Exception('Requested template `' . $template . '` could not be found.');
+		$this->getTemplate = file_get_contents(APP_DIR.'templates/email/'.$template.'.tpl');
+		if(!$this->getTemplate) {
+			throw new \Exception('Requested template `'.$template.'` could not be found.');
 		} else {
 			return $this->getTemplate;
 		}
@@ -180,11 +180,11 @@ class Email {
 	 *
 	 * @param string $type What type of login notification are we sending?
 	 * @param array $vars
-	 * @return void
+	 * @return Email
 	 */
 	public function generateLoginNotification($type, $vars) {
 
-		if ($type == 'failed') {
+		if($type == 'failed') {
 
 			$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 			$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
@@ -192,7 +192,7 @@ class Email {
 			$this->message = str_replace($this->find, $this->replace, $this->readTemplate('login_failed'));
 			return $this;
 			
-		} else if ($type == 'success') {
+		} else if($type == 'success') {
 
 			$this->find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 			$this->replace = array($this->settings->get('company_name'), $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
@@ -213,15 +213,15 @@ class Email {
 	 *
 	 * @param string $tpl The email template to use.
 	 * @param array $data
-	 * @return void
+	 * @return Email
 	 */
 	public function buildEmail($tpl, $data = array()) {
 
 		$this->message = $this->readTemplate($tpl);
 		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array($this->settings->get('company_name'), $this->masterurl, date('j/F/Y H:i', time())), $this->message);
 
-		foreach ($data as $key => $val) {
-			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
+		foreach($data as $key => $val) {
+			$this->message = str_replace('{{ '.$key.' }}', $val, $this->message);
 		}
 
 		return $this;

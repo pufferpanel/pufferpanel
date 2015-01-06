@@ -26,6 +26,9 @@ trait Error_Handler {
 
 	protected static $_error;
 
+	/**
+	 * @param string $error
+	 */
 	protected final static function _setError($error) {
 
 		self::$_error = $error;

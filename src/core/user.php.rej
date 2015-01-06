@@ -1,0 +1,29 @@
+--- /dev/null
++++ /dev/null
+@@ -50,7 +50,7 @@
+ 	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
+ 	 * @return void
+ 	 */
+-	public function __construct($rebuild = false){
++	public function __construct($rebuild = false) {
+ 
+ 		parent::__construct();
+ 
+@@ -70,7 +70,7 @@
+ 	 * @param string $id The ID of a user requested in the Admin CP.
+ 	 * @return void
+ 	 */
+-	public function rebuildData($id){
++	public function rebuildData($id) {
+ 
+ 		self::__construct($id);
+ 
+@@ -82,7 +82,7 @@
+ 	 * @param mixed $id The column value for the data you need (e.g. email).
+ 	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
+ 	 */
+-	public function getData($id = null){
++	public function getData($id = null) {
+ 
+ 		if($this->user && !is_null($this->user)) {
+ 

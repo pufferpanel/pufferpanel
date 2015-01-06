@@ -1,0 +1,19 @@
+--- /dev/null
++++ /dev/null
+@@ -192,11 +192,11 @@
+ 	}
+ 
+ 	/**
+-	* Builds IP and Port array for a node given raw data.
+-	*
+-	* @param string $rawLine Raw string of IPs and Ports to build into an array
+-	* @return bool
+-	*/
++	 * Builds IP and Port array for a node given raw data.
++	 *
++	 * @param string $rawLine Raw string of IPs and Ports to build into an array
++	 * @return bool
++	 */
+ 	protected function _buildPortArray($rawLine) {
+ 
+ 		$raw = str_replace(" ", "", $rawLine);

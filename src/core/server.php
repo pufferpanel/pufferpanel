@@ -50,9 +50,9 @@ class Server extends User {
 	 * Constructor class for building server data.
 	 *
 	 * @param string|int $reference This can either be a string (server hash) or a numeric value (server id).
-	 * @return void
+	 * @return false|null
 	 */
-	public function __construct($reference = null){
+	public function __construct($reference = null) {
 
 		Authentication::__construct();
 		parent::__construct();
@@ -79,7 +79,7 @@ class Server extends User {
 	 * @param int $id This value should be the ID of the server you are getting information for.
 	 * @return void
 	 */
-	public function rebuildData($id){
+	public function rebuildData($id) {
 
 		self::__construct($id);
 
@@ -91,7 +91,7 @@ class Server extends User {
 	 * @param string $id The column value for the data you need (e.g. server_name).
 	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
-	public function getData($id = null){
+	public function getData($id = null) {
 
 
 		if(is_null($id) && !is_null($this->server)) {
@@ -134,7 +134,7 @@ class Server extends User {
 	 * Handles incoming requests to access a server and redirects to the correct location and sets a cookie.
 	 *
 	 * @param string $hash The hash of the server you are redirecting to.
-	 * @return void
+	 * @return boolean
 	 */
 	public function nodeRedirect($hash) {
 
@@ -154,7 +154,7 @@ class Server extends User {
 	 * @param int $server_id The server ID.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _rebuildData($server_id){
+	private function _rebuildData($server_id) {
 
 		$this->server = ORM::forTable('servers')->findOne($server_id);
 
@@ -179,16 +179,16 @@ class Server extends User {
 	 * @param string $hash The server hash.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _buildData($hash){
+	private function _buildData($hash) {
 		
-		$query =  ORM::forTable('servers')->where(array(
+		$query = ORM::forTable('servers')->where(array(
 					'hash' => $hash,
 					'active' => 1
 				));
 
 		if(!$this->isAdmin()) {
 
-			$query= $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
+			$query = $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
 					parent::getData('id'),
 					join(',', parent::listServerPermissions())
 				));

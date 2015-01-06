@@ -37,8 +37,7 @@ class Log extends User {
 	 * @param int $uid The user ID.
 	 * @return void
 	 */
-	public function __construct($uid)
-		{
+	public function __construct($uid) {
 
 			$this->uid = ($uid !== false) ? $uid : null;
 
@@ -55,8 +54,7 @@ class Log extends User {
 	 * @param array $data An array of the data that caused the error. Should be in the form Array(action, desc, uid).
 	 * @return void
 	 */
-	public function addLog($priority, $viewable, $data = array())
-		{
+	public function addLog($priority, $viewable, $data = array()) {
 
 			$this->uid = (!array_key_exists(2, $data)) ? $this->uid : $data[2];
 			$this->logger = ORM::forTable('actions_log')->create();
@@ -77,10 +75,9 @@ class Log extends User {
 	/**
 	 * Get the current page URL where the log action is called.
 	 *
-	 * @return string
+	 * @return Log
 	 */
-	public function getUrl()
-		{
+	public function getUrl() {
 
 			$this->url = (isset($_SERVER['HTTPS']) == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			return $this;
