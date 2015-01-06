@@ -85,6 +85,14 @@ $klein = new \Klein\Klein();
  * Initalize cores
  */
 $core->settings = new Settings();
+
+/*
+* Require HTTPS Connection
+*/
+if($core->settings->get('https') == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
+	exit(header('Location: https://'.$core->settings->get('master_url').$_SERVER['REQUEST_URI']));
+}
+
 $core->auth = new Authentication();
 $core->user = new User();
 $core->server = new Server();
@@ -121,18 +129,6 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 if($core->user->getData('root_admin') == 1) {
 	$core->twig->addGlobal('admin', true);
 }
-
-$klein->respond('/[*]', function($request, $response, $service, $app, $klein) use ($core) {
-
-	/*
-	* Require HTTPS Connection
-	*/
-	if($core->settings->get('https') == 1 && !$request->isSecure()) {
-		$response->redirect("https://".$request->server()['HTTP_HOST'].$request->server()['REQUEST_URI'])->send();
-		$klein->skipRemaining();
-	}
-
-});
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 
