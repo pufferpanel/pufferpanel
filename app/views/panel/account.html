@@ -19,19 +19,21 @@
 {% block sidebar %}
 <div class="list-group">
 	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="account.php" class="list-group-item active">{{ lang.sidebar_settings }}</a>
-	<a href="totp.php" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
+	<a href="/account" class="list-group-item active">{{ lang.sidebar_settings }}</a>
+	<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+	<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="col-9">
-	{{ output|raw }}
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<div class="row">
 		<div class="col-6">
 			<h3 class="nopad">{{ lang.settings_change_pass }}</h3><hr />
-				<form action="account.php?action=password" method="post">
+				<form action="/account/update/password" method="post">
 					<div class="form-group">
 						<label for="p_password" class="control-label">{{ lang.settings_current_pass }}</label>
 						<div>
@@ -60,7 +62,7 @@
 		</div>
 		<div class="col-6">
 			<h3 class="nopad">{{ lang.settings_update_email }}</h3><hr />
-				<form action="account.php?action=email" method="post">
+				<form action="/account/update/email" method="post">
 					<div class="form-group">
 						<label for="email" class="control-label">{{ lang.settings_new_email }}</label>
 						<div>
@@ -75,7 +77,7 @@
 					</div>
 					<div class="form-group">
 						<div>
-							{{ xsrf.email|raw }}
+							{{ xsrf|raw }}
 							<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_email }}" />
 						</div>
 					</div>
@@ -85,7 +87,7 @@
 	<div class="row">
 		<div class="col-6">
 			<h3>Login Notification</h3><hr />
-			<form action="account.php?action=notifications" method="post">
+			<form action="/account/update/notifications" method="post">
 				<div class="row">
 					<div class="col-6 nopad">
 						<div class="form-group">
@@ -118,7 +120,7 @@
 				</div>
 				<div class="form-group">
 					<div>
-						{{ xsrf.notify|raw }}
+						{{ xsrf|raw }}
 						<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_preferences }}" />
 					</div>
 				</div>
@@ -127,7 +129,7 @@
 		<div class="col-6">
 			<h3>Sub-User Token</h3><hr />
 			<div class="well well-sm"><p>If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.</p></div>
-			<form action="account.php?action=subuser" method="post">
+			<form action="/account/update/subuser" method="post">
 				<div class="form-group">
 					<label for="token" class="control-label">Token</label>
 					<div>
@@ -136,7 +138,7 @@
 				</div>
 				<div class="form-group">
 					<div>
-						{{ xsrf.notify|raw }}
+						{{ xsrf|raw }}
 						<input type="submit" class="btn btn-primary" value="Validate Token" />
 					</div>
 				</div>

@@ -7,28 +7,6 @@
 	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
 {% endblock %}
 
-{% block servername %}
-<ul class="nav navbar-nav">
-	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
-</ul>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="../../account.php" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="../../totp.php" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="../../servers.php" class="list-group-item">{{ lang.sidebar_servers }}</a>
-</div>
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-	<a href="../index.php" class="list-group-item">{{ lang.sidebar_overview }}</a>
-	{% if permission.files.view == true %}<a href="index.php" class="list-group-item active">{{ lang.sidebar_files }}</a>{% endif %}
-	{% if permission.users.view == true %}<a href="../users/list.php" class="list-group-item">Manage Subusers</a>{% endif %}
-	{% if permission.manage.view == true %}<a href="../settings.php" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="col-9" id="load_files">
 	<span id="save_status" style="display:none;width: 100%;"></span>
@@ -68,6 +46,7 @@
 </div>
 <script type="text/javascript">
 $(window).load(function() {
+	$("#sidebar_links").find("a[href='/node/files']").addClass('active');
 	$("textarea").keydown(function(e) {
 		if(e.keyCode === 9) {
 			var start = this.selectionStart;

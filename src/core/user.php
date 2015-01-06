@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \ReflectionClass;
 
 /**
  * PufferPanel Core User Class File
@@ -25,46 +25,42 @@ use \ORM as ORM;
 class User extends Authentication {
 
 	/**
-	* @param int $_uid Private variable used for keeping track of current user permissions.
-	*/
-	private $_perms;
-
-	/**
-	 * @param string $_shash Private variable used for keeping track of server we are interested in for permissions.
+	 * @param object $user
 	 */
-	private static $_shash;
+	protected $user;
 
 	/**
-	* @param int $_uid Private variable used for keeping track of current user id for permissions.
-	*/
-	private static $_uid;
+	 * @param array $permissions
+	 */
+	protected $permissions;
 
 	/**
-	* @param int $_oid Private variable used for keeping track of server owner id for permissions.
-	*/
-	private static $_oid;
+	 * @param string $permissions_server
+	 */
+	private static $permissions_server;
+
+	/**
+	 * @param int $permissions_owner
+	 */
+	private static $permissions_owner;
 
 	/**
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
-	 * @param string $ip The IP address of a user who is requesting the function, or if called from the Admin CP it is the user id.
-	 * @param mixed $session The value of the pp_auth_token cookie.
-	 * @param mixed $hash The server hash of the requesting user which is used when they are viewing node pages.
+	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
 	 * @return void
 	 */
-	public function __construct($ip, $session = null, $hash = null){
+	public function __construct($rebuild = false){
 
-		/*
-		 * Reset Values
-		 */
-		$this->_l = true;
+		parent::__construct();
 
-		if(self::isLoggedIn($ip, $session, $hash) === true)
-			$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
-		else if(is_null($session) && is_null($hash) && is_numeric($ip))
-			$this->user = ORM::forTable('users')->findOne($ip);
-		else
-			$this->_l = false;
+		if(parent::isLoggedIn() && !$rebuild) {
+			$this->user = $this->select;
+		} else if($rebuild) {
+			$this->user = ORM::forTable('users')->findOne($rebuild);
+		} else {
+			$this->user = false;
+		}
 
 	}
 
@@ -76,7 +72,7 @@ class User extends Authentication {
 	 */
 	public function rebuildData($id){
 
-		$this->__construct($id);
+		self::__construct($id);
 
 	}
 
@@ -88,16 +84,23 @@ class User extends Authentication {
 	 */
 	public function getData($id = null){
 
-		if(is_null($id))
-			if($this->_l === true)
-				return ($this->user_array = (array) $this->user) ? $this->user_array["\0*\0_data"] : false;
-			else
-				return false;
-		else
-			if($this->_l === true && isset($this->user->{$id}))
-				return $this->user->{$id};
-			else
-				return false;
+		if($this->user && !is_null($this->user)) {
+
+			if(is_null($id)) {
+
+				$reflect = new ReflectionClass($this->user);
+				$data = $reflect->getProperty('_data');
+				$data->setAccessible(true);
+
+				return $data->getValue($this->user);
+
+			} else {
+				return (isset($this->user->{$id})) ? $this->user->{$id} : false;
+			}
+
+		} else {
+			return false;
+		}
 
 	}
 
@@ -105,16 +108,14 @@ class User extends Authentication {
 	 * Initiator class for server based on Hash.
 	 *
 	 * @param string $server The hash of the server we are interested in.
-	 * @param int $uid Returns the current user's ID
-	 * @param int $oid Returns the server owner's ID
+	 * @param int $oid Sets the server owner.
 	 * @return void
 	 * @static
 	 */
-	public static function initalizePermissions($server, $uid, $oid = null) {
+	public static function initalizePermissions($server, $oid) {
 
-		self::$_shash = $server;
-		self::$_uid = $uid;
-		self::$_oid = $oid;
+		self::$permissions_server = $server;
+		self::$permissions_owner = $oid;
 
 	}
 
@@ -124,38 +125,18 @@ class User extends Authentication {
 	 * @param bool $list Set to true to return an array of all servers that a user has permission for. Defaults to false.
 	 * @return void
 	 */
-	public function getPermissions($list = false) {
+	final protected function _getPermissions($list = false) {
 
-		if(!isset($this->_permissionJson)) {
-			$this->perms = ORM::forTable('users')->select('permissions')->where('id', self::$_uid)->findOne();
+		if(self::getData('permissions') && !empty(self::getData('permissions'))) {
+
+			$this->permissions = json_decode(self::getData('permissions'), true);
+
 		}
 
-		if($this->perms !== false) {
+		if(!$list && !is_null($this->permissions)) {
 
-			if(!empty($this->perms->permissions)) {
-				$this->_permissionJson = json_decode($this->perms->permissions, true);
-			} else {
-				$this->_permissionJson = null;
-			}
-
-		} else {
-			$this->_permissionJson = null;
-		}
-
-		if(is_null($this->_permissionJson) || !isset($this->_permissionJson)) {
-			return false;
-		} else {
-
-			if(!$list) {
-
-				if(!array_key_exists(self::$_shash, $this->_permissionJson)) {
-					return false;
-				} else {
-					return $this->_permissionJson[self::$_shash]['perms'];
-				}
-
-			} else {
-				return $this->_permissionJson;
+			if(array_key_exists(self::$permissions_server, $this->permissions)) {
+				$this->permissions = $this->permissions[self::$permissions_server]['perms'];
 			}
 
 		}
@@ -169,8 +150,8 @@ class User extends Authentication {
 	 */
 	public function listServerPermissions() {
 
-		$this->_perms = $this->getPermissions(true);
-		return (is_array($this->_perms)) ? array_keys($this->_perms) : array("0" => "0");
+		$this->_getPermissions(true);
+		return (is_array($this->permissions)) ? array_keys($this->permissions) : array("0" => "0");
 
 	}
 
@@ -180,7 +161,7 @@ class User extends Authentication {
 	 * @return array
 	 * @static
 	 */
-	private static function listAvaliablePermissions() {
+	final protected static function _listAvaliablePermissions() {
 
 		return array(
 			'console' => array('view', 'commands', 'power'),
@@ -199,19 +180,18 @@ class User extends Authentication {
 	 */
 	public function twigListPermissions($array = null) {
 
-		$this->buildPermissions = array();
-		$this->allPerms = self::listAvaliablePermissions();
+		$buildPermissions = array();
 
-		foreach($this->allPerms as $permission => $submodule) {
+		foreach(self::_listAvaliablePermissions() as $permission => $submodule) {
 
 			foreach($submodule as $id => $subpermission) {
 
 				if(!is_array($subpermission)) {
-					$this->buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission, $array);
+					$buildPermissions[$permission][$subpermission] = $this->hasPermission($permission.".".$subpermission, $array);
 				} else {
 
 					foreach($subpermission as $subid => $subsubpermission) {
-						$this->buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission, $array);
+						$buildPermissions[$permission][$id][$subsubpermission] = $this->hasPermission($permission.".".$id.".".$subsubpermission, $array);
 					}
 
 				}
@@ -220,7 +200,7 @@ class User extends Authentication {
 
 		}
 
-		return $this->buildPermissions;
+		return $buildPermissions;
 
 	}
 
@@ -233,31 +213,30 @@ class User extends Authentication {
 	 */
 	public function hasPermission($permission, $array = null) {
 
-		if(!is_null($array))
-			$this->_perms = $array;
-		else
-			if(is_null($this->_perms))
-				$this->_perms = $this->getPermissions();
+		if(!is_null($array) && is_array($array)) {
+			$this->permissions = $array;
+		} else {
+			$this->_getPermissions();
+		}
 
-		if(self::$_oid != $this->getData('id') && is_null($array))
-			if($this->getData('root_admin') == 1)
+		if(self::$permissions_owner != self::getData('id') && is_null($array)) {
+
+			if($this->isAdmin()) {
 				return true;
-			else
-				if(is_array($this->_perms))
-					return in_array($permission, $this->_perms);
-				else
-					return false;
-		else
-			if(!is_array($array))
+			} else {
+				return (is_array($this->permissions)) ? in_array($permission, $this->permissions) : false;
+			}
+
+		} else {
+
+			if(!is_array($array)) {
 				return true;
-			else
-				if(is_array($this->_perms))
-					return in_array($permission, $this->_perms);
-				else
-					return false;
+			} else {
+				return (is_array($this->permissions)) ? in_array($permission, $this->permissions) : false;
+			}
+
+		}
 
 	}
 
 }
-
-?>

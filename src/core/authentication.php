@@ -33,17 +33,26 @@ class Authentication {
 
 	use Components\Authentication, Components\Page;
 
+	protected $settings;
+
+	protected $authenticated = false;
+
+	protected $select;
+
 	/**
 	 * Authentcation constructor class.
 	 *
 	 * @return void
 	 */
-	public function __construct()
-		{
+	public function __construct(){
 
-			$this->settings = new Settings();
+		$this->settings = new Settings();
 
-		}
+		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
+
+		$this->authenticated = (!$this->select) ? false : true;
+
+	}
 
 	/**
 	 * Validates a TOTP request.
@@ -83,56 +92,54 @@ class Authentication {
 	}
 
 	/**
-	 * Checks if a user is currently logged in or if their session is expired.
+	 * Returns the authentication status of a user.
 	 *
-	 * @param string $ip
-	 * @param string $session
-	 * @param string $serverhash
-	 * @param int $acp
 	 * @return bool
 	 */
-	public function isLoggedIn($ip, $session, $serverhash = null, $acp = false){
+	public final function isLoggedIn() {
 
-		$this->user = ORM::forTable('users')->where(array('session_ip' => $ip, 'session_id' => $session))->findOne();
+		return $this->authenticated;
 
-		if($this->user !== false){
+	}
 
-			if($this->user->root_admin != 1 && $acp === true)
-				return false;
-			else{
+	/**
+	 * Returns the admin status of a user.
+	 *
+	 * @return bool
+	 */
+	public final function isAdmin() {
 
-				if($this->user->root_admin != 1){
+		if(!$this->select) {
+			return 'hue';
+		} else {
+			return ($this->select->root_admin == 1) ? true : false;
+		}
 
-					if(!is_null($serverhash)){
+	}
 
-						/*
-						 * We have to do a mini-permissions building here since we can't call the user function from here
-						 */
-						if(!is_null($this->user->permissions) && !empty($this->user->permissions))
-							$this->permissions = array_keys(json_decode($this->user->permissions, true));
-						else
-							$this->permissions = array("0" => "0");
+	/**
+	 * Checks if the selected server belongs to the user.
+	 *
+	 * @return bool
+	 */
+	public final function isServer() {
 
-						$this->server = ORM::forTable('servers')->where(array('hash' => $serverhash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->user->id, join(',', $this->permissions)))->findOne();
-
-							if($this->server !== false)
-								return true;
-							else
-								return false;
-
-					}else
-						return true;
-
-				}else
-					return true;
-
-			}
-
-		}else
+		if(!isset($_COOKIE['pp_server_hash']) || empty($_COOKIE['pp_server_hash'])) {
 			return false;
+		}
+
+		$query = ORM::forTable('servers')->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1));
+
+		if(!$this->isAdmin()) {
+
+			$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
+
+			$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)));
+
+		}
+
+		return (!$query->findOne()) ? false : true;
 
 	}
 
 }
-
-?>

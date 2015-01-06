@@ -1,0 +1,70 @@
+{% extends "install/install_base.html" %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    This information can be changed later on. Please provide accurate information for URLs, using the wrong link can break the system.
+</div>
+
+<div class="alert alert-danger" id="warning" style="display: none;"></div>
+
+<fieldset>
+    <div class="form-group">
+	<label for="company_name" class="control-label">Company Name</label>
+	<div>
+	    <input type="text" class="form-control" id="company_name" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="main_website" class="control-label">Main Website URL</label>
+	<div>
+	    <input type="text" class="form-control" id="main_website" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="master_url" class="control-label">PufferPanel Master URL</label>
+	<div>
+	    <input type="text" class="form-control" id="master_url" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="assets_url" class="control-label">PufferPanel Assets URL</label>
+	<div>
+	    <input type="text" class="form-control" id="assets_url" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="sendmail_email" class="control-label">Sendmail Email</label>
+	<div>
+	    <input type="text" class="form-control" id="sendmail_email" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<div>
+	    <button id="submitBtn" class="btn btn-primary">Continue &rarr;</button>
+	</div>
+    </div>
+</fieldset>
+
+{% endblock %}
+
+{% block endscripts %}
+<script type="text/javascript">
+    $("#submitBtn").click(function () {
+	$.post("settings", {
+	    main_website: $("#main_website").val(),
+	    master_url: $("#master_url").val(),
+	    assets_url: $("#assets_url").val(),
+	    sendmail_email: $("#sendmail_email").val(),
+	    company_name: $("#company_name").val()
+	}).done(function (data) {
+	    if (data === 'true') {
+
+	    } else {
+		$("#warning").text(data);
+		$("#warning").show();
+	    }
+	});
+    });
+</script>
+{% endblock %}

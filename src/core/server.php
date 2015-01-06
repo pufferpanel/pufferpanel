@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \ReflectionClass;
 
 /**
  * PufferPanel Core Server management class.
@@ -27,46 +27,49 @@ class Server extends User {
 	use Components\Page;
 
 	/**
-	 * @param array $_s Defaults to true and will be changed to false if there is an error. This variable is used for the server portion of the code.
+	 * @param bool $found_server
 	 */
-	private $_s;
+	protected $found_server = true;
 
 	/**
-	 * @param array $_n Defaults to true and will be changed to false if there is an error. This variable is used for the node part of the code.
+	 * @param bool $found_node
 	 */
-	private $_n;
+	protected $found_node = true;
+
+	/**
+	 * @param array $server
+	 */
+	protected $server;
+
+	/**
+	 * @param array $node
+	 */
+	protected $node;
 
 	/**
 	 * Constructor class for building server data.
 	 *
-	 * @param string $hash The server hash.
-	 * @param int $userid The ID of the user who is requesting the server information or in some cases the ID of the server (if called via rebuildData function).
-	 * @param int $isroot The root administrator status of the user requesting the server information.
+	 * @param string|int $reference This can either be a string (server hash) or a numeric value (server id).
 	 * @return void
 	 */
-	public function __construct($hash = null, $userid = null, $isroot = null){
+	public function __construct($reference = null){
 
-		/*
-		 * Reset Values
-		 */
-		$this->_data = array();
-		$this->_ndata = array();
-		$this->_s = true;
-		$this->_n = true;
+		Authentication::__construct();
+		parent::__construct();
 
-		/*
-		 * Make Calls
-		 */
-		User::initalizePermissions($hash, $userid, null);
-		if(!is_null($userid) && is_numeric($userid) && !is_null($hash))
-			$this->_buildData($hash, $userid, $isroot);
-		else if(!is_null($userid) && is_null($hash))
-			$this->_rebuildData($userid);
-		else
-			$this->_s = false;
+		if(is_null($reference) && !isset($_COOKIE['pp_server_hash'])) {
+			return false;
+		} else if(is_null($reference)) {
+			$reference = $_COOKIE['pp_server_hash'];
+		}
 
-		//Re-assign values with owner ID
-		User::initalizePermissions($hash, $userid, $this->getData('owner_id'));
+		if(is_numeric($reference)) {
+			$this->_rebuildData($reference);
+		} else {
+			$this->_buildData($reference);
+		}
+		
+		parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
 
 	}
 
@@ -78,7 +81,7 @@ class Server extends User {
 	 */
 	public function rebuildData($id){
 
-		$this->__construct(null, $id);
+		self::__construct($id);
 
 	}
 
@@ -90,16 +93,18 @@ class Server extends User {
 	 */
 	public function getData($id = null){
 
-		if(is_null($id))
-			if($this->_s === true)
-				return ($this->server_array = (array) $this->server) ? $this->server_array["\0*\0_data"] : false;
-			else
-				return false;
-		else
-			if($this->_s === true && isset($this->server->{$id}))
-				return $this->server->{$id};
-			else
-				return false;
+
+		if(is_null($id) && !is_null($this->server)) {
+
+			$reflect = new ReflectionClass($this->server);
+			$data = $reflect->getProperty('_data');
+			$data->setAccessible(true);
+
+			return ($this->found_server) ? $data->getValue($this->server) : false;
+
+		} else {
+			return ($this->found_server && isset($this->server->{$id})) ? $this->server->{$id} : false;
+		}
 
 	}
 
@@ -111,16 +116,17 @@ class Server extends User {
 	 */
 	public function nodeData($id = null) {
 
-		if(is_null($id))
-			if($this->_n === true)
-				return ($this->node_array = (array) $this->node) ? $this->node_array["\0*\0_data"] : false;
-			else
-				return false;
-		else
-			if($this->_n === true && isset($this->node->{$id}))
-				return $this->node->{$id};
-			else
-				return false;
+		if(is_null($id) && !is_null($this->node)) {
+
+			$reflect = new ReflectionClass($this->node);
+			$data = $reflect->getProperty('_data');
+			$data->setAccessible(true);
+
+			return ($this->found_node) ? $data->getValue($this->node) : false;
+
+		} else {
+			return ($this->found_node && isset($this->node->{$id})) ? $this->node->{$id} : false;
+		}
 
 	}
 
@@ -128,55 +134,42 @@ class Server extends User {
 	 * Handles incoming requests to access a server and redirects to the correct location and sets a cookie.
 	 *
 	 * @param string $hash The hash of the server you are redirecting to.
-	 * @param array $perms
-	 * @param int $userid
-	 * @param int $isroot
 	 * @return void
 	 */
-	public function nodeRedirect($hash, $userid, $isroot) {
+	public function nodeRedirect($hash) {
 
-		$this->__construct($hash, $userid, $isroot);
+		$query = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1));
 
-		if($isroot == '1')
-			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
-		else
-			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
+		if(!$this->isAdmin()) {
+			$query = $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(parent::getData('id'), join(',', parent::listServerPermissions())));
+		}
 
-		if($this->server !== false){
-
-			setcookie('pp_server_hash', $this->server->hash, 0, '/');
-			$this->redirect('node/index.php');
-
-		}else
-			$this->redirect('servers.php?error=error');
+		return (!$query->findOne()) ? false : true;
 
 	}
 
 	/**
 	 * Rebuilds server data using a specified ID. Useful for Admin CP applications.
 	 *
-	 * @param int $sid The server ID.
+	 * @param int $server_id The server ID.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _rebuildData($sid){
+	private function _rebuildData($server_id){
 
-		$this->server = ORM::forTable('servers')->findOne($sid);
+		$this->server = ORM::forTable('servers')->findOne($server_id);
 
-		if($this->server === false)
-			$this->_s = false;
+		if(!$this->server) {
+			$this->found_server = false;
+			$this->found_node = false;
+			return;
+		}
 
-		/*
-		 * Grab Node Information
-		 */
-		if($this->_s !== false){
+		$this->node = ORM::forTable('nodes')->findOne($this->server->node);
 
-			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
-
-			if($this->node === false)
-				$this->_n = false;
-
-		}else
-			$this->_n = false;
+		if(!$this->node) {
+			$this->found_node = false;
+			return;
+		}
 
 	}
 
@@ -184,37 +177,96 @@ class Server extends User {
 	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
 	 *
 	 * @param string $hash The server hash.
-	 * @param int $userid The ID of the user who is requesting the server information.
-	 * @param int $isroot The root administrator status of the user requesting the server information.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _buildData($hash, $userid, $isroot){
+	private function _buildData($hash){
+		
+		$query =  ORM::forTable('servers')->where(array(
+					'hash' => $hash,
+					'active' => 1
+				));
 
-		if($isroot == '1')
-			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->findOne();
-		else
-			$this->server = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1))->where_raw('`owner_id` = ? OR `hash` IN(?)', array($userid, join(',', parent::listServerPermissions())))->findOne();
+		if(!$this->isAdmin()) {
 
-		if($this->server === false)
-			$this->_s = false;
+			$query= $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
+					parent::getData('id'),
+					join(',', parent::listServerPermissions())
+				));
+			
+		}
 
-		/*
-		 * Grab Node Information
-		 */
-		if($this->_s !== false){
+		$this->server = $query->findOne();
 
-			$this->_n = true;
+		if(!$this->server) {
+			$this->found_server = false;
+			$this->found_node = false;
+			return;
+		}
 
-			$this->node = ORM::forTable('nodes')->where(array('id' => $this->server->node))->findOne();
+		$this->node = ORM::forTable('nodes')->where(array('id' => $this->server->node))->findOne();
 
-			if($this->node === false)
-				$this->_n = false;
+		if(!$this->node) {
+			$this->found_node = false;
+			return;
+		}
 
-		}else
-			$this->_n = false;
+	}
+
+	/**
+	 * Returns an array of users with access to currently active server and their current status.
+	 *
+	 * @return array
+	 */
+	public function listAffiliatedUsers() {
+
+		$affiliated = json_decode($this->getData('subusers'), true);
+		$userdata = array();
+
+		if(is_array($affiliated) && !empty($affiliated)) {
+
+			foreach($affiliated as $id => $status) {
+
+				if($status != "verified") {
+
+					$selectUser = ORM::forTable('account_change')
+						->select('content')
+						->where(array('key' => $status, 'verified' => 0))
+						->findOne();
+
+					if($selectUser) {
+
+						$content = json_decode($selectUser->content, true);
+						$userdata[$id] = array(
+							"status" => "pending",
+							"revoke" => $status,
+							"permissions" => $content[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				} else {
+
+					$selectUser = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
+
+					if($selectUser) {
+
+						$permissions = json_decode($selectUser->permissions, true);
+						$userdata[$selectUser->email] = array(
+							"status" => "verified",
+							"id" => $selectUser->uuid,
+							"permissions" => $permissions[$this->getData('hash')]['perms']
+						);
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $userdata;
 
 	}
 
 }
-
-?>

@@ -17,11 +17,22 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
+use \Exception;
 
 /**
  * PufferPanel Core Language Class
  */
 class Language {
+
+	/**
+	 * @param string $language
+	 */
+	protected $language;
+
+	/**
+	 * @param array $loaded
+	 */
+	protected $loaded;
 
 	/**
 	 * Constructor class for language
@@ -31,12 +42,13 @@ class Language {
 	 */
 	public function __construct($language){
 
-		$this->_language = $language;
+		$this->language = $language;
 
-		if(!file_exists(dirname(__DIR__).'/lang/'.$language.'.json'))
-			exit('Unable to load the required language file! lang/'.$language.'.json');
+		if(!file_exists(dirname(__DIR__).'/lang/'.$language.'.json')) {
+			throw new Exception('Unable to load the required language file! lang/'.$language.'.json');
+		}
 
-		$this->loaded_language = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$language.'.json'), true);
+		$this->loaded = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$language.'.json'), true);
 
 	}
 
@@ -50,20 +62,21 @@ class Language {
 
 		$template = str_replace(".", "_", $template);
 
-		if(array_key_exists($template, $this->loaded_language))
-			return $this->loaded_language[$template];
-		else{
+		if(array_key_exists($template, $this->loaded)) {
+			return $this->loaded[$template];
+		} else {
 
-			if($this->_language == "en")
+			if($this->language == "en") {
 				return $template;
-			else{
+			} else {
 
-				$this->load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
+				$load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
 
-					if(array_key_exists($template, $this->load_english))
-						return $this->load_english[$template];
-					else
-						return $template;
+				if(array_key_exists($template, $load_english)) {
+					return $load_english[$template];
+				} else {
+					return $template;
+				}
 
 			}
 
@@ -78,7 +91,7 @@ class Language {
 	 */
 	public function loadTemplates() {
 
-		return $this->loaded_language;
+		return $this->loaded;
 
 	}
 

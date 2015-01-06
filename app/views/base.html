@@ -20,30 +20,52 @@
 <body>
 	<div class="container">
 		<div class="pull-right" style="margin-top: -26px;">
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=de" class="language">Deutsch</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=en" class="language">English</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=se" class="language">Svenska</a>
-			<a href="{{ settings.master_url }}ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a>
+			<a href="{{ settings.master_url }}language/de" class="language">Deutsch</a>
+			<a href="{{ settings.master_url }}language/en" class="language">English</a>
+			<a href="{{ settings.master_url }}language/es" class="language">Espa&ntilde;ol</a>
+			<a href="{{ settings.master_url }}language/fr" class="language">Fran&ccedil;ais</a>
+			<a href="{{ settings.master_url }}language/pt" class="language">Portugu&ecirc;s</a>
+			<a href="{{ settings.master_url }}language/ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a>
+			<a href="{{ settings.master_url }}language/se" class="language">Svenska</a>
+			<a href="{{ settings.master_url }}language/zh" class="language">&#20013;&#22269;&#30340;的</a>
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="{{ settings.master_url }}">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="{{ settings.master_url }}index">{{ settings.company_name }}</a>
 			</div>
-			{% block servername %}{% endblock %}
+			{% block servername %}
+				{% if server.name is defined %}
+				<ul class="nav navbar-nav">
+					<li class="active dynUpdate" id="{{ server.id }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+				</ul>
+				{% endif %}
+			{% endblock %}
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php"><i class="fa fa-cogs"></i></a></li>{% endif %}
-					<li><a href="{{ settings.master_url }}logout.php"><i class="fa fa-power-off"></i></a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index"><i class="fa fa-cogs"></i></a></li>{% endif %}
+					<li><a href="{{ settings.master_url }}auth/logout"><i class="fa fa-power-off"></i></a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3">
-				{% block sidebar %}{% endblock %}
+			<div class="col-3" id="sidebar_links">
+				{% block sidebar %}
+					{% if server.name is defined %}
+						<div class="list-group">
+							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+							<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
+							<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+							<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
+						</div>
+						<div class="list-group">
+							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
+							<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
+							{% if permission.files.view == true %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
+							{% if permission.users.view == true %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
+							{% if permission.manage.view == true %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
+						</div>
+					{% endif %}
+				{% endblock %}
 			</div>
 			{% block content %}{% endblock %}
 		</div>
@@ -53,7 +75,7 @@
 					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format(fversion)|raw }}</p>
 				</div>
 				<div class="col-4">
-					<p class="pull-right">{{ lang.footer_generated|format(footer.seconds) }}<br />Page Rendered in <span id="p_render_time">...</span> seconds.</p>
+					<p class="pull-right">Page Rendered in <span id="p_render_time">...</span> seconds.</p>
 				</div>
 			</div>
 			<script type="text/javascript">
@@ -68,7 +90,7 @@
 						element.find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 						$.ajax({
 							type: "POST",
-							url: "{{ settings.master_url }}ajax/get_status.php",
+							url: "{{ settings.master_url }}ajax/status",
 							data: { server: connection },
 							success: function(data) {
 									element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");

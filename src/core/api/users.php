@@ -58,7 +58,7 @@ class Users {
 
 		$this->user = ORM::forTable('users')->rawQuery("SELECT users.*, GROUP_CONCAT(servers.hash) AS s_hash FROM users LEFT JOIN servers ON servers.owner_id = users.id AND servers.active = 1 WHERE users.uuid = :uuid LIMIT 1", array('uuid' => $uuid))->findOne();
 
-		if(is_null($this->user->id)) {
+		if(!$this->user || is_null($this->user->email)) {
 			return false;
 		} else {
 
@@ -224,7 +224,6 @@ class Users {
 					break;
 				default:
 					return false;
-					break;
 
 			}
 

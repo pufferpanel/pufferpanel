@@ -1,0 +1,38 @@
+{% extends "install/install_base.html" %}
+
+{% block content %}
+<div class="alert alert-info">
+    Use the button below to install the database tables
+</div>
+
+<pre id="status">
+</pre>
+
+<br>
+
+<button id="install" class="btn btn-primary">Install tables</button>
+<a id="continue" href="settings" style="display: none;" class="btn btn-primary">Continue</a>
+{% endblock %}
+
+{% block endscripts %}
+<script type="text/javascript">
+    $("#install").click(function () {
+	$("#install").text("Installing");
+	$("#install").prop('disabled', true);
+	$.post("tables", function (data) {
+	    lines = data.split("\n");
+	    for (i = 0; i < lines.length - 1; i++) {
+		$("#status").text($("#status").text() + "\n" + lines[i]);
+	    }
+	    console.info(lines[lines.length - 1]);
+	    if (lines[lines.length - 1]) {
+		$("#install").hide();
+		$("#continue").show();
+	    } else {
+		$("#install").text("Install tables");
+		$("#install").prop('disabled', false);
+	    }
+	});
+    });
+</script>
+{% endblock %}

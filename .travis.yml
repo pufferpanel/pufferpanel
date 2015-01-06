@@ -1,0 +1,30 @@
+language: php
+
+php:
+  - 5.5
+  - 5.6
+
+branches:
+  only:
+    - master
+    - klein
+
+before_script:
+  - composer self-update
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - phpenv rehash
+
+script:
+    - phing -f build.xml phplint
+
+install:
+  - composer install --prefer-source --no-interaction --dev
+
+notifications:
+  irc:
+    channels:
+      - "irc.esper.net#pufferpanel"
+    template:
+      - "%{branch} (%{commit}): %{message} %{build_url}"
+    skip_join: true

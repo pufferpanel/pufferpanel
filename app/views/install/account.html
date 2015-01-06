@@ -1,0 +1,40 @@
+{% extends "install/install_base.html" %}
+
+{% block content %}
+
+<div class="alert alert-info">
+    You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC <code>(irc.esper.net/#pufferpanel)</code> if you encounter any problems or have questions, comments, or concerns.
+</div>
+
+<p>You've reached the final step of the process. Please fill out the information below to create your admin account. After finishing this step you will be redirected to the login page where you will be able to access the Admin Control Panel to add nodes, users, and servers. Thank you for installing PufferPanel on your server. Please contact us on IRC <code>(irc.esper.net/#pufferpanel)</code> if you encounter any problems or have questions, comments, or concerns.</p>
+?>
+<form action="account" method="post">
+    <div class="form-group">
+	<label for="email" class="control-label">Email</label>
+	<div>
+	    <input type="text" class="form-control" name="email" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="username" class="control-label">Username</label>
+	<div>
+	    <input type="text" class="form-control" name="username" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<label for="password" class="control-label">Password</label>
+	<div>
+	    <input type="password" class="form-control" name="password" autocomplete="off" />
+	</div>
+    </div>
+    <div class="form-group">
+	<div>
+	    <input type="submit" class="btn btn-primary" name="do_account" value="Finish &rarr;" />
+	</div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block endscripts %}
+{% endblock %}
