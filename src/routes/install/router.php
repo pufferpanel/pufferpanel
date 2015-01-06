@@ -52,7 +52,7 @@ $klein->respond('GET', '/install/start', function($request, $response) use ($twi
 	$response->body($twig->render('install/start.html'))->send();
 });
 
-$klein->respond('POST', '/install/start', function($request, $response, $service) {
+$klein->respond('POST', '/install/start', function($request, $response) {
 
 	try {
 
