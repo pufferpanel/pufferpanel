@@ -96,38 +96,34 @@ class Query {
 
 		if(!$this->server || !$this->node) {
 			return false;
-		} else {
+		}
 
-			$this->server->gsd_id = (!$override) ?: (int) $override;
+		$this->server->gsd_id = (!$override) ?: (int) $override;
+		
+		try {
 
-			try {
+			Unirest::timeout(1);
+			$request = Unirest::get(
+				"http://".$this->node->ip.":".$this->node->port."/gameservers/".$this->server->gsd_id,
+				array(
+					'X-Access-Token' => $this->node->gsd_secret
+				)
+			);
 
-				Unirest::timeout(1);
-				$request = Unirest::get(
-					"http://".$this->node->ip.":".$this->node->port."/gameservers/".$this->server->gsd_id,
-					array(
-						'X-Access-Token' => $this->node->gsd_secret
-					)
-				);
-
-				/*
+			/*
 				* Valid Data was Returned
 				*/
-				if(!isset($request->body->status) || $request->body->status == 0) {
-					return false;
-				} else {
-
-					$this->query_data['query'] = (isset($request->body->query)) ? $request->body->query : null;
-					$this->query_data['pid'] = (isset($request->body->pid)) ? $request->body->pid : null;
-					$this->query_data['process'] = (isset($request->body->pid)) ? $request->body->pid : [];
-					return true;
-
-				}
-
-			} catch(\Exception $e) {
+			if(!isset($request->body->status) || $request->body->status == 0) {
 				return false;
 			}
 
+			$this->query_data['query'] = (isset($request->body->query)) ? $request->body->query : null;
+			$this->query_data['pid'] = (isset($request->body->pid)) ? $request->body->pid : null;
+			$this->query_data['process'] = (isset($request->body->pid)) ? $request->body->pid : [];
+			return true;
+
+		} catch(\Exception $e) {
+			return false;
 		}
 
 	}
