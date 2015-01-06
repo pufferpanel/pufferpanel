@@ -16,44 +16,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-namespace PufferPanel\Core;
+namespace PufferPanel\Core\Config;
 use \Exception;
 
-class GlobalConfig implements ConfigInterface {
+class JsonConfig implements ConfigInterface {
 
-	/**
-	 * @param object $config
-	 */
-	private static $config;
+	private $config;
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function __construct($path, $array = false) {
-
 		if(!file_exists(BASE_DIR.$path)) {
 			throw new Exception("The config file ".$path." does not exist.");
 		}
 
-		self::$config = json_decode(file_get_contents(BASE_DIR.'config.json'), $array);
+		$this->config = json_decode(file_get_contents(BASE_DIR.$path), $array);
 
 		if(json_last_error() != "JSON_ERROR_NONE") {
-			throw new Exception("An error occured when trying decode the config.json file. ".json_last_error());
+			throw new Exception("An error occured when trying decode ".$path.". ".json_last_error());
 		}
-
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function config($base = null) {
-
-		if(is_null(self::$config)) {
-			new self('config.json');
-		}
-
-		return (is_null($base)) ? self::$config : self::$config->{$base};
-
+	public function config($base = null) {
+		return (is_null($base)) ? $this->config : $this->config->{$base};
 	}
 
 }

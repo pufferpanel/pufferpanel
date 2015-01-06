@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\GlobalConfig;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\Config;
 session_start();
 
 if(!ini_get('date.timezone')) {
@@ -66,9 +66,9 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.GlobalConfig::config('mysql')->host.';dbname='.GlobalConfig::config('mysql')->database,
-	'username' => GlobalConfig::config('mysql')->username,
-	'password' => GlobalConfig::config('mysql')->password,
+	'connection_string' => 'mysql:host='.Config::config('mysql')->host.';dbname='.Config::config('mysql')->database,
+	'username' => Config::config('mysql')->username,
+	'password' => Config::config('mysql')->password,
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

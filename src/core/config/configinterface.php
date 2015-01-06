@@ -16,8 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-namespace PufferPanel\Core;
-use \Exception;
+namespace PufferPanel\Core\Config;
 
 interface ConfigInterface {
 
@@ -31,11 +30,10 @@ interface ConfigInterface {
 	public function __construct($path, $array = false);
 
 	/**
-	 * Returns the configuration with a base.
+	 * Gets a specific key from a config, or the entire config if key is null.
 	 *
-	 * @param string $base Configuration file relative to BASE_DIR
-	 * @return object|array
+	 * @param type $base Key
 	 */
-	public static function config($base = null);
+	public function config($base = null);
 
 }

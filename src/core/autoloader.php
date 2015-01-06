@@ -32,11 +32,16 @@ require_once(SRC_DIR.'core/components/gsd.php');
 require_once(SRC_DIR.'core/components/page.php');
 require_once(SRC_DIR.'core/components/url.php');
 
+/**
+ * Load config types
+ */
+require_once(SRC_DIR.'core/config/configinterface.php');
+require_once(SRC_DIR.'core/config/jsonconfig.php');
+
 /*
  * Include Required Global Class Files
  */
-require_once(SRC_DIR.'core/ConfigInterface.php');
-require_once(SRC_DIR.'core/GlobalConfig.php');
+require_once(SRC_DIR.'core/config.php');
 require_once(SRC_DIR.'core/authentication.php');
 require_once(SRC_DIR.'core/email.php');
 require_once(SRC_DIR.'core/files.php');
