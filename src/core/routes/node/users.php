@@ -94,7 +94,7 @@ class Users extends \PufferPanel\Core\Email {
 			'URLENCODE_TOKEN' => urlencode($registerToken),
 			'SERVER' => $this->server->getData('name'),
 			'EMAIL' => $data['email']
-		))->dispatch($data['email'], Settings::config('company_name').' - You\'ve Been Invited to Manage a Server');
+		))->dispatch($data['email'], Settings::config()->company_name.' - You\'ve Been Invited to Manage a Server');
 
 		return true;
 

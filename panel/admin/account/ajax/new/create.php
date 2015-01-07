@@ -44,7 +44,7 @@ $user->set(array(
 	'username' => $_POST['username'],
 	'email' => $_POST['email'],
 	'password' => $core->auth->hash($_POST['pass']),
-	'language' => Settings::config('default_language'),
+	'language' => Settings::config().default_language,
 	'register_time' => time()
 ));
 $user->save();
@@ -55,7 +55,7 @@ $user->save();
 $core->email->buildEmail('admin_newaccount', array(
     'PASS' => $_POST['pass'],
     'EMAIL' => $_POST['email']
-))->dispatch($_POST['email'], Settings::config('company_name').' - Account Created');
+))->dispatch($_POST['email'], Settings::config().company_name.' - Account Created');
 
 Components\Page::redirect('../../view.php?id='.$user->id());
 

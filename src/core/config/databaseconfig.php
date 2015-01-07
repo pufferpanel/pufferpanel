@@ -33,22 +33,18 @@ class DatabaseConfig implements ConfigInterface {
 	}
 
 	public function config($base = null) {
-		if($base == null) {
-			throw new \Exception('Cannot get null key from database');
-		}
-
-		if(isset($this->cache[$base])) {
-			return $this->cache[$base];
-		}
 
 		$val = ORM::forTable($this->table)->where($this->columnKey, $base)->select($this->columnValue)->findOne();
+			
 		if($val == null) {
 			$this->cache[$base] = null;
-			return null;
 		} else {
 			$this->cache[$base] = $val->{$this->columnValue};
-			return $val->{$this->columnValue};
 		}
+		
+		$localCache = (object) $this->cache;
+
+		return (is_null($base)) ? $localCache : $localCache->{$base};
 	}
 
 }

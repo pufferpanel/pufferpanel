@@ -62,7 +62,7 @@ if(isset($_POST['email_user'])){
     $core->email->buildEmail('admin_new_ftppass', array(
         'PASS' => $_POST['ftp_pass'],
         'SERVER' => $core->server->getData('name')
-    ))->dispatch($core->user->getData('email'), Settings::config('company_name').' - Your FTP Password was Reset');
+    ))->dispatch($core->user->getData('email'), Settings::config()->company_name.' - Your FTP Password was Reset');
 
 }
 

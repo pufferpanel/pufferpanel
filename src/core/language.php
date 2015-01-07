@@ -42,7 +42,7 @@ class Language extends User {
 	public function __construct(){
 
 		if(!$this->getData('language')) {
-			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : Settings::config('default_language');
+			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : Settings::config()->default_language;
 		} else {
 			$this->language = $this->getData('language');
 		}

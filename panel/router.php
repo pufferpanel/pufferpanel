@@ -84,7 +84,7 @@ $klein = new \Klein\Klein();
 /*
 * Require HTTPS Connection
 */
-if(Settings::config('https') == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
+if(Settings::config()->https == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
 	exit(header('Location: https://'.$core->settings->config('master_url').$_SERVER['REQUEST_URI']));
 }
 

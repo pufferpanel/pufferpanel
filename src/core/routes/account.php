@@ -62,7 +62,7 @@ class Account extends \PufferPanel\Core\Email {
 		$this->buildEmail('password_changed', array(
 			'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
 			'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-		))->dispatch($this->_user->getData('email'), Settings::config('company_name').' - Password Change Notification');
+		))->dispatch($this->_user->getData('email'), Settings::config()->company_name.' - Password Change Notification');
 
 		return true;
 

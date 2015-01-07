@@ -25,14 +25,14 @@ $klein->respond(array('GET', 'POST', 'PUT', 'DELETE'), '/api/*', function($reque
 
 	$response->header('Content-Type', 'application/json');
 
-	if(Settings::config('use_api') != 1) {
+	if(Settings::config()->use_api != 1) {
 
 		$response->code(404);
 		$response->body(json_encode(array('message' => 'This API is not enabled.')))->send();
 
 	}
 
-	if(Settings::config('https') == 1 && !$request->isSecure()) {
+	if(Settings::config()->https == 1 && !$request->isSecure()) {
 
 		$response->code(403);
 		$response->body(json_encode(array('message' => 'This API can only be accessed using a secure (HTTPS) connection.')))->send();

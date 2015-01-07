@@ -42,7 +42,7 @@ $user->password = $core->auth->hash($_POST['pass']);
 		$core->email->buildEmail('new_password', array(
             'NEW_PASS' => $_POST['pass'],
             'EMAIL' => $_POST['email']
-        ))->dispatch($_POST['email'], Settings::config('company_name').' - An Admin has Reset Your Password');
+        ))->dispatch($_POST['email'], Settings::config()->company_name.' - An Admin has Reset Your Password');
 
 	}
 

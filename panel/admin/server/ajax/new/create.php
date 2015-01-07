@@ -218,7 +218,7 @@ $core->email->buildEmail('admin_new_server', array(
 		'MINECRAFT' => $node->fqdn.':'.$_POST['server_port'],
 		'USER' => $ftpUser.'-'.$content['id'],
 		'PASS' => $_POST['ftp_pass_2']
-))->dispatch($_POST['email'], Settings::config('company_name').' - New Server Added');
+))->dispatch($_POST['email'], Settings::config().company_name.' - New Server Added');
 
 Components\Page::redirect('../../view.php?id='.$server->id());
 
