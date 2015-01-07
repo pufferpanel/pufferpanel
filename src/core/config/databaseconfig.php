@@ -24,6 +24,7 @@ class DatabaseConfig implements ConfigInterface {
 	private $table;
 	private $columnKey;
 	private $columnValue;
+	private $cache = array();
 
 	public function __construct($table = 'settings', $columnKey = 'key', $columnValue = 'value') {
 		$this->table = $table;
@@ -35,8 +36,19 @@ class DatabaseConfig implements ConfigInterface {
 		if($base == null) {
 			throw new \Exception('Cannot get null key from database');
 		}
-		$val = ORM::forTable($this->table)->where($this->columnKey, $base)->select($this->columnValue)->findOne()->asArray();
-		return $val[$this->columnValue];
+
+		if(isset($this->cache[$base])) {
+			return $this->cache[$base];
+		}
+
+		$val = ORM::forTable($this->table)->where($this->columnKey, $base)->select($this->columnValue)->findOne();
+		if($val == null) {
+			$this->cache[$base] = null;
+			return null;
+		} else {
+			$this->cache[$base] = $val->{$this->columnValue};
+			return $val->{$this->columnValue};
+		}
 	}
 
 }
