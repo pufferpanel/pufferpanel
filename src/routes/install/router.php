@@ -78,17 +78,24 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 			throw new \Exception('Cannot override existing config');
 		}
 
-		$fp = fopen(BASE_DIR . 'config.json', 'w+');
+		$fp = fopen(BASE_DIR.'config.json.dist', 'w');
 		fwrite($fp, json_encode(array(
 			'mysql' => array(
 				'host' => $host,
 				'database' => $db,
 				'username' => $user,
-				'password' => $pass
+				'password' => $pass,
+				'ssl' => array(
+					'use' => false,
+					'client-key' => '/path/to/key.pem',
+					'client-cert' => '/path/to/cert.pem',
+					'ca-cert' => '/path/to/ca-cert.pem'
+				)
 			),
 			'hash' => $hash
 		)));
 		fclose($fp);
+		rename(BASE_DIR.'config.json.dist', BASE_DIR.'config.json');
 		$_SESSION['installer_progress'] = 'tables';
 		$response->body(true)->send();
 
