@@ -47,7 +47,7 @@ class Query extends Server {
 			/*
 			 * Load Information into Script
 			 */
-			$this->server = ORM::forTable('servers')->findOne($serverid);
+			$this->server = ORM::forTable('servers')->findOne($this->getData('id'));
 
 			/*
 			 * Load Node Information into Script
