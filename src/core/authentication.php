@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \Otp\Otp, \Base32\Base32, \PufferPanel\Core\Config\DatabaseConfig;
+use \ORM, \Otp\Otp, \Base32\Base32, \PufferPanel\Core\Config\InMemoryDatabaseConfig;
 
 /**
  * PufferPanel Core Authentication Class
@@ -39,7 +39,7 @@ class Authentication {
 	 */
 	public function __construct(){
 
-		$this->settings = new DatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
+		$this->settings = new InMemoryDatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
 
 		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 

@@ -38,6 +38,7 @@ require_once(SRC_DIR.'core/components/url.php');
 require_once(SRC_DIR.'core/config/configinterface.php');
 require_once(SRC_DIR.'core/config/jsonconfig.php');
 require_once(SRC_DIR.'core/config/databaseconfig.php');
+require_once(SRC_DIR.'core/config/inmemdatabaseconfig.php');
 
 /*
  * Include Required Global Class Files
