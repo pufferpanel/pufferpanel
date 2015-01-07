@@ -25,11 +25,7 @@ class InMemoryDatabaseConfig implements ConfigInterface {
 	private $cache = array();
 
 	public function __construct($table = 'settings', $columnKey = 'key', $columnValue = 'value') {
-		$this->table = $table;
-		$this->columnKey = $columnKey;
-		$this->columnValue = $columnValue;
-
-		$val = ORM::forTable($this->table)->select($columnKey, $columnValue)->findMany();
+		$val = ORM::forTable($table)->select($columnKey, $columnValue)->findMany();
 		foreach($val as $configOption) {
 			$this->cache[$configOption->{$columnKey}] = $configOption->{$columnValue};
 		}
