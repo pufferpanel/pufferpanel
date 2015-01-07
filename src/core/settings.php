@@ -21,6 +21,7 @@ use \ORM as ORM;
 
 /**
  * PufferPanel Core Settings Class File
+ * @deprecated Use DatabaseConfig instead
  */
 class Settings {
 

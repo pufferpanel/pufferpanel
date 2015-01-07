@@ -37,6 +37,7 @@ require_once(SRC_DIR.'core/components/url.php');
  */
 require_once(SRC_DIR.'core/config/configinterface.php');
 require_once(SRC_DIR.'core/config/jsonconfig.php');
+require_once(SRC_DIR.'core/config/databaseconfig.php');
 
 /*
  * Include Required Global Class Files
@@ -50,5 +51,4 @@ require_once(SRC_DIR.'core/language.php');
 require_once(SRC_DIR.'core/log.php');
 require_once(SRC_DIR.'core/query.php');
 require_once(SRC_DIR.'core/server.php');
-require_once(SRC_DIR.'core/settings.php');
 require_once(SRC_DIR.'core/routes.php');

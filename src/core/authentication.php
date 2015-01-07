@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \Otp\Otp, \Base32\Base32;
+use \ORM, \Otp\Otp, \Base32\Base32, Core\Config\DatabaseConfig;
 
 /**
  * PufferPanel Core Authentication Class
@@ -39,7 +39,7 @@ class Authentication {
 	 */
 	public function __construct(){
 
-		$this->settings = new Settings();
+		$this->settings = new DatabaseConfig('acp_settings', 'setting_ref');
 
 		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 
@@ -59,10 +59,7 @@ class Authentication {
 
 		$otp = new Otp();
 
-		if($otp->checkTotp(Base32::decode($secret), $key))
-			return true;
-		else
-			return false;
+		return $otp->checkTotp(Base32::decode($secret), $key);
 
 	}
 
@@ -77,10 +74,11 @@ class Authentication {
 
 		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-		if($this->get !== false)
+		if($this->get !== false) {
 			return $this->password_compare($raw, $this->get->password);
-		else
+		} else {
 			return false;
+		}
 
 	}
 

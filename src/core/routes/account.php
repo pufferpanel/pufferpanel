@@ -33,7 +33,7 @@ class Account extends \PufferPanel\Core\Email {
 	public function __construct($user) {
 
 		$this->_user = $user;
-		$this->settings = new \PufferPanel\Core\Settings();
+		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref');
 
 	}
 
@@ -63,7 +63,7 @@ class Account extends \PufferPanel\Core\Email {
 		$this->buildEmail('password_changed', array(
 			'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
 			'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-		))->dispatch($this->_user->getData('email'), $this->settings->get('company_name').' - Password Change Notification');
+		))->dispatch($this->_user->getData('email'), $this->settings->config('company_name').' - Password Change Notification');
 
 		return true;
 

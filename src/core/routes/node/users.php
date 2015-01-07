@@ -41,7 +41,7 @@ class Users extends \PufferPanel\Core\Email {
 	public function __construct(\PufferPanel\Core\Server $server) {
 
 		$this->server = $server;
-		$this->settings = new \PufferPanel\Core\Settings();
+		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref');
 
 	}
 
@@ -100,7 +100,7 @@ class Users extends \PufferPanel\Core\Email {
 			'URLENCODE_TOKEN' => urlencode($registerToken),
 			'SERVER' => $this->server->getData('name'),
 			'EMAIL' => $data['email']
-		))->dispatch($data['email'], $this->settings->get('company_name').' - You\'ve Been Invited to Manage a Server');
+		))->dispatch($data['email'], $this->settings->config('company_name').' - You\'ve Been Invited to Manage a Server');
 
 		return true;
 
@@ -167,7 +167,7 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	protected final static function _rebuildUserPermissions(array $data) {
 
-		foreach($data as $id => $permission) {
+		foreach($data as $permission) {
 
 			if(in_array($permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', $data)) {
 				$data = array_merge($data, array("files.view"));
