@@ -29,7 +29,10 @@ class DatabaseConfig implements ConfigInterface {
 		$this->columnKey = $columnKey;
 	}
 
-	public function config($base) {
+	public function config($base = null) {
+		if($base == null) {
+			throw new \Exception('Cannot get null key from database');
+		}
 		return ORM::forTable($this->table)->where($this->columnKey, $base)->findOne();
 	}
 
