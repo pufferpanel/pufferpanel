@@ -110,21 +110,21 @@ class Query {
 				)
 			);
 
-			/*
-				* Valid Data was Returned
-				*/
-			if(!isset($request->body->status) || $request->body->status == 0) {
-				return false;
-			}
-
-			$this->query_data['query'] = (isset($request->body->query)) ? $request->body->query : null;
-			$this->query_data['pid'] = (isset($request->body->pid)) ? $request->body->pid : null;
-			$this->query_data['process'] = (isset($request->body->pid)) ? $request->body->pid : [];
-			return true;
-
 		} catch(\Exception $e) {
 			return false;
 		}
+
+		/*
+		* Valid Data was Returned
+		*/
+		if(!isset($request->body->status) || $request->body->status == 0) {
+			return false;
+		}
+
+		$this->query_data['query'] = (isset($request->body->query)) ? $request->body->query : null;
+		$this->query_data['pid'] = (isset($request->body->pid)) ? $request->body->pid : null;
+		$this->query_data['process'] = (isset($request->body->pid)) ? $request->body->pid : [];
+		return true;		
 
 	}
 
