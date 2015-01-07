@@ -41,7 +41,7 @@ class Users extends \PufferPanel\Core\Email {
 	public function __construct(\PufferPanel\Core\Server $server) {
 
 		$this->server = $server;
-		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref');
+		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
 
 	}
 

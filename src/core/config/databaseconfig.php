@@ -23,17 +23,20 @@ class DatabaseConfig implements ConfigInterface {
 
 	private $table;
 	private $columnKey;
+	private $columnValue;
 
-	public function __construct($table = 'settings', $columnKey = 'key') {
+	public function __construct($table = 'settings', $columnKey = 'key', $columnValue = 'value') {
 		$this->table = $table;
 		$this->columnKey = $columnKey;
+		$this->columnValue = $columnValue;
 	}
 
 	public function config($base = null) {
 		if($base == null) {
 			throw new \Exception('Cannot get null key from database');
 		}
-		return ORM::forTable($this->table)->where($this->columnKey, $base)->findOne();
+		$val = ORM::forTable($this->table)->where($this->columnKey, $base)->select($this->columnValue)->findOne()->asArray();
+		return $val[$this->columnValue];
 	}
 
 }

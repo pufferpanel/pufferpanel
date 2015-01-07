@@ -33,7 +33,7 @@ class Account extends \PufferPanel\Core\Email {
 	public function __construct($user) {
 
 		$this->_user = $user;
-		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref');
+		$this->settings = new \PufferPanel\Core\Config\DatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
 
 	}
 

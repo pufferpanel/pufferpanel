@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM, Core\Config\DatabaseConfig;
+use \ORM as ORM, \PufferPanel\Core\Config\DatabaseConfig;
 
 
 /**
@@ -41,7 +41,7 @@ class Email {
 	 */
 	public function __construct() {
 
-		$this->settings = new DatabaseConfig('acp_settings', 'setting_ref');
+		$this->settings = new DatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
 		$this->masterurl = ($this->settings->config('https') == 1) ? 'https:' . $this->settings->config('master_url') : 'http:' . $this->settings->config('master_url');
 
 	}
