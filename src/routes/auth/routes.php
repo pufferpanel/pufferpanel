@@ -46,7 +46,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 			$core->email->generateLoginNotification('failed', array(
 				'IP_ADDRESS' => $request->ip(),
 				'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip())
-			))->dispatch($request->param('email'), $core->settings->get('company_name').' - Account Login Failure Notification');
+			))->dispatch($request->param('email'), Settings::config('company_name').' - Account Login Failure Notification');
 
 		}
 
@@ -73,7 +73,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 			$core->email->generateLoginNotification('success', array(
 				'IP_ADDRESS' => $request->ip(),
 				'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip())
-			))->dispatch($request->param('email'), $core->settings->get('company_name').' - Account Login Notification');
+			))->dispatch($request->param('email'), Settings::config('company_name').' - Account Login Notification');
 
 		}
 
@@ -166,7 +166,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 		$core->email->buildEmail('new_password', array(
 			'NEW_PASS' => $password,
 			'EMAIL' => $query->content
-		))->dispatch($query->content, $core->settings->get('company_name').' - New Password');
+		))->dispatch($query->content, Settings::config('company_name').' - New Password');
 
 		$service->flash('<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
 		$response->redirect('/auth/login')->send();
@@ -185,7 +185,7 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 	}
 
 	require SRC_DIR.'captcha/recaptchalib.php';
-	$resp = recaptcha_check_answer($core->settings->get('captcha_priv'), $request->ip(), $request->param('recaptcha_challenge_field'), $request->param('recaptcha_response_field'));
+	$resp = recaptcha_check_answer(Settings::config('captcha_priv'), $request->ip(), $request->param('recaptcha_challenge_field'), $request->param('recaptcha_response_field'));
 
 	if($resp->is_valid) {
 
@@ -208,7 +208,7 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 				'IP_ADDRESS' => $request->ip(),
 				'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip()),
 				'PKEY' => $key
-			))->dispatch($request->param('email'), $core->settings->get('company_name').' - Reset Your Password');
+			))->dispatch($request->param('email'), Settings::config('company_name').' - Reset Your Password');
 
 			$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
 			$response->redirect('/auth/password/pending')->send();
@@ -306,7 +306,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 		'email' => $query->content,
 		'password' => $core->auth->hash($request->param('password')),
 		'permissions' => null,
-		'language' => $core->settings->get('default_language'),
+		'language' => Settings::config('default_language'),
 		'register_time' => time()
 	));
 	$user->save();

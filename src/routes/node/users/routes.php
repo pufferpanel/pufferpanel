@@ -21,7 +21,7 @@ use \ORM;
 
 $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $response, $service, $app, $klein) use ($core) {
 
-	if($core->settings->get('allow_subusers') != 1 || !$core->user->hasPermission('users.view')) {
+	if(Settings::config('allow_subusers') != 1 || !$core->user->hasPermission('users.view')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();

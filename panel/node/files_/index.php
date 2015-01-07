@@ -23,7 +23,7 @@ require_once('../../../src/core/core.php');
 
 if($core->auth->isLoggedIn($_SERVER['REMOTE_ADDR'], $core->auth->getCookie('pp_auth_token'), $core->auth->getCookie('pp_server_hash')) === false){
 
-	Components\Page::redirect($core->settings->get('master_url').'index.php?login');
+	Components\Page::redirect(Settings::config('master_url').'index.php?login');
 	exit();
 }
 

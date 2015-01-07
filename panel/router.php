@@ -82,15 +82,10 @@ $core = new stdClass();
 $klein = new \Klein\Klein();
 
 /*
- * Initalize Cores
- */
-$core->settings = new Settings();
-
-/*
 * Require HTTPS Connection
 */
-if($core->settings->get('https') == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
-	exit(header('Location: https://'.$core->settings->get('master_url').$_SERVER['REQUEST_URI']));
+if(Settings::config('https') == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
+	exit(header('Location: https://'.$core->settings->config('master_url').$_SERVER['REQUEST_URI']));
 }
 
 $core->auth = new Authentication();
@@ -110,7 +105,7 @@ $core->language = new Language();
  * Twig Setup
  */
 $core->twig->addGlobal('lang', $core->language->loadTemplates()); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
-$core->twig->addGlobal('settings', $core->settings->get()); // @TODO Change this to addGlobal('settings', $this->settings) to allow access as {{ settings.get('value') }}
+$core->twig->addGlobal('settings', Settings::config()); // @TODO Change this to addGlobal('settings', $this->settings) to allow access as {{ settings.get('value') }}
 $core->twig->addGlobal('get', Components\Page::twigGET());
 $core->twig->addGlobal('permission', $core->user->twigListPermissions()); // @TODO Change this to addGlobal('permission', $core->user) to allow access as {% if permission.hasPermission('permission') %}
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));

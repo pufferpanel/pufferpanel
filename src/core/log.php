@@ -45,7 +45,6 @@ class Log extends User {
 	 */
 	public function __construct() {
 
-
 			$this->uid = (!$this->getData('id')) ? null : $this->getData('id');
 
 	}

@@ -41,10 +41,8 @@ class Language extends User {
 	 */
 	public function __construct(){
 
-		$s = new Config\DatabaseConfig('acp_settings', 'setting_ref', 'setting_val');
-
 		if(!$this->getData('language')) {
-			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : $s->config('default_language');
+			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : Settings::config('default_language');
 		} else {
 			$this->language = $this->getData('language');
 		}

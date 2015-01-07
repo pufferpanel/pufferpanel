@@ -31,7 +31,7 @@ if(isset($_GET['success']) && $_GET['success']) {
 echo $twig->render(
 	'admin/config/global.html', array(
 		'output' => (isset($outputMessage)) ? $outputMessage : null,
-		'settings' => $core->settings->get(),
+		'settings' => Settings::getInstance(),
 		'footer' => array(
 			'seconds' => number_format((microtime(true) - $pageStartTime), 4)
 		)
