@@ -22,7 +22,7 @@ use \ORM, \Unirest;
 /**
  * PufferPanel Core GSD Implementation Class
  */
-class Query {
+class Query extends Server {
 
 	use Components\GSD;
 
@@ -40,9 +40,9 @@ class Query {
 	 * @param int $serverid The ID of the server that will be implementing this class.
 	 * @return array Returns an array on success or false on failure.
 	 */
-	public function __construct($serverid) {
+	public function __construct() {
 
-		if(is_numeric($serverid)) {
+		if(is_numeric($this->getData('id'))) {
 
 			/*
 			 * Load Information into Script
