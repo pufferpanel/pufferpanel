@@ -66,6 +66,7 @@ class Settings {
 	 *
 	 * @param int $id The ID of the node you want the name for.
 	 * @return string The name of the node.
+	 * @deprecated This should not be a part of Settings
 	 */
 	public function nodeName($id)
 		{
