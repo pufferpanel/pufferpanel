@@ -82,7 +82,7 @@ $core = new stdClass();
 $klein = new \Klein\Klein();
 
 /*
- * Initalize cores
+ * Initalize Cores
  */
 $core->settings = new Settings();
 
@@ -104,31 +104,17 @@ $core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'),
 	'cache' => false,
 	'debug' => true
 ));
-
-/*
- * Check Language Settings
- */
-if(!$core->user->getData('language')) {
-	if(empty($_COOKIE['pp_language'])) {
-		$_l = new Language($core->settings->get('default_language'));
-	} else {
-		$_l = new Language($_COOKIE['pp_language']);
-	}
-} else {
-	$_l = new Language($core->user->getData('language'));
-}
+$core->language = new Language();
 
 /*
  * Twig Setup
  */
-$core->twig->addGlobal('lang', $_l->loadTemplates());
-$core->twig->addGlobal('settings', $core->settings->get());
+$core->twig->addGlobal('lang', $core->language->loadTemplates()); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
+$core->twig->addGlobal('settings', $core->settings->get()); // @TODO Change this to addGlobal('settings', $this->settings) to allow access as {{ settings.get('value') }}
 $core->twig->addGlobal('get', Components\Page::twigGET());
-$core->twig->addGlobal('permission', $core->user->twigListPermissions());
+$core->twig->addGlobal('permission', $core->user->twigListPermissions()); // @TODO Change this to addGlobal('permission', $core->user) to allow access as {% if permission.hasPermission('permission') %}
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
-if($core->user->getData('root_admin') == 1) {
-	$core->twig->addGlobal('admin', true);
-}
+$core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 

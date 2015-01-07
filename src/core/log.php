@@ -26,10 +26,16 @@ use \ORM as ORM;
  */
 class Log extends User {
 
+
 	/**
 	 * @param string $url
 	 */
 	private $url;
+
+	/**
+	 * @param int $uid
+	 */
+	private $uid;
 
 	/**
 	 * Constructor class for logging
@@ -37,12 +43,12 @@ class Log extends User {
 	 * @param int $uid The user ID.
 	 * @return void
 	 */
-	public function __construct($uid)
-		{
+	public function __construct() {
 
-			$this->uid = ($uid !== false) ? $uid : null;
 
-		}
+			$this->uid = (!$this->getData('id')) ? null : $this->getData('id');
+
+	}
 
 	/**
 	 * Logging Function
@@ -55,37 +61,36 @@ class Log extends User {
 	 * @param array $data An array of the data that caused the error. Should be in the form Array(action, desc, uid).
 	 * @return void
 	 */
-	public function addLog($priority, $viewable, $data = array())
-		{
+	public function addLog($priority, $viewable, $data = array()) {
 
-			$this->uid = (!array_key_exists(2, $data)) ? $this->uid : $data[2];
-			$this->logger = ORM::forTable('actions_log')->create();
+		$logger = ORM::forTable('actions_log')->create();
 
-			$this->logger->priority = $priority;
-			$this->logger->viewable = $viewable;
-			$this->logger->user = $this->uid;
-			$this->logger->time = time();
-			$this->logger->ip = $_SERVER['REMOTE_ADDR'];
-			$this->logger->url = $this->url;
-			$this->logger->action = $data[0];
-			$this->logger->desc = $data[1];
+		$logger->set(array(
+			'priority' => $priority,
+			'viewable' => $viewable,
+			'user' => (!array_key_exists(2, $data)) ? $this->uid : $data[2],
+			'time' => time(),
+			'ip' => $_SERVER['REMOTE_ADDR'],
+			'url' => $this->url,
+			'action' => $data[0],
+			'desc' => $data[1]
+		));
 
-			$this->logger->save();
+		$logger->save();
 
-		}
+	}
 
 	/**
 	 * Get the current page URL where the log action is called.
 	 *
-	 * @return string
+	 * @return Core\Log
 	 */
-	public function getUrl()
-		{
+	public function getUrl(){
 
-			$this->url = (isset($_SERVER['HTTPS']) == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			return $this;
+		$this->url = (isset($_SERVER['HTTPS']) == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		return $this;
 
-		}
+	}
 
 }
 

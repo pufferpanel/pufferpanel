@@ -17,14 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
-
-/*
- * TOTP Class
- */
-use Otp\Otp;
-use Otp\GoogleAuthenticator;
-use Base32\Base32;
+use \ORM, \Otp\Otp, \Base32\Base32;
 
 /**
  * PufferPanel Core Authentication Class
@@ -110,7 +103,7 @@ class Authentication {
 	public final function isAdmin() {
 
 		if(!$this->select) {
-			return 'hue';
+			return false;
 		} else {
 			return ($this->select->root_admin == 1) ? true : false;
 		}

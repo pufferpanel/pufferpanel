@@ -22,7 +22,7 @@ use \Exception;
 /**
  * PufferPanel Core Language Class
  */
-class Language {
+class Language extends User {
 
 	/**
 	 * @param string $language
@@ -37,18 +37,23 @@ class Language {
 	/**
 	 * Constructor class for language
 	 *
-	 * @param string $language The language to load.
 	 * @return void
 	 */
-	public function __construct($language){
+	public function __construct(){
 
-		$this->language = $language;
+		$s = new Settings();
 
-		if(!file_exists(dirname(__DIR__).'/lang/'.$language.'.json')) {
-			throw new Exception('Unable to load the required language file! lang/'.$language.'.json');
+		if(!$this->getData('language')) {
+			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : $s->get('default_language');
+		} else {
+			$this->language = $this->getData('language');
 		}
 
-		$this->loaded = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$language.'.json'), true);
+		if(!file_exists(dirname(__DIR__).'/lang/'.$this->language.'.json')) {
+			throw new Exception('Unable to load the required language file! lang/'.$this->language.'.json');
+		}
+
+		$this->loaded = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$this->language.'.json'), true);
 
 	}
 
@@ -58,29 +63,25 @@ class Language {
 	 * @param string $template The language key.
 	 * @return string
 	 */
-	public function tpl($template){
+	public function render($template){
 
 		$template = str_replace(".", "_", $template);
 
 		if(array_key_exists($template, $this->loaded)) {
 			return $this->loaded[$template];
-		} else {
-
-			if($this->language == "en") {
-				return $template;
-			} else {
-
-				$load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
-
-				if(array_key_exists($template, $load_english)) {
-					return $load_english[$template];
-				} else {
-					return $template;
-				}
-
-			}
-
 		}
+
+		if($this->language == "en") {
+			return $template;
+		}
+
+		$load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
+
+		if(array_key_exists($template, $load_english)) {
+			return $load_english[$template];
+		}
+
+		return $template;
 
 	}
 

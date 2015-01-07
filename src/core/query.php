@@ -99,7 +99,7 @@ class Query {
 		}
 
 		$this->server->gsd_id = (!$override) ?: (int) $override;
-		
+
 		try {
 
 			Unirest::timeout(1);
@@ -165,7 +165,7 @@ class Query {
 	 * Returns the last x lines from the server log for a server.
 	 *
 	 * @param int $lines The number of lines from the server log to return.
-	 * @return array
+	 * @return string
 	 */
 	public function serverLog($lines = 750) {
 
@@ -183,14 +183,14 @@ class Query {
 			} catch(\Exception $e) {
 
 				\Tracy\Debugger::log($e);
-				return array("Daemon error occured.");
+				return "Daemon error occured.";
 
 			}
 
 			return $response->body;
 
 		} else {
-			return array("Server is currently offline.");
+			return "Server is currently offline.";
 		}
 
 	}

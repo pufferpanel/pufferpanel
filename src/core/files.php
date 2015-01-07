@@ -54,27 +54,4 @@ class Files {
 
 	}
 
-	/**
-	 * Reads a specified number of lines from a given file.
-	 *
-	 * @todo Remove function.
-	 * @param string $filename
-	 * @param int $lines
-	 * @return void
-	 */
-	public function readLines($filename, $lines) {
-	}
-
-	/**
-	 * Reads a specified number of lines from a given file beginning at the end of the file.
-	 *
-	 * @todo Remove function.
-	 * @param string $path
-	 * @param int $line_count
-	 * @param int $block_size
-	 * @return void
-	 */
-	function last_lines($path, $line_count, $block_size = 512) {
-	}
-
 }

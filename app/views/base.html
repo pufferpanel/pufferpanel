@@ -31,7 +31,7 @@
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="{{ settings.master_url }}index">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="//{{ settings.master_url }}index">{{ settings.company_name }}</a>
 			</div>
 			{% block servername %}
 				{% if server.name is defined %}
@@ -90,7 +90,7 @@
 						element.find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 						$.ajax({
 							type: "POST",
-							url: "{{ settings.master_url }}ajax/status",
+							url: "//{{ settings.master_url }}ajax/status",
 							data: { server: connection },
 							success: function(data) {
 									element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
