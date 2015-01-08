@@ -89,16 +89,13 @@ class Query extends Server {
 	/**
 	 * Gets the status of any specified server given an IP address.
 	 *
-	 * @param int $override If an ID is provided this function will check that specific server, otherwise it is assumed to be the loaded server.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
-	public function online($override = false) {
+	public function online() {
 
 		if(!$this->server || !$this->node) {
 			return false;
 		}
-
-		$this->server->gsd_id = (!$override) ?: (int) $override;
 
 		try {
 
@@ -117,9 +114,7 @@ class Query extends Server {
 				return false;
 			}
 
-			$this->query_data['query'] = (isset($request->body->query)) ? $request->body->query : null;
-			$this->query_data['pid'] = (isset($request->body->pid)) ? $request->body->pid : null;
-			$this->query_data['process'] = (isset($request->body->pid)) ? $request->body->pid : [];
+			$this->query_data = $request->body;
 			return true;
 
 		} catch(\Exception $e) {
@@ -131,11 +126,12 @@ class Query extends Server {
 	/**
 	 * Returns the process ID of the last server query.
 	 *
+	 * @deprecated
 	 * @return int
 	 */
 	public function pid() {
 
-		return ($this->online()) ? $this->query_data['pid'] : null;
+		return null;
 
 	}
 
@@ -151,13 +147,15 @@ class Query extends Server {
 
 			if(is_null($element)) {
 				return $this->query_data;
-			} else {
-				return (array_key_exists($element, $this->query_data)) ? $this->query_data[$element] : null;
 			}
 
-		} else {
-			return null;
+			if(isset($this->query_data->{$element})) {
+				return $this->query_data->{$element};
+			}
+
 		}
+
+		return null;
 
 	}
 
@@ -179,6 +177,7 @@ class Query extends Server {
 						"X-Access-Token" => $this->server->gsd_secret
 					)
 				);
+				return $response->body;
 
 			} catch(\Exception $e) {
 
@@ -186,8 +185,6 @@ class Query extends Server {
 				return "Daemon error occured.";
 
 			}
-
-			return $response->body;
 
 		} else {
 			return "Server is currently offline.";
@@ -214,8 +211,10 @@ class Query extends Server {
 
 				case 403:
 					return "Authentication error encountered.";
+					break;
 				default:
 					return "[HTTP/{$this->response->code}] Invalid response was recieved. ({$this->response->raw_body})";
+					break;
 
 			}
 
@@ -270,7 +269,7 @@ class Query extends Server {
 
 		try {
 
-			$this->get = Unirest::get(
+			$request = Unirest::get(
 				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
 				array(
 					"X-Access-Token" => $this->server->gsd_secret
@@ -284,7 +283,7 @@ class Query extends Server {
 
 		}
 
-		return ($this->get->body != "ok") ? false : true;
+		return ($request->body != "ok") ? false : true;
 
 	}
 
