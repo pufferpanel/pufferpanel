@@ -10,7 +10,6 @@ branches:
     - klein
 
 before_script:
-  - composer self-update
   - pear channel-discover pear.phing.info
   - pear install phing/phing
   - phpenv rehash
@@ -19,6 +18,7 @@ script:
     - phing -f build.xml phplint
 
 install:
+  - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
 notifications:
