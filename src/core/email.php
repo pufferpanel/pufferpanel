@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
+use \ORM, \Tracy\Debugger, \Exception;
 
 
 /**
@@ -28,10 +28,28 @@ class Email {
 	use Components\Authentication;
 
 	/**
-	 * @param string $message
+	 * @param string $master_url
+	 * @static
 	 */
-	protected $message;
-	protected $masterurl;
+	protected $master_url;
+
+	/**
+	 * @param string $message
+	 * @static
+	 */
+	protected static $message;
+
+	/**
+	 * @param string $email
+	 * @static
+	 */
+	protected static $email;
+
+	/**
+	 * @param string $subject
+	 * @static
+	 */
+	protected static $subject;
 
 	/**
 	 * Constructor for email sending
@@ -40,12 +58,12 @@ class Email {
 	 */
 	public function __construct() {
 
-		$this->masterurl = (Settings::config()->https == 1) ? 'https:' . Settings::config()->master_url : 'http:' . Settings::config()->master_url;
+		$this->master_url = (Settings::config()->https == 1) ? 'https://' . Settings::config()->master_url : 'http://' . Settings::config()->master_url;
 
 	}
 
 	/**
-	 * Sends an email that has been formatted.
+	 * Sends an email that has been formatted using the method defined in settings.
 	 *
 	 * @param string $email The email address to send to.
 	 * @param string $subject The subject of the email.
@@ -53,93 +71,142 @@ class Email {
 	 */
 	public function dispatch($email, $subject) {
 
-		$this->getDispatchSystem = $this->getDispatchSystemFunct();
-		if ($this->getDispatchSystem == 'php') {
+		self::$email = $email;
+		self::$subject = $subject;
 
-			$headers = 'From: ' . Settings::config()->sendmail_email . "\r\n" .
-					'Reply-To: ' . Settings::config()->sendmail_email . "\r\n" .
-					'MIME-Version: 1.0' . "\r\n" .
-					'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-					'X-Mailer: PHP/' . phpversion();
+		switch(Settings::config()->sendmail_method) {
 
-			mail($email, $subject, $this->message, $headers);
+			case 'postmark':
+				self::_sendWithPostmark();
+				break;
+			case 'mandrill':
+				self::_sendWithMandrill();
+				break;
+			case 'mailgun':
+				self::_sendWithMailgun();
+				break;
+			case 'sendgrid':
+				self::_sendWithSendgrid();
+				break;
+			default:
+				self::_sendWithPHP();
 
-		} else if ($this->getDispatchSystem == 'postmark') {
+		}
 
-			\Postmark\Mail::compose(Settings::config()->postmark_api_key)
-					->from(Settings::config()->sendmail_email, Settings::config()->company_name)
-					->addTo($email, $email)
-					->subject($subject)
-					->messageHtml($this->message)
-					->send();
+	}
 
-		} else if ($this->getDispatchSystem == 'mandrill') {
+	/**
+	 * Sends an email using the built-in PHP mail() function.
+	 *
+	 * @return void
+	 * @static
+	 */
+	protected static function _sendWithPHP() {
 
-			try {
+		$headers = 'From: ' . Settings::config()->sendmail_email . "\r\n" .
+			'Reply-To: ' . Settings::config()->sendmail_email . "\r\n" .
+			'MIME-Version: 1.0' . "\r\n" .
+			'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
 
-				$mandrill = new \Mandrill(Settings::config()->mandrill_api_key);
-				$mandrillMessage = array(
-					'html' => $this->message,
-					'subject' => $subject,
-					'from_email' => Settings::config()->sendmail_email,
-					'from_name' => Settings::config()->company_name,
-					'to' => array(
-						array(
-							'email' => $email,
-							'name' => $email
-						)
-					),
-					'headers' => array('Reply-To' => Settings::config()->sendmail_email),
-					'important' => false
-				);
-				$async = true;
-				$ip_pool = 'Main Pool';
-				$mandrill->messages->send($mandrillMessage, $async, $ip_pool);
+		mail(self::$email, self::$subject, self::$message, $headers);
 
-			} catch (\Mandrill_Error $e) {
+	}
 
-				echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
-				throw $e;
+	/**
+	 * Sends an email using the Sendgrid Email API.
+	 *
+	 * @return void
+	 * @static
+	 */
+	protected static function _sendWithSendgrid() {
 
-			}
+		/*
+		* Decrypt Key Information
+		*/
+		list($iv, $hash) = explode('.', Settings::config()->sendgrid_api_key);
+		list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
 
-		} else if ($this->getDispatchSystem == 'mailgun') {
+		$sendgrid = new \SendGrid($username, $password);
+		$email = new \SendGrid\Email();
 
-			list(, $domain) = explode('@', Settings::config()->sendmail_email);
+		$email->addTo(self::$email)
+			->setFrom(Settings::config()->sendmail_email)
+			->setSubject(self::$subject)
+			->setHtml(self::$message);
 
-			$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
-			$mail->sendMessage($domain, array(
-				'from' => Settings::config()->company_name . ' <' . Settings::config()->sendmail_email . '>',
-				'to' => $email . ' <' . $email . '>',
-				'subject' => $subject,
-				'html' => $this->message
-			));
+		$sendgrid->send(self::$email);
 
-		} else if ($this->getDispatchSystem == 'sendgrid') {
 
-			/*
-			 * Decrypt Key Information
-			 */
-			list($iv, $hash) = explode('.', Settings::config()->sendgrid_api_key);
-			list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
+	}
 
-			$sendgrid = new \SendGrid($username, $password);
-			$email = new \SendGrid\Email();
+	/**
+	 * Sends an email using the Postmark Email API.
+	 *
+	 * @return void
+	 * @static
+	 */
+	protected static function _sendWithPostmark() {
 
-			$email->addTo($email)->
-					setFrom(Settings::config()->sendmail_email)->
-					setSubject($subject)->
-					setHtml($this->message);
+		\Postmark\Mail::compose(Settings::config()->postmark_api_key)
+			->from(Settings::config()->sendmail_email, Settings::config()->company_name)
+			->addTo(self::$email, self::email)
+			->subject(self::$subject)
+			->messageHtml(self::$message)
+			->send();
 
-			$sendgrid->send($email);
+	}
 
-		} else {
+	/**
+	 * Sends an email using the Mailgun Email API.
+	 *
+	 * @return void
+	 * @static
+	 */
+	protected static function _sendWithMailgun() {
 
-			$headers = 'From: ' . Settings::config()->sendmail_email . "\r\n" .
-					'Reply-To: ' . Settings::config()->sendmail_email . "\r\n" .
-					'X-Mailer: PHP/' . phpversion();
+		list($x, $domain) = explode('@', Settings::config()->sendmail_email);
 
-			mail($email, $subject, $this->message, $headers);
+		$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
+		$mail->sendMessage($domain, array(
+			'from' => Settings::config()->company_name . ' <' . Settings::config()->sendmail_email . '>',
+			'to' => self::$email.' <'.self::$email.'>',
+			'subject' => self::$subject,
+			'html' => self::$message
+		));
+
+	}
+
+	/**
+	 * Sends an email using the Mandrill Email API.
+	 *
+	 * @return void
+	 * @static
+	 */
+	protected static function _sendWithMandrill() {
+
+		try {
+
+			$mandrill = new \Mandrill(Settings::config()->mandrill_api_key);
+			$mandrill->messages->send(array(
+				'html' => self::$message,
+				'subject' => self::$subject,
+				'from_email' => Settings::config()->sendmail_email,
+				'from_name' => Settings::config()->company_name,
+				'to' => array(
+					array(
+						'email' => self::$email,
+						'name' => self::$email
+					)
+				),
+				'headers' => array('Reply-To' => Settings::config()->sendmail_email),
+				'important' => false
+			), true, 'Main Pool');
+
+		} catch (\Mandrill_Error $e) {
+
+			Debugger::log($e);
+			throw new Exception("An error occured when trying to send an email. Please check the error log.");
 
 		}
 
@@ -149,6 +216,7 @@ class Email {
 	 * Gets the Email System to send with from the settings.
 	 *
 	 * @return string
+	 * @deprecated
 	 */
 	private function getDispatchSystemFunct() {
 
@@ -162,13 +230,13 @@ class Email {
 	 * @param string $template
 	 * @return string
 	 */
-	private function readTemplate($template) {
+	protected function _readTemplate($template) {
 
-		$getTemplate = file_get_contents(APP_DIR . 'templates/email/' . $template . '.tpl');
-		if (!$getTemplate) {
-			throw new \Exception('Requested template `' . $template . '` could not be found.');
+		$readTemplate = file_get_contents(APP_DIR . 'templates/email/' . $template . '.tpl');
+		if (!$readTemplate) {
+			throw new Exception('Requested template `' . $readTemplate . '` could not be found.');
 		} else {
-			return $getTemplate;
+			return $readTemplate;
 		}
 
 	}
@@ -184,23 +252,11 @@ class Email {
 	public function generateLoginNotification($type, $vars) {
 
 		$find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->masterurl);
+		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->master_url);
 
-		if ($type == 'failed') {
-			
-			$this->message = str_replace($find, $replace, $this->readTemplate('login_failed'));
-			
-		} else if ($type == 'success') {
+		self::$message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
 
-			$this->message = str_replace($find, $replace, $this->readTemplate('login_success'));
-
-		} else {
-
-			throw new \Exception('Invalid email template specified.');
-
-		}
-
-		return $this;
+		return self;
 
 	}
 
@@ -211,15 +267,15 @@ class Email {
 	 * @param array $data
 	 * @return void
 	 */
-	public function buildEmail($tpl, $data = array()) {
+	public function buildEmail($tpl, array $data) {
 
-		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->masterurl, date('j/F/Y H:i', time())), $this->readTemplate($tpl));
+		self::$message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->masterurl, date('j/F/Y H:i', time())), $this->readTemplate($tpl));
 
 		foreach ($data as $key => $val) {
-			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
+			self::$message = str_replace('{{ ' . $key . ' }}', $val, self::$message);
 		}
 
-		return $this;
+		return self;
 
 	}
 
