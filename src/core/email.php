@@ -29,32 +29,26 @@ class Email {
 
 	/**
 	 * @param string $master_url
-	 * @static
 	 */
 	protected $master_url;
 
 	/**
 	 * @param string $message
-	 * @static
 	 */
-	protected static $message;
+	protected $message;
 
 	/**
 	 * @param string $email
-	 * @static
 	 */
-	protected static $email;
+	protected $email;
 
 	/**
 	 * @param string $subject
-	 * @static
 	 */
-	protected static $subject;
+	protected $subject;
 
 	/**
 	 * Constructor for email sending
-	 *
-	 * @return void
 	 */
 	public function __construct() {
 
@@ -71,25 +65,25 @@ class Email {
 	 */
 	public function dispatch($email, $subject) {
 
-		self::$email = $email;
-		self::$subject = $subject;
+		$this->$email = $email;
+		$this->$subject = $subject;
 
 		switch(Settings::config()->sendmail_method) {
 
 			case 'postmark':
-				self::_sendWithPostmark();
+				$this->_sendWithPostmark();
 				break;
 			case 'mandrill':
-				self::_sendWithMandrill();
+				$this->_sendWithMandrill();
 				break;
 			case 'mailgun':
-				self::_sendWithMailgun();
+				$this->_sendWithMailgun();
 				break;
 			case 'sendgrid':
-				self::_sendWithSendgrid();
+				$this->_sendWithSendgrid();
 				break;
 			default:
-				self::_sendWithPHP();
+				$this->_sendWithPHP();
 
 		}
 
@@ -99,9 +93,8 @@ class Email {
 	 * Sends an email using the built-in PHP mail() function.
 	 *
 	 * @return void
-	 * @static
 	 */
-	protected static function _sendWithPHP() {
+	protected function _sendWithPHP() {
 
 		$headers = 'From: ' . Settings::config()->sendmail_email . "\r\n" .
 			'Reply-To: ' . Settings::config()->sendmail_email . "\r\n" .
@@ -109,7 +102,7 @@ class Email {
 			'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
 			'X-Mailer: PHP/' . phpversion();
 
-		mail(self::$email, self::$subject, self::$message, $headers);
+		mail($this->$email, $this->$subject, $this->$message, $headers);
 
 	}
 
@@ -117,9 +110,8 @@ class Email {
 	 * Sends an email using the Sendgrid Email API.
 	 *
 	 * @return void
-	 * @static
 	 */
-	protected static function _sendWithSendgrid() {
+	protected function _sendWithSendgrid() {
 
 		/*
 		* Decrypt Key Information
@@ -130,12 +122,12 @@ class Email {
 		$sendgrid = new \SendGrid($username, $password);
 		$email = new \SendGrid\Email();
 
-		$email->addTo(self::$email)
+		$email->addTo($this->$email)
 			->setFrom(Settings::config()->sendmail_email)
-			->setSubject(self::$subject)
-			->setHtml(self::$message);
+			->setSubject($this->$subject)
+			->setHtml($this->$message);
 
-		$sendgrid->send(self::$email);
+		$sendgrid->send($email);
 
 
 	}
@@ -144,15 +136,14 @@ class Email {
 	 * Sends an email using the Postmark Email API.
 	 *
 	 * @return void
-	 * @static
 	 */
-	protected static function _sendWithPostmark() {
+	protected function _sendWithPostmark() {
 
 		\Postmark\Mail::compose(Settings::config()->postmark_api_key)
 			->from(Settings::config()->sendmail_email, Settings::config()->company_name)
-			->addTo(self::$email, self::email)
-			->subject(self::$subject)
-			->messageHtml(self::$message)
+			->addTo($this->$email, $this->email)
+			->subject($this->$subject)
+			->messageHtml($this->$message)
 			->send();
 
 	}
@@ -161,18 +152,17 @@ class Email {
 	 * Sends an email using the Mailgun Email API.
 	 *
 	 * @return void
-	 * @static
 	 */
-	protected static function _sendWithMailgun() {
+	protected function _sendWithMailgun() {
 
-		list($x, $domain) = explode('@', Settings::config()->sendmail_email);
+		list(, $domain) = explode('@', Settings::config()->sendmail_email);
 
 		$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
 		$mail->sendMessage($domain, array(
 			'from' => Settings::config()->company_name . ' <' . Settings::config()->sendmail_email . '>',
-			'to' => self::$email.' <'.self::$email.'>',
-			'subject' => self::$subject,
-			'html' => self::$message
+			'to' => $this->$email.' <'.$this->$email.'>',
+			'subject' => $this->$subject,
+			'html' => $this->$message
 		));
 
 	}
@@ -181,22 +171,21 @@ class Email {
 	 * Sends an email using the Mandrill Email API.
 	 *
 	 * @return void
-	 * @static
 	 */
-	protected static function _sendWithMandrill() {
+	protected function _sendWithMandrill() {
 
 		try {
 
 			$mandrill = new \Mandrill(Settings::config()->mandrill_api_key);
 			$mandrill->messages->send(array(
-				'html' => self::$message,
-				'subject' => self::$subject,
+				'html' => $this->$message,
+				'subject' => $this->$subject,
 				'from_email' => Settings::config()->sendmail_email,
 				'from_name' => Settings::config()->company_name,
 				'to' => array(
 					array(
-						'email' => self::$email,
-						'name' => self::$email
+						'email' => $this->$email,
+						'name' => $this->$email
 					)
 				),
 				'headers' => array('Reply-To' => Settings::config()->sendmail_email),
@@ -209,18 +198,6 @@ class Email {
 			throw new Exception("An error occured when trying to send an email. Please check the error log.");
 
 		}
-
-	}
-
-	/**
-	 * Gets the Email System to send with from the settings.
-	 *
-	 * @return string
-	 * @deprecated
-	 */
-	private function getDispatchSystemFunct() {
-
-		return Settings::config()->sendmail_method;
 
 	}
 
@@ -254,7 +231,7 @@ class Email {
 		$find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->master_url);
 
-		self::$message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
+		$this->$message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
 
 		return self;
 
@@ -269,10 +246,10 @@ class Email {
 	 */
 	public function buildEmail($tpl, array $data) {
 
-		self::$message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->masterurl, date('j/F/Y H:i', time())), $this->readTemplate($tpl));
+		$this->$message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
 
 		foreach ($data as $key => $val) {
-			self::$message = str_replace('{{ ' . $key . ' }}', $val, self::$message);
+			$this->$message = str_replace('{{ ' . $key . ' }}', $val, $this->$message);
 		}
 
 		return self;
