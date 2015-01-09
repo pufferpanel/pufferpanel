@@ -65,8 +65,8 @@ class Email {
 	 */
 	public function dispatch($email, $subject) {
 
-		$this->$email = $email;
-		$this->$subject = $subject;
+		$this->email = $email;
+		$this->subject = $subject;
 
 		switch(Settings::config()->sendmail_method) {
 
@@ -102,7 +102,7 @@ class Email {
 			'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
 			'X-Mailer: PHP/' . phpversion();
 
-		mail($this->$email, $this->$subject, $this->$message, $headers);
+		mail($this->email, $this->subject, $this->message, $headers);
 
 	}
 
@@ -122,10 +122,10 @@ class Email {
 		$sendgrid = new \SendGrid($username, $password);
 		$email = new \SendGrid\Email();
 
-		$email->addTo($this->$email)
+		$email->addTo($this->email)
 			->setFrom(Settings::config()->sendmail_email)
-			->setSubject($this->$subject)
-			->setHtml($this->$message);
+			->setSubject($this->subject)
+			->setHtml($this->message);
 
 		$sendgrid->send($email);
 
@@ -141,9 +141,9 @@ class Email {
 
 		\Postmark\Mail::compose(Settings::config()->postmark_api_key)
 			->from(Settings::config()->sendmail_email, Settings::config()->company_name)
-			->addTo($this->$email, $this->email)
-			->subject($this->$subject)
-			->messageHtml($this->$message)
+			->addTo($this->email, $this->email)
+			->subject($this->subject)
+			->messageHtml($this->message)
 			->send();
 
 	}
@@ -160,9 +160,9 @@ class Email {
 		$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
 		$mail->sendMessage($domain, array(
 			'from' => Settings::config()->company_name . ' <' . Settings::config()->sendmail_email . '>',
-			'to' => $this->$email.' <'.$this->$email.'>',
-			'subject' => $this->$subject,
-			'html' => $this->$message
+			'to' => $this->email.' <'.$this->email.'>',
+			'subject' => $this->subject,
+			'html' => $this->message
 		));
 
 	}
@@ -178,14 +178,14 @@ class Email {
 
 			$mandrill = new \Mandrill(Settings::config()->mandrill_api_key);
 			$mandrill->messages->send(array(
-				'html' => $this->$message,
-				'subject' => $this->$subject,
+				'html' => $this->message,
+				'subject' => $this->subject,
 				'from_email' => Settings::config()->sendmail_email,
 				'from_name' => Settings::config()->company_name,
 				'to' => array(
 					array(
-						'email' => $this->$email,
-						'name' => $this->$email
+						'email' => $this->email,
+						'name' => $this->email
 					)
 				),
 				'headers' => array('Reply-To' => Settings::config()->sendmail_email),
@@ -231,7 +231,7 @@ class Email {
 		$find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
 		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->master_url);
 
-		$this->$message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
+		$this->message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
 
 		return self;
 
@@ -246,10 +246,10 @@ class Email {
 	 */
 	public function buildEmail($tpl, array $data) {
 
-		$this->$message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
+		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
 
 		foreach ($data as $key => $val) {
-			$this->$message = str_replace('{{ ' . $key . ' }}', $val, $this->$message);
+			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
 		}
 
 		return self;
