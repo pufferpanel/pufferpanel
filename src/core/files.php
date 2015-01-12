@@ -24,6 +24,29 @@ namespace PufferPanel\Core;
 class Files {
 
 	/**
+	 * Returns an array of files that are allowed to be edited through the panel.
+	 *
+	 * @return array
+	 */
+	public final function editable() {
+
+		return array(
+			'txt',
+			'yml',
+			'yaml',
+			'log',
+			'conf',
+			'html',
+			'json',
+			'properties',
+			'props',
+			'cfg',
+			'lang'
+		);
+
+	}
+
+	/**
 	 * Converts from bytes into the largest possible size that is still readable.
 	 *
 	 * @param int $bytes

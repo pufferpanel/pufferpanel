@@ -44,7 +44,7 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 	if(count($go_back) > 1 && !empty($go_back[1])) {
 
 		$previous_directory['show'] = true;
-		$previous_directory['link'] = str_replace(end($go_back), "", trim(implode('/', $go_back), '/'));
+		$previous_directory['link'] = trim(str_replace(end($go_back), "", trim(implode('/', $go_back), '/')), '/');
 		$previous_directory['link_show'] = rtrim($previous_directory['link'], "/");
 
 	}
@@ -61,7 +61,7 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 			'extensions' => array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang'),
 			'zip_extensions' => array('zip', 'tar.gz', 'tar', 'gz'),
 			'directory' => $previous_directory,
-			'header_dir' => ltrim($request->param('dir'), '/')
+			'header_dir' => ($request->param('dir')) ? trim($request->param('dir'), '/')."/" : null
 		)))->send();
 
 	}

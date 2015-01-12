@@ -38,14 +38,14 @@ $(window).load(function(){
 	var doneLoad = false;
 	function handleLoader(show){
 		if(show === true){
-			var height = $("#get_height").height();
+			var height = $("#load_files").height();
 			var width = $(".files_loading_box").width();
-			var center_height = (height / 2) - 15;
-			var center_width = (width / 2) - 15;
-			$("#position_me").css({"top": center_height, "left": center_width});
+			var center_height = (height / 2) - 30;
+			var center_width = (width / 2) - 30;
+			$("#position_me").css({"top": center_height, "left": center_width, "font-size": "60px"});
 			$(".files_loading_box").css("height", (height + 5)).fadeIn();
 		}else{
-			$(".files_loading_box").fadeOut();
+			$(".files_loading_box").fadeOut(100);
 		}
 	}
 	function newLoad(){
@@ -59,9 +59,9 @@ $(window).load(function(){
 					url: '/node/ajax/files/directory',
 					data: {'dir': dir},
 					success: function(data) {
+						handleLoader(false);
 						$("#load_files").slideUp(function(){
 							$("#load_files").html(data);
-							handleLoader(false);
 							$("#load_files").slideDown();
 							newLoad();
 						});
@@ -73,20 +73,15 @@ $(window).load(function(){
 					url: '/node/ajax/files/directory',
 					data: {},
 					success: function(data) {
+						handleLoader(false);
 						$("#load_files").slideUp(function(){
 							$("#load_files").html(data);
-							handleLoader(false);
 							$("#load_files").slideDown();
 							newLoad();
 						});
 					}
 				});
 			}
-		});
-		$("a.edit_file").click(function(event){
-			event.preventDefault();
-			var file = $.urlParam('file', $(this).attr("href"));
-			$().redirect('edit.php', {'file': file});
 		});
 		$(".delete_file").click(function(e){
 			e.preventDefault();

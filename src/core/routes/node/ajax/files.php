@@ -71,7 +71,7 @@ class Files extends \PufferPanel\Core\Files {
 
 		$contents = self::_retrieveFolderListing();
 
-		if(!$contents) {
+		if(!is_array($contents)) {
 
 			self::_setError("Unable to connect to daemon to process this request.");
 			return false;

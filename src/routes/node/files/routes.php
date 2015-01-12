@@ -81,3 +81,68 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 	}
 
 });
+
+$klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response, $service) use ($core) {
+
+	if(!$core->user->hasPermission('files.edit')) {
+
+		$response->code(403);
+		$response->body($core->twig->render('node/403.html'))->send();
+		return;
+
+	}
+
+	$file = (object) pathinfo($request->param('file'));
+	if(!in_array($file->extension, $core->files->editable())) {
+
+		$service->flash('<div class="alert alert-danger">You do not have permission to edit files with that extension.</div>');
+		$response->redirect('/node/files')->send();
+		return;
+
+	}
+
+	if(in_array($file->dirname, array(".", "./", "/"))) {
+		$file->dirname = "";
+	}
+
+	$file->dirname = trim($file->dirname, '/');
+
+	try {
+
+		$unirest = \Unirest::get(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			array(
+				"X-Access-Token" => $core->server->getData('gsd_secret')
+			)
+		);
+
+		if($unirest->code != 200 || !isset($unirest->body->contents)) {
+
+			$service->flash('<div class="alert alert-danger">An error was encountered when trying to retrieve this file for editing. [HTTP\1.1 '.$unirest->code.']</div>');
+			$response->redirect('/node/files')->send();
+			return;
+
+		}
+
+		/*
+		* Display Page
+		*/
+		$response->body($core->twig->render('node/files/edit.html', array(
+			'server' => $core->server->getData(),
+			'xsrf' => $core->auth->XSRF(),
+			'file' => $request->param('file'),
+			'extension' => $file->extension,
+			'directory' => $file->dirname,
+			'contents' => $unirest->body->contents
+		)))->send();
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$service->flash('<div class="alert alert-danger">The daemon does not appear to be online currently. Please try again.</div>');
+		$response->redirect('/node/files')->send();
+		return;
+
+	}
+
+});
