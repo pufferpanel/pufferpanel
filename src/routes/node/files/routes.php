@@ -103,9 +103,9 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 
 	if(in_array($file->dirname, array(".", "./", "/"))) {
 		$file->dirname = "";
+	} else {
+		$file->dirname = trim($file->dirname, '/')."/";
 	}
-
-	$file->dirname = trim($file->dirname, '/');
 
 	try {
 
