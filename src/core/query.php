@@ -42,6 +42,7 @@ class Query extends Server {
 	 */
 	public function __construct() {
 
+		Server::__construct();
 		if(is_numeric($this->getData('id'))) {
 
 			/*
@@ -202,6 +203,7 @@ class Query extends Server {
 		$this->response = $this->_getServerProperties();
 
 		if(!$this->response) {
+			\Tracy\Debugger::log($this->node);
 			return "Unable to connect to the GSD Daemon running on the node.";
 		}
 
@@ -293,6 +295,10 @@ class Query extends Server {
 	 * @return bool|object
 	 */
 	public function _getServerProperties() {
+
+		if(!$this->node || !$this->server) {
+			return false;
+		}
 
 		try {
 

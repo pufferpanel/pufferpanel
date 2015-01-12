@@ -39,12 +39,12 @@ class Server extends User {
 	/**
 	 * @param array $server
 	 */
-	protected $server;
+	protected $server = false;
 
 	/**
 	 * @param array $node
 	 */
-	protected $node;
+	protected $node = false;
 
 	/**
 	 * Constructor class for building server data.
@@ -68,7 +68,7 @@ class Server extends User {
 		} else {
 			$this->_buildData($reference);
 		}
-		
+
 		parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
 
 	}
@@ -94,7 +94,7 @@ class Server extends User {
 	public function getData($id = null){
 
 
-		if(is_null($id) && !is_null($this->server)) {
+		if(is_null($id) && $this->server) {
 
 			$reflect = new ReflectionClass($this->server);
 			$data = $reflect->getProperty('_data');
@@ -116,7 +116,7 @@ class Server extends User {
 	 */
 	public function nodeData($id = null) {
 
-		if(is_null($id) && !is_null($this->node)) {
+		if(is_null($id) && $this->node) {
 
 			$reflect = new ReflectionClass($this->node);
 			$data = $reflect->getProperty('_data');
@@ -180,7 +180,7 @@ class Server extends User {
 	 * @return mixed Returns an array on success or false on failure.
 	 */
 	private function _buildData($hash){
-		
+
 		$query =  ORM::forTable('servers')->where(array(
 					'hash' => $hash,
 					'active' => 1
@@ -192,7 +192,7 @@ class Server extends User {
 					parent::getData('id'),
 					join(',', parent::listServerPermissions())
 				));
-			
+
 		}
 
 		$this->server = $query->findOne();
