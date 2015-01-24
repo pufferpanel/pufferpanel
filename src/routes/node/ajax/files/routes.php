@@ -78,7 +78,7 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 
 		if($unirest->code == 200) {
 
-			$response->body("File has been successfully saved.")->send();
+			$response->body('<div class="alert alert-success">File has been successfully saved.</div>')->send();
 
 		} else {
 
