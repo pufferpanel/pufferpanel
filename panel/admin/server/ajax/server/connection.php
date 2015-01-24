@@ -55,7 +55,7 @@ if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData
 	Components\Page::redirect('../../view.php?id='.$_POST['sid'].'&disp=o_fail');
 }
 
-$request = Unirest::put(
+$request = Unirest\Request::put(
 	"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 	array(
 		'X-Access-Token' => $core->server->nodeData('gsd_secret')

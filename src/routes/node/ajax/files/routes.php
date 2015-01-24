@@ -66,7 +66,7 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 
 	try {
 
-		$unirest = Unirest::put(
+		$unirest = Unirest\Request::put(
 			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
 			array(
 				'X-Access-Token' => $core->server->getData('gsd_secret')

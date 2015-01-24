@@ -128,7 +128,7 @@ class Users extends \PufferPanel\Core\Email {
 
 		try {
 
-			Unirest::put(
+			Unirest\Request::put(
 				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
 				array(
 					"X-Access-Token" => $this->server->nodeData('gsd_secret')
@@ -251,7 +251,7 @@ class Users extends \PufferPanel\Core\Email {
 
 		try {
 
-			Unirest::put(
+			Unirest\Request::put(
 				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
 				array(
 					"X-Access-Token" => $this->server->nodeData('gsd_secret')

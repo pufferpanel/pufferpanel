@@ -129,7 +129,6 @@ class Email {
 
 		$sendgrid->send($email);
 
-
 	}
 
 	/**
@@ -139,12 +138,14 @@ class Email {
 	 */
 	protected function _sendWithPostmark() {
 
-		\Postmark\Mail::compose(Settings::config()->postmark_api_key)
-			->from(Settings::config()->sendmail_email, Settings::config()->company_name)
-			->addTo($this->email, $this->email)
-			->subject($this->subject)
-			->messageHtml($this->message)
-			->send();
+		$client = new \Postmark\PostmarkClient(Settings::config()->postmark_api_key);
+
+		$send = $client->sendEmail(
+			Settings::config()->sendmail_email,
+			$this->email,
+			$this->subject,
+			$this->message
+		);
 
 	}
 

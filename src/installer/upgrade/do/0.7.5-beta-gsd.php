@@ -37,7 +37,7 @@ while($row = $select->fetch()){
 	// get GSD config
 	try {
 
-		$request = Unirest::get(
+		$request = Unirest\Request::get(
 			"http://".$row['ip'].":".$row['gsd_listen']."/gameservers/config",
 			array(
 				'X-Access-Token' => $row['gsd_secret']
@@ -87,7 +87,7 @@ while($row = $select->fetch()){
 
 		}
 
-		$putrequest = Unirest::put(
+		$putrequest = Unirest\Request::put(
 			"http://".$row['ip'].":".$row['gsd_listen']."/gameservers/config",
 			array(
 				'X-Access-Token' => $row['gsd_secret']

@@ -39,7 +39,7 @@ $newSecret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
 
 try {
 
-	$request = Unirest::put(
+	$request = Unirest\Request::put(
 		'http://' . $server->ip . ':' . $server->gsd_listen . '/gameservers/' . $server->gsd_id,
 		array(
 			"X-Access-Token" => $server->node_gsd_secret

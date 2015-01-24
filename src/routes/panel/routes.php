@@ -181,7 +181,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		try {
 
-			Unirest::put(
+			Unirest\Request::put(
 				'http://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
 				array(
 					"X-Access-Token" => $info->node_gsd_secret

@@ -3,7 +3,6 @@
     	"php": ">=5.5",
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
-    	"bugsnag/bugsnag": "2.5.*",
     	"christian-riesen/otp": "1.3.*",
         "flowjs/flow-php-server": "0.2.1",
         "j4mie/idiorm": "1.5.1",
@@ -11,10 +10,10 @@
         "league/flysystem": "0.5.12",
     	"mandrill/mandrill": "1.0.52",
         "mashape/unirest-php" : "2.1.0",
-    	"sendgrid/sendgrid": "2.0.6",
+    	"sendgrid/sendgrid": "2.2.0",
     	"tracy/tracy": "2.2.*",
         "twig/twig": "1.17.*",
-        "znarkus/postmark": "dev-master",
+        "wildbit/postmark-php": "dev-master",
         "mailgun/mailgun-php": "~1.7.2"
     }
 }

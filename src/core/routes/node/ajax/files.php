@@ -147,7 +147,7 @@ class Files extends \PufferPanel\Core\Files {
 
 			$attached_folder = (!is_null($this->params['dir'])) ? $this->params['dir'] : "/";
 
-			$request = Unirest::get(
+			$request = Unirest\Request::get(
 				"http://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id')."/folder/".$attached_folder,
 				array(
 					'X-Access-Token' => $this->server->getData('gsd_secret')

@@ -71,8 +71,8 @@ class Query extends Server {
 
 		try {
 
-			Unirest::timeout(1);
-			$request = Unirest::get(
+			Unirest\Request::timeout(1);
+			$request = Unirest\Request::get(
 				"http://".$ip.":".$port."/gameservers/".$id,
 				array(
 					'X-Access-Token' => $secret
@@ -100,8 +100,8 @@ class Query extends Server {
 
 		try {
 
-			Unirest::timeout(1);
-			$request = Unirest::get(
+			Unirest\Request::timeout(1);
+			$request = Unirest\Request::get(
 				"http://".$this->node->ip.":".$this->node->port."/gameservers/".$this->server->gsd_id,
 				array(
 					'X-Access-Token' => $this->node->gsd_secret
@@ -172,7 +172,7 @@ class Query extends Server {
 
 			try {
 
-				$response = Unirest::get(
+				$response = Unirest\Request::get(
 					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/log/".$lines,
 					array(
 						"X-Access-Token" => $this->server->gsd_secret
@@ -235,7 +235,7 @@ class Query extends Server {
 
 			try {
 
-				$this->put = Unirest::put(
+				$this->put = Unirest\Request::put(
 					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
 					array(
 						"X-Access-Token" => $this->server->gsd_secret
@@ -271,7 +271,7 @@ class Query extends Server {
 
 		try {
 
-			$request = Unirest::get(
+			$request = Unirest\Request::get(
 				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
 				array(
 					"X-Access-Token" => $this->server->gsd_secret
@@ -302,7 +302,7 @@ class Query extends Server {
 
 		try {
 
-			return Unirest::get(
+			return Unirest\Request::get(
 				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
 				array(
 					"X-Access-Token" => $this->server->gsd_secret

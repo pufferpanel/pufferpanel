@@ -56,7 +56,7 @@ $server->save();
  */
 try {
 
-	$request = Unirest::put(
+	$request = Unirest\Request::put(
 		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 		array(
 			"X-Access-Token" => $core->server->nodeData('gsd_secret')

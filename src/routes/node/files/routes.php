@@ -109,7 +109,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 
 	try {
 
-		$unirest = \Unirest::get(
+		$unirest = \Unirest\Request::get(
 			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
 			array(
 				"X-Access-Token" => $core->server->getData('gsd_secret')

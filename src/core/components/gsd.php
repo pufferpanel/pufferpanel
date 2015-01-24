@@ -34,11 +34,11 @@ trait GSD {
 	 */
 	public function avaliable($ip, $port = 8003, $timeout = 3) {
 
-		Unirest::timeout($timeout);
+		Unirest\Request::timeout($timeout);
 
 		try {
 
-			Unirest::get("http://".$ip.":".$port);
+			Unirest\Request::get("http://".$ip.":".$port);
 			return true;
 
 		} catch(\Exception $e) {

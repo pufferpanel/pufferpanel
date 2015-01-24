@@ -33,7 +33,7 @@ if($core->user->hasPermission('files.zip') !== true) {
 
 if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 
-	$request = Unirest::put(
+	$request = Unirest\Request::put(
 		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['zipItemPath'],
 		array(
 			"X-Access-Token" => $core->server->getData('gsd_secret')
@@ -51,7 +51,7 @@ if(isset($_POST['zipItemPath']) && !empty($_POST['zipItemPath'])) {
 
 } elseif(isset($_POST['unzipItemPath']) && !empty($_POST['unzipItemPath'])) {
 
-	$request = Unirest::put(
+	$request = Unirest\Request::put(
 		"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$_POST['unzipItemPath'],
 		array(
 			"X-Access-Token" => $core->server->getData('gsd_secret')
