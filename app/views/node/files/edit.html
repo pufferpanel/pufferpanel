@@ -69,11 +69,14 @@ $(window).load(function() {
 			l = $("input[name='xsrf']").val();
 			$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"), $.ajax({
 				type: "POST",
-				url: "../ajax/files/save.php",
+				url: "/node/ajax/files/save",
 				data: {
 					file: e,
 					file_contents: s,
 					xsrf: l
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#save_status").html('<div class="alert alert-danger">Error: '+errorThrown+'</div>'), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
 				},
 				success: function(a) {
 					$("#save_status").html(a), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()

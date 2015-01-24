@@ -17,11 +17,82 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
+use \Unirest;
 
 $klein->respond('POST', '/node/ajax/files/[*]', function() use($core) {
 
 	$core->routes = new Router\Router_Controller('Node\Ajax\Files', $core->server);
 	$core->routes = $core->routes->loadClass();
+
+});
+
+$klein->respond('POST', '/node/ajax/files/save', function($request, $response) use($core) {
+
+	if(!$core->user->hasPermission('files.save')) {
+
+		$response->code(403)->body("You are not authorized to perform this action.")->send();
+		return;
+
+	}
+
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
+
+		$response->code(403)->body('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>')->send();
+		return;
+
+	}
+
+	if(!$request->param('file') || !$request->param('file_contents')) {
+
+		$response->code(500)->body('<div class="alert alert-warning"> Not all required parameters were passed to the script.</div>')->send();
+		return;
+
+	}
+
+	$file = (object) pathinfo($request->param('file'));
+
+	if(!in_array($file->extension, $core->files->editable())) {
+
+		$response->code(500)->body("This type of file cannot be edited.")->send();
+		return;
+
+	}
+
+	if(in_array($file->dirname, array(".", "./", "/"))) {
+		$file->dirname = "";
+	} else {
+		$file->dirname = trim($file->dirname, '/')."/";
+	}
+
+	try {
+
+		$unirest = Unirest::put(
+			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			array(
+				'X-Access-Token' => $core->server->getData('gsd_secret')
+			),
+			array(
+				"contents" => $request->param('file_contents')
+			)
+		);
+
+		if($unirest->code == 200) {
+
+			$response->body("File has been successfully saved.")->send();
+
+		} else {
+
+			$response->code(500)->body("An error occured while trying to save this file. [".$unirest->raw_body."]")->send();
+
+		}
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$response->code(500)->body("An error was encountered when trying to connect to the remote server to save this file.")->send();
+
+	}
+
 
 });
 
@@ -58,7 +129,7 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 		$response->body($core->twig->render('node/files/ajax/list_dir.html', array(
 			'files' => $core->routes->getFiles(),
 			'folders' => $core->routes->getFolders(),
-			'extensions' => array('txt', 'yml', 'log', 'conf', 'html', 'json', 'properties', 'props', 'cfg', 'lang'),
+			'extensions' => $core->files->editable(),
 			'zip_extensions' => array('zip', 'tar.gz', 'tar', 'gz'),
 			'directory' => $previous_directory,
 			'header_dir' => ($request->param('dir')) ? trim($request->param('dir'), '/')."/" : null
