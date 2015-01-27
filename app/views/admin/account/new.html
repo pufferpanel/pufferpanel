@@ -20,7 +20,7 @@
 		{% endif %}
 		</div>
 	{% endif %}
-	<form action="ajax/new/create.php" method="post">
+	<form action="ajax/new/create" method="post">
 		<fieldset>
 			<div class="form-group">
 				<label for="username" class="control-label">Username</label>
@@ -65,7 +65,7 @@
 			e.preventDefault();
 			$.ajax({
 				type: "GET",
-				url: "new.php?do=generate_password",
+				url: "new?do=generate_password",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

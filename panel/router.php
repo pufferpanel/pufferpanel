@@ -110,6 +110,7 @@ $core->twig->addGlobal('get', Components\Page::twigGET());
 $core->twig->addGlobal('permission', $core->user->twigListPermissions()); // @TODO Change this to addGlobal('permission', $core->user) to allow access as {% if permission.hasPermission('permission') %}
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
+$core->twig->addGlobal('version', Version::get());
 
 $klein->respond('!@^(/auth/|/langauge/|/api/)', function($request, $response, $service, $app, $klein) use ($core) {
 

@@ -9,7 +9,7 @@
 		<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
 		<li><a href="#ftp_sett" data-toggle="tab">FTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
-		<li><a href="../../servers.php?goto={{ server.hash }}">Server Control</a></li>
+		<li><a href="../../servers?goto={{ server.hash }}">Server Control</a></li>
 	</ul>
 	{% if get.disp is defined and get.disp != 1 %}
 		<br />
@@ -27,7 +27,7 @@
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Connection Information</h3><hr />
-			<form action="ajax/server/connection.php" method="POST">
+			<form action="ajax/server/connection" method="POST">
 				<fieldset>
 					<div class="panel panel-default">
 						<div class="panel-heading">Changing IP &amp; Port</div>
@@ -80,7 +80,7 @@
 		</div>
 		<div class="tab-pane" id="server_sett">
 			<h3>Server Settings</h3><hr />
-			<form action="ajax/server/allocate.php" method="post">
+			<form action="ajax/server/allocate" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label class="control-label">Server Name</label>
@@ -131,7 +131,7 @@
 		</div>
 		<div class="tab-pane" id="ftp_sett">
 			<h3>FTP Settings</h3><hr />
-			<form action="ajax/server/ftp.php" method="post">
+			<form action="ajax/server/ftp" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">Host</label>
@@ -179,7 +179,7 @@
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
 				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> Deleting a server is an irreversiable action. Proceede with caution. This server will be removed from the database along with all files on the server.</div>
-				<form action="ajax/server/delete.php" method="POST">
+				<form action="ajax/server/delete" method="POST">
 					<input type="hidden" name="sid" value="{{ get.id }}" />
 					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Server" />
 				</form>
@@ -196,7 +196,7 @@
 			e.preventDefault();
 			$.ajax({
 				type: "POST",
-				url: "ajax/server/token.php?id={{ get.id }}",
+				url: "ajax/server/token?id={{ get.id }}",
 				data: { gsd_reset: true},
 				success: function(data) {
 					if(data.indexOf(' ') > 0) {
@@ -224,7 +224,7 @@
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "add.php?do=generate_password",
+				url: "add?do=generate_password",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

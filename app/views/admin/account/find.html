@@ -132,7 +132,7 @@
 			var search_term = $('input[name="term"]').val();
 			$.ajax({
 				type: "POST",
-				url: "ajax/search/simple.php",
+				url: "ajax/search/simple",
 				data: { method: "simple", field: search_field, operator: search_operator, term: search_term },
 				success: function(data) {
 					$("#search_results").slideUp(function(){
@@ -156,7 +156,7 @@
 			var search_term_2 = $('input[name="term_2"]').val();
 			$.ajax({
 				type: "POST",
-				url: "ajax/search/advanced.php",
+				url: "ajax/search/advanced",
 				data: { method: "advanced", field_1: search_field_1, operator_1: search_operator_1, term_1: search_term_1, mid_op: middle_op, field_2: search_field_2, operator_2: search_operator_2, term_2: search_term_2},
 				success: function(data) {
 					$("#search_results").slideUp(function(){
@@ -173,7 +173,7 @@
 			$("#list_all_tab").append(' <i class="fa fa-refresh fa-spin"></i>');
 			$.ajax({
 				type: "POST",
-				url: "ajax/search/getall.php",
+				url: "ajax/search/getall",
 				success: function(data) {
 					$("#search_results").slideUp(function(){
 						$("#search_results").html(data);

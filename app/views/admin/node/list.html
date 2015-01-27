@@ -17,7 +17,7 @@
 		<tbody>
 			{% for id, node in nodes %}
 				<tr class="dynUpdate" id="{{ node.ip }}+{{ node.gsd_listen }}">
-					<td><a href="view.php?id={{ node.id }}">{{ node.node }}</a></td>
+					<td><a href="view?id={{ node.id }}">{{ node.node }}</a></td>
 					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>
 					<td>{{ node.ip }}</td>
@@ -37,7 +37,7 @@
 				var element = $(this);
 				$.ajax({
 					type: "POST",
-					url: "ajax/get_status.php",
+					url: "ajax/get_status",
 					data: { ip: connection },
 						success: function(data) {
 							element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");

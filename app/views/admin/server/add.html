@@ -22,7 +22,7 @@
 			{% endif %}
 		</div>
 	{% endif %}
-	<form action="ajax/new/create.php" method="POST">
+	<form action="ajax/new/create" method="POST">
 		<fieldset>
 			<div class="well">
 				<div class="row">
@@ -157,7 +157,7 @@
 		var activeNode = $('#getNode').val();
 		$.ajax({
 			type: "POST",
-			url: "ajax/new/load_list.php",
+			url: "ajax/new/load_list",
 			data: {'node' : activeNode},
 			success: function(data) {
 				$('#updateList').html(data);
@@ -171,7 +171,7 @@
 		var activeLocation = $('#getLocation').val();
 		$.ajax({
 			type: "POST",
-			url: "ajax/new/load_nodelist.php",
+			url: "ajax/new/load_nodelist",
 			data: {'location' : activeLocation},
 			success: function(data) {
 				$('#updateNodeList').html(data);
@@ -185,7 +185,7 @@
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "add.php?do=generate_password",
+				url: "add?do=generate_password",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

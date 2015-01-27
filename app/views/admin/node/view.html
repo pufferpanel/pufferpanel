@@ -29,7 +29,7 @@
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Basic Information</h3><hr />
-			<form action="ajax/update/basic.php" method="post">
+			<form action="ajax/update/basic" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="name" class="control-label">Node Name</label>
@@ -68,11 +68,11 @@
 	"tokens": ["{{ node.gsd_secret }}"],
 	"interfaces":{
 		"rest":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_download.php"
+			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_download"
 		},
 		"console":{},
 		"ftp":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",
+			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp",
 			"port": 21,
 			"host": "{{ node.ip }}",
 			"use_ssl": true
@@ -83,7 +83,7 @@
 		</div>
 		<div class="tab-pane" id="allocation">
 			<h3>IP &amp; Port Allocation</h3><hr />
-			<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
+			<form action="ajax/ports/add_port" id="addPorts" style="display: none;" method="post">
 				<div class="form-group">
 					<label for="add_ports" class="control-label" id="setTitle"></label>
 					<div class="input-group">
@@ -147,7 +147,7 @@
 		<div class="tab-pane" id="ftp">
 			<h3>FTP Settings</h3><hr />
 			<div class="well">
-				<form action="ajax/update/ftp.php?do=ipuser" method="post">
+				<form action="ajax/update/ftp?do=ipuser" method="post">
 					<fieldset>
 						<div class="form-group">
 							<label for="ip" class="control-label">FTP IP</label>
@@ -181,7 +181,7 @@
 				<div class="row">
 					<div class="col-1"></div>
 					<div class="col-10">
-						<form action="ajax/ports/new_ip.php" method="post">
+						<form action="ajax/ports/new_ip" method="post">
 							<div class="row">
 								<div class="form-group">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
@@ -217,7 +217,7 @@
 			e.preventDefault();
 			$.ajax({
 				type: "POST",
-				url: "view.php?id={{ get.id }}",
+				url: "view?id={{ get.id }}",
 				data: { gsd_reset: true},
 				success: function(data) {
 					if(data.indexOf(' ') > 0) {
@@ -236,7 +236,7 @@
 		"rest":{},\n\
 		"console":{},\n\
 		"ftp":{\n\
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",\n\
+			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp",\n\
 			"port": 21,\n\
 			"host": "127.0.0.1",\n\
 			"use_ssl": true\n\
@@ -274,7 +274,7 @@
 					{
 						$.ajax({
 							type: "POST",
-							url: "ajax/ports/delete.php",
+							url: "ajax/ports/delete",
 							data: { ip: ip, port: port, node: node_id},
 							success: function(data) {
 								$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
