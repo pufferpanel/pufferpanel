@@ -20,7 +20,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" href="../../assets/css/bootstrap.css">
+	<style>
+	<?php include PANEL_DIR . 'assets/css/bootstrap.css'; ?>
+	</style>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<title>PufferPanel Installer</title>
 </head>
 <body>
@@ -42,24 +45,7 @@
 					</div>
 					<h3>Detailed Version Information</h3>
 					<div class="well well-sm">
-						<?php
-
-							if(is_dir(BASE_DIR.'.git')) {
-
-								$head = trim(file_get_contents(BASE_DIR.'.git/HEAD'));
-								if(is_array(explode('/', $head))) {
-									list($ignore, $path) =  explode(" ", $head);
-									$version = trim(file_get_contents(SRC_DIR.'versions/current')).' ('.$head.') (sha: '.substr(trim(file_get_contents(BASE_DIR.'.git/'.$path)), 0 ,8).')';
-								} else {
-									$version = trim(file_get_contents(SRC_DIR.'versions/current')).' ('.$head.')';
-								}
-
-							} else {
-								$version = 'Must Install using Git';
-							}
-
-						?>
-						<code><?php echo $version; ?></code>
+						<code><?php echo \PufferPanel\Core\Version::get(); ?></code>
 					</div>
 					<h3>Installer Comments</h3>
 					<?php
@@ -68,52 +54,52 @@
 						/*
 						 * Fail if not Installed with Git
 						 */
-						if(!is_dir(BASE_DIR.'.git')) {
+						if(!is_dir(BASE_DIR.'.git')) { ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">Incompatable Install Method</h3>
-									</div>
-									<div class="panel-body">
-										<p class="text-danger">This panel <strong>must</strong> be installed using <code>git clone</code> on your server. Please re-read the documentatioin and follow the directions correctly.</p>
-									</div>
-								</div>';
-							$continue = false;
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Incompatible Install Method</h3>
+								</div>
+								<div class="panel-body">
+									<p class="text-danger">This panel <strong>must</strong> be installed using <code>git clone</code> on your server. Please re-read the documentatioin and follow the directions correctly.</p>
+								</div>
+							</div>
+							<?php $continue = false;
 
 						}
 
 						/*
 						* Fail if not composer hasn't been run
 						*/
-						if(!is_dir(BASE_DIR.'vendor')) {
+						if(!is_dir(BASE_DIR.'vendor')) { ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">Run Composer</h3>
-									</div>
-									<div class="panel-body">
-										<p class="text-danger">This panel <strong>must</strong> have composer run before being installed. Please double check the documentation for instructions on doing this.</p>
-									</div>
-								</div>';
-							$continue = false;
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Run Composer</h3>
+								</div>
+								<div class="panel-body">
+									<p class="text-danger">This panel <strong>must</strong> have composer run before being installed. Please double check the documentation for instructions on doing this.</p>
+								</div>
+							</div>';
+							<?php $continue = false;
 
 						}
 
 						/*
 						 * Check to make sure PHP is at least 5.5.0
 						 */
-						if(version_compare(PHP_VERSION, "5.5.0") < 0) {
+						if(version_compare(PHP_VERSION, "5.5.0") < 0) { ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">PHP Version too Low</h3>
-									</div>
-									<div class="panel-body">
-										<p class="text-danger">Minimum Required Version: <code>5.5.0</code><br />
-										Currently Installed: <code>'.PHP_VERSION.'</code></p>
-									</div>
-								</div>';
-							$continue = false;
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">PHP Version too Low</h3>
+								</div>
+								<div class="panel-body">
+									<p class="text-danger">Minimum Required Version: <code>5.5.0</code><br />
+									Currently Installed: <code><?php echo PHP_VERSION; ?></code></p>
+								</div>
+							</div>
+							<?php $continue = false;
 
 						}
 
@@ -130,18 +116,18 @@
 							$failedchmod[] = '<p class="text-danger"><code>/src/cache</code> is improperly CHMOD\'d. It should be 0777.</p>';
 						}
 
-						if(!empty($failedchmod)){
+						if(!empty($failedchmod)){ ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">Failed CHMOD Checks</h3>
-									</div>
-									<div class="panel-body">
-										'.implode("", $failedchmod).'
-									</div>
-								</div>';
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Failed CHMOD Checks</h3>
+								</div>
+								<div class="panel-body">
+									<?php echo implode("", $failedchmod); ?>
+								</div>
+							</div>
 
-							$continue = false;
+							<?php $continue = false;
 
 						}
 
@@ -154,18 +140,18 @@
 							}
 						}
 
-						if(!empty($failedextensions)){
+						if(!empty($failedextensions)){ ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">Failed Dependencies Checks</h3>
-									</div>
-									<div class="panel-body">
-										'.  implode("", $failedextensions).'
-									</div>
-								</div>';
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Failed Dependencies Checks</h3>
+								</div>
+								<div class="panel-body">
+									<?php echo implode("", $failedextensions); ?>
+								</div>
+							</div>
 
-							$continue = false;
+							<?php $continue = false;
 
 						}
 
@@ -178,30 +164,41 @@
 							}
 						}
 
-						if(!empty($failedList)) {
+						if(!empty($failedList)) { ?>
 
-							echo '<div class="panel panel-danger">
-									<div class="panel-heading">
-										<h3 class="panel-title">Failed Function Checks</h3>
-									</div>
-									<div class="panel-body">
-										'.implode("", $failedList).'
-									</div>
-								</div>';
+							<div class="panel panel-danger">
+								<div class="panel-heading">
+									<h3 class="panel-title">Failed Function Checks</h3>
+								</div>
+								<div class="panel-body">
+									<?php echo implode("", $failedList); ?>
+								</div>
+							</div>
 
-							$continue = false;
+							<?php $continue = false;
 
 						}
-
-					echo ($continue) ? '<div class="well"><p style="margin-bottom:0;">Everything looks good here captain!</p></div><a href="install/start">Continue &rarr;</a>' : '<div class="alert alert-info">Please fix the errors above before continuing.</div>';
-				?>
+						if($continue) { ?>
+							<div class="well"><p style="margin-bottom:0;">Everything looks good here captain!</p></div><a onclick="cont()" href="#">Continue &rarr;</a>
+						<?php } else { ?>
+							<div class="alert alert-info">Please fix the errors above before continuing.</div>
+						<?php }
+					?>
 				</div>
 				<div class="col-2"></div>
 			</div>
 		</div>
 		<div class="footer">
-			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo trim(file_get_contents(SRC_DIR.'versions/current')).' ('.substr(trim(@file_get_contents(BASE_DIR.'.git/HEAD')), 0, 8).')'; ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
+			<div class="col-8 nopad"><p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running <?php echo \PufferPanel\Core\Version::get(); ?> distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p></div>
 		</div>
 	</div>
 </body>
+
+<script>
+	function cont() {
+		$.post('install', function() {
+			window.location.href = "install/start";
+		});		
+	}
+</script>
 </html>

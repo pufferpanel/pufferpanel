@@ -50,7 +50,7 @@
 	    sql_p: $("#sql_p").val()
 	}).done(function (data) {
 	    if (data === 'true') {
-
+		window.location.href = "install/tables";
 	    } else {
 		$("#warning").text(data);
 		$("#warning").show();

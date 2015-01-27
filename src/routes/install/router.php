@@ -43,11 +43,21 @@ $klein->respond('/install/[:progress]', function($request, $response) {
 });
 
 $klein->respond('GET', '/install', function($request, $response) use ($twig) {
+	if (isset($_SESSION['installer_progress']) && $_SESSION['installer_progress'] !== $request->param('progress')) {
+		$response->redirect('/install/' . $_SESSION['installer_progress'])->send();
+	}
 	include(SRC_DIR . 'installer/install/index.php');
 });
 
+$klein->respond('POST', '/install', function($request, $response) {
+	$_SESSION['installer_progress'] = 'start';
+});
+
 $klein->respond('GET', '/install/start', function($request, $response) use ($twig) {
-	$response->body($twig->render('install/start.html'))->send();
+	$response->body($twig->render('install/start.html', array(
+		'css' => file_get_contents(PANEL_DIR . 'assets/css/bootstrap.css'),
+		'version' => Version::get()
+	)))->send();
 });
 
 $klein->respond('POST', '/install/start', function($request, $response) {
@@ -79,6 +89,9 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		}
 
 		$fp = fopen(BASE_DIR.'config.json.dist', 'w');
+		if($fp === false) {
+			throw new \Exception('Could not open config.json.dist');
+		}
 		fwrite($fp, json_encode(array(
 			'mysql' => array(
 				'host' => $host,
@@ -96,17 +109,23 @@ $klein->respond('POST', '/install/start', function($request, $response) {
 		)));
 		fclose($fp);
 		rename(BASE_DIR.'config.json.dist', BASE_DIR.'config.json');
+		if (!file_exists(BASE_DIR.'config.json')) {
+			throw new \Exception("Could not create config.json");
+		}
 		$_SESSION['installer_progress'] = 'tables';
-		$response->body(true)->send();
+		$response->body('true')->send();
 
-	} catch (\PDOException $e) {
+	} catch (\Exception $e) {
 		$response->body($e->getMessage())->send();
 	}
 
 });
 
 $klein->respond('GET', '/install/tables', function($request, $response) use ($twig) {
-	$response->body($twig->render('install/tables.html'))->send();
+	$response->body($twig->render('install/tables.html', array(
+		'css' => file_get_contents(PANEL_DIR . 'assets/css/bootstrap.css'),
+		'version' => Version::get()
+	)))->send();
 });
 
 $klein->respond('POST', '/install/tables', function($request, $response) {
@@ -290,7 +309,7 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 		$mysql->commit();
 
 		$_SESSION['installer_progress'] = 'settings';
-		echo "true";
+		$response->body('true')->send();
 
 	} catch (\Exception $ex) {
 
@@ -304,7 +323,11 @@ $klein->respond('POST', '/install/tables', function($request, $response) {
 });
 
 $klein->respond('GET', '/install/settings', function($request, $response, $service) use ($twig) {
-	$response->body($twig->render('install/settings.html', array('flash' => $service->flashes())))->send();
+	$response->body($twig->render('install/settings.html', array(
+		'flash' => $service->flashes(),
+		'css' => file_get_contents(PANEL_DIR . 'assets/css/bootstrap.css'),
+		'version' => Version::get()
+	)))->send();
 });
 
 $klein->respond('POST', '/install/settings', function($request, $response, $service) {
@@ -355,7 +378,7 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 			':aurl' => $assetsUrl
 		));
 		$_SESSION['installer_progress'] = 'account';
-		$response->body(true)->send();
+		$response->body('true')->send();
 
 	} catch (\Exception $ex) {
 		$response->body($ex->getMessage())->send();
@@ -364,7 +387,10 @@ $klein->respond('POST', '/install/settings', function($request, $response, $serv
 });
 
 $klein->respond('GET', '/install/account', function($request, $response) use ($twig) {
-	$response->body($twig->render('install/account.html'))->send();
+	$response->body($twig->render('install/account.html', array(
+		'css' => file_get_contents(PANEL_DIR . 'assets/css/bootstrap.css'),
+		'version' => Version::get()
+	)))->send();
 });
 
 $klein->respond('POST', '/install/account', function($request, $response) {

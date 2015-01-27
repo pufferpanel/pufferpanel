@@ -5,7 +5,9 @@
 	{% block scripts %}
 	<meta charset="UTF-8">
 	<script type="text/javascript">var pageRenderStart = new Date().getTime();</script>
-	<link rel="stylesheet" href="../../assets/css/bootstrap.css">
+	<style>
+	{{ css|raw }}
+	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	{% endblock %}
 	<title>PufferPanel Installer</title>
@@ -33,7 +35,7 @@
 	    <div class="footer">
 		<div class="row">
 		    <div class="col-8 ">
-			<p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running insert version here</p>
+			<p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running {{ version }}</p>
 		    </div>
 		</div>
 	    </div>

@@ -54,3 +54,4 @@ require_once(SRC_DIR.'core/server.php');
 require_once(SRC_DIR.'core/query.php');
 require_once(SRC_DIR.'core/settings.php');
 require_once(SRC_DIR.'core/routes.php');
+require_once(SRC_DIR.'core/version.php');
