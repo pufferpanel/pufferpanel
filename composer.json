@@ -12,7 +12,7 @@
         "mashape/unirest-php" : "2.1.0",
     	"sendgrid/sendgrid": "2.2.0",
     	"tracy/tracy": "2.2.*",
-        "twig/twig": "1.17.*",
+        "twig/twig": "1.18.*",
         "wildbit/postmark-php": "dev-master",
         "mailgun/mailgun-php": "~1.7.2"
     }
