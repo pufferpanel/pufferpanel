@@ -21,7 +21,7 @@
 <html lang="en">
 <head>
 	<style>
-	<?php include PANEL_DIR . 'assets/css/bootstrap.css'; ?>
+	<?php include APP_DIR . 'assets/css/bootstrap.css'; ?>
 	</style>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<title>PufferPanel Installer</title>
@@ -198,7 +198,7 @@
 	function cont() {
 		$.post('install', function() {
 			window.location.href = "install/start";
-		});		
+		});
 	}
 </script>
 </html>
