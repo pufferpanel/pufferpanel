@@ -41,12 +41,12 @@
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;"></div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if ( permission.files.zip == true ) and ( file.extension not in zip_extensions ) %}
-							<button href="/node/files/compress/{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
+							<button href="{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="zip_file btn btn-xxs btn-default"><i class="fa fa-archive"></i></button>
 						{% endif %}
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if permission.files.delete == true %}
-							<button href="/node/files/delete/{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+							<button href="{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
 						{% endif %}
 						</div>
 					</div>
@@ -73,7 +73,7 @@
 					<div class="row" style="text-align:center;margin-left:8px;">
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if ( permission.files.zip == true ) and ( file.extension in zip_extensions ) %}
-							<button href="/node/files/decompress/{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="unzip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
+							<button href="{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="unzip_file btn btn-xxs btn-default"><i class="fa fa-file-archive-o"></i></button>
 						{% endif %}
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
@@ -83,7 +83,7 @@
 						</div>
 						<div class="col-4" style="padding: 0 !important;margin: 0 -1px 0;">
 						{% if permission.files.delete == true %}
-							<button href="/node/files/delete/{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
+							<button href="{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="delete_file btn btn-xxs btn-danger"><i class="fa fa-trash"></i></button>
 						{% endif %}
 						</div>
 					</div>

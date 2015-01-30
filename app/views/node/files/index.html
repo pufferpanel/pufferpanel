@@ -2,11 +2,6 @@
 
 {% block title %}File Manager{% endblock %}
 
-{% block scripts %}
-	{{ parent() }}
-	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
-{% endblock %}
-
 {% block content %}
 {% if flash.info is defined %}
 <div class="col-9">
@@ -86,19 +81,11 @@ $(window).load(function(){
 		$(".delete_file").click(function(e){
 			e.preventDefault();
 			var clicked = $(this); //Fixes some strange bug going on
-			if($.urlParam('dir', $(this).attr("href")) != null){
-				var deleteItemType = 'dir';
-				var deleteItemPath = $.urlParam('dir', $(this).attr("href"));
-			}
-			if($.urlParam('file', $(this).attr("href")) != null){
-				var deleteItemType = 'file';
-				var deleteItemPath = $.urlParam('file', $(this).attr("href"));
-			}
+			var deleteItemPath = clicked.attr("href");
 			$.ajax({
 				type: "POST",
 				url: '/node/ajax/files/delete',
 				data: {
-					'deleteItemType': deleteItemType,
 					'deleteItemPath': deleteItemPath
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
@@ -116,9 +103,7 @@ $(window).load(function(){
 		$(".zip_file").click(function(e){
 			e.preventDefault();
 			clicked = $(this); //Fixes some strange bug going on
-			if($.urlParam('dir', $(this).attr("href")) != null){
-				var zipItemPath = $.urlParam('dir', $(this).attr("href"));
-			}
+			var zipItemPath = clicked.attr("href");
 			$.ajax({
 				type: "POST",
 				url: '/node/ajax/files/compress',
@@ -129,7 +114,7 @@ $(window).load(function(){
 					alert(errorThrown);
 				},
 				success: function(data) {
-					if(data != "") {
+					if(data != "ok") {
 						alert(data);
 					} else {
 						firstLoad();
@@ -140,9 +125,7 @@ $(window).load(function(){
 		$(".unzip_file").click(function(e){
 			e.preventDefault();
 			clicked = $(this); //Fixes some strange bug going on
-			if($.urlParam('file', $(this).attr("href")) != null){
-				var unzipItemPath = $.urlParam('file', $(this).attr("href"));
-			}
+			var unzipItemPath = clicked.attr("href");
 			$.ajax({
 				type: "POST",
 				url: '/node/ajax/files/compress',
@@ -153,7 +136,7 @@ $(window).load(function(){
 					alert(errorThrown);
 				},
 				success: function(data) {
-					if(data != "") {
+					if(data != "ok") {
 						alert(data);
 					} else {
 						firstLoad();

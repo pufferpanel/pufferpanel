@@ -2,11 +2,6 @@
 
 {% block title %}Editing File{% endblock %}
 
-{% block scripts %}
-	{{ parent() }}
-	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
-{% endblock %}
-
 {% block content %}
 <div class="col-9" id="load_files">
 	<span id="save_status" style="display:none;width: 100%;"></span>

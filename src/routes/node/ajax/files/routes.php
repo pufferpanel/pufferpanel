@@ -26,6 +26,108 @@ $klein->respond('POST', '/node/ajax/files/[*]', function() use($core) {
 
 });
 
+$klein->respond('POST', '/node/ajax/files/delete', function($request, $response) use($core) {
+
+	if(!$core->user->hasPermission('files.delete')) {
+
+		$response->code(403)->body("You are not authorized to perform this action.")->send();
+		return;
+
+	}
+
+	$unirest = (object) array("code" => 500, "raw_body" => "Invalid function passed.");
+
+	if($request->param('deleteItemPath') && !empty($request->param('deleteItemPath'))) {
+
+		try {
+
+			$unirest = Unirest\Request::delete(
+				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('deleteItemPath'),
+				array(
+					'X-Access-Token' => $core->server->getData('gsd_secret')
+				)
+			);
+
+		} catch(\Exception $e) {
+
+			\Tracy\Debugger::log($e);
+			$response->code(500)->body("Unirest response error.")->send();
+			return;
+
+		}
+
+	}
+
+	if($unirest->code !== 200) {
+
+		$response->code($unirest->code)->body($unirest->raw_body)->send();
+		return;
+
+	}
+
+	$response->code(200)->body("ok")->send();
+
+});
+
+$klein->respond('POST', '/node/ajax/files/compress', function($request, $response) use($core) {
+
+	if(!$core->user->hasPermission('files.zip')) {
+
+		$response->code(403)->body("You are not authorized to perform this action.")->send();
+		return;
+
+	}
+
+	$unirest = (object) array("code" => 500, "raw_body" => "Invalid function passed.");
+
+	try {
+
+		if($request->param('zipItemPath') && !empty($request->param('zipItemPath'))) {
+
+			$unirest = Unirest\Request::put(
+				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('zipItemPath'),
+				array(
+					"X-Access-Token" => $core->server->getData('gsd_secret')
+				),
+				array(
+					"zip" => $request->param('zipItemPath')
+				)
+			);
+
+		} else if($request->param('unzipItemPath') && !empty($request->param('unzipItemPath'))) {
+
+			$unirest = Unirest\Request::put(
+				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('unzipItemPath'),
+				array(
+					"X-Access-Token" => $core->server->getData('gsd_secret')
+				),
+				array(
+					"unzip" => $request->param('unzipItemPath')
+				)
+			);
+
+		}
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$response->code(500)->body("Unirest response error.")->send();
+		return;
+
+	}
+
+	if($unirest->code !== 200) {
+
+		$response->code($unirest->code)->body($unirest->raw_body)->send();
+		\Tracy\Debugger::log($unirest);
+		return;
+
+	}
+
+	$response->code(200)->body("ok")->send();
+
+});
+
 $klein->respond('POST', '/node/ajax/files/save', function($request, $response) use($core) {
 
 	if(!$core->user->hasPermission('files.save')) {
