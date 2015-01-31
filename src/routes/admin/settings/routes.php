@@ -58,10 +58,10 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
                     ELSE setting_val
                 END
                 ", array(
-                    'enable_api' => (!in_array('use_api', $_POST['permissions'])) ? 0 : 1,
-                    'force_online' => (!in_array('force_online', $_POST['permissions'])) ? 0 : 1,
-                    'https' => (!in_array('https', $_POST['permissions'])) ? 0 : 1,
-                    'allow_subusers' => (!in_array('allow_subusers', $_POST['permissions'])) ? 0 : 1
+                    'enable_api' => (!in_array('use_api', $request->param('permissions'))) ? 0 : 1,
+                    'force_online' => (!in_array('force_online', $request->param('permissions'))) ? 0 : 1,
+                    'https' => (!in_array('https', $request->param('permissions'))) ? 0 : 1,
+                    'allow_subusers' => (!in_array('allow_subusers', $request->param('permissions'))) ? 0 : 1
                 )
             );
 
@@ -75,6 +75,78 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
         }
 
         $response->redirect('/admin/settings/global')->send();
+
+    }
+
+    if($request->param('page') == "email" && $request->param('action') == "update") {
+
+        $response->cookie("__TMP_pp_admin_updateglobal", json_encode($request->paramsPost()), time() + 30);
+
+        if(!in_array($request->param('smail_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
+
+            $service->flash('<div class="alert alert-danger">The email method selected was not a valid choice.</div>');
+            $response->redirect('/admin/settings/email')->send();
+            return;
+
+        }
+
+        if(!filter_var($request->param('sendmail_email'), FILTER_VALIDATE_EMAIL)) {
+
+            $service->flash('<div class="alert alert-danger">The email provided as the sendmail address is not valid.</div>');
+            $response->redirect('/admin/settings/email')->send();
+            return;
+
+        }
+
+        if($request->param('smail_method') != 'php' && empty($request->param($request->param('smail_method').'_api_key'))) {
+
+            $service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
+            $response->redirect('/admin/settings/email')->send();
+            return;
+
+        }
+
+        /*
+         * Handle Sendgrid Information
+         */
+        $sendgrid = null;
+        if(strpos($request->param('sendgrid_api_key'), '|')) {
+            $iv = $core->auth->generate_iv();
+            $sendgrid = $iv.'.'.$core->auth->encrypt($request->param('sendgrid_api_key'), $iv);
+        }
+
+        try {
+
+            $query = ORM::forTable('acp_settings')->rawExecute("
+                UPDATE acp_settings SET setting_val = CASE setting_ref
+                    WHEN 'sendmail_method' THEN :sendmail_method
+                    WHEN 'sendmail_email' THEN :sendmail_email
+                    WHEN 'postmark_api_key' THEN :postmark_api_key
+                    WHEN 'mandrill_api_key' THEN :mandrill_api_key
+                    WHEN 'mailgun_api_key' THEN :mailgun_api_key
+                    WHEN 'sendgrid_api_key' THEN :sendgrid_api_key
+                    ELSE setting_val
+                END
+                ", array(
+                    'sendmail_method' => $request->param('smail_method'),
+                    'sendmail_email' => $request->param('sendmail_email'),
+                    'postmark_api_key' => $request->param('postmark_api_key'),
+                    'mandrill_api_key' => $request->param('mandrill_api_key'),
+                    'mailgun_api_key' => $request->param('mailgun_api_key'),
+                    'sendgrid_api_key' => $sendgrid,
+                )
+            );
+
+            $service->flash('<div class="alert alert-success">Your email settings have been updated.</div>');
+
+        } catch(\Exception $e) {
+
+            Debugger::log($e);
+            $service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+
+        }
+
+        $response->redirect('/admin/settings/email')->send();
 
     }
 
