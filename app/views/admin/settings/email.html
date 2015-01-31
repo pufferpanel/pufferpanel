@@ -75,6 +75,7 @@
 		}
 	}
 	$(document).ready(function(){
+        $("#sidebar_links").find("a[href='/admin/settings/email']").addClass('active');
 		updateActive();
 		$("#smail_method").change(function(){
 			updateActive();

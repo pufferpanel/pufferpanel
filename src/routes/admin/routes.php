@@ -26,6 +26,6 @@ $klein->respond('GET', '/admin/index', function($request, $response) use ($core)
 });
 
 include 'account/routes.php';
-include 'config/routes.php';
+include 'settings/routes.php';
 include 'node/routes.php';
 include 'server/routes.php';

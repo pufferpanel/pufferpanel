@@ -10,8 +10,6 @@
 			<script src="//{{ settings.assets_url }}javascript/bootstrap.min.js"></script>
 			<script src="//{{ settings.assets_url }}javascript/admin.min.js"></script>
 			<script src="//{{ settings.assets_url }}javascript/jquery.cookie.js"></script>
-			<script src="//{{ settings.assets_url }}javascript/jquery.debounce.js"></script>
-			<script src="//{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
 			<script src="//{{ settings.assets_url }}javascript/socket.io.min.js"></script>
 		{% endblock %}
 		<title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
@@ -20,54 +18,54 @@
 <body>
 	<div class="container">
 		<div class="pull-right" style="margin-top: -26px;">
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=de" class="language">Deutsch</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=en" class="language">English</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=es" class="language">Espa&ntilde;ol</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=fr" class="language">Fran&ccedil;ais</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=pt" class="language">Portugu&ecirc;s</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=se" class="language">Svenska</a>
-			<a href="//{{ settings.master_url }}ajax/set_language.php?language=zh" class="language">&#20013;&#22269;&#30340;的</a>
+			<a href="//{{ settings.master_url }}language/de" class="language">Deutsch</a>
+			<a href="//{{ settings.master_url }}language/en" class="language">English</a>
+			<a href="//{{ settings.master_url }}language/es" class="language">Espa&ntilde;ol</a>
+			<a href="//{{ settings.master_url }}language/fr" class="language">Fran&ccedil;ais</a>
+			<a href="//{{ settings.master_url }}language/pt" class="language">Portugu&ecirc;s</a>
+			<a href="//{{ settings.master_url }}language/ru" class="language">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a>
+			<a href="//{{ settings.master_url }}language/se" class="language">Svenska</a>
+			<a href="//{{ settings.master_url }}language/zh" class="language">&#20013;&#22269;&#30340;的</a>
 		</div>
 		<div class="navbar navbar-default">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="{{ settings.master_url }}index">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="/index">{{ settings.company_name }}</a>
 			</div>
 			<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="{{ settings.master_url }}servers"><i class="fa fa-list-alt"></i></a></li>
-					<li><a href="{{ settings.master_url }}logout"><i class="fa fa-power-off"></i></a></li>
+					<li><a href="/index"><i class="fa fa-list-alt"></i></a></li>
+					<li><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3">
+			<div class="col-3" id="sidebar_links">
 				<div class="list-group">
-					<a href="{{ settings.master_url }}admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+					<a href="/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-					<a href="{{ settings.master_url }}admin/config/global" id="sidenav_config-global" class="list-group-item">Global Settings</a>
-					<a href="{{ settings.master_url }}admin/config/urls" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
-					<a href="{{ settings.master_url }}admin/config/email" id="sidenav_config-email" class="list-group-item">Email Settings</a>
-					<a href="{{ settings.master_url }}admin/config/captcha" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
+					<a href="/admin/settings/global" id="sidenav_config-global" class="list-group-item">Global Settings</a>
+					<a href="/admin/settings/urls" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
+					<a href="/admin/settings/email" id="sidenav_config-email" class="list-group-item">Email Settings</a>
+					<a href="/admin/settings/captcha" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-					<a href="{{ settings.master_url }}admin/account/find" id="sidenav_account-find" class="list-group-item">Find Account</a>
-					<a href="{{ settings.master_url }}admin/account/new" id="sidenav_account-new" class="list-group-item">New Account</a>
+					<a href="/admin/account/find" id="sidenav_account-find" class="list-group-item">Find Account</a>
+					<a href="/admin/account/new" id="sidenav_account-new" class="list-group-item">New Account</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-					<a href="{{ settings.master_url }}admin/server/find" id="sidenav_server-find" class="list-group-item">Find Server</a>
-					<a href="{{ settings.master_url }}admin/server/add" id="sidenav_server-add" class="list-group-item">New Server</a>
+					<a href="/admin/server/find" id="sidenav_server-find" class="list-group-item">Find Server</a>
+					<a href="/admin/server/add" id="sidenav_server-add" class="list-group-item">New Server</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-					<a href="{{ settings.master_url }}admin/node/list" id="sidenav_node-list" class="list-group-item">List Nodes</a>
-					<a href="{{ settings.master_url }}admin/node/add" id="sidenav_node-add" class="list-group-item">Add Node</a>
-					<a href="{{ settings.master_url }}admin/node/locations" id="sidenav_node-locations" class="list-group-item">Manage Locations</a>
-					<a href="{{ settings.master_url }}admin/node/delete" id="sidenav_node-delete" class="list-group-item">Delete Node</a>
+					<a href="/admin/node/list" id="sidenav_node-list" class="list-group-item">List Nodes</a>
+					<a href="/admin/node/add" id="sidenav_node-add" class="list-group-item">Add Node</a>
+					<a href="/admin/node/locations" id="sidenav_node-locations" class="list-group-item">Manage Locations</a>
+					<a href="/admin/node/delete" id="sidenav_node-delete" class="list-group-item">Delete Node</a>
 				</div>
 			</div>
 			{% block content %}{% endblock %}

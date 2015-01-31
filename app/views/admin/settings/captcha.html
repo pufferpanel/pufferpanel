@@ -29,6 +29,11 @@
 		</fieldset>
 	</form>
 </div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/settings/captcha']").addClass('active');
+});
+</script>
 {% endblock %}
 
 {% block javascript %}{% endblock %}
