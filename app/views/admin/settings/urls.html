@@ -4,32 +4,25 @@
 
 {% block content %}
 <div class="col-9">
-	{{ output|raw }}
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<h3>URL Settings</h3><span class="label label-warning">Trailing Slashes Required</span><hr />
-	<form action="actions/url" method="POST">
+	<form action="urls/update" method="POST">
 		<fieldset>
 			<div class="form-group">
 				<label for="main_url" class="control-label">Main Website URL</label>
-				<div class="input-group">
-					<span class="input-group-addon">http{% if settings.https == 1 %}s{% endif %}:</span>
-					<input type="text" name="main_url" class="form-control" value="{{ settings.main_website }}"/>
-				</div>
+				<input type="text" name="main_url" class="form-control" value="{{ settings.main_website }}"/>
 				<p><small class="text-muted"><em>The URL corresponding to your main website, not necessarily this PufferPanel installation.</em></small></p>
 			</div>
 			<div class="form-group">
 				<label for="master_url" class="control-label">PufferPanel Master URL</label>
-				<div class="input-group">
-					<span class="input-group-addon">http{% if settings.https == 1 %}s{% endif %}:</span>
-					<input type="text" name="master_url" class="form-control" value="{{ settings.master_url }}"/>
-				</div>
+				<input type="text" name="master_url" class="form-control" value="{{ settings.master_url }}"/>
 				<p><small class="text-muted"><em>The URL corresponding to this PufferPanel installation.</em></small></p>
 			</div>
 			<div class="form-group">
 				<label for="assets_url" class="control-label">Assets Directory URL</label>
-				<div class="input-group">
-					<span class="input-group-addon">http{% if settings.https == 1 %}s{% endif %}:</span>
-					<input type="text" name="assets_url" class="form-control" value="{{ settings.assets_url }}"/>
-				</div>
+				<input type="text" name="assets_url" class="form-control" value="{{ settings.assets_url }}"/>
 				<p><small class="text-muted"><em>The URL corresponding to the assets for PufferPanel. Update this only if you are using a CDN or Caching Service that modifies where the assets are stored.</em></small></p>
 			</div>
 			<div class="form-group">

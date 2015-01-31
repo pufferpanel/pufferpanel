@@ -4,7 +4,9 @@
 
 {% block content %}
 <div class="col-9">
-    	{{ output|raw }}
+    {% if flash.info is defined %}
+        {{ flash.info.0|raw }}
+    {% endif %}
 	<h3>Email Settings</h3><hr />
 	<form action="email/update" method="POST">
 		<fieldset>

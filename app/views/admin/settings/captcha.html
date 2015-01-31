@@ -4,9 +4,11 @@
 
 {% block content %}
 <div class="col-9">
-	{{ output|raw }}
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<h3>reCAPTCHA Settings</h3><hr />
-	<form action="actions/captcha" method="POST">
+	<form action="captcha/update" method="POST">
 		<fieldset>
 			<div class="form-group">
 				<label for="pub_key" class="control-label">Public Key</label>
