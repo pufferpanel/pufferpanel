@@ -4,10 +4,15 @@
 
 {% block content %}
 <div class="col-9">
-{% if flash.info is defined %}
-	{{ flash.info.0|raw }}
-{% endif %}
-<h3>Company Name</h3><hr />
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li>Settings</li>
+		<li class="active">General</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<h3>Company Name</h3><hr />
 	<form action="global/company" method="POST">
 		<fieldset>
 			<div class="input-group">

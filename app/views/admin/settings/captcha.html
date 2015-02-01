@@ -4,6 +4,11 @@
 
 {% block content %}
 <div class="col-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li>Settings</li>
+		<li class="active">Captcha</li>
+	</ul>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}

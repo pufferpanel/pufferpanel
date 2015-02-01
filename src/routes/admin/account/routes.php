@@ -19,20 +19,49 @@
 namespace PufferPanel\Core;
 use \ORM;
 
-$klein->respond('GET', '/admin/account/find', function($request, $response, $service) use ($core) {
-    
-    $response->body($core->twig->render('admin/account/find.html'))->send();
-    
+$klein->respond('GET', '/admin/account', function($request, $response, $service) use ($core) {
+
+    $users = ORM::forTable('users')->findArray();
+
+    $response->body($core->twig->render(
+        'admin/account/find.html',
+        array(
+            'users' => $users
+        )
+    ))->send();
+
 });
 
 $klein->respond('GET', '/admin/account/new', function($request, $response, $service) use ($core) {
-    
+
     $response->body($core->twig->render('admin/account/new.html'))->send();
-    
+
 });
 
-$klein->respond('GET', '/admin/account/view', function($request, $response, $service) use ($core) {
-    
-    $response->body($core->twig->render('admin/account/view.html'))->send();
-    
+$klein->respond('GET', '/admin/account/view/[i:id]', function($request, $response, $service) use ($core) {
+
+    $core->user->rebuildData($request->param('id'));
+
+    $date1 = new \DateTime(date('Y-m-d', $core->user->getData('register_time')));
+    $date2 = new \DateTime(date('Y-m-d', time()));
+
+    $user = $core->user->getData();
+    $user['register_time'] = date('F j, Y g:ia', $core->user->getData('register_time')).' ('.$date2->diff($date1)->format("%a Days Ago").')';
+
+    /*
+     * Select Servers Owned by the User
+     */
+    $servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+        ->join('nodes', array('servers.node', '=', 'nodes.id'))
+        ->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
+        ->findArray();
+
+    $response->body($core->twig->render(
+        'admin/account/view.html',
+        array(
+            'user' => $user,
+            'servers' => $servers
+        )
+    ))->send();
+
 });

@@ -10,6 +10,9 @@
 	<h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
 	<p>Welcome to the most advanced, lightweight, and user-friendly control panel for Minecraft. You are currently running version <code>{{ version }}</code>.</p>
 </div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/index']").addClass('active');
+});
+</script>
 {% endblock %}
-
-{% block javascript %}{% endblock %}

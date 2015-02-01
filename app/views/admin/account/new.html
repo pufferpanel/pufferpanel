@@ -61,6 +61,7 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("#sidebar_links").find("a[href='/admin/account/new']").addClass('active');
 		$("#gen_pass_bttn").click(function(e){
 			e.preventDefault();
 			$.ajax({

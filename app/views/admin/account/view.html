@@ -4,17 +4,18 @@
 
 {% block content %}
 <div class="col-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/account">Accounts</a></li>
+		<li class="active">{{ user.username }}</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<div class="row">
 		<h3 class="nopad">Viewing User: {{ user.username }}</h3><hr />
-		{% if get.disp is defined and get.disp != 1 %}
-			{% if get.disp == 'p_updated' %}
-				<div class="alert alert-success">Account password has been updated.</div>
-			{% elseif get.disp == 'd_updated' %}
-				<div class="alert alert-success">Account email & administrator status updated.</div>
-			{% endif %}
-		{% endif %}
 		<div class="col-6 nopad">
-			<form action="ajax/account/update" method="POST">
+			<form action="{{ user.id }}/update" method="POST">
 				<fieldset>
 					<div class="form-group">
 						<label for="username" class="control-label">Username</label>
@@ -57,7 +58,7 @@
 		<div class="col-6 nopad-right">
 			<div class="well">
 				<h5 class="nopad">Update Password</h5><hr />
-				<form action="ajax/account/password" method="post">
+				<form action="{{ user.id }}/password" method="post">
 					<fieldset>
 						<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
 						<div class="form-group">
@@ -111,8 +112,8 @@
 				<tbody>
 						{% for server in servers %}
 							<tr>
-								<td><a href="../../servers?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-								<td><a href="../server/view?id={{ server.id }}">{{ server.name }}</a></td>
+								<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+								<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
 								<td>{{ server.node_name }}</td>
 								<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 								<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
@@ -123,7 +124,7 @@
 		{% else %}
 			<div class="alert alert-info">There are no servers associated with this account.</div>
 		{% endif %}
-		<button onclick="location.href='../server/add?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
+		<button onclick="location.href='/admin/server/new?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
 	</div>
 </div>
 {% endblock %}
@@ -131,11 +132,11 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
-		setActiveOption('account-find');
+		$("#sidebar_links").find("a[href='/admin/account']").addClass('active');
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "view?do=generate_password",
+				url: "/admin/passgen/12",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

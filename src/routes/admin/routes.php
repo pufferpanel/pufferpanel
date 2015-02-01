@@ -25,6 +25,20 @@ $klein->respond('GET', '/admin/index', function($request, $response) use ($core)
 
 });
 
+$klein->respond('GET', '/admin/passgen/[i:count]?', function($request, $response) use ($core) {
+
+	if(!$request->param('count')) {
+
+		$response->body($core->auth->keygen(16))->send();
+
+	} else {
+
+		$response->body($core->auth->keygen($request->param('count')))->send();
+
+	}
+
+});
+
 include 'account/routes.php';
 include 'settings/routes.php';
 include 'node/routes.php';
