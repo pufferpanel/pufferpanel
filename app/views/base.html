@@ -79,7 +79,8 @@
 				</div>
 			</div>
 			<script type="text/javascript">
-			$(document).ready(function(){
+			$(window).load(function() {
+				for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
 				if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
 				function updateServerStatus() {
 					$(".dynUpdate").each(function(index, data){
@@ -101,9 +102,6 @@
 				}
 				updateServerStatus();
 				setInterval(updateServerStatus, 15000);
-			});
-			for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
-			$(window).load(function() {
 				var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
 				$("#p_render_time").html(elapsed);
 			});

@@ -31,20 +31,21 @@
 
 {% block javascript %}
 <script type="text/javascript">
-	$(document).ready(function(){
-			$(".dynUpdate").each(function(index, data){
-				var connection = $(this).attr("id");
-				var element = $(this);
-				$.ajax({
-					type: "POST",
-					url: "ajax/get_status",
-					data: { ip: connection },
-						success: function(data) {
-							element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-							element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
-						}
-				});
+	$(window).load(function(){
+		$("#sidebar_links").find("a[href='/admin/node']").addClass('active');
+		$(".dynUpdate").each(function() {
+			var connection = $(this).attr("id");
+			var element = $(this);
+			$(this).find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
+			$.ajax({
+				type: "POST",
+				url: "/ajax/status/node",
+				data: { node: connection }
+			}).done(function(data) {
+				element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+				element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
 			});
+		});
 	});
 </script>
 {% endblock %}
