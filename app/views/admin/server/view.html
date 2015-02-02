@@ -4,83 +4,25 @@
 
 {% block content %}
 <div class="col-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/server">Servers</a></li>
+		<li class="active">{{ server.name }}</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#info" data-toggle="tab">Connection</a></li>
-		<li><a href="#server_sett" data-toggle="tab">Settings</a></li>
+		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
 		<li><a href="#ftp_sett" data-toggle="tab">FTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
-		<li><a href="../../servers?goto={{ server.hash }}">Server Control</a></li>
+		<li><a href="/index/{{ server.hash }}">Server Control</a></li>
 	</ul>
-	{% if get.disp is defined and get.disp != 1 %}
-		<br />
-		<div class="alert alert-danger">
-			{% if get.disp == 'n_fail' %}
-				The server name does not meet the requirements (4-35 characters, a-z A-Z 0-9 _ -).
-			{% elseif get.disp == 'o_fail' %}
-				GSD must be online and running before updating servers!
-			{% elseif get.disp == 'gsd_error' %}
-				GSD returned an error code and we were unable to process your request.
-			{% endif %}
-		</div>
-	{% endif %}
 	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The GSD Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
 	<div class="tab-content">
-		<div class="tab-pane active" id="info">
-			<h3>Connection Information</h3><hr />
-			<form action="ajax/server/connection" method="POST">
-				<fieldset>
-					<div class="panel panel-default">
-						<div class="panel-heading">Changing IP &amp; Port</div>
-						<div class="panel-body">
-							<p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
-							<p>Current Connection Address: <code>{{ server.server_ip }}:{{ server.server_port }}</code></p>
-						</div>
-					</div>
-					<div class="form-group col-6 nopad">
-						<label for="server_ip" class="control-label">Server IP</label>
-						<div>
-							<select name="server_ip" id="server_ip" class="form-control">
-								{% for ip, internal in decoded.ips %}
-									<option
-										{% if internal.ports_free > 0 %}
-											value="{{ ip }}"
-											{% if server.server_ip == ip %}
-												selected="selected"
-											{% endif %}
-										{% else %}
-											disabled="disabled"
-										{% endif %}
-									>{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
-								{% endfor %}
-							</select>
-						</div>
-					</div>
-					<div class="form-group col-6 nopad-right">
-						<label for="server_ip" class="control-label">Server Port</label>
-						<div>
-							{% for ip, internal in decoded.ports %}
-							<span {% if server.server_ip != ip %}style="display:none;"{% endif %} id="node_{{ ip }}">
-								<select name="server_port_{{ ip }}" class="form-control">';
-								{% for port, avaliable in internal %}
-									<option
-										{% if server.server_port == port %}selected="selected"{% endif %}
-										{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
-									>{{ port }}</option>
-								{% endfor %}
-								</select>
-							</span>
-							{% endfor %}
-						</div>
-					</div>
-					<input type="hidden" name="sid" value="{{ get.id }}" />
-					<input type="hidden" name="nid" value="{{ node.id }}" />
-					<input type="submit" value="Update Server" class="btn btn-primary btn-sm" />
-				</fieldset>
-			</form>
-		</div>
-		<div class="tab-pane" id="server_sett">
+		<div class="tab-pane active" id="server_sett">
 			<h3>Server Settings</h3><hr />
-			<form action="ajax/server/allocate" method="post">
+			<form action="{{ server.id }}/settings" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label class="control-label">Server Name</label>
@@ -128,10 +70,63 @@
 					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
 				</fieldset>
 			</form>
+			<div class="well" style="margin-top:15px;">
+				<h3 class="nopad">Connection Information</h3><hr />
+				<form action="{{ server.id }}/connection" method="POST">
+					<fieldset>
+						<div class="panel panel-default">
+							<div class="panel-heading">Changing IP &amp; Port</div>
+							<div class="panel-body">
+								<p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
+								<p>Current Connection Address: <code>{{ server.server_ip }}:{{ server.server_port }}</code></p>
+							</div>
+						</div>
+						<div class="form-group col-6 nopad">
+							<label for="server_ip" class="control-label">Server IP</label>
+							<div>
+								<select name="server_ip" id="server_ip" class="form-control">
+									{% for ip, internal in decoded.ips %}
+										<option
+											{% if internal.ports_free > 0 %}
+												value="{{ ip }}"
+												{% if server.server_ip == ip %}
+													selected="selected"
+												{% endif %}
+											{% else %}
+												disabled="disabled"
+											{% endif %}
+										>{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-6 nopad-right">
+							<label for="server_ip" class="control-label">Server Port</label>
+							<div>
+								{% for ip, internal in decoded.ports %}
+								<span {% if server.server_ip != ip %}style="display:none;"{% endif %} id="node_{{ ip }}">
+									<select name="server_port_{{ ip }}" class="form-control">';
+									{% for port, avaliable in internal %}
+										<option
+											{% if server.server_port == port %}selected="selected"{% endif %}
+											{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
+										>{{ port }}</option>
+									{% endfor %}
+									</select>
+								</span>
+								{% endfor %}
+							</div>
+						</div>
+						<input type="hidden" name="sid" value="{{ get.id }}" />
+						<input type="hidden" name="nid" value="{{ node.id }}" />
+						<input type="submit" value="Update Connection Information" class="btn btn-primary btn-sm" />
+					</fieldset>
+				</form>
+			</div>
 		</div>
 		<div class="tab-pane" id="ftp_sett">
 			<h3>FTP Settings</h3><hr />
-			<form action="ajax/server/ftp" method="post">
+			<form action="{{ server.id }}/ftp" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">Host</label>
@@ -179,9 +174,9 @@
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
 				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> Deleting a server is an irreversiable action. Proceede with caution. This server will be removed from the database along with all files on the server.</div>
-				<form action="ajax/server/delete" method="POST">
+				<form action="{{ server.id }}/delete" method="POST">
 					<input type="hidden" name="sid" value="{{ get.id }}" />
-					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Server" />
+					<input type="submit" name="delete" class="btn btn-sm btn-danger disabled" value="Permanetly Delete this Server" />
 				</form>
 		</div>
 	</div>
@@ -191,13 +186,12 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
-		setActiveOption('server-find');
+		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 		$("#reset_token").click(function(e){
 			e.preventDefault();
 			$.ajax({
 				type: "POST",
-				url: "ajax/server/token?id={{ get.id }}",
-				data: { gsd_reset: true},
+				url: "/admin/server/view/{{ server.id }}/reset-token",
 				success: function(data) {
 					if(data.indexOf(' ') > 0) {
 						alert(data);
@@ -208,14 +202,6 @@
 				}
 			});
 		});
-		if($.urlParam('error') != null){
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-				$.each(exploded, function(key, value) {
-					$('[name="' + value + '"]').parent().parent().addClass('has-error');
-				});
-		}
-
 		$("#server_ip").change(function() {
 			var ip = $(this).val().replace(/\./g, "\\.");
 			$("[id^=node_]").hide();
@@ -224,7 +210,7 @@
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "add?do=generate_password",
+				url: "/admin/passgen/12",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

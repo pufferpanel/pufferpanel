@@ -83,6 +83,8 @@ class Server extends User {
 
 		self::__construct($id);
 
+		return (!$this->server) ? false : true;
+
 	}
 
 	/**
