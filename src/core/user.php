@@ -68,11 +68,13 @@ class User extends Authentication {
 	 * Re-runs the __construct() class with a defined ID for the admin control panel.
 	 *
 	 * @param string $id The ID of a user requested in the Admin CP.
-	 * @return void
+	 * @return bool
 	 */
 	public function rebuildData($id){
 
 		self::__construct($id);
+
+		return (!$this->user) ? false : true;
 
 	}
 
