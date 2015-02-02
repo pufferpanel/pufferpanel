@@ -54,6 +54,23 @@ $klein->respond('GET', '/admin/node/locations', function($request, $response, $s
 
 $klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, $service) use ($core) {
 
-	$response->body($core->twig->render('admin/node/view.html'))->send();
+	$node = ORM::forTable('nodes')->findOne($request->param('id'));
+
+	if(!$node) {
+
+		$service->flash('<div class="alert alert-danger">A node by that ID does not exist in the system.</div>');
+		$response->redirect('/admin/node')->send();
+		return;
+
+	}
+
+	$response->body($core->twig->render(
+		'admin/node/view.html',
+		array(
+			'flash' => $service->flashes(),
+			'node' => $node,
+			'portlisting' => json_decode($node->ports, true),
+		)
+	))->send();
 
 });

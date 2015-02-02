@@ -25,7 +25,7 @@
 		<tbody>
 			{% for id, node in nodes %}
 				<tr class="dynUpdate" id="{{ node.id }}">
-					<td><a href="view?id={{ node.id }}">{{ node.node }}</a></td>
+					<td><a href="node/view/{{ node.id }}">{{ node.node }}</a></td>
 					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>
 					<td>{{ node.ip }}</td>
