@@ -48,15 +48,6 @@ class Email {
 	protected $subject;
 
 	/**
-	 * Constructor for email sending
-	 */
-	public function __construct() {
-
-		$this->master_url = (Settings::config()->https == 1) ? 'https://' . Settings::config()->master_url : 'http://' . Settings::config()->master_url;
-
-	}
-
-	/**
 	 * Sends an email that has been formatted using the method defined in settings.
 	 *
 	 * @param string $email The email address to send to.
@@ -230,11 +221,11 @@ class Email {
 	public function generateLoginNotification($type, $vars) {
 
 		$find = array('{{ HOST_NAME }}', '{{ IP_ADDRESS }}', '{{ GETHOSTBY_IP_ADDRESS }}', '{{ DATE }}', '{{ MASTER_URL }}');
-		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), $this->master_url);
+		$replace = array(Settings::config()->company_name, $vars['IP_ADDRESS'], $vars['GETHOSTBY_IP_ADDRESS'], date('r', time()), Settings::config()->master_url);
 
 		$this->message = str_replace($find, $replace, $this->_readTemplate('login_'.$type));
 
-		return self;
+		return $this;
 
 	}
 
@@ -247,13 +238,13 @@ class Email {
 	 */
 	public function buildEmail($tpl, array $data) {
 
-		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, $this->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
+		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, Settings::config()->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
 
 		foreach ($data as $key => $val) {
 			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
 		}
 
-		return self;
+		return $this;
 
 	}
 
