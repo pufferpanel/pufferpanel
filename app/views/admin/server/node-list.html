@@ -1,0 +1,14 @@
+{% if nodes != false %}
+	<div class="form-group col-6 nopad-right">
+		<label for="server_name" class="control-label">Location Node</label>
+		<div>
+			<select name="node" id="getNode" class="form-control">
+			{% for node in nodes %}
+				<option value="{{ node.id }}"> {{ node.node }} {% if node.public == 0 %}(Private){% endif %}</option>
+			{% endfor %}
+			</select>
+		</div>
+	</div>
+{% else %}
+	<script type="text/javascript">$('#noNodes').show();</script>
+{% endif %}

@@ -4,25 +4,16 @@
 
 {% block content %}
 <div class="col-9">
-	<h3 class="nopad">Create New Server</h3><hr />
-	{% if get.disp is defined and get.disp != 1 %}
-		<div class="alert alert-danger">
-			{% if get.disp == 'missing_args' %} Not all arguments were passed by the script.
-			{% elseif get.disp == 'gsd_offline' %} The GSD daemon running on the server is not on or is blocked by your firewall. Please make sure it is accessible before creating a server.
-			{% elseif get.disp == 's_fail' %} The server name you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Server name can only contain a-zA-Z0-9_-
-			{% elseif get.disp == 'n_fail' %} The node selected does not seem to exist.
-			{% elseif get.disp == 'ip_fail' %} The selected IP does not exist.
-			{% elseif get.disp == 'port_fail' %} The selected port does not exist.
-			{% elseif get.disp == 'port_full' %} The selected port is already in use.
-			{% elseif get.disp == 'e_fail' %} The email you entered is invalid.
-			{% elseif get.disp == 'p_fail' %} The passwords you entered did not match or were not at least 8 characters.
-			{% elseif get.disp == 'a_fail' %} Account with that email does not exist in the system.
-			{% elseif get.disp == 'm_fail' %} You entered a non-number for Disk and/or Memory.
-			{% elseif get.disp == 'b_fail' %} You entered a non-number for Backup Files and/or Disk Space.
-			{% endif %}
-		</div>
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/server">Servers</a></li>
+		<li class="active">Create New Server</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="ajax/new/create" method="POST">
+	<h3 class="nopad">Create New Server</h3><hr />
+	<form action="new" method="POST">
 		<fieldset>
 			<div class="well">
 				<div class="row">
@@ -43,7 +34,7 @@
 			</div>
 			<div class="well">
 				<div class="row">
-					<div class="alert alert-warning" id="noNodes" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This location does not have any nodes assigned to it. Please select a different location.</div>
+					<div class="alert alert-danger" id="noNodes" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This location does not have any nodes assigned to it. Please select a different location.</div>
 					<div class="form-group col-6 nopad">
 						<label for="location" class="control-label">Server Location</label>
 						<div>
@@ -65,7 +56,7 @@
 						</div>
 					</span>
 				</div>
-				<div class="alert alert-warning" id="noPorts" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This node does not have any free ports available. Please select another node.</div>
+				<div class="alert alert-danger" id="noPorts" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This IP does not have any free ports available. Please select another.</div>
 				<div class="row">
 					<span id="updateList">
 						<div class="form-group col-6 nopad">
@@ -146,6 +137,7 @@
 
 {% block javascript %}
 <script type="text/javascript">
+	$("#sidebar_links").find("a[href='/admin/server/new']").addClass('active');
 	function updatePortList(){
 		$("#server_ip").change(function() {
 			var ip = $(this).val().replace(/\./g, "\\.");
@@ -157,7 +149,7 @@
 		var activeNode = $('#getNode').val();
 		$.ajax({
 			type: "POST",
-			url: "ajax/new/load_list",
+			url: "new/ip-list",
 			data: {'node' : activeNode},
 			success: function(data) {
 				$('#updateList').html(data);
@@ -165,13 +157,12 @@
 				return false;
 			}
 		});
-		return false;
 	}
 	function updateNodeList(){
 		var activeLocation = $('#getLocation').val();
 		$.ajax({
 			type: "POST",
-			url: "ajax/new/load_nodelist",
+			url: "new/node-list",
 			data: {'location' : activeLocation},
 			success: function(data) {
 				$('#updateNodeList').html(data);
@@ -185,7 +176,7 @@
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "add?do=generate_password",
+				url: "/admin/passgen/12",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();
@@ -209,26 +200,6 @@
 		// 		$("#updateList, #updateNodeList").show();
 		// 	}
 		// });
-		if($.urlParam('error') != null){
-
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-
-				$.each(exploded, function(key, value) {
-
-					$('[name="' + value + '"]').parent().parent().addClass('has-error');
-
-				});
-
-			var obj = $.parseJSON($.cookie('__TMP_pp_admin_newserver'));
-
-				$.each(obj, function(key, value) {
-
-					$('[name="' + key + '"]').val(value);
-
-				});
-
-		}
 	});
 </script>
 {% endblock %}
