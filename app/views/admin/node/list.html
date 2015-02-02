@@ -4,6 +4,14 @@
 
 {% block content %}
 <div class="col-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li class="active">Nodes</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<h3>Configured Nodes</h3><hr />
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
@@ -16,7 +24,7 @@
 		</thead>
 		<tbody>
 			{% for id, node in nodes %}
-				<tr class="dynUpdate" id="{{ node.ip }}+{{ node.gsd_listen }}">
+				<tr class="dynUpdate" id="{{ node.id }}">
 					<td><a href="view?id={{ node.id }}">{{ node.node }}</a></td>
 					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>

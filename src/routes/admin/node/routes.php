@@ -19,6 +19,21 @@
 namespace PufferPanel\Core;
 use \ORM;
 
+$klein->respond('GET', '/admin/node', function($request, $response, $service) use ($core) {
+
+	$response->body($core->twig->render(
+		'admin/node/list.html',
+		array(
+			'flash' => $service->flashes(),
+			'nodes' => ORM::forTable('nodes')
+				->select('nodes.*')->select('locations.long', 'l_location')
+				->join('locations', array('nodes.location', '=', 'locations.short'))
+				->findMany()
+		)
+	))->send();
+
+});
+
 $klein->respond('GET', '/admin/node/add', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render('admin/node/add.html'))->send();
@@ -31,19 +46,13 @@ $klein->respond('GET', '/admin/node/delete', function($request, $response, $serv
 
 });
 
-$klein->respond('GET', '/admin/node/list', function($request, $response, $service) use ($core) {
-
-	$response->body($core->twig->render('admin/node/list.html'))->send();
-
-});
-
 $klein->respond('GET', '/admin/node/locations', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render('admin/node/locations.html'))->send();
 
 });
 
-$klein->respond('GET', '/admin/node/view', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render('admin/node/view.html'))->send();
 

@@ -63,6 +63,7 @@ class Query extends Server {
 	 * Gets the status of any specified server given an IP address.
 	 *
 	 * @param string $ip The IP address of the main GSD server to check aganist.
+	 * @param int $port The port of the main GSD server to check aganist.
 	 * @param int $id The GSD ID of the server to check.
 	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
@@ -84,6 +85,30 @@ class Query extends Server {
 		}
 
 		return (isset($request->body->status)) ? $request->body->status : false;
+
+	}
+
+	/**
+	* Gets the status of any specified node.
+	*
+	* @param string $ip The IP address of the main GSD server to check aganist.
+	* @param int $port The port of the main GSD server to check aganist.
+	* @return bool
+	*/
+	public function checkNodeStatus($ip, $port = 8003){
+
+		try {
+
+			Unirest\Request::timeout(1);
+			$request = Unirest\Request::get(
+				"http://".$ip.":".$port."/gameservers/"
+			);
+
+			return true;
+
+		} catch(\Exception $e) {
+			return false;
+		}
 
 	}
 

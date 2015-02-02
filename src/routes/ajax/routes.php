@@ -33,7 +33,41 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				->where('servers.id', $request->param('server'))
 				->findOne();
 
+			if(!$status) {
+				$response->body('#FF9900')->send();
+				return;
+			}
+
 			if(!$core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret)) {
+				$response->body('#E33200')->send();
+			} else {
+				$response->body('#53B30C')->send();
+			}
+
+		} else {
+			$response->body('#FF9900')->send();
+		}
+
+	}
+
+});
+
+$klein->respond('POST', '/ajax/status/node', function($request, $response) use ($core){
+
+	if(!$core->auth->isLoggedIn()) {
+		$response->body('#FF9900')->send();
+	} else {
+
+		if($request->param('node')) {
+
+			$status = ORM::forTable('nodes')->findOne($request->param('node'));
+
+			if(!$status) {
+				$response->body('#FF9900')->send();
+				return;
+			}
+
+			if(!$core->gsd->checkNodeStatus($status->ip, $status->gsd_listen)) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
