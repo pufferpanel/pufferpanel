@@ -159,9 +159,9 @@ trait Authentication {
 	* @param string $regex Optional parameter to define your own regex for checking password requirements.
 	* @return bool
 	*/
-	public function validatePasswordRequirements($password, $regex = "#.*^(?=.{8,200})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$#") {
+	public function validatePasswordRequirements($password, $regex = "((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})") {
 
-		return (preg_match($regex, $password)) ? true : false;
+		return (preg_match($regex, $password) === 1) ? true : false;
 
 	}
 
