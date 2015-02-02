@@ -4,23 +4,16 @@
 
 {% block content %}
 <div class="col-9">
-	<h3 class="nopad">Create New Account</h3><hr />
-	{% if get.error is defined and get.error != 1 %}
-		<div class="alert alert-danger"><i class="fa fa-warning"></i>
-		{% if get.error == 'u_fail' %}
-			The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain a-zA-Z0-9_-
-		{% elseif get.error == 'e_fail' %}
-			The email you entered is invalid.
-		{% elseif get.error == 'p_fail' %}
-			The passwords you entered did not match or were not at least 8 characters.
-		{% elseif get.error == 'a_fail' %}
-			Account with that username or email already exists in the system.
-		{% else %}
-			Undefined error occured.
-		{% endif %}
-		</div>
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/account">Accounts</a></li>
+		<li class="active">Create New Account</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="ajax/new/create" method="post">
+	<h3 class="nopad">Create New Account</h3><hr />
+	<form action="new" method="post">
 		<fieldset>
 			<div class="form-group">
 				<label for="username" class="control-label">Username</label>
@@ -66,12 +59,10 @@
 			e.preventDefault();
 			$.ajax({
 				type: "GET",
-				url: "new?do=generate_password",
+				url: "/admin/passgen/12",
 				success: function(data) {
-					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="pass"]').val(data);
-					$('input[name="pass_2"]').val(data);
+					$("#gen_pass").html('<strong>Generated Password:</strong> '+data).slideDown();
+					$('input[name="pass"], input[name="pass_2"]').val(data);
 					return false;
 				}
 			});

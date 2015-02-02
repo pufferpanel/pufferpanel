@@ -8,6 +8,9 @@
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li class="active">Accounts</li>
 	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<h3>All Registered Users</h3><hr />
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
