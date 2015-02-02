@@ -2,8 +2,8 @@
 
 {% block scripts %}
 	{{ parent() }}
-	<script src="//{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
-	<script src="//{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
+	<script src="{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
 {% endblock %}
 {% block title %}Manage your Server{% endblock %}
 
