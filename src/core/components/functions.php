@@ -73,7 +73,7 @@ trait Functions {
 					throw new Exception("The range provided for ports in processPorts({$input}) is invalid. The start value ({$explode[0]}) can't be higher than the end value ({$explode[1]}).");
 				}
 
-				for($i = $explode[0]; $explode[0] <= $explode[1]; $i++) {
+				for($i = $explode[0]; $i <= $explode[1]; $i++) {
 					$port_list[] = $i;
 				}
 
