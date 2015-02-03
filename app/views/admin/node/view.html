@@ -3,7 +3,7 @@
 {% block title %}Viewing Node{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li><a href="/admin/node">Nodes</a></li>
@@ -171,11 +171,11 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-1"></div>
-					<div class="col-10">
+					<div class="col-md-1 hidden-xs hidden-sm"></div>
+					<div class="col-md-10 col-sm-12 col-xs-12">
 						<form action="{{ node.id }}/add-ip" method="post">
 							<div class="row">
-								<div class="form-group">
+								<div class="form-group col-md-12">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
 									<div>
 										<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25567,25569,25571,25573,25575 OR 25565-25570"></textarea>
@@ -184,7 +184,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="form-group">
+								<div class="form-group col-md-12">
 									<div>
 										<input type="hidden" name="nid" value="{{ node.id }}" />
 										<input type="submit" class="btn btn-primary" name="submit" value="Add New IPs" />
@@ -193,7 +193,7 @@
 							</div>
 						</form>
 					</div>
-					<div class="col-1"></div>
+					<div class="col-md-1 hidden-xs hidden-sm"></div>
 				</div>
 			</div>
 			<div class="modal-footer">

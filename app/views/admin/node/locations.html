@@ -3,7 +3,7 @@
 {% block title %}List All Nodes{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li><a href="/admin/node">Nodes</a></li>
@@ -19,7 +19,7 @@
 				<th>Shortcode</th>
 				<th>Location</th>
 				<th>Total Nodes</th>
-				<th style="width:10%">Manage</th>
+				<th>Manage</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,32 +29,25 @@
 				<td>{{ location.long }}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
 				<td style="text-align:center;">
-					<div class="row" style="text-align:center;">
-						<div class="col-6" style="padding: 0 !important;">
-							<button class="edit_location btn btn-xxs btn-default disabled"><i class="fa fa-pencil"></i></button>
-						</div>
-						<div class="col-6" style="padding: 0 !important;">
-							<button class="delete_location btn btn-xxs btn-danger disabled"><i class="fa fa-trash-o"></i></button>
-						</div>
-					</div>
+					<span class="badge">Edit</span>
+					<span class="badge alert-danger">Delete</span>
 				</td>
-
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 	<h3>Add New Location</h3>
-	<form action="ajax/locations/add" method="POST">
-		<div class="well well-sm">
+	<form action="locations" method="POST">
+		<div class="well">
 			<div class="row">
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<label for="shortcode" class="control-label">Shortcode</label>
 					<div>
 						<input type="text" class="form-control" name="shortcode" placeholder="atl" />
 						<p><small class="text-muted"><em>Must be between 1 and 10 characters long. (a-zA-Z0-9-)</em></small></p>
 					</div>
 				</div>
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<label for="location" class="control-label">Location</label>
 					<div>
 						<input type="text" class="form-control" name="location" placeholder="U.S. (Atlanta)" />
@@ -63,7 +56,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<div>
 						<input type="submit" value="Add Location" class="btn btn-primary btn-sm" />
 					</div>

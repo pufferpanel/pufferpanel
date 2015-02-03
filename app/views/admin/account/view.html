@@ -3,7 +3,7 @@
 {% block title %}Viewing User{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li><a href="/admin/account">Accounts</a></li>
@@ -12,9 +12,9 @@
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
+	<h3>Viewing User: {{ user.username }}</h3><hr />
 	<div class="row">
-		<h3 class="nopad">Viewing User: {{ user.username }}</h3><hr />
-		<div class="col-6 nopad">
+		<div class="col-md-6 col-sm-6">
 			<form action="{{ user.id }}/update" method="POST">
 				<fieldset>
 					<div class="form-group">
@@ -49,13 +49,13 @@
 						<div>
 							<input type="hidden" name="uid" value="{{ get.id }}" />
 							<input type="hidden" name="action" value="details" />
-							<input type="submit" value="Update User" class="btn btn-primary" />
+							<input type="submit" value="Update User" class="btn btn-primary btn-sm" />
 						</div>
 					</div>
 				</fieldset>
 			</form>
 		</div>
-		<div class="col-6 nopad-right">
+		<div class="col-md-6 col-sm-6">
 			<div class="well">
 				<h5 class="nopad">Update Password</h5><hr />
 				<form action="{{ user.id }}/password" method="post">
@@ -87,8 +87,8 @@
 							<div>
 								<input type="hidden" name="uid" value="{{ get.id }}" />
 								<input type="hidden" name="email" value="{{ user.email }}" />
-								<button class="btn btn-primary" type="submit">Change Password</button>
-								<button class="btn btn-default" id="gen_pass_bttn" type="button">Generate Password</button>
+								<button class="btn btn-primary btn-sm" type="submit">Change Password</button>
+								<button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
 							</div>
 						</div>
 					</fieldset>
@@ -97,34 +97,36 @@
 		</div>
 	</div>
 	<div class="row">
-		<h3>Associated Servers</h3><hr />
-		{% if servers[0]|length > 0 %}
-			<table class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th style="width:2%;"></th>
-						<th>Server Name</th>
-						<th>Node</th>
-						<th>Connection</th>
-						<th style="width:10%;"></th>
-					</tr>
-				</thead>
-				<tbody>
-						{% for server in servers %}
-							<tr>
-								<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-								<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
-								<td>{{ server.node_name }}</td>
-								<td>{{ server.server_ip }}:{{ server.server_port }}</td>
-								<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
-							</tr>
-						{% endfor %}
-				</tbody>
-			</table>
-		{% else %}
-			<div class="alert alert-info">There are no servers associated with this account.</div>
-		{% endif %}
-		<button onclick="location.href='/admin/server/new?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
+		<div class="col-md-12">
+			<h3>Associated Servers</h3><hr />
+			{% if servers[0]|length > 0 %}
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width:2%;"></th>
+							<th>Server Name</th>
+							<th>Node</th>
+							<th>Connection</th>
+							<th style="width:10%;"></th>
+						</tr>
+					</thead>
+					<tbody>
+							{% for server in servers %}
+								<tr>
+									<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+									<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
+									<td>{{ server.node_name }}</td>
+									<td>{{ server.server_ip }}:{{ server.server_port }}</td>
+									<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
+								</tr>
+							{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				<div class="alert alert-info">There are no servers associated with this account.</div>
+			{% endif %}
+			<button onclick="location.href='/admin/server/new?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
+		</div>
 	</div>
 </div>
 {% endblock %}

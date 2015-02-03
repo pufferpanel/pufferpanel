@@ -3,7 +3,7 @@
 {% block title %}Add a New Server{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li><a href="/admin/server">Servers</a></li>
@@ -17,14 +17,14 @@
 		<fieldset>
 			<div class="well">
 				<div class="row">
-					<div class="form-group col-6 nopad">
+					<div class="form-group col-md-6 nopad">
 						<label for="server_name" class="control-label">Server Name</label>
 						<div>
 							<input type="text" autocomplete="off" name="server_name" class="form-control" />
 							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Character Limits: a-zA-Z0-9_- (Max 35 characters)</em></small></p>
 						</div>
 					</div>
-					<div class="form-group col-6 nopad-right">
+					<div class="form-group col-md-6 nopad-right">
 						<label for="email" class="control-label">Owner Email</label>
 						<div>
 							<input type="text" autocomplete="off" name="email" value="{% if get.email is defined %}{{ get.email }}{% endif %}" class="form-control" />
@@ -35,7 +35,7 @@
 			<div class="well">
 				<div class="row">
 					<div class="alert alert-danger" id="noNodes" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This location does not have any nodes assigned to it. Please select a different location.</div>
-					<div class="form-group col-6 nopad">
+					<div class="form-group col-md-6 nopad">
 						<label for="location" class="control-label">Server Location</label>
 						<div>
 							<select name="location" id="getLocation" class="form-control">
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 					<span id="updateNodeList">
-						<div class="form-group col-6 nopad">
+						<div class="form-group col-md-6 nopad">
 							<label for="server_name" class="control-label">Location Node</label>
 							<div>
 								<select name="node" id="getNode" class="form-control">
@@ -59,7 +59,7 @@
 				<div class="alert alert-danger" id="noPorts" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This IP does not have any free ports available. Please select another.</div>
 				<div class="row">
 					<span id="updateList">
-						<div class="form-group col-6 nopad">
+						<div class="form-group col-md-6 nopad">
 							<label for="server_ip" class="control-label">Server IP</label>
 							<div>
 								<select name="server_ip" class="form-control">
@@ -67,7 +67,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group col-6 nopad-right">
+						<div class="form-group col-md-6 nopad-right">
 							<label for="server_port" class="control-label">Server Port</label>
 							<div>
 								<select name="server_port" class="form-control">
@@ -83,21 +83,21 @@
 			</div>
 			<div class="well">
 				<div class="row">
-					<div class="form-group col-4 nopad">
+					<div class="form-group col-md-4 nopad">
 						<label for="alloc_mem" class="control-label">Allocate Memory (in MB)</label>
 						<div class="input-group">
 							<input type="text" autocomplete="off" name="alloc_mem" class="form-control" />
 							<span class="input-group-addon">MB</span>
 						</div>
 					</div>
-					<div class="form-group col-4">
+					<div class="form-group col-md-4">
 						<label for="alloc_disk" class="control-label">Allocate Disk Space (in MB)</label>
 						<div class="input-group">
 							<input type="text" autocomplete="off" name="alloc_disk" class="form-control" />
 							<span class="input-group-addon">MB</span>
 						</div>
 					</div>
-					<div class="form-group col-4 nopad-right">
+					<div class="form-group col-md-4 nopad-right">
 						<label for="cpu_limit" class="control-label">CPU Limit</label>
 						<div class="input-group">
 							<input type="text" autocomplete="off" name="cpu_limit" class="form-control" />
@@ -110,7 +110,7 @@
 			<div class="well">
 				<div class="row">
 					<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
-					<div class="form-group col-6 nopad">
+					<div class="form-group col-md-6 nopad">
 						<label for="ftp_pass" class="control-label">FTP Password</label>
 						<div class="input-group">
 							<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
@@ -119,7 +119,7 @@
 							</span>
 						</div>
 					</div>
-					<div class="form-group col-6 nopad-right">
+					<div class="form-group col-md-6 nopad-right">
 						<label for="ftp_pass_2" class="control-label">FTP Password (Again)</label>
 						<div>
 							<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />

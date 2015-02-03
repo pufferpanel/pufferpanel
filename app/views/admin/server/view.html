@@ -3,7 +3,7 @@
 {% block title %}Viewing Server{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li><a href="/admin/server">Servers</a></li>
@@ -43,28 +43,30 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="form-group col-4 nopad">
+						<div class="form-group col-md-4 nopad">
 							<label for="alloc_mem" class="control-label">Allocate RAM</label>
 							<div class="input-group">
 								<input type="text" autocomplete="off" name="alloc_mem" value="{{ server.max_ram }}" class="form-control" />
 								<span class="input-group-addon">MB</span>
 							</div>
 						</div>
-						<div class="form-group col-4 nopad-right">
+						<div class="form-group col-md-4 nopad-right">
 							<label for="alloc_disk" class="control-label">Disk Space</label>
 							<div class="input-group">
 								<input type="text" name="alloc_disk" disabled="disabled" value="{{ server.disk_space }}" class="form-control" />
 								<span class="input-group-addon">MB</span>
 							</div>
 						</div>
-						<div class="form-group col-4 nopad-right">
+						<div class="form-group col-md-4 nopad-right">
 							<label for="cpu_limit" class="control-label">CPU Limit</label>
 							<div class="input-group">
 								<input type="text" name="cpu_limit" value="{{ server.cpu_limit }}" class="form-control" />
 								<span class="input-group-addon">%</span>
 							</div>
 						</div>
-						<div class="row"><p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p></div>
+						<div class="col-md-12">
+							<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p>
+						</div>
 					</div>
 					<input type="hidden" name="sid" value="{{ get.id }}" />
 					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
@@ -81,40 +83,42 @@
 								<p>Current Connection Address: <code>{{ server.server_ip }}:{{ server.server_port }}</code></p>
 							</div>
 						</div>
-						<div class="form-group col-6 nopad">
-							<label for="server_ip" class="control-label">Server IP</label>
-							<div>
-								<select name="server_ip" id="server_ip" class="form-control">
-									{% for ip, internal in decoded.ips %}
-										<option
-											{% if internal.ports_free > 0 %}
-												value="{{ ip }}"
-												{% if server.server_ip == ip %}
-													selected="selected"
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label for="server_ip" class="control-label">Server IP</label>
+								<div>
+									<select name="server_ip" id="server_ip" class="form-control">
+										{% for ip, internal in decoded.ips %}
+											<option
+												{% if internal.ports_free > 0 %}
+													value="{{ ip }}"
+													{% if server.server_ip == ip %}
+														selected="selected"
+													{% endif %}
+												{% else %}
+													disabled="disabled"
 												{% endif %}
-											{% else %}
-												disabled="disabled"
-											{% endif %}
-										>{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
-									{% endfor %}
-								</select>
-							</div>
-						</div>
-						<div class="form-group col-6 nopad-right">
-							<label for="server_ip" class="control-label">Server Port</label>
-							<div>
-								{% for ip, internal in decoded.ports %}
-								<span {% if server.server_ip != ip %}style="display:none;"{% endif %} id="node_{{ ip }}">
-									<select name="server_port_{{ ip }}" class="form-control">';
-									{% for port, avaliable in internal %}
-										<option
-											{% if server.server_port == port %}selected="selected"{% endif %}
-											{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
-										>{{ port }}</option>
-									{% endfor %}
+											>{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
+										{% endfor %}
 									</select>
-								</span>
-								{% endfor %}
+								</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="server_ip" class="control-label">Server Port</label>
+								<div>
+									{% for ip, internal in decoded.ports %}
+									<span {% if server.server_ip != ip %}style="display:none;"{% endif %} id="node_{{ ip }}">
+										<select name="server_port_{{ ip }}" class="form-control">';
+										{% for port, avaliable in internal %}
+											<option
+												{% if server.server_port == port %}selected="selected"{% endif %}
+												{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
+											>{{ port }}</option>
+										{% endfor %}
+										</select>
+									</span>
+									{% endfor %}
+								</div>
 							</div>
 						</div>
 						<input type="hidden" name="sid" value="{{ get.id }}" />
@@ -142,8 +146,10 @@
 					</div>
 					<div class="well">
 						<div class="row">
-							<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
-							<div class="form-group col-6 nopad">
+							<div class="col-md-12">
+								<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
+							</div>
+							<div class="form-group col-md-6 nopad">
 								<label for="ftp_pass" class="control-label">New Password</label>
 								<div class="input-group">
 									<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
@@ -152,7 +158,7 @@
 									</span>
 								</div>
 							</div>
-							<div class="form-group col-6 nopad-right">
+							<div class="form-group col-md-6 nopad-right">
 								<label for="ftp_pass_2" class="control-label">New Password (Again)</label>
 								<div>
 									<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />

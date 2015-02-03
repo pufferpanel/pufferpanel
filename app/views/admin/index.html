@@ -3,7 +3,10 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li class="active">Admin Control</li>
+	</ul>
 	{% if installer == true %}
 		<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>
 	{% endif %}

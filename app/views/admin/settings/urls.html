@@ -3,7 +3,7 @@
 {% block title %}URL Settings{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li>Settings</li>
@@ -12,7 +12,7 @@
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
-	<h3>URL Settings</h3><span class="label label-warning">Trailing Slashes Required</span><hr />
+	<h3>URL Settings</h3><span class="label label-default">Trailing Slashes Required</span><hr />
 	<form action="urls/update" method="POST">
 		<fieldset>
 			<div class="form-group">
@@ -32,7 +32,7 @@
 			</div>
 			<div class="form-group">
 				<div>
-					<input type="submit" value="Update Settings" class="btn btn-primary" />
+					<input type="submit" value="Update Settings" class="btn btn-primary btn-sm" />
 				</div>
 			</div>
 		</fieldset>

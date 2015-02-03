@@ -3,7 +3,7 @@
 {% block title %}Email Settings{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
     <ul class="breadcrumb">
         <li><a href="/admin/index">Admin Control</a></li>
         <li>Settings</li>
@@ -15,25 +15,27 @@
 	<h3>Email Settings</h3><hr />
 	<form action="email/update" method="POST">
 		<fieldset>
-			<div class="form-group col-6 nopad">
-				<label for="smail_method" class="control-label">Sendmail Method</label>
-				<div>
-					<select name="smail_method" class="form-control" id="smail_method">
-						<option value="php" {% if settings.sendmail_method == 'php' %}selected="selected"{% endif %}>PHP mail()</option>
-						<option value="postmark" {% if settings.sendmail_method == 'postmark' %}selected="selected"{% endif %}>Postmark</option>
-						<option value="mandrill" {% if settings.sendmail_method == 'mandrill' %}selected="selected"{% endif %}>Mandrill</option>
-						<option value="mailgun" {% if settings.sendmail_method == 'mailgun' %}selected="selected"{% endif %}>Mailgun</option>
-						<option value="sendgrid" {% if settings.sendmail_method == 'sendgrid' %}selected="selected"{% endif %}>Sendgrid</option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group col-6 nopad-right">
-				<label for="sendmail_email" class="control-label">Sendmail Address</label>
-				<div>
-					<input type="text" name="sendmail_email" class="form-control" value="{{ settings.sendmail_email }}"/>
-					<p><small class="text-muted"><em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em></small></p>
-				</div>
-			</div>
+            <div class="row">
+    			<div class="form-group col-md-6">
+    				<label for="smail_method" class="control-label">Sendmail Method</label>
+    				<div>
+    					<select name="smail_method" class="form-control" id="smail_method">
+    						<option value="php" {% if settings.sendmail_method == 'php' %}selected="selected"{% endif %}>PHP mail()</option>
+    						<option value="postmark" {% if settings.sendmail_method == 'postmark' %}selected="selected"{% endif %}>Postmark</option>
+    						<option value="mandrill" {% if settings.sendmail_method == 'mandrill' %}selected="selected"{% endif %}>Mandrill</option>
+    						<option value="mailgun" {% if settings.sendmail_method == 'mailgun' %}selected="selected"{% endif %}>Mailgun</option>
+    						<option value="sendgrid" {% if settings.sendmail_method == 'sendgrid' %}selected="selected"{% endif %}>Sendgrid</option>
+    					</select>
+    				</div>
+    			</div>
+    			<div class="form-group col-md-6 nopad-right">
+    				<label for="sendmail_email" class="control-label">Sendmail Address</label>
+    				<div>
+    					<input type="text" name="sendmail_email" class="form-control" value="{{ settings.sendmail_email }}"/>
+    					<p><small class="text-muted"><em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em></small></p>
+    				</div>
+    			</div>
+            </div>
 			<div class="form-group" id="postmark">
 				<label for="postmark_api_key" class="control-label">PostmarkApp API Key</label>
 				<div>
@@ -64,7 +66,7 @@
 			</div>
 			<div class="form-group">
 				<div>
-					<input type="submit" value="Update Email Settings" class="btn btn-primary" />
+					<input type="submit" value="Update Email Settings" class="btn btn-primary btn-sm" />
 				</div>
 			</div>
 		</fieldset>
