@@ -4,29 +4,16 @@
 
 {% block content %}
 <div class="col-9">
-	<h3 class="nopad">Add New Node</h3><hr />
-	{% if get.disp is defined and get.disp != 1 %}
-		<div class="alert alert-danger">
-			{% if get.disp == 'agree_warn' %}
-				You must agree to the node warning before we can create the node.
-			{% elseif get.disp == 'missing_args' %}
-				Not all arguments were passed by the script.
-			{% elseif get.disp == 'n_fail' %}
-				The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).
-			{% elseif get.disp == 'url_fail' %}
-				The node URL provided is not valid. URLs must end with a trailing slash and must be a subdomain without any additional folders. (e.g. <strong>http://node.example.com/</strong>)
-			{% elseif get.disp == 'ip_fail' %}
-				The IP addresses provided were not valid.
-			{% elseif get.disp == 'dir_fail' %}
-				The directory you entered was not valid. Must end with a trailing slash.
-			{% elseif get.disp == 'ip_port_space' %}
-				Unable to allocate the ports you inputted.
-			{% elseif get.disp == 'port_fail' %}
-				The ports you entered were not in a valid format.
-			{% endif %}
-		</div>
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li class="active">Add New Node</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="ajax/new/create" method="POST">
+	<h3 class="nopad">Add New Node</h3><hr />
+	<form action="new" method="POST">
 		<fieldset>
 			<div class="well">
 				<div class="row">
@@ -132,8 +119,7 @@
 				</div>
 			</div>
 			<div class="alert alert-info"><input type="checkbox" name="is_private" /> This is a reserved node, please do not automatically allocate new servers to it.</div>
-			<div class="alert alert-danger"><input type="checkbox" name="read_warning" /> I have read and understand how to set up this node. (<a href="http://docs.pffr.me/en/latest/installing_nodes/" target="_blank">docs</a>)</div>
-			<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm disabled" />
+			<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm" />
 		</fieldset>
 	</form>
 </div>
@@ -142,6 +128,7 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("#sidebar_links").find("a[href='/admin/node/new']").addClass('active');
 		$("input[name='node_name']").keyup(function(){
 			if($(this).val().length > 15 || /^[a-zA-Z0-9_.-]*$/.test($(this).val()) == false)
 				$(this).parent().parent().removeClass('has-success').addClass('has-error');
@@ -150,23 +137,6 @@
 			else
 				$(this).parent().parent().removeClass('has-error').addClass('has-success');
 		});
-		$("input[name='read_warning']").click(function(){
-			if($("input[name='read_warning']").is(":checked"))
-				$("#disable_complete").removeClass("disabled");
-			else
-				$("#disable_complete").addClass("disabled");
-		});
-		if($.urlParam('error') != null){
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-				$.each(exploded, function(key, value) {
-					$('[name="' + value + '"]').parent().parent().addClass('has-error');
-				});
-			var obj = $.parseJSON($.cookie('__TMP_pp_admin_newnode'));
-				$.each(obj, function(key, value) {
-					$('[name="' + key + '"]').val(value);
-				});
-		}
 	});
 </script>
 {% endblock %}

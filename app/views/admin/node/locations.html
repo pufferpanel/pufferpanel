@@ -4,6 +4,14 @@
 
 {% block content %}
 <div class="col-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li class="active">Manage Locations</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<h3 class="nopad">Node Locations</h3>
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
@@ -11,29 +19,31 @@
 				<th>Shortcode</th>
 				<th>Location</th>
 				<th>Total Nodes</th>
+				<th style="width:10%">Manage</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for location in locations %}
-			<tr class="dynUpdate" id="{{ node.fqdn }}">
+			<tr id="{{ location.id }}">
 				<td>{{ location.short }}</a></td>
 				<td>{{ location.long }}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
+				<td style="text-align:center;">
+					<div class="row" style="text-align:center;">
+						<div class="col-6" style="padding: 0 !important;">
+							<button class="edit_location btn btn-xxs btn-default disabled"><i class="fa fa-pencil"></i></button>
+						</div>
+						<div class="col-6" style="padding: 0 !important;">
+							<button class="delete_location btn btn-xxs btn-danger disabled"><i class="fa fa-trash-o"></i></button>
+						</div>
+					</div>
+				</td>
+
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 	<h3>Add New Location</h3>
-	{% if get.error is defined and get.error != 1 %}
-		<div class="alert alert-danger">
-			{% if get.error == "missing_args" %} Not all arguments were passed to the script.
-			{% elseif get.error == "shortcode" %} The shortcode provided was invalid.
-			{% elseif get.error == "location" %} The location provided cannot be empty. {% endif %}
-		</div>
-	{% endif %}
-	{% if get.success is defined %}
-		<div class="alert alert-success">You have successfully added a new location.</div>
-	{% endif %}
 	<form action="ajax/locations/add" method="POST">
 		<div class="well well-sm">
 			<div class="row">
@@ -67,17 +77,7 @@
 {% block javascript %}
 <script type="text/javascript">
 $(document).ready(function(){
-	if($.urlParam('error') != null){
-		var field = $.urlParam('error');
-		var exploded = field.split('|');
-		$.each(exploded, function(key, value) {
-			$('[name="' + value + '"]').parent().parent().addClass('has-error');
-		});
-		var obj = $.parseJSON($.cookie('__TMP_pp_admin_newlocation'));
-		$.each(obj, function(key, value) {
-			$('[name="' + key + '"]').val(value);
-		});
-	}
+	$("#sidebar_links").find("a[href='/admin/node/locations']").addClass('active');
 });
 </script>
 {% endblock %}

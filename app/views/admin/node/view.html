@@ -21,7 +21,7 @@
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Basic Information</h3><hr />
-			<form action="ajax/update/basic" method="post">
+			<form action="{{ node.id }}/settings" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="name" class="control-label">Node Name</label>
@@ -60,11 +60,11 @@
 	"tokens": ["{{ node.gsd_secret }}"],
 	"interfaces":{
 		"rest":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_download"
+			"authurl": "{{ settings.master_url }}auth/gsd/download"
 		},
 		"console":{},
 		"ftp":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp",
+			"authurl": "{{ settings.master_url }}auth/gsd/ftp",
 			"port": 21,
 			"host": "{{ node.ip }}",
 			"use_ssl": true
@@ -75,7 +75,7 @@
 		</div>
 		<div class="tab-pane" id="allocation">
 			<h3>IP &amp; Port Allocation</h3><hr />
-			<form action="ajax/ports/add_port" id="addPorts" style="display: none;" method="post">
+			<form action="{{ node.id }}/add-port" id="addPorts" style="display: none;" method="post">
 				<div class="form-group">
 					<label for="add_ports" class="control-label" id="setTitle"></label>
 					<div class="input-group">
@@ -139,7 +139,7 @@
 		<div class="tab-pane" id="ftp">
 			<h3>FTP Settings</h3><hr />
 			<div class="well">
-				<form action="ajax/update/ftp?do=ipuser" method="post">
+				<form action="{{ node.id }}/ftp" method="post">
 					<fieldset>
 						<div class="form-group">
 							<label for="ip" class="control-label">FTP IP</label>
@@ -173,7 +173,7 @@
 				<div class="row">
 					<div class="col-1"></div>
 					<div class="col-10">
-						<form action="ajax/ports/new_ip" method="post">
+						<form action="{{ node.id }}/add-ip" method="post">
 							<div class="row">
 								<div class="form-group">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
@@ -203,100 +203,102 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
-		setActiveOption('node-list');
-		$("#reset_token").click(function(e){
-			e.preventDefault();
-			$.ajax({
-				type: "POST",
-				url: "view?id={{ get.id }}",
-				data: { gsd_reset: true},
-				success: function(data) {
-					if(data.indexOf(' ') > 0) {
-						alert(data);
-					} else {
-						$("#reset_token_warn_tkn").html(data);
-						$("#reset_token_warn").show();
-						$("#form_gsd_token").val(data);
-						$("#node_gsd_config").text('{\n\
+$(window).load(function(){
+	$("#sidebar_links").find("a[href='/admin/node']").addClass('active');
+	$("#reset_token").click(function(e){
+		e.preventDefault();
+		$.ajax({
+			type: "POST",
+			url: "{{ node.id }}/reset-token",
+			data: { gsd_reset: true},
+			success: function(data) {
+				if(data.indexOf(' ') > 0) {
+					alert(data);
+				} else {
+					$("#reset_token_warn_tkn").html(data);
+					$("#reset_token_warn").show();
+					$("#form_gsd_token").val(data);
+					$("#node_gsd_config").text('{\n\
 	"daemon": {\n\
 		"listenport": {{ node.gsd_listen }},\n\
 		"consoleport": {{ node.gsd_console }}\n\
 	},\n\
 	"tokens": ["'+ data +'"],\n\
 	"interfaces":{\n\
-		"rest":{},\n\
+		"rest":{\n\
+			"authurl": "{{ settings.master_url }}auth/gsd/download"\n\
+		},\n\
 		"console":{},\n\
 		"ftp":{\n\
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp",\n\
+			"authurl": "{{ settings.master_url }}auth/gsd/ftp",\n\
 			"port": 21,\n\
-			"host": "127.0.0.1",\n\
+			"host": "{{ node.ip }}",\n\
 			"use_ssl": true\n\
 		}\n\
 	},\n\
 	"servers": []\n\
 }');
-					}
 				}
-			});
+			}
 		});
-		$(".clickToAdd").click(function(){
-			var rawUrl = $(this).attr("href");
-			var exploded = rawUrl.split('/');
-			var ip = exploded[2];
-			var node_id = exploded[3];
-			$("#addPorts").slideUp(function(){
-				$("#setTitle").html('Add Ports for '+ip);
-				$("input[name='add_ports']").val("");
-				$("input[name='add_ports_ip']").val(ip);
-				$("input[name='add_ports_node']").val(node_id);
-				$("#addPorts").slideDown();
-			});
+	});
+	$(".clickToAdd").click(function(){
+		var rawUrl = $(this).attr("href");
+		var exploded = rawUrl.split('/');
+		var ip = exploded[2];
+		var node_id = exploded[3];
+		$("#addPorts").slideUp(function(){
+			$("#setTitle").html('Add Ports for '+ip);
+			$("input[name='add_ports']").val("");
+			$("input[name='add_ports_ip']").val(ip);
+			$("input[name='add_ports_node']").val(node_id);
+			$("#addPorts").slideDown();
 		});
-		$(".deletePort").click(function(){
+	});
+	$(".deletePort").click(function(){
 
-			var rawUrl = $(this).attr("href");
-			var exploded = rawUrl.split('/');
-			var ip = exploded[2];
-			var port = exploded[3];
-			var node_id = exploded[4];
-			var conf = confirm("Are you sure you want to delete "+ip+":"+port);
+		var rawUrl = $(this).attr("href");
+		var exploded = rawUrl.split('/');
+		var ip = exploded[2];
+		var port = exploded[3];
+		var node_id = exploded[4];
+		var conf = confirm("Are you sure you want to delete "+ip+":"+port);
 
-				if(conf == true)
-					{
-						$.ajax({
-							type: "POST",
-							url: "ajax/ports/delete",
-							data: { ip: ip, port: port, node: node_id},
-							success: function(data) {
-								$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
-							}
-						});
-					}else{
-						return false;
-					}
-
-		});
-		if($.urlParam('error') != null){
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-				$.each(exploded, function(key, value) {
-					$('[name="' + value + '"]').parent().parent().addClass('has-error');
-				});
-		}
-		$("#warning_1").click(function(){
-			if($(this).is(":checked"))
-				$("#disable_complete").removeClass("disabled");
-			else
-				$("#disable_complete").addClass("disabled");
-		});
-		$("#warning_2").click(function(){
-			if($(this).is(":checked"))
-				$("#disable_complete_pass").removeClass("disabled");
-			else
-				$("#disable_complete_pass").addClass("disabled");
-		});
+			if(conf == true)
+				{
+					$.ajax({
+						type: "POST",
+						url: "{{ node.id }}/delete-port",
+						data: { ip: ip, port: port, node: node_id},
+						success: function(data) {
+							$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
+						}
+					});
+				}else{
+					return false;
+				}
 
 	});
+	if($.urlParam('error') != null){
+		var field = $.urlParam('error');
+		var exploded = field.split('|');
+			$.each(exploded, function(key, value) {
+				$('[name="' + value + '"]').parent().parent().addClass('has-error');
+			});
+	}
+	$("#warning_1").click(function(){
+		if($(this).is(":checked"))
+			$("#disable_complete").removeClass("disabled");
+		else
+			$("#disable_complete").addClass("disabled");
+	});
+	$("#warning_2").click(function(){
+		if($(this).is(":checked"))
+			$("#disable_complete_pass").removeClass("disabled");
+		else
+			$("#disable_complete_pass").addClass("disabled");
+	});
+
+});
 </script>
 {% endblock %}
