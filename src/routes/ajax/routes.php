@@ -67,7 +67,7 @@ $klein->respond('POST', '/ajax/status/node', function($request, $response) use (
 				return;
 			}
 
-			if(!$core->gsd->checkNodeStatus($status->ip, $status->gsd_listen)) {
+			if(!$core->gsd->avaliable($status->ip, $status->gsd_listen)) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
