@@ -3,22 +3,20 @@
 {% block title %}File Manager{% endblock %}
 
 {% block content %}
-{% if flash.info is defined %}
-<div class="col-9">
-	{{ flash.info.0|raw }}
-</div>
-{% endif %}
-<div class="col-9" id="internal_alert">
-	<div class="alert alert-info">
-		<i class="fa fa-spinner fa-spin"></i> {{ lang.node_files_loading }}
+	{% if flash.info is defined %}
+	<div class="col-md-9">
+		{{ flash.info.0|raw }}
 	</div>
-</div>
-<div class="row">
-	<div class="col-9">
+	{% endif %}
+	<div class="col-md-9" id="internal_alert">
+		<div class="alert alert-info">
+			<i class="fa fa-spinner fa-spin"></i> {{ lang.node_files_loading }}
+		</div>
+	</div>
+	<div class="col-md-9">
 		<div class="files_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
 	</div>
-	<div class="col-9" id="load_files"></div>
-</div>
+	<div class="col-md-9" id="load_files"></div>
 <script type="text/javascript">
 $(window).load(function(){
 	$("#sidebar_links").find("a[href='/node/files']").addClass('active');

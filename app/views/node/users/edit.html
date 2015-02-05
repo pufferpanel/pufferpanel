@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
@@ -20,15 +20,15 @@
 				<label><input type="checkbox" name="permissions[]" value="console.view" checked="checked" disabled/> View Console</label>
 				<p class="list-group-item-text">Gives user permission to view the console page. This must be enabled in order to add a subuser to the server. They will be able to view the server statistics as well as the server console.</p>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="console.commands" {% if permissions.console.commands == true %}checked="checked"{% endif %}/> Send Commands</label>
 						<p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="console.power" {% if permissions.console.power == true %}checked="checked"{% endif %}/> Control Power</label>
 						<p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
 					</div>
@@ -38,50 +38,50 @@
 				<label><input type="checkbox" name="permissions[]" value="files.view" {% if permissions.files.view == true %}checked="checked"{% endif %}/> View Files</label>
 				<p class="list-group-item-text">Gives user permission to view the file listing.</p>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.edit" {% if permissions.files.edit == true %}checked="checked"{% endif %}/> Edit File</label>
 						<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.save" {% if permissions.files.save == true %}checked="checked"{% endif %}/> Save Modifications</label>
 						<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.download" {% if permissions.files.download == true %}checked="checked"{% endif %}/> Download Files</label>
 						<p class="list-group-item-text">Gives user permission to download files from the server.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.zip" {% if permissions.files.zip == true %}checked="checked"{% endif %}/> Compress and Decompress Files</label>
 						<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.create" {% if permissions.files.create == true %}checked="checked"{% endif %}/> Create Files</label>
 						<p class="list-group-item-text">Gives user permission to create files on the server.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.upload" {% if permissions.files.upload == true %}checked="checked"{% endif %}/> Upload Files</label>
 						<p class="list-group-item-text">Gives user permission to upload files to the server.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="files.delete" {% if permissions.files.delete == true %}checked="checked"{% endif %}/> Delete Files <span class="label label-danger">Danger</span></label>
 						<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
 					</div>
@@ -91,36 +91,36 @@
 				<label><input type="checkbox" name="permissions[]" value="manage.view" {% if permissions.manage.view == true %}checked="checked"{% endif %}/> View Manager</label>
 				<p class="list-group-item-text">Gives user permission to view the server management page.</p>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="manage.rename.view" {% if permissions.manage.rename.view == true %}checked="checked"{% endif %}/> View Server Jar Tab</label>
 						<p class="list-group-item-text">Gives user permission to view the Server Jar Tab.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
+					<div class="col-md-2"><br /><br /></div>
+					<div class="col-md-10">
 						<label><input type="checkbox" name="permissions[]" value="manage.rename.jar" {% if permissions.manage.rename.jar == true %}checked="checked"{% endif %}/> Modify Jar File Name</label>
 						<p class="list-group-item-text">Gives user permission modify the jar file name for a server.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-1"><br /><br /></div>
-					<div class="col-11">
+					<div class="col-md-1"><br /><br /></div>
+					<div class="col-md-11">
 						<label><input type="checkbox" name="permissions[]" value="manage.ftp.view" {% if permissions.manage.ftp.view == true %}checked="checked"{% endif %}/> View FTP Tab</label>
 						<p class="list-group-item-text">Gives user permission to view the FTP tab.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
+					<div class="col-md-2"><br /><br /></div>
+					<div class="col-md-10">
 						<label><input type="checkbox" name="permissions[]" value="manage.ftp.details" {% if permissions.manage.ftp.details == true %}checked="checked"{% endif %}/> View FTP Details</label>
 						<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
-					<div class="col-2"><br /><br /></div>
-					<div class="col-10">
+					<div class="col-md-2"><br /><br /></div>
+					<div class="col-md-10">
 						<label><input type="checkbox" name="permissions[]" value="manage.ftp.password" {% if permissions.manage.ftp.password == true %}checked="checked"{% endif %}/> Modify FTP Password <span class="label label-danger">Danger</span></label>
 						<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
 					</div>

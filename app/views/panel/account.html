@@ -26,12 +26,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<div class="row">
-		<div class="col-6">
+		<div class="col-md-6">
 			<h3 class="nopad">{{ lang.settings_change_pass }}</h3><hr />
 				<form action="/account/update/password" method="post">
 					<div class="form-group">
@@ -55,12 +55,12 @@
 					<div class="form-group">
 						<div>
 							{{ xsrf.pass|raw }}
-							<input type="submit" class="btn btn-primary" value="{{ lang.settings_change_pass }}" />
+							<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_change_pass }}" />
 						</div>
 					</div>
 				</form>
 		</div>
-		<div class="col-6">
+		<div class="col-md-6">
 			<h3 class="nopad">{{ lang.settings_update_email }}</h3><hr />
 				<form action="/account/update/email" method="post">
 					<div class="form-group">
@@ -78,18 +78,18 @@
 					<div class="form-group">
 						<div>
 							{{ xsrf|raw }}
-							<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_email }}" />
+							<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_update_email }}" />
 						</div>
 					</div>
 				</form>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-6">
+		<div class="col-md-6">
 			<h3>Login Notification</h3><hr />
 			<form action="/account/update/notifications" method="post">
 				<div class="row">
-					<div class="col-6 nopad">
+					<div class="col-md-6 nopad">
 						<div class="form-group">
 							<h4>Success</h4>
 							<div class="radio">
@@ -100,7 +100,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-6">
+					<div class="col-md-6">
 						<div class="form-group">
 							<h4>Failed</h4>
 							<div class="radio">
@@ -121,12 +121,12 @@
 				<div class="form-group">
 					<div>
 						{{ xsrf|raw }}
-						<input type="submit" class="btn btn-primary" value="{{ lang.settings_update_preferences }}" />
+						<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_update_preferences }}" />
 					</div>
 				</div>
 			</form>
 		</div>
-		<div class="col-6">
+		<div class="col-md-6">
 			<h3>Sub-User Token</h3><hr />
 			<div class="well well-sm"><p>If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.</p></div>
 			<form action="/account/update/subuser" method="post">
@@ -139,7 +139,7 @@
 				<div class="form-group">
 					<div>
 						{{ xsrf|raw }}
-						<input type="submit" class="btn btn-primary" value="Validate Token" />
+						<input type="submit" class="btn btn-primary btn-sm" value="Validate Token" />
 					</div>
 				</div>
 			</form>

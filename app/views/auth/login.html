@@ -2,7 +2,7 @@
 
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="col-6">
+<div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
     	<legend>{{ lang.login_login_h1 }}</legend>
     	<fieldset>
@@ -58,7 +58,7 @@
 		</form>
 	</div>
 </div>
-<div class="col-3"></div>
+<div class="col-md-3"></div>
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#login-form").submit(function(event){

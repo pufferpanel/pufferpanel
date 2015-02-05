@@ -5,12 +5,12 @@
 		{% block scripts %}
 			<meta charset="UTF-8">
 			<script type="text/javascript">var pageRenderStart = new Date().getTime();</script>
-			<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap_new.css">
+			<link rel="stylesheet" href="{{ settings.assets_url }}css/bootstrap.css">
+			<link rel="stylesheet" href="{{ settings.assets_url }}css/pufferpanel.css">
 			<link rel="stylesheet" href="{{ settings.assets_url }}css/fontawesome/font-awesome.min.css">
 			<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-			<script src="{{ settings.assets_url }}javascript/bootstrap_new.js"></script>
+			<script src="{{ settings.assets_url }}javascript/bootstrap.js"></script>
 			<script src="{{ settings.assets_url }}javascript/admin.min.js"></script>
-			<script src="{{ settings.assets_url }}javascript/jquery.cookie.js"></script>
 		{% endblock %}
 		<title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
 	{% endblock %}
@@ -27,7 +27,7 @@
 				<a class="navbar-brand" href="/index">{{ settings.company_name }}</a>
 			</div>
 			<div class="navbar-collapse collapse navbar-responsive-collapse">
-				<ul class="nav navbar-nav hidden-sm hidden-md hidden-lg">
+				<ul class="nav navbar-nav hidden-md hidden-lg">
 					<li><a href="#">Index</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
@@ -75,15 +75,15 @@
 							<li><a href="/language/zh">&#20013;&#22269;&#30340;的</a></li>
 						</ul>
 					</li>
-					<li class="hidden-xs"><a href="/index"><i class="fa fa-list-alt"></i></a></li>
-					<li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
-					<li class="hidden-sm hidden-md hidden-lg"><a href="/index">Server List</a></li>
-					<li class="hidden-sm hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
+					<li class="hidden-xs hidden-sm"><a href="/index"><i class="fa fa-list-alt"></i></a></li>
+					<li class="hidden-xs hidden-sm"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
+					<li class="hidden-md hidden-lg"><a href="/index">Server List</a></li>
+					<li class="hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3 hidden-xs" id="sidebar_links">
+			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
 				<div class="list-group">
 					<a href="/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
 				</div>
@@ -113,7 +113,7 @@
 			</div>
 			{% block content %}{% endblock %}
 		</div>
-		<div class="footer" style="margin-top:15px;font-size: 10px;">
+		<div class="footer">
 			<div class="row">
 				<div class="col-md-8 col-xs-6">
 					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format(fversion)|raw }}</p>

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs">
 		{% if permission.files.create == true %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
 		{% if permission.files.upload == true %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
@@ -121,14 +121,14 @@ $(document).ready(function() {
 				// Add the file to the list
 				$('.flow-list').append('<div class="well well-sm flow-file flow-file-'+ file.uniqueIdentifier +'"> \
 					<div class="row"> \
-						<div class="col-8"> \
+						<div class="col-md-8"> \
 							<h6>Uploading <span class="flow-file-name"></span> <span class="flow-file-size"></span></h6> \
 							<span class="flow-file-progress" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
 							<div class="progress progress-striped active"> \
 								<div class="progress-bar progress-bar-info" style="width: 0%"></div> \
 							</div> \
 						</div> \
-						<div class="col-4"> \
+						<div class="col-md-4"> \
 							<p style="padding-top:32px;"> \
 								<button class="flow-file-pause btn btn-xs btn-primary"><i class="fa fa-pause"></i> Pause</button> \
 								<button class="flow-file-resume btn btn-xs btn-primary" style="display:none;"><i class="fa fa-play"></i> Resume</button> \

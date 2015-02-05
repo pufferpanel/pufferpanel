@@ -7,7 +7,7 @@
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
 		<li>Settings</li>
-		<li class="active">General</li>
+		<li class="active">Global</li>
 	</ul>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
@@ -18,13 +18,13 @@
 			<div class="input-group">
 				<input type="text" name="company_name" class="form-control" value="{{ settings.company_name }}" />
 				<span class="input-group-btn">
-					<input type="submit" value="Update" class="btn btn-primary" />
+					<input type="submit" value="Update" class="btn btn-primary btn-sm" />
 				</span>
 			</div>
 		</fieldset>
 	</form>
 	<br />
-	<h3>General Settings</h3><hr />
+	<h3>Global Settings</h3><hr />
 	<form action="global/general" method="POST">
 		<fieldset>
 			<div class="row">

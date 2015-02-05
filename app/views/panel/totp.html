@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	<h3 style="margin-top:0;">Two-Factor Authentication</h3><hr />
 	{% if totp == 1 %}
 		<div class="alert alert-success">Two-Factor authentication is currently enabled on this account. For security reasons it is not possible to disable this from the panel. Please contact support in order to have it disabled on your account.</div>
@@ -43,7 +43,7 @@
 		<form action="#" id="do_totp" method="post">
 			<div class="form-group">
 				<div>
-					<input type="submit" id="enable_totp" class="btn btn-success" name="enable_totp" value="Enable Two-Factor Authentication" />
+					<input type="submit" id="enable_totp" class="btn btn-success btn-sm" name="enable_totp" value="Enable Two-Factor Authentication" />
 				</div>
 			</div>
 		</form>
@@ -59,7 +59,7 @@
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" id="close_reload">Close</button>
+				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">Close</button>
 			</div>
 		</div>
 	</div>
