@@ -103,15 +103,15 @@ class Query extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"http://".$this->node->ip.":".$this->node->port."/gameservers/".$this->server->gsd_id,
+				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id,
 				array(
 					'X-Access-Token' => $this->node->gsd_secret
 				)
 			);
 
 			/*
-				* Valid Data was Returned
-				*/
+			* Valid Data was Returned
+			*/
 			if(!isset($request->body->status) || $request->body->status == 0) {
 				return false;
 			}
