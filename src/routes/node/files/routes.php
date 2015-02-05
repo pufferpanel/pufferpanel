@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM, \Flow, \League\Flysystem\Filesystem as Filesystem, \League\Flysystem\Adapter\Ftp as Adapter;
 
 $klein->respond(array('GET', 'POST'), '/node/files/[*]', function($request, $response, $service, $app, $klein) use($core) {
 
@@ -128,6 +128,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 		* Display Page
 		*/
 		$response->body($core->twig->render('node/files/edit.html', array(
+			'flash' => $service->flashes(),
 			'server' => $core->server->getData(),
 			'xsrf' => $core->auth->XSRF(),
 			'file' => $request->param('file'),
@@ -141,6 +142,208 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 		\Tracy\Debugger::log($e);
 		$service->flash('<div class="alert alert-danger">The daemon does not appear to be online currently. Please try again.</div>');
 		$response->redirect('/node/files')->send();
+		return;
+
+	}
+
+});
+
+$klein->respond('GET', '/node/files/add/[*:directory]?', function($request, $response, $service) use($core) {
+
+	if(!$core->user->hasPermission('files.create') || !$core->user->hasPermission('files.upload')) {
+
+		$response->code(403);
+		$response->body($core->twig->render('node/403.html'))->send();
+		return;
+
+	}
+
+	$response->body($core->twig->render(
+		'node/files/add.html',
+		array(
+			'flash' => $service->flashes(),
+			'directory' => $request->param('directory'),
+			'server' => $core->server->getData()
+		)
+	))->send();
+
+});
+
+$klein->respond('POST', '/node/files/add', function($request, $response, $service) use($core) {
+
+	if(!$core->user->hasPermission('files.create')) {
+
+		$response->code(403);
+		$response->body($core->twig->render('node/403.html'))->send();
+		return;
+
+	}
+
+	try {
+
+		$filesystem = new Filesystem(new Adapter(array(
+			'host' => $core->server->nodeData('ip'),
+			'username' => $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'),
+			'password' => $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')),
+			'port' => 21,
+			'passive' => true,
+			'ssl' => true,
+			'timeout' => 10
+		)));
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$response->code(500);
+		$response->body('<div class="alert alert-danger">An execption occured when trying to connect to the server.</div>')->send();
+		return;
+
+	}
+
+	try {
+
+		if(!$filesystem->write(urldecode($_POST['newFilePath']), $_POST['newFileContents'])) {
+
+			$response->code(500);
+			$response->body('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>')->send();
+			return;
+
+		} else {
+
+			$response->code(200);
+			$response->body('ok')->send();
+			return;
+
+		}
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$response->code(500);
+		$response->body('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>')->send();
+		return;
+
+	}
+
+});
+
+$klein->respond('/node/files/upload', function($request, $response, $service) use($core) {
+
+	if(!$core->user->hasPermission('files.upload')) {
+
+		$response->code(403);
+		$response->body('you don\'t have permission to do that')->send();
+		return;
+
+	}
+
+	// prevent output buffering
+	ini_set('upload_max_filesize', '100M');
+	ini_set('post_max_size', '110M');
+	set_time_limit(0);
+
+	if($request->param('newFilePath') === null) {
+
+		$response->code(404);
+		$response->body('missing parameters')->send();
+		return;
+
+	}
+
+	if(($request->param('flowTotalSize') / (1024 * 1024)) > 100) {
+
+		$response->code(500);
+		$response->body('this file is too large to upload (max size: 100MB)')->send();
+		return;
+
+	}
+
+	if(ob_get_level()) {
+		ob_end_clean();
+	}
+
+	try {
+
+		$filesystem = new Filesystem(new Adapter(array(
+			'host' => $core->server->nodeData('ip'),
+			'username' => $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'),
+			'password' => $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')),
+			'port' => 21,
+			'passive' => true,
+			'ssl' => true,
+			'timeout' => 10
+		)));
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$response->code(500);
+		$response->body('unable to connect to FTP server')->send();
+		return;
+
+	}
+
+	$tempDir = '/tmp/'.$core->server->getData('hash');
+	$uploadPath = SRC_DIR . 'cache/uploads/' . $core->server->getData('hash') . '/';
+
+	if(!is_dir($tempDir)) {
+		mkdir($tempDir, 0777);
+	}
+
+	if(!is_dir($uploadPath)) {
+		mkdir($uploadPath, 0777);
+	}
+
+	$config = new Flow\Config();
+	$config->setTempDir($tempDir);
+	$file = new Flow\File($config);
+
+
+	if($request->method('get')) {
+
+		if($file->checkChunk()) {
+			$response->code(200)->send();
+		} else {
+
+			$response->code(404);
+			$response->body('unable to work with chunk')->send();
+			return;
+
+		}
+
+	} else {
+
+		if($file->validateChunk()) {
+			$file->saveChunk();
+		} else {
+
+			$response->code(400);
+			$response->body('an error occured')->send();
+			return;
+
+		}
+
+	}
+
+	try {
+
+		if($file->validateFile() && $file->save($uploadPath.$request->param('flowFilename'))) {
+
+				$stream = fopen($uploadPath.$request->param('flowFilename'), 'r');
+				$filesystem->writeStream(rtrim($request->param('newFilePath'), '/').'/'.$request->param('flowFilename'), $stream);
+				unlink($uploadPath.$request->param('flowFilename'));
+
+				$response->code(200)->send();
+
+		}
+
+	} catch(\Exception $e) {
+
+		Tracy\Debugger::log($e);
+		unlink($uploadPath.$request->param('flowFilename'));
+
+		$response->code(400);
+		$response->body('unable to write file to server')->send();
 		return;
 
 	}

@@ -5,9 +5,11 @@
 {% block content %}
 <div class="col-md-9" id="load_files">
 	<span id="save_status" style="display:none;width: 100%;"></span>
-	{% if error %}
-		{{ error|raw }}
-	{% else %}
+	{% if flash.info is defined %}
+	<div class="col-md-12">
+		{{ flash.info.0|raw }}
+	</div>
+	{% endif %}
 	<form method="post" id="editing_file">
 		<div class="form-group">
 			<div>
@@ -37,7 +39,6 @@
 			</div>
 		{% endif %}
     </form>
-    {% endif %}
 </div>
 <script type="text/javascript">
 $(window).load(function() {
