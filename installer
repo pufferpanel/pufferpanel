@@ -109,6 +109,7 @@ echo -n "Email: "
 read adminemail
 echo -n "Password: "
 read -s adminpass
+echo ""
 
 echo "-----"
 echo -e "${green}Configuration options complete, beginning installation process${normal}"
@@ -136,5 +137,11 @@ cd ..
 
 echo "-----"
 echo "Installing database"
-mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} < PufferPanel/install/install.sql
-validateCommand
+php -f PufferPanel/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlpass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
+if [ $? -ne 0 ]; then
+    echo -e "${red}An error occured while installing, halting${normal}";
+    cd $DIR
+    revertInstall
+    mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} -e "DROP DATABASE IF EXISTS pufferpanel"
+    exit
+fi
