@@ -1,0 +1,95 @@
+#!/bin/bash
+version=0.1
+red="\e[0;31m"
+green="\e[0;32m"
+normal="\e[0m"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+#This is a helper function to allow for less repetition of command checks
+function checkInstall {
+    if type "$1" 1>/dev/null 2>&1; then
+        echo -e "$2: [${green}Installed${normal}]";
+    else
+        echo -e "$2: [${red}Not Installed${normal}]";
+    fi
+}
+
+function validateCommand {
+    if [ $? -ne 0 ]; then
+        echo -e "${red}An error occured while cloning, halting installation${normal}";
+        DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+        exit
+    fi
+}
+
+echo "PufferPanel Installer - Version $version"
+echo "------"
+echo "Checking dependencies:"
+
+canInstall=true
+
+#Check if Git is installed
+checkInstall git Git
+
+#Check if PHP is installed
+checkInstall php PHP
+
+#Check if MySQL is installed
+checkInstall mysql MySQL-client
+
+#Check if PHP depedencies are installed
+result=$(php -r 'exit (version_compare(PHP_VERSION, "5.5.0") < 0 ? "1" : "0");');
+if [ "$result" -eq "0" ]; then
+    echo -e "PHP 5.5.0+: [${green}Installed${normal}]";
+else
+    echo -e "PHP 5.5.0+: [${red}Not Installed${normal}]";
+    canInstall=false
+fi
+extensions=("curl" "hash" "openssl" "mcrypt" "pdo" "pdo_mysql")
+for i in ${extensions[@]}; do
+    phpcmd=`php <<EOF
+<?php exit (extension_loaded("${i}") ? "1" : "0"); ?> 
+EOF`
+    result=$phpcmd;
+    if [ "$result" -ne "0" ]; then
+        echo -e "PHP-${i}: [${green}Installed${normal}]";
+    else
+        echo -e "PHP-${i}: [${red}Not Installed${normal}]";
+        canInstall=false
+    fi
+done
+
+echo "------"
+
+if ${canInstall}; then
+    echo "All dependencies are installed, processing with installation";
+else
+    echo "Please insure all dependencies are installed";
+    exit;
+fi
+
+exit;
+
+echo "-----"
+echo "Cloning PufferPanel"
+
+git clone https://github.com/PufferPanel/PufferPanel.git
+validateCommand
+
+echo "-----"
+cd PufferPanel
+ppversion=$(git describe --abbrev=0 --tags)
+echo "Checking out ${ppversion}"
+git checkout tags/${ppversion}
+validateCommand
+
+echo "-----"
+echo "Installing Composer"
+curl -sS https://getcomposer.org/installer | php
+validateCommand
+php composer.phar install
+validateCommand
+cd ..
+
+echo "-----"
+echo "Executing PHP validator"
