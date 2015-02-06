@@ -145,3 +145,17 @@ if [ $? -ne 0 ]; then
     mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} -e "DROP DATABASE IF EXISTS pufferpanel"
     exit
 fi
+
+echo "-----"
+echo "Finishing install"
+chmod -R 774 PufferPanel/src/cache
+
+getent passwd apache > /dev/null
+if [ $? -eq 0 ]; then
+  echo "Chowning files to Apache user"
+else
+  echo "${red}Apache user not found, cannot chown to correct user${normal}"
+fi
+
+echo -e "${green}PufferPanel has installed successfully."
+echo -e "If the above chown is not the correct user or did not work, please manually chown the PufferPanel folder${normal}"
