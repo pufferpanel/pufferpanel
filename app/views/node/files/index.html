@@ -87,7 +87,7 @@ $(window).load(function(){
 					'deleteItemPath': deleteItemPath
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					alert(errorThrown);
+					alert(jqXHR.responseText);
 				},
 				success: function(data) {
 					if(data != "ok") {
