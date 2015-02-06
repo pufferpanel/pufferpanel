@@ -36,6 +36,7 @@ class Files {
 			'yaml',
 			'log',
 			'conf',
+			'config',
 			'html',
 			'json',
 			'properties',
