@@ -11,15 +11,22 @@ function checkInstall {
         echo -e "$2: [${green}Installed${normal}]";
     else
         echo -e "$2: [${red}Not Installed${normal}]";
+        canInstall=false
     fi
 }
 
 function validateCommand {
     if [ $? -ne 0 ]; then
-        echo -e "${red}An error occured while cloning, halting installation${normal}";
-        DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+        echo -e "${red}An error occured while installing, halting${normal}";
+        cd $DIR
+        revertInstall
         exit
     fi
+}
+
+function revertInstall {
+    cd $DIR;
+    rm -rf PufferPanel/
 }
 
 echo "PufferPanel Installer - Version $version"
@@ -68,7 +75,43 @@ else
     exit;
 fi
 
-exit;
+echo "-----"
+echo "Preparing MySQL connection"
+echo -e "${red}For this step, please use either root or an account with database creation and GRANT${normal}"
+echo -n "MySQL Host: "
+read mysqlhost
+echo -n "MySQL Username: "
+read mysqluser
+notValid=true
+while ${notValid}; do
+    echo -n "MySQL Password: "
+    read -s mysqlpass
+    if mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} -e "exit"; then 
+        notValid=false
+    else 
+        echo "${red}Database connection could not be established${normal}"
+    fi
+done;
+
+echo ""
+echo "-----"
+echo "Preparing Site configuration"
+echo -n "Enter company name: "
+read companyname
+echo -n "Enter site url: "
+read siteurl
+
+echo "-----"
+echo "Preparing admin account"
+echo -n "Username: "
+read adminname
+echo -n "Email: "
+read adminemail
+echo -n "Password: "
+read -s adminpass
+
+echo "-----"
+echo -e "${green}Configuration options complete, beginning installation process${normal}"
 
 echo "-----"
 echo "Cloning PufferPanel"
@@ -92,4 +135,6 @@ validateCommand
 cd ..
 
 echo "-----"
-echo "Executing PHP validator"
+echo "Installing database"
+mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} < PufferPanel/install/install.sql
+validateCommand
