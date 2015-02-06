@@ -35,20 +35,6 @@ define('SRC_DIR', BASE_DIR.'src/');
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
 
-/*
-* Has Installer been run?
-*/
-if(!file_exists(BASE_DIR.'config.json') || (strpos($_SERVER['REQUEST_URI'], '/install') == 0 && !file_exists(SRC_DIR.'install.lock'))) {
-
-	if(file_exists(BASE_DIR.'vendor/autoload.php')) {
-		include SRC_DIR.'routes/install/router.php';
-	} else {
-		throw new Exception("You must install the dependencies before using PufferPanel.");
-	}
-	return;
-
-}
-
 require_once SRC_DIR.'core/autoloader.php';
 
 Twig_Autoloader::register();
