@@ -249,9 +249,9 @@ try {
 	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
 	$mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :username, :email, :password, NULL, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)")->execute(array(
 		':uuid' => $uuid,
-		':username' => $param['adminName'],
+		':username' => $params['adminName'],
 		':email' => $params['adminEmail'],
-		':password' => password_hash($param['adminPass'], PASSWORD_BCRYPT),
+		':password' => password_hash($params['adminPass'], PASSWORD_BCRYPT),
 		':language' => 'en',
 		':time' => time()
 	));
@@ -266,6 +266,7 @@ try {
 	$mysql->commit();
 
 	exit(0);
+
 } catch (\Exception $ex) {
 
 	echo $ex->getMessage() . "\n";
@@ -273,4 +274,5 @@ try {
 		$mysql->rollBack();
 	}
 	exit(1);
+
 }
