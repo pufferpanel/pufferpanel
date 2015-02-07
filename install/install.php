@@ -2,7 +2,7 @@
 
 use \PDO;
 
-define(BASE_DIR, dirname(__FILE__));
+define("BASE_DIR", dirname(__FILE__));
 
 $params = array();
 parse_str(implode('&', array_splice($argv, 1)), $params);
@@ -47,7 +47,7 @@ try {
 		throw new \Exception("Could not create config.json");
 	}
 
-	$mysql = new PDO('mysql:host=' . $params['mysqlHost'] . ';dbname=pufferpanel', $params['mysqlUser'], $params['mysqlPass'], array(
+	$mysql = new PDO('mysql:host=' . $params['mysqlHost'], $params['mysqlUser'], $params['mysqlPass'], array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	));
@@ -57,6 +57,8 @@ try {
 
 	$mysql->exec("DROP DATABASE IF EXISTS `pufferpanel`");
 	$mysql->exec("CREATE DATABASE `pufferpanel`");
+
+	$mysql->exec("USE `pufferpanel`");
 
 	/*
 	 * CREATE TABLE `account_change`
