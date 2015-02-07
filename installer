@@ -137,7 +137,7 @@ cd ..
 
 echo "-----"
 echo "Installing database"
-php -f PufferPanel/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlpass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
+php -f PufferPanel/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlPass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
 if [ $? -ne 0 ]; then
     echo -e "${red}An error occured while installing, halting${normal}";
     cd $DIR
