@@ -2,6 +2,8 @@
 
 use \PDO;
 
+define(BASE_DIR, dirname(__FILE__));
+
 $params = array();
 parse_str(implode('&', array_splice($argv, 1)), $params);
 
@@ -69,7 +71,7 @@ try {
 						`time` int(15) NOT NULL,
 						`verified` int(1) NOT NULL DEFAULT '0',
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `account_change` created.\n";
 
 	/*
@@ -82,7 +84,7 @@ try {
 						`permissions` tinytext NOT NULL,
 						`request_ips` tinytext NOT NULL,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `api` created.\n";
 
 	/*
@@ -95,7 +97,7 @@ try {
 						`token` char(32) NOT NULL DEFAULT '',
 						`path` varchar(5000) NOT NULL DEFAULT '',
 						PRIMARY KEY (`id`)
-					) ENGINE=MEMORY DEFAULT CHARSET=latin1;");
+					) ENGINE=MEMORY DEFAULT CHARSET=utf8;");
 	echo "Table `downloads` created.\n";
 
 	/*
@@ -107,7 +109,7 @@ try {
 						`setting_ref` char(25) NOT NULL DEFAULT '',
 						`setting_val` tinytext,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `acp_settings` created.\n";
 
 	/*
@@ -125,7 +127,7 @@ try {
 						`action` char(100) NOT NULL DEFAULT '',
 						`desc` text NOT NULL,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `actions_log` created.\n";
 
 	/*
@@ -137,7 +139,7 @@ try {
 						`short` varchar(10) NOT NULL DEFAULT '',
 						`long` varchar(500) NOT NULL DEFAULT '',
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `locations` created.\n";
 
 	/*
@@ -160,7 +162,7 @@ try {
 						`ports` text NOT NULL,
 						`public` int(1) NOT NULL DEFAULT '1',
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `nodes` created.\n";
 
 	/*
@@ -190,7 +192,7 @@ try {
 						`ftp_user` tinytext NOT NULL,
 						`ftp_pass` tinytext NOT NULL,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `servers` created.\n";
 
 	/*
@@ -198,7 +200,7 @@ try {
 	 */
 	$mysql->exec("DROP TABLE IF EXISTS `users`");
 	$mysql->exec("CREATE TABLE `users` (
-		  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+						`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 						`whmcs_id` int(11) DEFAULT NULL,
 						`uuid` varchar(36) NOT NULL,
 						`username` varchar(50) NOT NULL DEFAULT '',
@@ -215,29 +217,55 @@ try {
 						`use_totp` int(1) NOT NULL DEFAULT '0',
 						`totp_secret` tinytext,
 						PRIMARY KEY (`id`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `users` created.\n";
 
-	$prepare = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
-		('company_name', :cname),
-		('master_url', :murl),
-		('assets_url', :aurl),
-		('main_website', :mwebsite),
-		('postmark_api_key', NULL),
-		('mandrill_api_key', NULL),
-		('mailgun_api_key', NULL),
-		('sendgrid_api_key', NULL),
-		('sendmail_email', NULL),
-		('sendmail_method','php'),
-		('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
-		('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
-		('default_language', 'en'),
-		('force_online', 0),
-		('https', 0),
-		('use_api', 0),
-		('allow_subusers', 0)");
+	$mysql->exec("DROP TABLE IF EXISTS `permissions`");
+	$mysql->exec("CREATE TABLE `permissions` (
+						`id` int(1) unsigned NOT NULL AUTO_INCREMENT,
+						`user` int(1) NOT NULL,
+						`server` int(1) NOT NULL,
+						`permission` varchar(200) NOT NULL DEFAULT '',
+						PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+	echo "Table `permissions` created.\n";
 
-	$prepare->execute(array(
+	$mysql->exec("DROP TABLE IF EXISTS `subusers`");
+
+	$mysql->exec("CREATE TABLE `subusers` (
+						`id` int(1) unsigned NOT NULL AUTO_INCREMENT,
+						`uuid` char(36) NOT NULL DEFAULT '',
+						`user` int(1) NOT NULL,
+						`server` int(1) NOT NULL,
+						`gsd_secret` char(36) NOT NULL DEFAULT '',
+						`gsd_permissions` text,
+						`permissions` text,
+						`pending` int(1) NOT NULL,
+						`pending_email` varchar(200) DEFAULT NULL,
+						PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+	echo "Table `subusers` created.\n";
+
+	$query = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
+						('company_name', :cname),
+						('master_url', :murl),
+						('assets_url', :aurl),
+						('main_website', :mwebsite),
+						('postmark_api_key', NULL),
+						('mandrill_api_key', NULL),
+						('mailgun_api_key', NULL),
+						('sendgrid_api_key', NULL),
+						('sendmail_email', NULL),
+						('sendmail_method','php'),
+						('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
+						('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
+						('default_language', 'en'),
+						('force_online', 0),
+						('https', 0),
+						('use_api', 0),
+						('allow_subusers', 0)");
+
+	$query->execute(array(
 		':cname' => $params['companyName'],
 		':murl' => $params['siteUrl'],
 		':mwebsite' => $params['siteUrl'],
@@ -266,7 +294,6 @@ try {
 	$mysql->commit();
 
 	exit(0);
-
 } catch (\Exception $ex) {
 
 	echo $ex->getMessage() . "\n";
@@ -274,5 +301,4 @@ try {
 		$mysql->rollBack();
 	}
 	exit(1);
-
 }
