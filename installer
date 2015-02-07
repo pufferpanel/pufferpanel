@@ -153,6 +153,10 @@ chmod -R 774 PufferPanel/src/cache
 getent passwd apache > /dev/null
 if [ $? -eq 0 ]; then
   echo "Chowning files to Apache user"
+  chown -R apache:apache PufferPanel
+  if [ $? -ne 0 ]; then
+    echo "${red}Could not chown to Apache, please do this manually${normal}"
+  fi
 else
   echo "${red}Apache user not found, cannot chown to correct user${normal}"
 fi
