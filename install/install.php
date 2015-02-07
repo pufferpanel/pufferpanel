@@ -274,7 +274,7 @@ try {
 		':aurl' => $params['siteUrl'] . '/assets'
 	));
 
-	echo "Settings added";
+	echo "Settings added\n";
 
 	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
 	$mysql->prepare("INSERT INTO `users` VALUES(NULL, NULL, :uuid, :username, :email, :password, NULL, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)")->execute(array(
@@ -286,12 +286,12 @@ try {
 		':time' => time()
 	));
 
-	echo "Admin user added";
+	echo "Admin user added\n";
 
 	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY :pass")->execute(array(
 		'pass' => $pass
 	));
-	echo "PufferPanel SQL user added";
+	echo "PufferPanel SQL user added\n";
 
 	$mysql->commit();
 
