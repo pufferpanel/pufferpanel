@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 
 $klein->respond('POST', '/node/ajax/console/power', function($request, $response) use ($core) {
 
-	if(!$core->user->hasPermission('console.power')) {
+	if(!$core->permissions->has('console.power')) {
 
 		$response->code(403);
 		$response->body('You do not have permission to perform this action.')->send();

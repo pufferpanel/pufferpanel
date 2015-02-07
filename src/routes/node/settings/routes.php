@@ -21,7 +21,7 @@ use \ORM, \Unirest, \Tracy;
 
 $klein->respond('GET', '/node/settings', function($request, $response, $service) use ($core) {
 
-	if(!$core->user->hasPermission('manage.view')) {
+	if(!$core->permissions->has('manage.view')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -42,7 +42,7 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 
 $klein->respond('POST', '/node/settings/jar', function($request, $response, $service) use ($core) {
 
-	if(!$core->user->hasPermission('manage.rename.jar')) {
+	if(!$core->permissions->has('manage.rename.jar')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -99,7 +99,7 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 
 $klein->respond('POST', '/node/settings/ftp', function($request, $response, $service) use ($core) {
 
-	if(!$core->user->hasPermission('manage.ftp.password')) {
+	if(!$core->permissions->has('manage.ftp.password')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();

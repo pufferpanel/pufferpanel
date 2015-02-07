@@ -115,17 +115,19 @@ class Authentication {
 			return false;
 		}
 
-		$query = ORM::forTable('servers')->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1));
+		return true;
 
-		if(!$this->isAdmin()) {
-
-			$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
-
-			$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)));
-
-		}
-
-		return (!$query->findOne()) ? false : true;
+		// $query = ORM::forTable('servers')->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1));
+		//
+		// if(!$this->isAdmin()) {
+		//
+		// 	$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
+		//
+		// 	$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)));
+		//
+		// }
+		//
+		// return (!$query->findOne()) ? false : true;
 
 	}
 

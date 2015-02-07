@@ -15,11 +15,11 @@
 	</div>
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
-		{% if permission.files.create == true %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
-		{% if permission.files.upload == true %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
+		{% if permission.has('files.create') %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
+		{% if permission.has('files.upload') %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
 	</ul>
 	<div class="tab-content">
-		{% if permission.files.create == true %}
+		{% if permission.has('files.create') %}
 		<div class="tab-pane active" id="create">
 			<div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
 			<form method="post" id="new_file">
@@ -29,7 +29,7 @@
 						<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
 					</div>
 				</div>
-				{% if permission.files.create == true %}
+				{% if permission.has('files.create') %}
 					<div class="form-group">
 						<div>
 							<button class="btn btn-primary btn-sm" id="create_file">{{ lang.string_save }}</button>
@@ -40,7 +40,7 @@
 		    </form>
 		</div>
 		{% endif %}
-		{% if permission.files.upload == true %}
+		{% if permission.has('files.upload') %}
 		<div class="tab-pane" id="upload">
 			<h4>/server/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
 			<div class="well well-sm"><p class="text-muted" style="margin-bottom:0;"><i class="fa fa-warning"></i> Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/server/</code> and begin typing. Once you have done this please click the button below to initalize the uploader.</p></div>
@@ -104,7 +104,7 @@ $(document).ready(function() {
 		var seconds = temp % 60;
 		return seconds + ' second' + numberEnding(seconds);
 	}
-	{% if permission.files.upload == true %}
+	{% if permission.has('files.upload') %}
 		$("#init_uploader").click(function(){
 			$(this).hide();
 			$("#initUploaderDiv").show();
@@ -204,7 +204,7 @@ $(document).ready(function() {
 			});
 		});
 	{% endif %}
-	{% if permission.files.create == true %}
+	{% if permission.has('files.create') %}
 		$("#create_file").click(function(e) {
 			e.preventDefault();
 			$("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");

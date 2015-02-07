@@ -18,7 +18,7 @@
 </head>
 <body>
 	<div class="container">
-		<div class="navbar navbar-default" style="margin-top: 30px;">
+		<div class="navbar navbar-default">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
 					<span class="icon-bar"></span>
@@ -36,6 +36,7 @@
 					{% endif %}
 				{% endblock %}
 				<ul class="nav navbar-nav hidden-md hidden-lg">
+					{% block navbar %}
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.sidebar_acc_actions }} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
@@ -49,12 +50,13 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.sidebar_server_acc }} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="/node/index">{{ lang.sidebar_overview }}</a></li>
-								{% if permission.files.view == true %}<li><a href="/node/files">{{ lang.sidebar_files }}</a></li>{% endif %}
-								{% if permission.users.view == true %}<li><a href="/node/users">Manage Subusers</a></li>{% endif %}
-								{% if permission.manage.view == true %}<li><a href="/node/settings">{{ lang.sidebar_manage }}</a></li>{% endif %}
+								{% if permission.has('files.view') %}<li><a href="/node/files">{{ lang.sidebar_files }}</a></li>{% endif %}
+								{% if permission.has('users.view') %}<li><a href="/node/users">Manage Subusers</a></li>{% endif %}
+								{% if permission.has('manage.view') %}<li><a href="/node/settings">{{ lang.sidebar_manage }}</a></li>{% endif %}
 							</ul>
 						</li>
 						{% endif %}
+					{% endblock %}
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
@@ -80,19 +82,19 @@
 		<div class="row">
 			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
 				{% block sidebar %}
+					<div class="list-group">
+						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
+						<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
+						<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
+						<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
+					</div>
 					{% if server.name is defined %}
-						<div class="list-group">
-							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-							<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
-							<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-							<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
-						</div>
 						<div class="list-group">
 							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
 							<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
-							{% if permission.files.view == true %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
-							{% if permission.users.view == true %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
-							{% if permission.manage.view == true %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
+							{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
+							{% if permission.has('users.view') %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
+							{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
 						</div>
 					{% endif %}
 				{% endblock %}

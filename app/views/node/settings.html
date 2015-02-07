@@ -5,17 +5,17 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs" style="margin-bottom:15px;">
-		{% if permission.manage.rename.view == true %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
-		{% if permission.manage.ftp.view == true %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }} Information</a></li>{% endif %}
+		{% if permission.has('manage.rename.view') %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
+		{% if permission.has('manage.ftp.view') %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }} Information</a></li>{% endif %}
 	</ul>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<div class="tab-content">
-		{% if permission.manage.rename.view == true %}
+		{% if permission.has('manage.rename.view') %}
 			<div class="tab-pane active" id="server_sett">
 				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
-				{% if permission.manage.rename.jar == true %}
+				{% if permission.has('manage.rename.jar') %}
 					<div class="well">
 						<form action="/node/settings/jar" method="post">
 							<fieldset>
@@ -38,10 +38,10 @@
 				{% endif %}
 			</div>
 		{% endif %}
-		{% if permission.manage.ftp.view == true %}
+		{% if permission.has('manage.ftp.view') %}
 			<div class="tab-pane" id="ftp_sett">
 				<h3>Manage FTP Information</h3><hr />
-				{% if permission.manage.ftp.details == true %}
+				{% if permission.has('manage.ftp.details') %}
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">{{ lang.string_host }}</label>
 						<div>
@@ -55,7 +55,7 @@
 						</div>
 					</div>
 				{% endif %}
-				{% if permission.manage.ftp.password == true %}
+				{% if permission.has('manage.ftp.password') %}
 					<form action="/node/settings/ftp" method="post">
 						<fieldset>
 							<div class="well">

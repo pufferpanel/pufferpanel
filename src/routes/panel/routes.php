@@ -153,27 +153,21 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	else if($request->param('action') == "subuser") {
 
 		$query = ORM::forTable('account_change')->select_many('id', 'verified', 'content')->where(array('key' => $request->param('token'), 'verified' => 0))->findOne();
-
-		if(!$query) {
-
-			$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
-			$response->redirect('/account')->send();
-			return;
-
-		}
-
-		$_perms = json_decode($query->content, true);
-		$info = ORM::forTable('servers')
-			->select_many('servers.*', 'users.permissions', 'nodes.ip', array('node_gsd_secret' => 'nodes.gsd_secret'), 'nodes.gsd_listen')
-			->join('users', array('servers.owner_id', '=', 'users.id'))
+		$info = ORM::forTable('subusers')
+			->selectMany('subusers.*', 'nodes.ip', 'nodes.gsd_listen', 'servers.gsd_id', 'servers.node')
+			->select('nodes.gsd_secret', 'node_gsd_secret')
+			->join('servers', array('subusers.server', '=', 'servers.id'))
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
-			->where('hash', key($_perms))
+			->where(array(
+				'subusers.uuid' => $query->content,
+				'subusers.pending_email' => $core->user->getData('email'),
+				'subusers.pending' => 1
+			))
 			->findOne();
 
-		$subusers = json_decode($info->subusers, true);
-		if(!array_key_exists($core->user->getData('email'), $subusers)) {
+		if(!$query || !$info) {
 
-			$service->flash('<div class="alert alert-danger">The token you entered is not valid for this email address.</div>');
+			$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -188,43 +182,35 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 				),
 				array(
 					"keys" => json_encode(array(
-						$_perms[$info->hash]['key'] => $_perms[$info->hash]['perms_gsd']
+						$info->gsd_secret => json_decode($info->gsd_permissions, true)
 					))
 				)
 			);
-
-			unset($subusers[$core->user->getData('email')]);
-			$subusers[$core->user->getData('id')] = "verified";
-
-			$permissions = @json_decode($info->permissions, true);
-			$permissions = (is_array($permissions)) ? $permissions : array();
-			$permissions[$info->hash] = $_perms[$info->hash];
-
-			// set permissions for user
-			$user = ORM::forTable('users')->findOne($core->user->getData('id'));
-			$user->permissions = json_encode($permissions);
-
-			//set server subusers
-			$info->subusers = json_encode($subusers);
-
-			// expire key
-			$query->verified = 1;
-
-			// save
-			$info->save();
-			$user->save();
-			$query->save();
-
-			$service->flash('<div class="alert alert-success">You have been added as a subuser for <em>'.$info->name.'</em>!</div>');
-			$response->redirect('/account')->send();
 
 		} catch(\Exception $e) {
 
 			\Tracy\Debugger::log($e);
 			$service->flash('<div class="alert alert-danger">The server management daemon is not responding, we were unable to add your permissions. Please try again later.</div>');
 			$response->redirect('/account')->send();
+			return;
 
 		}
+
+		foreach(json_decode($info->permissions, true) as $id => $permission) {
+
+			ORM::forTable('permissions')->create()->set(array(
+				'user' => $core->user->getData('id'),
+				'server' => $info->server,
+				'permission' => $permission
+			))->save();
+
+		}
+
+		$info->set(array('subusers.pending' => 0, 'subusers.user' => $core->user->getData('id')))->save();
+		$query->delete();
+
+		$service->flash('<div class="alert alert-success">You have been added as a subuser for that server!</div>');
+		$response->redirect('/account')->send();
 
 	}
 
@@ -248,7 +234,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
 			->join('locations', array('nodes.location', '=', 'locations.short'))
 			->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
-			->where_raw('servers.owner_id = ? OR servers.hash IN(?)', array($core->user->getData('id'), join(',', $core->user->listServerPermissions())))
+			->where_raw('servers.owner_id = ? OR servers.id IN(?)', array($core->user->getData('id'), join(',', $core->permissions->listServers())))
 			->findArray();
 
 	}
@@ -260,7 +246,6 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 		'servers' => $servers,
 		'flash' => $service->flashes()
 	)))->send();
-
 
 });
 

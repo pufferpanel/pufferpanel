@@ -21,7 +21,7 @@ use \ORM, \Flow, \League\Flysystem\Filesystem as Filesystem, \League\Flysystem\A
 
 $klein->respond(array('GET', 'POST'), '/node/files/[*]', function($request, $response, $service, $app, $klein) use($core) {
 
-	if(!$core->user->hasPermission('files.view')) {
+	if(!$core->permissions->has('files.view')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -42,7 +42,7 @@ $klein->respond('GET' , '/node/files', function($request, $response, $service) u
 
 $klein->respond('GET', '/node/files/download/[*:file]', function($request, $response, $service) use($core) {
 
-	if(!$core->user->hasPermission('files.download')) {
+	if(!$core->permissions->has('files.download')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -84,7 +84,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 
 $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response, $service) use ($core) {
 
-	if(!$core->user->hasPermission('files.edit')) {
+	if(!$core->permissions->has('files.edit')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -150,7 +150,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 
 $klein->respond('GET', '/node/files/add/[*:directory]?', function($request, $response, $service) use($core) {
 
-	if(!$core->user->hasPermission('files.create') || !$core->user->hasPermission('files.upload')) {
+	if(!$core->permissions->has('files.create') || !$core->permissions->has('files.upload')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -171,7 +171,7 @@ $klein->respond('GET', '/node/files/add/[*:directory]?', function($request, $res
 
 $klein->respond('POST', '/node/files/add', function($request, $response, $service) use($core) {
 
-	if(!$core->user->hasPermission('files.create')) {
+	if(!$core->permissions->has('files.create')) {
 
 		$response->code(403);
 		$response->body($core->twig->render('node/403.html'))->send();
@@ -229,7 +229,7 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 
 $klein->respond('/node/files/upload', function($request, $response, $service) use($core) {
 
-	if(!$core->user->hasPermission('files.upload')) {
+	if(!$core->permissions->has('files.upload')) {
 
 		$response->code(403);
 		$response->body('you don\'t have permission to do that')->send();

@@ -28,7 +28,7 @@
 				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
-		{% if permission.files.save == true %}
+		{% if permission.has('files.save') %}
 			<div class="form-group">
 				<div>
 					<input type="hidden" name="file" value="{{ file }}" />
@@ -57,7 +57,7 @@ $(window).load(function() {
 			e.preventDefault();
 		}
 	});
-	{% if permission.files.save == true %}
+	{% if permission.has('files.save') %}
 		$("#save_file").click(function(a) {
 			a.preventDefault();
 			var e = $("input[name='file']").val(),

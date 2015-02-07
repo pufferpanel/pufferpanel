@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Login{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block sidebar %}{% endblock %}
+
 {% block content %}
 <div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
@@ -29,8 +33,8 @@
     		<div class="form-group">
     			<div>
                     {{ xsrf|raw }}
-    				<input type="submit" class="btn btn-primary" value="Login" />
-    				<button class="btn btn-default" onclick="window.location='/auth/password';return false;">{{ lang.string_reset_password }}</button>
+    				<input type="submit" class="btn btn-primary btn-sm" value="Login" />
+    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">{{ lang.string_reset_password }}</button>
     			</div>
     		</div>
     	</fieldset>
@@ -52,7 +56,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<input type="submit" class="btn btn-default" value="Continue" />
+					<input type="submit" class="btn btn-default btn-sm" value="Continue" />
 				</div>
 			</div>
 		</form>

@@ -50,6 +50,7 @@ require_once(SRC_DIR.'core/files.php');
 require_once(SRC_DIR.'core/user.php');
 require_once(SRC_DIR.'core/language.php');
 require_once(SRC_DIR.'core/log.php');
+require_once(SRC_DIR.'core/permissions.php');
 require_once(SRC_DIR.'core/server.php');
 require_once(SRC_DIR.'core/query.php');
 require_once(SRC_DIR.'core/settings.php');

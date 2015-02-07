@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Register New Account{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block sidebar %}{% endblock %}
+
 {% block content %}
 <div class="col-md-6">
 	<form action="/auth/register" method="POST" id="login-form">
@@ -10,7 +14,7 @@
 				{{ flash.info.0|raw }}
 			{% endif %}
 			<div class="well well-sm">
-				<p>Welcome! Please fill out the form below to create an account and begin accessing servers. If you have already have an account please go to <code>Account Settings &rarr; Server Token</code> and add the token you have recieved and authenticate the request.</p>
+				<p>Welcome! Please fill out the form below to create an account and begin accessing servers.</p>
 			</div>
 			<div class="form-group">
 				<label for="login-password" class="control-label">Token</label>
@@ -37,8 +41,8 @@
 			<div class="form-group">
 				<div>
 					{{ xsrf|raw }}
-					<input type="submit" class="btn btn-primary" value="Create Account" />
-					<button class="btn btn-default" onclick="window.location='index.php';return false;">Login</button>
+					<input type="submit" class="btn btn-primary btn-sm" value="Create Account" />
+					<button class="btn btn-default btn-sm" onclick="window.location='login';return false;">Login</button>
 				</div>
 			</div>
 		</fieldset>

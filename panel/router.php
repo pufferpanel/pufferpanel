@@ -87,14 +87,15 @@ $core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'),
 	'debug' => true
 ));
 $core->language = new Language();
+$core->permissions = new Permissions($core->server->getData('id'));
 
 /*
  * Twig Setup
  */
 $core->twig->addGlobal('lang', $core->language->loadTemplates()); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
-$core->twig->addGlobal('settings', Settings::config()); // @TODO Change this to addGlobal('settings', $this->settings) to allow access as {{ settings.get('value') }}
+$core->twig->addGlobal('settings', Settings::config());
 $core->twig->addGlobal('get', Components\Page::twigGET());
-$core->twig->addGlobal('permission', $core->user->twigListPermissions()); // @TODO Change this to addGlobal('permission', $core->user) to allow access as {% if permission.hasPermission('permission') %}
+$core->twig->addGlobal('permission', $core->permissions);
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());

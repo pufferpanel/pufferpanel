@@ -78,13 +78,13 @@
 				</div>
 				<div class="col-md-6">
 					<hr />
-					{% if permission.console.commands == true %}
+					{% if permission.has('console.commands') %}
 						<form action="#" method="post" id="console_command">
 							<fieldset>
 								<div class="input-group">
 									<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ lang.node_console_command_help }}" />
 									<span class="input-group-btn">
-										<button id="sending_command" class="btn btn-primary">&rarr;</button>
+										<button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
 									</span>
 								</div>
 							</fieldset>
@@ -94,7 +94,7 @@
 				</div>
 				<div class="col-md-6" style="text-align:center;">
 					<hr />
-					{% if permission.console.power == true %}
+					{% if permission.has('console.power') %}
 						<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
 						<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
 						<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
@@ -216,7 +216,7 @@
 			$("#paused_console").val();
 			$("#paused_console").val($("#live_console").val());
 		});
-		{% if permission.console.commands == true %}
+		{% if permission.has('console.commands') %}
 			$("#console_command").submit(function(event){
 				event.preventDefault();
 				var ccmd = $("#ccmd").val();
@@ -246,7 +246,7 @@
 				}
 			});
 		{% endif %}
-		{% if permission.console.power == true %}
+		{% if permission.has('console.power') %}
 			var can_run = true;
 			$("#kill_proc").click(function(){
 				var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");

@@ -28,7 +28,7 @@ $klein->respond('POST', '/node/ajax/files/[*]', function() use($core) {
 
 $klein->respond('POST', '/node/ajax/files/delete', function($request, $response) use($core) {
 
-	if(!$core->user->hasPermission('files.delete')) {
+	if(!$core->permissions->has('files.delete')) {
 
 		$response->code(403)->body("You are not authorized to perform this action.")->send();
 		return;
@@ -71,7 +71,7 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 
 $klein->respond('POST', '/node/ajax/files/compress', function($request, $response) use($core) {
 
-	if(!$core->user->hasPermission('files.zip')) {
+	if(!$core->permissions->has('files.zip')) {
 
 		$response->code(403)->body("You are not authorized to perform this action.")->send();
 		return;
@@ -130,7 +130,7 @@ $klein->respond('POST', '/node/ajax/files/compress', function($request, $respons
 
 $klein->respond('POST', '/node/ajax/files/save', function($request, $response) use($core) {
 
-	if(!$core->user->hasPermission('files.save')) {
+	if(!$core->permissions->has('files.save')) {
 
 		$response->code(403)->body("You are not authorized to perform this action.")->send();
 		return;
@@ -200,7 +200,7 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 
 $klein->respond('POST', '/node/ajax/files/directory', function($request, $response) use($core) {
 
-	if(!$core->user->hasPermission('files.view')) {
+	if(!$core->permissions->has('files.view')) {
 
 		$response->code(403);
 		$response->body("You are not authorized to perform this action.")->send();

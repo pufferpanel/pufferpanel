@@ -22,7 +22,7 @@ use \ORM, \ReflectionClass;
 /**
  * PufferPanel Core Server management class.
  */
-class Server extends User {
+class Server extends Permissions {
 
 	use Components\Page;
 
@@ -69,7 +69,7 @@ class Server extends User {
 			$this->_buildData($reference);
 		}
 
-		parent::initalizePermissions($this->getData('hash'), $this->getData('owner_id'));
+		//parent::initalizePermissions($this->getData('id'), $this->getData('owner_id'));
 
 	}
 
@@ -143,7 +143,7 @@ class Server extends User {
 		$query = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1));
 
 		if(!$this->isAdmin()) {
-			$query = $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(parent::getData('id'), join(',', parent::listServerPermissions())));
+			$query = $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(parent::getData('id'), join(',', Permissions::listServers())));
 		}
 
 		return (!$query->findOne()) ? false : true;
@@ -190,9 +190,9 @@ class Server extends User {
 
 		if(!$this->isAdmin()) {
 
-			$query= $query->where_raw('`owner_id` = ? OR `hash` IN(?)', array(
+			$query= $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(
 					parent::getData('id'),
-					join(',', parent::listServerPermissions())
+					join(',', Permissions::listServers())
 				));
 
 		}
@@ -211,63 +211,6 @@ class Server extends User {
 			$this->found_node = false;
 			return;
 		}
-
-	}
-
-	/**
-	 * Returns an array of users with access to currently active server and their current status.
-	 *
-	 * @return array
-	 */
-	public function listAffiliatedUsers() {
-
-		$affiliated = json_decode($this->getData('subusers'), true);
-		$userdata = array();
-
-		if(is_array($affiliated) && !empty($affiliated)) {
-
-			foreach($affiliated as $id => $status) {
-
-				if($status != "verified") {
-
-					$selectUser = ORM::forTable('account_change')
-						->select('content')
-						->where(array('key' => $status, 'verified' => 0))
-						->findOne();
-
-					if($selectUser) {
-
-						$content = json_decode($selectUser->content, true);
-						$userdata[$id] = array(
-							"status" => "pending",
-							"revoke" => $status,
-							"permissions" => $content[$this->getData('hash')]['perms']
-						);
-
-					}
-
-				} else {
-
-					$selectUser = ORM::forTable('users')->selectMany('permissions', 'email', 'uuid')->where('id', $id)->findOne();
-
-					if($selectUser) {
-
-						$permissions = json_decode($selectUser->permissions, true);
-						$userdata[$selectUser->email] = array(
-							"status" => "verified",
-							"id" => $selectUser->uuid,
-							"permissions" => $permissions[$this->getData('hash')]['perms']
-						);
-
-					}
-
-				}
-
-			}
-
-		}
-
-		return $userdata;
 
 	}
 

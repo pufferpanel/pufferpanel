@@ -289,7 +289,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 	}
 
-	$user = ORM::forTable('users')->where_any_is(array(array('username' => $_POST['username']), array('email' => $query->content)))->findOne();
+	$user = ORM::forTable('users')->where_any_is(array(array('username' => $request->param('username')), array('email' => $request->param('email'))))->findOne();
 
 	if($user) {
 
@@ -311,10 +311,9 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 	));
 	$user->save();
 
-	$query->verified = 1;
-	$query->save();
+	$query->delete();
 
-	$service->flash('<div class="alert alert-danger">Your account has been created successfully, you may now login and add a server to your account.</div>');
+	$service->flash('<div class="alert alert-success">Your account has been created successfully, you may now login and add a server to your account.</div>');
 	$response->redirect('/auth/login')->send();
 
 });
