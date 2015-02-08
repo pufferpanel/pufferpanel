@@ -29,14 +29,28 @@ $klein->respond('GET', '/assets/[:type]/[*:file]', function($request, $response)
 
 	}
 
-	if($request->param('type') == 'css') {
-		$response->header('Content-Type', 'text/'.$request->param('type'));
-	} else if($request->param('type') == 'javascript') {
-		$response->header('Content-Type', 'application/'.$request->param('type'));
+	$etag = md5_file($file);
+
+	if($request->server()["HTTP_IF_MODIFIED_SINCE"] && $request->server()["HTTP_IF_NONE_MATCH"]) {
+
+		if(filemtime($file) <= strtotime($request->server()["HTTP_IF_MODIFIED_SINCE"]) || trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+			$response->code(304);
+		}
+
 	}
 
-	$response->header('X-Content-Type-Options', 'nosniff');
-	$response->header('Last-Modified', gmdate('D, d M Y H:i:s', filemtime($file)).' GMT');
+	if($request->param('type') == 'css') {
+		header('Content-Type: text/'.$request->param('type'));
+	} else if($request->param('type') == 'javascript') {
+		header('Content-Type: application/'.$request->param('type'));
+	}
+
+	header('X-Content-Type-Options: nosniff');
+	header('Cache-control: public');
+	header('Pragma: cache');
+	header('Etag: "'.$etag.'"');
+	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 60 * 60) . ' GMT');
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file)).' GMT');
 
 	$response->body(file_get_contents($file))->send();
 
