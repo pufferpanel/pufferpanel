@@ -67,14 +67,6 @@ ORM::configure(array(
 $core = new stdClass();
 $klein = new \Klein\Klein();
 
-/*
-* Require HTTPS Connection
-*/
-if(Settings::config()->https == 1 && (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']))) {
-	$url = rtrim(str_replace(array('https://', 'http://'), "", Settings::config()->master_url), '/');
-	exit(header('Location: https://'.$url.$_SERVER['REQUEST_URI']));
-}
-
 $core->auth = new Authentication();
 $core->user = new User();
 $core->server = new Server();
