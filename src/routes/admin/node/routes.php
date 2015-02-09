@@ -169,20 +169,101 @@ $klein->respond('POST', '/admin/node/locations', function($request, $response, $
 
 	}
 
-	if(empty($request->param('location'))) {
-
-		$service->flash('<div class="alert alert-danger">Location name must not be empty.</div>');
-		$response->redirect('/admin/node/locations')->send();
-		return;
-
-	}
-
 	$location = ORM::forTable('locations')->create();
 	$location->short = $request->param('shortcode');
 	$location->long = $request->param('location');
 	$location->save();
 
 	$service->flash('<div class="alert alert-success">Successfully added a new location.</div>');
+	$response->redirect('/admin/node/locations')->send();
+	return;
+
+});
+
+$klein->respond('GET', '/admin/node/locations/[:shortcode]/edit', function($request, $response) use($core) {
+
+	if(!preg_match('/^[\w-]{1,10}$/', $request->param('shortcode'))) {
+
+		$response->code(404)->body('<div class="alert alert-danger">No location provided or the location was invalid.</div>')->send();
+		return;
+
+	}
+
+	$location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+	if(!$location) {
+
+		$response->code(404)->body('<div class="alert alert-danger">That location could not be found in the system.</div>')->send();
+		return;
+
+	}
+
+	$response->body($core->twig->render(
+		'admin/node/location-popup.html',
+		array(
+			'location' => $location
+		)
+	))->send();
+
+});
+
+$klein->respond('GET', '/admin/node/locations/[:shortcode]/delete', function($request, $response, $service) use($core) {
+
+	$location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+	if(!$location) {
+
+		$service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
+		$response->redirect('/admin/node/locations')->send();
+		return;
+
+	}
+
+	if(ORM::forTable('nodes')->where('location', $location->short)->findMany()) {
+
+		$service->flash('<div class="alert alert-danger">You may not delete locations with currently active nodes.</div>');
+		$response->redirect('/admin/node/locations')->send();
+		return;
+
+	}
+
+	$location->delete();
+	$service->flash('<div class="alert alert-success">The requested location has been deleted from the system.</div>');
+	$response->redirect('/admin/node/locations')->send();
+
+});
+
+
+$klein->respond('POST', '/admin/node/locations/[:shortcode]/edit', function($request, $response, $service) use($core) {
+
+	if(!preg_match('/^[\w-]{1,10}$/', $request->param('shortcode'))) {
+
+		$service->flash('<div class="alert alert-danger">Location shotcode must be between 1 and 10 characters, and not contain any special characters.</div>');
+		$response->redirect('/admin/node/locations')->send();
+		return;
+
+	}
+
+	$location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+	if(!$location) {
+
+		$service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
+		$response->redirect('/admin/node/locations')->send();
+		return;
+
+	}
+
+	$nodes = ORM::forTable('nodes')->where('location', $location->short)->findMany();
+	foreach($nodes as $node) {
+
+		$node->location = $request->param('location-short');
+		$node->save();
+
+	}
+
+	$location->short = $request->param('location-short');
+	$location->long = $request->param('location-long');
+	$location->save();
+
+	$service->flash('<div class="alert alert-success">Location information has been successfully updated.</div>');
 	$response->redirect('/admin/node/locations')->send();
 	return;
 

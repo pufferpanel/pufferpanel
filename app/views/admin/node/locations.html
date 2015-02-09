@@ -29,8 +29,8 @@
 				<td>{{ location.long }}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
 				<td style="text-align:center;">
-					<span class="badge">Edit</span>
-					<span class="badge alert-danger">Delete</span>
+					<a href="/admin/node/locations/{{ location.short }}/edit" class="edit_location"><span class="badge">Edit</span></a>
+					<a href="/admin/node/locations/{{ location.short }}/delete"><span class="badge alert-danger">Delete</span></a>
 				</td>
 			</tr>
 			{% endfor %}
@@ -64,13 +64,27 @@
 			</div>
 		</div>
 	</form>
+	<span id="appendModal"></span>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script type="text/javascript">
-$(document).ready(function(){
+$(window).load(function(){
 	$("#sidebar_links").find("a[href='/admin/node/locations']").addClass('active');
+	$(".edit_location").click(function(e){
+		var c = $(this);
+		e.preventDefault();
+		$.ajax({
+			'url': c.attr('href'),
+			'method': 'GET'
+		}).done(function(data){
+			$("#appendModal").html(data);
+			$("#launchModal").modal();
+		}).fail(function() {
+			alert("An error occured while trying to make this request.");
+		});
+	});
 });
 </script>
 {% endblock %}
