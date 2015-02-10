@@ -2,7 +2,7 @@
 
 use \PDO;
 
-define("BASE_DIR", dirname(__FILE__));
+define("BASE_DIR", dirname(dirname(__FILE__)) . '/');
 
 $params = array();
 parse_str(implode('&', array_splice($argv, 1)), $params);
@@ -271,7 +271,7 @@ try {
 		':cname' => $params['companyName'],
 		':murl' => $params['siteUrl'],
 		':mwebsite' => $params['siteUrl'],
-		':aurl' => $params['siteUrl'] . '/assets'
+		':aurl' => '//' . $params['siteUrl'] . '/assets/'
 	));
 
 	echo "Settings added\n";
