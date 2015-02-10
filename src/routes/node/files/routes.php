@@ -202,7 +202,7 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 
 	try {
 
-		if(!$filesystem->write(urldecode($_POST['newFilePath']), $_POST['newFileContents'])) {
+		if(!$filesystem->write(urldecode($request->param('newFilePath')), $request->param('newFileContents'))) {
 
 			$response->code(500);
 			$response->body('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>')->send();
@@ -302,7 +302,8 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 	if($request->method('get')) {
 
 		if($file->checkChunk()) {
-			$response->code(200)->send();
+			$response->code(200)->body('chunked')->send();
+			return;
 		} else {
 
 			$response->code(404);
@@ -333,7 +334,8 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 				$filesystem->writeStream(rtrim($request->param('newFilePath'), '/').'/'.$request->param('flowFilename'), $stream);
 				unlink($uploadPath.$request->param('flowFilename'));
 
-				$response->code(200)->send();
+				$response->code(200)->body('done')->send();
+				return;
 
 		}
 
@@ -347,5 +349,7 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 		return;
 
 	}
+
+	exit();
 
 });

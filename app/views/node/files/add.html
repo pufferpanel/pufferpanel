@@ -185,8 +185,13 @@ $(document).ready(function() {
 				+ readablizeBytes(file.averageSpeed) + '/s '
 				+ secondsToStr(file.timeRemaining()) + ' remaining') ;
 				$('.flow-file-'+file.uniqueIdentifier+' .progress .progress-bar').css('width', Math.floor(file.progress()*100) + '%');
+
+				if(file.progress() == 1) {
+					$('.flow-file-'+file.uniqueIdentifier+' .flow-file-progress').text('Moving file to server, please wait...');
+				}
+
 			});
-			flow.on('complete', function(){
+			flow.on('complete', function(file, message) {
 				$('.flow-progress .progress-resume-link, .flow-progress .progress-pause-link').hide();
 			});
 			flow.on('fileSuccess', function(file, message){
@@ -214,20 +219,18 @@ $(document).ready(function() {
 				data: {
 					newFilePath: "{% if directory is not empty %}{{ directory }}{% endif %}" + $("#file_name").val(),
 					newFileContents: $("#live_console").val()
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					$("#write_status").html('<div class="alert alert-danger">'+errorThrown+'</div>').show();
-					$("#create_file").html("Save").removeClass("disabled");
-				},
-				success: function(data) {
-					if(data != "ok"){
-						$("#write_status").html(data);
-						$("#create_file").html("Save").removeClass("disabled");
-						$("#write_status").slideDown();
-					} else {
-						window.location.replace('/node/files/edit/{% if directory is not empty %}{{ directory }}{% endif %}' + $("#file_name").val());
-					}
 				}
+			}).done(function(data) {
+				if(data != "ok"){
+					$("#write_status").html(data);
+					$("#create_file").html("Save").removeClass("disabled");
+					$("#write_status").slideDown();
+				} else {
+					window.location.replace('/node/files/edit/{% if directory is not empty %}{{ directory }}{% endif %}' + $("#file_name").val());
+				}
+			}).fail(function(xhr, status, error) {
+				$("#write_status").html('<div class="alert alert-danger">'+ xhr.responseText +'</div>').show();
+				$("#create_file").html("Save").removeClass("disabled");
 			});
 		});
 	{% endif %}
