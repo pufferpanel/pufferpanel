@@ -8,6 +8,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 usedev=false
 installpath="PufferPanel"
 webuser="apache"
+test=false
 
 #This is a helper function to allow for less repetition of command checks
 function checkInstall {
@@ -33,13 +34,27 @@ function revertInstall {
     rm -rf PufferPanel/
 }
 
-while getopts "?dp:" opt; do
+while getopts "h?dptu:" opt; do
     case "$opt" in
     d)  
         usedev=true
         ;;
     p)  
         installpath=$OPTARG
+        ;;
+    u)
+        webuser=$OPTARG
+        ;;
+    t) 
+        test=true
+        ;;
+    h)
+        echo "PufferPanel Installer - Version $version"
+        echo "Optional parameters: "
+        echo "-d        | If set, will install the latest dev version of the panel"
+        echo "-u [user] | Sets the user/group owner of the panel files" 
+        echo "-t        | Checks if the depedencies are installed without installing panel"
+        exit;
         ;;
     esac
 done
@@ -52,6 +67,7 @@ echo "PufferPanel Installer - Version $version"
 echo "------"
 echo "Install path: ${installpath}"
 echo "Using dev: ${usedev}"
+echo "Testing only: ${test}"
 echo "------"
 echo "Checking dependencies:"
 
@@ -91,9 +107,14 @@ done
 echo "------"
 
 if ${canInstall}; then
-    echo "All dependencies are installed, processing with installation";
+    if ${test}; then
+        echo -e "${green}All dependencies are validated${normal}"
+        exit;
+    else 
+        echo -e "{$green}All dependencies are installed, processing with installation${normal}";
+    fi
 else
-    echo "Please insure all dependencies are installed";
+    echo -e "${red}Please ensure all dependencies are installed${normal}";
     exit;
 fi
 
@@ -176,15 +197,15 @@ echo "-----"
 echo "Finishing install"
 chmod -R 774 PufferPanel/src/cache
 
-getent passwd apache > /dev/null
+getent passwd ${webuser} > /dev/null
 if [ $? -eq 0 ]; then
-  echo "Chowning files to Apache user"
-  chown -R apache:apache PufferPanel
+  echo "Chowning files to ${webuser} user"
+  chown -R ${webuser}:${webuser} PufferPanel
   if [ $? -ne 0 ]; then
-    echo "${red}Could not chown to Apache, please do this manually${normal}"
+    echo "${red}Could not chown to ${webuser}, please do this manually${normal}"
   fi
 else
-  echo "${red}Apache user not found, cannot chown to correct user${normal}"
+  echo "${red}${webuser} user not found, cannot chown to correct user${normal}"
 fi
 
 echo -e "${green}PufferPanel has installed successfully."
