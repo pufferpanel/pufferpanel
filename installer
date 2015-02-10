@@ -5,6 +5,10 @@ green="\e[0;32m"
 normal="\e[0m"
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
+usedev=false
+installpath="PufferPanel"
+webuser="apache"
+
 #This is a helper function to allow for less repetition of command checks
 function checkInstall {
     if type "$1" 1>/dev/null 2>&1; then
@@ -29,7 +33,25 @@ function revertInstall {
     rm -rf PufferPanel/
 }
 
+while getopts "?dp:" opt; do
+    case "$opt" in
+    d)  
+        usedev=true
+        ;;
+    p)  
+        installpath=$OPTARG
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
 echo "PufferPanel Installer - Version $version"
+echo "------"
+echo "Install path: ${installpath}"
+echo "Using dev: ${usedev}"
 echo "------"
 echo "Checking dependencies:"
 
@@ -115,17 +137,21 @@ echo "-----"
 echo -e "${green}Configuration options complete, beginning installation process${normal}"
 
 echo "-----"
-echo "Cloning PufferPanel"
+echo "Cloning PufferPanel to ${installpath}"
 
-git clone https://github.com/PufferPanel/PufferPanel.git
+git clone https://github.com/PufferPanel/PufferPanel.git ${installpath}
 validateCommand
 
 echo "-----"
 cd PufferPanel
 ppversion=$(git describe --abbrev=0 --tags)
-echo "Checking out ${ppversion}"
-git checkout tags/${ppversion}
-validateCommand
+if ${usedev}; then 
+    echo "Using dev version"
+else
+    echo "Checking out ${ppversion}"
+    git checkout tags/${ppversion}
+    validateCommand
+fi
 
 echo "-----"
 echo "Installing Composer"
