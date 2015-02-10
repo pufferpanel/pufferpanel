@@ -111,7 +111,7 @@ if ${canInstall}; then
         echo -e "${green}All dependencies are validated${normal}"
         exit;
     else 
-        echo -e "{$green}All dependencies are installed, processing with installation${normal}";
+        echo -e "${green}All dependencies are installed, processing with installation${normal}";
     fi
 else
     echo -e "${red}Please ensure all dependencies are installed${normal}";
