@@ -3,12 +3,17 @@ version=0.1
 red="\e[0;31m"
 green="\e[0;32m"
 normal="\e[0m"
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 usedev=false
-installpath="PufferPanel"
 webuser="apache"
 test=false
+
+# test for /var/www/html
+if [ -d /var/www/html ]; then
+  installpath="/var/www/html/PufferPanel"
+else
+  installpath="/var/www/PufferPanel"
+fi
 
 #This is a helper function to allow for less repetition of command checks
 function checkInstall {
@@ -23,14 +28,12 @@ function checkInstall {
 function validateCommand {
     if [ $? -ne 0 ]; then
         echo -e "${red}An error occured while installing, halting${normal}";
-        cd $DIR
         revertInstall
         exit
     fi
 }
 
 function revertInstall {
-    cd $DIR;
     rm -rf ${installpath}
 }
 
@@ -176,7 +179,7 @@ git clone https://github.com/PufferPanel/PufferPanel.git ${installpath}
 validateCommand
 
 echo "-----"
-cd PufferPanel
+cd ${installpath}
 ppversion=$(git describe --abbrev=0 --tags)
 if ${usedev}; then 
     echo "Using dev version"
@@ -199,7 +202,6 @@ echo "Installing database"
 php -f PufferPanel/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlPass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
 if [ $? -ne 0 ]; then
     echo -e "${red}An error occured while installing, halting${normal}";
-    cd $DIR
     revertInstall
     mysql -h ${mysqlhost} -u ${mysqluser} -p${mysqlpass} -e "DROP DATABASE IF EXISTS pufferpanel"
     exit
