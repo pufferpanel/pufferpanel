@@ -4,16 +4,12 @@ red="\e[0;31m"
 green="\e[0;32m"
 normal="\e[0m"
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+installpath=$DIR/"PufferPanel"
+
 usedev=false
 webuser="apache"
 test=false
-
-# test for /var/www/html
-if [ -d /var/www/html ]; then
-  installpath="/var/www/html/PufferPanel"
-else
-  installpath="/var/www/PufferPanel"
-fi
 
 #This is a helper function to allow for less repetition of command checks
 function checkInstall {
