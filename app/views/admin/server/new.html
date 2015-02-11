@@ -1,5 +1,64 @@
 {% extends "admin_base.html" %}
 
+{% block scripts %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ settings.assets_url }}css/selectize.css" />
+	<script src="{{ settings.assets_url }}javascript/selectize.js"></script>
+	<style type="text/css">
+		.selectize-control.contacts .selectize-input > div {
+			padding: 1px 10px;
+			font-size: 13px;
+			font-weight: normal;
+			-webkit-font-smoothing: auto;
+			color: #f7fbff;
+			text-shadow: 0 1px 0 rgba(8,32,65,0.2);
+			background: #2183f5;
+			background: -moz-linear-gradient(top, #2183f5 0%, #1d77f3 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2183f5), color-stop(100%,#1d77f3));
+			background: -webkit-linear-gradient(top,  #2183f5 0%,#1d77f3 100%);
+			background: -o-linear-gradient(top,  #2183f5 0%,#1d77f3 100%);
+			background: -ms-linear-gradient(top,  #2183f5 0%,#1d77f3 100%);
+			background: linear-gradient(to bottom,  #2183f5 0%,#1d77f3 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2183f5', endColorstr='#1d77f3',GradientType=0 );
+			border: 1px solid #0f65d2;
+			-webkit-border-radius: 999px;
+			-moz-border-radius: 999px;
+			border-radius: 999px;
+			-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+			-moz-box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+			box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+		}
+		.selectize-control.contacts .selectize-input > div.active {
+			background: #0059c7;
+			background: -moz-linear-gradient(top, #0059c7 0%, #0051c1 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0059c7), color-stop(100%,#0051c1));
+			background: -webkit-linear-gradient(top,  #0059c7 0%,#0051c1 100%);
+			background: -o-linear-gradient(top,  #0059c7 0%,#0051c1 100%);
+			background: -ms-linear-gradient(top,  #0059c7 0%,#0051c1 100%);
+			background: linear-gradient(to bottom,  #0059c7 0%,#0051c1 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0059c7', endColorstr='#0051c1',GradientType=0 );
+			border-color: #0051c1;
+		}
+		.selectize-control.contacts .selectize-input > div .email {
+			opacity: 0.8;
+		}
+		.selectize-control.contacts .selectize-input > div .name + .email {
+			margin-left: 5px;
+		}
+		.selectize-control.contacts .selectize-input > div .email:before {
+			content: '<';
+		}
+		.selectize-control.contacts .selectize-input > div .email:after {
+			content: '>';
+		}
+		.selectize-control.contacts .selectize-dropdown .caption {
+			font-size: 12px;
+			display: block;
+			color: #a0a0a0;
+		}
+	</style>
+{% endblock %}
+
 {% block title %}Add a New Server{% endblock %}
 
 {% block content %}
@@ -27,7 +86,7 @@
 					<div class="form-group col-md-6 nopad-right">
 						<label for="email" class="control-label">Owner Email</label>
 						<div>
-							<input type="text" autocomplete="off" name="email" value="{% if get.email is defined %}{{ get.email }}{% endif %}" class="form-control" />
+							<select autocomplete="off" id="selectize_email" class="contacts" value="{% if get.email is defined %}{{ get.email }}{% endif %}"></select>
 						</div>
 					</div>
 				</div>
@@ -177,7 +236,36 @@
 			}
 		});
 	}
-	$(document).ready(function(){
+	$(window).load(function(){
+		$('#selectize_email').selectize({
+			valueField: 'url',
+			labelField: 'name',
+			searchField: 'name',
+			options: [],
+			create: false,
+			render: {
+				option: function(item, escape) {
+					return '<div>' +
+						'<span class="label">' + escape(item.username) + '</span>' +
+						'<span class="caption">' + escape(item.email) + '</span>' +
+					'</div>';
+				}
+			},
+			load: function(query, callback) {
+				if (!query.length) callback();
+				$.ajax({
+					url: '/admin/server/accounts/' + encodeURIComponent(query),
+					type: 'GET',
+					error: function() {
+						callback();
+					},
+					success: function(res) {
+						console.log(res.accounts);
+						callback(res.accounts.slice(0, 10));
+					}
+				});
+			}
+		});
 		updateNodeList();
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({

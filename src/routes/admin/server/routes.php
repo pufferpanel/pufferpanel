@@ -319,6 +319,22 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
 
 });
 
+$klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $response) use ($core) {
+
+	$select = ORM::forTable('users')->where_like('email', '%'.$request->param('email').'%')->findMany();
+
+	$resp = array();
+	foreach($select as $select) {
+
+		$resp = array_merge($resp, array(array('email' => $select->email, 'username' => $select->username)));
+
+	}
+
+	$response->header('Content-Type', 'application/json');
+	$response->body(json_encode(array('accounts' => $resp), JSON_PRETTY_PRINT))->send();
+
+});
+
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
