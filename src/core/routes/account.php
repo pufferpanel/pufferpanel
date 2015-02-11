@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Router;
-use \ORM;
+use \ORM, PufferPanel\Core\Settings;
 
 class Account extends \PufferPanel\Core\Email {
 
