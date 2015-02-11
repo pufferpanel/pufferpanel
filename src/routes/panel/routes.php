@@ -153,6 +153,15 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	else if($request->param('action') == "subuser") {
 
 		$query = ORM::forTable('account_change')->select_many('id', 'verified', 'content')->where(array('key' => $request->param('token'), 'verified' => 0))->findOne();
+
+		if(!$query) {
+
+			$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
+			$response->redirect('/account')->send();
+			return;
+
+		}
+
 		$info = ORM::forTable('subusers')
 			->selectMany('subusers.*', 'nodes.ip', 'nodes.gsd_listen', 'servers.gsd_id', 'servers.node')
 			->select('nodes.gsd_secret', 'node_gsd_secret')
@@ -165,9 +174,9 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 			))
 			->findOne();
 
-		if(!$query || !$info) {
+		if(!$info) {
 
-			$service->flash('<div class="alert alert-danger">The token you entered is invalid.</div>');
+			$service->flash('<div class="alert alert-danger">You don\'t seem to be listed as a subuser for that server anymore.</div>');
 			$response->redirect('/account')->send();
 			return;
 
