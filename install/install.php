@@ -293,7 +293,7 @@ try {
 	} catch (\Exception $ex) {
 		//ignoring because no user actually existed
 	}
-	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY :pass")->execute(array(
+	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY :pass")->execute(array(
 		'pass' => $pass
 	));
 	echo "PufferPanel SQL user added\n";
