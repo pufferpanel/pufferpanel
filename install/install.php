@@ -269,8 +269,8 @@ try {
 
 	$query->execute(array(
 		':cname' => $params['companyName'],
-		':murl' => $params['siteUrl'],
-		':mwebsite' => $params['siteUrl'],
+		':murl' => $params['siteUrl'] . '/',
+		':mwebsite' => $params['siteUrl'] . '/',
 		':aurl' => '//' . $params['siteUrl'] . '/assets/'
 	));
 
@@ -288,6 +288,11 @@ try {
 
 	echo "Admin user added\n";
 
+	try {
+		$mysql->prepare("DROP USER 'pufferpanel'@'localhost'")->execute();
+	} catch (\Exception $ex) {
+		//ignoring because no user actually existed
+	}
 	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY :pass")->execute(array(
 		'pass' => $pass
 	));
