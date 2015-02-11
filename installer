@@ -186,16 +186,16 @@ else
 fi
 
 echo "-----"
+cd ${installpath}
 echo "Installing Composer"
 curl -sS https://getcomposer.org/installer | php
 validateCommand
 php composer.phar install
 validateCommand
-cd ..
 
 echo "-----"
 echo "Installing database"
-php -f PufferPanel/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlPass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
+php -f ${installpath}/install/install.php mysqlHost=${mysqlhost} mysqlUser=${mysqluser} mysqlPass=${mysqlpass} companyName=${companyName} siteUrl=${siteurl} adminName=${adminname} adminEmail=${adminemail} adminPass=${adminpass}
 if [ $? -ne 0 ]; then
     echo -e "${red}An error occured while installing, halting${normal}";
     revertInstall
@@ -205,12 +205,12 @@ fi
 
 echo "-----"
 echo "Finishing install"
-chmod -R 774 PufferPanel/src/cache
+chmod -R 774 ${installpath}/src/cache
 
 getent passwd ${webuser} > /dev/null
 if [ $? -eq 0 ]; then
   echo "Chowning files to ${webuser} user"
-  chown -R ${webuser}:${webuser} PufferPanel
+  chown -R ${webuser}:${webuser} ${installpath}
   if [ $? -ne 0 ]; then
     echo "${red}Could not chown to ${webuser}, please do this manually${normal}"
   fi
