@@ -326,7 +326,11 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 	$resp = array();
 	foreach($select as $select) {
 
-		$resp = array_merge($resp, array(array('email' => $select->email, 'username' => $select->username)));
+		$resp = array_merge($resp, array(array(
+			'email' => $select->email,
+			'username' => $select->username,
+			'hash' => md5($select->email)
+		)));
 
 	}
 
@@ -336,6 +340,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 });
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
+
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
 
