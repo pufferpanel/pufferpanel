@@ -107,7 +107,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="row"><p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p></div>
+				<div class="row">
+					<div class="col-md-12">
+						<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p>
+					</div>
+				</div>
 			</div>
 			<div class="well">
 				<div class="row">
@@ -143,8 +147,8 @@
 	function updatePortList(){
 		$("#server_ip").change(function() {
 			var ip = $(this).val().replace(/\./g, "\\.");
-			$("[id^=node_]").hide();
-			$("#node_"+ip).show();
+			$("[id^=node_]").hide().prop("disabled", true);;
+			$("#node_"+ip).show().prop("disabled", false);
 		});
 	}
 	function updateList(){

@@ -107,16 +107,14 @@
 								<label for="server_ip" class="control-label">Server Port</label>
 								<div>
 									{% for ip, internal in decoded.ports %}
-									<span {% if server.server_ip != ip %}style="display:none;"{% endif %} id="node_{{ ip }}">
-										<select name="server_port_{{ ip }}" class="form-control">';
-										{% for port, avaliable in internal %}
-											<option
-												{% if server.server_port == port %}selected="selected"{% endif %}
-												{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
-											>{{ port }}</option>
-										{% endfor %}
-										</select>
-									</span>
+									<select name="server_port_{{ ip }}" class="form-control" {% if server.server_ip != ip %}style="display:none;" disabled{% endif %} id="node_{{ ip }}">
+									{% for port, avaliable in internal %}
+										<option
+											{% if server.server_port == port %}selected="selected"{% endif %}
+											{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
+										>{{ port }}</option>
+									{% endfor %}
+									</select>
 									{% endfor %}
 								</div>
 							</div>
@@ -210,8 +208,8 @@
 		});
 		$("#server_ip").change(function() {
 			var ip = $(this).val().replace(/\./g, "\\.");
-			$("[id^=node_]").hide();
-			$("#node_"+ip).show();
+			$("[id^=node_]").hide().prop("disabled", true);;
+			$("#node_"+ip).show().prop("disabled", false);
 		});
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({

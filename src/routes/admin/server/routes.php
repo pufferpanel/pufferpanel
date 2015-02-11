@@ -83,8 +83,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete', function() {
 
 $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($request, $response, $service) use($core) {
 
-	$server_port = $request->param('server_port_'.str_replace('.', '_', $request->param('server_ip')));
-
 	$ports = json_decode($core->server->nodeData('ports'), true);
 	$ips = json_decode($core->server->nodeData('ips'), true);
 
@@ -96,7 +94,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 	}
 
-	if(!array_key_exists($server_port, $ports[$request->param('server_ip')])) {
+	if(!array_key_exists($request->param('server_port'), $ports[$request->param('server_ip')])) {
 
 		$service->flash('<div class="alert alert-danger">The selected port does not exist on the node for this IP.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
@@ -104,7 +102,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 	}
 
-	if($ports[$request->param('server_ip')][$server_port] == 0 && $server_port != $core->server->getData('server_port')) {
+	if($ports[$request->param('server_ip')][$request->param('server_port')] == 0 && $request->param('server_port') != $core->server->getData('server_port')) {
 
 		$service->flash('<div class="alert alert-danger">The selected port is currently in use for this IP.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
@@ -121,7 +119,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 			),
 			array(
 				"game_cfg" => json_encode(array(
-					"gameport" => (int) $server_port,
+					"gameport" => (int) $request->param('server_port'),
 					"gamehost" => $request->param('server_ip')
 				))
 			)
@@ -138,7 +136,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 		$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 		$server->server_ip = $request->param('server_ip');
-		$server->server_port = $server_port;
+		$server->server_port = $request->param('server_port');
 		$server->save();
 
 		/*
@@ -150,7 +148,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 		/*
 		* Update Old
 		*/
-		$ports[$request->param('server_ip')][$server_port] = 0;
+		$ports[$request->param('server_ip')][$request->param('server_port')] = 0;
 		$ips[$request->param('server_ip')]['ports_free']--;
 
 		$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
@@ -323,8 +321,6 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
-	$server_port = $request->param['server_port_'.str_replace('.', '_', $request->param('server_ip'))];
-
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
 
 	if(!$node) {
@@ -348,8 +344,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	if(
 		!array_key_exists($request->param('server_ip'), $ips) ||
-		!array_key_exists($server_port, $ports[$request->param('server_ip')]) ||
-		$ports[$request->param('server_ip')][$server_port] == 0
+		!array_key_exists($request->param('server_port'), $ports[$request->param('server_ip')]) ||
+		$ports[$request->param('server_ip')][$request->param('server_port')] == 0
 	) {
 
 		$service->flash('<div class="alert alert-danger">The selected IP or Port is currently in use or not avaliable.</div>');
@@ -432,7 +428,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 				"s:console:send"
 			)
 		),
-		"gameport" => (int) $server_port,
+		"gameport" => (int) $request->param('server_port'),
 		"gamehost" => $request->param('server_ip'),
 		"plugin" => "minecraft",
 		"autoon" => false
@@ -466,14 +462,14 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			'cpu_limit' => $request->param('cpu_limit'),
 			'date_added' => time(),
 			'server_ip' => $request->param('server_ip'),
-			'server_port' => $server_port,
+			'server_port' => $request->param('server_port'),
 			'ftp_user' => $ftp_username,
 			'ftp_pass' => $ftp_password
 		));
 		$server->save();
 
 		$ips[$request->param('server_ip')]['ports_free']--;
-		$ports[$request->param('server_ip')][$server_port]--;
+		$ports[$request->param('server_ip')][$request->param('server_port')]--;
 
 		$node->ips = json_encode($ips);
 		$node->ports = json_encode($ports);
@@ -482,7 +478,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		$core->email->buildEmail('admin_new_server', array(
 				'NAME' => $request->param('server_name'),
 				'FTP' => $node->fqdn.':21',
-				'MINECRAFT' => $node->fqdn.':'.$server_port,
+				'MINECRAFT' => $node->fqdn.':'.$request->param('server_port'),
 				'USER' => $ftpUser.'-'.$content['id'],
 				'PASS' => $request->param('ftp_pass')
 		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
