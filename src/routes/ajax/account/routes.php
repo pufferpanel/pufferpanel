@@ -45,7 +45,7 @@ $klein->respond('POST', '/ajax/account/totp', function($request, $response) use 
 			<form action="#" method="post" id="totp_token_verify">
 				<div class="form-group">
 					<label class="control-label" for="totp_token">TOTP Token</label>
-					<input class="form-control input-lg" type="text" id="totp_token" style="font-size:30px;" />
+					<input class="form-control" type="text" id="totp_token" style="" />
 				</div>
 				'.$core->auth->XSRF().'
 			</form>

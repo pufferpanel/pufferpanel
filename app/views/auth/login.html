@@ -51,7 +51,7 @@
 					<div class="form-group">
 						<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
 						<div>
-							<input class="form-control input-lg" type="text" placeholder="000111" name="totp_token" id="totp_token" style="font-size:30px;" />
+							<input class="form-control" type="text" placeholder="000111" name="totp_token" id="totp_token" />
 						</div>
 					</div>
 				</div>
@@ -66,15 +66,15 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#login-form").submit(function(event){
+        event.preventDefault();
 		var check_email = $("#email").val();
 		$.ajax({
 			type: "POST",
-			url: "/auth/totp",
-			async:false,
-			data: { totp: true, check: check_email },
+			url: "/auth/login/totp",
+			async: false,
+			data: { check: check_email },
 			success: function(data){
-				if(data == 1){
-					event.preventDefault();
+				if(data == 'true'){
 					$("#openTOTP").modal('show');
 					$('#openTOTP').on('shown.bs.modal', function(){
 						$("#totp_token").focus();

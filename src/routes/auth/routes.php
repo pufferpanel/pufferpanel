@@ -34,6 +34,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
 		$response->redirect('/auth/login')->send();
+		return;
 
 	}
 
@@ -52,12 +53,14 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 		$service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>');
 		$response->redirect('/auth/login')->send();
+		return;
 
 	} else {
 
 		if($account->use_totp == 1 && !$core->auth->validateTOTP($request->param('totp_token'), $account->totp_secret)){
 			$service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>');
 			$response->redirect('/auth/login')->send();
+			return;
 		}
 
 		$cookie = (object) array('token' => $core->auth->keygen('12'), 'expires' => ($request->param('remember_me')) ? (time() + 604800) : null);
@@ -79,6 +82,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 		$response->cookie('pp_auth_token', $cookie->token, $cookie->expires);
 		$response->redirect('/index')->send();
+		return;
 
 	}
 
@@ -86,16 +90,19 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 $klein->respond('POST', '/auth/login/totp', function($request, $response) {
 
-	if(!$request->param('totp') || !$request->param('check')) {
-		$response->body(false)->send();
+	if(!$request->param('check')) {
+		$response->body('false')->send();
+		return;
 	} else {
 
 		$totp = ORM::forTable('users')->select('use_totp')->where('email', $request->param('check'))->findOne();
 
 		if(!$totp) {
-			$response->body(false)->send();
+			$response->body('false')->send();
+			return;
 		} else {
-			$response->body(($totp->use_totp == 1) ? true : false)->send();
+			$response->body(($totp->use_totp == 1) ? 'true' : 'false')->send();
+			return;
 		}
 
 	}
