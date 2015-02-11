@@ -238,9 +238,11 @@
 	}
 	$(window).load(function(){
 		$('#selectize_email').selectize({
-			valueField: 'url',
-			labelField: 'name',
-			searchField: 'name',
+			persist: false,
+			maxItems: null,
+			valueField: 'email',
+			labelField: 'email',
+			searchField: 'email',
 			options: [],
 			create: false,
 			render: {
