@@ -66,7 +66,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#login-form").submit(function(event){
-        event.preventDefault();
 		var check_email = $("#email").val();
 		$.ajax({
 			type: "POST",
@@ -79,6 +78,7 @@ $(document).ready(function(){
 					$('#openTOTP').on('shown.bs.modal', function(){
 						$("#totp_token").focus();
 					})
+                    event.preventDefault();
 				}else{
 					$(this).submit();
 				}
