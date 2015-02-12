@@ -24,7 +24,7 @@ string.refresh, Refresh
 string.close, Close
 string.generated_pass, Generated Password
 string.modpacks, Modpacks
-string.ftp, ftp
+string.ftp, FTP
 string.host, Host
 string.username, Username
 string.generate, Generate
@@ -36,13 +36,18 @@ string.version, Version
 string.published, Published
 string.versions, Versions
 string.save, Save
+string.token, Token
+string.language, Language
+string.acp, Admin Control Panel
+string.logout, Logout
+string.location, Location
 footer.license, PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
 footer.version, Running Version %s distributed by <a href="http://pufferpanel.com/">PufferPanel Development</a>.
 footer.generated, Page Generated in %s seconds.
 footer.queries, Executed %s database queries.
-sidebar.acc_actions, Account Actions
-sidebar.server_acc, Server Actions
-sidebar.server_sett, Server Settings
+sidebar.acc.actions, Account Actions
+sidebar.server.acc, Server Actions
+sidebar.server.sett, Server Settings
 sidebar.settings, Settings
 sidebar.servers, My Servers
 sidebar.overview, Overview
@@ -50,6 +55,8 @@ sidebar.console, Live Console
 sidebar.files, File Manager
 sidebar.manage, Server Management
 sidebar.plugins, Server Plugins
+sidebar.manage_subusers, Manage Subusers
+sidebar.totp_settings, TOTP Settings
 header.account, Account
 header.logout, Logout
 header.admin, Admin CP
@@ -66,6 +73,9 @@ settings.failed_login, Failed Login
 settings.notify.email_me, Please Email Me
 settings.notify.no_email_me, Don't Email Me
 settings.update_preferences, Update Preferences
+settings.subuser.h1, Sub-User Token
+settings.subuser.help, If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.
+settings.subuser.validate, Validate Token
 node.overview.stats_h1, Statistics Overview
 node.overview.collect_usage, Attempting to collect usage information, this could take a few seconds. Please ensure server is online.
 node.overview.collect_disk, Collecting disk usage information, this could take a few seconds.
@@ -93,28 +103,22 @@ node.files.edit.no_file, No file was specified that can be edited.
 node.files.edit.error, You can return to the file manager by <a href="index.php">clicking here</a>.
 node.files.ajax.no_dir, Unable to locate request directory. Error logged.
 node.files.ajax.no_dl, Unable to connect to the server to get the files. Please try again.
-node.files.ajax.saved, File was sucessfully saved.
+node.files.ajax.saved, File was successfully saved.
 node.files.ajax.no_save, Unable to save the file.
 node.files.ajax.no_edit, This type of file cannot be edited via our online file manager. Please use a FTP client.
 node.files.ajax.file_404, The file specified could not be found on the server.
-node.settings.modpack.modpack_h1, Server Modpack Management
-node.settings.modpack.current, Current Modpack
-node.settings.modpack.install, Install Modpack
-node.settings.modpack.select, —- Select a Modpack
 node.settings.jar.jar_h1, Server .jar Name
 node.settings.jar.jarfile_name, Jarfile Name
 node.settings.jar.update, Update Name
-node.settings.ftp.ftp_h1, ftp Settings
-node.settings.ajax.installing_modpack, Installing Modpack
-node.settings.ajax.modpack_error, You can not use a disabled form input as a modpack!
-node.plugins.welcome_h1, Plugin Installer
-node.plugins.welcome, Welcome to your built-in plugin installer. This installer gathers results and data from Bukget and displays them here in an easy to use manner. The automatic installer can be buggy at times, especially for complex plugins. We recommend downloading plugins to your computer first if possible.
-node.plugins.search_h1, Search Plugin Repository
-node.plugins.plugin_name, Plugin Name
-node.plugins.installed, Your plugin has been installed successfully.
-node.plugins.installing, Please wait while your plugin is installing. This process could take about a minute to complete.
-node.plugins.installing_warning, Do not navigate away from this page!
-node.plugins.error.term, Please enter a valid search term.
-node.plugins.view.author, This plugin is created and maintained by %s.
-node.plugins.view.view, View this plugin <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank">on Bukkit</a>.
+node.settings.ftp.ftp_h1, FTP Settings
 node.ajax.generic_error, An error was encountered with this AJAX request.
+error.unhandled, An unhandled error occured while processing this request. Please go back and try again.
+error.xsrf, The XSRF token received was not valid. Please make sure cookies are enabled and try your request again.
+error.invalid_password, We were unable to verify your account password. Please try your request again.
+error.invalid_email, The email you provided is not valid.
+error.password_mismatch, The passwords you provided did not match each other.
+error.password_strength, Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.
+error.account.same_email, Sorry, you can't change your email to the email address you are currently using for the account, that wouldn't make sense!
+success.account.email, Your email address has been successfully updated to <em>%s</em>.
+success.account.password, Your password has been successfully changed! Please login again using your new password.
+success.notifications.updated, Your account notification preferences have been updated.

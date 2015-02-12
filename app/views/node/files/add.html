@@ -32,8 +32,8 @@
 				{% if permission.has('files.create') %}
 					<div class="form-group">
 						<div>
-							<button class="btn btn-primary btn-sm" id="create_file">{{ lang.string_save }}</button>
-							<button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{% endif %}';return false;">{{ lang.node_files_edit_back }}</button>
+							<button class="btn btn-primary btn-sm" id="create_file">{{ l.render('string_save') }}</button>
+							<button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{% endif %}';return false;">{{ l.render('node_files_edit_back') }}</button>
 						</div>
 					</div>
 				{% endif %}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html l.render('')"en">
 <head>
 	{% block head %}
 		{% block scripts %}
@@ -38,21 +38,21 @@
 				<ul class="nav navbar-nav hidden-md hidden-lg">
 					{% block navbar %}
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.sidebar_acc_actions }} <b class="caret"></b></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('sidebar.acc.actions') }} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="/account">{{ lang.sidebar_settings }}</a></li>
-								<li><a href="/totp">TOTP {{ lang.sidebar_settings }}</a></li>
-								<li><a href="/index">{{ lang.sidebar_servers }}</a></li>
+								<li><a href="/account">{{ l.render('sidebar.settings') }}</a></li>
+								<li><a href="/totp">{{ l.render('sidebar.totp_settings') }}</a></li>
+								<li><a href="/index">{{ l.render('sidebar.servers') }}</a></li>
 							</ul>
 						</li>
 						{% if server.name is defined %}
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.sidebar_server_acc }} <b class="caret"></b></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('sidebar.server.acc') }} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="/node/index">{{ lang.sidebar_overview }}</a></li>
-								{% if permission.has('files.view') %}<li><a href="/node/files">{{ lang.sidebar_files }}</a></li>{% endif %}
-								{% if permission.has('users.view') %}<li><a href="/node/users">Manage Subusers</a></li>{% endif %}
-								{% if permission.has('manage.view') %}<li><a href="/node/settings">{{ lang.sidebar_manage }}</a></li>{% endif %}
+								<li><a href="/node/index">{{ l.render('sidebar.overview') }}</a></li>
+								{% if permission.has('files.view') %}<li><a href="/node/files">{{ l.render('sidebar.files') }}</a></li>{% endif %}
+								{% if permission.has('users.view') %}<li><a href="/node/users">{{ l.render('sidebar.manage_subusers') }}</a></li>{% endif %}
+								{% if permission.has('manage.view') %}<li><a href="/node/settings">{{ l.render('sidebar.manage') }}</a></li>{% endif %}
 							</ul>
 						</li>
 						{% endif %}
@@ -60,7 +60,7 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('string.language') }}<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="/language/de">Deutsch</a></li>
 							<li><a href="/language/en">English</a></li>
@@ -72,9 +72,9 @@
 							<li><a href="/language/zh">&#20013;&#22269;&#30340;的</a></li>
 						</ul>
 					</li>
-					{% if admin %}<li class="hidden-sm hidden-md hidden-lg"><a href="/admin/index">Admin Control Panel</a></li>{% endif %}
+					{% if admin %}<li class="hidden-sm hidden-md hidden-lg"><a href="/admin/index">{{ l.render('string.acp') }}</a></li>{% endif %}
 					{% if admin %}<li class="hidden-xs"><a href="/admin/index"><i class="fa fa-cogs"></i></a></li>{% endif %}
-					<li class="hidden-sm hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
+					<li class="hidden-sm hidden-md hidden-lg"><a href="/auth/logout">{{ l.render('string.logout') }}</a></li>
 					<li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
 				</ul>
 			</div>
@@ -83,18 +83,18 @@
 			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
 				{% block sidebar %}
 					<div class="list-group">
-						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-						<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
-						<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-						<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
+						<a href="#" class="list-group-item list-group-item-heading"><strong>{{ l.render('sidebar.acc.actions') }}</strong></a>
+						<a href="/account" class="list-group-item">{{ l.render('sidebar.settings') }}</a>
+						<a href="/totp" class="list-group-item">{{ l.render('sidebar.totp_settings') }}</a>
+						<a href="/index" class="list-group-item">{{ l.render('sidebar.servers') }}</a>
 					</div>
 					{% if server.name is defined %}
 						<div class="list-group">
-							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_server_acc }}</strong></a>
-							<a href="/node/index" class="list-group-item">{{ lang.sidebar_overview }}</a>
-							{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ lang.sidebar_files }}</a>{% endif %}
-							{% if permission.has('users.view') %}<a href="/node/users" class="list-group-item">Manage Subusers</a>{% endif %}
-							{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ lang.sidebar_manage }}</a>{% endif %}
+							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ l.render('sidebar.server.acc') }}</strong></a>
+							<a href="/node/index" class="list-group-item">{{ l.render('sidebar.overview') }}</a>
+							{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ l.render('sidebar.files') }}</a>{% endif %}
+							{% if permission.has('users.view') %}<a href="/node/users" class="list-group-item">{{ l.render('sidebar.manage_subusers') }}</a>{% endif %}
+							{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ l.render('sidebar.manage') }}</a>{% endif %}
 						</div>
 					{% endif %}
 				{% endblock %}
@@ -104,7 +104,7 @@
 		<div class="footer">
 			<div class="row">
 				<div class="col-md-8 col-xs-6">
-					<p>{{ lang.footer_license|raw }}<br />{{ lang.footer_version|format(fversion)|raw }}</p>
+					<p>{{ l.render('footer.license')|raw }}<br />{{ l.render('footer.version')|format(fversion)|raw }}</p>
 				</div>
 				<div class="col-md-4 col-xs-6">
 					<p class="pull-right">Page Rendered in <span id="p_render_time">...</span> seconds.</p>

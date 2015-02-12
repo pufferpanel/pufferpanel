@@ -8,21 +8,21 @@
 {% block content %}
 <div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
-    	<legend>{{ lang.login_login_h1 }}</legend>
+    	<legend>{{ l.render('login.login_h1') }}</legend>
     	<fieldset>
             {% if flash.info is defined %}
                 {{ flash.info.0|raw }}
             {% endif %}
     		<div class="form-group">
-    			<label for="email" class="control-label">{{ lang.string_email }}</label>
+    			<label for="email" class="control-label">{{ l.render('string.email') }}</label>
     			<div>
-    				<input type="text" class="form-control" name="email" id="email" placeholder="{{ lang.string_email }}" />
+    				<input type="text" class="form-control" name="email" id="email" placeholder="{{ l.render('string.email') }}" />
     			</div>
     		</div>
     		<div class="form-group">
-    			<label for="login-password" class="control-label">{{ lang.string_password }}</label>
+    			<label for="login-password" class="control-label">{{ l.render('string.password') }}</label>
     			<div>
-    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ lang.string_password }}" />
+    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ l.render('string.password') }}" />
     			</div>
     		</div>
     		<div class="form-group">
@@ -33,8 +33,8 @@
     		<div class="form-group">
     			<div>
                     {{ xsrf|raw }}
-    				<input type="submit" class="btn btn-primary btn-sm" value="Login" />
-    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">{{ lang.string_reset_password }}</button>
+    				<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('string.login') }}" />
+    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">{{ l.render('string.reset_password') }}</button>
     			</div>
     		</div>
     	</fieldset>

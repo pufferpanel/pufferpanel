@@ -20,20 +20,20 @@
 if(!isset($_GET['l']))
 	die('No language input passed.');
 
-if(!file_exists('../'.$_GET['l'].'.txt'))
+if(!file_exists('../raw/'.$_GET['l'].'.txt'))
 	die('Language file does not exist.');
 
-$content = file('../'.$_GET['l'].'.txt');
+$content = file('../raw/'.$_GET['l'].'.txt');
 $json = array();
 
 foreach($content as $line => $string){
 
 	list($id, $lang) = explode(",", $string, 2);
-	$json = array_merge($json, array(strtolower(str_replace(".", "_", $id)) => trim($lang)));
+	$json = array_merge($json, array(strtolower($id) => trim($lang)));
 
 }
 
-$fp = fopen('../../../src/core/lang/'.$_GET['l'].'.json', 'w+');
+$fp = fopen('../'.$_GET['l'].'.json', 'w+');
 fwrite($fp, json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 fclose($fp);
 

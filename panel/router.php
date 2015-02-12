@@ -84,7 +84,7 @@ $core->permissions = new Permissions($core->server->getData('id'));
 /*
  * Twig Setup
  */
-$core->twig->addGlobal('lang', $core->language->loadTemplates()); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
+$core->twig->addGlobal('l', $core->language); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
 $core->twig->addGlobal('settings', Settings::config());
 $core->twig->addGlobal('get', Components\Page::twigGET());
 $core->twig->addGlobal('permission', $core->permissions);

@@ -6,22 +6,13 @@
 <div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 	<ul class="nav navbar-nav navbar-right">
 		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('header.account') }}<b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}auth/logout">{{ lang.header_logout }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index">{{ lang.header_admin }}</a></li>{% endif %}
+					<li><a href="{{ settings.master_url }}auth/logout">{{ l.render('header.logout') }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index">{{ l.render('header.admin') }}</a></li>{% endif %}
 				</ul>
 		</li>
 	</ul>
-</div>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="/index" class="list-group-item active">{{ lang.sidebar_servers }}</a>
 </div>
 {% endblock %}
 
@@ -34,10 +25,10 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					<th>{{ lang.string_name }}</th>
-					<th>Location</th>
-					<th>{{ lang.string_node }}</th>
-					<th>{{ lang.string_connect }}</th>
+					<th>{{ l.render('string.name') }}</th>
+					<th>{{ l.render('string.location') }}</th>
+					<th>{{ l.render('string.node') }}</th>
+					<th>{{ l.render('string.connect') }}</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -59,4 +50,9 @@
 		</div>
 	{% endif %}
 </div>
+<script type="text/javascript">
+$(window).load(function() {
+	$("#sidebar_links").find("a[href='/index']").addClass('active');
+});
+</script>
 {% endblock %}

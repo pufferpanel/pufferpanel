@@ -6,22 +6,13 @@
 <div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 	<ul class="nav navbar-nav navbar-right">
 		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('header.account') }}<b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+					<li><a href="{{ settings.master_url }}logout.php">{{ l.render('header.logout') }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ l.render('header.admin') }}</a></li>{% endif %}
 				</ul>
 		</li>
 	</ul>
-</div>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="/account" class="list-group-item">{{ lang.sidebar_settings }}</a>
-	<a href="/totp" class="list-group-item active">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
 </div>
 {% endblock %}
 
@@ -65,7 +56,8 @@
 	</div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){
+$(window).load(function() {
+	$("#sidebar_links").find("a[href='/index']").addClass('active');
 	$("#close_reload").click(function(){
 		location.reload();
 	});

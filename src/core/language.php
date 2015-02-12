@@ -47,11 +47,11 @@ class Language extends User {
 			$this->language = $this->getData('language');
 		}
 
-		if(!file_exists(dirname(__DIR__).'/lang/'.$this->language.'.json')) {
-			throw new Exception('Unable to load the required language file! lang/'.$this->language.'.json');
+		if(!file_exists(APP_DIR.'languages/'.$this->language.'.json')) {
+			throw new Exception('Unable to load the required language file! '.APP_DIR.'languages/'.$this->language.'.json');
 		}
 
-		$this->loaded = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$this->language.'.json'), true);
+		$this->loaded = json_decode(file_get_contents(APP_DIR.'languages/'.$this->language.'.json'), true);
 
 	}
 
@@ -63,23 +63,19 @@ class Language extends User {
 	 */
 	public function render($template){
 
-		$template = str_replace(".", "_", $template);
+		if(!array_key_exists($template, $this->loaded)) {
 
-		if(array_key_exists($template, $this->loaded)) {
-			return $this->loaded[$template];
+			$load_english = json_decode(file_get_contents(APP_DIR.'languages/en.json'), true);
+
+			if(array_key_exists($template, $load_english)) {
+				return $load_english[$template];
+			} else {
+				return "{{ $template }}";
+			}
+
 		}
 
-		if($this->language == "en") {
-			return $template;
-		}
-
-		$load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
-
-		if(array_key_exists($template, $load_english)) {
-			return $load_english[$template];
-		}
-
-		return $template;
+		return $this->loaded[$template];
 
 	}
 
@@ -87,6 +83,7 @@ class Language extends User {
 	 * Returns the loaded langauge as an array.
 	 *
 	 * @return array
+	 * @deprecated
 	 */
 	public function loadTemplates() {
 

@@ -6,22 +6,13 @@
 <div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
 	<ul class="nav navbar-nav navbar-right">
 		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ lang.header_account }}<b class="caret"></b></a>
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('header.account') }}<b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}logout.php">{{ lang.header_logout }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ lang.header_admin }}</a></li>{% endif %}
+					<li><a href="{{ settings.master_url }}logout.php">{{ l.render('header.logout') }}</a></li>
+					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ l.render('header.admin') }}</a></li>{% endif %}
 				</ul>
 		</li>
 	</ul>
-</div>
-{% endblock %}
-
-{% block sidebar %}
-<div class="list-group">
-	<a href="#" class="list-group-item list-group-item-heading"><strong>{{ lang.sidebar_acc_actions }}</strong></a>
-	<a href="/account" class="list-group-item active">{{ lang.sidebar_settings }}</a>
-	<a href="/totp" class="list-group-item">TOTP {{ lang.sidebar_settings }}</a>
-	<a href="/index" class="list-group-item">{{ lang.sidebar_servers }}</a>
 </div>
 {% endblock %}
 
@@ -32,22 +23,22 @@
 	{% endif %}
 	<div class="row">
 		<div class="col-md-6">
-			<h3 class="nopad">{{ lang.settings_change_pass }}</h3><hr />
+			<h3 class="nopad">{{ l.render('settings.change_pass') }}</h3><hr />
 				<form action="/account/update/password" method="post">
 					<div class="form-group">
-						<label for="p_password" class="control-label">{{ lang.settings_current_pass }}</label>
+						<label for="p_password" class="control-label">{{ l.render('settings.current_pass') }}</label>
 						<div>
 							<input type="password" class="form-control" name="p_password" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="p_password_new" class="control-label">{{ lang.settings_new_pass }}</label>
+						<label for="p_password_new" class="control-label">{{ l.render('settings.new_pass') }}</label>
 						<div>
 							<input type="password" class="form-control" name="p_password_new" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="p_password_new_2" class="control-label">{{ lang.settings_new_pass }} {{ lang.string_again }}</label>
+						<label for="p_password_new_2" class="control-label">{{ l.render('settings.new_pass') }} {{ l.render('string.again') }}</label>
 						<div>
 							<input type="password" class="form-control" name="p_password_new_2" />
 						</div>
@@ -55,22 +46,22 @@
 					<div class="form-group">
 						<div>
 							{{ xsrf.pass|raw }}
-							<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_change_pass }}" />
+							<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('settings.change_pass') }}" />
 						</div>
 					</div>
 				</form>
 		</div>
 		<div class="col-md-6">
-			<h3 class="nopad">{{ lang.settings_update_email }}</h3><hr />
+			<h3 class="nopad">{{ l.render('settings.update_email') }}</h3><hr />
 				<form action="/account/update/email" method="post">
 					<div class="form-group">
-						<label for="email" class="control-label">{{ lang.settings_new_email }}</label>
+						<label for="email" class="control-label">{{ l.render('settings.new_email') }}</label>
 						<div>
 							<input type="text" class="form-control" name="newemail" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="password" class="control-label">{{ lang.settings_current_pass }}</label>
+						<label for="password" class="control-label">{{ l.render('settings.current_pass') }}</label>
 						<div>
 							<input type="password" class="form-control" name="password" />
 						</div>
@@ -78,7 +69,7 @@
 					<div class="form-group">
 						<div>
 							{{ xsrf|raw }}
-							<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_update_email }}" />
+							<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('settings.update_email') }}" />
 						</div>
 					</div>
 				</form>
@@ -93,10 +84,10 @@
 						<div class="form-group">
 							<h4>Success</h4>
 							<div class="radio">
-							    <label class="alt-label"><input type="radio" name="e_s" value="1" {% if notify_login_s == '1' %}checked="checked"{% endif %} />{{ lang.settings_notify_email_me }}</label>
+							    <label class="alt-label"><input type="radio" name="e_s" value="1" {% if notify_login_s == '1' %}checked="checked"{% endif %} />{{ l.render('settings.notify.email_me') }}</label>
 							</div>
 							<div class="radio">
-								<label class="alt-label"><input type="radio" name="e_s" value="0" {% if notify_login_s == '0' %}checked="checked"{% endif %} />{{ lang.settings_notify_no_email_me }}</label>
+								<label class="alt-label"><input type="radio" name="e_s" value="0" {% if notify_login_s == '0' %}checked="checked"{% endif %} />{{ l.render('settings.notify.no_email_me') }}</label>
 							</div>
 						</div>
 					</div>
@@ -104,16 +95,16 @@
 						<div class="form-group">
 							<h4>Failed</h4>
 							<div class="radio">
-								<label class="alt-label"><input type="radio" name="e_f" value="1" {% if notify_login_f == '1' %}checked="checked"{% endif %} />{{ lang.settings_notify_email_me }}</label>
+								<label class="alt-label"><input type="radio" name="e_f" value="1" {% if notify_login_f == '1' %}checked="checked"{% endif %} />{{ l.render('settings.notify.email_me') }}</label>
 							</div>
 							<div class="radio">
-								<label class="alt-label"><input type="radio" name="e_f" value="0" {% if notify_login_f == '0' %}checked="checked"{% endif %} />{{ lang.settings_notify_no_email_me }}</label>
+								<label class="alt-label"><input type="radio" name="e_f" value="0" {% if notify_login_f == '0' %}checked="checked"{% endif %} />{{ l.render('settings.notify.no_email_me') }}</label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="password" class="control-label">{{ lang.settings_current_pass }}</label>
+					<label for="password" class="control-label">{{ l.render('settings.current_pass') }}</label>
 					<div>
 						<input type="password" class="form-control" name="password" />
 					</div>
@@ -121,17 +112,17 @@
 				<div class="form-group">
 					<div>
 						{{ xsrf|raw }}
-						<input type="submit" class="btn btn-primary btn-sm" value="{{ lang.settings_update_preferences }}" />
+						<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('settings.update_preferences') }}" />
 					</div>
 				</div>
 			</form>
 		</div>
 		<div class="col-md-6">
-			<h3>Sub-User Token</h3><hr />
-			<div class="well well-sm"><p>If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.</p></div>
+			<h3>{{ l.render('settings.subuser.h1') }}</h3><hr />
+			<div class="well well-sm"><p>{{ l.render('settings.subuser.help') }}</p></div>
 			<form action="/account/update/subuser" method="post">
 				<div class="form-group">
-					<label for="token" class="control-label">Token</label>
+					<label for="token" class="control-label">{{ l.render('string.token') }}</label>
 					<div>
 						<input type="text" class="form-control" name="token" />
 					</div>
@@ -139,11 +130,16 @@
 				<div class="form-group">
 					<div>
 						{{ xsrf|raw }}
-						<input type="submit" class="btn btn-primary btn-sm" value="Validate Token" />
+						<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('settings.subuser.validate') }}" />
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+$(window).load(function() {
+	$("#sidebar_links").find("a[href='/account']").addClass('active');
+});
+</script>
 {% endblock %}

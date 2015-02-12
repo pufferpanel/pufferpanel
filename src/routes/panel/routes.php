@@ -37,7 +37,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 	if(!$core->auth->XSRF($request->param('xsrf'))) {
 
-		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
+		$service->flash('<div class="alert alert-warning">'.$core->language->render('error.xsrf').'</div>');
 		$response->redirect('/account')->send();
 		return;
 
@@ -46,17 +46,9 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	// Update Email Address
 	if($request->param('action') == "email") {
 
-		if(!$request->param('newemail') || !$request->param('password')) {
-
-			$service->flash('<div class="alert alert-danger">Not all variables were passed to the script.</div>');
-			$response->redirect('/account')->send();
-			return;
-
-		}
-
 		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('password'))) {
 
-			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.invalid_password').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -64,7 +56,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if($request->param('newemail') == $core->user->getData('email')) {
 
-			$service->flash('<div class="alert alert-danger">Sorry, you can\'t change your email to the email address you are currently using for the account, that wouldn\'t make sense!</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.account.same_email').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -72,7 +64,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if(!filter_var($request->param('newemail'), FILTER_VALIDATE_EMAIL)) {
 
-			$service->flash('<div class="alert alert-danger">The email you provided is not valid.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.invalid_email').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -82,7 +74,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		$account->email = $request->param('newemail');
 		$account->save();
 
-		$service->flash('<div class="alert alert-success">Your email address has been successfully updated to <em>'.$request->param('newemail').'</em>.</div>');
+		$service->flash('<div class="alert alert-success">'.printf($core->language->render('success.account.email'), $request->param('newemail')).'</div>');
 		$response->redirect('/account')->send();
 
 	}
@@ -92,7 +84,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))){
 
-			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.invalid_password').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -100,7 +92,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if($request->param('p_password_new') != $request->param('p_password_new_2')) {
 
-			$service->flash('<div class="alert alert-danger">Your passwords did not match.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.password_mismatch').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -108,7 +100,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if(!$core->auth->validatePasswordRequirements($request->param('p_password_new'))) {
 
-			$service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.password_strength').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -116,12 +108,12 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if(!$core->routes->updatePassword($request->param('p_password'), $request->param('p_password_new'))) {
 
-			$service->flash('<div class="alert alert-danger">An unhandled error was encountered when trying to update your password.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.unhandled').'</div>');
 			$response->redirect('/account')->send();
 
 		} else {
 
-			$service->flash('<div class="alert alert-success">Your password has been sucessfully changed! Please login again using your new password.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('success.account.password').'</div>');
 			$response->redirect('/auth/login')->send();
 
 		}
@@ -133,7 +125,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('password'))) {
 
-			$service->flash('<div class="alert alert-danger">We were unable to verify your account password. Please try your request again.</div>');
+			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.invalid_password').'</div>');
 			$response->redirect('/account')->send();
 			return;
 
@@ -144,7 +136,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		$account->notify_login_f = $request->param('e_f');
 		$account->save();
 
-		$service->flash('<div class="alert alert-success">Your notification preferences have been updated.</div>');
+		$service->flash('<div class="alert alert-success">'.$core->language->render('success.notifications.updated').'</div>');
 		$response->redirect('/account')->send();
 
 	}
@@ -262,8 +254,7 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response, $service)
 
 	if(!$core->server->nodeRedirect($request->param('goto'))) {
 
-		$service->flash('<div class="alert alert-danger">The requested server or function does not exist, or you do not have permission to access that server or function.</div>');
-		$response->redirect('/index')->send();
+		$response->body($core->twig->render('errors/403.html'))->send();
 
 	} else {
 
@@ -276,7 +267,7 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response, $service)
 
 $klein->respond('GET', '/language/[:language]', function($request, $response) use ($core) {
 
-	if(file_exists(SRC_DIR.'lang/'.$request->param('language').'.json')) {
+	if(file_exists(APP_DIR.'languages/'.$request->param('language').'.json')) {
 
 		if($core->auth->isLoggedIn()) {
 
@@ -289,11 +280,11 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
 		}
 
 		$response->cookie("pp_language", $request->param('language'), time() + 2678400);
-		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/servers')->send();
+		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index')->send();
 
 	} else {
 
-		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/servers')->send();
+		$response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index')->send();
 
 	}
 
