@@ -276,7 +276,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	*/
 	try {
 
-		$unirest = Request::put(
+		Request::put(
 			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 			array(
 				"X-Access-Token" => $core->server->nodeData('gsd_secret')
@@ -500,8 +500,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 				'NAME' => $request->param('server_name'),
 				'FTP' => $node->fqdn.':21',
 				'MINECRAFT' => $node->fqdn.':'.$request->param('server_port'),
-				'USER' => $ftpUser.'-'.$content['id'],
-				'PASS' => $request->param('ftp_pass')
+				'USER' => $ftp_username.'-'.$unirest->body->id,
+				'PASS' => $ftp_password
 		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
 
 		$service->flash('<div class="alert alert-success">Server created successfully.</div>');
