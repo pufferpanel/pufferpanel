@@ -321,7 +321,7 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
 
 $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $response) use ($core) {
 
-	$select = ORM::forTable('users')->where_like('email', '%'.$request->param('email').'%')->findMany();
+	$select = ORM::forTable('users')->where_raw('email LIKE ? OR username LIKE ?', array('%'.$request->param('email').'%', '%'.$request->param('email').'%'))->findMany();
 
 	$resp = array();
 	foreach($select as $select) {
