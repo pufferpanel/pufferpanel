@@ -202,6 +202,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/ftp', function($request, $res
 
 	}
 
+	$service->flash('<div class="alert alert-success">The FTP password for this server has been successfully reset.</div>');
+	$response->redirect('/admin/server/view/'.$request->param('id').'?tab=ftp_sett')->send();
+
 });
 
 $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($request, $response) use($core) {
