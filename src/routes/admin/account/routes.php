@@ -62,7 +62,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 
     }
 
-    if(!$core->auth->validatePasswordRequirements($request->param('pass') || $request->param('pass') != $request->param('pass_2'))) {
+    if(!$core->auth->validatePasswordRequirements($request->param('pass')) || $request->param('pass') != $request->param('pass_2')) {
 
         $service->flash('<div class="alert alert-danger">The password provided did not meet the requirements, or did not match.</div>');
         $response->redirect('/admin/account/new')->send();
