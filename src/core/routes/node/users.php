@@ -46,6 +46,10 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function addSubuser(\Klein\DataCollection\DataCollection $data) {
 
+		if(is_null($data->permissions) || !$data->permissions) {
+			return false;
+		}
+
 		$registerToken = $this->keygen(32);
 		$subuserToken = $this->keygen(32);
 		$subuserUUID = $this->generateUniqueUUID('subusers', 'uuid');
