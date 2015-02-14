@@ -156,6 +156,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 		$node->ips = json_encode($ips);
 		$node->save();
 
+		$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+
 	} catch(\Exception $e) {
 
 		Debugger::log($e);

@@ -107,7 +107,7 @@
 								<label for="server_ip" class="control-label">Server Port</label>
 								<div>
 									{% for ip, internal in decoded.ports %}
-									<select name="server_port_{{ ip }}" class="form-control" {% if server.server_ip != ip %}style="display:none;" disabled{% endif %} id="node_{{ ip }}">
+									<select name="server_port" class="form-control" {% if server.server_ip != ip %}style="display:none;" disabled{% endif %} id="node_{{ ip }}">
 									{% for port, avaliable in internal %}
 										<option
 											{% if server.server_port == port %}selected="selected"{% endif %}
