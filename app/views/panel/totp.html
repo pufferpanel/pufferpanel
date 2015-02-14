@@ -2,25 +2,32 @@
 
 {% block title %}Your Servers{% endblock %}
 
-{% block navdropdown %}
-<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-	<ul class="nav navbar-nav navbar-right">
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('header.account') }}<b class="caret"></b></a>
-				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}logout.php">{{ l.render('header.logout') }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index.php">{{ l.render('header.admin') }}</a></li>{% endif %}
-				</ul>
-		</li>
-	</ul>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="col-md-9">
-	<h3 style="margin-top:0;">Two-Factor Authentication</h3><hr />
+	<h3 style="margin-top:0;">Two-Factor Authentication <small>{% if totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	{% if totp == 1 %}
-		<div class="alert alert-success">Two-Factor authentication is currently enabled on this account. For security reasons it is not possible to disable this from the panel. Please contact support in order to have it disabled on your account.</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Disable TOTP</div>
+			<div class="panel-body">
+				<p>In order to disable TOTP on this account you will need to provide a valid TOTP token. Once validated TOTP protection on this account will be disabled.</p>
+				<br />
+				<form action="/totp" method="post">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">TOTP Token</span>
+								<input type="text" name="token" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-danger btn-sm" type="submit">Disable Two Factor Authentication</button>
+								</span>
+						</div>
+						{{ xsrf|raw }}
+					</div>
+				</form>
+			</div>
+		</div>
 	{% else %}
 		<div class="panel panel-info">
 			<div class="panel-heading">

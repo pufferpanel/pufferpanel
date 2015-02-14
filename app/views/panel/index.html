@@ -2,20 +2,6 @@
 
 {% block title %}Your Servers{% endblock %}
 
-{% block navdropdown %}
-<div class="navbar-collapse navbar-responsive-collapse collapse" style="height: 1px;">
-	<ul class="nav navbar-nav navbar-right">
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('header.account') }}<b class="caret"></b></a>
-				<ul class="dropdown-menu">
-					<li><a href="{{ settings.master_url }}auth/logout">{{ l.render('header.logout') }}</a></li>
-					{% if admin %}<li><a href="{{ settings.master_url }}admin/index">{{ l.render('header.admin') }}</a></li>{% endif %}
-				</ul>
-		</li>
-	</ul>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="col-md-9">
 	{% if flash.info is defined %}

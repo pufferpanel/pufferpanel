@@ -290,10 +290,40 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
 
 });
 
-$klein->respond('GET', '/totp', function($request, $response) use ($core) {
+$klein->respond('GET', '/totp', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render('panel/totp.html', array(
-		'totp' => $core->user->getData('use_totp')
+		'totp' => $core->user->getData('use_totp'),
+		'xsrf' => $core->auth->XSRF(),
+		'flash' => $service->flashes()
 	)))->send();
+
+});
+
+$klein->respond('POST', '/totp', function($request, $response, $service) use($core) {
+
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
+
+		$service->flash('<div class="alert alert-warning">'.$core->language->render('error.xsrf').'</div>');
+		$response->redirect('/totp')->send();
+		return;
+
+	}
+
+	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))){
+
+		$service->flash('<div class="alert alert-danger">Unable to validate that TOTP token for this account.</div>');
+		$response->redirect('/totp')->send();
+		return;
+
+	}
+
+	$user = ORM::forTable('users')->findOne($core->user->getData('id'));
+	$user->use_totp = 0;
+	$user->totp_secret = null;
+	$user->save();
+
+	$service->flash('<div class="alert alert-warning">TOTP has been disabled for this account.</div>');
+	$response->redirect('/totp')->send();
 
 });
