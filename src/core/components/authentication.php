@@ -132,23 +132,24 @@ trait Authentication {
 	}
 
 	/**
-	* Generates a random string of characters.
-	*
-	* @param int $amount
-	* @return string
-	* @static
-	*/
-	public static function keygen($amount){
+	 * Generates a random string of characters.
+	 *
+	 * @param int $amount
+	 * @param string $keyset
+	 * @return string
+	 * @static
+	 */
+	public static function keygen($amount, $keyset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'){
 
-		$character_set = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
-		$random = null;
-		$max = (strlen($character_set) - 1);
+		$amount = ($amount >= 5) ? $amount : 5;
 
-		for ($i=0; $i < $amount; $i++) {
-			$random .= $character_set[mt_rand(0, $max)];
-		}
+		$factory = new \RandomLib\Factory;
+		$generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
 
-		return str_shuffle($random);
+		$string = $generator->generateString($amount - 3, $keyset);
+		$position = $generator->generateInt(0, $amount - 4);
+
+		return substr($string, 0, $position).$generator->generateString(1, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ').$generator->generateInt(0, 9).$generator->generateString(1, 'abcdefghijklmnopqrstuvwxyz').substr($string, $position);
 
 	}
 

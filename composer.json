@@ -5,6 +5,7 @@
     	"ext-mcrypt": "*",
     	"christian-riesen/otp": "1.3.*",
         "flowjs/flow-php-server": "0.2.1",
+        "ircmaxell/random-lib": "1.1.0",
         "j4mie/idiorm": "1.5.1",
         "klein/klein": "2.1.*",
         "league/flysystem": "1.0.*",
