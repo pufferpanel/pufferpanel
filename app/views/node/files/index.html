@@ -109,7 +109,7 @@ $(window).load(function(){
 					'zipItemPath': zipItemPath
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					alert(errorThrown);
+					alert(jqXHR.responseText);
 				},
 				success: function(data) {
 					if(data != "ok") {
@@ -131,7 +131,7 @@ $(window).load(function(){
 					'unzipItemPath': unzipItemPath
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					alert(errorThrown);
+					alert(jqXHR.responseText);
 				},
 				success: function(data) {
 					if(data != "ok") {

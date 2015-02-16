@@ -42,7 +42,7 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 		try {
 
 			$unirest = Unirest\Request::delete(
-				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".urlencode($request->param('deleteItemPath')),
+				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".rawurlencode($request->param('deleteItemPath')),
 				array(
 					'X-Access-Token' => $core->server->getData('gsd_secret')
 				)

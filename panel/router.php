@@ -45,7 +45,7 @@ Unirest\Request::timeout(5);
  * This should NEVER be done on a live environment. In most cases Debugger is smart
  * enough to figure out if it is a local or development environment.
  */
-Debugger::enable(Debugger::DEVELOPMENT, SRC_DIR.'/logs');
+Debugger::enable(Debugger::PRODUCTION, SRC_DIR.'/logs');
 Debugger::$strictMode = TRUE;
 
 /*

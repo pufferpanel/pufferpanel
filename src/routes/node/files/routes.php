@@ -341,7 +341,7 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 
 	} catch(\Exception $e) {
 
-		Tracy\Debugger::log($e);
+		\Tracy\Debugger::log($e);
 		unlink($uploadPath.$request->param('flowFilename'));
 
 		$response->code(400);
