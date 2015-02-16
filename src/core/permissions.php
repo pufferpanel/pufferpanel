@@ -82,7 +82,7 @@ class Permissions extends User {
 
 	public function has($permission) {
 
-		if(User::getData('id') == $this->server->owner_id) {
+		if(User::getData('id') == $this->server->owner_id || User::getData('root_admin') == 1) {
 			return true;
 		}
 
