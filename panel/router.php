@@ -86,7 +86,6 @@ $core->permissions = new Permissions($core->server->getData('id'));
  */
 $core->twig->addGlobal('l', $core->language); // @TODO Change this to addGlobal('language', $core->language) to allow access as {{ language.render('template') }}
 $core->twig->addGlobal('settings', Settings::config());
-$core->twig->addGlobal('get', Components\Page::twigGET());
 $core->twig->addGlobal('permission', $core->permissions);
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));

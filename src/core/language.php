@@ -35,9 +35,7 @@ class Language extends User {
 	protected $loaded;
 
 	/**
-	 * Constructor class for language
-	 *
-	 * @return void
+	 * Constructor class for Language
 	 */
 	public function __construct(){
 

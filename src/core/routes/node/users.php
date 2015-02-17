@@ -30,8 +30,6 @@ class Users extends \PufferPanel\Core\Email {
 
 	/**
 	 * Constructor class for \PufferPanel\Core\Router\Node\Users
-	 *
-	 * @return void
 	 */
 	public function __construct(\PufferPanel\Core\Server $server) {
 

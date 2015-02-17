@@ -28,7 +28,6 @@ class JsonConfig implements ConfigInterface {
 	 *
 	 * @param string $path Configuration file relative to BASE_DIR
 	 * @param bool $array
-	 * @return void
 	 */
 	public function __construct($path, $array = false) {
 		if(!file_exists(BASE_DIR.$path)) {

@@ -127,7 +127,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 		if($unirest->code > 204){
 
-			Debugger::log($e);
 			$service->flash('<div class="alert alert-danger">GSD returned an error when trying to process your request. GSD said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
 			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 			return;

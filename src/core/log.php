@@ -39,9 +39,6 @@ class Log extends User {
 
 	/**
 	 * Constructor class for logging
-	 *
-	 * @param int $uid The user ID.
-	 * @return void
 	 */
 	public function __construct() {
 

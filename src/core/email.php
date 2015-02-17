@@ -131,7 +131,7 @@ class Email {
 
 		$client = new \Postmark\PostmarkClient(Settings::config()->postmark_api_key);
 
-		$send = $client->sendEmail(
+		$client->sendEmail(
 			Settings::config()->sendmail_email,
 			$this->email,
 			$this->subject,

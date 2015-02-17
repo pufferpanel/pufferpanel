@@ -99,10 +99,10 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		$IPA = array_merge($IPA, array($ip => array()));
 		$IPP = array_merge($IPP, array($ip => array()));
 
-		$portList = array();
 		$portList = Functions::processPorts($ports);
 
-		for($l=0; $l<count($portList); $l++) {
+		$portCount = count($portList);
+		for($l=0; $l<$portCount; $l++) {
 			$IPP[$ip][$portList[$l]] = 1;
 		}
 
@@ -403,10 +403,10 @@ $klein->respond('POST', '/admin/node/view/[i:id]/add-ip', function($request, $re
 		$IPA = array_merge($IPA, array($ip => array()));
 		$IPP = array_merge($IPP, array($ip => array()));
 
-		$portList = [];
 		$portList = Functions::processPorts($ports);
 
-		for($l=0; $l<count($portList); $l++) {
+		$portCount = count($portList);
+		for($l=0; $l<$portCount; $l++) {
 
 				$IPP[$ip][$portList[$l]] = 1;
 
@@ -465,7 +465,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/ftp', function($request, $respo
 
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request, $response, $service) use($core) {
+$klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request, $response) use($core) {
 
 	$node = ORM::forTable('nodes')->findOne($request->param('id'));
 	if(!$core->gsd->avaliable($node->ip, $node->gsd_listen)) {
@@ -483,7 +483,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request
 
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request, $response, $service) use($core) {
+$klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request, $response) use($core) {
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
 

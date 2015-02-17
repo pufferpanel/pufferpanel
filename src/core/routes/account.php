@@ -28,7 +28,6 @@ class Account extends \PufferPanel\Core\Email {
 	 * I can't just extend \PufferPanel\Core\User for some reason, and I am too lazy to fix that right now.
 	 *
 	 * @param object $user
-	 * @return void
 	 */
 	public function __construct($user) {
 
@@ -45,8 +44,7 @@ class Account extends \PufferPanel\Core\Email {
 	 */
 	public function updatePassword($old, $new) {
 
-		$this->oldPassword = $old;
-		$this->newPassword = $this->hash($new);
+		$new_password = $this->hash($new);
 
 		$this->account = ORM::forTable('users')->findOne($this->_user->getData('id'));
 
@@ -54,7 +52,7 @@ class Account extends \PufferPanel\Core\Email {
 				return false;
 			}
 
-		$this->account->password = $this->newPassword;
+		$this->account->password = $new_password;
 		$this->account->session_id = null;
 		$this->account->session_ip = null;
 		$this->account->save();

@@ -29,8 +29,6 @@ class Router_Controller {
 
 	/**
 	 * Constructor class for Routes that handles loading class files on the fly.
-	 *
-	 * @return void
 	 */
 	public function __construct($class, $pass = false) {
 

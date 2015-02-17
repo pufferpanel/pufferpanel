@@ -25,10 +25,18 @@ use \ORM, \Unirest, \ReflectionClass;
 class Permissions extends User {
 
 	protected $permissions;
+
 	protected $permission_list = array();
+
 	protected $subuser;
+
 	private $server;
 
+	/**
+	 * Constructor class for Permissions
+	 *
+	 * @param int $server The server ID that we are checking for.
+	 */
 	public function __construct($server = null) {
 
 		parent::__construct();
@@ -53,6 +61,11 @@ class Permissions extends User {
 
 	}
 
+	/**
+	 * Returns a list of servers that a user has permission to access.
+	 *
+	 * @return array
+	 */
 	public function listServers() {
 
 		$select = ORM::forTable('subusers')->where('user', User::getData('id'))->findMany();
@@ -66,6 +79,11 @@ class Permissions extends User {
 
 	}
 
+	/**
+	 * Builds a list of permissions that a user has access to.
+	 *
+	 * @return void
+	 */
 	protected function buildPermissionList() {
 
 		foreach($this->permissions as &$permission) {
@@ -74,12 +92,22 @@ class Permissions extends User {
 
 	}
 
+	/**
+	 * Returns the object value for different rows of a subuser.
+	 *
+	 * @return string
+	 */
 	public function get($param) {
 
 		return (isset($this->subuser->{$param})) ? $this->subuser->{$param} : false;
 
 	}
 
+	/**
+	* Returns true or false depending on if the user has a specified permission.
+	*
+	* @return bool
+	*/
 	public function has($permission) {
 
 		if(User::getData('id') == $this->server->owner_id || User::getData('root_admin') == 1) {

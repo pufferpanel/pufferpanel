@@ -250,7 +250,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 
 });
 
-$klein->respond('GET', '/index/[:goto]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/index/[:goto]', function($request, $response) use ($core) {
 
 	if(!$core->server->nodeRedirect($request->param('goto'))) {
 

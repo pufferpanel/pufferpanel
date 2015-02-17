@@ -45,8 +45,6 @@ class Files extends \PufferPanel\Core\Files {
 
 	/**
 	 * Constructor class.
-	 *
-	 * @return void
 	 */
 	public function __construct(\PufferPanel\Core\Server $server) {
 

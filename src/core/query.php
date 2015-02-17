@@ -36,9 +36,6 @@ class Query extends Server {
 
 	/**
 	 * Builds server data using a specified ID, Hash, and Root Administrator Status.
-	 *
-	 * @param int $serverid The ID of the server that will be implementing this class.
-	 * @return array Returns an array on success or false on failure.
 	 */
 	public function __construct() {
 
@@ -201,29 +198,27 @@ class Query extends Server {
 	 */
 	public function generateServerProperties() {
 
-		$this->response = $this->_getServerProperties();
+		$response = $this->_getServerProperties();
 
-		if(!$this->response) {
+		if(!$response) {
 			\Tracy\Debugger::log($this->node);
 			return "Unable to connect to the GSD Daemon running on the node.";
 		}
 
-		if(!in_array($this->response->code, array(200, 500))) {
+		if(!in_array($response->code, array(200, 500))) {
 
-			switch($this->response->code) {
+			switch($response->code) {
 
 				case 403:
 					return "Authentication error encountered.";
-					break;
 				default:
-					return "[HTTP/{$this->response->code}] Invalid response was recieved. ({$this->response->raw_body})";
-					break;
+					return "[HTTP/{$response->code}] Invalid response was recieved. ({$response->raw_body})";
 
 			}
 
 		}
 
-		if($this->response->code == 500 || !isset($this->response->body->contents) || empty($this->response->body->contents)) {
+		if($response->code == 500 || !isset($response->body->contents) || empty($response->body->contents)) {
 
 			/*
 			* Create server.properties
@@ -236,7 +231,7 @@ class Query extends Server {
 
 			try {
 
-				$this->put = Unirest\Request::put(
+				$put = Unirest\Request::put(
 					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
 					array(
 						"X-Access-Token" => $this->server->gsd_secret
@@ -253,7 +248,7 @@ class Query extends Server {
 
 			}
 
-			if(!empty($this->put->body)) {
+			if(!empty($put->body)) {
 				return "Unable to process request to create server.properties file.";
 			}
 

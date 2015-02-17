@@ -68,7 +68,6 @@
 							<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p>
 						</div>
 					</div>
-					<input type="hidden" name="sid" value="{{ get.id }}" />
 					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
 				</fieldset>
 			</form>
@@ -119,7 +118,6 @@
 								</div>
 							</div>
 						</div>
-						<input type="hidden" name="sid" value="{{ get.id }}" />
 						<input type="hidden" name="nid" value="{{ node.id }}" />
 						<input type="submit" value="Update Connection Information" class="btn btn-primary btn-sm" />
 					</fieldset>
@@ -177,7 +175,6 @@
 			<h3>Delete Server</h3><hr />
 				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> Deleting a server is an irreversiable action. Proceede with caution. This server will be removed from the database along with all files on the server.</div>
 				<form action="{{ server.id }}/delete" method="POST">
-					<input type="hidden" name="sid" value="{{ get.id }}" />
 					<input type="submit" name="delete" class="btn btn-sm btn-danger disabled" value="Permanetly Delete this Server" />
 				</form>
 		</div>

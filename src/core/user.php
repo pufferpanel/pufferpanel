@@ -43,13 +43,12 @@ class User extends Authentication {
 	 * Constructor Class responsible for filling in arrays with the data from a specified user.
 	 *
 	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
-	 * @return void
 	 */
 	public function __construct($rebuild = false){
 
 		parent::__construct();
 
-		if(parent::isLoggedIn() && !$rebuild) {
+		if(Authentication::isLoggedIn() && !$rebuild) {
 			$this->user = $this->select;
 		} else if($rebuild) {
 			$this->user = ORM::forTable('users')->findOne($rebuild);

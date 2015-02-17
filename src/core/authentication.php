@@ -32,8 +32,6 @@ class Authentication {
 
 	/**
 	 * Authentcation constructor class.
-	 *
-	 * @return void
 	 */
 	public function __construct(){
 
@@ -68,10 +66,10 @@ class Authentication {
 	 */
 	public function verifyPassword($email, $raw){
 
-		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
+		$get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-		if($this->get !== false) {
-			return $this->password_compare($raw, $this->get->password);
+		if($get !== false) {
+			return $this->password_compare($raw, $get->password);
 		} else {
 			return false;
 		}

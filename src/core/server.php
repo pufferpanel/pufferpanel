@@ -50,7 +50,6 @@ class Server extends Permissions {
 	 * Constructor class for building server data.
 	 *
 	 * @param string|int $reference This can either be a string (server hash) or a numeric value (server id).
-	 * @return void
 	 */
 	public function __construct($reference = null){
 
@@ -58,7 +57,7 @@ class Server extends Permissions {
 		parent::__construct();
 
 		if(is_null($reference) && !isset($_COOKIE['pp_server_hash'])) {
-			return false;
+			$reference = false;
 		} else if(is_null($reference)) {
 			$reference = $_COOKIE['pp_server_hash'];
 		}
@@ -68,8 +67,6 @@ class Server extends Permissions {
 		} else {
 			$this->_buildData($reference);
 		}
-
-		//parent::initalizePermissions($this->getData('id'), $this->getData('owner_id'));
 
 	}
 
@@ -142,7 +139,7 @@ class Server extends Permissions {
 
 		$query = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1));
 
-		if(!$this->isAdmin()) {
+		if(!User::isAdmin()) {
 			$query = $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(parent::getData('id'), join(',', Permissions::listServers())));
 		}
 
@@ -188,10 +185,10 @@ class Server extends Permissions {
 					'active' => 1
 				));
 
-		if(!$this->isAdmin()) {
+		if(!User::isAdmin()) {
 
 			$query= $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(
-					parent::getData('id'),
+					User::getData('id'),
 					join(',', Permissions::listServers())
 				));
 
