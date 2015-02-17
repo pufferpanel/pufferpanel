@@ -26,7 +26,7 @@ $mysql = new PDO('mysql:host='.$_INFO['sql_h'].';dbname='.$_INFO['sql_db'], $_IN
 ));
 $mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function gen_UUID(){
+function gen_UUID() {
 
 	return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
 					mt_rand(0, 0xffff),
@@ -44,7 +44,7 @@ $results = $mysql->prepare("SELECT * FROM `users`");
 $results->execute();
 
 $row = $results->fetch();
-foreach($row as &$row){
+foreach($row as &$row) {
 
 	$mysql->exec("UPDATE `users` SET `uuid` = '".gen_UUID()."' WHERE `id` = ".$row['id']);
 

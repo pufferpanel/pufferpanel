@@ -36,11 +36,11 @@ trait Url {
 
 		$limit = 1;
 
-		if (stripos($source, "http://") == 0) {
+		if(stripos($source, "http://") == 0) {
 			$source = str_ireplace("http://", "", $source, $limit);
 		}
 
-		if ($stripHttps && stripos($source, "https://") == 0) {
+		if($stripHttps && stripos($source, "https://") == 0) {
 			$source = str_ireplace("https://", "", $source, $limit);
 		}
 
@@ -65,7 +65,7 @@ trait Url {
 	 * @return type
 	 */
 	public static function addTrailing($source) {
-		return self::stripTrailing($source) . '/';
+		return self::stripTrailing($source).'/';
 	}
 
 }

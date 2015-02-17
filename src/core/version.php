@@ -33,15 +33,15 @@ class Version {
 	 * @return string
 	 */
 	public static function getGitSHA() {
-		if (isset(self::$sha)) {
+		if(isset(self::$sha)) {
 			return self::$sha;
 		}
-		if (is_dir(BASE_DIR . '.git')) {
+		if(is_dir(BASE_DIR.'.git')) {
 
-			$head = trim(file_get_contents(BASE_DIR . '.git/HEAD'));
-			if (strpos($head, 'ref: ') !== false) {
+			$head = trim(file_get_contents(BASE_DIR.'.git/HEAD'));
+			if(strpos($head, 'ref: ') !== false) {
 				list(, $path) = explode(" ", $head);
-				$version = substr(trim(file_get_contents(BASE_DIR . '.git/' . $path)), 0, 8);
+				$version = substr(trim(file_get_contents(BASE_DIR.'.git/'.$path)), 0, 8);
 			} else {
 				$version = $head;
 			}
@@ -58,7 +58,7 @@ class Version {
 	 * in the format "Version (sha)"
 	 */
 	public static function get() {
-		return trim(file_get_contents(SRC_DIR . 'versions/current')) . ' (sha: ' . self::getGitSHA() . ')';
+		return trim(file_get_contents(SRC_DIR.'versions/current')).' (sha: '.self::getGitSHA().')';
 	}
 
 }

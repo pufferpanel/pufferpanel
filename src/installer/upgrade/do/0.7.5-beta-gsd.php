@@ -32,7 +32,7 @@ $mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $select = $mysql->prepare("SELECT * FROM `nodes`");
 $select->execute();
 
-while($row = $select->fetch()){
+while($row = $select->fetch()) {
 
 	// get GSD config
 	try {

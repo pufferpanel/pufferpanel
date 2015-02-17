@@ -38,7 +38,6 @@ class Account extends \PufferPanel\Core\Email {
 	/**
 	 * Handles updating a user password for the router. Can also be used outside of the router if needed.
 	 *
-	 * @param string $old
 	 * @param string $new
 	 * @return bool
 	 */

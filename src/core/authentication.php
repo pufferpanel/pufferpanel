@@ -33,7 +33,7 @@ class Authentication {
 	/**
 	 * Authentcation constructor class.
 	 */
-	public function __construct(){
+	public function __construct() {
 
 		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 
@@ -49,7 +49,7 @@ class Authentication {
 	 * @param string $secret The TOTP secret.
 	 * @return bool
 	 */
-	public function validateTOTP($key, $secret){
+	public function validateTOTP($key, $secret) {
 
 		$otp = new Otp();
 
@@ -64,7 +64,7 @@ class Authentication {
 	 * @param string $raw The raw password.
 	 * @return bool
 	 */
-	public function verifyPassword($email, $raw){
+	public function verifyPassword($email, $raw) {
 
 		$get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 

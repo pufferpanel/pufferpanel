@@ -40,7 +40,7 @@ $klein->respond('GET', '/api/nodes/[i:id]', function($request, $response) use ($
 
 });
 
-$klein->respond('POST', '/?', function ($request, $response) use ($nodes) {
+$klein->respond('POST', '/?', function($request, $response) use ($nodes) {
 
 	$response->header('Content-Type', 'application/json');
 
