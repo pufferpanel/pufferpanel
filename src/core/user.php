@@ -44,7 +44,7 @@ class User extends Authentication {
 	 *
 	 * @param mixed $rebuild If passed it should be the ID of the user to rebuild the data as. If passed as false it will build data as the logged in user.
 	 */
-	public function __construct($rebuild = false){
+	public function __construct($rebuild = false) {
 
 		parent::__construct();
 
@@ -64,7 +64,7 @@ class User extends Authentication {
 	 * @param string $id The ID of a user requested in the Admin CP.
 	 * @return bool
 	 */
-	public function rebuildData($id){
+	public function rebuildData($id) {
 
 		self::__construct($id);
 
@@ -78,7 +78,7 @@ class User extends Authentication {
 	 * @param mixed $id The column value for the data you need (e.g. email).
 	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
-	public function getData($id = null){
+	public function getData($id = null) {
 
 		if($this->user && !is_null($this->user)) {
 

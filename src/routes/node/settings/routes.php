@@ -67,14 +67,14 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 		try {
 
 			Unirest\Request::put(
-				'http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'),
+				'http://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'),
 				array(
 					"X-Access-Token" => $core->server->nodeData('gsd_secret')
 				),
 				array(
 					"variables" => json_encode(array(
-						"-jar" => str_replace(".jar", "", $request->param('jarfile')) . '.jar',
-						"-Xmx" => $core->server->getData('max_ram') . 'M'
+						"-jar" => str_replace(".jar", "", $request->param('jarfile')).'.jar',
+						"-Xmx" => $core->server->getData('max_ram').'M'
 					))
 			));
 
@@ -138,6 +138,6 @@ $klein->respond('POST', '/node/settings/ftp', function($request, $response, $ser
 
 $klein->respond('POST', '/node/settings/password', function($request, $response) use ($core) {
 
-	$response->body($core->auth->keygen(rand(6,10))."-".$core->auth->keygen(rand(6,14)))->send();
+	$response->body($core->auth->keygen(rand(6, 10))."-".$core->auth->keygen(rand(6, 14)))->send();
 
 });

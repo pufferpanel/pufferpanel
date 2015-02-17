@@ -79,7 +79,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 	if(
 		!filter_var(gethostbyname($request->param('fqdn')), FILTER_VALIDATE_IP) ||
-		!filter_var($request->param('ip') , FILTER_VALIDATE_IP)
+		!filter_var($request->param('ip'), FILTER_VALIDATE_IP)
 	) {
 
 		$service->flash('<div class="alert alert-danger">The Fully Qualified Domain Name or Server IP provided were invalid.</div>');
@@ -102,7 +102,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		$portList = Functions::processPorts($ports);
 
 		$portCount = count($portList);
-		for($l=0; $l<$portCount; $l++) {
+		for($l = 0; $l < $portCount; $l++) {
 			$IPP[$ip][$portList[$l]] = 1;
 		}
 
@@ -406,7 +406,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/add-ip', function($request, $re
 		$portList = Functions::processPorts($ports);
 
 		$portCount = count($portList);
-		for($l=0; $l<$portCount; $l++) {
+		for($l = 0; $l < $portCount; $l++) {
 
 				$IPP[$ip][$portList[$l]] = 1;
 
@@ -437,7 +437,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/add-ip', function($request, $re
 
 $klein->respond('POST', '/admin/node/view/[i:id]/ftp', function($request, $response, $service) use($core) {
 
-	if(!filter_var($request->param('ip') , FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE)) {
+	if(!filter_var($request->param('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE)) {
 
 		$service->flash('<div class="alert alert-danger">The IP provided for FTP was not valid. FTP IPs must resolve to a non-reserved address.</div>');
 		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=ftp')->send();

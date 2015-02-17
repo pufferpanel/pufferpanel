@@ -49,7 +49,7 @@ $klein->respond('GET', '/assets/[:type]/[*:file]', function($request, $response)
 	header('Cache-control: public');
 	header('Pragma: cache');
 	header('Etag: "'.$etag.'"');
-	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 60 * 60) . ' GMT');
+	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 60 * 60).' GMT');
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file)).' GMT');
 
 	$response->body(file_get_contents($file))->send();

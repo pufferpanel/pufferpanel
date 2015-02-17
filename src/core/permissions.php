@@ -104,10 +104,10 @@ class Permissions extends User {
 	}
 
 	/**
-	* Returns true or false depending on if the user has a specified permission.
-	*
-	* @return bool
-	*/
+	 * Returns true or false depending on if the user has a specified permission.
+	 *
+	 * @return bool
+	 */
 	public function has($permission) {
 
 		if(User::getData('id') == $this->server->owner_id || User::getData('root_admin') == 1) {

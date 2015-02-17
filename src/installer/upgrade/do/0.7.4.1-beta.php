@@ -42,7 +42,7 @@ $mysql->exec("ALTER TABLE nodes
 $select = $mysql->prepare("SELECT `id`, `gsd_server_dir` FROM `nodes`");
 $select->execute();
 
-while($row = $select->fetch()){
+while($row = $select->fetch()) {
 	
 	$mysql->exec("UPDATE nodes SET `gsd_server_dir` = '/home/' WHERE `id` = ".$row['id']);
 	

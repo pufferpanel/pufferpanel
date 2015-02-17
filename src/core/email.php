@@ -87,11 +87,11 @@ class Email {
 	 */
 	protected function _sendWithPHP() {
 
-		$headers = 'From: ' . Settings::config()->sendmail_email . "\r\n" .
-			'Reply-To: ' . Settings::config()->sendmail_email . "\r\n" .
-			'MIME-Version: 1.0' . "\r\n" .
-			'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-			'X-Mailer: PHP/' . phpversion();
+		$headers = 'From: '.Settings::config()->sendmail_email."\r\n".
+			'Reply-To: '.Settings::config()->sendmail_email."\r\n".
+			'MIME-Version: 1.0'."\r\n".
+			'Content-type: text/html; charset=iso-8859-1'."\r\n".
+			'X-Mailer: PHP/'.phpversion();
 
 		mail($this->email, $this->subject, $this->message, $headers);
 
@@ -151,7 +151,7 @@ class Email {
 
 		$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
 		$mail->sendMessage($domain, array(
-			'from' => Settings::config()->company_name . ' <' . Settings::config()->sendmail_email . '>',
+			'from' => Settings::config()->company_name.' <'.Settings::config()->sendmail_email.'>',
 			'to' => $this->email.' <'.$this->email.'>',
 			'subject' => $this->subject,
 			'html' => $this->message
@@ -184,7 +184,7 @@ class Email {
 				'important' => false
 			), true, 'Main Pool');
 
-		} catch (\Mandrill_Error $e) {
+		} catch(\Mandrill_Error $e) {
 
 			Debugger::log($e);
 			throw new Exception("An error occured when trying to send an email. Please check the error log.");
@@ -201,9 +201,9 @@ class Email {
 	 */
 	protected function _readTemplate($template) {
 
-		$readTemplate = file_get_contents(APP_DIR . 'templates/email/' . $template . '.tpl');
-		if (!$readTemplate) {
-			throw new Exception('Requested template `' . $readTemplate . '` could not be found.');
+		$readTemplate = file_get_contents(APP_DIR.'templates/email/'.$template.'.tpl');
+		if(!$readTemplate) {
+			throw new Exception('Requested template `'.$readTemplate.'` could not be found.');
 		} else {
 			return $readTemplate;
 		}
@@ -215,7 +215,7 @@ class Email {
 	 *
 	 * @param string $type What type of login notification are we sending?
 	 * @param array $vars
-	 * @return void
+	 * @return Email
 	 * @deprecated This is just a more or less glorified buildEmail
 	 */
 	public function generateLoginNotification($type, $vars) {
@@ -234,14 +234,14 @@ class Email {
 	 *
 	 * @param string $tpl The email template to use.
 	 * @param array $data
-	 * @return void
+	 * @return Email
 	 */
 	public function buildEmail($tpl, array $data) {
 
 		$this->message = str_replace(array('{{ HOST_NAME }}', '{{ MASTER_URL }}', '{{ DATE }}'), array(Settings::config()->company_name, Settings::config()->master_url, date('j/F/Y H:i', time())), $this->_readTemplate($tpl));
 
-		foreach ($data as $key => $val) {
-			$this->message = str_replace('{{ ' . $key . ' }}', $val, $this->message);
+		foreach($data as $key => $val) {
+			$this->message = str_replace('{{ '.$key.' }}', $val, $this->message);
 		}
 
 		return $this;

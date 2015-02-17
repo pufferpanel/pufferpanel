@@ -32,19 +32,19 @@ class Users {
 	private $__allowedUpdateColumns = array('whmcs_id', 'username', 'email', 'password', 'language', 'root_admin', 'notify_login_s', 'notify_login_f');
 
 	/**
-	* @param array $__requiredUserFields An array containing all of the fields that must be sent in a request for creating a user.
-	*/
+	 * @param array $__requiredUserFields An array containing all of the fields that must be sent in a request for creating a user.
+	 */
 	private $__requiredUserFields = array('username', 'email', 'password', 'admin', 'options');
 
 	/**
-	* @param array $_usersData
-	*/
+	 * @param array $_usersData
+	 */
 	protected $_usersData = array();
 
 	/**
-	* Constructor Class
-	* @return void
-	*/
+	 * Constructor Class
+	 * @return void
+	 */
 	public function __construct() { }
 
 	/**
@@ -168,7 +168,7 @@ class Users {
 	 * 		The UUID of the user whom you are trying to update.
 	 * @param array $data
 	 * 		An array containing the coulmn names to update as keys and their value being the data you wish to replace it with.
-	 * @return bool|int
+	 * @return boolean
 	 * 		- Returns true if the operation was successful and all of the data was updated.
 	 * 		- Returns an integer if the operation failed which is then matched to an error in the API.
 	 */

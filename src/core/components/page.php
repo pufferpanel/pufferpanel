@@ -67,7 +67,7 @@ trait Page {
 
 		$vars = $_GET;
 		$return = array();
-		foreach($vars as $id => $value){
+		foreach($vars as $id => $value) {
 
 			if(empty($value))
 				$value = true;
