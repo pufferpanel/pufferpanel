@@ -106,7 +106,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 
 		}
 
-		if(!$core->routes->updatePassword($request->param('p_password'), $request->param('p_password_new'))) {
+		if(!$core->routes->updatePassword($request->param('p_password_new'))) {
 
 			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.unhandled').'</div>');
 			$response->redirect('/account')->send();

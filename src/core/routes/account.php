@@ -42,7 +42,7 @@ class Account extends \PufferPanel\Core\Email {
 	 * @param string $new
 	 * @return bool
 	 */
-	public function updatePassword($old, $new) {
+	public function updatePassword($new) {
 
 		$new_password = $this->hash($new);
 

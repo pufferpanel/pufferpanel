@@ -89,5 +89,3 @@ class Log extends User {
 	}
 
 }
-
-?>

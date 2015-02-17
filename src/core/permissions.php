@@ -53,7 +53,7 @@ class Permissions extends User {
 			'server' => $server
 		))->findOne();
 
-		if($server != null) {
+		if($server !== null) {
 
 			$this->server = ORM::forTable('servers')->select('owner_id')->findOne($server);
 
