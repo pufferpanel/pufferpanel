@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM, \Unirest;
 
 $klein->respond('GET', '/auth/login', function($request, $response, $service) use ($core) {
 
@@ -191,45 +191,61 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
 	}
 
-	require SRC_DIR.'captcha/recaptchalib.php';
-	$resp = recaptcha_check_answer(Settings::config('captcha_priv'), $request->ip(), $request->param('recaptcha_challenge_field'), $request->param('recaptcha_response_field'));
+	try {
 
-	if($resp->is_valid) {
+		$unirest = Unirest\Request::get(
+			"https://www.google.com/recaptcha/api/siteverify",
+			array(),
+			array(
+				'secret' => Settings::config('captcha_priv'),
+				'response' => $request->param('g-recaptcha-response'),
+				'remoteip' => $request->ip()
+			)
+		);
 
-		$query = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
+		if(!isset($unirest->body->success) || !$unirest->body->success) {
 
-		if($query) {
-
-			$key = $core->auth->keygen('30');
-
-			$account = ORM::forTable('account_change')->create();
-			$account->set(array(
-				'type' => 'password',
-				'content' => $request->param('email'),
-				'key' => $key,
-				'time' => time() + 14400
-			));
-			$account->save();
-
-			$core->email->buildEmail('password_reset', array(
-				'IP_ADDRESS' => $request->ip(),
-				'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip()),
-				'PKEY' => $key
-			))->dispatch($request->param('email'), Settings::config()->company_name.' - Reset Your Password');
-
-			$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
-			$response->redirect('/auth/password/pending')->send();
-
-		} else {
-
-			$service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
+			$service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
 			$response->redirect('/auth/password')->send();
+			return;
 
 		}
 
+	} catch(\Exception $e) {
+
+		$service->flash('<div class="alert alert-danger">Unable to query the captcha validation servers. Please try it again.</div>');
+		$response->redirect('/auth/password')->send();
+		return;
+
+	}
+
+	$query = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
+
+	if($query) {
+
+		$key = $core->auth->keygen('30');
+
+		$account = ORM::forTable('account_change')->create();
+		$account->set(array(
+			'type' => 'password',
+			'content' => $request->param('email'),
+			'key' => $key,
+			'time' => time() + 14400
+		));
+		$account->save();
+
+		$core->email->buildEmail('password_reset', array(
+			'IP_ADDRESS' => $request->ip(),
+			'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($request->ip()),
+			'PKEY' => $key
+		))->dispatch($request->param('email'), Settings::config()->company_name.' - Reset Your Password');
+
+		$service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
+		$response->redirect('/auth/password/pending')->send();
+
 	} else {
 
-		$service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
+		$service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
 		$response->redirect('/auth/password')->send();
 
 	}
