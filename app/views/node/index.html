@@ -140,21 +140,21 @@
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
 		var memoryChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", ""],
+			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			}]
 		};
 		var cpuChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", ""],
+			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			}]
 		};
 		memoryChart = new Chart(ctx).Bar(memoryChartData, {
@@ -163,7 +163,7 @@
 			barShowStroke: false,
 			scaleOverride: false,
 			tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %},
-			barValueSpacing: 2,
+			barValueSpacing: 1,
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
 		});
@@ -173,7 +173,7 @@
 			barShowStroke: false,
 			scaleOverride: false,
 			tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %},
-			barValueSpacing: 2,
+			barValueSpacing: 1,
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
 		});
