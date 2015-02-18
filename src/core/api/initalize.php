@@ -26,21 +26,21 @@ class Initalize {
 	const PP_NAMESPACE = 'PufferPanel\Core\API\\';
 
 	/**
-	* Constructor class
-	*
-	* @return void
-	*/
+	 * Constructor class
+	 *
+	 * @return void
+	 */
 	public function __construct() { }
 
 	/**
-	* Dynamically loads a given class into the API as needed.
-	*
-	* @param string $class The name of the API class to initalize.
-	* @return object
-	*/
+	 * Dynamically loads a given class into the API as needed.
+	 *
+	 * @param string $class The name of the API class to initalize.
+	 * @return object
+	 */
 	public function loadClass($class) {
 
-		require __DIR__ . '/' . strtolower($class) . '.php';
+		require __DIR__.'/'.strtolower($class).'.php';
 		$controller = self::PP_NAMESPACE.$class;
 
 		return new $controller;
@@ -48,13 +48,13 @@ class Initalize {
 	}
 
 	/**
-	* Dynamically loads a given class into the API as needed from an external source.
-	*
-	* @param string $class The name of the API class to initalize.
-	* @param string $namespace If a namespace is used for the class it must be defined. Set to "null" for a global namespace.
-	* @param string $location The location to the file containing the class.
-	* @return object
-	*/
+	 * Dynamically loads a given class into the API as needed from an external source.
+	 *
+	 * @param string $class The name of the API class to initalize.
+	 * @param string $namespace If a namespace is used for the class it must be defined. Set to "null" for a global namespace.
+	 * @param string $location The location to the file containing the class.
+	 * @return object
+	 */
 	public function loadExternalClass($class, $namespace, $location) {
 
 		require $location;

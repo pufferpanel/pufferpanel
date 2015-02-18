@@ -31,7 +31,7 @@ $klein->respond(array('GET', 'POST'), '/node/files/[*]', function($request, $res
 
 });
 
-$klein->respond('GET' , '/node/files', function($request, $response, $service) use($core) {
+$klein->respond('GET', '/node/files', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render('node/files/index.html', array(
 		'server' => $core->server->getData(),
@@ -284,7 +284,7 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 	}
 
 	$tempDir = '/tmp/'.$core->server->getData('hash');
-	$uploadPath = SRC_DIR . 'cache/uploads/' . $core->server->getData('hash') . '/';
+	$uploadPath = SRC_DIR.'cache/uploads/'.$core->server->getData('hash').'/';
 
 	if(!is_dir($tempDir)) {
 		mkdir($tempDir, 0777);

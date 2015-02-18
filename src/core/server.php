@@ -51,7 +51,7 @@ class Server extends Permissions {
 	 *
 	 * @param string|int $reference This can either be a string (server hash) or a numeric value (server id).
 	 */
-	public function __construct($reference = null){
+	public function __construct($reference = null) {
 
 		Authentication::__construct();
 		parent::__construct();
@@ -76,7 +76,7 @@ class Server extends Permissions {
 	 * @param int $id This value should be the ID of the server you are getting information for.
 	 * @return void
 	 */
-	public function rebuildData($id){
+	public function rebuildData($id) {
 
 		self::__construct($id);
 
@@ -90,7 +90,7 @@ class Server extends Permissions {
 	 * @param string $id The column value for the data you need (e.g. server_name).
 	 * @return mixed A string is returned on success, array if nothing was passed, and if the command fails 'false' is returned.
 	 */
-	public function getData($id = null){
+	public function getData($id = null) {
 
 
 		if(is_null($id) && $this->server) {
@@ -153,7 +153,7 @@ class Server extends Permissions {
 	 * @param int $server_id The server ID.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _rebuildData($server_id){
+	private function _rebuildData($server_id) {
 
 		$this->server = ORM::forTable('servers')->findOne($server_id);
 
@@ -178,16 +178,16 @@ class Server extends Permissions {
 	 * @param string $hash The server hash.
 	 * @return mixed Returns an array on success or false on failure.
 	 */
-	private function _buildData($hash){
+	private function _buildData($hash) {
 
-		$query =  ORM::forTable('servers')->where(array(
+		$query = ORM::forTable('servers')->where(array(
 					'hash' => $hash,
 					'active' => 1
 				));
 
 		if(!User::isAdmin()) {
 
-			$query= $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(
+			$query = $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(
 					User::getData('id'),
 					join(',', Permissions::listServers())
 				));

@@ -69,7 +69,7 @@ $mysql->exec("ALTER TABLE nodes
 $select = $mysql->prepare("SELECT * FROM `nodes`");
 $select->execute();
 
-while($row = $select->fetch()){
+while($row = $select->fetch()) {
 
 	$mysql->exec("UPDATE nodes SET `location` = 'def', `allocate_memory` = 1024, `allocate_disk` = 10240, `public` = 1 WHERE `id` = ".$row['id']);
 
@@ -78,7 +78,7 @@ while($row = $select->fetch()){
 $select = $mysql->prepare("SELECT * FROM `servers`");
 $select->execute();
 
-while($row = $select->fetch()){
+while($row = $select->fetch()) {
 
 	$mysql->exec("UPDATE servers SET `subusers` = NULL, `gsd_secret` = '".uuid()."' WHERE `id` = ".$row['id']);
 
@@ -87,7 +87,7 @@ while($row = $select->fetch()){
 $select = $mysql->prepare("SELECT * FROM `users`");
 $select->execute();
 
-while($row = $select->fetch()){
+while($row = $select->fetch()) {
 
 	$mysql->exec("UPDATE users SET `permissions` = NULL WHERE `id` = ".$row['id']);
 

@@ -16,8 +16,9 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
-if(isset($_POST['version']) && file_exists('do/'.$_POST['version'].'.php'))
+if(isset($_POST['version']) && file_exists('do/'.$_POST['version'].'.php')) {
 	header('Location: do/'.$_POST['version'].'.php');
+}
 ?>
 <html lang="en">
 <head>

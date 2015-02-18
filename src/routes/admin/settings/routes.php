@@ -21,119 +21,119 @@ use \ORM, \Tracy\Debugger;
 
 $klein->respond('GET', '/admin/settings/[:page]', function($request, $response, $service) use ($core) {
 
-    $response->body($core->twig->render(
-        'admin/settings/'.$request->param('page').'.html',
-        array(
-            'flash' => $service->flashes()
-        )
-    ))->send();
+	$response->body($core->twig->render(
+		'admin/settings/'.$request->param('page').'.html',
+		array(
+			'flash' => $service->flashes()
+		)
+	))->send();
 
 });
 
 $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, $response, $service) use ($core) {
 
-    // Update Captcha
-    if($request->param('page') == "captcha" && $request->param('action') == "update") {
+	// Update Captcha
+	if($request->param('page') == "captcha" && $request->param('action') == "update") {
 
-        ORM::forTable('acp_settings')->rawExecute(
-            "UPDATE acp_settings SET setting_val = IF(setting_ref='captcha_pub', :pub, :priv) WHERE setting_ref IN ('captcha_pub', 'captcha_priv')",
-            array(
-                'pub' => $request->param('pub_key'),
-                'priv' => $request->param('priv_key')
-            )
-        );
+		ORM::forTable('acp_settings')->rawExecute(
+			"UPDATE acp_settings SET setting_val = IF(setting_ref='captcha_pub', :pub, :priv) WHERE setting_ref IN ('captcha_pub', 'captcha_priv')",
+			array(
+				'pub' => $request->param('pub_key'),
+				'priv' => $request->param('priv_key')
+			)
+		);
 
-        $service->flash('<div class="alert alert-success">Your reCAPTCHA settings have been updated.</div>');
-        $response->redirect('/admin/settings/captcha')->send();
+		$service->flash('<div class="alert alert-success">Your reCAPTCHA settings have been updated.</div>');
+		$response->redirect('/admin/settings/captcha')->send();
 
-    }
+	}
 
-    // Set Company Name
-    if($request->param('page') == "global" && $request->param('action') == "company") {
+	// Set Company Name
+	if($request->param('page') == "global" && $request->param('action') == "company") {
 
-        $query = ORM::forTable('acp_settings')->where('setting_ref', 'company_name')->findOne();
-        $query->setting_val = $request->param('company_name');
-        $query->save();
+		$query = ORM::forTable('acp_settings')->where('setting_ref', 'company_name')->findOne();
+		$query->setting_val = $request->param('company_name');
+		$query->save();
 
-        $service->flash('<div class="alert alert-success">Your company name has been successfully updated.</div>');
-        $response->redirect('/admin/settings/global')->send();
+		$service->flash('<div class="alert alert-success">Your company name has been successfully updated.</div>');
+		$response->redirect('/admin/settings/global')->send();
 
-    }
+	}
 
-    // Update Global Settings
-    if($request->param('page') == "global" && $request->param('action') == "general") {
+	// Update Global Settings
+	if($request->param('page') == "global" && $request->param('action') == "general") {
 
-        try {
+		try {
 
-            ORM::forTable('acp_settings')->rawExecute(
-                "UPDATE acp_settings SET setting_val = CASE setting_ref
+			ORM::forTable('acp_settings')->rawExecute(
+				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'use_api' THEN :enable_api
                     WHEN 'force_online' THEN :force_online
                     WHEN 'https' THEN :https
                     WHEN 'allow_subusers' THEN :allow_subusers
                     ELSE setting_val
                 END", array(
-                    'enable_api' => (!in_array('use_api', $request->param('permissions'))) ? 0 : 1,
-                    'force_online' => (!in_array('force_online', $request->param('permissions'))) ? 0 : 1,
-                    'https' => (!in_array('https', $request->param('permissions'))) ? 0 : 1,
-                    'allow_subusers' => (!in_array('allow_subusers', $request->param('permissions'))) ? 0 : 1
-                )
-            );
+					'enable_api' => (!in_array('use_api', $request->param('permissions'))) ? 0 : 1,
+					'force_online' => (!in_array('force_online', $request->param('permissions'))) ? 0 : 1,
+					'https' => (!in_array('https', $request->param('permissions'))) ? 0 : 1,
+					'allow_subusers' => (!in_array('allow_subusers', $request->param('permissions'))) ? 0 : 1
+				)
+			);
 
-            $service->flash('<div class="alert alert-success">Your global settings have been successfully updated.</div>');
+			$service->flash('<div class="alert alert-success">Your global settings have been successfully updated.</div>');
 
-        } catch(\Exception $e) {
+		} catch(\Exception $e) {
 
-            Debugger::log($e);
-            $service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			Debugger::log($e);
+			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
 
-        }
+		}
 
-        $response->redirect('/admin/settings/global')->send();
+		$response->redirect('/admin/settings/global')->send();
 
-    }
+	}
 
-    if($request->param('page') == "email" && $request->param('action') == "update") {
+	if($request->param('page') == "email" && $request->param('action') == "update") {
 
-        $response->cookie("__TMP_pp_admin_updateglobal", json_encode($request->paramsPost()), time() + 30);
+		$response->cookie("__TMP_pp_admin_updateglobal", json_encode($request->paramsPost()), time() + 30);
 
-        if(!in_array($request->param('smail_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
+		if(!in_array($request->param('smail_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
 
-            $service->flash('<div class="alert alert-danger">The email method selected was not a valid choice.</div>');
-            $response->redirect('/admin/settings/email')->send();
-            return;
+			$service->flash('<div class="alert alert-danger">The email method selected was not a valid choice.</div>');
+			$response->redirect('/admin/settings/email')->send();
+			return;
 
-        }
+		}
 
-        if(!filter_var($request->param('sendmail_email'), FILTER_VALIDATE_EMAIL)) {
+		if(!filter_var($request->param('sendmail_email'), FILTER_VALIDATE_EMAIL)) {
 
-            $service->flash('<div class="alert alert-danger">The email provided as the sendmail address is not valid.</div>');
-            $response->redirect('/admin/settings/email')->send();
-            return;
+			$service->flash('<div class="alert alert-danger">The email provided as the sendmail address is not valid.</div>');
+			$response->redirect('/admin/settings/email')->send();
+			return;
 
-        }
+		}
 
-        if($request->param('smail_method') != 'php' && empty($request->param($request->param('smail_method').'_api_key'))) {
+		if($request->param('smail_method') != 'php' && empty($request->param($request->param('smail_method').'_api_key'))) {
 
-            $service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
-            $response->redirect('/admin/settings/email')->send();
-            return;
+			$service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
+			$response->redirect('/admin/settings/email')->send();
+			return;
 
-        }
+		}
 
-        /*
+		/*
          * Handle Sendgrid Information
          */
-        $sendgrid = null;
-        if(strpos($request->param('sendgrid_api_key'), '|')) {
-            $iv = $core->auth->generate_iv();
-            $sendgrid = $iv.'.'.$core->auth->encrypt($request->param('sendgrid_api_key'), $iv);
-        }
+		$sendgrid = null;
+		if(strpos($request->param('sendgrid_api_key'), '|')) {
+			$iv = $core->auth->generate_iv();
+			$sendgrid = $iv.'.'.$core->auth->encrypt($request->param('sendgrid_api_key'), $iv);
+		}
 
-        try {
+		try {
 
-            ORM::forTable('acp_settings')->rawExecute(
-            "UPDATE acp_settings SET setting_val = CASE setting_ref
+			ORM::forTable('acp_settings')->rawExecute(
+			"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'sendmail_method' THEN :sendmail_method
                     WHEN 'sendmail_email' THEN :sendmail_email
                     WHEN 'postmark_api_key' THEN :postmark_api_key
@@ -142,86 +142,86 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
                     WHEN 'sendgrid_api_key' THEN :sendgrid_api_key
                     ELSE setting_val
                 END", array(
-                    'sendmail_method' => $request->param('smail_method'),
-                    'sendmail_email' => $request->param('sendmail_email'),
-                    'postmark_api_key' => $request->param('postmark_api_key'),
-                    'mandrill_api_key' => $request->param('mandrill_api_key'),
-                    'mailgun_api_key' => $request->param('mailgun_api_key'),
-                    'sendgrid_api_key' => $sendgrid,
-                )
-            );
+					'sendmail_method' => $request->param('smail_method'),
+					'sendmail_email' => $request->param('sendmail_email'),
+					'postmark_api_key' => $request->param('postmark_api_key'),
+					'mandrill_api_key' => $request->param('mandrill_api_key'),
+					'mailgun_api_key' => $request->param('mailgun_api_key'),
+					'sendgrid_api_key' => $sendgrid,
+				)
+			);
 
-            $service->flash('<div class="alert alert-success">Your email settings have been updated.</div>');
+			$service->flash('<div class="alert alert-success">Your email settings have been updated.</div>');
 
-        } catch(\Exception $e) {
+		} catch(\Exception $e) {
 
-            Debugger::log($e);
-            $service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			Debugger::log($e);
+			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
 
-        }
+		}
 
-        $response->redirect('/admin/settings/email')->send();
+		$response->redirect('/admin/settings/email')->send();
 
-    }
+	}
 
-    // Update URLs
-    if($request->param('page') == "urls" && $request->param('action') == "update") {
+	// Update URLs
+	if($request->param('page') == "urls" && $request->param('action') == "update") {
 
-        $urls = array();
-        foreach($request->paramsPost() as $id => $val) {
+		$urls = array();
+		foreach($request->paramsPost() as $id => $val) {
 
-            $url = parse_url($val);
+			$url = parse_url($val);
 
-            if(!$url || !filter_var($val, FILTER_VALIDATE_URL)) {
+			if(!$url || !filter_var($val, FILTER_VALIDATE_URL)) {
 
-                $service->flash('<div class="alert alert-danger">The URL provided is invalid and cannot be processed.</div>');
-                $response->redirect('/admin/settings/urls')->send();
-                return;
+				$service->flash('<div class="alert alert-danger">The URL provided is invalid and cannot be processed.</div>');
+				$response->redirect('/admin/settings/urls')->send();
+				return;
 
-            }
+			}
 
-            if(!isset($url['scheme'])) {
-                $urls[$id] = (Settings::config()->https == 1) ? 'https://'.$val : 'http://'.$val;
-            } else {
+			if(!isset($url['scheme'])) {
+				$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$val : 'http://'.$val;
+			} else {
 
-                if($url['scheme'] != 'https' && Settings::config()->https == 1) {
-                    $urls[$id] = str_replace('http://', 'https://', $val);
-                } else {
-                    $urls[$id] = $val;
-                }
+				if($url['scheme'] != 'https' && Settings::config()->https == 1) {
+					$urls[$id] = str_replace('http://', 'https://', $val);
+				} else {
+					$urls[$id] = $val;
+				}
 
-            }
+			}
 
-            $urls[$id] = rtrim($urls[$id], '/').'/';
+			$urls[$id] = rtrim($urls[$id], '/').'/';
 
-        }
+		}
 
-        try {
+		try {
 
-            ORM::forTable('acp_settings')->rawExecute(
-                "UPDATE acp_settings SET setting_val = CASE setting_ref
+			ORM::forTable('acp_settings')->rawExecute(
+				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'main_website' THEN :main_url
                     WHEN 'master_url' THEN :master_url
                     WHEN 'assets_url' THEN :assets_url
                     ELSE setting_val
                 END", array(
-                    'main_url' => $urls['main_url'],
-                    'master_url' => $urls['master_url'],
-                    'assets_url' => $urls['assets_url']
-                )
-            );
+					'main_url' => $urls['main_url'],
+					'master_url' => $urls['master_url'],
+					'assets_url' => $urls['assets_url']
+				)
+			);
 
-            $service->flash('<div class="alert alert-success">Your URL settings have been updated.</div>');
+			$service->flash('<div class="alert alert-success">Your URL settings have been updated.</div>');
 
-        } catch(\Exception $e) {
+		} catch(\Exception $e) {
 
-            Debugger::log($e);
-            $service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			Debugger::log($e);
+			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
 
-        }
+		}
 
-        $response->redirect('/admin/settings/urls')->send();
+		$response->redirect('/admin/settings/urls')->send();
 
-    }
+	}
 
 });

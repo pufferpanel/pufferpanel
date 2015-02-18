@@ -37,7 +37,7 @@ class Language extends User {
 	/**
 	 * Constructor class for Language
 	 */
-	public function __construct(){
+	public function __construct() {
 
 		if(!$this->getData('language')) {
 			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : Settings::config()->default_language;
@@ -59,7 +59,7 @@ class Language extends User {
 	 * @param string $template The language key.
 	 * @return string
 	 */
-	public function render($template){
+	public function render($template) {
 
 		if(!array_key_exists($template, $this->loaded)) {
 

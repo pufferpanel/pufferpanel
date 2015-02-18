@@ -82,7 +82,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 	// Update Account Password
 	else if($request->param('action') == "password") {
 
-		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))){
+		if(!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))) {
 
 			$service->flash('<div class="alert alert-danger">'.$core->language->render('error.invalid_password').'</div>');
 			$response->redirect('/account')->send();
@@ -177,7 +177,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		try {
 
 			Unirest\Request::put(
-				'https://' . $info->ip . ':' . $info->gsd_listen . '/gameservers/' . $info->gsd_id,
+				'https://'.$info->ip.':'.$info->gsd_listen.'/gameservers/'.$info->gsd_id,
 				array(
 					"X-Access-Token" => $info->node_gsd_secret
 				),
@@ -310,7 +310,7 @@ $klein->respond('POST', '/totp', function($request, $response, $service) use($co
 
 	}
 
-	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))){
+	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))) {
 
 		$service->flash('<div class="alert alert-danger">Unable to validate that TOTP token for this account.</div>');
 		$response->redirect('/totp')->send();

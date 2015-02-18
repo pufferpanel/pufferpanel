@@ -44,7 +44,7 @@ class Router_Controller {
 	 */
 	public function loadClass() {
 
-		require __DIR__ . '/routes/' . strtolower(str_replace('\\', '/', $this->_class)) . '.php';
+		require __DIR__.'/routes/'.strtolower(str_replace('\\', '/', $this->_class)).'.php';
 		$controller = self::PP_NAMESPACE.$this->_class;
 
 		return (!$this->_pass) ? new $controller : new $controller($this->_pass);

@@ -209,7 +209,7 @@ $klein->respond('POST', '/node/ajax/files/directory', function($request, $respon
 	}
 
 	$previous_directory = array();
-	if(!empty($request->param('dir'))){
+	if(!empty($request->param('dir'))) {
 		$previous_directory['first'] = true;
 	}
 

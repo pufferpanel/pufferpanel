@@ -125,7 +125,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 			)
 		);
 
-		if($unirest->code > 204){
+		if($unirest->code > 204) {
 
 			$service->flash('<div class="alert alert-danger">GSD returned an error when trying to process your request. GSD said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
 			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
@@ -195,7 +195,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/ftp', function($request, $res
 	$server->encryption_iv = $iv;
 	$server->save();
 
-	if($request->param('email_user')){
+	if($request->param('email_user')) {
 
 		$core->email->buildEmail('admin_new_ftppass', array(
 			'PASS' => $request->param('ftp_pass'),
@@ -288,7 +288,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			),
 			array(
 				"variables" => json_encode(array(
-					"-jar" => str_replace(".jar", "", $core->server->getData('server_jar')) . '.jar',
+					"-jar" => str_replace(".jar", "", $core->server->getData('server_jar')).'.jar',
 					"-Xmx" => $request->param('alloc_mem')."M"
 				)),
 				"build" => json_encode(array(

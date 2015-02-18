@@ -40,7 +40,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 	$account = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
 
-	if(!$core->auth->verifyPassword($request->param('email'), $request->param('password'))){
+	if(!$core->auth->verifyPassword($request->param('email'), $request->param('password'))) {
 
 		if($account && $account->notify_login_f == 1) {
 
@@ -57,7 +57,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
 	} else {
 
-		if($account->use_totp == 1 && !$core->auth->validateTOTP($request->param('totp_token'), $account->totp_secret)){
+		if($account->use_totp == 1 && !$core->auth->validateTOTP($request->param('totp_token'), $account->totp_secret)) {
 			$service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>');
 			$response->redirect('/auth/login')->send();
 			return;
@@ -71,7 +71,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 		));
 		$account->save();
 
-		if($account->notify_login_s == 1){
+		if($account->notify_login_s == 1) {
 
 			$core->email->generateLoginNotification('success', array(
 				'IP_ADDRESS' => $request->ip(),
