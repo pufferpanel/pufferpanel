@@ -113,7 +113,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 	try {
 
 		$unirest = Request::put(
-			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 			array(
 				'X-Access-Token' => $core->server->nodeData('gsd_secret')
 			),
@@ -216,7 +216,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 	try {
 
 		$unirest = Request::put(
-			'http://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'),
+			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'),
 			array(
 				"X-Access-Token" => $core->server->nodeData('gsd_secret')
 			),
@@ -282,7 +282,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	try {
 
 		Request::put(
-			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
 			array(
 				"X-Access-Token" => $core->server->nodeData('gsd_secret')
 			),
@@ -463,7 +463,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	try {
 
 		$unirest = Request::post(
-			'http://'.$node->ip.':'.$node->gsd_listen.'/gameservers',
+			'https://'.$node->ip.':'.$node->gsd_listen.'/gameservers',
 			array(
 				'X-Access-Token' => $node->gsd_secret
 			),

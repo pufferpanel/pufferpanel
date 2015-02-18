@@ -38,7 +38,6 @@ $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER[
 require_once SRC_DIR.'core/autoloader.php';
 
 Twig_Autoloader::register();
-Unirest\Request::timeout(5);
 
 /*
  * Set Debugger::DETECT to Debugger::DEVELOPMENT to force errors to be displayed.

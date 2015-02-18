@@ -42,7 +42,7 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 		try {
 
 			$unirest = Unirest\Request::delete(
-				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".rawurlencode($request->param('deleteItemPath')),
+				"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".rawurlencode($request->param('deleteItemPath')),
 				array(
 					'X-Access-Token' => $core->server->getData('gsd_secret')
 				)
@@ -85,7 +85,7 @@ $klein->respond('POST', '/node/ajax/files/compress', function($request, $respons
 		if($request->param('zipItemPath') && !empty($request->param('zipItemPath'))) {
 
 			$unirest = Unirest\Request::put(
-				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('zipItemPath'),
+				"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('zipItemPath'),
 				array(
 					"X-Access-Token" => $core->server->getData('gsd_secret')
 				),
@@ -97,7 +97,7 @@ $klein->respond('POST', '/node/ajax/files/compress', function($request, $respons
 		} else if($request->param('unzipItemPath') && !empty($request->param('unzipItemPath'))) {
 
 			$unirest = Unirest\Request::put(
-				"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('unzipItemPath'),
+				"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$request->param('unzipItemPath'),
 				array(
 					"X-Access-Token" => $core->server->getData('gsd_secret')
 				),
@@ -169,7 +169,7 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 	try {
 
 		$unirest = Unirest\Request::put(
-			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
 			array(
 				'X-Access-Token' => $core->server->getData('gsd_secret')
 			),

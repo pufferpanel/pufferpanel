@@ -76,7 +76,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 		));
 		$download->save();
 
-		$response->redirect("http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$downloadToken)->send();
+		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$downloadToken)->send();
 
 	}
 
@@ -110,7 +110,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 	try {
 
 		$unirest = \Unirest\Request::get(
-			"http://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
 			array(
 				"X-Access-Token" => $core->server->getData('gsd_secret')
 			)

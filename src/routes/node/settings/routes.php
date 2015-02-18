@@ -67,7 +67,7 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 		try {
 
 			Unirest\Request::put(
-				'http://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'),
+				'https://' . $core->server->nodeData('ip') . ':' . $core->server->nodeData('gsd_listen') . '/gameservers/' . $core->server->getData('gsd_id'),
 				array(
 					"X-Access-Token" => $core->server->nodeData('gsd_secret')
 				),

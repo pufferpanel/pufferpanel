@@ -22,6 +22,9 @@
  */
 require_once(BASE_DIR.'vendor/autoload.php');
 
+\Unirest\Request::verifyPeer(false);
+\Unirest\Request::timeout(5);
+
 /*
 * Include Required Global Component Files
 */

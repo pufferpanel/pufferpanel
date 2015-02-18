@@ -40,6 +40,7 @@ class Query extends Server {
 	public function __construct() {
 
 		Server::__construct();
+
 		if(is_numeric($this->getData('id'))) {
 
 			/*
@@ -71,7 +72,7 @@ class Query extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"http://".$ip.":".$port."/gameservers/".$id,
+				"https://".$ip.":".$port."/gameservers/".$id,
 				array(
 					'X-Access-Token' => $secret
 				)
@@ -100,7 +101,7 @@ class Query extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id,
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id,
 				array(
 					'X-Access-Token' => $this->node->gsd_secret
 				)
@@ -171,7 +172,7 @@ class Query extends Server {
 			try {
 
 				$response = Unirest\Request::get(
-					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/log/".$lines,
+					"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/log/".$lines,
 					array(
 						"X-Access-Token" => $this->server->gsd_secret
 					)
@@ -232,7 +233,7 @@ class Query extends Server {
 			try {
 
 				$put = Unirest\Request::put(
-					"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+					"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
 					array(
 						"X-Access-Token" => $this->server->gsd_secret
 					),
@@ -268,7 +269,7 @@ class Query extends Server {
 		try {
 
 			$request = Unirest\Request::get(
-				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
 				array(
 					"X-Access-Token" => $this->server->gsd_secret
 				)
@@ -276,7 +277,7 @@ class Query extends Server {
 
 		} catch(\Exception $e) {
 
-			\Tracy\Debugger::log($e);
+			//\Tracy\Debugger::log($e);
 			return false;
 
 		}
@@ -299,7 +300,7 @@ class Query extends Server {
 		try {
 
 			return Unirest\Request::get(
-				"http://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
 				array(
 					"X-Access-Token" => $this->server->gsd_secret
 				)

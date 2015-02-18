@@ -228,7 +228,7 @@ class Servers {
 		$data = json_encode($data);
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'http://'.$node['ip'].':'.$node['listen'].'/gameservers');
+		curl_setopt($ch, CURLOPT_URL, 'https://'.$node['ip'].':'.$node['listen'].'/gameservers');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'X-Access-Token: '.$node['secret']
 		));

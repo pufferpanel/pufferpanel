@@ -16,7 +16,11 @@
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
-	<div class="alert alert-danger" id="socket_error" style="display:none;"><i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.</div>
+	<div class="alert alert-danger" id="socket_error" style="display:none;">
+		<i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+		<br /><br />
+		<strong>If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.ip }}:{{ node.gsd_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).</strong>
+	</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
@@ -132,7 +136,7 @@
 <script type="text/javascript">
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		var socket = io('http://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
+		var socket = io('https://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'secure': true, 'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
 		var memoryChartData = {
@@ -225,7 +229,7 @@
 					$.ajax({
 						type: "POST",
 						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/console',
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/console',
 						timeout: 5000,
 						data: { command: ccmd },
 						error: function(jqXHR, textStatus, errorThrown) {
@@ -254,7 +258,7 @@
 					$.ajax({
 						type: "GET",
 						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/kill',
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/kill',
 						timeout: 5000,
 						error: function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
@@ -279,7 +283,7 @@
 						$.ajax({
 							type: "GET",
 							headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-							url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/off',
+							url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/off',
 							timeout: 5000,
 							error: function(jqXHR, textStatus, errorThrown) {
 								$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
