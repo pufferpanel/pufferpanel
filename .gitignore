@@ -16,3 +16,4 @@ phpdoc_base/*
 !src/cache/downloads/.githold
 !src/cache/uploads/.githold
 config.json
+app/languages/*.json
