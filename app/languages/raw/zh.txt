@@ -61,7 +61,7 @@ node.file.modified, 最后修改
 node.settings.modpack.modpack_h1, 服务器改装配套管理
 node.settings.modpack.current, 现时改装配套
 node.settings.modpack.install, 安装改装配套
-node.settings.jar.jar_h1 服务器 .jar 名称
+node.settings.jar.jar_h1, 服务器 .jar 名称
 node.settings.jar.jarfile_name, Jarfile 名称
 node.settings.jar.update, 更新名称
 node.plugins.welcome_h1, 插件安装程序
