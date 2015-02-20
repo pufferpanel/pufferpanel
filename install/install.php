@@ -1,5 +1,40 @@
 <?php
+/**
+ * 
+ *                 __.............__
+           .--""```                 ```""--.
+            ':--..___             ___..--:'
+              \      ```"""""""```      /
+            .-`  ___.....-----.....___  '-.
+          .:-""``     ~          ~    ``""-:.
+         /`-..___ ~        ~         ~___..-'\
+        /  ~    '`""---.........---""`        \
+       ;                                       ;
+      ; '::.   '          _,           _,       ;
+      |   ':::    '     .' (    ~   .-'./    ~  |
+      |~  .:'   .     _/..._'.    .'.-'/        |
+      | .:'       .-'`      ` '-./.'_.'         |
+      |  ':.     ( o)   ))      ;= <_           |
+      ; '::.      '-.,\\__ __.-;`\'. '.  .      ;
+       ;    ':         \) |`\ \)  '.'-.\       ;
+        \.:'.:':.         \_/       '-._\     /
+         \ ':.     ~                    `    /
+          '. '::..  _ . - - -- .~ _      ~ .'
+            '-._':'                 `'-_.-'
+               (``''--..._____...--''``)
+                `"--...__     __...--"`
+                         `````
 
+ * 
+ * I did not waste hours and hours writing beautiful documentation
+ * just so you could ignore it and do some voodo-magic. Please
+ * do not try to edit this file, and if you even have this open
+ * I am surprised. Shoo, this is a fish only domain. Use the installer
+ * and read the documentation. pls.
+ * 
+ * http://docs.pufferpanel.com/
+ * 
+ **/
 use \PDO;
 
 define("BASE_DIR", dirname(dirname(__FILE__)).'/');
