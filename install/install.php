@@ -42,6 +42,11 @@ define("BASE_DIR", dirname(dirname(__FILE__)).'/');
 $params = array();
 parse_str(implode('&', array_splice($argv, 1)), $params);
 
+if(empty($params)) {
+	echo "You failed to read the docs. Go read them again";
+	return;
+}
+
 $keyset = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*-=+[]()";
 $hash = "";
 
