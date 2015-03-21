@@ -62,19 +62,20 @@ class Query extends Server {
 	 *
 	 * @param string $ip The IP address of the main GSD server to check aganist.
 	 * @param int $port The port of the main GSD server to check aganist.
-	 * @param int $id The GSD ID of the server to check.
+	 * @param string $hash The hash of the server to check for.
 	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
-	public function check_status($ip, $port, $id, $secret) {
+	public function check_status($ip, $port, $hash, $secret) {
 
 		try {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"https://".$ip.":".$port."/gameservers/".$id,
+				"https://".$ip.":".$port."/server",
 				array(
-					'X-Access-Token' => $secret
+					'X-Access-Token' => $secret,
+					'X-Access-Server' => $hash
 				)
 			);
 
@@ -101,9 +102,10 @@ class Query extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id,
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/server",
 				array(
-					'X-Access-Token' => $this->node->gsd_secret
+					'X-Access-Token' => $this->node->gsd_secret,
+					'X-Access-Server' => $this->server->hash
 				)
 			);
 
@@ -172,11 +174,17 @@ class Query extends Server {
 			try {
 
 				$response = Unirest\Request::get(
-					"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/log/".$lines,
+					"https://".$this->node->ip.":".$this->node->gsd_listen."/server/log/".$lines,
 					array(
-						"X-Access-Token" => $this->server->gsd_secret
+						"X-Access-Token" => $this->server->gsd_secret,
+						"X-Access-Server" => $this->server->hash
 					)
 				);
+
+				if($response->code !== 200) {
+					return isset($response->body->message) ? "An error occured using the Scales daemon. Scales said '".$response->body->message."'" : "An unknown error occured with the Scales daemon.";
+				}
+
 				return $response->body;
 
 			} catch(\Exception $e) {
@@ -203,7 +211,7 @@ class Query extends Server {
 
 		if(!$response) {
 			\Tracy\Debugger::log($this->node);
-			return "Unable to connect to the GSD Daemon running on the node.";
+			return "Unable to connect to the Scales Daemon running on the node.";
 		}
 
 		if(!in_array($response->code, array(200, 500))) {
@@ -233,9 +241,10 @@ class Query extends Server {
 			try {
 
 				$put = Unirest\Request::put(
-					"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+					"https://".$this->node->ip.":".$this->node->gsd_listen."/server/file/server.properties",
 					array(
-						"X-Access-Token" => $this->server->gsd_secret
+						"X-Access-Token" => $this->server->gsd_secret,
+						"X-Access-Server" => $this->server->hash
 					),
 					array(
 						"contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $this->server->server_port, $this->server->server_ip)
@@ -269,9 +278,10 @@ class Query extends Server {
 		try {
 
 			$request = Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/on",
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/server/power/on",
 				array(
-					"X-Access-Token" => $this->server->gsd_secret
+					"X-Access-Token" => $this->server->gsd_secret,
+					"X-Access-Server" => $this->server->hash
 				)
 			);
 
@@ -282,7 +292,7 @@ class Query extends Server {
 
 		}
 
-		return ($request->body != "ok") ? false : true;
+		return ($request->code != 204) ? false : true;
 
 	}
 
@@ -300,9 +310,10 @@ class Query extends Server {
 		try {
 
 			return Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/gameservers/".$this->server->gsd_id."/file/server.properties",
+				"https://".$this->node->ip.":".$this->node->gsd_listen."/server/file/server.properties",
 				array(
-					"X-Access-Token" => $this->server->gsd_secret
+					"X-Access-Token" => $this->server->gsd_secret,
+					"X-Access-Server" => $this->server->hash
 				)
 			);
 

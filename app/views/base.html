@@ -31,7 +31,7 @@
 				{% block servername %}
 					{% if server.name is defined %}
 					<ul class="nav navbar-nav">
-						<li class="active dynUpdate" id="{{ server.id }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+						<li class="active dynUpdate" id="{{ server.hash }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
 					</ul>
 					{% endif %}
 				{% endblock %}
@@ -125,11 +125,10 @@
 					$.ajax({
 						type: "POST",
 						url: "/ajax/status",
-						data: { server: connection },
-						success: function(data) {
-								element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-								element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
-						}
+						data: { server: connection }
+					}).done(function(data) {
+						element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+						element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
 					});
 				});
 			}

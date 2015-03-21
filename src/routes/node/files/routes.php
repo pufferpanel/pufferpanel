@@ -70,13 +70,13 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 
 		$download = ORM::forTable('downloads')->create();
 		$download->set(array(
-			'server' => $core->server->getData('gsd_id'),
+			'server' => $core->server->getData('hash'),
 			'token' => $downloadToken,
 			'path' => str_replace("../", "", $request->param('file'))
 		));
 		$download->save();
 
-		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/download/".$downloadToken)->send();
+		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/download/".$downloadToken)->send();
 
 	}
 
@@ -110,13 +110,14 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 	try {
 
 		$unirest = \Unirest\Request::get(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
 			array(
-				"X-Access-Token" => $core->server->getData('gsd_secret')
+				"X-Access-Token" => $core->server->getData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
 			)
 		);
 
-		if($unirest->code != 200 || !isset($unirest->body->contents)) {
+		if($unirest->code !== 200 || !isset($unirest->body->contents)) {
 
 			$service->flash('<div class="alert alert-danger">An error was encountered when trying to retrieve this file for editing. [HTTP\1.1 '.$unirest->code.']</div>');
 			$response->redirect('/node/files')->send();
@@ -181,46 +182,34 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 
 	try {
 
-		$filesystem = new Filesystem(new Adapter(array(
-			'host' => $core->server->nodeData('ip'),
-			'username' => $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'),
-			'password' => $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')),
-			'port' => 21,
-			'passive' => true,
-			'ssl' => true,
-			'timeout' => 10
-		)));
+		$unirest = \Unirest\Request::put(
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($request->param('newFilePath')),
+			array(
+				"X-Access-Token" => $core->server->getData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
+			),
+			array(
+				"contents" => $request->param('newFileContents')
+			)
+		);
 
-	} catch(\Exception $e) {
+		if($unirest->code !== 204) {
 
-		\Tracy\Debugger::log($e);
-		$response->code(500);
-		$response->body('<div class="alert alert-danger">An execption occured when trying to connect to the server.</div>')->send();
-		return;
-
-	}
-
-	try {
-
-		if(!$filesystem->write(urldecode($request->param('newFilePath')), $request->param('newFileContents'))) {
-
-			$response->code(500);
-			$response->body('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>')->send();
-			return;
-
-		} else {
-
-			$response->code(200);
-			$response->body('ok')->send();
+			$response->code($unirest->code);
+			$response->body('An error occured while trying to write the file to the server. ['.$unirest->body->message.']')->send();
 			return;
 
 		}
 
+		$response->code(200);
+		$response->body('ok')->send();
+		return;
+
 	} catch(\Exception $e) {
 
 		\Tracy\Debugger::log($e);
 		$response->code(500);
-		$response->body('<div class="alert alert-danger">An execption occured when trying to write the file to the server.</div>')->send();
+		$response->body('An execption occured when trying to connect to the server.')->send();
 		return;
 
 	}

@@ -69,29 +69,31 @@ class Files extends \PufferPanel\Core\Files {
 
 		$contents = self::_retrieveFolderListing();
 
-		if(!is_array($contents)) {
+		if(!$contents) {
 
 			self::_setError("Unable to connect to daemon to process this request.");
 			return false;
 
 		}
 
-		if(isset($contents['code']) && isset($contents['message'])) {
+		if($contents->code !== 200 || isset($contents->body->message)) {
 
-			self::_setError("The daemon returned an error. (".$contents['message'].")");
+			self::_setError("The daemon returned an error. (".$contents->body->message.")");
 			return false;
 
 		}
 
-		foreach($contents as $value) {
+		foreach(json_decode($contents->raw_body, true) as $value) {
 
-			if($value['filetype'] == 'folder') {
+			if($value['file'] !== true) {
+
+				// @TODO handle symlinks
 
 				$this->display_folders = array_merge($this->display_folders, array(array(
 					"entry" => $value['name'],
 					"directory" => trim($this->params['dir'], "/"),
 					"size" => null,
-					"date" => strtotime($value['mtime'])
+					"date" => strtotime($value['modified'])
 				)));
 
 			} else {
@@ -101,7 +103,7 @@ class Files extends \PufferPanel\Core\Files {
 					"directory" => trim($this->params['dir'], "/"),
 					"extension" => pathinfo($value['name'], PATHINFO_EXTENSION),
 					"size" => $this->formatSize($value['size']),
-					"date" => strtotime($value['mtime'])
+					"date" => strtotime($value['modified'])
 				)));
 
 			}
@@ -146,13 +148,14 @@ class Files extends \PufferPanel\Core\Files {
 			$attached_folder = (!is_null($this->params['dir'])) ? $this->params['dir'] : "/";
 
 			$request = Unirest\Request::get(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id')."/folder/".$attached_folder,
+				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server/directory/".$attached_folder,
 				array(
-					'X-Access-Token' => $this->server->getData('gsd_secret')
+					'X-Access-Token' => $this->server->getData('gsd_secret'),
+					'X-Access-Server' => $this->server->getData('hash')
 				)
 			);
 
-			return json_decode($request->raw_body, true);
+			return $request;
 
 		} catch(\Exception $e) {
 

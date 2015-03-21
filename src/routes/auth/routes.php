@@ -341,9 +341,9 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 });
 
-$klein->respond('POST', '/auth/gsd/download', function($request, $response) use ($core) {
+$klein->respond('POST', '/auth/remote/download', function($request, $response) use ($core) {
 
-	if(!$request->param('token') || !is_numeric($request->param('server'))) {
+	if(!$request->param('token')) {
 
 		$response->code(500);
 		$response->body("missing tokens")->send();
@@ -352,7 +352,6 @@ $klein->respond('POST', '/auth/gsd/download', function($request, $response) use 
 	}
 
 	$download = ORM::forTable('downloads')->where(array(
-		'server' => $request->param('server'),
 		'token' => $request->param('token')
 	))->findOne();
 
@@ -365,13 +364,16 @@ $klein->respond('POST', '/auth/gsd/download', function($request, $response) use 
 	} else {
 
 		$download->delete();
-		$response->json(array('path' => $download->path));
+		$response->json(array(
+			'path' => $download->path,
+			'server' => $download->server
+		));
 
 	}
 
 });
 
-$klein->respond('POST', '/auth/gsd/ftp', function($request, $response) use ($core) {
+$klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($core) {
 
 	if(!$request->param('username') || !$request->param('password')) {
 

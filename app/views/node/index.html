@@ -17,7 +17,7 @@
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
 	<div class="alert alert-danger" id="socket_error" style="display:none;">
-		<i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+		We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
 		<br /><br />
 		<strong>If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.ip }}:{{ node.gsd_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).</strong>
 	</div>
@@ -100,8 +100,8 @@
 					<hr />
 					{% if permission.has('console.power') %}
 						<button class="btn btn-primary btn-sm start" id="on">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm poke" id="restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm poke" id="off">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-primary btn-sm restart" id="restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop" id="off">{{ l.render('string.stop') }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
 						<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
@@ -120,11 +120,9 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-10">
+					<div class="col-md-12">
 						<textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
 					</div>
-					<div class="col-md-1"></div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -136,7 +134,7 @@
 <script type="text/javascript">
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		var socket = io('https://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'secure': true, 'query': 'token={{ server.gsd_secret }}'});
+		var socket = io('https://{{ node.ip }}:{{ node.gsd_console }}/server/{{ server.hash }}', {'query': 'token={{ server.gsd_secret }}'});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
 		var memoryChartData = {
@@ -184,11 +182,11 @@
 			$("#socket_error:visible").hide();
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
-		socket.on('process', function (data) {
+		socket.on('stats', function (data) {
 			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");
+			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
 			memoryChart.removeData();
-			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.process.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.process.cpu], ""); }
+			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
 			cpuChart.removeData();
 		});
 		socket.on('query', function(data){
@@ -196,24 +194,24 @@
 				$("#players_notice").hide();
 				$("#toggle_players").show();
 			}
-			if(data.query.players.length !== 0){
-				$("#toggle_players").html("");
-				$.each(data.query.players, function(id, d) {
-					console.log(d);
-					$.each(d, function(n, name) {
-						$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
-					});
-				});
-			}else{
-				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-			}
+			// if(data.data.players !== 'undefined' && data.data.players.length !== 0){
+			// 	$("#toggle_players").html("");
+			// 	$.each(data.data.players, function(id, d) {
+			// 		console.log(d);
+			// 		$.each(d, function(n, name) {
+			// 			$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
+			// 		});
+			// 	});
+			// }else{
+			// 	$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
+			// }
 			$("img[data-toggle='tooltip']").tooltip();
 		});
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		socket.on('console', function (data) {
-			$("#live_console").val($("#live_console").val() + data.l);
+			$("#live_console").val($("#live_console").val() + data.line);
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		$("#pause_console").click(function(){
@@ -228,125 +226,128 @@
 					$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 					$.ajax({
 						type: "POST",
-						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/console',
-						timeout: 5000,
-						data: { command: ccmd },
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
-							$("#sending_command").removeClass('disabled');
-							$("#sending_command").html('&rarr;');
-							$("#ccmd").val('');
+						headers: {
+							"X-Access-Token": "{{ server.gsd_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
 						},
-						success: function(data) {
-							$("#sending_command").removeClass('disabled');
-							$("#sending_command").html('&rarr;');
-							$("#ccmd").val('');
-								if(data != ""){
-									$("#sc_resp").html(data).fadeIn().delay(5000).fadeOut();
-								}
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/server/console',
+						timeout: 5000,
+						data: {
+							command: ccmd
 						}
+					}).done(function(data) {
+						$("#sending_command").removeClass('disabled');
+						$("#sending_command").html('&rarr;');
+						$("#ccmd").val('');
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+						$("#sending_command").removeClass('disabled');
+						$("#sending_command").html('&rarr;');
+						$("#ccmd").val('');
 					});
 				}
 			});
 		{% endif %}
 		{% if permission.has('console.power') %}
 			var can_run = true;
-			$("#kill_proc").click(function(){
+			$("#kill_proc").click(function(e){
+				e.preventDefault();
 				var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
 				if(killConfirm) {
 					$.ajax({
 						type: "GET",
-						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/kill',
-						timeout: 5000,
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							return false;
+						headers: {
+							"X-Access-Token": "{{ server.gsd_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
 						},
-						success: function(data) {
-							if(data == "ok"){
-								$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
-								return false;
-							}
-						}
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/server/power/kill',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 					});
 				}
 			});
-			$(".poke").click(function(){
-				var command = $(this).attr("id");
-				if(command == 'off'){ uCommand = 'Stopping'; }else{ uCommand = 'Restarting';}
-					if(can_run === true){
-						can_run = false;
-						$(this).append(' <i class="fa fa-refresh fa-spin"></i>');
-						$(this).toggleClass('disabled');
-						$.ajax({
-							type: "GET",
-							headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-							url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/off',
-							timeout: 5000,
-							error: function(jqXHR, textStatus, errorThrown) {
-								$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-								$("#off").removeClass('disabled');
-								$("#off").html('Stop');
-								$("#restart").removeClass('disabled');
-								$("#restart").html('Restart');
-								can_run = true;
-								return false;
-							},
-							success: function(data) {
-								if(data == "ok"){
-									$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-									can_run = true;
-									if(command == "restart"){
-										setTimeout(function() { start_server(); }, 5000)
-									}
-									$("#off").removeClass('disabled');
-									$("#off").html('{{ l.render('string.stop') }}');
-									return false;
-								}
-							}
-						});
-					}else{
+			$(".stop").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
+					$.ajax({
+						type: "GET",
+						headers: {
+							"X-Access-Token": "{{ server.gsd_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
+						},
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/server/power/off',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+						$(".stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
+						can_run = true;
 						return false;
-					}
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							$(".stop").removeClass('disabled').html('Stop');
+							can_run = true;
+					});
+				}
 			});
-			$("#on").click(function(){
+			$(".restart").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
+					$.ajax({
+						type: "GET",
+						headers: {
+							"X-Access-Token": "{{ server.gsd_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
+						},
+						url: 'https://{{ node.ip }}:{{ node.gsd_listen }}/server/power/restart',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+						$(".restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
+						can_run = true;
+						return false;
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							$(".restart").removeClass('disabled').html('Restart');
+							can_run = true;
+					});
+				}
+			});
+			$(".start").click(function(e){
+				e.preventDefault();
 				start_server();
 			});
 			function start_server() {
 				if(can_run === true){
 					can_run = false;
-					$("#restart").removeClass('disabled');
-					$("#restart").html('{{ l.render('string.restart') }}');
-					$("#on").append(' <i class="fa fa-refresh fa-spin"></i>');
-					$("#on").toggleClass('disabled');
+					$(".start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "POST",
 						url: "/node/ajax/console/power",
-						timeout: 5000,
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node_ajax_generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+						timeout: 5000
+					}).done(function(data) {
+						if(data == "ok"){
+							$("#live_console").val("Server is starting...\n");
+							$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
+							can_run = true;
+						}else{
+							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
+							can_run = true;
+						}
+						$("#on").toggleClass('disabled');
+						$("#on").html('{{ l.render('string.start') }}');
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 							$("#on").removeClass('disabled');
 							$("#on").html('Start');
 							can_run = true;
-							return false;
-						},
-						success: function(data) {
-							if(data == "ok"){
-								$("#live_console").val("Server is starting...\n");
-								$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax_server_started') }}").fadeIn().delay(5000).fadeOut();
-								can_run = true;
-							}else{
-								$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
-								can_run = true;
-							}
-							$("#on").toggleClass('disabled');
-							$("#on").html('{{ l.render('string.start') }}');
-						}
 					});
-				}else{
-					return false;
 				}
 			}
 		{% endif %}

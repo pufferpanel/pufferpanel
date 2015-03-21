@@ -42,9 +42,10 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 		try {
 
 			$unirest = Unirest\Request::delete(
-				"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".rawurlencode($request->param('deleteItemPath')),
+				"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($request->param('deleteItemPath')),
 				array(
-					'X-Access-Token' => $core->server->getData('gsd_secret')
+					'X-Access-Token' => $core->server->getData('gsd_secret'),
+					'X-Access-Server' => $core->server->getData('hash')
 				)
 			);
 
@@ -58,7 +59,7 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 
 	}
 
-	if($unirest->code !== 200) {
+	if($unirest->code !== 204) {
 
 		$response->code($unirest->code)->body($unirest->raw_body)->send();
 		return;
@@ -139,14 +140,14 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 
 	if(!$core->auth->XSRF($request->param('xsrf'))) {
 
-		$response->code(403)->body('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>')->send();
+		$response->code(403)->body('The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.')->send();
 		return;
 
 	}
 
 	if(!$request->param('file') || !$request->param('file_contents')) {
 
-		$response->code(500)->body('<div class="alert alert-warning"> Not all required parameters were passed to the script.</div>')->send();
+		$response->code(500)->body('Not all required parameters were passed to the script.')->send();
 		return;
 
 	}
@@ -169,22 +170,23 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 	try {
 
 		$unirest = Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id')."/file/".$file->dirname.$file->basename,
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
 			array(
-				'X-Access-Token' => $core->server->getData('gsd_secret')
+				'X-Access-Token' => $core->server->getData('gsd_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
 			),
 			array(
 				"contents" => $request->param('file_contents')
 			)
 		);
 
-		if($unirest->code == 200) {
+		if($unirest->code === 204) {
 
 			$response->body('<div class="alert alert-success">File has been successfully saved.</div>')->send();
 
 		} else {
 
-			$response->code(500)->body("An error occured while trying to save this file. [".$unirest->raw_body."]")->send();
+			$response->code(500)->body("An error occured while trying to save this file. [".$unirest->body->message."]")->send();
 
 		}
 

@@ -20,7 +20,7 @@
 			</thead>
 			<tbody>
 				{% for server in servers %}
-					<tr class="dynUpdate" id="{{ server.id }}">
+					<tr class="dynUpdate" id="{{ server.hash }}">
 						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
 						<td>{{ server.location }}</td>
 						<td>{{ server.node_name }}</td>

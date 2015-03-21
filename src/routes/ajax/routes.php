@@ -28,9 +28,9 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 		if($request->param('server')) {
 
 			$status = ORM::forTable('servers')
-				->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
+				->select('servers.hash', 's_hash')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
-				->where('servers.id', $request->param('server'))
+				->where('servers.hash', $request->param('server'))
 				->findOne();
 
 			if(!$status) {
@@ -38,7 +38,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				return;
 			}
 
-			if(!$core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret)) {
+			if($core->gsd->check_status($status->ip, $status->gsd_listen, $status->s_hash, $status->gsd_secret) !== 200) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
