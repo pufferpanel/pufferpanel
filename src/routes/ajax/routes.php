@@ -38,7 +38,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				return;
 			}
 
-			if($core->gsd->check_status($status->ip, $status->gsd_listen, $status->s_hash, $status->gsd_secret) !== 200) {
+			if($core->gsd->check_status($status->ip, $status->gsd_listen, $status->s_hash, $status->gsd_secret) !== 1) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
