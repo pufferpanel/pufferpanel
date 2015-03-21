@@ -415,7 +415,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	$iv = $core->auth->generate_iv();
 	$ftp_password = $core->auth->encrypt($request->param('ftp_pass'), $iv);
-	$ftp_username = Functions::generateFTPUsername($request->param('server_name'));
+	$sftp_username = Functions::generateFTPUsername($request->param('server_name'));
 	$server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
 	$gsd_secret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
 
@@ -424,9 +424,9 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	*/
 	$data = array(
 		"name" => $server_hash,
-		"user" => $ftp_username,
+		"user" => $sftp_username,
 		"overide_command_line" => "",
-		"path" => $node->gsd_server_dir.$ftp_username,
+		"path" => $node->gsd_server_dir.$sftp_username,
 		"build" => array(
 			"install_dir" => '/mnt/MC/CraftBukkit/',
 			"disk" => array(
@@ -489,7 +489,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			'date_added' => time(),
 			'server_ip' => $request->param('server_ip'),
 			'server_port' => $request->param('server_port'),
-			'ftp_user' => $ftp_username,
+			'sftp_user' => $sftp_username,
 			'ftp_pass' => $ftp_password
 		));
 		$server->save();
@@ -505,7 +505,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 				'NAME' => $request->param('server_name'),
 				'FTP' => $node->fqdn.':21',
 				'MINECRAFT' => $node->fqdn.':'.$request->param('server_port'),
-				'USER' => $ftp_username.'-'.$unirest->body->id,
+				'USER' => $sftp_username.'-'.$unirest->body->id,
 				'PASS' => $ftp_password
 		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
 

@@ -114,23 +114,43 @@ $klein->respond('POST', '/node/settings/ftp', function($request, $response, $ser
 
 	}
 
-	if(!$core->auth->validatePasswordRequirements($request->param('ftp_pass'))) {
+	if(!$core->auth->validatePasswordRequirements($request->param('sftp_pass'))) {
 
 		$service->flash('<div class="alert alert-danger">The password you provided does not meet the requirements. Please use at least 8 characters, include at least one number, and use mixed case.</div>');
-		$response->redirect('/node/settings?tab=ftp_sett')->send();
+		$response->redirect('/node/settings?tab=sftp_sett')->send();
 
 	} else {
 
 		/*
 		 * Update Server FTP Information
 		 */
-		$ftp = ORM::forTable('servers')->findOne($core->server->getData('id'));
-		$ftp->encryption_iv = $core->auth->generate_iv();
-		$ftp->ftp_pass = $core->auth->encrypt($request->param('ftp_pass'), $ftp->encryption_iv);
-		$ftp->save();
+		try {
 
-		$service->flash('<div class="alert alert-success">Your FTP password has been updated.</div>');
-		$response->redirect('/node/settings?tab=ftp_sett')->send();
+			$unirest = Unirest\Request::post(
+				'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/server/reset-password',
+				array(
+					"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+					"X-Access-Server" => $core->server->getData('hash')
+				),
+				array(
+					"password" => $request->param('sftp_pass')
+				)
+			);
+
+			if($unirest->code === 204) {
+				$service->flash('<div class="alert alert-success">Your SFTP password has been updated.</div>');
+				$response->redirect('/node/settings?tab=sftp_sett')->send();
+			} else {
+				throw new \Exception("Scales did not return a success code while attempting to reset an account password. (code: ".$unirest->code.")");
+			}
+
+		} catch(\Exception $e) {
+
+			Tracy\Debugger::log($e);
+			$service->flash('<div class="alert alert-danger">Unable to access the Scales daemon to reset your password. Please try again in a moment.</div>');
+			$response->redirect('/node/settings?tab=sftp_sett')->send();
+
+		}
 
 	}
 

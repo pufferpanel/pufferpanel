@@ -401,7 +401,7 @@ $klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($
 	*/
 	$server = ORM::forTable('servers')
 		->selectMany('encryption_iv', 'ftp_pass', 'gsd_secret')
-		->where(array('gsd_id' => $serverid, 'ftp_user' => $username))
+		->where(array('gsd_id' => $serverid, 'sftp_user' => $username))
 		->findOne();
 
 	if(!$server) {

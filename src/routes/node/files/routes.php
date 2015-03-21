@@ -255,7 +255,7 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 
 		$filesystem = new Filesystem(new Adapter(array(
 			'host' => $core->server->nodeData('ip'),
-			'username' => $core->server->getData('ftp_user').'-'.$core->server->getData('gsd_id'),
+			'username' => $core->server->getData('sftp_user').'-'.$core->server->getData('gsd_id'),
 			'password' => $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')),
 			'port' => 21,
 			'passive' => true,

@@ -70,7 +70,7 @@ Response
 		"cpu": 30,
 		"ip": "192.168.1.2",
 		"port": 25565,
-		"ftp_user": "mc-MY_DEMO_XyZab"
+		"sftp_user": "mc-MY_DEMO_XyZab"
 	}
 
 Create a New Server

@@ -62,7 +62,7 @@ class Servers {
 				"cpu" => (int) $this->server->cpu_limit,
 				"ip" => $this->server->server_ip,
 				"port" => (int) $this->server->server_port,
-				"ftp_user" => $this->server->ftp_user
+				"sftp_user" => $this->server->sftp_user
 			);
 
 		}
@@ -147,7 +147,7 @@ class Servers {
 		$this->iv = $this->generate_iv();
 		$this->data['ftp_password_raw'] = self::keygen(12);
 		$this->data['ftp_password'] = $this->encrypt($this->data['ftp_password_raw'], $this->iv);
-		$this->data['ftp_username'] = self::generateFTPUsername($this->data['name']);
+		$this->data['sftp_username'] = self::generateFTPUsername($this->data['name']);
 		$this->serverHash = $this->generateUniqueUUID('servers', 'hash');
 		$this->daemonSecret = $this->generateUniqueUUID('servers', 'gsd_secret');
 
@@ -156,9 +156,9 @@ class Servers {
 		*/
 		$this->data['gsd_id'] = $this->_sendToDaemon(array(
 			"name" => $this->serverHash,
-			"user" => $this->data['ftp_username'],
+			"user" => $this->data['sftp_username'],
 			"overide_command_line" => "",
-			"path" => $this->node->gsd_server_dir.$this->data['ftp_username'],
+			"path" => $this->node->gsd_server_dir.$this->data['sftp_username'],
 			"variables" => array(
 				"-jar" => 'server.jar',
 				"-Xmx" => $this->data['memory']."M"
@@ -193,7 +193,7 @@ class Servers {
 			'date_added' => time(),
 			'server_ip' => $this->data['ip'],
 			'server_port' => $this->data['port'],
-			'ftp_user' => $this->data['ftp_username'],
+			'sftp_user' => $this->data['sftp_username'],
 			'ftp_pass' => $this->data['ftp_password']
 		));
 		$this->server->save();
@@ -209,7 +209,7 @@ class Servers {
 			'hash' => $this->serverHash,
 			'owner' => $this->data['owner'],
 			'ftp' => array(
-				'username' => $this->data['ftp_username'],
+				'username' => $this->data['sftp_username'],
 				'password' => $this->data['ftp_password_raw']
 			)
 		);

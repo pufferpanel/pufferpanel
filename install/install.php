@@ -231,7 +231,7 @@ try {
 					`date_added` int(15) NOT NULL,
 					`server_ip` varchar(50) NOT NULL DEFAULT '',
 					`server_port` int(11) NOT NULL,
-					`ftp_user` tinytext NOT NULL,
+					`sftp_user` tinytext NOT NULL,
 					`ftp_pass` tinytext NOT NULL,
 					PRIMARY KEY (`id`)
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
