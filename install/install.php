@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  *                 __.............__
  *          .--""```                 ```""--.
  *           ':--..___             ___..--:'
@@ -25,15 +25,15 @@
  *               `"--...__     __...--"`
  *                        `````
  *
- * 
+ *
  * I did not waste hours and hours writing beautiful documentation
  * just so you could ignore it and do some voodo-magic. Please
  * do not try to edit this file, and if you even have this open
  * I am surprised. Shoo, this is a fish only domain. Use the installer
  * and read the documentation. pls.
- * 
- * http://docs.pufferpanel.com/
- * 
+ *
+ * http://pufferpanel.com/
+ *
  **/
 use \PDO;
 
@@ -197,8 +197,8 @@ try {
 					`fqdn` tinytext NOT NULL,
 					`ip` tinytext NOT NULL,
 					`gsd_secret` char(32) DEFAULT NULL,
-					`gsd_listen` int(1) DEFAULT '8003',
-					`gsd_console` int(1) DEFAULT '8031',
+					`gsd_listen` int(1) DEFAULT '5656',
+					`gsd_console` int(1) DEFAULT '5657',
 					`gsd_server_dir` tinytext,
 					`ips` text NOT NULL,
 					`ports` text NOT NULL,
@@ -231,8 +231,7 @@ try {
 					`date_added` int(15) NOT NULL,
 					`server_ip` varchar(50) NOT NULL DEFAULT '',
 					`server_port` int(11) NOT NULL,
-					`sftp_user` tinytext NOT NULL,
-					`ftp_pass` tinytext NOT NULL,
+					`sftp_user` tinytext NOT NULL
 					PRIMARY KEY (`id`)
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	echo "Table `servers` created.\n";
@@ -299,8 +298,8 @@ try {
 					('sendgrid_api_key', NULL),
 					('sendmail_email', NULL),
 					('sendmail_method','php'),
-					('captcha_pub','6LdSzuYSAAAAAHkmq8LlvmhM-ybTfV8PaTgyBDII'),
-					('captcha_priv','6LdSzuYSAAAAAISSAYIJrFGGGJHi5a_V3hGRvIAz'),
+					('captcha_pub',NULL),
+					('captcha_priv',NULL),
 					('default_language', 'en'),
 					('force_online', 0),
 					('https', 0),
