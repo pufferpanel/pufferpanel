@@ -66,29 +66,37 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 
 		try {
 
-			Unirest\Request::put(
-				'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'),
+			$unirest = Unirest\Request::put(
+				'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/server',
 				array(
-					"X-Access-Token" => $core->server->nodeData('gsd_secret')
+					"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+					"X-Access-Server" => $core->server->getData('hash')
 				),
 				array(
-					"variables" => json_encode(array(
+					"json" => json_encode(array(
 						"-jar" => str_replace(".jar", "", $request->param('jarfile')).'.jar',
 						"-Xmx" => $core->server->getData('max_ram').'M'
-					))
-			));
+					)),
+					"object" => "variables",
+					"overwrite" => false
+				)
+			);
+
+			if($unirest->code !== 204) {
+				throw new \Exception("Error occured while trying to udpdate server settings. (code: ".$unirest->code.")");
+			}
 
 			$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 			$server->server_jar = str_replace(".jar", "", $request->param('jarfile'));
 			$server->save();
 
-			$service->flash('<div class="alert alert-success"> Your server statup executable has been updated to <strong>'.str_replace(".jar", "", $request->param('jarfile')).'.jar</strong>.</div>');
+			$service->flash('<div class="alert alert-success"> Your server startup executable has been updated to <strong>'.str_replace(".jar", "", $request->param('jarfile')).'.jar</strong>.</div>');
 			$response->redirect('/node/settings')->send();
 
 		} catch(\Exception $e) {
 
 			Tracy\Debugger::log($e);
-			$service->flash('<div class="alert alert-danger"> An error occured when attempting to update settings on the remote server. Please try again.</div>');
+			$service->flash('<div class="alert alert-danger"> An error occured when attempting to update settings on the remote Scales server. Please try again.</div>');
 			$response->redirect('/node/settings')->send();
 
 		}
