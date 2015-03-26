@@ -103,20 +103,36 @@ class Users extends \PufferPanel\Core\Email {
 
 		try {
 
-			Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
+			$unirest = Unirest\Request::put(
+				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
 				array(
-					"X-Access-Token" => $this->server->nodeData('gsd_secret')
+					"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+					"X-Access-Server" => $this->server->getData('hash')
 				),
 				array(
-					"keys" => json_encode(array(
+					"json" => json_encode(array(
 						$gsdSecret => self::_buildGSDPermissions($data->permissions)
-					))
+					)),
+					"object" => "keys",
+					"overwrite" => false
 				)
 			);
 
+			if($unirest->code !== 204) {
+				throw new \Exception();
+			}
+
 			if($find) {
 
+				foreach(self::_rebuildUserPermissions($data->permissions) as $id => $permission) {
+
+					ORM::forTable('permissions')->create()->set(array(
+						'user' => $find->id,
+						'server' => $this->server->getData('id'),
+						'permission' => $permission
+					))->save();
+
+				}
 				/*
 				* Send Email
 				*/
@@ -178,17 +194,24 @@ class Users extends \PufferPanel\Core\Email {
 
 		try {
 
-			Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
+			$unirest = Unirest\Request::put(
+				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
 				array(
-					"X-Access-Token" => $this->server->nodeData('gsd_secret')
+					"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+					"X-Access-Server" => $this->server->getData('hash')
 				),
 				array(
-					"keys" => json_encode(array(
+					"json" => json_encode(array(
 						$select->gsd_secret => self::_buildGSDPermissions($data->permissions)
-					))
+					)),
+					"object" => "keys",
+					"overwrite" => false
 				)
 			);
+
+			if($unirest->code !== 204) {
+				throw new \Exception();
+			}
 
 			return true;
 
@@ -269,6 +292,9 @@ class Users extends \PufferPanel\Core\Email {
 				case "files.zip":
 					$gsd = array_merge($gsd, array("s:files:zip"));
 					break;
+				case "manage.ftp.password":
+					$gsd = array_merge($gsd, array("s:ftp"));
+					break;
 
 			}
 
@@ -295,17 +321,24 @@ class Users extends \PufferPanel\Core\Email {
 
 			try {
 
-				Unirest\Request::put(
-					"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/gameservers/".$this->server->getData('gsd_id'),
+				$unirest = Unirest\Request::put(
+					"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
 					array(
-						"X-Access-Token" => $this->server->nodeData('gsd_secret')
+						"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+						"X-Access-Server" => $this->server->getData('hash')
 					),
 					array(
-						"keys" => json_encode(array(
-							$orm->gsd_secret => array()
-						))
+						"json" => json_encode(array(
+							$orm->gsd_secret => ""
+						)),
+						"object" => "keys",
+						"overwrite" => false
 					)
 				);
+
+				if($unirest->code !== 204) {
+					throw new \Exception();
+				}
 
 				ORM::forTable('permissions')
 					->where(array(
