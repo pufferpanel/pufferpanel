@@ -213,25 +213,20 @@ $(window).load(function(){
 					$("#reset_token_warn_tkn").html(data);
 					$("#reset_token_warn").show();
 					$("#form_gsd_token").val(data);
-					$("#node_gsd_config").text('{\n\
-	"daemon": {\n\
-		"listenport": {{ node.gsd_listen }},\n\
-		"consoleport": {{ node.gsd_console }}\n\
-	},\n\
-	"tokens": ["'+ data +'"],\n\
-	"interfaces":{\n\
-		"rest":{\n\
-			"authurl": "{{ settings.master_url }}auth/gsd/download"\n\
-		},\n\
-		"console":{},\n\
-		"ftp":{\n\
-			"authurl": "{{ settings.master_url }}auth/gsd/ftp",\n\
-			"port": 21,\n\
-			"host": "{{ node.ip }}",\n\
-			"use_ssl": true\n\
-		}\n\
-	},\n\
-	"servers": []\n\
+					$("#node_gsd_config").text('{ \n\
+	"listen": { \n\
+		"sftp": 22, \n\
+		"rest": {{ node.gsd_listen }}, \n\
+		"socket": {{ node.gsd_console }} \n\
+	}, \n\
+	"urls": { \n\
+		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
+		"download": "{{ settings.master_url }}auth/remote/download" \n\
+	}, \n\
+	"basepath": "{{ node.gsd_server_dir }}", \n\
+	"keys": [ \n\
+		"' + data + '" \n\
+	] \n\
 }');
 				}
 			}
