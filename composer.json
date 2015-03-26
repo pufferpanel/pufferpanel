@@ -8,7 +8,6 @@
         "ircmaxell/random-lib": "1.1.0",
         "j4mie/idiorm": "1.5.1",
         "klein/klein": "2.1.*",
-        "league/flysystem": "1.0.*",
     	"mandrill/mandrill": "1.0.52",
         "mashape/unirest-php" : "2.2.0",
     	"sendgrid/sendgrid": "2.2.*",
