@@ -51,26 +51,21 @@
 				</fieldset>
 			</form>
 			<hr />
-			<h6>Sample GSD Configuration File</h6>
+			<h6>Scales Configuration File</h6>
 			<pre id="node_gsd_config">{
-	"daemon": {
-		"listenport": {{ node.gsd_listen }},
-		"consoleport": {{ node.gsd_console }}
+	"listen": {
+		"sftp": 22,
+		"rest": {{ node.gsd_listen }},
+		"socket": {{ node.gsd_console }}
 	},
-	"tokens": ["{{ node.gsd_secret }}"],
-	"interfaces":{
-		"rest":{
-			"authurl": "{{ settings.master_url }}auth/gsd/download"
-		},
-		"console":{},
-		"ftp":{
-			"authurl": "{{ settings.master_url }}auth/gsd/ftp",
-			"port": 21,
-			"host": "{{ node.ip }}",
-			"use_ssl": true
-		}
+	"urls": {
+		"repo": "{{ settings.master_url }}auth/remote/pack",
+		"download": "{{ settings.master_url }}auth/remote/download"
 	},
-	"servers": []
+	"basepath": "{{ node.gsd_server_dir }}",
+	"keys": [
+		"{{ node.gsd_secret }}"
+	]
 }</pre>
 		</div>
 		<div class="tab-pane" id="allocation">
