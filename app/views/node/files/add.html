@@ -23,7 +23,7 @@
 		<div class="tab-pane active" id="create">
 			<div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
 			<form method="post" id="new_file">
-				<h4>/server/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+				<h4>/public/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
 				<div class="form-group">
 					<div>
 						<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
@@ -32,8 +32,8 @@
 				{% if permission.has('files.create') %}
 					<div class="form-group">
 						<div>
-							<button class="btn btn-primary btn-sm" id="create_file">{{ l.render('string_save') }}</button>
-							<button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{% endif %}';return false;">{{ l.render('node_files_edit_back') }}</button>
+							<button class="btn btn-primary btn-sm" id="create_file">{{ l.render('string.save') }}</button>
+							<button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{% endif %}';return false;">{{ l.render('node.files.edit.back') }}</button>
 						</div>
 					</div>
 				{% endif %}
@@ -42,8 +42,8 @@
 		{% endif %}
 		{% if permission.has('files.upload') %}
 		<div class="tab-pane" id="upload">
-			<h4>/server/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-			<div class="well well-sm"><p class="text-muted" style="margin-bottom:0;"><i class="fa fa-warning"></i> Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/server/</code> and begin typing. Once you have done this please click the button below to initalize the uploader.</p></div>
+			<h4>/public/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+			<div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/public/</code> and begin typing. Once you have done this please click the button below to initalize the uploader.</div>
 			<div class="alert alert-info">After a file is completed uploading it may appear that the page hangs and that the file is stuck with 0 seconds remaining. This is because we are playing with bits in the background and depending on the size of the file this might take some time. For very large files we highly suggest using your FTP client to upload files as it will be much quicker.</div>
 			<button id="init_uploader" class="btn btn-primary btn-sm">Initalize Uploader</button>
 			<div id="initUploaderDiv" style="display:none;">

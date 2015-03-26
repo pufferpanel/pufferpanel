@@ -251,27 +251,6 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 		ob_end_clean();
 	}
 
-	try {
-
-		$filesystem = new Filesystem(new Adapter(array(
-			'host' => $core->server->nodeData('ip'),
-			'username' => $core->server->getData('sftp_user').'-'.$core->server->getData('gsd_id'),
-			'password' => $core->auth->decrypt($core->server->getData('ftp_pass'), $core->server->getData('encryption_iv')),
-			'port' => 21,
-			'passive' => true,
-			'ssl' => true,
-			'timeout' => 10
-		)));
-
-	} catch(\Exception $e) {
-
-		\Tracy\Debugger::log($e);
-		$response->code(500);
-		$response->body('unable to connect to FTP server')->send();
-		return;
-
-	}
-
 	$tempDir = '/tmp/'.$core->server->getData('hash');
 	$uploadPath = SRC_DIR.'cache/uploads/'.$core->server->getData('hash').'/';
 
@@ -319,12 +298,16 @@ $klein->respond('/node/files/upload', function($request, $response, $service) us
 
 		if($file->validateFile() && $file->save($uploadPath.$request->param('flowFilename'))) {
 
-				$stream = fopen($uploadPath.$request->param('flowFilename'), 'r');
-				$filesystem->writeStream(rtrim($request->param('newFilePath'), '/').'/'.$request->param('flowFilename'), $stream);
-				unlink($uploadPath.$request->param('flowFilename'));
-
-				$response->code(200)->body('done')->send();
-				return;
+			// Handle Upload Here
+			$response->code(400);
+			$response->body('file uploading is disabled currently')->send();
+			return;
+			// $stream = fopen($uploadPath.$request->param('flowFilename'), 'r');
+			// $filesystem->writeStream(rtrim($request->param('newFilePath'), '/').'/'.$request->param('flowFilename'), $stream);
+			// unlink($uploadPath.$request->param('flowFilename'));
+			//
+			// $response->code(200)->body('done')->send();
+			// return;
 
 		}
 

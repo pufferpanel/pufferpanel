@@ -14,11 +14,11 @@
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
-		<li><a href="#ftp_sett" data-toggle="tab">FTP</a></li>
+		<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 		<li><a href="/index/{{ server.hash }}">Server Control</a></li>
 	</ul>
-	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The GSD Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Security Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="server_sett">
 			<h3>Server Settings</h3><hr />
@@ -37,7 +37,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label">GSD Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
+						<label class="control-label">Scales Security Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 						<div>
 							<input type="text" readonly="readonly" id="form_gsd_token" value="{{ server.gsd_secret }}" class="form-control" />
 						</div>
@@ -124,9 +124,9 @@
 				</form>
 			</div>
 		</div>
-		<div class="tab-pane" id="ftp_sett">
-			<h3>FTP Settings</h3><hr />
-			<form action="{{ server.id }}/ftp" method="post">
+		<div class="tab-pane" id="sftp_sett">
+			<h3>SFTP Settings</h3><hr />
+			<form action="{{ server.id }}/sftp" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">Host</label>
@@ -148,7 +148,7 @@
 							<div class="form-group col-md-6 nopad">
 								<label for="ftp_pass" class="control-label">New Password</label>
 								<div class="input-group">
-									<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
+									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
 									<span class="input-group-btn">
 										<button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">Generate</button>
 									</span>
@@ -157,7 +157,7 @@
 							<div class="form-group col-md-6 nopad-right">
 								<label for="ftp_pass_2" class="control-label">New Password (Again)</label>
 								<div>
-									<input type="password" autocomplete="off" name="ftp_pass_2" class="form-control" />
+									<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
 								</div>
 								<div class="checkbox" style="margin-bottom:-20px;">
 									<label>
@@ -213,8 +213,8 @@
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();
-					$('input[name="ftp_pass"]').val(data);
-					$('input[name="ftp_pass_2"]').val(data);
+					$('input[name="sftp_pass"]').val(data);
+					$('input[name="sftp_pass_2"]').val(data);
 					return false;
 				}
 			});

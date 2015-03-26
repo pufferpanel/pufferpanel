@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \Tracy\Debugger, \Unirest\Request, \PufferPanel\Core\Components\Functions;
+use \ORM, \Tracy\Debugger, \Unirest, \PufferPanel\Core\Components\Functions;
 
 $klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
 
@@ -113,21 +113,24 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 	try {
 
 		$unirest = Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
 			array(
-				'X-Access-Token' => $core->server->nodeData('gsd_secret')
+				'X-Access-Token' => $core->server->nodeData('gsd_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
 			),
 			array(
-				"game_cfg" => json_encode(array(
+				"json" => json_encode(array(
 					"gameport" => (int) $request->param('server_port'),
 					"gamehost" => $request->param('server_ip')
-				))
+				)),
+				"object" => null,
+				"overwrite" => false
 			)
 		);
 
-		if($unirest->code > 204) {
+		if($unirest->code !== 204) {
 
-			$service->flash('<div class="alert alert-danger">GSD returned an error when trying to process your request. GSD said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
+			$service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
 			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 			return;
 
@@ -169,43 +172,65 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/ftp', function($request, $response, $service) use($core) {
+$klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $response, $service) use($core) {
 
-	if($request->param('ftp_pass') != $request->param('ftp_pass_2')) {
+	if($request->param('sftp_pass') != $request->param('sftp_pass_2')) {
 
-		$service->flash('<div class="alert alert-danger">The FTP passwords did not match.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=ftp_sett')->send();
+		$service->flash('<div class="alert alert-danger">The SFTP passwords did not match.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=sftp_sett')->send();
 		return;
 
 	}
 
-	if(!$core->auth->validatePasswordRequirements($request->param('ftp_pass'))) {
+	if(!$core->auth->validatePasswordRequirements($request->param('sftp_pass'))) {
 
 		$service->flash('<div class="alert alert-danger">The assigned password does not meet the requirements for passwords on this server.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=ftp_sett')->send();
+		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=sftp_sett')->send();
 		return;
 
 	}
 
-	$iv = $core->auth->generate_iv();
-	$pass = $core->auth->encrypt($request->param('ftp_pass'), $iv);
+	try {
 
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->ftp_pass = $pass;
-	$server->encryption_iv = $iv;
-	$server->save();
+		$unirest = Unirest\Request::post(
+			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/server/reset-password',
+			array(
+				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
+			),
+			array(
+				"password" => $request->param('sftp_pass')
+			)
+		);
+
+		if($unirest->code !== 204) {
+
+			$service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
+			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+			return;
+
+		}
+
+	} catch(\Exception $e) {
+
+		Debugger::log($e);
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+		return;
+
+	}
 
 	if($request->param('email_user')) {
 
 		$core->email->buildEmail('admin_new_ftppass', array(
-			'PASS' => $request->param('ftp_pass'),
+			'PASS' => $request->param('sftp_pass'),
 			'SERVER' => $core->server->getData('name')
-		))->dispatch($core->user->getData('email'), Settings::config()->company_name.' - Your FTP Password was Reset');
+		))->dispatch($core->user->getData('email'), Settings::config()->company_name.' - Your SFTP Password was Reset');
 
 	}
 
-	$service->flash('<div class="alert alert-success">The FTP password for this server has been successfully reset.</div>');
-	$response->redirect('/admin/server/view/'.$request->param('id').'?tab=ftp_sett')->send();
+	$service->flash('<div class="alert alert-success">The SFTP password for this server has been successfully reset.</div>');
+	$response->redirect('/admin/server/view/'.$request->param('id').'?tab=sftp_sett')->send();
 
 });
 
@@ -216,21 +241,24 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 	try {
 
 		$unirest = Request::put(
-			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/gameservers/'.$core->server->getData('gsd_id'),
+			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen')."/server",
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret')
+				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
-				"keys" => json_encode(array(
+				"json" => json_encode(array(
 					$core->server->getData('gsd_secret') => array(),
 					$secret => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:query", "s:console", "s:console:send")
-				))
+				)),
+				"object" => "keys",
+				"overwrite" => false
 			)
 		);
 
-		if($unirest->code != 200) {
+		if($unirest->code != 204) {
 
-			$response->body("Error trying to update token. GSD said: {$unirest->raw_body} [HTTP/1.1 {$unirest->code}]")->send();
+			$response->body("Error trying to update token. Scales said: {$unirest->raw_body} [HTTP/1.1 {$unirest->code}]")->send();
 			return;
 
 		}
@@ -238,7 +266,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 	} catch(\Exception $e) {
 
 		Debugger::log($e);
-		$response->body("The server management daemon is not responding, we were unable to update the GSD token.")->send();
+		$response->body("The server management daemon is not responding, we were unable to update the Scales Security Token.")->send();
 		return;
 
 	}
@@ -282,18 +310,33 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	try {
 
 		Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/gameservers/".$core->server->getData('gsd_id'),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret')
+				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
-				"variables" => json_encode(array(
+				"json" => json_encode(array(
 					"-jar" => str_replace(".jar", "", $core->server->getData('server_jar')).'.jar',
 					"-Xmx" => $request->param('alloc_mem')."M"
 				)),
-				"build" => json_encode(array(
+				"object" => "variables",
+				"overwrite" => false
+			)
+		);
+
+		Request::put(
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
+			array(
+				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
+			),
+			array(
+				"json" => json_encode(array(
 					"cpu" => (int) $request->param('cpu_limit')
-				))
+				)),
+				"object" => "build",
+				"overwrite" => false
 			)
 		);
 
@@ -425,10 +468,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	$data = array(
 		"name" => $server_hash,
 		"user" => $sftp_username,
-		"overide_command_line" => "",
-		"path" => $node->gsd_server_dir.$sftp_username,
 		"build" => array(
-			"install_dir" => '/mnt/MC/CraftBukkit/',
+			"pack" => "default",
 			"disk" => array(
 				"hard" => ($request->param('alloc_disk') < 32) ? 32 : (int) $request->param('alloc_disk'),
 				"soft" => ($request->param('alloc_disk') > 2048) ? (int) $request->param('alloc_disk') - 1024 : 32
@@ -463,7 +504,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	try {
 
 		$unirest = Request::post(
-			'https://'.$node->ip.':'.$node->gsd_listen.'/gameservers',
+			'https://'.$node->ip.':'.$node->gsd_listen.'/server',
 			array(
 				'X-Access-Token' => $node->gsd_secret
 			),
@@ -489,8 +530,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			'date_added' => time(),
 			'server_ip' => $request->param('server_ip'),
 			'server_port' => $request->param('server_port'),
-			'sftp_user' => $sftp_username,
-			'ftp_pass' => $ftp_password
+			'sftp_user' => $sftp_username
 		));
 		$server->save();
 
@@ -505,8 +545,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 				'NAME' => $request->param('server_name'),
 				'FTP' => $node->fqdn.':21',
 				'MINECRAFT' => $node->fqdn.':'.$request->param('server_port'),
-				'USER' => $sftp_username.'-'.$unirest->body->id,
-				'PASS' => $ftp_password
+				'USER' => $sftp_username.'-'.$unirest->body->id
 		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
 
 		$service->flash('<div class="alert alert-success">Server created successfully.</div>');
@@ -516,7 +555,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	} catch(\Exception $e) {
 
 		Debugger::log($e);
-		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that GSD is running and try again.</div>');
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
