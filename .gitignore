@@ -11,4 +11,3 @@ src/cache/*
 !src/cache/uploads/.githold
 config.json
 app/languages/*.json
-language-builder
