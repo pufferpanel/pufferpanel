@@ -56,7 +56,8 @@
 	"listen": {
 		"sftp": 22,
 		"rest": {{ node.gsd_listen }},
-		"socket": {{ node.gsd_console }}
+		"socket": {{ node.gsd_console }},
+		"uploads": 5658
 	},
 	"urls": {
 		"repo": "{{ settings.master_url }}auth/remote/pack",
@@ -218,7 +219,8 @@ $(window).load(function(){
 	"listen": { \n\
 		"sftp": 22, \n\
 		"rest": {{ node.gsd_listen }}, \n\
-		"socket": {{ node.gsd_console }} \n\
+		"socket": {{ node.gsd_console }}, \n\
+		"uploads": 5658 \n\
 	}, \n\
 	"urls": { \n\
 		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
