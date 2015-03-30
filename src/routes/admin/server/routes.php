@@ -289,7 +289,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 
 	}
 
-	if(!preg_match('/^[\w-]{4,35}$/', $request->param('server_name'))) {
+	if(!preg_match('/^[\w -]{4,35}$/', $request->param('server_name'))) {
 
 		$service->flash('<div class="alert alert-danger">The server name did not meet server requirements. Server names must be between 4 and 35 characters and not contain any special characters.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
@@ -309,7 +309,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	*/
 	try {
 
-		Request::put(
+		Unirest\Request::put(
 			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
@@ -325,7 +325,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			)
 		);
 
-		Request::put(
+		Unirest\Request::put(
 			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
@@ -347,7 +347,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	} catch(\Exception $e) {
 
 		Debugger::log($e);
-		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that GSD is running and try again.</div>');
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
 
