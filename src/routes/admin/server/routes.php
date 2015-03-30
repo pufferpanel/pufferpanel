@@ -400,7 +400,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	}
 
-	if(!preg_match('/^[\w-]{4,35}$/', $request->param('server_name'))) {
+	if(!preg_match('/^[\w -]{4,35}$/', $request->param('server_name'))) {
 
 		$service->flash('<div class="alert alert-danger">The name provided for the server did not meet server requirements. Server names must be between 4 and 3 characters long and contain no special characters.</div>');
 		$response->redirect('/admin/server/new')->send();
@@ -448,16 +448,14 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	}
 
-	if($request->param('ftp_pass') != $request->param('ftp_pass_2') || !$core->auth->validatePasswordRequirements($request->param('ftp_pass'))) {
+	if($request->param('sftp_pass') != $request->param('sftp_pass_2') || !$core->auth->validatePasswordRequirements($request->param('sftp_pass'))) {
 
-		$service->flash('<div class="alert alert-danger">The FTP password provided did not match in both fields or did not meet the server password requirements.</div>');
+		$service->flash('<div class="alert alert-danger">The SFTP password provided did not match in both fields or did not meet the server password requirements.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
 	}
 
-	$iv = $core->auth->generate_iv();
-	$ftp_password = $core->auth->encrypt($request->param('ftp_pass'), $iv);
 	$sftp_username = Functions::generateFTPUsername($request->param('server_name'));
 	$server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
 	$gsd_secret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
@@ -497,31 +495,34 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		),
 		"gameport" => (int) $request->param('server_port'),
 		"gamehost" => $request->param('server_ip'),
-		"plugin" => "minecraft",
-		"autoon" => false
+		"plugin" => "minecraft"
 	);
 
 	try {
 
-		$unirest = Request::post(
+		$unirest = Unirest\Request::post(
 			'https://'.$node->ip.':'.$node->gsd_listen.'/server',
 			array(
-				'X-Access-Token' => $node->gsd_secret
+				'X-Access-Token' => $node->gsd_secret,
+				'X-Access-Server' => "hodor"
 			),
 			array(
-				'settings' => json_encode($data)
+				'settings' => json_encode($data),
+				'password' => $request->param('sftp_pass')
 			)
 		);
 
+		if($unirest->code !== 204) {
+			throw new \Exception("An error occured trying to add a server. (".$unirest->raw_body.") [HTTP 1.1/".$unirest->code."]");
+		}
+
 		$server = ORM::forTable('servers')->create();
 		$server->set(array(
-			'gsd_id' => $unirest->body->id,
 			'hash' => $server_hash,
 			'gsd_secret' => $gsd_secret,
-			'encryption_iv' => $iv,
 			'node' => $request->param('node'),
 			'name' => $request->param('server_name'),
-			'modpack' => '0000-0000-0000-0',
+			'modpack' => 'default',
 			'server_jar' => 'server.jar',
 			'owner_id' => $user->id,
 			'max_ram' => $request->param('alloc_mem'),
@@ -543,9 +544,10 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 		$core->email->buildEmail('admin_new_server', array(
 				'NAME' => $request->param('server_name'),
-				'FTP' => $node->fqdn.':21',
-				'MINECRAFT' => $node->fqdn.':'.$request->param('server_port'),
-				'USER' => $sftp_username.'-'.$unirest->body->id
+				'SFTP' => $node->fqdn.':22',
+				'SERVER_CONN' => $node->fqdn.':'.$request->param('server_port'),
+				'USER' => $sftp_username,
+				'PASS' => $request->param('sftp_pass')
 		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
 
 		$service->flash('<div class="alert alert-success">Server created successfully.</div>');

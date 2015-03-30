@@ -6,7 +6,7 @@
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs" style="margin-bottom:15px;">
 		{% if permission.has('manage.rename.view') %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
-		{% if permission.has('manage.ftp.view') %}<li class=""><a href="#sftp_sett" data-toggle="tab">{{ l.render('string.ftp') }} Information</a></li>{% endif %}
+		{% if permission.has('manage.ftp.view') %}<li class=""><a href="#sftp_sett" data-toggle="tab">SFTP Information</a></li>{% endif %}
 	</ul>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
@@ -40,7 +40,7 @@
 		{% endif %}
 		{% if permission.has('manage.ftp.view') %}
 			<div class="tab-pane" id="sftp_sett">
-				<h3>Manage FTP Information</h3><hr />
+				<h3>Manage SFTP Information</h3><hr />
 				{% if permission.has('manage.ftp.details') %}
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">{{ l.render('string.host') }}</label>
@@ -51,7 +51,7 @@
 					<div class="form-group">
 						<label for="sftp_user" class="control-label">{{ l.render('string.username') }}</label>
 						<div>
-							<input type="text" readonly="readonly" value="{{ server.sftp_user }}-{{ server.gsd_id }}" class="form-control" />
+							<input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
 						</div>
 					</div>
 				{% endif %}
