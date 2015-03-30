@@ -65,7 +65,8 @@
 	"basepath": "{{ node.gsd_server_dir }}",
 	"keys": [
 		"{{ node.gsd_secret }}"
-	]
+	],
+	"upload_maxfilesize": 100000000
 }</pre>
 		</div>
 		<div class="tab-pane" id="allocation">
@@ -226,7 +227,8 @@ $(window).load(function(){
 	"basepath": "{{ node.gsd_server_dir }}", \n\
 	"keys": [ \n\
 		"' + data + '" \n\
-	] \n\
+	], \n\
+	"upload_maxfilesize": 100000000 \n\
 }');
 				}
 			}

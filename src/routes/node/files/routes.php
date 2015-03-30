@@ -163,7 +163,8 @@ $klein->respond('GET', '/node/files/add/[*:directory]?', function($request, $res
 		array(
 			'flash' => $service->flashes(),
 			'directory' => $request->param('directory'),
-			'server' => $core->server->getData()
+			'server' => $core->server->getData(),
+			'node' => $core->server->nodeData()
 		)
 	))->send();
 
