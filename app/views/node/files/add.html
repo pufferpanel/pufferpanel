@@ -4,7 +4,7 @@
 
 {% block scripts %}
 	{{ parent() }}
-	<script src="http://cdn.binaryjs.com/0/binary.js"></script>
+	<script src="{{ settings.assets_url }}javascript/binaryjs.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -89,6 +89,7 @@ var newFileContents;
 				// Add to list of uploaded files
 				var stream = client.send(file, {
 					token: "{{ server.gsd_secret }}",
+					server: "{{ server.hash }}",
 					path: $("#u_file_name").val(),
 					name: file.name,
 					size: file.size
@@ -111,6 +112,16 @@ var newFileContents;
 						}
 					}
 				});
+
+				stream.on('close', function(data) {
+					$("#upload_error").html("The BinaryJS data stream was closed by the server. Please refresh the page and try again.").show();
+					$("#file-upload-" + identifier).hide();
+				});
+
+				stream.on('error', function(data) {
+					console.error("An error was encountered with the BinaryJS upload stream.");
+				});
+
 			});
 		});
 
