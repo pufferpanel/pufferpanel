@@ -58,6 +58,10 @@ trait Functions {
 
 		$port_list = [];
 
+		if(!trim($input)) {
+			return $port_list;
+		}
+
 		foreach(explode(',', $input) as $range) {
 
 			if(strpos($range, '-')) {

@@ -96,6 +96,18 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 		list($ip, $ports) = explode('|', $values);
 
+		if(!trim($ip)) {
+			$service->flash('<div class="alert alert-danger">An IP must be specified with a port list</div>');
+			$response->redirect('/admin/node/new')->send();
+			return;
+		}
+
+		if(!trim($ports)) {
+			$service->flash('<div class="alert alert-danger">You must provide at least one port with an IP</div>');
+			$response->redirect('/admin/node/new')->send();
+			return;
+		}
+
 		$IPA = array_merge($IPA, array($ip => array()));
 		$IPP = array_merge($IPP, array($ip => array()));
 
