@@ -57,7 +57,9 @@
 var newFilePath;
 var newFileContents;
 {% if permission.has('files.upload') %}
-	var client = new BinaryClient('wss://{{ node.ip }}:5658/server/{{ server.hash }}');
+	var client = new BinaryClient('wss://{{ node.ip }}:5658/server/{{ server.hash }}', {
+		chunkSize: 40960
+	});
 
 	// Wait for connection to BinaryJS server
 	client.on('open', function() {
@@ -105,7 +107,7 @@ var newFileContents;
 
 						if(tx >= 1) {
 							$('.prog-bar-text-' + identifier).text('Upload Complete');
-							$('.prog-bar-' + identifier).css('width', '100%');
+							$('.prog-bar-' + identifier).css('width', '100%').parent().removeClass('active').removeClass('progress-striped');
 						} else {
 							$('.prog-bar-text-' + identifier).text(Math.round(tx * 100) + '%');
 							$('.prog-bar-' + identifier).css('width', tx * 100 + '%');
