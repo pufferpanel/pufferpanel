@@ -15,7 +15,7 @@
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
 		<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
-		<li><a href="#ftp" data-toggle="tab">FTP</a></li>
+		<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
 	</ul>
 	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new Scales Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
 	<div class="tab-content">
@@ -133,13 +133,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane" id="ftp">
-			<h3>FTP Settings</h3><hr />
+		<div class="tab-pane" id="sftp">
+			<h3>SFTP Settings</h3><hr />
 			<div class="well">
-				<form action="{{ node.id }}/ftp" method="post">
+				<form action="{{ node.id }}/sftp" method="post">
 					<fieldset>
 						<div class="form-group">
-							<label for="ip" class="control-label">FTP IP</label>
+							<label for="ip" class="control-label">SFTP IP</label>
 							<div>
 								<input type="text" name="ip" value="{{ node.ip }}" class="form-control" />
 							</div>
@@ -147,7 +147,7 @@
 						<div class="form-group">
 							<div>
 								<input type="hidden" name="nid" value="{{ node.id }}" />
-								<input type="submit" value="Update FTP Address" class="btn btn-primary btn-sm" />
+								<input type="submit" value="Update SFTP Address" class="btn btn-primary btn-sm" />
 							</div>
 						</div>
 					</fieldset>

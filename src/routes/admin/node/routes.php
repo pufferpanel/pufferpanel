@@ -435,12 +435,12 @@ $klein->respond('POST', '/admin/node/view/[i:id]/add-ip', function($request, $re
 
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/ftp', function($request, $response, $service) use($core) {
+$klein->respond('POST', '/admin/node/view/[i:id]/sftp', function($request, $response, $service) use($core) {
 
 	if(!filter_var($request->param('ip'), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE)) {
 
-		$service->flash('<div class="alert alert-danger">The IP provided for FTP was not valid. FTP IPs must resolve to a non-reserved address.</div>');
-		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=ftp')->send();
+		$service->flash('<div class="alert alert-danger">The IP provided for SFTP was not valid. SFTP IPs must resolve to a non-reserved address.</div>');
+		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=sftp')->send();
 		return;
 
 	}
@@ -453,7 +453,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/ftp', function($request, $respo
 		$node->save();
 
 		$service->flash('<div class="alert alert-success">Your node settings have been updated.</div>');
-		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=ftp')->send();
+		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=sftp')->send();
 
 	} else {
 
