@@ -44,7 +44,7 @@
 		<div class="tab-pane" id="upload">
 			<h4>/public/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="u_file_name" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
 			<div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/public/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
-			<div class="alert alert-warning" id="upload_error" style="display: none;"></div>
+			<div class="alert alert-danger" id="upload_error" style="display: none;"></div>
 			<div id="uploader_box" class="well well-sm">
 				<center><h2 style="margin-bottom: 25px;">Connecting...</h2></center>
 			</div>
@@ -74,7 +74,7 @@ var newFileContents;
 				var file = e.originalEvent.dataTransfer.files[index];
 				var identifier = Math.random().toString(36).slice(2);
 
-				$('#file_progress').append('<div class="well well-sm" id="file-upload-"> \
+				$('#file_progress').append('<div class="well well-sm" id="file-upload-' + identifier +'"> \
 					<div class="row"> \
 						<div class="col-md-12"> \
 							<h6>Uploading ' + file.name + '</h6> \
@@ -98,6 +98,7 @@ var newFileContents;
 				stream.on('data', function(data) {
 					if(data.error) {
 						$("#upload_error").html(data.error).show();
+						$("#file-upload-" + identifier).hide();
 					} else {
 						tx += data.rx;
 
