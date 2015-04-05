@@ -101,7 +101,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 			$service->flash('<div class="alert alert-danger">An IP must be specified with a port list</div>');
 			$response->redirect('/admin/node/new')->send();
 			return;
-			
+
 		}
 
 		if(!trim($ports)) {
@@ -530,5 +530,86 @@ $klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request
 	$node->save();
 
 	$response->body('Done')->send();
+
+});
+
+$klein->respond('GET', '/admin/node/plugins', function($request, $response, $service) use($core) {
+
+	$response->body($core->twig->render(
+		'admin/node/plugins/index.html',
+		array(
+			'flash' => $service->flashes(),
+			'plugins' => ORM::forTable('plugins')->findMany(),
+		)
+	))->send();
+
+});
+
+$klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $response, $service) use($core) {
+
+	$orm = ORM::forTable('plugins')->where('hash', $request->param('hash'))->findOne();
+
+	if(!$orm) {
+
+		$service->flash('<div class="alert alert-danger">The requested plugin does not seem to exist in the system.</div>');
+		$response->redirect('/admin/node/plugins')->send();
+		return;
+
+	}
+
+	$response->body($core->twig->render(
+		'admin/node/plugins/view.html',
+		array(
+			'flash' => $service->flashes(),
+			'plugin' => $orm,
+			'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+				->join('nodes', array('servers.node', '=', 'nodes.id'))
+				->where('servers.plugin', $orm->slug)
+				->findArray()
+		)
+	))->send();
+
+});
+
+$klein->respond('GET', '/admin/node/plugins/new', function($request, $response, $service) use($core) {
+
+	$response->body($core->twig->render(
+		'admin/node/plugins/new.html',
+		array(
+			'flash' => $service->flashes()
+		)
+	))->send();
+
+});
+
+$klein->respond('POST', '/admin/node/plugins/new', function($request, $response, $service) use($core) {
+
+	if(!preg_match('/^(.{1,100})$/', $request->param('name')) || !preg_match('/^[\w.-]{1,100}$/', $request->param('slug'))) {
+
+		$service->flash('<div class="alert alert-danger">The name or slug provided for this plugin must not exceede 100 characters.</div>');
+		$response->redirect('/admin/node/plugins/new')->send();
+		return;
+
+	}
+
+	if(ORM::forTable('plugins')->where('slug', $request->param('slug'))->findOne()) {
+
+		$service->flash('<div class="alert alert-danger">A plugin with that slug already exists in the system.</div>');
+		$response->redirect('/admin/node/plugins/new')->send();
+		return;
+
+	}
+
+	$new = ORM::forTable('plugins')->create();
+	$hash = $core->auth->generateUniqueUUID('plugins', 'hash');
+	$new->set(array(
+		'hash' => $hash,
+		'name' => $request->param('name'),
+		'description' => $request->param('description'),
+		'slug' => $request->param('slug')
+	));
+	$new->save();
+
+	$response->redirect('/admin/node/plugins/view/'.$hash)->send();
 
 });

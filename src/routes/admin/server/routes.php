@@ -361,6 +361,7 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
 		'admin/server/new.html',
 		array(
 			'locations' => ORM::forTable('locations')->findMany(),
+			'plugins' => ORM::forTable('plugins')->findMany(),
 			'flash' => $service->flashes()
 		)
 	))->send();
@@ -467,7 +468,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		"name" => $server_hash,
 		"user" => $sftp_username,
 		"build" => array(
-			"pack" => "default",
+			"pack" => ($request->param('installable') == "none") ? null : $request->param('installable'),
 			"disk" => array(
 				"hard" => ($request->param('alloc_disk') < 32) ? 32 : (int) $request->param('alloc_disk'),
 				"soft" => ($request->param('alloc_disk') > 2048) ? (int) $request->param('alloc_disk') - 1024 : 32
@@ -495,7 +496,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		),
 		"gameport" => (int) $request->param('server_port'),
 		"gamehost" => $request->param('server_ip'),
-		"plugin" => "minecraft"
+		"plugin" => $request->param('plugin')
 	);
 
 	try {

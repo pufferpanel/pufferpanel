@@ -41,23 +41,24 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">Find Account</a></li>
-							<li><a href="#">New Account</a></li>
+							<li><a href="/admin/account">Find Account</a></li>
+							<li><a href="/admin/account/new">New Account</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Server Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">Find Server</a></li>
-							<li><a href="#">New Server</a></li>
+							<li><a href="/admin/server">Find Server</a></li>
+							<li><a href="/admin/server/new">New Server</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Node Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">List Nodes</a></li>
-							<li><a href="#">Add Node</a></li>
-							<li><a href="#">Manage Locations</a></li>
+							<li><a href="/admin/node">List Nodes</a></li>
+							<li><a href="/admin/node/new">Add Node</a></li>
+							<li><a href="/admin/node/locations">Manage Locations</a></li>
+							<li><a href="/admin/node/plugins">Manage Plugins</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -89,26 +90,27 @@
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-					<a href="/admin/settings/global" id="sidenav_config-global" class="list-group-item">Global Settings</a>
-					<a href="/admin/settings/urls" id="sidenav_config-urls" class="list-group-item">URL Settings</a>
-					<a href="/admin/settings/email" id="sidenav_config-email" class="list-group-item">Email Settings</a>
-					<a href="/admin/settings/captcha" id="sidenav_config-captcha" class="list-group-item">Captcha Settings</a>
+					<a href="/admin/settings/global" class="list-group-item">Global Settings</a>
+					<a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
+					<a href="/admin/settings/email" class="list-group-item">Email Settings</a>
+					<a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-					<a href="/admin/account" id="sidenav_account-find" class="list-group-item">Find Account</a>
-					<a href="/admin/account/new" id="sidenav_account-new" class="list-group-item">New Account</a>
+					<a href="/admin/account" class="list-group-item">Find Account</a>
+					<a href="/admin/account/new" class="list-group-item">New Account</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-					<a href="/admin/server" id="sidenav_server-find" class="list-group-item">Find Server</a>
-					<a href="/admin/server/new" id="sidenav_server-add" class="list-group-item">New Server</a>
+					<a href="/admin/server" class="list-group-item">Find Server</a>
+					<a href="/admin/server/new" class="list-group-item">New Server</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-					<a href="/admin/node" id="sidenav_node-list" class="list-group-item">List Nodes</a>
-					<a href="/admin/node/new" id="sidenav_node-add" class="list-group-item">Add Node</a>
-					<a href="/admin/node/locations" id="sidenav_node-locations" class="list-group-item">Manage Locations</a>
+					<a href="/admin/node" class="list-group-item">List Nodes</a>
+					<a href="/admin/node/new" class="list-group-item">Add Node</a>
+					<a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
+					<a href="/admin/node/plugins" class="list-group-item">Manage Plugins</a>
 				</div>
 			</div>
 			{% block content %}{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Viewing Plugin {{ plugin.slug }}.js{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li><a href="/admin/node/plugins">Plugins</a></li>
+		<li class="active">{{ plugin.name }}</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<h3>Viewing Plugin: {{ plugin.name}}</h3>
+	<p>{{ plugin.description|raw }}</p>
+	<p>This plugin refers to a file called <code>{{ plugin.slug }}.js</code> in the <code>plugins/</code> folder of Scales instances on nodes.</p>
+	<hr />
+	<h3>Servers Running this Plugin</h3>
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Node</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for server in servers %}
+				<tr>
+					<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
+					<td>{{ server.node_name }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/settings/plugins']").addClass('active');
+});
+</script>
+{% endblock %}
+
+{% block javascript %}{% endblock %}
