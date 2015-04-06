@@ -23,7 +23,7 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
 
 	$response->body($core->twig->render('node/index.html', array(
 		'server' => array_merge($core->server->getData(), array(
-			'gsd_secret' => ($core->permissions->get('gsd_secret')) ? $core->permissions->get('gsd_secret') : $core->server->getData('gsd_secret'),
+			'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
 			'node' => $core->server->nodeData('node'),
 			'console_inner' => $core->gsd->serverLog()
 		)),

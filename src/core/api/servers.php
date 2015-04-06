@@ -149,16 +149,16 @@ class Servers {
 		$this->data['ftp_password'] = $this->encrypt($this->data['ftp_password_raw'], $this->iv);
 		$this->data['sftp_username'] = self::generateFTPUsername($this->data['name']);
 		$this->serverHash = $this->generateUniqueUUID('servers', 'hash');
-		$this->daemonSecret = $this->generateUniqueUUID('servers', 'gsd_secret');
+		$this->daemonSecret = $this->generateUniqueUUID('servers', 'daemon_secret');
 
 		/*
 		* Build Call
 		*/
-		$this->data['gsd_id'] = $this->_sendToDaemon(array(
+		$this->data['daemon_id'] = $this->_sendToDaemon(array(
 			"name" => $this->serverHash,
 			"user" => $this->data['sftp_username'],
 			"overide_command_line" => "",
-			"path" => $this->node->gsd_server_dir.$this->data['sftp_username'],
+			"path" => $this->node->daemon_base_dir.$this->data['sftp_username'],
 			"variables" => array(
 				"-jar" => 'server.jar',
 				"-Xmx" => $this->data['memory']."M"
@@ -169,8 +169,8 @@ class Servers {
 			"autoon" => false
 		), array(
 			'ip' => $this->node->ip,
-			'listen' => $this->node->gsd_listen,
-			'secret' => $this->node->gsd_secret
+			'listen' => $this->node->daemon_listen,
+			'secret' => $this->node->daemon_secret
 		));
 
 		/*
@@ -178,9 +178,9 @@ class Servers {
 		*/
 		$this->server = ORM::forTable('servers')->create();
 		$this->server->set(array(
-			'gsd_id' => $this->data['gsd_id'],
+			'daemon_id' => $this->data['daemon_id'],
 			'hash' => $this->serverHash,
-			'gsd_secret' => $this->node->gsd_secret, // @TODO change this to be a unique secret for each server once GSD/GSC is fixed/implemented
+			'daemon_secret' => $this->node->daemon_secret, // @TODO change this to be a unique secret for each server once GSD/GSC is fixed/implemented
 			'encryption_iv' => $this->iv,
 			'node' => $this->data['node'],
 			'name' => $this->data['name'],

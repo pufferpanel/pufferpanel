@@ -80,7 +80,7 @@ $select->execute();
 
 while($row = $select->fetch()) {
 
-	$mysql->exec("UPDATE servers SET `subusers` = NULL, `gsd_secret` = '".uuid()."' WHERE `id` = ".$row['id']);
+	$mysql->exec("UPDATE servers SET `subusers` = NULL, `daemon_secret` = '".uuid()."' WHERE `id` = ".$row['id']);
 
 }
 

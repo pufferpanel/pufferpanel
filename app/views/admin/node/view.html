@@ -38,7 +38,7 @@
 					<div class="form-group">
 						<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 						<div>
-							<input type="text" readonly="readonly" id="form_gsd_token" value="{{ node.gsd_secret }}" class="form-control" />
+							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
 							<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
 						</div>
 					</div>
@@ -52,20 +52,20 @@
 			</form>
 			<hr />
 			<h6>Scales Configuration File</h6>
-			<pre id="node_gsd_config">{
+			<pre id="node_daemon_config">{
 	"listen": {
-		"sftp": 22,
-		"rest": {{ node.gsd_listen }},
-		"socket": {{ node.gsd_console }},
-		"uploads": 5658
+		"sftp": {{ node.daemon_sftp }},
+		"rest": {{ node.daemon_listen }},
+		"socket": {{ node.daemon_console }},
+		"uploads": {{ node.daemon_upload }}
 	},
 	"urls": {
 		"repo": "{{ settings.master_url }}auth/remote/pack",
 		"download": "{{ settings.master_url }}auth/remote/download"
 	},
-	"basepath": "{{ node.gsd_server_dir }}",
+	"basepath": "{{ node.daemon_base_dir }}",
 	"keys": [
-		"{{ node.gsd_secret }}"
+		"{{ node.daemon_secret }}"
 	],
 	"upload_maxfilesize": 100000000
 }</pre>
@@ -207,26 +207,26 @@ $(window).load(function(){
 		$.ajax({
 			type: "POST",
 			url: "{{ node.id }}/reset-token",
-			data: { gsd_reset: true},
+			data: { daemon_reset: true},
 			success: function(data) {
 				if(data.indexOf(' ') > 0) {
 					alert(data);
 				} else {
 					$("#reset_token_warn_tkn").html(data);
 					$("#reset_token_warn").show();
-					$("#form_gsd_token").val(data);
-					$("#node_gsd_config").text('{ \n\
+					$("#form_daemon_token").val(data);
+					$("#node_daemon_config").text('{ \n\
 	"listen": { \n\
-		"sftp": 22, \n\
-		"rest": {{ node.gsd_listen }}, \n\
-		"socket": {{ node.gsd_console }}, \n\
-		"uploads": 5658 \n\
+		"sftp": {{ node.daemon_sftp }}, \n\
+		"rest": {{ node.daemon_listen }}, \n\
+		"socket": {{ node.daemon_console }}, \n\
+		"uploads": {{ node.daemon_upload }} \n\
 	}, \n\
 	"urls": { \n\
 		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
 		"download": "{{ settings.master_url }}auth/remote/download" \n\
 	}, \n\
-	"basepath": "{{ node.gsd_server_dir }}", \n\
+	"basepath": "{{ node.daemon_base_dir }}", \n\
 	"keys": [ \n\
 		"' + data + '" \n\
 	], \n\

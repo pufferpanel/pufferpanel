@@ -155,8 +155,8 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		}
 
 		$info = ORM::forTable('subusers')
-			->selectMany('subusers.*', 'nodes.ip', 'nodes.gsd_listen', 'servers.gsd_id', 'servers.node')
-			->select('nodes.gsd_secret', 'node_gsd_secret')
+			->selectMany('subusers.*', 'nodes.ip', 'nodes.daemon_listen', 'servers.daemon_id', 'servers.node')
+			->select('nodes.daemon_secret', 'node_daemon_secret')
 			->join('servers', array('subusers.server', '=', 'servers.id'))
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
 			->where(array(
@@ -177,13 +177,13 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 		try {
 
 			Unirest\Request::put(
-				'https://'.$info->ip.':'.$info->gsd_listen.'/gameservers/'.$info->gsd_id,
+				'https://'.$info->ip.':'.$info->daemon_listen.'/gameservers/'.$info->daemon_id,
 				array(
-					"X-Access-Token" => $info->node_gsd_secret
+					"X-Access-Token" => $info->node_daemon_secret
 				),
 				array(
 					"keys" => json_encode(array(
-						$info->gsd_secret => json_decode($info->gsd_permissions, true)
+						$info->daemon_secret => json_decode($info->daemon_permissions, true)
 					))
 				)
 			);

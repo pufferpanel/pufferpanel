@@ -102,9 +102,9 @@ class Query extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/server",
+				"https://".$this->node->ip.":".$this->node->daemon_listen."/server",
 				array(
-					'X-Access-Token' => $this->node->gsd_secret,
+					'X-Access-Token' => $this->node->daemon_secret,
 					'X-Access-Server' => $this->server->hash
 				)
 			);
@@ -174,9 +174,9 @@ class Query extends Server {
 			try {
 
 				$response = Unirest\Request::get(
-					"https://".$this->node->ip.":".$this->node->gsd_listen."/server/log/".$lines,
+					"https://".$this->node->ip.":".$this->node->daemon_listen."/server/log/".$lines,
 					array(
-						"X-Access-Token" => $this->server->gsd_secret,
+						"X-Access-Token" => $this->server->daemon_secret,
 						"X-Access-Server" => $this->server->hash
 					)
 				);
@@ -241,9 +241,9 @@ class Query extends Server {
 			try {
 
 				$put = Unirest\Request::put(
-					"https://".$this->node->ip.":".$this->node->gsd_listen."/server/file/server.properties",
+					"https://".$this->node->ip.":".$this->node->daemon_listen."/server/file/server.properties",
 					array(
-						"X-Access-Token" => $this->server->gsd_secret,
+						"X-Access-Token" => $this->server->daemon_secret,
 						"X-Access-Server" => $this->server->hash
 					),
 					array(
@@ -278,9 +278,9 @@ class Query extends Server {
 		try {
 
 			$request = Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/server/power/on",
+				"https://".$this->node->ip.":".$this->node->daemon_listen."/server/power/on",
 				array(
-					"X-Access-Token" => $this->server->gsd_secret,
+					"X-Access-Token" => $this->server->daemon_secret,
 					"X-Access-Server" => $this->server->hash
 				)
 			);
@@ -310,9 +310,9 @@ class Query extends Server {
 		try {
 
 			return Unirest\Request::get(
-				"https://".$this->node->ip.":".$this->node->gsd_listen."/server/file/server.properties",
+				"https://".$this->node->ip.":".$this->node->daemon_listen."/server/file/server.properties",
 				array(
-					"X-Access-Token" => $this->server->gsd_secret,
+					"X-Access-Token" => $this->server->daemon_secret,
 					"X-Access-Server" => $this->server->hash
 				)
 			);

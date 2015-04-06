@@ -75,9 +75,9 @@ Response
 		"node": "My_First_Node",
 		"fqdn": "ec2-255-255-255-0.us-west-2.compute.amazonaws.com",
 		"ip": "255.255.255.0",
-		"gsd_listen": 8003,
-		"gsd_console": 8031,
-		"gsd_server_dir": "/home/",
+		"daemon_listen": 8003,
+		"daemon_console": 8031,
+		"daemon_base_dir": "/home/",
 		"ports": {
 			"255.255.255.1": {
 				"25565": 1,
@@ -125,11 +125,11 @@ Parameters
 +----------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | fqdn           | yes      | The Fully Qualified Domain Name for the node you are adding. If not specified or invalid defaults to the server IP.                                                         |
 +----------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gsd_listen     | yes      | The port that GSD will be listening on. (Default: ``8003``)                                                                                                                 |
+| daemon_listen     | yes      | The port that GSD will be listening on. (Default: ``8003``)                                                                                                                 |
 +----------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gsd_console    | yes      | The port that the GSD console will be listening on. (Default: ``8031``)                                                                                                     |
+| daemon_console    | yes      | The port that the GSD console will be listening on. (Default: ``8031``)                                                                                                     |
 +----------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gsd_server_dir | yes      | The folder where you would like servers to be created. (Default: ``/home/``)                                                                                                |
+| daemon_base_dir | yes      | The folder where you would like servers to be created. (Default: ``/home/``)                                                                                                |
 +----------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Request

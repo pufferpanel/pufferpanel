@@ -57,19 +57,21 @@ $klein->respond('GET', '/admin/node/new', function($request, $response, $service
 $klein->respond('POST', '/admin/node/new', function($request, $response, $service) use($core) {
 
 	if(
-		!is_numeric($request->param('gsd_listen')) ||
-		!is_numeric($request->param('gsd_console')) ||
+		!is_numeric($request->param('daemon_listen')) ||
+		!is_numeric($request->param('daemon_console')) ||
+		!is_numeric($request->param('daemon_upload')) ||
+		!is_numeric($request->param('daemon_sftp')) ||
 		!is_numeric($request->param('allocate_memory')) ||
 		!is_numeric($request->param('allocate_disk'))
 	) {
 
-		$service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the GSD listening ports as well as the disk and memory allocation.</div>');
+		$service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the daemon listening ports as well as the disk and memory allocation.</div>');
 		$response->redirect('/admin/node/new')->send();
 		return;
 
 	}
 
-	if(!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $request->param('gsd_server_dir'))) {
+	if(!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $request->param('daemon_base_dir'))) {
 
 		$service->flash('<div class="alert alert-danger">That seems to be an invalid directory that you passed.</div>');
 		$response->redirect('/admin/node/new')->send();
@@ -150,17 +152,19 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		'allocate_disk' => ($request->param('disk_selector') == 1) ? ($request->param('allocate_disk') * 1024) : $request->param('allocate_disk'),
 		'fqdn' => $request->param('fqdn'),
 		'ip' => $request->param('ip'),
-		'gsd_secret' => $core->auth->generateUniqueUUID('nodes', 'gsd_secret'),
-		'gsd_listen' => $request->param('gsd_listen'),
-		'gsd_console' => $request->param('gsd_console'),
-		'gsd_server_dir' => $request->param('gsd_server_dir'),
+		'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
+		'daemon_listen' => $request->param('daemon_listen'),
+		'daemon_console' => $request->param('daemon_console'),
+		'daemon_upload' => $request->param('daemon_upload'),
+		'daemon_sftp' => $request->param('daemon_sftp'),
+		'daemon_base_dir' => $request->param('daemon_base_dir'),
 		'ips' => json_encode($IPA),
 		'ports' => json_encode($IPP),
 		'public' => (!$request->param('is_public')) ? 0 : 1
 	));
 	$node->save();
 
-	$service->flash('<div class="alert alert-success">Node successfully created. Please make sure to setup GSD properly on the node and then begin adding servers.</div>');
+	$service->flash('<div class="alert alert-success">Node successfully created. Please make sure to setup the daemon properly on the node and then begin adding servers.</div>');
 	$response->redirect('/admin/node/view/'.$node->id())->send();
 	return;
 
@@ -494,12 +498,12 @@ $klein->respond('POST', '/admin/node/view/[i:id]/sftp', function($request, $resp
 $klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request, $response) use($core) {
 
 	$node = ORM::forTable('nodes')->findOne($request->param('id'));
-	if(!$core->gsd->avaliable($node->ip, $node->gsd_listen)) {
+	if(!$core->gsd->avaliable($node->ip, $node->daemon_listen)) {
 
-		$node->gsd_secret = $core->auth->generateUniqueUUID('nodes', 'gsd_secret');
+		$node->daemon_secret = $core->auth->generateUniqueUUID('nodes', 'daemon_secret');
 		$node->save();
 
-		$response->body($node->gsd_secret)->send();
+		$response->body($node->daemon_secret)->send();
 
 	} else {
 

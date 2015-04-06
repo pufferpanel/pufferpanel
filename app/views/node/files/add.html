@@ -57,7 +57,7 @@
 var newFilePath;
 var newFileContents;
 {% if permission.has('files.upload') %}
-	var client = new BinaryClient('wss://{{ node.ip }}:5658/server/{{ server.hash }}', {
+	var client = new BinaryClient('wss://{{ node.ip }}:{{ node.daemon_upload }}/server/{{ server.hash }}', {
 		chunkSize: 40960
 	});
 
@@ -90,7 +90,7 @@ var newFileContents;
 
 				// Add to list of uploaded files
 				var stream = client.send(file, {
-					token: "{{ server.gsd_secret }}",
+					token: "{{ server.daemon_secret }}",
 					server: "{{ server.hash }}",
 					path: $("#u_file_name").val(),
 					name: file.name,

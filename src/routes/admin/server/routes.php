@@ -113,9 +113,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 	try {
 
 		$unirest = Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
-				'X-Access-Token' => $core->server->nodeData('gsd_secret'),
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
 				'X-Access-Server' => $core->server->getData('hash')
 			),
 			array(
@@ -193,9 +193,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 	try {
 
 		$unirest = Unirest\Request::post(
-			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen').'/server/reset-password',
+			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
@@ -236,19 +236,19 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 
 $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($request, $response) use($core) {
 
-	$secret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
+	$secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
 	try {
 
 		$unirest = Request::put(
-			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('gsd_listen')."/server",
+			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen')."/server",
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
 				"json" => json_encode(array(
-					$core->server->getData('gsd_secret') => array(),
+					$core->server->getData('daemon_secret') => array(),
 					$secret => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:query", "s:console", "s:console:send")
 				)),
 				"object" => "keys",
@@ -272,7 +272,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 	}
 
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->gsd_secret = $secret;
+	$server->daemon_secret = $secret;
 	$server->save();
 
 	$response->body($secret)->send();
@@ -310,9 +310,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	try {
 
 		Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
@@ -326,9 +326,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 		);
 
 		Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server",
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
-				"X-Access-Token" => $core->server->nodeData('gsd_secret'),
+				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(
@@ -459,7 +459,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	$sftp_username = Functions::generateFTPUsername($request->param('server_name'));
 	$server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
-	$gsd_secret = $core->auth->generateUniqueUUID('servers', 'gsd_secret');
+	$daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
 	/*
 	* Build Call
@@ -480,7 +480,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			"-Xmx" => $request->param('alloc_mem')."M"
 		),
 		"keys" => array(
-			$gsd_secret => array(
+			$daemon_secret => array(
 				"s:ftp",
 				"s:get",
 				"s:power",
@@ -502,9 +502,9 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	try {
 
 		$unirest = Unirest\Request::post(
-			'https://'.$node->ip.':'.$node->gsd_listen.'/server',
+			'https://'.$node->ip.':'.$node->daemon_listen.'/server',
 			array(
-				'X-Access-Token' => $node->gsd_secret,
+				'X-Access-Token' => $node->daemon_secret,
 				'X-Access-Server' => "hodor"
 			),
 			array(
@@ -520,7 +520,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		$server = ORM::forTable('servers')->create();
 		$server->set(array(
 			'hash' => $server_hash,
-			'gsd_secret' => $gsd_secret,
+			'daemon_secret' => $daemon_secret,
 			'node' => $request->param('node'),
 			'name' => $request->param('server_name'),
 			'modpack' => 'default',

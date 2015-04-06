@@ -58,7 +58,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 
 	} else {
 
-		if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData('gsd_listen'))) {
+		if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData('daemon_listen'))) {
 
 			$service->flash('<div class="alert alert-danger">Unable to access the server daemon to process file downloads.</div>');
 			$response->redirect('/node/files')->send();
@@ -76,7 +76,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 		));
 		$download->save();
 
-		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/download/".$downloadToken)->send();
+		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/download/".$downloadToken)->send();
 
 	}
 
@@ -110,9 +110,9 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 	try {
 
 		$unirest = \Unirest\Request::get(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
 			array(
-				"X-Access-Token" => $core->server->getData('gsd_secret'),
+				"X-Access-Token" => $core->server->getData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			)
 		);
@@ -184,9 +184,9 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 	try {
 
 		$unirest = \Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('gsd_listen')."/server/file/".rawurlencode($request->param('newFilePath')),
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($request->param('newFilePath')),
 			array(
-				"X-Access-Token" => $core->server->getData('gsd_secret'),
+				"X-Access-Token" => $core->server->getData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
 			),
 			array(

@@ -400,8 +400,8 @@ $klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($
 	* Verify Identity
 	*/
 	$server = ORM::forTable('servers')
-		->selectMany('encryption_iv', 'ftp_pass', 'gsd_secret')
-		->where(array('gsd_id' => $serverid, 'sftp_user' => $username))
+		->selectMany('encryption_iv', 'ftp_pass', 'daemon_secret')
+		->where(array('daemon_id' => $serverid, 'sftp_user' => $username))
 		->findOne();
 
 	if(!$server) {
@@ -419,7 +419,7 @@ $klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($
 			return;
 
 		} else {
-			$response->json(array('authkey' => $server->gsd_secret));
+			$response->json(array('authkey' => $server->daemon_secret));
 		}
 
 	}

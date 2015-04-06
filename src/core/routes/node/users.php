@@ -51,7 +51,7 @@ class Users extends \PufferPanel\Core\Email {
 		$registerToken = $this->keygen(32);
 		$subuserToken = $this->keygen(32);
 		$subuserUUID = $this->generateUniqueUUID('subusers', 'uuid');
-		$gsdSecret = $this->generateUniqueUUID('servers', 'gsd_secret');
+		$gsdSecret = $this->generateUniqueUUID('servers', 'daemon_secret');
 		$data->permissions = self::_rebuildUserPermissions($data->permissions);
 
 		$find = ORM::forTable('users')->where('email', $data->email)->findOne();
@@ -93,8 +93,8 @@ class Users extends \PufferPanel\Core\Email {
 			'uuid' => $subuserUUID,
 			'user' => (!$find) ? "-1" : $find->id,
 			'server' => $this->server->getData('id'),
-			'gsd_secret' => $gsdSecret,
-			'gsd_permissions' => json_encode(self::_buildGSDPermissions($data->permissions)),
+			'daemon_secret' => $gsdSecret,
+			'daemon_permissions' => json_encode(self::_buildGSDPermissions($data->permissions)),
 			'permissions' => (!$find) ? json_encode($data->permissions) : null,
 			'pending' => (!$find) ? 1 : 0,
 			'pending_email' => (!$find) ? $data->email : null
@@ -104,9 +104,9 @@ class Users extends \PufferPanel\Core\Email {
 		try {
 
 			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
+				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
 				array(
-					"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $this->server->getData('hash')
 				),
 				array(
@@ -162,7 +162,7 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function modifySubuser(\Klein\DataCollection\DataCollection $data) {
 
-		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('gsd_listen'))) {
+		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'))) {
 			self::_setError("Unable to access the server management daemon.");
 			return false;
 		}
@@ -189,20 +189,20 @@ class Users extends \PufferPanel\Core\Email {
 
 		}
 
-		$select->gsd_permissions = json_encode(self::_buildGSDPermissions($data->permissions));
+		$select->daemon_permissions = json_encode(self::_buildGSDPermissions($data->permissions));
 		$select->save();
 
 		try {
 
 			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
+				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
 				array(
-					"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $this->server->getData('hash')
 				),
 				array(
 					"json" => json_encode(array(
-						$select->gsd_secret => self::_buildGSDPermissions($data->permissions)
+						$select->daemon_secret => self::_buildGSDPermissions($data->permissions)
 					)),
 					"object" => "keys",
 					"overwrite" => false
@@ -312,7 +312,7 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function revokeActiveUserPermissions(ORM $orm) {
 
-		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('gsd_listen'))) {
+		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'))) {
 			self::_setError("Unable to access the server management daemon.");
 			return false;
 		}
@@ -322,14 +322,14 @@ class Users extends \PufferPanel\Core\Email {
 			try {
 
 				$unirest = Unirest\Request::put(
-					"https://".$this->server->nodeData('ip').":".$this->server->nodeData('gsd_listen')."/server",
+					"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
 					array(
-						"X-Access-Token" => $this->server->nodeData('gsd_secret'),
+						"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 						"X-Access-Server" => $this->server->getData('hash')
 					),
 					array(
 						"json" => json_encode(array(
-							$orm->gsd_secret => ""
+							$orm->daemon_secret => ""
 						)),
 						"object" => "keys",
 						"overwrite" => false

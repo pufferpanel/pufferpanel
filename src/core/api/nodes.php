@@ -49,7 +49,7 @@ class Nodes {
 	/**
 	 * @param array $_optionalAddFields Array containing the names of all fields that are optional when adding a node.
 	 */
-	protected $_optionalAddFields = array('fqdn', 'gsd_listen', 'gsd_console', 'gsd_server_dir');
+	protected $_optionalAddFields = array('fqdn', 'daemon_listen', 'daemon_console', 'daemon_base_dir');
 
 	/**
 	 * Constructor Class
@@ -76,9 +76,9 @@ class Nodes {
 				"node" => $this->node->node,
 				"fqdn" => $this->node->fqdn,
 				"ip" => $this->node->ip,
-				"gsd_listen" => (int) $this->node->gsd_listen,
-				"gsd_console" => (int) $this->node->gsd_console,
-				"gsd_server_dir" => $this->node->gsd_server_dir,
+				"daemon_listen" => (int) $this->node->daemon_listen,
+				"daemon_console" => (int) $this->node->daemon_console,
+				"daemon_base_dir" => $this->node->daemon_base_dir,
 				"ports" => json_decode($this->node->ports, true),
 				"servers" => (!empty($this->node->servers)) ? explode(',', $this->node->servers) : array()
 			);
@@ -163,10 +163,10 @@ class Nodes {
 		}
 
 		$this->fqdn = (array_key_exists('fqdn', $data) && filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) ? $data['fqdn'] : $data['ip'];
-		$this->gsd_listen = (array_key_exists('gsd_listen', $data) && is_numeric($data['gsd_listen'])) ? $data['gsd_listen'] : 8003;
-		$this->gsd_console = (array_key_exists('gsd_console', $data) && is_numeric($data['gsd_console'])) ? $data['gsd_console'] : 8031;
-		$this->gsd_server_dir = (array_key_exists('gsd_server_dir', $data) && preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $data['gsd_server_dir'])) ? $data['gsd_server_dir'] : '/home/';
-		$this->gsd_secret = $this->generateUniqueUUID('nodes', 'gsd_secret');
+		$this->daemon_listen = (array_key_exists('daemon_listen', $data) && is_numeric($data['daemon_listen'])) ? $data['daemon_listen'] : 8003;
+		$this->daemon_console = (array_key_exists('daemon_console', $data) && is_numeric($data['daemon_console'])) ? $data['daemon_console'] : 8031;
+		$this->daemon_base_dir = (array_key_exists('daemon_base_dir', $data) && preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $data['daemon_base_dir'])) ? $data['daemon_base_dir'] : '/home/';
+		$this->daemon_secret = $this->generateUniqueUUID('nodes', 'daemon_secret');
 
 		// Add to Database
 		$this->insert = ORM::forTable('nodes')->create();
@@ -174,10 +174,10 @@ class Nodes {
 			'node' => $this->node,
 			'fqdn' => $this->fqdn,
 			'ip' => $this->ip,
-			'gsd_secret' => $this->gsd_secret,
-			'gsd_listen' => $this->gsd_listen,
-			'gsd_console' => $this->gsd_console,
-			'gsd_server_dir' => $this->gsd_server_dir,
+			'daemon_secret' => $this->daemon_secret,
+			'daemon_listen' => $this->daemon_listen,
+			'daemon_console' => $this->daemon_console,
+			'daemon_base_dir' => $this->daemon_base_dir,
 			'ips' => json_encode($this->_IPArray),
 			'ports' => json_encode($this->_PortArray)
 		));
@@ -185,7 +185,7 @@ class Nodes {
 
 		return array(
 			"id" => $this->insert->id(),
-			"token" => $this->gsd_secret,
+			"token" => $this->daemon_secret,
 			"node" => $this->node
 		);
 

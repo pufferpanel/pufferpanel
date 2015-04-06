@@ -38,9 +38,9 @@ while($row = $select->fetch()) {
 	try {
 
 		$request = Unirest\Request::get(
-			"http://".$row['ip'].":".$row['gsd_listen']."/gameservers/config",
+			"http://".$row['ip'].":".$row['daemon_listen']."/gameservers/config",
 			array(
-				'X-Access-Token' => $row['gsd_secret']
+				'X-Access-Token' => $row['daemon_secret']
 			)
 		);
 
@@ -53,15 +53,15 @@ while($row = $select->fetch()) {
 		$config = json_decode($request->raw_body, true);
 
 		// update all the core settings
-		$config['daemon']['listenport'] = $row['gsd_listen'];
-		$config['daemon']['consoleport'] = $row['gsd_console'];
+		$config['daemon']['listenport'] = $row['daemon_listen'];
+		$config['daemon']['consoleport'] = $row['daemon_console'];
 		$config['interfaces']['rest']['authurl'] = str_replace("_ftp", "_download", $config['interfaces']['ftp']['authurl']);
 		$config['interfaces']['ftp']['use_ssl'] = true;
 
 		// loop each server and set permissions and keys
 		foreach($config['servers'] as $id => $internals) {
 
-			$server = $mysql->prepare("SELECT * FROM `servers` WHERE `node` = :node AND `gsd_id` = :gid");
+			$server = $mysql->prepare("SELECT * FROM `servers` WHERE `node` = :node AND `daemon_id` = :gid");
 			$server->execute(array(
 				'node' => $row['id'],
 				'gid' => $id
@@ -79,7 +79,7 @@ while($row = $select->fetch()) {
 			);
 
 			$config['servers'][$id]['keys'] = array(
-				$s['gsd_secret'] => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:files:zip", "s:query", "s:console", "s:console:send")
+				$s['daemon_secret'] => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:files:zip", "s:query", "s:console", "s:console:send")
 			);
 
 			$config['servers'][$id]['gameport'] = (int) $s['server_port'];
@@ -88,9 +88,9 @@ while($row = $select->fetch()) {
 		}
 
 		$putrequest = Unirest\Request::put(
-			"http://".$row['ip'].":".$row['gsd_listen']."/gameservers/config",
+			"http://".$row['ip'].":".$row['daemon_listen']."/gameservers/config",
 			array(
-				'X-Access-Token' => $row['gsd_secret']
+				'X-Access-Token' => $row['daemon_secret']
 			),
 			array(
 				"cfg" => json_encode($config)

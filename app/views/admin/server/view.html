@@ -39,7 +39,7 @@
 					<div class="form-group">
 						<label class="control-label">Scales Security Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 						<div>
-							<input type="text" readonly="readonly" id="form_gsd_token" value="{{ server.gsd_secret }}" class="form-control" />
+							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ server.daemon_secret }}" class="form-control" />
 						</div>
 					</div>
 					<div class="row">
@@ -196,7 +196,7 @@
 						alert(data);
 					} else {
 						$("#reset_token_warn").show();
-						$("#form_gsd_token").val(data);
+						$("#form_daemon_token").val(data);
 					}
 				}
 			});

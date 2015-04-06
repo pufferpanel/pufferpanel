@@ -34,17 +34,17 @@ $mysql->exec("ALTER TABLE acp_settings
 
 // update nodes table
 $mysql->exec("ALTER TABLE nodes
-		ADD COLUMN gsd_listen int(1) DEFAULT '8003' AFTER gsd_secret,
-		ADD COLUMN gsd_console int(1) DEFAULT '8031' AFTER gsd_listen,
-		ADD COLUMN gsd_server_dir tinytext AFTER gsd_console
+		ADD COLUMN daemon_listen int(1) DEFAULT '8003' AFTER daemon_secret,
+		ADD COLUMN daemon_console int(1) DEFAULT '8031' AFTER daemon_listen,
+		ADD COLUMN daemon_base_dir tinytext AFTER daemon_console
 	");
 
-$select = $mysql->prepare("SELECT `id`, `gsd_server_dir` FROM `nodes`");
+$select = $mysql->prepare("SELECT `id`, `daemon_base_dir` FROM `nodes`");
 $select->execute();
 
 while($row = $select->fetch()) {
 	
-	$mysql->exec("UPDATE nodes SET `gsd_server_dir` = '/home/' WHERE `id` = ".$row['id']);
+	$mysql->exec("UPDATE nodes SET `daemon_base_dir` = '/home/' WHERE `id` = ".$row['id']);
 	
 }
 
