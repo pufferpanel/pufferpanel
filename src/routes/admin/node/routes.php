@@ -36,6 +36,14 @@ $klein->respond('GET', '/admin/node', function($request, $response, $service) us
 
 $klein->respond('GET', '/admin/node/new', function($request, $response, $service) use($core) {
 
+	if(ORM::forTable('locations')->count() == 0) {
+
+		$service->flash('<div class="alert alert-danger">You must have at least one location defined before creating a node.</div>');
+		$response->redirect('/admin/node/locations')->send();
+		return;
+		
+	}
+
 	$response->body($core->twig->render(
 		'admin/node/new.html',
 		array(
