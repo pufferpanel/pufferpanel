@@ -41,7 +41,7 @@ $klein->respond('GET', '/admin/node/new', function($request, $response, $service
 		$service->flash('<div class="alert alert-danger">You must have at least one location defined before creating a node.</div>');
 		$response->redirect('/admin/node/locations')->send();
 		return;
-		
+
 	}
 
 	$response->body($core->twig->render(
@@ -174,8 +174,10 @@ $klein->respond('GET', '/admin/node/locations', function($request, $response, $s
 			'flash' => $service->flashes(),
 			'locations' => ORM::forTable('locations')
 				->select_many('locations.*')
-				->select_expr('COUNT(nodes.id)', 'totalnodes')
+				->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
+				->select_expr('COUNT(servers.id)', 'totalservers')
 				->left_outer_join('nodes', array('locations.short', '=', 'nodes.location'))
+				->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
 				->group_by('locations.id')
 				->find_many()
 		)

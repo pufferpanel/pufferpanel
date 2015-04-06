@@ -19,6 +19,7 @@
 				<th>Shortcode</th>
 				<th>Location</th>
 				<th>Total Nodes</th>
+				<th>Total Servers</th>
 				<th>Manage</th>
 			</tr>
 		</thead>
@@ -28,6 +29,7 @@
 				<td>{{ location.short }}</a></td>
 				<td>{{ location.long }}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
+				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalservers }}{% endif %}</td>
 				<td style="text-align:center;">
 					<a href="/admin/node/locations/{{ location.short }}/edit" class="edit_location"><span class="badge">Edit</span></a>
 					<a href="/admin/node/locations/{{ location.short }}/delete"><span class="badge label-danger">Delete</span></a>
