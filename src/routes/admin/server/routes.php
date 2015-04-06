@@ -521,8 +521,9 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			"cpu" => (int) $request->param('cpu_limit')
 		),
 		"variables" => array(
+			"-Xmx" => $request->param('alloc_mem')."M",
 			"-jar" => "server.jar",
-			"-Xmx" => $request->param('alloc_mem')."M"
+			"nogui" => ""
 		),
 		"keys" => array(
 			$daemon_secret => array(
