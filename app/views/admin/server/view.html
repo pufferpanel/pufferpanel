@@ -173,9 +173,9 @@
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
-				<div class="alert alert-danger"><strong><i class="fa fa-warning"></i></strong> Deleting a server is an irreversiable action. Proceede with caution. This server will be removed from the database along with all files on the server.</div>
-				<form action="{{ server.id }}/delete" method="POST">
-					<input type="submit" name="delete" class="btn btn-sm btn-danger disabled" value="Permanetly Delete this Server" />
+				<div class="alert alert-danger"><strong>Deleting a server is an irreversiable action.</strong> Proceede with caution. This server will be removed from the database along with all files on the server.</div>
+				<form action="{{ server.id }}/delete" id="deleteCheckpoint" method="POST">
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Server" />
 				</form>
 		</div>
 	</div>
@@ -185,6 +185,12 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("form#deleteCheckpoint").submit(function(e) {
+			e.preventDefault();
+			if(confirm("STOP! Are you absolutely positive that you want to delete this server. ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
+				$("#deleteCheckpoint").unbind('submit').submit();
+			}
+		});
 		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 		$("#reset_token").click(function(e){
 			e.preventDefault();

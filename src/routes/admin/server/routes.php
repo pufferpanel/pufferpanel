@@ -77,7 +77,51 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
 
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/delete', function() {
+$klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $response, $service) use ($core) {
+
+	try {
+
+		$unirest = Unirest\Request::delete(
+			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
+			array(
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
+			)
+		);
+
+		if($unirest->code !== 204) {
+			throw new \Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
+		}
+
+	} catch(\Exception $e) {
+
+		\Tracy\Debugger::log($e);
+		$service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=delete')->send();
+		return;
+
+	}
+
+	// Deleted from Scales, move to removing from panel
+	$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
+	$ports = json_decode($node->ports, true);
+	$ips = json_decode($node->ips, true);
+
+	$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')]++;
+	$ips[$core->server->getData('server_ip')]['ports_free']++;
+
+	$node->ips = json_encode($ips);
+	$node->ports = json_encode($ports);
+
+	$node->save();
+
+	ORM::forTable('subusers')->where('server', $core->server->getData('id'))->deleteMany();
+	ORM::forTable('permissions')->where('server', $core->server->getData('id'))->deleteMany();
+	ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
+	ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
+
+	$service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
+	$response->redirect('/admin/server')->send();
 
 });
 
@@ -112,7 +156,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 	try {
 
-		$unirest = Request::put(
+		$unirest = Unirest\Request::put(
 			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
@@ -136,39 +180,40 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 		}
 
-		$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-		$server->server_ip = $request->param('server_ip');
-		$server->server_port = $request->param('server_port');
-		$server->save();
-
-		/*
-		* Update Old
-		*/
-		$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')] = 1;
-		$ips[$core->server->getData('server_ip')]['ports_free']++;
-
-		/*
-		* Update Old
-		*/
-		$ports[$request->param('server_ip')][$request->param('server_port')] = 0;
-		$ips[$request->param('server_ip')]['ports_free']--;
-
-		$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
-		$node->ports = json_encode($ports);
-		$node->ips = json_encode($ips);
-		$node->save();
-
-		$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 
 	} catch(\Exception $e) {
 
 		Debugger::log($e);
-		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that GSD is running and try again.</div>');
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that the daemon is running and try again.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
 
 	}
+
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->server_ip = $request->param('server_ip');
+	$server->server_port = $request->param('server_port');
+	$server->save();
+
+	/*
+	* Update Old
+	*/
+	$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')] = 1;
+	$ips[$core->server->getData('server_ip')]['ports_free']++;
+
+	/*
+	* Update Old
+	*/
+	$ports[$request->param('server_ip')][$request->param('server_port')] = 0;
+	$ips[$request->param('server_ip')]['ports_free']--;
+
+	$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
+	$node->ports = json_encode($ports);
+	$node->ips = json_encode($ips);
+	$node->save();
+
+	$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
+	$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 
 });
 
@@ -240,7 +285,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 
 	try {
 
-		$unirest = Request::put(
+		$unirest = Unirest\Request::put(
 			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
