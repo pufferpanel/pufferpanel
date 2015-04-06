@@ -517,44 +517,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			throw new \Exception("An error occured trying to add a server. (".$unirest->raw_body.") [HTTP 1.1/".$unirest->code."]");
 		}
 
-		$server = ORM::forTable('servers')->create();
-		$server->set(array(
-			'hash' => $server_hash,
-			'daemon_secret' => $daemon_secret,
-			'node' => $request->param('node'),
-			'name' => $request->param('server_name'),
-			'modpack' => 'default',
-			'server_jar' => 'server.jar',
-			'owner_id' => $user->id,
-			'max_ram' => $request->param('alloc_mem'),
-			'disk_space' => $request->param('alloc_disk'),
-			'cpu_limit' => $request->param('cpu_limit'),
-			'date_added' => time(),
-			'server_ip' => $request->param('server_ip'),
-			'server_port' => $request->param('server_port'),
-			'sftp_user' => $sftp_username
-		));
-		$server->save();
-
-		$ips[$request->param('server_ip')]['ports_free']--;
-		$ports[$request->param('server_ip')][$request->param('server_port')]--;
-
-		$node->ips = json_encode($ips);
-		$node->ports = json_encode($ports);
-		$node->save();
-
-		$core->email->buildEmail('admin_new_server', array(
-				'NAME' => $request->param('server_name'),
-				'SFTP' => $node->fqdn.':22',
-				'SERVER_CONN' => $node->fqdn.':'.$request->param('server_port'),
-				'USER' => $sftp_username,
-				'PASS' => $request->param('sftp_pass')
-		))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
-
-		$service->flash('<div class="alert alert-success">Server created successfully.</div>');
-		$response->redirect('/admin/server/view/'.$server->id())->send();
-		return;
-
 	} catch(\Exception $e) {
 
 		Debugger::log($e);
@@ -563,6 +525,44 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		return;
 
 	}
+
+	$server = ORM::forTable('servers')->create();
+	$server->set(array(
+		'hash' => $server_hash,
+		'daemon_secret' => $daemon_secret,
+		'node' => $request->param('node'),
+		'name' => $request->param('server_name'),
+		'plugin' => $request->param('installable'),
+		'server_jar' => 'server.jar',
+		'owner_id' => $user->id,
+		'max_ram' => $request->param('alloc_mem'),
+		'disk_space' => $request->param('alloc_disk'),
+		'cpu_limit' => $request->param('cpu_limit'),
+		'date_added' => time(),
+		'server_ip' => $request->param('server_ip'),
+		'server_port' => $request->param('server_port'),
+		'sftp_user' => $sftp_username
+	));
+	$server->save();
+
+	$ips[$request->param('server_ip')]['ports_free']--;
+	$ports[$request->param('server_ip')][$request->param('server_port')]--;
+
+	$node->ips = json_encode($ips);
+	$node->ports = json_encode($ports);
+	$node->save();
+
+	$core->email->buildEmail('admin_new_server', array(
+			'NAME' => $request->param('server_name'),
+			'SFTP' => $node->fqdn.':'.$node->daemon_sftp,
+			'SERVER_CONN' => $node->fqdn.':'.$request->param('server_port'),
+			'USER' => $sftp_username,
+			'PASS' => $request->param('sftp_pass')
+	))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
+
+	$service->flash('<div class="alert alert-success">Server created successfully.</div>');
+	$response->redirect('/admin/server/view/'.$server->id())->send();
+	return;
 
 });
 
