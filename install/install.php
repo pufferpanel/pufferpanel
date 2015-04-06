@@ -270,10 +270,10 @@ try {
 	$mysql->exec("DROP TABLE IF EXISTS `plugins`");
 	$mysql->exec("CREATE TABLE `plugins` (
 					`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-					`hash` char(36) CHARACTER NOT NULL DEFAULT '',
-					`name` varchar(100) CHARACTER NOT NULL DEFAULT '',
-					`description` text CHARACTER NOT NULL,
-					`slug` varchar(100) CHARACTER NOT NULL DEFAULT '',
+					`hash` char(36) NOT NULL DEFAULT '',
+					`name` varchar(100) NOT NULL DEFAULT '',
+					`description` text NOT NULL,
+					`slug` varchar(100) NOT NULL DEFAULT '',
 					PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 	echo "Table `plugins` created.\n";
