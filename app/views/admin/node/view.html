@@ -63,6 +63,10 @@
 		"repo": "{{ settings.master_url }}auth/remote/pack",
 		"download": "{{ settings.master_url }}auth/remote/download"
 	},
+	"ssl": {
+		"key": "https.key",
+		"cert": "https.pem"
+	},
 	"basepath": "{{ node.daemon_base_dir }}",
 	"keys": [
 		"{{ node.daemon_secret }}"
@@ -225,6 +229,10 @@ $(window).load(function(){
 	"urls": { \n\
 		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
 		"download": "{{ settings.master_url }}auth/remote/download" \n\
+	}, \n\
+	"ssl": { \n\
+		"key": "https.key", \n\
+		"cert": "https.pem" \n\
 	}, \n\
 	"basepath": "{{ node.daemon_base_dir }}", \n\
 	"keys": [ \n\
