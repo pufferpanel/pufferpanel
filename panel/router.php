@@ -156,7 +156,6 @@ include SRC_DIR.'routes/assets/routes.php';
 include SRC_DIR.'routes/auth/routes.php';
 include SRC_DIR.'routes/panel/routes.php';
 include SRC_DIR.'routes/node/routes.php';
-include SRC_DIR.'routes/api/routes.php';
 
 $klein->respond('*', function($request, $response) use ($core) {
 
