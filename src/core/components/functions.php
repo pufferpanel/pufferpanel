@@ -44,7 +44,7 @@ trait Functions {
 			$username = $base.'_'.self::keygen((11 - $i));
 		}
 
-		return "mc-".strtolower($username);
+		return "pp-".strtolower($username);
 
 	}
 

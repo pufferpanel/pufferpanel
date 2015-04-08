@@ -28,7 +28,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 		if($request->param('server')) {
 
 			$status = ORM::forTable('servers')
-				->select('servers.hash', 's_hash')->select('nodes.ip')->select('nodes.daemon_secret')->select('nodes.daemon_listen')
+				->select('servers.hash', 's_hash')->select('nodes.fqdn')->select('nodes.daemon_secret')->select('nodes.daemon_listen')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where('servers.hash', $request->param('server'))
 				->findOne();
@@ -38,7 +38,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				return;
 			}
 
-			if($core->gsd->check_status($status->ip, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
+			if($core->gsd->check_status($status->fqdn, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
@@ -67,7 +67,7 @@ $klein->respond('POST', '/ajax/status/node', function($request, $response) use (
 				return;
 			}
 
-			if(!$core->gsd->avaliable($status->ip, $status->daemon_listen, 1)) {
+			if(!$core->gsd->avaliable($status->fqdn, $status->daemon_listen, 1)) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();

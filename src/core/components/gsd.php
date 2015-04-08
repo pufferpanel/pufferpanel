@@ -32,7 +32,7 @@ trait GSD {
 	 * @param int $timeout
 	 * @return bool
 	 */
-	public function avaliable($ip, $port = 8003, $timeout = 3) {
+	public function avaliable($ip, $port = 5656, $timeout = 3) {
 
 		Unirest\Request::timeout($timeout);
 

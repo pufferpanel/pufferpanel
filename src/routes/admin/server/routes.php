@@ -82,7 +82,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $
 	try {
 
 		$unirest = Unirest\Request::delete(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
 				'X-Access-Server' => $core->server->getData('hash')
@@ -157,7 +157,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 	try {
 
 		$unirest = Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
 				'X-Access-Server' => $core->server->getData('hash')
@@ -238,7 +238,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 	try {
 
 		$unirest = Unirest\Request::post(
-			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
+			'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -286,7 +286,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 	try {
 
 		$unirest = Unirest\Request::put(
-			'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen')."/server",
+			'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -355,7 +355,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	try {
 
 		Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -371,7 +371,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 		);
 
 		Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server",
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -548,7 +548,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	try {
 
 		$unirest = Unirest\Request::post(
-			'https://'.$node->ip.':'.$node->daemon_listen.'/server',
+			'https://'.$node->fqdn.':'.$node->daemon_listen.'/server',
 			array(
 				'X-Access-Token' => $node->daemon_secret,
 				'X-Access-Server' => "hodor"

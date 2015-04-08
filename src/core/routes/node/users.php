@@ -104,7 +104,7 @@ class Users extends \PufferPanel\Core\Email {
 		try {
 
 			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
+				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
 				array(
 					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $this->server->getData('hash')
@@ -162,7 +162,7 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function modifySubuser(\Klein\DataCollection\DataCollection $data) {
 
-		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'))) {
+		if(!$this->avaliable($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'))) {
 			self::_setError("Unable to access the server management daemon.");
 			return false;
 		}
@@ -195,7 +195,7 @@ class Users extends \PufferPanel\Core\Email {
 		try {
 
 			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
+				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
 				array(
 					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $this->server->getData('hash')
@@ -312,7 +312,7 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function revokeActiveUserPermissions(ORM $orm) {
 
-		if(!$this->avaliable($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'))) {
+		if(!$this->avaliable($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'))) {
 			self::_setError("Unable to access the server management daemon.");
 			return false;
 		}
@@ -322,7 +322,7 @@ class Users extends \PufferPanel\Core\Email {
 			try {
 
 				$unirest = Unirest\Request::put(
-					"https://".$this->server->nodeData('ip').":".$this->server->nodeData('daemon_listen')."/server",
+					"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
 					array(
 						"X-Access-Token" => $this->server->nodeData('daemon_secret'),
 						"X-Access-Server" => $this->server->getData('hash')

@@ -67,7 +67,7 @@ $klein->respond('POST', '/node/settings/jar', function($request, $response, $ser
 		try {
 
 			$unirest = Unirest\Request::put(
-				'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen').'/server',
+				'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server',
 				array(
 					"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $core->server->getData('hash')
@@ -135,7 +135,7 @@ $klein->respond('POST', '/node/settings/ftp', function($request, $response, $ser
 		try {
 
 			$unirest = Unirest\Request::post(
-				'https://'.$core->server->nodeData('ip').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
+				'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
 				array(
 					"X-Access-Token" => $core->server->nodeData('daemon_secret'),
 					"X-Access-Server" => $core->server->getData('hash')

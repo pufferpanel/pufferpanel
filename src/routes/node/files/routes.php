@@ -58,7 +58,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 
 	} else {
 
-		if(!$core->gsd->avaliable($core->server->nodeData('ip'), $core->server->nodeData('daemon_listen'))) {
+		if(!$core->gsd->avaliable($core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'))) {
 
 			$service->flash('<div class="alert alert-danger">Unable to access the server daemon to process file downloads.</div>');
 			$response->redirect('/node/files')->send();
@@ -76,7 +76,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 		));
 		$download->save();
 
-		$response->redirect("https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/download/".$downloadToken)->send();
+		$response->redirect("https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server/download/".$downloadToken)->send();
 
 	}
 
@@ -110,7 +110,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 	try {
 
 		$unirest = \Unirest\Request::get(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
 			array(
 				"X-Access-Token" => $core->server->getData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -184,7 +184,7 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 	try {
 
 		$unirest = \Unirest\Request::put(
-			"https://".$core->server->nodeData('ip').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($request->param('newFilePath')),
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($request->param('newFilePath')),
 			array(
 				"X-Access-Token" => $core->server->getData('daemon_secret'),
 				"X-Access-Server" => $core->server->getData('hash')
@@ -214,115 +214,5 @@ $klein->respond('POST', '/node/files/add', function($request, $response, $servic
 		return;
 
 	}
-
-});
-
-$klein->respond('/node/files/upload', function($request, $response, $service) use($core) {
-
-	if(!$core->permissions->has('files.upload')) {
-
-		$response->code(403);
-		$response->body('you don\'t have permission to do that')->send();
-		return;
-
-	}
-
-	// prevent output buffering
-	ini_set('upload_max_filesize', '100M');
-	ini_set('post_max_size', '110M');
-	set_time_limit(0);
-
-	if($request->param('newFilePath') === null) {
-
-		$response->code(404);
-		$response->body('missing parameters')->send();
-		return;
-
-	}
-
-	if(($request->param('flowTotalSize') / (1024 * 1024)) > 100) {
-
-		$response->code(500);
-		$response->body('this file is too large to upload (max size: 100MB)')->send();
-		return;
-
-	}
-
-	if(ob_get_level()) {
-		ob_end_clean();
-	}
-
-	$tempDir = '/tmp/'.$core->server->getData('hash');
-	$uploadPath = SRC_DIR.'cache/uploads/'.$core->server->getData('hash').'/';
-
-	if(!is_dir($tempDir)) {
-		mkdir($tempDir, 0777);
-	}
-
-	if(!is_dir($uploadPath)) {
-		mkdir($uploadPath, 0777);
-	}
-
-	$config = new Flow\Config();
-	$config->setTempDir($tempDir);
-	$file = new Flow\File($config);
-
-
-	if($request->method('get')) {
-
-		if($file->checkChunk()) {
-			$response->code(200)->body('chunked')->send();
-			return;
-		} else {
-
-			$response->code(404);
-			$response->body('unable to work with chunk')->send();
-			return;
-
-		}
-
-	} else {
-
-		if($file->validateChunk()) {
-			$file->saveChunk();
-		} else {
-
-			$response->code(400);
-			$response->body('an error occured')->send();
-			return;
-
-		}
-
-	}
-
-	try {
-
-		if($file->validateFile() && $file->save($uploadPath.$request->param('flowFilename'))) {
-
-			// Handle Upload Here
-			$response->code(400);
-			$response->body('file uploading is disabled currently')->send();
-			return;
-			// $stream = fopen($uploadPath.$request->param('flowFilename'), 'r');
-			// $filesystem->writeStream(rtrim($request->param('newFilePath'), '/').'/'.$request->param('flowFilename'), $stream);
-			// unlink($uploadPath.$request->param('flowFilename'));
-			//
-			// $response->code(200)->body('done')->send();
-			// return;
-
-		}
-
-	} catch(\Exception $e) {
-
-		\Tracy\Debugger::log($e);
-		unlink($uploadPath.$request->param('flowFilename'));
-
-		$response->code(400);
-		$response->body('unable to write file to server')->send();
-		return;
-
-	}
-
-	exit();
 
 });
