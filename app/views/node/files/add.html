@@ -57,7 +57,7 @@
 var newFilePath;
 var newFileContents;
 {% if permission.has('files.upload') %}
-	var client = new BinaryClient('wss://{{ node.ip }}:{{ node.daemon_upload }}/server/{{ server.hash }}', {
+	var client = new BinaryClient('wss://{{ node.fqdn }}:{{ node.daemon_upload }}/server/{{ server.hash }}', {
 		chunkSize: 40960
 	});
 
