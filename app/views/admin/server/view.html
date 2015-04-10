@@ -72,6 +72,26 @@
 				</fieldset>
 			</form>
 			<div class="well" style="margin-top:15px;">
+				<h3 class="nopad">Startp Parameters</h3><hr />
+				<form action="{{ server.id }}/startup" method="POST">
+					<fieldset>
+						<div class="form-group">
+							<label for="alloc_mem" class="control-label">Startp Command Variables</label>
+							<div>
+								<input type="text" autocomplete="off" name="daemon_startup" value="{{ server.daemon_startup }}" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="alloc_disk" class="control-label">Disk Space</label>
+							<div class="input-group">
+								<input type="text" name="alloc_disk" disabled="disabled" value="{{ server.disk_space }}" class="form-control" />
+								<span class="input-group-addon">MB</span>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="well" style="margin-top:15px;">
 				<h3 class="nopad">Connection Information</h3><hr />
 				<form action="{{ server.id }}/connection" method="POST">
 					<fieldset>
