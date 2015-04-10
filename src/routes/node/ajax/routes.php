@@ -28,12 +28,12 @@ $klein->respond('POST', '/node/ajax/console/power', function($request, $response
 
 	}
 
-	$generate = $core->gsd->generateServerProperties();
+	$generate = $core->daemon->generateServerProperties();
 	if($generate !== true) {
 		$response->body($generate)->send();
 	} else {
 
-		if(!$core->gsd->powerOn()) {
+		if(!$core->daemon->powerOn()) {
 			$response->body("Unable to power on server due to a daemon error.")->send();
 		} else {
 			$response->body("ok")->send();

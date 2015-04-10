@@ -498,7 +498,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/sftp', function($request, $resp
 $klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request, $response) use($core) {
 
 	$node = ORM::forTable('nodes')->findOne($request->param('id'));
-	if(!$core->gsd->avaliable($node->ip, $node->daemon_listen)) {
+	if(!$core->daemon->avaliable($node->ip, $node->daemon_listen)) {
 
 		$node->daemon_secret = $core->auth->generateUniqueUUID('nodes', 'daemon_secret');
 		$node->save();

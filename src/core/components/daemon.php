@@ -22,10 +22,10 @@ use \Unirest;
 /**
 * General Functions Trait
 */
-trait GSD {
+trait Daemon {
 
 	/**
-	 * Checks if the GSD server is runnning.
+	 * Checks if the daemon is running.
 	 *
 	 * @param string $ip
 	 * @param int $port

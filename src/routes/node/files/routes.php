@@ -58,7 +58,7 @@ $klein->respond('GET', '/node/files/download/[*:file]', function($request, $resp
 
 	} else {
 
-		if(!$core->gsd->avaliable($core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'))) {
+		if(!$core->daemon->avaliable($core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'))) {
 
 			$service->flash('<div class="alert alert-danger">Unable to access the server daemon to process file downloads.</div>');
 			$response->redirect('/node/files')->send();

@@ -20,11 +20,11 @@ namespace PufferPanel\Core;
 use \ORM, \Unirest;
 
 /**
- * PufferPanel Core GSD Implementation Class
+ * PufferPanel Core Daemon Implementation Class
  */
-class Query extends Server {
+class Daemon extends Server {
 
-	use Components\GSD;
+	use Components\Daemon;
 
 	protected $server = false;
 
@@ -60,22 +60,24 @@ class Query extends Server {
 	/**
 	 * Gets the status of any specified server given an IP address.
 	 *
-	 * @param string $ip The IP address of the main GSD server to check aganist.
-	 * @param int $port The port of the main GSD server to check aganist.
+	 * @param string $ip The IP address of the main daemon server to check aganist.
+	 * @param int $port The port of the main daemon server to check aganist.
 	 * @param string $hash The hash of the server to check for.
-	 * @param string $secret The GSD secret of the server to check, or the god token for the node.
+	 * @param string $secret The daemon secret of the server to check, or the god token for the node.
 	 * @return bool Returns an true if server is on, false if off or invalid data was recieved.
 	 */
-	public function check_status($ip, $port, $hash, $secret) {
+	public function check_status() {
+
+		$arguments = func_get_args();
 
 		try {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"https://".$ip.":".$port."/server",
+				"https://".$arguments[0].":".$arguments[1]."/server",
 				array(
-					'X-Access-Token' => $secret,
-					'X-Access-Server' => $hash
+					'X-Access-Token' => $arguments[3],
+					'X-Access-Server' => $arguments[2]
 				)
 			);
 

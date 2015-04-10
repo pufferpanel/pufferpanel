@@ -71,12 +71,9 @@ $core->user = new User();
 $core->server = new Server();
 $core->email = new Email();
 $core->log = new Log();
-$core->gsd = new Query();
+$core->daemon = new Daemon();
 $core->files = new Files();
-$core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'), array(
-	'cache' => false,
-	'debug' => true
-));
+$core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'));
 $core->language = new Language();
 $core->permissions = new Permissions($core->server->getData('id'));
 
@@ -116,8 +113,7 @@ $klein->respond('@^/auth/', function($request, $response, $service, $app, $klein
 
 	if($core->auth->isLoggedIn() && !in_array($request->pathname(), array(
 		"/auth/logout",
-		"/auth/gsd/download",
-		"/auth/gsd/ftp"
+		"/auth/remote/download"
 	))) {
 
 		$response->redirect('/index')->send();

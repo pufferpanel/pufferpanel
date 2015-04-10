@@ -38,7 +38,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				return;
 			}
 
-			if($core->gsd->check_status($status->fqdn, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
+			if($core->daemon->check_status($status->fqdn, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();
@@ -67,7 +67,7 @@ $klein->respond('POST', '/ajax/status/node', function($request, $response) use (
 				return;
 			}
 
-			if(!$core->gsd->avaliable($status->fqdn, $status->daemon_listen, 1)) {
+			if(!$core->daemon->avaliable($status->fqdn, $status->daemon_listen, 1)) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();

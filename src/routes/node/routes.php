@@ -25,7 +25,7 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
 		'server' => array_merge($core->server->getData(), array(
 			'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
 			'node' => $core->server->nodeData('node'),
-			'console_inner' => $core->gsd->serverLog()
+			'console_inner' => $core->daemon->serverLog()
 		)),
 		'node' => $core->server->nodeData(),
 		'flash' => $service->flashes()
