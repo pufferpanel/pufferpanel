@@ -72,22 +72,24 @@
 				</fieldset>
 			</form>
 			<div class="well" style="margin-top:15px;">
-				<h3 class="nopad">Startp Parameters</h3><hr />
+				<h3 class="nopad">Startup Parameters</h3><hr />
 				<form action="{{ server.id }}/startup" method="POST">
 					<fieldset>
 						<div class="form-group">
-							<label for="alloc_mem" class="control-label">Startp Command Variables</label>
+							<label for="alloc_mem" class="control-label">Startup Command</label>
 							<div>
-								<input type="text" autocomplete="off" name="daemon_startup" value="{{ server.daemon_startup }}" class="form-control" />
+								<input type="text" autocomplete="off" name="daemon_startup" value="{{ server.daemon_startup }}" class="form-control" placeholder="e.g: -Xmx${memory} -jar ${jar} nogui" />
+								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. Use <code>${memory}</code> to specify the amount of memory that the server is allowed to use. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="alloc_disk" class="control-label">Disk Space</label>
-							<div class="input-group">
-								<input type="text" name="alloc_disk" disabled="disabled" value="{{ server.disk_space }}" class="form-control" />
-								<span class="input-group-addon">MB</span>
+							<label for="alloc_disk" class="control-label">Startup Command Variables</label>
+							<div>
+								<textarea name="daemon_variables" rows="5" class="form-control" placeholder="e.g: jar|server.jar">{{ server.daemon_variables }}</textarea>
+								<p><small>List one variable per line in the format of <code>variable_name|variable_value</code>. Please note that variable names and values are seperated with a pipe character (<code>|</code>).</small></p>
 							</div>
 						</div>
+						<input type="submit" value="Update Server Startup Parameters" class="btn btn-primary btn-sm" />
 					</fieldset>
 				</form>
 			</div>

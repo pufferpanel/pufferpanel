@@ -40,70 +40,70 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 
 });
 
-$klein->respond('POST', '/node/settings/jar', function($request, $response, $service) use ($core) {
-
-	if(!$core->permissions->has('manage.rename.jar')) {
-
-		$response->code(403);
-		$response->body($core->twig->render('node/403.html'))->send();
-		return;
-
-	}
-
-	if(!$core->auth->XSRF($request->param('xsrf'))) {
-
-		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-		$response->redirect('/node/settingsd')->send();
-
-	}
-
-	if(!preg_match('/^([\w\d_.-]+)$/', $request->param('jarfile'))) {
-
-		$service->flash('<div class="alert alert-danger"> The name provided for your .jar file seems to be invalid. Please make sure that it only contains the following characters: <strong>a-zA-Z0-9_-.</strong></div>');
-		$response->redirect('/node/settings')->send();
-
-	} else {
-
-		try {
-
-			$unirest = Unirest\Request::put(
-				'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server',
-				array(
-					"X-Access-Token" => $core->server->nodeData('daemon_secret'),
-					"X-Access-Server" => $core->server->getData('hash')
-				),
-				array(
-					"json" => json_encode(array(
-						"-jar" => str_replace(".jar", "", $request->param('jarfile')).'.jar',
-						"-Xmx" => $core->server->getData('max_ram').'M'
-					)),
-					"object" => "variables",
-					"overwrite" => false
-				)
-			);
-
-			if($unirest->code !== 204) {
-				throw new \Exception("Error occured while trying to udpdate server settings. (code: ".$unirest->code.")");
-			}
-
-			$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-			$server->server_jar = str_replace(".jar", "", $request->param('jarfile'));
-			$server->save();
-
-			$service->flash('<div class="alert alert-success"> Your server startup executable has been updated to <strong>'.str_replace(".jar", "", $request->param('jarfile')).'.jar</strong>.</div>');
-			$response->redirect('/node/settings')->send();
-
-		} catch(\Exception $e) {
-
-			Tracy\Debugger::log($e);
-			$service->flash('<div class="alert alert-danger"> An error occured when attempting to update settings on the remote Scales server. Please try again.</div>');
-			$response->redirect('/node/settings')->send();
-
-		}
-
-	}
-
-});
+// $klein->respond('POST', '/node/settings/jar', function($request, $response, $service) use ($core) {
+//
+// 	if(!$core->permissions->has('manage.rename.jar')) {
+//
+// 		$response->code(403);
+// 		$response->body($core->twig->render('node/403.html'))->send();
+// 		return;
+//
+// 	}
+//
+// 	if(!$core->auth->XSRF($request->param('xsrf'))) {
+//
+// 		$service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
+// 		$response->redirect('/node/settingsd')->send();
+//
+// 	}
+//
+// 	if(!preg_match('/^([\w\d_.-]+)$/', $request->param('jarfile'))) {
+//
+// 		$service->flash('<div class="alert alert-danger"> The name provided for your .jar file seems to be invalid. Please make sure that it only contains the following characters: <strong>a-zA-Z0-9_-.</strong></div>');
+// 		$response->redirect('/node/settings')->send();
+//
+// 	} else {
+//
+// 		try {
+//
+// 			$unirest = Unirest\Request::put(
+// 				'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server',
+// 				array(
+// 					"X-Access-Token" => $core->server->nodeData('daemon_secret'),
+// 					"X-Access-Server" => $core->server->getData('hash')
+// 				),
+// 				array(
+// 					"json" => json_encode(array(
+// 						"-jar" => str_replace(".jar", "", $request->param('jarfile')).'.jar',
+// 						"-Xmx" => $core->server->getData('max_ram').'M'
+// 					)),
+// 					"object" => "variables",
+// 					"overwrite" => false
+// 				)
+// 			);
+//
+// 			if($unirest->code !== 204) {
+// 				throw new \Exception("Error occured while trying to udpdate server settings. (code: ".$unirest->code.")");
+// 			}
+//
+// 			$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+// 			$server->server_jar = str_replace(".jar", "", $request->param('jarfile'));
+// 			$server->save();
+//
+// 			$service->flash('<div class="alert alert-success"> Your server startup executable has been updated to <strong>'.str_replace(".jar", "", $request->param('jarfile')).'.jar</strong>.</div>');
+// 			$response->redirect('/node/settings')->send();
+//
+// 		} catch(\Exception $e) {
+//
+// 			Tracy\Debugger::log($e);
+// 			$service->flash('<div class="alert alert-danger"> An error occured when attempting to update settings on the remote Scales server. Please try again.</div>');
+// 			$response->redirect('/node/settings')->send();
+//
+// 		}
+//
+// 	}
+//
+// });
 
 $klein->respond('POST', '/node/settings/ftp', function($request, $response, $service) use ($core) {
 

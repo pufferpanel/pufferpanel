@@ -324,6 +324,66 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 
 });
 
+$klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, $response, $service) use ($core) {
+
+	// Build Startup Variables
+	$startup_variables = [];
+	if($request->param('daemon_variables') && !empty($request->param('daemon_variables'))) {
+
+		foreach(explode(PHP_EOL, $request->param('daemon_variables')) as $line => $contents) {
+
+			if(strpos($contents, '|')) {
+
+				list($var, $value) = explode('|', $contents);
+				$startup_variables[$var] = str_replace(array("\n", "\r"), "", $value);
+
+			}
+
+		}
+
+	}
+	$startup_variables['memory'] = $core->server->getData('max_ram');
+
+	try {
+
+		Unirest\Request::put(
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
+			array(
+				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
+				"X-Access-Server" => $core->server->getData('hash')
+			),
+			array(
+				"json" => json_encode(array(
+					"command" => $request->param('daemon_startup'),
+					"variables" => $startup_variables
+				)),
+				"object" => "startup",
+				"overwrite" => true
+			)
+		);
+
+		$orm = ORM::forTable('servers')->findOne($core->server->getData('id'));
+		$orm->set(array(
+			'daemon_startup' => $request->param('daemon_startup'),
+			'daemon_variables' => $request->param('daemon_variables')
+		));
+		$orm->save();
+
+		$service->flash('<div class="alert alert-success">Server startup command and variables have been updated.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+		return;
+
+	} catch(\Exception $e) {
+
+		Debugger::log($e);
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+		return;
+
+	}
+
+});
+
 $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request, $response, $service) use($core) {
 
 	if(!is_numeric($request->param('alloc_mem')) || !is_numeric($request->param('cpu_limit'))) {
@@ -362,10 +422,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			),
 			array(
 				"json" => json_encode(array(
-					"-jar" => str_replace(".jar", "", $core->server->getData('server_jar')).'.jar',
-					"-Xmx" => $request->param('alloc_mem')."M"
+					"memory" => $request->param('alloc_mem')
 				)),
-				"object" => "variables",
+				"object" => "startup:variables",
 				"overwrite" => false
 			)
 		);
@@ -506,6 +565,24 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	$server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
 	$daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
+	// Build Startup Variables
+	$startup_variables = [];
+	if($request->param('daemon_variables') && !empty($request->param('daemon_variables'))) {
+
+		foreach(explode(PHP_EOL, $request->param('daemon_variables')) as $line => $contents) {
+
+			if(strpos($contents, '|')) {
+
+				list($var, $value) = explode('|', $contents);
+				$startup_variables[$var] = str_replace(array("\n", "\r"), "", $value);
+
+			}
+
+		}
+
+	}
+	$startup_variables['memory'] = $core->server->getData('max_ram');
+
 	/*
 	* Build Call
 	*/
@@ -520,10 +597,9 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			),
 			"cpu" => (int) $request->param('cpu_limit')
 		),
-		"variables" => array(
-			"-Xmx" => $request->param('alloc_mem')."M",
-			"-jar" => "server.jar",
-			"nogui" => ""
+		"startup" => array(
+			"command" => $request->param('daemon_startup'),
+			"variables" => $startup_variables
 		),
 		"keys" => array(
 			$daemon_secret => array(
@@ -579,7 +655,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'node' => $request->param('node'),
 		'name' => $request->param('server_name'),
 		'plugin' => $request->param('installable'),
-		'server_jar' => 'server.jar',
+		'daemon_startup' => $request->param('daemon_startup'),
+		'daemon_variables' => $request->param('daemon_variables'),
 		'owner_id' => $user->id,
 		'max_ram' => $request->param('alloc_mem'),
 		'disk_space' => $request->param('alloc_disk'),

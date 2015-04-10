@@ -5,41 +5,14 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs" style="margin-bottom:15px;">
-		{% if permission.has('manage.rename.view') %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
 		{% if permission.has('manage.ftp.view') %}<li class=""><a href="#sftp_sett" data-toggle="tab">SFTP Information</a></li>{% endif %}
 	</ul>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<div class="tab-content">
-		{% if permission.has('manage.rename.view') %}
-			<div class="tab-pane active" id="server_sett">
-				<h3>{{ l.render('node.settings.jar.jar_h1') }}</h3><hr />
-				{% if permission.has('manage.rename.jar') %}
-					<div class="well">
-						<form action="/node/settings/jar" method="post">
-							<fieldset>
-							<div class="form-group">
-								<label for="jarfile" class="control-label">{{ l.render('node.settings.jar.jarfile_name') }}</label>
-								<div class="input-group">
-									<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
-									<span class="input-group-addon">.jar</span>
-									<span class="input-group-btn">
-										{{ xsrf|raw }}
-										<button class="btn btn-primary btn-sm">{{ l.render('node.settings.jar.update') }}</button>
-									</span>
-								</div>
-							</div>
-							</fieldset>
-						</form>
-					</div>
-				{% else %}
-					<div class="alert alert-danger">You do not have permission to perform this function.</div>
-				{% endif %}
-			</div>
-		{% endif %}
 		{% if permission.has('manage.ftp.view') %}
-			<div class="tab-pane" id="sftp_sett">
+			<div class="tab-pane" id="sftp_sett active">
 				<h3>Manage SFTP Information</h3><hr />
 				{% if permission.has('manage.ftp.details') %}
 					<div class="form-group">
