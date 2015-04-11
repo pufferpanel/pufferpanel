@@ -589,6 +589,15 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	}
 
+	$plugin = ORM::forTable('plugins')->select('id')->where('slug', $request->param('plugin'))->findOne();
+	if(!$plugin) {
+
+		$service->flash('<div class="alert alert-danger">The selected plugin does not appear to exist in the system.</div>');
+		$response->redirect('/admin/server/new')->send();
+		return;
+
+	}
+
 	$sftp_username = Functions::generateFTPUsername($request->param('server_name'));
 	$server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
 	$daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
@@ -617,7 +626,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'daemon_secret' => $daemon_secret,
 		'node' => $request->param('node'),
 		'name' => $request->param('server_name'),
-		'plugin' => $request->param('installable'),
+		'plugin' => $plugin->id,
+		'pack' => $request->param('installable'),
 		'daemon_startup' => $request->param('daemon_startup'),
 		'daemon_variables' => $request->param('daemon_variables'),
 		'owner_id' => $user->id,
@@ -694,12 +704,12 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			throw new Exception("An error occured trying to add a server. (".$unirest->raw_body.") [HTTP 1.1/".$unirest->code."]");
 		}
 
-		ORM::for_db()->commit();
+		ORM::get_db()->commit();
 
 	} catch(Exception $e) {
 
 		Debugger::log($e);
-		ORM::for_db()->rollBack();
+		ORM::get_db()->rollBack();
 
 		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/new')->send();

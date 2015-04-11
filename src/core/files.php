@@ -42,7 +42,8 @@ class Files {
 			'properties',
 			'props',
 			'cfg',
-			'lang'
+			'lang',
+			'0' // Supports BungeeCord Files
 		);
 
 	}
