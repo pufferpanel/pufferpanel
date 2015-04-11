@@ -27,7 +27,7 @@ $klein->respond('GET', '/admin/node', function($request, $response, $service) us
 			'flash' => $service->flashes(),
 			'nodes' => ORM::forTable('nodes')
 				->select('nodes.*')->select('locations.long', 'l_location')
-				->join('locations', array('nodes.location', '=', 'locations.short'))
+				->join('locations', array('nodes.location', '=', 'locations.id'))
 				->findMany()
 		)
 	))->send();
@@ -180,7 +180,7 @@ $klein->respond('GET', '/admin/node/locations', function($request, $response, $s
 				->select_many('locations.*')
 				->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
 				->select_expr('COUNT(servers.id)', 'totalservers')
-				->left_outer_join('nodes', array('locations.short', '=', 'nodes.location'))
+				->left_outer_join('nodes', array('locations.id', '=', 'nodes.location'))
 				->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
 				->group_by('locations.id')
 				->find_many()

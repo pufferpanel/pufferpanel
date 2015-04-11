@@ -52,7 +52,7 @@
 						<div>
 							<select name="location" id="getLocation" class="form-control">
 								{% for location in locations %}
-									<option value="{{ location.short }}">{{ location.long }}</option>
+									<option value="{{ location.id }}">{{ location.long }}</option>
 								{% endfor %}
 							</select>
 						</div>
@@ -276,7 +276,6 @@
 						callback();
 					},
 					success: function(res) {
-						console.log(res.accounts);
 						callback(res.accounts.slice(0, 10));
 					}
 				});
@@ -298,11 +297,11 @@
 			return false;
 		});
 		$(document).on('change', '#getNode', function() {
-			updateList()
+			updateList();
 		});
 		$(document).on('change', '#getLocation', function() {
 			$("#noNodes").hide();
-			updateNodeList()
+			updateNodeList();
 		});
 		// $('[name="assign_random"]').click(function(){
 		// 	if($(this).is(':checked')) {
