@@ -37,7 +37,7 @@ $klein->respond('GET', '/admin/server', function($request, $response, $service) 
 
 });
 
-$klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function($request, $response, $service) use($core) {
+$klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function($request, $response, $service, $app, $klein) use($core) {
 
 	if(!$core->server->rebuildData($request->param('id'))) {
 
@@ -52,12 +52,16 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
 
 		}
 
+		$klein->skipRemaining();
 		return;
 
 	}
 
 	if(!$core->user->rebuildData($core->server->getData('owner_id'))) {
+
 		throw new Exception("This error should never occur. Attempting to access a server with an unknown user id.");
+		$klein->skipRemaining();
+
 	}
 
 });
