@@ -98,6 +98,18 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 	}
 
+	if(ORM::forTable('nodes')->where_is_any(array(
+		array('node', $request->param('node_name')),
+		array('ip', $request->param('ip')),
+		array('fqdn', $request->param('fqdn'))
+	))->findOne()) {
+
+		$service->flash('<div class="alert alert-danger">A node with that name or IP address is already in use on this system.</div>');
+		$response->redirect('/admin/node/new')->send();
+		return;
+
+	}
+
 	$IPP = array();
 	$IPA = array();
 
