@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \Tracy\Debugger, \Unirest, \PufferPanel\Core\Components\Functions;
+use \ORM, \Exception, \Tracy\Debugger, \Unirest\Request, \PufferPanel\Core\Components\Functions;
 
 $klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
 
@@ -57,7 +57,7 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
 	}
 
 	if(!$core->user->rebuildData($core->server->getData('owner_id'))) {
-		throw new \Exception("This error should never occur. Attempting to access a server with an unknown user id.");
+		throw new Exception("This error should never occur. Attempting to access a server with an unknown user id.");
 	}
 
 });
@@ -79,39 +79,17 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
 
 $klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $response, $service) use ($core) {
 
-	try {
+	// Start Transaction so if the daemon errors we can rollback changes
+	ORM::get_db()->beginTransaction();
 
-		$unirest = Unirest\Request::delete(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			)
-		);
-
-		if($unirest->code !== 204) {
-			throw new \Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
-		}
-
-	} catch(\Exception $e) {
-
-		\Tracy\Debugger::log($e);
-		$service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=delete')->send();
-		return;
-
-	}
-
-	// Deleted from Scales, move to removing from panel
 	$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
-	$ports = json_decode($node->ports, true);
-	$ips = json_decode($node->ips, true);
 
-	$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')]++;
-	$ips[$core->server->getData('server_ip')]['ports_free']++;
-
-	$node->ips = json_encode($ips);
-	$node->ports = json_encode($ports);
+		$ports = json_decode($node->ports, true);
+		$ips = json_decode($node->ips, true);
+		$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')]++;
+		$ips[$core->server->getData('server_ip')]['ports_free']++;
+		$node->ips = json_encode($ips);
+		$node->ports = json_encode($ports);
 
 	$node->save();
 
@@ -120,8 +98,34 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $
 	ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
 	ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
 
-	$service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
-	$response->redirect('/admin/server')->send();
+	try {
+
+		$unirest = Request::delete(
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
+			array(
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
+			)
+		);
+
+		if($unirest->code !== 204) {
+			throw new Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
+		}
+
+		ORM::get_db()->commit();
+		$service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
+		$response->redirect('/admin/server')->send();
+
+	} catch(Exception $e) {
+
+		Debugger::log($e);
+		ORM::get_db()->rollBack();
+
+		$service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=delete')->send();
+		return;
+
+	}
 
 });
 
@@ -154,41 +158,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 
 	}
 
-	try {
-
-		$unirest = Unirest\Request::put(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			),
-			array(
-				"json" => json_encode(array(
-					"gameport" => (int) $request->param('server_port'),
-					"gamehost" => $request->param('server_ip')
-				)),
-				"object" => null,
-				"overwrite" => false
-			)
-		);
-
-		if($unirest->code !== 204) {
-
-			$service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
-			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-			return;
-
-		}
-
-
-	} catch(\Exception $e) {
-
-		Debugger::log($e);
-		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that the daemon is running and try again.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-		return;
-
-	}
+	ORM::get_db()->beginTransaction();
 
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 	$server->server_ip = $request->param('server_ip');
@@ -212,8 +182,46 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 	$node->ips = json_encode($ips);
 	$node->save();
 
-	$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
-	$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+	try {
+
+		$unirest = Request::put(
+			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
+			array(
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
+			),
+			array(
+				"json" => json_encode(array(
+					"gameport" => (int) $request->param('server_port'),
+					"gamehost" => $request->param('server_ip')
+				)),
+				"object" => null,
+				"overwrite" => false
+			)
+		);
+
+		if($unirest->code !== 204) {
+
+			$service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
+			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+			return;
+
+		}
+
+		ORM::get_db()->commit();
+		$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+
+	} catch(Exception $e) {
+
+		Debugger::log($e);
+		ORM::get_db()->rollBack();
+
+		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that the daemon is running and try again.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+		return;
+
+	}
 
 });
 
@@ -237,7 +245,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 
 	try {
 
-		$unirest = Unirest\Request::post(
+		$unirest = Request::post(
 			'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen').'/server/reset-password',
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
@@ -256,7 +264,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 
 		}
 
-	} catch(\Exception $e) {
+	} catch(Exception $e) {
 
 		Debugger::log($e);
 		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
@@ -283,9 +291,15 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 
 	$secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
+	ORM::get_db()->beginTransaction();
+
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->daemon_secret = $secret;
+	$server->save();
+
 	try {
 
-		$unirest = Unirest\Request::put(
+		$unirest = Request::put(
 			'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
@@ -308,19 +322,17 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($reque
 
 		}
 
-	} catch(\Exception $e) {
+		$response->body($secret)->send();
+
+	} catch(Exception $e) {
 
 		Debugger::log($e);
+		ORM::get_db()->rollBack();
+
 		$response->body("The server management daemon is not responding, we were unable to update the Scales Security Token.")->send();
 		return;
 
 	}
-
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->daemon_secret = $secret;
-	$server->save();
-
-	$response->body($secret)->send();
 
 });
 
@@ -344,9 +356,18 @@ $klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, 
 	}
 	$startup_variables['memory'] = $core->server->getData('max_ram');
 
+	ORM::get_db()->beginTransaction();
+
+	$orm = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$orm->set(array(
+		'daemon_startup' => $request->param('daemon_startup'),
+		'daemon_variables' => $request->param('daemon_variables')
+	));
+	$orm->save();
+
 	try {
 
-		Unirest\Request::put(
+		Request::put(
 			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
@@ -362,20 +383,16 @@ $klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, 
 			)
 		);
 
-		$orm = ORM::forTable('servers')->findOne($core->server->getData('id'));
-		$orm->set(array(
-			'daemon_startup' => $request->param('daemon_startup'),
-			'daemon_variables' => $request->param('daemon_variables')
-		));
-		$orm->save();
-
+		ORM::get_db()->commit();
 		$service->flash('<div class="alert alert-success">Server startup command and variables have been updated.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
 
-	} catch(\Exception $e) {
+	} catch(Exception $e) {
 
 		Debugger::log($e);
+		ORM::get_db()->rollBack();
+
 		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
@@ -402,6 +419,8 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 
 	}
 
+	ORM::get_db()->beginTransaction();
+
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
 	$server->name = $request->param('server_name');
 	$server->max_ram = $request->param('alloc_mem');
@@ -414,7 +433,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	*/
 	try {
 
-		Unirest\Request::put(
+		Request::put(
 			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
@@ -429,7 +448,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			)
 		);
 
-		Unirest\Request::put(
+		Request::put(
 			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
 			array(
 				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
@@ -444,13 +463,17 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			)
 		);
 
+		ORM::get_db()->commit();
+
 		$service->flash('<div class="alert alert-success">Server settings have been updated.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
 
-	} catch(\Exception $e) {
+	} catch(Exception $e) {
 
 		Debugger::log($e);
+		ORM::get_db()->rollBack();
+
 		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
@@ -494,6 +517,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
+	ORM::get_db()->beginTransaction();
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
 
@@ -583,6 +607,33 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	}
 	$startup_variables['memory'] = $core->server->getData('max_ram');
 
+	$server = ORM::forTable('servers')->create();
+	$server->set(array(
+		'hash' => $server_hash,
+		'daemon_secret' => $daemon_secret,
+		'node' => $request->param('node'),
+		'name' => $request->param('server_name'),
+		'plugin' => $request->param('installable'),
+		'daemon_startup' => $request->param('daemon_startup'),
+		'daemon_variables' => $request->param('daemon_variables'),
+		'owner_id' => $user->id,
+		'max_ram' => $request->param('alloc_mem'),
+		'disk_space' => $request->param('alloc_disk'),
+		'cpu_limit' => $request->param('cpu_limit'),
+		'date_added' => time(),
+		'server_ip' => $request->param('server_ip'),
+		'server_port' => $request->param('server_port'),
+		'sftp_user' => $sftp_username
+	));
+	$server->save();
+
+	$ips[$request->param('server_ip')]['ports_free']--;
+	$ports[$request->param('server_ip')][$request->param('server_port')]--;
+
+	$node->ips = json_encode($ips);
+	$node->ports = json_encode($ports);
+	$node->save();
+
 	/*
 	* Build Call
 	*/
@@ -623,7 +674,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	try {
 
-		$unirest = Unirest\Request::post(
+		$unirest = Request::post(
 			'https://'.$node->fqdn.':'.$node->daemon_listen.'/server',
 			array(
 				'X-Access-Token' => $node->daemon_secret,
@@ -636,44 +687,21 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		);
 
 		if($unirest->code !== 204) {
-			throw new \Exception("An error occured trying to add a server. (".$unirest->raw_body.") [HTTP 1.1/".$unirest->code."]");
+			throw new Exception("An error occured trying to add a server. (".$unirest->raw_body.") [HTTP 1.1/".$unirest->code."]");
 		}
 
-	} catch(\Exception $e) {
+		ORM::for_db()->commit();
+
+	} catch(Exception $e) {
 
 		Debugger::log($e);
+		ORM::for_db()->rollBack();
+
 		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
 	}
-
-	$server = ORM::forTable('servers')->create();
-	$server->set(array(
-		'hash' => $server_hash,
-		'daemon_secret' => $daemon_secret,
-		'node' => $request->param('node'),
-		'name' => $request->param('server_name'),
-		'plugin' => $request->param('installable'),
-		'daemon_startup' => $request->param('daemon_startup'),
-		'daemon_variables' => $request->param('daemon_variables'),
-		'owner_id' => $user->id,
-		'max_ram' => $request->param('alloc_mem'),
-		'disk_space' => $request->param('alloc_disk'),
-		'cpu_limit' => $request->param('cpu_limit'),
-		'date_added' => time(),
-		'server_ip' => $request->param('server_ip'),
-		'server_port' => $request->param('server_port'),
-		'sftp_user' => $sftp_username
-	));
-	$server->save();
-
-	$ips[$request->param('server_ip')]['ports_free']--;
-	$ports[$request->param('server_ip')][$request->param('server_port')]--;
-
-	$node->ips = json_encode($ips);
-	$node->ports = json_encode($ports);
-	$node->save();
 
 	$core->email->buildEmail('admin_new_server', array(
 			'NAME' => $request->param('server_name'),
