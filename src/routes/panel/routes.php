@@ -224,7 +224,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 		$servers = ORM::forTable('servers')
 			->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
-			->join('locations', array('nodes.location', '=', 'locations.short'))
+			->join('locations', array('nodes.location', '=', 'locations.id'))
 			->orderByDesc('active')
 			->findArray();
 
@@ -233,7 +233,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 		$servers = ORM::forTable('servers')
 			->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
-			->join('locations', array('nodes.location', '=', 'locations.short'))
+			->join('locations', array('nodes.location', '=', 'locations.id'))
 			->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
 			->where_raw('servers.owner_id = ? OR servers.id IN(?)', array($core->user->getData('id'), join(',', $core->permissions->listServers())))
 			->findArray();
