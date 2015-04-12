@@ -21,7 +21,7 @@ use \ORM, \Unirest, \PufferPanel\Core\Settings;
 
 class Users extends \PufferPanel\Core\Email {
 
-	use \PufferPanel\Core\Components\Authentication, \PufferPanel\Core\Components\GSD, \PufferPanel\Core\Components\Error_Handler;
+	use \PufferPanel\Core\Components\Authentication, \PufferPanel\Core\Components\Daemon, \PufferPanel\Core\Components\Error_Handler;
 
 	/**
 	 * @param object
