@@ -222,7 +222,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 	if($core->auth->isAdmin()) {
 
 		$servers = ORM::forTable('servers')
-			->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
+			->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
 			->join('locations', array('nodes.location', '=', 'locations.id'))
 			->orderByDesc('active')
@@ -231,7 +231,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 	} else {
 
 		$servers = ORM::forTable('servers')
-			->select('servers.*')->select('nodes.node', 'node_name')->select('locations.long', 'location')
+			->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
 			->join('locations', array('nodes.location', '=', 'locations.id'))
 			->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))

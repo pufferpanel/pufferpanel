@@ -4,7 +4,7 @@
 		<div>
 			<select name="node" id="getNode" class="form-control">
 			{% for node in nodes %}
-				<option value="{{ node.id }}"> {{ node.node }} {% if node.public == 0 %}(Private){% endif %}</option>
+				<option value="{{ node.id }}"> {{ node.name }} {% if node.public == 0 %}(Private){% endif %}</option>
 			{% endfor %}
 			</select>
 		</div>

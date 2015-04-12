@@ -97,11 +97,11 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		return;
 
 	}
-
-	if(ORM::forTable('nodes')->where_is_any(array(
-		array('node', $request->param('node_name')),
-		array('ip', $request->param('ip')),
-		array('fqdn', $request->param('fqdn'))
+	
+	if(ORM::forTable('nodes')->where_any_is(array(
+		array('name' => $request->param('node_name')),
+		array('ip' => $request->param('ip')),
+		array('fqdn' => $request->param('fqdn'))
 	))->findOne()) {
 
 		$service->flash('<div class="alert alert-danger">A node with that name or IP address is already in use on this system.</div>');
@@ -158,7 +158,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 	$node = ORM::forTable('nodes')->create();
 	$node->set(array(
-		'node' => $request->param('node_name'),
+		'name' => $request->param('node_name'),
 		'location' => $request->param('location'),
 		'allocate_memory' => ($request->param('mem_selector') == 1) ? ($request->param('allocate_memory') * 1024) : $request->param('allocate_memory'),
 		'allocate_disk' => ($request->param('disk_selector') == 1) ? ($request->param('allocate_disk') * 1024) : $request->param('allocate_disk'),
