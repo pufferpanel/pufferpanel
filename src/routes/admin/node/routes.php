@@ -97,7 +97,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		return;
 
 	}
-	
+
 	if(ORM::forTable('nodes')->where_any_is(array(
 		array('name' => $request->param('node_name')),
 		array('ip' => $request->param('ip')),
@@ -588,6 +588,7 @@ $klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $r
 		array(
 			'flash' => $service->flashes(),
 			'plugin' => $orm,
+			'vars' => json_decode($orm->variables, true),
 			'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where('servers.plugin', $orm->slug)
@@ -626,13 +627,35 @@ $klein->respond('POST', '/admin/node/plugins/new', function($request, $response,
 
 	}
 
+	if(!$request->param('variables_name') || empty($request->param('variables_name')[0])) {
+		$built_variables = array();
+	} else {
+
+		$count = count($request->param('variables_name'));
+		$built_variables = [];
+
+		for($i = 0; $i < $count; $i++) {
+
+			$built_variables[$request->param('variables_identifier')[$i]] = array(
+				"name" => $request->param('variables_name')[$i],
+				"description" => $request->param('variables_description')[$i],
+				"required" => ($request->param('variables_required')[$i] == "true") ? true : false,
+				"editable" => ($request->param('variables_editable')[$i] == "true") ? true : false,
+				"default" => $request->param('variables_default')[$i]
+			);
+
+		}
+
+	}
+
 	$new = ORM::forTable('plugins')->create();
 	$hash = $core->auth->generateUniqueUUID('plugins', 'hash');
 	$new->set(array(
 		'hash' => $hash,
 		'name' => $request->param('name'),
 		'description' => $request->param('description'),
-		'slug' => $request->param('slug')
+		'slug' => $request->param('slug'),
+		'variables' => json_encode($built_variables)
 	));
 	$new->save();
 

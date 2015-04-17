@@ -40,6 +40,64 @@
 						<textarea class="form-control" rows="5" name="description"></textarea>
 					</div>
 				</div>
+				<h3>Plugin Variables</h3>
+				<span class="additional_params">
+					<p>These are additional optional parameters that can be accessed elsewhere within the panel for this plugin. They can be accessed in startup parameters as <code>${identifier}</code> and can be edited per-server by users if you set <code>editable = true</code>. You can <a class="add_additional_param" href="#">click here</a> to add additional parameters to this form.</p>
+					<span>
+						<div class="row">
+							<div class="form-group col-md-4 col-xs-6">
+								<label class="control-label">Name</label>
+								<div>
+									<input type="text" name="variables_name[]" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group col-md-4 col-xs-6">
+								<label class="control-label">Default Value</label>
+								<div>
+									<input type="text" name="variables_default[]" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group col-md-2 col-xs-9">
+								<label class="control-label">Identifier</label>
+								<div>
+									<input type="text" name="variables_identifier[]" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-2 col-xs-3">
+								<label class="control-label">&nbsp;</label>
+								<div>
+									<button class="form-control btn btn-sm btn-danger disabled" type="button">Remove</button>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-2 col-xs-6">
+								<label class="control-label">Editable</label>
+								<div>
+									<select name="variables_editable[]" class="form-control">
+										<option value="true">True</option>
+										<option value="false">False</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group col-md-2 col-xs-6">
+								<label class="control-label">Required</label>
+								<div>
+									<select name="variables_required[]" class="form-control">
+										<option value="true">True</option>
+										<option value="false">False</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group col-md-8 col-xs-12">
+								<label class="control-label">Description</label>
+								<div>
+									<textarea name="variables_description[]" class="form-control" rows="3"></textarea>
+								</div>
+							</div>
+						</div>
+					</span>
+				</span>
 				<input type="submit" value="Add Plugin" class="btn btn-sm btn-primary" />
 			</div>
 		</fieldset>
@@ -48,6 +106,29 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#sidebar_links").find("a[href='/admin/node/plugins']").addClass('active');
+
+    var x = 1;
+	$(".add_additional_param").click(function(e){
+
+        e.preventDefault();
+        if(x < 20){
+
+            x++;
+			random = Math.random().toString(36).slice(2);
+			$(".additional_params").append('<span id="' + random + '"><hr /><div class="row"><div class="form-group col-md-4 col-xs-6"><label class="control-label">Name</label><div><input type="text" name="variables_name[]" class="form-control" /></div></div><div class="form-group col-md-4 col-xs-6"><label class="control-label">Default Value</label><div><input type="text" name="variables_default[]" class="form-control" /></div></div><div class="form-group col-md-2 col-xs-9"><label class="control-label">Identifier</label><div><input type="text" name="variables_identifier[]" class="form-control" /></div></div><div class="col-md-2 col-xs-3"><label class="control-label">&nbsp;</label><div><button class="form-control btn btn-sm btn-danger remove_field" data-id="' + random +'" type="button">Remove</button></div></div></div><div class="row"><div class="form-group col-md-2 col-xs-6"><label class="control-label">Editable</label><div><select name="variables_editable[]" class="form-control"><option value="true">True</option><option value="false">False</option></select></div></div><div class="form-group col-md-2 col-xs-6"><label class="control-label">Required</label><div><select name="variables_required[]" class="form-control"><option value="true">True</option><option value="false">False</option></select></div></div><div class="form-group col-md-8 col-xs-12"><label class="control-label">Description</label><div><textarea name="variables_description[]" class="form-control" rows="3"></textarea></div></div></div></span>');
+
+        }
+
+		$(".remove_field").click(function(e){
+
+	        e.preventDefault();
+			$("span#"+$(this).attr('data-id')).remove();
+			x--;
+
+	    });
+
+    });
+
 });
 </script>
 {% endblock %}
