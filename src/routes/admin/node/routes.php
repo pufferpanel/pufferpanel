@@ -588,7 +588,7 @@ $klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $r
 		array(
 			'flash' => $service->flashes(),
 			'plugin' => $orm,
-			'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+			'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where('servers.plugin', $orm->slug)
 				->findArray()

@@ -123,7 +123,7 @@ $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $respons
 	/*
      * Select Servers Owned by the User
      */
-	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')
+	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
 		->join('nodes', array('servers.node', '=', 'nodes.id'))
 		->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
 		->findArray();

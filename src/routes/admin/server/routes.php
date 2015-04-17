@@ -21,7 +21,7 @@ use \ORM, \Exception, \Tracy\Debugger, \Unirest\Request, \PufferPanel\Core\Compo
 
 $klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
 
-	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.node', 'node_name')->select('users.email', 'user_email')
+	$servers = ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')->select('users.email', 'user_email')
 		->join('users', array('servers.owner_id', '=', 'users.id'))
 		->join('nodes', array('servers.node', '=', 'nodes.id'))
 		->orderByDesc('active')
