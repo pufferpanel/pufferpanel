@@ -30,7 +30,7 @@
 		<tbody>
 			{% for key, var in vars %}
 				<tr>
-					<td>{{ key }}</td>
+					<td><code>&#36&#123;{{ key }}&#125;</code></td>
 					<td>{{ var.description }}</td>
 					<td>{{ var.default }}</td>
 					<td><center>{% if var.editable == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
