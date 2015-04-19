@@ -126,7 +126,7 @@ trait Authentication {
 		if(!$check) {
 			return $uuid;
 		} else {
-			$this->generateUniqueUUID($database, $column);
+			return $this->generateUniqueUUID($database, $column);
 		}
 
 	}
