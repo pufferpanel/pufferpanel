@@ -163,8 +163,8 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 
 		$user = ORM::forTable('users')->where('email', $query->content)->findOne();
 		$user->password = $core->auth->hash($password);
-
 		$user->save();
+		
 		$query->save();
 
 		/*
@@ -225,14 +225,12 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
 		$key = $core->auth->keygen('30');
 
-		$account = ORM::forTable('account_change')->create();
-		$account->set(array(
+		ORM::forTable('account_change')->create()->set(array(
 			'type' => 'password',
 			'content' => $request->param('email'),
 			'key' => $key,
 			'time' => time() + 14400
-		));
-		$account->save();
+		))->save();
 
 		$core->email->buildEmail('password_reset', array(
 			'IP_ADDRESS' => $request->ip(),
@@ -281,12 +279,11 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 
 	}
 
-	$query = ORM::forTable('account_change')
-		->where(array(
-			'type' => 'user_register',
-			'key' => $request->param('token'),
-			'verified' => 0
-		))->findOne();
+	$query = ORM::forTable('account_change')->where(array(
+		'type' => 'user_register',
+		'key' => $request->param('token'),
+		'verified' => 0
+	))->findOne();
 
 	if(!$query) {
 
@@ -321,22 +318,16 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 		return;
 
 	}
-
-	$user = ORM::forTable('users')->create();
-	$user->set(array(
-		'uuid' => $core->auth->gen_UUID(),
+	
+	ORM::forTable('users')->where('id', $query->user_id)->findOne()->set(array(
 		'username' => $request->param('username'),
-		'email' => $query->content,
 		'password' => $core->auth->hash($request->param('password')),
-		'permissions' => null,
-		'language' => Settings::config('default_language'),
 		'register_time' => time()
-	));
-	$user->save();
+	))->save();
 
 	$query->delete();
 
-	$service->flash('<div class="alert alert-success">Your account has been created successfully, you may now login and add a server to your account.</div>');
+	$service->flash('<div class="alert alert-success">Your account has been created successfully, you may now login.</div>');
 	$response->redirect('/auth/login')->send();
 
 });
@@ -415,7 +406,7 @@ $klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($
 		if($core->auth->encrypt($request->param('password'), $server->encryption_iv) != $server->ftp_pass) {
 
 			$response->code(403);
-			$response->body("invalid password was passed - ".json_encode($_POST))->send();
+			$response->body("invalid password was passed - ".json_encode($request->paramsPost()))->send();
 			return;
 
 		} else {

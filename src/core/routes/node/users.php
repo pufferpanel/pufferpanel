@@ -49,59 +49,75 @@ class Users extends \PufferPanel\Core\Email {
 		}
 
 		$registerToken = $this->keygen(32);
-		$subuserToken = $this->keygen(32);
-		$subuserUUID = $this->generateUniqueUUID('subusers', 'uuid');
 		$gsdSecret = $this->generateUniqueUUID('servers', 'daemon_secret');
 		$data->permissions = self::_rebuildUserPermissions($data->permissions);
 
-		$find = ORM::forTable('users')->where('email', $data->email)->findOne();
-		if(!$find) {
-
-			$newAccount = ORM::forTable('account_change')->create();
-			$newAccount->set(array(
-				'type' => 'user_register',
-				'content' => $data->email,
-				'key' => $registerToken,
-				'time' => time()
-			));
-			$newAccount->save();
-
-			$newAccount = ORM::forTable('account_change')->create();
-			$newAccount->set(array(
-				'type' => 'subuser',
-				'content' => $subuserUUID,
-				'key' => $subuserToken,
-				'time' => time()
-			));
-			$newAccount->save();
-
-			/*
-			* Send Email
-			*/
-			$this->buildEmail('new_subuser_createaccount', array(
-				'REGISTER_TOKEN' => $registerToken,
-				'SUBUSER_TOKEN' => $subuserToken,
-				'URLENCODE_TOKEN' => urlencode($registerToken),
-				'SERVER' => $this->server->getData('name'),
-				'EMAIL' => $data->email
-			))->dispatch($data->email, Settings::config()->company_name.' - You\'ve Been Invited to Manage a Server');
-
-		}
-
-		$addToken = ORM::forTable('subusers')->create();
-		$addToken->set(array(
-			'uuid' => $subuserUUID,
-			'user' => (!$find) ? "-1" : $find->id,
-			'server' => $this->server->getData('id'),
-			'daemon_secret' => $gsdSecret,
-			'daemon_permissions' => json_encode(self::_buildGSDPermissions($data->permissions)),
-			'permissions' => (!$find) ? json_encode($data->permissions) : null,
-			'pending' => (!$find) ? 1 : 0,
-			'pending_email' => (!$find) ? $data->email : null
-		));
-		$addToken->save();
-
+		ORM::get_db()->beginTransaction();
+		
 		try {
+
+			$user = ORM::forTable('users')->where('email', $data->email)->findOne();
+			$existed = $user ? true : false;
+
+			if(!$existed) {
+
+				$user = ORM::forTable('users')->create()->set(array(
+					'uuid' => $this->generateUniqueUUID('users', 'uuid'),
+					'username' => null,
+					'email' => $data->email,
+					'password' => null,
+					'language' => Settings::config('default_language'),
+					'register_time' => time()
+				));
+				$user->save();
+
+				ORM::forTable('account_change')->create()->set(array(
+					'user_id' => $user->id,
+					'type' => 'user_register',
+					'content' => $data->email,
+					'key' => $registerToken,
+					'time' => time()
+				))->save();
+				
+			}
+
+			ORM::forTable('subusers')->create()->set(array(
+				'user' => $user->id,
+				'server' => $this->server->getData('id'),
+				'daemon_secret' => $gsdSecret,
+				'daemon_permissions' => json_encode(self::_buildGSDPermissions($data->permissions)),
+				'pending' => 0
+			))->save();
+
+			$email = null;
+
+			foreach(self::_rebuildUserPermissions($data->permissions) as $id => $permission) {
+
+				ORM::forTable('permissions')->create()->set(array(
+					'user' => $user->id,
+					'server' => $this->server->getData('id'),
+					'permission' => $permission
+				))->save();
+
+			}
+
+			if($existed) {			
+				
+				$email = $this->buildEmail('new_subuser', array(
+					'SERVER' => $this->server->getData('name'),
+					'EMAIL' => $data->email
+				));
+
+			} else {
+
+				$email = $this->buildEmail('new_subuser_createaccount', array(
+					'REGISTER_TOKEN' => $registerToken,
+					'URLENCODE_TOKEN' => urlencode($registerToken),
+					'SERVER' => $this->server->getData('name'),
+					'EMAIL' => $data->email
+				));
+				
+			}
 
 			$unirest = Unirest\Request::put(
 				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
@@ -119,35 +135,19 @@ class Users extends \PufferPanel\Core\Email {
 			);
 
 			if($unirest->code !== 204) {
-				throw new \Exception();
+				throw new \Exception("Error with communication to Scales:" . $unirest->code);
 			}
 
-			if($find) {
+			$email->dispatch($data->email, Settings::config()->company_name.' - You\'ve Been Invited to Manage a Server');
 
-				foreach(self::_rebuildUserPermissions($data->permissions) as $id => $permission) {
-
-					ORM::forTable('permissions')->create()->set(array(
-						'user' => $find->id,
-						'server' => $this->server->getData('id'),
-						'permission' => $permission
-					))->save();
-
-				}
-				/*
-				* Send Email
-				*/
-				$this->buildEmail('new_subuser', array(
-					'SERVER' => $this->server->getData('name'),
-					'EMAIL' => $data->email
-				))->dispatch($data->email, Settings::config()->company_name.' - You\'ve Been Invited to Manage a Server');
-
-			}
+			ORM::get_db()->commit();
 			return true;
 
 		} catch(\Exception $e) {
 
 			\Tracy\Debugger::log($e);
 			self::_setError("An error occured when trying to update the server information on the daemon.");
+			ORM::get_db()->rollBack();
 			return false;
 
 		}
@@ -234,7 +234,6 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	protected final static function _rebuildUserPermissions(array $data) {
 
-		\Tracy\Debugger::log($data);
 		foreach($data as $permission) {
 
 			if(in_array($permission, array('files.edit', 'files.save', 'files.download', 'files.delete', 'files.create', 'files.upload', 'files.zip')) && !in_array('files.view', $data)) {

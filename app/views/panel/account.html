@@ -103,24 +103,6 @@
 				</div>
 			</form>
 		</div>
-		<div class="col-md-6">
-			<h3>{{ l.render('settings.subuser.h1') }}</h3><hr />
-			<div class="well well-sm"><p>{{ l.render('settings.subuser.help') }}</p></div>
-			<form action="/account/update/subuser" method="post">
-				<div class="form-group">
-					<label for="token" class="control-label">{{ l.render('string.token') }}</label>
-					<div>
-						<input type="text" class="form-control" name="token" />
-					</div>
-				</div>
-				<div class="form-group">
-					<div>
-						{{ xsrf|raw }}
-						<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('settings.subuser.validate') }}" />
-					</div>
-				</div>
-			</form>
-		</div>
 	</div>
 </div>
 <script type="text/javascript">
