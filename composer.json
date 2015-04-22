@@ -3,7 +3,7 @@
     	"php": ">=5.5",
     	"ext-pdo": "*",
     	"ext-mcrypt": "*",
-    	"christian-riesen/otp": "1.3.*",
+    	"christian-riesen/otp": "1.4.*",
         "flowjs/flow-php-server": "0.2.1",
         "ircmaxell/random-lib": "1.1.0",
         "j4mie/idiorm": "1.5.1",
