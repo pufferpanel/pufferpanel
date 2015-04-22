@@ -113,6 +113,14 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 	$IPP = array();
 	$IPA = array();
 
+	if(!$request->param('ip_port') || empty($request->param('ip_port'))) {
+
+		$service->flash('<div class="alert alert-danger">You must define at least one IP and Port for this node to add servers to.</div>');
+		$response->redirect('/admin/node/new')->send();
+		return;
+
+	}
+
 	$lines = explode("\r\n", str_replace(" ", "", $request->param('ip_port')));
 	foreach($lines as $id => $values) {
 
@@ -120,7 +128,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 		if(!trim($ip)) {
 
-			$service->flash('<div class="alert alert-danger">An IP must be specified with a port list</div>');
+			$service->flash('<div class="alert alert-danger">An IP must be specified with a port list.</div>');
 			$response->redirect('/admin/node/new')->send();
 			return;
 
