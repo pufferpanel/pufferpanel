@@ -1,0 +1,9 @@
+{% for name, data in variables %}
+	<div class="form-group col-md-6 nopad">
+		<label lass="control-label">{{ data.name }} <code>${% verbatim %}{{% endverbatim %}{{ name }}{% verbatim %}}{% endverbatim %}</code></label>
+		<div>
+			<input type="text" name="plugin_variable_{{ name }}" class="form-control" value="{{ data.default }}"/>
+			<p><small>{{ data.description }} {% if data.required == true %}<span style="color:#F04124;">(required field)</span>{% endif %}</small></p>
+		</div>
+	</div>
+{% endfor %}

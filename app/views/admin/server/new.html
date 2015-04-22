@@ -4,7 +4,8 @@
 	{{ parent() }}
 	<link rel="stylesheet" type="text/css" href="{{ settings.assets_url }}css/selectize.css" />
 	<link rel="stylesheet" type="text/css" href="{{ settings.assets_url }}css/selectize.contacts.css" />
-	<script src="{{ settings.assets_url }}javascript/selectize.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/js/standalone/selectize.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/Cookies.js/1.2.1/cookies.min.js"></script>
 {% endblock %}
 
 {% block title %}Add a New Server{% endblock %}
@@ -104,7 +105,7 @@
 					<div class="form-group col-md-6 nopad">
 						<label for="alloc_mem" class="control-label">Server Plugin</label>
 						<div>
-							<select name="plugin" class="form-control">
+							<select name="plugin" id="getPlugin" class="form-control">
 								{% for plugin in plugins %}
 									<option value="{{ plugin.slug }}">{{ plugin.name }}</option>
 								{% endfor %}
@@ -156,13 +157,17 @@
 							<label for="alloc_mem" class="control-label">Startup Command</label>
 							<div>
 								<input type="text" autocomplete="off" name="daemon_startup" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} nogui" />
-								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. Use <code>${memory}</code> to specify the amount of memory that the server is allowed to use. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
+								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
+								<p><small>The following is a list of permanetly defined variables that can be accessed: <code>${memory}</code>, <code>${ip}</code>, and <code>${port}</code>.</small></p>
 							</div>
 						</div>
+						<div class="row" id="pluginVariableListing">
+
+						</div>
 						<div class="form-group">
-							<label for="alloc_disk" class="control-label">Startup Command Variables</label>
+							<label for="alloc_disk" class="control-label">Additional Startup Command Variables</label>
 							<div>
-								<textarea name="daemon_variables" rows="5" class="form-control" placeholder="e.g: jar|server.jar"></textarea>
+								<textarea name="daemon_variables" rows="5" class="form-control" placeholder="e.g: variable|42"></textarea>
 								<p><small>List one variable per line in the format of <code>variable_name|variable_value</code>. Please note that variable names and values are seperated with a pipe character (<code>|</code>).</small></p>
 							</div>
 						</div>
@@ -236,6 +241,17 @@
 			}
 		});
 	}
+	function updatePluginVariables() {
+		$.ajax({
+			type: "POST",
+			url: "new/plugin-variables",
+			data: {
+				'slug' : $("#getPlugin").val()
+			}
+		}).done(function(data) {
+			$("#pluginVariableListing").html(data);
+		});
+	}
 	$(window).load(function(){
 		$('#selectize_email').selectize({
 			persist: false,
@@ -282,6 +298,7 @@
 			}
 		});
 		updateNodeList();
+		updatePluginVariables();
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
@@ -299,6 +316,9 @@
 		$(document).on('change', '#getNode', function() {
 			updateList();
 		});
+		$(document).on('change', '#getPlugin', function() {
+			updatePluginVariables();
+		});
 		$(document).on('change', '#getLocation', function() {
 			$("#noNodes").hide();
 			updateNodeList();
@@ -310,6 +330,13 @@
 		// 		$("#updateList, #updateNodeList").show();
 		// 	}
 		// });
+		if(Cookies.get('__temporary_pp_admin_newserver')){
+			var obj = $.parseJSON(Cookies.expire('__temporary_pp_admin_newserver', {'path': '/admin/server'}).get('__temporary_pp_admin_newserver'));
+			$.each(obj, function(key, value) {
+				$('[name="' + key + '"]').val(value);
+			});
+			Cookies.expire('__temporary_pp_admin_newserver');
+		}
 	});
 </script>
 {% endblock %}

@@ -521,6 +521,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
+	setcookie('__temporary_pp_admin_newserver', json_encode($_POST), time() + 10);
 	ORM::get_db()->beginTransaction();
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
@@ -589,7 +590,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	}
 
-	$plugin = ORM::forTable('plugins')->select('id')->where('slug', $request->param('plugin'))->findOne();
+	$plugin = ORM::forTable('plugins')->where('slug', $request->param('plugin'))->findOne();
 	if(!$plugin) {
 
 		$service->flash('<div class="alert alert-danger">The selected plugin does not appear to exist in the system.</div>');
@@ -618,7 +619,39 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		}
 
 	}
+
+	foreach(json_decode($plugin->variables, true) as $name => $data) {
+
+		if((!$request->param('plugin_variable_'.$name) || empty($request->param('plugin_variable_'.$name))) && $data['required'] == true) {
+
+			$service->flash('<div class="alert alert-danger">A required plugin variable was left blank when completing this server setup.</div>');
+			$response->redirect('/admin/server/new')->send();
+			return;
+
+		}
+
+		if((!$request->param('plugin_variable_'.$name) || empty($request->param('plugin_variable_'.$name))) && !empty($data['default'])) {
+
+			$startup_variables[$name] = $data['default'];
+
+		} else if($request->param('plugin_variable_'.$name) && !empty($request->param('plugin_variable_'.$name))) {
+
+			$startup_variables[$name] = $request->param('plugin_variable_'.$name);
+
+		}
+
+	}
+
+	// IP & Port are defined within Scales so we do not need to send them as additional parameters here.
 	$startup_variables['memory'] = $core->server->getData('max_ram');
+
+	// Setup for SQL
+	$storage_variables = "";
+	foreach($startup_variables as $name => $value) {
+
+		$storage_variables .= $name."|".$value."\n";
+
+	}
 
 	$server = ORM::forTable('servers')->create();
 	$server->set(array(
@@ -629,7 +662,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'plugin' => $plugin->id,
 		'pack' => $request->param('installable'),
 		'daemon_startup' => $request->param('daemon_startup'),
-		'daemon_variables' => $request->param('daemon_variables'),
+		'daemon_variables' => $storage_variables,
 		'owner_id' => $user->id,
 		'max_ram' => $request->param('alloc_mem'),
 		'disk_space' => $request->param('alloc_disk'),
@@ -752,6 +785,19 @@ $klein->respond('POST', '/admin/server/new/ip-list', function($request, $respons
 		'admin/server/ip-list.html',
 		array(
 			'node' => $node
+		)
+	))->send();
+
+});
+
+$klein->respond('POST', '/admin/server/new/plugin-variables', function($request, $response) use($core) {
+
+	$orm = ORM::forTable('plugins')->select('variables')->where('slug', $request->param('slug'))->findOne();
+
+	$response->body($core->twig->render(
+		'admin/server/plugin-variables.html',
+		array(
+			'variables' => json_decode($orm->variables, true)
 		)
 	))->send();
 
