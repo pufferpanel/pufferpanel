@@ -128,6 +128,18 @@ class Authentication {
 
 	}
 
+	/**
+	 * Checks if the selected server is correctly installed.
+	 *
+	 * @return bool
+	 */
+	public final function isInstalled() {
+
+		return ORM::forTable('servers')->where(array(
+			'installed' => 1,
+			'hash' => $_COOKIE['pp_server_hash']
+		))->findOne();
+
 	}
 
 }

@@ -199,7 +199,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($reques
 					"gameport" => (int) $request->param('server_port'),
 					"gamehost" => $request->param('server_ip')
 				)),
-				"object" => null,
+				"object" => false,
 				"overwrite" => false
 			)
 		);
@@ -670,7 +670,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'date_added' => time(),
 		'server_ip' => $request->param('server_ip'),
 		'server_port' => $request->param('server_port'),
-		'sftp_user' => $sftp_username
+		'sftp_user' => $sftp_username,
+		'installed' => 0
 	));
 	$server->save();
 
@@ -729,7 +730,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			),
 			array(
 				'settings' => json_encode($data),
-				'password' => $request->param('sftp_pass')
+				'password' => $request->param('sftp_pass'),
+				'srcds_app_id' => ($request->param('plugin_variable_srcds_app_id')) ? $request->param('plugin_variable_srcds_app_id') : false
 			)
 		);
 
@@ -749,14 +751,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		return;
 
 	}
-
-	$core->email->buildEmail('admin_new_server', array(
-			'NAME' => $request->param('server_name'),
-			'SFTP' => $node->fqdn.':'.$node->daemon_sftp,
-			'SERVER_CONN' => $node->fqdn.':'.$request->param('server_port'),
-			'USER' => $sftp_username,
-			'PASS' => $request->param('sftp_pass')
-	))->dispatch($request->param('email'), Settings::config()->company_name.' - New Server Added');
 
 	$service->flash('<div class="alert alert-success">Server created successfully.</div>');
 	$response->redirect('/admin/server/view/'.$server->id())->send();

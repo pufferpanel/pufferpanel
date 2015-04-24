@@ -164,7 +164,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 		$user = ORM::forTable('users')->where('email', $query->content)->findOne();
 		$user->password = $core->auth->hash($password);
 		$user->save();
-		
+
 		$query->save();
 
 		/*
@@ -318,7 +318,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
 		return;
 
 	}
-	
+
 	ORM::forTable('users')->where('id', $query->user_id)->findOne()->set(array(
 		'username' => $request->param('username'),
 		'password' => $core->auth->hash($request->param('password')),
@@ -414,5 +414,45 @@ $klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($
 		}
 
 	}
+
+});
+
+$klein->respond('POST', '/auth/remote/install-progress', function($request, $response) use ($core) {
+
+	// Server is done Installing
+	if(!$request->param('server')) {
+
+		$response->code(404)->body('No server variable passed to this request.')->send();
+		return;
+
+	}
+
+	$server = ORM::forTable('servers')->where(array(
+		'hash' => $request->param('server'),
+		'installed' => 0
+	))->findOne();
+
+	if(!$server) {
+
+		$response->code(404)->body('No server found in the system.')->send();
+		return;
+
+	}
+
+	$node = ORM::forTable('nodes')->findOne($server->node);
+	$user = ORM::forTable('users')->findOne($server->owner_id);
+
+	$server->installed = 1;
+	$server->save();
+
+	$core->email->buildEmail('admin_new_server', array(
+			'NAME' => $server->name,
+			'SFTP' => $node->fqdn.':'.$node->daemon_sftp,
+			'SERVER_CONN' => $server->server_ip.':'.$server->server_port,
+			'USER' => $server->sftp_user,
+			'PASS' => 'You need to set your SFTP password in the panel after logging in.'
+	))->dispatch($user->email, Settings::config()->company_name.' - New Server Added');
+
+	$response->code(204)->body("")->send();
 
 });

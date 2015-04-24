@@ -127,8 +127,14 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 
 	if(!$core->auth->isServer()) {
 
-		$service->flash('<div class="alert alert-danger">You seem to have accessed that page in an invalid manner.</div>');
-		$response->redirect('/index')->send();
+		$response->code(404)->body($core->twig->render('errors/404.html'))->send();
+		$klein->skipRemaining();
+
+	}
+
+	if(!$core->auth->isInstalled()) {
+
+		$response->body($core->twig->render('errors/installing.html'))->send();
 		$klein->skipRemaining();
 
 	}
