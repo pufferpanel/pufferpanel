@@ -92,7 +92,6 @@ class Server extends Permissions {
 	 */
 	public function getData($id = null) {
 
-
 		if(is_null($id) && $this->server) {
 
 			$reflect = new ReflectionClass($this->server);
@@ -161,6 +160,8 @@ class Server extends Permissions {
 			$this->found_server = false;
 			$this->found_node = false;
 			return;
+		} else {
+			$this->found_server = true;
 		}
 
 		$this->node = ORM::forTable('nodes')->findOne($this->server->node);
@@ -168,6 +169,8 @@ class Server extends Permissions {
 		if(!$this->node) {
 			$this->found_node = false;
 			return;
+		} else {
+			$this->found_node = true;
 		}
 
 	}
@@ -200,14 +203,13 @@ class Server extends Permissions {
 			$this->found_server = false;
 			$this->found_node = false;
 			return;
+		} else {
+			$this->found_server = true;
 		}
 
 		$this->node = ORM::forTable('nodes')->where(array('id' => $this->server->node))->findOne();
 
-		if(!$this->node) {
-			$this->found_node = false;
-			return;
-		}
+		$this->found_node = (!$this->node) ? false : true;
 
 	}
 
