@@ -6,7 +6,7 @@
 			<label lass="control-label">{{ data.name }} <code>${% verbatim %}{{% endverbatim %}{{ name }}{% verbatim %}}{% endverbatim %}</code></label>
 			<div>
 				<input type="text" name="plugin_variable_{{ name }}" class="form-control" value="{{ data.default }}"/>
-				<p><small>{{ data.description }} {% if data.required == true %}<span style="color:#F04124;">(required field)</span>{% endif %}</small></p>
+				<p><small>{{ data.description|raw }} {% if data.required == true %}<span style="color:#F04124;">(required field)</span>{% endif %}</small></p>
 			</div>
 		</div>
 	{% if loop.index is divisible by(2) %}

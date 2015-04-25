@@ -16,6 +16,7 @@
 		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
 		<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
+		{% if server.installed == 0 %}<li><a href="#installer" data-toggle="tab">Installer Progress</a></li>{% endif %}
 		<li><a href="/index/{{ server.hash }}">Server Control</a></li>
 	</ul>
 	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Security Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
@@ -193,6 +194,18 @@
 				</fieldset>
 			</form>
 		</div>
+		{% if server.installed == 0 %}
+			<div class="tab-pane" id="installer">
+				<h3>Install Progress</h3><hr />
+					<div class="alert alert-danger" id="socket_error" style="display:none;">
+						We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+						<br /><br />
+						If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
+					</div>
+					<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
+					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+			</div>
+		{% endif %}
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
 				<div class="alert alert-danger"><strong>Deleting a server is an irreversiable action.</strong> Proceede with caution. This server will be removed from the database along with all files on the server.</div>
@@ -207,6 +220,21 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
+		{% if server.installed == 0 %}
+			var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}', {'query': 'token={{ server.daemon_secret }}'});
+			socket.io.on('connect_error', function(err) {
+				$("#socket_error:hidden").show();
+			});
+			socket.on('connect', function (){
+				$("#socket_error:visible").hide();
+				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+			});
+			socket.on('installer', function (data) {
+				console.log(data);
+				$("#live_console").val($("#live_console").val() + data.line);
+				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+			});
+		{% endif %}
 		$("form#deleteCheckpoint").submit(function(e) {
 			e.preventDefault();
 			if(confirm("STOP! Are you absolutely positive that you want to delete this server. ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {

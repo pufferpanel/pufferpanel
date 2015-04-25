@@ -642,9 +642,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	}
 
-	// IP & Port are defined within Scales so we do not need to send them as additional parameters here.
-	$startup_variables['memory'] = $core->server->getData('max_ram');
-
 	// Setup for SQL
 	$storage_variables = "";
 	foreach($startup_variables as $name => $value) {
@@ -694,7 +691,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 				"hard" => ($request->param('alloc_disk') < 32) ? 32 : (int) $request->param('alloc_disk'),
 				"soft" => ($request->param('alloc_disk') > 2048) ? (int) $request->param('alloc_disk') - 1024 : 32
 			),
-			"cpu" => (int) $request->param('cpu_limit')
+			"cpu" => (int) $request->param('cpu_limit'),
+			"memory" => (int) $request->param('alloc_mem')
 		),
 		"startup" => array(
 			"command" => $request->param('daemon_startup'),
@@ -731,7 +729,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			array(
 				'settings' => json_encode($data),
 				'password' => $request->param('sftp_pass'),
-				'srcds_app_id' => ($request->param('plugin_variable_srcds_app_id')) ? $request->param('plugin_variable_srcds_app_id') : false
+				'build_params' => ($request->param('plugin_variable_build_params')) ? $request->param('plugin_variable_build_params') : false
 			)
 		);
 
@@ -753,7 +751,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	}
 
 	$service->flash('<div class="alert alert-success">Server created successfully.</div>');
-	$response->redirect('/admin/server/view/'.$server->id())->send();
+	$response->redirect('/admin/server/view/'.$server->id().'?tab=installer')->send();
 	return;
 
 });
