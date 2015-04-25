@@ -197,15 +197,11 @@
 			if(data['data'].players != undefined && data['data'].players.length !== 0){
 				$("#toggle_players").html("");
 				$.each(data['data'].players, function(id, d) {
-					console.log(d);
-					$.each(d, function(n, name) {
-						$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
-					});
+					$("#toggle_players").append("<code>" + d.name + "</code>");
 				});
 			}else{
 				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
 			}
-			$("img[data-toggle='tooltip']").tooltip();
 		});
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
