@@ -599,7 +599,7 @@ $klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $r
 			'vars' => json_decode($orm->variables, true),
 			'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
-				->where('servers.plugin', $orm->slug)
+				->where('servers.plugin', $orm->id)
 				->findArray()
 		)
 	))->send();
