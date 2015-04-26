@@ -16,7 +16,7 @@
 	{% endif %}
 	<div class="list-group">
 	{% for user in users %}
-		<a {% if user.pending == 0 %}href="/node/users/edit/{{ user.email }}"{% endif %} class="list-group-item">
+		<a href="/node/users/edit/{{ user.email }}" class="list-group-item">
 			<h4 class="list-group-item-heading">{{ user.email }} {% if user.username == null %}<span class="badge label-default">Pending</span>{% endif %}</h4>
 			<p class="list-group-item-text"><strong>Permission Nodes:</strong>
 				{{ user.user_permissions }}
