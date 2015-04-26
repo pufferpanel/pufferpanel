@@ -15,22 +15,23 @@
 			<script src="{{ settings.assets_url }}javascript/admin.min.js"></script>
 			<script src="{{ settings.assets_url }}javascript/bootstrap-notify.min.js"></script>
 			<script type="text/javascript">
-				$(document).ready(function() {
-					$.notifyDefaults({
-						placement: {
-							from: "bottom",
-							align: "right"
-						},
-						newest_on_top: false,
-						delay: 2000,
-						animate: {
-							enter: "animated fadeInUp",
-							exit: "animated fadeOutDown"
-						}
-					});
-					{% if (node is defined) and (server is defined) %}
-						var socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
-						var notifySocketError = false;
+				$.notifyDefaults({
+					placement: {
+						from: "bottom",
+						align: "right"
+					},
+					newest_on_top: false,
+					delay: 2000,
+					animate: {
+						enter: "animated fadeInUp",
+						exit: "animated fadeOutDown"
+					}
+				});
+				{% if (node is defined) and (server is defined) %}
+					var socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
+					var notifySocketError = false;
+
+					$(document).ready(function() {
 						socket.io.on('connect_error', function(err) {
 							if(typeof notifySocketError !== 'object') {
 								notifySocketError = $.notify({
