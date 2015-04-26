@@ -22,7 +22,7 @@
 		<tbody>
 			{% for user in users %}
 				<tr>
-					<td><a href="/admin/account/view/{{ user.id }}">{{ user.username }}</a> {% if user.root_admin == 1 %}<span class="badge">Administrator</span>{% endif %}</td>
+					<td><a href="/admin/account/view/{{ user.id }}">{% if user.username != null %}{{ user.username }}{% else %}[ unregistered subuser ]{% endif %}</a> {% if user.root_admin == 1 %}<span class="badge">Administrator</span>{% endif %}</td>
 					<td>{{ user.email }}</td>
 				</tr>
 			{% endfor %}
