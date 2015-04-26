@@ -49,17 +49,15 @@ class Users extends \PufferPanel\Core\Email {
 		}
 
 		$registerToken = $this->keygen(32);
-		$gsdSecret = $this->generateUniqueUUID('servers', 'daemon_secret');
+		$daemon_permissionSecret = $this->generateUniqueUUID('servers', 'daemon_secret');
 		$data->permissions = self::_rebuildUserPermissions($data->permissions);
 
 		ORM::get_db()->beginTransaction();
-		
+
 		try {
 
-			$user = ORM::forTable('users')->where('email', $data->email)->findOne();
-			$existed = $user ? true : false;
-
-			if(!$existed) {
+			$checkUserExists = ORM::forTable('users')->where('email', $data->email)->findOne();
+			if(!$checkUserExists) {
 
 				$user = ORM::forTable('users')->create()->set(array(
 					'uuid' => $this->generateUniqueUUID('users', 'uuid'),
@@ -78,15 +76,14 @@ class Users extends \PufferPanel\Core\Email {
 					'key' => $registerToken,
 					'time' => time()
 				))->save();
-				
+
 			}
 
 			ORM::forTable('subusers')->create()->set(array(
 				'user' => $user->id,
 				'server' => $this->server->getData('id'),
-				'daemon_secret' => $gsdSecret,
-				'daemon_permissions' => json_encode(self::_buildGSDPermissions($data->permissions)),
-				'pending' => 0
+				'daemon_secret' => $daemon_permissionSecret,
+				'daemon_permissions' => json_encode(self::_buildDaemonPermissions($data->permissions))
 			))->save();
 
 			$email = null;
@@ -101,8 +98,8 @@ class Users extends \PufferPanel\Core\Email {
 
 			}
 
-			if($existed) {			
-				
+			if($checkUserExists) {
+
 				$email = $this->buildEmail('new_subuser', array(
 					'SERVER' => $this->server->getData('name'),
 					'EMAIL' => $data->email
@@ -116,7 +113,7 @@ class Users extends \PufferPanel\Core\Email {
 					'SERVER' => $this->server->getData('name'),
 					'EMAIL' => $data->email
 				));
-				
+
 			}
 
 			$unirest = Unirest\Request::put(
@@ -127,7 +124,7 @@ class Users extends \PufferPanel\Core\Email {
 				),
 				array(
 					"json" => json_encode(array(
-						$gsdSecret => self::_buildGSDPermissions($data->permissions)
+						$daemon_permissionSecret => self::_buildDaemonPermissions($data->permissions)
 					)),
 					"object" => "keys",
 					"overwrite" => false
@@ -167,7 +164,10 @@ class Users extends \PufferPanel\Core\Email {
 			return false;
 		}
 
-		$select = ORM::forTable('subusers')->where('uuid', $data->uuid)->findOne();
+		$select = ORM::forTable('subusers')->where(array(
+			'user' => $data->user_id,
+			'server' => $this->server->getData('id')
+		))->findOne();
 
 		if(!$select) {
 			self::_setError("Invalid user was provided.");
@@ -175,21 +175,21 @@ class Users extends \PufferPanel\Core\Email {
 		}
 
 		ORM::forTable('permissions')->where(array(
-			'user' => $select->user,
-			'server' => $select->server
+			'user' => $data->user_id,
+			'server' => $this->server->getData('id')
 		))->deleteMany();
 
 		foreach(self::_rebuildUserPermissions($data->permissions) as $id => $permission) {
 
 			ORM::forTable('permissions')->create()->set(array(
 				'user' => $select->user,
-				'server' => $select->server,
+				'server' => $this->server->getData('id'),
 				'permission' => $permission
 			))->save();
 
 		}
 
-		$select->daemon_permissions = json_encode(self::_buildGSDPermissions($data->permissions));
+		$select->daemon_permissions = json_encode(self::_buildDaemonPermissions($data->permissions));
 		$select->save();
 
 		try {
@@ -202,7 +202,7 @@ class Users extends \PufferPanel\Core\Email {
 				),
 				array(
 					"json" => json_encode(array(
-						$select->daemon_secret => self::_buildGSDPermissions($data->permissions)
+						$select->daemon_secret => self::_buildDaemonPermissions($data->permissions)
 					)),
 					"object" => "keys",
 					"overwrite" => false
@@ -259,47 +259,47 @@ class Users extends \PufferPanel\Core\Email {
 	}
 
 	/**
-	 * Builds an array of equivalent GSD permissions for each panel permission.
+	 * Builds an array of equivalent Daemon permissions for each panel permission.
 	 *
 	 * @param array $data
 	 * @return array
 	 * @static
 	 */
-	protected final static function _buildGSDPermissions(array $data) {
+	protected final static function _buildDaemonPermissions(array $data) {
 
-		$gsd = array("s:console", "s:query");
+		$daemon_permission = array("s:console", "s:query");
 
 		foreach($data as $permissionNode) {
 
 			switch($permissionNode) {
 
 				case "console.power":
-					$gsd = array_merge($gsd, array("s:power"));
+					$daemon_permission = array_merge($daemon_permission, array("s:power"));
 					break;
 				case "console.commands":
-					$gsd = array_merge($gsd, array("s:console:send"));
+					$daemon_permission = array_merge($daemon_permission, array("s:console:send"));
 					break;
 				case "files.view":
-					$gsd = array_merge($gsd, array("s:files"));
+					$daemon_permission = array_merge($daemon_permission, array("s:files"));
 					break;
 				case "files.edit":
-					$gsd = array_merge($gsd, array("s:files:get"));
+					$daemon_permission = array_merge($daemon_permission, array("s:files:get"));
 					break;
 				case "files.save":
-					$gsd = array_merge($gsd, array("s:files:put"));
+					$daemon_permission = array_merge($daemon_permission, array("s:files:put"));
 					break;
 				case "files.zip":
-					$gsd = array_merge($gsd, array("s:files:zip"));
+					$daemon_permission = array_merge($daemon_permission, array("s:files:zip"));
 					break;
 				case "manage.ftp.password":
-					$gsd = array_merge($gsd, array("s:ftp"));
+					$daemon_permission = array_merge($daemon_permission, array("s:ftp"));
 					break;
 
 			}
 
 		}
 
-		return $gsd;
+		return $daemon_permission;
 
 	}
 
@@ -343,8 +343,7 @@ class Users extends \PufferPanel\Core\Email {
 					->where(array(
 						'user' => $orm->user,
 						'server' => $this->server->getData('id')
-					))
-					->delete_many();
+					))->delete_many();
 
 				$orm->delete();
 
@@ -360,8 +359,14 @@ class Users extends \PufferPanel\Core\Email {
 
 		} else {
 
-			ORM::forTable('account_change')->where('content', $orm->uuid)->findOne()->delete();
-			ORM::forTable('subusers')->where('uuid', $orm->uuid)->findOne()->delete();
+			ORM::forTable('account_change')->where(array(
+				'content' => $orm->email,
+				'type' => 'user_register'
+			))->findOne()->delete();
+			ORM::forTable('subusers')->where(array(
+				'id' => $orm->user,
+				'server' => $this->server->getData('id')
+			))->findOne()->delete();
 			$orm->delete();
 			return true;
 

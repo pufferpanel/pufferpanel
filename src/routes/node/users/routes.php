@@ -34,7 +34,7 @@ $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $re
 $klein->respond('GET', '/node/users', function($request, $response, $service) use ($core) {
 
 	$select = ORM::forTable('subusers')
-		->raw_query("SELECT subusers.*, users.email, GROUP_CONCAT(permissions.permission SEPARATOR ', ') as user_permissions FROM subusers LEFT JOIN permissions ON subusers.user = permissions.user AND subusers.server = permissions.server LEFT JOIN users ON subusers.user = users.id WHERE subusers.server = :server GROUP BY subusers.id",
+		->raw_query("SELECT subusers.*, users.email, users.username, GROUP_CONCAT(permissions.permission SEPARATOR ', ') as user_permissions FROM subusers LEFT JOIN permissions ON subusers.user = permissions.user AND subusers.server = permissions.server LEFT JOIN users ON subusers.user = users.id WHERE subusers.server = :server GROUP BY subusers.id",
 		array(
 			'server' => $core->server->getData('id')
 		))->findArray();
@@ -47,7 +47,7 @@ $klein->respond('GET', '/node/users', function($request, $response, $service) us
 
 });
 
-$klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $response, $service) use ($core) {
 
 	if($request->param('action') == 'add') {
 
@@ -57,18 +57,18 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 			'server' => $core->server->getData()
 		)))->send();
 
-	} else if($request->param('action') == 'edit' && $request->param('id')) {
+	} else if($request->param('action') == 'edit' && $request->param('email')) {
 
 		$user = ORM::forTable('subusers')
-			->raw_query("SELECT subusers.*, users.email, GROUP_CONCAT(permissions.permission) as user_permissions FROM subusers
-						LEFT JOIN users ON subusers.user = users.id
-						LEFT JOIN permissions ON subusers.user = permissions.user AND subusers.server = permissions.server
-						WHERE subusers.uuid = :uuid
-						GROUP BY subusers.id",
-						array(
-							'uuid' => $request->param('id')
-						)
-			)->findOne();
+			->raw_query("SELECT subusers.*, users.email, users.id as user_id, GROUP_CONCAT(permissions.permission) as user_permissions FROM subusers
+				LEFT JOIN users ON subusers.user = users.id
+				LEFT JOIN permissions ON subusers.user = permissions.user AND subusers.server = permissions.server
+				WHERE users.email = :email AND subusers.server = :server
+				GROUP BY subusers.id",
+			array(
+				"email" => $request->param('email'),
+				"server" => $core->server->getData('id')
+			))->findOne();
 
 		if(!$user) {
 
@@ -82,19 +82,22 @@ $klein->respond('GET', '/node/users/[:action]/[:id]?', function($request, $respo
 			'flash' => $service->flashes(),
 			'server' => $core->server->getData(),
 			'permissions' => array_flip(explode(',', str_replace('.', '_', $user->user_permissions))),
-			'user' => array('email' => $user->email, 'uuid' => $request->param('id')),
+			'user' => array('email' => $user->email, 'user_id' => $user->user_id),
 			'xsrf' => $core->auth->XSRF()
 		)))->send();
 
-	} else if($request->param('action') == 'revoke' && $request->param('id')) {
+	} else if($request->param('action') == 'revoke' && $request->param('email')) {
 
 		$core->routes = new Router\Router_Controller('Node\Users', $core->server);
 		$core->routes = $core->routes->loadClass();
 
 		$query = ORM::forTable('subusers')
-			->where(array(
-				'uuid' => $request->param('id'),
-				'server' => $core->server->getData('id')
+			->raw_query("SELECT subusers.*, users.email FROM subusers
+				LEFT JOIN users ON subusers.user = users.id
+				WHERE users.email = :email AND subusers.server = :server",
+			array(
+				"email" => $request->param('email'),
+				"server" => $core->server->getData('id')
 			))->findOne();
 
 		if(!$query) {
