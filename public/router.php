@@ -127,7 +127,7 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 
 	if(!$core->auth->isServer()) {
 
-		$response->code(404)->body($core->twig->render('errors/404.html'))->send();
+		$response->code(403)->body($core->twig->render('errors/403.html'))->send();
 		$klein->skipRemaining();
 
 	}

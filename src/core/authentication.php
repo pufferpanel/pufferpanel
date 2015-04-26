@@ -121,7 +121,7 @@ class Authentication {
 		));
 
 		if(!$this->isAdmin()) {
-			$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions->listServers())));
+			$query->where_raw('`owner_id` = ? OR `id` IN(?)', array($this->select->id, join(',', $permissions->listServers())));
 		}
 
 		return $query->findOne();
