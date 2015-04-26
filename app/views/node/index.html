@@ -5,6 +5,7 @@
 	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
 	<script src="{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
 {% endblock %}
+
 {% block title %}Manage your Server{% endblock %}
 
 {% block content %}
@@ -16,11 +17,6 @@
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
-	<div class="alert alert-danger" id="socket_error" style="display:none;">
-		We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
-		<br /><br />
-		If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
-	</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
@@ -134,7 +130,38 @@
 <script type="text/javascript">
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}', {'query': 'token={{ server.daemon_secret }}'});
+		socket.on('stats', function (data) {
+			var currentTime = new Date();
+			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
+			memoryChart.removeData();
+			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
+			cpuChart.removeData();
+		});
+		socket.on('query', function(data){
+			if($("#players_notice").is(":visible")){
+				$("#players_notice").hide();
+				$("#toggle_players").show();
+			}
+			if(data['data'].players != undefined && data['data'].players.length !== 0){
+				$("#toggle_players").html("");
+				$.each(data['data'].players, function(id, d) {
+					$("#toggle_players").append("<code>" + d.name + "</code>");
+				});
+			}else{
+				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
+			}
+		});
+		socket.on('console', function (data) {
+			$("#live_console").val($("#live_console").val() + data.line);
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		$("#pause_console").click(function(){
+			$("#paused_console").val();
+			$("#paused_console").val($("#live_console").val());
+		});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
 		var memoryChartData = {
@@ -174,45 +201,6 @@
 			barValueSpacing: 1,
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
-		});
-		socket.io.on('connect_error', function(err) {
-			$("#socket_error:hidden").show();
-		});
-		socket.on('connect', function (){
-			$("#socket_error:visible").hide();
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('stats', function (data) {
-			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
-			memoryChart.removeData();
-			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
-			cpuChart.removeData();
-		});
-		socket.on('query', function(data){
-			if($("#players_notice").is(":visible")){
-				$("#players_notice").hide();
-				$("#toggle_players").show();
-			}
-			if(data['data'].players != undefined && data['data'].players.length !== 0){
-				$("#toggle_players").html("");
-				$.each(data['data'].players, function(id, d) {
-					$("#toggle_players").append("<code>" + d.name + "</code>");
-				});
-			}else{
-				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-			}
-		});
-		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('console', function (data) {
-			$("#live_console").val($("#live_console").val() + data.line);
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		$("#pause_console").click(function(){
-			$("#paused_console").val();
-			$("#paused_console").val($("#live_console").val());
 		});
 		{% if permission.has('console.commands') %}
 			$("#console_command").submit(function(event){

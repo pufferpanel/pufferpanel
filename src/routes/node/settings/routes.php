@@ -33,9 +33,7 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 		'flash' => $service->flashes(),
 		'xsrf' => $core->auth->XSRF(),
 		'server' => array_merge($core->server->getData(), array('server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))))),
-		'node' => array(
-			'fqdn' => $core->server->nodeData('fqdn')
-		)
+		'node' => $core->server->nodeData()
 	)))->send();
 
 });

@@ -171,6 +171,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 	*/
 	$response->body($core->twig->render('panel/index.html', array(
 		'servers' => $servers,
+		'user' => $core->user->getData(),
 		'flash' => $service->flashes()
 	)))->send();
 

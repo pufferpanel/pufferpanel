@@ -35,6 +35,7 @@ $klein->respond('GET', '/node/files', function($request, $response, $service) us
 
 	$response->body($core->twig->render('node/files/index.html', array(
 		'server' => $core->server->getData(),
+		'node' => $core->server->nodeData(),
 		'flash' => $service->flashes()
 	)))->send();
 
@@ -131,6 +132,7 @@ $klein->respond('GET', '/node/files/edit/[*:file]', function($request, $response
 		$response->body($core->twig->render('node/files/edit.html', array(
 			'flash' => $service->flashes(),
 			'server' => $core->server->getData(),
+			'node' => $core->server->nodeData(),
 			'xsrf' => $core->auth->XSRF(),
 			'file' => $request->param('file'),
 			'extension' => $file->extension,

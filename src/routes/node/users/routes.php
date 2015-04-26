@@ -42,7 +42,8 @@ $klein->respond('GET', '/node/users', function($request, $response, $service) us
 	$response->body($core->twig->render('node/users/index.html', array(
 		'flash' => $service->flashes(),
 		'users' => $select,
-		'server' => $core->server->getData()
+		'server' => $core->server->getData(),
+		'node' => $core->server->nodeData()
 	)))->send();
 
 });
@@ -54,7 +55,8 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
 		$response->body($core->twig->render('node/users/add.html', array(
 			'flash' => $service->flashes(),
 			'xsrf' => $core->auth->XSRF(),
-			'server' => $core->server->getData()
+			'server' => $core->server->getData(),
+			'node' => $core->server->nodeData()
 		)))->send();
 
 	} else if($request->param('action') == 'edit' && $request->param('email')) {
@@ -83,6 +85,7 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
 			'server' => $core->server->getData(),
 			'permissions' => array_flip(explode(',', str_replace('.', '_', $user->user_permissions))),
 			'user' => array('email' => $user->email, 'user_id' => $user->user_id),
+			'node' => $core->server->nodeData(),
 			'xsrf' => $core->auth->XSRF()
 		)))->send();
 
