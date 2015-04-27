@@ -521,7 +521,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
-	setcookie('__temporary_pp_admin_newserver', json_encode($_POST), time() + 10);
+	setcookie('__temporary_pp_admin_newserver', json_encode($_POST), time() + 60);
 	ORM::get_db()->beginTransaction();
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
@@ -577,14 +577,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	) {
 
 		$service->flash('<div class="alert alert-danger">Allocated memory, disk, and CPU must all be integers.</div>');
-		$response->redirect('/admin/server/new')->send();
-		return;
-
-	}
-
-	if($request->param('sftp_pass') != $request->param('sftp_pass_2') || !$core->auth->validatePasswordRequirements($request->param('sftp_pass'))) {
-
-		$service->flash('<div class="alert alert-danger">The SFTP password provided did not match in both fields or did not meet the server password requirements.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
@@ -728,7 +720,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 			),
 			array(
 				'settings' => json_encode($data),
-				'password' => $request->param('sftp_pass'),
+				'password' => $core->auth->keygen(16),
 				'build_params' => ($request->param('plugin_variable_build_params')) ? $request->param('plugin_variable_build_params') : false
 			)
 		);
