@@ -275,22 +275,6 @@
 				});
 			}
 		});
-		updateNodeList();
-		updatePluginVariables();
-		$("#gen_pass_bttn").click(function(){
-			$.ajax({
-				type: "GET",
-				url: "/admin/passgen/12",
-				success: function(data) {
-					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="sftp_pass"]').val(data);
-					$('input[name="sftp_pass_2"]').val(data);
-					return false;
-				}
-			});
-			return false;
-		});
 		$(document).on('change', '#getNode', function() {
 			updateList();
 		});
@@ -301,19 +285,14 @@
 			$("#noNodes").hide();
 			updateNodeList();
 		});
-		// $('[name="assign_random"]').click(function(){
-		// 	if($(this).is(':checked')) {
-		// 		$("#updateList, #updateNodeList").hide();
-		// 	} else {
-		// 		$("#updateList, #updateNodeList").show();
-		// 	}
-		// });
 		if(Cookies.get('__temporary_pp_admin_newserver')){
 			var obj = $.parseJSON(Cookies.get('__temporary_pp_admin_newserver'));
 			$.each(obj, function(key, value) {
 				$('[name="' + key + '"]').val(value);
 			});
 			Cookies.expire('__temporary_pp_admin_newserver', {'path': '/admin/server'});
+			updateNodeList();
+			updatePluginVariables();
 		}
 	});
 </script>

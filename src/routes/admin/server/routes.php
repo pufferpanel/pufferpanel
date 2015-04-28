@@ -445,22 +445,8 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			),
 			array(
 				"json" => json_encode(array(
-					"memory" => $request->param('alloc_mem')
-				)),
-				"object" => "startup:variables",
-				"overwrite" => false
-			)
-		);
-
-		Request::put(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
-			array(
-				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
-				"X-Access-Server" => $core->server->getData('hash')
-			),
-			array(
-				"json" => json_encode(array(
-					"cpu" => (int) $request->param('cpu_limit')
+					"cpu" => (int) $request->param('cpu_limit'),
+					"memory" => (int) $request->param('alloc_mem')
 				)),
 				"object" => "build",
 				"overwrite" => false
