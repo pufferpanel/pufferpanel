@@ -285,6 +285,8 @@
 			$("#noNodes").hide();
 			updateNodeList();
 		});
+		updateNodeList();
+		updatePluginVariables();
 		if(Cookies.get('__temporary_pp_admin_newserver')){
 			var obj = $.parseJSON(Cookies.get('__temporary_pp_admin_newserver'));
 			$.each(obj, function(key, value) {
