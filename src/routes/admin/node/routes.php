@@ -364,7 +364,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
 	$node = ORM::forTable('nodes')->findOne($request->param('id'));
 	if($node) {
 
-		$node->node = $request->param('name');
+		$node->name = $request->param('name');
 		$node->fqdn = $request->param('fqdn');
 		$node->save();
 
