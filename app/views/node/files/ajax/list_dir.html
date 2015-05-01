@@ -41,7 +41,7 @@
 						<div class="col-md-3 hidden-xs hidden-sm"></div>
 						<div class="col-md-3 hidden-xs hidden-sm">
 							{% if ( permission.has('files.zip') ) and ( file.extension not in zip_extensions ) %}
-								<a href="{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="zip_file"><span class="badge label-default"><i class="fa fa-archive"></i></span></a>
+								<!-- <a href="{% if folder.directory %}{{ folder.directory }}/{% endif %}{{ folder.entry }}" class="zip_file"><span class="badge label-default"><i class="fa fa-archive"></i></span></a> -->
 							{% endif %}
 						</div>
 						<div class="col-md-3">
@@ -73,7 +73,7 @@
 					<div class="row" style="text-align:center;">
 						<div class="col-md-3 hidden-xs hidden-sm">
 							{% if ( permission.has('files.zip') ) and ( file.extension in zip_extensions ) %}
-								<a href="{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="unzip_file"><span class="badge label-default"><i class="fa fa-file-archive-o"></i></span></a>
+								<!-- <a href="{% if file.directory %}{{ file.directory }}/{% endif %}{{ file.entry }}" class="unzip_file"><span class="badge label-default"><i class="fa fa-file-archive-o"></i></span></a> -->
 							{% endif %}
 						</div>
 						<div class="col-md-3 hidden-xs hidden-sm">
