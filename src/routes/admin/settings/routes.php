@@ -68,13 +68,11 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			ORM::forTable('acp_settings')->rawExecute(
 				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'use_api' THEN :enable_api
-                    WHEN 'force_online' THEN :force_online
                     WHEN 'https' THEN :https
                     WHEN 'allow_subusers' THEN :allow_subusers
                     ELSE setting_val
                 END", array(
 					'enable_api' => (!in_array('use_api', $request->param('permissions'))) ? 0 : 1,
-					'force_online' => (!in_array('force_online', $request->param('permissions'))) ? 0 : 1,
 					'https' => (!in_array('https', $request->param('permissions'))) ? 0 : 1,
 					'allow_subusers' => (!in_array('allow_subusers', $request->param('permissions'))) ? 0 : 1
 				)
