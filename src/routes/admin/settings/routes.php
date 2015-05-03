@@ -168,13 +168,17 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 	if($request->param('page') == "urls" && $request->param('action') == "update") {
 
 		$urls = array();
-		foreach($request->paramsPost() as $id => $val) {
+		foreach(array(
+			'main_url' => $request->param('main_url'),
+			'master_url' => $request->param('master_url'),
+			'assets_url' => $request->param('assets_url')
+		) as $id => $val) {
 
 			$url = parse_url($val);
 
 			if(!$url || !filter_var($val, FILTER_VALIDATE_URL)) {
 
-				$service->flash('<div class="alert alert-danger">The URL provided is invalid and cannot be processed.</div>');
+				$service->flash('<div class="alert alert-danger">At least one of the URLs provided was invalid and could not be processed.</div>');
 				$response->redirect('/admin/settings/urls')->send();
 				return;
 
@@ -184,11 +188,10 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 				$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$val : 'http://'.$val;
 			} else {
 
-				if($url['scheme'] != 'https' && Settings::config()->https == 1) {
-					$urls[$id] = str_replace('http://', 'https://', $val);
-				} else {
-					$urls[$id] = $val;
-				}
+				$url['scheme'] = ($url['scheme'] != 'https' && Settings::config()->https == 1) ? $url['scheme'].'s' : $url['scheme'];
+				$url['path'] = (isset($url['path'])) ? $url['path'] : null;
+
+				$urls[$id] = $url['scheme'].'://'.$url['host'].$url['path'];
 
 			}
 
