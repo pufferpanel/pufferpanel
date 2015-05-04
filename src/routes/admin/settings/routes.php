@@ -174,7 +174,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 			$url = parse_url($val);
 
-			if(!$url || !filter_var($val, FILTER_VALIDATE_URL)) {
+			if(!isset($url['host'])) {
 
 				$service->flash('<div class="alert alert-danger">At least one of the URLs provided was invalid and could not be processed.</div>');
 				$response->redirect('/admin/settings/urls')->send();
@@ -182,15 +182,12 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 			}
 
-			if(!isset($url['scheme'])) {
-				$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$val : 'http://'.$val;
+			$url['path'] = (isset($url['path'])) ? $url['path'] : null;
+
+			if($id != "assets_url") {
+				$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$url['host'].$url['path'] : 'http://'.$url['host'].$url['path'];
 			} else {
-
-				$url['scheme'] = ($url['scheme'] != 'https' && Settings::config()->https == 1) ? $url['scheme'].'s' : $url['scheme'];
-				$url['path'] = (isset($url['path'])) ? $url['path'] : null;
-
-				$urls[$id] = $url['scheme'].'://'.$url['host'].$url['path'];
-
+				$urls[$id] = "//".$url['host'].$url['path'];
 			}
 
 			$urls[$id] = rtrim($urls[$id], '/').'/';
