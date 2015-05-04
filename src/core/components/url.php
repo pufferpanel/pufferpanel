@@ -1,7 +1,7 @@
 <?php
 
 /*
-  PufferPanel - A Minecraft Server Management Panel
+  PufferPanel - A Game Server Management Panel
   Copyright (c) 2015 PufferPanel
 
   This program is free software: you can redistribute it and/or modify
