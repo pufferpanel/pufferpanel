@@ -45,7 +45,7 @@ class Users extends \PufferPanel\Core\Email {
 	public function addSubuser(\Klein\DataCollection\DataCollection $data) {
 
 		if(is_null($data->permissions) || !$data->permissions) {
-			return false;
+			$data->permissions = array('console.view');
 		}
 
 		$registerToken = $this->keygen(32);
@@ -180,6 +180,10 @@ class Users extends \PufferPanel\Core\Email {
 			'user' => $data->user_id,
 			'server' => $this->server->getData('id')
 		))->deleteMany();
+		
+		if(is_null($data->permissions) || !$data->permissions) {
+			$data->permissions = array('console.view');
+		}
 
 		foreach(self::_rebuildUserPermissions($data->permissions) as $id => $permission) {
 
