@@ -56,7 +56,9 @@ class Users extends \PufferPanel\Core\Email {
 
 		try {
 
-			$checkUserExists = ORM::forTable('users')->where('email', $data->email)->findOne();
+			$user = ORM::forTable('users')->where('email', $data->email)->findOne();
+
+			$checkUserExists = $user ? true : false;
 			if(!$checkUserExists) {
 
 				$user = ORM::forTable('users')->create()->set(array(
