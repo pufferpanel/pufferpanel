@@ -95,10 +95,10 @@
 				<div class="col-md-6" style="text-align:center;">
 					<hr />
 					{% if permission.has('console.power') %}
-						<button class="btn btn-primary btn-sm start" id="on">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm restart" id="restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm stop" id="off">{{ l.render('string.stop') }}</button>
-						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
+						<button class="btn btn-success btn-sm start" id="on">{{ l.render('string.start') }}</button>
+						<button class="btn btn-primary btn-sm restart" disabled="disabled" id="restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop" disabled="disabled" id="off">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-primary btn-sm" disabled="disabled" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
 						<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
@@ -128,6 +128,12 @@
 	</div>
 </div>
 <script type="text/javascript">
+	socket.on('query', function (data) {
+		$("#off").removeAttr("disabled");
+		$("#restart").removeAttr("disabled");
+		$("#pause_console").removeAttr("disabled");
+		$("#on").attr("disabled", "disabled");
+	});
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
 		socket.on('stats', function (data) {
