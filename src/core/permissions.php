@@ -75,6 +75,13 @@ class Permissions extends User {
 			$servers = array_merge($servers, array($select['server']));
 		}
 
+		$select = ORM::forTable('servers')
+			->where(array('active' => 1, 'owner_id' => User::getData('id')))->findMany();
+
+		foreach($select as &$select) {
+			$servers = array_merge($servers, array($select['id']));
+		}
+
 		return $servers;
 
 	}
