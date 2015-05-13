@@ -47,6 +47,7 @@ require_once(SRC_DIR.'core/config/inmemdatabaseconfig.php');
  * Include Required Global Class Files
  */
 require_once(SRC_DIR.'core/config.php');
+require_once(SRC_DIR.'core/databasemanager.php');
 require_once(SRC_DIR.'core/authentication.php');
 require_once(SRC_DIR.'core/email.php');
 require_once(SRC_DIR.'core/files.php');

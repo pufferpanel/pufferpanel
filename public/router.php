@@ -57,7 +57,13 @@ ORM::configure(array(
 	'driver_options' => array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-	)
+	),
+	'logging' => true,
+	'logger' => function($query, $time) {
+		DatabaseManager::logQuery($query, $time);
+	},
+	'caching' => true,
+	'caching_auto_clear' => true
 ));
 
 /*
