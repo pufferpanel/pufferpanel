@@ -151,7 +151,8 @@ $klein->respond('/admin/[*]', function($request, $response, $service, $app, $kle
 
 	if(!$core->auth->isAdmin()) {
 
-		$response->redirect('/index')->send();
+		$response->code(403);
+		$response->body($core->twig->render('errors/403.html'))->send();
 		$klein->skipRemaining();
 
 	}
