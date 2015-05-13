@@ -74,9 +74,11 @@ class Permissions extends User {
 					)
 					->findMany();
 
-		$servers = [];
+		// If we don't set a value here there will be exceptions when trying to login or logout of an account without servers attached.
+		$servers = [0];
+
 		foreach($select as &$select) {
-			$servers = array_merge($servers, array($select['server']));
+			$servers = array_merge($servers, array($select['id']));
 		}
 
 		return $servers;
