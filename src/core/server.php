@@ -139,7 +139,7 @@ class Server extends Permissions {
 		$query = ORM::forTable('servers')->where(array('hash' => $hash, 'active' => 1));
 
 		if(!User::isAdmin()) {
-			$query = $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(User::getData('id'), join(',', Permissions::listServers())));
+			$query->where_in('id', Permissions::listServers());
 		}
 
 		return (!$query->findOne()) ? false : true;
@@ -189,12 +189,7 @@ class Server extends Permissions {
 				));
 
 		if(!User::isAdmin()) {
-
-			$query = $query->where_raw('`owner_id` = ? OR `id` IN(?)', array(
-					User::getData('id'),
-					join(',', Permissions::listServers())
-				));
-
+			$query->where_in('id', Permissions::listServers());
 		}
 
 		$this->server = $query->findOne();

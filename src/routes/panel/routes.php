@@ -160,8 +160,8 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 			->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
 			->join('nodes', array('servers.node', '=', 'nodes.id'))
 			->join('locations', array('nodes.location', '=', 'locations.id'))
-			->where(array('servers.owner_id' => $core->user->getData('id'), 'servers.active' => 1))
-			->where_raw('servers.owner_id = ? OR servers.id IN(?)', array($core->user->getData('id'), join(',', $core->permissions->listServers())))
+			->where('servers.active', 1)
+			->where_in('servers.id', $core->permissions->listServers())
 			->findArray();
 
 	}

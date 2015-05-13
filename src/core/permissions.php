@@ -68,7 +68,11 @@ class Permissions extends User {
 	 */
 	public function listServers() {
 
-		$select = ORM::forTable('subusers')->where('user', User::getData('id'))->findMany();
+		$select = ORM::forTable('servers')
+					->raw_query('(SELECT id FROM servers WHERE owner_id = :userid) UNION (SELECT server FROM subusers WHERE user = :userid)',
+						array('userid' => User::getData('id'))
+					)
+					->findMany();
 
 		$servers = [];
 		foreach($select as &$select) {
