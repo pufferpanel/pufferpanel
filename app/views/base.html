@@ -207,10 +207,26 @@
 					}).done(function(data) {
 						element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
 						element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+						if (data == "#53B30C") {
+							$("#on").removeAttr("disabled");
+							$("#on").attr("disabled", "disabled");
+							$("#off").removeAttr("disabled");
+							$("#restart").removeAttr("disabled");
+							$("#pause_console").removeAttr("disabled");
+						} else if (data == "#E33200") {
+							$("#on").removeAttr("disabled");
+							$("#off").attr("disabled", "disabled");
+							$("#restart").attr("disabled", "disabled");
+							$("#pause_console").attr("disabled", "disabled");
+						}
 					});
 				});
 			}
-			updateServerStatus();
+			if (window.location.href.indexOf("/index?tab=console") > -1) {
+				setInterval(updateServerStatus, 5000);
+			} else {
+				updateServerStatus();
+			}
 			var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
 			$("#p_render_time").html(elapsed);
 		});
