@@ -31,9 +31,9 @@
 				{% if (node is defined) and (server is defined) %}
 					var socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
 					var notifySocketError = false;
-
-					$(document).ready(function() {
+					$(window).load(function() {
 						socket.io.on('connect_error', function(err) {
+							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": "#FF9900"});
 							if(typeof notifySocketError !== 'object') {
 								notifySocketError = $.notify({
 									message: 'We were unable to connect to the main Socket.IO server, \
@@ -53,6 +53,13 @@
 								notifySocketError.close();
 								notifySocketError = false;
 							}
+						});
+						socket.on('initial_status', function(data) {
+							var color = "#E33200";
+							if(data.status == 1) {
+								color = "#53B30C";
+							}
+							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": color});
 						});
 						socket.on('status', function(data) {
 							if(data.status != "crashed") {
@@ -109,7 +116,7 @@
 				{% block servername %}
 					{% if server.name is defined %}
 					<ul class="nav navbar-nav">
-						<li class="active dynUpdate" id="{{ server.hash }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+						<li class="active" id="{{ server.hash }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
 					</ul>
 					{% endif %}
 				{% endblock %}
@@ -193,24 +200,6 @@
 		$(window).load(function() {
 			for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
 			if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
-			function updateServerStatus() {
-				$(".dynUpdate").each(function(index, data){
-					var element = $(this);
-					var connection = element.attr("id");
-					if(element.find("#applyUpdate").hasClass("spin-light")){var c = {"color": "#fff"};} else {var c = {"color": "#000"};}
-					element.find("#applyUpdate").removeClass("fa-circle").css(c);
-					element.find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
-					$.ajax({
-						type: "POST",
-						url: "/ajax/status",
-						data: { server: connection }
-					}).done(function(data) {
-						element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-						element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
-					});
-				});
-			}
-			updateServerStatus();
 			var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
 			$("#p_render_time").html(elapsed);
 		});

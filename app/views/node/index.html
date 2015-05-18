@@ -95,11 +95,11 @@
 				<div class="col-md-6" style="text-align:center;">
 					<hr />
 					{% if permission.has('console.power') %}
-						<button class="btn btn-primary btn-sm start" id="on">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm restart" id="restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm stop" id="off">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-success btn-sm start disabled" id="server_start">{{ l.render('string.start') }}</button>
+						<button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ l.render('string.stop') }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-						<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
+						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
 				</div>
@@ -154,6 +154,12 @@
 		socket.on('console', function (data) {
 			$("#live_console").val($("#live_console").val() + data.line);
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		socket.on('initial_status', function(data) {
+			updateServerPowerControls(data.status);
+		});
+		socket.on('status', function(data) {
+			updateServerPowerControls(data.status);
 		});
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
@@ -234,6 +240,23 @@
 		{% endif %}
 		{% if permission.has('console.power') %}
 			var can_run = true;
+			function updateServerPowerControls(data) {
+				// Server is On or Starting
+				if(data == 1 || data == 3) {
+					$("#server_start").addClass('disabled');
+					$("#server_stop, #server_restart").removeClass("disabled");
+				} else {
+					$("#server_start").removeClass('disabled');
+					$("#server_stop, #server_restart").addClass("disabled");
+				}
+
+				if(data !== 0) {
+					$("#kill_process_text").slideDown(200);
+				} else {
+					$("#kill_process_text").slideUp(200);
+				}
+
+			}
 			$("#kill_proc").click(function(e){
 				e.preventDefault();
 				var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
@@ -253,7 +276,7 @@
 					});
 				}
 			});
-			$(".stop").click(function(e){
+			$("#server_stop").click(function(e){
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
@@ -268,17 +291,17 @@
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-						$(".stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
+						$("#server_stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
 						can_run = true;
 						return false;
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$(".stop").removeClass('disabled').html('Stop');
+							$("#server_stop").removeClass('disabled').html('Stop');
 							can_run = true;
 					});
 				}
 			});
-			$(".restart").click(function(e){
+			$("#server_restart").click(function(e){
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
@@ -293,24 +316,24 @@
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
-						$(".restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
+						$("#server_restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
 						can_run = true;
 						return false;
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$(".restart").removeClass('disabled').html('Restart');
+							$("#server_restart").removeClass('disabled').html('Restart');
 							can_run = true;
 					});
 				}
 			});
-			$(".start").click(function(e){
+			$("#server_start").click(function(e){
 				e.preventDefault();
 				start_server();
 			});
 			function start_server() {
 				if(can_run === true){
 					can_run = false;
-					$(".start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
+					$("#server_start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "POST",
 						url: "/node/ajax/console/power",
@@ -324,12 +347,12 @@
 							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
 							can_run = true;
 						}
-						$("#on").toggleClass('disabled');
-						$("#on").html('{{ l.render('string.start') }}');
+						$("#server_start").toggleClass('disabled');
+						$("#server_start").html('{{ l.render('string.start') }}');
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#on").removeClass('disabled');
-							$("#on").html('Start');
+							$("#server_start").removeClass('disabled');
+							$("#server_start").html('Start');
 							can_run = true;
 					});
 				}
