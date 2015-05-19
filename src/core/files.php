@@ -43,6 +43,10 @@ class Files {
 			'props',
 			'cfg',
 			'lang',
+			'ini',
+			'cmd',
+			'sh',
+			'lua',
 			'0' // Supports BungeeCord Files
 		);
 
