@@ -51,7 +51,7 @@ Debugger::$strictMode = TRUE;
 * MySQL PDO Connection Engine
 */
 ORM::configure(array(
-	'connection_string' => 'mysql:host='.Config::config('mysql')->host.';dbname='.Config::config('mysql')->database,
+	'connection_string' => 'mysql:host='.Config::config('mysql')->host.':'.Config::config('mysql')->port.';dbname='.Config::config('mysql')->database,
 	'username' => Config::config('mysql')->username,
 	'password' => Config::config('mysql')->password,
 	'driver_options' => array(
