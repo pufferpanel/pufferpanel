@@ -117,8 +117,8 @@ error.xsrf, Token XSRF jest niepoprawny. Prosimy o sprawdzenie czy ciasteczka s�
 error.invalid_password, Nie możemy zweryfikować twojego hasła. Prosimy spróbować ponownie.
 error.invalid_email, Email który podałeś/aś jest nie prawidłowy.
 error.password_mismatch, Hasła które podałeś nie są takie same.
-error.password_strength, Twoje hasło nie jest wystarczająco mocne, prosimy użyć hasła które zawiera więcej niż 8 znaków oraz posiada cyfry oraz znaki specjalne.
+error.password_strength, Twoje hasło nie jest wystarczająco mocne, prosimy użyć hasła które zawiera więcej niż 8 znaków oraz posiada cyfry i znaki specjalne.
 error.account.same_email, Yyyyy... nie można zmienić emaila który jest taki sam.
-success.account.email, Twój email został poprawnie zmieniony do <em>%s</em>.
+success.account.email, Twój email został poprawnie zmieniony na <em>%s</em>.
 success.account.password, Twoje hasło zostało poprawnie zmienione!
 success.notifications.updated, Twoje ustawienia notyfikacji zostały poprawnie zmienione.
