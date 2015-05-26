@@ -18,19 +18,19 @@
   along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-use \PDO;
+$klein->respond('GET', function($request, $response, $service, $app) {
+	
+});
 
-try {
+$klein->respond('POST', function($request, $response, $service) {
+	$params = $request->paramsPost();
+	$mysql = ORM::get_db();
+	try {
 
-	$mysql = new PDO('mysql:host=' . $params['mysqlHost'], $params['mysqlUser'], $params['mysqlPass'], array(
-		PDO::ATTR_PERSISTENT => true,
-		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-	));
+		$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$mysql->beginTransaction();
 
-	$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$mysql->beginTransaction();
-
-	$query = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
+		$query = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 					('company_name', :cname),
 					('master_url', :murl),
 					('assets_url', :aurl),
@@ -49,31 +49,32 @@ try {
 					('use_api', 0),
 					('allow_subusers', 0)");
 
-	$query->execute(array(
-		':cname' => $params['companyName'],
-		':murl' => 'http://' . $params['siteUrl'] . '/',
-		':mwebsite' => 'http://' . $params['siteUrl'] . '/',
-		':aurl' => '//' . $params['siteUrl'] . '/assets/'
-	));
+		$query->execute(array(
+			':cname' => $params['companyName'],
+			':murl' => 'http://' . $params['siteUrl'] . '/',
+			':mwebsite' => 'http://' . $params['siteUrl'] . '/',
+			':aurl' => '//' . $params['siteUrl'] . '/assets/'
+		));
 
-	echo "Settings added\n";
+		$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+		$mysql->prepare("INSERT INTO `users` VALUES(NULL, :uuid, :username, :email, :password, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)")->execute(array(
+			':uuid' => $uuid,
+			':username' => $params['adminName'],
+			':email' => $params['adminEmail'],
+			':password' => password_hash($params['adminPass'], PASSWORD_BCRYPT),
+			':language' => 'en',
+			':time' => time()
+		));
+		$response->redirect('/index');
+	} catch (\Exception $ex) {
 
-	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-	$mysql->prepare("INSERT INTO `users` VALUES(NULL, :uuid, :username, :email, :password, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)")->execute(array(
-		':uuid' => $uuid,
-		':username' => $params['adminName'],
-		':email' => $params['adminEmail'],
-		':password' => password_hash($params['adminPass'], PASSWORD_BCRYPT),
-		':language' => 'en',
-		':time' => time()
-	));
-
-	echo "Admin user added\n";
-} catch (\Exception $ex) {
-
-	echo $ex->getMessage() . "\n";
-	if (isset($mysql) && $mysql->inTransaction()) {
-		$mysql->rollBack();
+		echo $ex->getMessage() . "\n";
+		if (isset($mysql) && $mysql->inTransaction()) {
+			$mysql->rollBack();
+		}
+		exit(1);
+		$service->flash("Error occurred while committing changes: ");
+		$service->flash($ex->getMessage());
+		$service->refresh();
 	}
-	exit(1);
-}
+});

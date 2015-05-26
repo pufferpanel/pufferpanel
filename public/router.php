@@ -93,6 +93,16 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
 
+//Check if panel is completely installed.
+//If no settings are found, then we should load configuration setup and skip anything else
+if(ORM::for_table("acp_settings")->count() == 0) {
+
+	include BASE_DIR.'install/configure.php';
+	$klein->dispatch();
+	return;
+
+}
+
 $klein->respond('!@^(/auth/|/langauge/|/api/|/assets/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
