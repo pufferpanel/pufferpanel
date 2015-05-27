@@ -1,7 +1,7 @@
 #/bin/bash
-version=0.1
+version=0.2.0
 divider="-----"
-installPath="PufferPanel"
+installPath=".."
 
 echo "PufferPanel Language Builder - v${version}"
 echo $divider
