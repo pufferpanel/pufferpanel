@@ -81,7 +81,7 @@ try {
 	$mysqlQueries = file_get_contents(BASE_DIR . "install/install.sql");
 	$mysql->exec($mysqlQueries);
 		
-	$hostquery = $mysql->prepare("select host from information_schema.processlist WHERE ID=connection_id()");
+	$hostquery = $mysql->prepare("SELECT host FROM information_schema.processlist WHERE ID=connection_id()");
 	$hostquery->execute();
 	$fullHost = parse_url($hostquery->fetchColumn(0));
 	$host = isset($fullHost['host']) ? $fullHost['host'] : $fullHost['path'];

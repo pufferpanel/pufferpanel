@@ -1,9 +1,13 @@
 -- Remove existing database and create new
-DROP DATABASE IF EXISTS `pufferpanel`;
-CREATE DATABASE `pufferpanel` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `pufferpanel` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
 USE `pufferpanel`;
+DROP TABLE IF EXISTS `subusers`;
+
+-- Disable Foreign keys to avoid errors in dropping
+SET FOREIGN_KEY_CHECKS = 0
 
 -- Create the tables needed
+DROP TABLE IF EXISTS `acp_settings`;
 CREATE TABLE `acp_settings` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `setting_ref` varchar(25) NOT NULL,
@@ -12,6 +16,7 @@ CREATE TABLE `acp_settings` (
   UNIQUE KEY `setting_ref_unique` (`setting_ref`)
 ) ENGINE=InnoDB;
 
+DROP TABLE `downloads`;
 CREATE TABLE `downloads` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `server` char(36) NOT NULL,
@@ -20,6 +25,7 @@ CREATE TABLE `downloads` (
   PRIMARY KEY (`id`)
 ) ENGINE=MEMORY;
 
+DROP TABLE IF EXISTS `locations`;
 CREATE TABLE `locations` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `short` varchar(10) NOT NULL,
@@ -28,6 +34,7 @@ CREATE TABLE `locations` (
   UNIQUE KEY `short_unique` (`short`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `plugins`;
 CREATE TABLE `plugins` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `hash` char(36) NOT NULL,
@@ -39,6 +46,7 @@ CREATE TABLE `plugins` (
   UNIQUE KEY `slug_unique` (`slug`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` char(36) NOT NULL,
@@ -59,6 +67,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `account_change`;
 CREATE TABLE `account_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned,
@@ -72,6 +81,7 @@ CREATE TABLE `account_change` (
   CONSTRAINT `FK_account_change_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `actions_log`;
 CREATE TABLE `actions_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `priority` tinyint(1) NOT NULL,
@@ -87,6 +97,7 @@ CREATE TABLE `actions_log` (
   CONSTRAINT `FK_actions_log_users` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `nodes`;
 CREATE TABLE `nodes` (
   `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(15) NOT NULL,
@@ -110,6 +121,7 @@ CREATE TABLE `nodes` (
   CONSTRAINT `FK_nodes_locations` FOREIGN KEY (`location`) REFERENCES `locations` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `servers`;
 CREATE TABLE `servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hash` char(36) NOT NULL,
@@ -139,6 +151,7 @@ CREATE TABLE `servers` (
   CONSTRAINT `FK_servers_users` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`)
  ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
@@ -151,6 +164,7 @@ CREATE TABLE `permissions` (
   CONSTRAINT `FK_permissions_users` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `subusers`;
 CREATE TABLE `subusers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
@@ -162,6 +176,10 @@ CREATE TABLE `subusers` (
   CONSTRAINT `FK_subusers_user` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
   CONSTRAINT `FK_subusers_server` FOREIGN KEY (`server`) REFERENCES `servers` (`id`)
 ) ENGINE=InnoDB;
+
+
+-- Enable foreign keys again
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insert all default data
 INSERT INTO `plugins` (`id`, `hash`, `slug`, `name`, `description`, `variables`)
