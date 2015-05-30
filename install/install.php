@@ -18,7 +18,7 @@
   along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-use \PDO;
+use \PDO as PDO;
 
 $params = array();
 parse_str(implode('&', array_splice($argv, 1)), $params);
