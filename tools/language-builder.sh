@@ -47,7 +47,6 @@ rawPath="${installPath}/app/languages/raw/"
 outputPath="${installPath}/app/languages/"
 rm -f ${outputPath}*.json
 
-echo "-----"
 echo "Generating language files"
 
 cd $rawPath
@@ -56,7 +55,7 @@ for f in *.txt
 do
     filename=$(basename $f .txt)
     echo "Building ${filename}"
-    php << EOF
+    php <<
     <?php 
         \$content = file('${filename}.txt');
         \$json = array();
@@ -71,6 +70,5 @@ do
 EOF    
 done
 
-echo "-----"
 echo "Building complete"
 cd $(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
