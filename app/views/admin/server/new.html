@@ -156,7 +156,7 @@
 						<div class="form-group">
 							<label for="alloc_mem" class="control-label">Startup Command</label>
 							<div>
-								<input type="text" autocomplete="off" name="daemon_startup" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} nogui" />
+								<input type="text" autocomplete="off" name="daemon_startup" class="form-control" value="-Xmx${memory}M -jar ${jar} nogui" />
 								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
 								<p><small>The following is a list of permanetly defined variables that can be accessed: <code>${memory}</code>, <code>${ip}</code>, and <code>${port}</code>.</small></p>
 							</div>
