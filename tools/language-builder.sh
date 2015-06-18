@@ -50,9 +50,9 @@ rm -f ${outputPath}*.json
 echo "Generating language files"
 
 cd $rawPath
-echo -n "    "
 for f in *.txt
 do
+    echo -n "    "
     filename=$(basename $f .txt)
     echo "Building ${filename}"
     # Yes, this looks bad, but only way for bash to work with it
