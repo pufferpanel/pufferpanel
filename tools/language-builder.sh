@@ -55,19 +55,15 @@ for f in *.txt
 do
     filename=$(basename $f .txt)
     echo "Building ${filename}"
-    php <<
-    <?php 
-        \$content = file('${filename}.txt');
-        \$json = array();
-        foreach(\$content as \$line => \$string){
-            list(\$id, \$lang) = explode(",", \$string, 2);
-            \$json = array_merge(\$json, array(strtolower(\$id) => trim(\$lang)));
+    # Yes, this looks bad, but only way for bash to work with it
+    php -r '$content = file("$argv[1].txt"); $json = array();
+        foreach($content as $line => $string){
+            list($id, $lang) = explode(",", $string, 2);
+            $json = array_merge($json, array(strtolower($id) => trim($lang)));
         }
-        \$fp = fopen('../${filename}.json', 'w+');
-        fwrite(\$fp, json_encode(\$json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-        fclose(\$fp);
-    ?>
-EOF    
+        $fp = fopen("../$argv[1].json", "w+");
+        fwrite($fp, json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        fclose($fp); ' -- ${filename}
 done
 
 echo "Building complete"
