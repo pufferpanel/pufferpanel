@@ -1,7 +1,7 @@
 <?php
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Game Server Management Panel
+	Copyright (c) 2015 Dane Everitt
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -21,18 +21,11 @@ use \ORM;
 
 $klein->respond('GET', '/node/index', function($request, $response, $service) use ($core) {
 
-	if($core->user->getData('id') != $core->server->getData('owner_id')) {
-
-		$permissionJson = json_decode($core->user->getData('permissions'), true);
-		$gsdSecret = $permissionJson[$core->server->getData('hash')]['key'];
-
-	}
-
 	$response->body($core->twig->render('node/index.html', array(
 		'server' => array_merge($core->server->getData(), array(
-			'gsd_secret' => (isset($gsdSecret)) ? $gsdSecret : $core->server->getData('gsd_secret'),
+			'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
 			'node' => $core->server->nodeData('node'),
-			'console_inner' => $core->gsd->serverLog()
+			'console_inner' => $core->daemon->serverLog()
 		)),
 		'node' => $core->server->nodeData(),
 		'flash' => $service->flashes()

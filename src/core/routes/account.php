@@ -1,7 +1,7 @@
 <?php
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Game Server Management Panel
+	Copyright (c) 2015 Dane Everitt
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Router;
-use \ORM;
+use \ORM, PufferPanel\Core\Settings;
 
 class Account extends \PufferPanel\Core\Email {
 
@@ -28,26 +28,22 @@ class Account extends \PufferPanel\Core\Email {
 	 * I can't just extend \PufferPanel\Core\User for some reason, and I am too lazy to fix that right now.
 	 *
 	 * @param object $user
-	 * @return void
 	 */
 	public function __construct($user) {
 
 		$this->_user = $user;
-		$this->settings = new \PufferPanel\Core\Settings();
 
 	}
 
 	/**
 	 * Handles updating a user password for the router. Can also be used outside of the router if needed.
 	 *
-	 * @param string $old
 	 * @param string $new
 	 * @return bool
 	 */
-	public function updatePassword($old, $new) {
+	public function updatePassword($new) {
 
-		$this->oldPassword = $old;
-		$this->newPassword = $this->hash($new);
+		$new_password = $this->hash($new);
 
 		$this->account = ORM::forTable('users')->findOne($this->_user->getData('id'));
 
@@ -55,7 +51,7 @@ class Account extends \PufferPanel\Core\Email {
 				return false;
 			}
 
-		$this->account->password = $this->newPassword;
+		$this->account->password = $new_password;
 		$this->account->session_id = null;
 		$this->account->session_ip = null;
 		$this->account->save();
@@ -63,7 +59,7 @@ class Account extends \PufferPanel\Core\Email {
 		$this->buildEmail('password_changed', array(
 			'IP_ADDRESS' => $_SERVER['REMOTE_ADDR'],
 			'GETHOSTBY_IP_ADDRESS' => gethostbyaddr($_SERVER['REMOTE_ADDR'])
-		))->dispatch($this->_user->getData('email'), $this->settings->get('company_name').' - Password Change Notification');
+		))->dispatch($this->_user->getData('email'), Settings::config()->company_name.' - Password Change Notification');
 
 		return true;
 

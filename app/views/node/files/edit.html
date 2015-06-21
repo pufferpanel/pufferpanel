@@ -2,17 +2,14 @@
 
 {% block title %}Editing File{% endblock %}
 
-{% block scripts %}
-	{{ parent() }}
-	<script type="text/javascript" src="{{ settings.assets_url }}javascript/jquery.redirect.min.js"></script>
-{% endblock %}
-
 {% block content %}
-<div class="col-9" id="load_files">
+<div class="col-md-9" id="load_files">
 	<span id="save_status" style="display:none;width: 100%;"></span>
-	{% if error %}
-		{{ error|raw }}
-	{% else %}
+	{% if flash.info is defined %}
+	<div class="col-md-12">
+		{{ flash.info.0|raw }}
+	</div>
+	{% endif %}
 	<form method="post" id="editing_file">
 		<div class="form-group">
 			<div>
@@ -31,18 +28,17 @@
 				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
 			</div>
 		</div>
-		{% if permission.files.save == true %}
+		{% if permission.has('files.save') %}
 			<div class="form-group">
 				<div>
 					<input type="hidden" name="file" value="{{ file }}" />
 					{{ xsrf|raw }}
-					<button class="btn btn-primary btn-sm" id="save_file">{{ lang.string_save }}</button>
-					<button class="btn btn-default btn-sm" onclick="window.location='index.php?dir={{ directory|url_encode }}';return false;">{{ lang.node_files_edit_back }}</button>
+					<button class="btn btn-primary btn-sm" id="save_file">{{ l.render('string.save') }}</button>
+					<button class="btn btn-default btn-sm" onclick="window.location='/node/files?dir={{ directory|url_encode }}';return false;">{{ l.render('node.files.edit.back') }}</button>
 				</div>
 			</div>
 		{% endif %}
     </form>
-    {% endif %}
 </div>
 <script type="text/javascript">
 $(window).load(function() {
@@ -61,7 +57,7 @@ $(window).load(function() {
 			e.preventDefault();
 		}
 	});
-	{% if permission.files.save == true %}
+	{% if permission.has('files.save') %}
 		$("#save_file").click(function(a) {
 			a.preventDefault();
 			var e = $("input[name='file']").val(),
@@ -69,11 +65,14 @@ $(window).load(function() {
 			l = $("input[name='xsrf']").val();
 			$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"), $.ajax({
 				type: "POST",
-				url: "../ajax/files/save.php",
+				url: "/node/ajax/files/save",
 				data: {
 					file: e,
 					file_contents: s,
 					xsrf: l
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#save_status").html('<div class="alert alert-danger">Error: '+errorThrown+'</div>'), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
 				},
 				success: function(a) {
 					$("#save_status").html(a), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()

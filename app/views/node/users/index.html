@@ -2,27 +2,24 @@
 
 {% block title %}Manage Subusers{% endblock %}
 
-{% block servername %}
-<ul class="nav navbar-nav">
-	<li class="active dynUpdate" id="{{ server.id }}"><a><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
-</ul>
-{% endblock %}
-
 {% block content %}
-<div class="col-9">
-	<p style="text-align:right;"><a href="/node/users/add"><button class="btn btn-sm btn-primary">Add Subuser</button></a></p>
+<div class="col-md-9">
+	<div class="panel panel-default">
+		<div class="panel-heading">Manage Subusers 	<span style="right:21px;top:6px;position:absolute;"><a href="/node/users/add"><button class="btn btn-xs btn-primary">Add Subuser</button></a></span></div>
+		<div class="panel-body">
+			<p>Adding a subuser allows you to provide additional people access to different aspects of the panel to control your server. You can fine-tune their access to different functions, as well as revoke permissions down the road without ever having to risk giving out your personal account informtion.<p>
+			<p>To begin, click the button above and select which features you a user to be able to access. Then, enter their email when prompted and an email invite will be sent to them.<p>
+		</div>
+	</div>
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<div class="list-group">
-	{% for email, info in users %}
-		<a {% if info.status != "pending" %}href="/node/users/edit/{{ info.id }}"{% endif %} class="list-group-item">
-			<h4 class="list-group-item-heading">{{ email }}</h4>
-			{% if info.status == "pending" %}<p><span class="label label-default">Pending</span>&nbsp;<span class="label label-danger" style="cursor:pointer;" onclick="window.location='/node/users/revoke/{{ info.revoke }}'">Revoke</span></p>{% endif %}
+	{% for user in users %}
+		<a href="/node/users/edit/{{ user.email }}" class="list-group-item">
+			<h4 class="list-group-item-heading">{{ user.email }} {% if user.username == null %}<span class="badge label-default">Pending</span>{% endif %}</h4>
 			<p class="list-group-item-text"><strong>Permission Nodes:</strong>
-				{% for id, perms in info.permissions %}
-					{{ perms }}{% if loop.last != true %},{% endif %}
-				{% endfor %}
+				{{ user.user_permissions }}
 			</p>
 		</a>
 	{% endfor %}

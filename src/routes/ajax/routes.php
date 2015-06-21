@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 namespace PufferPanel\Core;
 use \ORM;
 
-$klein->respond('POST', '/ajax/status', function($request, $response) use ($core){
+$klein->respond('POST', '/ajax/status', function($request, $response) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 		$response->body('#FF9900')->send();
@@ -28,12 +28,46 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 		if($request->param('server')) {
 
 			$status = ORM::forTable('servers')
-				->select('servers.gsd_id')->select('nodes.ip')->select('nodes.gsd_secret')->select('nodes.gsd_listen')
+				->select('servers.hash', 's_hash')->select('nodes.fqdn')->select('nodes.daemon_secret')->select('nodes.daemon_listen')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
-				->where('servers.id', $request->param('server'))
+				->where('servers.hash', $request->param('server'))
 				->findOne();
 
-			if(!$core->gsd->check_status($status->ip, $status->gsd_listen, $status->gsd_id, $status->gsd_secret)) {
+			if(!$status) {
+				$response->body('#FF9900')->send();
+				return;
+			}
+
+			if($core->daemon->check_status($status->fqdn, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
+				$response->body('#E33200')->send();
+			} else {
+				$response->body('#53B30C')->send();
+			}
+
+		} else {
+			$response->body('#FF9900')->send();
+		}
+
+	}
+
+});
+
+$klein->respond('POST', '/ajax/status/node', function($request, $response) use ($core) {
+
+	if(!$core->auth->isLoggedIn()) {
+		$response->body('#FF9900')->send();
+	} else {
+
+		if($request->param('node')) {
+
+			$status = ORM::forTable('nodes')->findOne($request->param('node'));
+
+			if(!$status) {
+				$response->body('#FF9900')->send();
+				return;
+			}
+
+			if(!$core->daemon->avaliable($status->fqdn, $status->daemon_listen, 1)) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();

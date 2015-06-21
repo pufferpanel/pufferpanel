@@ -3,7 +3,15 @@
 {% block title %}List All Nodes{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li class="active">Manage Locations</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<h3 class="nopad">Node Locations</h3>
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
@@ -11,40 +19,37 @@
 				<th>Shortcode</th>
 				<th>Location</th>
 				<th>Total Nodes</th>
+				<th>Total Servers</th>
+				<th>Manage</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for location in locations %}
-			<tr class="dynUpdate" id="{{ node.fqdn }}">
+			<tr id="{{ location.id }}">
 				<td>{{ location.short }}</a></td>
 				<td>{{ location.long }}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
+				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalservers }}{% endif %}</td>
+				<td style="text-align:center;">
+					<a href="/admin/node/locations/{{ location.short }}/edit" class="edit_location"><span class="badge">Edit</span></a>
+					<a href="/admin/node/locations/{{ location.short }}/delete"><span class="badge label-danger">Delete</span></a>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 	<h3>Add New Location</h3>
-	{% if get.error is defined and get.error != 1 %}
-		<div class="alert alert-danger">
-			{% if get.error == "missing_args" %} Not all arguments were passed to the script.
-			{% elseif get.error == "shortcode" %} The shortcode provided was invalid.
-			{% elseif get.error == "location" %} The location provided cannot be empty. {% endif %}
-		</div>
-	{% endif %}
-	{% if get.success is defined %}
-		<div class="alert alert-success">You have successfully added a new location.</div>
-	{% endif %}
-	<form action="ajax/locations/add.php" method="POST">
-		<div class="well well-sm">
+	<form action="locations" method="POST">
+		<div class="well">
 			<div class="row">
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<label for="shortcode" class="control-label">Shortcode</label>
 					<div>
 						<input type="text" class="form-control" name="shortcode" placeholder="atl" />
 						<p><small class="text-muted"><em>Must be between 1 and 10 characters long. (a-zA-Z0-9-)</em></small></p>
 					</div>
 				</div>
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<label for="location" class="control-label">Location</label>
 					<div>
 						<input type="text" class="form-control" name="location" placeholder="U.S. (Atlanta)" />
@@ -53,7 +58,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-6">
+				<div class="form-group col-md-6">
 					<div>
 						<input type="submit" value="Add Location" class="btn btn-primary btn-sm" />
 					</div>
@@ -61,23 +66,27 @@
 			</div>
 		</div>
 	</form>
+	<span id="appendModal"></span>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script type="text/javascript">
-$(document).ready(function(){
-	if($.urlParam('error') != null){
-		var field = $.urlParam('error');
-		var exploded = field.split('|');
-		$.each(exploded, function(key, value) {
-			$('[name="' + value + '"]').parent().parent().addClass('has-error');
+$(window).load(function(){
+	$("#sidebar_links").find("a[href='/admin/node/locations']").addClass('active');
+	$(".edit_location").click(function(e){
+		var c = $(this);
+		e.preventDefault();
+		$.ajax({
+			'url': c.attr('href'),
+			'method': 'GET'
+		}).done(function(data){
+			$("#appendModal").html(data);
+			$("#launchModal").modal();
+		}).fail(function() {
+			alert("An error occured while trying to make this request.");
 		});
-		var obj = $.parseJSON($.cookie('__TMP_pp_admin_newlocation'));
-		$.each(obj, function(key, value) {
-			$('[name="' + key + '"]').val(value);
-		});
-	}
+	});
 });
 </script>
 {% endblock %}

@@ -36,6 +36,7 @@ trait Functions {
 	 */
 	public static function generateFTPUsername($base) {
 
+		$base = str_replace(" ", "", $base);
 		$i = strlen($base);
 		if($i > 6) {
 			$username = substr($base, 0, 6).'_'.self::keygen(5);
@@ -43,19 +44,23 @@ trait Functions {
 			$username = $base.'_'.self::keygen((11 - $i));
 		}
 
-	    return "mc-".strtolower($username);
+		return "pp-".strtolower($username);
 
 	}
 
 	/**
 	 * Returns an array of ports from a 'range' seperated by '-'.
 	 *
-	 * @param string $range String of two ports using '-' to seperate.
+	 * @param string $input String of two ports using '-' to seperate.
 	 * @return array Returns an array of integers. Returns null if first port is smaller than next.
 	 */
 	public static function processPorts($input) {
 
 		$port_list = [];
+
+		if(!trim($input)) {
+			return $port_list;
+		}
 
 		foreach(explode(',', $input) as $range) {
 
@@ -73,7 +78,7 @@ trait Functions {
 					throw new Exception("The range provided for ports in processPorts({$input}) is invalid. The start value ({$explode[0]}) can't be higher than the end value ({$explode[1]}).");
 				}
 
-				for($i = $explode[0]; $explode[0] <= $explode[1]; $i++) {
+				for($i = $explode[0]; $i <= $explode[1]; $i++) {
 					$port_list[] = $i;
 				}
 

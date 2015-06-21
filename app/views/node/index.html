@@ -5,16 +5,11 @@
 	<script src="{{ settings.assets_url }}javascript/chartjs/chart.core.js"></script>
 	<script src="{{ settings.assets_url }}javascript/chartjs/chart.bar.js"></script>
 {% endblock %}
+
 {% block title %}Manage your Server{% endblock %}
 
-{% block servername %}
-<ul class="nav navbar-nav">
-	<li class="active dynUpdate" id="{{ server.id }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
-</ul>
-{% endblock %}
-
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
@@ -22,87 +17,92 @@
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
-	<div class="alert alert-danger" id="socket_error" style="display:none;"><i class="fa fa-exclamation-triangle"></i> We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
-				<div class="col-6">
+				<div class="col-md-6">
 					<h3 class="nopad">Memory Usage</h3><hr />
-					<div class="row">
+					<div class="row centered">
 						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (10s Increments)</small></p>
-						<p class="graph-yaxis text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
+						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
+						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>Memory Usage (%)</small></p>
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="col-md-6">
 					<h3 class="nopad">CPU Usage</h3><hr />
-					<div class="row">
+					<div class="row centered">
 						<canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (10s Increments)</small></p>
-						<p class="graph-yaxis text-muted" style="margin-top:-65px !important;"><small>CPU Usage (%)</small></p>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
+						<p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>CPU Usage (%)</small></p>
+						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>CPU Usage (%)</small></p>
 					</div>
 				</div>
 			</div>
-			<div class="col-12">
-				<h3 class="nopad">{{ lang.node_overview_players_h5 }}</h3><hr />
-				<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ lang.node_overview_collect_usage }}</div>
-				<span id="toggle_players" style="display:none;">
-					<p class="text-muted">{{ lang.node_overview_no_players }}</p>
-			</div>
-			<div class="col-12">
-				<h3>{{ lang.node_overview_information_h1 }}</h3><hr />
-				<table class="table table-striped table-bordered table-hover">
-					<tbody>
-						<tr>
-							<td><strong>{{ lang.string_connection }}</strong></td>
-							<td>{{ server.server_ip }}:{{ server.server_port }}</td>
-						</tr>
-						<tr>
-							<td><strong>{{ lang.string_node }}</strong></td>
-							<td>{{ server.node }}</td>
-						</tr>
-						<tr>
-							<td><strong>{{ lang.string_mem_alloc }}</strong></td>
-							<td>{{ server.max_ram }} MB</td>
-						</tr>
-						<tr>
-							<td><strong>{{ lang.string_disk_alloc }}</strong></td>
-							<td>{{ server.disk_space }} MB</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="nopad">{{ l.render('node.overview.players_h5') }}</h3><hr />
+					<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ l.render('node.overview.collect_usage') }}</div>
+					<span id="toggle_players" style="display:none;">
+						<p class="text-muted">{{ l.render('node.overview.no_players') }}</p>
+				</div>
+				<div class="col-md-12">
+					<h3>{{ l.render('node.overview.information_h1') }}</h3><hr />
+					<table class="table table-striped table-bordered table-hover">
+						<tbody>
+							<tr>
+								<td><strong>{{ l.render('string.connection') }}</strong></td>
+								<td>{{ server.server_ip }}:{{ server.server_port }}</td>
+							</tr>
+							<tr>
+								<td><strong>{{ l.render('string.node') }}</strong></td>
+								<td>{{ node.name }}</td>
+							</tr>
+							<tr>
+								<td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
+								<td>{{ server.max_ram }} MB</td>
+							</tr>
+							<tr>
+								<td><strong>{{ l.render('string.disk_alloc') }}</strong></td>
+								<td>{{ server.disk_space }} MB</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div class="tab-pane" id="console">
-			<div class="col-12">
-				<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
-			</div>
-			<div class="col-6">
-				<hr />
-				{% if permission.console.commands == true %}
-					<form action="#" method="post" id="console_command">
-						<fieldset>
-							<div class="input-group">
-								<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ lang.node_console_command_help }}" />
-								<span class="input-group-btn">
-									<button id="sending_command" class="btn btn-primary">&rarr;</button>
-								</span>
-							</div>
-						</fieldset>
-					</form>
-					<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-				{% endif %}
-			</div>
-			<div class="col-6" style="text-align:center;">
-				<hr />
-				{% if permission.console.power == true %}
-					<button class="btn btn-primary btn-sm start" id="on">{{ lang.string_start }}</button>
-					<button class="btn btn-primary btn-sm poke" id="restart">{{ lang.string_restart }}</button>
-					<button class="btn btn-danger btn-sm poke" id="off">{{ lang.string_stop }}</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-					<div style="margin-top:5px;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
-					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
-				{% endif %}
+			<div class="row">
+				<div class="col-md-12">
+					<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
+				</div>
+				<div class="col-md-6">
+					<hr />
+					{% if permission.has('console.commands') %}
+						<form action="#" method="post" id="console_command">
+							<fieldset>
+								<div class="input-group">
+									<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ l.render('node.console.command_help') }}" />
+									<span class="input-group-btn">
+										<button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
+									</span>
+								</div>
+							</fieldset>
+						</form>
+						<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+					{% endif %}
+				</div>
+				<div class="col-md-6" style="text-align:center;">
+					<hr />
+					{% if permission.has('console.power') %}
+						<button class="btn btn-success btn-sm start disabled" id="server_start">{{ l.render('string.start') }}</button>
+						<button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
+						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
+						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -112,79 +112,29 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="PauseConsole">{{ lang.node_console_scrollstop_h1|raw }}</h4>
+				<h4 class="modal-title" id="PauseConsole">{{ l.render('node.console.scrollstop_h1')|raw }}</h4>
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-1"></div>
-					<div class="col-10">
+					<div class="col-md-12">
 						<textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
 					</div>
-					<div class="col-1"></div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">{{ lang.string_close }}</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">{{ l.render('string.close') }}</button>
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		var socket = io('http://{{ node.ip }}:{{ node.gsd_console }}/{{ server.gsd_id }}', {'query': 'token={{ server.gsd_secret }}'});
-		var ctx = $("#memoryChart").get(0).getContext("2d");
-		var cty = $("#cpuChart").get(0).getContext("2d");
-		var memoryChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", ""],
-			datasets: [{
-				fillColor : "#ccc",
-				strokeColor : "rgba(0,0,0,0)",
-				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-			}]
-		};
-		var cpuChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", ""],
-			datasets: [{
-				fillColor : "#ccc",
-				strokeColor : "rgba(0,0,0,0)",
-				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-			}]
-		};
-		memoryChart = new Chart(ctx).Bar(memoryChartData, {
-			animation: true,
-			showScale: true,
-			barShowStroke: false,
-			scaleOverride: false,
-			tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %},
-			barValueSpacing: 2,
-			barStrokeWidth: 1,
-			scaleShowGridLines: false
-		});
-		cpuChart = new Chart(cty).Bar(cpuChartData, {
-			animation: true,
-			showScale: true,
-			barShowStroke: false,
-			scaleOverride: false,
-			tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %},
-			barValueSpacing: 2,
-			barStrokeWidth: 1,
-			scaleShowGridLines: false
-		});
-		socket.io.on('connect_error', function(err) {
-			$("#socket_error:hidden").show();
-		});
-		socket.on('connect', function (){
-			$("#socket_error:visible").hide();
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('process', function (data) {
+		socket.on('stats', function (data) {
 			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.process.memory / (1024 * 1024))], "");
+			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
 			memoryChart.removeData();
-			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.process.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.process.cpu], ""); }
+			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
 			cpuChart.removeData();
 		});
 		socket.on('query', function(data){
@@ -192,31 +142,73 @@
 				$("#players_notice").hide();
 				$("#toggle_players").show();
 			}
-			if(data.query.players.length !== 0){
+			if(data['data'].players != undefined && data['data'].players.length !== 0){
 				$("#toggle_players").html("");
-				$.each(data.query.players, function(id, d) {
-					console.log(d);
-					$.each(d, function(n, name) {
-						$("#toggle_players").append('<img data-toggle="tooltip" src="http://i.fishbans.com/helm/'+name+'/32" title="'+name+'" style="padding: 0 2px 6px 0;"/>');
-					});
+				$.each(data['data'].players, function(id, d) {
+					$("#toggle_players").append("<code>" + d.name + "</code>");
 				});
 			}else{
 				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
 			}
-			$("img[data-toggle='tooltip']").tooltip();
-		});
-		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		socket.on('console', function (data) {
-			$("#live_console").val($("#live_console").val() + data.l);
+			$("#live_console").val($("#live_console").val() + data.line);
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		socket.on('initial_status', function(data) {
+			updateServerPowerControls(data.status);
+		});
+		socket.on('status', function(data) {
+			updateServerPowerControls(data.status);
+		});
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		$("#pause_console").click(function(){
 			$("#paused_console").val();
 			$("#paused_console").val($("#live_console").val());
 		});
-		{% if permission.console.commands == true %}
+		var ctx = $("#memoryChart").get(0).getContext("2d");
+		var cty = $("#cpuChart").get(0).getContext("2d");
+		var memoryChartData = {
+			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			datasets: [{
+				fillColor : "#ccc",
+				strokeColor : "rgba(0,0,0,0)",
+				highlightFill : "#666",
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			}]
+		};
+		var cpuChartData = {
+			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			datasets: [{
+				fillColor : "#ccc",
+				strokeColor : "rgba(0,0,0,0)",
+				highlightFill : "#666",
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			}]
+		};
+		memoryChart = new Chart(ctx).Bar(memoryChartData, {
+			animation: false,
+			showScale: true,
+			barShowStroke: false,
+			scaleOverride: false,
+			tooltipTemplate: {% verbatim %}"<%= value %> Mb"{% endverbatim %},
+			barValueSpacing: 1,
+			barStrokeWidth: 1,
+			scaleShowGridLines: false
+		});
+		cpuChart = new Chart(cty).Bar(cpuChartData, {
+			animation: false,
+			showScale: true,
+			barShowStroke: false,
+			scaleOverride: false,
+			tooltipTemplate: {% verbatim %}"<%= value %> %"{% endverbatim %},
+			barValueSpacing: 1,
+			barStrokeWidth: 1,
+			scaleShowGridLines: false
+		});
+		{% if permission.has('console.commands') %}
 			$("#console_command").submit(function(event){
 				event.preventDefault();
 				var ccmd = $("#ccmd").val();
@@ -224,125 +216,145 @@
 					$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 					$.ajax({
 						type: "POST",
-						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/console',
-						timeout: 5000,
-						data: { command: ccmd },
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
-							$("#sending_command").removeClass('disabled');
-							$("#sending_command").html('&rarr;');
-							$("#ccmd").val('');
+						headers: {
+							"X-Access-Token": "{{ server.daemon_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
 						},
-						success: function(data) {
-							$("#sending_command").removeClass('disabled');
-							$("#sending_command").html('&rarr;');
-							$("#ccmd").val('');
-								if(data != ""){
-									$("#sc_resp").html(data).fadeIn().delay(5000).fadeOut();
-								}
+						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/console',
+						timeout: 5000,
+						data: {
+							command: ccmd
 						}
+					}).done(function(data) {
+						$("#sending_command").removeClass('disabled');
+						$("#sending_command").html('&rarr;');
+						$("#ccmd").val('');
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+						$("#sending_command").removeClass('disabled');
+						$("#sending_command").html('&rarr;');
+						$("#ccmd").val('');
 					});
 				}
 			});
 		{% endif %}
-		{% if permission.console.power == true %}
+		{% if permission.has('console.power') %}
 			var can_run = true;
-			$("#kill_proc").click(function(){
+			function updateServerPowerControls(data) {
+				// Server is On or Starting
+				if(data == 1 || data == 3) {
+					$("#server_start").addClass('disabled');
+					$("#server_stop, #server_restart").removeClass("disabled");
+				} else {
+					$("#server_start").removeClass('disabled');
+					$("#server_stop, #server_restart").addClass("disabled");
+				}
+
+				if(data !== 0) {
+					$("#kill_process_text").slideDown(200);
+				} else {
+					$("#kill_process_text").slideUp(200);
+				}
+
+			}
+			$("#kill_proc").click(function(e){
+				e.preventDefault();
 				var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
 				if(killConfirm) {
 					$.ajax({
 						type: "GET",
-						headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-						url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/kill',
-						timeout: 5000,
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							return false;
+						headers: {
+							"X-Access-Token": "{{ server.daemon_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
 						},
-						success: function(data) {
-							if(data == "ok"){
-								$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
-								return false;
-							}
-						}
+						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/kill',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+						$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 					});
 				}
 			});
-			$(".poke").click(function(){
-				var command = $(this).attr("id");
-				if(command == 'off'){ uCommand = 'Stopping'; }else{ uCommand = 'Restarting';}
-					if(can_run === true){
-						can_run = false;
-						$(this).append(' <i class="fa fa-refresh fa-spin"></i>');
-						$(this).toggleClass('disabled');
-						$.ajax({
-							type: "GET",
-							headers: {"X-Access-Token": "{{ server.gsd_secret }}"},
-							url: 'http://{{ node.ip }}:{{ node.gsd_listen }}/gameservers/{{ server.gsd_id }}/off',
-							timeout: 5000,
-							error: function(jqXHR, textStatus, errorThrown) {
-								$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-								$("#off").removeClass('disabled');
-								$("#off").html('Stop');
-								$("#restart").removeClass('disabled');
-								$("#restart").html('Restart');
-								can_run = true;
-								return false;
-							},
-							success: function(data) {
-								if(data == "ok"){
-									$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-									can_run = true;
-									if(command == "restart"){
-										setTimeout(function() { start_server(); }, 5000)
-									}
-									$("#off").removeClass('disabled');
-									$("#off").html('{{ lang.string_stop }}');
-									return false;
-								}
-							}
-						});
-					}else{
+			$("#server_stop").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
+					$.ajax({
+						type: "GET",
+						headers: {
+							"X-Access-Token": "{{ server.daemon_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
+						},
+						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/off',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+						$("#server_stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
+						can_run = true;
 						return false;
-					}
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							$("#server_stop").removeClass('disabled').html('Stop');
+							can_run = true;
+					});
+				}
 			});
-			$("#on").click(function(){
+			$("#server_restart").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
+					$.ajax({
+						type: "GET",
+						headers: {
+							"X-Access-Token": "{{ server.daemon_secret }}",
+							"X-Access-Server": "{{ server.hash }}"
+						},
+						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/restart',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+						$("#server_restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
+						can_run = true;
+						return false;
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							$("#server_restart").removeClass('disabled').html('Restart');
+							can_run = true;
+					});
+				}
+			});
+			$("#server_start").click(function(e){
+				e.preventDefault();
 				start_server();
 			});
 			function start_server() {
 				if(can_run === true){
 					can_run = false;
-					$("#restart").removeClass('disabled');
-					$("#restart").html('{{ lang.string_restart }}');
-					$("#on").append(' <i class="fa fa-refresh fa-spin"></i>');
-					$("#on").toggleClass('disabled');
+					$("#server_start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "POST",
 						url: "/node/ajax/console/power",
-						timeout: 5000,
-						error: function(jqXHR, textStatus, errorThrown) {
-							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ lang.node_ajax_generic_error }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#on").removeClass('disabled');
-							$("#on").html('Start');
+						timeout: 5000
+					}).done(function(data) {
+						if(data == "ok"){
+							$("#live_console").val("Server is starting...\n");
+							$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
 							can_run = true;
-							return false;
-						},
-						success: function(data) {
-							if(data == "ok"){
-								$("#live_console").val("Server is starting...\n");
-								$("#pw_resp").attr('class', 'alert alert-success').html("{{ lang.node_console_ajax_server_started }}").fadeIn().delay(5000).fadeOut();
-								can_run = true;
-							}else{
-								$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
-								can_run = true;
-							}
-							$("#on").toggleClass('disabled');
-							$("#on").html('{{ lang.string_start }}');
+						}else{
+							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
+							can_run = true;
 						}
+						$("#server_start").toggleClass('disabled');
+						$("#server_start").html('{{ l.render('string.start') }}');
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							$("#server_start").removeClass('disabled');
+							$("#server_start").html('Start');
+							can_run = true;
 					});
-				}else{
-					return false;
 				}
 			}
 		{% endif %}

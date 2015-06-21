@@ -1,7 +1,7 @@
 <?php
 /*
-PufferPanel - A Minecraft Server Management Panel
-Copyright (c) 2013 Dane Everitt
+PufferPanel - A Game Server Management Panel
+Copyright (c) 2015 Dane Everitt
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,21 @@ $klein->respond('GET', '/admin/index', function($request, $response) use ($core)
 
 });
 
+$klein->respond('GET', '/admin/passgen/[i:count]?', function($request, $response) use ($core) {
+
+	if(!$request->param('count')) {
+
+		$response->body($core->auth->keygen(16))->send();
+
+	} else {
+
+		$response->body($core->auth->keygen($request->param('count')))->send();
+
+	}
+
+});
+
 include 'account/routes.php';
-include 'config/routes.php';
+include 'settings/routes.php';
 include 'node/routes.php';
 include 'server/routes.php';

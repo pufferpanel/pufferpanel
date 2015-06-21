@@ -1,7 +1,7 @@
 <?php
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Game Server Management Panel
+	Copyright (c) 2015 Dane Everitt
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ use \Exception;
 /**
  * PufferPanel Core Language Class
  */
-class Language {
+class Language extends User {
 
 	/**
 	 * @param string $language
@@ -35,20 +35,21 @@ class Language {
 	protected $loaded;
 
 	/**
-	 * Constructor class for language
-	 *
-	 * @param string $language The language to load.
-	 * @return void
+	 * Constructor class for Language
 	 */
-	public function __construct($language){
+	public function __construct() {
 
-		$this->language = $language;
-
-		if(!file_exists(dirname(__DIR__).'/lang/'.$language.'.json')) {
-			throw new Exception('Unable to load the required language file! lang/'.$language.'.json');
+		if(!$this->getData('language')) {
+			$this->language = (isset($_COOKIE['pp_language']) && !empty($_COOKIE['pp_language'])) ? $_COOKIE['pp_language'] : Settings::config()->default_language;
+		} else {
+			$this->language = $this->getData('language');
 		}
 
-		$this->loaded = json_decode(file_get_contents(dirname(__DIR__).'/lang/'.$language.'.json'), true);
+		if(!file_exists(APP_DIR.'languages/'.$this->language.'.json')) {
+			throw new Exception('Unable to load the required language file! '.APP_DIR.'languages/'.$this->language.'.json');
+		}
+
+		$this->loaded = json_decode(file_get_contents(APP_DIR.'languages/'.$this->language.'.json'), true);
 
 	}
 
@@ -58,29 +59,21 @@ class Language {
 	 * @param string $template The language key.
 	 * @return string
 	 */
-	public function tpl($template){
+	public function render($template) {
 
-		$template = str_replace(".", "_", $template);
+		if(!array_key_exists($template, $this->loaded)) {
 
-		if(array_key_exists($template, $this->loaded)) {
-			return $this->loaded[$template];
-		} else {
+			$load_english = json_decode(file_get_contents(APP_DIR.'languages/en.json'), true);
 
-			if($this->language == "en") {
-				return $template;
+			if(array_key_exists($template, $load_english)) {
+				return $load_english[$template];
 			} else {
-
-				$load_english = json_decode(file_get_contents(__DIR__.'/lang/en.json'), true);
-
-				if(array_key_exists($template, $load_english)) {
-					return $load_english[$template];
-				} else {
-					return $template;
-				}
-
+				return "{{ $template }}";
 			}
 
 		}
+
+		return $this->loaded[$template];
 
 	}
 
@@ -88,6 +81,7 @@ class Language {
 	 * Returns the loaded langauge as an array.
 	 *
 	 * @return array
+	 * @deprecated
 	 */
 	public function loadTemplates() {
 

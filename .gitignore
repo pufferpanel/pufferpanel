@@ -1,18 +1,13 @@
 # osx noise
 .DS_Store
-profile
-PufferPan.esproj/*
 *HASHFILE*
-*configuration.php
 *.lock
-SETUP
-panel/api/index2.php
 vendor
 composer.phar
 src/logs/*.log
 src/logs/*.html
 src/cache/*
-phpdoc_base/*
 !src/cache/downloads/.githold
 !src/cache/uploads/.githold
 config.json
+app/languages/*.json

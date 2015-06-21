@@ -17,14 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM as ORM;
-
-/*
- * TOTP Class
- */
-use Otp\Otp;
-use Otp\GoogleAuthenticator;
-use Base32\Base32;
+use \ORM, \Otp\Otp, \Base32\Base32;
 
 /**
  * PufferPanel Core Authentication Class
@@ -33,20 +26,14 @@ class Authentication {
 
 	use Components\Authentication, Components\Page;
 
-	protected $settings;
-
 	protected $authenticated = false;
 
 	protected $select;
 
 	/**
 	 * Authentcation constructor class.
-	 *
-	 * @return void
 	 */
-	public function __construct(){
-
-		$this->settings = new Settings();
+	public function __construct() {
 
 		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 
@@ -62,14 +49,11 @@ class Authentication {
 	 * @param string $secret The TOTP secret.
 	 * @return bool
 	 */
-	public function validateTOTP($key, $secret){
+	public function validateTOTP($key, $secret) {
 
 		$otp = new Otp();
 
-		if($otp->checkTotp(Base32::decode($secret), $key))
-			return true;
-		else
-			return false;
+		return $otp->checkTotp(Base32::decode($secret), $key);
 
 	}
 
@@ -80,14 +64,15 @@ class Authentication {
 	 * @param string $raw The raw password.
 	 * @return bool
 	 */
-	public function verifyPassword($email, $raw){
+	public function verifyPassword($email, $raw) {
 
-		$this->get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
+		$get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-		if($this->get !== false)
-			return $this->password_compare($raw, $this->get->password);
-		else
+		if($get !== false) {
+			return $this->password_compare($raw, $get->password);
+		} else {
 			return false;
+		}
 
 	}
 
@@ -110,7 +95,7 @@ class Authentication {
 	public final function isAdmin() {
 
 		if(!$this->select) {
-			return 'hue';
+			return false;
 		} else {
 			return ($this->select->root_admin == 1) ? true : false;
 		}
@@ -124,21 +109,36 @@ class Authentication {
 	 */
 	public final function isServer() {
 
+		$permissions = new Permissions();
+
 		if(!isset($_COOKIE['pp_server_hash']) || empty($_COOKIE['pp_server_hash'])) {
 			return false;
 		}
 
-		$query = ORM::forTable('servers')->where(array('hash' => $_COOKIE['pp_server_hash'], 'active' => 1));
+		$query = ORM::forTable('servers')->where(array(
+			'hash' => $_COOKIE['pp_server_hash'],
+			'active' => 1
+		));
 
 		if(!$this->isAdmin()) {
-
-			$permissions = (!empty($this->select->permissions)) ? array_keys(json_decode($this->select->permissions, true)) : array();
-
-			$query->where_raw('`owner_id` = ? OR `hash` IN(?)', array($this->select->id, join(',', $permissions)));
-
+			$query->where_in('id', $permissions->listServers());
 		}
 
-		return (!$query->findOne()) ? false : true;
+		return $query->findOne();
+
+	}
+
+	/**
+	 * Checks if the selected server is correctly installed.
+	 *
+	 * @return bool
+	 */
+	public final function isInstalled() {
+
+		return ORM::forTable('servers')->where(array(
+			'installed' => 1,
+			'hash' => $_COOKIE['pp_server_hash']
+		))->findOne();
 
 	}
 

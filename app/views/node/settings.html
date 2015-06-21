@@ -3,83 +3,51 @@
 {% block title %}Server Settings{% endblock %}
 
 {% block content %}
-<div class="col-9">
-	<ul class="nav nav-tabs" id="config_tabs" style="margin-bottom:15px;">
-		{% if permission.manage.rename.view == true %}<li class="active"><a href="#server_sett" data-toggle="tab">Server Jarfile</a></li>{% endif %}
-		{% if permission.manage.ftp.view == true %}<li class=""><a href="#ftp_sett" data-toggle="tab">{{ lang.string_ftp }} Information</a></li>{% endif %}
-	</ul>
+<div class="col-md-9">
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
-	<div class="tab-content">
-		{% if permission.manage.rename.view == true %}
-			<div class="tab-pane active" id="server_sett">
-				<h3>{{ lang.node_settings_jar_jar_h1 }}</h3><hr />
-				{% if permission.manage.rename.jar == true %}
+	{% if permission.has('manage.ftp.view') %}
+		<h3>Manage SFTP Information</h3><hr />
+		{% if permission.has('manage.ftp.details') %}
+			<div class="form-group">
+				<label for="ftp_host" class="control-label">{{ l.render('string.host') }}</label>
+				<div>
+					<input type="text" readonly="readonly" value="{{ node.fqdn }}" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="sftp_user" class="control-label">{{ l.render('string.username') }}</label>
+				<div>
+					<input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
+				</div>
+			</div>
+		{% endif %}
+		{% if permission.has('manage.ftp.password') %}
+			<form action="/node/settings/ftp" method="post">
+				<fieldset>
 					<div class="well">
-						<form action="/node/settings/jar" method="post">
-							<fieldset>
-							<div class="form-group">
-								<label for="jarfile" class="control-label">{{ lang.node_settings_jar_jarfile_name }}</label>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="sftp_pass" class="control-label">{{ l.render('settings.new_pass') }}</label>
 								<div class="input-group">
-									<input type="text" autocomplete="off" name="jarfile" class="form-control" value="{{ server.server_jar }}"/>
-									<span class="input-group-addon">.jar</span>
+									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
 									<span class="input-group-btn">
-										{{ xsrf|raw }}
-										<button class="btn btn-primary">{{ lang.node_settings_jar_update }}</button>
+										<button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">{{ l.render('string.generate') }}</button>
 									</span>
 								</div>
 							</div>
-							</fieldset>
-						</form>
-					</div>
-				{% else %}
-					<div class="alert alert-danger">You do not have permission to perform this function.</div>
-				{% endif %}
-			</div>
-		{% endif %}
-		{% if permission.manage.ftp.view == true %}
-			<div class="tab-pane" id="ftp_sett">
-				<h3>Manage FTP Information</h3><hr />
-				{% if permission.manage.ftp.details == true %}
-					<div class="form-group">
-						<label for="ftp_host" class="control-label">{{ lang.string_host }}</label>
-						<div>
-							<input type="text" readonly="readonly" value="{{ node.fqdn }}" class="form-control" />
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="ftp_user" class="control-label">{{ lang.string_username }}</label>
-						<div>
-							<input type="text" readonly="readonly" value="{{ server.ftp_user }}-{{ server.gsd_id }}" class="form-control" />
-						</div>
-					</div>
-				{% endif %}
-				{% if permission.manage.ftp.password == true %}
-					<form action="/node/settings/ftp" method="post">
-						<fieldset>
-							<div class="well">
-								<div class="row">
-									<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
-									<div class="form-group col-6 nopad">
-										<label for="ftp_pass" class="control-label">{{ lang.settings_new_pass }}</label>
-										<div class="input-group">
-											<input type="password" autocomplete="off" name="ftp_pass" class="form-control" />
-											<span class="input-group-btn">
-												<button class="btn btn-success" id="gen_pass_bttn" type="button">{{ lang.string_generate }}</button>
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							{{ xsrf|raw }}
-							<input type="submit" value="{{ lang.settings_change_pass }}" class="btn btn-primary btn-sm" />
-						</fieldset>
-					</form>
-				{% endif %}
-			</div>
+					{{ xsrf|raw }}
+					<input type="submit" value="{{ l.render('settings.change_pass') }}" class="btn btn-primary btn-sm" />
+				</fieldset>
+			</form>
 		{% endif %}
-	</div>
+	{% endif %}
 </div>
 <script type="text/javascript">
 $("#sidebar_links").find("a[href='/node/settings']").addClass('active');
@@ -89,9 +57,8 @@ $("#gen_pass_bttn").click(function(){
 		data: {xsrf: $("input[name='xsrf']").val()},
 		url:"/node/settings/password",
 		success: function(s){
-			return $("#gen_pass").html("<strong>{{ lang.string_generated_pass }}:</strong> "+s+" <br /><em>You should store this somewhere safe, it will not be shown again.</em>"),
-			$("#gen_pass").slideDown(),$('input[name="ftp_pass"]').val(s),
-			$('input[name="ftp_pass_2"]').val(s),!1
+			return $("#gen_pass").html("<strong>{{ l.render('string.generated_pass') }}:</strong> "+s+" <br /><em>You should store this somewhere safe, it will not be shown again.</em>"),
+			$("#gen_pass").slideDown(),$('input[name="sftp_pass"]').val(s);
 		}
 	}),
 !1});

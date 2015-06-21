@@ -1,7 +1,7 @@
 <?php
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+	PufferPanel - A Game Server Management Panel
+	Copyright (c) 2015 Dane Everitt
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ class Router_Controller {
 
 	/**
 	 * Constructor class for Routes that handles loading class files on the fly.
-	 *
-	 * @return void
 	 */
 	public function __construct($class, $pass = false) {
 
@@ -46,7 +44,7 @@ class Router_Controller {
 	 */
 	public function loadClass() {
 
-		require __DIR__ . '/routes/' . strtolower(str_replace('\\', '/', $this->_class)) . '.php';
+		require __DIR__.'/routes/'.strtolower(str_replace('\\', '/', $this->_class)).'.php';
 		$controller = self::PP_NAMESPACE.$this->_class;
 
 		return (!$this->_pass) ? new $controller : new $controller($this->_pass);

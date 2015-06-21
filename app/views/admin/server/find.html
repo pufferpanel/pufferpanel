@@ -3,8 +3,14 @@
 {% block title %}Find a Server{% endblock %}
 
 {% block content %}
-<div class="col-9">
-	{% if error != null %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li class="active">Servers</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<div class="tab-pane" id="list_all">
 		<h3>All Servers</h3><hr />
 		<table class="table table-striped table-bordered table-hover">
@@ -21,11 +27,11 @@
 			<tbody>
 				{% for server in servers %}
 					<tr>
-						<td><a href="../../servers.php?goto={{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-						<td><a href="view.php?id={{ server.id }}">{{ server.name }}</a></td>
-						<td><a href="../node/view.php?id={{ server.node }}">{{ server.node_name }}</a></td>
+						<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+						<td><a href="server/view/{{ server.id }}">{{ server.name }}</a></td>
+						<td><a href="/admin/node/view/{{ server.node }}">{{ server.node_name }}</a></td>
 						<td>{{ server.server_ip }}:{{ server.server_port }}</td>
-						<td><a href="../account/view.php?id={{ server.owner_id }}">{{ server.user_email }}</a></td>
+						<td><a href="/admin/account/view/{{ server.owner_id }}">{{ server.user_email }}</a></td>
 						<td style="text-align:center;">{% if server.active == 1 %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
 					</tr>
 				{% endfor %}
@@ -33,4 +39,9 @@
 		</table>
 	</div>
 </div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
+});
+</script>
 {% endblock %}

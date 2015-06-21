@@ -3,87 +3,82 @@
 {% block title %}Viewing Node{% endblock %}
 
 {% block content %}
-<div class="col-9">
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li class="active">{{ node.name }}</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
 		<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
-		<li><a href="#ftp" data-toggle="tab">FTP</a></li>
+		<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
 	</ul>
-	{% if get.disp is defined and get.disp != 1 %}
-		<br />
-		<div class="alert alert-danger">
-			{% if get.disp == 'missing_warn' %}
-				You must agree to the warning before updating the information.
-			{% elseif get.disp == 'missing_args' %}
-				Not all arguments were passed by the script.
-			{% elseif get.disp == 'ip_fail' %}
-				The IP address provided for FTP or the node FQDN was invalid.
-			{% elseif get.disp == 'n_fail' %}
-				The node name does not meet the requirements (1-15 characters, a-zA-Z0-9_.-).
-			{% elseif get.disp == 'add_port_fail' %}
-				The port list entered was invalid.
-			{% endif %}
-		</div>
-	{% endif %}
-	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The GSD Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new GSD Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new Scales Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Basic Information</h3><hr />
-			<form action="ajax/update/basic.php" method="post">
+			<form action="{{ node.id }}/settings" method="post">
 				<fieldset>
 					<div class="form-group">
 						<label for="name" class="control-label">Node Name</label>
 						<div>
-							<input type="text" name="name" value="{{ node.node }}" class="form-control" />
+							<input type="text" name="name" value="{{ node.name }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="ip" class="control-label">Node FQDN</label>
 						<div>
 							<input type="text" name="fqdn" value="{{ node.fqdn }}" class="form-control" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="name" class="control-label">GSD Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
+						<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 						<div>
-							<input type="text" readonly="readonly" id="form_gsd_token" value="{{ node.gsd_secret }}" class="form-control" />
-							<p class="text-muted"><small>Please update your GSD configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://docs.pffr.me/en/latest/installing_nodes/#install-game-server-daemon" target="_blank">Whats this?</a></small></p>
+							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
+							<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
 						</div>
 					</div>
 					<div class="form-group">
 						<div>
 							<input type="hidden" name="nid" value="{{ node.id }}" />
-							<input type="submit" value="Update Information" class="btn btn-primary" />
+							<input type="submit" value="Update Information" class="btn btn-primary btn-sm" />
 						</div>
 					</div>
 				</fieldset>
 			</form>
 			<hr />
-			<h6>Sample GSD Configuration File</h6>
-			<pre id="node_gsd_config">{
-	"daemon": {
-		"listenport": {{ node.gsd_listen }},
-		"consoleport": {{ node.gsd_console }}
+			<h6>Scales Configuration File</h6>
+			<pre id="node_daemon_config">{
+	"listen": {
+		"sftp": {{ node.daemon_sftp }},
+		"rest": {{ node.daemon_listen }},
+		"socket": {{ node.daemon_console }},
+		"uploads": {{ node.daemon_upload }}
 	},
-	"tokens": ["{{ node.gsd_secret }}"],
-	"interfaces":{
-		"rest":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_download.php"
-		},
-		"console":{},
-		"ftp":{
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",
-			"port": 21,
-			"host": "{{ node.ip }}",
-			"use_ssl": true
-		}
+	"urls": {
+		"repo": "{{ settings.master_url }}auth/remote/pack",
+		"download": "{{ settings.master_url }}auth/remote/download",
+		"install": "{{ settings.master_url }}auth/remote/install-progress"
 	},
-	"servers": []
+	"ssl": {
+		"key": "https.key",
+		"cert": "https.pem"
+	},
+	"basepath": "{{ node.daemon_base_dir }}",
+	"keys": [
+		"{{ node.daemon_secret }}"
+	],
+	"upload_maxfilesize": 100000000
 }</pre>
 		</div>
 		<div class="tab-pane" id="allocation">
 			<h3>IP &amp; Port Allocation</h3><hr />
-			<form action="ajax/ports/add_port.php" id="addPorts" style="display: none;" method="post">
+			<form action="{{ node.id }}/add-port" id="addPorts" style="display: none;" method="post">
 				<div class="form-group">
 					<label for="add_ports" class="control-label" id="setTitle"></label>
 					<div class="input-group">
@@ -91,7 +86,7 @@
 						<span class="input-group-btn">
 							<input type="hidden" name="add_ports_ip" value=""/>
 							<input type="hidden" name="add_ports_node" value=""/>
-							<button class="btn btn-primary" type="submit">&rarr;</button>
+							<button class="btn btn-primary btn-sm" type="submit">&rarr;</button>
 						</span>
 					</div>
 				</div>
@@ -144,13 +139,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane" id="ftp">
-			<h3>FTP Settings</h3><hr />
+		<div class="tab-pane" id="sftp">
+			<h3>SFTP Settings</h3><hr />
 			<div class="well">
-				<form action="ajax/update/ftp.php?do=ipuser" method="post">
+				<form action="{{ node.id }}/sftp" method="post">
 					<fieldset>
 						<div class="form-group">
-							<label for="ip" class="control-label">FTP IP</label>
+							<label for="ip" class="control-label">SFTP IP</label>
 							<div>
 								<input type="text" name="ip" value="{{ node.ip }}" class="form-control" />
 							</div>
@@ -158,7 +153,7 @@
 						<div class="form-group">
 							<div>
 								<input type="hidden" name="nid" value="{{ node.id }}" />
-								<input type="submit" value="Update FTP Address" class="btn btn-primary" />
+								<input type="submit" value="Update SFTP Address" class="btn btn-primary btn-sm" />
 							</div>
 						</div>
 					</fieldset>
@@ -179,11 +174,11 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-1"></div>
-					<div class="col-10">
-						<form action="ajax/ports/new_ip.php" method="post">
+					<div class="col-md-1 hidden-xs hidden-sm"></div>
+					<div class="col-md-10 col-sm-12 col-xs-12">
+						<form action="{{ node.id }}/add-ip" method="post">
 							<div class="row">
-								<div class="form-group">
+								<div class="form-group col-md-12">
 									<label for="ip_port" class="control-label">Available IPs &amp; Ports</label>
 									<div>
 										<textarea name="ip_port" class="form-control" rows="5" placeholder="127.0.0.1|25565,25567,25569,25571,25573,25575 OR 25565-25570"></textarea>
@@ -192,16 +187,16 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="form-group">
+								<div class="form-group col-md-12">
 									<div>
 										<input type="hidden" name="nid" value="{{ node.id }}" />
-										<input type="submit" class="btn btn-primary" name="submit" value="Add New IPs" />
+										<input type="submit" class="btn btn-primary btn-sm" name="submit" value="Add New IPs" />
 									</div>
 								</div>
 							</div>
 						</form>
 					</div>
-					<div class="col-1"></div>
+					<div class="col-md-1 hidden-xs hidden-sm"></div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -211,100 +206,104 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
-		setActiveOption('node-list');
-		$("#reset_token").click(function(e){
-			e.preventDefault();
-			$.ajax({
-				type: "POST",
-				url: "view.php?id={{ get.id }}",
-				data: { gsd_reset: true},
-				success: function(data) {
-					if(data.indexOf(' ') > 0) {
-						alert(data);
-					} else {
-						$("#reset_token_warn_tkn").html(data);
-						$("#reset_token_warn").show();
-						$("#form_gsd_token").val(data);
-						$("#node_gsd_config").text('{\n\
-	"daemon": {\n\
-		"listenport": {{ node.gsd_listen }},\n\
-		"consoleport": {{ node.gsd_console }}\n\
-	},\n\
-	"tokens": ["'+ data +'"],\n\
-	"interfaces":{\n\
-		"rest":{},\n\
-		"console":{},\n\
-		"ftp":{\n\
-			"authurl": "{% if settings.https == 1 %}https:{% else %}http:{% endif %}{{ settings.master_url }}ajax/validate_ftp.php",\n\
-			"port": 21,\n\
-			"host": "127.0.0.1",\n\
-			"use_ssl": true\n\
-		}\n\
-	},\n\
-	"servers": []\n\
+$(window).load(function(){
+	$("#sidebar_links").find("a[href='/admin/node']").addClass('active');
+	$("#reset_token").click(function(e){
+		e.preventDefault();
+		$.ajax({
+			type: "POST",
+			url: "{{ node.id }}/reset-token",
+			data: { daemon_reset: true},
+			success: function(data) {
+				if(data.indexOf(' ') > 0) {
+					alert(data);
+				} else {
+					$("#reset_token_warn_tkn").html(data);
+					$("#reset_token_warn").show();
+					$("#form_daemon_token").val(data);
+					$("#node_daemon_config").text('{ \n\
+	"listen": { \n\
+		"sftp": {{ node.daemon_sftp }}, \n\
+		"rest": {{ node.daemon_listen }}, \n\
+		"socket": {{ node.daemon_console }}, \n\
+		"uploads": {{ node.daemon_upload }} \n\
+	}, \n\
+	"urls": { \n\
+		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
+		"download": "{{ settings.master_url }}auth/remote/download", \n\
+		"install": "{{ settings.master_url }}auth/remote/install-progress" \n\
+	}, \n\
+	"ssl": { \n\
+		"key": "https.key", \n\
+		"cert": "https.pem" \n\
+	}, \n\
+	"basepath": "{{ node.daemon_base_dir }}", \n\
+	"keys": [ \n\
+		"' + data + '" \n\
+	], \n\
+	"upload_maxfilesize": 100000000 \n\
 }');
-					}
 				}
-			});
+			}
 		});
-		$(".clickToAdd").click(function(){
-			var rawUrl = $(this).attr("href");
-			var exploded = rawUrl.split('/');
-			var ip = exploded[2];
-			var node_id = exploded[3];
-			$("#addPorts").slideUp(function(){
-				$("#setTitle").html('Add Ports for '+ip);
-				$("input[name='add_ports']").val("");
-				$("input[name='add_ports_ip']").val(ip);
-				$("input[name='add_ports_node']").val(node_id);
-				$("#addPorts").slideDown();
-			});
+	});
+	$(".clickToAdd").click(function(){
+		var rawUrl = $(this).attr("href");
+		var exploded = rawUrl.split('/');
+		var ip = exploded[2];
+		var node_id = exploded[3];
+		$("#addPorts").slideUp(function(){
+			$("#setTitle").html('Add Ports for '+ip);
+			$("input[name='add_ports']").val("");
+			$("input[name='add_ports_ip']").val(ip);
+			$("input[name='add_ports_node']").val(node_id);
+			$("#addPorts").slideDown();
 		});
-		$(".deletePort").click(function(){
+	});
+	$(".deletePort").click(function(){
 
-			var rawUrl = $(this).attr("href");
-			var exploded = rawUrl.split('/');
-			var ip = exploded[2];
-			var port = exploded[3];
-			var node_id = exploded[4];
-			var conf = confirm("Are you sure you want to delete "+ip+":"+port);
+		var rawUrl = $(this).attr("href");
+		var exploded = rawUrl.split('/');
+		var ip = exploded[2];
+		var port = exploded[3];
+		var node_id = exploded[4];
+		var conf = confirm("Are you sure you want to delete "+ip+":"+port);
 
-				if(conf == true)
-					{
-						$.ajax({
-							type: "POST",
-							url: "ajax/ports/delete.php",
-							data: { ip: ip, port: port, node: node_id},
-							success: function(data) {
-								$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
-							}
-						});
-					}else{
-						return false;
-					}
-
-		});
-		if($.urlParam('error') != null){
-			var field = $.urlParam('error');
-			var exploded = field.split('|');
-				$.each(exploded, function(key, value) {
-					$('[name="' + value + '"]').parent().parent().addClass('has-error');
-				});
-		}
-		$("#warning_1").click(function(){
-			if($(this).is(":checked"))
-				$("#disable_complete").removeClass("disabled");
-			else
-				$("#disable_complete").addClass("disabled");
-		});
-		$("#warning_2").click(function(){
-			if($(this).is(":checked"))
-				$("#disable_complete_pass").removeClass("disabled");
-			else
-				$("#disable_complete_pass").addClass("disabled");
-		});
+			if(conf == true)
+				{
+					$.ajax({
+						type: "POST",
+						url: "{{ node.id }}/delete-port",
+						data: { ip: ip, port: port, node: node_id},
+						success: function(data) {
+							$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
+						}
+					});
+				}else{
+					return false;
+				}
 
 	});
+	if($.urlParam('error') != null){
+		var field = $.urlParam('error');
+		var exploded = field.split('|');
+			$.each(exploded, function(key, value) {
+				$('[name="' + value + '"]').parent().parent().addClass('has-error');
+			});
+	}
+	$("#warning_1").click(function(){
+		if($(this).is(":checked"))
+			$("#disable_complete").removeClass("disabled");
+		else
+			$("#disable_complete").addClass("disabled");
+	});
+	$("#warning_2").click(function(){
+		if($(this).is(":checked"))
+			$("#disable_complete_pass").removeClass("disabled");
+		else
+			$("#disable_complete_pass").addClass("disabled");
+	});
+
+});
 </script>
 {% endblock %}
