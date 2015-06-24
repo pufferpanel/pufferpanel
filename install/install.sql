@@ -4,7 +4,7 @@ USE `pufferpanel`;
 DROP TABLE IF EXISTS `subusers`;
 
 -- Disable Foreign keys to avoid errors in dropping
-SET FOREIGN_KEY_CHECKS = 0
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- Create the tables needed
 DROP TABLE IF EXISTS `acp_settings`;
