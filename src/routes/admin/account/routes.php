@@ -104,6 +104,29 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 
 });
 
+$klein->respond('GET', '/admin/account/delete/[i:id]', function($request, $response, $service) use ($core) {
+
+	$servers = ORM::for_table('servers')->where('owner_id', $request->id)->count();
+	$subusers = ORM::for_table('subusers')->where('user', $request->id)->count();
+	
+	if($servers === 0) {
+		if($subusers === 0) {
+			$user = ORM::for_table('users')->find_one($request->id);
+			$user->delete();
+			
+			$service->flash('<div class="alert alert-success">The account you specified has been deleted successfully.</div>');
+			$response->redirect('/admin/account')->send();
+		} else {
+			$service->flash('<div class="alert alert-danger">The user you specified could not be deleted because the user is a subuser of a server.</div>');
+			$response->redirect('/admin/account')->send();
+		}
+	} else {
+		$service->flash('<div class="alert alert-danger">The user you specified could not be deleted because the user has associated server(s).</div>');
+		$response->redirect('/admin/account')->send();
+	}
+	
+});
+
 $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
