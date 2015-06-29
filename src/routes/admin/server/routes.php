@@ -522,7 +522,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
 	if(!preg_match('/^[\w -]{4,35}$/', $request->param('server_name'))) {
 
-		$service->flash('<div class="alert alert-danger">The name provided for the server did not meet server requirements. Server names must be between 4 and 3 characters long and contain no special characters.</div>');
+		$service->flash('<div class="alert alert-danger">The name provided for the server did not meet server requirements. Server names must be between 4 and 35 characters long and contain no special characters.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
