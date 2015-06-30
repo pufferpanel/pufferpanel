@@ -1,0 +1,124 @@
+string.email, Email
+string.password, Password
+string.login, Login
+string.reset_password, Reimposta Password
+string.spam_protection, Protezione Spam
+string.again, (Ancora)
+string.noservers, Non hai ancora nessun server assegnato.
+string.node, Nodo
+string.name, Nome
+string.connect, Connetti
+string.status, Stato
+string.offline, Disconnesso
+string.online, Connesso
+string.connection, Connessione
+string.mem_alloc, Memoria Allocata
+string.disk_alloc, Disco Allocato
+string.start, Avvia
+string.restart, Riavvia
+string.stop, Ferma
+string.options, Opzioni
+string.search, Cerca
+string.clear, Pulisci
+string.refresh, Aggiorna
+string.close, Chiudi
+string.generated_pass, Password Generata
+string.modpacks, Modpacks
+string.ftp, FTP
+string.host, Host
+string.username, Username
+string.generate, Genera
+string.description, Descrizione
+string.previous, Precedente
+string.next, Successivo
+string.about, Info
+string.version, Versione
+string.published, Pubblicato
+string.versions, Versioni
+string.save, Salva
+string.token, Token
+string.language, Lingua
+string.acp, Pannello di Controllo Admin
+string.logout, Logout
+string.location, Ubicazione
+footer.license, PufferPanel è distribuito con la licenza <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.version, Versione %s distribuita da <a href="http://pufferpanel.com/">PufferPanel Development</a>.
+footer.generated, Pagina Generato in %s secondi.
+footer.queries, Eseguite %s queries sul database.
+sidebar.acc.actions, Operazioni Profilo
+sidebar.server.acc, Operazioni Server
+sidebar.server.sett, Impostazioni Server
+sidebar.settings, Impostazioni
+sidebar.servers, I Miei Servers
+sidebar.overview, Panoramica
+sidebar.console, Console in Diretta
+sidebar.files, Gestore dei Files
+sidebar.manage, Gestione Server
+sidebar.plugins, Server Plugins
+sidebar.manage_subusers, Gestisci Sottoutenti
+sidebar.totp_settings, Impostazioni TOTP
+header.account, Profilo
+header.logout, Logout
+header.admin, PC Admin
+login.login_h1, Accedi a PufferPanel
+reset.reset_h1, Reimposta Password
+settings.change_pass, Cambia Password
+settings.update_email, Aggiorna Email
+settings.current_pass, Password Attuale
+settings.new_pass, Nuova Password
+settings.new_email, Nuova Email
+settings.notifications_h1, Aggiorna Preferenze di Notifica
+settings.login_success, Accesso Completato
+settings.failed_login, Accesso Fallito
+settings.notify.email_me, Mandami una Email
+settings.notify.no_email_me, Non Mandarmi una Email
+settings.update_preferences, Aggiorna Preferenze
+settings.subuser.h1, Codice Sottoutente
+settings.subuser.help, Se hai ricevuto l'email è perché sei stato aggiuto come sottoutente di un server. Inserisci il codice nella casella sottostante.
+settings.subuser.validate, Convalida Codice
+node.overview.stats_h1, Panoramica delle Statistiche
+node.overview.collect_usage, Caricamento dati riguardanti l'utilizzo. Questo fase può richiedere un po' di tempo. Assicurati che il server sia online.
+node.overview.collect_disk, Caricamento dati riguardanti il disco. Questo fase può richiedere un po' di tempo. Assicurati che il server sia online.
+node.overview.no_players, Nessun player online.
+node.overview.disk_h1, Utilizzo Spazio sul Disco
+node.overview.space_used, Hai usato %s MB di disco su un massimo di %s MB.
+node.overview.information_h1, Informazioni Server
+node.overview.players_h5, Player Connessi
+node.overview.cpu_h5, Utilizzo CPU
+node.overview.memory_h5, Utilizzo Memoria
+node.overview.ajax.no_conn, Impossibile collegarsi al nodo.
+node.overview.ajax.no_exec, Impossibile esegure comandi su questo server.
+node.console.command_help, Inserisci comando
+node.console.scrollstop_alert, Hai selezione del testo in console. Quando ciò accade la console non si aggiorna automaticamente per far in modo che sia più semplice copiare il testo selezionato. Per aggiornare nuovamente la console, deseleziona semplicemente il testo.
+node.console.scrollstop_h1, Scrollstop&trade; Console Window
+node.console.ajax.server_started, Server avviato con successo.
+node.files.loading, Caricamento delle cartella. Attendere.
+node.files.name, Nome del File
+node.files.size, Dimensioni del File
+node.files.modified, Ultima Modifica
+node.files.edit.daemon_error, Impossibile collegarsi al daemon.
+node.files.edit.back, Torna al Gestore dei File
+node.files.edit.type_error, Questo tipo di file non è modificabile tramite il pannello di controllo.
+node.files.edit.no_file, Nessun file specificato per la modifica.
+node.files.edit.error, Puoi tornare al gestore dei file <a href="index.php">cliccando qui</a>.
+node.files.ajax.no_dir, Impossible individuare la cartella richiesta. Errore registrato.
+node.files.ajax.no_dl, Impossible collegarsi al server per ottenere i files. Riprova.
+node.files.ajax.saved, File salvato con successo.
+node.files.ajax.no_save, Impossible salvare il file.
+node.files.ajax.no_edit, Questo tipo di file non è modificabile tramite il gestore dei file. Prova ad utilizzare un client FTP.
+node.files.ajax.file_404, Imposibile trovare il file specificato sul server.
+node.settings.jar.jar_h1, Nome del Server .jar
+node.settings.jar.jarfile_name, Nome Jarfile
+node.settings.jar.update, Nome Aggiornamento
+node.settings.ftp.ftp_h1, Impostazioni FTP
+node.ajax.generic_error, Errore durante la richiesta AJAX.
+error.unhandled, Errore imprevisto durente il processo della richiesta. Torna indietro e riprova.
+error.xsrf, Il codice XSRF ricevuto non è valido. Assicurati che i cookies siano abilitato e riprova.
+error.invalid_password, Impossibile verificare la tua password. Riprova.
+error.invalid_email, L'email inserita non è valida.
+error.password_mismatch, Le password inserite non corrispondono.
+error.password_strength, La tua password non è abbastanza complessa. Assicurati che include almento un numero e che sia composta da maiuscole e minuscole. La password deve avere almeno 8 caratteri.
+error.account.same_email, Non puoi cambiare indirizzo email con quello che hai già in uso.
+success.account.email, La tua email è stata cambiata con successo in <em>%s</em>.
+success.account.password, La tua password è stata cambiata con successo! Accedi nuovamente utilizzando la nuova password.
+success.notifications.updated, Le tua preferenze di notifica sono state aggiornate.
