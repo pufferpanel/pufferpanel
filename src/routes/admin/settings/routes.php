@@ -65,6 +65,22 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		try {
 
+			$https = (!in_array('https', $request->param('permissions'))) ? 0 : 1;
+
+			if($https) {
+
+				$new_master_url = str_replace("http://", "https://", Settings::config()->master_url);
+
+				if($new_master_url != Settings::config()->master_url) {
+
+					$query = ORM::forTable('acp_settings')->where('setting_ref', 'master_url')->findOne();
+					$query->setting_val = $new_master_url;
+					$query->save();
+
+				}
+
+			}
+
 			ORM::forTable('acp_settings')->rawExecute(
 				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'use_api' THEN :enable_api
