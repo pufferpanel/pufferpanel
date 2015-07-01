@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-12" id="stats_players" style="display: none;">
 					<h3 class="nopad">{{ l.render('node.overview.players_h5') }}</h3><hr />
 					<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ l.render('node.overview.collect_usage') }}</div>
 					<span id="toggle_players" style="display:none;">
@@ -157,9 +157,11 @@
 		});
 		socket.on('initial_status', function(data) {
 			updateServerPowerControls(data.status);
+			updatePlayerListVisibility(data.status);
 		});
 		socket.on('status', function(data) {
 			updateServerPowerControls(data.status);
+			updatePlayerListVisibility(data.status);
 		});
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
@@ -208,6 +210,16 @@
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
 		});
+
+		function updatePlayerListVisibility(data) {
+			// Server is On or Starting
+			if(data == 1 || data == 3) {
+				$("#stats_players").show();
+			} else {
+				$("#stats_players").hide();
+			}
+		}
+
 		{% if permission.has('console.commands') %}
 			$("#console_command").submit(function(event){
 				event.preventDefault();
