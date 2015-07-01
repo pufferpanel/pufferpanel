@@ -80,6 +80,11 @@ $(window).load(function(){
 			e.preventDefault();
 			var clicked = $(this); //Fixes some strange bug going on
 			var deleteItemPath = clicked.attr("href");
+
+			if (!confirm("Are you sure you want to delete " + deleteItemPath + "?")) {
+				return;
+			}
+
 			$.ajax({
 				type: "POST",
 				url: '/node/ajax/files/delete',
