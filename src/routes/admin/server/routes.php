@@ -507,7 +507,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
-	setcookie('__temporary_pp_admin_newserver', json_encode($_POST), time() + 60);
+	setcookie('__temporary_pp_admin_newserver', base64_encode(json_encode($_POST)), time() + 60);
 	ORM::get_db()->beginTransaction();
 
 	$node = ORM::forTable('nodes')->findOne($request->param('node'));
