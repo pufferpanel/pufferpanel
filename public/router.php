@@ -103,7 +103,7 @@ if(ORM::for_table("acp_settings")->count() == 0) {
 
 }
 
-$klein->respond('!@^(/auth/|/langauge/|/api/|/assets/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('!@^(/auth/|/language/|/api/|/assets/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
