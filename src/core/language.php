@@ -78,7 +78,7 @@ class Language extends User {
 	}
 
 	/**
-	 * Returns the loaded langauge as an array.
+	 * Returns the loaded language as an array.
 	 *
 	 * @return array
 	 * @deprecated
