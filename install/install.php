@@ -100,6 +100,42 @@ try {
 	));
 	echo "PufferPanel SQL user added as pufferpanel@" . $host . "\n";
 
+	$query = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
+				('company_name', :cname),
+				('master_url', :murl),
+				('assets_url', :aurl),
+				('main_website', :mwebsite),
+				('postmark_api_key', NULL),
+				('mandrill_api_key', NULL),
+				('mailgun_api_key', NULL),
+				('sendgrid_api_key', NULL),
+				('sendmail_email', NULL),
+				('sendmail_method','php'),
+				('captcha_pub',NULL),
+				('captcha_priv',NULL),
+				('default_language', 'en'),
+				('force_online', 0),
+				('https', 0),
+				('use_api', 0),
+				('allow_subusers', 0)");
+
+	$query->execute(array(
+		':cname' => $params['companyName'],
+		':murl' => 'http://' . $params['siteUrl'] . '/',
+		':mwebsite' => 'http://' . $params['siteUrl'] . '/',
+		':aurl' => '//' . $params['siteUrl'] . '/assets/'
+	));
+
+	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+	$mysql->prepare("INSERT INTO `users` VALUES(NULL, :uuid, :username, :email, :password, :language, :time, NULL, NULL, 1, 0, 1, 0, NULL)")->execute(array(
+		':uuid' => $uuid,
+		':username' => $params['adminName'],
+		':email' => $params['adminEmail'],
+		':password' => password_hash($params['adminPass'], PASSWORD_BCRYPT),
+		':language' => 'en',
+		':time' => time()
+	));
+
 	$mysql->commit();
 
 	exit(0);
