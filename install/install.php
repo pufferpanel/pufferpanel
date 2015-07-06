@@ -72,33 +72,18 @@ try {
 
 	$mysql = new PDO('mysql:host=' . $params['host'] . ';port=' . $params['port'], $params['user'], $params['pass'], array(
 		PDO::ATTR_PERSISTENT => true,
-		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 	));
 
-	$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$mysql->beginTransaction();
-
-	$mysqlQueries = file_get_contents(BASE_DIR . "install/install.sql");
-	$mysql->exec($mysqlQueries);
-		
-	$hostquery = $mysql->prepare("SELECT host FROM information_schema.processlist WHERE ID=connection_id()");
-	$hostquery->execute();
-	$fullHost = parse_url($hostquery->fetchColumn(0));
-	$host = isset($fullHost['host']) ? $fullHost['host'] : $fullHost['path'];
-
-	try {
-		$mysql->prepare("DROP USER 'pufferpanel'@:host")->execute(array(
-			'host' => $host
-		));
-	} catch (\Exception $ex) {
-		//ignoring because no user actually existed
+	$mysqlQueries = explode(";", file_get_contents(BASE_DIR . "install/install.sql"));
+	foreach ($mysqlQueries as $query) {
+		if (empty(trim($query))) {
+			continue;
+		}
+		$mysql->exec($query);
 	}
-
-	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@:host IDENTIFIED BY :pass")->execute(array(
-		'pass' => $pass,
-		'host' => $host
-	));
-	echo "PufferPanel SQL user added as pufferpanel@" . $host . "\n";
 
 	$query = $mysql->prepare("INSERT INTO `acp_settings` (`setting_ref`, `setting_val`) VALUES
 				('company_name', :cname),
@@ -136,6 +121,24 @@ try {
 		':time' => time()
 	));
 
+	$hostquery = $mysql->prepare("SELECT host FROM information_schema.processlist WHERE ID=connection_id()");
+	$hostquery->execute();
+	$fullHost = parse_url($hostquery->fetchColumn(0));
+	$host = isset($fullHost['host']) ? $fullHost['host'] : $fullHost['path'];
+
+	try {
+		$mysql->prepare("DROP USER 'pufferpanel'@:host")->execute(array(
+			'host' => $host
+		));
+	} catch (\Exception $ex) {
+		//ignoring because no user actually existed
+	}
+
+	$mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@:host IDENTIFIED BY :pass")->execute(array(
+		'pass' => $pass,
+		'host' => $host
+	));
+	echo "PufferPanel SQL user added as pufferpanel@" . $host . "\n";
 	$mysql->commit();
 
 	exit(0);

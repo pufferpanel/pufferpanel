@@ -1,7 +1,6 @@
 -- Remove existing database and create new
 CREATE DATABASE IF NOT EXISTS `pufferpanel` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
 USE `pufferpanel`;
-DROP TABLE IF EXISTS `subusers`;
 
 -- Disable Foreign keys to avoid errors in dropping
 SET FOREIGN_KEY_CHECKS = 0;
@@ -16,7 +15,7 @@ CREATE TABLE `acp_settings` (
   UNIQUE KEY `setting_ref_unique` (`setting_ref`)
 ) ENGINE=InnoDB;
 
-DROP TABLE `downloads`;
+DROP TABLE IF EXISTS `downloads`;
 CREATE TABLE `downloads` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `server` char(36) NOT NULL,
