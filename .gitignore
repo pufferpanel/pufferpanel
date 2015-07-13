@@ -1,9 +1,17 @@
 # osx noise
 .DS_Store
 *HASHFILE*
+
+# ide files
+.netbeans
+.nbi/*
+.idea/*
+*.iml
+
+# lock files
 *.lock
-vendor
-composer.phar
+
+# panel files
 src/logs/*.log
 src/logs/*.html
 src/cache/*
@@ -11,5 +19,10 @@ src/cache/*
 !src/cache/uploads/.githold
 config.json
 app/languages/*.json
-backup
-tools/composer.phar
+
+# nodejs files
+node_modules/*
+
+# legacy files
+vendor/*
+*/composer.phar

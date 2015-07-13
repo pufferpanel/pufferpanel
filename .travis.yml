@@ -1,25 +1,19 @@
-language: php
+language: node_js
 
-php:
-  - 5.5
-  - 5.6
+node_js:
+  - "0.12"
+  - "0.10"
 
 branches:
   only:
     - master
-    - klein
+    - kraken
 
-before_script:
-  - pear channel-discover pear.phing.info
-  - pear install phing/phing
-  - phpenv rehash
-
-script:
-    - phing -f build.xml phplint
+before_install:
+  - "curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh"
 
 install:
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
+  - npm install
 
 notifications:
   irc:

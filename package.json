@@ -1,0 +1,10 @@
+{
+  "name": "PufferPanel",
+  "version": "0.9.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/service.js"
+  },
+  "dependencies": {
+  }
+}
