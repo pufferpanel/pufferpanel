@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg)](https://travis-ci.org/PufferPanel/PufferPanel) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=master) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
-##Need help? Feature Requests? Please read our [Documentation](http://www.pufferpanel.com/v0.8.0/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
+##Need help? Feature Requests? Please read our [Documentation](http://www.pufferpanel.com/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
 
 #What is PufferPanel?
-PufferPanel is a web-based Game Server Management System created by players for players. PufferPanel allows you to manage multiple different game servers all from one central location, and give other users their own servers, or access to your own servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/v0.8.0/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/v0.8.0/docs/administrative-feature-tour).
+PufferPanel is a web-based Game Server Management System created by players for players. PufferPanel allows you to manage multiple different game servers all from one central location, and give other users their own servers, or access to your own servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
 
 #Open Source
 PufferPanel has been and will always be committed to being free and open-source software. All of our projects are available on our Github Account and we welcome any user to submit ideas or code. Being licensed under a GPL-v3 license means that you are welcome to runs PufferPanel in a commercial (for-profit) environment or make any changes to the system that you see fit.
@@ -16,7 +16,7 @@ PufferPanel offers you a no-hassle solution for managing your game servers at bo
 Best of all? It's free.
 
 # Installing, Upgrading, and the API
-If you need help with PufferPanel you can contact us on IRC (irc.esper.net #pufferpanel) or ask a question on our [Community Support Forums](https://community.pufferpanel.com). Check out our [Documentation](http://www.pufferpanel.com/v0.8.0/docs) for guides on how to install, update, and manage PufferPanel.
+If you need help with PufferPanel you can contact us on IRC (irc.esper.net #pufferpanel) or ask a question on our [Community Support Forums](https://community.pufferpanel.com). Check out our [Documentation](http://www.pufferpanel.com/docs) for guides on how to install, update, and manage PufferPanel.
 
 # Special Thanks
 * **[FontAwesome.io](http://fontawesome.io)** — Mad props to the people who created this wonderful open-source icon-set that we take advantage of in PufferPanel.
