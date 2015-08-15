@@ -1,3 +1,6 @@
+Yo, where's all the activity at!? Great question, check out the [Kraken](https://github.com/PufferPanel/PufferPanel/tree/kraken) branch to follow our progress on PufferPanel `v0.9`.
+
+
 [![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg)](https://travis-ci.org/PufferPanel/PufferPanel) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=master) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
 ##Need help? Feature Requests? Please read our [Documentation](http://www.pufferpanel.com/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
 
