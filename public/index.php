@@ -2,5 +2,3 @@
 
 header('Location: /index');
 exit();
-
-?>

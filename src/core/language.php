@@ -90,5 +90,3 @@ class Language extends User {
 	}
 
  }
-
- ?>
