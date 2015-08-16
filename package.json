@@ -1,0 +1,28 @@
+{
+  "name": "PufferPanel",
+  "description": "Reinventing the way game servers are managed.",
+  "version": "0.9.0",
+  "contributors": [],
+  "dependencies": {
+    "hapi": "9.0.2",
+    "inert": "3.0.1",
+    "path": "0.11.14",
+    "nunjucks": "1.3.4",
+    "vision": "3.0.0"
+  },
+  "bugs": {
+    "web": "https://github.com/PufferPanel/PufferPanel/issues"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/PufferPanel/PufferPanel.git"
+    }
+  ],
+  "licenses": [
+    {
+      "name": "GPL v3"
+    }
+  ],
+  "homepage": "http://pufferpanel.com"
+}
