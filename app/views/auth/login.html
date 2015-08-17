@@ -10,6 +10,9 @@
    	<form action="/auth/login" method="POST" id="login-form">
     	<legend>Login to PufferPanel</legend>
     	<fieldset>
+        {% if flash|length %}
+          <div class="alert alert-danger">{{ flash }}</div>
+        {% endif %}
     		<div class="form-group">
     			<label for="email" class="control-label">Email</label>
     			<div>
