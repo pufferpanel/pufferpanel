@@ -15,9 +15,7 @@ var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 var Notp = require('notp');
 var Base32 = require('thirty-two');
 
-var AuthenticationFunction = function Authentication () {
-
-};
+var Authentication = function () {};
 
 Authentication.prototype.validateCredentials = function (request, callback) {
 
@@ -76,4 +74,4 @@ Authentication.prototype.generatePasswordHash = function (rawpassword) {
   return Bcrypt.hashSync(rawpassword, 10);
 };
 
-module.exports = AuthenticationFunction;
+module.exports = Authentication;
