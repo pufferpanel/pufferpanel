@@ -3,12 +3,19 @@
   "description": "Reinventing the way game servers are managed.",
   "version": "0.9.0",
   "contributors": [],
+  "devDependencies": {
+    "babel-eslint": "^4.0.10",
+    "eslint": "^1.1.0",
+    "eslint-config-airbnb": "0.0.7",
+    "eslint-plugin-react": "^3.2.3"
+  },
   "dependencies": {
     "async": "1.4.2",
     "bcrypt": "0.8.5",
     "fs-extra": "0.23.1",
     "date-utils": "1.2.17",
     "hapi": "9.0.2",
+    "hapi-auth-cookie": "3.1.0",
     "inert": "3.0.1",
     "path": "0.11.14",
     "notp": "2.0.2",

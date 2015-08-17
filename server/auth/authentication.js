@@ -35,7 +35,7 @@ Authentication.prototype.validateCredentials = function (request, callback) {
 
     var session = {
       id: Randomstring.generate(12),
-      ip: request.info.remoteAddr
+      ip: request.info.remoteAddress
     }
 
     Rethink.table('users').get(user[0].id).update({
@@ -45,7 +45,7 @@ Authentication.prototype.validateCredentials = function (request, callback) {
       Logger.error(err)
     })
 
-    return callback(session.id, true)
+    return callback(user[0], true)
 
   }).error(function (err) {
     Logger.error(err)
