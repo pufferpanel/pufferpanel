@@ -11,74 +11,56 @@ var Path = require('path')
 var Randomstring = require('randomstring')
 var Bcrypt = require('bcrypt')
 var Logger = require(Path.join(__dirname, '../../lib/logger.js'))
-var Mysql = require(Path.join(__dirname, '../../lib/mysql.js'))
+var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'))
 var Notp = require('notp')
 var Base32 = require('thirty-two')
 
-Mysql.connect()
-
 function Authentication () {}
 
-Authentication.prototype.validateCredentials = function (requestip, data, callback) {
+Authentication.prototype.validateCredentials = function (request, callback) {
 
-  var email = data.email
-  var password = data.password
+  Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
 
-  Mysql.query('SELECT password, use_totp, totp_secret FROM users WHERE email = ?', [email], function (error, result) {
+    if (user.length !== 1) return callback('No account with that information could be found in the system.', false)
 
-    if (error) {
-      Logger.error('An error occured with a MySQL operation in Authentication.validateLogin() at step 1.', error)
-      return callback('A MySQL error occured.', false)
-    }
-
-    if (result.length !== 1) return callback('No account with that information could be found in the system.', false)
-
-    // TOTP Checks
-    if (result[0].use_totp === 1) {
-      if (!Notp.totp.verify(data.totp_token, Base32.decode(result[0].totp_secret), { time: 30 })) {
+    if (user[0].use_totp === 1) {
+      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
         return callback('TOTP Token was invalid.', false)
       }
     }
 
-    var userPassword = Authentication.prototype.updatePasswordHash(result[0].password)
-
-    if (!Bcrypt.compareSync(password, userPassword)) {
+    if (!Bcrypt.compareSync(request.payload.password, Authentication.prototype.updatePasswordHash(user[0].password))) {
       return callback('Email or password was incorrect.', false)
     }
 
     var session = {
       id: Randomstring.generate(12),
-      ip: requestip
+      ip: request.info.remoteAddr
     }
 
-    Mysql.query('UPDATE users SET session_id = ?, session_ip = ? WHERE email = ?', [session.id, session.ip, email], function (error, result) {
-
-      if (error) {
-        Logger.error('An error occured with a MySQL operation in Authentication.validateLogin() at step 2.', error)
-        return callback('A MySQL error occured.', false)
-      }
-
-      return callback(session.id, true)
-
+    Rethink.table('users').get(user[0].id).update({
+      session_id: session.id,
+      session_ip: session.ip
+    }).run().error(function (err) {
+      Logger.error(err)
     })
 
+    return callback(session.id, true)
+
+  }).error(function (err) {
+    Logger.error(err)
+    callback('There was an error processing this request.', false)
   })
 
 }
 
 Authentication.prototype.TOTPEnabled = function (email, callback) {
 
-  Mysql.query('SELECT use_totp FROM users WHERE email = ?', [email], function (error, result) {
-
-    if (error) {
-      Logger.error('An error occured with a MySQL operation in Authentication.TOTPEnabled() at step 1.', error)
-      return callback(null, false)
-    }
-
-    if (result.length !== 1) return callback(null, false)
-
-    return callback(null, result[0].use_totp)
-
+  Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
+    if (user.length !== 1) return callback(null, false)
+    return callback(null, user[0].use_totp)
+  }).error(function (err) {
+    Logger.error(err)
   })
 
 }
