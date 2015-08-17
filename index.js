@@ -7,20 +7,22 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  */
-var Path = require('path')
-var Yargs = require('yargs').argv
-var Logger = require('./lib/logger.js')
+var Path = require('path');
+var Yargs = require('yargs').argv;
+var Logger = require('./lib/logger.js');
 
 // Setup Logging Information
 if (Yargs.debug) {
-  Logger.debugStatus = true
-  Logger.debug('PufferPanel running in debug mode.')
+  Logger.debugStatus = true;
+  Logger.debug('PufferPanel running in debug mode.');
 }
 
 if (Yargs.verbose) {
-  Logger.verboseStatus = true
-  Logger.verbose('PufferPanel running in verbose mode.')
+  Logger.verboseStatus = true;
+  Logger.verbose('PufferPanel running in verbose mode.');
 }
 
+Test = function T () {};
+
 // Include HapiJS Routing Mechanisms
-require(Path.join(__dirname, 'lib/routes.js'))
+require(Path.join(__dirname, 'lib/routes.js'));
