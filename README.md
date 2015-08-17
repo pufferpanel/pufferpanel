@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/PufferPanel/PufferPanel/tree/hapi.js.svg?style=svg)](https://circleci.com/gh/PufferPanel/PufferPanel/tree/hapi.js)
+
 # PufferPanel — Written in Hapi
 This is a development branch of PufferPanel written in Hapi, a Node.js server framework.
 
