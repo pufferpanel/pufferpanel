@@ -11,7 +11,7 @@ var Path = require('path');
 var Yargs = require('yargs').argv;
 var Logger = require('./lib/logger.js');
 
-Logger.prepare(Yargs)
+Logger.prepare(Yargs);
 
 Test = function T () {};
 
