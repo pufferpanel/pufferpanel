@@ -8,7 +8,7 @@
         "type_error": "This type of file cannot be edited via our control panel.",
         "daemon_error": "Unable to connect to the daemon.",
         "no_file": "No file was specified that can be edited.",
-        "error": "You can return to the file manager by <a href=\"index.php\">clicking here<\/a>."
+        "error": "You can return to the file manager by <a href=\"index.php\">clicking here</a>."
       },
       "modified": "Last Modified",
       "ajax": {
@@ -113,7 +113,7 @@
     },
     "account": {
       "password": "Your password has been successfully changed! Please login again using your new password.",
-      "email": "Your email address has been successfully updated to <em>%s<\/em>."
+      "email": "Your email address has been successfully updated to <em>%s</em>."
     }
   },
   "settings": {
@@ -138,8 +138,8 @@
   },
   "footer": {
     "generated": "Page Generated in %s seconds.",
-    "version": "Running Version %s distributed by <a href=\"http:\/\/pufferpanel.com\/\">PufferPanel Development<\/a>.",
-    "license": "PufferPanel is licensed under a <a href=\"https:\/\/github.com\/PufferPanel\/PufferPanel\/blob\/master\/LICENSE\">GPL-v3 License<\/a>.",
+    "version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
+    "license": "PufferPanel is licensed under a <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3 License</a>.",
     "queries": "Executed %s database queries."
   },
   "header": {
