@@ -11,16 +11,7 @@ var Path = require('path');
 var Yargs = require('yargs').argv;
 var Logger = require('./lib/logger.js');
 
-// Setup Logging Information
-if (Yargs.debug) {
-  Logger.debugStatus = true;
-  Logger.debug('PufferPanel running in debug mode.');
-}
-
-if (Yargs.verbose) {
-  Logger.verboseStatus = true;
-  Logger.verbose('PufferPanel running in verbose mode.');
-}
+Logger.prepare(Yargs)
 
 Test = function T () {};
 
