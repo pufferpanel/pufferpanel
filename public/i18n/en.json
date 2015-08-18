@@ -1,0 +1,182 @@
+{
+  "node": {
+    "files": {
+      "loading": "Loading Directory. Please wait.",
+      "name": "File Name",
+      "edit": {
+        "back": "Back to File Manager",
+        "type_error": "This type of file cannot be edited via our control panel.",
+        "daemon_error": "Unable to connect to the daemon.",
+        "no_file": "No file was specified that can be edited.",
+        "error": "You can return to the file manager by <a href=\"index.php\">clicking here<\/a>."
+      },
+      "modified": "Last Modified",
+      "ajax": {
+        "no_dir": "Unable to locate request directory. Error logged.",
+        "no_save": "Unable to save the file.",
+        "file_404": "The file specified could not be found on the server.",
+        "no_dl": "Unable to connect to the server to get the files. Please try again.",
+        "no_edit": "This type of file cannot be edited via our online file manager. Please use a FTP client.",
+        "saved": "File was successfully saved."
+      },
+      "size": "File Size"
+    },
+    "overview": {
+      "players_h5": "Players Online",
+      "cpu_h5": "CPU Usage",
+      "no_players": "No players are currently online.",
+      "stats_h1": "Statistics Overview",
+      "collect_disk": "Collecting disk usage information, this could take a few seconds.",
+      "ajax": {
+        "no_exec": "Unable to execute command on the server.",
+        "no_conn": "Unable to connect to the node."
+      },
+      "space_used": "You are using %s MB of your maximum %s MB of disk space.",
+      "memory_h5": "Memory Usage",
+      "disk_h1": "Disk Space Used",
+      "information_h1": "Server Information",
+      "collect_usage": "Attempting to collect usage information, this could take a few seconds. Please ensure server is online."
+    },
+    "ajax": {
+      "generic_error": "An error was encountered with this AJAX request."
+    },
+    "console": {
+      "scrollstop_alert": "You have selected text in the console. The console will not auto-update when this occurs. This is done to allow you to easily copy or select text in the console. To allow for automatic refreshing again simply un-select the text.",
+      "ajax": {
+        "server_started": "Server has been started successfully."
+      },
+      "command_help": "Enter Console Command",
+      "scrollstop_h1": "Scrollstop&trade; Console Window"
+    },
+    "settings": {
+      "ftp": {
+        "ftp_h1": "FTP Settings"
+      },
+      "jar": {
+        "jarfile_name": "Jarfile Name",
+        "update": "Update Name",
+        "jar_h1": "Server .jar Name"
+      }
+    }
+  },
+  "reset": {
+    "reset_h1": "Reset Your Password"
+  },
+  "string": {
+    "username": "Username",
+    "generated_pass": "Generated Password",
+    "connect": "Connect",
+    "close": "Close",
+    "previous": "Previous",
+    "ftp": "FTP",
+    "spam_protection": "Spam Protection",
+    "token": "Token",
+    "next": "Next",
+    "start": "Start",
+    "version": "Version",
+    "location": "Location",
+    "online": "Online",
+    "offline": "Offline",
+    "save": "Save",
+    "email": "Email",
+    "status": "Status",
+    "node": "Node",
+    "description": "Description",
+    "again": "(Again)",
+    "stop": "Stop",
+    "about": "About",
+    "modpacks": "Modpacks",
+    "mem_alloc": "Memory Allocated",
+    "host": "Host",
+    "logout": "Logout",
+    "noservers": "No servers have been assigned to your account yet.",
+    "password": "Password",
+    "generate": "Generate",
+    "restart": "Restart",
+    "search": "Search",
+    "name": "Name",
+    "language": "Language",
+    "versions": "Versions",
+    "clear": "Clear",
+    "disk_alloc": "Disk Allocated",
+    "reset_password": "Reset Password",
+    "refresh": "Refresh",
+    "connection": "Connection",
+    "acp": "Admin Control Panel",
+    "published": "Published",
+    "login": "Login",
+    "options": "Options"
+  },
+  "success": {
+    "notifications": {
+      "updated": "Your account notification preferences have been updated."
+    },
+    "account": {
+      "password": "Your password has been successfully changed! Please login again using your new password.",
+      "email": "Your email address has been successfully updated to <em>%s<\/em>."
+    }
+  },
+  "settings": {
+    "new_email": "New Email",
+    "change_pass": "Change Password",
+    "notifications_h1": "Update Notification Preferences",
+    "update_email": "Update Email",
+    "subuser": {
+      "validate": "Validate Token",
+      "h1": "Sub-User Token",
+      "help": "If you have recieved an email because you were added as a subuser on a server please enter that token in the box below."
+    },
+    "failed_login": "Failed Login",
+    "login_success": "Successful Login",
+    "current_pass": "Current Password",
+    "new_pass": "New Password",
+    "update_preferences": "Update Preferences",
+    "notify": {
+      "email_me": "Please Email Me",
+      "no_email_me": "Don't Email Me"
+    }
+  },
+  "footer": {
+    "generated": "Page Generated in %s seconds.",
+    "version": "Running Version %s distributed by <a href=\"http:\/\/pufferpanel.com\/\">PufferPanel Development<\/a>.",
+    "license": "PufferPanel is licensed under a <a href=\"https:\/\/github.com\/PufferPanel\/PufferPanel\/blob\/master\/LICENSE\">GPL-v3 License<\/a>.",
+    "queries": "Executed %s database queries."
+  },
+  "header": {
+    "admin": "Admin CP",
+    "account": "Account",
+    "logout": "Logout"
+  },
+  "error": {
+    "password_strength": "Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.",
+    "invalid_email": "The email you provided is not valid.",
+    "account": {
+      "same_email": "Sorry, you can't change your email to the email address you are currently using for the account, that wouldn't make sense!"
+    },
+    "xsrf": "The XSRF token received was not valid. Please make sure cookies are enabled and try your request again.",
+    "password_mismatch": "The passwords you provided did not match each other.",
+    "unhandled": "An unhandled error occured while processing this request. Please go back and try again.",
+    "invalid_password": "We were unable to verify your account password. Please try your request again."
+  },
+  "login": {
+    "login_h1": "Login to PufferPanel"
+  },
+  "sidebar": {
+    "files": "File Manager",
+    "acc": {
+      "actions": "Account Actions"
+    },
+    "totp_settings": "TOTP Settings",
+    "manage_subusers": "Manage Subusers",
+    "overview": "Overview",
+    "manage": "Server Management",
+    "servers": "My Servers",
+    "plugins": "Server Plugins",
+    "console": "Live Console",
+    "server": {
+      "sett": "Server Settings",
+      "acc": "Server Actions"
+    },
+    "settings": "Settings"
+  }
+}
