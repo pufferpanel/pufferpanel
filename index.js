@@ -13,7 +13,5 @@ var Logger = require('./lib/logger.js');
 
 Logger.prepare(Yargs);
 
-Test = function T () {};
-
 // Include HapiJS Routing Mechanisms
 require(Path.join(__dirname, 'lib/routes.js'));
