@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% block title %}Service Temporarily Unavaliable{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+	<div class="panel panel-warning">
+		<div class="panel-heading">
+			<h3 class="panel-title">Error: Service Temporarily Unavaliable</h3>
+		</div>
+		<div class="panel-body">
+			<p style="margin-bottom:0;">The requested server is still completing the install process. Please check back in a few minutes, you should recieve an email as soon as this process is completed.</p>
+			<br /><br />
+			<div class="progress progress-striped active">
+				<div class="progress-bar progress-bar-danger" style="width: 100%"></div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
