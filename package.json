@@ -33,7 +33,9 @@
   "scripts": {
     "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
     "test-mocha": "mocha tests/*",
-    "test": "npm run-script test-eslint && npm run-script test-mocha "
+    "test": "npm run-script test-eslint && npm run-script test-mocha",
+    "start": "node index.js",
+    "start-verbose": "node index.js --consoleLevel=verbose"
   },
   "bugs": {
     "url": "https://github.com/PufferPanel/PufferPanel/issues"

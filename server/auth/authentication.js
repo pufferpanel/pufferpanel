@@ -12,14 +12,15 @@ var Randomstring = require('randomstring');
 var Bcrypt = require('bcrypt');
 var Notp = require('notp');
 var Base32 = require('thirty-two');
+var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 
 var Authentication = {};
 
 Authentication.validateCredentials = function (request, callback) {
 
-  var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
+  var connection = Rethink.openConnection();
 
-  Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
+  connection.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
 
     if (user.length !== 1) {
       return callback('No account with that information could be found in the system.', false);
@@ -57,9 +58,9 @@ Authentication.validateCredentials = function (request, callback) {
 
 Authentication.TOTPEnabled = function (email, callback) {
 
-  var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
+  var connection = Rethink.openConnection();
 
-  Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
+  connection.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
     if (user.length !== 1) {
       return callback(null, false);
     }

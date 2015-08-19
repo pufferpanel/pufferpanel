@@ -14,7 +14,7 @@ def insert(keys, value, parent):
     return
 
 
-for fn in os.listdir('../public/i18n/raw'):
+for fn in os.listdir('../i18n/raw'):
     if fn[0] == '.':
         continue
 
