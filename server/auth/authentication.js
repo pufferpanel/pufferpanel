@@ -26,7 +26,7 @@ Authentication.prototype.validateCredentials = function (request, callback) {
     }
 
     if (user[0].use_totp === 1) {
-      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), {time: 30})) {
+      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
         return callback('TOTP Token was invalid.', false, null);
       }
     }
