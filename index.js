@@ -13,5 +13,22 @@ var Logger = require('./lib/logger.js');
 
 Logger.prepare(Yargs);
 
+Logger.info('+ =========================================== +');
+Logger.info('| PufferPanel logs all information and errors |');
+Logger.info('| into the logs/ directory. Please check      |');
+Logger.info('| there before asking for help with bugs.     |');
+Logger.info('|                                             |');
+Logger.info('| \x1b[41mSubmit bug reports at the following link:\x1b[0m   |');
+Logger.info('| https://github.com/PufferPanel/PufferPanel  |');
+Logger.info('+ =========================================== +');
+
 // Include HapiJS Routing Mechanisms
 require(Path.join(__dirname, 'lib/routes.js'));
+
+process.on('SIGINT', function () {
+
+  Logger.warn('Recieved SIGINT. Preparing for shutdown...');
+  Logger.info('All shutdown parameters complete. Stopping...\n');
+  process.exit();
+
+});
