@@ -14,16 +14,19 @@ var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 var Notp = require('notp');
 var Base32 = require('thirty-two');
 
-var Authentication = function () {};
+var Authentication = function () {
+};
 
 Authentication.prototype.validateCredentials = function (request, callback) {
 
   Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
 
-    if (user.length !== 1) { return callback('No account with that information could be found in the system.', false); }
+    if (user.length !== 1) {
+      return callback('No account with that information could be found in the system.', false);
+    }
 
     if (user[0].use_totp === 1) {
-      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
+      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), {time: 30})) {
         return callback('TOTP Token was invalid.', false, null);
       }
     }
@@ -55,7 +58,9 @@ Authentication.prototype.validateCredentials = function (request, callback) {
 Authentication.prototype.TOTPEnabled = function (email, callback) {
 
   Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
-    if (user.length !== 1) { return callback(null, false); }
+    if (user.length !== 1) {
+      return callback(null, false);
+    }
     return callback(null, user[0].use_totp);
   }).error(function (err) {
     Logger.error(err);
