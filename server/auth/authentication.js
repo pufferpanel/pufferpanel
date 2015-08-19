@@ -10,7 +10,6 @@
 var Path = require('path');
 var Randomstring = require('randomstring');
 var Bcrypt = require('bcrypt');
-var Logger = require(Path.join(__dirname, '../../lib/logger.js'));
 var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 var Notp = require('notp');
 var Base32 = require('thirty-two');
@@ -25,12 +24,12 @@ Authentication.prototype.validateCredentials = function (request, callback) {
 
     if (user[0].use_totp === 1) {
       if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
-        return callback('TOTP Token was invalid.', false);
+        return callback('TOTP Token was invalid.', false, null);
       }
     }
 
     if (!Bcrypt.compareSync(request.payload.password, Authentication.prototype.updatePasswordHash(user[0].password))) {
-      return callback('Email or password was incorrect.', false);
+      return callback('Email or password was incorrect.', false, null);
     }
 
     var session = {
@@ -42,14 +41,13 @@ Authentication.prototype.validateCredentials = function (request, callback) {
       session_id: session.id,
       session_ip: session.ip
     }).run().error(function (err) {
-      Logger.error(err);
+      callback('There was an error creating the session.', false, err);
     });
 
-    return callback(user[0], true);
+    return callback(user[0], true, null);
 
   }).error(function (err) {
-    Logger.error(err);
-    callback('There was an error processing this request.', false);
+    callback('There was an error processing this request.', false, err);
   });
 
 };
