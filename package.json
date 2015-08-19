@@ -5,7 +5,9 @@
   "contributors": [],
   "devDependencies": {
     "eslint": "1.1.0",
-    "eslint-plugin-hapi": "1.2.0"
+    "eslint-plugin-hapi": "1.2.0",
+    "mocha": "2.2.5",
+    "should": "7.0.4"
   },
   "dependencies": {
     "async": "1.4.2",
@@ -29,7 +31,9 @@
     "yargs": "3.19.0"
   },
   "scripts": {
-    "test": "eslint --plugin hapi lib/* server/* index.js"
+    "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
+    "test-mocha": "mocha tests/*",
+    "test": "npm run-script test-eslint && npm run-script test-mocha "
   },
   "bugs": {
     "url": "https://github.com/PufferPanel/PufferPanel/issues"

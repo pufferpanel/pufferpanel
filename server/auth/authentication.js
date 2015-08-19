@@ -10,14 +10,14 @@
 var Path = require('path');
 var Randomstring = require('randomstring');
 var Bcrypt = require('bcrypt');
-var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 var Notp = require('notp');
 var Base32 = require('thirty-two');
 
-var Authentication = function () {
-};
+var Authentication = {};
 
-Authentication.prototype.validateCredentials = function (request, callback) {
+Authentication.validateCredentials = function (request, callback) {
+
+  var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 
   Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
 
@@ -55,7 +55,9 @@ Authentication.prototype.validateCredentials = function (request, callback) {
 
 };
 
-Authentication.prototype.TOTPEnabled = function (email, callback) {
+Authentication.TOTPEnabled = function (email, callback) {
+
+  var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 
   Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
     if (user.length !== 1) {
@@ -69,11 +71,11 @@ Authentication.prototype.TOTPEnabled = function (email, callback) {
 };
 
 // Helper function to convert from PHP password_hash
-Authentication.prototype.updatePasswordHash = function (password) {
+Authentication.updatePasswordHash = function (password) {
   return password.replace(/^\$2y(.+)$/i, '\$2a$1');
 };
 
-Authentication.prototype.generatePasswordHash = function (rawpassword) {
+Authentication.generatePasswordHash = function (rawpassword) {
   return Bcrypt.hashSync(rawpassword, 10);
 };
 
