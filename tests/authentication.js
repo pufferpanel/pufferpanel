@@ -1,8 +1,4 @@
-global.requireFromRoot = function (name) {
-  return require(__dirname + '/../' + name);
-};
-
-var Authentication = requireFromRoot('server/auth/authentication');
+var Authentication = require('../server/auth/authentication.js');
 require('should');
 
 describe('Server/Auth/Authentication', function () {
@@ -29,7 +25,7 @@ describe('Server/Auth/Authentication', function () {
   describe('generatePasswordHash', function () {
 
     var rawPw = 'admin';
-    var hashRegex = /^\$2a\$10\$.{53}/g;
+    var hashRegex =/^\$2a\$10\$.{53}/g;
 
     context('when generates', function () {
       it('should be hashed', function () {
