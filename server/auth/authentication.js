@@ -16,24 +16,22 @@ var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 
 var Authentication = {};
 
-Authentication.validateCredentials = function (request, callback) {
+Authentication.validateLogin = function (request, callback) {
 
-  var connection = Rethink.openConnection();
-
-  connection.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
+  Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
 
     if (user.length !== 1) {
-      return callback('No account with that information could be found in the system.', false);
+      return callback({ error: 'No account with that information could be found in the system.' });
     }
 
     if (user[0].use_totp === 1) {
       if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
-        return callback('TOTP Token was invalid.', false, null);
+        return callback({ error: 'TOTP token was invalid.' });
       }
     }
 
-    if (!Bcrypt.compareSync(request.payload.password, Authentication.prototype.updatePasswordHash(user[0].password))) {
-      return callback('Email or password was incorrect.', false, null);
+    if (!Bcrypt.compareSync(request.payload.password, Authentication.updatePasswordHash(user[0].password))) {
+      return callback({ error: 'Email or password was incorrect.' });
     }
 
     var session = {
@@ -45,26 +43,28 @@ Authentication.validateCredentials = function (request, callback) {
       session_id: session.id,
       session_ip: session.ip
     }).run().error(function (err) {
-      callback('There was an error creating the session.', false, err);
+      return callback({ error: 'An error occured creating the session in the database.' });
     });
 
-    return callback(user[0], true, null);
+    return callback({
+      success: true,
+      session: user[0]
+    });
 
   }).error(function (err) {
-    callback('There was an error processing this request.', false, err);
+    Logger.error(err);
+    return callback({ error: 'There was an error processing this request.' });
   });
 
 };
 
 Authentication.TOTPEnabled = function (email, callback) {
 
-  var connection = Rethink.openConnection();
-
-  connection.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
-    if (user.length !== 1) {
-      return callback(null, false);
+  Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
+    if (user.length !== 1 || user[0].use_totp === 0) {
+      return callback(false);
     }
-    return callback(null, user[0].use_totp);
+    return callback(true);
   }).error(function (err) {
     Logger.error(err);
   });

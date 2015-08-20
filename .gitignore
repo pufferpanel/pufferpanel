@@ -2,6 +2,6 @@
 .DS_Store
 node_modules
 logs
-configuration.json
+config.json
 .idea/
 *.iml

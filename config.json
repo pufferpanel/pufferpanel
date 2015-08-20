@@ -1,1 +1,11 @@
-{}
+{
+  "server": {
+    "port": 3000
+  },
+  "rethink": {
+    "host": "localhost",
+    "port": 28015,
+    "database": "pufferpanel"
+  },
+  "yar": "v5DqU9iNo"
+}

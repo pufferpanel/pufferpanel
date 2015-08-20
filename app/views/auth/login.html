@@ -72,7 +72,7 @@ $(document).ready(function(){
 			type: "POST",
 			url: "/auth/login/totp",
 			async: false,
-			data: { check: check_email },
+			data: { check: check_email, crumb: '{{ crumb }}' },
 			success: function(data){
 				if(data == 'true'){
 					$("#openTOTP").modal('show');
@@ -81,7 +81,7 @@ $(document).ready(function(){
 					})
           event.preventDefault();
 				}else{
-					$(this).submit();
+          $(this).submit();
 				}
 			}
 		});

@@ -17,21 +17,21 @@ describe('Server/Auth/Authentication', function () {
     context('when already converted', function () {
       it('should not update', function () {
         Authentication.updatePasswordHash(newPw).should.equal(validatedPw);
-      })
-    })
+      });
+    });
 
   });
 
   describe('generatePasswordHash', function () {
 
     var rawPw = 'admin';
-    var hashRegex =/^\$2a\$10\$.{53}/g;
+    var hashRegex = /^\$2a\$10\$.{53}/g;
 
     context('when generates', function () {
       it('should be hashed', function () {
         hashRegex.test(Authentication.generatePasswordHash(rawPw)).should.be.true();
       });
-    })
+    });
   });
 
 });
