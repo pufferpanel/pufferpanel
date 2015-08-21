@@ -1,6 +1,5 @@
 import json
 import os
-from pprint import pprint
 
 rootPath = '../public/i18n/'
 

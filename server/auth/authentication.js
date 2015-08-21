@@ -55,7 +55,6 @@ Authentication.validateLogin = function (email, password, totp_token, callback) 
       return callback(undefined, false, 'Email or password was incorrect.');
     }
 
-
     return callback(undefined, true, user);
 
   }).error(function (err) {
@@ -64,7 +63,18 @@ Authentication.validateLogin = function (email, password, totp_token, callback) 
 
 };
 
+/**
+ * @callback createSessionCallback
+ */
+/**
+ * Creates a new session for the given user
+ *
+ * @param {String} userId - ID of user
+ * @param {String} ipAddr - IP Address
+ * @param {createSessionCallback} callback - Function to handle response
+ */
 Authentication.createSession = function (userId, ipAddr, callback) {
+
   var sessionId = Randomstring.generate(12);
 
   var Rethink = requireFromRoot('lib/rethink');
@@ -76,44 +86,13 @@ Authentication.createSession = function (userId, ipAddr, callback) {
   }).error(function (err) {
     return callback(err, undefined);
   });
-};
 
-/**
- * @callback loginUserCallback
- * @param {Error} err - Error that occurred, otherwise undefined
- * @param {Boolean} success - Whether the user was successfully logged in
- * @param {Object|String} data - The user data if the login was valid, otherwise a failure message
- */
-/**
- * Attempts to log a user. The given credentials are first verified, then a session is created.
- *
- * @param {String} email - Email of user
- * @param {String} password - Password for user
- * @param {String} totptoken - Totp token for user
- * @param {String} ipAddr - IP address to create session for
- * @param {loginUserCallback} callback - Function to handle response
- */
-Authentication.loginUser = function (email, password, totptoken, ipAddr, callback) {
-  Authentication.validateLogin(email, password, totptoken, function (err, success, data) {
-    if (err !== undefined) {
-      return callback(err, false, data);
-    }
-
-    if (!success) {
-      return callback(undefined, false, data);
-    }
-
-    Authentication.createSession(data.id, ipAddr, function (err, sessionId) {
-      data.session_id = sessionId;
-      return callback(err, err === undefined, data);
-    });
-  });
 };
 
 /**
  * @callback isTOTPEnabledCallback
  * @param {Error} err - Error that occurred, otherwise undefined
- * @param {Boolean} isEnabled - True if the given email has TOTP enabled, otherwise false
+ * @param {Boolean} isEnabled - True if TOTP is enabled, otherwise false
  */
 /**
  * Gets if a given user's TOTP option is enabled.
