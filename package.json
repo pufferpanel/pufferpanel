@@ -32,8 +32,8 @@
   },
   "scripts": {
     "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
-    "test-mocha": "mocha tests/*",
-    "test": "npm run-script test-eslint && npm run-script test-mocha",
+    "test-mocha": "mocha tests",
+    "test": "sh tests/execute.sh",
     "start": "node index.js",
     "start-verbose": "node index.js --consoleLevel=verbose"
   },
