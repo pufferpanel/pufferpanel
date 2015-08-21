@@ -1,4 +1,4 @@
-/**
+/*
  * PufferPanel — Reinventing the way game servers are managed.
  * Copyright (c) 2015 PufferPanel
  *
@@ -16,18 +16,18 @@ var Authentication = {};
 
 /**
  * @callback validateLoginCallback
- * @param {Error} err Error that occurred during execution, otherwise undefined
- * @param {boolean} success If the login credentials were valid
- * @param {Object|string} data If err is undefined, then the user is returned, otherwise a message with the failure
+ * @param {Error} err - Error that occurred during execution, otherwise undefined
+ * @param {Boolean} success - If the login credentials were valid
+ * @param {Object|String} data - If err is undefined, then the user is returned, otherwise a message with the failure
  *   reason
  */
 /**
  * Determines whether given credentials are valid.
  *
- * @param {string} email Email address of user
- * @param {string} password Password for user (may be hashed)
- * @param {string} totp_token TOTP token if the user has totp enabled, otherwise may be omitted
- * @param {validateLoginCallback} callback Function to call with results
+ * @param {String} email - Email address of user
+ * @param {String} password - Password for user (may be hashed)
+ * @param {String} [totp_token] - TOTP token if the user has totp enabled, otherwise may be omitted
+ * @param {validateLoginCallback} callback - Function to call with results
  */
 Authentication.validateLogin = function (email, password, totp_token, callback) {
 
@@ -80,18 +80,18 @@ Authentication.createSession = function (userId, ipAddr, callback) {
 
 /**
  * @callback loginUserCallback
- * @param {Error} err Error that occurred, otherwise undefined
- * @param {boolean} success Whether the user was successfully logged in
- * @param {Object|string} data The user data if the login was valid, otherwise a failure message
+ * @param {Error} err - Error that occurred, otherwise undefined
+ * @param {Boolean} success - Whether the user was successfully logged in
+ * @param {Object|String} data - The user data if the login was valid, otherwise a failure message
  */
 /**
  * Attempts to log a user. The given credentials are first verified, then a session is created.
  *
- * @param {string} email Email of user
- * @param {string} password Password for user
- * @param {string} totptoken Totp token for user
- * @param {string} ipAddr IP address to create session for
- * @param callback Function to handle response
+ * @param {String} email - Email of user
+ * @param {String} password - Password for user
+ * @param {String} totptoken - Totp token for user
+ * @param {String} ipAddr - IP address to create session for
+ * @param {loginUserCallback} callback - Function to handle response
  */
 Authentication.loginUser = function (email, password, totptoken, ipAddr, callback) {
   Authentication.validateLogin(email, password, totptoken, function (err, success, data) {
@@ -110,6 +110,17 @@ Authentication.loginUser = function (email, password, totptoken, ipAddr, callbac
   });
 };
 
+/**
+ * @callback isTOTPEnabledCallback
+ * @param {Error} err - Error that occurred, otherwise undefined
+ * @param {Boolean} isEnabled - True if the given email has TOTP enabled, otherwise false
+ */
+/**
+ * Gets if a given user's TOTP option is enabled.
+ *
+ * @param {String} email - Email of user
+ * @param {isTOTPEnabledCallback} callback - Function to handle response
+ */
 Authentication.isTOTPEnabled = function (email, callback) {
 
   var Rethink = requireFromRoot('lib/rethink');
@@ -124,11 +135,22 @@ Authentication.isTOTPEnabled = function (email, callback) {
 
 };
 
-// Helper function to convert from PHP password_hash
+/**
+ * Updates a password stored in PHP's BCrypt format to NodeJS's BCrypt format
+ *
+ * @param {String} password - Password hash to convert
+ * @returns {String} Updated password
+ */
 Authentication.updatePasswordHash = function (password) {
   return password.replace(/^\$2y(.+)$/i, '\$2a$1');
 };
 
+/**
+ * Generates a {@link bcrypt}-hashed password
+ *
+ * @param {String} rawpassword - Password to hash
+ * @returns {String} Hashed form of the password
+ */
 Authentication.generatePasswordHash = function (rawpassword) {
   return Bcrypt.hashSync(rawpassword, 10);
 };

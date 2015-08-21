@@ -10,10 +10,8 @@
 global.requireFromRoot = function (name) {
   return require(__dirname + '/' + name);
 };
-var Yargs = require('yargs').argv;
-var Logger = requireFromRoot('lib/logger');
 
-Logger.prepare(Yargs);
+var Logger = requireFromRoot('lib/logger');
 
 Logger.info('+ =========================================== +');
 Logger.info('| PufferPanel logs all information and errors |');
