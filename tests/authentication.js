@@ -1,4 +1,16 @@
-var Authentication = require('../server/auth/authentication.js');
+/**
+ * PufferPanel — Reinventing the way game servers are managed.
+ * Copyright (c) 2015 PufferPanel
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ */
+global.requireFromRoot = function (name) {
+  return require(__dirname + '/../' + name);
+};
+var Authentication = requireFromRoot('server/auth/authentication');
 require('should');
 
 describe('Server/Auth/Authentication', function () {

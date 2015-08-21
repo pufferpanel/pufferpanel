@@ -7,9 +7,11 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  */
-var Path = require('path');
+global.requireFromRoot = function (name) {
+  return require(__dirname + '/' + name);
+};
 var Yargs = require('yargs').argv;
-var Logger = require('./lib/logger.js');
+var Logger = requireFromRoot('lib/logger');
 
 Logger.prepare(Yargs);
 
@@ -23,7 +25,7 @@ Logger.info('| https://github.com/PufferPanel/PufferPanel  |');
 Logger.info('+ =========================================== +');
 
 // Include HapiJS Routing Mechanisms
-require(Path.join(__dirname, 'lib/routes.js'));
+requireFromRoot('lib/routes');
 
 process.on('SIGINT', function () {
 

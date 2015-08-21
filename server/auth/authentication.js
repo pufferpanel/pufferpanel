@@ -7,59 +7,112 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  */
-var Path = require('path');
 var Randomstring = require('randomstring');
 var Bcrypt = require('bcrypt');
 var Notp = require('notp');
 var Base32 = require('thirty-two');
-var Rethink = require(Path.join(__dirname, '../../lib/rethink.js'));
 
 var Authentication = {};
 
-Authentication.validateLogin = function (request, callback) {
+/**
+ * @callback validateLoginCallback
+ * @param {Error} err Error that occurred during execution, otherwise undefined
+ * @param {boolean} success If the login credentials were valid
+ * @param {Object|string} data If err is undefined, then the user is returned, otherwise a message with the failure
+ *   reason
+ */
+/**
+ * Determines whether given credentials are valid.
+ *
+ * @param {string} email Email address of user
+ * @param {string} password Password for user (may be hashed)
+ * @param {string} totp_token TOTP token if the user has totp enabled, otherwise may be omitted
+ * @param {validateLoginCallback} callback Function to call with results
+ */
+Authentication.validateLogin = function (email, password, totp_token, callback) {
 
-  Rethink.table('users').filter(Rethink.row('email').eq(request.payload.email)).run().then(function (user) {
+  //check if totp_token was provided. If it was not, then callback is not defined and we need to adjust
+  if (callback === undefined) {
+    callback = totp_token;
+  }
 
-    if (user.length !== 1) {
-      return callback({ error: 'No account with that information could be found in the system.' });
+  var Rethink = requireFromRoot('lib/rethink.js');
+  Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (users) {
+
+    if (users.length !== 1) {
+      return callback(undefined, false, 'No account with that information could be found in the system.');
     }
 
-    if (user[0].use_totp === 1) {
-      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user[0].totp_secret), { time: 30 })) {
-        return callback({ error: 'TOTP token was invalid.' });
+    var user = users[0];
+
+    if (user.use_totp === 1) {
+      if (!Notp.totp.verify(totp_token, Base32.decode(user.totp_secret), { time: 30 })) {
+        return callback(undefined, false, 'TOTP token was invalid.');
       }
     }
 
-    if (!Bcrypt.compareSync(request.payload.password, Authentication.updatePasswordHash(user[0].password))) {
-      return callback({ error: 'Email or password was incorrect.' });
+    if (!Bcrypt.compareSync(password, Authentication.updatePasswordHash(user.password))) {
+      return callback(undefined, false, 'Email or password was incorrect.');
     }
 
-    var session = {
-      id: Randomstring.generate(12),
-      ip: request.info.remoteAddress
-    };
 
-    Rethink.table('users').get(user[0].id).update({
-      session_id: session.id,
-      session_ip: session.ip
-    }).run().error(function (err) {
-      return callback({ error: 'An error occured creating the session in the database.' });
-    });
-
-    return callback({
-      success: true,
-      session: user[0]
-    });
+    return callback(undefined, true, user);
 
   }).error(function (err) {
-    Logger.error(err);
-    return callback({ error: 'There was an error processing this request.' });
+    return callback(err, false, 'There was an error processing this request.');
   });
 
 };
 
-Authentication.TOTPEnabled = function (email, callback) {
+Authentication.createSession = function (userId, ipAddr, callback) {
+  var sessionId = Randomstring.generate(12);
 
+  var Rethink = requireFromRoot('lib/rethink');
+  Rethink.table('users').get(userId).update({
+    session_id: sessionId,
+    session_ip: ipAddr
+  }).run().then(function () {
+    return callback(undefined, sessionId);
+  }).error(function (err) {
+    return callback(err, undefined);
+  });
+};
+
+/**
+ * @callback loginUserCallback
+ * @param {Error} err Error that occurred, otherwise undefined
+ * @param {boolean} success Whether the user was successfully logged in
+ * @param {Object|string} data The user data if the login was valid, otherwise a failure message
+ */
+/**
+ * Attempts to log a user. The given credentials are first verified, then a session is created.
+ *
+ * @param {string} email Email of user
+ * @param {string} password Password for user
+ * @param {string} totptoken Totp token for user
+ * @param {string} ipAddr IP address to create session for
+ * @param callback Function to handle response
+ */
+Authentication.loginUser = function (email, password, totptoken, ipAddr, callback) {
+  Authentication.validateLogin(email, password, totptoken, function (err, success, data) {
+    if (err !== undefined) {
+      return callback(err, false, data);
+    }
+
+    if (!success) {
+      return callback(undefined, false, data);
+    }
+
+    Authentication.createSession(data.id, ipAddr, function (err, sessionId) {
+      data.session_id = sessionId;
+      return callback(err, err === undefined, data);
+    });
+  });
+};
+
+Authentication.isTOTPEnabled = function (email, callback) {
+
+  var Rethink = requireFromRoot('lib/rethink');
   Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
     if (user.length !== 1 || user[0].use_totp === 0) {
       return callback(false);
