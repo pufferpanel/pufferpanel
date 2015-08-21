@@ -65,6 +65,8 @@ Authentication.validateLogin = function (email, password, totp_token, callback) 
 
 /**
  * @callback createSessionCallback
+ * @param {Error} err - Error that occurred, otherwise undefined
+ * @param {String} session - Session token
  */
 /**
  * Creates a new session for the given user
@@ -105,11 +107,11 @@ Authentication.isTOTPEnabled = function (email, callback) {
   var Rethink = requireFromRoot('lib/rethink');
   Rethink.table('users').filter(Rethink.row('email').eq(email)).run().then(function (user) {
     if (user.length !== 1 || user[0].use_totp === 0) {
-      return callback(false);
+      return callback(undefined, false);
     }
-    return callback(true);
+    return callback(undefined, true);
   }).error(function (err) {
-    Logger.error(err);
+    return callback(err, false);
   });
 
 };
