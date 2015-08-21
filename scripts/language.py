@@ -2,6 +2,8 @@ import json
 import os
 from pprint import pprint
 
+rootPath = '../public/i18n/'
+
 def insert(keys, value, parent):
     clonedKeys = list(keys);
     if len(clonedKeys) == 1:
@@ -13,14 +15,13 @@ def insert(keys, value, parent):
         insert(clonedKeys, value, newParent)
     return
 
-
-for fn in os.listdir('../i18n/raw'):
+for fn in os.listdir(rootPath + 'raw'):
     if fn[0] == '.':
         continue
 
     print('Migration of file:', fn)
 
-    with open('../i18n/raw/' + fn, 'r') as jsonFile:
+    with open(rootPath + 'raw/' + fn, 'r') as jsonFile:
         data = json.load(jsonFile)
 
     migration = {}
@@ -39,7 +40,7 @@ for fn in os.listdir('../i18n/raw'):
             keys.append(item)
         insert(keys, data[key], migration)
 
-    with open('../i18n/' + fn, 'w+') as outputFile:
+    with open(rootPath + fn, 'w+') as outputFile:
         json.dump(migration, outputFile)
 
     print('Done')
