@@ -27,11 +27,11 @@
 			<tbody>
 				{% for server in servers %}
 					<tr class="dynUpdate" id="{{ server.hash }}">
-						{% if user.admin == 1 %}<td style="width:26px;">{% if server.owner == user.id %}<i class="fa fa-circle" style="color:#50af51;"></i>{% else %}<i class="fa fa-circle" style="color:#ddd;"></i>{% endif %}</td>{% endif %}
-						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
-						<td>{{ server.location }}</td>
-						<td>{{ server.node_name }}</td>
-						<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
+						{% if user.admin == 1 %}<td style="width:26px;">{% if server.left.owner == user.id %}<i class="fa fa-circle" style="color:#50af51;"></i>{% else %}<i class="fa fa-circle" style="color:#ddd;"></i>{% endif %}</td>{% endif %}
+						<td><a href="/server/{{ server.left.id }}/index">{{ server.left.name }}</a></td>
+						<td>{{ server.right.location }}</td>
+						<td>{{ server.right.name }}</td>
+						<td><code>{{ server.left.server_ip }}:{{ server.left.server_port }}</code></td>
 						<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
 					</tr>
 				{% endfor %}
