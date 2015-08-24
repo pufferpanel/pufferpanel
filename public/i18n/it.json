@@ -1,0 +1,182 @@
+{
+  "node": {
+    "files": {
+      "loading": "Caricamento delle cartella. Attendere.",
+      "name": "Nome del File",
+      "edit": {
+        "back": "Torna al Gestore dei File",
+        "type_error": "Questo tipo di file non \u00e8 modificabile tramite il pannello di controllo.",
+        "daemon_error": "Impossibile collegarsi al daemon.",
+        "no_file": "Nessun file specificato per la modifica.",
+        "error": "Puoi tornare al gestore dei file <a href=\"index.php\">cliccando qui<\/a>."
+      },
+      "modified": "Ultima Modifica",
+      "ajax": {
+        "no_dir": "Impossible individuare la cartella richiesta. Errore registrato.",
+        "no_save": "Impossible salvare il file.",
+        "file_404": "Imposibile trovare il file specificato sul server.",
+        "no_dl": "Impossible collegarsi al server per ottenere i files. Riprova.",
+        "no_edit": "Questo tipo di file non \u00e8 modificabile tramite il gestore dei file. Prova ad utilizzare un client FTP.",
+        "saved": "File salvato con successo."
+      },
+      "size": "Dimensioni del File"
+    },
+    "overview": {
+      "players_h5": "Player Connessi",
+      "cpu_h5": "Utilizzo CPU",
+      "no_players": "Nessun player online.",
+      "stats_h1": "Panoramica delle Statistiche",
+      "collect_disk": "Caricamento dati riguardanti il disco. Questo fase pu\u00f2 richiedere un po' di tempo. Assicurati che il server sia online.",
+      "ajax": {
+        "no_exec": "Impossibile esegure comandi su questo server.",
+        "no_conn": "Impossibile collegarsi al nodo."
+      },
+      "space_used": "Hai usato %s MB di disco su un massimo di %s MB.",
+      "memory_h5": "Utilizzo Memoria",
+      "disk_h1": "Utilizzo Spazio sul Disco",
+      "information_h1": "Informazioni Server",
+      "collect_usage": "Caricamento dati riguardanti l'utilizzo. Questo fase pu\u00f2 richiedere un po' di tempo. Assicurati che il server sia online."
+    },
+    "ajax": {
+      "generic_error": "Errore durante la richiesta AJAX."
+    },
+    "console": {
+      "scrollstop_alert": "Hai selezione del testo in console. Quando ci\u00f2 accade la console non si aggiorna automaticamente per far in modo che sia pi\u00f9 semplice copiare il testo selezionato. Per aggiornare nuovamente la console, deseleziona semplicemente il testo.",
+      "ajax": {
+        "server_started": "Server avviato con successo."
+      },
+      "command_help": "Inserisci comando",
+      "scrollstop_h1": "Scrollstop&trade; Console Window"
+    },
+    "settings": {
+      "ftp": {
+        "ftp_h1": "Impostazioni FTP"
+      },
+      "jar": {
+        "jarfile_name": "Nome Jarfile",
+        "update": "Nome Aggiornamento",
+        "jar_h1": "Nome del Server .jar"
+      }
+    }
+  },
+  "reset": {
+    "reset_h1": "Reimposta Password"
+  },
+  "string": {
+    "username": "Username",
+    "generated_pass": "Password Generata",
+    "connect": "Connetti",
+    "close": "Chiudi",
+    "previous": "Precedente",
+    "ftp": "FTP",
+    "spam_protection": "Protezione Spam",
+    "token": "Token",
+    "next": "Successivo",
+    "start": "Avvia",
+    "version": "Versione",
+    "location": "Ubicazione",
+    "online": "Connesso",
+    "offline": "Disconnesso",
+    "save": "Salva",
+    "email": "Email",
+    "status": "Stato",
+    "node": "Nodo",
+    "description": "Descrizione",
+    "again": "(Ancora)",
+    "stop": "Ferma",
+    "about": "Info",
+    "modpacks": "Modpacks",
+    "mem_alloc": "Memoria Allocata",
+    "host": "Host",
+    "logout": "Logout",
+    "noservers": "Non hai ancora nessun server assegnato.",
+    "password": "Password",
+    "generate": "Genera",
+    "restart": "Riavvia",
+    "search": "Cerca",
+    "name": "Nome",
+    "language": "Lingua",
+    "versions": "Versioni",
+    "clear": "Pulisci",
+    "disk_alloc": "Disco Allocato",
+    "reset_password": "Reimposta Password",
+    "refresh": "Aggiorna",
+    "connection": "Connessione",
+    "acp": "Pannello di Controllo Admin",
+    "published": "Pubblicato",
+    "login": "Login",
+    "options": "Opzioni"
+  },
+  "success": {
+    "notifications": {
+      "updated": "Le tua preferenze di notifica sono state aggiornate."
+    },
+    "account": {
+      "password": "La tua password \u00e8 stata cambiata con successo! Accedi nuovamente utilizzando la nuova password.",
+      "email": "La tua email \u00e8 stata cambiata con successo in <em>%s<\/em>."
+    }
+  },
+  "settings": {
+    "new_email": "Nuova Email",
+    "change_pass": "Cambia Password",
+    "notifications_h1": "Aggiorna Preferenze di Notifica",
+    "update_email": "Aggiorna Email",
+    "subuser": {
+      "validate": "Convalida Codice",
+      "h1": "Codice Sottoutente",
+      "help": "Se hai ricevuto l'email \u00e8 perch\u00e9 sei stato aggiuto come sottoutente di un server. Inserisci il codice nella casella sottostante."
+    },
+    "failed_login": "Accesso Fallito",
+    "login_success": "Accesso Completato",
+    "current_pass": "Password Attuale",
+    "new_pass": "Nuova Password",
+    "update_preferences": "Aggiorna Preferenze",
+    "notify": {
+      "email_me": "Mandami una Email",
+      "no_email_me": "Non Mandarmi una Email"
+    }
+  },
+  "footer": {
+    "generated": "Pagina Generato in %s secondi.",
+    "version": "Versione %s distribuita da <a href=\"http:\/\/pufferpanel.com\/\">PufferPanel Development<\/a>.",
+    "license": "PufferPanel \u00e8 distribuito con la licenza <a href=\"https:\/\/github.com\/PufferPanel\/PufferPanel\/blob\/master\/LICENSE\">GPL-v3 License<\/a>.",
+    "queries": "Eseguite %s queries sul database."
+  },
+  "header": {
+    "admin": "PC Admin",
+    "account": "Profilo",
+    "logout": "Logout"
+  },
+  "error": {
+    "password_strength": "La tua password non \u00e8 abbastanza complessa. Assicurati che include almento un numero e che sia composta da maiuscole e minuscole. La password deve avere almeno 8 caratteri.",
+    "invalid_email": "L'email inserita non \u00e8 valida.",
+    "account": {
+      "same_email": "Non puoi cambiare indirizzo email con quello che hai gi\u00e0 in uso."
+    },
+    "xsrf": "Il codice XSRF ricevuto non \u00e8 valido. Assicurati che i cookies siano abilitato e riprova.",
+    "password_mismatch": "Le password inserite non corrispondono.",
+    "unhandled": "Errore imprevisto durente il processo della richiesta. Torna indietro e riprova.",
+    "invalid_password": "Impossibile verificare la tua password. Riprova."
+  },
+  "login": {
+    "login_h1": "Accedi a PufferPanel"
+  },
+  "sidebar": {
+    "files": "Gestore dei Files",
+    "acc": {
+      "actions": "Operazioni Profilo"
+    },
+    "totp_settings": "Impostazioni TOTP",
+    "manage_subusers": "Gestisci Sottoutenti",
+    "overview": "Panoramica",
+    "manage": "Gestione Server",
+    "servers": "I Miei Servers",
+    "plugins": "Server Plugins",
+    "console": "Console in Diretta",
+    "server": {
+      "sett": "Impostazioni Server",
+      "acc": "Operazioni Server"
+    },
+    "settings": "Impostazioni"
+  }
+}

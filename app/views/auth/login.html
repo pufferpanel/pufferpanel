@@ -8,21 +8,21 @@
 {% block content %}
 <div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
-    	<legend>{{ l.render('login.login_h1') }}</legend>
+    	<legend>Login to PufferPanel</legend>
     	<fieldset>
-            {% if flash.info is defined %}
-                {{ flash.info.0|raw }}
-            {% endif %}
+        {% if flash|length %}
+          <div class="alert alert-danger">{{ flash }}</div>
+        {% endif %}
     		<div class="form-group">
-    			<label for="email" class="control-label">{{ l.render('string.email') }}</label>
+    			<label for="email" class="control-label">Email</label>
     			<div>
-    				<input type="text" class="form-control" name="email" id="email" placeholder="{{ l.render('string.email') }}" />
+    				<input type="text" class="form-control" name="email" id="email" placeholder="Email" />
     			</div>
     		</div>
     		<div class="form-group">
-    			<label for="login-password" class="control-label">{{ l.render('string.password') }}</label>
+    			<label for="login-password" class="control-label">Password</label>
     			<div>
-    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ l.render('string.password') }}" />
+    				<input type="password" class="form-control" name="password" id="password" placeholder="Password" />
     			</div>
     		</div>
     		<div class="form-group">
@@ -32,9 +32,10 @@
     		</div>
     		<div class="form-group">
     			<div>
-                    {{ xsrf|raw }}
-    				<input type="submit" class="btn btn-primary btn-sm" value="{{ l.render('string.login') }}" />
-    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">{{ l.render('string.reset_password') }}</button>
+            <input type="hidden" name="crumb" value="{{ crumb }}"/>
+    				<input type="submit" class="btn btn-primary btn-sm" value="Login" />
+    				<a class="btn btn-default btn-sm" href="/auth/password">Reset Password</a>
+            <a class="btn btn-default btn-sm" href="/auth/register">Register</a>
     			</div>
     		</div>
     	</fieldset>
@@ -71,16 +72,16 @@ $(document).ready(function(){
 			type: "POST",
 			url: "/auth/login/totp",
 			async: false,
-			data: { check: check_email },
+			data: { check: check_email, crumb: '{{ crumb }}' },
 			success: function(data){
 				if(data == 'true'){
 					$("#openTOTP").modal('show');
 					$('#openTOTP').on('shown.bs.modal', function(){
 						$("#totp_token").focus();
 					})
-                    event.preventDefault();
+          event.preventDefault();
 				}else{
-					$(this).submit();
+          $(this).submit();
 				}
 			}
 		});

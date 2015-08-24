@@ -1,0 +1,53 @@
+{
+  "name": "PufferPanel",
+  "description": "Reinventing the way game servers are managed.",
+  "version": "0.9.0",
+  "contributors": [],
+  "devDependencies": {
+    "chai": "3.2.0",
+    "eslint": "1.1.0",
+    "eslint-plugin-hapi": "1.2.0",
+    "mocha": "2.2.5"
+  },
+  "dependencies": {
+    "async": "1.4.2",
+    "bcrypt": "0.8.5",
+    "colors": "1.1.2",
+    "crumb": "4.0.3",
+    "date-utils": "1.2.17",
+    "fs-extra": "0.23.1",
+    "hapi": "9.0.2",
+    "hapi-auth-cookie": "3.1.0",
+    "inert": "3.0.1",
+    "notp": "2.0.2",
+    "nunjucks": "1.3.4",
+    "path": "0.11.14",
+    "randomstring": "1.0.7",
+    "rfr": "1.2.1",
+    "rethinkdbdash": "2.1.6",
+    "thirty-two": "0.0.2",
+    "underscore": "1.8.3",
+    "vision": "3.0.0",
+    "winston": "1.0.1",
+    "yar": "3.0.3",
+    "yargs": "3.19.0"
+  },
+  "scripts": {
+    "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
+    "test-mocha": "mocha tests",
+    "test": "sh tests/execute.sh",
+    "start": "node index.js",
+    "start-verbose": "node index.js --consoleLevel=verbose"
+  },
+  "bugs": {
+    "url": "https://github.com/PufferPanel/PufferPanel/issues"
+  },
+  "repository": [
+    {
+      "type": "git",
+      "url": "https://github.com/PufferPanel/PufferPanel.git"
+    }
+  ],
+  "license": "GPL-3.0",
+  "homepage": "http://pufferpanel.com"
+}

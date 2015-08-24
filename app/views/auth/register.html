@@ -10,8 +10,8 @@
 	<form action="/auth/register" method="POST" id="login-form">
 		<legend>Create Account</legend>
 		<fieldset>
-			{% if flash.info is defined %}
-				{{ flash.info.0|raw }}
+			{% if flash|length %}
+				{{ flash }}
 			{% endif %}
 			<div class="well well-sm">
 				<p>Welcome! Please fill out the form below to create an account and begin accessing servers.</p>
@@ -19,7 +19,7 @@
 			<div class="form-group">
 				<label for="login-password" class="control-label">Token</label>
 				<div>
-					<input type="text" class="form-control" name="token" id="token" {% if token != false %}value="{{ token }}"{% endif %} />
+					<input type="text" class="form-control" name="token" id="token" {% if token|length %}value="{{ token }}"{% endif %} />
 					<p><small class="text-muted"><em>Please enter the token that you recieved in the email.</em></small></p>
 				</div>
 			</div>
@@ -32,17 +32,17 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="password" class="control-label">{{ l.render('string.password') }}</label>
+				<label for="password" class="control-label">Password</label>
 				<div>
-					<input type="password" class="form-control" name="password" id="password" placeholder="{{ l.render('string.password') }}" />
+					<input type="password" class="form-control" name="password" id="password" placeholder="Password" />
 					<p><small class="text-muted"><em>Must be at least 8 characters long and contain one special character and mixed case.</em></small></p>
 				</div>
 			</div>
 			<div class="form-group">
 				<div>
-					{{ xsrf|raw }}
+					<input type="hidden" name="crumb" value="{{ crumb }}"/>
 					<input type="submit" class="btn btn-primary btn-sm" value="Create Account" />
-					<button class="btn btn-default btn-sm" onclick="window.location='login';return false;">Login</button>
+					<a class="btn btn-default btn-sm" href="/auth/login">Login</a>
 				</div>
 			</div>
 		</fieldset>
