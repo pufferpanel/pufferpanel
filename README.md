@@ -1,4 +1,4 @@
-[![Circle CI](https://circleci.com/gh/PufferPanel/PufferPanel/tree/kraken.svg?style=svg)](https://circleci.com/gh/PufferPanel/PufferPanel/tree/kraken) ![](https://david-dm.org/PufferPanel/PufferPanel/kraken.svg) ![](https://david-dm.org/PufferPanel/PufferPanel/kraken/dev-status.svg)
+[![Circle CI](https://circleci.com/gh/PufferPanel/PufferPanel/tree/kraken.svg?style=svg)](https://circleci.com/gh/PufferPanel/PufferPanel/tree/kraken) [![](https://david-dm.org/PufferPanel/PufferPanel/kraken.svg)](https://david-dm.org/PufferPanel/PufferPanel/kraken) [![](https://david-dm.org/PufferPanel/PufferPanel/kraken/dev-status.svg)](https://david-dm.org/PufferPanel/PufferPanel/kraken#info=devDependencies&view=table)
 
 # PufferPanel — Written in Hapi
 This is a development branch of PufferPanel written in Hapi, a Node.js server framework.
