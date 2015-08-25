@@ -37,7 +37,7 @@
   "scripts": {
     "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
     "test-mocha": "mocha tests",
-    "test": "eslint --plugin hapi lib/* server/* index.js",
+    "test": "sh tests/execute.sh",
     "start": "node index.js",
     "start-verbose": "node index.js --consoleLevel=verbose"
   },
