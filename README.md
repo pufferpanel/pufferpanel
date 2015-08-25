@@ -1,5 +1,5 @@
 [![Circle CI](https://img.shields.io/circleci/project/PufferPanel/PufferPanel/kraken.svg?style=flat-square)](https://circleci.com/gh/PufferPanel/PufferPanel/tree/kraken)
-[![](https://img.shields.io/david/PufferPanel/PufferPanel/kraken.svg?style=flat-square)](https://david-dm.org/PufferPanel/PufferPanel/kraken) [![](https://img.shields.io/david/dev/PufferPanel/PufferPanel/kraken-status.svg?style=flat-square)](https://david-dm.org/PufferPanel/PufferPanel/kraken#info=devDependencies&view=table)
+[![](https://img.shields.io/david/PufferPanel/PufferPanel/kraken.svg?style=flat-square)](https://david-dm.org/PufferPanel/PufferPanel/kraken) [![](https://img.shields.io/david/dev/PufferPanel/PufferPanel/kraken.svg?style=flat-square)](https://david-dm.org/PufferPanel/PufferPanel/kraken#info=devDependencies&view=table)
 [![](https://img.shields.io/codacy/5181b766fb7d49a6bf47b3dabc93686c.svg?style=flat-square)](https://www.codacy.com/app/dane_2/PufferPanel)
 
 
