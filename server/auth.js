@@ -23,38 +23,40 @@ var Authentication = {};
  */
 Authentication.validateLogin = function (request, callback) {
 
-  if (typeof callback === undefined) {
-    return callback({ error: 'No callback function was assigned to this request.' });
-  }
-
-  R.table('users').filter(R.row('email').eq(request.payload.email)).run().then(function (user) {
-
-    if (user.length !== 1) {
-      return callback({ error: 'No account with that information could be found in the system.' });
+    if (typeof callback === undefined) {
+        return callback({ error: 'No callback function was assigned to this request.' });
     }
 
-    user = user[0];
-    if (user.use_totp === 1) {
-      if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user.totp_secret), { time: 30 })) {
-        return callback({ error: 'TOTP token was invalid.' });
-      }
-    }
+    R.table('users').filter(R.row('email').eq(request.payload.email)).run().then(function (user) {
 
-    if (!Bcrypt.compareSync(request.payload.password, Authentication.updatePasswordHash(user.password))) {
-      return callback({ error: 'Email or password was incorrect.' });
-    }
+        if (user.length !== 1) {
+            return callback({ error: 'No account with that information could be found in the system.' });
+        }
 
-    return callback({
-      success: true,
-      session: user
+        user = user[0];
+        if (user.use_totp === 1) {
+            if (!Notp.totp.verify(request.payload.totp_token, Base32.decode(user.totp_secret), { time: 30 })) {
+                return callback({ error: 'TOTP token was invalid.' });
+            }
+        }
+
+        if (!Bcrypt.compareSync(request.payload.password, Authentication.updatePasswordHash(user.password))) {
+            return callback({ error: 'Email or password was incorrect.' });
+        }
+
+        return callback({
+            success: true,
+            session: user
+        });
+
+    }).error(function (err) {
+
+        Logger.error(err);
+        return callback({ error: 'There was an error processing this request.' });
     });
 
-  }).error(function (err) {
-    Logger.error(err);
-    return callback({ error: 'There was an error processing this request.' });
-  });
-
 };
+
 
 /**
  * Gets if a given user's TOTP option is enabled.
@@ -64,17 +66,20 @@ Authentication.validateLogin = function (request, callback) {
  */
 Authentication.isTOTPEnabled = function (email, callback) {
 
-  R.table('users').filter(R.row('email').eq(email)).run().then(function (user) {
-    if (user.length !== 1 || user[0].use_totp === 0) {
-      return callback(false);
-    }
-    return callback(true);
-  }).error(function (err) {
-    Logger.error(err);
-    return callback(false);
-  });
+    R.table('users').filter(R.row('email').eq(email)).run().then(function (user) {
+
+        if (user.length !== 1 || user[0].use_totp === 0) {
+            return callback(false);
+        }
+        return callback(true);
+    }).error(function (err) {
+
+        Logger.error(err);
+        return callback(false);
+    });
 
 };
+
 
 /**
  * Updates a password stored in PHP's BCrypt format to NodeJS's BCrypt format
@@ -83,8 +88,10 @@ Authentication.isTOTPEnabled = function (email, callback) {
  * @returns {String} Updated password
  */
 Authentication.updatePasswordHash = function (password) {
-  return password.replace(/^\$2y(.+)$/i, '\$2a$1');
+
+    return password.replace(/^\$2y(.+)$/i, '\$2a$1');
 };
+
 
 /**
  * Generates a {@link bcrypt}-hashed password
@@ -93,7 +100,8 @@ Authentication.updatePasswordHash = function (password) {
  * @returns {String} Hashed form of the password
  */
 Authentication.generatePasswordHash = function (rawpassword) {
-  return Bcrypt.hashSync(rawpassword, 10);
+
+    return Bcrypt.hashSync(rawpassword, 10);
 };
 
 module.exports = Authentication;

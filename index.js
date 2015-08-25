@@ -7,9 +7,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  */
+require('colors');
 var Rfr = require('rfr');
 var Logger = Rfr('lib/logger');
-require('colors');
 
 Logger.info('+ =========================================== +');
 Logger.info('| PufferPanel logs all information and errors |');
@@ -25,8 +25,7 @@ Rfr('lib/routes.js');
 
 process.on('SIGINT', function () {
 
-  Logger.warn('Recieved SIGINT. Preparing for shutdown...');
-  Logger.info('All shutdown parameters complete. Stopping...\n');
-  process.exit();
-
+    Logger.warn('Recieved SIGINT. Preparing for shutdown...');
+    Logger.info('All shutdown parameters complete. Stopping...\n');
+    process.exit();
 });
