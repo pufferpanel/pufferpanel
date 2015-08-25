@@ -29,17 +29,18 @@
     "rethinkdbdash": "2.1.6",
     "rfr": "1.2.1",
     "thirty-two": "0.0.2",
+    "underscore": "1.8.3",
     "vision": "3.0.0",
     "winston": "1.0.1",
     "yar": "3.0.3",
     "yargs": "3.19.0"
   },
   "scripts": {
-    "test-eslint": "eslint --plugin hapi lib/* server/* index.js",
+    "test-eslint": "eslint --plugin hapi lib/* index.js",
     "test-mocha": "mocha tests",
     "test": "sh tests/execute.sh",
     "start": "node index.js",
-    "start-verbose": "node index.js --consoleLevel=verbose"
+    "start-verbose": "node index.js --consoleLevel=verbose --showMeta=true"
   },
   "bugs": {
     "url": "https://github.com/PufferPanel/PufferPanel/issues"
