@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Your Servers{% endblock %}
+{% block title %}{{ __('pages.base.index') }}{% endblock %}
 
 {% block content %}
 <div class="col-md-9">
@@ -9,7 +9,7 @@
 	{% endif %}
 	{% if user.admin == 1 %}
 		<div class="alert alert-info">
-			You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a green dot to the left of their name.
+			{{ __('notice.viewingAsAdmin') }}
 		</div>
 	{% endif %}
 	{% if servers %}
@@ -17,10 +17,10 @@
 			<thead>
 				<tr>
 					{% if user.admin == 1 %}<th></th>{% endif %}
-					<th>Server Name</th>
-					<th>Location</th>
-					<th>Node</th>
-					<th>Connection Address</th>
+					<th>{{ __('string.servername') }}</th>
+					<th>{{ __('string.location') }}</th>
+					<th>{{ __('string.node') }}</th>
+					<th>{{ __('string.connection') }}</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -28,7 +28,7 @@
 				{% for server in servers %}
 					<tr class="dynUpdate" id="{{ server.hash }}">
 						{% if user.admin == 1 %}<td style="width:26px;">{% if server.left.owner == user.id %}<i class="fa fa-circle" style="color:#50af51;"></i>{% else %}<i class="fa fa-circle" style="color:#ddd;"></i>{% endif %}</td>{% endif %}
-						<td><a href="/server/{{ server.left.id }}/index">{{ server.left.name }}</a></td>
+						<td><a href="/server/{{ server.left.id }}">{{ server.left.name }}</a></td>
 						<td>{{ server.right.location }}</td>
 						<td>{{ server.right.name }}</td>
 						<td><code>{{ server.left.server_ip }}:{{ server.left.server_port }}</code></td>
@@ -39,7 +39,7 @@
 		</table>
 	{% else %}
 		<div class="alert alert-info">
-			You do not currently have any servers listed on your account.
+			{{ __('notice.noServers') }}
 		</div>
 	{% endif %}
 </div>
