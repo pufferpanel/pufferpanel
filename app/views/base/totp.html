@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="col-md-9">
-	<h3 style="margin-top:0;">{{ __('string.tfa') }} <small>{% if user.user_totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
+	<h3 style="margin-top:0;">{{ __('string.tfa') }} <small>{% if user.use_totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
 	{% if flash|length %}
 	  <div class="alert alert-danger">{{ flash }}</div>
 	{% endif %}
@@ -88,8 +88,6 @@ $(window).load(function() {
 				timeout: 5000,
 				success: function(data) {
 					location.reload();
-					// $("#notice_box_totp").html(data);
-					//$('#notice_box_totp').fadeIn();
 				}
 			});
 			event.preventDefault();
