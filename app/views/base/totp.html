@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ __('pages.base.totp') }}{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+	<h3 style="margin-top:0;">{{ __('string.tfa') }} <small>{% if user.user_totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
+	{% if flash|length %}
+	  <div class="alert alert-danger">{{ flash }}</div>
+	{% endif %}
+	{% if user.use_totp == 1 %}
+		<div class="panel panel-default">
+			<div class="panel-heading">{{ __('string.disable') }} TOTP</div>
+			<div class="panel-body">
+				<p>{{ __('notice.disableTotp') }}</p>
+				<br />
+				<form action="/totp/verify-token" method="post">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">{{ __('string.totptoken') }}</span>
+								<input type="text" name="token" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn btn-danger btn-sm" type="submit">{{ __('string.disable') }} {{ __('string.tfa') }}</button>
+								</span>
+						</div>
+					  <input type="hidden" name="crumb" value="{{ crumb }}" />
+					</div>
+				</form>
+			</div>
+		</div>
+	{% else %}
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">{{ __('string.enable') }} TOTP</h3>
+			</div>
+			<div class="panel-body">
+				<p>{{ __('notice.totpDisabled') }}</p>
+				<div class="alert alert-info" style="margin-bottom: 0;">{{ __('notice.totpSupport') }}</div>
+			</div>
+		</div>
+		<form action="#" id="do_totp" method="post">
+			<div class="form-group">
+				<div>
+					<input type="submit" id="enable_totp" class="btn btn-success btn-sm" name="enable_totp" value="{{ __('string.enable') }} {{ __('string.tfa') }}" />
+				</div>
+			</div>
+		</form>
+	{% endif %}
+</div>
+<div class="modal fade" id="openTOTP" tabindex="-1" role="dialog" aria-labelledby="openTOTP" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">TOTP QR Code</h4>
+			</div>
+			<div class="modal-body" id="modal_insert_content">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">{{ __('string.close') }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(window).load(function() {
+	$("#sidebar_links").find("a[href='/totp']").addClass('active');
+	$("#do_totp").submit(function(event){
+		$.ajax({
+			type: "POST",
+			url: "/totp/generate-token",
+			data: { action : "generate", crumb: "{{ crumb }}" },
+			timeout: 5000,
+			success: function(data){
+				$("#modal_insert_content").html(data);
+				$('#openTOTP').modal('show');
+				run_totp_popup();
+			}
+		});
+		event.preventDefault();
+	});
+	function run_totp_popup(){
+		$("#totp_token_verify").submit(function(event){
+			$.ajax({
+				type: "POST",
+				url: "/totp/verify-token",
+				data: { token: $("#totp_token").val(), crumb: "{{ crumb }}" },
+				timeout: 5000,
+				success: function(data) {
+					location.reload();
+					// $("#notice_box_totp").html(data);
+					//$('#notice_box_totp').fadeIn();
+				}
+			});
+			event.preventDefault();
+		});
+	}
+});
+</script>
+{% endblock %}
