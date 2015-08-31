@@ -15,64 +15,9 @@ Chai.config.includeStack = false;
 var Should = Chai.should();
 var Expect = Chai.expect;
 var Assert = Chai.assert;
-var Authentication = Rfr('server/auth.js');
+var Authentication = Rfr('lib/controllers/authentication.js');
 
-describe('Server/Auth', function () {
-
-  describe('validateLogin', function () {
-
-    context('when user logs in with valid credentials', function () {
-      it('should return successfully', function (done) {
-        Authentication.validateLogin({
-          payload: {
-            email: 'theoretical@email.com',
-            password: 'theoretically_correct_password'
-          }
-        }, function (reply) {
-          Expect(reply.error).to.be.undefined;
-          Expect(reply.success).to.be.defined;
-          Expect(reply.success).to.be.true;
-          done();
-        });
-      });
-    });
-
-    context('when user logs in with invalid credentials', function () {
-      it('should return unsuccessfully', function (done) {
-        Authentication.validateLogin({
-          payload: {
-            email: 'bad@email.com',
-            password: 'FalsePassword'
-          }
-        }, function (reply) {
-          Assert.isUndefined(reply.success, 'success is undefined');
-          Assert.isDefined(reply.error, 'error is defined');
-          done();
-        });
-      });
-    });
-
-  });
-
-  describe('updatePasswordHash', function () {
-
-    var oldPw = '$2y$10$CrEJiLF5OoK/D.FgBs8Wc.Kr0C0KZaxWwOJwlYI4P98wjHP9BzXnK';
-    var newPw = '$2a$10$CrEJiLF5OoK/D.FgBs8Wc.Kr0C0KZaxWwOJwlYI4P98wjHP9BzXnK';
-    var validatedPw = '$2a$10$CrEJiLF5OoK/D.FgBs8Wc.Kr0C0KZaxWwOJwlYI4P98wjHP9BzXnK';
-
-    context('when needs update', function () {
-      it('should update', function () {
-        Assert.strictEqual(Authentication.updatePasswordHash(oldPw), validatedPw, 'passwords are the same.');
-      });
-    });
-
-    context('when already converted', function () {
-      it('should not update', function () {
-        Assert.strictEqual(Authentication.updatePasswordHash(newPw), validatedPw, 'passwords are the same.');
-      });
-    });
-
-  });
+describe('Controller/Authentication', function () {
 
   describe('generatePasswordHash', function () {
 
