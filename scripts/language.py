@@ -1,7 +1,7 @@
 import json
 import os
 
-rootPath = '../public/i18n/'
+rootPath = '../app/i18n/'
 
 def insert(keys, value, parent):
     clonedKeys = list(keys);
