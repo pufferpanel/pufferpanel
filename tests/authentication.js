@@ -11,24 +11,70 @@ process.env.NODE_ENV = 'test';
 
 var Rfr = require('rfr');
 var Chai = require('chai');
-Chai.config.includeStack = false;
-var Should = Chai.should();
-var Expect = Chai.expect;
-var Assert = Chai.assert;
 var Authentication = Rfr('lib/controllers/authentication.js');
+var UserModels = Rfr('tests/models/users');
+Chai.config.includeStack = false;
+var Assert = Chai.assert;
 
 describe('Controller/Authentication', function () {
 
-  describe('generatePasswordHash', function () {
+    beforeEach(function () {
 
-    var rawPw = 'admin';
-    var hashRegex = /^\$2a\$10\$.{53}/g;
-
-    context('when generates', function () {
-      it('should be hashed', function () {
-        Assert.isTrue(hashRegex.test(Authentication.generatePasswordHash(rawPw)), 'the password hash is valid.');
-      });
+        UserModels.reset();
     });
-  });
 
+    describe('generatePasswordHash', function () {
+
+        var rawPw = 'admin';
+        var hashRegex = /^\$2a\$10\$.{53}/g;
+
+        context('when generates', function () {
+            it('should be hashed', function () {
+                Assert.isTrue(hashRegex.test(Authentication.generatePasswordHash(rawPw)));
+            });
+        });
+    });
+
+    describe('loginUser', function () {
+
+        var email = 'admin@example.com';
+        var badEmail = 'donotuse@example.com';
+        var password = 'admin';
+        var badPassword = 'wrong';
+
+        context('when email and password are correct', function () {
+
+            it('should correctly log in user', function () {
+                Authentication.loginUser(email, password, null, function (err, data) {
+                    Assert.isTrue(!err);
+                    Assert.isNotString(data);
+                    Assert.isObject(data);
+                    Assert.property(data, 'id');
+                    Assert.property(data, 'sessionToken');
+                });
+            });
+        });
+
+        context('when email is correct and password is incorrect', function () {
+
+            it('should fail to log in user', function () {
+                Authentication.loginUser(email, badPassword, null, function (err, data) {
+
+                    Assert.isTrue(!err);
+                    Assert.isString(data);
+                });
+            });
+        });
+
+        context('when email does not exist', function () {
+
+            it('should fail to log in user', function () {
+                Authentication.loginUser(badEmail, password, null, function (err, data) {
+
+                    Assert.isTrue(!err);
+                    Assert.isString(data);
+                });
+            });
+        });
+    });
 });
