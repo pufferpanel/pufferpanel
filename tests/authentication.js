@@ -29,7 +29,9 @@ describe('Controller/Authentication', function () {
         var hashRegex = /^\$2a\$10\$.{53}/g;
 
         context('when generates', function () {
+            
             it('should be hashed', function () {
+
                 Assert.isTrue(hashRegex.test(Authentication.generatePasswordHash(rawPw)));
             });
         });
@@ -45,6 +47,7 @@ describe('Controller/Authentication', function () {
         context('when email and password are correct', function () {
 
             it('should correctly log in user', function () {
+
                 Authentication.loginUser(email, password, null, function (err, data) {
                     Assert.isTrue(!err);
                     Assert.isNotString(data);
@@ -58,6 +61,7 @@ describe('Controller/Authentication', function () {
         context('when email is correct and password is incorrect', function () {
 
             it('should fail to log in user', function () {
+
                 Authentication.loginUser(email, badPassword, null, function (err, data) {
 
                     Assert.isTrue(!err);
@@ -69,6 +73,7 @@ describe('Controller/Authentication', function () {
         context('when email does not exist', function () {
 
             it('should fail to log in user', function () {
+
                 Authentication.loginUser(badEmail, password, null, function (err, data) {
 
                     Assert.isTrue(!err);
