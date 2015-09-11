@@ -46,9 +46,15 @@ TestUserModels.delete = function (id, next) {
 TestUserModels.reset = function () {
 
     _fakeData = [{
-        id: 1,
+        id: 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST',
         email: 'admin@example.com',
-        password: '$2a$10$Jng3U.6P9FOBdLj0Vcmnn.Ob1pSHkw0qa20ZUi2hYRzxLN4G3mFmy'
+        password: '$2a$10$Jng3U.6P9FOBdLj0Vcmnn.Ob1pSHkw0qa20ZUi2hYRzxLN4G3mFmy',
+        useTotp: false
+    }, {
+        id: 'ABCDEFGH-1234-5678-9012-ABCDEFGHIJKL',
+        email: 'example@example.com',
+        password: '$2a$10$Jng3U.6P9FOBdLj0Vcmnn.Ob1pSHkw0qa20ZUi2hYRzxLN4G3mFmy',
+        useTotp: true
     }];
 };
 

@@ -29,7 +29,7 @@ describe('Controller/Authentication', function () {
         var hashRegex = /^\$2a\$10\$.{53}/g;
 
         context('when generates', function () {
-            
+
             it('should be hashed', function () {
 
                 Assert.isTrue(hashRegex.test(Authentication.generatePasswordHash(rawPw)));
