@@ -49,7 +49,7 @@ describe('Controller/User', function () {
 
             it('should be enabled', function () {
 
-                User.isTOTPEnabled(enabledUser, function(err, enabled) {
+                User.isTOTPEnabled(enabledUser, function (err, enabled) {
                     Assert.isTrue(enabled);
                 });
             });
@@ -59,7 +59,7 @@ describe('Controller/User', function () {
 
             it('should be disabled', function () {
 
-                User.isTOTPEnabled(disabledUser, function(err, enabled) {
+                User.isTOTPEnabled(disabledUser, function (err, enabled) {
                     Assert.isFalse(enabled);
                 });
             });

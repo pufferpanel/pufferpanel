@@ -37,9 +37,9 @@
     "yargs": "3.19.0"
   },
   "scripts": {
-    "test-eslint": "eslint --plugin hapi lib/* index.js",
+    "test-eslint": "eslint --plugin hapi lib/* index.js tests/*",
     "test-mocha": "mocha tests",
-    "test": "sh tests/execute.sh",
+    "test": "sh scripts/execute-tests.sh",
     "start": "node index.js",
     "start-verbose": "node index.js --consoleLevel=verbose --showMeta=true"
   },

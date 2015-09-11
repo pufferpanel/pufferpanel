@@ -29,7 +29,7 @@ TestUserModels.update = function (id, fields, next) {
 
     var user = _.findWhere(_fakeData, { id: id });
     if (user === undefined) {
-        return next(new Error("No such user"));
+        return next(new Error('No such user'));
     }
     _.extend(user, fields);
     return next();
@@ -40,7 +40,8 @@ TestUserModels.delete = function (id, next) {
     _fakeData = _.reject(_fakeData, function (user) {
 
         return user.id === id;
-    })
+    });
+    return next();
 };
 
 TestUserModels.reset = function () {
