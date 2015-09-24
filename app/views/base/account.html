@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}{{ __('pages.base.account') }}{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+    {% if flashError|length %}
+        {% for flash in flashError %}
+	       <div class="alert alert-danger">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+    {% if flashSuccess|length %}
+        {% for flash in flashSuccess %}
+           <div class="alert alert-success">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="nopad">{{ __('settings.change_pass') }}</h3><hr />
+        </div>
+        <form action="/account/update/password" method="post">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="newPassword" class="control-label">{{ __('settings.new_pass') }}</label>
+                    <div>
+                        <input type="password" class="form-control" name="newPassword" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newPasswordAgain" class="control-label">{{ __('settings.new_pass') }} {{ __('string.again') }}</label>
+                    <div>
+                        <input type="password" class="form-control" name="newPasswordAgain" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+				<div class="form-group">
+					<label for="currentPassword" class="control-label">{{ __('settings.current_pass') }}</label>
+                    <div class="input-group">
+                        <input type="hidden" name="crumb" value="{{ crumb }}" />
+                        <input type="password" class="form-control" name="currentPassword" />
+                        <div class="input-group-btn">
+                            <input type="submit" class="btn btn-primary btn-sm" value="{{ __('string.update') }}" />
+                        </div>
+                    </div>
+				</div>
+            </div>
+        </form>
+    </div>
+	<div class="row">
+        <div class="col-md-12">
+            <h3 class="nopad">{{ __('settings.update_email') }}</h3><hr />
+        </div>
+        <form action="/account/update/email" method="post">
+            <div class="col-md-6">
+				<div class="form-group">
+					<label for="email" class="control-label">{{ __('settings.new_email') }}</label>
+					<div>
+						<input type="text" class="form-control" name="newemail" />
+					</div>
+				</div>
+            </div>
+            <div class="col-md-6">
+				<div class="form-group">
+					<label for="password" class="control-label">{{ __('settings.current_pass') }}</label>
+                    <div class="input-group">
+                        <input type="hidden" name="crumb" value="{{ crumb }}" />
+                        <input type="password" class="form-control" name="password" />
+                        <div class="input-group-btn">
+                            <input type="submit" class="btn btn-primary btn-sm" value="{{ __('string.update') }}" />
+                        </div>
+                    </div>
+				</div>
+            </div>
+		</form>
+	</div>
+	<div class="row">
+        <div class="col-md-12">
+            <h3 class="nopad">{{ __('settings.login_notifications') }}</h3><hr />
+        </div>
+        <form action="/account/update/notifications" method="post">
+		    <div class="col-md-3">
+				<div class="form-group">
+					<div class="radio">
+					    <label class="alt-label"><input type="radio" name="e_s" value="1" {% if user.notifications.loginSuccess == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailSuccess') }}</label>
+					</div>
+					<div class="radio">
+						<label class="alt-label"><input type="radio" name="e_s" value="0" {% if user.notifications.loginSuccess == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailSuccess') }}</label>
+					</div>
+				</div>
+            </div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<div class="radio">
+						<label class="alt-label"><input type="radio" name="e_f" value="1" {% if user.notifications.loginFailure == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailFailure') }}</label>
+					</div>
+					<div class="radio">
+						<label class="alt-label"><input type="radio" name="e_f" value="0" {% if user.notifications.loginFailure == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailFailure') }}</label>
+					</div>
+				</div>
+			</div>
+            <div class="col-md-6">
+				<div class="form-group">
+					<label for="password" class="control-label">{{ __('settings.current_pass') }}</label>
+                    <div class="input-group">
+                        <input type="hidden" name="crumb" value="{{ crumb }}" />
+                        <input type="password" class="form-control" name="password" />
+                        <div class="input-group-btn">
+                            <input type="submit" class="btn btn-primary btn-sm" value="{{ __('string.update') }}" />
+                        </div>
+                    </div>
+				</div>
+            </div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+$(window).load(function() {
+	$("#sidebar_links").find("a[href='/account']").addClass('active');
+});
+</script>
+{% endblock %}

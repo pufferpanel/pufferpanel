@@ -110,7 +110,8 @@
     "tfa": "Two-Factor Authentication",
     "enable": "Enable",
     "disable": "Disable",
-    "totptoken": "TOTP Token"
+    "totptoken": "TOTP Token",
+    "update": "Update"
   },
   "success": {
     "notifications": {
@@ -135,10 +136,13 @@
     "login_success": "Successful Login",
     "current_pass": "Current Password",
     "new_pass": "New Password",
+    "login_notifications": "Login Notifications",
     "update_preferences": "Update Preferences",
     "notify": {
-      "email_me": "Please Email Me",
-      "no_email_me": "Don't Email Me"
+      "emailSuccess": "Email on Success",
+      "noEmailSuccess": "Don't Email on Succcess",
+      "emailFailure": "Email on Failure",
+      "noEmailFailure": "Don't Email on Failure"
     }
   },
   "footer": {
@@ -195,7 +199,8 @@
   "pages": {
     "base": {
       "index": "Your Servers",
-      "totp": "TOTP Settings"
+      "totp": "TOTP Settings",
+      "account": "Account Management"
     }
   }
 }
