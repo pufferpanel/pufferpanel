@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class="col-md-9">
-	<h3 style="margin-top:0;">{{ __('string.tfa') }} <small>{% if user.use_totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
+	<h3 style="margin-top:0;">{{ __('string.tfa') }} <small>{% if user.useTotp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
 	{% if flash|length %}
 	  <div class="alert alert-danger">{{ flash }}</div>
 	{% endif %}
-	{% if user.use_totp == 1 %}
+	{% if user.useTotp == 1 %}
 		<div class="panel panel-default">
 			<div class="panel-heading">{{ __('string.disable') }} TOTP</div>
 			<div class="panel-body">
@@ -84,7 +84,7 @@ $(window).load(function() {
 			$.ajax({
 				type: "POST",
 				url: "/totp/verify-token",
-				data: { token: $("#totp_token").val(), crumb: "{{ crumb }}" },
+				data: { token: $("#totp_token").val(), crumb: "{{ crumb }}", ajax: true },
 				timeout: 5000,
 				success: function(data) {
 					location.reload();
