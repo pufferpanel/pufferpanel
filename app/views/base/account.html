@@ -82,20 +82,20 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <div class="radio">
-                        <label class="alt-label"><input type="radio" name="e_s" value="1" {% if user.notifications.loginSuccess == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailSuccess') }}</label>
+                        <label class="alt-label"><input type="radio" name="loginSuccess" value="true" {% if user.notifications.loginSuccess == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailSuccess') }}</label>
                     </div>
                     <div class="radio">
-                        <label class="alt-label"><input type="radio" name="e_s" value="0" {% if user.notifications.loginSuccess == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailSuccess') }}</label>
+                        <label class="alt-label"><input type="radio" name="loginSuccess" value="false" {% if user.notifications.loginSuccess == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailSuccess') }}</label>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <div class="radio">
-                        <label class="alt-label"><input type="radio" name="e_f" value="1" {% if user.notifications.loginFailure == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailFailure') }}</label>
+                        <label class="alt-label"><input type="radio" name="loginFailure" value="true" {% if user.notifications.loginFailure == 1 %}checked="checked"{% endif %} />{{ __('settings.notify.emailFailure') }}</label>
                     </div>
                     <div class="radio">
-                        <label class="alt-label"><input type="radio" name="e_f" value="0" {% if user.notifications.loginFailure == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailFailure') }}</label>
+                        <label class="alt-label"><input type="radio" name="loginFailure" value="false" {% if user.notifications.loginFailure == 0 %}checked="checked"{% endif %} />{{ __('settings.notify.noEmailFailure') }}</label>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                     <label for="password" class="control-label">{{ __('settings.current_pass') }}</label>
                     <div class="input-group">
                         <input type="hidden" name="crumb" value="{{ crumb }}" />
-                        <input type="password" class="form-control" name="password" />
+                        <input type="password" class="form-control" name="currentPassword" />
                         <div class="input-group-btn">
                             <input type="submit" class="btn btn-primary btn-sm" value="{{ __('string.update') }}" />
                         </div>
