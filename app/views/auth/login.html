@@ -52,7 +52,7 @@
 					<div class="form-group">
 						<label for="totp_token" class="control-label">Two-Factor Authentication Token</label>
 						<div>
-							<input class="form-control" type="text" placeholder="000111" name="totp_token" id="totp_token" />
+							<input class="form-control" type="text" placeholder="000111" name="totpToken" id="totpToken" />
 						</div>
 					</div>
 				</div>
@@ -77,7 +77,7 @@ $(document).ready(function(){
 				if(data == 'true'){
 					$("#openTOTP").modal('show');
 					$('#openTOTP').on('shown.bs.modal', function(){
-						$("#totp_token").focus();
+						$("#totpToken").focus();
 					})
           event.preventDefault();
 				}else{
