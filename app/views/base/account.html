@@ -49,14 +49,14 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h3 class="nopad">{{ __('settings.update_email') }}</h3><hr />
+            <h3 class="nopad">{{ __('settings.update_email') }} <small>{{ user.email }}</small></h3><hr />
         </div>
         <form action="/account/update/email" method="post">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="email" class="control-label">{{ __('settings.new_email') }}</label>
                     <div>
-                        <input type="text" class="form-control" name="newemail" />
+                        <input type="text" class="form-control" name="newEmail" />
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                     <label for="password" class="control-label">{{ __('settings.current_pass') }}</label>
                     <div class="input-group">
                         <input type="hidden" name="crumb" value="{{ crumb }}" />
-                        <input type="password" class="form-control" name="password" />
+                        <input type="password" class="form-control" name="currentPassword" />
                         <div class="input-group-btn">
                             <input type="submit" class="btn btn-primary btn-sm" value="{{ __('string.update') }}" />
                         </div>
