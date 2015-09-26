@@ -43,17 +43,19 @@ describe('Controller/Authentication', function () {
         var badEmail = 'donotuse@example.com';
         var password = 'admin';
         var badPassword = 'wrong';
+        var ipAddress = '127.0.0.1';
 
         context('when email and password are correct', function () {
 
             it('should correctly log in user', function () {
 
-                Authentication.loginUser(email, password, null, function (err, data) {
+                Authentication.loginUser(email, password, null, ipAddress, function (err, data) {
                     Assert.isTrue(!err);
                     Assert.isNotString(data);
                     Assert.isObject(data);
                     Assert.property(data, 'id');
                     Assert.property(data, 'sessionToken');
+                    Assert.property(data, 'sessionIp');
                 });
             });
         });
@@ -62,7 +64,7 @@ describe('Controller/Authentication', function () {
 
             it('should fail to log in user', function () {
 
-                Authentication.loginUser(email, badPassword, null, function (err, data) {
+                Authentication.loginUser(email, badPassword, null, ipAddress, function (err, data) {
 
                     Assert.isTrue(!err);
                     Assert.isString(data);
@@ -74,7 +76,7 @@ describe('Controller/Authentication', function () {
 
             it('should fail to log in user', function () {
 
-                Authentication.loginUser(badEmail, password, null, function (err, data) {
+                Authentication.loginUser(badEmail, password, null, ipAddress, function (err, data) {
 
                     Assert.isTrue(!err);
                     Assert.isString(data);
