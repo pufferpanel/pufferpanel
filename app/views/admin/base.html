@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head %}
+		{% block scripts %}
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<link rel="stylesheet" href="{{ settings.urls.assets }}/css/bootstrap.css">
+			<link rel="stylesheet" href="{{ settings.urls.assets }}/css/pufferpanel.css">
+            <link rel="stylesheet" href="{{ settings.urls.assets }}/css/animate.css">
+			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+            <script src="{{ settings.urls.assets }}/js/bootstrap-notify.min.js"></script>
+			<!-- <script src="{{ settings.urls.assets }}/javascript/admin.min.js"></script> -->
+		{% endblock %}
+		<title>{{ settings.companyName }} Admin Control Panel - {% block title %}{% endblock %}</title>
+	{% endblock %}
+</head>
+<body>
+	<div class="container">
+		<div class="navbar navbar-default" style="margin-top: 30px;">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index">{{ settings.companyName }}</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav hidden-md hidden-lg">
+					<li><a href="/admin">Admin Index</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/settings/general">Global Settings</a></li>
+							<li><a href="/admin/settings/urls">URL Settings</a></li>
+							<li><a href="/admin/settings/email">Email Settings</a></li>
+							<li><a href="/admin/settings/captcha">Captcha Settings</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/account">Find Account</a></li>
+							<li><a href="/admin/account/new">New Account</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Server Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/server">Find Server</a></li>
+							<li><a href="/admin/server/new">New Server</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Node Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/node">List Nodes</a></li>
+							<li><a href="/admin/node/new">Add Node</a></li>
+							<li><a href="/admin/node/locations">Manage Locations</a></li>
+							<li><a href="/admin/node/plugins">Manage Plugins</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="hidden-xs hidden-sm"><a href="/"><i class="fa fa-list-alt"></i></a></li>
+					<li class="hidden-xs hidden-sm"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
+					<li class="hidden-md hidden-lg"><a href="/">Server List</a></li>
+					<li class="hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
+				<div class="list-group">
+					<a href="/admin" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
+					<a href="/admin/settings/general" class="list-group-item">Global Settings</a>
+					<a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
+					<a href="/admin/settings/email" class="list-group-item">Email Settings</a>
+					<a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
+					<a href="/admin/account" class="list-group-item">Find Account</a>
+					<a href="/admin/account/new" class="list-group-item">New Account</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
+					<a href="/admin/server" class="list-group-item">Find Server</a>
+					<a href="/admin/server/new" class="list-group-item">New Server</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
+					<a href="/admin/node" class="list-group-item">List Nodes</a>
+					<a href="/admin/node/new" class="list-group-item">Add Node</a>
+					<a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
+					<a href="/admin/node/plugins" class="list-group-item">Manage Plugins</a>
+				</div>
+			</div>
+			{% block content %}{% endblock %}
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-md-8 col-xs-6">
+                    <p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.9.0 Beta distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p>
+				</div>
+				<div class="col-md-4 col-xs-6"></div>
+			</div>
+		</div>
+	</div>
+	{% block javascript %}{% endblock %}
+	<script type="text/javascript">
+		if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+		if($.urlParam("error")!=null){var field=$.urlParam("error");var exploded=field.split("|");$.each(exploded,function(key,value){$('[name="'+value+'"]').parent().parent().addClass("has-error")});var obj=$.parseJSON($.cookie("__TMP_pp_admin_updateglobal"));$.each(obj,function(key,value){$('[name="'+key+'"]').val(value)})};
+		for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
+	</script>
+</body>
+</html>

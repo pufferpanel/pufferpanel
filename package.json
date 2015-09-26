@@ -12,6 +12,7 @@
   "dependencies": {
     "async": "1.4.2",
     "bcrypt": "0.8.5",
+    "boom": "^2.9.0",
     "colors": "1.1.2",
     "crumb": "4.0.*",
     "date-utils": "1.2.17",
