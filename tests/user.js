@@ -23,6 +23,28 @@ describe('Controller/User', function () {
         UserModels.reset();
     });
 
+    describe('getData', function () {
+
+        context('when run', function () {
+
+            var userId = 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST';
+
+            it('should return user data object', function () {
+
+                User.getData(userId, function (err, user) {
+                    Assert.isNull(err);
+                    Assert.isObject(user);
+                    Assert.property(user, 'id');
+                    Assert.property(user, 'email');
+                    Assert.property(user, 'password');
+                });
+
+            });
+
+        });
+
+    });
+
     describe('generateTOTP', function () {
 
         context('when generated', function () {
@@ -65,4 +87,132 @@ describe('Controller/User', function () {
             });
         });
     });
+
+    describe('updatePassword', function () {
+
+        var userId = 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST';
+        var user = 'admin@example.com';
+        var userCurrentPassword = 'Dinosaur1';
+        var newUserPassword = 'Pterodactyl1';
+
+        context('when called', function () {
+
+            it('should update password', function () {
+
+                User.updatePassword(userId, userCurrentPassword, newUserPassword, function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isUndefined(response);
+                });
+
+            });
+
+        });
+
+        context('when sent an invalid password', function () {
+
+            it('should fail', function () {
+
+                User.updatePassword(userId, 'invalid', newUserPassword, function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isString(response);
+                });
+
+            });
+
+        });
+
+    });
+
+    describe('updateNotifications', function () {
+
+        var userId = 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST';
+        var userPassword = 'Dinosaur1';
+
+        context('when sent valid data', function () {
+
+            it('should be successful', function () {
+
+                User.updateNotifications(userId, userPassword, true, true, function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isUndefined(response);
+                });
+
+            });
+
+        });
+
+        context('when sent invalid data', function () {
+
+            it('should not be successful', function () {
+
+                User.updateNotifications(userId, userPassword, 'invalid', true, function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isArray(response);
+                });
+
+            });
+
+        });
+
+        context('when sent an invalid password', function () {
+
+            it('should not be successful', function () {
+
+                User.updateNotifications(userId, 'invalidpassword', true, true, function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isString(response);
+                });
+
+            });
+
+        });
+
+    });
+
+    describe('updateEmail', function () {
+
+        var userId = 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST';
+        var userPassword = 'Dinosaur1';
+
+        context('when sent valid data', function () {
+
+            it('should be successful', function () {
+
+                User.updateEmail(userId, userPassword, 'newemail@example.com', function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isUndefined(response);
+                });
+
+            });
+
+        });
+
+        context('when sent invalid email', function () {
+
+            it('should not be successful', function () {
+
+                User.updateEmail(userId, userPassword, 'invalid', function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isArray(response);
+                });
+
+            });
+
+        });
+
+        context('when sent an invalid password', function () {
+
+            it('should not be successful', function () {
+
+                User.updateEmail(userId, 'invalidpassword', 'newemail@example.com', function (err, response) {
+                    Assert.isTrue(!err);
+                    Assert.isString(response);
+                });
+
+            });
+
+        });
+
+    });
+
 });

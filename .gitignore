@@ -6,4 +6,3 @@ config.json
 .idea/
 *.iml
 jsdoc
-out

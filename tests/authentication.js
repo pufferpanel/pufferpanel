@@ -37,11 +37,43 @@ describe('Controller/Authentication', function () {
         });
     });
 
+    describe('validateAccountPassword', function () {
+
+        var userId = 'ABCDEFGH-1234-5678-9012-IJKLMNOPQRST';
+        var goodPassword = 'Dinosaur1';
+        var badPassword = 'NotDinosaur1';
+
+        context('when password is correct', function () {
+
+            it('should return null', function () {
+
+                Authentication.validateAccountPassword(userId, goodPassword, function (err) {
+                    Assert.isNull(err);
+                });
+
+            });
+
+        });
+
+        context('when password is incorrect', function () {
+
+            it('should return false', function () {
+
+                Authentication.validateAccountPassword(userId, badPassword, function (err) {
+                    Assert.isFalse(err);
+                });
+
+            });
+
+        });
+
+    });
+
     describe('loginUser', function () {
 
         var email = 'admin@example.com';
         var badEmail = 'donotuse@example.com';
-        var password = 'admin';
+        var password = 'Dinosaur1';
         var badPassword = 'wrong';
         var ipAddress = '127.0.0.1';
 
