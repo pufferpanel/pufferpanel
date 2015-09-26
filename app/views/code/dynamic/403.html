@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{ settings.urls.assets }}/css/bootstrap.css">
+	<link rel="stylesheet" href="{{ settings.urls.assets }}/css/pufferpanel.css">
+	<title>403: Forbidden</title>
+</head>
+<body>
+	<div class="container">
+		<div class="navbar navbar-default">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/servers">403: Forbidden</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+				<h1 style="text-align:center;">403 - Forbidden</h1>
+                <div class="alert alert-danger">{{ message }}</div>
+				<p style="text-align:center;"><a href="/servers">Take me back please!</a></p>
+			</div>
+            <div class="col-md-3">
+            </div>
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-md-8 ">
+					<p>PufferPanel is licensed under a <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.<br />Running Version 0.9.0 Beta distributed by <a href="http://pufferpanel.com">PufferPanel Development</a>.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
