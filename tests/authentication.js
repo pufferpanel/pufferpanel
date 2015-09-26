@@ -1,5 +1,5 @@
 /**
- * PufferPanel � Reinventing the way game servers are managed.
+ * PufferPanel - Reinventing the way game servers are managed.
  * Copyright (c) 2015 PufferPanel
  *
  * This program is free software: you can redistribute it and/or modify
