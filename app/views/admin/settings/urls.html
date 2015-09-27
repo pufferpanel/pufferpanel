@@ -20,7 +20,7 @@
         {% endfor %}
 	{% endif %}
 	<h3>URL Settings</h3><span class="label label-danger">No Trailing Slashes</span><hr />
-	<form action="urls/updateUrls" method="POST">
+	<form action="urls/updateUrlSettings" method="POST">
 		<fieldset>
 			<div class="form-group">
 				<label for="mainUrl" class="control-label">PufferPanel Master URL</label>
@@ -34,6 +34,7 @@
 			</div>
 			<div class="form-group">
 				<div>
+					<input type="hidden" name="crumb" value="{{ crumb }}" />
 					<input type="submit" value="Update Settings" class="btn btn-primary btn-sm" />
 				</div>
 			</div>

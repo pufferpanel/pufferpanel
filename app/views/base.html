@@ -60,8 +60,8 @@
 							<li><a href="/language/zh">&#20013;&#22269;&#30340;的</a></li>
 						</ul>
 					</li>
-					{% if user.admin %}<li class="hidden-sm hidden-md hidden-lg"><a href="/admin">Admin Control Panel</a></li>{% endif %}
-					{% if user.admin %}<li class="hidden-xs"><a href="/admin"><i class="fa fa-cogs"></i></a></li>{% endif %}
+					{% if user.scope == 'admin' %}<li class="hidden-sm hidden-md hidden-lg"><a href="/admin">Admin Control Panel</a></li>{% endif %}
+					{% if user.scope == 'admin' %}<li class="hidden-xs"><a href="/admin"><i class="fa fa-cogs"></i></a></li>{% endif %}
 					<li class="hidden-sm hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
 					<li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
 				</ul>

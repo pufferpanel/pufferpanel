@@ -7,7 +7,7 @@
 	{% if flash|length %}
 		{{ flash }}
 	{% endif %}
-	{% if user.admin == 1 %}
+	{% if user.scope == 'admin' %}
 		<div class="alert alert-info">
 			{{ __('notice.viewingAsAdmin') }}
 		</div>
@@ -16,7 +16,7 @@
 		<table class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
-					{% if user.admin == 1 %}<th></th>{% endif %}
+					{% if user.scope == 'admin' %}<th></th>{% endif %}
 					<th>{{ __('string.servername') }}</th>
 					<th>{{ __('string.location') }}</th>
 					<th>{{ __('string.node') }}</th>
