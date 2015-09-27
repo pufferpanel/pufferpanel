@@ -20,12 +20,13 @@
         {% endfor %}
 	{% endif %}
 	<h3>Company Name</h3><hr />
-	<form action="general/updateCompanyName" method="POST">
+	<form action="general" method="POST">
 		<fieldset>
 			<div class="input-group">
 				<input type="text" name="companyName" class="form-control" value="{{ settings.companyName }}" />
 				<span class="input-group-btn">
 					<input type="hidden" name="crumb" value="{{ crumb }}" />
+					<input type="hidden" name="doAction" value="company" />
 					<input type="submit" value="Update" class="btn btn-primary btn-sm" />
 				</span>
 			</div>
@@ -33,7 +34,7 @@
 	</form>
 	<br />
 	<h3>General Settings</h3><hr />
-	<form action="general/generalSettings" method="POST">
+	<form action="general" method="POST">
 		<fieldset>
 			<div class="row">
 				<div class="form-group col-md-6 col-sm-6">
@@ -52,6 +53,7 @@
 			<div class="form-group">
 				<div>
 					<input type="hidden" name="crumb" value="{{ crumb }}" />
+					<input type="hidden" name="doAction" value="general" />
 					<input type="submit" value="Update Settings" class="btn btn-primary btn-sm" />
 				</div>
 			</div>
