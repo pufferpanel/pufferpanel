@@ -5,9 +5,12 @@
   "contributors": [],
   "devDependencies": {
     "chai": "3.3.*",
+    "coveralls": "2.11.4",
     "eslint": "1.5.*",
     "eslint-plugin-hapi": "1.2.0",
-    "mocha": "2.3.*"
+    "istanbul": "0.3.21",
+    "mocha": "2.3.*",
+    "mocha-lcov-reporter": "1.0.0"
   },
   "dependencies": {
     "async": "1.4.2",
@@ -40,11 +43,19 @@
     "yargs": "3.25.*"
   },
   "scripts": {
+    "coveralls": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./tests/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "test-eslint": "eslint --plugin hapi lib/* index.js tests/*",
     "test-mocha": "mocha tests",
     "test": "sh scripts/execute-tests.sh",
     "start": "node index.js",
     "start-verbose": "node index.js --consoleLevel=verbose --showMeta=true"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "lib"
+      ]
+    }
   },
   "bugs": {
     "url": "https://github.com/PufferPanel/PufferPanel/issues"

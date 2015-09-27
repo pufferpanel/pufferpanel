@@ -6,3 +6,6 @@ config.json
 .idea/
 *.iml
 jsdoc
+coverage/*
+
+coverage.html
