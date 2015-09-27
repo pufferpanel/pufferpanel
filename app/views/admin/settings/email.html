@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Email Settings{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+    <ul class="breadcrumb">
+        <li><a href="/admin">Admin Control</a></li>
+        <li>Settings</li>
+        <li class="active">Email</li>
+    </ul>
+    {% if flashSuccess|length %}
+		{% for flash in flashSuccess %}
+            <div class="alert alert-success">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+    {% if flashFailure|length %}
+		{% for flash in flashFailure %}
+            <div class="alert alert-danger">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+	<h3>Email Settings</h3><hr />
+	<form action="email" method="POST">
+		<fieldset>
+            <div class="row">
+    			<div class="form-group col-md-6">
+    				<label for="smail_method" class="control-label">Sendmail Method</label>
+    				<div>
+    					<select name="transportMethod" class="form-control" id="smail_method">
+    						<option value="direct" {% if settings.emailConfiguration.system == 'direct' %}selected="selected"{% endif %}>Direct Transport</option>
+    						<option value="postmark" {% if settings.emailConfiguration.system == 'postmark' %}selected="selected"{% endif %}>Postmark</option>
+    						<option value="mandrill" {% if settings.emailConfiguration.system == 'mandrill' %}selected="selected"{% endif %}>Mandrill</option>
+    						<option value="mailgun" {% if settings.emailConfiguration.system == 'mailgun' %}selected="selected"{% endif %}>Mailgun</option>
+    						<option value="sendgrid" {% if settings.emailConfiguration.system == 'sendgrid' %}selected="selected"{% endif %}>Sendgrid</option>
+    					</select>
+    				</div>
+    			</div>
+    			<div class="form-group col-md-6 nopad-right">
+    				<label for="sendmail_email" class="control-label">Sendmail Address</label>
+    				<div>
+    					<input type="text" name="transportEmail" class="form-control" value="{{ settings.emailConfiguration.email }}"/>
+    					<p><small class="text-muted"><em>The email address all outgoing emails should use. If using Postmark, Mandrill, or Mailgun this must match the email used in their settings.</em></small></p>
+    				</div>
+    			</div>
+            </div>
+            <div class="form-group" id="directWarning" style="display: none;">
+                <div class="alert alert-danger">Do not use Direct Transport method for anything other than developmental testing. It is unreliable and volitaile. Use one of the other listed transports for a production environment.</div>
+            </div>
+			<div class="form-group" id="transportToken">
+				<label for="transportToken" class="control-label">Transport API Key</label>
+				<div>
+					<input type="text" name="transportToken" class="form-control" value="{{ settings.emailConfiguration.apiToken }}"/>
+					<p><small class="text-muted"><em>The API key generated on <a href="https://postmarkapp.com/">Postmark</a>, <a href="https://mandrill.com/">Mandrill</a>, <a href="https://mailgun.com/">Mailgun</a>, or <a href="https://sendgrid.com/">Sendgrid</a>.</em></small></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+					<input type="submit" value="Update Email Settings" class="btn btn-primary btn-sm" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	function updateActive(){
+        $("#directWarning").hide();
+		var method = $("#smail_method :selected").val();
+        if(method == 'direct') {
+            $("#directWarning").show();
+            $("#transportToken").hide();
+        } else {
+			$("#transportToken").show();
+            $("#directWarning").hide();
+		}
+	}
+	$(document).ready(function(){
+        $("#sidebar_links").find("a[href='/admin/settings/email']").addClass('active');
+		updateActive();
+		$("#smail_method").change(function(){
+			updateActive();
+		});
+	});
+</script>
+{% endblock %}
