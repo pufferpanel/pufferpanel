@@ -1,3 +1,5 @@
+export CIPHER_KEY="HURBLUGLUGUG"
+export CIPHER_ALGO="AES-256-CTR"
 npm run-script test-eslint
 eslintRes=$?
 npm run-script test-mocha

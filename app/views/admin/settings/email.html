@@ -27,11 +27,12 @@
     				<label for="smail_method" class="control-label">Sendmail Method</label>
     				<div>
     					<select name="transportMethod" class="form-control" id="smail_method">
-    						<option value="direct" {% if settings.emailConfiguration.system == 'direct' %}selected="selected"{% endif %}>Direct Transport</option>
-    						<option value="postmark" {% if settings.emailConfiguration.system == 'postmark' %}selected="selected"{% endif %}>Postmark</option>
-    						<option value="mandrill" {% if settings.emailConfiguration.system == 'mandrill' %}selected="selected"{% endif %}>Mandrill</option>
-    						<option value="mailgun" {% if settings.emailConfiguration.system == 'mailgun' %}selected="selected"{% endif %}>Mailgun</option>
-    						<option value="sendgrid" {% if settings.emailConfiguration.system == 'sendgrid' %}selected="selected"{% endif %}>Sendgrid</option>
+    						<option value="direct" {% if settings.emailConfiguration.method == 'direct' %}selected="selected"{% endif %}>Direct Transport</option>
+                            <option value="smtp" {% if settings.emailConfiguration.method == 'smtp' %}selected="selected"{% endif %}>SMTP Server</option>
+                            <option value="postmark" {% if settings.emailConfiguration.method == 'postmark' %}selected="selected"{% endif %}>Postmark</option>
+    						<option value="mandrill" {% if settings.emailConfiguration.method == 'mandrill' %}selected="selected"{% endif %}>Mandrill</option>
+    						<option value="mailgun" {% if settings.emailConfiguration.method == 'mailgun' %}selected="selected"{% endif %}>Mailgun</option>
+    						<option value="sendgrid" {% if settings.emailConfiguration.method == 'sendgrid' %}selected="selected"{% endif %}>Sendgrid</option>
     					</select>
     				</div>
     			</div>
@@ -53,8 +54,35 @@
 					<p><small class="text-muted"><em>The API key generated on <a href="https://postmarkapp.com/">Postmark</a>, <a href="https://mandrill.com/">Mandrill</a>, <a href="https://mailgun.com/">Mailgun</a>, or <a href="https://sendgrid.com/">Sendgrid</a>.</em></small></p>
 				</div>
 			</div>
+            <div class="row" id="smtpSettings">
+    			<div class="form-group col-md-6">
+    				<label class="control-label">SMTP Host</label>
+    				<div>
+                        <input type="text" name="smtpHost" class="form-control" value="{{ settings.emailConfiguration.smtp.host }}"/>
+    				</div>
+    			</div>
+    			<div class="form-group col-md-6 nopad-right">
+    				<label class="control-label">SMTP Port</label>
+    				<div>
+    					<input type="text" name="smtpPort" class="form-control" value="{{ settings.emailConfiguration.smtp.port }}"/>
+    				</div>
+    			</div>
+                <div class="form-group col-md-6">
+    				<label class="control-label">SMTP Username</label>
+    				<div>
+                        <input type="text" name="smtpUsername" class="form-control" value="{{ settings.emailConfiguration.smtp.auth.user }}"/>
+    				</div>
+    			</div>
+    			<div class="form-group col-md-6 nopad-right">
+    				<label class="control-label">SMTP Password</label>
+    				<div>
+    					<input type="password" name="smtpPassword" class="form-control"/>
+    				</div>
+    			</div>
+            </div>
 			<div class="form-group">
 				<div>
+                    <input type="hidden" name="crumb" value="{{ crumb }}" />
 					<input type="submit" value="Update Email Settings" class="btn btn-primary btn-sm" />
 				</div>
 			</div>
@@ -71,10 +99,16 @@
         if(method == 'direct') {
             $("#directWarning").show();
             $("#transportToken").hide();
-        } else {
+            $("#smtpSettings").hide();
+        } else if (method != 'smtp' ){
 			$("#transportToken").show();
             $("#directWarning").hide();
-		}
+            $("#smtpSettings").hide();
+		} else {
+            $("#smtpSettings").show();
+            $("#transportToken").hide();
+            $("#directWarning").hide();
+        }
 	}
 	$(document).ready(function(){
         $("#sidebar_links").find("a[href='/admin/settings/email']").addClass('active');

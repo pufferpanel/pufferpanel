@@ -23,6 +23,55 @@ describe('Controller/Authentication', function () {
         UserModels.reset();
     });
 
+    // env.CIPHER_KEY = HURBLUGLUGUG
+    describe('encrypt', function () {
+
+        context('when run', function () {
+
+            it('should be a valid encrypted string', function () {
+
+                Assert.strictEqual(Authentication.encrypt('thisissomeencryptedthing'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
+
+            });
+
+        });
+
+        context('when compared to an invalid encryption', function () {
+
+            it('should not match', function () {
+
+                Assert.notStrictEqual(Authentication.encrypt('randomstring'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
+
+            });
+
+        });
+
+    });
+
+    describe('decrypt', function () {
+
+        context('when run', function () {
+
+            it('should be a valid decrypted string', function () {
+
+                Assert.strictEqual(Authentication.decrypt('3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05'), 'thisissomeencryptedthing');
+
+            });
+
+        });
+
+        context('when given an invalid encryption', function () {
+
+            it('should not match', function () {
+
+                Assert.notStrictEqual(Authentication.decrypt('3e89ed68b63502d2353f'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
+
+            });
+
+        });
+
+    });
+
     describe('generatePasswordHash', function () {
 
         var rawPw = 'admin';
