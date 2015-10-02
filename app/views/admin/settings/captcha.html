@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+
+{% block title %}reCAPTCHA Settings{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin">Admin Control</a></li>
+		<li>Settings</li>
+		<li class="active">reCAPTCHA</li>
+	</ul>
+    {% if flashSuccess|length %}
+		{% for flash in flashSuccess %}
+            <div class="alert alert-success">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+    {% if flashFailure|length %}
+		{% for flash in flashFailure %}
+            <div class="alert alert-danger">{{ flash }}</div>
+        {% endfor %}
+	{% endif %}
+	<h3>reCAPTCHA Settings</h3><hr />
+	<div class="panel panel-default">
+		<div class="panel-heading">What is reCAPTCHA?</div>
+		<div class="panel-body">
+			reCAPTCHA is the system used to help prevent people from abusing the password reset page on PufferPanel. You will need to generate your own keys
+			 by going to <a href="https://www.google.com/recaptcha/intro/index.html">Google's reCAPTCHA Site</a> and clicking "get reCAPTCHA."
+		</div>
+	</div>
+	<form action="captcha" method="POST">
+		<fieldset>
+			<div class="form-group">
+				<label for="pub_key" class="control-label">reCAPTCHA Public Key</label>
+				<div>
+					<input type="text" name="captchaPublic" class="form-control" value="{{ settings.captcha.public }}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="priv_key" class="control-label">reCAPTCHA Secret Key</label>
+				<div>
+					<input type="text" name="captchaSecret" class="form-control" value="{{ settings.captcha.secret }}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div>
+                    <input type="hidden" name="crumb" value="{{ crumb }}" />
+					<input type="submit" value="Update reCAPTCHA Keys" class="btn btn-primary btn-sm" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/settings/captcha']").addClass('active');
+});
+</script>
+{% endblock %}
+
+{% block javascript %}{% endblock %}
