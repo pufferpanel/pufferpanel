@@ -20,6 +20,9 @@ Logger.info('| '.reset + 'Submit bug reports at the following link: '.red + '  |
 Logger.info('| https://github.com/PufferPanel/PufferPanel  |');
 Logger.info('+ =========================================== +');
 
+//Load up API
+Rfr('lib/api/loader.js');
+
 // Include HapiJS Routing Mechanisms
 Rfr('lib/routes.js');
 
