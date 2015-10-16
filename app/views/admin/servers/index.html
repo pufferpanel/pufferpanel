@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Find a Server{% endblock %}
+
+{% block content %}
+<div class="col-md-9">
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li class="active">Servers</li>
+	</ul>
+	<div class="tab-pane" id="list_all">
+		<h3>All Servers</h3><hr />
+        {% if servers|length == 0 %}
+            <div class="alert alert-info">There are no servers that exist on this system yet. Why not <a href="#">add a new one</a>?</div>
+        {% endif %}
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>Server Name</th>
+					<th>Node</th>
+					<th>Connection Information</th>
+					<th>Owner Information</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for server in servers %}
+					<tr>
+						<td><a href="/server/{{ server.id }}">{{ server.name }}</a></td>
+						<td><a href="/admin/node/view/{{ server.node }}">{{ server.node }}</a></td>
+						<td><code>{{ server.base.ip }}</code>
+                            {% for port in server.base.ports %}
+                                <br />&nbsp;&nbsp;&rarr;&nbsp;<code>:{{ port }}</code>
+                            {% endfor %}
+                        </td>
+						<td><a href="/admin/account/view/{{ server.owner_id }}">d@example.com</a></td>
+                        <td style="text-align:center;">{% if server.active == true %}<i class="fa fa-circle" style="color:#50af51;"></i>{% else %}<i class="fa fa-circle" style="color:#ddd;"></i>{% endif %}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
+});
+</script>
+{% endblock %}
