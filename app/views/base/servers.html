@@ -31,7 +31,7 @@
 						<td><a href="/server/{{ server.left.id }}">{{ server.left.name }}</a></td>
 						<td>{{ locations[server.right.location].long }} <code>{{ locations[server.right.location].short }}</code></td>
 						<td>{{ server.right.name }}</td>
-						<td><code>{{ server.left.server_ip }}:{{ server.left.server_port }}</code></td>
+						<td><code>{{ server.left.base.ip }}:{{ server.left.base.ports }}</code></td>
 						<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
 					</tr>
 				{% endfor %}
