@@ -20,11 +20,13 @@ Logger.info('| '.reset + 'Submit bug reports at the following link: '.red + '  |
 Logger.info('| https://github.com/PufferPanel/PufferPanel  |');
 Logger.info('+ =========================================== +');
 
-//Load up API
-Rfr('lib/api/loader.js');
+var api = Rfr('lib/api/loader.js');
+var server = Rfr('lib/server.js');
 
-// Include HapiJS Routing Mechanisms
-Rfr('lib/routes.js');
+server.prepare();
+api.load();
+server.finalize();
+server.start();
 
 process.on('SIGINT', function () {
 
