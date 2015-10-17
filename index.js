@@ -9,7 +9,7 @@
  */
 require('colors');
 var Rfr = require('rfr');
-var Logger = Rfr('lib/logger');
+var Logger = Rfr('lib/api/logger.js');
 
 Logger.info('+ =========================================== +');
 Logger.info('| PufferPanel logs all information and errors |');
@@ -20,7 +20,7 @@ Logger.info('| '.reset + 'Submit bug reports at the following link: '.red + '  |
 Logger.info('| https://github.com/PufferPanel/PufferPanel  |');
 Logger.info('+ =========================================== +');
 
-var api = Rfr('lib/api/loader.js');
+var api = Rfr('lib/apiloader.js');
 var server = Rfr('lib/server.js');
 
 server.prepare();

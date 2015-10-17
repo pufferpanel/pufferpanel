@@ -1,5 +1,6 @@
 {
   "name": "Minecraft",
   "version": "0.1",
-  "main": "main.js"
+  "main": "main.js",
+  "views": "views"
 }

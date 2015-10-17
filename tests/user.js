@@ -11,7 +11,7 @@ process.env.NODE_ENV = 'test';
 
 var Rfr = require('rfr');
 var Chai = require('chai');
-var User = Rfr('lib/controllers/user.js');
+var User = Rfr('lib/api/controllers/user.js');
 var UserModels = Rfr('tests/models/users.js');
 Chai.config.includeStack = false;
 var Assert = Chai.assert;
@@ -32,17 +32,15 @@ describe('Controller/User', function () {
             it('should return user data object', function () {
 
                 User.getData(userId, function (err, user) {
+
                     Assert.isNull(err);
                     Assert.isObject(user);
                     Assert.property(user, 'id');
                     Assert.property(user, 'email');
                     Assert.property(user, 'password');
                 });
-
             });
-
         });
-
     });
 
     describe('generateTOTP', function () {
@@ -55,6 +53,7 @@ describe('Controller/User', function () {
             it('should be valid', function () {
 
                 User.generateTOTP(userId, function (err, totp) {
+
                     var totpSecret = totp.secret;
                     Assert.isTrue(totpRegex.test(totpSecret));
                 });
@@ -72,6 +71,7 @@ describe('Controller/User', function () {
             it('should be enabled', function () {
 
                 User.isTOTPEnabled(enabledUser, function (err, enabled) {
+
                     Assert.isTrue(enabled);
                 });
             });
@@ -82,6 +82,7 @@ describe('Controller/User', function () {
             it('should be disabled', function () {
 
                 User.isTOTPEnabled(disabledUser, function (err, enabled) {
+
                     Assert.isFalse(enabled);
                 });
             });
@@ -103,9 +104,7 @@ describe('Controller/User', function () {
                     Assert.isTrue(!err);
                     Assert.isUndefined(response);
                 });
-
             });
-
         });
 
         context('when sent an invalid password', function () {
@@ -113,14 +112,12 @@ describe('Controller/User', function () {
             it('should fail', function () {
 
                 User.updatePassword(userId, 'invalid', newUserPassword, function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isString(response);
                 });
-
             });
-
         });
-
     });
 
     describe('updateNotifications', function () {
@@ -133,12 +130,11 @@ describe('Controller/User', function () {
             it('should be successful', function () {
 
                 User.updateNotifications(userId, userPassword, true, true, function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isUndefined(response);
                 });
-
             });
-
         });
 
         context('when sent invalid data', function () {
@@ -146,12 +142,11 @@ describe('Controller/User', function () {
             it('should not be successful', function () {
 
                 User.updateNotifications(userId, userPassword, 'invalid', true, function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isArray(response);
                 });
-
             });
-
         });
 
         context('when sent an invalid password', function () {
@@ -159,14 +154,12 @@ describe('Controller/User', function () {
             it('should not be successful', function () {
 
                 User.updateNotifications(userId, 'invalidpassword', true, true, function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isString(response);
                 });
-
             });
-
         });
-
     });
 
     describe('updateEmail', function () {
@@ -179,12 +172,11 @@ describe('Controller/User', function () {
             it('should be successful', function () {
 
                 User.updateEmail(userId, userPassword, 'newemail@example.com', function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isUndefined(response);
                 });
-
             });
-
         });
 
         context('when sent invalid email', function () {
@@ -192,12 +184,11 @@ describe('Controller/User', function () {
             it('should not be successful', function () {
 
                 User.updateEmail(userId, userPassword, 'invalid', function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isArray(response);
                 });
-
             });
-
         });
 
         context('when sent an invalid password', function () {
@@ -205,14 +196,11 @@ describe('Controller/User', function () {
             it('should not be successful', function () {
 
                 User.updateEmail(userId, 'invalidpassword', 'newemail@example.com', function (err, response) {
+
                     Assert.isTrue(!err);
                     Assert.isString(response);
                 });
-
             });
-
         });
-
     });
-
 });

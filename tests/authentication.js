@@ -11,7 +11,7 @@ process.env.NODE_ENV = 'test';
 
 var Rfr = require('rfr');
 var Chai = require('chai');
-var Authentication = Rfr('lib/controllers/authentication.js');
+var Authentication = Rfr('lib/api/controllers/authentication.js');
 var UserModels = Rfr('tests/models/users');
 Chai.config.includeStack = false;
 var Assert = Chai.assert;
@@ -31,9 +31,7 @@ describe('Controller/Authentication', function () {
             it('should be a valid encrypted string', function () {
 
                 Assert.strictEqual(Authentication.encrypt('thisissomeencryptedthing'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
-
             });
-
         });
 
         context('when compared to an invalid encryption', function () {
@@ -41,11 +39,8 @@ describe('Controller/Authentication', function () {
             it('should not match', function () {
 
                 Assert.notStrictEqual(Authentication.encrypt('randomstring'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
-
             });
-
         });
-
     });
 
     describe('decrypt', function () {
@@ -55,9 +50,7 @@ describe('Controller/Authentication', function () {
             it('should be a valid decrypted string', function () {
 
                 Assert.strictEqual(Authentication.decrypt('3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05'), 'thisissomeencryptedthing');
-
             });
-
         });
 
         context('when given an invalid encryption', function () {
@@ -65,11 +58,8 @@ describe('Controller/Authentication', function () {
             it('should not match', function () {
 
                 Assert.notStrictEqual(Authentication.decrypt('3e89ed68b63502d2353f'), '3e89ed68b63502d2353f3eb9fedb6cfb854dcb47207f0a05');
-
             });
-
         });
-
     });
 
     describe('generatePasswordHash', function () {
@@ -99,9 +89,7 @@ describe('Controller/Authentication', function () {
                 Authentication.validateAccountPassword(userId, goodPassword, function (err) {
                     Assert.isNull(err);
                 });
-
             });
-
         });
 
         context('when password is incorrect', function () {
@@ -111,11 +99,8 @@ describe('Controller/Authentication', function () {
                 Authentication.validateAccountPassword(userId, badPassword, function (err) {
                     Assert.isFalse(err);
                 });
-
             });
-
         });
-
     });
 
     describe('loginUser', function () {
