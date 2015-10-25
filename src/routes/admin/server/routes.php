@@ -407,9 +407,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, 
 
 $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request, $response, $service) use($core) {
 
-	if(!is_numeric($request->param('alloc_mem')) || !is_numeric($request->param('cpu_limit'))) {
+	if(!is_numeric($request->param('alloc_mem')) || !is_numeric($request->param('cpu_limit')) || !is_numeric($request->param('block_io'))) {
 
-		$service->flash('<div class="alert alert-danger">Allocated memory and CPU limits must be an integer.</div>');
+		$service->flash('<div class="alert alert-danger">Allocated Memory, Block IO, and CPU limits must be an integer.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
 		return;
 
@@ -423,6 +423,14 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 
 	}
 
+	if ($request->param('block_io') > 1000 || $request->param('block_io') < 10) {
+
+		$service->flash('<div class="alert alert-danger">Block IO must not be less than 10 or greater than 1000.</div>');
+		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
+		return;
+
+	}
+
 	ORM::get_db()->beginTransaction();
 
 	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
@@ -430,6 +438,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 	$server->max_ram = $request->param('alloc_mem');
 	//$server->disk_space = $request->param('alloc_disk');
 	$server->cpu_limit = $request->param('cpu_limit');
+	$server->block_io = $request->param('block_io');
 	$server->save();
 
 	/*
@@ -446,7 +455,8 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 			array(
 				"json" => json_encode(array(
 					"cpu" => (int) $request->param('cpu_limit'),
-					"memory" => (int) $request->param('alloc_mem')
+					"memory" => (int) $request->param('alloc_mem'),
+					"io" => (int) $request->param('block_io')
 				)),
 				"object" => "build",
 				"overwrite" => false
@@ -559,10 +569,19 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	if(
 		!is_numeric($request->param('alloc_mem')) ||
 		!is_numeric($request->param('alloc_disk')) ||
-		!is_numeric($request->param('cpu_limit'))
+		!is_numeric($request->param('cpu_limit')) ||
+		!is_numeric($request->param('block_io'))
 	) {
 
-		$service->flash('<div class="alert alert-danger">Allocated memory, disk, and CPU must all be integers.</div>');
+		$service->flash('<div class="alert alert-danger">Allocated memory, disk, Block IO, and CPU must all be integers.</div>');
+		$response->redirect('/admin/server/new')->send();
+		return;
+
+	}
+
+	if ($request->param('block_io') > 1000 || $request->param('block_io') < 10) {
+
+		$service->flash('<div class="alert alert-danger">Block IO must not be less than 10 or greater than 1000.</div>');
 		$response->redirect('/admin/server/new')->send();
 		return;
 
@@ -635,13 +654,13 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'node' => $request->param('node'),
 		'name' => $request->param('server_name'),
 		'plugin' => $plugin->id,
-		'pack' => $request->param('installable'),
 		'daemon_startup' => $request->param('daemon_startup'),
 		'daemon_variables' => $storage_variables,
 		'owner_id' => $user->id,
 		'max_ram' => $request->param('alloc_mem'),
 		'disk_space' => $request->param('alloc_disk'),
 		'cpu_limit' => $request->param('cpu_limit'),
+		'block_io' => $request->param('block_io'),
 		'date_added' => time(),
 		'server_ip' => $request->param('server_ip'),
 		'server_port' => $request->param('server_port'),
@@ -664,13 +683,13 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		"name" => $server_hash,
 		"user" => $sftp_username,
 		"build" => array(
-			"pack" => ($request->param('installable') == "none") ? null : $request->param('installable'),
 			"disk" => array(
 				"hard" => ($request->param('alloc_disk') < 32) ? 32 : (int) $request->param('alloc_disk'),
 				"soft" => ($request->param('alloc_disk') > 2048) ? (int) $request->param('alloc_disk') - 1024 : 32
 			),
 			"cpu" => (int) $request->param('cpu_limit'),
-			"memory" => (int) $request->param('alloc_mem')
+			"memory" => (int) $request->param('alloc_mem'),
+			"io" => (int) $request->param('block_io')
 		),
 		"startup" => array(
 			"command" => $request->param('daemon_startup'),
