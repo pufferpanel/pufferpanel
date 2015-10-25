@@ -567,6 +567,24 @@ $klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request
 
 });
 
+$klein->respond('POST', '/admin/node/view/[i:id]/delete', function($request, $response, $service) use($core) {
+
+	$node = ORM::forTable('nodes')->findOne($request->param('id'));
+
+	if (ORM::forTable('servers')->where('node', $node->id)->count() > 0) {
+		$service->flash('<div class="alert alert-danger">In order to delete this node there cannot be servers associated with it.</div>');
+		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=delete')->send();
+		return;
+	}
+
+	$node->delete();
+
+	$service->flash('<div class="alert alert-success">The node ('. $node->name .') was successfully deleted.</div>');
+	$response->redirect('/admin/node')->send();
+	return;
+
+});
+
 $klein->respond('GET', '/admin/node/plugins', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render(
