@@ -44,8 +44,12 @@ Twig_Autoloader::register();
  * This should NEVER be done on a live environment. In most cases Debugger is smart
  * enough to figure out if it is a local or development environment.
  */
-Debugger::enable(Debugger::DETECT, SRC_DIR.'/logs');
-Debugger::$strictMode = TRUE;
+if(Config::config('debugging') === true) {
+	Debugger::enable(Debugger::DEVELOPMENT, SRC_DIR.'/logs');
+} else {
+	Debugger::enable(Debugger::DETECT, SRC_DIR.'/logs');
+}
+Debugger::$strictMode = true;
 
 /*
 * MySQL PDO Connection Engine

@@ -13,3 +13,4 @@ config.json
 app/languages/*.json
 backup
 tools/composer.phar
+silent-sync.json
