@@ -59,7 +59,7 @@ class Email {
 		$this->email = $email;
 		$this->subject = $subject;
 
-		switch(Settings::config()->sendmail_method) {
+		switch(Settings::config()->transport_method) {
 
 			case 'postmark':
 				$this->_sendWithPostmark();
@@ -93,7 +93,11 @@ class Email {
 			'Content-type: text/html; charset=iso-8859-1'."\r\n".
 			'X-Mailer: PHP/'.phpversion();
 
-		mail($this->email, $this->subject, $this->message, $headers);
+		try {
+			mail($this->email, $this->subject, $this->message, $headers);
+		} catch (\Exception $e) {
+			Debugger::log($e);
+		}
 
 	}
 
@@ -104,15 +108,21 @@ class Email {
 	 */
 	protected function _sendWithSendgrid() {
 
-		$sendgrid = new \SendGrid(Settings::config()->transport_token);
-		$email = new \SendGrid\Email();
+		try {
 
-		$email->addTo($this->email)
-			->setFrom(Settings::config()->transport_email)
-			->setSubject($this->subject)
-			->setHtml($this->message);
+			$sendgrid = new \SendGrid(Settings::config()->transport_token);
+			$email = new \SendGrid\Email();
 
-		$sendgrid->send($email);
+			$email->addTo($this->email)
+				->setFrom(Settings::config()->transport_email)
+				->setSubject($this->subject)
+				->setHtml($this->message);
+
+			$sendgrid->send($email);
+
+		} catch (\SendGrid\Exception $e) {
+			Debugger::log($e);
+		}
 
 	}
 
@@ -123,14 +133,19 @@ class Email {
 	 */
 	protected function _sendWithPostmark() {
 
-		$client = new \Postmark\PostmarkClient(Settings::config()->transport_token);
+		try {
 
-		$client->sendEmail(
-			Settings::config()->transport_email,
-			$this->email,
-			$this->subject,
-			$this->message
-		);
+			$client = new \Postmark\PostmarkClient(Settings::config()->transport_token);
+			$client->sendEmail(
+				Settings::config()->transport_email,
+				$this->email,
+				$this->subject,
+				$this->message
+			);
+
+		} catch (\Postmark\Models\PostmarkException $e) {
+			Debugger::log($e);
+		}
 
 	}
 
@@ -141,15 +156,21 @@ class Email {
 	 */
 	protected function _sendWithMailgun() {
 
-		list(, $domain) = explode('@', Settings::config()->transport_email);
+		try {
 
-		$mail = new \Mailgun\Mailgun(Settings::config()->transport_token);
-		$mail->sendMessage($domain, array(
-			'from' => Settings::config()->company_name.' <'.Settings::config()->transport_email.'>',
-			'to' => $this->email.' <'.$this->email.'>',
-			'subject' => $this->subject,
-			'html' => $this->message
-		));
+			list(, $domain) = explode('@', Settings::config()->transport_email);
+
+			$mail = new \Mailgun\Mailgun(Settings::config()->transport_token);
+			$mail->sendMessage($domain, array(
+				'from' => Settings::config()->company_name.' <'.Settings::config()->transport_email.'>',
+				'to' => $this->email.' <'.$this->email.'>',
+				'subject' => $this->subject,
+				'html' => $this->message
+			));
+
+		} catch (\Mailgun\Messages\Exceptions $e) {
+			Debugger::log($e);
+		}
 
 	}
 
@@ -179,10 +200,7 @@ class Email {
 			), true, 'Main Pool');
 
 		} catch(\Mandrill_Error $e) {
-
 			Debugger::log($e);
-			throw new Exception("An error occured when trying to send an email. Please check the error log.");
-
 		}
 
 	}
