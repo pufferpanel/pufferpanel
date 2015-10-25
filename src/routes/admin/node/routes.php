@@ -624,6 +624,25 @@ $klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $r
 
 });
 
+$klein->respond('POST', '/admin/node/plugins/view/[:hash]/delete', function($request, $response, $service) use($core) {
+
+	$plugin = ORM::forTable('plugins')->where('hash', $request->param('hash'))->findOne();
+
+	if (ORM::forTable('servers')->where('plugin', $plugin->id)->count() > 0) {
+
+		$service->flash('<div class="alert alert-danger">The selected plugin cannot be deleted because there are servers running on it.</div>');
+		$response->redirect('/admin/node/plugins/view/'.$request->param('hash'))->send();
+		return;
+
+	}
+
+	$plugin->delete();
+	$service->flash('<div class="alert alert-success">The plugin ('. $plugin->name .') has been successfully deleted.</div>');
+	$response->redirect('/admin/node/plugins')->send();
+	return;
+
+});
+
 $klein->respond('GET', '/admin/node/plugins/new', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render(

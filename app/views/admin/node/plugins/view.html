@@ -59,6 +59,10 @@
 			{% endfor %}
 		</tbody>
 	</table>
+	<hr />
+	<form action="{{ plugin.hash }}/delete" method="post">
+		<input type="submit" action="submit" class="form-control btn btn-sm btn-danger" value="Delete this Plugin" />
+	</form>
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
