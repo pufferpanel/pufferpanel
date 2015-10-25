@@ -63,34 +63,24 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 	// Update Global Settings
 	if($request->param('page') == "global" && $request->param('action') == "general") {
 
+		$permissionsParam = (is_array($request->param('permissions'))) ? $request->param('permissions') : array();
+
 		try {
-
-			$https = (!in_array('https', $request->param('permissions'))) ? 0 : 1;
-
-			if($https) {
-
-				$new_master_url = str_replace("http://", "https://", Settings::config()->master_url);
-
-				if($new_master_url != Settings::config()->master_url) {
-
-					$query = ORM::forTable('acp_settings')->where('setting_ref', 'master_url')->findOne();
-					$query->setting_val = $new_master_url;
-					$query->save();
-
-				}
-
-			}
 
 			ORM::forTable('acp_settings')->rawExecute(
 				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'use_api' THEN :enable_api
                     WHEN 'https' THEN :https
                     WHEN 'allow_subusers' THEN :allow_subusers
+					WHEN 'master_url' THEN :master_url
+					WHEN 'assets_url' THEN :assets_url
                     ELSE setting_val
                 END", array(
-					'enable_api' => (!in_array('use_api', $request->param('permissions'))) ? 0 : 1,
-					'https' => (!in_array('https', $request->param('permissions'))) ? 0 : 1,
-					'allow_subusers' => (!in_array('allow_subusers', $request->param('permissions'))) ? 0 : 1
+					'enable_api' => (!in_array('use_api', $permissionsParam)) ? 0 : 1,
+					'https' => (!in_array('https', $permissionsParam)) ? 0 : 1,
+					'allow_subusers' => (!in_array('allow_subusers', $permissionsParam)) ? 0 : 1,
+					'master_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->master_url) : str_replace("https://", "http://", Settings::config()->master_url),
+					'assets_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->assets_url) : str_replace("https://", "http://", Settings::config()->assets_url)
 				)
 			);
 
@@ -199,13 +189,9 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			}
 
 			$url['path'] = (isset($url['path'])) ? $url['path'] : null;
+			$url['port'] = (isset($url['port'])) ? ':'.$url['port'] : null;
 
-			if($id != "assets_url") {
-				$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$url['host'].$url['path'] : 'http://'.$url['host'].$url['path'];
-			} else {
-				$urls[$id] = "//".$url['host'].$url['path'];
-			}
-
+			$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$url['host'].$url['port'].$url['path'] : 'http://'.$url['host'].$url['port'].$url['path'];
 			$urls[$id] = rtrim($urls[$id], '/').'/';
 
 		}
