@@ -30,7 +30,7 @@
 						<label for="server_name" class="control-label">Server Name</label>
 						<div>
 							<input type="text" autocomplete="off" name="server_name" class="form-control" />
-							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Character Limits: a-zA-Z0-9_- (Max 35 characters)</em></small></p>
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Character Limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (Max 35 characters)</em></small></p>
 						</div>
 					</div>
 					<div class="form-group col-md-6 nopad-right">
@@ -112,51 +112,51 @@
 							</select>
 						</div>
 					</div>
-					<div class="form-group col-md-6 nopad">
-						<label for="alloc_mem" class="control-label">Install Package</label>
-						<div>
-							<select name="installable" class="form-control">
-								<option value="none">None</option>
-							</select>
-						</div>
-					</div>
 				</div>
 				<div class="row">
-					<div class="form-group col-md-4 nopad">
-						<label for="alloc_mem" class="control-label">Allocate Memory (in MB)</label>
+					<div class="form-group col-md-3 nopad">
+						<label for="alloc_mem" class="control-label">Memory (in MB)</label>
 						<div class="input-group">
 							<input type="text" autocomplete="off" name="alloc_mem" class="form-control" />
 							<span class="input-group-addon">MB</span>
 						</div>
 					</div>
-					<div class="form-group col-md-4">
-						<label for="alloc_disk" class="control-label">Allocate Disk Space (in MB)</label>
+					<div class="form-group col-md-3">
+						<label for="alloc_disk" class="control-label">Disk Space (in MB)</label>
 						<div class="input-group">
 							<input type="text" autocomplete="off" name="alloc_disk" class="form-control" />
 							<span class="input-group-addon">MB</span>
 						</div>
 					</div>
-					<div class="form-group col-md-4 nopad-right">
-						<label for="cpu_limit" class="control-label">CPU Limit</label>
+					<div class="form-group col-md-3">
+						<label for="cpu_limit" class="control-label">CPU Quota</label>
 						<div class="input-group">
-							<input type="text" autocomplete="off" name="cpu_limit" class="form-control" />
+							<input type="text" autocomplete="off" name="cpu_limit" class="form-control" value="0" />
 							<span class="input-group-addon">%</span>
+						</div>
+					</div>
+					<div class="form-group col-md-3 nopad-right">
+						<label for="cpu_limit" class="control-label">Block IO</label>
+						<div class="input-group">
+							<input type="text" autocomplete="off" name="block_io" class="form-control" value="500" />
+							<span class="input-group-addon">IO</span>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>.</small></p>
+						<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/reference/run/#block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.</small></p>
 					</div>
 				</div>
 			</div>
+			<h3 class="nopad">Server Startup Configuration</h3><hr />
 			<div class="well" style="margin-top:15px;">
 				<form action="{{ server.id }}/startup" method="POST">
 					<fieldset>
 						<div class="form-group">
 							<label for="alloc_mem" class="control-label">Startup Command</label>
 							<div>
-								<input type="text" autocomplete="off" name="daemon_startup" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} nogui" />
+								<input type="text" autocomplete="off" name="daemon_startup" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} -nogui" />
 								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
 								<p><small>The following is a list of permanetly defined variables that can be accessed: <code>${memory}</code>, <code>${ip}</code>, and <code>${port}</code>.</small></p>
 							</div>
@@ -219,15 +219,17 @@
 			}
 		});
 	}
-	function updatePluginVariables() {
+	function updatePluginVariables(self) {
 		$.ajax({
 			type: "POST",
 			url: "new/plugin-variables",
 			data: {
 				'slug' : $("#getPlugin").val()
-			}
+			},
+			datatype: 'json'
 		}).done(function(data) {
-			$("#pluginVariableListing").html(data);
+			$('input[name="daemon_startup"]').val(data.startup);
+			$("#pluginVariableListing").html(data.html);
 		});
 	}
 	$(window).load(function(){

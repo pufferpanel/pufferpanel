@@ -40,6 +40,12 @@
 						<textarea class="form-control" rows="5" name="description"></textarea>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="control-label">Default Startup Line</label>
+					<div>
+						<input type="text" class="form-control" name="default_startup" placeholder="-Xms${memory}M -server -jar ${jar} -nogui" />
+					</div>
+				</div>
 				<h3>Plugin Variables</h3>
 				<span class="additional_params">
 					<p>These are additional optional parameters that can be accessed elsewhere within the panel for this plugin. They can be accessed in startup parameters as <code>${identifier}</code> and can be edited per-server by users if you set <code>editable = true</code>. You can <a class="add_additional_param" href="#">click here</a> to add additional parameters to this form.</p>

@@ -762,13 +762,16 @@ $klein->respond('POST', '/admin/server/new/ip-list', function($request, $respons
 
 $klein->respond('POST', '/admin/server/new/plugin-variables', function($request, $response) use($core) {
 
-	$orm = ORM::forTable('plugins')->select('variables')->where('slug', $request->param('slug'))->findOne();
+	$orm = ORM::forTable('plugins')->selectMany('variables', 'default_startup')->where('slug', $request->param('slug'))->findOne();
 
-	$response->body($core->twig->render(
-		'admin/server/plugin-variables.html',
-		array(
-			'variables' => json_decode($orm->variables, true)
-		)
+	$response->json(array(
+		'html' => $core->twig->render(
+			'admin/server/plugin-variables.html',
+			array(
+				'variables' => json_decode($orm->variables, true)
+			)
+		),
+		'startup' => $orm->default_startup
 	))->send();
 
 });

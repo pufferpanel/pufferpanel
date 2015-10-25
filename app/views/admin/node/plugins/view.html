@@ -16,6 +16,8 @@
 	<h3>Viewing Plugin: {{ plugin.name}}</h3>
 	<p>{{ plugin.description|raw }}</p>
 	<p>This plugin refers to a file called <code>{{ plugin.slug }}.js</code> in the <code>plugins/</code> folder of Scales instances on nodes.</p>
+	<h3>Default Startup Command</h3>
+	<pre><code>{{ plugin.default_startup }}</code></pre>
 	<h3>Variables</h3>
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
@@ -31,7 +33,7 @@
 			{% for key, var in vars %}
 				<tr>
 					<td><code>&#36&#123;{{ key }}&#125;</code></td>
-					<td>{{ var.description }}</td>
+					<td>{{ var.description|raw }}</td>
 					<td>{{ var.default }}</td>
 					<td><center>{% if var.editable == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
 					<td><center>{% if var.required == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>

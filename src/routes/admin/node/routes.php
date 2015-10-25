@@ -681,6 +681,7 @@ $klein->respond('POST', '/admin/node/plugins/new', function($request, $response,
 		'name' => $request->param('name'),
 		'description' => $request->param('description'),
 		'slug' => $request->param('slug'),
+		'default_startup' => $request->param('default_startup'),
 		'variables' => json_encode($built_variables)
 	));
 	$new->save();
