@@ -87,8 +87,8 @@ class Email {
 	 */
 	protected function _sendWithPHP() {
 
-		$headers = 'From: '.Settings::config()->sendmail_email."\r\n".
-			'Reply-To: '.Settings::config()->sendmail_email."\r\n".
+		$headers = 'From: '.Settings::config()->transport_email."\r\n".
+			'Reply-To: '.Settings::config()->transport_email."\r\n".
 			'MIME-Version: 1.0'."\r\n".
 			'Content-type: text/html; charset=iso-8859-1'."\r\n".
 			'X-Mailer: PHP/'.phpversion();
@@ -104,17 +104,11 @@ class Email {
 	 */
 	protected function _sendWithSendgrid() {
 
-		/*
-		* Decrypt Key Information
-		*/
-		list($iv, $hash) = explode('.', Settings::config()->sendgrid_api_key);
-		list($username, $password) = explode('|', Components\Authentication::decrypt($hash, $iv));
-
-		$sendgrid = new \SendGrid($username, $password);
+		$sendgrid = new \SendGrid(Settings::config()->transport_token);
 		$email = new \SendGrid\Email();
 
 		$email->addTo($this->email)
-			->setFrom(Settings::config()->sendmail_email)
+			->setFrom(Settings::config()->transport_email)
 			->setSubject($this->subject)
 			->setHtml($this->message);
 
@@ -129,10 +123,10 @@ class Email {
 	 */
 	protected function _sendWithPostmark() {
 
-		$client = new \Postmark\PostmarkClient(Settings::config()->postmark_api_key);
+		$client = new \Postmark\PostmarkClient(Settings::config()->transport_token);
 
 		$client->sendEmail(
-			Settings::config()->sendmail_email,
+			Settings::config()->transport_email,
 			$this->email,
 			$this->subject,
 			$this->message
@@ -147,11 +141,11 @@ class Email {
 	 */
 	protected function _sendWithMailgun() {
 
-		list(, $domain) = explode('@', Settings::config()->sendmail_email);
+		list(, $domain) = explode('@', Settings::config()->transport_email);
 
-		$mail = new \Mailgun\Mailgun(Settings::config()->mailgun_api_key);
+		$mail = new \Mailgun\Mailgun(Settings::config()->transport_token);
 		$mail->sendMessage($domain, array(
-			'from' => Settings::config()->company_name.' <'.Settings::config()->sendmail_email.'>',
+			'from' => Settings::config()->company_name.' <'.Settings::config()->transport_email.'>',
 			'to' => $this->email.' <'.$this->email.'>',
 			'subject' => $this->subject,
 			'html' => $this->message
@@ -168,11 +162,11 @@ class Email {
 
 		try {
 
-			$mandrill = new \Mandrill(Settings::config()->mandrill_api_key);
+			$mandrill = new \Mandrill(Settings::config()->transport_token);
 			$mandrill->messages->send(array(
 				'html' => $this->message,
 				'subject' => $this->subject,
-				'from_email' => Settings::config()->sendmail_email,
+				'from_email' => Settings::config()->transport_email,
 				'from_name' => Settings::config()->company_name,
 				'to' => array(
 					array(
@@ -180,7 +174,7 @@ class Email {
 						'name' => $this->email
 					)
 				),
-				'headers' => array('Reply-To' => Settings::config()->sendmail_email),
+				'headers' => array('Reply-To' => Settings::config()->transport_email),
 				'important' => false
 			), true, 'Main Pool');
 

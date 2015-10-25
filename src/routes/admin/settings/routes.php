@@ -101,7 +101,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		$response->cookie("__TMP_pp_admin_updateglobal", json_encode($request->paramsPost()), time() + 30);
 
-		if(!in_array($request->param('smail_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
+		if(!in_array($request->param('transport_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
 
 			$service->flash('<div class="alert alert-danger">The email method selected was not a valid choice.</div>');
 			$response->redirect('/admin/settings/email')->send();
@@ -109,7 +109,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		if(!filter_var($request->param('sendmail_email'), FILTER_VALIDATE_EMAIL)) {
+		if(!filter_var($request->param('transport_email'), FILTER_VALIDATE_EMAIL)) {
 
 			$service->flash('<div class="alert alert-danger">The email provided as the sendmail address is not valid.</div>');
 			$response->redirect('/admin/settings/email')->send();
@@ -117,7 +117,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		if($request->param('smail_method') != 'php' && empty($request->param($request->param('smail_method').'_api_key'))) {
+		if(empty($request->param('transport_token'))) {
 
 			$service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
 			$response->redirect('/admin/settings/email')->send();
@@ -125,33 +125,18 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		/*
-         * Handle Sendgrid Information
-         */
-		$sendgrid = null;
-		if(strpos($request->param('sendgrid_api_key'), '|')) {
-			$iv = $core->auth->generate_iv();
-			$sendgrid = $iv.'.'.$core->auth->encrypt($request->param('sendgrid_api_key'), $iv);
-		}
-
 		try {
 
 			ORM::forTable('acp_settings')->rawExecute(
 			"UPDATE acp_settings SET setting_val = CASE setting_ref
-                    WHEN 'sendmail_method' THEN :sendmail_method
-                    WHEN 'sendmail_email' THEN :sendmail_email
-                    WHEN 'postmark_api_key' THEN :postmark_api_key
-                    WHEN 'mandrill_api_key' THEN :mandrill_api_key
-                    WHEN 'mailgun_api_key' THEN :mailgun_api_key
-                    WHEN 'sendgrid_api_key' THEN :sendgrid_api_key
+                    WHEN 'transport_method' THEN :transport_method
+                    WHEN 'transport_email' THEN :transport_email
+                    WHEN 'transport_token' THEN :transport_token
                     ELSE setting_val
                 END", array(
-					'sendmail_method' => $request->param('smail_method'),
-					'sendmail_email' => $request->param('sendmail_email'),
-					'postmark_api_key' => $request->param('postmark_api_key'),
-					'mandrill_api_key' => $request->param('mandrill_api_key'),
-					'mailgun_api_key' => $request->param('mailgun_api_key'),
-					'sendgrid_api_key' => $sendgrid,
+					'transport_method' => $request->param('transport_method'),
+					'transport_email' => $request->param('transport_email'),
+					'transport_token' => $request->param('transport_token')
 				)
 			);
 
