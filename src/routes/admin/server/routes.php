@@ -133,6 +133,37 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $
 
 });
 
+$klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function($request, $response) use ($core) {
+
+	try {
+
+		$unirest = Request::get(
+			'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/rebuild-container',
+			array(
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
+			)
+		);
+
+	} catch (Exception $e) {
+
+		Debugger::log($e);
+		$response->code(500)->body('Unable to process this request due to a connection error. ' . $e->getMessage() )->send();
+		return;
+
+	}
+
+	if($unirest->code > 204 || $unirest->code < 200) {
+		$response->code($unirest->code)->body('Scales returned an error. ' . $unirest->raw_body)->send();
+		return;
+	}
+
+	$response->body('The container for this server has been successfully rebuilt. If the server is currently running this process has been queued.')->send();
+	return;
+
+});
+
+
 $klein->respond('POST', '/admin/server/view/[i:id]/connection', function($request, $response, $service) use($core) {
 
 	$ports = json_decode($core->server->nodeData('ports'), true);

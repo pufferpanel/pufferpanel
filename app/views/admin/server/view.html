@@ -15,6 +15,7 @@
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
 		<li><a href="#connection" data-toggle="tab">Connection</a></li>
+		<li><a href="#rebuild" data-toggle="tab">Rebuild</a></li>
 		<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 		{% if server.installed == 0 %}<li><a href="#installer" data-toggle="tab">Installer Progress</a></li>{% endif %}
@@ -157,6 +158,39 @@
 				</form>
 			</div>
 		</div>
+		<div class="tab-pane" id="rebuild">
+			<h3>Rebuild Server</h3><hr />
+			<div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="rebuildContainer" class="btn btn-sm btn-primary">Rebuild Docker Container</button>
+					</div>
+					<div class="col-md-8">
+						Rebuild the server's docker container. This will update the server container if you made manual changes to the server's configuration file on Scales, or if for whatever reason the container becomes damaged or lost at sea. If the server is currently running this process will be queued until the server is powered off.
+					</div>
+				</div>
+			</div>
+			<!-- <div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="reinstallServer" class="btn btn-sm btn-danger">Reinstall Server</button>
+					</div>
+					<div class="col-md-8">
+						Reinstall this server's program. <strong>This will delete all files that currently exist for the server.</strong> If the server is currently running this process will be queued until the server is powered off.
+					</div>
+				</div>
+			</div>
+			<div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="changeType" class="btn btn-sm btn-primary">Change Server Type</button>
+					</div>
+					<div class="col-md-8">
+						Change the type of server that this instance is running. Will reinstall the server to the new plugin and reset all files in the process. If the server is currently running this process will be queued until the server is powered off.
+					</div>
+				</div>
+			</div> -->
+		</div>
 		<div class="tab-pane" id="sftp_sett">
 			<h3>SFTP Settings</h3><hr />
 			<form action="{{ server.id }}/sftp" method="post">
@@ -285,6 +319,20 @@
 				}
 			});
 			return false;
+		});
+		$('#rebuildContainer').click(function (event) {
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/admin/server/view/{{ server.id }}/rebuild-container',
+				dataType: 'text',
+				data: {}
+			}).done(function (data) {
+				alert(data);
+			}).fail(function (jqXHR, textStatus) {
+				console.error(jqXHR);
+				alert('An error occured while attempting to process this request. PufferPanel said: HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
+			});
 		});
 	});
 </script>
