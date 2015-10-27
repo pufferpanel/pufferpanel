@@ -137,7 +137,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function(
 
 	try {
 
-		$unirest = Request::get(
+		$unirest = Request::put(
 			'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/rebuild-container',
 			array(
 				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
@@ -159,6 +159,39 @@ $klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function(
 	}
 
 	$response->body('The container for this server has been successfully rebuilt. If the server is currently running this process has been queued.')->send();
+	return;
+
+});
+
+$klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($request, $response) use ($core) {
+
+	try {
+
+		$unirest = Request::put(
+			'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/reinstall',
+			array(
+				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
+				'X-Access-Server' => $core->server->getData('hash')
+			),
+			array(
+				'build_params' => $request->param('build_params')
+			)
+		);
+
+	} catch (Exception $e) {
+
+		Debugger::log($e);
+		$response->code(500)->body('Unable to process this request due to a connection error. ' . $e->getMessage() )->send();
+		return;
+
+	}
+
+	if($unirest->code > 204 || $unirest->code < 200) {
+		$response->code($unirest->code)->body('Scales returned an error. ' . $unirest->raw_body)->send();
+		return;
+	}
+
+	$response->body('This container has been added to the reinstall queue. If the server is powered off it will begin immediately. You can track the reinstaller progress by clicking on the \'Installer\' tab above.')->send();
 	return;
 
 });
