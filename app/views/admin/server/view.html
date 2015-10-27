@@ -231,7 +231,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		{% if server.installed == 0 %}
-			var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}', {'query': 'token={{ server.daemon_secret }}'});
+			var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
 			socket.io.on('connect_error', function(err) {
 				$("#socket_error:hidden").show();
 			});
