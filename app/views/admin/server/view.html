@@ -173,30 +173,41 @@
 			<div class="well">
 				<div class="row">
 					<div class="col-md-4 text-center">
-						<button id="reinstallServer" class="btn btn-sm btn-danger">Reinstall Server</button>
+						<button id="reinstallServer" class="btn btn-sm btn-danger">Re-Install Server</button>
 					</div>
 					<div class="col-md-8">
-						Reinstall this server's program. <strong>This will delete all files that currently exist for the server.</strong> If the server is currently running this process will immediately stop the running server and reinstall.
+						<div>
+							<div>
+								<input type="text" autocomplete="off" id="reinstallBuildParams" class="form-control" placeholder="Build Parameters"/>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
 						<br />
-						<div class="form-group">
-							<label for="alloc_mem" class="control-label">Build Parameters</label>
-							<div>
-								<input type="text" autocomplete="off" id="reinstallBuildParams" class="form-control" />
-							</div>
-						</div>
+						Reinstall this server's program. <strong>This will delete all files that currently exist for the server.</strong> If the server is currently running this process will immediately stop the running server and reinstall.
 					</div>
 				</div>
 			</div>
 			<!-- <div class="well">
 				<div class="row">
 					<div class="col-md-4 text-center">
-						<button id="changeType" class="btn btn-sm btn-primary">Change Server Type</button>
+						<button id="changeType" class="btn btn-sm btn-danger">Re-Install with New Plugin</button>
 					</div>
 					<div class="col-md-8">
+						<div>
+							<select name="plugin" id="getPlugin" class="form-control">
+								{% for plugin in plugins %}
+									<option value="{{ plugin.slug }}">{{ plugin.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<br />
 						Change the type of server that this instance is running. Will reinstall the server to the new plugin and reset all files in the process. If the server is currently running this process will be queued until the server is powered off.
 					</div>
 				</div>
@@ -249,18 +260,16 @@
 				</fieldset>
 			</form>
 		</div>
-		{% if server.installed == 0 %}
-			<div class="tab-pane" id="installer">
-				<h3>Install Progress</h3><hr />
-					<div class="alert alert-danger" id="socket_error" style="display:none;">
-						We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
-						<br /><br />
-						If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
-					</div>
-					<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
-					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
-			</div>
-		{% endif %}
+		<div class="tab-pane" id="installer">
+			<h3>Install Progress</h3><hr />
+				<div class="alert alert-danger" id="socket_error" style="display:none;">
+					We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+					<br /><br />
+					If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
+				</div>
+				<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
+				<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
 				<div class="alert alert-danger"><strong>Deleting a server is an irreversiable action.</strong> Proceede with caution. This server will be removed from the database along with all files on the server.</div>
@@ -275,21 +284,19 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function(){
-		{% if server.installed == 0 %}
-			var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
-			socket.io.on('connect_error', function(err) {
-				$("#socket_error:hidden").show();
-			});
-			socket.on('connect', function (){
-				$("#socket_error:visible").hide();
-				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-			});
-			socket.on('installer', function (data) {
-				console.log(data);
-				$("#live_console").val($("#live_console").val() + data.line);
-				$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-			});
-		{% endif %}
+		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
+		socket.io.on('connect_error', function(err) {
+			$("#socket_error:hidden").show();
+		});
+		socket.on('connect', function (){
+			$("#socket_error:visible").hide();
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		socket.on('installer', function (data) {
+			console.log(data);
+			$("#live_console").val($("#live_console").val() + data.line);
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
 		$("form#deleteCheckpoint").submit(function(e) {
 			e.preventDefault();
 			if(confirm("STOP! Are you absolutely positive that you want to delete this server. ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
@@ -354,8 +361,12 @@
 					build_params: $('#reinstallBuildParams').val()
 				}
 			}).done(function (data) {
-				alert(data);
-				$("#installerProgressTab").show();
+				$("#live_console").val('');
+				$("#installerProgressTab").show(function () {
+					$("#installerProgressTab").tab('show');
+					$("#rebuild").removeClass('active');
+					$("#installer").addClass('active');
+				});
 			}).fail(function (jqXHR, textStatus) {
 				console.error(jqXHR);
 				alert('An error occured while attempting to process this request. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);

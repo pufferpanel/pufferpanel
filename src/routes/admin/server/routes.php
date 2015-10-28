@@ -75,6 +75,7 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
 			'node' => $core->server->nodeData(),
 			'decoded' => array('ips' => json_decode($core->server->nodeData('ips'), true), 'ports' => json_decode($core->server->nodeData('ports'), true)),
 			'server' => $core->server->getData(),
+			'plugins' => ORM::forTable('plugins')->findMany(),
 			'user' => $core->user->getData()
 		)
 	))->send();
@@ -165,6 +166,11 @@ $klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function(
 
 $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($request, $response) use ($core) {
 
+	ORM::get_db()->beginTransaction();
+	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
+	$server->installed = 0;
+	$server->save();
+
 	try {
 
 		$unirest = Request::put(
@@ -178,9 +184,12 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 			)
 		);
 
+		ORM::get_db()->commit();
+
 	} catch (Exception $e) {
 
 		Debugger::log($e);
+		ORM::get_db()->rollBack();
 		$response->code(500)->body('Unable to process this request due to a connection error. ' . $e->getMessage() )->send();
 		return;
 
