@@ -535,7 +535,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/reset-token', function($request
 
 $klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request, $response) use($core) {
 
-	$node = ORM::forTable('nodes')->findOne($request->param('node'));
+	$node = ORM::forTable('nodes')->findOne($request->param('id'));
 
 	if(!$node) {
 		$response->body("The requested node does not exist in the system.")->send();
@@ -566,6 +566,39 @@ $klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request
 	$response->body('Done')->send();
 
 });
+
+$klein->respond('DELETE', '/admin/node/view/[i:id]/delete-ip/[:ip_address]', function($request, $response) use($core) {
+
+	$node = ORM::forTable('nodes')->findOne($request->param('id'));
+
+	if(ORM::forTable('servers')->where(array(
+		'node' => $request->param('id'),
+		'server_ip' => $request->param('ip_address')
+	))->count() > 0) {
+		$response->code(500)->body('Unable to delete this IP because there are still servers associated with it.')->send();
+		return;
+	}
+
+	$ips = json_decode($node->ips, true);
+	$ports = json_decode($node->ports, true);
+
+	if (!array_key_exists($request->param('ip_address'), $ips) || !array_key_exists($request->param('ip_address'), $ports)) {
+		$response->code(500)->body('The requested IP does not exist on this node.')->send();
+		return;
+	}
+
+	unset($ips[$request->param('ip_address')]);
+	unset($ports[$request->param('ip_address')]);
+
+	$node->ips = json_encode($ips);
+	$node->ports = json_encode($ports);
+	$node->save();
+
+	$response->code(204)->send();
+	return;
+
+});
+
 
 $klein->respond('POST', '/admin/node/view/[i:id]/delete', function($request, $response, $service) use($core) {
 

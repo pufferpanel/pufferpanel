@@ -86,7 +86,6 @@
 						<input type="text" name="add_ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="form-control" />
 						<span class="input-group-btn">
 							<input type="hidden" name="add_ports_ip" value=""/>
-							<input type="hidden" name="add_ports_node" value=""/>
 							<button class="btn btn-primary btn-sm" type="submit">&rarr;</button>
 						</span>
 					</div>
@@ -102,28 +101,30 @@
 				</thead>
 				<tbody>
 					{% for ip, ports in portlisting %}
-						<tr><td style="vertical-align:top;">{{ ip }}<br /><a href="#/add/{{ ip }}/{{ node.id }}" class="clickToAdd" onclick="return false;">Add Port(s)</a></td>
-						<td>
-						{% for port, avaliable in ports %}
-							{% if loop.index is odd %}
-								{% if avaliable == 1 %}
-									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
-								{% else %}
-									<i class="fa fa-toggle-on"></i>
-								{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
-							{% endif %}
-						{% endfor %}
-						</td><td>
-						{% for port, avaliable in ports %}
-							{% if loop.index is even %}
-								{% if avaliable == 1 %}
-									<span><a href="#/delete/{{ ip }}/{{ port }}/{{ node.id }}" class="deletePort" onclick="return false;"><i class="fa fa-toggle-off"></i></a>
-								{% else %}
-									<i class="fa fa-toggle-on"></i>
-								{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
-							{% endif %}
-						{% endfor %}
-						</td>
+						<tr>
+							<td style="vertical-align:top;">{{ ip }}<br /><a href="#/add/{{ ip }}" class="clickToAdd" onclick="return false;">Add Port(s)</a> | <a href="#/delete/{{ ip }}" class="clickToDelete" onclick="return false;">Delete</a></td>
+							<td>
+							{% for port, avaliable in ports %}
+								{% if loop.index is odd %}
+									{% if avaliable == 1 %}
+										<span><a href="#/delete/{{ ip }}/{{ port }}" class="deletePort" onclick="return false;"><i class="fa fa-circle-o"></i></a>
+									{% else %}
+										<i class="fa fa-check-circle-o"></i>
+									{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
+								{% endif %}
+							{% endfor %}
+							</td>
+							<td>
+							{% for port, avaliable in ports %}
+								{% if loop.index is even %}
+									{% if avaliable == 1 %}
+										<span><a href="#/delete/{{ ip }}/{{ port }}" class="deletePort" onclick="return false;"><i class="fa fa-circle-o"></i></a>
+									{% else %}
+										<i class="fa fa-check-circle-o"></i>
+									{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
+								{% endif %}
+							{% endfor %}
+							</td>
 						</tr>
 					{% endfor %}
 					<tr>
@@ -136,7 +137,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Key</div>
 				<div class="panel-body">
-					<p><i class="fa fa-toggle-off"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-toggle-on"></i> (Port Used; Cannot Delete)</p>
+					<p><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-check-circle-o"></i> (Port Used; Cannot Delete)</p>
 				</div>
 			</div>
 		</div>
@@ -265,13 +266,25 @@ $(window).load(function(){
 		var rawUrl = $(this).attr("href");
 		var exploded = rawUrl.split('/');
 		var ip = exploded[2];
-		var node_id = exploded[3];
 		$("#addPorts").slideUp(function(){
 			$("#setTitle").html('Add Ports for '+ip);
 			$("input[name='add_ports']").val("");
 			$("input[name='add_ports_ip']").val(ip);
-			$("input[name='add_ports_node']").val(node_id);
 			$("#addPorts").slideDown();
+		});
+	});
+	$(".clickToDelete").click(function(){
+		var self = $(this);
+		var exploded = ($(this).attr("href")).split('/');
+		var ip = exploded[2];
+		$.ajax({
+			method: 'DELETE',
+			url: '/admin/node/view/{{ node.id }}/delete-ip/' + ip
+		}).done(function (data) {
+			self.parent().parent().fadeOut();
+		}).fail(function (jqXHR) {
+			console.error(jqXHR);
+			alert('HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
 		});
 	});
 	$(".deletePort").click(function(){
@@ -280,7 +293,6 @@ $(window).load(function(){
 		var exploded = rawUrl.split('/');
 		var ip = exploded[2];
 		var port = exploded[3];
-		var node_id = exploded[4];
 		var conf = confirm("Are you sure you want to delete "+ip+":"+port);
 
 			if(conf == true)
@@ -288,9 +300,9 @@ $(window).load(function(){
 					$.ajax({
 						type: "POST",
 						url: "{{ node.id }}/delete-port",
-						data: { ip: ip, port: port, node: node_id},
+						data: { ip: ip, port: port},
 						success: function(data) {
-							$(".deletePort[href='#/delete/"+ip+"/"+port+"/"+node_id+"']").parent().fadeOut();
+							$(".deletePort[href='#/delete/"+ip+"/"+port+"']").parent().fadeOut();
 						}
 					});
 				}else{
