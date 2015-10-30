@@ -90,12 +90,9 @@ try {
 				('master_url', :murl),
 				('assets_url', :aurl),
 				('main_website', :mwebsite),
-				('postmark_api_key', NULL),
-				('mandrill_api_key', NULL),
-				('mailgun_api_key', NULL),
-				('sendgrid_api_key', NULL),
-				('sendmail_email', NULL),
-				('sendmail_method','php'),
+				('transport_token', NULL),
+				('transport_email', NULL),
+				('transport_method','php'),
 				('captcha_pub',NULL),
 				('captcha_priv',NULL),
 				('default_language', 'en'),
@@ -104,12 +101,12 @@ try {
 				('use_api', 0),
 				('allow_subusers', 0)");
 
-        $params['siteUrl'] = preg_replace("(^https?://)", "", $param['siteUrl']);
+    $params['siteUrl'] = preg_replace("(^https?://)", "", $param['siteUrl']);
 	$query->execute(array(
 		':cname' => $params['companyName'],
 		':murl' => 'http://' . $params['siteUrl'] . '/',
 		':mwebsite' => 'http://' . $params['siteUrl'] . '/',
-		':aurl' => '//' . $params['siteUrl'] . '/assets/'
+		':aurl' => 'http://' . $params['siteUrl'] . '/assets/'
 	));
 
 	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));

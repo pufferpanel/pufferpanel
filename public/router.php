@@ -131,13 +131,14 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/)', function($request, $res
 
 $klein->respond('@^/auth/', function($request, $response, $service, $app, $klein) use ($core) {
 
-	if($core->auth->isLoggedIn() && !in_array($request->pathname(), array(
-		"/auth/logout",
-		"/auth/remote/download"
-	))) {
+	if($core->auth->isLoggedIn()) {
 
-		$response->redirect('/index')->send();
-		$klein->skipRemaining();
+		// Redirect /auth/* requests to /index if they are logged in
+		// Skips redirect on requests to /auth/logout and /auth/remote/*
+		if(0 !== strpos($request->pathname(), "/auth/logout") && 0 !== strpos($request->pathname(), "/auth/remote/")) {
+			$response->redirect('/index')->send();
+			$klein->skipRemaining();
+		}
 
 	}
 

@@ -337,6 +337,7 @@ $klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, 
 			'flash' => $service->flashes(),
 			'node' => $node,
 			'portlisting' => json_decode($node->ports, true),
+			'autodeploy' => ORM::forTable('autodeploy')->where('node', $request->param('id'))->where_gt('expires', time())->findOne()
 		)
 	))->send();
 
@@ -599,6 +600,29 @@ $klein->respond('DELETE', '/admin/node/view/[i:id]/delete-ip/[:ip_address]', fun
 
 });
 
+$klein->respond('POST', '/admin/node/view/[i:id]/generate-autodeploy', function($request, $response, $service) use($core) {
+
+	$node = ORM::forTable('nodes')->findOne($request->param('id'));
+
+	if (ORM::forTable('autodeploy')->where('node', $node->id)->where_gt('expires', time())->count() > 0) {
+		$service->flash('<div class="alert alert-danger">There is already an exisiting auto-deploy script for this server.</div>');
+		$response->redirect('/admin/node/view/'.$request->param('id').'?tab=deploy')->send();
+		return;
+	}
+
+	$deploy = ORM::forTable('autodeploy')->create();
+	$deploy->set(array(
+		'node' => $node->id,
+		'code' => $core->auth->generateUniqueUUID('autodeploy', 'code'),
+		'expires' => time() + 900
+	));
+	$deploy->save();
+
+	$service->flash('<div class="alert alert-success">A new deployment script endpoint was successfully configured for this node.</div>');
+	$response->redirect('/admin/node/view/'.$request->param('id').'?tab=deploy')->send();
+	return;
+
+});
 
 $klein->respond('POST', '/admin/node/view/[i:id]/delete', function($request, $response, $service) use($core) {
 

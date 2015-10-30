@@ -40,6 +40,7 @@ CREATE TABLE `plugins` (
   `slug` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
+  `default_startup` text,
   `variables` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug_unique` (`slug`)
@@ -78,6 +79,15 @@ CREATE TABLE `account_change` (
   PRIMARY KEY (`id`),
   KEY `FK_account_change_users` (`user_id`),
   CONSTRAINT `FK_account_change_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `autodeploy`
+CREATE TABLE `autodeploy` (
+  `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
+  `node` mediumint(10) unsigned NOT NULL,
+  `code` char(36) NOT NULL DEFAULT '',
+  `expires` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `actions_log`;
@@ -128,7 +138,6 @@ CREATE TABLE `servers` (
   `node` mediumint(8) unsigned NOT NULL,
   `name` varchar(200) NOT NULL,
   `plugin` mediumint(10) unsigned NOT NULL,
-  `pack` varchar(100) NOT NULL DEFAULT '',
   `daemon_startup` text,
   `daemon_variables` text,
   `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -136,6 +145,7 @@ CREATE TABLE `servers` (
   `max_ram` smallint(5) unsigned NOT NULL,
   `disk_space` int(10) unsigned NOT NULL,
   `cpu_limit` smallint(6) unsigned DEFAULT NULL,
+  `block_io` smallint(6) unsigned DEFAULT NULL,
   `date_added` int(10) unsigned NOT NULL,
   `server_ip` varchar(45) NOT NULL,
   `server_port` smallint(5) unsigned NOT NULL,
@@ -183,8 +193,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Insert all default data
 INSERT INTO `plugins` (`id`, `hash`, `slug`, `name`, `description`, `variables`)
 VALUES
-	(1, '37d8949d-5da2-4390-a28f-27ac1babc4da', 'minecraft', 'Minecraft', 'Minecraft is a game about breaking and placing blocks. At first, people built structures to protect against nocturnal monsters, but as the game grew players worked together to create wonderful, imaginative things. This version of the plugin is ment for versions of the game <strong>greater than 1.7.0</strong>.', '{\"jar\":{\"name\":\"Server Jar Name\",\"description\":\"The name of the server jar file to use when booting the server.\",\"required\":true,\"editable\":true,\"default\":\"server.jar\"},\"build_params\":{\"name\":\"Build Parameters\", \"description\":\"The build parameters to use when creating this server. Please see the documentation <a href=\\\"http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-minecraft-server#build-parameters\\\" target=\\\"_blank\\\">located here</a> for how to do this.\",\"required\":false,\"editable\":false,\"default\":\"\"}}'),
-	(2, 'b4b90feb-6adb-499c-a9f8-09b6e80c9d16', 'minecraft-pre', 'Minecraft (pre 1.7)', 'Minecraft is a game about breaking and placing blocks. At first, people built structures to protect against nocturnal monsters, but as the game grew players worked together to create wonderful, imaginative things. This version of the plugin is ment for versions of the game <strong>less than 1.7.0</strong>.', '{\"jar\":{\"name\":\"Server Jar Name\",\"description\":\"The name of the server jar file to use when booting the server.\",\"required\":true,\"editable\":true,\"default\":\"server.jar\"}}'),
-	(3, '64a8fe48-0b69-4e8a-96c4-14c60309c6c1', 'bungeecord', 'BungeeCord', 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.', '{\"jar\":{\"name\":\"BungeeCord Jar Name\",\"description\":\"The name of the BungeeCord jar file to use when booting the server.\",\"required\":true,\"editable\":true,\"default\":\"BungeeCord.jar\"},\"build_params\":{\"name\":\"Build Parameters\", \"description\":\"The build parameters to use when creating this server. Please see the documentation <a href=\\\"http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-bungeecord-server#build-parameters\\\" target=\\\"_blank\\\">located here</a> for how to do this.\",\"required\":false,\"editable\":false,\"default\":\"\"}}'),
-	(4, '79f128d5-f43b-46e2-b190-9a4cd15f9594', 'srcds', 'SRCDS', 'SRCDS is for Steam Servers.', '{\"players\":{\"name\":\"Maximum Players\",\"description\":\"The maximum number of players (including bots) that can access a server at once.\",\"required\":true,\"editable\":false,\"default\":\"20\"},\"map\":{\"name\":\"Map\",\"description\":\"The default map to use in a rotation.\",\"required\":false,\"editable\":true,\"default\":\"\"},\"game\":{\"name\": \"SRCDS Game\", \"description\":\"The name of the type of game to be used for this server.\", \"required\": true, \"editable\": false, \"default\":\"\"},\"build_params\":{\"name\":\"SRCDS Application ID\", \"description\":\"The ID corresponding to the application that should be installed on this server. This should be an integer.\",\"required\":true,\"editable\":false,\"default\":\"\"}}'),
-	(5, '7f7d87ef-fdbe-45a0-b020-a29326ee3d6f', 'mcserver', 'MCServer', 'MCServer is a Minecraft-compatible multiplayer game server that is written in C++ and designed to be efficient with memory and CPU, as well as having a flexible Lua Plugin API. MCServer is compatible with the vanilla Minecraft client.', '{\"build_params\":{\"name\":\"Build Parameters\",\"description\":\"The build parameters to use when creating this server. \",\"required\":false,\"editable\":false,\"default\":\"\"}}');
+  (1, '37d8949d-5da2-4390-a28f-27ac1babc4da', 'minecraft', 'Minecraft', 'Minecraft is a game about breaking and placing blocks. At first, people built structures to protect against nocturnal monsters, but as the game grew players worked together to create wonderful, imaginative things. This version of the plugin is ment for versions of the game <strong>greater than 1.7.0</strong>.', '-Xms${memory}M -server -jar ${jar} -nogui', '{\"jar\":{\"name\":\"Server Jar Name\",\"description\":\"The name of the server jar file to use when booting the server.\",\"required\":true,\"editable\":true,\"default\":\"server.jar\"},\"build_params\":{\"name\":\"Build Parameters\", \"description\":\"The build parameters to use when creating this server. Please see the documentation <a href=\\\"http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-minecraft-server#build-parameters\\\" target=\\\"_blank\\\">located here</a> for how to do this.\",\"required\":false,\"editable\":false,\"default\":\"\"}}'),
+  (2, 'a98d5464-7166-4459-88e7-dfad9be96389', 'minecraft-pre', 'MC Pre 1.7', 'Pre 1.7', '-Xms${memory}M -server -jar ${jar} -nogui', '{\"jar\":{\"name\":\"Jar\",\"description\":\"\",\"required\":true,\"editable\":true,\"default\":\"server.jar\"},\"build_params\":{\"name\":\"build_params\",\"description\":\"\",\"required\":true,\"editable\":true,\"default\":\"-v 1.6.4\"}}'),
+  (3, '64a8fe48-0b69-4e8a-96c4-14c60309c6c1', 'bungeecord', 'BungeeCord', 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.', '-Xms${memory}M -server -jar ${jar}', '{\"jar\":{\"name\":\"BungeeCord Jar Name\",\"description\":\"The name of the BungeeCord jar file to use when booting the server.\",\"required\":true,\"editable\":true,\"default\":\"BungeeCord.jar\"},\"build_params\":{\"name\":\"Build Parameters\", \"description\":\"The build parameters to use when creating this server. Please see the documentation <a href=\\\"http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-bungeecord-server#build-parameters\\\" target=\\\"_blank\\\">located here</a> for how to do this.\",\"required\":false,\"editable\":false,\"default\":\"\"}}'),
+  (4, '79f128d5-f43b-46e2-b190-9a4cd15f9594', 'srcds', 'SRCDS', 'SRCDS is for Steam Servers.', '-game ${game} -strictportbind -port ${port} -console +map ${map} -maxplayers ${players} -norestart', '{\"players\":{\"name\":\"Maximum Players\",\"description\":\"The maximum number of players (including bots) that can access a server at once.\",\"required\":true,\"editable\":false,\"default\":\"20\"},\"map\":{\"name\":\"Map\",\"description\":\"The default map to use in a rotation.\",\"required\":false,\"editable\":true,\"default\":\"\"},\"game\":{\"name\": \"SRCDS Game\", \"description\":\"The name of the type of game to be used for this server.\", \"required\": true, \"editable\": false, \"default\":\"\"},\"build_params\":{\"name\":\"SRCDS Application ID\", \"description\":\"The ID corresponding to the application that should be installed on this server. This should be an integer.\",\"required\":true,\"editable\":false,\"default\":\"\"}}');

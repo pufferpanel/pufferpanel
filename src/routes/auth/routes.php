@@ -364,59 +364,6 @@ $klein->respond('POST', '/auth/remote/download', function($request, $response) u
 
 });
 
-$klein->respond('POST', '/auth/remote/ftp', function($request, $response) use ($core) {
-
-	if(!$request->param('username') || !$request->param('password')) {
-
-		$response->code(500);
-		$response->body("failed to pass required vars")->send();
-		return;
-
-	}
-
-	if(!preg_match('^([mc-]{3})([\w\d\-]{12})[\-]([\d]+)$^', $request->param('username'), $matches)) {
-
-		$response->code(403);
-		$response->body("invalid username was passed")->send();
-		return;
-
-	} else {
-
-		$username = $matches[1].$matches[2];
-		$serverid = $matches[3];
-
-	}
-
-	/*
-	* Verify Identity
-	*/
-	$server = ORM::forTable('servers')
-		->selectMany('encryption_iv', 'ftp_pass', 'daemon_secret')
-		->where(array('daemon_id' => $serverid, 'sftp_user' => $username))
-		->findOne();
-
-	if(!$server) {
-
-		$response->code(403);
-		$response->body("unable to locate the requested server")->send();
-		return;
-
-	} else {
-
-		if($core->auth->encrypt($request->param('password'), $server->encryption_iv) != $server->ftp_pass) {
-
-			$response->code(403);
-			$response->body("invalid password was passed - ".json_encode($request->paramsPost()))->send();
-			return;
-
-		} else {
-			$response->json(array('authkey' => $server->daemon_secret));
-		}
-
-	}
-
-});
-
 $klein->respond('POST', '/auth/remote/install-progress', function($request, $response) use ($core) {
 
 	// Server is done Installing
@@ -454,5 +401,151 @@ $klein->respond('POST', '/auth/remote/install-progress', function($request, $res
 	))->dispatch($user->email, Settings::config()->company_name.' - New Server Added');
 
 	$response->code(204)->body("")->send();
+
+});
+
+$klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $response) use ($core) {
+
+	$deploy = ORM::forTable('autodeploy')->where('code', $request->param('key'))->where_gt('expires', time())->findOne();
+	if (!$deploy) {
+		$response->code(404)->body('404')->send();
+		return;
+	}
+
+	$node = ORM::forTable('nodes')->findOne($deploy->node);
+	if (!$node) {
+		$response->code(404)->body('404 Node')->send();
+		return;
+	}
+	// Check Access IP here
+
+	$script = "#!/bin/bash
+# PufferPanel Installer Script
+
+if [ \"$(id -u)\" != \"0\" ]; then
+   echo \"This script must be run as root!\" 1>&2
+   exit 1
+fi
+
+if [ \$SUDO_USER == \"\" ]; then
+	SUDO_USER=\"root\"
+fi
+
+RED=\$(tput setf 4)
+NORMAL=\$(tput sgr0)
+SSL_COUNTRY=\"US\"
+SSL_STATE=\"New-York\"
+SSL_LOCALITY=\"New-York\"
+SSL_ORG=\"PufferPanel\"
+SSL_ORG_NAME=\"SSL\"
+SSL_EMAIL=\"auto-generate@ssl.example.com\"
+SSL_COMMON=\"{$node->fqdn}\"
+SSL_PASSWORD=\"\"
+
+function checkResponseCode() {
+    if [ $? -ne 0 ]; then
+        echo \"\${RED}An error occured while installing, halting...\${NORMAL}\"
+        exit 1
+    fi
+}
+
+# Install NodeJS Dependencies
+curl -sL https://deb.nodesource.com/setup_4.x | bash -
+checkResponseCode
+
+# Install Other Dependencies
+apt-get update
+apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar
+checkResponseCode
+
+# Install Docker
+curl -sSL https://get.docker.com/ | sh
+checkResponseCode
+
+# Add your user to the docker group
+echo \"Configuring Docker for:\" \$SUDO_USER
+usermod -aG docker \$SUDO_USER
+checkResponseCode
+
+# Add the Scales User Group
+addgroup --system scalesuser
+checkResponseCode
+
+# Change the SFTP System
+sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
+checkResponseCode
+
+# Add Match Group to the End of the File
+echo -e \"Match group scalesuser\\n
+    ChrootDirectory %h\\n
+    X11Forwarding no\\n
+    AllowTcpForwarding no\\n
+    ForceCommand internal-sftp\" >> /etc/ssh/sshd_config
+checkResponseCode
+
+# Restart SSHD
+service ssh restart
+checkResponseCode
+
+# Ensure /srv exists
+mkdir /srv
+checkResponseCode
+
+# Clone the repository
+git clone https://github.com/PufferPanel/Scales /srv/scales
+checkResponseCode
+
+cd /srv/scales
+checkResponseCode
+
+# Checkout the Latest Version of Scales
+git checkout tags/\$(git describe --abbrev=0 --tags)
+checkResponseCode
+
+# Install the dependiencies for Scales to run.
+# This process may take a few minutes to complete.
+npm install
+checkResponseCode
+
+# Generate SSL Certificates
+openssl req -x509 -days 365 -newkey rsa:4096 -keyout https.key -out https.pem -nodes -passin pass:\$SSL_PASSWORD \
+    -subj \"/C=\$SSL_COUNTRY/ST=\$SSL_STATE/L=\$SSL_LOCALITY/O=\$SSL_ORG/OU=\$SSL_ORG_NAME/CN=\$SSL_COMMON/emailAddress=\$SSL_EMAIL\"
+checkResponseCode
+
+echo \"{\\n
+	\"listen\": {\\n
+		\"sftp\": {$node->daemon_sftp},\\n
+		\"rest\": {$node->daemon_listen},\\n
+		\"socket\": {$node->daemon_console},\\n
+		\"uploads\": {$node->daemon_upload}\\n
+	},\\n
+	\"urls\": {\\n
+		\"repo\": \"".Settings::config('master_url')."auth/remote/pack\",\\n
+		\"download\": \"".Settings::config('master_url')."auth/remote/download\",\\n
+		\"install\": \"".Settings::config('master_url')."auth/remote/install-progress\"\\n
+	},\\n
+	\"ssl\": {\\n
+		\"key\": \"https.key\",\\n
+		\"cert\": \"https.pem\"\\n
+	},\\n
+	\"basepath\": \"{$node->daemon_base_dir}\",\\n
+	\"keys\": [\\n
+		\"{$node->daemon_secret}\"\\n
+	],\\n
+	\"upload_maxfilesize\": 100000000\\n
+}\" > config.json
+checkResponseCode
+
+npm start
+checkResponseCode
+
+echo \"Successfully Installed Scales\"
+exit 0
+";
+
+	$response->header('Content-Type', 'text/plain');
+	$response->body($script);
+	$response->send();
+	return;
 
 });
