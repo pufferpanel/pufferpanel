@@ -274,6 +274,11 @@
 				<form action="{{ server.id }}/delete" id="deleteCheckpoint" method="POST">
 					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Server" />
 				</form>
+				<hr />
+				<div class="alert alert-danger">Force deleting a server will remove it from the panel even if an error is returned by the Scales process. We do not suggest using this method to remove a server from the panel. <strong>The server and its related data may continue to exist on the Scales isntance and the panel will no longer be able to control it.</strong></div>
+				<form action="{{ server.id }}/delete/force" id="forceDeleteCheckpoint" method="POST">
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Force Delete this Server" />
+				</form>
 		</div>
 	</div>
 </div>
@@ -297,10 +302,16 @@
 		});
 		$("form#deleteCheckpoint").submit(function(e) {
 			e.preventDefault();
-			if(confirm("STOP! Are you absolutely positive that you want to delete this server. ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
+			if(confirm("STOP! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
 				$("#deleteCheckpoint").unbind('submit').submit();
 			}
 		});
+		$("form#forceDeleteCheckpoint").submit(function(e) {
+			e.preventDefault();
+			if(confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the Scales instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE SCALES INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")){
+				$("#forceDeleteCheckpoint").unbind('submit').submit();
+			}
+		})
 		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 		$("#reset_token").click(function(e){
 			e.preventDefault();

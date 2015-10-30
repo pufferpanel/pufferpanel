@@ -82,7 +82,7 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
 
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $response, $service) use ($core) {
+$klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($request, $response, $service) use ($core) {
 
 	// Start Transaction so if the daemon errors we can rollback changes
 	ORM::get_db()->beginTransaction();
@@ -124,8 +124,18 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete', function($request, $
 	} catch(Exception $e) {
 
 		Debugger::log($e);
-		ORM::get_db()->rollBack();
 
+		if ($request->param('force') && $request->param('force') === "force") {
+
+			ORM::get_db()->commit();
+
+			$service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system. <strong>Because you requested a force delete this server has been removed from the panel regardless of the reason for the error. This server and its data may still exist on the Scales instance.</strong></div>');
+			$response->redirect('/admin/server')->send();
+			return;
+
+		}
+
+		ORM::get_db()->rollBack();
 		$service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
 		$response->redirect('/admin/server/view/'.$request->param('id').'?tab=delete')->send();
 		return;
