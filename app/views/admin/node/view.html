@@ -168,6 +168,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Auto-Deploy Node</div>
 				<div class="panel-body">
+					<p>Auto-Deployment has been tested on the following systems: <code>Ubuntu 14.04 x64</code>, <code>Ubuntu 15.10 x64</code>, and <code>Debian 8.1 x64</code>. Some systems may require that you run the following command before running the command below: <code>apt-get install -y sudo curl</code>.</p>
 					{% if autodeploy == false %}
 						<p>Node Auto-Deployment allows you to run one quick command on your new node to install Scales and set it up immediately. Press the button below to generate a temporary token that will allow you to perform this action.<p>
 						<form action="{{ node.id }}/generate-autodeploy" method="POST">
