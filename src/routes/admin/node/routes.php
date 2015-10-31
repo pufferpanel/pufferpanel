@@ -301,14 +301,6 @@ $klein->respond('POST', '/admin/node/locations/[:shortcode]/edit', function($req
 
 	}
 
-	$nodes = ORM::forTable('nodes')->where('location', $location->short)->findMany();
-	foreach($nodes as $node) {
-
-		$node->location = $request->param('location-short');
-		$node->save();
-
-	}
-
 	$location->short = $request->param('location-short');
 	$location->long = $request->param('location-long');
 	$location->save();
@@ -336,6 +328,7 @@ $klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, 
 		array(
 			'flash' => $service->flashes(),
 			'node' => $node,
+			'locations' => ORM::forTable('locations')->findMany(),
 			'portlisting' => json_decode($node->ports, true),
 			'autodeploy' => ORM::forTable('autodeploy')->where('node', $request->param('id'))->where_gt('expires', time())->findOne()
 		)
@@ -362,10 +355,12 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
 	}
 
 
+	$location = ORM::forTable('locations')->select('id')->findOne($request->param('location'));
 	$node = ORM::forTable('nodes')->findOne($request->param('id'));
-	if($node) {
+	if($node && $location) {
 
 		$node->name = $request->param('name');
+		$node->location = $location->id;
 		$node->fqdn = $request->param('fqdn');
 		$node->save();
 
@@ -374,7 +369,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
 
 	} else {
 
-		$service->flash('<div class="alert alert-danger">The requested node does not exist in the system.</div>');
+		$service->flash('<div class="alert alert-danger">The requested node or location does not exist in the system.</div>');
 		$response->redirect('/admin/node')->send();
 
 	}

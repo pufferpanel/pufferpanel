@@ -25,24 +25,38 @@
 			<h3>Basic Information</h3><hr />
 			<form action="{{ node.id }}/settings" method="post">
 				<fieldset>
-					<div class="form-group">
-						<label for="name" class="control-label">Node Name</label>
-						<div>
-							<input type="text" name="name" value="{{ node.name }}" class="form-control" />
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="name" class="control-label">Node Name</label>
+							<div>
+								<input type="text" name="name" value="{{ node.name }}" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="location" class="control-label">Location</label>
+							<div>
+								<select name="location" class="form-control">
+									{% for location in locations %}
+										<option value="{{ location.id }}" {% if location.id == node.location %}selected="selected"{% endif %}>{{ location.long }}</option>
+									{% endfor %}
+								</select>
+							</div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="ip" class="control-label">Node FQDN</label>
-						<div>
-							<input type="text" name="fqdn" value="{{ node.fqdn }}" class="form-control" />
-							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="ip" class="control-label">Node FQDN</label>
+							<div>
+								<input type="text" name="fqdn" value="{{ node.fqdn }}" class="form-control" />
+								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
-						<div>
-							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
-							<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
+						<div class="form-group col-md-6">
+							<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
+							<div>
+								<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
+								<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
+							</div>
 						</div>
 					</div>
 					<div class="form-group">
