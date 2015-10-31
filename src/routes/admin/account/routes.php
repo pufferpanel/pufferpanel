@@ -139,7 +139,7 @@ $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $respons
 
 });
 
-$klein->respond('POST', '/admin/account/view/[i:id]/[:action]', function($request, $response, $service) use ($core) {
+$klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
@@ -149,53 +149,109 @@ $klein->respond('POST', '/admin/account/view/[i:id]/[:action]', function($reques
 
 	}
 
-	if($request->param('action') == 'update') {
+	if(!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
 
-		if(!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
-
-			$service->flash('<div class="alert alert-danger">The email provided was not valid.</div>');
-			$response->redirect('/admin/account/view/'.$request->param('id'))->send();
-			return;
-
-		}
-
-		$user = ORM::forTable('users')->findOne($request->param('id'));
-		$user->set(array(
-			'email' => $request->param('email'),
-			'root_admin' => $request->param('root_admin')
-		));
-		$user->save();
-
-		$service->flash('<div class="alert alert-success">Account has been updated.</div>');
+		$service->flash('<div class="alert alert-danger">The email provided was not valid.</div>');
 		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		return;
 
 	}
 
-	if($request->param('action') == 'password') {
+	$user = ORM::forTable('users')->findOne($request->param('id'));
+	$user->set(array(
+		'email' => $request->param('email'),
+		'root_admin' => $request->param('root_admin')
+	));
+	$user->save();
 
-		$user = ORM::forTable('users')->findOne($request->param('id'));
-		$user->password = $core->auth->hash($request->param('pass'));
+	$service->flash('<div class="alert alert-success">Account has been updated.</div>');
+	$response->redirect('/admin/account/view/'.$request->param('id'))->send();
 
-			if($request->param('email_user')) {
+});
 
-				$core->email->buildEmail('new_password_admin', array(
-					'NEW_PASS' => $request->param('pass'),
-					'EMAIL' => $user->email
-				))->dispatch($user->email, Settings::config()->company_name.' - An Admin has Reset Your Password');
+$klein->respond('POST', '/admin/account/view/[i:id]/password', function($request, $response, $service) use ($core) {
 
-			}
+	if(!$core->user->rebuildData($request->param('id'))) {
 
-			if($request->param('clear_session')) {
+		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
+		$response->redirect('/admin/account')->send();
+		return;
 
-				$user->session_id = null;
-				$user->session_ip = null;
+	}
 
-			}
+	$user = ORM::forTable('users')->findOne($request->param('id'));
+	$user->password = $core->auth->hash($request->param('pass'));
 
-		$user->save();
+		if($request->param('email_user')) {
 
-		$service->flash('<div class="alert alert-success">Account password has been updated.</div>');
+			$core->email->buildEmail('new_password_admin', array(
+				'NEW_PASS' => $request->param('pass'),
+				'EMAIL' => $user->email
+			))->dispatch($user->email, Settings::config()->company_name.' - An Admin has Reset Your Password');
+
+		}
+
+		if($request->param('clear_session')) {
+
+			$user->session_id = null;
+			$user->session_ip = null;
+
+		}
+
+	$user->save();
+
+	$service->flash('<div class="alert alert-success">Account password has been updated.</div>');
+	$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+
+});
+
+$klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, $response, $service) use ($core) {
+
+	if(!$core->user->rebuildData($request->param('id'))) {
+
+		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
+		$response->redirect('/admin/account')->send();
+		return;
+
+	}
+
+	$user = ORM::forTable('users')->findOne($request->param('id'));
+
+	if($user->root_admin > 0) {
+		$service->flash('<div class="alert alert-danger">Root administrator accounts cannot be deleted through the panel, they must be manually removed from the database.</div>');
 		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		return;
+	}
+
+	if(ORM::forTable('servers')->where('owner_id', $user->id)->count() > 0) {
+		$service->flash('<div class="alert alert-danger">You may not delete users who have a server associated with their account.</div>');
+		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		return;
+	}
+
+	ORM::get_db()->beginTransaction();
+
+	try {
+
+		ORM::forTable('permissions')->where('user', $user->id)->deleteMany();
+		ORM::forTable('subusers')->where('user', $user->id)->deleteMany();
+		ORM::forTable('account_change')->where('user_id', $user->id)->deleteMany();
+		ORM::forTable('actions_log')->where('user', $user->id)->deleteMany();
+		$user->delete();
+
+		ORM::get_db()->commit();
+
+		$service->flash('<div class="alert alert-success">USer successfully deleted and all associated data was removed.</div>');
+		$response->redirect('/admin/account')->send();
+		return;
+
+	} catch (\Exception $e) {
+
+		ORM::get_db()->rollBack();
+
+		$service->flash('<div class="alert alert-danger">There was an error encountered with this MySQL request.</div>');
+		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		return;
 
 	}
 

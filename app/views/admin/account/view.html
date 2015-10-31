@@ -126,6 +126,13 @@
 			<button onclick="location.href='/admin/server/new?email={{ user.email }}';" class="btn btn-success btn-sm">Add New Server</button>
 		</div>
 	</div>
+	<div class="row" style="margin-top:20px;">
+		<div class="col-md-4">
+			<form action="{{ user.id }}/delete" method="post">
+				<input type="submit" action="submit" class="btn btn-sm btn-danger" value="Delete this User" />
+			</form>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
