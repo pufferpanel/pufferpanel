@@ -55,7 +55,7 @@ checkResponseCode
 
 # Install Other Dependencies
 echo "Installing some dependiencies. Please Wait... "
-(apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar > /dev/null 2>&1 || true) &
+(apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python > /dev/null 2>&1 || true) &
 spinner $!
 checkResponseCode
 
