@@ -408,7 +408,7 @@ $klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $respons
 
 	$deploy = ORM::forTable('autodeploy')->where('code', $request->param('key'))->where_gt('expires', time())->findOne();
 	if (!$deploy) {
-		$response->code(404)->body('404')->send();
+		$response->code(404)->body('echo "The requested URL does not exist."; exit 1')->send();
 		return;
 	}
 
@@ -419,132 +419,10 @@ $klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $respons
 	}
 	// Check Access IP here
 
-	$script = "#!/bin/bash
-# PufferPanel Installer Script
-
-if [ \"$(id -u)\" != \"0\" ]; then
-   echo \"This script must be run as root!\" 1>&2
-   exit 1
-fi
-
-if [ \$SUDO_USER == \"\" ]; then
-	SUDO_USER=\"root\"
-fi
-
-RED=\$(tput setf 4)
-NORMAL=\$(tput sgr0)
-SSL_COUNTRY=\"US\"
-SSL_STATE=\"New-York\"
-SSL_LOCALITY=\"New-York\"
-SSL_ORG=\"PufferPanel\"
-SSL_ORG_NAME=\"SSL\"
-SSL_EMAIL=\"auto-generate@ssl.example.com\"
-SSL_COMMON=\"{$node->fqdn}\"
-SSL_PASSWORD=\"\"
-
-function checkResponseCode() {
-    if [ $? -ne 0 ]; then
-        echo \"\${RED}An error occured while installing, halting...\${NORMAL}\"
-        exit 1
-    fi
-}
-
-# Install NodeJS Dependencies
-curl -sL https://deb.nodesource.com/setup_4.x | bash -
-checkResponseCode
-
-# Install Other Dependencies
-apt-get update
-apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar
-checkResponseCode
-
-# Install Docker
-curl -sSL https://get.docker.com/ | sh
-checkResponseCode
-
-# Add your user to the docker group
-echo \"Configuring Docker for:\" \$SUDO_USER
-usermod -aG docker \$SUDO_USER
-checkResponseCode
-
-# Add the Scales User Group
-addgroup --system scalesuser
-checkResponseCode
-
-# Change the SFTP System
-sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
-checkResponseCode
-
-# Add Match Group to the End of the File
-echo -e \"Match group scalesuser\\n
-    ChrootDirectory %h\\n
-    X11Forwarding no\\n
-    AllowTcpForwarding no\\n
-    ForceCommand internal-sftp\" >> /etc/ssh/sshd_config
-checkResponseCode
-
-# Restart SSHD
-service ssh restart
-checkResponseCode
-
-# Ensure /srv exists
-mkdir /srv
-checkResponseCode
-
-# Clone the repository
-git clone https://github.com/PufferPanel/Scales /srv/scales
-checkResponseCode
-
-cd /srv/scales
-checkResponseCode
-
-# Checkout the Latest Version of Scales
-git checkout tags/\$(git describe --abbrev=0 --tags)
-checkResponseCode
-
-# Install the dependiencies for Scales to run.
-# This process may take a few minutes to complete.
-npm install
-checkResponseCode
-
-# Generate SSL Certificates
-openssl req -x509 -days 365 -newkey rsa:4096 -keyout https.key -out https.pem -nodes -passin pass:\$SSL_PASSWORD \
-    -subj \"/C=\$SSL_COUNTRY/ST=\$SSL_STATE/L=\$SSL_LOCALITY/O=\$SSL_ORG/OU=\$SSL_ORG_NAME/CN=\$SSL_COMMON/emailAddress=\$SSL_EMAIL\"
-checkResponseCode
-
-echo \"{\\n
-	\"listen\": {\\n
-		\"sftp\": {$node->daemon_sftp},\\n
-		\"rest\": {$node->daemon_listen},\\n
-		\"socket\": {$node->daemon_console},\\n
-		\"uploads\": {$node->daemon_upload}\\n
-	},\\n
-	\"urls\": {\\n
-		\"repo\": \"".Settings::config('master_url')."auth/remote/pack\",\\n
-		\"download\": \"".Settings::config('master_url')."auth/remote/download\",\\n
-		\"install\": \"".Settings::config('master_url')."auth/remote/install-progress\"\\n
-	},\\n
-	\"ssl\": {\\n
-		\"key\": \"https.key\",\\n
-		\"cert\": \"https.pem\"\\n
-	},\\n
-	\"basepath\": \"{$node->daemon_base_dir}\",\\n
-	\"keys\": [\\n
-		\"{$node->daemon_secret}\"\\n
-	],\\n
-	\"upload_maxfilesize\": 100000000\\n
-}\" > config.json
-checkResponseCode
-
-npm start
-checkResponseCode
-
-echo \"Successfully Installed Scales\"
-exit 0
-";
-
 	$response->header('Content-Type', 'text/plain');
-	$response->body($script);
+	$response->body($core->twig->render('templates/auto-deploy.tpl', array(
+		'node' => $node
+	)));
 	$response->send();
 	return;
 

@@ -175,7 +175,7 @@
 						</form>
 					{% else %}
 						<div class="alert alert-info">Please SSH into this node and then run the command below to setup Scales. This script will auto-expire 15 minutes after creation.</div>
-						<pre><code>curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }} | sudo bash</code></pre>
+						<pre><code>curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }} | sudo bash -</code></pre>
 					{% endif %}
 				</div>
 			</div>
