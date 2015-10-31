@@ -180,6 +180,25 @@
 					{% endif %}
 				</div>
 			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">OVH Server Deployment (<a href="http://scales.pufferpanel.com/docs/switching-ovh-kernels" target="_blank">Official Documentation</a>)</div>
+				<div class="panel-body">
+					<div class="alert alert-warning">This documentation is only for users running OVH kernels. You can check if this is the case by running <code>uname -r</code>. If it ends with <code>-grsec-xxxx-grs-ipv6-64</code> or similar it is probably an OVH kernel. Standard Ubuntu Kernels look like <code>3.13.0-37-generic</code>.</div>
+					<p>OVH default kernels are shipped without support for virtualization solutions such as Docker, KVM, Xen, etc. This makes it rather problematic to try and use Scales on these machines because we leverage Docker instances to run servers, and these instances rely on cgroup which helps limit CPU and IO usage. <strong>Run the commands below before you run the auto-deploy script to get Scales to work properly.</strong></p>
+					<pre># Install standard Ubuntu Kernel
+sudo apt-get install linux-image-server
+
+# Change the Boot Order
+sudo mv /etc/grub.d/06_OVHkernel /etc/grub.d/25_OVHkernel
+
+# Update Grub
+sudo update-grub
+
+# Restart the Server
+sudo shutdown -r now</pre>
+					<p><br />If the above commands worked, <code>uname -r</code> should output something ending with <code>-generic</code> rather than <code>-grsec-xxxx-grs-ipv6-64</code>.</p>
+				</div>
+			</div>
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Node</h3><hr />
