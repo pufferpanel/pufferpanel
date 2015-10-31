@@ -16,6 +16,7 @@
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
+		<li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
 	</ul><br />
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
@@ -102,6 +103,119 @@
 						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane" id="remote">
+			<h3>Remote Connection Information</h3>
+			<p>Remote connections allows you to optionally control your server from outside of the panel. Using this feature you can create custom scripts to start or stop your server at specified times, or even track server information on another site.</p>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Connection Information</h3>
+				</div>
+				<div class="panel-body">
+					<div class="alert alert-info">This is still a work in progress, and as such it is not neccessarily fully documented.</div>
+					<table class="table table-hover" style="margin-bottom:0;">
+						<tr>
+							<td style="border-top:0;">Connection Base</td>
+							<td style="border-top:0;">https://{{ node.fqdn }}:{{ node.daemon_listen }}/</td>
+						</tr>
+						<tr>
+							<td>X-Access-Server</td>
+							<td><code>{{ server.hash }}</code></td>
+						</tr>
+						<tr>
+							<td>X-Access-Token</td>
+							<td><code>{{ server.daemon_secret }}</code></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Connection Endpoints</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-hover" style="margin-bottom:0;">
+						<thead>
+							<tr>
+								<th>Action</th>
+								<th>Method</th>
+								<th>Endpoint</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Basic Server Information</td>
+								<td><code>GET</code></td>
+								<td><code>/server</code></td>
+								<td><a href="http://scales.pufferpanel.com/docs/server" target="_blank"><i class="fa fa-link"></i></a></td>
+							</tr>
+							<tr>
+								<td>Get Last Lines of Console</td>
+								<td><code>GET</code></td>
+								<td><code>/server/log/:lines</code></td>
+								<td><a href="http://scales.pufferpanel.com/docs/serverloglines" target="_blank"><i class="fa fa-link"></i></a></td>
+							</tr>
+							{% if permission.has('console.power') %}
+								<tr>
+									<td>Control Server Power</td>
+									<td><code>GET</code></td>
+									<td><code>/server/power/(start|stop|restart|kill)</code></td>
+									<td><a href="http://scales.pufferpanel.com/docs/serverpowerstatus" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('console.commands') %}
+								<tr>
+									<td>Send Console Commands</td>
+									<td><code>POST</code></td>
+									<td><code>/server/console</code></td>
+									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('files.view') %}
+								<tr>
+									<td>View Server Files</td>
+									<td><code>GET</code></td>
+									<td><code>/server/directory/:directory</code></td>
+									<td><a href="http://scales.pufferpanel.com/docs/serverdirectorydirectory" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('files.edit') %}
+								<tr>
+									<td>Edit Server File</td>
+									<td><code>GET</code></td>
+									<td><code>/server/file/:file</code></td>
+									<td><a href="http://scales.pufferpanel.com/docs/serverfilefile" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('files.save') %}
+								<tr>
+									<td>Save Server File</td>
+									<td><code>PUT</code></td>
+									<td><code>/server/file/:file</code></td>
+									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('files.delete') %}
+								<tr>
+									<td>Delete Server File</td>
+									<td><code>DELETE</code></td>
+									<td><code>/server/file/:file</code></td>
+									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+							{% if permission.has('manage.ftp.password') %}
+								<tr>
+									<td>Change SFTP Password</td>
+									<td><code>POST</code></td>
+									<td><code>/server/reset-password</code></td>
+									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
+								</tr>
+							{% endif %}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
