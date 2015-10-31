@@ -29,9 +29,10 @@
 					}
 				});
 				{% if (node is defined) and (server is defined) %}
-					var socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
-					var notifySocketError = false;
+					var socket;
 					$(window).load(function() {
+						socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
+						var notifySocketError = false;
 						socket.io.on('connect_error', function(err) {
 							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": "#FF9900"});
 							if(typeof notifySocketError !== 'object') {
