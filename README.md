@@ -5,10 +5,10 @@ Yo, where's all the activity at!? Great question, check out the [Kraken](https:/
 ##Need help? Feature Requests? Please read our [Documentation](http://www.pufferpanel.com/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
 
 #What is PufferPanel?
-PufferPanel is a web-based Game Server Management System created by players for players. PufferPanel allows you to manage multiple different game servers all from one central location, and give other users their own servers, or access to your own servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
+PufferPanel is a web-based Game Server Management System. PufferPanel allows you to manage multiple different game servers all from one central location. You can give other users their own servers or allow them access to your servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
 
 #Open Source
-PufferPanel has been and will always be committed to being free and open-source software. All of our projects are available on our Github Account and we welcome any user to submit ideas or code. Being licensed under a GPL-v3 license means that you are welcome to runs PufferPanel in a commercial (for-profit) environment or make any changes to the system that you see fit.
+PufferPanel has been and will always be committed to being free and open-source software. All of our projects are available on our GitHub Account and we welcome any user to submit ideas or code. Being licensed under a GPL-v3 license means that you are welcome to runs PufferPanel in a commercial (for-profit) environment or make any changes to the system that you see fit.
 
 #Why Create PufferPanel
 We set out to create PufferPanel to fill a hole in the Game Server industry. There are very few free and open-source game management panels out there, and we wanted to be the best. There are many users who simply cannot afford to shell out money on expensive management panels just to run a few personal servers, or want to use a system that restricts them from making modifications to suit their needs. PufferPanel changes all of this by providing a simple interface that can support multiple game types and keeps things simple and non-bloated.
