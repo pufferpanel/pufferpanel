@@ -284,15 +284,15 @@ $klein->respond('GET', '/admin/node/locations/[:shortcode]/delete', function($re
 
 $klein->respond('POST', '/admin/node/locations/[:shortcode]/edit', function($request, $response, $service) use($core) {
 
-	if(!preg_match('/^[\w-]{1,10}$/', $request->param('shortcode'))) {
+	if(!preg_match('/^[\w-]{1,10}$/', $request->param('location-short'))) {
 
-		$service->flash('<div class="alert alert-danger">Location shotcode must be between 1 and 10 characters, and not contain any special characters.</div>');
+		$service->flash('<div class="alert alert-danger">Location shortcode must be between 1 and 10 characters, and not contain any special characters.</div>');
 		$response->redirect('/admin/node/locations')->send();
 		return;
 
 	}
 
-	$location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+	$location = ORM::forTable('locations')->where('short', $request->param('location-short'))->findOne();
 	if(!$location) {
 
 		$service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
