@@ -81,7 +81,7 @@ CREATE TABLE `account_change` (
   CONSTRAINT `FK_account_change_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `autodeploy`
+DROP TABLE IF EXISTS `autodeploy`;
 CREATE TABLE `autodeploy` (
   `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
   `node` mediumint(10) unsigned NOT NULL,
