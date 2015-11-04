@@ -182,7 +182,6 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Auto-Deploy Node</div>
 				<div class="panel-body">
-					<p>Auto-Deployment has been tested on the following systems: <code>Ubuntu 14.04 x64</code>, <code>Ubuntu 15.10 x64</code>, and <code>Debian 8.1 x64</code>. Some systems may require that you run the following command before running the command below: <code>apt-get install -y sudo curl</code>.</p>
 					{% if autodeploy == false %}
 						<p>Node Auto-Deployment allows you to run one quick command on your new node to install Scales and set it up immediately. Press the button below to generate a temporary token that will allow you to perform this action.<p>
 						<form action="{{ node.id }}/generate-autodeploy" method="POST">
@@ -190,7 +189,34 @@
 						</form>
 					{% else %}
 						<div class="alert alert-info">Please SSH into this node and then run the command below to setup Scales. This script will auto-expire 15 minutes after creation.</div>
-						<pre><code>curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }} | sudo bash -</code></pre>
+						<pre><code>sudo bash < <(curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }})</code></pre>
+						<p style="margin-top:20px;">This automatical deploy script has been tested on the systems below using DigitalOcean containers, if your OS is not listed then it probably is not supported. If there is a pre-run command listed it must be run before running the command above.</p>
+						<table class="table table-hover" style="margin-bottom:0;">
+							<thead>
+								<tr>
+									<th>Operating System</th>
+									<th>Pre-Run Command</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Ubuntu 14.04 (x64)</td>
+									<td>n/a</td>
+								</tr>
+								<tr>
+									<td>Ubuntu 15.10 (x64)</td>
+									<td><code>apt-get install curl</code></td>
+								</tr>
+								<tr>
+									<td>Debian 8.2 (x64)</td>
+									<td><code>apt-get install sudo curl</code></td>
+								</tr>
+								<tr>
+									<td>CentOS 7.1 (x64)</td>
+									<td>n/a</td>
+								</tr>
+							</tbody>
+						</table>
 					{% endif %}
 				</div>
 			</div>

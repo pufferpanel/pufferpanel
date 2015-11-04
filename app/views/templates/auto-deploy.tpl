@@ -1,18 +1,36 @@
 #!/bin/bash
 # PufferPanel Installer Script
 
+export DEBIAN_FRONTEND=noninteractive
+
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root!" 1>&2
    exit 1
 fi
 
-if [ $SUDO_USER == "" ]; then
+if [ "$SUDO_USER" == "" ]; then
 	SUDO_USER="root"
 fi
 
-DEBIAN_FRONTEND=noninteractive
-RED=$(tput setf 4)
-NORMAL=$(tput sgr0)
+RED="\e[31m"
+NORMAL="\e[0m"
+
+if type apt-get &> /dev/null; then
+    if [[ -f /etc/debian_version || -f /etc/redhat-release ]]; then
+        echo -e "System detected as some variant of Ubuntu/Redhat or Debian."
+        OS_INSTALL_CMD="apt-get"
+    else
+        echo -e "${RED}This OS does not appear to be supported by this program!${NORMAL}"
+        exit 1
+    fi
+elif type yum &> /dev/null; then
+    echo -e "System detected as CentOS variant."
+    OS_INSTALL_CMD="yum"
+else
+    echo -e "${RED}This OS does not appear to be supported by this program, or apt-get/yum is not installed!${NORMAL}"
+    exit 1
+fi
+
 SSL_COUNTRY="US"
 SSL_STATE="New-York"
 SSL_LOCALITY="New-York"
@@ -24,29 +42,17 @@ SSL_PASSWORD=""
 
 function checkResponseCode() {
     if [ $? -ne 0 ]; then
-        echo "${RED}An error occured while installing, removing docker and halting...${NORMAL}"
-        apt-get autoremove --purge docker-engine
-        rm -rf /var/lib/docker
+        echo -e "${RED}An error occured while installing, halting...${NORMAL}"
         exit 1
     fi
 }
 
-function spinner() {
-    local pid=$1
-    local delay=0.1
-    local spinstr='|/-\'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-        local temp=${spinstr#?}
-        printf "%c" "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
-}
-
 # Install NodeJS Dependencies
-curl -sL https://deb.nodesource.com/setup_4.x | bash -
+if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+    curl -sL https://deb.nodesource.com/setup_4.x | bash -
+else
+    curl -sL https://rpm.nodesource.com/setup_4.x | bash -
+fi
 checkResponseCode
 
 # Install Docker
@@ -54,9 +60,12 @@ curl -sSL https://get.docker.com/ | sh
 checkResponseCode
 
 # Install Other Dependencies
-echo "Installing some dependiencies. Please Wait... "
-(apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python > /dev/null 2>&1 || true) &
-spinner $!
+echo "Installing some dependiencies."
+if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+    apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python
+else
+    yum -y install openssl curl git make gcc-c++ nodejs openjdk-7-jdk tar python
+fi
 checkResponseCode
 
 # Add your user to the docker group
@@ -65,7 +74,7 @@ usermod -aG docker $SUDO_USER
 checkResponseCode
 
 # Add the Scales User Group
-addgroup --system scalesuser
+groupadd --system scalesuser
 checkResponseCode
 
 # Change the SFTP System
@@ -81,7 +90,11 @@ echo -e "Match group scalesuser
 checkResponseCode
 
 # Restart SSHD
-service ssh restart
+if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+    service ssh restart
+else
+    service sshd restart
+fi
 checkResponseCode
 
 # Ensure /srv exists
@@ -100,7 +113,6 @@ git checkout tags/$(git describe --abbrev=0 --tags)
 checkResponseCode
 
 # Install the dependiencies for Scales to run.
-# This process may take a few minutes to complete.
 npm install
 checkResponseCode
 
