@@ -101,7 +101,7 @@ try {
 				('use_api', 0),
 				('allow_subusers', 0)");
 
-    $params['siteUrl'] = preg_replace("(^https?:\/\/)", "", $param['siteUrl']);
+    $params['siteUrl'] = preg_replace("(^https?:\/\/)", "", $params['siteUrl']);
 	$query->execute(array(
 		':cname' => $params['companyName'],
 		':murl' => 'http://' . $params['siteUrl'] . '/',
