@@ -64,7 +64,7 @@ echo "Installing some dependiencies."
 if [ $OS_INSTALL_CMD == 'apt-get' ]; then
     apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python
 else
-    yum -y install openssl curl git make gcc-c++ nodejs openjdk-7-jdk tar python
+    yum -y install openssl curl git make gcc-c++ nodejs java-1.8.0-openjdk-devel tar python
 fi
 checkResponseCode
 
