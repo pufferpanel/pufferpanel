@@ -360,7 +360,7 @@
 				alert(data);
 			}).fail(function (jqXHR, textStatus) {
 				console.error(jqXHR);
-				alert('An error occured while attempting to process this request. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
+				alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your Scales error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
 			});
 		});
 		$('#reinstallServer').click(function (event) {
