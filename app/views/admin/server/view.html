@@ -286,12 +286,12 @@
 
 {% block javascript %}
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function() {
 		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
 		socket.io.on('connect_error', function(err) {
 			$("#socket_error:hidden").show();
 		});
-		socket.on('connect', function (){
+		socket.on('connect', function () {
 			$("#socket_error:visible").hide();
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
