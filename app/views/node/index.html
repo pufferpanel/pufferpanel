@@ -266,7 +266,11 @@
 			}
 		});
 		socket.on('console', function (data) {
-			$("#live_console").val($("#live_console").val() + data.line);
+			var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
+			if (total.length > 750) {
+				total = total.slice(total.length - 750);
+			}
+			$("#live_console").val(total.join("\n"));
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
 		socket.on('initial_status', function(data) {
