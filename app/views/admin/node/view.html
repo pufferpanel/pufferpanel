@@ -190,7 +190,7 @@
 					{% else %}
 						<div class="alert alert-info">Please SSH into this node and then run the command below to setup Scales. This script will auto-expire 15 minutes after creation.</div>
 						<pre><code>sudo bash -c 'source <(curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }})'</code></pre>
-						<p style="margin-top:20px;">This automatical deploy script has been tested on the systems below using DigitalOcean containers, if your OS is not listed then it probably is not supported. If there is a pre-run command listed it must be run before running the command above.</p>
+						<p style="margin-top:20px;">This automatic deploy script has been tested on the systems below. If your OS is not listed then it probably is not (officially) supported. If there is a pre-run command listed it must be run before running the command above.</p>
 						<table class="table table-hover" style="margin-bottom:0;">
 							<thead>
 								<tr>
