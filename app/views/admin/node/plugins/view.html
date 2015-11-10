@@ -15,7 +15,7 @@
 	{% endif %}
 	<h3>Viewing Plugin: {{ plugin.name}}</h3>
 	<p>{{ plugin.description|raw }}</p>
-	<p>This plugin refers to a file called <code>{{ plugin.slug }}.js</code> in the <code>plugins/</code> folder of Scales instances on nodes.</p>
+	<p>This plugin refers to a file called <code>main.js</code> in the <code>lib/plugins/{{ plugin.slug }}</code> folder of Scales instances on nodes.</p>
 	<h3>Default Startup Command</h3>
 	<pre><code>{{ plugin.default_startup }}</code></pre>
 	<h3>Variables</h3>
