@@ -3,10 +3,14 @@
 	<div>
 		<select name="server_ip" id="server_ip" class="form-control">
 		{% set no_free = true %}
+		{% set selected = false %}
+		{% set selected_ip = "" %}
 		{% for ip, internal in node.ips %}
 			{% if internal.ports_free > 0 %}
 				{% set no_free = false %}
-				<option value="{{ ip }}">{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
+				<option value="{{ ip }}" {% if selected == false %}selected="selected"{% endif %}>{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
+				{% set selected = true %}
+				{% set selected_ip = ip %}
 			{% else %}
 				<option value="{{ ip }}">{{ ip }} (No Ports Avaliable)</option>
 			{% endif %}
@@ -18,7 +22,7 @@
 	<label for="server_ip" class="control-label">Server Port</label>
 	<div>
 	{% for ip, internal in node.ports %}
-		<select name="server_port" class="form-control" id="node_{{ ip }}" {% if not loop.first %}style="display:none;" disabled="disabled"{% endif %}>
+		<select name="server_port" class="form-control" id="node_{{ ip }}" {% if selected_ip != ip %}style="display:none;" disabled="disabled"{% endif %}>
 		{% for port, avaliable in internal %}
 			{% if avaliable == 1 %}
 				<option value="{{ port }}">{{ port }}</option>
