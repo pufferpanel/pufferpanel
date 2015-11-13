@@ -12,20 +12,28 @@ if [ "$SUDO_USER" == "" ]; then
 	SUDO_USER="root"
 fi
 
-RED="\e[31m"
-NORMAL="\e[0m"
+RED=$(tput setf 4)
+GREEN=$(tput setf 2)
+NORMAL=$(tput sgr0)
+BOLD=$(tput bold)
 KERNEL=$(uname -r)
 
-echo -e "${red}[!!] STOP - READ THIS BEFORE CONTINUING [!!]${normal}"
+echo -e "${RED}${BOLD}[!!] STOP - READ THIS BEFORE CONTINUING [!!]${NORMAL}"
 echo -e "THIS SOFTWARE DOES NOT AND WILL NOT RUN PROPERLY ON NON-STANDARD UNIX KERNELS. PLEASE ENSURE THAT THE OUTPUT BELOW IS VALID."
 echo -e ""
-echo -e "Kernel Version: ${KERNEL}"
+echo -e "${BOLD}${GREEN}Kernel Version: ${KERNEL}${NORMAL}"
 echo -e ""
-echo -e "If this looks anything like '-grsec-xxxx-grs-ipv6-64' then it is probably a non-standard kernel. Standard kernels appear as '3.13.0-37-generic' or similar. Documentation for updating your kernel can be found at: http://scales.pufferpanel.com/docs/switching-ovh-kernels"
-echo -e ""
-echo -e "THIS SOFTWARE REQUIRES A KERNEL VERSION OF AT LEAST 3.10."
-echo -e "Software install will continue in 30 seconds. Press CTRL+C to quit."
-sleep 30
+echo -e "If this looks anything like '-grsec-xxxx-grs-ipv6-64' then it is probably a non-standard kernel. Standard kernels appear as '3.13.0-37-generic' or similar and should be at least version 3.10 or higher. Documentation for updating your kernel can be found at: http://scales.pufferpanel.com/docs/switching-ovh-kernels"
+echo
+read -r -p "I have read the above and confirmed that my kernel is a.) standard and b.) of a high enough version [y/N]: " response
+case $response in
+    [yY][eE][sS]|[yY])
+        true
+        ;;
+    *)
+        exit 1
+        ;;
+esac
 
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version || -f /etc/redhat-release ]]; then
