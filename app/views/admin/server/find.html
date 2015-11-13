@@ -26,13 +26,13 @@
 			</thead>
 			<tbody>
 				{% for server in servers %}
-					<tr>
+					<tr class="dynUpdate" id="{{ server.hash }}">
 						<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
 						<td><a href="server/view/{{ server.id }}">{{ server.name }}</a></td>
 						<td><a href="/admin/node/view/{{ server.node }}">{{ server.node_name }}</a></td>
-						<td>{{ server.server_ip }}:{{ server.server_port }}</td>
+						<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
 						<td><a href="/admin/account/view/{{ server.owner_id }}">{{ server.user_email }}</a></td>
-						<td style="text-align:center;">{% if server.active == 1 %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
+						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -41,6 +41,25 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
+	function updateServerStatus() {
+		$(".dynUpdate").each(function(index, data){
+			var element = $(this);
+			var connection = element.attr("id");
+			element.find(".applyUpdate").removeClass("fa-check-circle fa-times-circle").css({color: "#000"});
+			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
+			$.ajax({
+				type: "POST",
+				url: "/ajax/status",
+				data: { server: connection }
+			}).done(function(data) {
+				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+				var selector = (data == "#53B30C") ? "fa-check-circle" : "fa-times-circle";
+				element.find(".applyUpdate").addClass(selector).css({"color": data});
+			});
+		});
+	}
+	updateServerStatus();
+	setInterval(updateServerStatus, 30000);
 	$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 });
 </script>

@@ -29,7 +29,7 @@
 					<td>{{ node.l_location }}</td>
 					<td>{{ node.fqdn }}</td>
 					<td>{{ node.ip }}</td>
-					<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
+					<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
 				</tr>
 			{% endfor %}
 		</tbody>
@@ -44,16 +44,20 @@
 		$(".dynUpdate").each(function() {
 			var connection = $(this).attr("id");
 			var element = $(this);
-			$(this).find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
+			element.find(".applyUpdate").removeClass("fa-check-circle fa-times-circle").css({color: "#000"});
+			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 			$.ajax({
 				type: "POST",
 				url: "/ajax/status/node",
 				data: { node: connection }
 			}).done(function(data) {
-				element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-				element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+				var selector = (data == "#53B30C") ? "fa-check-circle" : "fa-times-circle";
+				element.find(".applyUpdate").addClass(selector).css({"color": data});
 			});
 		});
+		updateServerStatus();
+		setInterval(updateServerStatus, 30000);
 	});
 </script>
 {% endblock %}

@@ -32,7 +32,7 @@
 						<td>{{ server.location }}</td>
 						<td>{{ server.node_name }}</td>
 						<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
-						<td style="width:26px;"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin"></i></td>
+						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -49,20 +49,21 @@ $(window).load(function() {
 		$(".dynUpdate").each(function(index, data){
 			var element = $(this);
 			var connection = element.attr("id");
-			if(element.find("#applyUpdate").hasClass("spin-light")){var c = {"color": "#fff"};} else {var c = {"color": "#000"};}
-			element.find("#applyUpdate").removeClass("fa-circle").css(c);
-			element.find("#applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
+			element.find(".applyUpdate").removeClass("fa-check-circle fa-times-circle").css({color: "#000"});
+			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 			$.ajax({
 				type: "POST",
 				url: "/ajax/status",
 				data: { server: connection }
 			}).done(function(data) {
-				element.find("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-				element.find("#applyUpdate").addClass("fa-circle").css({"color": data});
+				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+				var selector = (data == "#53B30C") ? "fa-check-circle" : "fa-times-circle";
+				element.find(".applyUpdate").addClass(selector).css({"color": data});
 			});
 		});
 	}
 	updateServerStatus();
+	setInterval(updateServerStatus, 30000);
 	$("#sidebar_links").find("a[href='/index']").addClass('active');
 });
 </script>

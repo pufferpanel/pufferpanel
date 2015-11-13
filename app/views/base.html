@@ -35,7 +35,7 @@
 						socket = io('{% block socketio_connect %}https://{{ node.fqdn }}:{{ node.daemon_console }}/server/{{ server.hash }}{% endblock %}', {'query': 'token={% block socketio_token %}{{ server.daemon_secret }}{% endblock %}'});
 						var notifySocketError = false;
 						socket.io.on('connect_error', function(err) {
-							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": "#FF9900"});
+							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-question-circle").css({"color": "#FF9900"});
 							if(typeof notifySocketError !== 'object') {
 								notifySocketError = $.notify({
 									message: 'We were unable to connect to the main Socket.IO server, \
@@ -57,15 +57,16 @@
 							}
 						});
 						socket.on('initial_status', function(data) {
-							var color = "#E33200";
+							var color = "#E33200", selector = "fa-times-circle";
 							if(data.status == 1) {
 								color = "#53B30C";
+								selector = "fa-check-circle";
 							}
-							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": color});
+							$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle").addClass(selector).css({"color": color});
 						});
 						socket.on('status', function(data) {
 							if(data.status != "crashed") {
-								var newStatus, color = "#E33200";
+								var newStatus, selector = "fa-times-circle", color = "#E33200";
 								switch(data.status) {
 									case 0:
 										newStatus = 'OFF';
@@ -73,6 +74,7 @@
 									case 1:
 										newStatus = 'ON';
 										color = "#53B30C";
+										selector = "fa-check-circle";
 										break;
 									case 2:
 										newStatus = 'STOPPING';
@@ -81,7 +83,7 @@
 										newStatus = 'STARTING';
 										break;
 								}
-								$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin").addClass("fa-circle").css({"color": color});
+								$("#applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle").addClass(selector).css({"color": color});
 								$.notify({
 									message: 'This server\'s power status has changed to <strong>' + newStatus + '</strong>.'
 								}, {
