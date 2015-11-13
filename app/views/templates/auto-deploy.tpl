@@ -14,6 +14,18 @@ fi
 
 RED="\e[31m"
 NORMAL="\e[0m"
+KERNEL=$(uname -r)
+
+echo -e "${red}[!!] STOP - READ THIS BEFORE CONTINUING [!!]${normal}"
+echo -e "THIS SOFTWARE DOES NOT AND WILL NOT RUN PROPERLY ON NON-STANDARD UNIX KERNELS. PLEASE ENSURE THAT THE OUTPUT BELOW IS VALID."
+echo -e ""
+echo -e "Kernel Version: ${KERNEL}"
+echo -e ""
+echo -e "If this looks anything like '-grsec-xxxx-grs-ipv6-64' then it is probably a non-standard kernel. Standard kernels appear as '3.13.0-37-generic' or similar. Documentation for updating your kernel can be found at: http://scales.pufferpanel.com/docs/switching-ovh-kernels"
+echo -e ""
+echo -e "THIS SOFTWARE REQUIRES A KERNEL VERSION OF AT LEAST 3.10."
+echo -e "Software install will continue in 30 seconds. Press CTRL+C to quit."
+sleep 30
 
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version || -f /etc/redhat-release ]]; then
