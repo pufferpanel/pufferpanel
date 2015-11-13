@@ -117,8 +117,6 @@ CREATE TABLE `nodes` (
   `ip` varchar(45) NOT NULL,
   `daemon_secret` char(36) DEFAULT NULL,
   `daemon_listen` smallint(5) unsigned DEFAULT '5656',
-  `daemon_console` smallint(5) unsigned DEFAULT '5657',
-  `daemon_upload` smallint(5) unsigned DEFAULT '5658',
   `daemon_sftp` smallint(5) unsigned DEFAULT '22',
   `daemon_base_dir` varchar(200) DEFAULT '/home/',
   `ips` mediumtext NOT NULL,

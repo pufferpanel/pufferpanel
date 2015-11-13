@@ -72,12 +72,9 @@
 			<pre id="node_daemon_config">{
 	"listen": {
 		"sftp": {{ node.daemon_sftp }},
-		"rest": {{ node.daemon_listen }},
-		"socket": {{ node.daemon_console }},
-		"uploads": {{ node.daemon_upload }}
+		"rest": {{ node.daemon_listen }}
 	},
 	"urls": {
-		"repo": "{{ settings.master_url }}auth/remote/pack",
 		"download": "{{ settings.master_url }}auth/remote/download",
 		"install": "{{ settings.master_url }}auth/remote/install-progress"
 	},
@@ -298,12 +295,9 @@ $(window).load(function(){
 					$("#node_daemon_config").text('{ \n\
 	"listen": { \n\
 		"sftp": {{ node.daemon_sftp }}, \n\
-		"rest": {{ node.daemon_listen }}, \n\
-		"socket": {{ node.daemon_console }}, \n\
-		"uploads": {{ node.daemon_upload }} \n\
+		"rest": {{ node.daemon_listen }} \n\
 	}, \n\
 	"urls": { \n\
-		"repo": "{{ settings.master_url }}auth/remote/pack", \n\
 		"download": "{{ settings.master_url }}auth/remote/download", \n\
 		"install": "{{ settings.master_url }}auth/remote/install-progress" \n\
 	}, \n\

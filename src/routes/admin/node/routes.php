@@ -58,8 +58,6 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 	if(
 		!is_numeric($request->param('daemon_listen')) ||
-		!is_numeric($request->param('daemon_console')) ||
-		!is_numeric($request->param('daemon_upload')) ||
 		!is_numeric($request->param('daemon_sftp')) ||
 		!is_numeric($request->param('allocate_memory')) ||
 		!is_numeric($request->param('allocate_disk'))
@@ -174,8 +172,6 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		'ip' => $request->param('ip'),
 		'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
 		'daemon_listen' => $request->param('daemon_listen'),
-		'daemon_console' => $request->param('daemon_console'),
-		'daemon_upload' => $request->param('daemon_upload'),
 		'daemon_sftp' => $request->param('daemon_sftp'),
 		'daemon_base_dir' => $request->param('daemon_base_dir'),
 		'ips' => json_encode($IPA),

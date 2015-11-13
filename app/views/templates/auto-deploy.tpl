@@ -144,12 +144,9 @@ checkResponseCode
 echo '{
 	"listen": {
 		"sftp": {{ node.daemon_sftp }},
-		"rest": {{ node.daemon_listen }},
-		"socket": {{ node.daemon_console }},
-		"uploads": {{ node.daemon_upload }}
+		"rest": {{ node.daemon_listen }}
 	},
 	"urls": {
-		"repo": "{{ settings.master_url }}auth/remote/pack",
 		"download": "{{ settings.master_url }}auth/remote/download",
 		"install": "{{ settings.master_url }}auth/remote/install-progress"
 	},

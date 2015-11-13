@@ -287,7 +287,7 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function() {
-		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_console }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
+		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
 		socket.io.on('connect_error', function(err) {
 			$("#socket_error:hidden").show();
 		});
