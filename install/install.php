@@ -96,9 +96,7 @@ try {
 				('captcha_pub',NULL),
 				('captcha_priv',NULL),
 				('default_language', 'en'),
-				('force_online', 0),
 				('https', 0),
-				('use_api', 0),
 				('allow_subusers', 0)");
 
     $params['siteUrl'] = preg_replace("(^https?:\/\/)", "", $params['siteUrl']);
