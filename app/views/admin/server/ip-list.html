@@ -8,7 +8,7 @@
 				{% set no_free = false %}
 				<option value="{{ ip }}">{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
 			{% else %}
-				<option disabled="disabled">{{ ip }} (No Ports Avaliable)</option>
+				<option value="{{ ip }}">{{ ip }} (No Ports Avaliable)</option>
 			{% endif %}
 		{% endfor%}
 		</select>
