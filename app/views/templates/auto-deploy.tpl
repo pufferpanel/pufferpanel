@@ -36,8 +36,8 @@ case $response in
 esac
 
 if type apt-get &> /dev/null; then
-    if [[ -f /etc/debian_version || -f /etc/redhat-release ]]; then
-        echo -e "System detected as some variant of Ubuntu/Redhat or Debian."
+    if [[ -f /etc/debian_version ]]; then
+        echo -e "System detected as some variant of Ubuntu or Debian."
         OS_INSTALL_CMD="apt-get"
     else
         echo -e "${RED}This OS does not appear to be supported by this program!${NORMAL}"
