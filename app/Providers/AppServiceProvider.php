@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace PufferPanel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

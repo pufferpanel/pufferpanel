@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace PufferPanel\Events;
 
 abstract class Event
 {

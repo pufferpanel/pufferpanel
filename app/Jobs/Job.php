@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace PufferPanel\Jobs;
 
 use Illuminate\Bus\Queueable;
 
