@@ -9,8 +9,10 @@
 			{% if internal.ports_free > 0 %}
 				{% set no_free = false %}
 				<option value="{{ ip }}" {% if selected == false %}selected="selected"{% endif %}>{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
-				{% set selected = true %}
-				{% set selected_ip = ip %}
+				{% if selected == false %}
+					{% set selected = true %}
+					{% set selected_ip = ip %}
+				{% endif %}
 			{% else %}
 				<option value="{{ ip }}">{{ ip }} (No Ports Avaliable)</option>
 			{% endif %}
