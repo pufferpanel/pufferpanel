@@ -3,8 +3,10 @@
 namespace PufferPanel\Http\Controllers\Auth;
 
 use PufferPanel\User;
+
 use Validator;
 use PufferPanel\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
@@ -62,4 +64,9 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
     }
+
+    public function getLogin(Request $request) {
+        return view('auth.login');
+    }
+
 }
