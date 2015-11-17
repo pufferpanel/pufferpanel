@@ -1,45 +1,21 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Laravel</title>
+@extends('layouts.master')
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+@section('title', 'Your Servers')
 
-        <style>
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
-
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: 96px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="content">
-                <div class="title">{{ $ip }}</div>
-            </div>
-        </div>
-    </body>
-</html>
+@section('content')
+<div class="col-md-9">
+	@if (Auth::user()->root_admin == 1)
+		<div class="alert alert-info">
+			You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a blue dot to the left of their name.
+		</div>
+	@endif
+	<div class="alert alert-info">
+		You do not currently have any servers listed on your account.
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#sidebar_links").find("a[href='/']").addClass('active');
+});
+</script>
+@endsection

@@ -67,7 +67,7 @@
 						<a href="#" class="list-group-item list-group-item-heading"><strong>Account Controls</strong></a>
 						<a href="/account" class="list-group-item">Account Settings</a>
 						<a href="/totp" class="list-group-item">Account Security</a>
-						<a href="/index" class="list-group-item">Your Servers</a>
+						<a href="/" class="list-group-item">Your Servers</a>
 					</div>
 					@if (isset($server->name))
 						<div class="list-group">
