@@ -23,6 +23,11 @@ class Server extends Model
     protected $hidden = ['daemonSecret'];
 
     /**
+     * @var array
+     */
+    protected static $serverUUIDInstance = [];
+
+    /**
      * Returns array of all servers owned by the logged in user.
      * Returns all active servers if user is a root admin.
      *
@@ -35,9 +40,13 @@ class Server extends Model
             return false;
         }
 
-        $query = self::where('active', 1);
+        $query = self::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
+                    ->join('nodes', 'servers.node', '=', 'nodes.id')
+                    ->join('locations', 'nodes.location', '=', 'locations.id')
+                    ->where('active', 1);
 
         if (Auth::user()->root_admin !== 1) {
+            // ->whereIn('servers.id', Permissions::serversAsArray());
             $query->where('owner', Auth::user()->id);
         }
 
@@ -48,7 +57,7 @@ class Server extends Model
     /**
      * Returns a single server specified by UUID
      *
-     * @param  string $uuid The UUID of the server to return an object about.
+     * @param  string $uuid The Short-UUID of the server to return an object about.
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getByUUID($uuid)
@@ -58,13 +67,19 @@ class Server extends Model
             return false;
         }
 
-        $query = self::where('uuid', $uuid)->where('active', 1);
+        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
+            return self::$serverUUIDInstance[$uuid];
+        }
+
+        $query = self::where('uuidShort', $uuid)->where('active', 1);
 
         if (Auth::user()->root_admin !== 1) {
+            // ->whereIn('id', Permissions::serversAsArray());
             $query->where('owner', Auth::user()->id);
         }
 
-        return $query->take(1)->get();
+        self::$serverUUIDInstance[$uuid] = $query->first();
+        return self::$serverUUIDInstance[$uuid];
 
     }
 

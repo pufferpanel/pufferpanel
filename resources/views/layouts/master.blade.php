@@ -69,7 +69,7 @@
                         <a href="/totp" class="list-group-item">Account Security</a>
                         <a href="/" class="list-group-item">Your Servers</a>
                     </div>
-                    @if (isset($server->name))
+                    @section('sidebar-server')
                         <div class="list-group">
                             <a href="#" class="list-group-item list-group-item-heading"><strong>Server Controls</strong></a>
                             <a href="/node/index" class="list-group-item">Server Overview</a>
@@ -77,7 +77,7 @@
                             <a href="/node/users" class="list-group-item">Manage Sub-Users</a>
                             <a href="/node/settings" class="list-group-item">Manage Server</a>
                         </div>
-                    @endif
+                    @show
                 @show
             </div>
             @yield('content')

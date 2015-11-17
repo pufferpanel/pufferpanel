@@ -30,9 +30,6 @@ class IndexController extends Controller
      */
     public function getIndex(Request $request)
     {
-        Debugbar::info($request->user()->toJson());
-        Debugbar::info(Server::getByUUID('0a16efa5-4c8c-4442-88b2-e747e2c563e6'));
-
         return view('base.index', [
             'servers' => Server::getUserServers(),
         ]);

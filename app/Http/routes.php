@@ -19,8 +19,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('logout', 'Auth\AuthController@getLogout');
 });
 
-// Route::group(['prefix' => 'server/{server}'], function () {
-//     Route::get('index', function ($server)    {
-//         // /server/{$server}/detail
-//     });
-// });
+Route::group(['prefix' => 'server/{server}'], function ($server) {
+    Route::get('/', 'Server\ServerController@getIndex');
+});

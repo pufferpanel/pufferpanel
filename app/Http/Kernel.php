@@ -29,5 +29,6 @@ class Kernel extends HttpKernel
         'auth' => \PufferPanel\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \PufferPanel\Http\Middleware\RedirectIfAuthenticated::class,
+        'server' => \PufferPanel\Http\MiddleWare\CheckServer::class,
     ];
 }

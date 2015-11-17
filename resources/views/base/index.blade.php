@@ -2,6 +2,9 @@
 
 @section('title', 'Your Servers')
 
+@section('sidebar-server')
+@endsection
+
 @section('content')
 <div class="col-md-9">
     @if (Auth::user()->root_admin == 1)
@@ -9,7 +12,7 @@
             You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a blue dot to the left of their name.
         </div>
     @endif
-    @if (!is_null($servers))
+    @if (!$servers->isEmpty())
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
@@ -35,9 +38,9 @@
                                 @endif
                             </td>
                         @endif
-                        <td><a href="/server/{{ $server->uuid }}">{{ $server->name }}</a></td>
+                        <td><a href="/server/{{ $server->uuidShort }}">{{ $server->name }}</a></td>
                         <td>{{ $server->location }}</td>
-                        <td>{{ $server->node }}</td>
+                        <td>{{ $server->nodeName }}</td>
                         <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                         <td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
                     </tr>
