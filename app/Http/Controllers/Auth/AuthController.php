@@ -5,6 +5,8 @@ namespace PufferPanel\Http\Controllers\Auth;
 use PufferPanel\User;
 
 use Validator;
+use Auth;
+
 use PufferPanel\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -26,6 +28,34 @@ class AuthController extends Controller
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     /**
+     * Post-Authentication redirect location.
+     *
+     * @var string
+     */
+    protected $redirectPath = '/';
+
+    /**
+     * Failed post-authentication redirect location.
+     *
+     * @var string
+     */
+    protected $loginPath = '/auth/login';
+
+    /**
+     * Lockout time for failed login requests.
+     *
+     * @var integer
+     */
+    protected $lockoutTime = 120;
+
+    /**
+     * After how many attempts should logins be throttled and locked.
+     *
+     * @var integer
+     */
+    protected $maxLoginAttempts = 5;
+
+    /**
      * Create a new authentication controller instance.
      *
      * @return void
@@ -44,9 +74,8 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|confirmed|min:8',
         ]);
     }
 
@@ -61,12 +90,8 @@ class AuthController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => password_hash($data['password']),
         ]);
-    }
-
-    public function getLogin(Request $request) {
-        return view('auth.login');
     }
 
 }

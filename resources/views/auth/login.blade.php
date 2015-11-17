@@ -12,33 +12,40 @@
 @section('content')
 <div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
-    	<legend>Login</legend>
+    	<legend>{{ trans('strings.login') }}</legend>
     	<fieldset>
-            @if (session('status'))
-                {{ session('status') }}
+            @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
     		<div class="form-group">
-    			<label for="email" class="control-label">Email</label>
+    			<label for="email" class="control-label">{{ trans('strings.email') }}</label>
     			<div>
-    				<input type="text" class="form-control" name="email" id="email" placeholder="Email" />
+    				<input type="text" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="{{ trans('strings.email') }}" />
     			</div>
     		</div>
     		<div class="form-group">
-    			<label for="login-password" class="control-label">Password</label>
+    			<label for="login-password" class="control-label">{{ trans('strings.password') }}</label>
     			<div>
-    				<input type="password" class="form-control" name="password" id="password" placeholder="Password" />
-    			</div>
-    		</div>
-    		<div class="form-group">
-    			<div>
-    				<label><input type="checkbox" name="remember_me" /> Remember Me</label>
+    				<input type="password" class="form-control" name="password" id="password" placeholder="{{ trans('strings.password') }}" />
     			</div>
     		</div>
     		<div class="form-group">
     			<div>
-                    {{ csrf_field() }}
-    				<input type="submit" class="btn btn-primary btn-sm" value="Login" />
-    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">Reset Password</button>
+    				<label><input type="checkbox" name="remember" /> {{ trans('auth.remeberme') }}</label>
+    			</div>
+    		</div>
+    		<div class="form-group">
+    			<div>
+                    {!! csrf_field() !!}
+    				<input type="submit" class="btn btn-primary btn-sm" value="{{ trans('strings.login') }}" />
+    				<button class="btn btn-default btn-sm" onclick="window.location='/auth/password';return false;">{{ trans('auth.resetpassword') }}</button>
     			</div>
     		</div>
     	</fieldset>
@@ -69,30 +76,30 @@
 <div class="col-md-3"></div>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#login-form").submit(function(event){
-		var check_email = $("#email").val();
-		$.ajax({
-			type: "POST",
-			url: "/auth/login/totp",
-			async: false,
-			data: { check: check_email },
-			success: function(data){
-				if(data == 'true'){
-					$("#openTOTP").modal('show');
-					$('#openTOTP').on('shown.bs.modal', function(){
-						$("#totp_token").focus();
-					})
-                    event.preventDefault();
-				}else{
-					$(this).submit();
-				}
-			}
-		});
-	});
-	$("#totp-form").submit(function(){
-		$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
-		return true;
-	});
+	// $("#login-form").submit(function(event){
+	// 	var check_email = $("#email").val();
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/auth/login/totp",
+	// 		async: false,
+	// 		data: { check: check_email },
+	// 		success: function(data){
+	// 			if(data == 'true'){
+	// 				$("#openTOTP").modal('show');
+	// 				$('#openTOTP').on('shown.bs.modal', function(){
+	// 					$("#totp_token").focus();
+	// 				})
+    //                 event.preventDefault();
+	// 			}else{
+	// 				$(this).submit();
+	// 			}
+	// 		}
+	// 	});
+	// });
+	// $("#totp-form").submit(function(){
+	// 	$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
+	// 	return true;
+	// });
 });
 </script>
 @endsection

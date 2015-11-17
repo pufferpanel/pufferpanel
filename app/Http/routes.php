@@ -11,8 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'Base\IndexController@getIndex');
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('login', 'Auth\AuthController@getLogin');
+    Route::post('login', 'Auth\AuthController@postLogin');
+    Route::get('logout', 'Auth\AuthController@getLogout');
 });
 
-Route::get('/auth/login', 'Auth\AuthController@getLogin');
+// Route::group(['prefix' => 'server/{server}'], function () {
+//     Route::get('index', function ($server)    {
+//         // /server/{$server}/detail
+//     });
+// });
