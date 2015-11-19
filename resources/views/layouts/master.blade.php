@@ -41,7 +41,7 @@
                 @section('right-nav')
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Langauge<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ trans('strings.language') }}<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/language/de">Deutsch</a></li>
                                 <li><a href="/language/en">English</a></li>
@@ -66,19 +66,19 @@
             <div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
                 @section('sidebar')
                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Account Controls</strong></a>
-                        <a href="/account" class="list-group-item">Account Settings</a>
-                        <a href="/account/totp" class="list-group-item">Account Security</a>
-                        <a href="/" class="list-group-item">Your Servers</a>
+                        <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.account_controls') }}</strong></a>
+                        <a href="/account" class="list-group-item">{{ trans('pagination.sidebar.account_settings') }}</a>
+                        <a href="/account/totp" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
+                        <a href="/" class="list-group-item">{{ trans('pagination.sidebar.servers') }}</a>
                     </div>
                     @section('sidebar-server')
                         @if (isset($server->name) && isset($node->name))
                             <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-heading"><strong>Server Controls</strong></a>
-                                <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">Server Overview</a>
-                                <a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">File Manager</a>
-                                <a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">Manage Sub-Users</a>
-                                <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">Manage Server</a>
+                                <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.server_controls') }}</strong></a>
+                                <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">{{ trans('pagination.sidebar.overview') }}</a>
+                                <a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">{{ trans('pagination.sidebar.files') }}</a>
+                                <a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>
+                                <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
                             </div>
                         @endif
                     @show

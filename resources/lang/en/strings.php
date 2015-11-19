@@ -12,5 +12,9 @@ return [
     'password' => 'Password',
     'email' => 'Email',
     'whoops' => 'Whoops',
+    'location' => 'Location',
+    'node' => 'Node',
+    'connection' => 'Connection',
+    'language' => 'Language',
 
 ];

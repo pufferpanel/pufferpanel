@@ -8,9 +8,7 @@
 @section('content')
 <div class="col-md-9">
     @if (Auth::user()->root_admin == 1)
-        <div class="alert alert-info">
-            You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a blue dot to the left of their name.
-        </div>
+        <div class="alert alert-info">{{ trans('base.view_as_admin') }}</div>
     @endif
     @if (!$servers->isEmpty())
         <table class="table table-striped table-bordered table-hover">
@@ -19,10 +17,10 @@
                     @if (Auth::user()->root_admin == 1)
                         <th></th>
                     @endif
-                    <th>Server Name</th>
-                    <th>Location</th>
-                    <th>Node</th>
-                    <th>Connection</th>
+                    <th>{{ trans('base.server_name') }}</th>
+                    <th>{{ trans('strings.location') }}</th>
+                    <th>{{ trans('strings.node') }}</th>
+                    <th>{{ trans('strings.connection') }}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -48,9 +46,7 @@
             </tbody>
         </table>
     @else
-        <div class="alert alert-info">
-            You do not currently have any servers listed on your account.
-        </div>
+        <div class="alert alert-info">{{ trans('base.no_servers') }}</div>
     @endif
 </div>
 <script>
