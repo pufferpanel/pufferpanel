@@ -5,15 +5,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        <link rel="stylesheet" href="http://pffr.me/assets/css/bootstrap.css">
-        <link rel="stylesheet" href="http://pffr.me/assets/css/pufferpanel.css">
-        <link rel="stylesheet" href="http://pffr.me/assets/css/animate.css">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/pufferpanel.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-        <script src="http://pffr.me/assets/javascript/admin.min.js"></script>
-        <script src="http://pffr.me/assets/javascript/bootstrap-notify.min.js"></script>
+        <script src="{{ asset('js/admin.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
     @show
     <title>PufferPanel - @yield('title')</title>
 </head>
@@ -30,7 +32,7 @@
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 @section('server-name')
-                    @if (isset($server->name))
+                    @if (isset($server->name) && isset($node->name))
                         <ul class="nav navbar-nav">
                             <li class="active" id="{{ $server->name }}"><a href="/server/{{ $server->id }}/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ $server->name }}</a></li>
                         </ul>
@@ -66,16 +68,16 @@
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Account Controls</strong></a>
                         <a href="/account" class="list-group-item">Account Settings</a>
-                        <a href="/totp" class="list-group-item">Account Security</a>
+                        <a href="/account/totp" class="list-group-item">Account Security</a>
                         <a href="/" class="list-group-item">Your Servers</a>
                     </div>
                     @section('sidebar-server')
                         <div class="list-group">
                             <a href="#" class="list-group-item list-group-item-heading"><strong>Server Controls</strong></a>
-                            <a href="/node/index" class="list-group-item">Server Overview</a>
-                            <a href="/node/files" class="list-group-item">File Manager</a>
-                            <a href="/node/users" class="list-group-item">Manage Sub-Users</a>
-                            <a href="/node/settings" class="list-group-item">Manage Server</a>
+                            <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">Server Overview</a>
+                            <a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">File Manager</a>
+                            <a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">Manage Sub-Users</a>
+                            <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">Manage Server</a>
                         </div>
                     @show
                 @show
