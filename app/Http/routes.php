@@ -21,4 +21,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'server/{server}'], function ($server) {
     Route::get('/', 'Server\ServerController@getIndex');
+
+    // Ajax Routes
+    Route::get('/ajax/status', 'Server\AjaxController@getStatus');
 });

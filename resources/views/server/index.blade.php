@@ -218,7 +218,7 @@
 </div>
 <script>
 $(document).ready(function () {
-    $('#sidebar_links').find('a[href=\'/node/index\']').addClass('active');
+    $('.server-index').addClass('active');
 });
 </script>
 @endsection

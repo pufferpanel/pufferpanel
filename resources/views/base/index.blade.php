@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 @foreach ($servers as $server)
-                    <tr class="dynUpdate" id="{{ $server->uuid }}">
+                    <tr class="dynUpdate" id="{{ $server->uuidShort }}">
                         @if (Auth::user()->root_admin == 1)
                             <td style="width:26px;">
                                 @if ($server->owner === Auth::user()->id)
@@ -53,9 +53,42 @@
         </div>
     @endif
 </div>
-<script type="text/javascript">
-$(document).ready(function() {
-    $("#sidebar_links").find("a[href='/']").addClass('active');
+<script>
+$(window).load(function () {
+    $('#sidebar_links').find('a[href=\'/\']').addClass('active');
+    function updateServerStatus () {
+        $('.dynUpdate').each(function (index, data) {
+
+            var element = $(this);
+            var serverShortUUID = $(this).attr('id');
+            var updateElement = $(this).find('.applyUpdate');
+
+            updateElement.removeClass('fa-check-circle fa-times-circle').css({ color: '#000' });
+            updateElement.addClass('fa-circle-o-notch fa-spinner fa-spin');
+
+            $.ajax({
+                type: 'GET',
+                url: '/server/' + serverShortUUID + '/ajax/status',
+                timeout: 10000
+            }).done(function (data) {
+
+                var selector = (data == 'true') ? 'fa-check-circle' : 'fa-times-circle';
+                var selectorColor = (data == 'true') ? 'rgb(83, 179, 12)' : 'rgb(227, 50, 0)';
+
+                updateElement.removeClass('fa-circle-o-notch fa-spinner fa-spin');
+                updateElement.addClass(selector).css({ color: selectorColor });
+
+            }).fail(function (jqXHR) {
+
+                updateElement.removeClass('fa-circle-o-notch fa-spinner fa-spin');
+                updateElement.addClass('fa-question-circle').css({ color: 'rgb(227, 50, 0)' });
+
+            });
+
+        });
+    }
+    updateServerStatus();
+    setInterval(updateServerStatus, 30000);
 });
 </script>
 @endsection

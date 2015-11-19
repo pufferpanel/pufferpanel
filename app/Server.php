@@ -83,4 +83,24 @@ class Server extends Model
 
     }
 
+    /**
+     * Returns non-administrative headers for accessing a server on Scales
+     *
+     * @param  string $uuid
+     * @return array
+     */
+    public static function getGuzzleHeaders($uuid)
+    {
+
+        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
+            return [
+                'X-Access-Server' => self::$serverUUIDInstance[$uuid]->uuid,
+                'X-Access-Token' => self::$serverUUIDInstance[$uuid]->daemonSecret
+            ];
+        }
+
+        return [];
+
+    }
+
 }
