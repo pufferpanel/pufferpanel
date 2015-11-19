@@ -28,7 +28,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/index">PufferPanel - Laravel</a>
+                <a class="navbar-brand" href="/">PufferPanel - Laravel</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 @section('server-name')
@@ -72,13 +72,15 @@
                         <a href="/" class="list-group-item">Your Servers</a>
                     </div>
                     @section('sidebar-server')
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-heading"><strong>Server Controls</strong></a>
-                            <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">Server Overview</a>
-                            <a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">File Manager</a>
-                            <a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">Manage Sub-Users</a>
-                            <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">Manage Server</a>
-                        </div>
+                        @if (isset($server->name) && isset($node->name))
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-heading"><strong>Server Controls</strong></a>
+                                <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">Server Overview</a>
+                                <a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">File Manager</a>
+                                <a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">Manage Sub-Users</a>
+                                <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">Manage Server</a>
+                            </div>
+                        @endif
                     @show
                 @show
             </div>
