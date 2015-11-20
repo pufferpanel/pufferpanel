@@ -170,7 +170,7 @@
                                 <li><a href="/language/zh">&#20013;&#22269;&#30340;的</a></li>
                             </ul>
                         </li>
-                        @if (Auth::user()->root_admin == 1)
+                        @if (null !== Auth::user() && Auth::user()->root_admin == 1)
                             <li class="hidden-xs"><a href="/admin/index"><i class="fa fa-cogs"></i></a></li>
                         @endif
                         <li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
