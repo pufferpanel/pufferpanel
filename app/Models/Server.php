@@ -3,6 +3,8 @@
 namespace PufferPanel\Models;
 
 use Auth;
+use PufferPanel\Models\Permission;
+use PufferPanel\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
 
 class Server extends Model
@@ -28,6 +30,43 @@ class Server extends Model
     protected static $serverUUIDInstance = [];
 
     /**
+     * @var mixed
+     */
+    protected static $user;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        self::$user = Auth::user();
+    }
+
+    /**
+     * Determine if we need to change the server's daemonSecret value to
+     * match that of the user if they are a subuser.
+     *
+     * @param Illuminate\Database\Eloquent\Model\Server $server
+     * @return string
+     */
+    protected static function getUserDaemonSecret(Server $server)
+    {
+
+        if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
+            return $server->daemonSecret;
+        }
+
+        $subuser = Subuser::where('server_id', $server->id)->where('user_id', self::$user->id)->first();
+
+        if (is_null($subuser)) {
+            return null;
+        }
+
+        return $subuser->daemonSecret;
+
+    }
+
+    /**
      * Returns array of all servers owned by the logged in user.
      * Returns all active servers if user is a root admin.
      *
@@ -36,18 +75,13 @@ class Server extends Model
     public static function getUserServers()
     {
 
-        if (!Auth::user()) {
-            return false;
-        }
-
         $query = self::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
                     ->join('nodes', 'servers.node', '=', 'nodes.id')
                     ->join('locations', 'nodes.location', '=', 'locations.id')
                     ->where('active', 1);
 
-        if (Auth::user()->root_admin !== 1) {
-            // ->whereIn('servers.id', Permissions::serversAsArray());
-            $query->where('owner', Auth::user()->id);
+        if (self::$user->root_admin !== 1) {
+            $query->whereIn('servers.id', Subuser::accessServers());
         }
 
         return $query->get();
@@ -63,22 +97,23 @@ class Server extends Model
     public static function getByUUID($uuid)
     {
 
-        if (!Auth::user()) {
-            return false;
-        }
-
         if (array_key_exists($uuid, self::$serverUUIDInstance)) {
             return self::$serverUUIDInstance[$uuid];
         }
 
         $query = self::where('uuidShort', $uuid)->where('active', 1);
 
-        if (Auth::user()->root_admin !== 1) {
-            // ->whereIn('id', Permissions::serversAsArray());
-            $query->where('owner', Auth::user()->id);
+        if (self::$user->root_admin !== 1) {
+            $query->whereIn('servers.id', Subuser::accessServers());
         }
 
-        self::$serverUUIDInstance[$uuid] = $query->first();
+        $result = $query->first();
+
+        if(!is_null($result)) {
+            $result->daemonSecret = self::getUserDaemonSecret($result);
+        }
+
+        self::$serverUUIDInstance[$uuid] = $result;
         return self::$serverUUIDInstance[$uuid];
 
     }

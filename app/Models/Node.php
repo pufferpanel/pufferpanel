@@ -2,11 +2,8 @@
 
 namespace PufferPanel\Models;
 
-use Auth;
-use Debugbar;
-use Illuminate\Database\Eloquent\Model;
-
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Model;
 
 class Node extends Model
 {
@@ -44,10 +41,6 @@ class Node extends Model
     public static function getByID($id)
     {
 
-        if (!Auth::user()) {
-            return false;
-        }
-
         // The Node is already cached.
         if (array_key_exists($id, self::$nodes)) {
             return self::$nodes[$id];
@@ -66,10 +59,6 @@ class Node extends Model
      */
     public static function guzzleRequest($node)
     {
-
-        if (!Auth::user()) {
-            return false;
-        }
 
         // The Guzzle Client is cached already.
         if (array_key_exists($node, self::$guzzle)) {

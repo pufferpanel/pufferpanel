@@ -1,16 +1,16 @@
 @extends('layouts.master')
 
 @section('title')
-    Viewing Server: {{ $server->uuidShort }}
+    Viewing Server: {{ $server->name }}
 @endsection
 
 @section('content')
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
+		<li class="active"><a href="#stats" data-toggle="tab">Information &amp; Usage</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
-		<li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
 	</ul><br />
+    {{ $server->daemonSecret }}
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">

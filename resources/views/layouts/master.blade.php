@@ -16,6 +16,13 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
         <script src="{{ asset('js/admin.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
+        @section('server-socket')
+            @if (isset($server->name) && isset($node->name))
+                <script>
+
+                </script>
+            @endif
+        @show
     @show
     <title>PufferPanel - @yield('title')</title>
 </head>

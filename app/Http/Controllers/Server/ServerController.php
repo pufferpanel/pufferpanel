@@ -38,12 +38,7 @@ class ServerController extends Controller
     public function getIndex(Request $request)
     {
 
-        $user = Auth::user();
-
         $server = Server::getByUUID($request->route()->server);
-
-        Debugbar::info(Gate::denies('power', $server));
-
         return view('server.index', [
             'server' => $server,
             'node' => Node::find($server->node)

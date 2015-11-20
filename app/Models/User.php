@@ -2,6 +2,8 @@
 
 namespace PufferPanel\Models;
 
+use PufferPanel\Models\Permission;
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -36,5 +38,10 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
+
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 
 }
