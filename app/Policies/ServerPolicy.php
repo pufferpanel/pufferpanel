@@ -26,19 +26,27 @@ class ServerPolicy
 
     public function before($user, $ability)
     {
-        // if ($user->root_admin === 1) {
-        //     return true;
-        // }
+        if ($user->root_admin === 1) {
+            return true;
+        }
     }
 
     public function power(User $user, Server $server)
     {
-        // if ($this->isOwner($user, $server)) {
-        //     return true;
-        // }
-        return true;
-        //return $user->permissions()->server($server)->permission('power')->exists();
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
 
+        return $user->permissions()->server($server)->permission('power')->exists();
+    }
+
+    public function command(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('command')->exists();
     }
 
 }

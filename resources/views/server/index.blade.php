@@ -4,13 +4,18 @@
     Viewing Server: {{ $server->name }}
 @endsection
 
+@section('scripts')
+    @parent
+    <script src="{{ asset('js/chartjs/chart.core.js') }}"></script>
+	<script src="{{ asset('js/chartjs/chart.bar.js') }}"></script>
+@endsection
+
 @section('content')
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Information &amp; Usage</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
 	</ul><br />
-    {{ $server->daemonSecret }}
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
@@ -118,6 +123,247 @@
 	</div>
 </div>
 <script>
+$(window).load(function () {
+
+    // Socket Recieves New Server Stats
+    socket.on('stats', function (data) {
+        var currentTime = new Date();
+        memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], '');
+        memoryChart.removeData();
+        if({{ $server->cpu }} > 0) { cpuChart.addData([(data.data.cpu / {{ $server->cpu }}) * 100], ''); }else{ cpuChart.addData([data.data.cpu], ''); }
+        cpuChart.removeData();
+    });
+
+    // Socket Recieves New Query
+    socket.on('query', function (data){
+        if($('#players_notice').is(':visible')){
+            $('#players_notice').hide();
+            $('#toggle_players').show();
+        }
+        if(data['data'].players != undefined && data['data'].players.length !== 0){
+            $('#toggle_players').html('');
+            $.each(data['data'].players, function(id, d) {
+                $('#toggle_players').append('<code>' + d.name + '</code>');
+            });
+        }else{
+            $('#toggle_players').html('<p class=\'text-muted\'>No players are currently online.</p>');
+        }
+    });
+
+    // New Console Data Recieved
+    socket.on('console', function (data) {
+        var total = (($('#live_console').val() ? $('#live_console').val() : '') + data.line).split('\n');
+        if (total.length > 750) {
+            total = total.slice(total.length - 750);
+        }
+        $('#live_console').val(total.join('\n'));
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+    });
+
+    // Update Listings on Initial Status
+    socket.on('initial_status', function (data) {
+        updateServerPowerControls(data.status);
+        updatePlayerListVisibility(data.status);
+    });
+
+    // Update Listings on Status
+    socket.on('status', function (data) {
+        updateServerPowerControls(data.status);
+        updatePlayerListVisibility(data.status);
+    });
+
+    // Scroll to the top of the Console when switching to that tab.
+    $('a[data-toggle=\'tab\']').on('shown.bs.tab', function (e) {
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+    });
+
+    // Load Paused Console with Live Console Data
+    $('#pause_console').click(function(){
+        $('#paused_console').val();
+        $('#paused_console').val($('#live_console').val());
+    });
+
+    // -----------------+
+    // Charting Methods |
+    // -----------------+
+    var ctx = $('#memoryChart').get(0).getContext('2d');
+    var cty = $('#cpuChart').get(0).getContext('2d');
+    var memoryChartData = {labels:["","","","","","","","","","","","","","","","","","","",""],datasets:[{fillColor:"#ccc",strokeColor:"rgba(0,0,0,0)",highlightFill:"#666",data:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]};
+    var cpuChartData = {labels:["","","","","","","","","","","","","","","","","","","",""],datasets:[{fillColor:"#ccc",strokeColor:"rgba(0,0,0,0)",highlightFill:"#666",data:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]};
+    var memoryChart= new Chart(ctx).Bar(memoryChartData,{animation:!1,showScale:!0,barShowStroke:!1,scaleOverride:!1,tooltipTemplate:"<%= value %> Mb",barValueSpacing:1,barStrokeWidth:1,scaleShowGridLines:!1});
+    var cpuChart = new Chart(cty).Bar(cpuChartData,{animation:!1,showScale:!0,barShowStroke:!1,scaleOverride:!1,tooltipTemplate:"<%= value %> %",barValueSpacing:1,barStrokeWidth:1,scaleShowGridLines:!1});
+    function updatePlayerListVisibility(data) {
+        // Server is On or Starting
+        if(data == 1 || data == 3) {
+            $('#stats_players').show();
+        } else {
+            $('#stats_players').hide();
+        }
+    }
+    @can('command', $server)
+        // Send Command to Server
+        $('#console_command').submit(function (event) {
+
+            event.preventDefault();
+            var ccmd = $('#ccmd').val();
+            if (ccmd == '') {
+                return;
+            }
+
+            $('#sending_command').html('<i class=\'fa fa-refresh fa-spin\'></i>').addClass('disabled');
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/console',
+                timeout: 10000,
+                data: { command: ccmd }
+            }).done(function (data) {
+
+                $('#sending_command').removeClass('disabled');
+                $('#sending_command').html('&rarr;');
+                $('#ccmd').val('');
+
+            }).fail(function (jqXHR) {
+
+                $('#sc_resp').html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+                $('#sending_command').html('&rarr;').removeClass('disabled');
+                $('#ccmd').val('');
+
+            });
+        });
+    @endcan
+    @can('power', $server)
+        var can_run = true;
+        function updateServerPowerControls (data) {
+
+            // Server is On or Starting
+            if(data == 1 || data == 3) {
+                $('#server_start').addClass('disabled');
+                $('#server_stop, #server_restart').removeClass('disabled');
+            } else {
+                $('#server_start').removeClass('disabled');
+                $('#server_stop, #server_restart').addClass('disabled');
+            }
+
+            if(data !== 0) {
+                $('#kill_process_text').slideDown(200);
+            } else {
+                $('#kill_process_text').slideUp(200);
+            }
+
+        }
+
+        // Kill Server Process Button
+        $('#kill_proc').click(function (e){
+
+            e.preventDefault();
+            var killConfirm = confirm('WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.');
+
+            if(killConfirm) {
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    },
+                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/kill',
+                    timeout: 10000
+                }).done(function(data) {
+                    $('#pw_resp').attr('class', 'alert alert-success').html('Server has been killed successfully.').fadeIn().delay(5000).fadeOut();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                });
+            }
+
+        });
+
+        $('#server_stop').click(function (e){
+            e.preventDefault();
+            if(can_run) {
+                can_run = false;
+                $(this).append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    },
+                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/off',
+                    timeout: 10000
+                }).done(function(data) {
+                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now stopping...').fadeIn().delay(5000).fadeOut();
+                    $('#server_stop').removeClass('disabled').html('Stop');
+                    can_run = true;
+                    return false;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                        $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                        $('#server_stop').removeClass('disabled').html('Stop');
+                        can_run = true;
+                });
+            }
+        });
+
+        $('#server_restart').click(function(e){
+            e.preventDefault();
+            if(can_run) {
+                can_run = false;
+                $(this).append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    },
+                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/restart',
+                    timeout: 10000
+                }).done(function(data) {
+                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now restarting...').fadeIn().delay(5000).fadeOut();
+                    $('#server_restart').removeClass('disabled').html('Restart');
+                    can_run = true;
+                    return false;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                        $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                        $('#server_restart').removeClass('disabled').html('Restart');
+                        can_run = true;
+                });
+            }
+        });
+        $('#server_start').click(function(e){
+            e.preventDefault();
+            start_server();
+        });
+        function start_server() {
+            if(can_run === true){
+                can_run = false;
+                $('#server_start').append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    },
+                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/on',
+                    timeout: 10000
+                }).done(function(data) {
+                    $('#live_console').val('Server is starting...\n');
+                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now starting...').fadeIn().delay(5000).fadeOut();
+                    $('#server_start').toggleClass('disabled');
+                    $('#server_start').html('Start');
+                    can_run = true;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                    $('#server_start').removeClass('disabled');
+                    $('#server_start').html('Start');
+                    can_run = true;
+                });
+            }
+        }
+    @endcan
+});
+
 $(document).ready(function () {
     $('.server-index').addClass('active');
 });

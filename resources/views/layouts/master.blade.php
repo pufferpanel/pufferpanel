@@ -16,10 +16,118 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
         <script src="{{ asset('js/admin.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                $.notifyDefaults({
+                    placement: {
+                        from: 'bottom',
+                        align: 'right'
+                    },
+                    newest_on_top: true,
+                    delay: 2000,
+                    animate: {
+                        enter: 'animated fadeInUp',
+                        exit: 'animated fadeOutDown'
+                    }
+                });
+            });
+        </script>
         @section('server-socket')
             @if (isset($server->name) && isset($node->name))
                 <script>
+                    var socket;
+                    var notifySocketError = false;
+                    $(window).load(function () {
 
+                        // Main Socket Object
+                        socket = io('https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/{{ $server->uuid }}', {
+                            'query': 'token={{ $server->daemonSecret }}'
+                        });
+
+                        // Socket Failed to Connect
+                        socket.io.on('connect_error', function (err) {
+							$('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin').addClass('fa-question-circle').css({ color: '#FF9900' });
+							if(typeof notifySocketError !== 'object') {
+								notifySocketError = $.notify({
+									message: '{{ trans('server.ajax.socket_error') }}',
+									url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+									target: '_blank'
+								}, {
+									type: 'danger',
+									delay: 0
+								});
+							}
+						});
+
+                        // Connected to Socket Successfully
+                        socket.on('connect', function () {
+                            if (notifySocketError !== false) {
+                                notifySocketError.close();
+                                notifySocketError = false;
+                            }
+                        });
+
+                        // Socket Sends Server Status on Connect
+                        socket.on('initial_status', function (data) {
+
+                            var color = '#E33200';
+                            var selector = 'fa-times-circle';
+
+                            if (data.status === 1) {
+                                color = '#53B30C';
+                                selector = 'fa-check-circle';
+                            }
+
+                            $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
+
+                        });
+
+                        // Socket Recieves New Status from Scales
+                        socket.on('status', function(data) {
+
+                            if(data.status !== 'crashed') {
+
+                                var newStatus, selector = 'fa-times-circle';
+                                var color = '#E33200';
+
+                                switch (data.status) {
+                                    case 0:
+                                        newStatus = 'OFF';
+                                        break;
+                                    case 1:
+                                        newStatus = 'ON';
+                                        color = "#53B30C";
+                                        selector = "fa-check-circle";
+                                        break;
+                                    case 2:
+                                        newStatus = 'STOPPING';
+                                        break;
+                                    case 3:
+                                        newStatus = 'STARTING';
+                                        break;
+                                }
+
+                                $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
+
+                                $.notify({
+                                    message: '{{ trans('server.ajax.socket_status') }} <strong>' + newStatus + '</strong>.'
+                                }, {
+                                    type: 'info'
+                                });
+
+                            } else {
+
+                                $.notify({
+                                    message: '{{ trans('server.ajax.socket_status_crashed') }}'
+                                }, {
+                                    delay: 5000,
+                                    type: 'danger'
+                                });
+                            }
+
+                        });
+
+                    });
                 </script>
             @endif
         @show
