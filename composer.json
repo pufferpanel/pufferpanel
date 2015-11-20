@@ -9,7 +9,8 @@
         "laravel/framework": "5.1.*",
         "barryvdh/laravel-debugbar": "^2.0",
         "doctrine/dbal": "^2.5",
-        "guzzlehttp/guzzle": "^6.1"
+        "guzzlehttp/guzzle": "^6.1",
+        "kris/laravel-form-builder": "^1.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

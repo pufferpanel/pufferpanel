@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => PufferPanel\User::class,
+    'model' => PufferPanel\Models\User::class,
 
     /*
     |--------------------------------------------------------------------------

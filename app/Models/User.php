@@ -1,6 +1,6 @@
 <?php
 
-namespace PufferPanel;
+namespace PufferPanel\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;

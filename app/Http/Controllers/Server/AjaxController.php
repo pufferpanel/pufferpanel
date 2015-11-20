@@ -2,8 +2,8 @@
 
 namespace PufferPanel\Http\Controllers\Server;
 
-use PufferPanel\Server;
-use PufferPanel\Node;
+use PufferPanel\Models\Server;
+use PufferPanel\Models\Node;
 use Debugbar;
 
 use PufferPanel\Http\Controllers\Controller;

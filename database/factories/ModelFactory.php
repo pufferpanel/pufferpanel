@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(PufferPanel\User::class, function (Faker\Generator $faker) {
+$factory->define(PufferPanel\Models\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,

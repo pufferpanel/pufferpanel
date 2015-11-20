@@ -2,6 +2,9 @@
 
 namespace PufferPanel\Providers;
 
+use PufferPanel\Models\User;
+use PufferPanel\Policies\UserPolicy;
+
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -14,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'PufferPanel\Model' => 'PufferPanel\Policies\ModelPolicy',
+        User::class => UserPolicy::class,
     ];
 
     /**

@@ -2,8 +2,10 @@
 
 namespace PufferPanel\Http\Controllers\Server;
 
-use PufferPanel\Server;
-use PufferPanel\Node;
+use Gate;
+use Auth;
+use PufferPanel\Models\Server;
+use PufferPanel\Models\Node;
 use Debugbar;
 
 use PufferPanel\Http\Controllers\Controller;
@@ -35,9 +37,16 @@ class ServerController extends Controller
      */
     public function getIndex(Request $request)
     {
+
+        $user = Auth::user();
+
+        $server = Server::getByUUID($request->route()->server);
+
+        Debugbar::info(Gate::denies('power', $server));
+
         return view('server.index', [
-            'server' => Server::getByUUID($request->route()->server),
-            'node' => Node::find(Server::getByUUID($request->route()->server)->node)
+            'server' => $server,
+            'node' => Node::find($server->node)
         ]);
     }
 

@@ -2,7 +2,7 @@
 
 namespace PufferPanel\Http\Controllers\Auth;
 
-use PufferPanel\User;
+use PufferPanel\Models\User;
 
 use Validator;
 use Auth;

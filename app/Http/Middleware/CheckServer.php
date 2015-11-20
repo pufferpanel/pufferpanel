@@ -4,7 +4,7 @@ namespace PufferPanel\Http\Middleware;
 
 use Closure;
 use Auth;
-use PufferPanel\Server;
+use PufferPanel\Models\Server;
 use Debugbar;
 
 class CheckServer

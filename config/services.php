@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model'  => PufferPanel\User::class,
+        'model'  => PufferPanel\Models\User::class,
         'key'    => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
