@@ -7,10 +7,7 @@ use Illuminate\Routing\Router;
 class BaseRoutes {
 
 	public function map(Router $router) {
-		$router->get('/', 'Base\IndexController@getIndex');
-
-		$router->get('login', 'Auth\AuthController@getLogin');
-		$router->post('login', 'Auth\AuthController@postLogin');
+		$router->get('/', [ 'as' => 'index', 'uses' => 'Base\IndexController@getIndex' ]);
 	}
 
 }
