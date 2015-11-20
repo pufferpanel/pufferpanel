@@ -73,7 +73,7 @@
 		<div class="tab-pane" id="console">
 			<div class="row">
 				<div class="col-md-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+					<textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
 				</div>
 				<div class="col-md-6">
 					<hr />
@@ -162,6 +162,23 @@ $(window).load(function () {
 
     // Update Listings on Initial Status
     socket.on('initial_status', function (data) {
+        if (data.status !== 0) {
+            $.ajax({
+                type: 'GET',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log/750',
+                timeout: 10000
+            }).done(function(data) {
+                $('#live_console').val(data);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to load initial server log.').fadeIn().delay(5000).fadeOut();
+            });
+        } else {
+            $('#live_console').val('');
+        }
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
     });
