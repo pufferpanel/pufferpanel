@@ -1,27 +1,34 @@
-## Laravel PHP Framework
+## PufferPanel
+PufferPanel is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. PufferPanel is built on the `Laravel PHP Framework (v5.1) LTS`.
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+## Documentation
+Documentation for installing and managing PufferPanel can be found on our [documentation](http://pufferpanel.com/docs) site.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Support for using PufferPanel can be found on our [community forums](https://community.pufferpanel.com) or on IRC at [`irc.esper.net #pufferpanel`](https://webchat.esper.net?channels=#pufferpanel).
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## License
+```
+Copyright (C) 2012 - 2015 PufferPanel Development (Dane Everitt)
 
-## Official Documentation
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-## Contributing
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+### Additional License Information
+Some Javascript and CSS used within the panel is licensed under a `MIT`, `Apache 2.0`, or `GPL` license. Please check their respective header files for more information information.
 
-## Security Vulnerabilities
+Some images used within PufferPanel are Copyright (c) their respective owners.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+`/public/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
 
-### License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+`/public/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
