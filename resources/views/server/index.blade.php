@@ -13,56 +13,59 @@
 @section('content')
 <div class="col-md-9">
 	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#stats" data-toggle="tab">Information &amp; Usage</a></li>
-		<li><a href="#console" data-toggle="tab">Control Server</a></li>
+		<li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
+		<li><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
 	</ul><br />
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
 			<div class="row">
 				<div class="col-md-6">
-					<h3 class="nopad">Memory Usage</h3><hr />
+					<h3 class="nopad">{{ trans('server.index.memory_use') }}</h3><hr />
 					<div class="row centered">
 						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>Memory Usage (%)</small></p>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
+						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
+						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
 					</div>
 				</div>
 				<div class="col-md-6">
-					<h3 class="nopad">CPU Usage</h3><hr />
+					<h3 class="nopad">{{ trans('server.index.cpu_use') }}</h3><hr />
 					<div class="row centered">
 						<canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>CPU Usage (%)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>CPU Usage (%)</small></p>
+						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
+						<p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
+						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12" id="stats_players" style="display: none;">
+				<div class="col-md-12" id="stats_players">
 					<h3 class="nopad">Active Players</h3><hr />
-					<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i>Currently Collecting Usage Information</div>
+					<div id="players_notice" class="alert alert-info">
+                        <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
+                    </div>
 					<span id="toggle_players" style="display:none;">
 						<p class="text-muted">No players are online.</p>
+                    </span>
 				</div>
 				<div class="col-md-12">
-					<h3>Server Information</h3><hr />
+					<h3>{{ trans('server.index.server_info') }}</h3><hr />
 					<table class="table table-striped table-bordered table-hover">
 						<tbody>
 							<tr>
-								<td><strong>Default Connection</strong></td>
+								<td><strong>{{ trans('server.index.connection') }}</strong></td>
 								<td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
 							</tr>
 							<tr>
-								<td><strong>Node</strong></td>
+								<td><strong>{{ trans('strings.node') }}</strong></td>
 								<td>{{ $node->name }}</td>
 							</tr>
 							<tr>
-								<td><strong>Memory Limit</strong></td>
+								<td><strong>{{ trans('server.index.mem_limit') }}</strong></td>
 								<td>{{ $server->memory }} MB</td>
 							</tr>
 							<tr>
-								<td><strong>Disk Space</strong></td>
+								<td><strong>{{ trans('server.index.disk_space') }}</strong></td>
 								<td>{{ $server->disk }} MB</td>
 							</tr>
 						</tbody>
@@ -80,7 +83,7 @@
 					<form action="#" method="post" id="console_command">
 						<fieldset>
 							<div class="input-group">
-								<input type="text" class="form-control" name="command" id="ccmd" placeholder="command here" />
+								<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
 								<span class="input-group-btn">
 									<button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
 								</span>
@@ -94,8 +97,8 @@
 					<button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
 					<button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
 					<button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-					<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
+                    <button class="btn btn-danger btn-sm stop disabled" id="kill_proc"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
 					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 				</div>
 			</div>
@@ -107,7 +110,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="PauseConsole">ScrollStop</h4>
+				<h4 class="modal-title" id="PauseConsole">{{ trans('server.index.scrollstop') }}</h4>
 			</div>
 			<div class="modal-body">
 				<div class="row">
@@ -117,14 +120,14 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('strings.close') }}</button>
 			</div>
 		</div>
 	</div>
 </div>
 <script>
 $(window).load(function () {
-
+    $('[data-toggle="tooltip"]').tooltip()
     // Socket Recieves New Server Stats
     socket.on('stats', function (data) {
         var currentTime = new Date();
@@ -143,7 +146,7 @@ $(window).load(function () {
         if(data['data'].players != undefined && data['data'].players.length !== 0){
             $('#toggle_players').html('');
             $.each(data['data'].players, function(id, d) {
-                $('#toggle_players').append('<code>' + d.name + '</code>');
+                $('#toggle_players').append('<code>' + d.name + '</code>,');
             });
         }else{
             $('#toggle_players').html('<p class=\'text-muted\'>No players are currently online.</p>');
@@ -266,9 +269,9 @@ $(window).load(function () {
             }
 
             if(data !== 0) {
-                $('#kill_process_text').slideDown(200);
+                $('#kill_proc').removeClass('disabled');
             } else {
-                $('#kill_process_text').slideUp(200);
+                $('#kill_proc').addClass('disabled');
             }
 
         }

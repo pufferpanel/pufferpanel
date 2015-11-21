@@ -13,5 +13,17 @@ return [
         'socket_status' => 'This server\'s power status has changed to',
         'socket_status_crashed' => 'This server has been detected as CRASHED.',
     ],
+    'index' => [
+        'memory_use' => 'Memory Usage',
+        'cpu_use' => 'CPU Usage',
+        'xaxis' => 'Time (2s Increments)',
+        'server_info' => 'Server Information',
+        'connection' => 'Default Connection',
+        'mem_limit' => 'Memory Limit',
+        'disk_space' => 'Disk Space',
+        'control' => 'Control Server',
+        'info_use' => 'Information & Usage',
+        'command' => 'Enter Console Command',
+    ]
 
 ];

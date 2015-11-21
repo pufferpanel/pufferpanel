@@ -16,5 +16,9 @@ return [
     'node' => 'Node',
     'connection' => 'Connection',
     'language' => 'Language',
+    'close' => 'Close',
+    'start' => 'Start',
+    'stop' => 'Stop',
+    'restart' => 'Restart',
 
 ];

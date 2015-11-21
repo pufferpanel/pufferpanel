@@ -206,8 +206,19 @@
         </div>
         <div class="footer">
             <div class="row">
+                <div class="col-md-12">
+                    Copyright &copy; 2012 - {{ date('Y') }} <a href="https://github.com/PufferPanel/PufferPanel" target="_blank">PufferPanel Development</a>.<br />
+                    PufferPanel is licensed under a <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GPLv3</a> license. <!-- Please do not remove this license notice. -->
+                </div>
             </div>
         </div>
     </div>
+    <script>
+    $(document).ready(function () {
+        // Remeber Active Tab and Navigate to it on Reload
+        for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
+        if($.urlParam('tab') != null){$('.nav.nav-tabs a[href="#' + $.urlParam('tab') + '"]').tab('show');}
+    });
+    </script>
 </body>
 </html>
