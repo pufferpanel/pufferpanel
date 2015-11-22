@@ -37,9 +37,20 @@ class ServerController extends Controller
      */
     public function getIndex(Request $request)
     {
-
         $server = Server::getByUUID($request->route()->server);
         return view('server.index', [
+            'server' => $server,
+            'node' => Node::find($server->node)
+        ]);
+    }
+
+    public function getFiles(Request $request)
+    {
+
+        $server = Server::getByUUID($request->route()->server);
+        $this->authorize('list-files', $server);
+
+        return view('server.files.index', [
             'server' => $server,
             'node' => Node::find($server->node)
         ]);

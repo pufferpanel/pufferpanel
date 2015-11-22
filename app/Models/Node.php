@@ -71,6 +71,7 @@ class Node extends Model
         self::$guzzle[$node] = new Client([
             'base_uri' => sprintf('https://%s:%s/', $nodeData->fqdn, $nodeData->daemonListen),
             'timeout' => 10.0,
+            'connect_timeout' => 5.0,
             'verify' => false,
         ]);
 

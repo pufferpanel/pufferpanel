@@ -49,4 +49,13 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('command')->exists();
     }
 
+    public function listFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('list-files')->exists();
+    }
+
 }

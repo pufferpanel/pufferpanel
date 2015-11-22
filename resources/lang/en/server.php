@@ -24,6 +24,9 @@ return [
         'control' => 'Control Server',
         'info_use' => 'Information & Usage',
         'command' => 'Enter Console Command',
-    ]
+    ],
+    'files' => [
+            'loading' => 'Loading file listing, this might take a few seconds...',
+    ],
 
 ];
