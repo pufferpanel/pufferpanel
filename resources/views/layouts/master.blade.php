@@ -46,18 +46,18 @@
 
                         // Socket Failed to Connect
                         socket.io.on('connect_error', function (err) {
-							$('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin').addClass('fa-question-circle').css({ color: '#FF9900' });
-							if(typeof notifySocketError !== 'object') {
-								notifySocketError = $.notify({
-									message: '{{ trans('server.ajax.socket_error') }}',
-									url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}',
-									target: '_blank'
-								}, {
-									type: 'danger',
-									delay: 0
-								});
-							}
-						});
+                            $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin').addClass('fa-question-circle').css({ color: '#FF9900' });
+                            if(typeof notifySocketError !== 'object') {
+                                notifySocketError = $.notify({
+                                    message: '{{ trans('server.ajax.socket_error') }}',
+                                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+                                    target: '_blank'
+                                }, {
+                                    type: 'danger',
+                                    delay: 0
+                                });
+                            }
+                        });
 
                         // Connected to Socket Successfully
                         socket.on('connect', function () {

@@ -6,8 +6,8 @@ use Illuminate\Routing\Router;
 
 class BaseRoutes {
 
-	public function map(Router $router) {
-		$router->get('/', [ 'as' => 'index', 'uses' => 'Base\IndexController@getIndex' ]);
-	}
+    public function map(Router $router) {
+        $router->get('/', [ 'as' => 'index', 'uses' => 'Base\IndexController@getIndex' ]);
+    }
 
 }

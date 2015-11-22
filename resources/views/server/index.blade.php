@@ -7,123 +7,123 @@
 @section('scripts')
     @parent
     <script src="{{ asset('js/chartjs/chart.core.js') }}"></script>
-	<script src="{{ asset('js/chartjs/chart.bar.js') }}"></script>
+    <script src="{{ asset('js/chartjs/chart.bar.js') }}"></script>
 @endsection
 
 @section('content')
 <div class="col-md-9">
-	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
-		<li><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
-	</ul><br />
-	<div class="tab-content">
-		<div class="tab-pane active" id="stats">
-			<div class="row">
-				<div class="col-md-6">
-					<h3 class="nopad">{{ trans('server.index.memory_use') }}</h3><hr />
-					<div class="row centered">
-						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
-						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<h3 class="nopad">{{ trans('server.index.cpu_use') }}</h3><hr />
-					<div class="row centered">
-						<canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
-						<p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12" id="stats_players">
-					<h3 class="nopad">Active Players</h3><hr />
-					<div id="players_notice" class="alert alert-info">
+    <ul class="nav nav-tabs" id="config_tabs">
+        <li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
+        <li><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
+    </ul><br />
+    <div class="tab-content">
+        <div class="tab-pane active" id="stats">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="nopad">{{ trans('server.index.memory_use') }}</h3><hr />
+                    <div class="row centered">
+                        <canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
+                        <p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
+                        <p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
+                        <p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="nopad">{{ trans('server.index.cpu_use') }}</h3><hr />
+                    <div class="row centered">
+                        <canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
+                        <p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
+                        <p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
+                        <p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="stats_players">
+                    <h3 class="nopad">Active Players</h3><hr />
+                    <div id="players_notice" class="alert alert-info">
                         <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
                     </div>
-					<span id="toggle_players" style="display:none;">
-						<p class="text-muted">No players are online.</p>
+                    <span id="toggle_players" style="display:none;">
+                        <p class="text-muted">No players are online.</p>
                     </span>
-				</div>
-				<div class="col-md-12">
-					<h3>{{ trans('server.index.server_info') }}</h3><hr />
-					<table class="table table-striped table-bordered table-hover">
-						<tbody>
-							<tr>
-								<td><strong>{{ trans('server.index.connection') }}</strong></td>
-								<td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
-							</tr>
-							<tr>
-								<td><strong>{{ trans('strings.node') }}</strong></td>
-								<td>{{ $node->name }}</td>
-							</tr>
-							<tr>
-								<td><strong>{{ trans('server.index.mem_limit') }}</strong></td>
-								<td>{{ $server->memory }} MB</td>
-							</tr>
-							<tr>
-								<td><strong>{{ trans('server.index.disk_space') }}</strong></td>
-								<td>{{ $server->disk }} MB</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="tab-pane" id="console">
-			<div class="row">
-				<div class="col-md-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
-				</div>
-				<div class="col-md-6">
-					<hr />
-					<form action="#" method="post" id="console_command">
-						<fieldset>
-							<div class="input-group">
-								<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
-								<span class="input-group-btn">
-									<button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
-								</span>
-							</div>
-						</fieldset>
-					</form>
-					<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-				</div>
-				<div class="col-md-6" style="text-align:center;">
-					<hr />
-					<button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
-					<button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
-					<button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
+                </div>
+                <div class="col-md-12">
+                    <h3>{{ trans('server.index.server_info') }}</h3><hr />
+                    <table class="table table-striped table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td><strong>{{ trans('server.index.connection') }}</strong></td>
+                                <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>{{ trans('strings.node') }}</strong></td>
+                                <td>{{ $node->name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>{{ trans('server.index.mem_limit') }}</strong></td>
+                                <td>{{ $server->memory }} MB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>{{ trans('server.index.disk_space') }}</strong></td>
+                                <td>{{ $server->disk }} MB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="console">
+            <div class="row">
+                <div class="col-md-12">
+                    <textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
+                </div>
+                <div class="col-md-6">
+                    <hr />
+                    <form action="#" method="post" id="console_command">
+                        <fieldset>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
+                                <span class="input-group-btn">
+                                    <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
+                                </span>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+                </div>
+                <div class="col-md-6" style="text-align:center;">
+                    <hr />
+                    <button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
+                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
+                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
                     <button class="btn btn-danger btn-sm stop disabled" id="kill_proc"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
-					<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
+                    <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="PauseConsole">{{ trans('server.index.scrollstop') }}</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('strings.close') }}</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="PauseConsole">{{ trans('server.index.scrollstop') }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('strings.close') }}</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
 $(window).load(function () {
