@@ -4,6 +4,30 @@ namespace PufferPanel\Http;
 
 class Helpers {
 
+    /**
+     * Listing of editable files in the control panel.
+     * @var array
+     */
+    protected static $editable = [
+        'txt',
+        'yml',
+        'yaml',
+        'log',
+        'conf',
+        'config',
+        'html',
+        'json',
+        'properties',
+        'props',
+        'cfg',
+        'lang',
+        'ini',
+        'cmd',
+        'sh',
+        'lua',
+        '0' // Supports BungeeCord Files
+    ];
+
     public function __construct()
     {
         //
@@ -24,6 +48,11 @@ class Helpers {
 
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).' '.$sz[$factor];
 
+    }
+
+    public static function editableFiles()
+    {
+        return self::$editable;
     }
 
 }

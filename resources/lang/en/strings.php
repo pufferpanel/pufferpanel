@@ -20,5 +20,6 @@ return [
     'start' => 'Start',
     'stop' => 'Stop',
     'restart' => 'Restart',
+    'save' => 'Save',
 
 ];

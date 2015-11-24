@@ -8,6 +8,8 @@ use PufferPanel\Models\Server;
 use PufferPanel\Models\Node;
 use PufferPanel\Http\Helpers;
 
+use PufferPanel\Exceptions\DisplayException;
+use PufferPanel\Http\Controllers\Scales\FileController;
 use PufferPanel\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -31,30 +33,6 @@ class AjaxController extends Controller
      * @var string
      */
     protected $directory;
-
-    /**
-     * Listing of editable files in the control panel.
-     * @var array
-     */
-    protected $editable = [
-        'txt',
-        'yml',
-        'yaml',
-        'log',
-        'conf',
-        'config',
-        'html',
-        'json',
-        'properties',
-        'props',
-        'cfg',
-        'lang',
-        'ini',
-        'cmd',
-        'sh',
-        'lua',
-        '0' // Supports BungeeCord Files
-    ];
 
     /**
      * Controller Constructor
@@ -122,7 +100,7 @@ class AjaxController extends Controller
     {
 
         $server = Server::getByUUID($uuid);
-        $this->directory = '/' . trim($request->input('directory', '/'), '/');
+        $this->directory = '/' . trim(urldecode($request->input('directory', '/')), '/');
         $this->authorize('list-files', $server);
 
         $prevDir = [
@@ -141,66 +119,61 @@ class AjaxController extends Controller
             $prevDir['link_show'] = trim($prevDir['link'], '/');
         }
 
+        $controller = new FileController($uuid);
+
         try {
+            $directoryContents = $controller->returnDirectoryListing($this->directory);
+        } catch (\Exception $e) {
 
-            $client = Node::guzzleRequest($server->node);
-            $directory = $request->input('directory', '/');
+            Debugbar::addException($e);
+            $exception = 'An error occured while attempting to load the requested directory, please try again.';
 
-            $res = $client->request('GET', '/server/directory/' . $this->directory, [
-                'headers' => Server::getGuzzleHeaders($uuid)
-            ]);
-
-            $json = json_decode($res->getBody());
-            if($res->getStatusCode() !== 200 || isset($json->error)) {
-                throw new \Exception('The response code from Scales was invalid: HTTP\\' . $res->getStatusCode());
+            if ($e instanceof DisplayException) {
+                $exception = $e->getMessage();
             }
 
-            $this->buildListing($json);
+            return response($exception, 500);
 
-            return view('server.files.list', [
-                'server' => $server,
-                'files' => $this->files,
-                'folders' => $this->folders,
-                'extensions' => $this->editable,
-                'directory' => $prevDir
-            ]);
-
-        } catch (\Exception $e) {
-            Debugbar::addException($e);
-            Log::notice('An exception was raised while attempting to contact a Scales instance to gather a directory listing.', [
-                'exception' => $e,
-                'path' => $request->path()
-            ]);
         }
+
+        return view('server.files.list', [
+            'server' => $server,
+            'files' => $directoryContents->files,
+            'folders' => $directoryContents->folders,
+            'extensions' => Helpers::editableFiles(),
+            'directory' => $prevDir
+        ]);
 
     }
 
-    protected function buildListing($json)
+    /**
+     * Handles a POST request to save a file.
+     *
+     * @param  Request $request
+     * @param  string  $uuid
+     * @return \Illuminate\Http\Response
+     */
+    public function postSaveFile(Request $request, $uuid)
     {
 
-        foreach($json as &$value) {
+        $server = Server::getByUUID($uuid);
+        $this->authorize('save-files', $server);
 
-            if ($value->file !== true) {
+        $controller = new FileController($uuid);
 
-                // @TODO Handle Symlinks
-                $this->folders = array_merge($this->folders, [[
-                    'entry' => $value->name,
-                    'directory' => trim($this->directory, '/'),
-                    'size' => null,
-                    'date' => strtotime($value->modified)
-                ]]);
+        try {
+            $controller->saveFileContents($request->input('file'), $request->input('contents'));
+            return response(null, 204);
+        } catch (\Exception $e) {
 
-            } else {
+            Debugbar::addException($e);
+            $exception = 'An error occured while attempting to save that file, please try again.';
 
-                $this->files = array_merge($this->files, [[
-                    'entry' => $value->name,
-                    'directory' => trim($this->directory, '/'),
-                    'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
-                    'size' => Helpers::bytesToHuman($value->size),
-                    'date' => strtotime($value->modified)
-                ]]);
-
+            if ($e instanceof DisplayException) {
+                $exception = $e->getMessage();
             }
+
+            return response($exception, 500);
 
         }
 

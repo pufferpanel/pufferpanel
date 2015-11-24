@@ -27,6 +27,9 @@ return [
     ],
     'files' => [
             'loading' => 'Loading file listing, this might take a few seconds...',
+            'yaml_notice' => 'You are currently editing a YAML file. These files do not accept tabs, they must use spaces. We\'ve gone ahead and made it so that hitting tab will insert :dropdown spaces.',
+            'back' => 'Back to File Manager',
+            'saved' => 'File has successfully been saved.',
     ],
 
 ];

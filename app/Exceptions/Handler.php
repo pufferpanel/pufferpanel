@@ -3,6 +3,7 @@
 namespace PufferPanel\Exceptions;
 
 use Exception;
+use DisplayException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -44,6 +45,19 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
+        }
+
+        if ($request->isXmlHttpRequest() || $request->ajax()) {
+
+            $exception = 'An exception occured while attempting to perform this action, please try again.';
+
+            if ($e instanceof DisplayException) {
+                $exception = $e->getMessage();
+            }
+
+            return response()->json([
+                'exception' => $exception
+            ], 500);
         }
 
         return parent::render($request, $e);
