@@ -11,7 +11,7 @@ class ServerRoutes {
 
             $router->get('/', [ 'as' => 'server.index', 'uses' => 'Server\ServerController@getIndex' ]);
             $router->get('/files', [ 'as' => 'files.index', 'uses' => 'Server\ServerController@getFiles' ]);
-            $router->get('/files/edit/{file}', [ 'as' => 'files.edit', 'uses' => 'Server\ServerController@getEditFile' ]);
+            $router->get('/files/edit/{file}', [ 'as' => 'files.edit', 'uses' => 'Server\ServerController@getEditFile' ])->where('file', '.*');
             $router->get('/files/add', [ 'as' => 'files.add', 'uses' => 'Server\ServerController@getAddFile' ]);
 
             // Ajax Routes

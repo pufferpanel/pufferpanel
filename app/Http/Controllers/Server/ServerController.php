@@ -81,7 +81,7 @@ class ServerController extends Controller
         return view('server.files.add', [
             'server' => $server,
             'node' => Node::find($server->node),
-            'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '/' : '/' . trim($request->get('dir'), '/') . '/'
+            'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/'
         ]);
     }
 
