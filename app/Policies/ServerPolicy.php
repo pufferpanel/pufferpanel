@@ -125,4 +125,37 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('save-files')->exists();
     }
 
+    /**
+     * Check if user has permission to add files to a server.
+     *
+     * @param  PufferPanel\Models\User   $user
+     * @param  PufferPanel\Models\Server $server
+     * @return boolean
+     */
+    public function addFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('add-files')->exists();
+    }
+
+    /**
+     * Check if user has permission to upload files to a server.
+     * This permission relies on the user having the 'add-files' permission as well due to page authorization.
+     *
+     * @param  PufferPanel\Models\User   $user
+     * @param  PufferPanel\Models\Server $server
+     * @return boolean
+     */
+    public function uploadFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('upload-files')->exists();
+    }
+
 }

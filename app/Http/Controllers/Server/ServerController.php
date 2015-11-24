@@ -67,6 +67,25 @@ class ServerController extends Controller
     }
 
     /**
+     * Renders add file page.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function getAddFile(Request $request)
+    {
+
+        $server = Server::getByUUID($request->route()->server);
+        $this->authorize('add-files', $server);
+
+        return view('server.files.add', [
+            'server' => $server,
+            'node' => Node::find($server->node),
+            'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '/' : '/' . trim($request->get('dir'), '/') . '/'
+        ]);
+    }
+
+    /**
      * Renders edit file page for a given file.
      *
      * @param  Request $request
