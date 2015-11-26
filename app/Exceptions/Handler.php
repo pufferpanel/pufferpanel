@@ -4,6 +4,7 @@ namespace PufferPanel\Exceptions;
 
 use Exception;
 use DisplayException;
+use Debugbar;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -55,9 +56,11 @@ class Handler extends ExceptionHandler
                 $exception = $e->getMessage();
             }
 
+            Debugbar::addException($e);
             return response()->json([
                 'exception' => $exception
             ], 500);
+
         }
 
         return parent::render($request, $e);

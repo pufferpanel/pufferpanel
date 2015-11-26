@@ -145,8 +145,12 @@ return [
         PufferPanel\Providers\EventServiceProvider::class,
         PufferPanel\Providers\RouteServiceProvider::class,
 
+        /*
+         * Additional Dependencies
+         */
         Barryvdh\Debugbar\ServiceProvider::class,
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
+        PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
 
     ],
 
@@ -179,6 +183,7 @@ return [
         'File'      => Illuminate\Support\Facades\File::class,
         'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
+        'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash'      => Illuminate\Support\Facades\Hash::class,
         'Input'     => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,

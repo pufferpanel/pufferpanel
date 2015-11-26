@@ -7,6 +7,12 @@
 
 @section('content')
 <div class="col-md-9">
+    @if (session('flash-error'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ session('flash-error') }}
+        </div>
+    @endif
     @if (Auth::user()->root_admin == 1)
         <div class="alert alert-info">{{ trans('base.view_as_admin') }}</div>
     @endif

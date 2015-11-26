@@ -10,7 +10,8 @@
         "barryvdh/laravel-debugbar": "^2.0",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "^6.1",
-        "kris/laravel-form-builder": "^1.6"
+        "kris/laravel-form-builder": "^1.6",
+        "pragmarx/google2fa": "^0.7.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

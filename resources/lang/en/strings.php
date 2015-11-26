@@ -21,5 +21,8 @@ return [
     'stop' => 'Stop',
     'restart' => 'Restart',
     'save' => 'Save',
+    'enabled' => 'Enabled',
+    'disabled' => 'Disabled',
+    'submit' => 'Submit',
 
 ];
