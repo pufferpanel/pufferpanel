@@ -52,7 +52,7 @@ class User extends Model implements AuthenticatableContract,
      * @param int $id Account ID for which we want to generate a TOTP secret
      * @return string
      */
-    public function setTotpSecret($id)
+    public static function setTotpSecret($id)
     {
 
         $totpSecretKey = Google2FA::generateSecretKey();
@@ -76,7 +76,7 @@ class User extends Model implements AuthenticatableContract,
      * @param int $id Account ID for which we want to generate a TOTP secret
      * @return boolean
      */
-    public function toggleTotp($id, $token)
+    public static function toggleTotp($id, $token)
     {
 
         $user = User::find($id);

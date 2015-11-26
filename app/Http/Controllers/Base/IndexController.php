@@ -73,9 +73,9 @@ class IndexController extends Controller
             'qrImage' => Google2FA::getQRCodeGoogleUrl(
                 'PufferPanel',
                 Auth::user()->email,
-                $totpSecretKey
+                $totpSecret
             ),
-            'secret' => $totpSecretKey
+            'secret' => $totpSecret
         ]);
 
     }
