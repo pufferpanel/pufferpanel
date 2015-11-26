@@ -24,5 +24,7 @@ return [
     'enabled' => 'Enabled',
     'disabled' => 'Disabled',
     'submit' => 'Submit',
+    'current_password' => 'Current Password',
+    'again' => 'Again',
 
 ];
