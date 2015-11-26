@@ -2,6 +2,8 @@
 
 namespace PufferPanel\Models;
 
+use Google2FA;
+use PufferPanel\Exceptions\AccountNotFound;
 use PufferPanel\Models\Permission;
 
 use Illuminate\Auth\Authenticatable;
@@ -42,6 +44,56 @@ class User extends Model implements AuthenticatableContract,
     public function permissions()
     {
         return $this->hasMany(Permission::class);
+    }
+
+    /**
+     * Sets the TOTP secret for an account.
+     *
+     * @param int $id Account ID for which we want to generate a TOTP secret
+     * @return string
+     */
+    public function setTotpSecret($id)
+    {
+
+        $totpSecretKey = Google2FA::generateSecretKey();
+
+        $user = User::find($id);
+
+        if (!$user) {
+            throw new AccountNotFound('An account with that ID (' . $id . ') does not exist in the system.');
+        }
+
+        $user->totp_secret = $totpSecretKey;
+        $user->save();
+
+        return $totpSecretKey;
+
+    }
+
+    /**
+     * Enables or disables TOTP on an account if the token is valid.
+     *
+     * @param int $id Account ID for which we want to generate a TOTP secret
+     * @return boolean
+     */
+    public function toggleTotp($id, $token)
+    {
+
+        $user = User::find($id);
+
+        if (!$user) {
+            throw new AccountNotFound('An account with that ID (' . $id . ') does not exist in the system.');
+        }
+
+        if (!Google2FA::verifyKey($user->totp_secret, $token)) {
+            return false;
+        }
+
+        $user->use_totp = ($user->use_totp === 1) ? 0 : 1;
+        $user->save();
+
+        return true;
+
     }
 
 }

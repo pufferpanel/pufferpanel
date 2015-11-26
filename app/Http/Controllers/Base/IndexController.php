@@ -5,6 +5,8 @@ namespace PufferPanel\Http\Controllers\Base;
 use Auth;
 use Debugbar;
 use Google2FA;
+use Log;
+use PufferPanel\Exceptions\AccountNotFoundException;
 use PufferPanel\Models\User;
 use PufferPanel\Models\Server;
 
@@ -58,17 +60,20 @@ class IndexController extends Controller
     public function putAccountTotp(Request $request)
     {
 
-        $totpSecretKey = Google2FA::generateSecretKey();
-
-        $user = User::find(Auth::user()->id);
-        $user->totp_secret = $totpSecretKey;
-        $user->save();
+        try {
+            $totpSecret = User::setTotpSecret(Auth::user()->id);
+        } catch (\Exception $e) {
+            if ($e instanceof AccountNotFoundException) {
+                return response($e->getMessage(), 500);
+            }
+            throw $e;
+        }
 
         return response()->json([
             'qrImage' => Google2FA::getQRCodeGoogleUrl(
                 'PufferPanel',
-                $user->email,
-                $user->totp_secret
+                Auth::user()->email,
+                $totpSecretKey
             ),
             'secret' => $totpSecretKey
         ]);
@@ -79,7 +84,7 @@ class IndexController extends Controller
      * Verifies that 2FA token recieved is valid and will work on the account.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return string
+     * @return \Illuminate\Http\Response
      */
     public function postAccountTotp(Request $request)
     {
@@ -88,18 +93,26 @@ class IndexController extends Controller
             return response('No input \'token\' defined.', 500);
         }
 
-        $user = User::find(Auth::user()->id);
-        if (!Google2FA::verifyKey($user->totp_secret, $request->input('token'))) {
+        try {
+            if(User::toggleTotp(Auth::user()->id, $request->input('token'))) {
+                return response('true');
+            }
             return response('false');
+        } catch (\Exception $e) {
+            if ($e instanceof AccountNotFoundException) {
+                return response($e->getMessage(), 500);
+            }
+            throw $e;
         }
-
-        $user->use_totp = 1;
-        $user->save();
-
-        return response('true');
 
     }
 
+    /**
+     * Disables TOTP on an account.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function deleteAccountTotp(Request $request)
     {
 
@@ -107,17 +120,51 @@ class IndexController extends Controller
             return redirect()->route('account.totp')->with('flash-error', 'Missing required `token` field in request.');
         }
 
-        $user = User::find(Auth::user()->id);
-        if (!Google2FA::verifyKey($user->totp_secret, $request->input('token'))) {
-            return response('false');
+        try {
+            if(User::toggleTotp(Auth::user()->id, $request->input('token'))) {
+                return redirect()->route('account.totp');
+            }
+            return redirect()->route('account.totp')->with('flash-error', 'Unable to disable TOTP on this account, was the token correct?');
+        } catch (\Exception $e) {
+            if ($e instanceof AccountNotFoundException) {
+                return redirect()->route('account.totp')->with('flash-error', 'An error occured while attempting to perform this action.');
+            }
+            throw $e;
         }
 
-        $user->totp_secret = null;
-        $user->use_totp = 0;
-        $user->save();
+    }
 
-        return redirect()->route('account.totp');
+    /**
+     * Display base account information page.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function getAccount(Request $request)
+    {
+        return view('base.account');
+    }
 
+    /**
+     * Update an account email.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postAccountEmail(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Update an account password.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postAccountPassword(Request $request)
+    {
+        //
     }
 
 }
