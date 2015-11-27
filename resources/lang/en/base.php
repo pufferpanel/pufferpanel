@@ -17,6 +17,8 @@ return [
     'view_as_admin' => 'You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a blue dot to the left of their name.',
     'server_name' => 'Server Name',
     'no_servers' => 'You do not currently have any servers listed on your account.',
+    'form_error' => 'The following errors were encountered while trying to process this request.',
+    'password_req' => 'Passwords must meet the following requirements: at least one uppercase character, one lowercase character, one digit, and be at least 8 characters in length.',
 
     'account' => [
         'totp_header' => 'Two-Factor Authentication',

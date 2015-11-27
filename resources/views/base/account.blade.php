@@ -7,16 +7,25 @@
 
 @section('content')
 <div class="col-md-9">
-    @if (session('flash-error'))
+    @if (count($errors) > 0)
         <div class="alert alert-danger alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-error') }}
+            {{ trans('base.form_error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
-    @if (session('flash-success'))
-        <div class="alert alert-success alert-dismissible" role="alert">
+    @if (session('flash-success') || session('flash-error'))
+        <div class="alert @if(session('flash-success')) alert-success @else alert-danger @endif alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-success') }}
+            @if (session('flash-success'))
+                {{ session('flash-success') }}
+            @else
+                {{ session('flash-error') }}
+            @endif
         </div>
     @endif
 	<div class="row">
@@ -33,12 +42,13 @@
 						<label for="new_password" class="control-label">{{ trans('base.account.new_password') }}</label>
 						<div>
 							<input type="password" class="form-control" name="new_password" />
+                            <p class="text-muted"><small>{{ trans('base.password_req') }}</small></p>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="new_password_again" class="control-label">{{ trans('base.account.new_password') }} {{ trans('strings.again') }}</label>
 						<div>
-							<input type="password" class="form-control" name="new_password_again" />
+							<input type="password" class="form-control" name="new_password_confirmation" />
 						</div>
 					</div>
 					<div class="form-group">
