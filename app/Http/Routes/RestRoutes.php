@@ -7,7 +7,7 @@ use Illuminate\Routing\Router;
 class RestRoutes {
 
     public function map(Router $router) {
-        $router->group(['prefix' => 'api'], function ($server) use ($router) {
+        $router->group(['prefix' => 'api/v1'], function ($server) use ($router) {
 
             $router->group(['prefix' => 'users'], function ($server) use ($router) {
 

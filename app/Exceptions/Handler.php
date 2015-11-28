@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        if ($request->isXmlHttpRequest() || $request->ajax()) {
+        if ($request->isXmlHttpRequest() || $request->ajax() || $request->path('/api/*')) {
 
             $exception = 'An exception occured while attempting to perform this action, please try again.';
 
@@ -56,9 +56,19 @@ class Handler extends ExceptionHandler
                 $exception = $e->getMessage();
             }
 
-            Debugbar::addException($e);
+            // Live environment, just return a nice error.
+            if(!env('APP_DEBUG', false)) {
+                return response()->json([
+                    'error' => $exception
+                ], 500);
+            }
+
+            // If we are debugging, return the exception in it's full manner.
             return response()->json([
-                'exception' => $exception
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ], 500);
 
         }

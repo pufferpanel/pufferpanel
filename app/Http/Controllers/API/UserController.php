@@ -2,8 +2,10 @@
 
 namespace PufferPanel\Http\Controllers\API;
 
+use Gate;
 use Log;
 use Debugbar;
+use PufferPanel\Models\API;
 use PufferPanel\Models\User;
 
 use PufferPanel\Http\Controllers\Controller;
@@ -17,13 +19,20 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('api');
+        $this->middleware('api');
     }
-
 
     public function getAllUsers(Request $request)
     {
-        return response()->json(User::all());
+
+        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
+        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
+            return API::noPermissionError();
+        }
+
+        return response()->json([
+            'users' => User::all()
+        ]);
     }
 
     /**
@@ -39,6 +48,12 @@ class UserController extends Controller
      */
     public function getUser(Request $request, $id, $fields = null)
     {
+
+        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
+        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
+            return API::noPermissionError();
+        }
+
         if (is_null($fields)) {
             return response()->json(User::find($id));
         }

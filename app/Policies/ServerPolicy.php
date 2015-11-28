@@ -2,6 +2,7 @@
 
 namespace PufferPanel\Policies;
 
+use Log;
 use Debugbar;
 use PufferPanel\Models\User;
 use PufferPanel\Models\Server;
