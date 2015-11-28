@@ -2,7 +2,6 @@
 
 namespace PufferPanel\Http\Controllers\Server;
 
-use Gate;
 use Auth;
 use PufferPanel\Models\Server;
 use PufferPanel\Models\Node;
