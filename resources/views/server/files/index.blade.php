@@ -5,21 +5,39 @@
 @endsection
 
 @section('content')
-<div class="col-md-9" id="internal_alert">
-    <div class="alert alert-info">
-        <i class="fa fa-spinner fa-spin"></i> {{ trans('server.files.loading') }}
+<div class="col-md-9">
+    <div class="row" id="internal_alert">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <i class="fa fa-spinner fa-spin"></i> {{ trans('server.files.loading') }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @if (session('flash-error'))
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ session('flash-error') }}
+                </div>
+            @endif
+            <div class="files_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="load_files"></div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">File Path Information</h3>
+                </div>
+                <div class="panel-body">
+                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path. While your SFTP client sees the files as <code>/public</code> this is not true for the server process.
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="col-md-9">
-    @if (session('flash-error'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-error') }}
-        </div>
-    @endif
-    <div class="files_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
-</div>
-<div class="col-md-9" id="load_files"></div>
 <script>
     $(document).ready(function () {
         $('.server-files').addClass('active');
@@ -76,6 +94,7 @@
                 handleLoader(false);
                 $("#load_files").slideUp(function () {
                     $("#load_files").html(data).slideDown();
+                    $('[data-toggle="tooltip"]').tooltip();
                     $('#internal_alert').slideUp();
                     reloadActionClick();
                 });

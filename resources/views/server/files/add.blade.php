@@ -25,7 +25,7 @@
         <div class="tab-pane active" id="create">
             <div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
             <form method="post" id="new_file">
-                <h4>/public/{{ $directory }} <input type="text" id="file_name" class="filename" value="newfile.txt" /></h4>
+                <h4>/home/container/{{ $directory }} <input type="text" id="file_name" class="filename" value="newfile.txt" /></h4>
                 <div class="form-group">
                     <div>
                         <textarea name="file_contents" id="fileContents" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
@@ -41,8 +41,8 @@
         </div>
         @can('upload-files', $server)
             <div class="tab-pane" id="upload">
-                <h4>/public/&nbsp;&nbsp;<input type="text" id="u_file_name" value="{{ $directory }}" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-                <div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/public/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
+                <h4>/home/container/&nbsp;&nbsp;<input type="text" id="u_file_name" value="{{ $directory }}" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+                <div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/home/container/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
                 <div class="alert alert-danger" id="upload_error" style="display: none;"></div>
                 <input type="file" id="fileinput" name="fileUpload[]" multiple="" style="display:none;"/>
                 <div id="uploader_box" class="well well-sm" style="cursor:pointer;">

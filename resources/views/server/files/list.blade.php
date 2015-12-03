@@ -1,4 +1,4 @@
-<h4 class="nopad">/public{{ $directory['header'] }} &nbsp;<small><a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted"><i class="fa fa-plus"></i></a></small></h4>
+<h4 class="nopad">/home/container{{ $directory['header'] }} &nbsp;<small><a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add New File(s)"></i></a></small></h4>
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
