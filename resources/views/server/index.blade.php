@@ -14,7 +14,7 @@
 <div class="col-md-9">
     <ul class="nav nav-tabs" id="config_tabs">
         <li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
-        <li><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
+        <li id="triggerConsoleView"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
     </ul><br />
     <div class="tab-content">
         <div class="tab-pane active" id="stats">
@@ -127,7 +127,8 @@
 </div>
 <script>
 $(window).load(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+
     // Socket Recieves New Server Stats
     socket.on('stats', function (data) {
         var currentTime = new Date();
@@ -155,12 +156,8 @@ $(window).load(function () {
 
     // New Console Data Recieved
     socket.on('console', function (data) {
-        var total = (($('#live_console').val() ? $('#live_console').val() : '') + data.line).split('\n');
-        if (total.length > 750) {
-            total = total.slice(total.length - 750);
-        }
-        $('#live_console').val(total.join('\n'));
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+        $('#live_console').val($('#live_console').val() + data.line);
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
 
     // Update Listings on Initial Status
@@ -176,6 +173,7 @@ $(window).load(function () {
                 timeout: 10000
             }).done(function(data) {
                 $('#live_console').val(data);
+                $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to load initial server log.').fadeIn().delay(5000).fadeOut();
             });
@@ -193,13 +191,18 @@ $(window).load(function () {
     });
 
     // Scroll to the top of the Console when switching to that tab.
+    $('#triggerConsoleView').click(function () {
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
+    });
+    if($('triggerConsoleView').is(':visible')) {
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
+    }
     $('a[data-toggle=\'tab\']').on('shown.bs.tab', function (e) {
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
 
     // Load Paused Console with Live Console Data
     $('#pause_console').click(function(){
-        $('#paused_console').val();
         $('#paused_console').val($('#live_console').val());
     });
 
@@ -240,18 +243,11 @@ $(window).load(function () {
                 url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/console',
                 timeout: 10000,
                 data: { command: ccmd }
-            }).done(function (data) {
-
-                $('#sending_command').removeClass('disabled');
-                $('#sending_command').html('&rarr;');
-                $('#ccmd').val('');
-
             }).fail(function (jqXHR) {
-
                 $('#sc_resp').html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+            }).always(function () {
                 $('#sending_command').html('&rarr;').removeClass('disabled');
                 $('#ccmd').val('');
-
             });
         });
     @endcan
