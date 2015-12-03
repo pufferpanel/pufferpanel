@@ -6,6 +6,7 @@ use Auth;
 use Debugbar;
 use Google2FA;
 use Log;
+use Alert;
 use PufferPanel\Exceptions\AccountNotFoundException;
 use PufferPanel\Exceptions\DisplayException;
 use PufferPanel\Models\User;
@@ -118,17 +119,21 @@ class IndexController extends Controller
     {
 
         if (!$request->has('token')) {
-            return redirect()->route('account.totp')->with('flash-error', 'Missing required `token` field in request.');
+            Alert::danger('Missing required `token` field in request.')->flash();
+            return redirect()->route('account.totp');
         }
 
         try {
             if(User::toggleTotp(Auth::user()->id, $request->input('token'))) {
                 return redirect()->route('account.totp');
             }
-            return redirect()->route('account.totp')->with('flash-error', 'Unable to disable TOTP on this account, was the token correct?');
+
+            Alert::danger('Unable to disable TOTP on this account, was the token correct?')->flash();
+            return redirect()->route('account.totp');
         } catch (\Exception $e) {
             if ($e instanceof AccountNotFoundException) {
-                return redirect()->route('account.totp')->with('flash-error', 'An error occured while attempting to perform this action.');
+                Alert::danger('An error occured while attempting to perform this action.')->flash();
+                return redirect()->route('account.totp');
             }
             throw $e;
         }
@@ -161,16 +166,19 @@ class IndexController extends Controller
         ]);
 
         if (!password_verify($request->input('password'), Auth::user()->password)) {
-            return redirect()->route('account')->with('flash-error', 'The password provided was not valid for this account.');
+            Alert::danger('The password provided was not valid for this account.')->flash();
+            return redirect()->route('account');
         }
 
         // Met Validation, lets roll out.
         try {
             User::setEmail(Auth::user()->id, $request->input('new_email'));
-            return redirect()->route('account')->with('flash-success', 'Your email address has successfully been updated.');
+            Alert::success('Your email address has successfully been updated.')->flash();
+            return redirect()->route('account');
         } catch (\Exception $e) {
             if ($e instanceof AccountNotFoundException || $e instanceof DisplayException) {
-                return redirect()->route('account')->with('flash-error', $e->getMessage());
+                Alert::danger($e->getMessage())->flash();
+                return redirect()->route('account');
             }
             throw $e;
         }
@@ -192,16 +200,19 @@ class IndexController extends Controller
         ]);
 
         if (!password_verify($request->input('current_password'), Auth::user()->password)) {
-            return redirect()->route('account')->with('flash-error', 'The password provided was not valid for this account.');
+            Alert::danger('The password provided was not valid for this account.')->flash();
+            return redirect()->route('account');
         }
 
         // Met Validation, lets roll out.
         try {
             User::setPassword(Auth::user()->id, $request->input('new_password'));
-            return redirect()->route('account')->with('flash-success', 'Your password has successfully been updated.');
+            Alert::success('Your password has successfully been updated.')->flash();
+            return redirect()->route('account');
         } catch (\Exception $e) {
             if ($e instanceof AccountNotFoundException || $e instanceof DisplayException) {
-                return redirect()->route('account')->with('flash-error', $e->getMessage());
+                Alert::danger($e->getMessage())->flash();
+                return redirect()->route('account');
             }
             throw $e;
         }

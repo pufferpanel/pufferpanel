@@ -7,12 +7,14 @@
 @section('content')
 <div class="col-md-9">
     <span id="save_status" style="display:none;width: 100%;"></span>
-    @if (session('flash-error'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-error') }}
-        </div>
-    @endif
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
     <h3 class="nopad"><small>Editing File: /home/container/{{ $file }}</small></h3>
     <form method="post" id="editing_file">
         <div class="form-group">

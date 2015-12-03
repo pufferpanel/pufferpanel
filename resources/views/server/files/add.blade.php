@@ -11,12 +11,14 @@
 
 @section('content')
 <div class="col-md-9">
-    @if (session('flash-error'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-error') }}
-        </div>
-    @endif
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
     <ul class="nav nav-tabs" id="config_tabs">
         <li class="active"><a href="#create" data-toggle="tab">Create File</a></li>
         @can('upload-files', $server)<li><a href="#upload" data-toggle="tab">Upload Files</a></li>@endcan

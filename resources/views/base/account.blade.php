@@ -18,16 +18,14 @@
             </ul>
         </div>
     @endif
-    @if (session('flash-success') || session('flash-error'))
-        <div class="alert @if(session('flash-success')) alert-success @else alert-danger @endif alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            @if (session('flash-success'))
-                {{ session('flash-success') }}
-            @else
-                {{ session('flash-error') }}
-            @endif
-        </div>
-    @endif
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
 	<div class="row">
 		<div class="col-md-6">
 			<h3 class="nopad">{{ trans('base.account.update_pass') }}</h3><hr />

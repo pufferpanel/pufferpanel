@@ -151,6 +151,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
         PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
+        Prologue\Alerts\AlertsServiceProvider::class,
 
     ],
 
@@ -167,6 +168,7 @@ return [
 
     'aliases' => [
 
+        'Alert'     => Prologue\Alerts\Facades\Alert::class,
         'App'       => Illuminate\Support\Facades\App::class,
         'Artisan'   => Illuminate\Support\Facades\Artisan::class,
         'Auth'      => Illuminate\Support\Facades\Auth::class,

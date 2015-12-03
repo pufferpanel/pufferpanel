@@ -7,12 +7,14 @@
 
 @section('content')
 <div class="col-md-9">
-    @if (session('flash-error'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ session('flash-error') }}
-        </div>
-    @endif
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
     <h3 style="margin-top:0;">{{ trans('base.account.totp_header') }} <small>@if (Auth::user()->use_totp === 1){{ trans('strings.enabled') }}@else{{ trans('strings.disabled') }}@endif</small></h3><hr />
     @if (Auth::user()->use_totp === 1)
         <div class="panel panel-default">

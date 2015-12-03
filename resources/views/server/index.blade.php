@@ -12,6 +12,14 @@
 
 @section('content')
 <div class="col-md-9">
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
     <ul class="nav nav-tabs" id="config_tabs">
         <li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
         <li id="triggerConsoleView"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>

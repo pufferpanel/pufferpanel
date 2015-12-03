@@ -8,6 +8,7 @@ use PufferPanel\Models\Node;
 use PufferPanel\Models\Download;
 use Debugbar;
 use Uuid;
+use Alert;
 
 use PufferPanel\Exceptions\DisplayException;
 use PufferPanel\Http\Controllers\Scales\FileController;
@@ -114,7 +115,8 @@ class ServerController extends Controller
                 $exception = $e->getMessage();
             }
 
-            return redirect()->route('files.index', $uuid)->with('flash-error', $exception);
+            Alert::danger($exception)->flash();
+            return redirect()->route('files.index', $uuid);
 
         }
 
