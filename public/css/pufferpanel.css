@@ -6,6 +6,7 @@ body{font-size:13px}
 @media (min-width:1200px){.container{width:970px}}
 .form-control{padding:4px 8px;font-size:13px;line-height:1.4}
 .footer{margin-top:15px;font-size:10px;color:#999}
+.nopad{margin-top:0!important}
 .alert-success{
 	background-image: url('../images/check-square.png') !important;
 	background-size: 13px;

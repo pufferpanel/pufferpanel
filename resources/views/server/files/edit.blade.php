@@ -13,6 +13,7 @@
             {{ session('flash-error') }}
         </div>
     @endif
+    <h3 class="nopad"><small>Editing File: /home/container/{{ $file }}</small></h3>
     <form method="post" id="editing_file">
         <div class="form-group">
             <div>
