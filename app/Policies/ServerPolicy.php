@@ -159,4 +159,20 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('upload-files')->exists();
     }
 
+    /**
+     * Check if user has permission to download files from a server.
+     *
+     * @param  PufferPanel\Models\User   $user
+     * @param  PufferPanel\Models\Server $server
+     * @return boolean
+     */
+    public function downloadFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('download-files')->exists();
+    }
+
 }

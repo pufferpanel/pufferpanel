@@ -5,7 +5,9 @@ namespace PufferPanel\Http\Controllers\Server;
 use Auth;
 use PufferPanel\Models\Server;
 use PufferPanel\Models\Node;
+use PufferPanel\Models\Download;
 use Debugbar;
+use Uuid;
 
 use PufferPanel\Exceptions\DisplayException;
 use PufferPanel\Http\Controllers\Scales\FileController;
@@ -124,6 +126,34 @@ class ServerController extends Controller
             'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
             'extension' => $fileInfo->extension
         ]);
+
+    }
+
+    /**
+     * Handles downloading a file for the user.
+     *
+     * @param  Request $request
+     * @param  string  $uuid
+     * @param  string  $file
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function getDownloadFile(Request $request, $uuid, $file)
+    {
+
+        $server = Server::getByUUID($uuid);
+        $node = Node::find($server->node);
+
+        $this->authorize('download-files', $server);
+
+        $download = new Download;
+
+        $download->token = Uuid::generate(4);
+        $download->server = $server->id;
+        $download->path = str_replace('../', '', $file);
+
+        $download->save();
+
+        return redirect('https://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
 
     }
 
