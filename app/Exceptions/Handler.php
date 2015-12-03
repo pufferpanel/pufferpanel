@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        if ($request->isXmlHttpRequest() || $request->ajax() || $request->path('/api/*')) {
+        if ($request->isXmlHttpRequest() || $request->ajax() || $request->is('/api/*')) {
 
             $exception = 'An exception occured while attempting to perform this action, please try again.';
 
