@@ -71,8 +71,13 @@
 
         }
 
+        function reloadActions () {
+            reloadActionClick();
+            reloadActionDelete();
+        }
+
         // Handle folder clicking to load new contents
-        function reloadActionClick() {
+        function reloadActionClick () {
             $('a.load_new').click(function (e) {
                 e.preventDefault();
                 window.history.pushState(null, null, $(this).attr('href'));
@@ -80,7 +85,35 @@
             });
         }
 
-        //
+        // Handle Deleting Files
+        function reloadActionDelete () {
+            $('a.delete_file').click(function (e) {
+                e.preventDefault();
+                var clicked = $(this);
+                var deleteItemPath = $(this).attr('href');
+
+                if (!confirm('Are you sure you want to delete /home/container/' + deleteItemPath + '? There is no reversing this action.')) {
+                    return;
+                }
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    }
+                }).done(function (data) {
+                    clicked.parent().parent().parent().parent().fadeOut();
+                }).fail(function (jqXHR) {
+                    $("#internal_alert").html('<div class="alert alert-danger">An error occured while attempting to delete <code>/home/container/' + deleteItemPath + '</code>. Please try again.</div>').show();
+                    console.log(jqXHR);
+                });
+
+            });
+        }
+
+        // Handle Loading Contents
         function loadDirectoryContents (dir) {
 
             handleLoader(true);
@@ -98,15 +131,20 @@
                     $("#load_files").html(data).slideDown();
                     $('[data-toggle="tooltip"]').tooltip();
                     $('#internal_alert').slideUp();
-                    reloadActionClick();
+
+                    // Run Actions Again
+                    reloadActions();
                 });
-            }).fail (function (jqXHR) {
+            }).fail(function (jqXHR) {
                 $("#internal_alert").html('<div class="alert alert-danger">An error occured while attempting to process this request. Please try again.</div>').show();
                 console.log(jqXHR);
             });
 
         }
+
+        // Load on Initial Page Load
         loadDirectoryContents($.urlParam('dir'));
+
     });
 </script>
 @endsection
