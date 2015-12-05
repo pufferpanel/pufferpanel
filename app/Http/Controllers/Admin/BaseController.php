@@ -22,7 +22,7 @@ class BaseController extends Controller
 
     }
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         return view('admin.index');
     }

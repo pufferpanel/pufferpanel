@@ -3,12 +3,13 @@
 namespace PufferPanel\Http\Controllers\Admin;
 
 use Debugbar;
-use PufferPanel\Models\User;
+use PufferPanel\Models\Server;
+use PufferPanel\Models\Node;
 
 use PufferPanel\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AccountsController extends Controller
+class ServersController extends Controller
 {
 
     /**
@@ -25,8 +26,11 @@ class AccountsController extends Controller
 
     public function getIndex(Request $request)
     {
-        return view('admin.accounts.index', [
-            'users' => User::paginate(20)
+        return view('admin.servers.index', [
+            'servers' => Server::select('servers.*', 'nodes.name as a_nodeName', 'users.email as a_ownerEmail')
+                ->join('nodes', 'servers.node', '=', 'nodes.id')
+                ->join('users', 'servers.owner', '=', 'users.id')
+                ->paginate(20),
         ]);
     }
 

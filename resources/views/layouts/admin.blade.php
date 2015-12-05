@@ -72,8 +72,8 @@
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-                        <a href="/admin/server" class="list-group-item">Find Server</a>
-                        <a href="/admin/server/new" class="list-group-item">New Server</a>
+                        <a href="/admin/servers" class="list-group-item">Find Server</a>
+                        <a href="/admin/servers/new" class="list-group-item">New Server</a>
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>

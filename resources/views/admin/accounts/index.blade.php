@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Active Accounts
+    Account List
 @endsection
 
 @section('content')
@@ -31,6 +31,9 @@
 			@endforeach
 		</tbody>
 	</table>
+    <div class="row">
+        <div class="col-md-12 text-center">{!! $users->render() !!}</div>
+    </div>
 </div>
 <script>
 $(document).ready(function () {
