@@ -31,5 +31,6 @@ class Kernel extends HttpKernel
         'guest' => \PufferPanel\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \PufferPanel\Http\MiddleWare\CheckServer::class,
         'api' => \PufferPanel\Http\MiddleWare\APIAuthenticate::class,
+        'admin' => \PufferPanel\Http\Middleware\AdminAuthenticate::class,
     ];
 }
