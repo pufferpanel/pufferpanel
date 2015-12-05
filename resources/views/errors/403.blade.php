@@ -2,10 +2,6 @@
 
 @section('title', '403: Forbidden')
 
-
-@section('right-nav')
-@endsection
-
 @section('content')
 <div class="col-md-9">
     <div class="panel panel-danger">
