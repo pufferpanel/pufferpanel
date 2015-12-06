@@ -19,16 +19,6 @@ class IndexController extends Controller
 {
 
     /**
-     * Controller Constructor
-     */
-    public function __construct()
-    {
-
-        // All routes in this controller are protected by the authentication middleware.
-        $this->middleware('auth');
-    }
-
-    /**
      * Returns listing of user's servers.
      *
      * @param  \Illuminate\Http\Request $request
