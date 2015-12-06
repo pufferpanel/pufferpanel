@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \PufferPanel\Console\Commands\Inspire::class,
+        \PufferPanel\Console\Commands\InstallPanel::class,
     ];
 
     /**
