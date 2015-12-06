@@ -1,0 +1,27 @@
+---
+ip: "192.168.10.77"
+memory: 2048
+cpus: 1
+hostname: pufferpanel
+name: pufferpanel
+provider: virtualbox
+
+authorize: ~/.ssh/id_rsa.pub
+
+keys:
+    - ~/.ssh/id_rsa
+
+folders:
+    - map: "~/projects/PufferPanel"
+      to: "/home/vagrant/pufferpanel"
+
+sites:
+    - map: pufferpanel.app
+      to: "/home/vagrant/pufferpanel/public"
+
+databases:
+    - homestead
+
+variables:
+    - key: APP_ENV
+      value: local
