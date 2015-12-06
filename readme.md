@@ -6,6 +6,15 @@ Documentation for installing and managing PufferPanel can be found on our [docum
 
 Support for using PufferPanel can be found on our [community forums](https://community.pufferpanel.com) or on IRC at [`irc.esper.net #pufferpanel`](https://webchat.esper.net?channels=#pufferpanel).
 
+### Development Environment
+
+A development environment can be created using [Homestead](http://laravel.com/docs/5.1/homestead)
+(on Vagrant). To launch the development environment run `vagrant up` from the
+project directory (assumed to be `~/projects/PufferPanel`), and create a hosts
+entry for `pufferpanel.app` pointing to `192.168.10.77`. After you have launched
+the Vagrant environment, run `vagrant ssh` to connect to the box and
+`php artisan panel:install` to create your admin user.
+
 ## License
 ```
 Copyright (C) 2012 - 2015 PufferPanel Development (Dane Everitt)
