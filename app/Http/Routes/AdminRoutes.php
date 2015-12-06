@@ -7,7 +7,7 @@ use Illuminate\Routing\Router;
 class AdminRoutes {
 
     public function map(Router $router) {
-        $router->group(['prefix' => 'admin'], function ($server) use ($router) {
+        $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function ($server) use ($router) {
             $router->get('/', [ 'as' => 'admin.index', 'uses' => 'Admin\BaseController@getIndex' ]);
 
             // Account Routes
