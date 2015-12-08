@@ -42,7 +42,7 @@ class JsonConfig implements ConfigInterface {
 	}
 
 	public function config($base = null) {
-		return (is_null($base)) ? $this->config : $this->config->{$base};
+		return (is_null($base)) ? $this->config : property_exists($this->config, $base) ? $this->config->{$base} : null;
 	}
 
 }
