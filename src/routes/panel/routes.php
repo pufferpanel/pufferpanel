@@ -231,6 +231,128 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
 
 });
 
+$klein->respond('GET', '/bulkcmd', function($request, $response, $service) use($core) {
+
+	$servers = ORM::forTable('servers')
+                        ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+                        ->join('nodes', array('servers.node', '=', 'nodes.id'))
+                        ->join('locations', array('nodes.location', '=', 'locations.id'))
+                        ->where('servers.active', 1)
+                        ->where_in('servers.id', $core->permissions->listServers())
+                        ->findArray();
+
+	$actualServers = array();
+
+	// Sorry, I'm not sure how to get servers where they are the owner only!
+	foreach ($servers as $server) {
+		if($server['owner_id'] === $core->user->getData('id')) {
+			$actualServers[] = $server;
+		}
+	}
+
+	$response->body($core->twig->render('panel/bulkcmd.html', array(
+		'servers' => $actualServers,
+		'xsrf' => $core->auth->XSRF(),
+		'flash' => $service->flashes()
+	)))->send();
+
+});
+
+$klein->respond('POST', '/bulkcmd', function($request, $response, $service) use ($core) {
+
+	if(!$core->auth->XSRF($request->param('xsrf'))) {
+
+                $service->flash('<div class="alert alert-warning">'.$core->language->render('error.xsrf').'</div>');
+                $response->redirect('/bulkcmd')->send();
+                return;
+
+        }
+
+	$servers = ORM::forTable('servers')
+                        ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+                        ->join('nodes', array('servers.node', '=', 'nodes.id'))
+                        ->join('locations', array('nodes.location', '=', 'locations.id'))
+                        ->where('servers.active', 1)
+                        ->where_in('servers.id', $core->permissions->listServers())
+                        ->findArray();
+
+        $actualServers = array();
+
+	// Sorry, I'm not sure how to get servers where they are the owner only!
+        foreach ($servers as $server) {
+                if($server['owner_id'] === $core->user->getData('id')) {
+                        $actualServers[] = $server['hash'];
+                }
+        }
+
+	if(empty($actualServers)) {
+		$service->flash('<div class="alert alert-warning">You do not have any servers.</div>');
+		$response->redirect('/bulkcmd')->send();
+		return;
+	}
+
+	$servers = $request->param('servers');
+
+	if(!is_array($servers) || (is_array($servers) && count($servers) < 1)) {
+		$service->flash('<div class="alert alert-warning">You selected an invalid server.</div>');
+                $response->redirect('/bulkcmd')->send();
+                return;
+	}
+
+	foreach ($servers as $server) {
+		if(!in_array($server, $actualServers)) {
+			$service->flash('<div class="alert alert-warning">One or more of the servers you selected was invalid.' . $server . '</div>');
+	                $response->redirect('/bulkcmd')->send();
+        	        return;
+		}
+	}
+
+	$command = $request->param('command');
+
+	if(empty($command)) {
+		$service->flash('<div class="alert alert-warning">You entered an invalid command.</div>');
+                $response->redirect('/bulkcmd')->send();
+                return;
+	}
+
+	foreach ($servers as $server) {
+		$serverToSendCommand = ORM::forTable('servers')
+						->select('servers.*')
+						->where('hash', $server)
+						->findArray();
+
+		if($serverToSendCommand != null) {
+			$serverToSendCommand = $serverToSendCommand[0];
+			$node = ORM::forTable('nodes')
+					->select('nodes.*')
+					->where('id', $serverToSendCommand['node'])
+					->findArray();
+			$node = $node[0];
+			try {
+				Unirest\Request::post(
+					"https://" . $node['fqdn'] . ":" . $node['daemon_listen'] . "/server/console",
+					array(
+						"X-Access-Token" => $node['daemon_secret'],
+						"X-Access-Server" => $server
+					),
+					array(
+						"command" => $command
+					)
+				);
+			} catch (\Exception $e) {
+				\Tracy\Debugger::log($e);
+				$service->flash('<div class="alert alert-danger">A problem happened while sending the command to the target servers.</div>');
+				$response->redirect('/bulkcmd')->send();
+				return;
+			}
+		}
+	}
+
+	$service->flash('<div class="alert alert-success">Your command has been sent successfully.</div>');
+	$response->redirect('/bulkcmd')->send();
+
+});
+
 $klein->respond('GET', '/totp', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render('panel/totp.html', array(
