@@ -233,25 +233,25 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
 
 $klein->respond('GET', '/bulkcmd', function($request, $response, $service) use($core) {
 
-	$servers = ORM::forTable('servers')
+	if($core->auth->isAdmin()) {
+                $servers = ORM::forTable('servers')
+                        ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+                        ->join('nodes', array('servers.node', '=', 'nodes.id'))
+                        ->join('locations', array('nodes.location', '=', 'locations.id'))
+                        ->orderByDesc('active')
+                        ->findArray();
+	} else {
+		$servers = ORM::forTable('servers')
                         ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
                         ->join('nodes', array('servers.node', '=', 'nodes.id'))
                         ->join('locations', array('nodes.location', '=', 'locations.id'))
                         ->where('servers.active', 1)
-                        ->where_in('servers.id', $core->permissions->listServers())
-                        ->findArray();
-
-	$actualServers = array();
-
-	// Sorry, I'm not sure how to get servers where they are the owner only!
-	foreach ($servers as $server) {
-		if($server['owner_id'] === $core->user->getData('id')) {
-			$actualServers[] = $server;
-		}
+                        ->where('servers.owner_id', $core->user->getData('id'))
+			->findArray();
 	}
 
 	$response->body($core->twig->render('panel/bulkcmd.html', array(
-		'servers' => $actualServers,
+		'servers' => $servers,
 		'xsrf' => $core->auth->XSRF(),
 		'flash' => $service->flashes()
 	)))->send();
@@ -268,24 +268,24 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
 
         }
 
-	$servers = ORM::forTable('servers')
-                        ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
-                        ->join('nodes', array('servers.node', '=', 'nodes.id'))
-                        ->join('locations', array('nodes.location', '=', 'locations.id'))
-                        ->where('servers.active', 1)
-                        ->where_in('servers.id', $core->permissions->listServers())
-                        ->findArray();
-
-        $actualServers = array();
-
-	// Sorry, I'm not sure how to get servers where they are the owner only!
-        foreach ($servers as $server) {
-                if($server['owner_id'] === $core->user->getData('id')) {
-                        $actualServers[] = $server['hash'];
-                }
+	if($core->auth->isAdmin()) {
+                $serversArray = ORM::forTable('servers')
+					->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+					->join('nodes', array('servers.node', '=', 'nodes.id'))
+					->join('locations', array('nodes.location', '=', 'locations.id'))
+					->orderByDesc('active')
+					->findArray();
+        } else {
+                $serversArray = ORM::forTable('servers')
+					->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+					->join('nodes', array('servers.node', '=', 'nodes.id'))
+					->join('locations', array('nodes.location', '=', 'locations.id'))
+					->where('servers.active', 1)
+					->where('servers.owner_id', $core->user->getData('id'))
+					->findArray();
         }
 
-	if(empty($actualServers)) {
+	if(empty($serversArray)) {
 		$service->flash('<div class="alert alert-warning">You do not have any servers.</div>');
 		$response->redirect('/bulkcmd')->send();
 		return;
@@ -299,14 +299,6 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
                 return;
 	}
 
-	foreach ($servers as $server) {
-		if(!in_array($server, $actualServers)) {
-			$service->flash('<div class="alert alert-warning">One or more of the servers you selected was invalid.' . $server . '</div>');
-	                $response->redirect('/bulkcmd')->send();
-        	        return;
-		}
-	}
-
 	$command = $request->param('command');
 
 	if(empty($command)) {
@@ -316,18 +308,20 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
 	}
 
 	foreach ($servers as $server) {
-		$serverToSendCommand = ORM::forTable('servers')
-						->select('servers.*')
-						->where('hash', $server)
-						->findArray();
+		$serverToSendCommand = null;
+
+		foreach ($serversArray as $srv) {
+			if($srv['hash'] === $server) {
+				$serverToSendCommand = $srv;
+			}
+		}
 
 		if($serverToSendCommand != null) {
-			$serverToSendCommand = $serverToSendCommand[0];
 			$node = ORM::forTable('nodes')
 					->select('nodes.*')
 					->where('id', $serverToSendCommand['node'])
-					->findArray();
-			$node = $node[0];
+					->findArray()[0];
+
 			try {
 				Unirest\Request::post(
 					"https://" . $node['fqdn'] . ":" . $node['daemon_listen'] . "/server/console",
@@ -345,6 +339,8 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
 				$response->redirect('/bulkcmd')->send();
 				return;
 			}
+		} else {
+			$service->flash('<div class="alert alert-warning">One of the servers you selected was invalid.</div>');
 		}
 	}
 
