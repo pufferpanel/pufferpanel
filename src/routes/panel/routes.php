@@ -341,6 +341,8 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
 			}
 		} else {
 			$service->flash('<div class="alert alert-warning">One of the servers you selected was invalid.</div>');
+			$response->redirect('/bulkcmd')->send();
+                        return;
 		}
 	}
 
