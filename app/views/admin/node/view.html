@@ -48,7 +48,7 @@
 							<label for="ip" class="control-label">Node FQDN</label>
 							<div>
 								<input type="text" name="fqdn" value="{{ node.fqdn }}" class="form-control" />
-								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (It must have a valid DNS record that resolves to an IP. Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
 							</div>
 						</div>
 						<div class="form-group col-md-6">
