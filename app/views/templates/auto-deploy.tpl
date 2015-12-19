@@ -18,6 +18,7 @@ NORMAL=$(tput sgr0)
 BOLD=$(tput bold)
 KERNEL=$(uname -r)
 
+{% if node.docker == 1 %}
 echo -e "${RED}${BOLD}[!!] STOP - READ THIS BEFORE CONTINUING [!!]${NORMAL}"
 echo -e "THIS SOFTWARE DOES NOT AND WILL NOT RUN PROPERLY ON NON-STANDARD KERNELS. PLEASE ENSURE THAT THE OUTPUT BELOW IS VALID."
 echo -e ""
@@ -28,12 +29,12 @@ echo
 read -r -p "I have read the above and confirmed that my kernel is a.) standard and b.) of a high enough version [y/N]: " response
 case $response in
     [yY][eE][sS]|[yY])
-        true
         ;;
     *)
-        exit 1
+        exit 0
         ;;
 esac
+{% endif %}
 
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version ]]; then
@@ -75,10 +76,6 @@ else
 fi
 checkResponseCode
 
-# Install Docker
-curl -sSL https://get.docker.com/ | sh
-checkResponseCode
-
 # Install Other Dependencies
 echo "Installing some dependiencies."
 if [ $OS_INSTALL_CMD == 'apt-get' ]; then
@@ -88,10 +85,18 @@ else
 fi
 checkResponseCode
 
+{% if node.docker == 1 %}
+
+# Install Docker
+curl -sSL https://get.docker.com/ | sh
+checkResponseCode
+
 # Add your user to the docker group
 echo "Configuring Docker for:" $SUDO_USER
 usermod -aG docker $SUDO_USER
 checkResponseCode
+
+{% endif %}
 
 # Add the Scales User Group
 groupadd --system scalesuser
