@@ -47,6 +47,7 @@ class Files {
 			'cmd',
 			'sh',
 			'lua',
+			'sk',
 			'0' // Supports BungeeCord Files
 		);
 
