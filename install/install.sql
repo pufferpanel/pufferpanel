@@ -122,6 +122,7 @@ CREATE TABLE `nodes` (
   `ips` mediumtext NOT NULL,
   `ports` mediumtext NOT NULL,
   `public` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `docker` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `FK_nodes_locations` (`location`),

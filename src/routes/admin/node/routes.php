@@ -176,7 +176,8 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		'daemon_base_dir' => $request->param('daemon_base_dir'),
 		'ips' => json_encode($IPA),
 		'ports' => json_encode($IPP),
-		'public' => (!$request->param('is_public')) ? 1 : 0
+		'public' => (!$request->param('is_public')) ? 1 : 0,
+        'docker' => ($request->param('is_docker')) ? 1 : 0
 	));
 	$node->save();
 

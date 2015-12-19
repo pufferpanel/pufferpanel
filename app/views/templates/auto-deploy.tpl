@@ -158,7 +158,9 @@ echo '{
 	"keys": [
 		"{{ node.daemon_secret }}"
 	],
-	"upload_maxfilesize": 100000000
+	"upload_maxfilesize": 100000000,
+        "docker": {% if node.docker == 1 %} true {% else %} false {% endif %}
+        
 }' > config.json
 checkResponseCode
 

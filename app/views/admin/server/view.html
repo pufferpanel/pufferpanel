@@ -158,6 +158,7 @@
 		</div>
 		<div class="tab-pane" id="rebuild">
 			<h3>Rebuild Server</h3><hr />
+			{% if node.docker == 1 %}
 			<div class="well">
 				<div class="row">
 					<div class="col-md-4 text-center">
@@ -168,6 +169,7 @@
 					</div>
 				</div>
 			</div>
+			{% endif %}
 			<div class="well">
 				<div class="row">
 					<div class="col-md-4 text-center">
