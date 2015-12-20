@@ -45,9 +45,9 @@ Twig_Autoloader::register();
  * enough to figure out if it is a local or development environment.
  */
 if(Config::config('debugging') === true) {
-	Debugger::enable(Debugger::DEVELOPMENT, BASEDIR.'/logs');
+	Debugger::enable(Debugger::DEVELOPMENT, BASE_DIR.'/logs');
 } else {
-	Debugger::enable(Debugger::DETECT, BASEDIR.'/logs');
+	Debugger::enable(Debugger::DETECT, BASE_DIR.'/logs');
 }
 Debugger::$strictMode = true;
 
