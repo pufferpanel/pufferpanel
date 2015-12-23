@@ -1,5 +1,5 @@
+sudo: false
 dist: precise
-group: legacy
 language: php
 
 php:
@@ -9,7 +9,7 @@ php:
 branches:
   only:
     - master
-    - klein
+    - kraken
 
 before_script:
   - pear channel-discover pear.phing.info
