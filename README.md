@@ -1,8 +1,8 @@
 Yo, where's all the activity at!? Great question, check out the [Kraken](https://github.com/PufferPanel/PufferPanel/tree/kraken) branch to follow our progress on PufferPanel `v0.9`.
 
 
-[![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg)](https://travis-ci.org/PufferPanel/PufferPanel) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PufferPanel/PufferPanel/?branch=master) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
-##Need help? Feature Requests? Please read our [Documentation](http://www.pufferpanel.com/docs).
+[![Build Status](https://travis-ci.org/PufferPanel/PufferPanel.svg)](https://travis-ci.org/PufferPanel/PufferPanel) [![Dependency Status](https://gemnasium.com/PufferPanel/PufferPanel.svg)](https://gemnasium.com/PufferPanel/PufferPanel)
+##Need help? Please read our [Documentation](http://www.pufferpanel.com/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
 
 #What is PufferPanel?
 PufferPanel is a web-based Game Server Management System. PufferPanel allows you to manage multiple different game servers all from one central location. You can give other users their own servers or allow them access to your servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
