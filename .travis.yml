@@ -1,3 +1,5 @@
+dist: precise
+group: legacy
 language: php
 
 php:
