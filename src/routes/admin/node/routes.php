@@ -143,7 +143,13 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		$IPA = array_merge($IPA, array($ip => array()));
 		$IPP = array_merge($IPP, array($ip => array()));
 
-		$portList = Functions::processPorts($ports);
+		try {
+            $portList = Functions::processPorts($ports);
+        } catch (Exception $ex) {
+            $service->flash('<div class="alert alert-danger">'.$ex.getMessage().'</div>');
+			$response->redirect('/admin/node/new')->send();
+			return;
+        }
 
 		$portCount = count($portList);
 		for($l = 0; $l < $portCount; $l++) {
