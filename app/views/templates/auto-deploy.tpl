@@ -100,7 +100,6 @@ checkResponseCode
 
 # Add the Scales User Group
 groupadd --system scalesuser
-checkResponseCode
 
 # Change the SFTP System
 sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
