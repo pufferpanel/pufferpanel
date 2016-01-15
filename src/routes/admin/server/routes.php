@@ -144,6 +144,16 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
 });
 
+$klein->respond('POST', '/admin/server/view/[i:id]/override', function($request, $response) use ($core) {
+    ORM::get_db()->beginTransaction();
+	$server = ORM::forTable('servers')->findOne($request->param('id'));
+	$server->installed = 1;
+	$server->save();
+    ORM::get_db()->commit();
+    $response->redirect('/admin/server/view/'.$request->param('id'))->send();    
+	return;
+});
+
 $klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function($request, $response) use ($core) {
 
 	try {

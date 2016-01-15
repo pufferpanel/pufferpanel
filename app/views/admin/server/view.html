@@ -269,6 +269,9 @@
 				</div>
 				<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
 				<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+				<form action="{{ server.id }}/override" id="overrideInstaller" method="POST">
+				    <input type="submit" name="override" class="btn btn-sm btn-danger" value="Force installer completition">
+				</form>
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
