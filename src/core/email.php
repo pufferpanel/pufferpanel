@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \Tracy\Debugger, \Exception;
+use \Tracy\Debugger, \Exception;
 
 
 /**
@@ -120,7 +120,7 @@ class Email {
 
 			$sendgrid->send($email);
 
-		} catch (\SendGrid\Exception $e) {
+		} catch (\Exception $e) {
 			Debugger::log($e);
 		}
 
@@ -143,7 +143,7 @@ class Email {
 				$this->message
 			);
 
-		} catch (\Postmark\Models\PostmarkException $e) {
+		} catch (\Exception $e) {
 			Debugger::log($e);
 		}
 
@@ -168,7 +168,7 @@ class Email {
 				'html' => $this->message
 			));
 
-		} catch (\Mailgun\Messages\Exceptions $e) {
+		} catch (\Exception $e) {
 			Debugger::log($e);
 		}
 
@@ -199,7 +199,7 @@ class Email {
 				'important' => false
 			), true, 'Main Pool');
 
-		} catch(\Mandrill_Error $e) {
+		} catch(\Exception $e) {
 			Debugger::log($e);
 		}
 
