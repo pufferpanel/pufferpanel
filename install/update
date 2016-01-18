@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+
+<?php
+$config = json_decode(file_get_contents(__DIR__ . '/../config.json'));
+$user = $config->mysql->username;
+$pass = $config->mysql->password;
+$host = $config->mysql->host;
+$db = $config->mysql->database;
+$port = $config->mysql->port;
+
+echo 'Will open a connection to ' . $host . ':' . $port . ' using ' . $user . ' identified by ' . $pass;
+echo "\n";
+
+$query = 'ALTER TABLE nodes ADD COLUMN docker TINYINT(4) NOT NULL DEFAULT \'1\'';
+$cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
+echo 'Executing: ' . $cmd;
+echo "\n";
+system($cmd);
+echo "\n";
