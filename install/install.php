@@ -29,7 +29,7 @@ if (empty($params)) {
 	return;
 }
 
-$keyset = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*-=+[]()";
+$keyset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 $hash = "";
 
 for ($i = 0; $i < 48; $i++) {
