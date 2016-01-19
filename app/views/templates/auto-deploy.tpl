@@ -70,6 +70,15 @@ function checkResponseCode() {
     fi
 }
 
+# Install Other Dependencies
+echo "Installing some dependiencies."
+if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+    apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+else
+    yum -y install openssl curl git make gcc-c++ nodejs java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
+fi
+checkResponseCode
+
 {% if node.docker == 1 %}
 
 # Install Docker
