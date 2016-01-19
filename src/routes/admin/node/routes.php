@@ -58,9 +58,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 	if(
 		!is_numeric($request->param('daemon_listen')) ||
-		!is_numeric($request->param('daemon_sftp')) ||
-		!is_numeric($request->param('allocate_memory')) ||
-		!is_numeric($request->param('allocate_disk'))
+		!is_numeric($request->param('daemon_sftp'))
 	) {
 
 		$service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the daemon listening ports as well as the disk and memory allocation.</div>');
@@ -172,8 +170,8 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 	$node->set(array(
 		'name' => $request->param('node_name'),
 		'location' => $request->param('location'),
-		'allocate_memory' => ($request->param('mem_selector') == 1) ? ($request->param('allocate_memory') * 1024) : $request->param('allocate_memory'),
-		'allocate_disk' => ($request->param('disk_selector') == 1) ? ($request->param('allocate_disk') * 1024) : $request->param('allocate_disk'),
+		'allocate_memory' => 0,
+		'allocate_disk' => 0,
 		'fqdn' => $request->param('fqdn'),
 		'ip' => $request->param('ip'),
 		'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
@@ -182,7 +180,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 		'daemon_base_dir' => $request->param('daemon_base_dir'),
 		'ips' => json_encode($IPA),
 		'ports' => json_encode($IPP),
-		'public' => (!$request->param('is_public')) ? 1 : 0,
+		'public' => 1,
         'docker' => ($request->param('is_docker')) ? 1 : 0
 	));
 	$node->save();
