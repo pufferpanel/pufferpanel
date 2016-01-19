@@ -125,9 +125,6 @@
 				<div class="col-md-8 col-xs-6">
 					<p>{{ l.render('footer.license')|raw }}<br />{{ l.render('footer.version')|format(fversion)|raw }}</p>
 				</div>
-				<div class="col-md-4 col-xs-6">
-					<p class="pull-right">Page Rendered in <span id="p_render_time">...</span> seconds.</p>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -136,10 +133,6 @@
 		if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
 		if($.urlParam("error")!=null){var field=$.urlParam("error");var exploded=field.split("|");$.each(exploded,function(key,value){$('[name="'+value+'"]').parent().parent().addClass("has-error")});var obj=$.parseJSON($.cookie("__TMP_pp_admin_updateglobal"));$.each(obj,function(key,value){$('[name="'+key+'"]').val(value)})};
 		for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
-		$(window).load(function() {
-			var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
-			$("#p_render_time").html(elapsed);
-		});
 	</script>
 </body>
 </html>
