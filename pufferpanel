@@ -1,0 +1,330 @@
+#!/usr/bin/env bash
+
+red=$(tput setf 4)
+green=$(tput setf 2)
+yellow=$(tput setf 6)
+normal=$(tput sgr0)
+bold=$(tput bold)
+
+mysqlHost="localhost"
+mysqlPort="3306"
+mysqlDb="pufferpanel"
+mysqlUser="root"
+mysqlPass=""
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+function printSeparator() {
+    echo "------------"
+}
+
+function loadConfig() {
+    if [ "${mysqlHost}" == "" ]; then
+        echo ""
+        configPath=${DIR}/config.json
+        mysqlHost=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->host;');
+        mysqlDb=$(php -r 'echo json_decode(file_get_contents(\'${configPath}'))->mysql->database;');
+        mysqlUser=$(php -r 'echo json_decode(file_get_contents(\'${configPath}'))->mysql->username;');
+        mysqlPass=$(php -r 'echo json_decode(file_get_contents("${DIR}/config.json"))->mysql->password;');
+        mysqlPort=$(php -r 'echo json_decode(file_get_contents("${DIR}/config.json"))->mysql->port;');
+    fi
+}
+
+function configureMysql() {
+
+    type mysql 1>/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "MYSQL is not found within your PATH, cannot proceed"
+        exit 1;
+    fi
+
+    echo "Thank you for using the PufferPanel installer!"
+    echo "Before we can complete the installation, we need to ask you some questions"
+    echo "These questions will help configure PufferPanel so that you can get to using it"
+    printSeparator
+    echo "MYSQL Configuration"
+    echo -n "Enter the MySQL host [localhost]: "
+    read temp
+    if [ "${temp}" != "" ]; then
+        mysqlHost=${temp}
+    fi
+    echo -n "Enter the MySQL port [3306]: "
+    read temp
+    if [ "${temp}" != "" ]; then
+        mysqlPort=${temp}
+    fi
+    echo -n "Enter the MySQL username (MUST HAVE GRANT) [root]: "
+    read temp
+    if [ "${temp}" != "" ]; then
+        mysqlUser=${temp}
+    fi
+    notValid=true
+    while ${notValid}; do
+        echo -n "Enter the MySQL password [password]: "
+        read -s temp
+        if [ "${temp}" != "" ]; then
+            mysqlPass=${temp}
+        fi
+        if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
+            notValid=false
+        else
+            print "Database connection could not be established"
+        fi
+    done
+
+    echo ""
+    echo "Installing database..."
+    mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" < install/install.sql
+
+    newUser="pufferpanel"
+    newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+    newHost=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "SELECT host FROM information_schema.processlist WHERE ID=connection_id()" | head -n 3 | tail -n 1)
+
+    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+     GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'${newHost}' IDENTIFIED BY '${newPw}';
+     GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY '${newPw}';
+     GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'172.17.42.%' IDENTIFIED BY '${newPw}';
+    "
+
+    echo "{
+    \"mysql\": {
+        \"host\": \"${mysqlHost}\",
+        \"database\": \"${mysqlDb}\",
+        \"username\": \"${newUser}\",
+        \"password\": \"${newPw}\",
+        \"port\": \"${mysqlPort}\",
+        \"ssl\": {
+            \"use\": false
+        }
+    }
+}" > config.json
+    echo "MySQL has been configured and the database installed"
+}
+
+function configureSite() {
+    echo "Configuring site details"
+    siteUrl=""
+    while [ "${siteUrl}" == "" ]; do
+        echo -n "Please enter the URL for your site (do NOT include http(s)://): "
+        read siteUrl
+    done
+    siteUrl=$(echo ${siteUrl} | sed 's/^http\(\|s\):\/\///g')
+    if [[ "${siteUrl}" == */ ]]; then
+        siteUrl="${siteUrl%?}"
+    fi
+
+    loadConfig
+    siteName=""
+    while [ "${siteName}" == "" ]; do
+        echo -n "Please enter the name of your site: "
+        read siteName
+    done
+    mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} -D ${mysqlDb} --password="${mysqlPass}" -e "
+        INSERT INTO acp_settings (setting_ref, setting_val) VALUES
+            ('company_name', '${siteName}'),
+            ('master_url', 'http://${siteUrl}'),
+            ('assets_url', 'http://${siteUrl}/assets'),
+            ('main_website', 'http://${siteUrl}'),
+            ('transport_token', NULL),
+            ('transport_email', NULL),
+            ('transport_method','php'),
+            ('captcha_pub',NULL),
+            ('captcha_priv',NULL),
+            ('default_language', 'en'),
+            ('https', 0),
+            ('allow_subusers', 0) ON DUPLICATE KEY UPDATE setting_val = VALUES(setting_val)"
+    echo "Settings saved to database"
+}
+
+function configureUser() {
+    loadConfig
+    echo "Please enter the following information for the new admin user"
+    username=""
+    email=""
+    password=""
+    uuid=$(uuidgen)
+    while [ "${username}" == "" ]; do
+        echo -n "Username: "
+        read username
+    done
+    while [ "${email}" == "" ]; do
+        echo -n "Email: "
+        read email
+    done
+    while [ "${password}" == "" ]; do
+        echo -n "Password: "
+        read -s password
+    done
+    password=$(php -r 'echo password_hash("${password}", PASSWORD_BCRYPT);');
+    time=$(php -r 'echo time();');
+
+    echo ""
+    echo "Installing user..."
+    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL)"
+}
+
+function configureNginx() {
+
+    if [ -d "/etc/nginx" ]; then
+        echo "Installing nginx config (if possible)"
+    else
+        echo "Nginx folder does not exist, will not install config"
+        return
+    fi
+    if [ "${siteUrl}" == "" ]; then
+        loadConfig
+        siteUrl=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "SELECT setting_val FROM acp_settings WHERE setting_ref='master_url'" | head -n 3 | tail -n 1 | sed 's/^http\(\|s\):\/\///g')
+        if [[ "${siteUrl}" == */ ]]; then
+            siteUrl="${siteUrl%?}"
+        fi
+    fi
+
+    phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php5/fpm/php-fpm.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    if [ "${phpSocket}" = "" ]; then
+        phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+        if [ "${phpSocket}" = "" ]; then
+            echo "Could not determine where PHP config is, cannot install config"
+            return
+        fi
+    fi
+
+    if [[ "$(echo ${phpSocket:0:1})" == "/" ]]; then
+        phpSocket="unix:${phpSocket}"
+    fi
+
+    conf="server {
+        listen 80;
+        root ${PWD};
+        index index.php;
+
+        server_name ${siteUrl};
+
+        client_max_body_size 20m;
+        client_body_timeout 120s;
+
+        location / {
+            try_files /public/router.php =404;
+            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+            fastcgi_pass ${phpSocket};
+            fastcgi_index router.php;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+            include /etc/nginx/fastcgi_params;
+        }
+
+        location /assets {
+            try_files /app/\$uri =404;
+        }
+    }
+
+    #server {
+    #    listen 443;
+    #    root ${PWD};
+    #    index index.php;
+    #
+    #    server_name ${siteUrl};
+    #
+    #    ssl on;
+    #    ssl_certificate     /etc/nginx/ssl/<server>.crt;
+    #    ssl_certificate_key /etc/nginx/ssl/<server>.key;
+    #
+    #    location / {
+    #        try_files /public/router.php =404;
+    #        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    #        fastcgi_pass ${phpSocket};
+    #        fastcgi_index router.php;
+    #        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+    #        include /etc/nginx/fastcgi_params;
+    #    }
+    #
+    #    location /assets {
+    #        try_files /app/\$uri =404;
+    #    }
+    #}
+    "
+
+    if [ -d "/etc/nginx/conf.d/" ]; then
+        if [ -f "/etc/nginx/conf.d/pufferpanel.conf" ]; then
+            echo "An existing configuration exists in /etc/nginx/conf.d"
+            return
+        fi
+        echo "${conf}" > /etc/nginx/conf.d/pufferpanel.conf
+    elif [ -d "/etc/nginx/sites-enabled" ]; then
+        if [ -f "/etc/nginx/sites-enabled/pufferpanel.conf" ]; then
+            echo "An existing configuration exists in /etc/nginx/sites-enabled"
+            return
+        fi
+        if [ -f "/etc/nginx/sites-available/pufferpanel.conf" ]; then
+            echo "An existing configuration exists in /etc/nginx/sites-available"
+            return
+        fi
+        echo "${conf}" > /etc/nginx/sites-available/pufferpanel.conf
+        ln -s /etc/nginx/sites-enabled/pufferpanel.conf /etc/nginx/sites-available/pufferpanel.conf
+    fi
+
+    service nginx restart
+}
+
+case $1 in
+    install)
+        type php 1>/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "PHP is not found within your PATH, cannot proceed"
+            exit 1;
+        fi
+
+        result=$(php -r 'exit (version_compare(PHP_VERSION, "5.5.0") < 0 ? "1" : "0");');
+        if [ "$result" == "0" ]; then
+            echo "PHP 5.5.0+: [${green}Installed${normal}]"
+        else
+            echo "PHP 5.5.0+: [${red}Not Installed${normal}]"
+            canInstall=false
+        fi
+
+        extensions=("curl" "hash" "openssl" "mcrypt" "pdo" "pdo_mysql")
+        canInstall=1
+        for i in ${extensions[@]}; do
+            phpcmd=$(php -r 'echo extension_loaded('${i}') ? 1 : 0;')
+            if [ "$phpcmd" -eq "1" ]; then
+                echo "PHP-${i}: [${green}Installed${normal}]"
+            else
+                echo "PHP-${i}: [${red}Not Installed${normal}]"
+                canInstall=0
+            fi
+        done
+        if [ "${canInstall}" -eq "0" ]; then
+            if [ "$2" = "-f" ]; then
+                canInstall=1
+                echo "Forcing installer through deps due to flag being present"
+            else
+                echo "Dependencies are missiing, cannot install"
+                exit 1
+            fi
+        fi
+
+        printSeparator
+        configureMysql
+        printSeparator
+        configureSite
+        printSeparator
+        configureUser
+        type nginx 1>/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            configureNginx
+        fi
+        ;;
+    updatesite)
+        configureSite
+        ;;
+    adduser)
+        configureUser
+        ;;
+    addnginx)
+        ;;
+    update)
+        install/update
+        ;;
+    *)
+        echo "PufferPanel"
+        echo "Usage: ./pufferpanel [install]"
+        ;;
+esac

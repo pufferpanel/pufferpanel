@@ -197,9 +197,6 @@
 				<div class="col-md-8 col-xs-6">
 					<p>{{ l.render('footer.license')|raw }}<br />{{ l.render('footer.version')|format(fversion)|raw }}</p>
 				</div>
-				<div class="col-md-4 col-xs-6">
-					<p class="pull-right">Page Rendered in <span id="p_render_time">...</span> seconds.</p>
-				</div>
 			</div>
 		</div>
 		<script type="text/javascript">
@@ -207,7 +204,6 @@
 			for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
 			if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
 			var elapsed = parseInt(new Date().getTime() - pageRenderStart) / 1000;
-			$("#p_render_time").html(elapsed);
 		});
 		</script>
 	</div>

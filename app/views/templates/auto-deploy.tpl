@@ -2,6 +2,8 @@
 # PufferPanel Installer Script
 
 export DEBIAN_FRONTEND=noninteractive
+scalesApt=http://ci.pufferpanel.com:8080/artifact/SC-BC/JOB1/build-4/Downloads/debian/scales.tar.gz
+scalesYum=http://ci.pufferpanel.com:8080/artifact/SC-BC/JOB1/build-4/Downloads/centos/scales.tar.gz
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root!" 1>&2
@@ -18,6 +20,7 @@ NORMAL=$(tput sgr0)
 BOLD=$(tput bold)
 KERNEL=$(uname -r)
 
+{% if node.docker == 1 %}
 echo -e "${RED}${BOLD}[!!] STOP - READ THIS BEFORE CONTINUING [!!]${NORMAL}"
 echo -e "THIS SOFTWARE DOES NOT AND WILL NOT RUN PROPERLY ON NON-STANDARD KERNELS. PLEASE ENSURE THAT THE OUTPUT BELOW IS VALID."
 echo -e ""
@@ -28,12 +31,12 @@ echo
 read -r -p "I have read the above and confirmed that my kernel is a.) standard and b.) of a high enough version [y/N]: " response
 case $response in
     [yY][eE][sS]|[yY])
-        true
         ;;
     *)
-        exit 1
+        exit 0
         ;;
 esac
+{% endif %}
 
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version ]]; then
@@ -67,25 +70,19 @@ function checkResponseCode() {
     fi
 }
 
-# Install NodeJS Dependencies
-if [ $OS_INSTALL_CMD == 'apt-get' ]; then
-    curl -sL https://deb.nodesource.com/setup_4.x | bash -
-else
-    curl -sL https://rpm.nodesource.com/setup_4.x | bash -
-fi
-checkResponseCode
-
-# Install Docker
-curl -sSL https://get.docker.com/ | sh
-checkResponseCode
-
 # Install Other Dependencies
 echo "Installing some dependiencies."
 if [ $OS_INSTALL_CMD == 'apt-get' ]; then
-    apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python
+    apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
 else
-    yum -y install openssl curl git make gcc-c++ nodejs java-1.8.0-openjdk-devel tar python
+    yum -y install openssl curl git make gcc-c++ nodejs java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
 fi
+checkResponseCode
+
+{% if node.docker == 1 %}
+
+# Install Docker
+curl -sSL https://get.docker.com/ | sh
 checkResponseCode
 
 # Add your user to the docker group
@@ -93,9 +90,10 @@ echo "Configuring Docker for:" $SUDO_USER
 usermod -aG docker $SUDO_USER
 checkResponseCode
 
+{% endif %}
+
 # Add the Scales User Group
 groupadd --system scalesuser
-checkResponseCode
 
 # Change the SFTP System
 sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
@@ -121,21 +119,19 @@ checkResponseCode
 mkdir -p /srv
 checkResponseCode
 
-# Clone the repository
-git clone https://github.com/PufferPanel/Scales /srv/scales
+cd /srv/
+if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+    curl -o scales.tar.gz $scalesApt
+else
+    curl -o scales.tar.gz $scalesYum
+fi
 checkResponseCode
+
+tar -xf scales.tar.gz
+checkResponseCode
+rm -f scales.tar.gz
 
 cd /srv/scales
-checkResponseCode
-
-# Checkout the Latest Version of Scales
-git checkout tags/$(git describe --abbrev=0 --tags)
-checkResponseCode
-
-# Install the dependiencies for Scales to run.
-npm install
-checkResponseCode
-
 # Generate SSL Certificates
 openssl req -x509 -days 365 -newkey rsa:4096 -keyout https.key -out https.pem -nodes -passin pass:$SSL_PASSWORD \
     -subj "/C=$SSL_COUNTRY/ST=$SSL_STATE/L=$SSL_LOCALITY/O=$SSL_ORG/OU=$SSL_ORG_NAME/CN=$SSL_COMMON/emailAddress=$SSL_EMAIL"
@@ -158,11 +154,14 @@ echo '{
 	"keys": [
 		"{{ node.daemon_secret }}"
 	],
-	"upload_maxfilesize": 100000000
+	"upload_maxfilesize": 100000000,
+        "docker": {% if node.docker == 1 %} true {% else %} false {% endif %}
+        
 }' > config.json
 checkResponseCode
 
-npm start
+chmod +x scales
+./scales start
 checkResponseCode
 
 echo "Successfully Installed Scales"

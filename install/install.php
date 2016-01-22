@@ -29,7 +29,7 @@ if (empty($params)) {
 	return;
 }
 
-$keyset = "abcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*-=+[]()";
+$keyset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 $hash = "";
 
 for ($i = 0; $i < 48; $i++) {
@@ -134,6 +134,13 @@ try {
 		'pass' => $pass,
 		'host' => $host
 	));
+    $mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY :pass")->execute(array(
+		'pass' => $pass
+	));
+    $mysql->prepare("GRANT SELECT, UPDATE, DELETE, ALTER, INSERT ON pufferpanel.* TO 'pufferpanel'@'172.17.42.*' IDENTIFIED BY :pass")->execute(array(
+		'pass' => $pass
+	));
+
 	echo "PufferPanel SQL user added as pufferpanel@" . $host . "\n";
 	$mysql->commit();
 
