@@ -15,3 +15,4 @@ backup
 tools/composer.phar
 silent-sync.json
 /nbproject/
+.idea/
