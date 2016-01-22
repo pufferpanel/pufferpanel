@@ -74,7 +74,7 @@ function configureMysql() {
 
     echo ""
     echo "Installing database..."
-    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/install.sql
+    mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" < install/install.sql
 
     newUser="pufferpanel"
     newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
