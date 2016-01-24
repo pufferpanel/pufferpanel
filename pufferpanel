@@ -3,6 +3,7 @@
 red=$(tput setf 4)
 green=$(tput setf 2)
 yellow=$(tput setf 6)
+blue=$(tput setf 1)
 normal=$(tput sgr0)
 bold=$(tput bold)
 
@@ -309,6 +310,18 @@ case $1 in
         if [ $? -eq 0 ]; then
             configureNginx
         fi
+
+        printSeparator
+        shopt -s nocasematch
+        echo -n "Would you like to thanks us? Each thanks gives us the motivation to provide this software to you. [Y/n]: "
+        read thanks
+        if [[ "${thanks}" == "Y" ]] || [[ "${thanks}" == "" ]]; then
+            curl -X POST https://thankyou.pufferpanel.com >/dev/null 2>&1
+        fi
+
+        printSeparator
+        echo "Thank you for installing PufferPanel!"
+        echo "Assuming that the installation completed, you will be able to visit your new panel at ${blue}http://${siteUrl}${normal}"
         ;;
     updatesite)
         configureSite
