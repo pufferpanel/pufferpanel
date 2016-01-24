@@ -90,6 +90,8 @@ echo "Configuring Docker for:" $SUDO_USER
 usermod -aG docker $SUDO_USER
 checkResponseCode
 
+service docker start
+
 {% endif %}
 
 # Add the Scales User Group
