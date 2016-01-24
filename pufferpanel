@@ -155,7 +155,7 @@ function configureUser() {
         echo -n "Password: "
         read -s password
     done
-    password=$(php -r 'echo password_hash("${password}", PASSWORD_BCRYPT);');
+    password=$(php -r 'echo password_hash("'${password}'", PASSWORD_BCRYPT);');
     time=$(php -r 'echo time();');
 
     echo ""
@@ -259,6 +259,9 @@ function configureNginx() {
         fi
         echo "${conf}" > /etc/nginx/sites-available/pufferpanel.conf
         ln -s /etc/nginx/sites-enabled/pufferpanel.conf /etc/nginx/sites-available/pufferpanel.conf
+    else
+        echo "Could not determine where to install the config"
+        return
     fi
 
     service nginx restart
