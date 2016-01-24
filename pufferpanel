@@ -336,6 +336,6 @@ case $1 in
         ;;
     *)
         echo "PufferPanel"
-        echo "Usage: ./pufferpanel [install]"
+        echo "Usage: ./pufferpanel [install/update]"
         ;;
 esac

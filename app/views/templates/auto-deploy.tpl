@@ -2,8 +2,8 @@
 # PufferPanel Installer Script
 
 export DEBIAN_FRONTEND=noninteractive
-scalesApt=http://ci.pufferpanel.com:8080/artifact/SC-BC/JOB1/build-4/Downloads/debian/scales.tar.gz
-scalesYum=http://ci.pufferpanel.com:8080/artifact/SC-BC/JOB1/build-4/Downloads/centos/scales.tar.gz
+scalesApt=http://ci.pufferpanel.com:8080/browse/SC-DE/latestSuccessful/artifact/shared/Debian-Bundle/scales.tar.gz
+scalesYum=http://ci.pufferpanel.com:8080/browse/SC-C7/latestSuccessful/artifact/shared/CentOS-Bundle/scales.tar.gz
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root!" 1>&2
