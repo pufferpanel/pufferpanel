@@ -114,14 +114,9 @@ function configureSite() {
     fi
 
     loadConfig
-    siteName=""
-    while [ "${siteName}" == "" ]; do
-        echo -n "Please enter the name of your site: "
-        read siteName
-    done
     mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} -D ${mysqlDb} --password="${mysqlPass}" -e "
         INSERT INTO acp_settings (setting_ref, setting_val) VALUES
-            ('company_name', '${siteName}'),
+            ('company_name', 'PufferPanel'),
             ('master_url', 'http://${siteUrl}'),
             ('assets_url', 'http://${siteUrl}/assets'),
             ('main_website', 'http://${siteUrl}'),
@@ -252,7 +247,7 @@ function configureNginx() {
             return
         fi
         echo "${conf}" > /etc/nginx/sites-available/pufferpanel.conf
-        ln -s /etc/nginx/sites-enabled/pufferpanel.conf /etc/nginx/sites-available/pufferpanel.conf
+        ln -s /etc/nginx/sites-available/pufferpanel.conf /etc/nginx/sites-available/pufferpanel.conf
     elif [ -d "/etc/nginx/conf.d/" ]; then
         if [ -f "/etc/nginx/conf.d/pufferpanel.conf" ]; then
             echo "An existing configuration exists in /etc/nginx/conf.d"
