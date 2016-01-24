@@ -247,7 +247,7 @@ function configureNginx() {
             return
         fi
         echo "${conf}" > /etc/nginx/sites-available/pufferpanel.conf
-        ln -s /etc/nginx/sites-available/pufferpanel.conf /etc/nginx/sites-available/pufferpanel.conf
+        ln -s /etc/nginx/sites-available/pufferpanel.conf /etc/nginx/sites-enabled/pufferpanel.conf
     elif [ -d "/etc/nginx/conf.d/" ]; then
         if [ -f "/etc/nginx/conf.d/pufferpanel.conf" ]; then
             echo "An existing configuration exists in /etc/nginx/conf.d"
