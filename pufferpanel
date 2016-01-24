@@ -35,7 +35,7 @@ function configureMysql() {
 
     type mysql 1>/dev/null 2>&1
     if [ $? -ne 0 ]; then
-        echo "MYSQL is not found within your PATH, cannot proceed"
+        echo "MySQL is not found within your PATH, cannot proceed"
         exit 1;
     fi
 
@@ -43,7 +43,7 @@ function configureMysql() {
     echo "Before we can complete the installation, we need to ask you some questions"
     echo "These questions will help configure PufferPanel so that you can get to using it"
     printSeparator
-    echo "MYSQL Configuration"
+    echo "MySQL Configuration"
     echo -n "Enter the MySQL host [localhost]: "
     read temp
     if [ "${temp}" != "" ]; then
@@ -61,7 +61,7 @@ function configureMysql() {
     fi
     notValid=true
     while ${notValid}; do
-        echo -n "Enter the MySQL password [password]: "
+        echo -n "Enter the MySQL account password: "
         read -s temp
         if [ "${temp}" != "" ]; then
             mysqlPass=${temp}
@@ -74,7 +74,7 @@ function configureMysql() {
     done
 
     echo ""
-    echo "Installing database..."
+    echo "Creating pufferpanel account and installing database..."
     mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" < install/install.sql
 
     newUser="pufferpanel"
@@ -99,14 +99,14 @@ function configureMysql() {
         }
     }
 }" > config.json
-    echo "MySQL has been configured and the database installed"
+    echo "MySQL has been configured and the database was installed"
 }
 
 function configureSite() {
     echo "Configuring site details"
     siteUrl=""
     while [ "${siteUrl}" == "" ]; do
-        echo -n "Please enter the URL for your site (do NOT include http(s)://): "
+        echo -n "Please enter the domain or IP (if you do not have a domain) for your site (do NOT include http(s)://): "
         read siteUrl
     done
     siteUrl=$(echo ${siteUrl} | sed 's/^http\(\|s\):\/\///g')
@@ -313,7 +313,7 @@ case $1 in
 
         printSeparator
         shopt -s nocasematch
-        echo -n "Would you like to thanks us? Each thanks gives us the motivation to provide this software to you. [Y/n]: "
+        echo -n "Would you like to thank us? Each thanks gives us the motivation to provide this software to you. [Y/n]: "
         read thanks
         if [[ "${thanks}" == "Y" ]] || [[ "${thanks}" == "" ]]; then
             curl -X POST https://thankyou.pufferpanel.com >/dev/null 2>&1
