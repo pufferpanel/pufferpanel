@@ -119,7 +119,7 @@ function configureSite() {
             ('company_name', 'PufferPanel'),
             ('master_url', 'http://${siteUrl}/'),
             ('assets_url', 'http://${siteUrl}/assets/'),
-            ('main_website', 'http://${siteUrl}'),
+            ('main_website', 'http://${siteUrl}/'),
             ('transport_token', NULL),
             ('transport_email', NULL),
             ('transport_method','php'),
