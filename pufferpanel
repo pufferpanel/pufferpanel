@@ -179,7 +179,7 @@ function configureNginx() {
         fi
     fi
 
-    phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php5/fpm/php-fpm.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
         phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpSocket}" = "" ]; then
@@ -283,7 +283,7 @@ case $1 in
         extensions=("curl" "hash" "openssl" "mcrypt" "pdo" "pdo_mysql")
         canInstall=1
         for i in ${extensions[@]}; do
-            phpcmd=$(php -r 'echo extension_loaded('${i}') ? 1 : 0;')
+            phpcmd=$(php -r 'echo extension_loaded("'${i}'") ? 1 : 0;')
             if [ "$phpcmd" -eq "1" ]; then
                 echo "PHP-${i}: [${green}Installed${normal}]"
             else
