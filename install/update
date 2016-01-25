@@ -8,12 +8,10 @@ $host = $config->mysql->host;
 $db = $config->mysql->database;
 $port = $config->mysql->port;
 
-echo 'Will open a connection to ' . $host . ':' . $port . ' using ' . $user . ' identified by ' . $pass;
+echo 'Will open a connection to ' . $host . ':' . $port . ' using ' . $user;
 echo "\n";
 
 $query = 'ALTER TABLE nodes ADD COLUMN docker TINYINT(4) NOT NULL DEFAULT \'1\'';
 $cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
-echo 'Executing: ' . $cmd;
-echo "\n";
 system($cmd);
 echo "\n";

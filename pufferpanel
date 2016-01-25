@@ -332,6 +332,7 @@ case $1 in
     addnginx)
         ;;
     update)
+        chmod +x install/update
         install/update
         ;;
     *)
