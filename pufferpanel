@@ -293,9 +293,9 @@ case $1 in
         if [ "${canInstall}" -eq "0" ]; then
             if [ "$2" = "-f" ]; then
                 canInstall=1
-                echo "Forcing installer through deps due to flag being present"
+                echo "Forcing installer due to flag being present"
             else
-                echo "Dependencies are missiing, cannot install"
+                echo "Dependencies are missing, cannot install"
                 exit 1
             fi
         fi
