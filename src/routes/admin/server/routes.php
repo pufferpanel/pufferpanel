@@ -661,7 +661,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 	*/
 	if(
 		!is_numeric($request->param('alloc_mem')) ||
-		!is_numeric($request->param('alloc_disk')) ||
 		!is_numeric($request->param('cpu_limit')) ||
 		!is_numeric($request->param('block_io'))
 	) {
@@ -751,7 +750,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		'daemon_variables' => $storage_variables,
 		'owner_id' => $user->id,
 		'max_ram' => $request->param('alloc_mem'),
-		'disk_space' => $request->param('alloc_disk'),
+		'disk_space' => 0,
 		'cpu_limit' => $request->param('cpu_limit'),
 		'block_io' => $request->param('block_io'),
 		'date_added' => time(),
