@@ -65,13 +65,6 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         return;
     }
 
-    if (!preg_match('/^([\/][\d\w.\-\/]+[\/])$/', $request->param('daemon_base_dir'))) {
-
-        $service->flash('<div class="alert alert-danger">That seems to be an invalid directory that you passed.</div>');
-        $response->redirect('/admin/node/new')->send();
-        return;
-    }
-
     if (!preg_match('/^[\w.-]{1,15}$/', $request->param('node_name'))) {
 
         $service->flash('<div class="alert alert-danger">The node name you passed does not meet server requirements. Names must be between 1 and 15 characters, and may not contain any special characters.</div>');
@@ -162,7 +155,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
         'daemon_listen' => $request->param('daemon_listen'),
         'daemon_sftp' => $request->param('daemon_sftp'),
-        'daemon_base_dir' => $request->param('daemon_base_dir'),
+        'daemon_base_dir' => '/home',
         'ips' => json_encode($IPA),
         'ports' => json_encode($IPP),
         'public' => 1,
