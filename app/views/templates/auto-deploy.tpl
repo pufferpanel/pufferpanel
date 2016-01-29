@@ -123,9 +123,9 @@ checkResponseCode
 
 cd /srv/
 if [ $OS_INSTALL_CMD == 'apt-get' ]; then
-    curl -o scales.tar.gz $scalesApt
+    curl -L -o scales.tar.gz $scalesApt
 else
-    curl -o scales.tar.gz $scalesYum
+    curl -L -o scales.tar.gz $scalesYum
 fi
 checkResponseCode
 
