@@ -3,7 +3,7 @@
 
 export DEBIAN_FRONTEND=noninteractive
 version=0.2.4.1
-scalesApt=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
+scalesApt=https://github.com/PufferPanel/Scales/releases/download/${version}/debian.tar.gz
 scalesYum=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
 
 if [ "$(id -u)" != "0" ]; then
