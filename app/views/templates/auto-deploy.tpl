@@ -2,8 +2,9 @@
 # PufferPanel Installer Script
 
 export DEBIAN_FRONTEND=noninteractive
-scalesApt=https://github.com/PufferPanel/Scales/releases/download/0.2.4/debian.tar.gz
-scalesYum=https://github.com/PufferPanel/Scales/releases/download/0.2.4/centos.tar.gz
+version=0.2.4.1
+scalesApt=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
+scalesYum=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root!" 1>&2
