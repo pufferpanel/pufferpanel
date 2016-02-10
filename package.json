@@ -1,0 +1,9 @@
+{
+  "name": "pufferpanel",
+  "author": "PufferPanel <dev@pufferpanel.com>",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+  },
+  "license": "apache"
+}
