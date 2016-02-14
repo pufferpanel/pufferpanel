@@ -3,3 +3,4 @@
 *.lock
 nbproject/
 .idea/
+node_modules/
