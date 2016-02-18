@@ -13,7 +13,9 @@
     "date-utils": "1.2.18",
     "fs-extra": "0.26.5",
     "winston": "2.1.10",
-    "yargs": "4.1.0"
+    "yargs": "4.1.0",
+    "validator": "4.8.0",
+    "argument-validator": "0.0.8"
   },
   "license": "apache"
 }
