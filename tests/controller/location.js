@@ -177,4 +177,106 @@ describe('Location Controller', function () {
             });
         });
     });
+
+    describe("#get", function () {
+        it('should error when UUID is null', function () {
+            Should.throws(function () {
+                controllers.location.get(null);
+            });
+        });
+
+        it('should error when UUID is undefined', function () {
+            Should.throws(function () {
+                controllers.location.get(undefined);
+            });
+        });
+
+        it('should error when UUID is empty', function () {
+            Should.throws(function () {
+                controllers.location.get('');
+            });
+        });
+
+        it('should error when UUID is whitespace', function () {
+            Should.throws(function () {
+                controllers.location.get(' ');
+            });
+        });
+
+        it('should error when UUID is not a string', function () {
+            Should.throws(function () {
+                controllers.location.get({ asdf: "asdf" });
+            });
+        });
+
+        it('should not error when UUID is valid', function () {
+            var location = undefined;
+            var validUUID = data[0].getUUID();
+
+            Should.doesNotThrow(function () {
+                location = controllers.location.get(validUUID);
+            }, 'Expected change to not error');
+
+            Should.exist(location, 'Expected location to exist');
+        });
+
+        it('should return undefined when UUID is valid and no location exists', function () {
+            var location = undefined;
+            var validButNotExistUUID = '12345678-1234-4531-ABCD-111111111111';
+
+            Should.doesNotThrow(function () {
+                location = controllers.location.get(validButNotExistUUID);
+            }, 'Expected change to not error');
+
+            Should.not.exist(location, 'Expected location to exist');
+        });
+    });
+
+    describe("#delete", function () {
+        it('should error when UUID is null', function () {
+            Should.throws(function () {
+                controllers.location.delete(null);
+            });
+        });
+
+        it('should error when UUID is undefined', function () {
+            Should.throws(function () {
+                controllers.location.delete(undefined);
+            });
+        });
+
+        it('should error when UUID is empty', function () {
+            Should.throws(function () {
+                controllers.location.delete('');
+            });
+        });
+
+        it('should error when UUID is whitespace', function () {
+            Should.throws(function () {
+                controllers.location.delete(' ');
+            });
+        });
+
+        it('should error when UUID is not a string', function () {
+            Should.throws(function () {
+                controllers.location.delete({ asdf: "asdf" });
+            });
+        });
+
+        it('should not error when UUID is valid', function () {
+            var validUUID = data[0].getUUID();
+
+            Should.doesNotThrow(function () {
+                controllers.location.delete(validUUID);
+            }, 'Expected delete to not error');
+        });
+
+        it('should not error when UUID is valid and no location exists', function () {
+            var validUUID = data[0].getUUID();
+
+            Should.doesNotThrow(function () {
+                controllers.location.delete(validUUID);
+            }, 'Expected delete to not error');
+        });
+    });
 });
