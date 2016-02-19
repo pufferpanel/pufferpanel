@@ -23,26 +23,11 @@ var UserController = Rfr('lib/controller/user.js');
 var ServerController = Rfr('lib/controller/server.js');
 var LocationController = Rfr('lib/controller/location.js');
 var NodeController = Rfr('lib/controller/node.js');
+var Common = Rfr('tests/common.js');
 
-var collections = {
-    location: new LocationCollection()
-};
-
-var controllers = {
-    location: new LocationController(collections),
-    user: new UserController(collections),
-    server: new ServerController(collections),
-    node: new NodeController(collections)
-};
-
-var data = [
-    new Location('12346578-1234-4321-ABCD-1234567890AB', 'Test1'),
-    new Location('87654321-4321-4321-8765-BA0123456789', 'Test2')
-];
-
-beforeEach(function () {
-    collections.location._reset(data);
-});
+var controllers = Common.controllers;
+var collections = Common.collections;
+var data = Common.data;
 
 describe('Controller/Location', function () {
     describe('#create', function () {
@@ -264,19 +249,30 @@ describe('Controller/Location', function () {
         });
 
         it('should not error when UUID is valid', function () {
+            var oldCount = collections.location.db.length;
             var validUUID = data[0].getUUID();
 
             Should.doesNotThrow(function () {
                 controllers.location.delete(validUUID);
             }, 'Expected delete to not error');
+
+            var location = controllers.location.get(validUUID);
+            Should.not.exist(location, 'Expected location to not exist');
+            Should.equal(oldCount - 1, collections.location.db.length, 'Expected collection to decrease by one');
         });
 
         it('should not error when UUID is valid and no location exists', function () {
-            var validUUID = data[0].getUUID();
+            var validUUID = '98765432-1234-4851-ADC1-ABC123456789';
+            var oldCount = collections.location.db.length;
+            var location = {};
 
             Should.doesNotThrow(function () {
                 controllers.location.delete(validUUID);
             }, 'Expected delete to not error');
+
+            var location = controllers.location.get(validUUID);
+            Should.not.exist(location, 'Expected location to not exist');
+            Should.equal(oldCount, collections.location.db.length, 'Expected collection to not change');
         });
     });
 });
