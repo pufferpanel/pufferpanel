@@ -15,20 +15,16 @@
  */
 
 var Rfr = require('rfr');
-var Rethink = require('rethinkdbdash');
+var _ = require('underscore');
 var Location = Rfr('lib/model/location.js');
 
 /**
- * Creates a new LocationCollection which relies on data from RethinkDB
+ * Creates a new LocationCollection
  *
- * @param {Object} dbConn - Existing connection, may be undefined
  * @constructor
  */
-var LocationCollection = function (dbConn) {
-    this.db = dbConn ? dbConn : new Rethink({
-        pool: false,
-        discovery: true
-    });
+var LocationCollection = function () {
+    this.db = [];
 };
 
 /**
@@ -39,12 +35,10 @@ var LocationCollection = function (dbConn) {
  */
 LocationCollection.prototype.get = function (uuid) {
     var self = this;
-    var result = yield self.db.table('locations').get(uuid).run();
-    if (result) {
-        return new Location(data.uuid, data.name);
-    } else {
-        return undefined;
-    }
+    var result = _.find(self.db, function (location) {
+        return location.uuid == uuid;
+    });
+    return result;
 };
 
 /**
@@ -54,7 +48,7 @@ LocationCollection.prototype.get = function (uuid) {
  */
 LocationCollection.prototype.add = function (location) {
     var self = this;
-    yield self.db.table('locations').insert(location);
+    self.db.push(location);
 };
 
 /**
@@ -64,7 +58,9 @@ LocationCollection.prototype.add = function (location) {
  */
 LocationCollection.prototype.remove = function (uuid) {
     var self = this;
-    yield self.db.table('locations').delete(uuid);
+    self.db = _.reject(self.db, function (location) {
+        return location.uuid == uuid;
+    });
 };
 
 /**
@@ -76,8 +72,16 @@ LocationCollection.prototype.remove = function (uuid) {
  */
 LocationCollection.prototype.update = function (uuid, newValues) {
     var self = this;
-    yield self.db.table('locations').get(uuid).update(newValues).run();
+    _.each(self.db, function (location) {
+        if (location.uuid == uuid) {
+            _.extend(location, newValues);
+        }
+    });
     return self.get(uuid);
+};
+
+LocationCollection.prototype._reset = function () {
+
 };
 
 module.exports = LocationCollection;

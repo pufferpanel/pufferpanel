@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "bcrypt": "2.3.0",
+    "bcrypt": "0.8.5",
     "rfr": "1.2.3",
     "hapi": "13.0.0",
     "rethinkdbdash": "2.2.17",
@@ -12,10 +12,17 @@
     "uuid": "2.0.1",
     "date-utils": "1.2.18",
     "fs-extra": "0.26.5",
-    "winston": "2.1.10",
+    "winston": "2.1.1",
     "yargs": "4.1.0",
     "validator": "4.8.0",
     "argument-validator": "0.0.8"
+  },
+  "devDependencies": {
+    "mocha": "2.4.5",
+    "should": "8.2.2"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/_mocha --recursive tests"
   },
   "license": "apache"
 }

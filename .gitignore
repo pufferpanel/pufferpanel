@@ -5,3 +5,5 @@ nbproject/
 .idea/
 node_modules/
 out/
+logs/
+*.log
