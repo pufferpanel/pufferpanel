@@ -16,43 +16,51 @@
 
 var _ = require('underscore');
 
-var LocationCollection = function () {
+var NodeCollection = function () {
     this.db = [];
 };
 
-LocationCollection.prototype.get = function (uuid) {
+NodeCollection.prototype.get = function (uuid) {
     var self = this;
-    var result = _.find(self.db, function (location) {
-        return location.uuid == uuid;
+    var result = _.find(self.db, function (node) {
+        return node.uuid == uuid;
     });
     return result;
 };
 
-LocationCollection.prototype.add = function (location) {
+NodeCollection.prototype.getByLocation = function (location) {
     var self = this;
-    self.db.push(location);
+    var results = _.filter(self.db, function (node) {
+        return node.location == location;
+    });
+    return results;
 };
 
-LocationCollection.prototype.remove = function (uuid) {
+NodeCollection.prototype.add = function (node) {
     var self = this;
-    self.db = _.reject(self.db, function (location) {
-        return location.uuid == uuid;
+    self.db.push(node);
+};
+
+NodeCollection.prototype.remove = function (uuid) {
+    var self = this;
+    self.db = _.reject(self.db, function (node) {
+        return node.uuid == uuid;
     });
 };
 
-LocationCollection.prototype.update = function (uuid, newValues) {
+NodeCollection.prototype.update = function (uuid, newValues) {
     var self = this;
-    _.each(self.db, function (location) {
-        if (location.uuid == uuid) {
-            _.extend(location, newValues);
+    _.each(self.db, function (node) {
+        if (node.uuid == uuid) {
+            _.extend(node, newValues);
         }
     });
     return self.get(uuid);
 };
 
-LocationCollection.prototype._reset = function (data) {
+NodeCollection.prototype._reset = function (data) {
     var self = this;
     self.db = _.clone(data);
 };
 
-module.exports = LocationCollection;
+module.exports = NodeCollection;

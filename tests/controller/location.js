@@ -18,11 +18,6 @@ var Assert = require('assert');
 var Should = require('should');
 var Rfr = require('rfr');
 var Location = Rfr('lib/model/location.js');
-var LocationCollection = Rfr('tests/dep/collection/location.js');
-var UserController = Rfr('lib/controller/user.js');
-var ServerController = Rfr('lib/controller/server.js');
-var LocationController = Rfr('lib/controller/location.js');
-var NodeController = Rfr('lib/controller/node.js');
 var Common = Rfr('tests/common.js');
 
 var controllers = Common.controllers;
@@ -77,7 +72,7 @@ describe('Controller/Location', function () {
 
     describe('#changeName', function () {
         var validName = 'Test3';
-        var validUUID = data[0].getUUID();
+        var validUUID = data.location[0].getUUID();
 
         describe('when uuid is invalid', function () {
             it('should error when uuid is null', function () {
@@ -196,7 +191,7 @@ describe('Controller/Location', function () {
 
         it('should not error when UUID is valid', function () {
             var location = undefined;
-            var validUUID = data[0].getUUID();
+            var validUUID = data.location[0].getUUID();
 
             Should.doesNotThrow(function () {
                 location = controllers.location.get(validUUID);
@@ -250,7 +245,7 @@ describe('Controller/Location', function () {
 
         it('should not error when UUID is valid', function () {
             var oldCount = collections.location.db.length;
-            var validUUID = data[0].getUUID();
+            var validUUID = data.location[0].getUUID();
 
             Should.doesNotThrow(function () {
                 controllers.location.delete(validUUID);
