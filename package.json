@@ -21,8 +21,5 @@
     "mocha": "2.4.5",
     "should": "8.2.2"
   },
-  "scripts": {
-    "test": "./node_modules/.bin/_mocha --recursive tests"
-  },
   "license": "apache"
 }

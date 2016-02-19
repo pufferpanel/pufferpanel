@@ -80,8 +80,9 @@ LocationCollection.prototype.update = function (uuid, newValues) {
     return self.get(uuid);
 };
 
-LocationCollection.prototype._reset = function () {
-
+LocationCollection.prototype._reset = function (data) {
+    var self = this;
+    self.db = _.clone(data);
 };
 
 module.exports = LocationCollection;

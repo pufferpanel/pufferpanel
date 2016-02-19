@@ -17,6 +17,7 @@
 var Assert = require('assert');
 var Should = require('should');
 var Rfr = require('rfr');
+var Location = Rfr('lib/model/location.js');
 var LocationCollection = Rfr('tests/dep/collection/location.js');
 var UserController = Rfr('lib/controller/user.js');
 var ServerController = Rfr('lib/controller/server.js');
@@ -34,8 +35,13 @@ var controllers = {
     node: new NodeController(collections)
 };
 
+var data = [
+    new Location('12346578-1234-4321-ABCD-1234567890AB', 'Test1'),
+    new Location('87654321-4321-4321-8765-BA0123456789', 'Test2')
+];
+
 beforeEach(function () {
-    collections.location._reset();
+    collections.location._reset(data);
 });
 
 describe('Location Controller', function () {
@@ -72,6 +78,7 @@ describe('Location Controller', function () {
 
         it('should not error when username is valid', function () {
             var location = undefined;
+            var oldCount = collections.location.db.length;
 
             Should.doesNotThrow(function () {
                 location = controllers.location.create('asdf');
@@ -79,6 +86,95 @@ describe('Location Controller', function () {
 
             Should.exist(location, 'Expected location to exist');
             Should.exist(controllers.location.get(location.getUUID()), 'Expected location to exist in controller');
+            Should.equal(oldCount + 1, collections.location.db.length, 'Expected collection to increase by one');
+        });
+    });
+
+    describe('#changeName', function () {
+        var validName = 'Test3';
+        var validUUID = data[0].getUUID();
+
+        describe('when uuid is invalid', function () {
+            it('should error when uuid is null', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(null, validName);
+                });
+            });
+
+            it('should error when uuid is undefined', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(undefined, validName);
+                });
+            });
+
+            it('should error when uuid is empty', function () {
+                Should.throws(function () {
+                    controllers.location.changeName('', validName);
+                });
+            });
+
+            it('should error when uuid is whitespace', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(' ', validName);
+                });
+            });
+
+            it('should error when uuid is not a string', function () {
+                Should.throws(function () {
+                    controllers.location.changeName({ asdf: 'asdf' }, validName);
+                });
+            });
+
+            it('should error when uuid is not a valid UUID', function () {
+                Should.throws(function () {
+                    controllers.location.changeName('123-123-123', validName);
+                });
+            });
+        });
+
+        describe('when uuid is valid', function () {
+            it('should error when name is null', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(validUUID, null);
+                });
+            });
+
+            it('should error when name is undefined', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(validUUID, undefined);
+                });
+            });
+
+            it('should error when name is empty', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(validUUID, '');
+                });
+            });
+
+            it('should error when name is whitespace', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(validUUID, ' ');
+                });
+            });
+
+            it('should error when name is not a string', function () {
+                Should.throws(function () {
+                    controllers.location.changeName(validUUID, { asdf: "asdf" });
+                });
+            });
+
+            it('should not error when name is valid', function () {
+                var newName = 'NewName';
+
+                Should.doesNotThrow(function () {
+                    location = controllers.location.changeName(validUUID, newName);
+                }, 'Expected change to not error');
+
+                var location = controllers.location.get(validUUID);
+                Should.exist(location, 'Expected location to exist');
+                Should.exist(controllers.location.get(location.getUUID()), 'Expected location to exist in controller');
+                Should.equal(newName, location.getName(), 'Expected location name to have updated');
+            });
         });
     });
 });
