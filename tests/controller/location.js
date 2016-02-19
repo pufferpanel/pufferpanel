@@ -44,7 +44,7 @@ beforeEach(function () {
     collections.location._reset(data);
 });
 
-describe('Location Controller', function () {
+describe('Controller/Location', function () {
     describe('#create', function () {
         it('should error when username is null', function () {
             Should.throws(function () {
