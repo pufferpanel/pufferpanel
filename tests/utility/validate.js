@@ -19,6 +19,8 @@ var Should = require('should');
 var Rfr = require('rfr');
 var Validate = Rfr('lib/utility/validate.js');
 
+//TODO: Complete all unit tests
+
 describe('Utilty/Validate', function () {
     describe('isString', function () {
         it('should error if null', function () {
@@ -56,5 +58,31 @@ describe('Utilty/Validate', function () {
                 Validate.isString('asdf', 'asdf');
             });
         });
+    });
+
+    describe('isBoolean', function () {
+        it('should error if null', function () {
+            Should.throws(function () {
+                Validate.isBoolean(null, 'asdf');
+            });
+        });
+
+        it('should error if undefined', function () {
+            Should.throws(function () {
+                Validate.isBoolean(undefined, 'asdf');
+            });
+        });
+
+        it('should error if string', function () {
+            Should.throws(function () {
+                Validate.isBoolean('asdf', 'asdf');
+            });
+        });
+
+        it('should not error if boolean', function () {
+            Should.doesNotThrow(function () {
+                Validate.isBoolean(true, 'asdf');
+            });
+        })
     });
 });
