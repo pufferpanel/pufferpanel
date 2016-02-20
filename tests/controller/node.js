@@ -201,4 +201,247 @@ describe('Controller/Node', function () {
             });
         });
     });
+
+    describe('#get', function () {
+        it('should fail when null', function () {
+            Should.throws(function () {
+                controllers.node.get(null);
+            });
+        });
+
+        it('should fail when undefined', function () {
+            Should.throws(function () {
+                controllers.node.get(undefined);
+            });
+        });
+
+        it('should fail when not string', function () {
+            Should.throws(function () {
+                controllers.node.get({ asdf: 'asdf' });
+            });
+        });
+
+        it('should fail when empty', function () {
+            Should.throws(function () {
+                controllers.node.get('');
+            });
+        });
+
+        it('should fail when whitespace', function () {
+            Should.throws(function () {
+                controllers.node.get(' ');
+            });
+        });
+
+        it('should fail when not UUID', function () {
+            Should.throws(function () {
+                controllers.node.get('asdf');
+            });
+        });
+
+        it('should return undefined if no node', function () {
+            var node = undefined;
+            var validUUID = '3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893';
+
+            Should.doesNotThrow(function () {
+                node = controllers.node.get(validUUID);
+            });
+
+            Should.not.exist(node, 'Did not expect a node');
+        });
+
+        it('should return the node when defined', function () {
+            var node = undefined;
+            var validUUID = collections.node.db[0].getUUID();
+
+            Should.doesNotThrow(function () {
+                node = controllers.node.get(validUUID);
+            });
+
+            Should.exist(node, 'Expected a node');
+        });
+    });
+
+    describe('#getAtLocation', function () {
+        it('should fail when null', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation(null);
+            });
+        });
+
+        it('should fail when undefined', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation(undefined);
+            });
+        });
+
+        it('should fail when not string', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation({ asdf: 'asdf' });
+            });
+        });
+
+        it('should fail when empty', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation('');
+            });
+        });
+
+        it('should fail when whitespace', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation(' ');
+            });
+        });
+
+        it('should fail when not UUID', function () {
+            Should.throws(function () {
+                controllers.node.getAtLocation('asdf');
+            });
+        });
+
+        it('should fail if no location', function () {
+            var validUUID = '3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893';
+
+            Should.throws(function () {
+                controllers.node.getAtLocation(validUUID);
+            });
+        });
+
+        it('should return the nodes when defined', function () {
+            var nodes = undefined;
+            var validUUID = '87654321-4321-4321-8765-BA0123456789';
+
+            Should.doesNotThrow(function () {
+                nodes = controllers.node.getAtLocation(validUUID);
+            });
+
+            Should.equal(nodes.length, 2, 'Expected 2 nodes at the location');
+        });
+    });
+
+    describe('#addAddress', function () {
+        var validUUID = '7d7d8d97-3a1c-4a8d-be5f-7577fac267af';
+        var validIP = '192.168.1.10';
+        var validPort = 25656;
+
+        describe('when node is invalid', function () {
+            it('should fail when null', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress(null, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when undefined', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress(undefined, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when not string', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress({ asdf: 'asdf' }, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when empty', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress('', validIP, validPort, false);
+                });
+            });
+
+            it('should fail when whitespace', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress(' ', validIP, validPort, false);
+                });
+            });
+
+            it('should fail when not UUID', function () {
+                Should.throws(function () {
+                    controllers.node.addAddress('asdfasdf', validIP, validPort, false);
+                });
+            });
+        });
+
+        describe('when node is valid', function () {
+            describe('and ip is invalid', function () {
+                it('should fail when null', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, null, validPort, false);
+                    });
+                });
+
+                it('should fail when undefined', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, undefined, validPort, false);
+                    });
+                });
+
+                it('should fail when not string', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                    });
+                });
+
+                it('should fail when empty', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, '', validPort, false);
+                    });
+                });
+
+                it('should fail when whitespace', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, ' ', validPort, false);
+                    });
+                });
+
+                it('should fail when not IP', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, 'asdfasdf', validPort, false);
+                    });
+                });
+
+                it('should fail when domain instead of IP', function () {
+                    Should.throws(function () {
+                        controllers.node.addAddress(validUUID, 'google.com', validPort, false);
+                    });
+                })
+            });
+
+            describe('and ip is valid', function () {
+                describe('and  port is invalid', function () {
+                    it('should fail when null', function () {
+                        Should.throws(function () {
+                            controllers.node.addAddress(validUUID, validIP, null, false);
+                        });
+                    });
+
+                    it('should fail when undefined', function () {
+                        Should.throws(function () {
+                            controllers.node.addAddress(validUUID, validIP, undefined, false);
+                        });
+                    });
+
+                    it('should fail when not a number', function () {
+                        Should.throws(function () {
+                            controllers.node.addAddress(validUUID, validIP, 'asdf', false);
+                        });
+                    });
+
+                    it('should fail if outside port range', function () {
+                        Should.throws(function () {
+                            controllers.node.addAddress(validUUID, validIP, -10, false);
+                        });
+                    });
+                });
+
+                describe('and port is valid', function () {
+                    it('should not error', function () {
+                        Should.doesNotThrow(function () {
+                            controllers.node.addAddress(validUUID, validIP, validPort, false);
+                        });
+                    });
+                });
+            });
+        });
+    });
 });
