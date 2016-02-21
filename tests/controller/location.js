@@ -17,6 +17,7 @@
 var Assert = require('assert');
 var Should = require('should');
 var Rfr = require('rfr');
+var Uuid = Rfr('lib/data/uuid.js');
 var Location = Rfr('lib/model/location.js');
 var Common = Rfr('tests/common.js');
 
@@ -87,27 +88,9 @@ describe('Controller/Location', function () {
                 });
             });
 
-            it('should error when uuid is empty', function () {
+            it('should error when uuid is not a uuid', function () {
                 Should.throws(function () {
-                    controllers.location.changeName('', validName);
-                });
-            });
-
-            it('should error when uuid is whitespace', function () {
-                Should.throws(function () {
-                    controllers.location.changeName(' ', validName);
-                });
-            });
-
-            it('should error when uuid is not a string', function () {
-                Should.throws(function () {
-                    controllers.location.changeName({ asdf: 'asdf' }, validName);
-                });
-            });
-
-            it('should error when uuid is not a valid UUID', function () {
-                Should.throws(function () {
-                    controllers.location.changeName('123-123-123', validName);
+                    controllers.location.changeName('asdf', validName);
                 });
             });
         });
@@ -170,22 +153,9 @@ describe('Controller/Location', function () {
                 controllers.location.get(undefined);
             });
         });
-
-        it('should error when UUID is empty', function () {
+        it('should error when UUID is not a UUID', function () {
             Should.throws(function () {
-                controllers.location.get('');
-            });
-        });
-
-        it('should error when UUID is whitespace', function () {
-            Should.throws(function () {
-                controllers.location.get(' ');
-            });
-        });
-
-        it('should error when UUID is not a string', function () {
-            Should.throws(function () {
-                controllers.location.get({ asdf: "asdf" });
+                controllers.location.get('adsf');
             });
         });
 
@@ -202,7 +172,7 @@ describe('Controller/Location', function () {
 
         it('should return undefined when UUID is valid and no location exists', function () {
             var location = undefined;
-            var validButNotExistUUID = '12345678-1234-4531-ABCD-111111111111';
+            var validButNotExistUUID = new Uuid('12345678-1234-4531-ABCD-111111111111');
 
             Should.doesNotThrow(function () {
                 location = controllers.location.get(validButNotExistUUID);
@@ -225,21 +195,10 @@ describe('Controller/Location', function () {
             });
         });
 
-        it('should error when UUID is empty', function () {
-            Should.throws(function () {
-                controllers.location.delete('');
-            });
-        });
 
-        it('should error when UUID is whitespace', function () {
+        it('should error when UUID is not a valid UUID', function () {
             Should.throws(function () {
-                controllers.location.delete(' ');
-            });
-        });
-
-        it('should error when UUID is not a string', function () {
-            Should.throws(function () {
-                controllers.location.delete({ asdf: "asdf" });
+                controllers.location.delete('asdf');
             });
         });
 
@@ -257,7 +216,7 @@ describe('Controller/Location', function () {
         });
 
         it('should not error when UUID is valid and no location exists', function () {
-            var validUUID = '98765432-1234-4851-ADC1-ABC123456789';
+            var validUUID = new Uuid('98765432-1234-4851-ADC1-ABC123456789');
             var oldCount = collections.location.db.length;
             var location = {};
 

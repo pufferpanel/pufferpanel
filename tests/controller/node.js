@@ -19,6 +19,7 @@ var Should = require('should');
 var Rfr = require('rfr');
 var Node = Rfr('lib/model/node.js');
 var Common = Rfr('tests/common.js');
+var Uuid = Rfr('lib/data/uuid.js');
 
 var controllers = Common.controllers;
 var collections = Common.collections;
@@ -27,7 +28,7 @@ var data = Common.data;
 describe('Controller/Node', function () {
     describe('#create', function () {
         var validName = 'NewNode1';
-        var validLocation = '12346578-1234-4321-ABCD-1234567890AB';
+        var validLocation = new Uuid('12346578-1234-4321-ABCD-1234567890AB');
         var validIP = '192.168.1.1';
         var validPort = 5656;
         var validAddresses = [{
@@ -80,25 +81,7 @@ describe('Controller/Node', function () {
                 });
             });
 
-            it('should fail when empty', function () {
-                Should.throws(function () {
-                    controllers.node.create(validName, '', validIP, validPort, validAddresses);
-                });
-            });
-
-            it('should fail when whitespace', function () {
-                Should.throws(function () {
-                    controllers.node.create(validName, ' ', validIP, validPort, validAddresses);
-                });
-            });
-
-            it('should fail when not a string', function () {
-                Should.throws(function () {
-                    controllers.node.create(validName, { asdf: 'asdf' }, validIP, validPort, validAddresses);
-                });
-            });
-
-            it('should fail when string but not UUID', function () {
+            it('should fail when not UUID', function () {
                 Should.throws(function () {
                     controllers.node.create(validName, 'asdf', validIP, validPort, validAddresses);
                 });
@@ -215,24 +198,6 @@ describe('Controller/Node', function () {
             });
         });
 
-        it('should fail when not string', function () {
-            Should.throws(function () {
-                controllers.node.get({ asdf: 'asdf' });
-            });
-        });
-
-        it('should fail when empty', function () {
-            Should.throws(function () {
-                controllers.node.get('');
-            });
-        });
-
-        it('should fail when whitespace', function () {
-            Should.throws(function () {
-                controllers.node.get(' ');
-            });
-        });
-
         it('should fail when not UUID', function () {
             Should.throws(function () {
                 controllers.node.get('asdf');
@@ -241,7 +206,7 @@ describe('Controller/Node', function () {
 
         it('should return undefined if no node', function () {
             var node = undefined;
-            var validUUID = '3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893';
+            var validUUID = new Uuid('3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893');
 
             Should.doesNotThrow(function () {
                 node = controllers.node.get(validUUID);
@@ -275,24 +240,6 @@ describe('Controller/Node', function () {
             });
         });
 
-        it('should fail when not string', function () {
-            Should.throws(function () {
-                controllers.node.getAtLocation({ asdf: 'asdf' });
-            });
-        });
-
-        it('should fail when empty', function () {
-            Should.throws(function () {
-                controllers.node.getAtLocation('');
-            });
-        });
-
-        it('should fail when whitespace', function () {
-            Should.throws(function () {
-                controllers.node.getAtLocation(' ');
-            });
-        });
-
         it('should fail when not UUID', function () {
             Should.throws(function () {
                 controllers.node.getAtLocation('asdf');
@@ -300,7 +247,7 @@ describe('Controller/Node', function () {
         });
 
         it('should fail if no location', function () {
-            var validUUID = '3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893';
+            var validUUID = new Uuid('3cc22a4d-6f12-4ca1-9cc7-2cbd6b1ce893');
 
             Should.throws(function () {
                 controllers.node.getAtLocation(validUUID);
@@ -309,7 +256,7 @@ describe('Controller/Node', function () {
 
         it('should return the nodes when defined', function () {
             var nodes = undefined;
-            var validUUID = '87654321-4321-4321-8765-BA0123456789';
+            var validUUID = data.location[1].getUUID();
 
             Should.doesNotThrow(function () {
                 nodes = controllers.node.getAtLocation(validUUID);
@@ -320,7 +267,7 @@ describe('Controller/Node', function () {
     });
 
     describe('#addAddress', function () {
-        var validUUID = '7d7d8d97-3a1c-4a8d-be5f-7577fac267af';
+        var validUUID = new Uuid('7d7d8d97-3a1c-4a8d-be5f-7577fac267af');
         var validIP = '192.168.1.10';
         var validPort = 25656;
 
@@ -334,24 +281,6 @@ describe('Controller/Node', function () {
             it('should fail when undefined', function () {
                 Should.throws(function () {
                     controllers.node.addAddress(undefined, validIP, validPort, false);
-                });
-            });
-
-            it('should fail when not string', function () {
-                Should.throws(function () {
-                    controllers.node.addAddress({ asdf: 'asdf' }, validIP, validPort, false);
-                });
-            });
-
-            it('should fail when empty', function () {
-                Should.throws(function () {
-                    controllers.node.addAddress('', validIP, validPort, false);
-                });
-            });
-
-            it('should fail when whitespace', function () {
-                Should.throws(function () {
-                    controllers.node.addAddress(' ', validIP, validPort, false);
                 });
             });
 
