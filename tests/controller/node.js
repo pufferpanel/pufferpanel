@@ -18,7 +18,7 @@ var Assert = require('assert');
 var Should = require('should');
 var Rfr = require('rfr');
 var Node = Rfr('lib/model/node.js');
-var Common = Rfr('tests/common.js');
+var Common = Rfr('tests/dep/common.js');
 var Uuid = Rfr('lib/data/uuid.js');
 
 var controllers = Common.controllers;
@@ -365,8 +365,227 @@ describe('Controller/Node', function () {
 
                 describe('and port is valid', function () {
                     it('should not error', function () {
+                        //TODO: Test if address was correctly added
                         Should.doesNotThrow(function () {
                             controllers.node.addAddress(validUUID, validIP, validPort, false);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('#removeAddress', function () {
+        var validUUID = new Uuid('0f4fb36f-7795-4765-8268-94d102810fa5');
+        var validIP = '10.0.0.2';
+        var validPort = 25656;
+
+        describe('when node is invalid', function () {
+            it('should fail when null', function () {
+                Should.throws(function () {
+                    controllers.node.removeAddress(null, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when undefined', function () {
+                Should.throws(function () {
+                    controllers.node.removeAddress(undefined, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when not UUID', function () {
+                Should.throws(function () {
+                    controllers.node.removeAddress('asdfasdf', validIP, validPort, false);
+                });
+            });
+        });
+
+        describe('when node is valid', function () {
+            describe('and ip is invalid', function () {
+                it('should fail when null', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, null, validPort, false);
+                    });
+                });
+
+                it('should fail when undefined', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, undefined, validPort, false);
+                    });
+                });
+
+                it('should fail when not string', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                    });
+                });
+
+                it('should fail when empty', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, '', validPort, false);
+                    });
+                });
+
+                it('should fail when whitespace', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, ' ', validPort, false);
+                    });
+                });
+
+                it('should fail when not IP', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, 'asdfasdf', validPort, false);
+                    });
+                });
+
+                it('should fail when domain instead of IP', function () {
+                    Should.throws(function () {
+                        controllers.node.removeAddress(validUUID, 'google.com', validPort, false);
+                    });
+                })
+            });
+
+            describe('and ip is valid', function () {
+                describe('and  port is invalid', function () {
+                    it('should fail when null', function () {
+                        Should.throws(function () {
+                            controllers.node.removeAddress(validUUID, validIP, null, false);
+                        });
+                    });
+
+                    it('should fail when undefined', function () {
+                        Should.throws(function () {
+                            controllers.node.removeAddress(validUUID, validIP, undefined, false);
+                        });
+                    });
+
+                    it('should fail when not a number', function () {
+                        Should.throws(function () {
+                            controllers.node.removeAddress(validUUID, validIP, 'asdf', false);
+                        });
+                    });
+
+                    it('should fail if outside port range', function () {
+                        Should.throws(function () {
+                            controllers.node.removeAddress(validUUID, validIP, -10, false);
+                        });
+                    });
+                });
+
+                describe('and port is valid', function () {
+                    it('should not error', function () {
+                        //TODO: Test if remove correctly removed the address
+                        Should.doesNotThrow(function () {
+                            controllers.node.removeAddress(validUUID, validIP, validPort, false);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('#updateAddress', function () {
+        var validUUID = new Uuid('0f4fb36f-7795-4765-8268-94d102810fa5');
+        var validIP = '10.0.0.2';
+        var validPort = 25656;
+
+        describe('when node is invalid', function () {
+            it('should fail when null', function () {
+                Should.throws(function () {
+                    controllers.node.updateAddress(null, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when undefined', function () {
+                Should.throws(function () {
+                    controllers.node.updateAddress(undefined, validIP, validPort, false);
+                });
+            });
+
+            it('should fail when not UUID', function () {
+                Should.throws(function () {
+                    controllers.node.updateAddress('asdfasdf', validIP, validPort, false);
+                });
+            });
+        });
+
+        describe('when node is valid', function () {
+            describe('and ip is invalid', function () {
+                it('should fail when null', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, null, validPort, false);
+                    });
+                });
+
+                it('should fail when undefined', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, undefined, validPort, false);
+                    });
+                });
+
+                it('should fail when not string', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                    });
+                });
+
+                it('should fail when empty', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, '', validPort, false);
+                    });
+                });
+
+                it('should fail when whitespace', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, ' ', validPort, false);
+                    });
+                });
+
+                it('should fail when not IP', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, 'asdfasdf', validPort, false);
+                    });
+                });
+
+                it('should fail when domain instead of IP', function () {
+                    Should.throws(function () {
+                        controllers.node.updateAddress(validUUID, 'google.com', validPort, false);
+                    });
+                })
+            });
+
+            describe('and ip is valid', function () {
+                describe('and  port is invalid', function () {
+                    it('should fail when null', function () {
+                        Should.throws(function () {
+                            controllers.node.updateAddress(validUUID, validIP, null, false);
+                        });
+                    });
+
+                    it('should fail when undefined', function () {
+                        Should.throws(function () {
+                            controllers.node.updateAddress(validUUID, validIP, undefined, false);
+                        });
+                    });
+
+                    it('should fail when not a number', function () {
+                        Should.throws(function () {
+                            controllers.node.updateAddress(validUUID, validIP, 'asdf', false);
+                        });
+                    });
+
+                    it('should fail if outside port range', function () {
+                        Should.throws(function () {
+                            controllers.node.updateAddress(validUUID, validIP, -10, false);
+                        });
+                    });
+                });
+
+                describe('and port is valid', function () {
+                    it('should not error', function () {
+                        //TODO: Test if address updated correctly
+                        Should.doesNotThrow(function () {
+                            controllers.node.updateAddress(validUUID, validIP, validPort, false);
                         });
                     });
                 });

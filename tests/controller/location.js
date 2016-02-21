@@ -19,7 +19,7 @@ var Should = require('should');
 var Rfr = require('rfr');
 var Uuid = Rfr('lib/data/uuid.js');
 var Location = Rfr('lib/model/location.js');
-var Common = Rfr('tests/common.js');
+var Common = Rfr('tests/dep/common.js');
 
 var controllers = Common.controllers;
 var collections = Common.collections;
