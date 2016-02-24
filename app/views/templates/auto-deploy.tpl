@@ -103,7 +103,7 @@ sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
 checkResponseCode
 
 # Add Match Group to the End of the File
-echo -e "Match group scalesuser
+echo -e "\nMatch group scalesuser
     ChrootDirectory %h
     X11Forwarding no
     AllowTcpForwarding no
