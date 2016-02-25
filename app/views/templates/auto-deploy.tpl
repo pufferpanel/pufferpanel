@@ -2,7 +2,7 @@
 # PufferPanel Installer Script
 
 export DEBIAN_FRONTEND=noninteractive
-version=0.2.4.1
+version="0.2.7"
 scalesApt=https://github.com/PufferPanel/Scales/releases/download/${version}/debian.tar.gz
 scalesYum=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
 
@@ -42,7 +42,7 @@ esac
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version ]]; then
         echo -e "System detected as some variant of Ubuntu or Debian."
-        OS_INSTALL_CMD="apt-get"
+        OS_INSTALL_CMD="apt"
     else
         echo -e "${RED}This OS does not appear to be supported by this program!${NORMAL}"
         exit 1
@@ -73,7 +73,7 @@ function checkResponseCode() {
 
 # Install Other Dependencies
 echo "Installing some dependiencies."
-if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+if [ $OS_INSTALL_CMD == 'apt' ]; then
     apt-get install -y openssl curl git make gcc g++ nodejs openjdk-7-jdk tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
 else
     yum -y install openssl curl git make gcc-c++ nodejs java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
@@ -92,6 +92,7 @@ usermod -aG docker $SUDO_USER
 checkResponseCode
 
 service docker start
+checkResponseCode
 
 {% endif %}
 
@@ -102,13 +103,17 @@ groupadd --system scalesuser
 sed -i '/Subsystem sftp/c\Subsystem sftp internal-sftp' /etc/ssh/sshd_config
 checkResponseCode
 
-# Add Match Group to the End of the File
-echo -e "\nMatch group scalesuser
+# Only append to sshd if this does not exist 
+grep -q "Match group scalesuser" /etc/ssh/sshd_config
+if [ $? -ne 0 ]; then
+    # Add Match Group to the End of the File
+    echo -e "\nMatch group scalesuser
     ChrootDirectory %h
     X11Forwarding no
     AllowTcpForwarding no
-    ForceCommand internal-sftp" >> /etc/ssh/sshd_config
-checkResponseCode
+    ForceCommand internal-sftp\n" >> /etc/ssh/sshd_config
+    checkResponseCode
+fi
 
 # Restart SSHD
 if [ $OS_INSTALL_CMD == 'apt-get' ]; then
