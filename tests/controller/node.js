@@ -63,7 +63,7 @@ describe('Controller/Node', function () {
 
             it('should fail when not a string', function () {
                 Should.throws(function () {
-                    controllers.node.create({ asdf: 'asdf' }, validLocation, validIP, validPort, validAddresses);
+                    controllers.node.create({asdf: 'asdf'}, validLocation, validIP, validPort, validAddresses);
                 });
             });
         });
@@ -115,7 +115,7 @@ describe('Controller/Node', function () {
 
             it('should fail when not a string', function () {
                 Should.throws(function () {
-                    controllers.node.create(validName, validLocation, { asdf: 'asdf' }, validPort, validAddresses);
+                    controllers.node.create(validName, validLocation, {asdf: 'asdf'}, validPort, validAddresses);
                 });
             });
 
@@ -167,7 +167,7 @@ describe('Controller/Node', function () {
 
             it('should fail when not array', function () {
                 Should.throws(function () {
-                    controllers.node.create(validName, validLocation, validIP, validPort, { asdf: 'asdf' });
+                    controllers.node.create(validName, validLocation, validIP, validPort, {asdf: 'asdf'});
                 });
             });
         });
@@ -307,7 +307,7 @@ describe('Controller/Node', function () {
 
                 it('should fail when not string', function () {
                     Should.throws(function () {
-                        controllers.node.addAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                        controllers.node.addAddress(validUUID, {asdf: 'asdf'}, validPort, false);
                     });
                 });
 
@@ -416,7 +416,7 @@ describe('Controller/Node', function () {
 
                 it('should fail when not string', function () {
                     Should.throws(function () {
-                        controllers.node.removeAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                        controllers.node.removeAddress(validUUID, {asdf: 'asdf'}, validPort, false);
                     });
                 });
 
@@ -525,7 +525,7 @@ describe('Controller/Node', function () {
 
                 it('should fail when not string', function () {
                     Should.throws(function () {
-                        controllers.node.updateAddress(validUUID, { asdf: 'asdf' }, validPort, false);
+                        controllers.node.updateAddress(validUUID, {asdf: 'asdf'}, validPort, false);
                     });
                 });
 
