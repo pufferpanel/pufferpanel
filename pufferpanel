@@ -151,12 +151,12 @@ function configureUser() {
         echo -n "Password: "
         read -s password
     done
-    password=$(php -r 'echo password_hash("'${password}'", PASSWORD_BCRYPT);');
+    password=$(php -r "echo password_hash('"${password}"', PASSWORD_BCRYPT);");
     time=$(php -r 'echo time();');
 
     echo ""
     echo "Installing user..."
-    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL)"
+    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
 }
 
 function configureNginx() {
@@ -220,8 +220,8 @@ function configureNginx() {
     #    server_name ${siteUrl};
     #
     #    ssl on;
-    #    ssl_certificate     /etc/nginx/ssl/<server>.crt;
-    #    ssl_certificate_key /etc/nginx/ssl/<server>.key;
+    #    ssl_certificate     /etc/nginx/ssl/${siteUrl}.crt;
+    #    ssl_certificate_key /etc/nginx/ssl/${siteUrl}.key;
     #
     #    location / {
     #        try_files /public/router.php =404;
