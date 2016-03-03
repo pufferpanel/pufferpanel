@@ -21,7 +21,6 @@ function printSeparator() {
 
 function loadConfig() {
     if [ "${mysqlHost}" == "" ]; then
-        echo ""
         configPath=${DIR}/config.json
         mysqlHost=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->host;');
         mysqlDb=$(php -r 'echo json_decode(file_get_contents(\'${configPath}'))->mysql->database;');
@@ -100,6 +99,9 @@ function configureMysql() {
     }
 }" > config.json
     echo "MySQL has been configured and the database was installed"
+    echo "Switching to new user for furthur commands"
+    mysqlHost=""
+    loadConfig
 }
 
 function configureSite() {
