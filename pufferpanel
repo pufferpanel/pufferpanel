@@ -23,10 +23,10 @@ function loadConfig() {
     if [ "${mysqlHost}" == "" ]; then
         configPath=${DIR}/config.json
         mysqlHost=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->host;');
-        mysqlDb=$(php -r 'echo json_decode(file_get_contents(\'${configPath}'))->mysql->database;');
-        mysqlUser=$(php -r 'echo json_decode(file_get_contents(\'${configPath}'))->mysql->username;');
-        mysqlPass=$(php -r 'echo json_decode(file_get_contents("${DIR}/config.json"))->mysql->password;');
-        mysqlPort=$(php -r 'echo json_decode(file_get_contents("${DIR}/config.json"))->mysql->port;');
+        mysqlDb=$(php -r 'echo json_decode(file_get_contents("'${configPath}'")->mysql->database;');
+        mysqlUser=$(php -r 'json_decode(file_get_contents("'${configPath}'")->mysql->username;');
+        mysqlPass=$(php -r 'json_decode(file_get_contents("'${configPath}'")->mysql->password;');
+        mysqlPort=$(php -r 'json_decode(file_get_contents("'${configPath}'")->mysql->port;');
     fi
 }
 
