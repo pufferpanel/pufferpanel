@@ -24,9 +24,9 @@ function loadConfig() {
         configPath=${DIR}/config.json
         mysqlHost=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->host;');
         mysqlDb=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->database;');
-        mysqlUser=$(php -r 'json_decode(file_get_contents("'${configPath}'"))->mysql->username;');
-        mysqlPass=$(php -r 'json_decode(file_get_contents("'${configPath}'"))->mysql->password;');
-        mysqlPort=$(php -r 'json_decode(file_get_contents("'${configPath}'"))->mysql->port;');
+        mysqlUser=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->username;');
+        mysqlPass=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->password;');
+        mysqlPort=$(php -r 'echo json_decode(file_get_contents("'${configPath}'"))->mysql->port;');
     fi
 }
 
@@ -99,7 +99,7 @@ function configureMysql() {
     }
 }" > config.json
     echo "MySQL has been configured and the database was installed"
-    echo "Switching to new user for furthur commands"
+    echo "Switching to new user for further commands"
     mysqlHost=""
     loadConfig
 }
@@ -117,7 +117,7 @@ function configureSite() {
     fi
 
     loadConfig
-    mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} -D ${mysqlDb} --password="${mysqlPass}" -e "
+    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
         INSERT INTO acp_settings (setting_ref, setting_val) VALUES
             ('company_name', 'PufferPanel'),
             ('master_url', 'http://${siteUrl}/'),
@@ -157,7 +157,8 @@ function configureUser() {
 
     echo ""
     echo "Installing user..."
-    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
+    mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+        INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
 }
 
 function configureNginx() {
@@ -170,7 +171,8 @@ function configureNginx() {
     fi
     if [ "${siteUrl}" == "" ]; then
         loadConfig
-        siteUrl=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "SELECT setting_val FROM acp_settings WHERE setting_ref='master_url'" | head -n 3 | tail -n 1 | sed 's/^http\(\|s\):\/\///g')
+        siteUrl=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+            SELECT setting_val FROM acp_settings WHERE setting_ref='master_url'" | head -n 3 | tail -n 1 | sed 's/^http\(\|s\):\/\///g')
         if [[ "${siteUrl}" == */ ]]; then
             siteUrl="${siteUrl%?}"
         fi
