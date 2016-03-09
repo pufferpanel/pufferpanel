@@ -116,7 +116,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Restart SSHD
-if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+if [ $OS_INSTALL_CMD == 'apt' ]; then
     service ssh restart
 else
     service sshd restart
@@ -128,7 +128,7 @@ mkdir -p /srv
 checkResponseCode
 
 cd /srv/
-if [ $OS_INSTALL_CMD == 'apt-get' ]; then
+if [ $OS_INSTALL_CMD == 'apt' ]; then
     curl -L -o scales.tar.gz $scalesApt
 else
     curl -L -o scales.tar.gz $scalesYum
