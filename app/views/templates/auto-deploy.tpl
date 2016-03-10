@@ -2,7 +2,7 @@
 # PufferPanel Installer Script
 
 export DEBIAN_FRONTEND=noninteractive
-version="0.2.7"
+version="v0.2.8"
 scalesApt=https://github.com/PufferPanel/Scales/releases/download/${version}/debian.tar.gz
 scalesYum=https://github.com/PufferPanel/Scales/releases/download/${version}/centos.tar.gz
 
