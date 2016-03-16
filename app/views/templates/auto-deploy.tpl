@@ -148,7 +148,8 @@ checkResponseCode
 echo '{
 	"listen": {
 		"sftp": {{ node.daemon_sftp }},
-		"rest": {{ node.daemon_listen }}
+		"rest": {{ node.daemon_listen }},
+		"host": "0.0.0.0"
 	},
 	"urls": {
 		"download": "{{ settings.master_url }}auth/remote/download",

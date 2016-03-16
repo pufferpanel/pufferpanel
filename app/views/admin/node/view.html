@@ -72,7 +72,8 @@
 			<pre id="node_daemon_config">{
 	"listen": {
 		"sftp": {{ node.daemon_sftp }},
-		"rest": {{ node.daemon_listen }}
+		"rest": {{ node.daemon_listen }},
+		"host": "0.0.0.0"
 	},
 	"urls": {
 		"download": "{{ settings.master_url }}auth/remote/download",
@@ -297,7 +298,8 @@ $(window).load(function(){
 					$("#node_daemon_config").text('{ \n\
 	"listen": { \n\
 		"sftp": {{ node.daemon_sftp }}, \n\
-		"rest": {{ node.daemon_listen }} \n\
+		"rest": {{ node.daemon_listen }}, \n\
+		"host": "0.0.0.0" \n\
 	}, \n\
 	"urls": { \n\
 		"download": "{{ settings.master_url }}auth/remote/download", \n\
