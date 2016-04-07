@@ -1,4 +1,4 @@
-string.email, Email
+﻿string.email, Email
 string.password, Wachtwoord
 string.login, Login
 string.reset_password, Wachtwoord reset
