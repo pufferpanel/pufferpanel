@@ -1,0 +1,124 @@
+string.email, Email
+string.password, Wachtwoord
+string.login, Login
+string.reset_password, Wachtwoord reset
+string.spam_protection, Spam Protectie
+string.again, (Opnieuw)
+string.noservers, Je hebt nog geen servers aan je account gekoppeld.
+string.node, Node
+string.name, Naam
+string.connect, Connect
+string.status, Status
+string.offline, Offline
+string.online, Online
+string.connection, Connectie
+string.mem_alloc, Geheugen toegewezen
+string.disk_alloc, Ruimte Toegewezen
+string.start, Start
+string.restart, Opnieuw opstarten
+string.stop, Stop
+string.options, Opties
+string.search, Zoek
+string.clear, Leeg
+string.refresh, vernieuw
+string.close, sluit
+string.generated_pass, Genereer wachtwoord
+string.modpacks, Modpacks
+string.ftp, FTP
+string.host, Host
+string.username, Gebruikersnaam
+string.generate, Genereer
+string.description, Beschrijving
+string.previous, Vorige
+string.next, Volgende
+string.about, Over
+string.version, Versie
+string.published, Gepubliceerd
+string.versions, Versies
+string.save, Opslaan
+string.token, Token
+string.language, Taal
+string.acp, Admin Control Panel
+string.logout, Uitloggen
+string.location, Locatie
+footer.license, PufferPanel is gelicentieerd onder <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.version, Lopende versie %s distributed by <a href="http://pufferpanel.com/">PufferPanel Development</a>.
+footer.generated, Pagina gemaakt in %s seconden.
+footer.queries, Voerde %s database opdrachten uit.
+sidebar.acc.actions, Account Actions
+sidebar.server.acc, Server Actions
+sidebar.server.sett, Server Instellingen
+sidebar.settings, Instellingen
+sidebar.servers, Mijn Servers
+sidebar.overview, Overzicht
+sidebar.console, Live Console
+sidebar.files, Bestandsbeheer
+sidebar.manage, Server Beheer
+sidebar.plugins, Server Plugins
+sidebar.manage_subusers, Beheer Sub-gebruikers
+sidebar.totp_settings, TOTP Instellingen
+header.account, Account
+header.logout, Uitloggen
+header.admin, Admin CP
+login.login_h1, Login in op PufferPanel
+reset.reset_h1, Reset uw wachtwoord
+settings.change_pass, Verander Wachtwoord
+settings.update_email, Update Email
+settings.current_pass, Huidig Wachtwoord
+settings.new_pass, Nieuw Wachtwoord
+settings.new_email, Nieuwe Email adres
+settings.notifications_h1, Update Meldingen Instellingen
+settings.login_success, Met succes ingelogd
+settings.failed_login, Mislukte Login
+settings.notify.email_me, Alsjeblieft Email mij
+settings.notify.no_email_me, Alsjeblieft Email mij niet
+settings.update_preferences, Update Instellingen
+settings.subuser.h1, Sub-User Token
+settings.subuser.help, Als je een email ontvangen hebt voor subuser op deze server. Type je token hier benden in.
+settings.subuser.validate, Token scannen
+node.overview.stats_h1, Statistische gegevens Overzicht
+node.overview.collect_usage, Proberen om gegevens op te halen, dit kan een paar seconden duren. Zorg ervoor dat je server online is.
+node.overview.collect_disk, Verzamelen harde schijf informatie, dit kan een paar seconden duren.
+node.overview.no_players, Er zijn momenteel geen spelers online.
+node.overview.disk_h1, Schijf ruimte gebruikt
+node.overview.space_used, U gebruikt %s MB van je maximum %s MB schijf ruimte.
+node.overview.information_h1, Server Informatie
+node.overview.players_h5, Spelers Online
+node.overview.cpu_h5, CPU Gebruik
+node.overview.memory_h5, Memorie Gebruik
+node.overview.ajax.no_conn, Geen verbinding naar node.
+node.overview.ajax.no_exec, Kan de opdracht op de server niet uitvoeren.
+node.console.command_help, Type Console opdracht
+node.console.scrollstop_alert, Je hebt tekst in de console geselecteerd. The console zal niet updaten wanneer dit gebeurt. Dit doen we om U makkelijk tekst te laten selecteren. Om weer verder te gaan de-selecteer de tekst.
+node.console.scrollstop_h1, Scrollstop&trade; Console Scherm
+node.console.ajax.server_started, Server is met succes gestart.
+node.files.loading, Laden map. Wacht alsjeblieft.
+node.files.name, Bestandsnaam
+node.files.size, Bestandsgrote
+node.files.modified, Laatst bewerkt
+node.files.edit.daemon_error, Geen verbinding naar daemon.
+node.files.edit.back, Terug naar bestandsbeheer
+node.files.edit.type_error, Dit type bestand kan niet worden bewerkt door ons control paneel.
+node.files.edit.no_file, Geen bestand was geselecteerd om te bewerken.
+node.files.edit.error, U kan terug naar de bestandsbeheer <a href="index.php">Klik hier</a>.
+node.files.ajax.no_dir, Kan map niet vinden. Error opgeslagen.
+node.files.ajax.no_dl, Kan geen verbinden met de server maken om bestanden op te vragen. Probeer alstublieft opnieuw.
+node.files.ajax.saved, Bestand is met succes opgeslagen.
+node.files.ajax.no_save, Kan het bestand niet opslaan.
+node.files.ajax.no_edit, Dit type bestand kan niet worden bewerkt in onze online bestandsbeheer. Gebruikt alstublieft een FTP client.
+node.files.ajax.file_404, Dit bestand kan niet gevonden worden op de server.
+node.settings.jar.jar_h1, Server .jar Naam
+node.settings.jar.jarfile_name, Jarfile Naam
+node.settings.jar.update, Update Naam
+node.settings.ftp.ftp_h1, FTP Instellingen
+node.ajax.generic_error, Er was een error met deze AJAX opdracht.
+error.unhandled, Er gebeurde een error . Ga alstublieft terug en probeer het opnieuw.
+error.xsrf, De ontvangen XSRF token is niet geldig. Wees er zeker van dat cookies aan staan en probeer het opnieuw.
+error.invalid_password, We konden je account wachtwoord niet vinden. Probeer het opnieuw.
+error.invalid_email, Het Email adres is fout.
+error.password_mismatch, De wachtwoorden komen niet overeen.
+error.password_strength, Uw wachtwoord is niet moeilijk genoeg. Probeer er een nummer in te verwerken, en wat hoofdletters. Je nieuwe wachtwoord moet ook 8 tekens lang zijn.
+error.account.same_email, Sorry, Je kan niet hetzelfde Email adres gebruiken dat je nu al gebruikt. Dat maakt geen verschil!
+success.account.email, Je Email adres is geüpdatet naar <em>%s</em>.
+success.account.password, Je wachtwoord is met succes veranderd! Log opnieuw in en gebruik je nieuwe wachtwoord.
+success.notifications.updated, Uw account notificatie instellingen zijn met succes geüpdatet!
