@@ -117,7 +117,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		if(empty($request->param('transport_token'))) {
+		if(empty($request->param('transport_token')) && ($request->param('transport_method') != 'php')) {
 
 			$service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
 			$response->redirect('/admin/settings/email')->send();
