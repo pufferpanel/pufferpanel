@@ -159,8 +159,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		$urls = array();
 		foreach(array(
 			'main_url' => $request->param('main_url'),
-			'master_url' => $request->param('master_url'),
-			'assets_url' => $request->param('assets_url')
+			'master_url' => $request->param('master_url')
 		) as $id => $val) {
 
 			$url = parse_url($val);
