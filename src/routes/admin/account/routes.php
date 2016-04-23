@@ -241,7 +241,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 
 		ORM::get_db()->commit();
 
-		$service->flash('<div class="alert alert-success">USer successfully deleted and all associated data was removed.</div>');
+		$service->flash('<div class="alert alert-success">User successfully deleted and all associated data was removed.</div>');
 		$response->redirect('/admin/account')->send();
 		return;
 
