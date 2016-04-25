@@ -1,10 +1,12 @@
 # PufferPanel
-================
+
 [Website](http://pufferpanel.com) |
 [Community Forums](https://community.pufferpanel.com) |
 [Community Chat](https://webchat.esper.net/?nick=&channels=pufferpanel) |
 [Documentation](http://www.pufferpanel.com/docs) |
 [Translations](https://www.transifex.com/pufferpanel/pufferpanel/)
+
+#### PufferPanel is currently undergoing many changes. Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
 
 ### Need help? Please read our [Documentation](http://www.pufferpanel.com/docs) and visit our [Community Support Forums](https://community.pufferpanel.com)
 
