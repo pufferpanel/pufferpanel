@@ -63,7 +63,7 @@ class Language extends User {
 
 		if(!array_key_exists($template, $this->loaded)) {
 
-			$load_english = json_decode(file_get_contents(APP_DIR.'languages/en.json'), true);
+			$load_english = json_decode(file_get_contents(APP_DIR.'languages/en_US.json'), true);
 
 			if(array_key_exists($template, $load_english)) {
 				return $load_english[$template];

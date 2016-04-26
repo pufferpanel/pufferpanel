@@ -10,7 +10,6 @@ src/cache/*
 !src/cache/downloads/.githold
 !src/cache/uploads/.githold
 config.json
-app/languages/*.json
 backup
 tools/composer.phar
 silent-sync.json
