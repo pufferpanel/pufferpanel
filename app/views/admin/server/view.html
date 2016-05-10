@@ -263,7 +263,7 @@
 		<div class="tab-pane" id="installer">
 			<h3>Install Progress</h3><hr />
 				<div class="alert alert-danger" id="socket_error" style="display:none;">
-					We are not able to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+					We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
 					<br /><br />
 					If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
 				</div>
@@ -275,7 +275,7 @@
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
-				<div class="alert alert-danger"><strong>Deleting a server is an irreversible action.</strong> Proceede with caution. This server will be removed from the database along with all files on the server.</div>
+				<div class="alert alert-danger"><strong>Deleting a server is an irreversible action.</strong> Proceed with caution. This server will be removed from the database along with all files on the server.</div>
 				<form action="{{ server.id }}/delete" id="deleteCheckpoint" method="POST">
 					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Server" />
 				</form>
