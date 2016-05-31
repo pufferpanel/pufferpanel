@@ -236,6 +236,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
+				<button id="scrollbot" type="button" class="btn btn-primary">Scroll To Bottom</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">{{ l.render('string.close') }}</button>
 			</div>
 		</div>
@@ -287,6 +288,9 @@
 		$("#pause_console").click(function(){
 			$("#paused_console").val();
 			$("#paused_console").val($("#live_console").val());
+		});
+		$("#scrollbot").click(function(){
+			$('#paused_console').scrollTop($('#paused_console')[0].scrollHeight);
 		});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
