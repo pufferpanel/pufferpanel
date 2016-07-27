@@ -60,3 +60,4 @@ require_once(SRC_DIR.'core/daemon.php');
 require_once(SRC_DIR.'core/settings.php');
 require_once(SRC_DIR.'core/routes.php');
 require_once(SRC_DIR.'core/version.php');
+require_once(SRC_DIR.'core/oauth2.php');
