@@ -17,7 +17,10 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \Otp\Otp, \Base32\Base32;
+
+use Base32\Base32;
+use ORM;
+use Otp\Otp;
 
 /**
  * PufferPanel Core Authentication Class
@@ -125,20 +128,6 @@ class Authentication {
 		}
 
 		return $query->findOne();
-
-	}
-
-	/**
-	 * Checks if the selected server is correctly installed.
-	 *
-	 * @return bool
-	 */
-	public final function isInstalled() {
-
-		return ORM::forTable('servers')->where(array(
-			'installed' => 1,
-			'hash' => $_COOKIE['pp_server_hash']
-		))->findOne();
 
 	}
 

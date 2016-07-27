@@ -74,7 +74,7 @@ class Daemon extends Server {
 
 			Unirest\Request::timeout(1);
 			$request = Unirest\Request::get(
-				"https://".$arguments[0].":".$arguments[1]."/server",
+				"https://".$arguments[0].":".$arguments[1]."/server/%s/status",
 				array(
 					'X-Access-Token' => $arguments[3],
 					'X-Access-Server' => $arguments[2]
@@ -103,12 +103,11 @@ class Daemon extends Server {
 		try {
 
 			Unirest\Request::timeout(1);
-			$request = Unirest\Request::get(
-				"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server",
-				array(
-					'X-Access-Token' => $this->node->daemon_secret,
-					'X-Access-Server' => $this->server->hash
-				)
+			$request = Unirest\Request::get(sprintf("https://%s:%s/server/%s/status?privkey=%s",
+                                $this->node->fqdn,
+                                $this->node->daemon_listen,
+                                $this->server->hash,
+                                $this->node->daemon_secret)
 			);
 
 			/*
@@ -124,18 +123,6 @@ class Daemon extends Server {
 		} catch(\Exception $e) {
 			return false;
 		}
-
-	}
-
-	/**
-	 * Returns the process ID of the last server query.
-	 *
-	 * @deprecated
-	 * @return int
-	 */
-	public function pid() {
-
-		return null;
 
 	}
 
@@ -175,16 +162,16 @@ class Daemon extends Server {
 
 			try {
 
-				$response = Unirest\Request::get(
-					"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/log/".$lines,
-					array(
-						"X-Access-Token" => $this->server->daemon_secret,
-						"X-Access-Server" => $this->server->hash
-					)
-				);
+				$response = Unirest\Request::get(sprintf("https://%s:%s/server/%s/log?lines=%s&privkey=%s",
+                                        $this->node->fqdn,
+                                        $this->node->daemon_listen,
+                                        $this->server->hash,
+                                        $lines,
+                                        $this->node->daemon_secret)
+                                );
 
 				if($response->code !== 200) {
-					return isset($response->body->message) ? "An error occured using the Scales daemon. Scales said '".$response->body->message."'" : "An unknown error occured with the Scales daemon.";
+					return isset($response->body->message) ? "An error occured using the daemon. Said '".$response->body->message."'" : "An unknown error occured with the daemon.";
 				}
 
 				return $response->body;
@@ -242,7 +229,7 @@ class Daemon extends Server {
 
 			try {
 
-				$put = Unirest\Request::put(
+				Unirest\Request::put(
 					"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/file/server.properties",
 					array(
 						"X-Access-Token" => $this->server->daemon_secret,
@@ -260,10 +247,6 @@ class Daemon extends Server {
 
 			}
 
-			if(!empty($put->body)) {
-				return "Unable to process request to create server.properties file.";
-			}
-
 		}
 
 		return true;
@@ -278,13 +261,14 @@ class Daemon extends Server {
 	public function powerOn() {
 
 		try {
-
-			$request = Unirest\Request::get(
-				"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/power/on",
-				array(
-					"X-Access-Token" => $this->server->daemon_secret,
-					"X-Access-Server" => $this->server->hash
-				)
+                    
+                        $request = Unirest\Request::get(
+                        sprintf("http://%s:%s/server/%s/start/%s?privkey=%s",
+                                $this->server->nodeData('fqdn'),
+                                $this->server->nodeData('daemon_listen'),
+                                $this->server->getData('hash'),
+                                $this->server->getData('daemon_secret')
+                                )
 			);
 
 		} catch(\Exception $e) {
@@ -294,7 +278,7 @@ class Daemon extends Server {
 
 		}
 
-		return ($request->code != 204) ? false : true;
+		return ($request->code != 200) ? false : true;
 
 	}
 

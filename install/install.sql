@@ -205,7 +205,7 @@ CREATE TABLE `oauth_clients` (
 
 DROP TABLE IF EXISTS `oauth_access_tokens`;
 CREATE TABLE `oauth_access_tokens` (
-	`access_token` INT(10) NOT NULL,
+	`access_token` CHAR(24) NOT NULL,
 	`client_id` INT(10) UNSIGNED NOT NULL,
 	`expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',

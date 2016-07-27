@@ -17,7 +17,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core\Router\Node\Ajax;
-use \ORM, \Unirest, \Tracy\Debugger;
+use \Unirest, \Tracy\Debugger;
 
 class Files extends \PufferPanel\Core\Files {
 
@@ -148,11 +148,13 @@ class Files extends \PufferPanel\Core\Files {
 			$attached_folder = (!is_null($this->params['dir'])) ? $this->params['dir'] : "/";
 
 			$request = Unirest\Request::get(
-				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server/directory/".$attached_folder,
-				array(
-					'X-Access-Token' => $this->server->getData('daemon_secret'),
-					'X-Access-Server' => $this->server->getData('hash')
-				)
+                        sprintf("http://%s:%s/server/%s/file/%s?privkey=%s",
+                                $this->server->nodeData('fqdn'),
+                                $this->server->nodeData('daemon_listen'),
+                                $this->server->getData('hash'),
+                                $attached_folder,
+                                $this->server->getData('daemon_secret')
+                                )
 			);
 
 			return $request;
@@ -161,7 +163,7 @@ class Files extends \PufferPanel\Core\Files {
 
 			Debugger::log($e);
 			return false;
-
+ 
 		}
 
 	}
