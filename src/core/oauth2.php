@@ -86,13 +86,15 @@ class OAuthService {
     }
 
     /**
-     * 
      * @param String $token
      * @return String Json-reply
      */
     public function handleInfoRequest($token) {
         $pdo = $this->pdo;
-        $stmt = $pdo->prepare("SELECT id, user_id, server_id, oat.scopes, expiretime, oc.client_id FROM oauth_clients AS oc INNER JOIN oauth_access_tokens AS oat ON oat.client_id = oc.id WHERE access_token = ?");
+        $stmt = $pdo->prepare("SELECT id, user_id, server_id, oat.scopes, expiretime, oc.client_id "
+                . "FROM oauth_clients AS oc "
+                . "INNER JOIN oauth_access_tokens AS oat ON oat.client_id = oc.id "
+                . "WHERE access_token = ? AND expiretime > NOW()");
         $stmt->execute(array($token));
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (count($data) === 0) {
@@ -105,6 +107,43 @@ class OAuthService {
             "username" => $data['user_id'],
             "server_id" => $data['server_id']
         );
+    }
+
+    /**
+     * @return string Token
+     */
+    public function getPanelAccessToken() {
+        $clientId = 'pufferpanel';
+        $clientSecret = $this->getOrGenPanelSecret();
+        $pdo = $this->pdo;
+        $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
+                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_od "
+                . "WHERE user_id = 0 AND server_id = 0 AND expiretime > NOW()");
+        $query->execute();
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        if (count($data) == 0) {
+            return $this->handleTokenCredentials($clientId, $clientSecret)['access_token'];
+        }
+        return $data['access_token'];
+    }
+
+    private function getOrGenPanelSecret() {
+        $pdo = $this->pdo;
+        $query = $pdo->prepare("SELECT client_secret FROM oauth_clients WHERE client_id = ?");
+        $query->execute(array('pufferpanel'));
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        if (count($data) === 0) {
+            $secret = base64_encode(openssl_random_pseudo_bytes(16));
+            $pdo->prepare('INSERT INTO oauth_clients VALUES (:clientId, :clientSecret, 0, 0, :scopes, :name, :desc')->execute(array(
+                ':clientId' => 'pufferpanel',
+                ':clientSecret' => $secret,
+                ':scopes' => 'pufferadmin',
+                ':name' => 'pufferpanel',
+                ':desc' => 'Pufferpanel auth'
+            ));
+            return getPanelToken();
+        }
+        return $data['client_secret'];
     }
 
 }
