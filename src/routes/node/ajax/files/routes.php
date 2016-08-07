@@ -40,13 +40,18 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 	if($request->param('deleteItemPath') && !empty($request->param('deleteItemPath'))) {
 
 		try {
+                    
+                        $bearer = OAuthService::Get()->getPanelAccessToken();
+                        $header = array(
+                            'Authorization' => 'Basic '. $bearer
+                        );
 
-			$unirest = Unirest\Request::delete(
-				"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($request->param('deleteItemPath')),
-				array(
-					'X-Access-Token' => $core->server->getData('daemon_secret'),
-					'X-Access-Server' => $core->server->getData('hash')
-				)
+			$unirest = Unirest\Request::delete(sprintf('https://%s:%s/server/%s/file/%s', array(
+                                $core->server->nodeData('fqdn'),
+                                $core->server->nodeData('daemon_listen'),
+                                $core->server->getData('hash'),
+                                rawurlencode($request->param('deleteItemPath')))),
+                            $header
 			);
 
 		} catch(\Exception $e) {
@@ -62,65 +67,6 @@ $klein->respond('POST', '/node/ajax/files/delete', function($request, $response)
 	if($unirest->code !== 204) {
 
 		$response->code($unirest->code)->body($unirest->raw_body)->send();
-		return;
-
-	}
-
-	$response->code(200)->body("ok")->send();
-
-});
-
-$klein->respond('POST', '/node/ajax/files/compress', function($request, $response) use($core) {
-
-	if(!$core->permissions->has('files.zip')) {
-
-		$response->code(403)->body("You are not authorized to perform this action.")->send();
-		return;
-
-	}
-
-	$unirest = (object) array("code" => 500, "raw_body" => "Invalid function passed.");
-
-	try {
-
-		if($request->param('zipItemPath') && !empty($request->param('zipItemPath'))) {
-
-			$unirest = Unirest\Request::put(
-				"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/gameservers/".$core->server->getData('daemon_id')."/file/".$request->param('zipItemPath'),
-				array(
-					"X-Access-Token" => $core->server->getData('daemon_secret')
-				),
-				array(
-					"zip" => $request->param('zipItemPath')
-				)
-			);
-
-		} else if($request->param('unzipItemPath') && !empty($request->param('unzipItemPath'))) {
-
-			$unirest = Unirest\Request::put(
-				"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/gameservers/".$core->server->getData('daemon_id')."/file/".$request->param('unzipItemPath'),
-				array(
-					"X-Access-Token" => $core->server->getData('daemon_secret')
-				),
-				array(
-					"unzip" => $request->param('unzipItemPath')
-				)
-			);
-
-		}
-
-	} catch(\Exception $e) {
-
-		\Tracy\Debugger::log($e);
-		$response->code(500)->body("Unirest response error.")->send();
-		return;
-
-	}
-
-	if($unirest->code !== 200) {
-
-		$response->code($unirest->code)->body($unirest->raw_body)->send();
-		\Tracy\Debugger::log($unirest);
 		return;
 
 	}
@@ -168,16 +114,19 @@ $klein->respond('POST', '/node/ajax/files/save', function($request, $response) u
 	}
 
 	try {
+            
+                $bearer = OAuthService::Get()->getPanelAccessToken();
+                $header = array(
+                    'Authorization' => 'Basic '. $bearer
+                );
 
-		$unirest = Unirest\Request::put(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server/file/".rawurlencode($file->dirname.$file->basename),
-			array(
-				'X-Access-Token' => $core->server->getData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			),
-			array(
-				"contents" => $request->param('file_contents')
-			)
+		$unirest = Unirest\Request::put(sprintf('https://%s:%s/server/%s/file/%s', array(
+                        $core->server->nodeData('fqdn'),
+                        $core->server->nodeData('daemon_listen'),
+                        $core->server->getData('hash'),
+                        rawurlencode($file->dirname.$file->basename))),
+                    $header,
+                    $request->param('file_contents')
 		);
 
 		if($unirest->code === 204) {

@@ -105,13 +105,18 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
 	try {
 
-		$unirest = Request::delete(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			)
-		);
+                $bearer = OAuthService::Get()->getPanelAccessToken();
+                $header = array(
+                  'Authorization' => 'Basic '. $bearer
+                );
+            
+                $updatedUrl = sprintf("http://%s:%s/server/%s", array(
+                    $this->server->nodeData('fqdn'),
+                    $this->server->nodeData('daemon_listen'),
+                    $core->server->getData('hash')
+                ));
+            
+		$unirest = Request::delete($updatedUrl);
 
 		if($unirest->code !== 204) {
 			throw new Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
@@ -154,36 +159,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/override', function($request,
 	return;
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/rebuild-container', function($request, $response) use ($core) {
-
-	try {
-
-		$unirest = Request::put(
-			'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/rebuild-container',
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			)
-		);
-
-	} catch (Exception $e) {
-
-		Debugger::log($e);
-		$response->code(500)->body('Unable to process this request due to a connection error. ' . $e->getMessage() )->send();
-		return;
-
-	}
-
-	if($unirest->code > 204 || $unirest->code < 200) {
-		$response->code($unirest->code)->body('Scales returned an error. ' . $unirest->raw_body)->send();
-		return;
-	}
-
-	$response->body('The container for this server has been successfully rebuilt. If the server is currently running this process has been queued.')->send();
-	return;
-
-});
-
 $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($request, $response) use ($core) {
 
 	ORM::get_db()->beginTransaction();
@@ -193,16 +168,10 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
 	try {
 
-		$unirest = Request::put(
-			'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/reinstall',
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			),
-			array(
-				'build_params' => $request->param('build_params')
-			)
-		);
+		$unirest = Request::post(sprintf('https://%s:%s/server/%s/install', array(
+                        $core->server->nodeData('fqdn'),
+                        $core->server->nodeData('daemon_listen'),
+                        $core->server->getData('hash'))));
 
 		ORM::get_db()->commit();
 
@@ -222,103 +191,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
 	$response->body('This container has been added to the reinstall queue. If the server is powered off it will begin immediately. You can track the reinstaller progress by clicking on the \'Installer\' tab above.')->send();
 	return;
-
-});
-
-
-$klein->respond('POST', '/admin/server/view/[i:id]/connection', function($request, $response, $service) use($core) {
-
-	$ports = json_decode($core->server->nodeData('ports'), true);
-	$ips = json_decode($core->server->nodeData('ips'), true);
-
-	if(!array_key_exists($request->param('server_ip'), $ports)) {
-
-		$service->flash('<div class="alert alert-danger">The selected IP does not exist on the node.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-		return;
-
-	}
-
-	if(!array_key_exists($request->param('server_port'), $ports[$request->param('server_ip')])) {
-
-		$service->flash('<div class="alert alert-danger">The selected port does not exist on the node for this IP.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-		return;
-
-	}
-
-	if($ports[$request->param('server_ip')][$request->param('server_port')] == 0 && $request->param('server_port') != $core->server->getData('server_port')) {
-
-		$service->flash('<div class="alert alert-danger">The selected port is currently in use for this IP.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-		return;
-
-	}
-
-	ORM::get_db()->beginTransaction();
-
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->server_ip = $request->param('server_ip');
-	$server->server_port = $request->param('server_port');
-	$server->save();
-
-	/*
-	* Update Old
-	*/
-	$ports[$core->server->getData('server_ip')][$core->server->getData('server_port')] = 1;
-	$ips[$core->server->getData('server_ip')]['ports_free']++;
-
-	/*
-	* Update Old
-	*/
-	$ports[$request->param('server_ip')][$request->param('server_port')] = 0;
-	$ips[$request->param('server_ip')]['ports_free']--;
-
-	$node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
-	$node->ports = json_encode($ports);
-	$node->ips = json_encode($ips);
-	$node->save();
-
-	try {
-
-		$unirest = Request::put(
-			"https://".$core->server->nodeData('fqdn').":".$core->server->nodeData('daemon_listen')."/server",
-			array(
-				'X-Access-Token' => $core->server->nodeData('daemon_secret'),
-				'X-Access-Server' => $core->server->getData('hash')
-			),
-			array(
-				"json" => json_encode(array(
-					"gameport" => (int) $request->param('server_port'),
-					"gamehost" => $request->param('server_ip')
-				)),
-				"object" => false,
-				"overwrite" => false
-			)
-		);
-
-		if($unirest->code !== 204) {
-
-			$service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: '.$unirest->raw_body.' [HTTP/1.1 '.$unirest->code.']</div>');
-			$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-			return;
-
-		}
-
-		ORM::get_db()->commit();
-		$service->flash('<div class="alert alert-success">The connection information for this server has been updated.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-
-	} catch(Exception $e) {
-
-		Debugger::log($e);
-		ORM::get_db()->rollBack();
-
-		$service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that the daemon is running and try again.</div>');
-		$response->redirect('/admin/server/view/'.$request->param('id'))->send();
-		return;
-
-	}
 
 });
 
@@ -381,55 +253,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 
 	$service->flash('<div class="alert alert-success">The SFTP password for this server has been successfully reset.</div>');
 	$response->redirect('/admin/server/view/'.$request->param('id').'?tab=sftp_sett')->send();
-
-});
-
-$klein->respond('POST', '/admin/server/view/[i:id]/reset-token', function($request, $response) use($core) {
-
-	$secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
-
-	ORM::get_db()->beginTransaction();
-
-	$server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-	$server->daemon_secret = $secret;
-	$server->save();
-
-	try {
-
-		$unirest = Request::put(
-			'https://'.$core->server->nodeData('fqdn').':'.$core->server->nodeData('daemon_listen')."/server",
-			array(
-				"X-Access-Token" => $core->server->nodeData('daemon_secret'),
-				"X-Access-Server" => $core->server->getData('hash')
-			),
-			array(
-				"json" => json_encode(array(
-					$core->server->getData('daemon_secret') => array(),
-					$secret => array("s:ftp", "s:get", "s:power", "s:files", "s:files:get", "s:files:put", "s:query", "s:console", "s:console:send")
-				)),
-				"object" => "keys",
-				"overwrite" => false
-			)
-		);
-
-		if($unirest->code != 204) {
-
-			$response->body("Error trying to update token. Scales said: {$unirest->raw_body} [HTTP/1.1 {$unirest->code}]")->send();
-			return;
-
-		}
-
-		$response->body($secret)->send();
-
-	} catch(Exception $e) {
-
-		Debugger::log($e);
-		ORM::get_db()->rollBack();
-
-		$response->body("The server management daemon is not responding, we were unable to update the Scales Security Token.")->send();
-		return;
-
-	}
 
 });
 
@@ -804,22 +627,22 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 		),
 		"gameport" => (int) $request->param('server_port'),
 		"gamehost" => $request->param('server_ip'),
-		"plugin" => $request->param('plugin')
+		"plugin" => $request->param('plugin'),
+                'password' => $core->auth->keygen(16),
+		'build_params' => ($request->param('plugin_variable_build_params')) ? $request->param('plugin_variable_build_params') : false
 	);
 
 	try {
-
-		$unirest = Request::post(
-			'https://'.$node->fqdn.':'.$node->daemon_listen.'/server',
-			array(
-				'X-Access-Token' => $node->daemon_secret,
-				'X-Access-Server' => "hodor"
-			),
-			array(
-				'settings' => json_encode($data),
-				'password' => $core->auth->keygen(16),
-				'build_params' => ($request->param('plugin_variable_build_params')) ? $request->param('plugin_variable_build_params') : false
-			)
+            
+                $bearer = OAuthService::Get()->getPanelAccessToken();
+                $header = array(
+                    'Authorization' => 'Bearer '. $bearer
+                );
+                
+		$unirest = Request::put(
+			'https://'.$node->fqdn.':'.$node->daemon_listen.'/server/'.$server_hash,
+			$header,
+			json_encode($data)
 		);
 
 		if($unirest->code !== 204) {
