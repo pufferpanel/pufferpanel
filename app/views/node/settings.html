@@ -4,63 +4,64 @@
 
 {% block content %}
 <div class="col-md-9">
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	{% if permission.has('manage.ftp.view') %}
-		<h3>Manage SFTP Information</h3><hr />
-		{% if permission.has('manage.ftp.details') %}
-			<div class="form-group">
-				<label for="ftp_host" class="control-label">{{ l.render('string.host') }}</label>
-				<div>
-					<input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }}" class="form-control" />
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="sftp_user" class="control-label">{{ l.render('string.username') }}</label>
-				<div>
-					<input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
-				</div>
-			</div>
-		{% endif %}
-		{% if permission.has('manage.ftp.password') %}
-			<form action="/node/settings/ftp" method="post">
-				<fieldset>
-					<div class="well">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="sftp_pass" class="control-label">{{ l.render('settings.new_pass') }}</label>
-								<div class="input-group">
-									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
-									<span class="input-group-btn">
-										<button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">{{ l.render('string.generate') }}</button>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					{{ xsrf|raw }}
-					<input type="submit" value="{{ l.render('settings.change_pass') }}" class="btn btn-primary btn-sm" />
-				</fieldset>
-			</form>
-		{% endif %}
-	{% endif %}
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    {% if permission.has('manage.ftp.view') %}
+    <h3>Manage SFTP Information</h3><hr />
+    {% if permission.has('manage.ftp.details') %}
+    <div class="form-group">
+        <label for="ftp_host" class="control-label">{{ l.render('string.host') }}</label>
+        <div>
+            <input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }}" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="sftp_user" class="control-label">{{ l.render('string.username') }}</label>
+        <div>
+            <input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
+        </div>
+    </div>
+    {% endif %}
+    {% if permission.has('manage.ftp.password') %}
+    <form action="/node/settings/ftp" method="post">
+        <fieldset>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success" style="display: none;margin-bottom:10px;" id="gen_pass"></div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="sftp_pass" class="control-label">{{ l.render('settings.new_pass') }}</label>
+                        <div class="input-group">
+                            <input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">{{ l.render('string.generate') }}</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ xsrf|raw }}
+            <input type="submit" value="{{ l.render('settings.change_pass') }}" class="btn btn-primary btn-sm" />
+        </fieldset>
+    </form>
+    {% endif %}
+    {% endif %}
 </div>
 <script type="text/javascript">
-$("#sidebar_links").find("a[href='/node/settings']").addClass('active');
-$("#gen_pass_bttn").click(function(){
-	return $.ajax({
-		type:"POST",
-		data: {xsrf: $("input[name='xsrf']").val()},
-		url:"/node/settings/password",
-		success: function(s){
-			return $("#gen_pass").html("<strong>{{ l.render('string.generated_pass') }}:</strong> "+s+" <br /><em>You should store this somewhere safe, it will not be shown again.</em>"),
-			$("#gen_pass").slideDown(),$('input[name="sftp_pass"]').val(s);
-		}
-	}),
-!1});
+    $("#sidebar_links").find("a[href='/node/settings']").addClass('active');
+    $("#gen_pass_bttn").click(function () {
+        return $.ajax({
+            type: "POST",
+            data: {xsrf: $("input[name='xsrf']").val()},
+            url: "/node/settings/password",
+            success: function (s) {
+                return $("#gen_pass").html("<strong>{{ l.render('string.generated_pass') }}:</strong> " + s + " <br /><em>You should store this somewhere safe, it will not be shown again.</em>"),
+                        $("#gen_pass").slideDown(), $('input[name="sftp_pass"]').val(s);
+            }
+        }),
+                !1
+    });
 </script>
 {% endblock %}

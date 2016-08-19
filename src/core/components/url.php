@@ -25,47 +25,46 @@ namespace PufferPanel\Core\Components;
  */
 trait Url {
 
-	/**
-	 * Strips http:// from a URL.
-	 * If true is passed, https:// will also be stripped.
-	 *
-	 * @param string $source String to strip
-	 * @param bool $stripHttps Strip HTTPS as well (default false)
-	 */
-	public static function stripHttp($source, $stripHttps = false) {
+    /**
+     * Strips http:// from a URL.
+     * If true is passed, https:// will also be stripped.
+     *
+     * @param string $source String to strip
+     * @param bool $stripHttps Strip HTTPS as well (default false)
+     */
+    public static function stripHttp($source, $stripHttps = false) {
 
-		$limit = 1;
+        $limit = 1;
 
-		if(stripos($source, "http://") == 0) {
-			$source = str_ireplace("http://", "", $source, $limit);
-		}
+        if (stripos($source, "http://") == 0) {
+            $source = str_ireplace("http://", "", $source, $limit);
+        }
 
-		if($stripHttps && stripos($source, "https://") == 0) {
-			$source = str_ireplace("https://", "", $source, $limit);
-		}
+        if ($stripHttps && stripos($source, "https://") == 0) {
+            $source = str_ireplace("https://", "", $source, $limit);
+        }
 
-		return $source;
-		
-	}
+        return $source;
+    }
 
-	/**
-	 * Convience method to remove trailing / from URL.
-	 *
-	 * @param type $source
-	 * @return type
-	 */
-	public static function stripTrailing($source) {
-		return rtrim($source, '/ ');
-	}
+    /**
+     * Convience method to remove trailing / from URL.
+     *
+     * @param type $source
+     * @return type
+     */
+    public static function stripTrailing($source) {
+        return rtrim($source, '/ ');
+    }
 
-	/**
-	 * Convience method to add trailing / to URL, if one does not exist
-	 *
-	 * @param type $source
-	 * @return type
-	 */
-	public static function addTrailing($source) {
-		return self::stripTrailing($source).'/';
-	}
+    /**
+     * Convience method to add trailing / to URL, if one does not exist
+     *
+     * @param type $source
+     * @return type
+     */
+    public static function addTrailing($source) {
+        return self::stripTrailing($source) . '/';
+    }
 
 }

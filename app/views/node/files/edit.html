@@ -4,82 +4,82 @@
 
 {% block content %}
 <div class="col-md-9" id="load_files">
-	<span id="save_status" style="display:none;width: 100%;"></span>
-	{% if flash.info is defined %}
-	<div class="col-md-12">
-		{{ flash.info.0|raw }}
-	</div>
-	{% endif %}
-	<form method="post" id="editing_file">
-		<div class="form-group">
-			<div>
-				{% if (extension == "yaml") or (extension == "yml") %}
-				<div class="alert alert-info">
-					You are currently editing a YAML file. These files do not accept tabs, they must use spaces.
-					We've gone ahead and made it so that hitting tab will insert
-					<select id="space_yaml">
-						<option value="2">2</option>
-						<option value="4" selected="selected">4</option>
-						<option value="8">8</option>
-					</select>
-					spaces.
-				</div>
-				{% endif %}
-				<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
-			</div>
-		</div>
-		{% if permission.has('files.save') %}
-			<div class="form-group">
-				<div>
-					<input type="hidden" name="file" value="{{ file }}" />
-					{{ xsrf|raw }}
-					<button class="btn btn-primary btn-sm" id="save_file">{{ l.render('string.save') }}</button>
-					<button class="btn btn-default btn-sm" onclick="window.location='/node/files?dir={{ directory|url_encode }}';return false;">{{ l.render('node.files.edit.back') }}</button>
-				</div>
-			</div>
-		{% endif %}
+    <span id="save_status" style="display:none;width: 100%;"></span>
+    {% if flash.info is defined %}
+    <div class="col-md-12">
+        {{ flash.info.0|raw }}
+    </div>
+    {% endif %}
+    <form method="post" id="editing_file">
+        <div class="form-group">
+            <div>
+                {% if (extension == "yaml") or (extension == "yml") %}
+                <div class="alert alert-info">
+                    You are currently editing a YAML file. These files do not accept tabs, they must use spaces.
+                    We've gone ahead and made it so that hitting tab will insert
+                    <select id="space_yaml">
+                        <option value="2">2</option>
+                        <option value="4" selected="selected">4</option>
+                        <option value="8">8</option>
+                    </select>
+                    spaces.
+                </div>
+                {% endif %}
+                <textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ contents }}</textarea>
+            </div>
+        </div>
+        {% if permission.has('files.save') %}
+        <div class="form-group">
+            <div>
+                <input type="hidden" name="file" value="{{ file }}" />
+                {{ xsrf|raw }}
+                <button class="btn btn-primary btn-sm" id="save_file">{{ l.render('string.save') }}</button>
+                <button class="btn btn-default btn-sm" onclick="window.location='/node/files?dir={{ directory|url_encode }}'; return false;">{{ l.render('node.files.edit.back') }}</button>
+            </div>
+        </div>
+        {% endif %}
     </form>
 </div>
 <script type="text/javascript">
-$(window).load(function() {
-	$("#sidebar_links").find("a[href='/node/files']").addClass('active');
-	$("textarea").keydown(function(e) {
-		if(e.keyCode === 9) {
-			var start = this.selectionStart;
-			var end = this.selectionEnd;
-			var $this = $(this);
-			var value = $this.val();
-			{% if (extension == "yaml") or (extension == "yml") %}var yamlSpaces = parseInt($("#space_yaml").val());{% endif %}
-			$this.val(value.substring(0, start)
-			+ {% if (extension == "yaml") or (extension == "yml") %}Array(yamlSpaces + 1).join(" "){% else %}"\t"{% endif %}
-			+ value.substring(end));
-			this.selectionStart = this.selectionEnd = start + {% if (extension == "yaml") or (extension == "yml") %}yamlSpaces{% else %}1{% endif %};
-			e.preventDefault();
-		}
-	});
-	{% if permission.has('files.save') %}
-		$("#save_file").click(function(a) {
-			a.preventDefault();
-			var e = $("input[name='file']").val(),
-			s = $("#live_console").val(),
-			l = $("input[name='xsrf']").val();
-			$("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"), $.ajax({
-				type: "POST",
-				url: "/node/ajax/files/save",
-				data: {
-					file: e,
-					file_contents: s,
-					xsrf: l
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					$("#save_status").html('<div class="alert alert-danger">Error: '+errorThrown+'</div>'), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
-				},
-				success: function(a) {
-					$("#save_status").html(a), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
-				}
-			})
-		})
-	{% endif %}
-});
+    $(window).load(function() {
+    $("#sidebar_links").find("a[href='/node/files']").addClass('active');
+    $("textarea").keydown(function(e) {
+    if (e.keyCode === 9) {
+    var start = this.selectionStart;
+    var end = this.selectionEnd;
+    var $this = $(this);
+    var value = $this.val();
+    { % if (extension == "yaml") or (extension == "yml") % }var yamlSpaces = parseInt($("#space_yaml").val()); { % endif % }
+    $this.val(value.substring(0, start)
+            + { % if (extension == "yaml") or (extension == "yml") % }Array(yamlSpaces + 1).join(" "){ % else % }"\t"{ % endif % }
+    + value.substring(end));
+    this.selectionStart = this.selectionEnd = start + { % if (extension == "yaml") or (extension == "yml") % }yamlSpaces{ % else % }1{ % endif % };
+    e.preventDefault();
+    }
+    });
+    { % if permission.has('files.save') % }
+    $("#save_file").click(function(a) {
+    a.preventDefault();
+    var e = $("input[name='file']").val(),
+            s = $("#live_console").val(),
+            l = $("input[name='xsrf']").val();
+    $("#save_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled"), $.ajax({
+    type: "POST",
+            url: "/node/ajax/files/save",
+            data: {
+            file: e,
+                    file_contents: s,
+                    xsrf: l
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+            $("#save_status").html('<div class="alert alert-danger">Error: ' + errorThrown + '</div>'), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
+            },
+            success: function(a) {
+            $("#save_status").html(a), $("#save_file").html("Save").removeClass("disabled"), $("#save_status").slideDown()
+            }
+    })
+    })
+    { % endif % }
+    });
 </script>
 {% endblock %}

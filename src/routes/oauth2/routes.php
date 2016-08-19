@@ -23,43 +23,42 @@ namespace PufferPanel\Core;
 use \PufferPanel\Core\OAuthService as OAuthService;
 
 $klein->respond('/oauth2/token/request', function($req, $res) {
-    
+
     $grantType = $req->param("grant_type");
-    
+
     if ($grantType != "client_credentials") {
         $res->code(400);
         $res->json(array("error" => "unsupported_grant_type"));
         $res->send();
         return;
     }
-    
+
     $clientId = $req->param("client_id");
     $clientSecret = $req->param("client_secret");
-    
-    if ($clientId === false || $clientSecrete === false) {        
+
+    if ($clientId === false || $clientSecrete === false) {
         $res->code(400);
         $res->json(array("error" => "invalid_request"));
         $res->send();
     }
-    
+
     $server = OAuthService::Get();
     $response = $server->handleTokenCredentials($clientId, $clientSecret);
-    if (array_key_exists("error", $response )) {
+    if (array_key_exists("error", $response)) {
         $res->code(400);
     } else {
         $res->code(200);
     }
-    
+
     $res->json($response);
     $res->send();
-    
 });
 
 $klein->respond('/oauth2/token/info', function($req, $res) {
-    
+
     //TODO: ADD SECURITY SO ONLY DAEMON CAN VALIDATE
     $token = $req->param('token');
-    if ($token === false) {        
+    if ($token === false) {
         $res->code(400);
         $res->json(array("error" => "invalid_request"));
         $res->send();
@@ -68,5 +67,4 @@ $klein->respond('/oauth2/token/info', function($req, $res) {
     $response = $server->handleInfoRequest($token);
     $res->json($response);
     $res->send();
-    
 });

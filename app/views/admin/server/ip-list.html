@@ -1,41 +1,41 @@
 <div class="form-group col-md-6 nopad">
-	<label for="server_ip" class="control-label">Server IP</label>
-	<div>
-		<select name="server_ip" id="server_ip" class="form-control">
-		{% set no_free = true %}
-		{% set selected = false %}
-		{% set selected_ip = "" %}
-		{% for ip, internal in node.ips %}
-			{% if internal.ports_free > 0 %}
-				{% set no_free = false %}
-				<option value="{{ ip }}" {% if selected == false %}selected="selected"{% endif %}>{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
-				{% if selected == false %}
-					{% set selected = true %}
-					{% set selected_ip = ip %}
-				{% endif %}
-			{% else %}
-				<option value="{{ ip }}">{{ ip }} (No Ports Avaliable)</option>
-			{% endif %}
-		{% endfor%}
-		</select>
-	</div>
+    <label for="server_ip" class="control-label">Server IP</label>
+    <div>
+        <select name="server_ip" id="server_ip" class="form-control">
+            {% set no_free = true %}
+            {% set selected = false %}
+            {% set selected_ip = "" %}
+            {% for ip, internal in node.ips %}
+            {% if internal.ports_free > 0 %}
+            {% set no_free = false %}
+            <option value="{{ ip }}" {% if selected == false %}selected="selected"{% endif %}>{{ ip }} ({{ internal.ports_free }} Avaliable Port(s))</option>
+            {% if selected == false %}
+            {% set selected = true %}
+            {% set selected_ip = ip %}
+            {% endif %}
+            {% else %}
+            <option value="{{ ip }}">{{ ip }} (No Ports Avaliable)</option>
+            {% endif %}
+            {% endfor%}
+        </select>
+    </div>
 </div>
 <div class="form-group col-md-6 nopad-right">
-	<label for="server_ip" class="control-label">Server Port</label>
-	<div>
-	{% for ip, internal in node.ports %}
-		<select name="server_port" class="form-control" id="node_{{ ip }}" {% if selected_ip != ip %}style="display:none;" disabled="disabled"{% endif %}>
-		{% for port, avaliable in internal %}
-			{% if avaliable == 1 %}
-				<option value="{{ port }}">{{ port }}</option>
-			{% else %}
-				<option disabled="disabled">{{ port }} (in use)</option>
-			{% endif %}
-		{% endfor %}
-		</select>
-	{% endfor %}
-	</div>
+    <label for="server_ip" class="control-label">Server Port</label>
+    <div>
+        {% for ip, internal in node.ports %}
+        <select name="server_port" class="form-control" id="node_{{ ip }}" {% if selected_ip != ip %}style="display:none;" disabled="disabled"{% endif %}>
+                {% for port, avaliable in internal %}
+                {% if avaliable == 1 %}
+                <option value="{{ port }}">{{ port }}</option>
+            {% else %}
+            <option disabled="disabled">{{ port }} (in use)</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        {% endfor %}
+    </div>
 </div>
 {% if no_free %}
-	<script type="text/javascript">$('#noPorts').show();</script>
+<script type="text/javascript">$('#noPorts').show();</script>
 {% endif %}

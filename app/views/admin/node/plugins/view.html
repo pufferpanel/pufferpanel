@@ -4,70 +4,70 @@
 
 {% block content %}
 <div class="col-md-9">
-	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/node">Nodes</a></li>
-		<li><a href="/admin/node/plugins">Plugins</a></li>
-		<li class="active">{{ plugin.name }}</li>
-	</ul>
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	<h3>Viewing Plugin: {{ plugin.name}}</h3>
-	<p>{{ plugin.description|raw }}</p>
-	<p>This plugin refers to a file called <code>main.js</code> in the <code>lib/plugins/{{ plugin.slug }}</code> folder of Scales instances on nodes.</p>
-	<h3>Default Startup Command</h3>
-	<pre><code>{{ plugin.default_startup }}</code></pre>
-	<h3>Variables</h3>
-	<table class="table table-striped table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>Identifier</th>
-				<th>Description</th>
-				<th>Default</th>
-				<th>Editable</th>
-				<th>Required</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for key, var in vars %}
-				<tr>
-					<td><code>&#36&#123;{{ key }}&#125;</code></td>
-					<td>{{ var.description|raw }}</td>
-					<td>{{ var.default }}</td>
-					<td><center>{% if var.editable == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
-					<td><center>{% if var.required == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	<hr />
-	<h3>Servers Running this Plugin</h3>
-	<table class="table table-striped table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Node</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for server in servers %}
-				<tr>
-					<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
-					<td>{{ server.node_name }}</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	<hr />
-	<form action="{{ plugin.hash }}/delete" method="post">
-		<input type="submit" action="submit" class="form-control btn btn-sm btn-danger" value="Delete this Plugin" />
-	</form>
+    <ul class="breadcrumb">
+        <li><a href="/admin/index">Admin Control</a></li>
+        <li><a href="/admin/node">Nodes</a></li>
+        <li><a href="/admin/node/plugins">Plugins</a></li>
+        <li class="active">{{ plugin.name }}</li>
+    </ul>
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    <h3>Viewing Plugin: {{ plugin.name}}</h3>
+    <p>{{ plugin.description|raw }}</p>
+    <p>This plugin refers to a file called <code>main.js</code> in the <code>lib/plugins/{{ plugin.slug }}</code> folder of Scales instances on nodes.</p>
+    <h3>Default Startup Command</h3>
+    <pre><code>{{ plugin.default_startup }}</code></pre>
+    <h3>Variables</h3>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Identifier</th>
+                <th>Description</th>
+                <th>Default</th>
+                <th>Editable</th>
+                <th>Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, var in vars %}
+            <tr>
+                <td><code>&#36&#123;{{ key }}&#125;</code></td>
+                <td>{{ var.description|raw }}</td>
+                <td>{{ var.default }}</td>
+                <td><center>{% if var.editable == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
+        <td><center>{% if var.required == true %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}</center></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <hr />
+    <h3>Servers Running this Plugin</h3>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Node</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for server in servers %}
+            <tr>
+                <td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
+                <td>{{ server.node_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr />
+    <form action="{{ plugin.hash }}/delete" method="post">
+        <input type="submit" action="submit" class="form-control btn btn-sm btn-danger" value="Delete this Plugin" />
+    </form>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){
-	$("#sidebar_links").find("a[href='/admin/node/plugins']").addClass('active');
-});
+    $(document).ready(function () {
+        $("#sidebar_links").find("a[href='/admin/node/plugins']").addClass('active');
+    });
 </script>
 {% endblock %}
 

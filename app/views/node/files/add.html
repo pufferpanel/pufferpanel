@@ -3,179 +3,169 @@
 {% block title %}Add New File{% endblock %}
 
 {% block scripts %}
-	{{ parent() }}
-	<script src="/assets/javascript/binaryjs.js"></script>
+{{ parent() }}
+<script src="/assets/javascript/binaryjs.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="col-md-9">
-	{% if flash.info is defined %}
-	<div class="col-md-12">
-		{{ flash.info.0|raw }}
-	</div>
-	{% endif %}
-	<ul class="nav nav-tabs" id="config_tabs">
-		{% if permission.has('files.create') %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
-		{% if permission.has('files.upload') %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
-	</ul>
-	<div class="tab-content">
-		{% if permission.has('files.create') %}
-		<div class="tab-pane active" id="create">
-			<div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
-			<form method="post" id="new_file">
-				<h4>/public/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-				<div class="form-group">
-					<div>
-						<textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
-					</div>
-				</div>
-				{% if permission.has('files.create') %}
-					<div class="form-group">
-						<div>
-							<button class="btn btn-primary btn-sm" id="create_file">{{ l.render('string.save') }}</button>
-							<button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{% endif %}';return false;">{{ l.render('node.files.edit.back') }}</button>
-						</div>
-					</div>
-				{% endif %}
-		    </form>
-		</div>
-		{% endif %}
-		{% if permission.has('files.upload') %}
-		<div class="tab-pane" id="upload">
-			<h4>/public/ <input type="text" id="u_file_name" value="{% if directory is not empty %}{{ directory }}{% endif %}" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-			<div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/public/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
-			<div class="alert alert-danger" id="upload_error" style="display: none;"></div>
-			<div id="uploader_box" class="well well-sm">
-				<center><h2 style="margin-bottom: 25px;">Connecting...</h2></center>
-			</div>
-			<span id="file_progress"></span>
-		</div>
-		{% endif %}
-	</div>
+    {% if flash.info is defined %}
+    <div class="col-md-12">
+        {{ flash.info.0|raw }}
+    </div>
+    {% endif %}
+    <ul class="nav nav-tabs" id="config_tabs">
+        {% if permission.has('files.create') %}<li class="active"><a href="#create" data-toggle="tab">Create File</a></li>{% endif %}
+        {% if permission.has('files.upload') %}<li class=""><a href="#upload" data-toggle="tab">Upload Files</a></li>{% endif %}
+    </ul>
+    <div class="tab-content">
+        {% if permission.has('files.create') %}
+        <div class="tab-pane active" id="create">
+            <div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
+            <form method="post" id="new_file">
+                <h4>/public/{% if directory is not empty %}{{ directory }}{% endif %} <input type="text" id="file_name" value="newfile.txt" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+                <div class="form-group">
+                    <div>
+                        <textarea name="file_contents" id="live_console" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
+                    </div>
+                </div>
+                {% if permission.has('files.create') %}
+                <div class="form-group">
+                    <div>
+                        <button class="btn btn-primary btn-sm" id="create_file">{{ l.render('string.save') }}</button>
+                        <button class="btn btn-default btn-sm" onclick="window.location='/node/files{% if directory is not empty %}?dir={{ directory }}{ % endif % }';return false;">{{ l.render('node.files.edit.back') }}</button>
+                    </div>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+        {% endif %}
+        {% if permission.has('files.upload') %}
+        <div class="tab-pane" id="upload">
+            <h4>/public/ <input type="text" id="u_file_name" value="{% if directory is not empty %}{{ directory }}{% endif %}" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
+            <div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/public/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
+            <div class="alert alert-danger" id="upload_error" style="display: none;"></div>
+            <div id="uploader_box" class="well well-sm">
+                <center><h2 style="margin-bottom: 25px;">Connecting...</h2></center>
+            </div>
+            <span id="file_progress"></span>
+        </div>
+        {% endif %}
+    </div>
 </div>
 <script type="text/javascript">
-var newFilePath;
-var newFileContents;
-{% if permission.has('files.upload') %}
-	var client = new BinaryClient('wss://{{ node.fqdn }}:{{ node.daemon_listen }}/upload/', {
-		chunkSize: 40960
-	});
+    var newFilePath;
+    var newFileContents;
+    { % if permission.has('files.upload') % }
+    var client = new BinaryClient('wss://{{ node.fqdn }}:{{ node.daemon_listen }}/upload/', {
+    chunkSize: 40960
+    });
+    // Wait for connection to BinaryJS server
+    client.on('open', function() {
 
-	// Wait for connection to BinaryJS server
-	client.on('open', function() {
+    var box = $('#uploader_box');
+    box.on('dragenter', doNothing);
+    box.on('dragover', doNothing);
+    box.html('<center><h2 style="margin-bottom:25px;">Drag Files Here to Upload</h2></center>');
+    box.on('drop', function(e) {
 
-		var box = $('#uploader_box');
-		box.on('dragenter', doNothing);
-		box.on('dragover', doNothing);
-		box.html('<center><h2 style="margin-bottom:25px;">Drag Files Here to Upload</h2></center>');
-		box.on('drop', function(e) {
+    e.originalEvent.preventDefault();
+    $.each(e.originalEvent.dataTransfer.files, function(index, value) {
 
-			e.originalEvent.preventDefault();
-			$.each(e.originalEvent.dataTransfer.files, function(index, value) {
+    var file = e.originalEvent.dataTransfer.files[index];
+    var identifier = Math.random().toString(36).slice(2);
+    $('#file_progress').append('<div class="well well-sm" id="file-upload-' + identifier + '"> \
+                                        <div class="row"> \
+                                                <div class="col-md-12"> \
+                                                        <h6>Uploading ' + file.name + '</h6> \
+                                                        <span class="prog-bar-text-' + identifier + '" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
+                                                        <div class="progress progress-striped active"> \
+                                                                <div class="progress-bar progress-bar-info prog-bar-' + identifier + '" style="width: 0%"></div> \
+                                                        </div> \
+                                                </div> \
+                                        </div> \
+                                </div>');
+    // Add to list of uploaded files
+    var stream = client.send(file, {
+    token: "{{ server.daemon_secret }}",
+            server: "{{ server.hash }}",
+            path: $("#u_file_name").val(),
+            name: file.name,
+            size: file.size
+    });
+    var tx = 0;
+    stream.on('data', function(data) {
+    if (data.error) {
+    $("#upload_error").html(data.error).show();
+    $("#file-upload-" + identifier).hide();
+    } else {
+    tx += data.rx;
+    if (tx >= 1) {
+    $('.prog-bar-text-' + identifier).text('Upload Complete');
+    $('.prog-bar-' + identifier).css('width', '100%').parent().removeClass('active').removeClass('progress-striped');
+    } else {
+    $('.prog-bar-text-' + identifier).text(Math.round(tx * 100) + '%');
+    $('.prog-bar-' + identifier).css('width', tx * 100 + '%');
+    }
+    }
+    });
+    stream.on('close', function(data) {
+    $("#upload_error").html("The BinaryJS data stream was closed by the server. Please refresh the page and try again.").show();
+    $("#file-upload-" + identifier).hide();
+    });
+    stream.on('error', function(data) {
+    console.error("An error was encountered with the BinaryJS upload stream.");
+    });
+    });
+    });
+    });
+    // Deal with DOM quirks
+    function doNothing (e){
+    e.preventDefault();
+    e.stopPropagation();
+    }
 
-				var file = e.originalEvent.dataTransfer.files[index];
-				var identifier = Math.random().toString(36).slice(2);
-
-				$('#file_progress').append('<div class="well well-sm" id="file-upload-' + identifier +'"> \
-					<div class="row"> \
-						<div class="col-md-12"> \
-							<h6>Uploading ' + file.name + '</h6> \
-							<span class="prog-bar-text-' + identifier +'" style="font-size: 10px;position: absolute;margin: 3px 0 0 15px;">Waiting...</span> \
-							<div class="progress progress-striped active"> \
-								<div class="progress-bar progress-bar-info prog-bar-' + identifier +'" style="width: 0%"></div> \
-							</div> \
-						</div> \
-					</div> \
-				</div>');
-
-				// Add to list of uploaded files
-				var stream = client.send(file, {
-					token: "{{ server.daemon_secret }}",
-					server: "{{ server.hash }}",
-					path: $("#u_file_name").val(),
-					name: file.name,
-					size: file.size
-				});
-
-				var tx = 0;
-				stream.on('data', function(data) {
-					if(data.error) {
-						$("#upload_error").html(data.error).show();
-						$("#file-upload-" + identifier).hide();
-					} else {
-						tx += data.rx;
-
-						if(tx >= 1) {
-							$('.prog-bar-text-' + identifier).text('Upload Complete');
-							$('.prog-bar-' + identifier).css('width', '100%').parent().removeClass('active').removeClass('progress-striped');
-						} else {
-							$('.prog-bar-text-' + identifier).text(Math.round(tx * 100) + '%');
-							$('.prog-bar-' + identifier).css('width', tx * 100 + '%');
-						}
-					}
-				});
-
-				stream.on('close', function(data) {
-					$("#upload_error").html("The BinaryJS data stream was closed by the server. Please refresh the page and try again.").show();
-					$("#file-upload-" + identifier).hide();
-				});
-
-				stream.on('error', function(data) {
-					console.error("An error was encountered with the BinaryJS upload stream.");
-				});
-
-			});
-		});
-
-	});
-
-	// Deal with DOM quirks
-	function doNothing (e){
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
-{% endif %}
-$(document).ready(function() {
-	$("#sidebar_links").find("a[href='/node/files']").addClass('active');
-	$("textarea").keydown(function(e) {
-		if(e.keyCode === 9) {
-			var start = this.selectionStart;
-			var end = this.selectionEnd;
-			var $this = $(this);
-			var value = $this.val();
-			$this.val(value.substring(0, start)
-			+ "\t"
-			+ value.substring(end));
-			this.selectionStart = this.selectionEnd = start + 1;
-			e.preventDefault();
-		}
-	});
-	{% if permission.has('files.create') %}
-		$("#create_file").click(function(e) {
-			e.preventDefault();
-			$("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
-			$.ajax({
-				type: "POST",
-				url: "/node/files/add",
-				data: {
-					newFilePath: "{% if directory is not empty %}{{ directory }}{% endif %}" + $("#file_name").val(),
-					newFileContents: $("#live_console").val()
-				}
-			}).done(function(data) {
-				if(data != "ok"){
-					$("#write_status").html(data);
-					$("#create_file").html("Save").removeClass("disabled");
-					$("#write_status").slideDown();
-				} else {
-					window.location.replace('/node/files/edit/{% if directory is not empty %}{{ directory }}{% endif %}' + $("#file_name").val());
-				}
-			}).fail(function(xhr, status, error) {
-				$("#write_status").html('<div class="alert alert-danger">'+ xhr.responseText +'</div>').show();
-				$("#create_file").html("Save").removeClass("disabled");
-			});
-		});
-	{% endif %}
-});
+    { % endif % }
+    $(document).ready(function() {
+    $("#sidebar_links").find("a[href='/node/files']").addClass('active');
+    $("textarea").keydown(function(e) {
+    if (e.keyCode === 9) {
+    var start = this.selectionStart;
+    var end = this.selectionEnd;
+    var $this = $(this);
+    var value = $this.val();
+    $this.val(value.substring(0, start)
+            + "\t"
+            + value.substring(end));
+    this.selectionStart = this.selectionEnd = start + 1;
+    e.preventDefault();
+    }
+    });
+    { % if permission.has('files.create') % }
+    $("#create_file").click(function(e) {
+    e.preventDefault();
+    $("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
+    $.ajax({
+    type: "POST",
+            url: "/node/files/add",
+            data: {
+            newFilePath: "{% if directory is not empty %}{{ directory }}{% endif %}" + $("#file_name").val(),
+                    newFileContents: $("#live_console").val()
+            }
+    }).done(function(data) {
+    if (data != "ok"){
+    $("#write_status").html(data);
+    $("#create_file").html("Save").removeClass("disabled");
+    $("#write_status").slideDown();
+    } else {
+    window.location.replace('/node/files/edit/{% if directory is not empty %}{{ directory }}{% endif %}' + $("#file_name").val());
+    }
+    }).fail(function(xhr, status, error) {
+    $("#write_status").html('<div class="alert alert-danger">' + xhr.responseText + '</div>').show();
+    $("#create_file").html("Save").removeClass("disabled");
+    });
+    });
+    { % endif % }
+    });
 </script>
 {% endblock %}

@@ -1,21 +1,23 @@
 <?php
+
 /*
-	PufferPanel - A Minecraft Server Management Panel
-	Copyright (c) 2013 Dane Everitt
+  PufferPanel - A Minecraft Server Management Panel
+  Copyright (c) 2013 Dane Everitt
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see http://www.gnu.org/licenses/.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see http://www.gnu.org/licenses/.
  */
+
 namespace PufferPanel\Core;
 
 use Base32\Base32;
@@ -27,108 +29,102 @@ use Otp\Otp;
  */
 class Authentication {
 
-	use Components\Authentication, Components\Page;
+    use Components\Authentication,
+        Components\Page;
 
-	protected $authenticated = false;
+    protected $authenticated = false;
+    protected $select;
 
-	protected $select;
+    /**
+     * Authentcation constructor class.
+     */
+    public function __construct() {
 
-	/**
-	 * Authentcation constructor class.
-	 */
-	public function __construct() {
+        $this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
 
-		$this->select = (!isset($_COOKIE['pp_auth_token']) || empty($_COOKIE['pp_auth_token'])) ? false : ORM::forTable('users')->where(array('session_ip' => $_SERVER['REMOTE_ADDR'], 'session_id' => $_COOKIE['pp_auth_token']))->findOne();
+        $this->authenticated = (!$this->select) ? false : true;
+    }
 
-		$this->authenticated = (!$this->select) ? false : true;
+    /**
+     * Validates a TOTP request.
+     *
+     * @todo Prevent TOTP replay attack.
+     * @param string $key The TOTP token sent in.
+     * @param string $secret The TOTP secret.
+     * @return bool
+     */
+    public function validateTOTP($key, $secret) {
 
-	}
+        $otp = new Otp();
 
-	/**
-	 * Validates a TOTP request.
-	 *
-	 * @todo Prevent TOTP replay attack.
-	 * @param string $key The TOTP token sent in.
-	 * @param string $secret The TOTP secret.
-	 * @return bool
-	 */
-	public function validateTOTP($key, $secret) {
+        return $otp->checkTotp(Base32::decode($secret), $key);
+    }
 
-		$otp = new Otp();
+    /**
+     * Verifys the a user is entering the correct password for their account.
+     *
+     * @param string $email
+     * @param string $raw The raw password.
+     * @return bool
+     */
+    public function verifyPassword($email, $raw) {
 
-		return $otp->checkTotp(Base32::decode($secret), $key);
+        $get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
 
-	}
+        if ($get !== false) {
+            return $this->password_compare($raw, $get->password);
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Verifys the a user is entering the correct password for their account.
-	 *
-	 * @param string $email
-	 * @param string $raw The raw password.
-	 * @return bool
-	 */
-	public function verifyPassword($email, $raw) {
+    /**
+     * Returns the authentication status of a user.
+     *
+     * @return bool
+     */
+    public final function isLoggedIn() {
 
-		$get = ORM::forTable('users')->select('password')->where('email', $email)->findOne();
+        return $this->authenticated;
+    }
 
-		if($get !== false) {
-			return $this->password_compare($raw, $get->password);
-		} else {
-			return false;
-		}
+    /**
+     * Returns the admin status of a user.
+     *
+     * @return bool
+     */
+    public final function isAdmin() {
 
-	}
+        if (!$this->select) {
+            return false;
+        } else {
+            return ($this->select->root_admin == 1) ? true : false;
+        }
+    }
 
-	/**
-	 * Returns the authentication status of a user.
-	 *
-	 * @return bool
-	 */
-	public final function isLoggedIn() {
+    /**
+     * Checks if the selected server belongs to the user.
+     *
+     * @return bool
+     */
+    public final function isServer() {
 
-		return $this->authenticated;
+        $permissions = new Permissions();
 
-	}
+        if (!isset($_COOKIE['pp_server_hash']) || empty($_COOKIE['pp_server_hash'])) {
+            return false;
+        }
 
-	/**
-	 * Returns the admin status of a user.
-	 *
-	 * @return bool
-	 */
-	public final function isAdmin() {
+        $query = ORM::forTable('servers')->where(array(
+            'hash' => $_COOKIE['pp_server_hash'],
+            'active' => 1
+        ));
 
-		if(!$this->select) {
-			return false;
-		} else {
-			return ($this->select->root_admin == 1) ? true : false;
-		}
+        if (!$this->isAdmin()) {
+            $query->where_in('id', $permissions->listServers());
+        }
 
-	}
-
-	/**
-	 * Checks if the selected server belongs to the user.
-	 *
-	 * @return bool
-	 */
-	public final function isServer() {
-
-		$permissions = new Permissions();
-
-		if(!isset($_COOKIE['pp_server_hash']) || empty($_COOKIE['pp_server_hash'])) {
-			return false;
-		}
-
-		$query = ORM::forTable('servers')->where(array(
-			'hash' => $_COOKIE['pp_server_hash'],
-			'active' => 1
-		));
-
-		if(!$this->isAdmin()) {
-			$query->where_in('id', $permissions->listServers());
-		}
-
-		return $query->findOne();
-
-	}
+        return $query->findOne();
+    }
 
 }

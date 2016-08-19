@@ -4,39 +4,39 @@
 
 {% block content %}
 <div class="col-md-9">
-	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li>Settings</li>
-		<li class="active">URLs</li>
-	</ul>
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	<h3>URL Settings</h3><span class="label label-default">Trailing Slashes Required</span><hr />
-	<form action="urls/update" method="POST">
-		<fieldset>
-			<div class="form-group">
-				<label for="main_url" class="control-label">Main Website URL</label>
-				<input type="text" name="main_url" class="form-control" value="{{ settings.main_website }}"/>
-				<p><small class="text-muted"><em>The URL corresponding to your main website, not necessarily this PufferPanel installation.</em></small></p>
-			</div>
-			<div class="form-group">
-				<label for="master_url" class="control-label">PufferPanel Master URL</label>
-				<input type="text" name="master_url" class="form-control" value="{{ settings.master_url }}"/>
-				<p><small class="text-muted"><em>The URL corresponding to this PufferPanel installation.</em></small></p>
-			</div>
-			<div class="form-group">
-				<div>
-					<input type="submit" value="Update Settings" class="btn btn-primary btn-sm" />
-				</div>
-			</div>
-		</fieldset>
-	</form>
+    <ul class="breadcrumb">
+        <li><a href="/admin/index">Admin Control</a></li>
+        <li>Settings</li>
+        <li class="active">URLs</li>
+    </ul>
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    <h3>URL Settings</h3><span class="label label-default">Trailing Slashes Required</span><hr />
+    <form action="urls/update" method="POST">
+        <fieldset>
+            <div class="form-group">
+                <label for="main_url" class="control-label">Main Website URL</label>
+                <input type="text" name="main_url" class="form-control" value="{{ settings.main_website }}"/>
+                <p><small class="text-muted"><em>The URL corresponding to your main website, not necessarily this PufferPanel installation.</em></small></p>
+            </div>
+            <div class="form-group">
+                <label for="master_url" class="control-label">PufferPanel Master URL</label>
+                <input type="text" name="master_url" class="form-control" value="{{ settings.master_url }}"/>
+                <p><small class="text-muted"><em>The URL corresponding to this PufferPanel installation.</em></small></p>
+            </div>
+            <div class="form-group">
+                <div>
+                    <input type="submit" value="Update Settings" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){
-	$("#sidebar_links").find("a[href='/admin/settings/urls']").addClass('active');
-});
+    $(document).ready(function () {
+        $("#sidebar_links").find("a[href='/admin/settings/urls']").addClass('active');
+    });
 </script>
 {% endblock %}
 

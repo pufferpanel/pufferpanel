@@ -4,48 +4,48 @@
 
 {% block content %}
 <div class="col-md-9">
-	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li>Settings</li>
-		<li class="active">Captcha</li>
-	</ul>
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	<h3>reCAPTCHA Settings</h3><hr />
-	<div class="panel panel-default">
-		<div class="panel-heading">What is reCAPTCHA?</div>
-		<div class="panel-body">
-			reCAPTCHA is the system used to help prevent people from abusing the password reset page on PufferPanel. You will need to generate your own keys
-			 by going to <a href="https://www.google.com/recaptcha">Google's reCAPTCHA Site</a> and clicking "get reCAPTCHA."
-		</div>
-	</div>
-	<form action="captcha/update" method="POST">
-		<fieldset>
-			<div class="form-group">
-				<label for="pub_key" class="control-label">Public Key</label>
-				<div>
-					<input type="text" name="pub_key" class="form-control" value="{{ settings.captcha_pub }}"/>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="priv_key" class="control-label">Private Key</label>
-				<div>
-					<input type="text" name="priv_key" class="form-control" value="{{ settings.captcha_priv }}"/>
-				</div>
-			</div>
-			<div class="form-group">
-				<div>
-					<input type="submit" value="Update reCAPTCHA Settings" class="btn btn-primary btn-sm" />
-				</div>
-			</div>
-		</fieldset>
-	</form>
+    <ul class="breadcrumb">
+        <li><a href="/admin/index">Admin Control</a></li>
+        <li>Settings</li>
+        <li class="active">Captcha</li>
+    </ul>
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    <h3>reCAPTCHA Settings</h3><hr />
+    <div class="panel panel-default">
+        <div class="panel-heading">What is reCAPTCHA?</div>
+        <div class="panel-body">
+            reCAPTCHA is the system used to help prevent people from abusing the password reset page on PufferPanel. You will need to generate your own keys
+            by going to <a href="https://www.google.com/recaptcha">Google's reCAPTCHA Site</a> and clicking "get reCAPTCHA."
+        </div>
+    </div>
+    <form action="captcha/update" method="POST">
+        <fieldset>
+            <div class="form-group">
+                <label for="pub_key" class="control-label">Public Key</label>
+                <div>
+                    <input type="text" name="pub_key" class="form-control" value="{{ settings.captcha_pub }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="priv_key" class="control-label">Private Key</label>
+                <div>
+                    <input type="text" name="priv_key" class="form-control" value="{{ settings.captcha_priv }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <input type="submit" value="Update reCAPTCHA Settings" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){
-	$("#sidebar_links").find("a[href='/admin/settings/captcha']").addClass('active');
-});
+    $(document).ready(function () {
+        $("#sidebar_links").find("a[href='/admin/settings/captcha']").addClass('active');
+    });
 </script>
 {% endblock %}
 

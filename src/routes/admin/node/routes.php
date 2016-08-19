@@ -26,13 +26,13 @@ use \ORM,
 $klein->respond('GET', '/admin/node', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render(
-                'admin/node/list.html', array(
-              'flash' => $service->flashes(),
-              'nodes' => ORM::forTable('nodes')
-                    ->select('nodes.*')->select('locations.long', 'l_location')
-                    ->join('locations', array('nodes.location', '=', 'locations.id'))
-                    ->findMany()
-                )
+                    'admin/node/list.html', array(
+                'flash' => $service->flashes(),
+                'nodes' => ORM::forTable('nodes')
+                        ->select('nodes.*')->select('locations.long', 'l_location')
+                        ->join('locations', array('nodes.location', '=', 'locations.id'))
+                        ->findMany()
+                    )
     ))->send();
 });
 
@@ -46,18 +46,17 @@ $klein->respond('GET', '/admin/node/new', function($request, $response, $service
     }
 
     $response->body($core->twig->render(
-                'admin/node/new.html', array(
-              'flash' => $service->flashes(),
-              'locations' => ORM::forTable('locations')->findMany()
-                )
+                    'admin/node/new.html', array(
+                'flash' => $service->flashes(),
+                'locations' => ORM::forTable('locations')->findMany()
+                    )
     ))->send();
 });
 
 $klein->respond('POST', '/admin/node/new', function($request, $response, $service) use($core) {
 
     if (
-          !is_numeric($request->param('daemon_listen')) ||
-          !is_numeric($request->param('daemon_sftp'))
+            !is_numeric($request->param('daemon_listen'))
     ) {
 
         $service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the daemon listening ports as well as the disk and memory allocation.</div>');
@@ -80,68 +79,13 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
     }
 
     if (ORM::forTable('nodes')->where_any_is(array(
-              array('name' => $request->param('node_name')),
-              array('fqdn' => $request->param('fqdn'))
-          ))->findOne()) {
+                array('name' => $request->param('node_name')),
+                array('fqdn' => $request->param('fqdn'))
+            ))->findOne()) {
 
         $service->flash('<div class="alert alert-danger">A node with that name or IP address is already in use on this system.</div>');
         $response->redirect('/admin/node/new')->send();
         return;
-    }
-
-    $IPP = array();
-    $IPA = array();
-
-    if (!$request->param('ip_port') || empty($request->param('ip_port'))) {
-
-        $service->flash('<div class="alert alert-danger">You must define at least one IP and Port for this node to add servers to.</div>');
-        $response->redirect('/admin/node/new')->send();
-        return;
-    }
-
-    $lines = explode("\r\n", str_replace(" ", "", $request->param('ip_port')));
-    foreach ($lines as $id => $values) {
-
-        list($ip, $ports) = explode('|', $values);
-
-        if (!trim($ip)) {
-
-            $service->flash('<div class="alert alert-danger">An IP must be specified with a port list.</div>');
-            $response->redirect('/admin/node/new')->send();
-            return;
-        }
-
-        if (!trim($ports)) {
-
-            $service->flash('<div class="alert alert-danger">You must provide at least one port with an IP</div>');
-            $response->redirect('/admin/node/new')->send();
-            return;
-        }
-
-        $IPA = array_merge($IPA, array($ip => array()));
-        $IPP = array_merge($IPP, array($ip => array()));
-
-        try {
-            $portList = Functions::processPorts($ports);
-        } catch (Exception $ex) {
-            $service->flash('<div class="alert alert-danger">' . $ex . getMessage() . '</div>');
-            $response->redirect('/admin/node/new')->send();
-            return;
-        }
-
-        $portCount = count($portList);
-        for ($l = 0; $l < $portCount; $l++) {
-            $IPP[$ip][$portList[$l]] = 1;
-        }
-
-        if (count($IPP[$ip]) > 0) {
-            $IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
-        } else {
-
-            $service->flash('<div class="alert alert-danger">You must enter ports to be used with the IP.</div>');
-            $response->redirect('/admin/node/new')->send();
-            return;
-        }
     }
 
     $node = ORM::forTable('nodes')->create();
@@ -155,9 +99,9 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
         'daemon_listen' => $request->param('daemon_listen'),
         'daemon_sftp' => $request->param('daemon_sftp'),
-        'daemon_base_dir' => '/home',
-        'ips' => json_encode($IPA),
-        'ports' => json_encode($IPP),
+        'daemon_base_dir' => '/svr/pufferd',
+        'ips' => json_encode(array()),
+        'ports' => json_encode(array()),
         'public' => 1,
         'docker' => ($request->param('is_docker')) ? 1 : 0
     ));
@@ -171,17 +115,17 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 $klein->respond('GET', '/admin/node/locations', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render(
-                'admin/node/locations.html', array(
-              'flash' => $service->flashes(),
-              'locations' => ORM::forTable('locations')
-                    ->select_many('locations.*')
-                    ->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
-                    ->select_expr('COUNT(servers.id)', 'totalservers')
-                    ->left_outer_join('nodes', array('locations.id', '=', 'nodes.location'))
-                    ->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
-                    ->group_by('locations.id')
-                    ->find_many()
-                )
+                    'admin/node/locations.html', array(
+                'flash' => $service->flashes(),
+                'locations' => ORM::forTable('locations')
+                        ->select_many('locations.*')
+                        ->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
+                        ->select_expr('COUNT(servers.id)', 'totalservers')
+                        ->left_outer_join('nodes', array('locations.id', '=', 'nodes.location'))
+                        ->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
+                        ->group_by('locations.id')
+                        ->find_many()
+                    )
     ))->send();
 });
 
@@ -220,9 +164,9 @@ $klein->respond('GET', '/admin/node/locations/[:shortcode]/edit', function($requ
     }
 
     $response->body($core->twig->render(
-                'admin/node/location-popup.html', array(
-              'location' => $location
-                )
+                    'admin/node/location-popup.html', array(
+                'location' => $location
+                    )
     ))->send();
 });
 
@@ -287,13 +231,13 @@ $klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, 
     }
 
     $response->body($core->twig->render(
-                'admin/node/view.html', array(
-              'flash' => $service->flashes(),
-              'node' => $node,
-              'locations' => ORM::forTable('locations')->findMany(),
-              'portlisting' => json_decode($node->ports, true),
-              'autodeploy' => ORM::forTable('autodeploy')->where('node', $request->param('id'))->where_gt('expires', time())->findOne()
-                )
+                    'admin/node/view.html', array(
+                'flash' => $service->flashes(),
+                'node' => $node,
+                'locations' => ORM::forTable('locations')->findMany(),
+                'portlisting' => json_decode($node->ports, true),
+                'autodeploy' => ORM::forTable('autodeploy')->where('node', $request->param('id'))->where_gt('expires', time())->findOne()
+                    )
     ))->send();
 });
 
@@ -358,9 +302,9 @@ $klein->respond('POST', '/admin/node/view/[i:id]/add-port', function($request, $
     foreach ($portList as $id => $port) {
 
         if (
-              (strlen($port) > 0 && strlen($port) < 6) &&
-              array_key_exists($request->param('add_ports_ip'), $saveports) &&
-              !array_key_exists($port, $saveports[$request->param('add_ports_ip')])
+                (strlen($port) > 0 && strlen($port) < 6) &&
+                array_key_exists($request->param('add_ports_ip'), $saveports) &&
+                !array_key_exists($port, $saveports[$request->param('add_ports_ip')])
         ) {
 
             $saveports[$request->param('add_ports_ip')][$port] = 1;
@@ -479,9 +423,9 @@ $klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request
     $ports = json_decode($node->ports, true);
 
     if (
-          array_key_exists($request->param('ip'), $ports) &&
-          array_key_exists($request->param('port'), $ports[$request->param('ip')]) &&
-          $ports[$request->param('ip')][$request->param('port')] == 1
+            array_key_exists($request->param('ip'), $ports) &&
+            array_key_exists($request->param('port'), $ports[$request->param('ip')]) &&
+            $ports[$request->param('ip')][$request->param('port')] == 1
     ) {
 
         unset($ports[$request->param('ip')][$request->param('port')]);
@@ -503,9 +447,9 @@ $klein->respond('DELETE', '/admin/node/view/[i:id]/delete-ip/[:ip_address]', fun
     $node = ORM::forTable('nodes')->findOne($request->param('id'));
 
     if (ORM::forTable('servers')->where(array(
-              'node' => $request->param('id'),
-              'server_ip' => $request->param('ip_address')
-          ))->count() > 0) {
+                'node' => $request->param('id'),
+                'server_ip' => $request->param('ip_address')
+            ))->count() > 0) {
         $response->code(500)->body('Unable to delete this IP because there are still servers associated with it.')->send();
         return;
     }
@@ -572,10 +516,10 @@ $klein->respond('POST', '/admin/node/view/[i:id]/delete', function($request, $re
 $klein->respond('GET', '/admin/node/plugins', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render(
-                'admin/node/plugins/index.html', array(
-              'flash' => $service->flashes(),
-              'plugins' => ORM::forTable('plugins')->findMany(),
-                )
+                    'admin/node/plugins/index.html', array(
+                'flash' => $service->flashes(),
+                'plugins' => ORM::forTable('plugins')->findMany(),
+                    )
     ))->send();
 });
 
@@ -591,15 +535,15 @@ $klein->respond('GET', '/admin/node/plugins/view/[:hash]', function($request, $r
     }
 
     $response->body($core->twig->render(
-                'admin/node/plugins/view.html', array(
-              'flash' => $service->flashes(),
-              'plugin' => $orm,
-              'vars' => json_decode($orm->variables, true),
-              'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
-                    ->join('nodes', array('servers.node', '=', 'nodes.id'))
-                    ->where('servers.plugin', $orm->id)
-                    ->findArray()
-                )
+                    'admin/node/plugins/view.html', array(
+                'flash' => $service->flashes(),
+                'plugin' => $orm,
+                'vars' => json_decode($orm->variables, true),
+                'servers' => ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')
+                        ->join('nodes', array('servers.node', '=', 'nodes.id'))
+                        ->where('servers.plugin', $orm->id)
+                        ->findArray()
+                    )
     ))->send();
 });
 
@@ -623,9 +567,9 @@ $klein->respond('POST', '/admin/node/plugins/view/[:hash]/delete', function($req
 $klein->respond('GET', '/admin/node/plugins/new', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render(
-                'admin/node/plugins/new.html', array(
-              'flash' => $service->flashes()
-                )
+                    'admin/node/plugins/new.html', array(
+                'flash' => $service->flashes()
+                    )
     ))->send();
 });
 
