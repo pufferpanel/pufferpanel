@@ -4,31 +4,31 @@
 
 {% block content %}
 <div class="col-md-9">
-    {% if flash.info is defined %}
-    {{ flash.info.0|raw }}
-    {% endif %}
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
 
-    <h1>Bulk Command Sender</h1>
+	<h1>Bulk Command Sender</h1>
 
-    {% if servers[0]|length > 0 %}
-    <form action="/bulkcmd" method="post">
-        <h3>Target Servers</h3>
-        <select name="servers[]" multiple="multiple" class="form-control">
-            {% for server in servers %}
-            <option value="{{ server.hash }}">{{ server.name }}</option>
-            {% endfor %}
-        </select>
+	{% if servers[0]|length > 0 %}
+		<form action="/bulkcmd" method="post">
+			<h3>Target Servers</h3>
+			<select name="servers[]" multiple="multiple" class="form-control">
+				{% for server in servers %}
+                        	        <option value="{{ server.hash }}">{{ server.name }}</option>
+	                        {% endfor %}
+			</select>
 
-        <h3>Command</h3>
-        <input type="text" name="command" placeholder="stop" class="form-control">
-        <br>
-        <div class="text-right">
-            <button type="submit" class="btn btn-primary">Send Command</button>
-        </div>
-        {{ xsrf|raw }}
-    </form>
-    {% else %}
-    <div class="alert alert-info">You do not have any servers.</div>
-    {% endif %}
+			<h3>Command</h3>
+			<input type="text" name="command" placeholder="stop" class="form-control">
+			<br>
+			<div class="text-right">
+				<button type="submit" class="btn btn-primary">Send Command</button>
+			</div>
+			{{ xsrf|raw }}
+		</form>
+	{% else %}
+		<div class="alert alert-info">You do not have any servers.</div>
+	{% endif %}
 </div>
 {% endblock %}

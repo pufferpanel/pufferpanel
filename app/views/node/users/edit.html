@@ -4,115 +4,115 @@
 
 {% block content %}
 <div class="col-md-9">
-    {% if flash.info is defined %}
-    {{ flash.info.0|raw }}
-    {% endif %}
-    <form action="/node/users/edit" method="post">
-        <h3 class="nopad">Viewing Perissions for: {{ user.email }}</h3><hr />
-        <div class="list-group">
-            <a href="#" class="list-group-item">
-                <label><input type="checkbox" name="permissions[]" value="console.view" checked="checked" disabled/> View Console</label>
-                <p class="list-group-item-text">Gives user permission to view the console page. This must be enabled in order to add a subuser to the server. They will be able to view the server statistics as well as the server console.</p>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="console.commands" {% if permissions.console_commands is defined %}checked="checked"{% endif %}/> Send Commands</label>
-                        <p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="console.power" {% if permissions.console_power is defined %}checked="checked"{% endif %}/> Control Power</label>
-                        <p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item">
-                <label><input type="checkbox" name="permissions[]" value="files.view" {% if permissions.files_view is defined %}checked="checked"{% endif %}/> View Files</label>
-                <p class="list-group-item-text">Gives user permission to view the file listing.</p>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.edit" {% if permissions.files_edit is defined %}checked="checked"{% endif %}/> Edit File</label>
-                        <p class="list-group-item-text">Gives user permission to open a file for editing.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.save" {% if permissions.files_save is defined %}checked="checked"{% endif %}/> Save Modifications</label>
-                        <p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.download" {% if permissions.files_download is defined %}checked="checked"{% endif %}/> Download Files</label>
-                        <p class="list-group-item-text">Gives user permission to download files from the server.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.zip" {% if permissions.files_zip is defined %}checked="checked"{% endif %}/> Compress and Decompress Files</label>
-                        <p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.create" {% if permissions.files_create is defined %}checked="checked"{% endif %}/> Create Files</label>
-                        <p class="list-group-item-text">Gives user permission to create files on the server.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.upload" {% if permissions.files_upload is defined %}checked="checked"{% endif %}/> Upload Files</label>
-                        <p class="list-group-item-text">Gives user permission to upload files to the server.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="files.delete" {% if permissions.files_delete is defined %}checked="checked"{% endif %}/> Delete Files <span class="label label-danger">Danger</span></label>
-                        <p class="list-group-item-text">Gives user permission to delete files on the server.</p>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item">
-                <label><input type="checkbox" name="permissions[]" value="manage.view" {% if permissions.manage_view is defined %}checked="checked"{% endif %}/> View Manager</label>
-                <p class="list-group-item-text">Gives user permission to view the server management page.</p>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="manage.ftp.details" {% if permissions.manage_ftp_details is defined %}checked="checked"{% endif %}/> View FTP Details</label>
-                        <p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:10px;">
-                    <div class="col-md-1 col-xs-1"><br /><br /></div>
-                    <div class="col-md-11 col-xs-11">
-                        <label><input type="checkbox" name="permissions[]" value="manage.ftp.password" {% if permissions.manage_ftp_password is defined %}checked="checked"{% endif %}/> Modify FTP Password <span class="label label-danger">Danger</span></label>
-                        <p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="form-group">
-            <div>
-                {{ xsrf|raw }}
-                <input type="hidden" name="user_id" value="{{ user.user_id }}" />
-                <input type="submit" value="Update Permissions" class="btn btn-primary btn-sm" />
-                <a href="/node/users/revoke/{{ user.email }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
-            </div>
-        </div>
-    </form>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<form action="/node/users/edit" method="post">
+		<h3 class="nopad">Viewing Perissions for: {{ user.email }}</h3><hr />
+		<div class="list-group">
+			<a href="#" class="list-group-item">
+				<label><input type="checkbox" name="permissions[]" value="console.view" checked="checked" disabled/> View Console</label>
+				<p class="list-group-item-text">Gives user permission to view the console page. This must be enabled in order to add a subuser to the server. They will be able to view the server statistics as well as the server console.</p>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="console.commands" {% if permissions.console_commands is defined %}checked="checked"{% endif %}/> Send Commands</label>
+						<p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="console.power" {% if permissions.console_power is defined %}checked="checked"{% endif %}/> Control Power</label>
+						<p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
+					</div>
+				</div>
+			</a>
+			<a href="#" class="list-group-item">
+				<label><input type="checkbox" name="permissions[]" value="files.view" {% if permissions.files_view is defined %}checked="checked"{% endif %}/> View Files</label>
+				<p class="list-group-item-text">Gives user permission to view the file listing.</p>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.edit" {% if permissions.files_edit is defined %}checked="checked"{% endif %}/> Edit File</label>
+						<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.save" {% if permissions.files_save is defined %}checked="checked"{% endif %}/> Save Modifications</label>
+						<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.download" {% if permissions.files_download is defined %}checked="checked"{% endif %}/> Download Files</label>
+						<p class="list-group-item-text">Gives user permission to download files from the server.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.zip" {% if permissions.files_zip is defined %}checked="checked"{% endif %}/> Compress and Decompress Files</label>
+						<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.create" {% if permissions.files_create is defined %}checked="checked"{% endif %}/> Create Files</label>
+						<p class="list-group-item-text">Gives user permission to create files on the server.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.upload" {% if permissions.files_upload is defined %}checked="checked"{% endif %}/> Upload Files</label>
+						<p class="list-group-item-text">Gives user permission to upload files to the server.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="files.delete" {% if permissions.files_delete is defined %}checked="checked"{% endif %}/> Delete Files <span class="label label-danger">Danger</span></label>
+						<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
+					</div>
+				</div>
+			</a>
+			<a href="#" class="list-group-item">
+				<label><input type="checkbox" name="permissions[]" value="manage.view" {% if permissions.manage_view is defined %}checked="checked"{% endif %}/> View Manager</label>
+				<p class="list-group-item-text">Gives user permission to view the server management page.</p>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="manage.ftp.details" {% if permissions.manage_ftp_details is defined %}checked="checked"{% endif %}/> View FTP Details</label>
+						<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
+					</div>
+				</div>
+				<div class="row" style="margin-top:10px;">
+					<div class="col-md-1 col-xs-1"><br /><br /></div>
+					<div class="col-md-11 col-xs-11">
+						<label><input type="checkbox" name="permissions[]" value="manage.ftp.password" {% if permissions.manage_ftp_password is defined %}checked="checked"{% endif %}/> Modify FTP Password <span class="label label-danger">Danger</span></label>
+						<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="form-group">
+			<div>
+				{{ xsrf|raw }}
+				<input type="hidden" name="user_id" value="{{ user.user_id }}" />
+				<input type="submit" value="Update Permissions" class="btn btn-primary btn-sm" />
+				<a href="/node/users/revoke/{{ user.email }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
+			</div>
+		</div>
+	</form>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#sidebar_links").find("a[href='/node/users']").addClass('active');
-    });
+$(document).ready(function() {
+	$("#sidebar_links").find("a[href='/node/users']").addClass('active');
+});
 </script>
 {% endblock %}

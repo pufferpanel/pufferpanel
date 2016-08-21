@@ -68,11 +68,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
         'Authorization' => 'Basic ' . $bearer
     );
 
-    $updatedUrl = sprintf("http://%s:%s/%s", array(
-        $nodeObj->fqdn,
-        $nodeObj->daemon_listen,
-        $request->param('path')
-    ));
+    $updatedUrl = sprintf("http://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
 
     $unireq = null;
 

@@ -4,18 +4,18 @@
 
 {% block content %}
 <div class="col-md-9">
-    <ul class="breadcrumb">
-        <li class="active">Admin Control</li>
-    </ul>
-    {% if installer == true %}
-    <div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>
-    {% endif %}
-    <h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
-    <p>Welcome to the most advanced, lightweight, and user-friendly open source game server control panel. You are currently running version <code>{{ version }}</code>.</p>
+	<ul class="breadcrumb">
+		<li class="active">Admin Control</li>
+	</ul>
+	{% if installer == true %}
+		<div class="alert alert-danger"><strong>WARNING!</strong> Please remove the install/ directory from PufferPanel immediately to prevent any possible security holes.</div>
+	{% endif %}
+	<h3 class="nopad">PufferPanel Admin Control Panel</h3><hr />
+	<p>Welcome to the most advanced, lightweight, and user-friendly open source game server control panel. You are currently running version <code>{{ version }}</code>.</p>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#sidebar_links").find("a[href='/admin/index']").addClass('active');
-    });
+$(document).ready(function(){
+	$("#sidebar_links").find("a[href='/admin/index']").addClass('active');
+});
 </script>
 {% endblock %}

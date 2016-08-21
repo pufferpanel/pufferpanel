@@ -4,337 +4,391 @@
 
 {% block content %}
 <div class="col-md-9">
-    <ul class="breadcrumb">
-        <li><a href="/admin/index">Admin Control</a></li>
-        <li><a href="/admin/server">Servers</a></li>
-        <li class="active">{{ server.name }}</li>
-    </ul>
-    {% if flash.info is defined %}
-    {{ flash.info.0|raw }}
-    {% endif %}
-    <ul class="nav nav-tabs" id="config_tabs">
-        <li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
-        <li><a href="#connection" data-toggle="tab">Connection</a></li>
-        <li><a href="#delete" data-toggle="tab">Delete</a></li>
-        <li><a href="/index/{{ server.hash }}">Server Control</a></li>
-    </ul>
-    <div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Security Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
-    <div class="tab-content">
-        <div class="tab-pane active" id="server_sett">
-            <h3>Server Settings</h3><hr />
-            <form action="{{ server.id }}/settings" method="post">
-                <fieldset>
-                    <div class="form-group">
-                        <label class="control-label">Server Name</label>
-                        <div>
-                            <input type="text" name="server_name" value="{{ server.name }}" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Owner Email</label>
-                        <div>
-                            <input type="text" readonly="readonly" value="{{ user.username }} ({{ user.email }})" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-3 nopad">
-                            <label for="alloc_mem" class="control-label">Memory (in MB)</label>
-                            <div class="input-group">
-                                <input type="text" autocomplete="off" name="alloc_mem" value="{{ server.max_ram }}" class="form-control" />
-                                <span class="input-group-addon">MB</span>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
-                </fieldset>
-            </form>
-        </div>
-        <div class="tab-pane" id="connection">
-            <h3 class="nopad">Connection Information</h3><hr />
-            <form action="{{ server.id }}/connection" method="POST">
-                <fieldset>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Changing IP &amp; Port</div>
-                        <div class="panel-body">
-                            <p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
-                            <p>Current Connection Address: <code>{{ server.server_ip }}:{{ server.server_port }}</code></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="server_ip" class="control-label">Server IP</label>
-                            <div>
-                                <select name="server_ip" id="server_ip" class="form-control">
-                                    {% for ip, internal in decoded.ips %}
-                                    <option
-                                        {% if internal.ports_free > 0 %}
-                                        value="{{ ip }}"
-                                        {% if server.server_ip == ip %}
-                                        selected="selected"
-                                        {% endif %}
-                                        {% else %}
-                                        disabled="disabled"
-                                        {% endif %}
-                                        >{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="server_ip" class="control-label">Server Port</label>
-                            <div>
-                                {% for ip, internal in decoded.ports %}
-                                <select name="server_port" class="form-control" {% if server.server_ip != ip %}style="display:none;" disabled{% endif %} id="node_{{ ip }}">
-                                        {% for port, avaliable in internal %}
-                                        <option
-                                        {% if server.server_port == port %}selected="selected"{% endif %}
-                                        {% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
-                                        >{{ port }}</option>
-                                    {% endfor %}
-                                </select>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" name="nid" value="{{ node.id }}" />
-                    <input type="submit" value="Update Connection Information" class="btn btn-primary btn-sm" />
-                </fieldset>
-            </form>
-        </div>
-        <div class="tab-pane" id="rebuild">
-            <h3>Rebuild Server</h3><hr />
-            {% if node.docker == 1 %}
-            <div class="well">
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <button id="rebuildContainer" class="btn btn-sm btn-primary">Rebuild Docker Container</button>
-                    </div>
-                    <div class="col-md-8">
-                        Rebuild the server's docker container. This will update the server container if you made manual changes to the server's configuration file on Scales, or if for whatever reason the container becomes damaged or lost at sea. If the server is currently running this process will be queued until the server is powered off.
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            <div class="well">
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <button id="reinstallServer" class="btn btn-sm btn-danger">Re-Install Server</button>
-                    </div>
-                    <div class="col-md-8">
-                        <div>
-                            <div>
-                                <input type="text" autocomplete="off" id="reinstallBuildParams" class="form-control" placeholder="Build Parameters"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <br />
-                        Reinstall this server's program. <strong>This will delete all files that currently exist for the server.</strong> If the server is currently running this process will immediately stop the running server and reinstall.
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="well">
-                    <div class="row">
-                            <div class="col-md-4 text-center">
-                                    <button id="changeType" class="btn btn-sm btn-danger">Re-Install with New Plugin</button>
-                            </div>
-                            <div class="col-md-8">
-                                    <div>
-                                            <select name="plugin" id="getPlugin" class="form-control">
-                                                    {% for plugin in plugins %}
-                                                            <option value="{{ plugin.slug }}">{{ plugin.name }}</option>
-                                                    {% endfor %}
-                                            </select>
-                                    </div>
-                            </div>
-                    </div>
-                    <div class="row">
-                            <div class="col-md-12">
-                                    <br />
-                                    Change the type of server that this instance is running. Will reinstall the server to the new plugin and reset all files in the process. If the server is currently running this process will be queued until the server is powered off.
-                            </div>
-                    </div>
-            </div> -->
-        </div>
-        <div class="tab-pane" id="sftp_sett">
-            <h3>SFTP Settings</h3><hr />
-            <form action="{{ server.id }}/sftp" method="post">
-                <fieldset>
-                    <div class="form-group">
-                        <label for="ftp_host" class="control-label">Host</label>
-                        <div>
-                            <input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }} or {{ node.ip }}:{{ node.daemon_sftp }}" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="sftp_user" class="control-label">Username</label>
-                        <div>
-                            <input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="well">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
-                            </div>
-                            <div class="form-group col-md-6 nopad">
-                                <label for="ftp_pass" class="control-label">New Password</label>
-                                <div class="input-group">
-                                    <input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">Generate</button>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6 nopad-right">
-                                <label for="ftp_pass_2" class="control-label">New Password (Again)</label>
-                                <div>
-                                    <input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
-                                </div>
-                                <div class="checkbox" style="margin-bottom:-20px;">
-                                    <label>
-                                        <input type="checkbox" name="email_user" /> Email new password to user.
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
-                </fieldset>
-            </form>
-        </div>
-        <div class="tab-pane" id="installer">
-            <h3>Install Progress</h3><hr />
-            <div class="alert alert-danger" id="socket_error" style="display:none;">
-                We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
-                <br /><br />
-                If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
-            </div>
-            <div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
-            <textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
-            <form action="{{ server.id }}/override" id="overrideInstaller" method="POST">
-                <input type="submit" name="override" class="btn btn-sm btn-danger" value="Force installer completion">
-            </form>
-        </div>
-        <div class="tab-pane" id="delete">
-            <h3>Delete Server</h3><hr />
-            <div class="alert alert-danger"><strong>Deleting a server is an irreversible action.</strong> Proceed with caution. This server will be removed from the database along with all files on the server.</div>
-            <form action="{{ server.id }}/delete" id="deleteCheckpoint" method="POST">
-                <input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Server" />
-            </form>
-            <hr />
-            <div class="alert alert-danger">Force deleting a server will remove it from the panel even if an error is returned by the Scales process. We do not suggest using this method to remove a server from the panel. <strong>The server and its related data may continue to exist on the Scales instance and the panel will no longer be able to control it.</strong></div>
-            <form action="{{ server.id }}/delete/force" id="forceDeleteCheckpoint" method="POST">
-                <input type="submit" name="delete" class="btn btn-sm btn-danger" value="Force Delete this Server" />
-            </form>
-        </div>
-    </div>
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/server">Servers</a></li>
+		<li class="active">{{ server.name }}</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<ul class="nav nav-tabs" id="config_tabs">
+		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
+		<li><a href="#connection" data-toggle="tab">Connection</a></li>
+		<li {% if server.installed == 0 %}style="display:none;"{% endif %} id="rebuildServerTab"><a href="#rebuild" data-toggle="tab">Rebuild</a></li>
+		<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
+		<li><a href="#delete" data-toggle="tab">Delete</a></li>
+		<li {% if server.installed == 1 %}style="display:none;"{% endif %} id="installerProgressTab"><a href="#installer" data-toggle="tab">Installer Progress</a></li>
+		<li><a href="/index/{{ server.hash }}">Server Control</a></li>
+	</ul>
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Security Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
+	<div class="tab-content">
+		<div class="tab-pane active" id="server_sett">
+			<h3>Server Settings</h3><hr />
+			<form action="{{ server.id }}/settings" method="post">
+				<fieldset>
+					<div class="form-group">
+						<label class="control-label">Server Name</label>
+						<div>
+							<input type="text" name="server_name" value="{{ server.name }}" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Owner Email</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ user.username }} ({{ user.email }})" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Scales Security Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
+						<div>
+							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ server.daemon_secret }}" class="form-control" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-3 nopad">
+							<label for="alloc_mem" class="control-label">Memory (in MB)</label>
+							<div class="input-group">
+								<input type="text" autocomplete="off" name="alloc_mem" value="{{ server.max_ram }}" class="form-control" />
+								<span class="input-group-addon">MB</span>
+							</div>
+						</div>
+						<div class="form-group col-md-3">
+							<label for="alloc_disk" class="control-label">Disk Space (in MB)</label>
+							<div class="input-group">
+								<input type="text" name="alloc_disk" disabled="disabled" value="{{ server.disk_space }}" class="form-control" />
+								<span class="input-group-addon">MB</span>
+							</div>
+						</div>
+						<div class="form-group col-md-3">
+							<label for="cpu_limit" class="control-label">CPU Quota</label>
+							<div class="input-group">
+								<input type="text" name="cpu_limit" value="{{ server.cpu_limit }}" class="form-control" />
+								<span class="input-group-addon">%</span>
+							</div>
+						</div>
+						<div class="form-group col-md-3 nopad-right">
+							<label for="cpu_limit" class="control-label">Block IO</label>
+							<div class="input-group">
+								<input type="text" name="block_io" value="{{ server.block_io }}" class="form-control" />
+								<span class="input-group-addon">IO</span>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/reference/run/#block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.</small></p>
+						</div>
+					</div>
+					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
+				</fieldset>
+			</form>
+			<div class="well" style="margin-top:15px;">
+				<h3 class="nopad">Startup Parameters</h3><hr />
+				<form action="{{ server.id }}/startup" method="POST">
+					<fieldset>
+						<div class="form-group">
+							<label for="alloc_mem" class="control-label">Startup Command</label>
+							<div>
+								<input type="text" autocomplete="off" name="daemon_startup" value="{{ server.daemon_startup }}" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} nogui" />
+								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. Use <code>${memory}</code> to specify the amount of memory that the server is allowed to use. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="alloc_disk" class="control-label">Startup Command Variables</label>
+							<div>
+								<textarea name="daemon_variables" rows="5" class="form-control" placeholder="e.g: jar|server.jar">{{ server.daemon_variables }}</textarea>
+								<p><small>List one variable per line in the format of <code>variable_name|variable_value</code>. Please note that variable names and values are seperated with a pipe character (<code>|</code>).</small></p>
+							</div>
+						</div>
+						<input type="submit" value="Update Server Startup Parameters" class="btn btn-primary btn-sm" />
+					</fieldset>
+				</form>
+			</div>
+		</div>
+		<div class="tab-pane" id="connection">
+			<h3 class="nopad">Connection Information</h3><hr />
+			<form action="{{ server.id }}/connection" method="POST">
+				<fieldset>
+					<div class="panel panel-default">
+						<div class="panel-heading">Changing IP &amp; Port</div>
+						<div class="panel-body">
+							<p>If you want to change the Server IP then select an IP from the list below that has at least one available port. When you select a new IP you will be prompted to select a new port from a list. If you only want to change the port, and not the IP, then you can do so by simply selecting an available port.</p>
+							<p>Current Connection Address: <code>{{ server.server_ip }}:{{ server.server_port }}</code></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="server_ip" class="control-label">Server IP</label>
+							<div>
+								<select name="server_ip" id="server_ip" class="form-control">
+									{% for ip, internal in decoded.ips %}
+										<option
+											{% if internal.ports_free > 0 %}
+												value="{{ ip }}"
+												{% if server.server_ip == ip %}
+													selected="selected"
+												{% endif %}
+											{% else %}
+												disabled="disabled"
+											{% endif %}
+										>{{ ip }} ({{ internal.ports_free }} Avaliable Ports)</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="server_ip" class="control-label">Server Port</label>
+							<div>
+								{% for ip, internal in decoded.ports %}
+								<select name="server_port" class="form-control" {% if server.server_ip != ip %}style="display:none;" disabled{% endif %} id="node_{{ ip }}">
+								{% for port, avaliable in internal %}
+									<option
+										{% if server.server_port == port %}selected="selected"{% endif %}
+										{% if avaliable == 1 %}value="{{ port }}"{% else %}disabled="disabled"{% endif %}
+									>{{ port }}</option>
+								{% endfor %}
+								</select>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<input type="hidden" name="nid" value="{{ node.id }}" />
+					<input type="submit" value="Update Connection Information" class="btn btn-primary btn-sm" />
+				</fieldset>
+			</form>
+		</div>
+		<div class="tab-pane" id="rebuild">
+			<h3>Rebuild Server</h3><hr />
+			{% if node.docker == 1 %}
+			<div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="rebuildContainer" class="btn btn-sm btn-primary">Rebuild Docker Container</button>
+					</div>
+					<div class="col-md-8">
+						Rebuild the server's docker container. This will update the server container if you made manual changes to the server's configuration file on Scales, or if for whatever reason the container becomes damaged or lost at sea. If the server is currently running this process will be queued until the server is powered off.
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			<div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="reinstallServer" class="btn btn-sm btn-danger">Re-Install Server</button>
+					</div>
+					<div class="col-md-8">
+						<div>
+							<div>
+								<input type="text" autocomplete="off" id="reinstallBuildParams" class="form-control" placeholder="Build Parameters"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<br />
+						Reinstall this server's program. <strong>This will delete all files that currently exist for the server.</strong> If the server is currently running this process will immediately stop the running server and reinstall.
+					</div>
+				</div>
+			</div>
+			<!-- <div class="well">
+				<div class="row">
+					<div class="col-md-4 text-center">
+						<button id="changeType" class="btn btn-sm btn-danger">Re-Install with New Plugin</button>
+					</div>
+					<div class="col-md-8">
+						<div>
+							<select name="plugin" id="getPlugin" class="form-control">
+								{% for plugin in plugins %}
+									<option value="{{ plugin.slug }}">{{ plugin.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<br />
+						Change the type of server that this instance is running. Will reinstall the server to the new plugin and reset all files in the process. If the server is currently running this process will be queued until the server is powered off.
+					</div>
+				</div>
+			</div> -->
+		</div>
+		<div class="tab-pane" id="sftp_sett">
+			<h3>SFTP Settings</h3><hr />
+			<form action="{{ server.id }}/sftp" method="post">
+				<fieldset>
+					<div class="form-group">
+						<label for="ftp_host" class="control-label">Host</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }} or {{ node.ip }}:{{ node.daemon_sftp }}" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="sftp_user" class="control-label">Username</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
+						</div>
+					</div>
+					<div class="well">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
+							</div>
+							<div class="form-group col-md-6 nopad">
+								<label for="ftp_pass" class="control-label">New Password</label>
+								<div class="input-group">
+									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
+									<span class="input-group-btn">
+										<button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">Generate</button>
+									</span>
+								</div>
+							</div>
+							<div class="form-group col-md-6 nopad-right">
+								<label for="ftp_pass_2" class="control-label">New Password (Again)</label>
+								<div>
+									<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
+								</div>
+								<div class="checkbox" style="margin-bottom:-20px;">
+									<label>
+										<input type="checkbox" name="email_user" /> Email new password to user.
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
+				</fieldset>
+			</form>
+		</div>
+		<div class="tab-pane" id="installer">
+			<h3>Install Progress</h3><hr />
+				<div class="alert alert-danger" id="socket_error" style="display:none;">
+					We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
+					<br /><br />
+					If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
+				</div>
+				<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
+				<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+				<form action="{{ server.id }}/override" id="overrideInstaller" method="POST">
+				    <input type="submit" name="override" class="btn btn-sm btn-danger" value="Force installer completion">
+				</form>
+		</div>
+		<div class="tab-pane" id="delete">
+			<h3>Delete Server</h3><hr />
+				<div class="alert alert-danger"><strong>Deleting a server is an irreversible action.</strong> Proceed with caution. This server will be removed from the database along with all files on the server.</div>
+				<form action="{{ server.id }}/delete" id="deleteCheckpoint" method="POST">
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Server" />
+				</form>
+				<hr />
+				<div class="alert alert-danger">Force deleting a server will remove it from the panel even if an error is returned by the Scales process. We do not suggest using this method to remove a server from the panel. <strong>The server and its related data may continue to exist on the Scales instance and the panel will no longer be able to control it.</strong></div>
+				<form action="{{ server.id }}/delete/force" id="forceDeleteCheckpoint" method="POST">
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Force Delete this Server" />
+				</form>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script type="text/javascript">
-    $(document).ready(function () {
-        var socket = io('https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
-        socket.io.on('connect_error', function (err) {
-            $("#socket_error:hidden").show();
-        });
-        socket.on('connect', function () {
-            $("#socket_error:visible").hide();
-            $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-        });
-        socket.on('installer', function (data) {
-            var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
-            if (total.length > 750) {
-                total = total.slice(total.length - 750);
-            }
-            $("#live_console").val(total.join("\n"));
-            $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-        });
-        $("form#deleteCheckpoint").submit(function (e) {
-            e.preventDefault();
-            if (confirm("STOP! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
-                $("#deleteCheckpoint").unbind('submit').submit();
-            }
-        });
-        $("form#forceDeleteCheckpoint").submit(function (e) {
-            e.preventDefault();
-            if (confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the Scales instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE SCALES INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")) {
-                $("#forceDeleteCheckpoint").unbind('submit').submit();
-            }
-        })
-        $("#sidebar_links").find("a[href='/admin/server']").addClass('active');
-        $("#reset_token").click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "/admin/server/view/{{ server.id }}/reset-token",
-                success: function (data) {
-                    if (data.indexOf(' ') > 0) {
-                        alert(data);
-                    } else {
-                        $("#reset_token_warn").show();
-                        $("#form_daemon_token").val(data);
-                    }
-                }
-            });
-        });
-        $("#server_ip").change(function () {
-            var ip = $(this).val().replace(/\./g, "\\.");
-            $("[id^=node_]").hide().prop("disabled", true);
-            ;
-            $("#node_" + ip).show().prop("disabled", false);
-        });
-        $("#gen_pass_bttn").click(function () {
-            $.ajax({
-                type: "GET",
-                url: "/admin/passgen/12",
-                success: function (data) {
-                    $("#gen_pass").html('<strong>Generated Password:</strong> ' + data);
-                    $("#gen_pass").slideDown();
-                    $('input[name="sftp_pass"]').val(data);
-                    $('input[name="sftp_pass_2"]').val(data);
-                    return false;
-                }
-            });
-            return false;
-        });
-        $('#rebuildContainer').click(function (event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '/admin/server/view/{{ server.id }}/rebuild-container',
-                dataType: 'text'
-            }).done(function (data) {
-                alert(data);
-            }).fail(function (jqXHR, textStatus) {
-                console.error(jqXHR);
-                alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your Scales error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
-            });
-        });
-        $('#reinstallServer').click(function (event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '/admin/server/view/{{ server.id }}/reinstall-server',
-                dataType: 'text',
-                data: {
-                    build_params: $('#reinstallBuildParams').val()
-                }
-            }).done(function (data) {
-                $("#live_console").val('');
-                $("#installerProgressTab").show(function () {
-                    $("#installerProgressTab").tab('show');
-                    $("#rebuild").removeClass('active');
-                    $("#installer").addClass('active');
-                });
-            }).fail(function (jqXHR, textStatus) {
-                console.error(jqXHR);
-                alert('An error occured while attempting to process this request. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
-            });
-        });
-    });
+	$(document).ready(function() {
+		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
+		socket.io.on('connect_error', function(err) {
+			$("#socket_error:hidden").show();
+		});
+		socket.on('connect', function () {
+			$("#socket_error:visible").hide();
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		socket.on('installer', function (data) {
+			var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
+			if (total.length > 750) {
+				total = total.slice(total.length - 750);
+			}
+			$("#live_console").val(total.join("\n"));
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+		});
+		$("form#deleteCheckpoint").submit(function(e) {
+			e.preventDefault();
+			if(confirm("STOP! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
+				$("#deleteCheckpoint").unbind('submit').submit();
+			}
+		});
+		$("form#forceDeleteCheckpoint").submit(function(e) {
+			e.preventDefault();
+			if(confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the Scales instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE SCALES INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")){
+				$("#forceDeleteCheckpoint").unbind('submit').submit();
+			}
+		})
+		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
+		$("#reset_token").click(function(e){
+			e.preventDefault();
+			$.ajax({
+				type: "POST",
+				url: "/admin/server/view/{{ server.id }}/reset-token",
+				success: function(data) {
+					if(data.indexOf(' ') > 0) {
+						alert(data);
+					} else {
+						$("#reset_token_warn").show();
+						$("#form_daemon_token").val(data);
+					}
+				}
+			});
+		});
+		$("#server_ip").change(function() {
+			var ip = $(this).val().replace(/\./g, "\\.");
+			$("[id^=node_]").hide().prop("disabled", true);;
+			$("#node_"+ip).show().prop("disabled", false);
+		});
+		$("#gen_pass_bttn").click(function(){
+			$.ajax({
+				type: "GET",
+				url: "/admin/passgen/12",
+				success: function(data) {
+					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
+					$("#gen_pass").slideDown();
+					$('input[name="sftp_pass"]').val(data);
+					$('input[name="sftp_pass_2"]').val(data);
+					return false;
+				}
+			});
+			return false;
+		});
+		$('#rebuildContainer').click(function (event) {
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/admin/server/view/{{ server.id }}/rebuild-container',
+				dataType: 'text'
+			}).done(function (data) {
+				alert(data);
+			}).fail(function (jqXHR, textStatus) {
+				console.error(jqXHR);
+				alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your Scales error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
+			});
+		});
+		$('#reinstallServer').click(function (event) {
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/admin/server/view/{{ server.id }}/reinstall-server',
+				dataType: 'text',
+				data: {
+					build_params: $('#reinstallBuildParams').val()
+				}
+			}).done(function (data) {
+				$("#live_console").val('');
+				$("#installerProgressTab").show(function () {
+					$("#installerProgressTab").tab('show');
+					$("#rebuild").removeClass('active');
+					$("#installer").addClass('active');
+				});
+			}).fail(function (jqXHR, textStatus) {
+				console.error(jqXHR);
+				alert('An error occured while attempting to process this request. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
+			});
+		});
+	});
 </script>
 {% endblock %}

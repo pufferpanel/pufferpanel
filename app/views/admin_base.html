@@ -1,160 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        {% block head %}
-        {% block scripts %}
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script type="text/javascript">var pageRenderStart = new Date().getTime();</script>
-        <link rel="stylesheet" href="/assets/css/bootstrap.css">
-        <link rel="stylesheet" href="/assets/css/pufferpanel.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-        <script src="/assets/javascript/admin.min.js"></script>
-        <script src="/assets/javascript/bootstrap-notify.min.js"></script>
-        {% endblock %}
-        <title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
-        {% endblock %}
-    </head>
-    <body>
-        <div class="container">
-            <div class="navbar navbar-default" style="margin-top: 30px;">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/index">{{ settings.company_name }}</a>
-                </div>
-                <div class="navbar-collapse collapse navbar-responsive-collapse">
-                    <ul class="nav navbar-nav hidden-md hidden-lg">
-                        <li><a href="#">Index</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/admin/settings/global">Global Settings</a></li>
-                                <li><a href="/admin/settings/urls">URL Settings</a></li>
-                                <li><a href="/admin/settings/email">Email Settings</a></li>
-                                <li><a href="/admin/settings/captcha">Captcha Settings</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account Management <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/admin/account">Find Account</a></li>
-                                <li><a href="/admin/account/new">New Account</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Server Management <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/admin/server">Find Server</a></li>
-                                <li><a href="/admin/server/new">New Server</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Node Management <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/admin/node">List Nodes</a></li>
-                                <li><a href="/admin/node/new">Add Node</a></li>
-                                <li><a href="/admin/node/locations">Manage Locations</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/language/en">English</a></li>
-                                <li><a href="/language/ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a></li>
-                                <li><a href="/language/de">Deutsch</a></li>
-                                <li><a href="/language/es">Espa&ntilde;ol</a></li>
-                                <li><a href="/language/fr_FR">Fran&ccedil;ais (France)</a></li>
-                                <li><a href="/language/it">Italiano</a></li>
-                                <li><a href="/language/ja">&#26085;&#26412;&#35486;</a></li>
-                                <li><a href="/language/nl">Nederlands</a></li>
-                                <li><a href="/language/nl_NL">Nederlands (Nederland)</a></li>
-                                <li><a href="/language/pl">Polski</a></li>
-                                <li><a href="/language/pt">Portugu&ecirc;s</a></li>
-                                <li><a href="/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
-                                <li><a href="/language/ru_RU">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081; (&#1056;&#1086;&#1089;&#1089;&#1080;&#1103;)</a></li>
-                                <li><a href="/language/sv_SE">Svenska</a></li>
-                                <li><a href="/language/yue">&#31908;&#35821;</a></li>
-                                <li><a href="/language/zh_CN">&#20013;&#25991;&#65288;&#20013;&#22269;&#65289;</a></li>
-                                <li><a href="/language/zh_HK">&#20013;&#25991;&#65288;&#39321;&#28207;&#65289;</a></li>
-                            </ul>
-                        </li>
-                        <li class="hidden-xs hidden-sm"><a href="/index"><i class="fa fa-list-alt"></i></a></li>
-                        <li class="hidden-xs hidden-sm"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
-                        <li class="hidden-md hidden-lg"><a href="/index">Server List</a></li>
-                        <li class="hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
-                    <div class="list-group">
-                        <a href="/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-                        <a href="/admin/settings/global" class="list-group-item">Global Settings</a>
-                        <a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
-                        <a href="/admin/settings/email" class="list-group-item">Email Settings</a>
-                        <a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-                        <a href="/admin/account" class="list-group-item">Find Account</a>
-                        <a href="/admin/account/new" class="list-group-item">New Account</a>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-                        <a href="/admin/server" class="list-group-item">Find Server</a>
-                        <a href="/admin/server/new" class="list-group-item">New Server</a>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-                        <a href="/admin/node" class="list-group-item">List Nodes</a>
-                        <a href="/admin/node/new" class="list-group-item">Add Node</a>
-                        <a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
-                    </div>
-                </div>
-                {% block content %}{% endblock %}
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="col-md-8 col-xs-6">
-                        <p>{{ l.render('footer.license')|raw }}<br />{{ l.render('footer.version')|format(fversion)|raw }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% block javascript %}{% endblock %}
-        <script type="text/javascript">
-            if ($.urlParam('tab') != null) {
-                $('#config_tabs a[href="#' + $.urlParam('tab') + '"]').tab('show');
-            }
-            if ($.urlParam("error") != null) {
-                var field = $.urlParam("error");
-                var exploded = field.split("|");
-                $.each(exploded, function (key, value) {
-                    $('[name="' + value + '"]').parent().parent().addClass("has-error")
-                });
-                var obj = $.parseJSON($.cookie("__TMP_pp_admin_updateglobal"));
-                $.each(obj, function (key, value) {
-                    $('[name="' + key + '"]').val(value)
-                })
-            }
-            ;
-            for (var queryParameters = {}, queryString = location.search.substring(1), re = /([^&=]+)=([^&]*)/g, m; m = re.exec(queryString); )
-                queryParameters[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-            $("a[data-toggle='tab']").click(function () {
-                queryParameters.tab = $(this).attr("href").substring(1), window.history.pushState(null, null, location.pathname + "?" + $.param(queryParameters))
-            });
-        </script>
-    </body>
+<head>
+	{% block head %}
+		{% block scripts %}
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<script type="text/javascript">var pageRenderStart = new Date().getTime();</script>
+			<link rel="stylesheet" href="/assets/css/bootstrap.css">
+			<link rel="stylesheet" href="/assets/css/pufferpanel.css">
+			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+			<script src="/assets/javascript/admin.min.js"></script>
+			<script src="/assets/javascript/bootstrap-notify.min.js"></script>
+		{% endblock %}
+		<title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
+	{% endblock %}
+</head>
+<body>
+	<div class="container">
+		<div class="navbar navbar-default" style="margin-top: 30px;">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index">{{ settings.company_name }}</a>
+			</div>
+			<div class="navbar-collapse collapse navbar-responsive-collapse">
+				<ul class="nav navbar-nav hidden-md hidden-lg">
+					<li><a href="#">Index</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/settings/global">Global Settings</a></li>
+							<li><a href="/admin/settings/urls">URL Settings</a></li>
+							<li><a href="/admin/settings/email">Email Settings</a></li>
+							<li><a href="/admin/settings/captcha">Captcha Settings</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/account">Find Account</a></li>
+							<li><a href="/admin/account/new">New Account</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Server Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/server">Find Server</a></li>
+							<li><a href="/admin/server/new">New Server</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Node Management <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/admin/node">List Nodes</a></li>
+							<li><a href="/admin/node/new">Add Node</a></li>
+							<li><a href="/admin/node/locations">Manage Locations</a></li>
+							<li><a href="/admin/node/plugins">Manage Plugins</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/language/en">English</a></li>
+							<li><a href="/language/ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a></li>
+							<li><a href="/language/de">Deutsch</a></li>
+							<li><a href="/language/es">Espa&ntilde;ol</a></li>
+							<li><a href="/language/fr_FR">Fran&ccedil;ais (France)</a></li>
+							<li><a href="/language/it">Italiano</a></li>
+							<li><a href="/language/ja">&#26085;&#26412;&#35486;</a></li>
+							<li><a href="/language/nl">Nederlands</a></li>
+							<li><a href="/language/nl_NL">Nederlands (Nederland)</a></li>
+							<li><a href="/language/pl">Polski</a></li>
+							<li><a href="/language/pt">Portugu&ecirc;s</a></li>
+							<li><a href="/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
+							<li><a href="/language/ru_RU">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081; (&#1056;&#1086;&#1089;&#1089;&#1080;&#1103;)</a></li>
+							<li><a href="/language/sv_SE">Svenska</a></li>
+							<li><a href="/language/yue">&#31908;&#35821;</a></li>
+							<li><a href="/language/zh_CN">&#20013;&#25991;&#65288;&#20013;&#22269;&#65289;</a></li>
+							<li><a href="/language/zh_HK">&#20013;&#25991;&#65288;&#39321;&#28207;&#65289;</a></li>
+						</ul>
+					</li>
+					<li class="hidden-xs hidden-sm"><a href="/index"><i class="fa fa-list-alt"></i></a></li>
+					<li class="hidden-xs hidden-sm"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
+					<li class="hidden-md hidden-lg"><a href="/index">Server List</a></li>
+					<li class="hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
+				<div class="list-group">
+					<a href="/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
+					<a href="/admin/settings/global" class="list-group-item">Global Settings</a>
+					<a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
+					<a href="/admin/settings/email" class="list-group-item">Email Settings</a>
+					<a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
+					<a href="/admin/account" class="list-group-item">Find Account</a>
+					<a href="/admin/account/new" class="list-group-item">New Account</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
+					<a href="/admin/server" class="list-group-item">Find Server</a>
+					<a href="/admin/server/new" class="list-group-item">New Server</a>
+				</div>
+				<div class="list-group">
+					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
+					<a href="/admin/node" class="list-group-item">List Nodes</a>
+					<a href="/admin/node/new" class="list-group-item">Add Node</a>
+					<a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
+					<a href="/admin/node/plugins" class="list-group-item">Manage Plugins</a>
+				</div>
+			</div>
+			{% block content %}{% endblock %}
+		</div>
+		<div class="footer">
+			<div class="row">
+				<div class="col-md-8 col-xs-6">
+					<p>{{ l.render('footer.license')|raw }}<br />{{ l.render('footer.version')|format(fversion)|raw }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% block javascript %}{% endblock %}
+	<script type="text/javascript">
+		if($.urlParam('tab') != null){$('#config_tabs a[href="#'+$.urlParam('tab')+'"]').tab('show');}
+		if($.urlParam("error")!=null){var field=$.urlParam("error");var exploded=field.split("|");$.each(exploded,function(key,value){$('[name="'+value+'"]').parent().parent().addClass("has-error")});var obj=$.parseJSON($.cookie("__TMP_pp_admin_updateglobal"));$.each(obj,function(key,value){$('[name="'+key+'"]').val(value)})};
+		for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
+	</script>
+</body>
 </html>

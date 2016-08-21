@@ -55,9 +55,7 @@ $klein->respond('GET', '/admin/node/new', function($request, $response, $service
 
 $klein->respond('POST', '/admin/node/new', function($request, $response, $service) use($core) {
 
-    if (
-            !is_numeric($request->param('daemon_listen'))
-    ) {
+    if (!is_numeric($request->param('daemon_listen'))) {
 
         $service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the daemon listening ports as well as the disk and memory allocation.</div>');
         $response->redirect('/admin/node/new')->send();
@@ -99,11 +97,11 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
         'daemon_listen' => $request->param('daemon_listen'),
         'daemon_sftp' => $request->param('daemon_sftp'),
-        'daemon_base_dir' => '/svr/pufferd',
-        'ips' => json_encode(array()),
-        'ports' => json_encode(array()),
+        'daemon_base_dir' => '/srv/pufferd',
+        'ips' => '{}',
+        'ports' => '{}',
         'public' => 1,
-        'docker' => ($request->param('is_docker')) ? 1 : 0
+        'docker' => 0
     ));
     $node->save();
 

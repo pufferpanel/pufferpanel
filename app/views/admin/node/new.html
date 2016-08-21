@@ -4,75 +4,76 @@
 
 {% block content %}
 <div class="col-md-9">
-    <ul class="breadcrumb">
-        <li><a href="/admin/index">Admin Control</a></li>
-        <li><a href="/admin/node">Nodes</a></li>
-        <li class="active">Add New Node</li>
-    </ul>
-    {% if flash.info is defined %}
-    {{ flash.info.0|raw }}
-    {% endif %}
-    <h3 class="nopad">Add New Node</h3><hr />
-    <form action="new" method="POST">
-        <fieldset>
-            <div class="well">
-                <div class="row">
-                    <div class="form-group col-md-6 nopad">
-                        <label for="node_name" class="control-label">Node Short Name</label>
-                        <div>
-                            <input type="text" name="node_name" placeholder="shortname" class="form-control" />
-                            <p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.).</em></small></p>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6 nopad-right">
-                        <label for="location" class="control-label">Location</label>
-                        <div>
-                            <select name="location" class="form-control">
-                                {% for location in locations %}
-                                <option value="{{ location.id }}">{{ location.long }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6 nopad">
-                        <label for="fqdn" class="control-label">Node <abbr title="Fully Qualified Domain Name">FQDN</abbr></label>
-                        <div>
-                            <input type="text" name="fqdn" class="form-control" placeholder="us1.nodes.example.com" />
-                            <p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN (domain) for this node. If you do not have one please enter its IP address. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="well">
-                <div class="row">
-                    <div class="form-group col-md-6 col-xs-6 nopad">
-                        <label for="daemon_listen" class="control-label">Daemon Listening Port</label>
-                        <div>
-                            <input type="text" name="daemon_listen" class="form-control" value="5656" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm" />
-        </fieldset>
-    </form>
+	<ul class="breadcrumb">
+		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="/admin/node">Nodes</a></li>
+		<li class="active">Add New Node</li>
+	</ul>
+	{% if flash.info is defined %}
+		{{ flash.info.0|raw }}
+	{% endif %}
+	<h3 class="nopad">Add New Node</h3><hr />
+	<form action="new" method="POST">
+		<fieldset>
+			<div class="well">
+				<div class="row">
+					<div class="form-group col-md-6 nopad">
+						<label for="node_name" class="control-label">Node Short Name</label>
+						<div>
+							<input type="text" name="node_name" placeholder="shortname" class="form-control" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.).</em></small></p>
+						</div>
+					</div>
+					<div class="form-group col-md-6 nopad-right">
+						<label for="location" class="control-label">Location</label>
+						<div>
+							<select name="location" class="form-control">
+								{% for location in locations %}
+									<option value="{{ location.id }}">{{ location.long }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6 nopad">
+						<label for="fqdn" class="control-label">Node <abbr title="Fully Qualified Domain Name">FQDN</abbr></label>
+						<div>
+							<input type="text" name="fqdn" class="form-control" placeholder="us1.nodes.example.com" />
+							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN (domain) for this node. If you do not have one please enter its IP address. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="well">
+				<div class="row">
+					<div class="form-group col-md-6 col-xs-6 nopad">
+						<label for="daemon_listen" class="control-label">Daemon Listening Port</label>
+						<div>
+							<input type="text" name="daemon_listen" class="form-control" value="5656" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<input type="submit" value="Create Node" id="disable_complete" class="btn btn-primary btn-sm" />
+		</fieldset>
+	</form>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#sidebar_links").find("a[href='/admin/node/new']").addClass('active');
-        $("input[name='node_name']").keyup(function () {
-            if ($(this).val().length > 15 || /^[a-zA-Z0-9_.-]*$/.test($(this).val()) == false)
-                $(this).parent().parent().removeClass('has-success').addClass('has-error');
-            else if ($(this).val().length == 0)
-                $(this).parent().parent().removeClass('has-success').removeClass('has-error');
-            else
-                $(this).parent().parent().removeClass('has-error').addClass('has-success');
-        });
-    });
+	$(document).ready(function(){
+		$("#sidebar_links").find("a[href='/admin/node/new']").addClass('active');
+		$("input[name='node_name']").keyup(function(){
+			if($(this).val().length > 15 || /^[a-zA-Z0-9_.-]*$/.test($(this).val()) == false)
+				$(this).parent().parent().removeClass('has-success').addClass('has-error');
+			else if($(this).val().length == 0)
+				$(this).parent().parent().removeClass('has-success').removeClass('has-error');
+			else
+				$(this).parent().parent().removeClass('has-error').addClass('has-success');
+		});
+	});
 </script>
 {% endblock %}

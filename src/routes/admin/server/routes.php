@@ -87,23 +87,16 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
     $node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
 
-    $ports = json_decode($node->ports, true);
-    $ips = json_decode($node->ips, true);
-    $ports[$core->server->getData('server_ip')][$core->server->getData('server_port')] ++;
-    $ips[$core->server->getData('server_ip')]['ports_free'] ++;
-    $node->ips = json_encode($ips);
-    $node->ports = json_encode($ports);
-
-    $node->save();
-
     ORM::forTable('subusers')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('permissions')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
-    ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
     ORM::forTable('oauth_access_tokens')->where('client_id', $core->server->getData('id'))->deleteMany();
     $clientIds = ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->select('id')->findMany();
-    ORM::forTable('oauth_access_tokens')->whereIdIn('client_id', $clientIds)->deleteMany();
+    foreach ($clientIds as $id) {
+        ORM::forTable('oauth_access_tokens')->where('client_id', $id->id)->deleteMany();
+    }
     ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->deleteMany();
+    ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
 
     try {
 
@@ -112,11 +105,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             'Authorization' => 'Basic ' . $bearer
         );
 
-        $updatedUrl = sprintf("http://%s:%s/server/%s", array(
-            $this->server->nodeData('fqdn'),
-            $this->server->nodeData('daemon_listen'),
-            $core->server->getData('hash')
-        ));
+        $updatedUrl = sprintf('https://%s:%s/server/%s', $node->fqdn, $node->daemon_listen, $core->server->getData('hash'));
 
         $unirest = Request::delete($updatedUrl);
 
@@ -166,10 +155,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
     try {
 
-        $unirest = Request::post(sprintf('https://%s:%s/server/%s/install', array(
-                    $core->server->nodeData('fqdn'),
-                    $core->server->nodeData('daemon_listen'),
-                    $core->server->getData('hash'))));
+        $unirest = Request::post(sprintf('https://%s:%s/server/%s/install', $core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'), $core->server->getData('hash')));
 
         ORM::get_db()->commit();
     } catch (Exception $e) {
@@ -334,11 +320,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
      */
     try {
 
-        Request::put(
-                "https://" . $core->server->nodeData('fqdn') . ":" . $core->server->nodeData('daemon_listen') . "/server", array(
+        Request::put("https://" . $core->server->nodeData('fqdn') . ":" . $core->server->nodeData('daemon_listen') . "/server", array(
             "X-Access-Token" => $core->server->nodeData('daemon_secret'),
-            "X-Access-Server" => $core->server->getData('hash')
-                ), array(
+            "X-Access-Server" => $core->server->getData('hash')), array(
             "json" => json_encode(array(
                 "cpu" => (int) $request->param('cpu_limit'),
                 "memory" => (int) $request->param('alloc_mem'),
