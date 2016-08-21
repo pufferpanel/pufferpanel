@@ -79,7 +79,8 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
             ))->dispatch($request->param('email'), Settings::config()->company_name . ' - Account Login Notification');
         }
 
-        $response->cookie('pp_auth_token', $cookie->token, $cookie->expires);
+        $response->cookie('pp_auth_token', $cookie->token, $cookie->expires);        
+        
         $response->redirect('/index')->send();
         return;
     }
