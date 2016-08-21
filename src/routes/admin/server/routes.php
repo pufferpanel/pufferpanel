@@ -100,6 +100,10 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
     ORM::forTable('permissions')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
+    ORM::forTable('oauth_access_tokens')->where('client_id', $core->server->getData('id'))->deleteMany();
+    $clientIds = ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->select('id')->findMany();
+    ORM::forTable('oauth_access_tokens')->whereIdIn('client_id', $clientIds)->deleteMany();
+    ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->deleteMany();
 
     try {
 
@@ -323,9 +327,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
     $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
     $server->name = $request->param('server_name');
     $server->max_ram = $request->param('alloc_mem');
-    //$server->disk_space = $request->param('alloc_disk');
-    $server->cpu_limit = $request->param('cpu_limit');
-    $server->block_io = $request->param('block_io');
     $server->save();
 
     /*
@@ -501,6 +502,15 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         'installed' => 1
     ));
     $server->save();
+
+    $oauth = ORM::forTable('oauth_clients')->create();
+    $oauth->set(array(
+        'client_id' => '.internal_' . $user->id . '_' . $server->id,
+        'client_secret' => openssl_random_pseudo_bytes(64),
+        'user_id' => $user->id,
+        'server_id' => $server->id
+    ));
+    $oauth->save();
 
     /*
      * Build Call
