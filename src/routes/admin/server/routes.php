@@ -116,13 +116,13 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
         $unirest = Request::delete($updatedUrl);
 
-        if ($unirest->code !== 204) {
-            throw new Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
+        if ($unirest->code == 204 || $unirest->code == 200) {
+            ORM::get_db()->commit();
+            $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
+            $response->redirect('/admin/server')->send();
+        } else {
+            throw new Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
         }
-
-        ORM::get_db()->commit();
-        $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
-        $response->redirect('/admin/server')->send();
     } catch (Exception $e) {
 
         Debugger::log($e);
@@ -414,20 +414,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         return;
     }
 
-    $ips = json_decode($node->ips, true);
-    $ports = json_decode($node->ports, true);
-
-    if (
-            !array_key_exists($request->param('server_ip'), $ips) ||
-            !array_key_exists($request->param('server_port'), $ports[$request->param('server_ip')]) ||
-            $ports[$request->param('server_ip')][$request->param('server_port')] == 0
-    ) {
-
-        $service->flash('<div class="alert alert-danger">The selected IP or Port is currently in use or not avaliable.</div>');
-        $response->redirect('/admin/server/new')->send();
-        return;
-    }
-
     $user = ORM::forTable('users')->select('id')->where('email', $request->param('email'))->findOne();
 
     if (!$user) {
@@ -437,23 +423,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         return;
     }
 
-    /*
-     * Validate Disk & Memory
-     */
-    if (
-            !is_numeric($request->param('alloc_mem')) ||
-            !is_numeric($request->param('cpu_limit')) ||
-            !is_numeric($request->param('block_io'))
-    ) {
-
-        $service->flash('<div class="alert alert-danger">Allocated memory, disk, Block IO, and CPU must all be integers.</div>');
-        $response->redirect('/admin/server/new')->send();
-        return;
-    }
-
-    if ($request->param('block_io') > 1000 || $request->param('block_io') < 10) {
-
-        $service->flash('<div class="alert alert-danger">Block IO must not be less than 10 or greater than 1000.</div>');
+    if (empty($request->param('alloc_mem')) || !is_numeric($request->param('alloc_mem'))) {
+        $service->flash('<div class="alert alert-danger">Memory is a required field and must be a number</div>');
         $response->redirect('/admin/server/new')->send();
         return;
     }
@@ -521,62 +492,23 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         'owner_id' => $user->id,
         'max_ram' => $request->param('alloc_mem'),
         'disk_space' => 0,
-        'cpu_limit' => $request->param('cpu_limit'),
-        'block_io' => $request->param('block_io'),
+        'cpu_limit' => 0,
+        'block_io' => 0,
         'date_added' => time(),
-        'server_ip' => $request->param('server_ip'),
-        'server_port' => $request->param('server_port'),
-        'sftp_user' => $sftp_username,
-        'installed' => 0
+        'server_ip' => '0.0.0.0',
+        'server_port' => '0',
+        'sftp_user' => '$sftp_username',
+        'installed' => 1
     ));
     $server->save();
-
-    $ips[$request->param('server_ip')]['ports_free'] --;
-    $ports[$request->param('server_ip')][$request->param('server_port')] --;
-
-    $node->ips = json_encode($ips);
-    $node->ports = json_encode($ports);
-    $node->save();
 
     /*
      * Build Call
      */
     $data = array(
         "name" => $server_hash,
-        "user" => $sftp_username,
-        "build" => array(
-            "disk" => array(
-                "hard" => ($request->param('alloc_disk') < 32) ? 32 : (int) $request->param('alloc_disk'),
-                "soft" => ($request->param('alloc_disk') > 2048) ? (int) $request->param('alloc_disk') - 1024 : 32
-            ),
-            "cpu" => (int) $request->param('cpu_limit'),
-            "memory" => (int) $request->param('alloc_mem'),
-            "io" => (int) $request->param('block_io')
-        ),
-        "startup" => array(
-            "command" => $request->param('daemon_startup'),
-            "variables" => $startup_variables
-        ),
-        "keys" => array(
-            $daemon_secret => array(
-                "s:ftp",
-                "s:get",
-                "s:power",
-                "s:files",
-                "s:files:get",
-                "s:files:delete",
-                "s:files:put",
-                "s:files:zip",
-                "s:query",
-                "s:console",
-                "s:console:send"
-            )
-        ),
-        "gameport" => (int) $request->param('server_port'),
-        "gamehost" => $request->param('server_ip'),
-        "plugin" => $request->param('plugin'),
-        'password' => $core->auth->keygen(16),
-        'build_params' => ($request->param('plugin_variable_build_params')) ? $request->param('plugin_variable_build_params') : false
+        "memory" => (int) $request->param('alloc_mem'),
+        "type" => $request->param('plugin')
     );
 
     try {
@@ -586,21 +518,25 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
             'Authorization' => 'Bearer ' . $bearer
         );
 
-        $unirest = Request::put(
-                        'https://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash, $header, json_encode($data)
-        );
+        try {
+            $unirest = Request::put(
+                            'https://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash, $header, json_encode($data)
+            );
+        } catch (\Error $e) {
+            throw new \Exception($e->getMessage());
+        }
 
-        if ($unirest->code !== 204) {
-            throw new Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP 1.1/" . $unirest->code . "]");
+        if ($unirest->code !== 204 && $unirest->code !== 200) {
+            throw new \Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP 1.1/" . $unirest->code . "]");
         }
 
         ORM::get_db()->commit();
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
 
-        Debugger::log($e);
+        //Debugger::log($e);
         ORM::get_db()->rollBack();
 
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.<br />' . $e->getMessage() . '</div>');
         $response->redirect('/admin/server/new')->send();
         return;
     }

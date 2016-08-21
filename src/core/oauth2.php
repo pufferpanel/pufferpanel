@@ -117,7 +117,7 @@ class OAuthService {
         $clientSecret = $this->getOrGenPanelSecret();
         $pdo = $this->pdo;
         $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_od "
+                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
                 . "WHERE user_id = 0 AND server_id = 0 AND expiretime > NOW()");
         $query->execute();
         $data = $query->fetch(\PDO::FETCH_ASSOC);
