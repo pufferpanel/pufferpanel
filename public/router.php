@@ -174,6 +174,7 @@ include SRC_DIR.'routes/auth/routes.php';
 include SRC_DIR.'routes/panel/routes.php';
 include SRC_DIR.'routes/node/routes.php';
 include SRC_DIR.'routes/oauth2/routes.php';
+include SRC_DIR.'routes/daemon/routes.php';
 
 $klein->respond('*', function($request, $response) use ($core) {
 

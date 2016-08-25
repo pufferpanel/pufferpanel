@@ -52,7 +52,7 @@ class OAuthService {
         $query = $this->pdo->prepare("SELECT id, client_secret, scopes FROM oauth_clients WHERE client_id = ?");
         $query->execute(array($clientId));
         $keys = $query->fetchAll(\PDO::FETCH_ASSOC);
-        if (count($keys) == 0) {
+        if ($keys === false || count($keys) == 0) {
             return array("error" => $clientId);
         }
 

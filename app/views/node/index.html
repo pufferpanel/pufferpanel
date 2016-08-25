@@ -26,7 +26,7 @@
 					<div class="row centered">
 						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
 						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
+						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (MB)</small></p>
 						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>Memory Usage (%)</small></p>
 					</div>
 				</div>
@@ -63,10 +63,6 @@
 								<td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
 								<td>{{ server.max_ram }} MB</td>
 							</tr>
-							<tr>
-								<td><strong>{{ l.render('string.disk_alloc') }}</strong></td>
-								<td>{{ server.disk_space }} MB</td>
-							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -96,9 +92,9 @@
 				<div class="col-md-6" style="text-align:center;">
 					<hr />
 					{% if permission.has('console.power') %}
-						<button class="btn btn-success btn-sm start disabled" id="server_start">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-success btn-sm start" id="server_start">{{ l.render('string.start') }}</button>
+						<button class="btn btn-primary btn-sm restart" id="server_restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop" id="server_stop">{{ l.render('string.stop') }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
 						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
@@ -375,21 +371,11 @@
 		{% if permission.has('console.power') %}
 			var can_run = true;
 			function updateServerPowerControls(data) {
-				// Server is On or Starting
-				if(data == 1 || data == 3) {
-					$("#server_start").addClass('disabled');
-					$("#server_stop, #server_restart").removeClass("disabled");
-				} else {
-					$("#server_start").removeClass('disabled');
-					$("#server_stop, #server_restart").addClass("disabled");
-				}
-
 				if(data !== 0) {
 					$("#kill_process_text").slideDown(200);
 				} else {
 					$("#kill_process_text").slideUp(200);
 				}
-
 			}
 			$("#kill_proc").click(function(e){
 				e.preventDefault();
@@ -397,11 +383,7 @@
 				if(killConfirm) {
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/kill',
+						url: '/daemon/server/{{ server.hash }}/kill',
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
@@ -414,23 +396,16 @@
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
-					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/off',
+						url: '/daemon/server/{{ server.hash }}/stop',
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-						$("#server_stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
 						can_run = true;
 						return false;
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_stop").removeClass('disabled').html('Stop');
 							can_run = true;
 					});
 				}
@@ -439,23 +414,25 @@
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
-					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/restart',
+						url: '/daemon/server/{{ server.hash }}/stop',
 						timeout: 5000
 					}).done(function(data) {
-						$("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
-						$("#server_restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
-						can_run = true;
-						return false;
+                                            $.ajax({
+						type: "GET",
+						url: '/daemon/server/{{ server.hash }}/start',
+						timeout: 5000
+                                            }).done(function(data) {
+                                                $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+                                                    can_run = true;
+                                                    return false;
+                                            }).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							can_run = true;
+                                            });						
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_restart").removeClass('disabled').html('Restart');
 							can_run = true;
 					});
 				}
@@ -467,10 +444,9 @@
 			function start_server() {
 				if(can_run === true){
 					can_run = false;
-					$("#server_start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
-						type: "POST",
-						url: "/node/ajax/console/power",
+						type: "GET",
+						url: '/daemon/server/{{ server.hash }}/start',
 						timeout: 5000
 					}).done(function(data) {
 						if(data == "ok"){
@@ -481,12 +457,8 @@
 							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
 							can_run = true;
 						}
-						$("#server_start").toggleClass('disabled');
-						$("#server_start").html('{{ l.render('string.start') }}');
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_start").removeClass('disabled');
-							$("#server_start").html('Start');
 							can_run = true;
 					});
 				}

@@ -102,12 +102,12 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
         $bearer = OAuthService::Get()->getPanelAccessToken();
         $header = array(
-            'Authorization' => 'Basic ' . $bearer
+            'Authorization' => 'Bearer ' . $bearer
         );
 
         $updatedUrl = sprintf('https://%s:%s/server/%s', $node->fqdn, $node->daemon_listen, $core->server->getData('hash'));
 
-        $unirest = Request::delete($updatedUrl);
+        $unirest = Request::delete($updatedUrl, $header);
 
         if ($unirest->code == 204 || $unirest->code == 200) {
             ORM::get_db()->commit();
@@ -490,9 +490,9 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     $oauth = ORM::forTable('oauth_clients')->create();
     $oauth->set(array(
         'client_id' => '.internal_' . $user->id . '_' . $server->id,
-        'client_secret' => openssl_random_pseudo_bytes(64),
+        'client_secret' => base64_encode(openssl_random_pseudo_bytes(64)),
         'user_id' => $user->id,
-        'server_id' => $server->id
+        'server_id' => $server->id()
     ));
     $oauth->save();
 

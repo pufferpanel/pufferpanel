@@ -25,7 +25,7 @@ use \ORM,
 
 $klein->respond('/daemon/[**:path]', function($request, $response, $service) use ($core) {
 
-    $server = $request->headers()['X-Access-Server'];
+    $server = $request->cookies()['pp_server_hash'];
     $auth = $request->cookies()['pp_auth_token'];
 
     if ($server === false || $auth === false) {
@@ -33,29 +33,30 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
         return;
     }
 
-    $serverObj = ORM::forTable('servers')->where('hash', $server)->findOne();
-    $userObj = ORM::forTable('users')->where('session_id', $auth->findOne());
+    $serverObj = ORM::forTable('servers')->selectMany(array('id', 'node'))->where('hash', $server)->findOne();
+    $userObj = ORM::forTable('users')->where('session_id', $auth)->findOne();
 
     if ($serverObj === false || $userObj === false) {
         $response->code(401)->send();
         return;
     }
-
-    $nodeObj = ORM::forTable('nodes')->where('id', $serverObj->node_id)->findFirst();
+        
+    $nodeObj = ORM::forTable('nodes')->where('id', $serverObj->node)->findOne();
 
     $pdo = ORM::get_db();
     $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-            . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_od "
+            . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
             . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
     $query->execute(array($userObj->id, $serverObj->id));
     $data = $query->fetch(\PDO::FETCH_ASSOC);
     $bearer = null;
-    if (count($data) == 0) {
+    if ($data === false || count($data) == 0) {
         $clientInfo = $pdo->prepare("SELECT client_id, client_secret FROM oauth_clients "
-                . "WHERE user_id = ?");
-        $clientInfo->execute(array($userObj->id));
-        $bearerArr = OAuth2Service::Get()->handleTokenCredentials($clientInfo['client_id'], $clientInfo['client_secret']);
-        if ($bearerArr['error']) {
+                . "WHERE user_id = ? AND server_id = ?");
+        $clientInfo->execute(array($userObj->id, $serverObj->id));
+        $info = $clientInfo->fetch(\PDO::FETCH_ASSOC);
+        $bearerArr = OAuthService::Get()->handleTokenCredentials($info['client_id'], $info['client_secret']);
+        if (array_key_exists('error', $bearerArr)) {
             $response->code(401)->send();
             return;
         }
@@ -65,11 +66,10 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
     }
 
     $header = array(
-        'Authorization' => 'Basic ' . $bearer
+        'Authorization' => 'Bearer ' . $bearer
     );
 
-    $updatedUrl = sprintf("http://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
-
+    $updatedUrl = sprintf("https://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
     $unireq = null;
 
     switch ($request->method()) {
@@ -91,5 +91,5 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
                 break;
             }
     }
-    $response->code($unirest->code())->body($unirest->body())->send();
+    $response->code($unireq->code)->body($unireq->body)->send();
 });
