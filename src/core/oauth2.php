@@ -25,11 +25,6 @@ use \ORM as ORM;
 class OAuthService {
 
     private static $oauthServer;
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = ORM::get_db();
-    }
 
     /**
      * @return OAuth2Server
@@ -49,29 +44,18 @@ class OAuthService {
      * @return String Json-reply
      */
     public function handleTokenCredentials($clientId, $clientSecret) {
-        $query = $this->pdo->prepare("SELECT id, client_secret, scopes FROM oauth_clients WHERE client_id = ?");
-        $query->execute(array($clientId));
-        $keys = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $pdo = ORM::get_db();
+        $query = $pdo->prepare("SELECT id, client_secret, scopes FROM oauth_clients WHERE client_id = ? AND client_secret = ?");
+        $query->execute(array($clientId, $clientSecret));
+        $keys = $query->fetch(\PDO::FETCH_ASSOC);
         if ($keys === false || count($keys) == 0) {
             return array("error" => $clientId);
         }
-
-        $matchingKey = -1;
-        foreach ($keys as $key => $value) {
-            if (strcasecmp($value['client_secret'], $clientSecret) == 0) {
-                $matchingKey = $key;
-            }
-        }
-
-        if ($matchingKey == -1) {
-            return $matchingKey;
-        }
-        $query->closeCursor();
         $accessToken = base64_encode(openssl_random_pseudo_bytes(16));
-        $scopes = $keys[$matchingKey]['scopes'];
-        $dbId = $keys[$matchingKey]['id'];
+        $scopes = $keys['scopes'];
+        $dbId = $keys['id'];
         $expire = time() + 3600;
-        $this->pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
+        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
             $accessToken,
             $dbId,
             date("Y-m-d H:i:s", $expire),
@@ -90,10 +74,11 @@ class OAuthService {
      * @return String Json-reply
      */
     public function handleInfoRequest($token) {
-        $pdo = $this->pdo;
-        $stmt = $pdo->prepare("SELECT id, user_id, server_id, oat.scopes, expiretime, oc.client_id "
+        $pdo = ORM::get_db();
+        $stmt = $pdo->prepare("SELECT user_id, IFNULL(hash, '*') AS server_id, oat.scopes, expiretime, oc.client_id "
                 . "FROM oauth_clients AS oc "
                 . "INNER JOIN oauth_access_tokens AS oat ON oat.client_id = oc.id "
+                . "LEFT JOIN servers AS s ON s.id = oc.server_id "
                 . "WHERE access_token = ? AND expiretime > NOW()");
         $stmt->execute(array($token));
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -115,24 +100,27 @@ class OAuthService {
     public function getPanelAccessToken() {
         $clientId = 'pufferpanel';
         $clientSecret = $this->getOrGenPanelSecret();
-        $pdo = $this->pdo;
+        $pdo = ORM::get_db();
         $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
                 . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
                 . "WHERE user_id = 0 AND server_id = 0 AND expiretime > NOW()");
         $query->execute();
         $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if (count($data) == 0) {
-            return $this->handleTokenCredentials($clientId, $clientSecret)['access_token'];
+        if ($data === false || count($data) == 0) {
+            \Tracy\Debugger::log("Creating new pair with " . $clientId . " -> " . $clientSecret);
+            $newToken = $this->handleTokenCredentials($clientId, $clientSecret);
+            \Tracy\Debugger::log(json_encode($newToken));
+            return $newToken['access_token'];
         }
         return $data['access_token'];
     }
 
     private function getOrGenPanelSecret() {
-        $pdo = $this->pdo;
+        $pdo = ORM::get_db();
         $query = $pdo->prepare("SELECT client_secret FROM oauth_clients WHERE client_id = ?");
         $query->execute(array('pufferpanel'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if (count($data) === 0) {
+        if ($data === false || count($data) === 0) {
             $secret = base64_encode(openssl_random_pseudo_bytes(16));
             $pdo->prepare('INSERT INTO oauth_clients VALUES (:clientId, :clientSecret, 0, 0, :scopes, :name, :desc')->execute(array(
                 ':clientId' => 'pufferpanel',

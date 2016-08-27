@@ -83,6 +83,7 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
 $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($request, $response, $service) use ($core) {
 
     // Start Transaction so if the daemon errors we can rollback changes
+    $bearer = OAuthService::Get()->getPanelAccessToken();
     ORM::get_db()->beginTransaction();
 
     $node = ORM::forTable('nodes')->findOne($core->server->getData('node'));
@@ -100,7 +101,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
     try {
 
-        $bearer = OAuthService::Get()->getPanelAccessToken();
         $header = array(
             'Authorization' => 'Bearer ' . $bearer
         );
@@ -381,6 +381,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
 
     setcookie('__temporary_pp_admin_newserver', base64_encode(json_encode($_POST)), time() + 60);
+    $bearer = OAuthService::Get()->getPanelAccessToken();
     ORM::get_db()->beginTransaction();
 
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
@@ -506,8 +507,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     );
 
     try {
-
-        $bearer = OAuthService::Get()->getPanelAccessToken();
+        
         $header = array(
             'Authorization' => 'Bearer ' . $bearer
         );
