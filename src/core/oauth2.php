@@ -122,12 +122,12 @@ class OAuthService {
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
             $secret = base64_encode(openssl_random_pseudo_bytes(16));
-            $pdo->prepare('INSERT INTO oauth_clients VALUES (:clientId, :clientSecret, 0, 0, :scopes, :name, :desc')->execute(array(
-                ':clientId' => 'pufferpanel',
-                ':clientSecret' => $secret,
-                ':scopes' => 'pufferadmin',
-                ':name' => 'pufferpanel',
-                ':desc' => 'Pufferpanel auth'
+            $pdo->prepare('INSERT INTO oauth_clients VALUES (?, ?, 0, 0, ?, ?, ?')->execute(array(
+                'pufferpanel',
+                $secret,
+                'pufferadmin',
+                'pufferpanel',
+                'Pufferpanel auth'
             ));
             return getPanelToken();
         }
