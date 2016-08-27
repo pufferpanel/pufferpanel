@@ -495,7 +495,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         'user_id' => $user->id,
         'server_id' => $server->id(),
         'name' => 'internal_use',
-        'desc' => 'internal_use'
+        'description' => 'internal_use'
     ));
     $oauth->save();
 
