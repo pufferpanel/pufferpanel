@@ -122,7 +122,7 @@ class OAuthService {
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
             $secret = base64_encode(openssl_random_pseudo_bytes(16));
-            $pdo->prepare('INSERT INTO oauth_clients VALUES (?, ?, 0, 0, ?, ?, ?')->execute(array(
+            $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, 0, 0, ?, ?, ?)')->execute(array(
                 'pufferpanel',
                 $secret,
                 'pufferadmin',
