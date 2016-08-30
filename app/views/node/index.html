@@ -4,6 +4,8 @@
 	{{ parent() }}
 	<script src="/assets/javascript/chartjs/chart.core.js"></script>
 	<script src="/assets/javascript/chartjs/chart.bar.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="/assets/javascript/js-cookie.js"></script>
 {% endblock %}
 
 {% block title %}Manage your Server{% endblock %}
@@ -95,6 +97,7 @@
 						<button class="btn btn-success btn-sm start" id="server_start">{{ l.render('string.start') }}</button>
 						<button class="btn btn-primary btn-sm restart" id="server_restart">{{ l.render('string.restart') }}</button>
 						<button class="btn btn-danger btn-sm stop" id="server_stop">{{ l.render('string.stop') }}</button>
+                                                <button class="btn btn-danger btn-sm install" id="server_install">{{ l.render('string.install') }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
 						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
@@ -241,43 +244,17 @@
 <script type="text/javascript">
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		socket.on('stats', function (data) {
-			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
-			memoryChart.removeData();
-			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
-			cpuChart.removeData();
-		});
-		socket.on('query', function(data){
-			if($("#players_notice").is(":visible")){
-				$("#players_notice").hide();
-				$("#toggle_players").show();
-			}
-			if(data['data'].players != undefined && data['data'].players.length !== 0){
-				$("#toggle_players").html("");
-				$.each(data['data'].players, function(id, d) {
-					$("#toggle_players").append("<code>" + d.name + "</code>");
-				});
-			}else{
-				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-			}
-		});
-		socket.on('console', function (data) {
-			var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
+                socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+		socket.onmessage = function (event) {
+                    data = event.data;
+                    console.log(data);
+                    var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
 			if (total.length > 750) {
 				total = total.slice(total.length - 750);
 			}
 			$("#live_console").val(total.join("\n"));
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('initial_status', function(data) {
-			updateServerPowerControls(data.status);
-			updatePlayerListVisibility(data.status);
-		});
-		socket.on('status', function(data) {
-			updateServerPowerControls(data.status);
-			updatePlayerListVisibility(data.status);
-		});
+		};
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
@@ -402,6 +379,24 @@
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+						can_run = true;
+						return false;
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							can_run = true;
+					});
+				}
+			});
+                        $("#server_install").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$.ajax({
+						type: "POST",
+						url: '/daemon/server/{{ server.hash }}/install',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
 						can_run = true;
 						return false;
 					}).fail(function(jqXHR, textStatus, errorThrown) {

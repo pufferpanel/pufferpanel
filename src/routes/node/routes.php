@@ -17,7 +17,11 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+
+$klein->respond('GET', '/node/[*]', function($request, $response, $service) use ($core) {
+    \Tracy\Debugger::log("asdfasdf");
+    $response->cookie('accessToken', OAuthService::Get()->getAccessToken($core->user->getData('id'), $core->server->getData('id')));
+});
 
 $klein->respond('GET', '/node/index', function($request, $response, $service) use ($core) {
 

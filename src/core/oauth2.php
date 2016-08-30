@@ -27,7 +27,7 @@ class OAuthService {
     private static $oauthServer;
 
     /**
-     * @return OAuth2Server
+     * @return OAuthService
      */
     public static function Get() {
         if (is_null(self::$oauthServer)) {
@@ -94,25 +94,30 @@ class OAuthService {
         );
     }
 
+    public function getAccessToken($userid, $serverid) {
+        $pdo = ORM::get_db();
+        $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
+                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
+                . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
+        $query->execute(array($userid, $serverid));
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        if ($data === false || count($data) == 0) {
+            $newquery = $pdo->prepare("SELECT client_id, client_secret FROM oauth_clients "
+                    . "WHERE user_id = ? AND server_id = ?");
+            $newquery->execute(array($userid, $serverid));
+            $result = $newquery->fetch(\PDO::FETCH_ASSOC);
+            $newToken = $this->handleTokenCredentials($result['client_id'], $result['client_secret']);
+            return $newToken['access_token'];
+        }
+        return $data['access_token'];
+    }
+
     /**
      * @return string Token
      */
     public function getPanelAccessToken() {
-        $clientId = 'pufferpanel';
-        $clientSecret = $this->getOrGenPanelSecret();
-        $pdo = ORM::get_db();
-        $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
-                . "WHERE user_id = 0 AND server_id = 0 AND expiretime > NOW()");
-        $query->execute();
-        $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if ($data === false || count($data) == 0) {
-            \Tracy\Debugger::log("Creating new pair with " . $clientId . " -> " . $clientSecret);
-            $newToken = $this->handleTokenCredentials($clientId, $clientSecret);
-            \Tracy\Debugger::log(json_encode($newToken));
-            return $newToken['access_token'];
-        }
-        return $data['access_token'];
+        $this->getOrGenPanelSecret();
+        return $this->getAccessToken(0, 0);
     }
 
     private function getOrGenPanelSecret() {
