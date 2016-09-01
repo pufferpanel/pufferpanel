@@ -6,6 +6,8 @@
 [Documentation](http://www.pufferpanel.com/docs) |
 [Translations](https://www.transifex.com/pufferpanel/pufferpanel/)
 
+![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")
+
 #### PufferPanel is currently undergoing many changes. Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
 
 ## What is PufferPanel?
