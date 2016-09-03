@@ -51,7 +51,7 @@ class OAuthService {
         if ($keys === false || count($keys) == 0) {
             return array("error" => $clientId);
         }
-        $accessToken = base64_encode(openssl_random_pseudo_bytes(16));
+        $accessToken = self::generateSecret();
         $scopes = $keys['scopes'];
         $dbId = $keys['id'];
         $expire = time() + 3600;
@@ -126,7 +126,7 @@ class OAuthService {
         $query->execute(array('pufferpanel'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
-            $secret = base64_encode(openssl_random_pseudo_bytes(16));
+            $secret = self::generateSecret();
             $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, 0, 0, ?, ?, ?)')->execute(array(
                 'pufferpanel',
                 $secret,
@@ -137,6 +137,14 @@ class OAuthService {
             return $this->getPanelToken();
         }
         return $data['client_secret'];
+    }
+    
+    /**
+     * 
+     * @return String
+     */
+    public static function generateSecret() {
+        return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
 }

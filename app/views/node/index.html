@@ -73,7 +73,7 @@
 		<div class="tab-pane" id="console">
 			<div class="row">
 				<div class="col-md-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
+					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
 				</div>
 				<div class="col-md-6">
 					<hr />
@@ -445,7 +445,6 @@
 						timeout: 5000
 					}).done(function(data) {
 						if(data == "ok"){
-							$("#live_console").val("Server is starting...\n");
 							$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
 							can_run = true;
 						}else{
