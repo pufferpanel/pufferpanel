@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-red=$(tput setf 4)
-green=$(tput setf 2)
-yellow=$(tput setf 6)
-blue=$(tput setf 1)
-normal=$(tput sgr0)
-bold=$(tput bold)
+red="\e[31m"
+green="\e[32m"
+yellow="\e[33m"
+blue="\e[34m"
+normal="\e[39m"
+bold="\e[1m"
 
 mysqlHost="localhost"
 mysqlPort="3306"
@@ -34,7 +34,7 @@ function configureMysql() {
 
     type mysql 1>/dev/null 2>&1
     if [ $? -ne 0 ]; then
-        echo "MySQL is not found within your PATH, cannot proceed"
+        echo -e ${red}"MySQL is not found within your PATH, cannot proceed"${normal}
         exit 1;
     fi
 
@@ -68,7 +68,7 @@ function configureMysql() {
         if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
             notValid=false
         else
-            print "Database connection could not be established"
+            echo -e ${red}"Database connection could not be established"${normal}
         fi
     done
 
@@ -166,7 +166,7 @@ function configureNginx() {
     if [ -d "/etc/nginx" ]; then
         echo "Installing nginx config (if possible)"
     else
-        echo "Nginx folder does not exist, will not install config"
+        echo -e ${red}"Nginx folder does not exist, will not install config"${normal}
         return
     fi
     if [ "${siteUrl}" == "" ]; then
@@ -180,7 +180,7 @@ function configureNginx() {
 
     
     if [ "${phpSocket}" = "" ]; then
-        echo "Could not determine where PHP config is, cannot install config"
+        echo -e ${red}"Could not determine where PHP config is, cannot install config"${normal}
         return
     fi
 
@@ -240,23 +240,23 @@ function configureNginx() {
 
     if [ -d "/etc/nginx/sites-enabled" ]; then
         if [ -f "/etc/nginx/sites-enabled/pufferpanel.conf" ]; then
-            echo "An existing configuration exists in /etc/nginx/sites-enabled"
+            echo -e ${red}"An existing configuration exists in /etc/nginx/sites-enabled"${normal}
             return
         fi
         if [ -f "/etc/nginx/sites-available/pufferpanel.conf" ]; then
-            echo "An existing configuration exists in /etc/nginx/sites-available"
+            echo -e ${red}"An existing configuration exists in /etc/nginx/sites-available"${normal}
             return
         fi
         echo "${conf}" > /etc/nginx/sites-available/pufferpanel.conf
         ln -s /etc/nginx/sites-available/pufferpanel.conf /etc/nginx/sites-enabled/pufferpanel.conf
     elif [ -d "/etc/nginx/conf.d/" ]; then
         if [ -f "/etc/nginx/conf.d/pufferpanel.conf" ]; then
-            echo "An existing configuration exists in /etc/nginx/conf.d"
+            echo -e ${red}"An existing configuration exists in /etc/nginx/conf.d"${normal}
             return
         fi
         echo "${conf}" > /etc/nginx/conf.d/pufferpanel.conf
     else
-        echo "Could not determine where to install the config"
+        echo -e ${red}"Could not determine where to install the config"${normal}
         return
     fi
 
@@ -267,15 +267,15 @@ case $1 in
     install)
         type php 1>/dev/null 2>&1
         if [ $? -ne 0 ]; then
-            echo "PHP is not found within your PATH, cannot proceed"
+            echo -e ${red}"PHP is not found within your PATH, cannot proceed"${normal}
             exit 1;
         fi
 
         result=$(php -r 'exit (version_compare(PHP_VERSION, "5.5.0") < 0 ? "1" : "0");');
         if [ "$result" == "0" ]; then
-            echo "PHP 5.5.0+: [${green}Installed${normal}]"
+            echo -e "PHP 5.5.0+: [${green}Installed${normal}]"
         else
-            echo "PHP 5.5.0+: [${red}Not Installed${normal}]"
+            echo -e "PHP 5.5.0+: [${red}Not Installed${normal}]"
             canInstall=false
         fi
 
@@ -284,9 +284,9 @@ case $1 in
         for i in ${extensions[@]}; do
             phpcmd=$(php -r 'echo extension_loaded("'${i}'") ? 1 : 0;')
             if [ "$phpcmd" -eq "1" ]; then
-                echo "PHP-${i}: [${green}Installed${normal}]"
+                echo -e "PHP-${i}: [${green}Installed${normal}]"
             else
-                echo "PHP-${i}: [${red}Not Installed${normal}]"
+                echo -e "PHP-${i}: [${red}Not Installed${normal}]"
                 canInstall=0
             fi
         done
@@ -295,7 +295,7 @@ case $1 in
                 canInstall=1
                 echo "Forcing installer due to flag being present"
             else
-                echo "Dependencies are missing, cannot install"
+                echo -e ${red}"Dependencies are missing, cannot install"${normal}
                 exit 1
             fi
         fi
