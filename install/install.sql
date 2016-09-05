@@ -185,36 +185,32 @@ CREATE TABLE `subusers` (
   CONSTRAINT `FK_subusers_server` FOREIGN KEY (`server`) REFERENCES `servers` (`id`)
 ) ENGINE=InnoDB;
 
+
 DROP TABLE IF EXISTS `oauth_clients`;
 CREATE TABLE `oauth_clients` (
-	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`client_id` CHAR(16) NOT NULL,
-	`client_secret` CHAR(64) NOT NULL,
-	`user_id` INT(10) UNSIGNED NOT NULL,
-	`server_id` INT(10) UNSIGNED NOT NULL,
-	`scopes` VARCHAR(1000) NOT NULL DEFAULT '',
-	`name` VARCHAR(128) NOT NULL,
-	`description` VARCHAR(1024) NOT NULL DEFAULT '',
-	PRIMARY KEY (`id`),
-	INDEX `FK_oauth_clients_users` (`user_id`),
-	INDEX `FK_oauth_clients_servers` (`server_id`),
-	INDEX `client_id` (`client_id`),
-	CONSTRAINT `FK_oauth_clients_servers` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`),
-	CONSTRAINT `FK_oauth_clients_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB;
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` char(16) COLLATE utf8_unicode_ci NOT NULL,
+  `client_secret` char(64) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `server_id` int(10) unsigned NOT NULL,
+  `scopes` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `FK_oauth_clients_users` (`user_id`),
+  KEY `FK_oauth_clients_servers` (`server_id`),
+  KEY `client_id` (`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `oauth_access_tokens`;
 CREATE TABLE `oauth_access_tokens` (
-	`access_token` CHAR(24) NOT NULL,
-	`client_id` INT(10) UNSIGNED NOT NULL,
-	`expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	PRIMARY KEY (`access_token`),
-	UNIQUE INDEX `access_token` (`access_token`),
-	INDEX `FK_oauth_access_tokens_oauth_clients` (`client_id`),
-	CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`client_id`) REFERENCES `oauth_clients` (`id`)
-) ENGINE=InnoDB;
-
+  `access_token` char(128) COLLATE utf8_unicode_ci NOT NULL,
+  `client_id` int(10) unsigned NOT NULL,
+  `expiretime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `scopes` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`access_token`),
+  UNIQUE KEY `access_token` (`access_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 -- Enable foreign keys again
