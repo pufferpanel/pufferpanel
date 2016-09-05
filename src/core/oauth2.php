@@ -134,7 +134,7 @@ class OAuthService {
                 'pufferpanel',
                 'Pufferpanel auth'
             ));
-            return $this->getPanelToken();
+            return $this->getPanelAccessToken();
         }
         return $data['client_secret'];
     }
