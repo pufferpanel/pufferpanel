@@ -36,7 +36,7 @@ $klein->respond('/oauth2/token/request', function($req, $res) {
     $clientId = $req->param("client_id");
     $clientSecret = $req->param("client_secret");
 
-    if ($clientId === false || $clientSecrete === false) {
+    if ($clientId === false || $clientSecret === false) {
         $res->code(400);
         $res->json(array("error" => "invalid_request"));
         $res->send();

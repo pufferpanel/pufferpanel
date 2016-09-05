@@ -23,7 +23,7 @@ namespace PufferPanel\Core;
 use \ORM,
     \Unirest;
 
-$klein->respond('/daemon/[**:path]', function($request, $response, $service) use ($core) {
+$klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $klein) {
 
     $server = $request->cookies()['pp_server_hash'];
     $auth = $request->cookies()['pp_auth_token'];
@@ -40,7 +40,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
         $response->code(401)->send();
         return;
     }
-        
+
     $nodeObj = ORM::forTable('nodes')->where('id', $serverObj->node)->findOne();
 
     $pdo = ORM::get_db();
@@ -70,26 +70,39 @@ $klein->respond('/daemon/[**:path]', function($request, $response, $service) use
     );
 
     $updatedUrl = sprintf("https://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
-    $unireq = null;
 
-    switch ($request->method()) {
-        default:
-        case 'GET': {
-                $unireq = Unirest\Request::get($updatedUrl, $header);
-                break;
-            }
-        case 'POST': {
-                $unireq = Unirest\Request::post($updatedUrl, $header, $request->body());
-                break;
-            }
-        case 'DELETE': {
-                $unireq = Unirest\Request::delete($updatedUrl, $header);
-                break;
-            }
-        case 'PUT': {
-                $unireq = Unirest\Request::put($updatedUrl, $header, $request->body());
-                break;
-            }
+    try {
+        $unireq = null;
+
+        switch ($request->method()) {
+            default:
+            case 'GET': {
+                    \Tracy\Debugger::log("$unireq");
+                    $unireq = Unirest\Request::get($updatedUrl, $header);
+                    \Tracy\Debugger::log("ASDFASDF");
+                    break;
+                }
+            case 'POST': {
+                    $unireq = Unirest\Request::post($updatedUrl, $header, $request->body());
+                    break;
+                }
+            case 'DELETE': {
+                    $unireq = Unirest\Request::delete($updatedUrl, $header);
+                    break;
+                }
+            case 'PUT': {
+                    $unireq = Unirest\Request::put($updatedUrl, $header, $request->body());
+                    break;
+                }
+        }
+        
+        $result = $unireq->body;
+
+        $response->code($unireq->code)->json($result);
+    } catch (\Exception $ex) {
+        $response->code(500)->json(array(
+            'error' => $ex->getMessage()
+        ))->send();
     }
-    $response->code($unireq->code)->body($unireq->body)->send();
+    $klein->skipRemaining();
 });

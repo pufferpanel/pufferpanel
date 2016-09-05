@@ -247,7 +247,6 @@
                 socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
 		socket.onmessage = function (event) {
                     data = event.data;
-                    console.log(data);
                     var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
 			if (total.length > 750) {
 				total = total.slice(total.length - 750);
@@ -456,8 +455,30 @@
 							can_run = true;
 					});
 				}
-			}
+			}                        
+                        
 		{% endif %}
+                
+                function pingStats() {
+                            $.ajax({
+				type: "GET",
+				url: '/daemon/server/{{ server.hash }}/stats',
+				timeout: 1000
+                            }).done(function(data) {
+                                if (data.error) {                                    
+                                    memoryChart.addData(0, "");
+                                    cpuChart.addData(0, "");
+                                } else {
+                                    console.log(data.memory);
+                                    console.log(data.cpu);
+                                    memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
+                                    cpuChart.addData([parseInt(data.cpu * 100)], "");
+                                }
+                            }).fail(function() {                                
+                            });
+                }
+                        
+                setInterval(pingStats, 2000);
 	});
 </script>
 {% endblock %}

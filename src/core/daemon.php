@@ -42,20 +42,17 @@ class Daemon extends Server {
 		Server::__construct();
 
 		if(is_numeric($this->getData('id'))) {
-
-			/*
-			 * Load Information into Script
-			 */
-			$this->server = ORM::forTable('servers')->findOne($this->getData('id'));
-
-			/*
-			 * Load Node Information into Script
-			 */
-			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
+                    
+                        $this->reconstruct($this->getData('id'));
 
 		}
 
 	}
+        
+        public function reconstruct($serverId) {
+            $this->server = ORM::forTable('servers')->findOne($serverId);
+            $this->node = ORM::forTable('nodes')->findOne($this->server->node);
+        }
 
 	/**
 	 * Gets the status of any specified server given an IP address.
@@ -73,9 +70,10 @@ class Daemon extends Server {
 		try {
 
 			Unirest\Request::timeout(1);
-			$request = $this->generateCall(sprintf("server/%s/status", arguments[2]));
+			$request = $this->generateCall(sprintf("server/%s/status", $this->server->hash));
 
 		} catch(\Exception $e) {
+                        \Tracy\Debugger::log($e);
 			return false;
 		}
 
