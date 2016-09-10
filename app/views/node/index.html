@@ -322,15 +322,9 @@
 					$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 					$.ajax({
 						type: "POST",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/console',
+						url: '/daemon/server/{{ server.hash }}/console',
 						timeout: 5000,
-						data: {
-							command: ccmd
-						}
+						data: ccmd
 					}).done(function(data) {
 						$("#sending_command").removeClass('disabled');
 						$("#sending_command").html('&rarr;');
@@ -469,10 +463,8 @@
                                     memoryChart.addData(0, "");
                                     cpuChart.addData(0, "");
                                 } else {
-                                    console.log(data.memory);
-                                    console.log(data.cpu);
                                     memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
-                                    cpuChart.addData([parseInt(data.cpu * 100)], "");
+                                    cpuChart.addData([parseInt(data.cpu)], "");
                                 }
                             }).fail(function() {                                
                             });
