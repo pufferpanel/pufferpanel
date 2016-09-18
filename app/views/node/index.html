@@ -405,12 +405,12 @@
 					$.ajax({
 						type: "GET",
 						url: '/daemon/server/{{ server.hash }}/stop',
-						timeout: 5000
+                                                timeout: 0
 					}).done(function(data) {
                                             $.ajax({
 						type: "GET",
 						url: '/daemon/server/{{ server.hash }}/start',
-						timeout: 5000
+						timeout: 0
                                             }).done(function(data) {
                                                 $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
                                                     can_run = true;
@@ -437,13 +437,7 @@
 						url: '/daemon/server/{{ server.hash }}/start',
 						timeout: 5000
 					}).done(function(data) {
-						if(data == "ok"){
 							$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
-							can_run = true;
-						}else{
-							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
-							can_run = true;
-						}
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 							can_run = true;
