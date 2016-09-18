@@ -300,7 +300,7 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
             try {
                 $bearer = OAuthService::Get()->getPanelAccessToken();
                 $header = array(
-                    'Authorization' => 'Basic ' . $bearer
+                    'Authorization' => 'Bearer ' . $bearer
                 );
 
                 $unirest = Unirest\Request::put(sprintf('https://%s:%s/server/%s/console', array(
