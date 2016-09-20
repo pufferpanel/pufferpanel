@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
+red=$(tput setf 4)
+green=$(tput setf 2)
+yellow=$(tput setf 6)
+blue=$(tput setf 1)
 normal=$(tput sgr0)
 bold=$(tput bold)
 
