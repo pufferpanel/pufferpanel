@@ -68,6 +68,53 @@ class OAuthService {
             "scope" => $scopes
         );
     }
+    
+    public function handleResourceOwner($username, $password) {
+        $email = explode('|', $username)[0];
+        $serverName = explode('|', $username)[1];        
+        $pdo = ORM::get_db();
+        $userQuery = $pdo->prepare("SELECT id, password FROM users WHERE email = ?");        
+        $userQuery->execute(array($email));        
+        $user = $userQuery->fetch(\PDO::FETCH_ASSOC);
+        if ($user === false || count($user) == 0) {
+            return array("error" => $username);
+        }
+        
+        if (!password_verify($password, $user['password'])) {
+            return array("error" => $password);
+        }
+        
+        $serverQuery = $pdo->prepare("SELECT s.id FROM servers AS s LEFT JOIN subusers AS su ON su.server = s.id WHERE s.name = ? AND (s.owner_id = ? OR su.user = ?) LIMIT 1");
+        $serverQuery->execute(array($serverName, $user['id'], $user['id']));
+        $server = $serverQuery->fetch(\PDO::FETCH_ASSOC);
+        if ($server === false || count($server) == 0) {
+            return array("error" => $username);
+        }
+        
+        $query = $pdo->prepare("SELECT id FROM oauth_clients WHERE user_id = ? AND server_id = ?");
+        $query->execute(array($user['id'], $server['id']));
+        $keys = $query->fetch(\PDO::FETCH_ASSOC);
+        if ($keys === false || count($keys) == 0) {
+            return array("error" => $username);
+        }
+                
+        $accessToken = self::generateSecret();
+        $scopes = 'sftp';
+        $dbId = $keys['id'];
+        $expire = time() + 3600;
+        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
+            $accessToken,
+            $dbId,
+            date("Y-m-d H:i:s", $expire),
+            $scopes
+        ));
+        return array(
+            "access_token" => $accessToken,
+            "expires" => $expire,
+            "token_type" => "bearer",
+            "scope" => $scopes
+        );
+    }
 
     /**
      * @param String $token

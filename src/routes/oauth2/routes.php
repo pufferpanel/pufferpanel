@@ -26,32 +26,58 @@ $klein->respond('/oauth2/token/request', function($req, $res) {
 
     $grantType = $req->param("grant_type");
 
-    if ($grantType != "client_credentials") {
-        $res->code(400);
-        $res->json(array("error" => "unsupported_grant_type"));
-        $res->send();
-        return;
+    switch ($grantType) {
+        case 'client_credentials': {
+                $clientId = $req->param("client_id");
+                $clientSecret = $req->param("client_secret");
+
+                if ($clientId === false || $clientSecret === false) {
+                    $res->code(400);
+                    $res->json(array("error" => "invalid_request"));
+                    $res->send();
+                }
+
+                $server = OAuthService::Get();
+                $response = $server->handleTokenCredentials($clientId, $clientSecret);
+                if (array_key_exists("error", $response)) {
+                    $res->code(400);
+                } else {
+                    $res->code(200);
+                }
+
+                $res->json($response);
+                $res->send();
+                break;
+            }
+        case 'password': {
+                $username = $req->param('username');
+                $password = $req->param('password');
+                
+                if ($username === false || $password === false) {
+                    $res->code(400);
+                    $res->json(array("error" => "invalid_request"));
+                    $res->send();
+                }
+
+                $server = OAuthService::Get();
+                $response = $server->handleResourceOwner($username, $password);
+                if (array_key_exists("error", $response)) {
+                    $res->code(400);
+                } else {
+                    $res->code(200);
+                }
+
+                $res->json($response);
+                $res->send();
+                break;
+            }
+        default: {
+                $res->code(400);
+                $res->json(array("error" => "unsupported_grant_type"));
+                $res->send();
+                break;
+            }
     }
-
-    $clientId = $req->param("client_id");
-    $clientSecret = $req->param("client_secret");
-
-    if ($clientId === false || $clientSecret === false) {
-        $res->code(400);
-        $res->json(array("error" => "invalid_request"));
-        $res->send();
-    }
-
-    $server = OAuthService::Get();
-    $response = $server->handleTokenCredentials($clientId, $clientSecret);
-    if (array_key_exists("error", $response)) {
-        $res->code(400);
-    } else {
-        $res->code(200);
-    }
-
-    $res->json($response);
-    $res->send();
 });
 
 $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
