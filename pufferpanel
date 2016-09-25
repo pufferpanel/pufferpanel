@@ -161,6 +161,46 @@ function configureUser() {
         INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
 }
 
+function configureApache() {
+    if [ -d "/etc/apache2" ]; then
+        echo "Installing apache2 config (if possible)"
+    else
+        echo "Apache folder does not exist, will not install config"
+        return
+    fi
+    if [ "${siteUrl}" == "" ]; then
+        loadConfig
+        siteUrl=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+            SELECT setting_val FROM acp_settings WHERE setting_ref='master_url'" | head -n 3 | tail -n 1 | sed 's/^http\(\|s\):\/\///g')
+        if [[ "${siteUrl}" == */ ]]; then
+            siteUrl="${siteUrl%?}"
+        fi
+    fi
+
+    conf="<VirtualHost *:80>
+        ServerName ${siteUrl}
+        DocumentRoot ${PWD}/public
+        </VirtualHost>"
+
+    if [ -d "/etc/apache2/sites-enabled" ]; then
+        if [ -f "/etc/apache2/sites-enabled/pufferpanel.conf" ]; then
+            echo "An existing configuration exists in /etc/apache2/sites-enabled. Enable it with `a2ensite pufferpanel`"
+            return
+        fi
+        if [ -f "/etc/apache2/sites-available/pufferpanel.conf" ]; then
+            echo "An existing configuration exists in /etc/apache2/sites-available. Enable it with `a2ensite pufferpanel`"
+            return
+        fi
+        echo "${conf}" > /etc/apache2/sites-available/pufferpanel.conf
+        ln -s /etc/apache2/sites-available/pufferpanel.conf /etc/apache2/sites-enabled/pufferpanel.conf
+    else
+        echo "Could not determine where to install the config"
+        return
+    fi
+
+    service apache2 restart
+}
+
 function configureNginx() {
 
     if [ -d "/etc/nginx" ]; then
@@ -309,6 +349,11 @@ case $1 in
         type nginx 1>/dev/null 2>&1
         if [ $? -eq 0 ]; then
             configureNginx
+        else
+        type apache2 1>/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            configureApache
+        fi
         fi
 
         printSeparator
