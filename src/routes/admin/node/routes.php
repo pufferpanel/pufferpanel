@@ -96,7 +96,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         'ip' => $request->param('fqdn'),
         'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
         'daemon_listen' => $request->param('daemon_listen'),
-        'daemon_sftp' => $request->param('daemon_sftp'),
+        'daemon_sftp' => '5657',
         'daemon_base_dir' => '/srv/pufferd',
         'ips' => '{}',
         'ports' => '{}',

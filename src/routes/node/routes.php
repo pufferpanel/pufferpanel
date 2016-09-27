@@ -30,7 +30,8 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
 			'node' => $core->server->nodeData('node')
 		)),
 		'node' => $core->server->nodeData(),
-		'flash' => $service->flashes()
+		'flash' => $service->flashes(),
+                'user' => $core->user->getData()
 	)))->send();
 
 });

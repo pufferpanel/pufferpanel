@@ -18,7 +18,7 @@
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
 		<li><a href="#console" data-toggle="tab">Control Server</a></li>
-		<li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
+		<!--<li><a href="#remote" data-toggle="tab">Remote Requests</a></li>-->
 	</ul><br />
 	<div class="tab-content">
 		<div class="tab-pane active" id="stats">
@@ -64,6 +64,18 @@
 							<tr>
 								<td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
 								<td>{{ server.max_ram }} MB</td>
+							</tr>
+                                                        <tr>
+								<td><strong>SFTP Connection</strong></td>
+								<td>{{ node.fqdn }}:{{ node.daemon_sftp }}</td>
+							</tr>
+                                                        <tr>
+								<td><strong>SFTP username</strong></td>
+								<td>{{ user.email }}|{{ server.name }}</td>
+							</tr>
+                                                        <tr>
+								<td><strong>SFTP password</strong></td>
+								<td>Same as your account password</td>
 							</tr>
 						</tbody>
 					</table>

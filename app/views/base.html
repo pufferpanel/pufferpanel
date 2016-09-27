@@ -68,9 +68,9 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ l.render('sidebar.server.acc') }} <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="/node/index">{{ l.render('sidebar.overview') }}</a></li>
-								{% if permission.has('files.view') %}<li><a href="/node/files">{{ l.render('sidebar.files') }}</a></li>{% endif %}
+								<!--{% if permission.has('files.view') %}<li><a href="/node/files">{{ l.render('sidebar.files') }}</a></li>{% endif %}-->
 								{% if permission.has('users.view') %}<li><a href="/node/users">{{ l.render('sidebar.manage_subusers') }}</a></li>{% endif %}
-								{% if permission.has('manage.view') %}<li><a href="/node/settings">{{ l.render('sidebar.manage') }}</a></li>{% endif %}
+								<!--{% if permission.has('manage.view') %}<li><a href="/node/settings">{{ l.render('sidebar.manage') }}</a></li>{% endif %}-->
 							</ul>
 						</li>
 						{% endif %}
@@ -119,9 +119,9 @@
 						<div class="list-group">
 							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ l.render('sidebar.server.acc') }}</strong></a>
 							<a href="/node/index" class="list-group-item">{{ l.render('sidebar.overview') }}</a>
-							{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ l.render('sidebar.files') }}</a>{% endif %}
+							<!--{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ l.render('sidebar.files') }}</a>{% endif %}-->
 							{% if permission.has('users.view') and settings.allow_subusers == 1 %}<a href="/node/users" class="list-group-item">{{ l.render('sidebar.manage_subusers') }}</a>{% endif %}
-							{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ l.render('sidebar.manage') }}</a>{% endif %}
+							<!--{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ l.render('sidebar.manage') }}</a>{% endif %}-->
 						</div>
 					{% endif %}
 				{% endblock %}
