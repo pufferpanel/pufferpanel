@@ -166,6 +166,13 @@ class OAuthService {
         $this->getOrGenPanelSecret();
         return $this->getAccessToken(0, 0);
     }
+    
+    public function getFor($userId, $serverId) {
+        $pdo = ORM::get_db();
+        $query = $pdo->prepare("SELECT id, client_id, name, description FROM oauth_clients WHERE user_id = ? AND server_id = ? AND client_id NOT LIKE '\.internal%'");
+        $query->execute(array($userId, $serverId));
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
     private function getOrGenPanelSecret() {
         $pdo = ORM::get_db();

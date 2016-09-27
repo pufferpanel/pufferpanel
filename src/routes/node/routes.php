@@ -31,7 +31,8 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
 		)),
 		'node' => $core->server->nodeData(),
 		'flash' => $service->flashes(),
-                'user' => $core->user->getData()
+                'user' => $core->user->getData(),
+                'oauth' => OAuthService::Get()->getFor($core->user->getData('id'), $core->server->getData('id'))
 	)))->send();
 
 });
