@@ -173,6 +173,37 @@ class OAuthService {
         $query->execute(array($userId, $serverId));
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    public function hasAccess($id, $userId) {
+        return 1 <= ORM::forTable('oauth_clients')
+                ->where('user_id', $userId)
+                ->where('id', $id)
+                ->count();
+    }
+    
+    public function revoke($id) {
+        $pdo = ORM::get_db();
+        $pdo->prepare("DELETE FROM oauth_access_tokens WHERE client_id = ?")->execute(array($id));
+        $pdo->prepare("DELETE FROM oauth_clients WHERE id = ?")->execute(array($id));
+    }
+    
+    /**
+     * 
+     * @return String secret key
+     */
+    public function create($pdo, $userId, $serverId, $id, $scopes = '', $name = '', $description = '') {
+        $secret = self::generateSecret();
+        $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)')->execute(array(
+                $id,
+                $secret,
+                $userId,
+                $serverId,
+                $scopes,
+                $name,
+                $description
+            ));
+        return $secret;
+    }
 
     private function getOrGenPanelSecret() {
         $pdo = ORM::get_db();
@@ -180,14 +211,7 @@ class OAuthService {
         $query->execute(array('pufferpanel'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
-            $secret = self::generateSecret();
-            $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, 0, 0, ?, ?, ?)')->execute(array(
-                'pufferpanel',
-                $secret,
-                'pufferadmin',
-                'pufferpanel',
-                'Pufferpanel auth'
-            ));
+            $this->create($pdo, 0, 0, 'pufferpanel', 'pufferadmin', 'pufferpanel', 'PufferPanel Internal Auth');
             return $this->getPanelAccessToken();
         }
         return $data['client_secret'];
@@ -200,5 +224,4 @@ class OAuthService {
     public static function generateSecret() {
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
-
 }

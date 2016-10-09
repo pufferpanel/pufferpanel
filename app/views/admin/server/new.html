@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="/assets/css/selectize.contacts.css" />
 	<script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/js/standalone/selectize.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/Cookies.js/1.2.1/cookies.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
 {% endblock %}
 
 {% block title %}Add a New Server{% endblock %}
@@ -85,23 +86,22 @@
 					<div class="form-group col-md-6 nopad">
 						<label for="alloc_mem" class="control-label">Server Plugin</label>
 						<div>
-							<select name="plugin" id="getPlugin" class="form-control">
-								{% for plugin in plugins %}
-									<option value="{{ plugin.slug }}">{{ plugin.name }}</option>
-								{% endfor %}
-							</select>
+                                                    <select name="plugin" id="getPlugin" class="form-control" data-bind="foreach: pluginData.plugins">
+                                                           <option data-bind="value: id, text: id"></option>
+                                                    </select>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-3 nopad">
-						<label for="alloc_mem" class="control-label">Memory (in MB)</label>
-						<div class="input-group">
-							<input type="text" autocomplete="off" name="alloc_mem" class="form-control" />
-							<span class="input-group-addon">MB</span>
-						</div>
-					</div>
-				</div>
+                                <div data-bind="foreach: pluginData.activeDisplay()">
+                                    <div class="row" >
+                                            <div class="form-group col-md-6 nopad">                                                    
+                                                    <label for="" class="control-label" data-bind="text: display, attr: {for: key }"></label>
+                                                    <div class="input-group">
+                                                            <input type="text" autocomplete="off" class="form-control" data-bind="value: value, attr: {name: key, id: key}"/>
+                                                    </div>
+                                            </div>
+                                    </div>
+                                </div>
 			</div>
 			<div class="well">
 				<input type="submit" value="Create Server" class="btn btn-primary btn-sm" />
@@ -113,28 +113,26 @@
 
 {% block javascript %}
 <script type="text/javascript">
+        var pluginData = {
+            plugins: ko.observableArray(),
+            variables: ko.observableArray(),
+            active: ko.observable()            
+        };
+        
+        pluginData.activeDisplay = ko.pureComputed(function() {
+                if (this.active() === undefined) {
+                    return {};
+                }
+                variables = this.variables();
+                for (var variable in variables) {
+                    if (variables[variable].key === this.active()) {
+                        return variables[variable].variables;
+                    }
+                }
+                return {};
+        }, pluginData);
+        
 	$("#sidebar_links").find("a[href='/admin/server/new']").addClass('active');
-	function updatePortList(){
-		$("#noPorts").hide();
-		$("#server_ip").change(function() {
-			var ip = $(this).val().replace(/\./g, "\\.");
-			$("[id^=node_]").hide().prop("disabled", true);;
-			$("#node_"+ip).show().prop("disabled", false);
-		});
-	}
-	function updateList(){
-		var activeNode = $('#getNode').val();
-		$.ajax({
-			type: "POST",
-			url: "new/ip-list",
-			data: {'node' : activeNode},
-			success: function(data) {
-				$('#updateList').html(data);
-				updatePortList();
-				return false;
-			}
-		});
-	}
 	function updateNodeList(){
 		var activeLocation = $('#getLocation').val();
 		$.ajax({
@@ -143,24 +141,49 @@
 			data: {'location' : activeLocation},
 			success: function(data) {
 				$('#updateNodeList').html(data);
-				updateList();
+                                updatePlugins();
 				return false;
 			}
 		});
 	}
-	function updatePluginVariables(self) {
+	function updatePlugins() {
 		$.ajax({
-			type: "POST",
-			url: "new/plugin-variables",
+			type: "GET",
+			url: "new/plugins",
 			data: {
-				'slug' : $("#getPlugin").val()
+                                'node': $('#getNode').val()
 			},
 			datatype: 'json'
 		}).done(function(data) {
-			$('input[name="daemon_startup"]').val(data.startup);
-			$("#pluginVariableListing").html(data.html);
+                    pluginData.plugins.removeAll();
+                    pluginData.variables.removeAll();
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            pluginData.plugins.push({
+                                id: key,
+                                name: key
+                            });
+                            temp = data[key];
+                            var vars = [];
+                            for(var k in temp) {
+                                 if (temp.hasOwnProperty(k)) {
+                                     result = temp[k];
+                                     result['key'] = k;
+                                     vars.push(result);
+                                 }
+                            }
+                            pluginData.variables.push({
+                                key: key,
+                                variables: vars
+                            });                            
+                        }
+                    }
+                    pluginData.active(pluginData.plugins()[0].id);
 		});
 	}
+        
+        ko.applyBindings(pluginData);
+        
 	$(window).load(function(){
 		$('#selectize_email').selectize({
 			persist: false,
@@ -207,17 +230,17 @@
 			}
 		});
 		$(document).on('change', '#getNode', function() {
-			updateList();
+			updatePlugins();
 		});
 		$(document).on('change', '#getPlugin', function() {
-			updatePluginVariables();
+                        //update KO to new plugin selected
+                        pluginData.active($("#getPlugin").val());
 		});
 		$(document).on('change', '#getLocation', function() {
 			$("#noNodes").hide();
 			updateNodeList();
 		});
 		updateNodeList();
-		updatePluginVariables();
 		if(Cookies.get('__temporary_pp_admin_newserver')){
 			var obj = $.parseJSON(atob(Cookies.get('__temporary_pp_admin_newserver')));
 			$.each(obj, function(key, value) {
@@ -225,8 +248,7 @@
 			});
 			Cookies.expire('__temporary_pp_admin_newserver', {'path': '/admin/server'});
 			updateNodeList();
-			updatePluginVariables();
 		}
-	});
+	});        
 </script>
 {% endblock %}

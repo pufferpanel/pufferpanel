@@ -1,21 +1,23 @@
 <?php
+
 /*
-	PufferPanel - A Game Server Management Panel
-	Copyright (c) 2015 Dane Everitt
+  PufferPanel - A Game Server Management Panel
+  Copyright (c) 2015 Dane Everitt
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see http://www.gnu.org/licenses/.
-*/
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
 namespace PufferPanel\Core;
 
 $klein->respond('GET', '/node/[*]', function($request, $response, $service) use ($core) {
@@ -24,17 +26,39 @@ $klein->respond('GET', '/node/[*]', function($request, $response, $service) use 
 
 $klein->respond('GET', '/node/index', function($request, $response, $service) use ($core) {
 
-	$response->body($core->twig->render('node/index.html', array(
-		'server' => array_merge($core->server->getData(), array(
-			'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
-			'node' => $core->server->nodeData('node')
-		)),
-		'node' => $core->server->nodeData(),
-		'flash' => $service->flashes(),
+    $response->body($core->twig->render('node/index.html', array(
+                'server' => array_merge($core->server->getData(), array(
+                    'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
+                    'node' => $core->server->nodeData('node')
+                )),
+                'node' => $core->server->nodeData(),
+                'flash' => $service->flashes(),
                 'user' => $core->user->getData(),
                 'oauth' => OAuthService::Get()->getFor($core->user->getData('id'), $core->server->getData('id'))
-	)))->send();
+    )))->send();
+});
 
+$klein->respond('DELETE', '/node/oauth', function($request, $response, $service) use ($core) {
+    $service->validateParam('id')->isInt();
+    $id = $request->param('id');
+    if(OAuthService::Get()->hasAccess($id, $core->user->getData('id'))) {
+        OAuthService::Get()->revoke($id);
+        $response->code(200);
+        return;
+    }
+    $response->code(401);    
+});
+
+$klein->respond('POST', '/node/oauth', function($request, $response, $service) use ($core) {
+    $service->validateParam('clientId')->notNull();
+    $service->validateParam('clientSecret')->notNull();
+    $id = $request->param('id');
+    if(OAuthService::Get()->hasAccess($id, $core->user->getData('id'))) {
+        OAuthService::Get()->revoke($id);
+        $response->code(200);
+        return;
+    }
+    $response->code(401);    
 });
 
 include 'ajax/routes.php';

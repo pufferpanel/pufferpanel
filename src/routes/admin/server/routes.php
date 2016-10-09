@@ -68,15 +68,11 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
 
 $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
 
-    $response->body($core->twig->render(
-                    'admin/server/view.html', array(
-                'flash' => $service->flashes(),
-                'node' => $core->server->nodeData(),
-                'decoded' => array('ips' => json_decode($core->server->nodeData('ips'), true), 'ports' => json_decode($core->server->nodeData('ports'), true)),
-                'server' => $core->server->getData(),
-                'plugins' => ORM::forTable('plugins')->findMany(),
-                'user' => $core->user->getData()
-                    )
+    $response->body($core->twig->render('admin/server/view.html', array(    
+        'flash' => $service->flashes(),
+        'node' => $core->server->nodeData(),
+        'server' => $core->server->getData(),
+        'user' => $core->user->getData())
     ))->send();
 });
 
@@ -351,12 +347,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
 
 $klein->respond('GET', '/admin/server/new', function($request, $response, $service) use ($core) {
 
-    $response->body($core->twig->render(
-                    'admin/server/new.html', array(
-                'locations' => ORM::forTable('locations')->findMany(),
-                'plugins' => ORM::forTable('plugins')->findMany(),
-                'flash' => $service->flashes()
-                    )
+    $response->body($core->twig->render('admin/server/new.html', array(
+        'locations' => ORM::forTable('locations')->findMany(),
+        'flash' => $service->flashes())
     ))->send();
 });
 
@@ -408,22 +401,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         $response->redirect('/admin/server/new')->send();
         return;
     }
-
-    if (empty($request->param('alloc_mem')) || !is_numeric($request->param('alloc_mem'))) {
-        $service->flash('<div class="alert alert-danger">Memory is a required field and must be a number</div>');
-        $response->redirect('/admin/server/new')->send();
-        return;
-    }
-
-    $plugin = ORM::forTable('plugins')->where('slug', $request->param('plugin'))->findOne();
-    if (!$plugin) {
-
-        $service->flash('<div class="alert alert-danger">The selected plugin does not appear to exist in the system.</div>');
-        $response->redirect('/admin/server/new')->send();
-        return;
-    }
-
-    $sftp_username = Functions::generateFTPUsername($request->param('server_name'));
+    
     $server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
     $daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
@@ -441,63 +419,25 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         }
     }
 
-    foreach (json_decode($plugin->variables, true) as $name => $data) {
-
-        if ((!$request->param('plugin_variable_' . $name) || empty($request->param('plugin_variable_' . $name))) && $data['required'] == true) {
-
-            $service->flash('<div class="alert alert-danger">A required plugin variable was left blank when completing this server setup.</div>');
-            $response->redirect('/admin/server/new')->send();
-            return;
-        }
-
-        if ((!$request->param('plugin_variable_' . $name) || empty($request->param('plugin_variable_' . $name))) && !empty($data['default'])) {
-
-            $startup_variables[$name] = $data['default'];
-        } else if ($request->param('plugin_variable_' . $name) && !empty($request->param('plugin_variable_' . $name))) {
-
-            $startup_variables[$name] = $request->param('plugin_variable_' . $name);
-        }
-    }
-
-    // Setup for SQL
-    $storage_variables = "";
-    foreach ($startup_variables as $name => $value) {
-
-        $storage_variables .= $name . "|" . $value . "\n";
-    }
-
     $server = ORM::forTable('servers')->create();
     $server->set(array(
         'hash' => $server_hash,
         'daemon_secret' => $daemon_secret,
         'node' => $request->param('node'),
         'name' => $request->param('server_name'),
-        'plugin' => $plugin->id,
-        'daemon_startup' => $request->param('daemon_startup'),
-        'daemon_variables' => $storage_variables,
         'owner_id' => $user->id,
-        'max_ram' => $request->param('alloc_mem'),
-        'disk_space' => 0,
-        'cpu_limit' => 0,
-        'block_io' => 0,
         'date_added' => time(),
-        'server_ip' => '0.0.0.0',
-        'server_port' => '0',
-        'sftp_user' => '$sftp_username',
-        'installed' => 1
     ));
     $server->save();
-
-    $oauth = ORM::forTable('oauth_clients')->create();
-    $oauth->set(array(
-        'client_id' => '.internal_' . $user->id . '_' . $server->id,
-        'client_secret' => OAuthService::generateSecret(),
-        'user_id' => $user->id,
-        'server_id' => $server->id(),
-        'name' => 'internal_use',
-        'description' => 'internal_use'
-    ));
-    $oauth->save();
+    
+    OAuthService::Get()->create(ORM::get_db(), 
+            $user->id(),
+            $server->id(),            
+            '.internal_' . $user->id . '_' . $server->id,
+            'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload',
+            'internal_use',
+            'internal_use'
+    );
 
     /*
      * Build Call
@@ -538,42 +478,26 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     }
 
     $service->flash('<div class="alert alert-success">Server created successfully.</div>');
-    $response->redirect('/admin/server/view/' . $server->id() . '?tab=installer')->send();
+    $response->redirect('/admin/server/view/' . $server->id())->send();
     return;
 });
 
 $klein->respond('POST', '/admin/server/new/node-list', function($request, $response) use($core) {
 
-    $response->body($core->twig->render(
-                    'admin/server/node-list.html', array(
-                'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()
-                    )
-    ))->send();
+    $response->body($core->twig->render('admin/server/node-list.html', array(
+                'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()   
+    )))->send();
 });
 
-$klein->respond('POST', '/admin/server/new/ip-list', function($request, $response) use($core) {
-
+$klein->respond('GET', '/admin/server/new/plugins', function($request, $response) {
+    
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
-    $node->ips = json_decode($node->ips, true);
-    $node->ports = json_decode($node->ports, true);
+    
+    try {
+        $unirest = Request::get('https://' . $node->fqdn . ':' . $node->daemon_listen . '/templates');
+    } catch (\Error $e) {
+        throw new \Exception($e->getMessage());
+    }
 
-    $response->body($core->twig->render(
-                    'admin/server/ip-list.html', array(
-                'node' => $node
-                    )
-    ))->send();
-});
-
-$klein->respond('POST', '/admin/server/new/plugin-variables', function($request, $response) use($core) {
-
-    $orm = ORM::forTable('plugins')->selectMany('variables', 'default_startup')->where('slug', $request->param('slug'))->findOne();
-
-    $response->json(array(
-        'html' => $core->twig->render(
-                'admin/server/plugin-variables.html', array(
-            'variables' => json_decode($orm->variables, true)
-                )
-        ),
-        'startup' => $orm->default_startup
-    ));
+    $response->json($unirest->body)->send();
 });
