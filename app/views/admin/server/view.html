@@ -14,14 +14,9 @@
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
-		<li><a href="#connection" data-toggle="tab">Connection</a></li>
-		<li {% if server.installed == 0 %}style="display:none;"{% endif %} id="rebuildServerTab"><a href="#rebuild" data-toggle="tab">Rebuild</a></li>
-		<li><a href="#sftp_sett" data-toggle="tab">SFTP</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
-		<li {% if server.installed == 1 %}style="display:none;"{% endif %} id="installerProgressTab"><a href="#installer" data-toggle="tab">Installer Progress</a></li>
 		<li><a href="/index/{{ server.hash }}">Server Control</a></li>
 	</ul>
-	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Security Token for this server has been reset. The old token has been disabled and access is no longer permitted for it.</div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="server_sett">
 			<h3>Server Settings</h3><hr />
@@ -39,70 +34,9 @@
 							<input type="text" readonly="readonly" value="{{ user.username }} ({{ user.email }})" class="form-control" />
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">Scales Security Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
-						<div>
-							<input type="text" readonly="readonly" id="form_daemon_token" value="{{ server.daemon_secret }}" class="form-control" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="form-group col-md-3 nopad">
-							<label for="alloc_mem" class="control-label">Memory (in MB)</label>
-							<div class="input-group">
-								<input type="text" autocomplete="off" name="alloc_mem" value="{{ server.max_ram }}" class="form-control" />
-								<span class="input-group-addon">MB</span>
-							</div>
-						</div>
-						<div class="form-group col-md-3">
-							<label for="alloc_disk" class="control-label">Disk Space (in MB)</label>
-							<div class="input-group">
-								<input type="text" name="alloc_disk" disabled="disabled" value="{{ server.disk_space }}" class="form-control" />
-								<span class="input-group-addon">MB</span>
-							</div>
-						</div>
-						<div class="form-group col-md-3">
-							<label for="cpu_limit" class="control-label">CPU Quota</label>
-							<div class="input-group">
-								<input type="text" name="cpu_limit" value="{{ server.cpu_limit }}" class="form-control" />
-								<span class="input-group-addon">%</span>
-							</div>
-						</div>
-						<div class="form-group col-md-3 nopad-right">
-							<label for="cpu_limit" class="control-label">Block IO</label>
-							<div class="input-group">
-								<input type="text" name="block_io" value="{{ server.block_io }}" class="form-control" />
-								<span class="input-group-addon">IO</span>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<p><small>If you do not want to limit CPU usage set the value to 0. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is 400% available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/reference/run/#block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.</small></p>
-						</div>
-					</div>
-					<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />
+					<!--<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />-->
 				</fieldset>
 			</form>
-			<div class="well" style="margin-top:15px;">
-				<h3 class="nopad">Startup Parameters</h3><hr />
-				<form action="{{ server.id }}/startup" method="POST">
-					<fieldset>
-						<div class="form-group">
-							<label for="alloc_mem" class="control-label">Startup Command</label>
-							<div>
-								<input type="text" autocomplete="off" name="daemon_startup" value="{{ server.daemon_startup }}" class="form-control" placeholder="e.g: -Xmx${memory}M -jar ${jar} nogui" />
-								<p><small>Do not include the program invocation (i.e. <code>java</code>) in this line. These arguments are appended to the command line when starting the server. Variables that are provided will be replaced dynamically when starting the server. Use <code>${memory}</code> to specify the amount of memory that the server is allowed to use. All other variables should be defined in the box below and use the format of <code>${VARIABLE}</code> above.</small></p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="alloc_disk" class="control-label">Startup Command Variables</label>
-							<div>
-								<textarea name="daemon_variables" rows="5" class="form-control" placeholder="e.g: jar|server.jar">{{ server.daemon_variables }}</textarea>
-								<p><small>List one variable per line in the format of <code>variable_name|variable_value</code>. Please note that variable names and values are seperated with a pipe character (<code>|</code>).</small></p>
-							</div>
-						</div>
-						<input type="submit" value="Update Server Startup Parameters" class="btn btn-primary btn-sm" />
-					</fieldset>
-				</form>
-			</div>
 		</div>
 		<div class="tab-pane" id="connection">
 			<h3 class="nopad">Connection Information</h3><hr />

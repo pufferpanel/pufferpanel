@@ -172,7 +172,6 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($cor
     } else {
 
         if (!ORM::forTable('servers')->where(array(
-                    'installed' => 1,
                     'hash' => $request->param('goto')
                 ))->findOne()) {
 
