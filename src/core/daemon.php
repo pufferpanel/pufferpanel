@@ -42,13 +42,13 @@ class Daemon extends Server {
 		Server::__construct();
 
 		if(is_numeric($this->getData('id'))) {
-                    
+
                         $this->reconstruct($this->getData('id'));
 
 		}
 
 	}
-        
+
         public function reconstruct($serverId) {
             $this->server = ORM::forTable('servers')->findOne($serverId);
             $this->node = ORM::forTable('nodes')->findOne($this->server->node);
@@ -181,7 +181,7 @@ class Daemon extends Server {
 
 		if(!$response) {
 			\Tracy\Debugger::log($this->node);
-			return "Unable to connect to the Scales Daemon running on the node.";
+			return "Unable to connect to the pufferd daemon running on the node.";
 		}
 
 		if(!in_array($response->code, array(200, 500))) {
@@ -235,7 +235,7 @@ class Daemon extends Server {
 	public function powerOn() {
 
 		try {
-                    
+
                         $request = $this->generateServerCall("start");
 
 		} catch(\Exception $e) {
@@ -272,7 +272,7 @@ class Daemon extends Server {
 		}
 
 	}
-        
+
         private function generateServerCall($url, $action = 'GET', $data = null)  {
             $updatedUrl = sprintf('/server/%s/%s', array(
                 $this->server->getData('hash'),
@@ -280,21 +280,21 @@ class Daemon extends Server {
             ));
             return $this->generateCall($updatedUrl, $action, $data);
         }
-        
+
         private function generateCall($url, $action = 'GET', $data = null) {
             $bearer = OAuthService::Get()->getPanelAccessToken();
             $header = array(
               'Authorization' => 'Basic '. $bearer
             );
-            
+
             $updatedUrl = sprintf("http://%s:%s/%s", array(
                 $this->server->nodeData('fqdn'),
                 $this->server->nodeData('daemon_listen'),
                 $url
             ));
-            
+
             switch($action) {
-                default: 
+                default:
                 case 'GET': {
                     return Unirest\Request::get($updatedUrl, $header);
                 }

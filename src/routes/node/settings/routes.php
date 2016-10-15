@@ -82,13 +82,13 @@ $klein->respond('POST', '/node/settings/ftp', function($request, $response, $ser
 				$service->flash('<div class="alert alert-success">Your SFTP password has been updated.</div>');
 				$response->redirect('/node/settings?tab=sftp_sett')->send();
 			} else {
-				throw new \Exception("Scales did not return a success code while attempting to reset an account password. (code: ".$unirest->code.")");
+				throw new \Exception("pufferd did not return a success code while attempting to reset an account password. (code: ".$unirest->code.")");
 			}
 
 		} catch(\Exception $e) {
 
 			Tracy\Debugger::log($e);
-			$service->flash('<div class="alert alert-danger">Unable to access the Scales daemon to reset your password. Please try again in a moment.</div>');
+			$service->flash('<div class="alert alert-danger">Unable to access the pufferd daemon to reset your password. Please try again in a moment.</div>');
 			$response->redirect('/node/settings?tab=sftp_sett')->send();
 
 		}

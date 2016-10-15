@@ -99,7 +99,7 @@
 						<button id="rebuildContainer" class="btn btn-sm btn-primary">Rebuild Docker Container</button>
 					</div>
 					<div class="col-md-8">
-						Rebuild the server's docker container. This will update the server container if you made manual changes to the server's configuration file on Scales, or if for whatever reason the container becomes damaged or lost at sea. If the server is currently running this process will be queued until the server is powered off.
+						Rebuild the server's docker container. This will update the server container if you made manual changes to the server's configuration file on pufferd, or if for whatever reason the container becomes damaged or lost at sea. If the server is currently running this process will be queued until the server is powered off.
 					</div>
 				</div>
 			</div>
@@ -214,7 +214,7 @@
 					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Server" />
 				</form>
 				<hr />
-				<div class="alert alert-danger">Force deleting a server will remove it from the panel even if an error is returned by the Scales process. We do not suggest using this method to remove a server from the panel. <strong>The server and its related data may continue to exist on the Scales instance and the panel will no longer be able to control it.</strong></div>
+				<div class="alert alert-danger">Force deleting a server will remove it from the panel even if an error is returned by the pufferd process. We do not suggest using this method to remove a server from the panel. <strong>The server and its related data may continue to exist on the pufferd instance and the panel will no longer be able to control it.</strong></div>
 				<form action="{{ server.id }}/delete/force" id="forceDeleteCheckpoint" method="POST">
 					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Force Delete this Server" />
 				</form>
@@ -250,7 +250,7 @@
 		});
 		$("form#forceDeleteCheckpoint").submit(function(e) {
 			e.preventDefault();
-			if(confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the Scales instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE SCALES INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")){
+			if(confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the pufferd instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE PUFFERD INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")){
 				$("#forceDeleteCheckpoint").unbind('submit').submit();
 			}
 		})
@@ -299,7 +299,7 @@
 				alert(data);
 			}).fail(function (jqXHR, textStatus) {
 				console.error(jqXHR);
-				alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your Scales error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
+				alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your pufferd error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
 			});
 		});
 		$('#reinstallServer').click(function (event) {

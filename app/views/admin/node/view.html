@@ -16,7 +16,7 @@
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 	</ul>
-	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new Scales Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The pufferd Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new pufferd Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Basic Information</h3><hr />
@@ -49,10 +49,10 @@
 							</div>
 						</div>
 						<div class="form-group col-md-6">
-							<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
+							<label for="name" class="control-label">pufferd Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
 							<div>
 								<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
-								<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
+								<p class="text-muted"><small>Please update your pufferd configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
 							</div>
 						</div>
 					</div>

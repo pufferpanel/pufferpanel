@@ -68,7 +68,7 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
 
 $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
 
-    $response->body($core->twig->render('admin/server/view.html', array(    
+    $response->body($core->twig->render('admin/server/view.html', array(
         'flash' => $service->flashes(),
         'node' => $core->server->nodeData(),
         'server' => $core->server->getData(),
@@ -110,7 +110,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
             $response->redirect('/admin/server')->send();
         } else {
-            throw new Exception('<div class="alert alert-danger">Scales returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
+            throw new Exception('<div class="alert alert-danger">pufferd returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
         }
     } catch (Exception $e) {
 
@@ -120,7 +120,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
             ORM::get_db()->commit();
 
-            $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system. <strong>Because you requested a force delete this server has been removed from the panel regardless of the reason for the error. This server and its data may still exist on the Scales instance.</strong></div>');
+            $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system. <strong>Because you requested a force delete this server has been removed from the panel regardless of the reason for the error. This server and its data may still exist on the pufferd instance.</strong></div>');
             $response->redirect('/admin/server')->send();
             return;
         }
@@ -163,7 +163,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
     }
 
     if ($unirest->code > 204 || $unirest->code < 200) {
-        $response->code($unirest->code)->body('Scales returned an error. ' . $unirest->raw_body)->send();
+        $response->code($unirest->code)->body('pufferd returned an error. ' . $unirest->raw_body)->send();
         return;
     }
 
@@ -200,14 +200,14 @@ $klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $re
 
         if ($unirest->code !== 204) {
 
-            $service->flash('<div class="alert alert-danger">Scales returned an error when trying to process your request. Scales said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
+            $service->flash('<div class="alert alert-danger">pufferd returned an error when trying to process your request. pufferd said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
             $response->redirect('/admin/server/view/' . $request->param('id'))->send();
             return;
         }
     } catch (Exception $e) {
 
         Debugger::log($e);
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
         $response->redirect('/admin/server/view/' . $request->param('id'))->send();
         return;
     }
@@ -275,7 +275,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, 
         Debugger::log($e);
         ORM::get_db()->rollBack();
 
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
         $response->redirect('/admin/server/view/' . $request->param('id'))->send();
         return;
     }
@@ -339,7 +339,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request,
         Debugger::log($e);
         ORM::get_db()->rollBack();
 
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.</div>');
+        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
         $response->redirect('/admin/server/view/' . $request->param('id'))->send();
         return;
     }
@@ -401,7 +401,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         $response->redirect('/admin/server/new')->send();
         return;
     }
-    
+
     $server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
     $daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
@@ -429,10 +429,10 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         'date_added' => time(),
     ));
     $server->save();
-    
-    OAuthService::Get()->create(ORM::get_db(), 
+
+    OAuthService::Get()->create(ORM::get_db(),
             $user->id(),
-            $server->id(),            
+            $server->id(),
             '.internal_' . $user->id . '_' . $server->id,
             'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload',
             'internal_use',
@@ -449,7 +449,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     );
 
     try {
-        
+
         $header = array(
             'Authorization' => 'Bearer ' . $bearer
         );
@@ -472,7 +472,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         //Debugger::log($e);
         ORM::get_db()->rollBack();
 
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that Scales is running and try again.<br />' . $e->getMessage() . '</div>');
+        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.<br />' . $e->getMessage() . '</div>');
         $response->redirect('/admin/server/new')->send();
         return;
     }
@@ -485,14 +485,14 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 $klein->respond('POST', '/admin/server/new/node-list', function($request, $response) use($core) {
 
     $response->body($core->twig->render('admin/server/node-list.html', array(
-                'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()   
+                'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()
     )))->send();
 });
 
 $klein->respond('GET', '/admin/server/new/plugins', function($request, $response) {
-    
+
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
-    
+
     try {
         $unirest = Request::get('https://' . $node->fqdn . ':' . $node->daemon_listen . '/templates');
     } catch (\Error $e) {
