@@ -27,7 +27,6 @@ $klein->respond('GET', '/node/[*]', function($request, $response, $service) use 
 });
 
 $klein->respond('GET', '/node/index', function($request, $response, $service) use ($core) {
-
     $response->body($core->twig->render('node/index.html', array(
                 'server' => array_merge($core->server->getData(), array(
                     'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
@@ -40,15 +39,15 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
     )))->send();
 });
 
-$klein->respond('DELETE', '/node/oauth', function($request, $response, $service) use ($core) {
+$klein->respond('DELETE', '/node/oauth/[i:id]', function($request, $response, $service) use ($core) {
     $service->validateParam('id')->isInt();
     $id = $request->param('id');
     if(OAuthService::Get()->hasAccess($id, $core->user->getData('id'))) {
         OAuthService::Get()->revoke($id);
-        $response->code(200);
+        $response->code(200)->send();
         return;
     }
-    $response->code(401);    
+    $response->code(401)->send();
 });
 
 $klein->respond('POST', '/node/oauth', function($request, $response, $service) use ($core) {

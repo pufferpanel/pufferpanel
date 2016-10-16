@@ -138,11 +138,11 @@
                                             </thead>
                                             <tbody id="tokenBody">
                                                 {% for client in oauth %}
-                                                    <tr id="oauth_{{ id }}">
+                                                    <tr id="oauth_{{ client.id }}">
                                                             <td>{{ client.client_id }}</td>
                                                             <td>{{ client.name }}</td>
                                                             <td>{{ client.description }}</td>
-                                                            <td><i class="fa applyUpdate fa-times-circle deleteOauth" style="color: rgb(227, 50, 0);" data-id="{{ id }}"></i></td>
+                                                            <td><i class="fa applyUpdate fa-times-circle deleteOauth" style="color: rgb(227, 50, 0);" data-clientid="{{ client.id }}"></i></td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
@@ -197,15 +197,16 @@
 <script type="text/javascript">
         $(".deleteOauth").click(function() {
             if(confirm("Are you sure you want to delete this token?")) {
-                $id = $(this).prop("data-id");
+                console.log($(this).attr("data-clientid"));
+                $id = $(this).attr("data-clientid");
                 $.ajax({
-                    url: "/node/oauth",
-                    data: {
-                        id: $id
-                    },
+                    url: "/node/oauth/" + $id,
                     method: "DELETE"
+                }).done(function() {
+                    $('#oauth_' + $id).remove();
+                }).fail(function() {
+                    $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
                 });
-                $('#' + $id).remove();
             }
         });
     
