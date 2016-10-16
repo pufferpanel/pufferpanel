@@ -37,7 +37,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
     $userObj = ORM::forTable('users')->where('session_id', $auth)->findOne();
 
     if ($serverObj === false || $userObj === false) {
-        $response->code(401)->send();
+        $response->code(402)->send();
         return;
     }
 
@@ -57,7 +57,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
         $info = $clientInfo->fetch(\PDO::FETCH_ASSOC);
         $bearerArr = OAuthService::Get()->handleTokenCredentials($info['client_id'], $info['client_secret']);
         if (array_key_exists('error', $bearerArr)) {
-            $response->code(401)->send();
+            $response->code(403)->send();
             return;
         }
         $bearer = $bearerArr['access_token'];
@@ -77,9 +77,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
         switch ($request->method()) {
             default:
             case 'GET': {
-                    \Tracy\Debugger::log("$unireq");
                     $unireq = Unirest\Request::get($updatedUrl, $header);
-                    \Tracy\Debugger::log("ASDFASDF");
                     break;
                 }
             case 'POST': {

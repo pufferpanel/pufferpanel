@@ -224,4 +224,8 @@ class OAuthService {
     public static function generateSecret() {
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
+    
+    public function getAllScopes() {
+        return 'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload';
+    }
 }

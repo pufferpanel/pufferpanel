@@ -149,10 +149,25 @@
 					</table>
                                 </div>
                             <div class="panel-footer">
-                                <div id="addOAuth">
-                                    <input id="oauthName" />
-                                    <input id="oauthDesc" />
-                                </div>
+                                <form id="addOAuth" class="form-group" method="POST" action="/node/oauth">
+                                    <div class="input-group">
+                                        <label for="oauthId">OAuth Client Id</label>
+                                        <input class="form-control" type="text" required name="oauthId" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="oauthName">OAuth Client Name</label>
+                                        <input class="form-control" type="text" name="oauthName" />                                    
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="oauthDesc">Description</label>
+                                        <textarea class="form-control" name="oauthDesc"></textarea>                                    
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button id="submitNewToken" class="btn btn-primary btn-sm">Create</button>
+                                        </span>
+                                    </div>
+                                </form>
                             </div>
 			</div>
 		</div>
@@ -182,7 +197,7 @@
 <script type="text/javascript">
         $(".deleteOauth").click(function() {
             if(confirm("Are you sure you want to delete this token?")) {
-                $id = $(this).prop("id");
+                $id = $(this).prop("data-id");
                 $.ajax({
                     url: "/node/oauth",
                     data: {
@@ -192,18 +207,6 @@
                 });
                 $('#' + $id).remove();
             }
-        });
-        
-        $(".addOauth").click(function() {
-            $.ajax({
-                url: "/node/oauth",
-                data: {
-                    id: $id
-                },
-                method: "DELETE"
-            }).done(function(data) {
-                        
-            });
         });
     
 	$(window).load(function(){

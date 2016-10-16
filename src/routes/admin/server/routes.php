@@ -434,7 +434,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
             $user->id(),
             $server->id(),
             '.internal_' . $user->id . '_' . $server->id,
-            'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload',
+            OAuthService::Get()->getAllScopes(),
             'internal_use',
             'internal_use'
     );

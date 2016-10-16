@@ -20,6 +20,8 @@
 
 namespace PufferPanel\Core;
 
+use ORM;
+
 $klein->respond('GET', '/node/[*]', function($request, $response, $service) use ($core) {
     $response->cookie('accessToken', OAuthService::Get()->getAccessToken($core->user->getData('id'), $core->server->getData('id')));
 });
@@ -50,15 +52,26 @@ $klein->respond('DELETE', '/node/oauth', function($request, $response, $service)
 });
 
 $klein->respond('POST', '/node/oauth', function($request, $response, $service) use ($core) {
-    $service->validateParam('clientId')->notNull();
-    $service->validateParam('clientSecret')->notNull();
-    $id = $request->param('id');
-    if(OAuthService::Get()->hasAccess($id, $core->user->getData('id'))) {
-        OAuthService::Get()->revoke($id);
-        $response->code(200);
-        return;
+    $service->validateParam('oauthId')->notNull();
+    $id = $request->param('oauthId');
+    $name = $request->param('oauthName');
+    $desc = $request->param('oauthDesc');
+    
+    if ($name === 'undefined' || $name === '') {
+        $name = $id;
     }
-    $response->code(401);    
+    
+    if ($desc === 'undefined' || $desc === '') {
+        $desc = $name;
+    }
+    
+    $pdo = ORM::get_db();
+    $secret = OAuthService::Get()->create($pdo, $core->user->getData('id'), $core->server->getData('id'), $id, OAuthService::Get()->getAllScopes(), $name, $desc);
+    $service->flash('<div class="alert alert-danger">Secret key generated: ' . $secret . '</div>');
+
+    $response->redirect('/node/index')->send();
+    //$response->code(200)->send();
+    return;
 });
 
 include 'ajax/routes.php';
