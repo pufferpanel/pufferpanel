@@ -14,6 +14,7 @@
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
+                <li><a href="#deploy" data-toggle="tab">Auto-Deploy</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 	</ul>
 	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The pufferd Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new pufferd Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
@@ -48,13 +49,6 @@
 								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (It must have a valid DNS record that resolves to an IP. Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
 							</div>
 						</div>
-						<div class="form-group col-md-6">
-							<label for="name" class="control-label">pufferd Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
-							<div>
-								<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
-								<p class="text-muted"><small>Please update your pufferd configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
-							</div>
-						</div>
 					</div>
 					<div class="form-group">
 						<div>
@@ -65,11 +59,48 @@
 				</fieldset>
 			</form>
 		</div>
+                <div class="tab-pane" id="deploy">
+                    <br />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Auto-Deploy Node</div>
+                        <div class="panel-body">
+                            {% if autodeploy == false %}
+                            <p>Node Auto-Deployment allows you to run one quick command on your new node to install the daemon and set it up immediately. Press the button below to generate a temporary token that will allow you to perform this action.<p>
+                            <form action="{{ node.id }}/generate-autodeploy" method="POST">
+                                <input type="submit" value="Generate Deployment Script" class="btn btn-primary btn-sm" />
+                            </form>
+                            {% else %}
+                            <div class="alert alert-info">Please log into into this node and then run the command below to setup the daemon. This script will auto-expire 15 minutes after creation.</div>
+                            <pre><code>sudo bash -c 'source <(curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }})'</code></pre>
+                            <p style="margin-top:20px;">This automatic deploy script has been tested on the systems below. If your OS is not listed then it probably is not (officially) supported. If there is a pre-run command listed it must be run before running the command above.</p>
+                            <table class="table table-hover" style="margin-bottom:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Operating System</th>
+                                        <th>Pre-Run Command</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Debian/Ubuntu</td>
+                                        <td><code>apt-get install sudo curl</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CentOS</td>
+                                        <td>yum install sudo curl</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            
 		<div class="tab-pane" id="delete">
 			<h3>Delete Node</h3><hr />
-				<div class="alert alert-danger"><strong>Deleting a node is an irreversible action.</strong> Proceede with caution. This node will be removed from the database immediately.</div>
+				<div class="alert alert-danger"><strong>Deleting a node is an irreversible action.</strong> Proceed with caution. This node will be removed from the database immediately.</div>
 				<form action="{{ node.id }}/delete" id="deleteCheckpoint" method="POST">
-					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Node" />
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Node" />
 				</form>
 		</div>
 	</div>
