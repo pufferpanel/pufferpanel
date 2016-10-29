@@ -23,6 +23,34 @@ namespace PufferPanel\Core;
 use \ORM,
     \Unirest;
 
+function handleProxy($url, $header, $request, $response) {
+         $unireq = null;
+
+        switch ($request->method()) {
+            default:
+            case 'GET': {
+                    $unireq = Unirest\Request::get($url, $header);
+                    break;
+                }
+            case 'POST': {
+                    $unireq = Unirest\Request::post($updatedUrl, $header, $request->body());
+                    break;
+                }
+            case 'DELETE': {
+                    $unireq = Unirest\Request::delete($updatedUrl, $header);
+                    break;
+                }
+            case 'PUT': {
+                    $unireq = Unirest\Request::put($updatedUrl, $header, $request->body());
+                    break;
+                }
+        }
+        
+        $result = $unireq->body;
+
+        $response->code($unireq->code)->json($result);   
+}
+
 $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $klein) {
 
     $server = $request->cookies()['pp_server_hash'];
@@ -69,38 +97,24 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
         'Authorization' => 'Bearer ' . $bearer
     );
 
-    $updatedUrl = sprintf("https://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
+    $updatedUrl = sprintf("://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
 
     try {
-        $unireq = null;
-
-        switch ($request->method()) {
-            default:
-            case 'GET': {
-                    $unireq = Unirest\Request::get($updatedUrl, $header);
-                    break;
-                }
-            case 'POST': {
-                    $unireq = Unirest\Request::post($updatedUrl, $header, $request->body());
-                    break;
-                }
-            case 'DELETE': {
-                    $unireq = Unirest\Request::delete($updatedUrl, $header);
-                    break;
-                }
-            case 'PUT': {
-                    $unireq = Unirest\Request::put($updatedUrl, $header, $request->body());
-                    break;
-                }
-        }
-        
-        $result = $unireq->body;
-
-        $response->code($unireq->code)->json($result);
+        handleProxy('https'.$updatedUrl, $header, $request, $response);
     } catch (\Exception $ex) {
-        $response->code(500)->json(array(
-            'error' => $ex->getMessage()
-        ))->send();
+        if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+         try {
+             handleProxy('http'.$updatedUrl, $header, $request, $response);
+         } catch (Exception $ex) {
+            $response->code(500)->json(array(
+                'error' => $ex->getMessage()
+            ))->send();
+         }   
+        } else {
+            $response->code(500)->json(array(
+                'error' => $ex->getMessage()
+            ))->send();
+        }
     }
     $klein->skipRemaining();
 });

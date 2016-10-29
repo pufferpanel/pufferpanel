@@ -125,8 +125,8 @@
 				<div class="panel-heading">
 					<h3 class="panel-title">Connection Information</h3>
 				</div>
-				<div class="panel-body">                                        
-                                        <table class="table table-hover" style="margin-bottom:0;">                                            
+				<div class="panel-body">
+                                        <table class="table table-hover" style="margin-bottom:0;">
                                             <caption><strong>Connection Base - https://{{ node.fqdn }}:{{ node.daemon_listen }}/</strong></caption>
                                             <thead>
                                                 <tr>
@@ -156,11 +156,11 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="oauthName">OAuth Client Name</label>
-                                        <input class="form-control" type="text" name="oauthName" />                                    
+                                        <input class="form-control" type="text" name="oauthName" />
                                     </div>
                                     <div class="input-group">
                                         <label for="oauthDesc">Description</label>
-                                        <textarea class="form-control" name="oauthDesc"></textarea>                                    
+                                        <textarea class="form-control" name="oauthDesc"></textarea>
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-btn">
@@ -209,23 +209,36 @@
                 });
             }
         });
-    
+
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-                socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
-		socket.onmessage = function (event) {
-                    data = event.data;
-                    var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-			if (total.length > 750) {
-				total = total.slice(total.length - 750);
-			}
-			$("#live_console").val(total.join("\n"));
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		};
+                socket = {
+                    onmessage: function(event) {}
+                };
+                try {
+                    socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                } catch (err) {
+                    console.log(err);
+                    try {
+                        socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                    } catch (err2) {
+
+                        console.log(err2);
+                    }
+                }
+                registerWebSocketHandler(socket);
+                socket.onerror = function () {
+                    console.warn("Switching to HTTP for websocket, this is NOT GOOD");
+                    socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                    registerWebSocketHandler(socket);
+                    socket.onerror = function() {
+                        $("#sc_resp").html('Unable to connect to web socket server').fadeIn().delay(5000).fadeOut();
+                    };
+                }
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
-		$("#pause_console").click(function(){ 
+		$("#pause_console").click(function(){
 			$("#paused_console").val();
 			$("#paused_console").val($("#live_console").val());
 		});
@@ -234,22 +247,23 @@
 		});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
+                var chartSize = 30;
 		var memoryChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			labels: Array.apply(null, Array(chartSize)).map(String.prototype.valueOf,""),
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: Array.apply(null, Array(chartSize)).map(Number.prototype.valueOf,0)
 			}]
 		};
 		var cpuChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			labels: Array.apply(null, Array(chartSize)).map(String.prototype.valueOf,""),
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: Array.apply(null, Array(chartSize)).map(Number.prototype.valueOf,0)
 			}]
 		};
 		memoryChart = new Chart(ctx).Bar(memoryChartData, {
@@ -287,19 +301,16 @@
 				event.preventDefault();
 				var ccmd = $("#ccmd").val();
 				if(ccmd != ""){
-					$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 					$.ajax({
 						type: "POST",
 						url: '/daemon/server/{{ server.hash }}/console',
 						timeout: 5000,
 						data: ccmd
 					}).done(function(data) {
-						$("#sending_command").removeClass('disabled');
 						$("#sending_command").html('&rarr;');
 						$("#ccmd").val('');
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 						$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
-						$("#sending_command").removeClass('disabled');
 						$("#sending_command").html('&rarr;');
 						$("#ccmd").val('');
 					});
@@ -386,7 +397,7 @@
                                             }).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 							can_run = true;
-                                            });						
+                                            });
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 							can_run = true;
@@ -411,28 +422,42 @@
 							can_run = true;
 					});
 				}
-			}                        
-                        
+			}
+
 		{% endif %}
-                
+
                 function pingStats() {
                             $.ajax({
 				type: "GET",
 				url: '/daemon/server/{{ server.hash }}/stats',
 				timeout: 1000
                             }).done(function(data) {
-                                if (data.error) {                                    
+                                memoryChart.removeData();
+                                cpuChart.removeData();
+                                if (data.error) {
                                     memoryChart.addData(0, "");
                                     cpuChart.addData(0, "");
                                 } else {
                                     memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
                                     cpuChart.addData([parseInt(data.cpu)], "");
                                 }
-                            }).fail(function() {                                
+                            }).fail(function() {
                             });
                 }
-                        
+
                 setInterval(pingStats, 2000);
+
+                function registerWebSocketHandler(ws) {
+                    ws.onmessage = function (event) {
+                        data = event.data;
+                        var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+    			if (total.length > 750) {
+				total = total.slice(total.length - 750);
+			}
+			$("#live_console").val(total.join("\n"));
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                    };
+                }
 	});
 </script>
 {% endblock %}
