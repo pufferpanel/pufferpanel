@@ -23,8 +23,7 @@ namespace PufferPanel\Core;
 use \ORM,
     \Exception,
     \Tracy\Debugger,
-    \Unirest\Request,
-    \PufferPanel\Core\Components\Functions;
+    \Unirest\Request;
 
 $klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
 
@@ -62,7 +61,6 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
     if (!$core->user->rebuildData($core->server->getData('owner_id'))) {
 
         throw new Exception("This error should never occur. Attempting to access a server with an unknown user id.");
-        $klein->skipRemaining();
     }
 });
 
@@ -101,10 +99,18 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             'Authorization' => 'Bearer ' . $bearer
         );
 
-        $updatedUrl = sprintf('https://%s:%s/server/%s', $node->fqdn, $node->daemon_listen, $core->server->getData('hash'));
+        $updatedUrl = sprintf('://%s:%s/server/%s', $node->fqdn, $node->daemon_listen, $core->server->getData('hash'));
 
-        $unirest = Request::delete($updatedUrl, $header);
-
+        $unirest;
+        try {
+            $unirest = Request::delete('https' . $updatedUrl, $header);
+        } catch (\Exception $ex) {
+            if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+                $unirest = Request::delete('http' . $updatedUrl, $header);
+            } else {
+                throw $ex;
+            }
+        }
         if ($unirest->code == 204 || $unirest->code == 200) {
             ORM::get_db()->commit();
             $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
@@ -151,14 +157,22 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
     try {
 
-        $unirest = Request::post(sprintf('https://%s:%s/server/%s/install', $core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'), $core->server->getData('hash')));
+        try {
+            $unirest = Request::post(sprintf('https://%s:%s/server/%s/install', $core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'), $core->server->getData('hash')));
+        } catch (\Exception $ex) {
+            if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+                $unirest = Request::post(sprintf('http://%s:%s/server/%s/install', $core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen'), $core->server->getData('hash')));
+            } else {
+                throw $ex;
+            }
+        }
 
         ORM::get_db()->commit();
     } catch (Exception $e) {
 
         Debugger::log($e);
         ORM::get_db()->rollBack();
-        $response->code(500)->body('Unable to process this request due to a connection error. ' . $e->getMessage())->send();
+        $response->code(500)->body('Unable to process this request due to an error. ' . $e->getMessage())->send();
         return;
     }
 
@@ -455,11 +469,13 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         );
 
         try {
-            $unirest = Request::put(
-                            'https://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash, $header, json_encode($data)
-            );
-        } catch (\Error $e) {
-            throw new \Exception($e->getMessage());
+            $unirest = Request::put('https://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash, $header, json_encode($data));
+        } catch (\Exception $ex) {
+            if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+                $unirest = Request::put('http://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash, $header, json_encode($data));
+            } else {
+                throw $ex;
+            }
         }
 
         if ($unirest->code !== 204 && $unirest->code !== 200) {
@@ -495,8 +511,12 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
 
     try {
         $unirest = Request::get('https://' . $node->fqdn . ':' . $node->daemon_listen . '/templates');
-    } catch (\Error $e) {
-        throw new \Exception($e->getMessage());
+    } catch (\Exception $ex) {
+        if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+            $unirest = Request::get('http://' . $node->fqdn . ':' . $node->daemon_listen . '/templates');
+        } else {
+            throw $ex;
+        }
     }
 
     $response->json($unirest->body)->send();
