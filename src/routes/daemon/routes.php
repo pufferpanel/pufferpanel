@@ -33,15 +33,15 @@ function handleProxy($url, $header, $request, $response) {
                     break;
                 }
             case 'POST': {
-                    $unireq = Unirest\Request::post($updatedUrl, $header, $request->body());
+                    $unireq = Unirest\Request::post($url, $header, $request->body());
                     break;
                 }
             case 'DELETE': {
-                    $unireq = Unirest\Request::delete($updatedUrl, $header);
+                    $unireq = Unirest\Request::delete($url, $header);
                     break;
                 }
             case 'PUT': {
-                    $unireq = Unirest\Request::put($updatedUrl, $header, $request->body());
+                    $unireq = Unirest\Request::put($url, $header, $request->body());
                     break;
                 }
         }
