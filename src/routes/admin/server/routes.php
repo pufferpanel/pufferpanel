@@ -28,17 +28,68 @@ use \ORM,
 $klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
 
     $servers = ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')->select('users.email', 'user_email')
+            ->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')
             ->join('users', array('servers.owner_id', '=', 'users.id'))
             ->join('nodes', array('servers.node', '=', 'nodes.id'))
             ->orderByDesc('active')
             ->findArray();
+    
+    $bearer = OAuthService::Get()->getPanelAccessToken();
+    $header = array(
+        'Authorization' => 'Bearer ' . $bearer
+    );
 
-    $response->body($core->twig->render(
-                    'admin/server/find.html', array(
+    $serverIds = array();
+    $nodes = array();
+    foreach($servers as $server) {
+        $serverIds[] = $server['hash'];
+        $nodes[] = $server["daemon_host"] . ":" . $server["daemon_listen"];
+    }
+    foreach($servers as $server) {
+        $serverIds[] = $server['hash'];
+    }
+
+    $ids = implode(",", $serverIds);
+    $nodeConnections = array_unique($nodes);
+    $results = array();
+    
+    foreach ($nodeConnections as $nodeConnection) {
+        try {
+            $unirest = Request::get(vsprintf('https://%s/network?ids=%s', array(
+                        $nodeConnection,
+                        $ids)),
+                        $header
+            );
+        } catch (\Exception $e) {
+            try {
+                 $unirest = Request::get(vsprintf('http://%s/network?ids=%s', array(
+                        $nodeConnection,
+                        $ids)),
+                        $header
+                );
+            } catch (\Exception $ex) {
+                $unirest = new \stdClass();
+                $unirest->body = array();
+            }
+        }        
+        $results = array_merge($results, get_object_vars($unirest->body));
+    }
+    
+    $newServers = array();
+    
+    foreach($servers as $server) {
+        foreach($results as $key => $value) {
+            if ($server['hash'] == $key) {
+                $server['connection'] = $value;
+            }
+        }
+        $newServers[] = $server;
+    }    
+
+    $response->body($core->twig->render('admin/server/find.html', array(
                 'flash' => $service->flashes(),
-                'servers' => $servers
-                    )
-    ))->send();
+                'servers' => $newServers
+            )))->send();
 });
 
 $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function($request, $response, $service, $app, $klein) use($core) {
@@ -495,6 +546,18 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
     $service->flash('<div class="alert alert-success">Server created successfully.</div>');
     $response->redirect('/admin/server/view/' . $server->id())->send();
+    
+    //have daemon install server
+    try {
+            Request::post('https://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash . '/install', $header, json_encode($data));
+    } catch (\Exception $ex) {
+        if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
+            try {
+                Request::post('http://' . $node->fqdn . ':' . $node->daemon_listen . '/server/' . $server_hash . '/install', $header, json_encode($data));
+            } catch (Exception $ex) {
+            }
+        }
+    }
     return;
 });
 

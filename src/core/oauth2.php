@@ -148,7 +148,7 @@ class OAuthService {
                 . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
         $query->execute(array($userid, $serverid));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if ($data === false || count($data) == 0) {
+        if ($data === false || count($data) == 0 || $data['access_token'] == '') {
             $newquery = $pdo->prepare("SELECT client_id, client_secret FROM oauth_clients "
                     . "WHERE user_id = ? AND server_id = ?");
             $newquery->execute(array($userid, $serverid));
@@ -226,6 +226,6 @@ class OAuthService {
     }
     
     public function getAllScopes() {
-        return 'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload';
+        return 'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload server.network';
     }
 }

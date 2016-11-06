@@ -137,7 +137,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     if ($core->auth->isAdmin()) {
 
         $servers = ORM::forTable('servers')
-                ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+                ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
                 ->join('nodes', array('servers.node', '=', 'nodes.id'))
                 ->join('locations', array('nodes.location', '=', 'locations.id'))
                 ->orderByDesc('active')
@@ -145,7 +145,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     } else {
 
         $servers = ORM::forTable('servers')
-                ->select('servers.*')->select('nodes.name', 'node_name')->select('locations.long', 'location')
+                ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.fqdn', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
                 ->join('nodes', array('servers.node', '=', 'nodes.id'))
                 ->join('locations', array('nodes.location', '=', 'locations.id'))
                 ->where('servers.active', 1)
@@ -153,11 +153,62 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
                 ->findArray();
     }
 
+    $bearer = OAuthService::Get()->getPanelAccessToken();
+    $header = array(
+        'Authorization' => 'Bearer ' . $bearer
+    );
+
+    $serverIds = array();
+    $nodes = array();
+    foreach($servers as $server) {
+        $serverIds[] = $server['hash'];
+        $nodes[] = $server["daemon_host"] . ":" . $server["daemon_listen"];
+    }
+
+    $ids = implode(",", $serverIds);
+    $nodeConnections = array_unique($nodes);
+    $results = array();
+    
+    var_dump($nodeConnections);
+    
+    foreach ($nodeConnections as $nodeConnection) {
+        try {
+            $unirest = Unirest\Request::get(vsprintf('https://%s/network?ids=%s', array(
+                        $nodeConnection,
+                        $ids)),
+                        $header
+            );
+        } catch (\Exception $e) {
+            try {
+                 $unirest = Unirest\Request::get(vsprintf('http://%s/network?ids=%s', array(
+                        $nodeConnection,
+                        $ids)),
+                        $header
+                );
+            } catch (\Exception $ex) {
+                $unirest = new \stdClass();
+                $unirest->body = array();
+            }
+        }
+        $results = array_merge($results, get_object_vars($unirest->body));
+    }
+    
+    $newServers = array();
+    
+    foreach($servers as $server) {
+        foreach($results as $key => $value) {
+            if ($server['hash'] == $key) {
+                $server['connection'] = $value;
+            }
+        }
+        $newServers[] = $server;
+    }
+
     /*
      * List Servers
      */
     $response->body($core->twig->render('panel/index.html', array(
-                'servers' => $servers,
+                'servers' => $newServers,
                 'user' => $core->user->getData(),
                 'flash' => $service->flashes()
     )))->send();
@@ -291,23 +342,16 @@ $klein->respond('POST', '/bulkcmd', function($request, $response, $service) use 
         }
 
         if ($serverToSendCommand != null) {
-            $node = ORM::forTable('nodes')
-                            ->select('nodes.*')
-                            ->where('id', $serverToSendCommand['node'])
-                            ->findArray()[0];
-
             try {
                 $bearer = OAuthService::Get()->getPanelAccessToken();
                 $header = array(
                     'Authorization' => 'Bearer ' . $bearer
                 );
 
-                $unirest = Unirest\Request::put(sprintf('https://%s:%s/server/%s/console', array(
+                Unirest\Request::put(sprintf('https://%s:%s/server/%s/console', array(
                             $core->server->nodeData('fqdn'),
                             $core->server->nodeData('daemon_listen'),
-                            $core->server->getData('hash'))), $header, array(
-                            "command" => $command
-                                )
+                            $core->server->getData('hash'))), $header, array("command" => $command)
                 );
             } catch (\Exception $e) {
                 \Tracy\Debugger::log($e);
