@@ -154,6 +154,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     }
 
     $bearer = OAuthService::Get()->getPanelAccessToken();
+    var_dump($bearer);
     $header = array(
         'Authorization' => 'Bearer ' . $bearer
     );
@@ -169,8 +170,6 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     $nodeConnections = array_unique($nodes);
     $results = array();
     
-    var_dump($nodeConnections);
-    
     foreach ($nodeConnections as $nodeConnection) {
         try {
             $unirest = Unirest\Request::get(vsprintf('https://%s/network?ids=%s', array(
@@ -178,6 +177,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
                         $ids)),
                         $header
             );
+            $results = array_merge($results, get_object_vars(json_decode($unirest->body)));
         } catch (\Exception $e) {
             try {
                  $unirest = Unirest\Request::get(vsprintf('http://%s/network?ids=%s', array(
@@ -185,12 +185,10 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
                         $ids)),
                         $header
                 );
+                $results = array_merge($results, get_object_vars(json_decode($unirest->body)));
             } catch (\Exception $ex) {
-                $unirest = new \stdClass();
-                $unirest->body = array();
             }
         }
-        $results = array_merge($results, get_object_vars($unirest->body));
     }
     
     $newServers = array();
