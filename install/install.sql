@@ -160,7 +160,7 @@ CREATE TABLE `subusers` (
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `oauth_scopes`;
-CREATE TABLE IF NOT EXISTS `oauth_scopes` (
+CREATE TABLE `oauth_scopes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `scope` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   `requiresserver` bit(1) NOT NULL DEFAULT b'1',
@@ -241,7 +241,7 @@ INSERT INTO `oauth_scopes` (`id`, `scope`, `requiresserver`, `admin`) VALUES
 
 DROP PROCEDURE IF EXISTS `oauthCreateClient`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthCreateClient`(
+CREATE PROCEDURE `oauthCreateClient`(
 	IN `clientId` VARCHAR(128),
 	IN `userId` BIGINT,
 	IN `serverId` BIGINT,
@@ -277,7 +277,7 @@ DELIMITER ;
 
 DROP FUNCTION IF EXISTS `oauthGenerateToken`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` FUNCTION `oauthGenerateToken`() RETURNS varchar(32) CHARSET utf8 COLLATE utf8_unicode_ci
+CREATE FUNCTION `oauthGenerateToken`() RETURNS varchar(32) CHARSET utf8 COLLATE utf8_unicode_ci
 BEGIN
 	RETURN REPLACE(UUID(), '-', '');
 END//
@@ -285,7 +285,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthGetOrGenAccessToken`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthGetOrGenAccessToken`(
+CREATE PROCEDURE `oauthGetOrGenAccessToken`(
 	IN `userId` BIGINT,
 	IN `serverId` BIGINT
 
@@ -320,7 +320,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthHandleInfoRequest`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthHandleInfoRequest`(IN `token` VARCHAR(128))
+CREATE PROCEDURE `oauthHandleInfoRequest`(IN `token` VARCHAR(128))
 BEGIN
 	DECLARE id bigint;
 	DECLARE server varchar(128);
@@ -340,7 +340,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthHandleResourceOwner`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthHandleResourceOwner`(IN `email` VARCHAR(128), IN `password` TEXT, IN `server` VARCHAR(128), OUT `success` BIT)
+CREATE PROCEDURE `oauthHandleResourceOwner`(IN `email` VARCHAR(128), IN `password` TEXT, IN `server` VARCHAR(128), OUT `success` BIT)
 Main:BEGIN
 	DECLARE resultUserId bigint;
 	DECLARE resultServerId bigint;
@@ -385,7 +385,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthHandleTokenCredentials`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthHandleTokenCredentials`(IN `clientid` CHAR(16), IN `clientsecret` CHAR(64), OUT `success` BIT)
+CREATE PROCEDURE `oauthHandleTokenCredentials`(IN `clientid` CHAR(16), IN `clientsecret` CHAR(64), OUT `success` BIT)
 BEGIN
 	DECLARE resultId bigint;
 	DECLARE token varchar(128);
@@ -413,7 +413,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthRemoveAccessToken`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthRemoveAccessToken`(IN `accessToken` VARCHAR(128), IN `accessTokenId` BIGINT)
+CREATE PROCEDURE `oauthRemoveAccessToken`(IN `accessToken` VARCHAR(128), IN `accessTokenId` BIGINT)
 Main:BEGIN
 	IF accessToken IS NULL AND accessTokenId IS NULL
 	THEN
@@ -437,7 +437,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthRemoveClientByClientId`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthRemoveClientByClientId`(IN `clientId` BIGINT)
+CREATE PROCEDURE `oauthRemoveClientByClientId`(IN `clientId` BIGINT)
 Main:BEGIN	
 	DECLARE done INT DEFAULT FALSE;
 	DECLARE tokenId BIGINT;
@@ -464,7 +464,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `oauthRemoveClientById`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `oauthRemoveClientById`(IN `id` BIGINT)
+CREATE PROCEDURE `oauthRemoveClientById`(IN `id` BIGINT)
 Main:BEGIN	
 	DECLARE done INT DEFAULT FALSE;
 	DECLARE tokenId BIGINT;
