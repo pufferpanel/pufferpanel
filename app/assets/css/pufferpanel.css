@@ -7,54 +7,54 @@ body{font-size:13px}
 .form-control{padding:4px 8px;font-size:13px;line-height:1.4}
 .footer{margin-top:15px;font-size:10px;color:#999}
 .alert-success{
-	background-image: url('../images/check-square.png') !important;
-	background-size: 13px;
-	background-repeat: no-repeat;
-	background-position: 15px 17px;
-	background-color:#f3f8f3;
-	color:#474a54;
-	border-left: 4px solid #50af51 !important;
-	border:0;
-	padding-left:40px;
+    background-image: url('../images/check-square.png') !important;
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: 15px 17px;
+    background-color:#f3f8f3;
+    color:#474a54;
+    border-left: 4px solid #50af51 !important;
+    border:0;
+    padding-left:40px;
 }
 .alert-success hr{border-top-color:rgba(0,0,0,0)}
 .alert-success .alert-link{color:#e6e6e6}
 .alert-info{
-	background-image: url('../images/info-circle.png') !important;
-	background-size: 13px;
-	background-repeat: no-repeat;
-	background-position: 15px 17px;
-	background-color:#f4f8fa;
-	color:#474a54;
-	border-left: 4px solid #5bc0de !important;
-	border:0;
-	padding-left:40px;
+    background-image: url('../images/info-circle.png') !important;
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: 15px 17px;
+    background-color:#f4f8fa;
+    color:#474a54;
+    border-left: 4px solid #5bc0de !important;
+    border:0;
+    padding-left:40px;
 }
 .alert-info hr{border-top-color:rgba(0,0,0,0)}
 .alert-info .alert-link{color:#e6e6e6}
 .alert-warning{
-	background-image: url('../images/exclamation-circle.png') !important;
-	background-size: 13px;
-	background-repeat: no-repeat;
-	background-position: 15px 17px;
-	background-color:#fcf8f2;
-	color:#474a54;
-	border-left: 4px solid #f0ad4e !important;
-	border:0;
-	padding-left:40px;
+    background-image: url('../images/exclamation-circle.png') !important;
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: 15px 17px;
+    background-color:#fcf8f2;
+    color:#474a54;
+    border-left: 4px solid #f0ad4e !important;
+    border:0;
+    padding-left:40px;
 }
 .alert-warning hr{border-top-color:rgba(0,0,0,0)}
 .alert-warning .alert-link{color:#e6e6e6}
 .alert-danger{
-	background-image: url('../images/exclamation-triangle.png') !important;
-	background-size: 13px;
-	background-repeat: no-repeat;
+    background-image: url('../images/exclamation-triangle.png') !important;
+    background-size: 13px;
+    background-repeat: no-repeat;
     background-position: 15px 17px;
-	background-color:#fdf7f7;
-	color:#474a54;
-	border-left: 4px solid #d9534f !important;
-	border:0;
-	padding-left:40px;
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+    border:0;
+    padding-left:40px;
 }
 .alert-danger hr{border-top-color:rgba(0,0,0,0)}
 .alert-danger .alert-link{color:#d9534f}

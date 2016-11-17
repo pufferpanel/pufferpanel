@@ -26,8 +26,8 @@
 					<th>{{ l.render('string.name') }}</th>
 					<th>{{ l.render('string.location') }}</th>
 					<th>{{ l.render('string.node') }}</th>
-					<th>{{ l.render('string.connect') }}</th>
-					<th></th>
+					<th>Bind Address</th>
+					<!--<th></th>-->
 				</tr>
 			</thead>
 			<tbody>
@@ -37,8 +37,8 @@
 						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
 						<td>{{ server.location }}</td>
 						<td>{{ server.node_name }}</td>
-						<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
-						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
+						<td><code>{{ server.connection }}</code></td>
+						<!--<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>-->
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -68,8 +68,8 @@ $(window).load(function() {
 			});
 		});
 	}
-	updateServerStatus();
-	setInterval(updateServerStatus, 30000);
+	//updateServerStatus();
+	//setInterval(updateServerStatus, 30000);
 	$("#sidebar_links").find("a[href='/index']").addClass('active');
 });
 </script>

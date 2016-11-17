@@ -107,7 +107,7 @@ if(ORM::for_table("acp_settings")->count() == 0) {
 
 }
 
-$klein->respond('!@^(/auth/|/language/|/api/|/assets/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/test/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
@@ -129,7 +129,7 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/)', function($request, $res
 
 });
 
-$klein->respond('@^/auth/', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if($core->auth->isLoggedIn()) {
 
@@ -149,13 +149,6 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 	if(!$core->auth->isServer()) {
 
 		$response->code(403)->body($core->twig->render('errors/403.html'))->send();
-		$klein->skipRemaining();
-
-	}
-
-	if(!$core->auth->isInstalled()) {
-
-		$response->body($core->twig->render('errors/installing.html'))->send();
 		$klein->skipRemaining();
 
 	}
@@ -180,6 +173,8 @@ include SRC_DIR.'routes/assets/routes.php';
 include SRC_DIR.'routes/auth/routes.php';
 include SRC_DIR.'routes/panel/routes.php';
 include SRC_DIR.'routes/node/routes.php';
+include SRC_DIR.'routes/oauth2/routes.php';
+include SRC_DIR.'routes/daemon/routes.php';
 
 $klein->respond('*', function($request, $response) use ($core) {
 

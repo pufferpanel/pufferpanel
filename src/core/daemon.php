@@ -43,19 +43,16 @@ class Daemon extends Server {
 
 		if(is_numeric($this->getData('id'))) {
 
-			/*
-			 * Load Information into Script
-			 */
-			$this->server = ORM::forTable('servers')->findOne($this->getData('id'));
-
-			/*
-			 * Load Node Information into Script
-			 */
-			$this->node = ORM::forTable('nodes')->findOne($this->server->node);
+                        $this->reconstruct($this->getData('id'));
 
 		}
 
 	}
+
+        public function reconstruct($serverId) {
+            $this->server = ORM::forTable('servers')->findOne($serverId);
+            $this->node = ORM::forTable('nodes')->findOne($this->server->node);
+        }
 
 	/**
 	 * Gets the status of any specified server given an IP address.
@@ -73,15 +70,10 @@ class Daemon extends Server {
 		try {
 
 			Unirest\Request::timeout(1);
-			$request = Unirest\Request::get(
-				"https://".$arguments[0].":".$arguments[1]."/server",
-				array(
-					'X-Access-Token' => $arguments[3],
-					'X-Access-Server' => $arguments[2]
-				)
-			);
+			$request = $this->generateCall(sprintf("server/%s/status", $this->server->hash));
 
 		} catch(\Exception $e) {
+                        \Tracy\Debugger::log($e);
 			return false;
 		}
 
@@ -103,13 +95,7 @@ class Daemon extends Server {
 		try {
 
 			Unirest\Request::timeout(1);
-			$request = Unirest\Request::get(
-				"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server",
-				array(
-					'X-Access-Token' => $this->node->daemon_secret,
-					'X-Access-Server' => $this->server->hash
-				)
-			);
+			$request = $this->generateServerCall("status");
 
 			/*
 			* Valid Data was Returned
@@ -124,18 +110,6 @@ class Daemon extends Server {
 		} catch(\Exception $e) {
 			return false;
 		}
-
-	}
-
-	/**
-	 * Returns the process ID of the last server query.
-	 *
-	 * @deprecated
-	 * @return int
-	 */
-	public function pid() {
-
-		return null;
 
 	}
 
@@ -175,16 +149,10 @@ class Daemon extends Server {
 
 			try {
 
-				$response = Unirest\Request::get(
-					"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/log/".$lines,
-					array(
-						"X-Access-Token" => $this->server->daemon_secret,
-						"X-Access-Server" => $this->server->hash
-					)
-				);
+				$response = $this->generateServerCall(sprintf("log?lines=%s", $lines));
 
 				if($response->code !== 200) {
-					return isset($response->body->message) ? "An error occured using the Scales daemon. Scales said '".$response->body->message."'" : "An unknown error occured with the Scales daemon.";
+					return isset($response->body->message) ? "An error occured using the daemon. Said '".$response->body->message."'" : "An unknown error occured with the daemon.";
 				}
 
 				return $response->body;
@@ -213,7 +181,7 @@ class Daemon extends Server {
 
 		if(!$response) {
 			\Tracy\Debugger::log($this->node);
-			return "Unable to connect to the Scales Daemon running on the node.";
+			return "Unable to connect to the pufferd daemon running on the node.";
 		}
 
 		if(!in_array($response->code, array(200, 500))) {
@@ -242,15 +210,8 @@ class Daemon extends Server {
 
 			try {
 
-				$put = Unirest\Request::put(
-					"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/file/server.properties",
-					array(
-						"X-Access-Token" => $this->server->daemon_secret,
-						"X-Access-Server" => $this->server->hash
-					),
-					array(
-						"contents" => sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $this->server->server_port, $this->server->server_ip)
-					)
+				$this->generateServerCall("file/server.properties", 'POST',
+                                            sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $this->server->server_port, $this->server->server_ip)
 				);
 
 			} catch(\Exception $e) {
@@ -258,10 +219,6 @@ class Daemon extends Server {
 				\Tracy\Debugger::log($e);
 				return "An error occured when trying to write a server.properties file.";
 
-			}
-
-			if(!empty($put->body)) {
-				return "Unable to process request to create server.properties file.";
 			}
 
 		}
@@ -279,13 +236,7 @@ class Daemon extends Server {
 
 		try {
 
-			$request = Unirest\Request::get(
-				"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/power/on",
-				array(
-					"X-Access-Token" => $this->server->daemon_secret,
-					"X-Access-Server" => $this->server->hash
-				)
-			);
+                        $request = $this->generateServerCall("start");
 
 		} catch(\Exception $e) {
 
@@ -294,7 +245,7 @@ class Daemon extends Server {
 
 		}
 
-		return ($request->code != 204) ? false : true;
+		return ($request->code != 200) ? false : true;
 
 	}
 
@@ -311,13 +262,7 @@ class Daemon extends Server {
 
 		try {
 
-			return Unirest\Request::get(
-				"https://".$this->node->fqdn.":".$this->node->daemon_listen."/server/file/server.properties",
-				array(
-					"X-Access-Token" => $this->server->daemon_secret,
-					"X-Access-Server" => $this->server->hash
-				)
-			);
+			return $this->generateServerCall("file/server.properties");
 
 		} catch(\Exception $e) {
 
@@ -327,5 +272,42 @@ class Daemon extends Server {
 		}
 
 	}
+
+        private function generateServerCall($url, $action = 'GET', $data = null)  {
+            $updatedUrl = sprintf('/server/%s/%s', array(
+                $this->server->getData('hash'),
+                $url
+            ));
+            return $this->generateCall($updatedUrl, $action, $data);
+        }
+
+        private function generateCall($url, $action = 'GET', $data = null) {
+            $bearer = OAuthService::Get()->getPanelAccessToken();
+            $header = array(
+              'Authorization' => 'Basic '. $bearer
+            );
+
+            $updatedUrl = sprintf("http://%s:%s/%s", array(
+                $this->server->nodeData('fqdn'),
+                $this->server->nodeData('daemon_listen'),
+                $url
+            ));
+
+            switch($action) {
+                default:
+                case 'GET': {
+                    return Unirest\Request::get($updatedUrl, $header);
+                }
+                case 'POST': {
+                    return Unirest\Request::post($updatedUrl, $header, $data);
+                }
+                case 'DELETE': {
+                    return Unirest\Request::delete($updatedUrl, $header);
+                }
+                case 'PUT': {
+                    return Unirest\Request::put($updatedUrl, $header, $data);
+                }
+            }
+        }
 
 }

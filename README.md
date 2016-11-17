@@ -20,7 +20,7 @@ PufferPanel is a web-based Game Server Management System. PufferPanel allows you
 In addition to being a free and open source project, PufferPanel provides an easy to use interface for everyone from individual users to large networks or companies. We strive to create a friendly community and we would love for you to join us.
 
 ### Scales
-PufferPanel works with the [Scales](https://github.com/PufferPanel/Scales) daemon, which supports a variety of games including Minecraft, PocketMine, and SRCDS. PufferPanel creates an automatic deployment script when creating a node that will install Scales for you. Please visit the [Scales documentation](http://scales.pufferpanel.com/docs) to learn more.
+PufferPanel works with the [pufferd](https://github.com/PufferPanel/pufferd) daemon, which is still in development.
 
 ## Having issues or want to help?
 If you need help with PufferPanel or you'd like to help out you can contact us on IRC (irc.esper.net #pufferpanel) or ask a question on our [Community Support Forums](https://community.pufferpanel.com). Check out our [Documentation](http://www.pufferpanel.com/docs) for guides on how to install, update, and manage PufferPanel.

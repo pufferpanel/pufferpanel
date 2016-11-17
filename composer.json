@@ -13,6 +13,7 @@
     	"tracy/tracy": "2.3.*",
         "twig/twig": "1.23.*",
         "wildbit/postmark-php": "1.3.*",
-        "mailgun/mailgun-php": "1.8.*"
+        "mailgun/mailgun-php": "1.8.*",
+        "paragonie/random_compat": "*"
     }
 }

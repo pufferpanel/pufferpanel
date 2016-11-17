@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM as ORM;
 
 $klein->respond('POST', '/ajax/status', function($request, $response) use ($core) {
 
@@ -28,7 +28,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 		if($request->param('server')) {
 
 			$status = ORM::forTable('servers')
-				->select('servers.hash', 's_hash')->select('nodes.fqdn')->select('nodes.daemon_secret')->select('nodes.daemon_listen')
+				->select('servers.hash', 's_hash')->select('nodes.fqdn')->select('nodes.daemon_secret')->select('nodes.daemon_listen')->select('servers.id')
 				->join('nodes', array('servers.node', '=', 'nodes.id'))
 				->where('servers.hash', $request->param('server'))
 				->findOne();
@@ -37,8 +37,10 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				$response->body('#FF9900')->send();
 				return;
 			}
+                        
+                        $core->daemon->reconstruct($status->id);
 
-			if($core->daemon->check_status($status->fqdn, $status->daemon_listen, $status->s_hash, $status->daemon_secret) !== 1) {
+			if($core->daemon->check_status() !== 1) {
 				$response->body('#E33200')->send();
 			} else {
 				$response->body('#53B30C')->send();

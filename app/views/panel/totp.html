@@ -4,99 +4,99 @@
 
 {% block content %}
 <div class="col-md-9">
-	<h3 style="margin-top:0;">Two-Factor Authentication <small>{% if totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	{% if totp == 1 %}
-		<div class="panel panel-default">
-			<div class="panel-heading">Disable TOTP</div>
-			<div class="panel-body">
-				<p>In order to disable TOTP on this account you will need to provide a valid TOTP token. Once validated TOTP protection on this account will be disabled.</p>
-				<br />
-				<form action="/totp" method="post">
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon">TOTP Token</span>
-								<input type="text" name="token" class="form-control">
-								<span class="input-group-btn">
-									<button class="btn btn-danger btn-sm" type="submit">Disable Two Factor Authentication</button>
-								</span>
-						</div>
-						{{ xsrf|raw }}
-					</div>
-				</form>
-			</div>
-		</div>
-	{% else %}
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<h3 class="panel-title">Two Factor Authentication</h3>
-			</div>
-			<div class="panel-body">
-				<p>It appears that you do not have Two-Factor authentication enabled. This method of authentication adds an additional barrier preventing unauthorized entry to your account. If you enable it you will be required to input a code generated on your phone or other TOTP supporting device before finishing your login.</p>
-				<div class="alert alert-info" style="margin-bottom: 0;">You must have a TOTP supporting application (e.g Google Authenticator, DUO Mobile) to use this option.</div>
-			</div>
-		</div>
-		<form action="#" id="do_totp" method="post">
-			<div class="form-group">
-				<div>
-					<input type="submit" id="enable_totp" class="btn btn-success btn-sm" name="enable_totp" value="Enable Two-Factor Authentication" />
-				</div>
-			</div>
-		</form>
-	{% endif %}
+    <h3 style="margin-top:0;">Two-Factor Authentication <small>{% if totp == 1 %}Enabled{% else %}Disabled{% endif %}</small></h3><hr />
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    {% if totp == 1 %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Disable TOTP</div>
+        <div class="panel-body">
+            <p>In order to disable TOTP on this account you will need to provide a valid TOTP token. Once validated TOTP protection on this account will be disabled.</p>
+            <br />
+            <form action="/totp" method="post">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">TOTP Token</span>
+                        <input type="text" name="token" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger btn-sm" type="submit">Disable Two Factor Authentication</button>
+                        </span>
+                    </div>
+                    {{ xsrf|raw }}
+                </div>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Two Factor Authentication</h3>
+        </div>
+        <div class="panel-body">
+            <p>It appears that you do not have Two-Factor authentication enabled. This method of authentication adds an additional barrier preventing unauthorized entry to your account. If you enable it you will be required to input a code generated on your phone or other TOTP supporting device before finishing your login.</p>
+            <div class="alert alert-info" style="margin-bottom: 0;">You must have a TOTP supporting application (e.g Google Authenticator, DUO Mobile) to use this option.</div>
+        </div>
+    </div>
+    <form action="#" id="do_totp" method="post">
+        <div class="form-group">
+            <div>
+                <input type="submit" id="enable_totp" class="btn btn-success btn-sm" name="enable_totp" value="Enable Two-Factor Authentication" />
+            </div>
+        </div>
+    </form>
+    {% endif %}
 </div>
 <div class="modal fade" id="openTOTP" tabindex="-1" role="dialog" aria-labelledby="openTOTP" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">TOTP QR Code</h4>
-			</div>
-			<div class="modal-body" id="modal_insert_content">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">TOTP QR Code</h4>
+            </div>
+            <div class="modal-body" id="modal_insert_content">
 
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">Close</button>
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-$(window).load(function() {
-	$("#sidebar_links").find("a[href='/totp']").addClass('active');
-	$("#close_reload").click(function(){
-		location.reload();
-	});
-	$("#do_totp").submit(function(event){
-		$.ajax({
-			type: "POST",
-			url: "/ajax/account/totp",
-			data: { action : "generate" },
-			timeout: 5000,
-			success: function(data){
-				$("#modal_insert_content").html(data);
-				$('#openTOTP').modal('show');
-				run_totp_popup();
-			}
-		});
-		event.preventDefault();
-	});
-	function run_totp_popup(){
-		$("#totp_token_verify").submit(function(event){
-			$.ajax({
-				type: "POST",
-				url: "/ajax/account/totp/verify",
-				data: { token: $("#totp_token").val(), xsrf: $('input[name="xsrf"]').val() },
-				timeout: 5000,
-				success: function(data){
-					$("#notice_box_totp").html(data);
-					$('#notice_box_totp').fadeIn();
-				}
-			});
-			event.preventDefault();
-		});
-	}
-});
+    $(window).load(function () {
+        $("#sidebar_links").find("a[href='/totp']").addClass('active');
+        $("#close_reload").click(function () {
+            location.reload();
+        });
+        $("#do_totp").submit(function (event) {
+            $.ajax({
+                type: "POST",
+                url: "/ajax/account/totp",
+                data: {action: "generate"},
+                timeout: 5000,
+                success: function (data) {
+                    $("#modal_insert_content").html(data);
+                    $('#openTOTP').modal('show');
+                    run_totp_popup();
+                }
+            });
+            event.preventDefault();
+        });
+        function run_totp_popup() {
+            $("#totp_token_verify").submit(function (event) {
+                $.ajax({
+                    type: "POST",
+                    url: "/ajax/account/totp/verify",
+                    data: {token: $("#totp_token").val(), xsrf: $('input[name="xsrf"]').val()},
+                    timeout: 5000,
+                    success: function (data) {
+                        $("#notice_box_totp").html(data);
+                        $('#notice_box_totp').fadeIn();
+                    }
+                });
+                event.preventDefault();
+            });
+        }
+    });
 </script>
 {% endblock %}

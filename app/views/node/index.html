@@ -4,6 +4,8 @@
 	{{ parent() }}
 	<script src="/assets/javascript/chartjs/chart.core.js"></script>
 	<script src="/assets/javascript/chartjs/chart.bar.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="/assets/javascript/js-cookie.js"></script>
 {% endblock %}
 
 {% block title %}Manage your Server{% endblock %}
@@ -26,7 +28,7 @@
 					<div class="row centered">
 						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
 						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (Mb)</small></p>
+						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (MB)</small></p>
 						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>Memory Usage (%)</small></p>
 					</div>
 				</div>
@@ -44,8 +46,9 @@
 				<div class="col-md-12" id="stats_players" style="display: none;">
 					<h3 class="nopad">{{ l.render('node.overview.players_h5') }}</h3><hr />
 					<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ l.render('node.overview.collect_usage') }}</div>
-					<span id="toggle_players" style="display:none;">
+					<div id="toggle_players" style="display:none;">
 						<p class="text-muted">{{ l.render('node.overview.no_players') }}</p>
+                                        </div>
 				</div>
 				<div class="col-md-12">
 					<h3>{{ l.render('node.overview.information_h1') }}</h3><hr />
@@ -63,9 +66,17 @@
 								<td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
 								<td>{{ server.max_ram }} MB</td>
 							</tr>
-							<tr>
-								<td><strong>{{ l.render('string.disk_alloc') }}</strong></td>
-								<td>{{ server.disk_space }} MB</td>
+                                                        <tr>
+								<td><strong>SFTP Connection</strong></td>
+								<td>{{ node.fqdn }}:{{ node.daemon_sftp }}</td>
+							</tr>
+                                                        <tr>
+								<td><strong>SFTP username</strong></td>
+								<td>{{ user.email }}|{{ server.name }}</td>
+							</tr>
+                                                        <tr>
+								<td><strong>SFTP password</strong></td>
+								<td>Same as your account password</td>
 							</tr>
 						</tbody>
 					</table>
@@ -75,7 +86,7 @@
 		<div class="tab-pane" id="console">
 			<div class="row">
 				<div class="col-md-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly">{{ server.console_inner }}</textarea>
+					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
 				</div>
 				<div class="col-md-6">
 					<hr />
@@ -96,11 +107,12 @@
 				<div class="col-md-6" style="text-align:center;">
 					<hr />
 					{% if permission.has('console.power') %}
-						<button class="btn btn-success btn-sm start disabled" id="server_start">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ l.render('string.stop') }}</button>
+						<button class="btn btn-success btn-sm start" id="server_start">{{ l.render('string.start') }}</button>
+						<button class="btn btn-primary btn-sm restart" id="server_restart">{{ l.render('string.restart') }}</button>
+						<button class="btn btn-danger btn-sm stop" id="server_stop">{{ l.render('string.stop') }}</button>
+                                                <button class="btn btn-danger btn-sm install" id="server_install">{{ l.render('string.install') }}</button>
 						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-						<div style="margin-top:5px;" id="kill_process_text" style="display:none;"><small><p class="text-muted">My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</p></small></div>
+                                                <div style="margin-top:5px; display:none;" id="kill_process_text"><p class="text-muted"><small>My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</small></p></div>
 						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
 					{% endif %}
 				</div>
@@ -114,109 +126,49 @@
 					<h3 class="panel-title">Connection Information</h3>
 				</div>
 				<div class="panel-body">
-					<div class="alert alert-info">This is still a work in progress, and as such it is not neccessarily fully documented.</div>
-					<table class="table table-hover" style="margin-bottom:0;">
-						<tr>
-							<td style="border-top:0;">Connection Base</td>
-							<td style="border-top:0;">https://{{ node.fqdn }}:{{ node.daemon_listen }}/</td>
-						</tr>
-						<tr>
-							<td>X-Access-Server</td>
-							<td><code>{{ server.hash }}</code></td>
-						</tr>
-						<tr>
-							<td>X-Access-Token</td>
-							<td><code>{{ server.daemon_secret }}</code></td>
-						</tr>
+                                        <table class="table table-hover" style="margin-bottom:0;">
+                                            <caption><strong>Connection Base - https://{{ node.fqdn }}:{{ node.daemon_listen }}/</strong></caption>
+                                            <thead>
+                                                <tr>
+                                                    <td>Client Id</td>
+                                                    <td>Name</td>
+                                                    <td>Client Description</td>
+                                                    <td>Revoke</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tokenBody">
+                                                {% for client in oauth %}
+                                                    <tr id="oauth_{{ client.id }}">
+                                                            <td>{{ client.client_id }}</td>
+                                                            <td>{{ client.name }}</td>
+                                                            <td>{{ client.description }}</td>
+                                                            <td><i class="fa applyUpdate fa-times-circle deleteOauth" style="color: rgb(227, 50, 0);" data-clientid="{{ client.id }}"></i></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
 					</table>
-				</div>
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Connection Endpoints</h3>
-				</div>
-				<div class="panel-body">
-					<table class="table table-hover" style="margin-bottom:0;">
-						<thead>
-							<tr>
-								<th>Action</th>
-								<th>Method</th>
-								<th>Endpoint</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Basic Server Information</td>
-								<td><code>GET</code></td>
-								<td><code>/server</code></td>
-								<td><a href="http://scales.pufferpanel.com/docs/server" target="_blank"><i class="fa fa-link"></i></a></td>
-							</tr>
-							<tr>
-								<td>Get Last Lines of Console</td>
-								<td><code>GET</code></td>
-								<td><code>/server/log/:lines</code></td>
-								<td><a href="http://scales.pufferpanel.com/docs/serverloglines" target="_blank"><i class="fa fa-link"></i></a></td>
-							</tr>
-							{% if permission.has('console.power') %}
-								<tr>
-									<td>Control Server Power</td>
-									<td><code>GET</code></td>
-									<td><code>/server/power/(start|stop|restart|kill)</code></td>
-									<td><a href="http://scales.pufferpanel.com/docs/serverpowerstatus" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('console.commands') %}
-								<tr>
-									<td>Send Console Commands</td>
-									<td><code>POST</code></td>
-									<td><code>/server/console</code></td>
-									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('files.view') %}
-								<tr>
-									<td>View Server Files</td>
-									<td><code>GET</code></td>
-									<td><code>/server/directory/:directory</code></td>
-									<td><a href="http://scales.pufferpanel.com/docs/serverdirectorydirectory" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('files.edit') %}
-								<tr>
-									<td>Edit Server File</td>
-									<td><code>GET</code></td>
-									<td><code>/server/file/:file</code></td>
-									<td><a href="http://scales.pufferpanel.com/docs/serverfilefile" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('files.save') %}
-								<tr>
-									<td>Save Server File</td>
-									<td><code>PUT</code></td>
-									<td><code>/server/file/:file</code></td>
-									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('files.delete') %}
-								<tr>
-									<td>Delete Server File</td>
-									<td><code>DELETE</code></td>
-									<td><code>/server/file/:file</code></td>
-									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-							{% if permission.has('manage.ftp.password') %}
-								<tr>
-									<td>Change SFTP Password</td>
-									<td><code>POST</code></td>
-									<td><code>/server/reset-password</code></td>
-									<td><a href="#" target="_blank"><i class="fa fa-link"></i></a></td>
-								</tr>
-							{% endif %}
-						</tbody>
-					</table>
-				</div>
+                                </div>
+                            <div class="panel-footer">
+                                <form id="addOAuth" class="form-group" method="POST" action="/node/oauth">
+                                    <div class="input-group">
+                                        <label for="oauthId">OAuth Client Id</label>
+                                        <input class="form-control" type="text" required name="oauthId" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="oauthName">OAuth Client Name</label>
+                                        <input class="form-control" type="text" name="oauthName" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="oauthDesc">Description</label>
+                                        <textarea class="form-control" name="oauthDesc"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button id="submitNewToken" class="btn btn-primary btn-sm">Create</button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
 			</div>
 		</div>
 	</div>
@@ -243,45 +195,46 @@
 	</div>
 </div>
 <script type="text/javascript">
+        $(".deleteOauth").click(function() {
+            if(confirm("Are you sure you want to delete this token?")) {
+                console.log($(this).attr("data-clientid"));
+                $id = $(this).attr("data-clientid");
+                $.ajax({
+                    url: "/node/oauth/" + $id,
+                    method: "DELETE"
+                }).done(function() {
+                    $('#oauth_' + $id).remove();
+                }).fail(function() {
+                    $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
+                });
+            }
+        });
+
 	$(window).load(function(){
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-		socket.on('stats', function (data) {
-			var currentTime = new Date();
-			memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
-			memoryChart.removeData();
-			if({{ server.cpu_limit }} > 0) { cpuChart.addData([(data.data.cpu / {{ server.cpu_limit }}) * 100], ""); }else{ cpuChart.addData([data.data.cpu], ""); }
-			cpuChart.removeData();
-		});
-		socket.on('query', function(data){
-			if($("#players_notice").is(":visible")){
-				$("#players_notice").hide();
-				$("#toggle_players").show();
-			}
-			if(data['data'].players != undefined && data['data'].players.length !== 0){
-				$("#toggle_players").html("");
-				$.each(data['data'].players, function(id, d) {
-					$("#toggle_players").append("<code>" + d.name + "</code>");
-				});
-			}else{
-				$("#toggle_players").html('<p class="text-muted">No players are currently online.</p>');
-			}
-		});
-		socket.on('console', function (data) {
-			var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
-			if (total.length > 750) {
-				total = total.slice(total.length - 750);
-			}
-			$("#live_console").val(total.join("\n"));
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('initial_status', function(data) {
-			updateServerPowerControls(data.status);
-			updatePlayerListVisibility(data.status);
-		});
-		socket.on('status', function(data) {
-			updateServerPowerControls(data.status);
-			updatePlayerListVisibility(data.status);
-		});
+                socket = {
+                    onmessage: function(event) {}
+                };
+                try {
+                    socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                } catch (err) {
+                    console.log(err);
+                    try {
+                        socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                    } catch (err2) {
+
+                        console.log(err2);
+                    }
+                }
+                registerWebSocketHandler(socket);
+                socket.onerror = function () {
+                    console.warn("Switching to HTTP for websocket, this is NOT GOOD");
+                    socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                    registerWebSocketHandler(socket);
+                    socket.onerror = function() {
+                        $("#sc_resp").html('Unable to connect to web socket server').fadeIn().delay(5000).fadeOut();
+                    };
+                }
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
@@ -294,22 +247,23 @@
 		});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
+                var chartSize = 30;
 		var memoryChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			labels: Array.apply(null, Array(chartSize)).map(String.prototype.valueOf,""),
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: Array.apply(null, Array(chartSize)).map(Number.prototype.valueOf,0)
 			}]
 		};
 		var cpuChartData = {
-			labels: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+			labels: Array.apply(null, Array(chartSize)).map(String.prototype.valueOf,""),
 			datasets: [{
 				fillColor : "#ccc",
 				strokeColor : "rgba(0,0,0,0)",
 				highlightFill : "#666",
-				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				data: Array.apply(null, Array(chartSize)).map(Number.prototype.valueOf,0)
 			}]
 		};
 		memoryChart = new Chart(ctx).Bar(memoryChartData, {
@@ -347,25 +301,16 @@
 				event.preventDefault();
 				var ccmd = $("#ccmd").val();
 				if(ccmd != ""){
-					$("#sending_command").html('<i class="fa fa-refresh fa-spin"></i>').addClass('disabled');
 					$.ajax({
 						type: "POST",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/console',
+						url: '/daemon/server/{{ server.hash }}/console',
 						timeout: 5000,
-						data: {
-							command: ccmd
-						}
+						data: ccmd
 					}).done(function(data) {
-						$("#sending_command").removeClass('disabled');
 						$("#sending_command").html('&rarr;');
 						$("#ccmd").val('');
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 						$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
-						$("#sending_command").removeClass('disabled');
 						$("#sending_command").html('&rarr;');
 						$("#ccmd").val('');
 					});
@@ -375,21 +320,11 @@
 		{% if permission.has('console.power') %}
 			var can_run = true;
 			function updateServerPowerControls(data) {
-				// Server is On or Starting
-				if(data == 1 || data == 3) {
-					$("#server_start").addClass('disabled');
-					$("#server_stop, #server_restart").removeClass("disabled");
-				} else {
-					$("#server_start").removeClass('disabled');
-					$("#server_stop, #server_restart").addClass("disabled");
-				}
-
 				if(data !== 0) {
 					$("#kill_process_text").slideDown(200);
 				} else {
 					$("#kill_process_text").slideUp(200);
 				}
-
 			}
 			$("#kill_proc").click(function(e){
 				e.preventDefault();
@@ -397,11 +332,7 @@
 				if(killConfirm) {
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/kill',
+						url: '/daemon/server/{{ server.hash }}/kill',
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
@@ -414,23 +345,34 @@
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
-					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/off',
+						url: '/daemon/server/{{ server.hash }}/stop',
 						timeout: 5000
 					}).done(function(data) {
 						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-						$("#server_stop").removeClass('disabled').html('{{ l.render('string.stop') }}');
 						can_run = true;
 						return false;
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_stop").removeClass('disabled').html('Stop');
+							can_run = true;
+					});
+				}
+			});
+                        $("#server_install").click(function(e){
+				e.preventDefault();
+				if(can_run) {
+					can_run = false;
+					$.ajax({
+						type: "POST",
+						url: '/daemon/server/{{ server.hash }}/install',
+						timeout: 5000
+					}).done(function(data) {
+						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
+						can_run = true;
+						return false;
+					}).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
 							can_run = true;
 					});
 				}
@@ -439,23 +381,25 @@
 				e.preventDefault();
 				if(can_run) {
 					can_run = false;
-					$(this).append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
 						type: "GET",
-						headers: {
-							"X-Access-Token": "{{ server.daemon_secret }}",
-							"X-Access-Server": "{{ server.hash }}"
-						},
-						url: 'https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/power/restart',
-						timeout: 5000
+						url: '/daemon/server/{{ server.hash }}/stop',
+                                                timeout: 0
 					}).done(function(data) {
-						$("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
-						$("#server_restart").removeClass('disabled').html('{{ l.render('string.restart') }}');
-						can_run = true;
-						return false;
+                                            $.ajax({
+						type: "GET",
+						url: '/daemon/server/{{ server.hash }}/start',
+						timeout: 0
+                                            }).done(function(data) {
+                                                $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+                                                    can_run = true;
+                                                    return false;
+                                            }).fail(function(jqXHR, textStatus, errorThrown) {
+							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+							can_run = true;
+                                            });
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_restart").removeClass('disabled').html('Restart');
 							can_run = true;
 					});
 				}
@@ -467,31 +411,53 @@
 			function start_server() {
 				if(can_run === true){
 					can_run = false;
-					$("#server_start").append(' <i class="fa fa-refresh fa-spin"></i>').toggleClass('disabled');
 					$.ajax({
-						type: "POST",
-						url: "/node/ajax/console/power",
+						type: "GET",
+						url: '/daemon/server/{{ server.hash }}/start',
 						timeout: 5000
 					}).done(function(data) {
-						if(data == "ok"){
-							$("#live_console").val("Server is starting...\n");
 							$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
-							can_run = true;
-						}else{
-							$("#pw_resp").attr('class', 'alert alert-danger').html(data).fadeIn().delay(5000).fadeOut();
-							can_run = true;
-						}
-						$("#server_start").toggleClass('disabled');
-						$("#server_start").html('{{ l.render('string.start') }}');
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 							$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-							$("#server_start").removeClass('disabled');
-							$("#server_start").html('Start');
 							can_run = true;
 					});
 				}
 			}
+
 		{% endif %}
+
+                function pingStats() {
+                            $.ajax({
+				type: "GET",
+				url: '/daemon/server/{{ server.hash }}/stats',
+				timeout: 1000
+                            }).done(function(data) {
+                                memoryChart.removeData();
+                                cpuChart.removeData();
+                                if (data.error) {
+                                    memoryChart.addData(0, "");
+                                    cpuChart.addData(0, "");
+                                } else {
+                                    memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
+                                    cpuChart.addData([parseInt(data.cpu)], "");
+                                }
+                            }).fail(function() {
+                            });
+                }
+
+                setInterval(pingStats, 2000);
+
+                function registerWebSocketHandler(ws) {
+                    ws.onmessage = function (event) {
+                        data = event.data;
+                        var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+    			if (total.length > 750) {
+				total = total.slice(total.length - 750);
+			}
+			$("#live_console").val(total.join("\n"));
+			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                    };
+                }
 	});
 </script>
 {% endblock %}

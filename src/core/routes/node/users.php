@@ -118,25 +118,6 @@ class Users extends \PufferPanel\Core\Email {
 
 			}
 
-			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
-				array(
-					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
-					"X-Access-Server" => $this->server->getData('hash')
-				),
-				array(
-					"json" => json_encode(array(
-						$daemon_permissionSecret => self::_buildDaemonPermissions($data->permissions)
-					)),
-					"object" => "keys",
-					"overwrite" => false
-				)
-			);
-
-			if($unirest->code !== 204) {
-				throw new \Exception("Error with communication to Scales:" . $unirest->code);
-			}
-
 			$email->dispatch($data->email, Settings::config()->company_name.' - You\'ve Been Invited to Manage a Server');
 
 			ORM::get_db()->commit();
@@ -145,7 +126,7 @@ class Users extends \PufferPanel\Core\Email {
 		} catch(\Exception $e) {
 
 			\Tracy\Debugger::log($e);
-			self::_setError("An error occured when trying to update the server information on the daemon.");
+			self::_setError("An error occured when trying to update the server information.");
 			ORM::get_db()->rollBack();
 			return false;
 
@@ -160,11 +141,6 @@ class Users extends \PufferPanel\Core\Email {
 	 * @return bool
 	 */
 	public function modifySubuser(\Klein\DataCollection\DataCollection $data) {
-
-		if(!$this->avaliable($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'))) {
-			self::_setError("Unable to access the server management daemon.");
-			return false;
-		}
 
 		$select = ORM::forTable('subusers')->where(array(
 			'user' => $data->user_id,
@@ -197,37 +173,6 @@ class Users extends \PufferPanel\Core\Email {
 
 		$select->daemon_permissions = json_encode(self::_buildDaemonPermissions($data->permissions));
 		$select->save();
-
-		try {
-
-			$unirest = Unirest\Request::put(
-				"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
-				array(
-					"X-Access-Token" => $this->server->nodeData('daemon_secret'),
-					"X-Access-Server" => $this->server->getData('hash')
-				),
-				array(
-					"json" => json_encode(array(
-						$select->daemon_secret => self::_buildDaemonPermissions($data->permissions)
-					)),
-					"object" => "keys",
-					"overwrite" => false
-				)
-			);
-
-			if($unirest->code !== 204) {
-				throw new \Exception();
-			}
-
-			return true;
-
-		} catch(\Exception $e) {
-
-			\Tracy\Debugger::log($e);
-			self::_setError("An error occured when trying to update the server information on the daemon.");
-			return false;
-
-		}
 
 	}
 
@@ -265,51 +210,6 @@ class Users extends \PufferPanel\Core\Email {
 	}
 
 	/**
-	 * Builds an array of equivalent Daemon permissions for each panel permission.
-	 *
-	 * @param array $data
-	 * @return array
-	 * @static
-	 */
-	protected final static function _buildDaemonPermissions(array $data) {
-
-		$daemon_permission = array("s:console", "s:query");
-
-		foreach($data as $permissionNode) {
-
-			switch($permissionNode) {
-
-				case "console.power":
-					$daemon_permission = array_merge($daemon_permission, array("s:power"));
-					break;
-				case "console.commands":
-					$daemon_permission = array_merge($daemon_permission, array("s:console:send"));
-					break;
-				case "files.view":
-					$daemon_permission = array_merge($daemon_permission, array("s:files"));
-					break;
-				case "files.edit":
-					$daemon_permission = array_merge($daemon_permission, array("s:files:get"));
-					break;
-				case "files.save":
-					$daemon_permission = array_merge($daemon_permission, array("s:files:put"));
-					break;
-				case "files.zip":
-					$daemon_permission = array_merge($daemon_permission, array("s:files:zip"));
-					break;
-				case "manage.ftp.password":
-					$daemon_permission = array_merge($daemon_permission, array("s:ftp"));
-					break;
-
-			}
-
-		}
-
-		return $daemon_permission;
-
-	}
-
-	/**
 	 * Revokes subuser permissions for a given user that has an active account on the panel.
 	 *
 	 * @param object $orm Database query object.
@@ -317,35 +217,11 @@ class Users extends \PufferPanel\Core\Email {
 	 */
 	public function revokeActiveUserPermissions(ORM $orm) {
 
-		if(!$this->avaliable($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'))) {
-			self::_setError("Unable to access the server management daemon.");
-			return false;
-		}
-
 		if($orm->pending == 0) {
 
 			try {
 
-				$unirest = Unirest\Request::put(
-					"https://".$this->server->nodeData('fqdn').":".$this->server->nodeData('daemon_listen')."/server",
-					array(
-						"X-Access-Token" => $this->server->nodeData('daemon_secret'),
-						"X-Access-Server" => $this->server->getData('hash')
-					),
-					array(
-						"json" => json_encode(array(
-							$orm->daemon_secret => ""
-						)),
-						"object" => "keys",
-						"overwrite" => false
-					)
-				);
-
-				if($unirest->code !== 204) {
-					throw new \Exception();
-				}
-
-				ORM::forTable('permissions')
+                                ORM::forTable('permissions')
 					->where(array(
 						'user' => $orm->user,
 						'server' => $this->server->getData('id')
@@ -358,7 +234,7 @@ class Users extends \PufferPanel\Core\Email {
 			} catch(\Exception $e) {
 
 				\Tracy\Debugger::log($e);
-				self::_setError("An error occured when trying to update the server information on the daemon.");
+				self::_setError("An error occured when trying to update the server.");
 				return false;
 
 			}

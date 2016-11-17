@@ -14,12 +14,10 @@
 	{% endif %}
 	<ul class="nav nav-tabs" id="config_tabs">
 		<li class="active"><a href="#info" data-toggle="tab">Information</a></li>
-		<li><a href="#allocation" data-toggle="tab">Allocation</a></li>
-		<li><a href="#sftp" data-toggle="tab">SFTP</a></li>
-		<li><a href="#deploy" data-toggle="tab">Auto-Deploy</a></li>
+                <li><a href="#deploy" data-toggle="tab">Auto-Deploy</a></li>
 		<li><a href="#delete" data-toggle="tab">Delete</a></li>
 	</ul>
-	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The Scales Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new Scales Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
+	<div class="alert alert-warning" id="reset_token_warn" style="display:none;margin-top: 15px;">The pufferd Token for this node has been changed. <strong>You must manually edit <em>config.json</em> on the server in order for this to take effect.</strong> Until you do this functions for this node from the panel will not occur.<br /><br /><strong>Your new pufferd Token is:</strong> <span id="reset_token_warn_tkn">...</span></div>
 	<div class="tab-content">
 		<div class="tab-pane active" id="info">
 			<h3>Basic Information</h3><hr />
@@ -51,13 +49,6 @@
 								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the FQDN for this node. If you do not have one please enter its IP address. This must be a valid FQDN if using a signed SSL certificate. (It must have a valid DNS record that resolves to an IP. Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
 							</div>
 						</div>
-						<div class="form-group col-md-6">
-							<label for="name" class="control-label">Scales Secret Token (<a href="#reset" id="reset_token">Reset Token</a>)</label>
-							<div>
-								<input type="text" readonly="readonly" id="form_daemon_token" value="{{ node.daemon_secret }}" class="form-control" />
-								<p class="text-muted"><small>Please update your Scales configuration file and add this as a token that can connect and use it. You do <strong>not</strong> need to click the button below once you've done this. <a href="http://www.pufferpanel.com/v0.8.0/docs/adding-a-new-node" target="_blank">Whats this?</a></small></p>
-							</div>
-						</div>
 					</div>
 					<div class="form-group">
 						<div>
@@ -67,164 +58,49 @@
 					</div>
 				</fieldset>
 			</form>
-			<hr />
-			<h6>Scales Configuration File</h6>
-			<pre id="node_daemon_config">{
-	"listen": {
-		"sftp": {{ node.daemon_sftp }},
-		"rest": {{ node.daemon_listen }}
-	},
-	"urls": {
-		"download": "{{ settings.master_url }}auth/remote/download",
-		"install": "{{ settings.master_url }}auth/remote/install-progress"
-	},
-	"ssl": {
-		"key": "https.key",
-		"cert": "https.pem"
-	},
-	"basepath": "{{ node.daemon_base_dir }}",
-	"keys": [
-		"{{ node.daemon_secret }}"
-	],
-	"upload_maxfilesize": 100000000,
-	"docker": {% if node.docker == 1 %} true {% else %} false {% endif %}
-
-}</pre>
 		</div>
-		<div class="tab-pane" id="allocation">
-			<h3>IP &amp; Port Allocation</h3><hr />
-			<form action="{{ node.id }}/add-port" id="addPorts" style="display: none;" method="post">
-				<div class="form-group">
-					<label for="add_ports" class="control-label" id="setTitle"></label>
-					<div class="input-group">
-						<input type="text" name="add_ports" value="" placeholder="enter a comma separated list of ports to add; enter to submit" class="form-control" />
-						<span class="input-group-btn">
-							<input type="hidden" name="add_ports_ip" value=""/>
-							<button class="btn btn-primary btn-sm" type="submit">&rarr;</button>
-						</span>
-					</div>
-				</div>
-			</form>
-			<table class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th>IP Address</th>
-						<th>Ports</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for ip, ports in portlisting %}
-						<tr>
-							<td style="vertical-align:top;">{{ ip }}<br /><a href="#/add/{{ ip }}" class="clickToAdd" onclick="return false;">Add Port(s)</a> | <a href="#/delete/{{ ip }}" class="clickToDelete" onclick="return false;">Delete</a></td>
-							<td>
-							{% for port, avaliable in ports %}
-								{% if loop.index is odd %}
-									{% if avaliable == 1 %}
-										<span><a href="#/delete/{{ ip }}/{{ port }}" class="deletePort" onclick="return false;"><i class="fa fa-circle-o"></i></a>
-									{% else %}
-										<i class="fa fa-check-circle-o"></i>
-									{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
-								{% endif %}
-							{% endfor %}
-							</td>
-							<td>
-							{% for port, avaliable in ports %}
-								{% if loop.index is even %}
-									{% if avaliable == 1 %}
-										<span><a href="#/delete/{{ ip }}/{{ port }}" class="deletePort" onclick="return false;"><i class="fa fa-circle-o"></i></a>
-									{% else %}
-										<i class="fa fa-check-circle-o"></i>
-									{% endif %}&nbsp;&nbsp;&nbsp;{{ port }}<br /></span>
-								{% endif %}
-							{% endfor %}
-							</td>
-						</tr>
-					{% endfor %}
-					<tr>
-						<td><a href="#" data-toggle="modal" data-target="#toggle_popup" id="t_popup">Add New IP Address</a></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="panel panel-default">
-				<div class="panel-heading">Key</div>
-				<div class="panel-body">
-					<p><i class="fa fa-circle-o"></i> (Port Available; Click to Delete Port)</p><p><i class="fa fa-check-circle-o"></i> (Port Used; Cannot Delete)</p>
-				</div>
-			</div>
-		</div>
-		<div class="tab-pane" id="sftp">
-			<h3>SFTP Settings</h3><hr />
-			<div class="well">
-				<form action="{{ node.id }}/sftp" method="post">
-					<fieldset>
-						<div class="form-group">
-							<label for="ip" class="control-label">SFTP IP</label>
-							<div>
-								<input type="text" name="ip" value="{{ node.ip }}" class="form-control" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div>
-								<input type="hidden" name="nid" value="{{ node.id }}" />
-								<input type="submit" value="Update SFTP Address" class="btn btn-primary btn-sm" />
-							</div>
-						</div>
-					</fieldset>
-				</form>
-			</div>
-		</div>
-		<div class="tab-pane" id="deploy">
-			<br />
-			<div class="panel panel-default">
-				<div class="panel-heading">Auto-Deploy Node</div>
-				<div class="panel-body">
-					{% if autodeploy == false %}
-						<p>Node Auto-Deployment allows you to run one quick command on your new node to install Scales and set it up immediately. Press the button below to generate a temporary token that will allow you to perform this action.<p>
-						<form action="{{ node.id }}/generate-autodeploy" method="POST">
-							<input type="submit" value="Generate Deployment Script" class="btn btn-primary btn-sm" />
-						</form>
-					{% else %}
-						<div class="alert alert-info">Please SSH into this node and then run the command below to setup Scales. This script will auto-expire 15 minutes after creation.</div>
-						<pre><code>sudo bash -c 'source <(curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }})'</code></pre>
-						<p style="margin-top:20px;">This automatic deploy script has been tested on the systems below. If your OS is not listed then it probably is not (officially) supported. If there is a pre-run command listed it must be run before running the command above.</p>
-						<table class="table table-hover" style="margin-bottom:0;">
-							<thead>
-								<tr>
-									<th>Operating System</th>
-									<th>Pre-Run Command</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Ubuntu 14.04 (x64)</td>
-									<td>n/a</td>
-								</tr>
-								<tr>
-									<td>Ubuntu 15.10 (x64)</td>
-									<td><code>apt-get install curl</code></td>
-								</tr>
-								<tr>
-									<td>Debian 8.2 (x64)</td>
-									<td><code>apt-get install sudo curl</code></td>
-								</tr>
-								<tr>
-									<td>CentOS 7.1 (x64)</td>
-									<td>n/a</td>
-								</tr>
-							</tbody>
-						</table>
-					{% endif %}
-				</div>
-			</div>
-		</div>
+                <div class="tab-pane" id="deploy">
+                    <br />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Auto-Deploy Node</div>
+                        <div class="panel-body">
+                            {% if autodeploy == false %}
+                            <p>Node Auto-Deployment allows you to run one quick command on your new node to install the daemon and set it up immediately. Press the button below to generate a temporary token that will allow you to perform this action.<p>
+                            <form action="{{ node.id }}/generate-autodeploy" method="POST">
+                                <input type="submit" value="Generate Deployment Script" class="btn btn-primary btn-sm" />
+                            </form>
+                            {% else %}
+                            <div class="alert alert-info">Please log into into this node and then run the command below to setup the daemon. This script will auto-expire 15 minutes after creation.</div>
+                            <pre><code>sudo bash -c 'source <(curl -sSLk {{ settings.master_url }}auth/remote/deploy/{{ autodeploy.code }})'</code></pre>
+                            <p style="margin-top:20px;">This automatic deploy script has been tested on the systems below. If your OS is not listed then it probably is not (officially) supported. If there is a pre-run command listed it must be run before running the command above.</p>
+                            <table class="table table-hover" style="margin-bottom:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Operating System</th>
+                                        <th>Pre-Run Command</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Debian/Ubuntu</td>
+                                        <td><code>apt-get install sudo curl</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CentOS</td>
+                                        <td>yum install sudo curl</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            
 		<div class="tab-pane" id="delete">
 			<h3>Delete Node</h3><hr />
-				<div class="alert alert-danger"><strong>Deleting a node is an irreversible action.</strong> Proceede with caution. This node will be removed from the database immediately.</div>
+				<div class="alert alert-danger"><strong>Deleting a node is an irreversible action.</strong> Proceed with caution. This node will be removed from the database immediately.</div>
 				<form action="{{ node.id }}/delete" id="deleteCheckpoint" method="POST">
-					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanetly Delete this Node" />
+					<input type="submit" name="delete" class="btn btn-sm btn-danger" value="Permanently Delete this Node" />
 				</form>
 		</div>
 	</div>
@@ -280,90 +156,6 @@ $(window).load(function(){
 		if(confirm("STOP! Are you absolutely positive that you want to delete this node? This action cannot be undone!")) {
 			$("#deleteCheckpoint").unbind('submit').submit();
 		}
-	});
-	$("#reset_token").click(function(e){
-		e.preventDefault();
-		$.ajax({
-			type: "POST",
-			url: "{{ node.id }}/reset-token",
-			data: { daemon_reset: true},
-			success: function(data) {
-				if(data.indexOf(' ') > 0) {
-					alert(data);
-				} else {
-					$("#reset_token_warn_tkn").html(data);
-					$("#reset_token_warn").show();
-					$("#form_daemon_token").val(data);
-					$("#node_daemon_config").text('{ \n\
-	"listen": { \n\
-		"sftp": {{ node.daemon_sftp }}, \n\
-		"rest": {{ node.daemon_listen }} \n\
-	}, \n\
-	"urls": { \n\
-		"download": "{{ settings.master_url }}auth/remote/download", \n\
-		"install": "{{ settings.master_url }}auth/remote/install-progress" \n\
-	}, \n\
-	"ssl": { \n\
-		"key": "https.key", \n\
-		"cert": "https.pem" \n\
-	}, \n\
-	"basepath": "{{ node.daemon_base_dir }}", \n\
-	"keys": [ \n\
-		"' + data + '" \n\
-	], \n\
-	"upload_maxfilesize": 100000000 \n\
-}');
-				}
-			}
-		});
-	});
-	$(".clickToAdd").click(function(){
-		var rawUrl = $(this).attr("href");
-		var exploded = rawUrl.split('/');
-		var ip = exploded[2];
-		$("#addPorts").slideUp(function(){
-			$("#setTitle").html('Add Ports for '+ip);
-			$("input[name='add_ports']").val("");
-			$("input[name='add_ports_ip']").val(ip);
-			$("#addPorts").slideDown();
-		});
-	});
-	$(".clickToDelete").click(function(){
-		var self = $(this);
-		var exploded = ($(this).attr("href")).split('/');
-		var ip = exploded[2];
-		$.ajax({
-			method: 'DELETE',
-			url: '/admin/node/view/{{ node.id }}/delete-ip/' + ip
-		}).done(function (data) {
-			self.parent().parent().fadeOut();
-		}).fail(function (jqXHR) {
-			console.error(jqXHR);
-			alert('HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
-		});
-	});
-	$(".deletePort").click(function(){
-
-		var rawUrl = $(this).attr("href");
-		var exploded = rawUrl.split('/');
-		var ip = exploded[2];
-		var port = exploded[3];
-		var conf = confirm("Are you sure you want to delete "+ip+":"+port);
-
-			if(conf == true)
-				{
-					$.ajax({
-						type: "POST",
-						url: "{{ node.id }}/delete-port",
-						data: { ip: ip, port: port},
-						success: function(data) {
-							$(".deletePort[href='#/delete/"+ip+"/"+port+"']").parent().fadeOut();
-						}
-					});
-				}else{
-					return false;
-				}
-
 	});
 	if($.urlParam('error') != null){
 		var field = $.urlParam('error');

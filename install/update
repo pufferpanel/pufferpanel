@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 
 <?php
+
 $config = json_decode(file_get_contents(__DIR__ . '/../config.json'));
 $user = $config->mysql->username;
 $pass = $config->mysql->password;
@@ -11,7 +12,15 @@ $port = $config->mysql->port;
 echo 'Will open a connection to ' . $host . ':' . $port . ' using ' . $user;
 echo "\n";
 
+//Assume old version, if this fails we do not care
 $query = 'ALTER TABLE nodes ADD COLUMN docker TINYINT(4) NOT NULL DEFAULT \'1\'';
 $cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
 system($cmd);
+
+//Add changes to 0.9
+$query = "CREATE TABLE `oauth_clients` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `client_id` CHAR(16) NOT NULL,`client_secret` CHAR(64) NOT NULL, `user_id` INT(10) UNSIGNED NOT NULL, `server_id` INT(10) UNSIGNED NOT NULL, `scopes` VARCHAR(1000) NOT NULL DEFAULT '', `name` VARCHAR(128) NOT NULL, `description` VARCHAR(1024) NOT NULL DEFAULT '', PRIMARY KEY (`id`), INDEX `FK_oauth_clients_users` (`user_id`), INDEX `FK_oauth_clients_servers` (`server_id`), INDEX `client_id` (`client_id`), CONSTRAINT `FK_oauth_clients_servers` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`), CONSTRAINT `FK_oauth_clients_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ) ENGINE=InnoDB;";
+$query += "CREATE TABLE `oauth_access_tokens` ( `access_token` INT(10) NOT NULL, `client_id` INT(10) UNSIGNED NOT NULL, `expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci', PRIMARY KEY (`access_token`), UNIQUE INDEX `access_token` (`access_token`), INDEX `FK_oauth_access_tokens_oauth_clients` (`client_id`), CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`client_id`) REFERENCES `oauth_clients` (`id`) ) ENGINE=InnoDB; ";
+$cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
+system($cmd);
+
 echo "\n";
