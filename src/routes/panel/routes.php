@@ -154,7 +154,6 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     }
 
     $bearer = OAuthService::Get()->getPanelAccessToken();
-    var_dump($bearer);
     $header = array(
         'Authorization' => 'Bearer ' . $bearer
     );
