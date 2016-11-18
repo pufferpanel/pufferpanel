@@ -4,7 +4,7 @@
 pufferdVersion=nightly
 
 export DEBIAN_FRONTEND=noninteractive
-downloadUrl="https://dl.pufferpanel.com/pufferd/${pufferdVersion}/pufferd
+downloadUrl="https://dl.pufferpanel.com/pufferd/${pufferdVersion}/pufferd"
 
 RED=$(tput setf 4)
 GREEN=$(tput setf 2)
