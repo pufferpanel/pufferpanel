@@ -287,7 +287,7 @@ class Daemon extends Server {
               'Authorization' => 'Bearer '. $bearer
             );
 
-            $updatedUrl = sprintf("%s/%s", array(
+            $updatedUrl = vprintf("%s/%s", array(
                 $this->buildBaseUrl(),
                 $url
             ));
@@ -315,11 +315,11 @@ class Daemon extends Server {
         
         public static function doesNodeUseHTTPS ($ip, $port) {
             try {
-                Unirest\Request::get(sprintf("https://%s:%s", array ($ip, $port)));
+                Unirest\Request::get(sprintf("https://%s:%s", $ip, $port));
                 return true;
             } catch (Exception $ex) {
                 try {
-                    Unirest\Request::get(sprintf("https//%s:%s", array ($ip, $port)));                
+                    Unirest\Request::get(sprintf("https//%s:%s", $ip, $port));
                 } catch (Exception $exe) {
                     throw new Exception("Daemon not available");
                 }                
@@ -328,7 +328,7 @@ class Daemon extends Server {
         }
         
         public function buildBaseUrl() {
-            return sprintf("%s://%s:%s/", array(
+            return vprintf("%s://%s:%s/", array(
                 $this->doesUseHttps() ? "https" : "http",
                 $this->server->nodeData('fqdn'),
                 $this->server->nodeData('daemon_listen')
@@ -336,7 +336,7 @@ class Daemon extends Server {
         }
         
         public static function buildBaseUrlForNode($ip, $port) {
-            return sprintf("%s://%s:%s/", array(
+            return vprintf("%s://%s:%s/", array(
                 self::doesNodeUseHTTPS($ip, $port) ? "https" : "http",
                 $ip,
                 $port
