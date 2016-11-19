@@ -40,7 +40,7 @@ trait Daemon {
         Unirest\Request::timeout($timeout);
 
         try {
-            Unirest::get(\PufferPanel\Core\Daemon::buildBaseUrlForNode($ip, $port));
+            Unirest\Request::get(\PufferPanel\Core\Daemon::buildBaseUrlForNode($ip, $port));
             return true;
         } catch (\Exception $e) {
             return false;
