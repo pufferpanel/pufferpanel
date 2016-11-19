@@ -242,6 +242,6 @@ class Daemon extends Server {
         }
 
         public static function buildBaseUrlForNode($ip, $port) {
-            return sprintf("%s://%s:%s/", self::doesNodeUseHTTPS($ip, $port) ? "https" : "http", $ip, $port);
+            return sprintf("%s://%s:%s", self::doesNodeUseHTTPS($ip, $port) ? "https" : "http", $ip, $port);
         }
 }
