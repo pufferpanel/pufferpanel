@@ -227,29 +227,21 @@ class Daemon extends Server {
             try {
                 Unirest\Request::get(sprintf("https://%s:%s", $ip, $port));
                 return true;
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 try {
                     Unirest\Request::get(sprintf("http://%s:%s", $ip, $port));
                     return false;
-                } catch (Exception $exe) {
+                } catch (\Exception $exe) {
                     throw new Exception("Daemon not available");
                 }
             }
         }
 
         public function buildBaseUrl() {
-            return vprintf("%s://%s:%s/", array(
-                $this->doesUseHttps() ? "https" : "http",
-                $this->server->nodeData('fqdn'),
-                $this->server->nodeData('daemon_listen')
-            ));
+            return self::buildBaseUrlForNode($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'));
         }
 
         public static function buildBaseUrlForNode($ip, $port) {
-            return vprintf("%s://%s:%s/", array(
-                self::doesNodeUseHTTPS($ip, $port) ? "https" : "http",
-                $ip,
-                $port
-            ));
+            return sprintf("%s://%s:%s/", self::doesNodeUseHTTPS($ip, $port) ? "https" : "http", $ip, $port);
         }
 }
