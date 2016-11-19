@@ -112,6 +112,7 @@ $klein->respond('GET', '/auth/logout', function($request, $response) use ($core)
         $response->cookie("pp_auth_token", null, time() - 86400);
         $response->cookie("pp_server_node", null, time() - 86400);
         $response->cookie("pp_server_hash", null, time() - 86400);
+        $response->cookie("accessToken", null, time() - 86400);
 
         $logout = ORM::forTable('users')->where(array('session_id' => $request->cookies()['pp_auth_token'], 'session_ip' => $request->ip()))->findOne();
         $logout->session_id = null;

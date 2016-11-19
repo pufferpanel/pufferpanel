@@ -189,16 +189,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
     }
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/override', function($request, $response) use ($core) {
-    ORM::get_db()->beginTransaction();
-    $server = ORM::forTable('servers')->findOne($request->param('id'));
-    $server->installed = 1;
-    $server->save();
-    ORM::get_db()->commit();
-    $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-    return;
-});
-
 $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($request, $response) use ($core) {
 
     ORM::get_db()->beginTransaction();
@@ -234,180 +224,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
     $response->body('This container has been added to the reinstall queue. If the server is powered off it will begin immediately. You can track the reinstaller progress by clicking on the \'Installer\' tab above.')->send();
     return;
-});
-
-$klein->respond('POST', '/admin/server/view/[i:id]/sftp', function($request, $response, $service) use($core) {
-
-    if ($request->param('sftp_pass') != $request->param('sftp_pass_2')) {
-
-        $service->flash('<div class="alert alert-danger">The SFTP passwords did not match.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=sftp_sett')->send();
-        return;
-    }
-
-    if (!$core->auth->validatePasswordRequirements($request->param('sftp_pass'))) {
-
-        $service->flash('<div class="alert alert-danger">The assigned password does not meet the requirements for passwords on this server.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=sftp_sett')->send();
-        return;
-    }
-
-    try {
-
-        $unirest = Request::post(
-                        'https://' . $core->server->nodeData('fqdn') . ':' . $core->server->nodeData('daemon_listen') . '/server/reset-password', array(
-                    "X-Access-Token" => $core->server->nodeData('daemon_secret'),
-                    "X-Access-Server" => $core->server->getData('hash')
-                        ), array(
-                    "password" => $request->param('sftp_pass')
-                        )
-        );
-
-        if ($unirest->code !== 204) {
-
-            $service->flash('<div class="alert alert-danger">pufferd returned an error when trying to process your request. pufferd said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
-            $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-            return;
-        }
-    } catch (Exception $e) {
-
-        Debugger::log($e);
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
-
-    if ($request->param('email_user')) {
-
-        $core->email->buildEmail('admin_new_ftppass', array(
-            'PASS' => $request->param('sftp_pass'),
-            'SERVER' => $core->server->getData('name')
-        ))->dispatch($core->user->getData('email'), Settings::config()->company_name . ' - Your SFTP Password was Reset');
-    }
-
-    $service->flash('<div class="alert alert-success">The SFTP password for this server has been successfully reset.</div>');
-    $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=sftp_sett')->send();
-});
-
-$klein->respond('POST', '/admin/server/view/[i:id]/startup', function($request, $response, $service) use ($core) {
-
-    // Build Startup Variables
-    $startup_variables = [];
-    if ($request->param('daemon_variables') && !empty($request->param('daemon_variables'))) {
-
-        foreach (explode(PHP_EOL, $request->param('daemon_variables')) as $line => $contents) {
-
-            if (strpos($contents, '|')) {
-
-                list($var, $value) = explode('|', $contents);
-                $startup_variables[$var] = str_replace(array("\n", "\r"), "", $value);
-            }
-        }
-    }
-    $startup_variables['memory'] = $core->server->getData('max_ram');
-
-    ORM::get_db()->beginTransaction();
-
-    $orm = ORM::forTable('servers')->findOne($core->server->getData('id'));
-    $orm->set(array(
-        'daemon_startup' => $request->param('daemon_startup'),
-        'daemon_variables' => $request->param('daemon_variables')
-    ));
-    $orm->save();
-
-    try {
-
-        Request::put(
-                "https://" . $core->server->nodeData('fqdn') . ":" . $core->server->nodeData('daemon_listen') . "/server", array(
-            "X-Access-Token" => $core->server->nodeData('daemon_secret'),
-            "X-Access-Server" => $core->server->getData('hash')
-                ), array(
-            "json" => json_encode(array(
-                "command" => $request->param('daemon_startup'),
-                "variables" => $startup_variables
-            )),
-            "object" => "startup",
-            "overwrite" => true
-                )
-        );
-
-        ORM::get_db()->commit();
-        $service->flash('<div class="alert alert-success">Server startup command and variables have been updated.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    } catch (Exception $e) {
-
-        Debugger::log($e);
-        ORM::get_db()->rollBack();
-
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
-});
-
-$klein->respond('POST', '/admin/server/view/[i:id]/settings', function($request, $response, $service) use($core) {
-
-    if (!is_numeric($request->param('alloc_mem')) || !is_numeric($request->param('cpu_limit')) || !is_numeric($request->param('block_io'))) {
-
-        $service->flash('<div class="alert alert-danger">Allocated Memory, Block IO, and CPU limits must be an integer.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
-
-    if (!preg_match('/^[\w -]{4,35}$/', $request->param('server_name'))) {
-
-        $service->flash('<div class="alert alert-danger">The server name did not meet server requirements. Server names must be between 4 and 35 characters and not contain any special characters.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
-
-    if ($request->param('block_io') > 1000 || $request->param('block_io') < 10) {
-
-        $service->flash('<div class="alert alert-danger">Block IO must not be less than 10 or greater than 1000.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
-
-    ORM::get_db()->beginTransaction();
-
-    $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-    $server->name = $request->param('server_name');
-    $server->max_ram = $request->param('alloc_mem');
-    $server->save();
-
-    /*
-     * Build the Data
-     */
-    try {
-
-        Request::put("https://" . $core->server->nodeData('fqdn') . ":" . $core->server->nodeData('daemon_listen') . "/server", array(
-            "X-Access-Token" => $core->server->nodeData('daemon_secret'),
-            "X-Access-Server" => $core->server->getData('hash')), array(
-            "json" => json_encode(array(
-                "cpu" => (int) $request->param('cpu_limit'),
-                "memory" => (int) $request->param('alloc_mem'),
-                "io" => (int) $request->param('block_io')
-            )),
-            "object" => "build",
-            "overwrite" => false
-                )
-        );
-
-        ORM::get_db()->commit();
-
-        $service->flash('<div class="alert alert-success">Server settings have been updated.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    } catch (Exception $e) {
-
-        Debugger::log($e);
-        ORM::get_db()->rollBack();
-
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id'))->send();
-        return;
-    }
 });
 
 $klein->respond('GET', '/admin/server/new', function($request, $response, $service) use ($core) {
@@ -530,13 +346,12 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         }
 
         if ($unirest->code !== 204 && $unirest->code !== 200) {
-            throw new \Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP 1.1/" . $unirest->code . "]");
+            throw new \Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP " . $unirest->code . "]");
         }
 
         ORM::get_db()->commit();
     } catch (\Exception $e) {
 
-        //Debugger::log($e);
         ORM::get_db()->rollBack();
 
         $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.<br />' . $e->getMessage() . '</div>');
