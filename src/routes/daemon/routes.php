@@ -97,24 +97,14 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
         'Authorization' => 'Bearer ' . $bearer
     );
 
-    $updatedUrl = sprintf("://%s:%s/%s", $nodeObj->fqdn, $nodeObj->daemon_listen, $request->param('path'));
+    $updatedUrl = sprintf("%s/%s", Daemon::buildBaseUrlForNode($nodeObj->fqdn, $nodeObj->daemon_listen), $request->param('path'));
 
     try {
-        handleProxy('https'.$updatedUrl, $header, $request, $response);
+        handleProxy($updatedUrl, $header, $request, $response);
     } catch (\Exception $ex) {
-        if ($ex->getMessage() === 'SSL received a record that exceeded the maximum permissible length.') {
-         try {
-             handleProxy('http'.$updatedUrl, $header, $request, $response);
-         } catch (Exception $ex) {
-            $response->code(500)->json(array(
+        $response->code(500)->json(array(
                 'error' => $ex->getMessage()
             ))->send();
-         }   
-        } else {
-            $response->code(500)->json(array(
-                'error' => $ex->getMessage()
-            ))->send();
-        }
     }
     $klein->skipRemaining();
 });

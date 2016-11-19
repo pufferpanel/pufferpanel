@@ -17,7 +17,6 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM, \Unirest, \Tracy;
 
 $klein->respond('GET', '/node/settings', function($request, $response, $service) use ($core) {
 

@@ -246,8 +246,9 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 		return;
 
 	} catch (\Exception $e) {
-
+                
 		ORM::get_db()->rollBack();
+                \Tracy\Debugger::log($e);
 
 		$service->flash('<div class="alert alert-danger">There was an error encountered with this MySQL request.</div>');
 		$response->redirect('/admin/account/view/'.$request->param('id'))->send();

@@ -284,12 +284,11 @@ class Daemon extends Server {
         private function generateCall($url, $action = 'GET', $data = null) {
             $bearer = OAuthService::Get()->getPanelAccessToken();
             $header = array(
-              'Authorization' => 'Basic '. $bearer
+              'Authorization' => 'Bearer '. $bearer
             );
 
-            $updatedUrl = sprintf("http://%s:%s/%s", array(
-                $this->server->nodeData('fqdn'),
-                $this->server->nodeData('daemon_listen'),
+            $updatedUrl = sprintf("%s/%s", array(
+                $this->buildBaseUrl(),
                 $url
             ));
 
@@ -309,5 +308,38 @@ class Daemon extends Server {
                 }
             }
         }
-
+        
+        public function doesUseHttps() {
+            return self::doesNodeUseHTTPS($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'));
+        }
+        
+        public static function doesNodeUseHTTPS ($ip, $port) {
+            try {
+                Unirest\Request::get(sprintf("https://%s:%s", array ($ip, $port)));
+                return true;
+            } catch (Exception $ex) {
+                try {
+                    Unirest\Request::get(sprintf("https//%s:%s", array ($ip, $port)));                
+                } catch (Exception $exe) {
+                    throw new Exception("Daemon not available");
+                }                
+                return false;
+            }
+        }
+        
+        public function buildBaseUrl() {
+            return sprintf("%s://%s:%s/", array(
+                $this->doesUseHttps() ? "https" : "http",
+                $this->server->nodeData('fqdn'),
+                $this->server->nodeData('daemon_listen')
+            ));
+        }
+        
+        public static function buildBaseUrlForNode($ip, $port) {
+            return sprintf("%s://%s:%s/", array(
+                self::doesNodeUseHTTPS($ip, $port) ? "https" : "http",
+                $ip,
+                $port
+            ));
+        }
 }

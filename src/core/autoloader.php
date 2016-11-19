@@ -23,7 +23,6 @@
  */
 require_once(BASE_DIR . 'vendor/autoload.php');
 
-\Unirest\Request::verifyPeer(false);
 \Unirest\Request::timeout(5);
 
 /*
