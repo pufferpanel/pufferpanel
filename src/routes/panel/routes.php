@@ -171,7 +171,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     
     foreach ($nodeConnections as $nodeConnection) {
         try {
-            $url = explode("", $nodeConnection);
+            $url = explode(":", $nodeConnection);
             $unirest = Unirest\Request::get(vsprintf(Daemon::buildBaseUrlForNode($url[0], $url[1]) . '/network?ids=%s', array(
                         $nodeConnection,
                         $ids)),
