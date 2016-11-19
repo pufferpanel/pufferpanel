@@ -171,22 +171,13 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     
     foreach ($nodeConnections as $nodeConnection) {
         try {
-            $unirest = Unirest\Request::get(vsprintf('https://%s/network?ids=%s', array(
+            $unirest = Unirest\Request::get(vsprintf(Daemon::buildBaseUrlForNode(explode(":", $nodeConnection)[0], explode(":", $nodeConnection)[1]) . '/network?ids=%s', array(
                         $nodeConnection,
                         $ids)),
                         $header
             );
             $results = array_merge($results, get_object_vars(json_decode($unirest->body)));
         } catch (\Exception $e) {
-            try {
-                 $unirest = Unirest\Request::get(vsprintf('http://%s/network?ids=%s', array(
-                        $nodeConnection,
-                        $ids)),
-                        $header
-                );
-                $results = array_merge($results, get_object_vars(json_decode($unirest->body)));
-            } catch (\Exception $ex) {
-            }
         }
     }
     
