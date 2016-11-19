@@ -95,7 +95,7 @@ class Daemon extends Server {
 		try {
 
 			Unirest\Request::timeout(1);
-			$request = $this->generateServerCall("status");
+			$request = $this->generateServerCall("");
 
 			/*
 			* Valid Data was Returned
@@ -134,96 +134,6 @@ class Daemon extends Server {
 		}
 
 		return null;
-
-	}
-
-	/**
-	 * Returns the last x lines from the server log for a server.
-	 *
-	 * @param int $lines The number of lines from the server log to return.
-	 * @return string
-	 */
-	public function serverLog($lines = 750) {
-
-		if($this->online()) {
-
-			try {
-
-				$response = $this->generateServerCall(sprintf("log?lines=%s", $lines));
-
-				if($response->code !== 200) {
-					return isset($response->body->message) ? "An error occured using the daemon. Said '".$response->body->message."'" : "An unknown error occured with the daemon.";
-				}
-
-				return $response->body;
-
-			} catch(\Exception $e) {
-
-				\Tracy\Debugger::log($e);
-				return "Daemon error occured.";
-
-			}
-
-		} else {
-			return "Server is currently offline.";
-		}
-
-	}
-
-	/**
-	 * Generates a server.properties file from a given template if it does not already exist.
-	 *
-	 * @return bool|string
-	 */
-	public function generateServerProperties() {
-
-		$response = $this->_getServerProperties();
-
-		if(!$response) {
-			\Tracy\Debugger::log($this->node);
-			return "Unable to connect to the pufferd daemon running on the node.";
-		}
-
-		if(!in_array($response->code, array(200, 500))) {
-
-			switch($response->code) {
-
-				case 403:
-					return "Authentication error encountered.";
-				default:
-					return "[HTTP/{$response->code}] Invalid response was recieved. ({$response->raw_body})";
-
-			}
-
-		}
-
-		if($response->code == 500 || !isset($response->body->contents) || empty($response->body->contents)) {
-
-			/*
-			* Create server.properties
-			*/
-			if(!file_exists(APP_DIR.'templates/server.properties.tpl') || empty(file_get_contents(APP_DIR.'templates/server.properties.tpl'))) {
-
-				return "No Template Avaliable for server.properties";
-
-			}
-
-			try {
-
-				$this->generateServerCall("file/server.properties", 'POST',
-                                            sprintf(file_get_contents(APP_DIR.'templates/server.properties.tpl'), $this->server->server_port, $this->server->server_ip)
-				);
-
-			} catch(\Exception $e) {
-
-				\Tracy\Debugger::log($e);
-				return "An error occured when trying to write a server.properties file.";
-
-			}
-
-		}
-
-		return true;
 
 	}
 
@@ -308,25 +218,25 @@ class Daemon extends Server {
                 }
             }
         }
-        
+
         public function doesUseHttps() {
             return self::doesNodeUseHTTPS($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'));
         }
-        
+
         public static function doesNodeUseHTTPS ($ip, $port) {
             try {
                 Unirest\Request::get(sprintf("https://%s:%s", $ip, $port));
                 return true;
             } catch (Exception $ex) {
                 try {
-                    Unirest\Request::get(sprintf("https//%s:%s", $ip, $port));
+                    Unirest\Request::get(sprintf("http://%s:%s", $ip, $port));
+                    return false;
                 } catch (Exception $exe) {
                     throw new Exception("Daemon not available");
-                }                
-                return false;
+                }
             }
         }
-        
+
         public function buildBaseUrl() {
             return vprintf("%s://%s:%s/", array(
                 $this->doesUseHttps() ? "https" : "http",
@@ -334,7 +244,7 @@ class Daemon extends Server {
                 $this->server->nodeData('daemon_listen')
             ));
         }
-        
+
         public static function buildBaseUrlForNode($ip, $port) {
             return vprintf("%s://%s:%s/", array(
                 self::doesNodeUseHTTPS($ip, $port) ? "https" : "http",
