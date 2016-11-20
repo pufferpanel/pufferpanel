@@ -128,16 +128,17 @@ class OAuthService {
                 . "LEFT JOIN servers AS s ON s.id = oc.server_id "
                 . "WHERE access_token = ? AND expiretime > NOW()");
         $stmt->execute(array($token));
-        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (count($data) === 0) {
             return array("active" => false);
         }
+        $res = $data[0];
         return array(
-            "active" => strtotime($data['expiretime']) > time(),
-            "scope" => $data['scopes'],
-            "client_id" => $data['client_id'],
-            "username" => $data['user_id'],
-            "server_id" => $data['server_id']
+            "active" => true,
+            "scope" => $res['scopes'],
+            "client_id" => $res['client_id'],
+            "username" => $res['user_id'],
+            "server_id" => $res['server_id']
         );
     }
 
