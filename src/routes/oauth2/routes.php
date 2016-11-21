@@ -22,7 +22,7 @@ namespace PufferPanel\Core;
 
 use \PufferPanel\Core\OAuthService as OAuthService;
 
-$klein->respond('/oauth2/token/request', function($req, $res) {
+$klein->respond('POST', '/oauth2/token/request', function($req, $res) {
 
     $grantType = $req->param("grant_type");
 
@@ -30,8 +30,12 @@ $klein->respond('/oauth2/token/request', function($req, $res) {
         case 'client_credentials': {
                 $clientId = $req->param("client_id");
                 $clientSecret = $req->param("client_secret");
+                $internal = '.internal';
+                $length = strlen($internal);
 
-                if ($clientId === false || $clientSecret === false) {
+                if ($clientId === false || $clientSecret === false 
+                        //|| $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal
+                        ) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
                     $res->send();
@@ -81,8 +85,24 @@ $klein->respond('/oauth2/token/request', function($req, $res) {
 });
 
 $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
-    //TODO: ADD SECURITY SO ONLY DAEMON CAN VALIDATE
-    $token = $req->param('token');
+    $authHeader = trim($req->headers()['Authorization']);
+    $parsedHeader = explode(' ', $authHeader);
+    if ($authHeader === '' || count($parsedHeader) != 2 || $parsedHeader[0] !== 'Bearer') {
+        $res->code(401);
+        $res->json(array("error" => "invalid_token"));
+        $res->send();
+        return;
+    }
+    $node = \ORM::forTable('nodes')->where_equal('daemon_secret', $parsedHeader[1])->count();
+    
+    if ($node !== 1) {
+        $res->code(401);
+        $res->json(array("error" => "invalid_token"));
+        $res->send();
+        return;
+    }
+    
+    $token = $req->param('token');    
     if ($token === false || $token == null) {
         $res->code(400);
         $res->json(array("error" => "invalid_request"));

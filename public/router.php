@@ -47,7 +47,7 @@ Twig_Autoloader::register();
 if(Config::config('debugging') === true) {
 	Debugger::enable(Debugger::DEVELOPMENT, BASE_DIR.'/logs');
 } else {
-	Debugger::enable(Debugger::DETECT, BASE_DIR.'/logs');
+	Debugger::enable(Debugger::PRODUCTION, BASE_DIR.'/logs');
 }
 Debugger::$strictMode = true;
 
