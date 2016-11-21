@@ -64,6 +64,9 @@ chmod +x pufferd
 ./pufferd -install -auth {{ settings.master_url }} -token {{ node.daemon_secret }}
 checkResponseCode
 
+chown -R pufferd:pufferd /srv/pufferd
+checkResponseCode
+
 echo "Successfully installed the daemon"
 echo "Please start the daemon (if the service was installed, use systemctl start pufferd)"
 exit 0

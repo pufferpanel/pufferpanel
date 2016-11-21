@@ -32,7 +32,10 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
                     'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
                     'node' => $core->server->nodeData('node')
                 )),
-                'node' => $core->server->nodeData(),
+                'node' => array_merge($core->server->nodeData(),
+                        array(
+                            'protocol' => Daemon::doesNodeUseHTTPS($core->server->nodeData()['fqdn'], $core->server->nodeData()['daemon_listen']) ? "wss" : "ws"
+                        )),
                 'flash' => $service->flashes(),
                 'user' => $core->user->getData(),
                 'oauth' => OAuthService::Get()->getFor($core->user->getData('id'), $core->server->getData('id'))

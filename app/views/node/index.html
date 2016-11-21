@@ -216,25 +216,12 @@
                     onmessage: function(event) {}
                 };
                 try {
-                    socket = new WebSocket("wss://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
+                    socket = new WebSocket("{{ node.protocol }}://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
                 } catch (err) {
                     console.log(err);
-                    try {
-                        socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
-                    } catch (err2) {
-
-                        console.log(err2);
-                    }
+                    $("#sc_resp").html('Unable to connect to web socket server').fadeIn().delay(5000).fadeOut();
                 }
                 registerWebSocketHandler(socket);
-                socket.onerror = function () {
-                    console.warn("Switching to HTTP for websocket, this is NOT GOOD");
-                    socket = new WebSocket("ws://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
-                    registerWebSocketHandler(socket);
-                    socket.onerror = function() {
-                        $("#sc_resp").html('Unable to connect to web socket server').fadeIn().delay(5000).fadeOut();
-                    };
-                }
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
