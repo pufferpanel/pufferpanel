@@ -308,6 +308,23 @@ function configureNginx() {
 
 case $1 in
     install)
+
+        installNode=1
+        forceInstall=0
+        for i in "$@"
+        do 
+        case $i in 
+            --force)
+                forceInstall=1
+                shift
+                ;;
+            --withoutDaemon)
+                installNode=0
+                shift
+                ;;
+        esac
+        done
+
         type php 1>/dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo "PHP is not found within your PATH, cannot proceed"
@@ -334,7 +351,7 @@ case $1 in
             fi
         done
         if [ "${canInstall}" -eq "0" ]; then
-            if [ "$2" = "-f" ]; then
+            if [ "$installNode" -eq "1" ]; then
                 canInstall=1
                 echo "Forcing installer due to flag being present"
             else
@@ -357,6 +374,15 @@ case $1 in
         if [ $? -eq 0 ]; then
             configureApache
         fi
+        fi
+
+        if [ "$withoutDaemon" -ne "1" ]
+            echo "Installing pufferd daemon onto the local node"            
+            nodeSecret=$(uuidgen)
+            sed -e "s/{{ settings.master_url }}/http://${siteUrl}/g" | sed -e "s/{{ node.daemon_secret }}/${nodeSecret}/g" | source -c
+            $(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+                INSERT INTO nodes (name, location, fqdn, ip, daemon_secret,daemon_listen,daemon_sftp, daemon_base_dir, allocate_memory, allocate_disk, ips, ports, public, docker)
+                VALUES('LocalNode', (SELECT id FROM locations WHERE short = 'Localhost'), 'http://${siteUrl}', 'http://${siteUrl}', '${nodeSecret}', 5656, 5657, '/srv/pufferd', 0, 0, '{}', '{}', 1, 0)"
         fi
 
         printSeparator
