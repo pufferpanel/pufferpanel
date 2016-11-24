@@ -28,37 +28,11 @@ class Version {
 	private static $sha;
 
 	/**
-	 * Returns the SHA for the current version
-	 *
-	 * @return string
-	 */
-	public static function getGitSHA() {
-		if(isset(self::$sha)) {
-			return self::$sha;
-		}
-		if(is_dir(BASE_DIR.'.git')) {
-
-			$head = trim(file_get_contents(BASE_DIR.'.git/HEAD'));
-			if(strpos($head, 'ref: ') !== false) {
-				list(, $path) = explode(" ", $head);
-				$version = substr(trim(file_get_contents(BASE_DIR.'.git/'.$path)), 0, 8);
-			} else {
-				$version = $head;
-			}
-			
-		} else {
-			$version = 'Invalid';
-		}
-		self::$sha = $version;
-		return $version;
-	}
-
-	/**
 	 * Returns the version string, including the current version and sha
 	 * in the format "Version (sha)"
 	 */
 	public static function get() {
-		return trim(file_get_contents(SRC_DIR.'versions/current')).' (sha: '.self::getGitSHA().')';
+		return trim(file_get_contents(SRC_DIR.'versions/current'));
 	}
 
 }

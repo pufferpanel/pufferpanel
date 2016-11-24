@@ -220,7 +220,7 @@ class Daemon extends Server {
         }
 
         public function doesUseHttps() {
-            return self::doesNodeUseHTTPS($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'));
+            return self::doesNodeUseHTTPS($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'));
         }
 
         public static function doesNodeUseHTTPS ($ip, $port) {
@@ -238,7 +238,7 @@ class Daemon extends Server {
         }
 
         public function buildBaseUrl() {
-            return self::buildBaseUrlForNode($this->server->nodeData('fqdn'), $this->server->nodeData('daemon_listen'));
+            return self::buildBaseUrlForNode($this->server->nodeData('ip'), $this->server->nodeData('daemon_listen'));
         }
 
         public static function buildBaseUrlForNode($ip, $port) {

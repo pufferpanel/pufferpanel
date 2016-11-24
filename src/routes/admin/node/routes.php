@@ -85,6 +85,11 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         $response->redirect('/admin/node/new')->send();
         return;
     }
+    
+    $internalip = $request->param('internalip');
+    if (trim($internalip) === '') {
+        $internalip = $request->param('fqdn');
+    }
 
     $node = ORM::forTable('nodes')->create();
     $node->set(array(
@@ -93,7 +98,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
         'allocate_memory' => 0,
         'allocate_disk' => 0,
         'fqdn' => $request->param('fqdn'),
-        'ip' => $request->param('fqdn'),
+        'ip' => $internalip,
         'daemon_secret' => $core->auth->generateUniqueUUID('nodes', 'daemon_secret'),
         'daemon_listen' => $request->param('daemon_listen'),
         'daemon_sftp' => '5657',
@@ -254,6 +259,18 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $response->redirect('/admin/node/view/' . $request->param('id'))->send();
         return;
     }
+    
+    $internalip = $request->param('internalip');
+    if (trim($internalip) === '') {
+        $internalip = $request->param('fqdn');
+    }
+    
+    if (!filter_var(gethostbyname($internalip, FILTER_VALIDATE_IP))) {
+
+        $service->flash('<div class="alert alert-danger">The node\'s internal is not valid. Domains must resolve to an IP.</div>');
+        $response->redirect('/admin/node/view/' . $request->param('id'))->send();
+        return;
+    }
 
 
     $location = ORM::forTable('locations')->select('id')->findOne($request->param('location'));
@@ -263,6 +280,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $node->name = $request->param('name');
         $node->location = $location->id;
         $node->fqdn = $request->param('fqdn');
+        $node->ip = $internalip;
         $node->save();
 
         $service->flash('<div class="alert alert-success">Your node settings have been updated.</div>');
@@ -272,163 +290,6 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $service->flash('<div class="alert alert-danger">The requested node or location does not exist in the system.</div>');
         $response->redirect('/admin/node')->send();
     }
-});
-
-$klein->respond('POST', '/admin/node/view/[i:id]/add-port', function($request, $response, $service) use($core) {
-
-    if (!preg_match('/^[\d-,]+$/', $request->param('add_ports'))) {
-
-        $service->flash('<div class="alert alert-danger">Hold up there cowboy. Those ports don\'t seem to be in a valid format.</div>');
-        $response->redirect('/admin/node/view/' . $request->param('id') . '?tab=allocation')->send();
-        return;
-    }
-
-    $portList = Functions::processPorts($request->param('add_ports'));
-
-    $node = ORM::forTable('nodes')->findOne($request->param('add_ports_node'));
-
-    if (!$node) {
-
-        $service->flash('<div class="alert alert-danger">The requested node does not exist in the system.</div>');
-        $response->redirect('/admin/node')->send();
-        return;
-    }
-
-    $saveips = json_decode($node->ips, true);
-    $saveports = json_decode($node->ports, true);
-
-    foreach ($portList as $id => $port) {
-
-        if (
-                (strlen($port) > 0 && strlen($port) < 6) &&
-                array_key_exists($request->param('add_ports_ip'), $saveports) &&
-                !array_key_exists($port, $saveports[$request->param('add_ports_ip')])
-        ) {
-
-            $saveports[$request->param('add_ports_ip')][$port] = 1;
-            $saveips[$request->param('add_ports_ip')]['ports_free'] ++;
-        }
-    }
-
-    $node->ips = json_encode($saveips);
-    $node->ports = json_encode($saveports);
-    $node->save();
-
-    $service->flash('<div class="alert alert-success">Ports were successfully added to <strong>' . $request->param('add_ports_ip') . '</strong>.</div>');
-    $response->redirect('/admin/node/view/' . $request->param('id') . '?tab=allocation')->send();
-});
-
-$klein->respond('POST', '/admin/node/view/[i:id]/add-ip', function($request, $response, $service) use($core) {
-
-    $lines = explode("\r\n", str_replace(" ", "", $request->param('ip_port')));
-
-    $node = ORM::forTable('nodes')->findOne($request->param('id'));
-
-    if (!$node) {
-
-        $service->flash('<div class="alert alert-danger">The requested node does not exist in the system.</div>');
-        $response->redirect('/admin/node')->send();
-        return;
-    }
-
-    $IPA = json_decode($node->ips, true);
-    $IPP = json_decode($node->ports, true);
-
-    foreach ($lines as $id => $values) {
-
-        list($ip, $ports) = explode('|', $values);
-
-        $IPA = array_merge($IPA, array($ip => array()));
-        $IPP = array_merge($IPP, array($ip => array()));
-
-        $portList = Functions::processPorts($ports);
-
-        $portCount = count($portList);
-        for ($l = 0; $l < $portCount; $l++) {
-
-            $IPP[$ip][$portList[$l]] = 1;
-        }
-
-        if (count($IPP[$ip]) > 0) {
-
-            $IPA[$ip] = array_merge($IPA[$ip], array("ports_free" => count($IPP[$ip])));
-        } else {
-
-            $service->flash('<div class="alert alert-danger">You must enter ports to be used with the IP.</div>');
-            $response->redirect('/admin/node/view/' . $request->param('id') . '?tab-allocation')->send();
-            return;
-        }
-    }
-
-    $node->ips = json_encode($IPA);
-    $node->ports = json_encode($IPP);
-    $node->save();
-
-    $service->flash('<div class="alert alert-success">New IP address has been successfully allocated to this node.</div>');
-    $response->redirect('/admin/node/view/' . $request->param('id') . '?tab=allocation')->send();
-});
-
-$klein->respond('POST', '/admin/node/view/[i:id]/delete-port', function($request, $response) use($core) {
-
-    $node = ORM::forTable('nodes')->findOne($request->param('id'));
-
-    if (!$node) {
-        $response->body("The requested node does not exist in the system.")->send();
-        return;
-    }
-
-    $ips = json_decode($node->ips, true);
-    $ports = json_decode($node->ports, true);
-
-    if (
-            array_key_exists($request->param('ip'), $ports) &&
-            array_key_exists($request->param('port'), $ports[$request->param('ip')]) &&
-            $ports[$request->param('ip')][$request->param('port')] == 1
-    ) {
-
-        unset($ports[$request->param('ip')][$request->param('port')]);
-        $ips[$request->param('ip')]['ports_free'] --;
-    } else {
-        $response->body("That port either doesn't exist or is currently in use.")->send();
-        return;
-    }
-
-    $node->ips = json_encode($ips);
-    $node->ports = json_encode($ports);
-    $node->save();
-
-    $response->body('Done')->send();
-});
-
-$klein->respond('DELETE', '/admin/node/view/[i:id]/delete-ip/[:ip_address]', function($request, $response) use($core) {
-
-    $node = ORM::forTable('nodes')->findOne($request->param('id'));
-
-    if (ORM::forTable('servers')->where(array(
-                'node' => $request->param('id'),
-                'server_ip' => $request->param('ip_address')
-            ))->count() > 0) {
-        $response->code(500)->body('Unable to delete this IP because there are still servers associated with it.')->send();
-        return;
-    }
-
-    $ips = json_decode($node->ips, true);
-    $ports = json_decode($node->ports, true);
-
-    if (!array_key_exists($request->param('ip_address'), $ips) || !array_key_exists($request->param('ip_address'), $ports)) {
-        $response->code(500)->body('The requested IP does not exist on this node.')->send();
-        return;
-    }
-
-    unset($ips[$request->param('ip_address')]);
-    unset($ports[$request->param('ip_address')]);
-
-    $node->ips = json_encode($ips);
-    $node->ports = json_encode($ports);
-    $node->save();
-
-    $response->code(204)->send();
-    return;
 });
 
 $klein->respond('POST', '/admin/node/view/[i:id]/generate-autodeploy', function($request, $response, $service) use($core) {

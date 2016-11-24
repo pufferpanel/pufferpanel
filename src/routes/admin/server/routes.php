@@ -139,7 +139,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             'Authorization' => 'Bearer ' . $bearer
         );
 
-        $updatedUrl = sprintf('%s/server/%s', Daemon::buildBaseUrlForNode($node->fqdn, $node->daemon_listen), $core->server->getData('hash'));
+        $updatedUrl = sprintf('%s/server/%s', Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen), $core->server->getData('hash'));
 
         try {
             $unirest = Request::delete($updatedUrl, $header);
@@ -182,7 +182,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($
 
     try {
 
-        $unirest = Request::post(sprintf('%s/server/%s/install', Daemon::buildBaseUrlForNode($core->server->nodeData('fqdn'), $core->server->nodeData('daemon_listen')), $core->server->getData('hash')));
+        $unirest = Request::post(sprintf('%s/server/%s/install', Daemon::buildBaseUrlForNode($core->server->nodeData('ip'), $core->server->nodeData('daemon_listen')), $core->server->getData('hash')));
 
         ORM::get_db()->commit();
     } catch (Exception $e) {
@@ -311,7 +311,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
             'Authorization' => 'Bearer ' . $bearer
         );
 
-        $unirest = Request::put(Daemon::buildBaseUrlForNode($node->fqdn, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($data));
+        $unirest = Request::put(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($data));
 
         if ($unirest->code !== 204 && $unirest->code !== 200) {
             throw new \Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP " . $unirest->code . "]");
@@ -332,7 +332,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     
     //have daemon install server
     try {
-        Request::post(Daemon::buildBaseUrlForNode($node->fqdn, $node->daemon_listen) . '/server/' . $server_hash . '/install', $header, json_encode($data));
+        Request::post(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash . '/install', $header, json_encode($data));
     } catch (\Exception $ex) {
     }
     return;
@@ -349,7 +349,7 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
 
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
 
-    $unirest = Request::get(Daemon::buildBaseUrlForNode($node->fqdn, $node->daemon_listen) . '/templates');
+    $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/templates');
 
     $response->json($unirest->body)->send();
 });

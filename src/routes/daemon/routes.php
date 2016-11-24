@@ -97,7 +97,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
         'Authorization' => 'Bearer ' . $bearer
     );
 
-    $updatedUrl = sprintf("%s/%s", Daemon::buildBaseUrlForNode($nodeObj->fqdn, $nodeObj->daemon_listen), $request->param('path'));
+    $updatedUrl = sprintf("%s/%s", Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $request->param('path'));
 
     try {
         handleProxy($updatedUrl, $header, $request, $response);

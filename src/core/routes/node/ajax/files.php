@@ -148,7 +148,7 @@ class Files extends \PufferPanel\Core\Files {
 			$attached_folder = (!is_null($this->params['dir'])) ? $this->params['dir'] : "/";
 
 			$request = Unirest\Request::get(sprintf("http://%s:%s/server/%s/file/%s",
-                                $this->server->nodeData('fqdn'),
+                                $this->server->nodeData('ip'),
                                 $this->server->nodeData('daemon_listen'),
                                 $this->server->getData('hash'),
                                 $attached_folder), array(
