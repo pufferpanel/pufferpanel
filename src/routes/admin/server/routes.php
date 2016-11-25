@@ -291,7 +291,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
             $user->id(),
             $server->id(),
             '.internal_' . $user->id . '_' . $server->id,
-            OAuthService::Get()->getAllScopes(),
+            OAuthService::getUserScopes(),
             'internal_use',
             'internal_use'
     );

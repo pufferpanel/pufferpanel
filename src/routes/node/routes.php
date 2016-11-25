@@ -68,7 +68,7 @@ $klein->respond('POST', '/node/oauth', function($request, $response, $service) u
     }
     
     $pdo = ORM::get_db();
-    $secret = OAuthService::Get()->create($pdo, $core->user->getData('id'), $core->server->getData('id'), $id, OAuthService::Get()->getAllScopes(), $name, $desc);
+    $secret = OAuthService::Get()->create($pdo, $core->user->getData('id'), $core->server->getData('id'), $id, OAuthService::getUserScopes(), $name, $desc);
     $service->flash('<div class="alert alert-danger">Secret key generated: ' . $secret . '</div>');
 
     $response->redirect('/node/index')->send();

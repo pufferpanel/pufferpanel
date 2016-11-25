@@ -212,21 +212,24 @@ class OAuthService {
         $query->execute(array('pufferpanel'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
-            $this->create($pdo, 0, 0, 'pufferpanel', 'pufferadmin', 'pufferpanel', 'PufferPanel Internal Auth');
+            $this->create($pdo, 0, 0, 'pufferpanel', self::getUserScopes() . ' ' . self::getAdminScopes(), 'pufferpanel', 'PufferPanel Internal Auth');
             return $this->getPanelAccessToken();
         }
         return $data['client_secret'];
     }
     
     /**
-     * 
      * @return String
      */
     public static function generateSecret() {
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
     
-    public function getAllScopes() {
-        return 'server.start server.stop server.install server.edit server.file.get server.file.put server.console server.console.send server.stats server.reload server.network';
+    public static function getUserScopes() {
+        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network';        
+    }
+    
+    public static function getAdminScopes() {
+        return 'server.create server.delete server.edit server.reload node.stop';
     }
 }
