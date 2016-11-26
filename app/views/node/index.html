@@ -211,6 +211,7 @@
         });
 
 	$(window).load(function(){
+                $epoch = 0;
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
                 socket = {
                     onmessage: function(event) {}
@@ -219,9 +220,21 @@
                     socket = new WebSocket("{{ node.protocol }}://{{ node.fqdn }}:{{ node.daemon_listen }}/server/{{ server.hash }}/console?accessToken=" + Cookies.get('accessToken'));
                 } catch (err) {
                     console.log(err);
-                    $("#sc_resp").html('Unable to connect to web socket server').fadeIn().delay(5000).fadeOut();
+                    $("#sc_resp").html('Unable to connect to web socket server, will attempt to use timed refresh').fadeIn().delay(5000).fadeOut();
+                    fallbackToStatic();
                 }
-                registerWebSocketHandler(socket);
+                socket.onmessage = function (event) {
+                    data = event.data;
+                    var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+                    if (total.length > 750) {
+                            total = total.slice(total.length - 750);
+                    }
+                    $("#live_console").val(total.join("\n"));
+                    $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                };
+                socket.onerror = function(event) {
+                    fallbackToStatic();
+                }
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
@@ -431,20 +444,30 @@
                             }).fail(function() {
                             });
                 }
-
-                setInterval(pingStats, 2000);
-
-                function registerWebSocketHandler(ws) {
-                    ws.onmessage = function (event) {
+                
+                function fallBackToStatic() {
+                    setInterval(getLogs, 1000);
+                }
+                
+                function getLogs() {
+                    $.ajax({
+                        type: "GET",
+                        url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
+                        timeout: 1000
+                    }).done(function(event) {\
+                        $epoch = Date.now();
                         data = event.data;
                         var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-    			if (total.length > 750) {
-				total = total.slice(total.length - 750);
-			}
-			$("#live_console").val(total.join("\n"));
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-                    };
+                        if (total.length > 750) {
+                                total = total.slice(total.length - 750);
+                        }
+                        $("#live_console").val(total.join("\n"));
+                        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                    }).fail(function() {
+                    });
                 }
+
+                setInterval(pingStats, 2000);
 	});
 </script>
 {% endblock %}
