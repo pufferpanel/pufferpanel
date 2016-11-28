@@ -139,7 +139,7 @@ function configureUser() {
     username=""
     email=""
     password=""
-    uuid=$(uuidgen)
+    uuid=$(cat /proc/sys/kernel/random/uuid)
     while [ "${username}" == "" ]; do
         echo -n "Username: "
         read username
