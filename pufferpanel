@@ -7,7 +7,7 @@ blue=$(tput setaf 4)
 normal=$(tput sgr0)
 bold=$(tput bold)
 
-mysqlHost="localhost"
+mysqlHost=""
 mysqlPort="3306"
 mysqlDb="pufferpanel"
 mysqlUser="root"
@@ -32,6 +32,7 @@ function loadConfig() {
 
 function configureMysql() {
 
+    mysqlHost="localhost"
     type mysql 1>/dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "MySQL is not found within your PATH, cannot proceed"
