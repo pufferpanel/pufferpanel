@@ -202,4 +202,4 @@ CREATE EVENT IF NOT EXIST `oauthAccessCleaner`
 	COMMENT 'Cleans up expired tokens from the database'
 	DO BEGIN
 	DELETE FROM oauth_access_tokens WHERE expiretime < NOW();
-END
+END;

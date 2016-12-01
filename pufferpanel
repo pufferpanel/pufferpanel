@@ -75,6 +75,7 @@ function configureMysql() {
     echo ""
     echo "Creating pufferpanel account and installing database..."
     mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" < install/install.sql
+    mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "SET GLOBAL event_scheduler = ON;"
 
     newUser="pufferpanel"
     newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
