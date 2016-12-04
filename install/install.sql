@@ -194,12 +194,5 @@ INSERT INTO `locations` (`id`, `short`, `long`)
 VALUES
         (1, 'Localhost', 'Localhost');
 
-CREATE EVENT IF NOT EXIST `oauthAccessCleaner` 
-	ON SCHEDULE
-		EVERY 5 MINUTE
-	ON COMPLETION PRESERVE
-	ENABLE
-	COMMENT 'Cleans up expired tokens from the database'
-	DO BEGIN
-	DELETE FROM oauth_access_tokens WHERE expiretime < NOW();
-END;
+DROP EVENT IF EXISTS `oauthTokenCleaner`;
+CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PRESERVE ENABLE COMMENT '' DO DELETE FROM oauthAccessTokens WHERE expireTime < NOW();
