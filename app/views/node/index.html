@@ -454,7 +454,7 @@
                         type: "GET",
                         url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
                         timeout: 1000
-                    }).done(function(event) {\
+                    }).done(function(event) {
                         $epoch = Date.now();
                         data = event.data;
                         var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
