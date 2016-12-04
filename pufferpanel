@@ -410,6 +410,10 @@ case $1 in
         configureUser
         ;;
     addnginx)
+        configureNginx
+        ;;
+    addapache)
+        configureApache
         ;;
     update)
         chmod +x install/update
@@ -417,6 +421,6 @@ case $1 in
         ;;
     *)
         echo "PufferPanel"
-        echo "Usage: ./pufferpanel [install/update]"
+        echo "Usage: ./pufferpanel [install/update/updatesite/addnginx/addapache/adduser]"
         ;;
 esac
