@@ -222,10 +222,13 @@ function configureNginx() {
 
     phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
-        phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+        phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpSocket}" = "" ]; then
-            echo "Could not determine where PHP config is, cannot install config"
-            return
+            phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+            if [ "${phpSocket}" = "" ]; then
+                echo "Could not determine where PHP config is, cannot install config"
+                return
+            fi
         fi
     fi
 
