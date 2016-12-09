@@ -209,6 +209,73 @@
                 });
             }
         });
+        
+        function fallbackToStatic() {
+                setInterval(getLogs, 1000);
+        }
+                
+        function updatePlayerListVisibility(data) {
+                // Server is On or Starting
+                if(data == 1 || data == 3) {
+                        $("#stats_players").show();
+                } else {
+                        $("#stats_players").hide();
+                }
+        }
+
+        $isStatPinging = false;
+        function pingStats() {
+            if ($isStatPinging) {
+                return;
+            }
+            $isStatPinging = true;
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/stats',
+                timeout: 1000
+            }).done(function(data) {
+                memoryChart.removeData();
+                cpuChart.removeData();
+                if (data.error) {
+                    memoryChart.addData(0, "");
+                    cpuChart.addData(0, "");
+                } else {
+                    memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
+                    cpuChart.addData([parseInt(data.cpu)], "");
+                }
+                $isStatPinging = false;
+            }).fail(function() {
+                $isStatPinging = false;
+            });
+        }             
+
+        $isLogPinging = false;
+        function getLogs() {
+            if (!$("#console").hasClass("active") || $isLogPinging) {
+                return;
+            }
+            $isLogPinging = true;
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
+                timeout: 1000
+            }).done(function(event) {
+                $epoch = Date.now();
+                data = event;
+                if (data === 'undefined') {
+                    return;
+                }
+                var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+                if (total.length > 750) {
+                        total = total.slice(total.length - 750);
+                }
+                $("#live_console").val(total.join("\n"));
+                $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                $isLogPinging = false;
+            }).fail(function() {
+                $isLogPinging = false;
+            });
+        }
 
 	$(window).load(function(){
                 $epoch = 0;
@@ -285,16 +352,7 @@
 			barValueSpacing: 1,
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
-		});
-
-		function updatePlayerListVisibility(data) {
-			// Server is On or Starting
-			if(data == 1 || data == 3) {
-				$("#stats_players").show();
-			} else {
-				$("#stats_players").hide();
-			}
-		}
+		});		
 
 		{% if permission.has('console.commands') %}
 			$("#console_command").submit(function(event){
@@ -424,48 +482,7 @@
 				}
 			}
 
-		{% endif %}
-
-                function pingStats() {
-                            $.ajax({
-				type: "GET",
-				url: '/daemon/server/{{ server.hash }}/stats',
-				timeout: 1000
-                            }).done(function(data) {
-                                memoryChart.removeData();
-                                cpuChart.removeData();
-                                if (data.error) {
-                                    memoryChart.addData(0, "");
-                                    cpuChart.addData(0, "");
-                                } else {
-                                    memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
-                                    cpuChart.addData([parseInt(data.cpu)], "");
-                                }
-                            }).fail(function() {
-                            });
-                }
-                
-                function fallBackToStatic() {
-                    setInterval(getLogs, 1000);
-                }
-                
-                function getLogs() {
-                    $.ajax({
-                        type: "GET",
-                        url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
-                        timeout: 1000
-                    }).done(function(event) {
-                        $epoch = Date.now();
-                        data = event.data;
-                        var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-                        if (total.length > 750) {
-                                total = total.slice(total.length - 750);
-                        }
-                        $("#live_console").val(total.join("\n"));
-                        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-                    }).fail(function() {
-                    });
-                }
+		{% endif %}                
 
                 setInterval(pingStats, 2000);
 	});
