@@ -260,8 +260,8 @@
                 url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
                 timeout: 1000
             }).done(function(event) {
-                $epoch = Date.now();
-                data = event;
+                $epoch = event.epoch;
+                data = event.logs;
                 if (data === 'undefined') {
                     return;
                 }
