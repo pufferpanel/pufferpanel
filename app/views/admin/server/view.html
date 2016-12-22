@@ -226,22 +226,6 @@
 {% block javascript %}
 <script type="text/javascript">
 	$(document).ready(function() {
-		var socket = io('https://{{ node.fqdn }}:{{ node.daemon_listen }}/server/install/{{ server.hash }}', {'query': 'token={{ node.daemon_secret }}'});
-		socket.io.on('connect_error', function(err) {
-			$("#socket_error:hidden").show();
-		});
-		socket.on('connect', function () {
-			$("#socket_error:visible").hide();
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
-		socket.on('installer', function (data) {
-			var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.line).split("\n");
-			if (total.length > 750) {
-				total = total.slice(total.length - 750);
-			}
-			$("#live_console").val(total.join("\n"));
-			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-		});
 		$("form#deleteCheckpoint").submit(function(e) {
 			e.preventDefault();
 			if(confirm("STOP! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. This action cannot be undone!")) {
@@ -274,20 +258,6 @@
 			var ip = $(this).val().replace(/\./g, "\\.");
 			$("[id^=node_]").hide().prop("disabled", true);;
 			$("#node_"+ip).show().prop("disabled", false);
-		});
-		$("#gen_pass_bttn").click(function(){
-			$.ajax({
-				type: "GET",
-				url: "/admin/passgen/12",
-				success: function(data) {
-					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
-					$("#gen_pass").slideDown();
-					$('input[name="sftp_pass"]').val(data);
-					$('input[name="sftp_pass_2"]').val(data);
-					return false;
-				}
-			});
-			return false;
 		});
 		$('#rebuildContainer').click(function (event) {
 			event.preventDefault();
