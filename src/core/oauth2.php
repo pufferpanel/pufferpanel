@@ -46,74 +46,47 @@ class OAuthService {
     public function handleTokenCredentials($clientId, $clientSecret) {
         $pdo = ORM::get_db();
         $query = $pdo->prepare("SELECT id, client_secret, scopes FROM oauth_clients WHERE client_id = ? AND client_secret = ?");
-        $query->execute(array($clientId, $clientSecret));
+        $query->execute(array($clientId, password_hash($clientSecret, PASSWORD_BCRYPT)));
         $keys = $query->fetch(\PDO::FETCH_ASSOC);
         if ($keys === false || count($keys) == 0) {
             return array("error" => $clientId);
         }
-        $accessToken = self::generateSecret();
         $scopes = $keys['scopes'];
-        $dbId = $keys['id'];
-        $expire = time() + 3600;
-        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
-            $accessToken,
-            $dbId,
-            date("Y-m-d H:i:s", $expire),
-            $scopes
-        ));
-        return array(
-            "access_token" => $accessToken,
-            "expires" => $expire,
-            "token_type" => "bearer",
-            "scope" => $scopes
-        );
+        $tokenId = $keys['id'];
+        return self::generateAccessToken($tokenId, $scopes);
     }
-    
+
     public function handleResourceOwner($username, $password) {
         $email = explode('|', $username)[0];
-        $serverName = explode('|', $username)[1];        
+        $serverName = explode('|', $username)[1];
         $pdo = ORM::get_db();
-        $userQuery = $pdo->prepare("SELECT id, password FROM users WHERE email = ?");        
-        $userQuery->execute(array($email));        
+        $userQuery = $pdo->prepare("SELECT id, password FROM users WHERE email = ?");
+        $userQuery->execute(array($email));
         $user = $userQuery->fetch(\PDO::FETCH_ASSOC);
         if ($user === false || count($user) == 0) {
             return array("error" => $username);
         }
-        
+
         if (!password_verify($password, $user['password'])) {
             return array("error" => $password);
         }
-        
+
         $serverQuery = $pdo->prepare("SELECT s.id FROM servers AS s LEFT JOIN subusers AS su ON su.server = s.id WHERE s.name = ? AND (s.owner_id = ? OR su.user = ?) LIMIT 1");
         $serverQuery->execute(array($serverName, $user['id'], $user['id']));
         $server = $serverQuery->fetch(\PDO::FETCH_ASSOC);
         if ($server === false || count($server) == 0) {
             return array("error" => $username);
         }
-        
+
         $query = $pdo->prepare("SELECT id FROM oauth_clients WHERE user_id = ? AND server_id = ?");
         $query->execute(array($user['id'], $server['id']));
         $keys = $query->fetch(\PDO::FETCH_ASSOC);
         if ($keys === false || count($keys) == 0) {
             return array("error" => $username);
         }
-                
-        $accessToken = self::generateSecret();
-        $scopes = 'sftp';
-        $dbId = $keys['id'];
-        $expire = time() + 3600;
-        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
-            $accessToken,
-            $dbId,
-            date("Y-m-d H:i:s", $expire),
-            $scopes
-        ));
-        return array(
-            "access_token" => $accessToken,
-            "expires" => $expire,
-            "token_type" => "bearer",
-            "scope" => $scopes
-        );
+
+        $tokenId = $keys['id'];
+        return self::generateAccessToken($tokenId, 'sftp');
     }
 
     /**
@@ -124,7 +97,7 @@ class OAuthService {
         $pdo = ORM::get_db();
         $stmt = $pdo->prepare("SELECT user_id, IFNULL(hash, '*') AS server_id, oat.scopes, expiretime, oc.client_id "
                 . "FROM oauth_clients AS oc "
-                . "INNER JOIN oauth_access_tokens AS oat ON oat.client_id = oc.id "
+                . "INNER JOIN oauth_access_tokens AS oat ON oat.oauthClientId = oc.id "
                 . "LEFT JOIN servers AS s ON s.id = oc.server_id "
                 . "WHERE access_token = ? AND expiretime > NOW()");
         $stmt->execute(array($token));
@@ -145,16 +118,16 @@ class OAuthService {
     public function getAccessToken($userid, $serverid) {
         $pdo = ORM::get_db();
         $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
-                . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
+                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId "
+                . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW() ");
         $query->execute(array($userid, $serverid));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) == 0 || $data['access_token'] == '') {
-            $newquery = $pdo->prepare("SELECT client_id, client_secret FROM oauth_clients "
-                    . "WHERE user_id = ? AND server_id = ?");
-            $newquery->execute(array($userid, $serverid));
+            $newquery = $pdo->prepare("SELECT id, scopes FROM oauth_clients "
+                    . "WHERE user_id = ? AND server_id = ? AND name = ?");
+            $newquery->execute(array($userid, $serverid, $userid == 0 && $serverid == 0 ? 'pufferpanel' : '.internal_' . $userid . '_' . $serverid));
             $result = $newquery->fetch(\PDO::FETCH_ASSOC);
-            $newToken = $this->handleTokenCredentials($result['client_id'], $result['client_secret']);
+            $newToken = $this->generateAccessToken($result['id'], $result['scopes']);
             return $newToken['access_token'];
         }
         return $data['access_token'];
@@ -167,27 +140,27 @@ class OAuthService {
         $this->getOrGenPanelSecret();
         return $this->getAccessToken(0, 0);
     }
-    
+
     public function getFor($userId, $serverId) {
         $pdo = ORM::get_db();
         $query = $pdo->prepare("SELECT id, client_id, name, description FROM oauth_clients WHERE user_id = ? AND server_id = ? AND client_id NOT LIKE '\.internal%'");
         $query->execute(array($userId, $serverId));
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
+
     public function hasAccess($id, $userId) {
         return 1 <= ORM::forTable('oauth_clients')
-                ->where('user_id', $userId)
-                ->where('id', $id)
-                ->count();
+                        ->where('user_id', $userId)
+                        ->where('id', $id)
+                        ->count();
     }
-    
+
     public function revoke($id) {
         $pdo = ORM::get_db();
         $pdo->prepare("DELETE FROM oauth_access_tokens WHERE client_id = ?")->execute(array($id));
         $pdo->prepare("DELETE FROM oauth_clients WHERE id = ?")->execute(array($id));
     }
-    
+
     /**
      * 
      * @return String secret key
@@ -195,14 +168,14 @@ class OAuthService {
     public function create($pdo, $userId, $serverId, $id, $scopes = '', $name = '', $description = '') {
         $secret = self::generateSecret();
         $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)')->execute(array(
-                $id,
-                $secret,
-                $userId,
-                $serverId,
-                $scopes,
-                $name,
-                $description
-            ));
+            $id,
+            password_hash($secret, PASSWORD_BCRYPT),
+            $userId,
+            $serverId,
+            $scopes,
+            $name,
+            $description
+        ));
         return $secret;
     }
 
@@ -217,19 +190,37 @@ class OAuthService {
         }
         return $data['client_secret'];
     }
-    
+
     /**
      * @return String
      */
     public static function generateSecret() {
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
-    
+
     public static function getUserScopes() {
-        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network';        
+        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network';
     }
-    
+
     public static function getAdminScopes() {
         return 'server.create server.delete server.edit server.reload node.stop';
+    }
+
+    private static function generateAccessToken($tokenId, $scopes) {
+        $accessToken = self::generateSecret();
+        $pdo = ORM::get_db();
+        $expire = time() + 3600;
+        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
+            $accessToken,
+            $tokenId,
+            date("Y-m-d H:i:s", $expire),
+            $scopes
+        ));
+        return array(
+            "access_token" => $accessToken,
+            "expires" => $expire,
+            "token_type" => "bearer",
+            "scope" => $scopes
+        );
     }
 }

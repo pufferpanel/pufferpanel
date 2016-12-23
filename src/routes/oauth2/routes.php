@@ -33,9 +33,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 $internal = '.internal';
                 $length = strlen($internal);
 
-                if ($clientId === false || $clientSecret === false 
-                        //|| $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal
-                        ) {
+                if ($clientId === false || $clientSecret === false || $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
                     $res->send();
@@ -93,6 +91,7 @@ $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
         $res->send();
         return;
     }
+    
     $node = \ORM::forTable('nodes')->where_equal('daemon_secret', $parsedHeader[1])->count();
     
     if ($node !== 1) {
