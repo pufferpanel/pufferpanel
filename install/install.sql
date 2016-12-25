@@ -6,8 +6,7 @@ USE `pufferpanel`;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Create the tables needed
-DROP TABLE IF EXISTS `acp_settings`;
-CREATE TABLE `acp_settings` (
+CREATE TABLE IF NOT EXISTS `acp_settings` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `setting_ref` varchar(25) NOT NULL,
   `setting_val` text,
@@ -15,8 +14,7 @@ CREATE TABLE `acp_settings` (
   UNIQUE KEY `setting_ref_unique` (`setting_ref`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `downloads`;
-CREATE TABLE `downloads` (
+CREATE TABLE IF NOT EXISTS `downloads` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `server` char(36) NOT NULL,
   `token` char(32) NOT NULL,
@@ -24,8 +22,7 @@ CREATE TABLE `downloads` (
   PRIMARY KEY (`id`)
 ) ENGINE=MEMORY;
 
-DROP TABLE IF EXISTS `locations`;
-CREATE TABLE `locations` (
+CREATE TABLE IF NOT EXISTS `locations` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `short` varchar(10) NOT NULL,
   `long` varchar(500) NOT NULL,
@@ -33,8 +30,7 @@ CREATE TABLE `locations` (
   UNIQUE KEY `short_unique` (`short`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` char(36) NOT NULL,
   `username` varchar(50),
@@ -54,8 +50,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `account_change`;
-CREATE TABLE `account_change` (
+CREATE TABLE IF NOT EXISTS `account_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned,
   `type` varchar(50) NOT NULL DEFAULT '',
@@ -68,8 +63,7 @@ CREATE TABLE `account_change` (
   CONSTRAINT `FK_account_change_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `autodeploy`;
-CREATE TABLE `autodeploy` (
+CREATE TABLE IF NOT EXISTS `autodeploy` (
   `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
   `node` mediumint(10) unsigned NOT NULL,
   `code` char(36) NOT NULL DEFAULT '',
@@ -77,8 +71,7 @@ CREATE TABLE `autodeploy` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `actions_log`;
-CREATE TABLE `actions_log` (
+CREATE TABLE IF NOT EXISTS `actions_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `priority` tinyint(1) NOT NULL,
   `viewable` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -93,8 +86,7 @@ CREATE TABLE `actions_log` (
   CONSTRAINT `FK_actions_log_users` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `nodes`;
-CREATE TABLE `nodes` (
+CREATE TABLE IF NOT EXISTS `nodes` (
   `id` mediumint(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(15) NOT NULL,
   `location` mediumint(8) unsigned NOT NULL,
@@ -116,8 +108,7 @@ CREATE TABLE `nodes` (
   CONSTRAINT `FK_nodes_locations` FOREIGN KEY (`location`) REFERENCES `locations` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `servers`;
-CREATE TABLE `servers` (
+CREATE TABLE IF NOT EXISTS `servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hash` char(36) NOT NULL,
   `daemon_secret` char(36) NOT NULL,
@@ -133,8 +124,7 @@ CREATE TABLE `servers` (
   CONSTRAINT `FK_servers_users` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`)
  ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `permissions`;
-CREATE TABLE `permissions` (
+CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
   `server` int(10) unsigned NOT NULL,
@@ -146,8 +136,7 @@ CREATE TABLE `permissions` (
   CONSTRAINT `FK_permissions_users` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `subusers`;
-CREATE TABLE `subusers` (
+CREATE TABLE IF NOT EXISTS `subusers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
   `server` int(10) unsigned NOT NULL,
@@ -159,40 +148,37 @@ CREATE TABLE `subusers` (
   CONSTRAINT `FK_subusers_server` FOREIGN KEY (`server`) REFERENCES `servers` (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `oauth_clients` (
+	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`client_id` CHAR(16) NOT NULL COLLATE 'utf8_unicode_ci',
+	`client_secret` CHAR(64) NOT NULL COLLATE 'utf8_unicode_ci',
+	`user_id` INT(10) UNSIGNED NOT NULL,
+	`server_id` INT(10) UNSIGNED NOT NULL,
+	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`name` VARCHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
+	`description` VARCHAR(1024) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	PRIMARY KEY (`id`),
+	INDEX `FK_oauth_clients_users` (`user_id`),
+	INDEX `FK_oauth_clients_servers` (`server_id`),
+	INDEX `client_id` (`client_id`)
+) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `oauth_clients`;
-CREATE TABLE `oauth_clients` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `client_id` char(16) COLLATE utf8_unicode_ci NOT NULL,
-  `client_secret` char(64) COLLATE utf8_unicode_ci NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `server_id` int(10) unsigned NOT NULL,
-  `scopes` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `name` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
-  `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `FK_oauth_clients_users` (`user_id`),
-  KEY `FK_oauth_clients_servers` (`server_id`),
-  KEY `client_id` (`client_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-DROP TABLE IF EXISTS `oauth_access_tokens`;
-CREATE TABLE `oauth_access_tokens` (
-  `access_token` char(128) COLLATE utf8_unicode_ci NOT NULL,
-  `client_id` int(10) unsigned NOT NULL,
-  `expiretime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `scopes` varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`access_token`),
-  UNIQUE KEY `access_token` (`access_token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE IF NOT EXISTS `oauth_access_tokens` (
+	`access_token` CHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
+	`client_id` INT(10) UNSIGNED NOT NULL,
+	`expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	PRIMARY KEY (`access_token`),
+	UNIQUE INDEX `access_token` (`access_token`)
+) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
+;
 
 
 -- Enable foreign keys again
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO `locations` (`id`, `short`, `long`)
-VALUES
-        (1, 'Localhost', 'Localhost');
+INSERT IGNORE INTO `locations` (`id`, `short`, `long`)
+VALUES (1, 'Localhost', 'Localhost');
 
 DROP EVENT IF EXISTS `oauthTokenCleaner`;
 CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PRESERVE ENABLE COMMENT '' DO DELETE FROM oauthAccessTokens WHERE expireTime < NOW();
