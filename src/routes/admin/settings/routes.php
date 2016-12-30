@@ -72,15 +72,13 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
                     WHEN 'use_api' THEN :enable_api
                     WHEN 'https' THEN :https
                     WHEN 'allow_subusers' THEN :allow_subusers
-					WHEN 'master_url' THEN :master_url
-					WHEN 'assets_url' THEN :assets_url
+                    WHEN 'master_url' THEN :master_url
                     ELSE setting_val
                 END", array(
 					'enable_api' => (!in_array('use_api', $permissionsParam)) ? 0 : 1,
 					'https' => (!in_array('https', $permissionsParam)) ? 0 : 1,
 					'allow_subusers' => (!in_array('allow_subusers', $permissionsParam)) ? 0 : 1,
-					'master_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->master_url) : str_replace("https://", "http://", Settings::config()->master_url),
-					'assets_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->assets_url) : str_replace("https://", "http://", Settings::config()->assets_url)
+					'master_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->master_url) : str_replace("https://", "http://", Settings::config()->master_url)
 				)
 			);
 
@@ -158,8 +156,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		$urls = array();
 		foreach(array(
-			'main_url' => $request->param('main_url'),
-			'master_url' => $request->param('master_url')
+			'main_url' => $request->param('main_url')
 		) as $id => $val) {
 
 			$url = parse_url($val);
@@ -186,12 +183,10 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'main_website' THEN :main_url
                     WHEN 'master_url' THEN :master_url
-                    WHEN 'assets_url' THEN :assets_url
                     ELSE setting_val
                 END", array(
 					'main_url' => $urls['main_url'],
-					'master_url' => $urls['master_url'],
-					'assets_url' => $urls['assets_url']
+					'master_url' => $urls['master_url']
 				)
 			);
 
