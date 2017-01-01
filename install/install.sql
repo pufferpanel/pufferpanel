@@ -164,14 +164,16 @@ CREATE TABLE IF NOT EXISTS `oauth_clients` (
 ) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `oauth_access_tokens` (
-	`access_token` CHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
-	`client_id` INT(10) UNSIGNED NOT NULL,
-	`expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	PRIMARY KEY (`access_token`),
-	UNIQUE INDEX `access_token` (`access_token`)
+  `access_token` CHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
+  `oauthClientId` INT(10) UNSIGNED NOT NULL,
+  `expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  PRIMARY KEY (`access_token`),
+  UNIQUE INDEX `access_token` (`access_token`),
+  INDEX `FK_oauth_access_tokens_oauth_clients` (`oauthClientId`),
+  CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`oauthClientId`) REFERENCES `oauth_clients` (`id`)
 ) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
-;
+
 
 
 -- Enable foreign keys again
