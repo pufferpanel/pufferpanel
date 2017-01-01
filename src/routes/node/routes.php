@@ -22,11 +22,20 @@ namespace PufferPanel\Core;
 
 use ORM;
 
-$klein->respond('GET', '/node/[*]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', '/node/[*]', function($request, $response) use ($core) {
     $response->cookie('accessToken', OAuthService::Get()->getAccessToken($core->user->getData('id'), $core->server->getData('id')));
 });
 
 $klein->respond('GET', '/node/index', function($request, $response, $service) use ($core) {
+
+    $protocol = "wss";
+
+    try {
+        $protocol = Daemon::doesNodeUseHTTPS($core->server->nodeData()['fqdn'], $core->server->nodeData()['daemon_listen']) ? "wss" : "ws";
+    } catch (\Exception $ex) {
+        $service->flash('<div class="alert alert-danger">The daemon does not report it is online, functionality is reduced until it is restarted</div>');
+    }
+
     $response->body($core->twig->render('node/index.html', array(
                 'server' => array_merge($core->server->getData(), array(
                     'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
@@ -34,7 +43,7 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
                 )),
                 'node' => array_merge($core->server->nodeData(),
                         array(
-                            'protocol' => Daemon::doesNodeUseHTTPS($core->server->nodeData()['fqdn'], $core->server->nodeData()['daemon_listen']) ? "wss" : "ws"
+                            'protocol' => $protocol
                         )),
                 'flash' => $service->flashes(),
                 'user' => $core->user->getData(),

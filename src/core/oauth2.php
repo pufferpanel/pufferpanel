@@ -124,7 +124,7 @@ class OAuthService {
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) == 0 || $data['access_token'] == '') {
             $newquery = $pdo->prepare("SELECT id, scopes FROM oauth_clients "
-                    . "WHERE user_id = ? AND server_id = ? AND name = ?");
+                    . "WHERE user_id = ? AND server_id = ? AND client_id = ?");
             $newquery->execute(array($userid, $serverid, $userid == 0 && $serverid == 0 ? 'pufferpanel' : '.internal_' . $userid . '_' . $serverid));
             $result = $newquery->fetch(\PDO::FETCH_ASSOC);
             $newToken = $this->generateAccessToken($result['id'], $result['scopes']);

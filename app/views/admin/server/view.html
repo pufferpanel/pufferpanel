@@ -25,13 +25,19 @@
 					<div class="form-group">
 						<label class="control-label">Server Name</label>
 						<div>
-							<input type="text" name="server_name" value="{{ server.name }}" class="form-control" />
+							<input type="text" readonly="readonly"  name="server_name" value="{{ server.name }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label">Owner Email</label>
 						<div>
 							<input type="text" readonly="readonly" value="{{ user.username }} ({{ user.email }})" class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Server UUID</label>
+						<div>
+							<input type="text" readonly="readonly" value="{{ server.hash }}" class="form-control" />
 						</div>
 					</div>
 					<!--<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />-->

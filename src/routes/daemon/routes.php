@@ -73,7 +73,7 @@ $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $
 
     $pdo = ORM::get_db();
     $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-            . "INNER JOIN oauth_clients AS oc ON oc.id = oat.client_id "
+            . "INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId "
             . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
     $query->execute(array($userObj->id, $serverObj->id));
     $data = $query->fetch(\PDO::FETCH_ASSOC);

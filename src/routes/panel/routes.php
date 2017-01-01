@@ -21,7 +21,7 @@
 namespace PufferPanel\Core;
 
 use \ORM,
-    \Unirest;
+    \Unirest\Request;
 
 $klein->respond('GET', '/account', function($request, $response, $service) use ($core) {
 
@@ -164,26 +164,27 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
         $serverIds[] = $server['hash'];
         $nodes[] = $server["daemon_host"] . ":" . $server["daemon_listen"];
     }
+    foreach($servers as $server) {
+        $serverIds[] = $server['hash'];
+    }
 
     $ids = implode(",", $serverIds);
     $nodeConnections = array_unique($nodes);
     $results = array();
-    
+
     foreach ($nodeConnections as $nodeConnection) {
         try {
-            $url = explode(":", $nodeConnection);
-            $unirest = Unirest\Request::get(vsprintf(Daemon::buildBaseUrlForNode($url[0], $url[1]) . '/network?ids=%s', array(
-                        $nodeConnection,
-                        $ids)),
-                        $header
+            $unirest = Request::get(vsprintf(Daemon::buildBaseUrlForNode(explode(":", $nodeConnection)[0], explode(":", $nodeConnection)[1]) .'/network?ids=%s', array(
+                $ids)),
+                $header
             );
-            $results = array_merge($results, get_object_vars(json_decode($unirest->body)));
+            $results = array_merge($results, get_object_vars($unirest->body));
         } catch (\Exception $e) {
         }
     }
-    
+
     $newServers = array();
-    
+
     foreach($servers as $server) {
         foreach($results as $key => $value) {
             if ($server['hash'] == $key) {

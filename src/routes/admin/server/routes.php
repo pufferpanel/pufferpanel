@@ -125,10 +125,9 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
     ORM::forTable('subusers')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('permissions')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
-    ORM::forTable('oauth_access_tokens')->where('client_id', $core->server->getData('id'))->deleteMany();
     $clientIds = ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->select('id')->findMany();
     foreach ($clientIds as $id) {
-        ORM::forTable('oauth_access_tokens')->where('client_id', $id->id)->deleteMany();
+        ORM::forTable('oauth_access_tokens')->where('oauthClientId', $id->id)->deleteMany();
     }
     ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->deleteMany();
     ORM::forTable('servers')->where('id', $core->server->getData('id'))->deleteMany();
@@ -140,6 +139,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         );
 
         $updatedUrl = sprintf('%s/server/%s', Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen), $core->server->getData('hash'));
+        Debugger::log($updatedUrl);
 
         try {
             $unirest = Request::delete($updatedUrl, $header);
@@ -171,35 +171,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=delete')->send();
         return;
     }
-});
-
-$klein->respond('POST', '/admin/server/view/[i:id]/reinstall-server', function($request, $response) use ($core) {
-
-    ORM::get_db()->beginTransaction();
-    $server = ORM::forTable('servers')->findOne($core->server->getData('id'));
-    $server->installed = 0;
-    $server->save();
-
-    try {
-
-        $unirest = Request::post(sprintf('%s/server/%s/install', Daemon::buildBaseUrlForNode($core->server->nodeData('ip'), $core->server->nodeData('daemon_listen')), $core->server->getData('hash')));
-
-        ORM::get_db()->commit();
-    } catch (Exception $e) {
-
-        Debugger::log($e);
-        ORM::get_db()->rollBack();
-        $response->code(500)->body('Unable to process this request due to an error. ' . $e->getMessage())->send();
-        return;
-    }
-
-    if ($unirest->code > 204 || $unirest->code < 200) {
-        $response->code($unirest->code)->body('pufferd returned an error. ' . $unirest->raw_body)->send();
-        return;
-    }
-
-    $response->body('This container has been added to the reinstall queue. If the server is powered off it will begin immediately. You can track the reinstaller progress by clicking on the \'Installer\' tab above.')->send();
-    return;
 });
 
 $klein->respond('GET', '/admin/server/new', function($request, $response, $service) use ($core) {
