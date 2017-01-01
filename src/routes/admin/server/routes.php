@@ -314,7 +314,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         $unirest = Request::put(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($data));
 
         if ($unirest->code !== 204 && $unirest->code !== 200) {
-            throw new \Exception("An error occured trying to add a server. (" . $unirest->raw_body . ") [HTTP " . $unirest->code . "]");
+            throw new \Exception("An error occurred trying to add a server. (" . $unirest->raw_body . ") [HTTP " . $unirest->code . "]");
         }
 
         ORM::get_db()->commit();
@@ -322,7 +322,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
         ORM::get_db()->rollBack();
 
-        $service->flash('<div class="alert alert-danger">An error occured while trying to connect to the remote node. Please check that pufferd is running and try again.<br />' . $e->getMessage() . '</div>');
+        $service->flash('<div class="alert alert-danger">An error occurred while trying to connect to the remote node. Please check that the daemon is running and try again.<br />' . $e->getMessage() . '</div>');
         $response->redirect('/admin/server/new')->send();
         return;
     }
