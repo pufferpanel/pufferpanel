@@ -17,9 +17,9 @@
 			<tr>
 				<th>Node Name</th>
 				<th>Location</th>
-				<th>FQDN or IP Address</th>
-				<th>SFTP Address</th>
-				<th></th>
+				<th>Public Address</th>
+				<th>Private Address</th>
+				<th>Status</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -56,8 +56,6 @@
 				element.find(".applyUpdate").addClass(selector).css({"color": data});
 			});
 		});
-		updateServerStatus();
-		setInterval(updateServerStatus, 30000);
 	});
 </script>
 {% endblock %}

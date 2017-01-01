@@ -30,7 +30,7 @@
 					<div class="form-group col-md-6 nopad">
 						<label for="server_name" class="control-label">Server Name</label>
 						<div>
-							<input type="text" autocomplete="off" name="server_name" class="form-control" />
+							<input type="text" autocomplete="off" id="server_name" name="server_name" class="form-control" />
 							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Character Limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (Max 35 characters)</em></small></p>
 						</div>
 					</div>
@@ -50,7 +50,7 @@
 				</div>
 				<div class="row">
 					<div class="form-group col-md-6 nopad">
-						<label for="location" class="control-label">Server Location</label>
+						<label for="getLocation" class="control-label">Server Location</label>
 						<div>
 							<select name="location" id="getLocation" class="form-control">
 								{% for location in locations %}
@@ -61,7 +61,7 @@
 					</div>
 					<span id="updateNodeList">
 						<div class="form-group col-md-6 nopad">
-							<label for="server_name" class="control-label">Location Node</label>
+							<label for="getNode" class="control-label">Location Node</label>
 							<div>
 								<select name="node" id="getNode" class="form-control">
 									<option value="---">Select a Location</option>
@@ -70,38 +70,29 @@
 						</div>
 					</span>
 				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger" id="noPorts" style="display:none;margin-bottom:10px;"><strong>Error:</strong> This IP does not have any free ports available. Please select another.</div>
-					</div>
-				</div>
-				<!-- <div class="row" style="margin-bottom:-15px;">
-					<div class="col-md-12">
-						<div class="alert alert-info"><input type="checkbox" class="disabled" disabled name="assign_random"> Check this box to assign this server to a random public node in this location.</div>
-					</div>
-				</div> -->
 			</div>
 			<div class="well">
 				<div class="row">
 					<div class="form-group col-md-6 nopad">
-						<label for="alloc_mem" class="control-label">Server Plugin</label>
+						<label for="getPlugin" class="control-label">Server Plugin</label>
 						<div>
-                                                    <select name="plugin" id="getPlugin" class="form-control" data-bind="foreach: pluginData.plugins">
-                                                           <option data-bind="value: id, text: id"></option>
-                                                    </select>
+							<select name="plugin" id="getPlugin" class="form-control" data-bind="foreach: pluginData.plugins">
+							   <option data-bind="value: id, text: id"></option>
+							</select>
 						</div>
 					</div>
 				</div>
-                                <div data-bind="foreach: pluginData.activeDisplay()">
-                                    <div class="row" >
-                                            <div class="form-group col-md-6 nopad">                                                    
-                                                    <label for="" class="control-label" data-bind="text: display, attr: {for: key }"></label>
-                                                    <div class="input-group">
-                                                            <input type="text" autocomplete="off" class="form-control" data-bind="value: value, attr: {name: key, id: key}"/>
-                                                    </div>
-                                            </div>
-                                    </div>
-                                </div>
+					<div data-bind="foreach: pluginData.activeDisplay()">
+					<div class="row" >
+						<div class="form-group col-md-8 nopad">
+							<label class="control-label" data-bind="text: display, attr: {for: key }"></label>
+							<div class="input-group">
+								<input type="text" autocomplete="off" class="form-control" data-bind="value: value, attr: {name: key, id: key}"/>
+								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em data-bind="text: desc"></em></small></p>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="well">
 				<input type="submit" value="Create Server" class="btn btn-primary btn-sm" />
@@ -151,7 +142,7 @@
 			type: "GET",
 			url: "new/plugins",
 			data: {
-                                'node': $('#getNode').val()
+            	'node': $('#getNode').val()
 			},
 			datatype: 'json'
 		}).done(function(data) {
