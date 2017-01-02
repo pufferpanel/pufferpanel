@@ -77,7 +77,7 @@
 						<label for="getPlugin" class="control-label">Server Plugin</label>
 						<div>
 							<select name="plugin" id="getPlugin" class="form-control" data-bind="foreach: pluginData.plugins">
-							   <option data-bind="value: id, text: id"></option>
+							   <option data-bind="value: id, text: name"></option>
 							</select>
 						</div>
 					</div>
@@ -150,15 +150,19 @@
                     pluginData.variables.removeAll();
                     for (var key in data) {
                         if (data.hasOwnProperty(key)) {
+                            var displayname = data[key]["display"];
+                            if (displayname == undefined || displayname === '') {
+                                displayname = key;
+							}
                             pluginData.plugins.push({
                                 id: key,
-                                name: key
+                                name: displayname,
                             });
-                            temp = data[key];
+                            var temp = data[key]["variables"];
                             var vars = [];
                             for(var k in temp) {
                                  if (temp.hasOwnProperty(k)) {
-                                     result = temp[k];
+                                     var result = temp[k];
                                      result['key'] = k;
                                      vars.push(result);
                                  }
