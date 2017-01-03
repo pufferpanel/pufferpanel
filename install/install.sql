@@ -9,7 +9,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE IF NOT EXISTS `acp_settings` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `setting_ref` varchar(25) NOT NULL,
-  `setting_val` text,
+  `setting_val` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `setting_ref_unique` (`setting_ref`)
 ) ENGINE=InnoDB;
@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS `locations` (
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` char(36) NOT NULL,
-  `username` varchar(50),
+  `username` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` text DEFAULT NULL,
   `language` char(2) NOT NULL DEFAULT 'en',
   `register_time` int(15) unsigned NOT NULL,
-  `session_id` char(12) DEFAULT '',
-  `session_ip` varchar(50) DEFAULT '',
+  `session_id` char(12) DEFAULT NULL,
+  `session_ip` varchar(50) DEFAULT NULL,
   `root_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `notify_login_s` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `notify_login_f` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `account_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned,
+  `user_id` int(10) unsigned NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT '',
   `content` mediumtext NOT NULL,
   `key` mediumtext NOT NULL,
@@ -94,10 +94,9 @@ CREATE TABLE IF NOT EXISTS `nodes` (
   `allocate_disk` int(10) unsigned NOT NULL,
   `fqdn` varchar(255) NOT NULL,
   `ip` varchar(45) NOT NULL,
-  `daemon_secret` char(36) DEFAULT NULL,
+  `daemon_secret` char(36) NOT NULL,
   `daemon_listen` smallint(5) unsigned DEFAULT '5656',
-  `daemon_sftp` smallint(5) unsigned DEFAULT '22',
-  `daemon_base_dir` varchar(200) DEFAULT '/home/',
+  `daemon_sftp` smallint(5) unsigned DEFAULT '5657',
   `ips` mediumtext NOT NULL,
   `ports` mediumtext NOT NULL,
   `public` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -128,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
   `server` int(10) unsigned NOT NULL,
-  `permission` varchar(200) NOT NULL DEFAULT '',
+  `permission` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_permissions_users` (`user`),
   KEY `FK_permissions_servers` (`server`),
@@ -141,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `subusers` (
   `user` int(10) unsigned NOT NULL,
   `server` int(10) unsigned NOT NULL,
   `daemon_secret` char(36) NOT NULL,
-  `daemon_permissions` mediumtext,
+  `daemon_permissions` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_server_key` (`user`, `server`),
   CONSTRAINT `FK_subusers_user` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
@@ -150,29 +149,29 @@ CREATE TABLE IF NOT EXISTS `subusers` (
 
 CREATE TABLE IF NOT EXISTS `oauth_clients` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`client_id` CHAR(16) NOT NULL COLLATE 'utf8_unicode_ci',
-	`client_secret` CHAR(64) NOT NULL COLLATE 'utf8_unicode_ci',
+	`client_id` CHAR(16) NOT NULL,
+	`client_secret` CHAR(64) NOT NULL,
 	`user_id` INT(10) UNSIGNED NOT NULL,
 	`server_id` INT(10) UNSIGNED NOT NULL,
-	`scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
-	`name` VARCHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
-	`description` VARCHAR(1024) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+	`scopes` VARCHAR(1000) NOT NULL DEFAULT '',
+	`name` VARCHAR(128) NOT NULL,
+	`description` VARCHAR(1024) NOT NULL DEFAULT 'No description',
 	PRIMARY KEY (`id`),
 	INDEX `FK_oauth_clients_users` (`user_id`),
 	INDEX `FK_oauth_clients_servers` (`server_id`),
 	INDEX `client_id` (`client_id`)
-) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `oauth_access_tokens` (
-  `access_token` CHAR(128) NOT NULL COLLATE 'utf8_unicode_ci',
+  `access_token` CHAR(128) NOT NULL,
   `oauthClientId` INT(10) UNSIGNED NOT NULL,
-  `expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `scopes` VARCHAR(1000) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  `expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `scopes` VARCHAR(1000) NOT NULL DEFAULT '',
   PRIMARY KEY (`access_token`),
   UNIQUE INDEX `access_token` (`access_token`),
   INDEX `FK_oauth_access_tokens_oauth_clients` (`oauthClientId`),
   CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`oauthClientId`) REFERENCES `oauth_clients` (`id`)
-) COLLATE='utf8_unicode_ci' ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
 
 
