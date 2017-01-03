@@ -60,11 +60,14 @@ cd /srv/pufferd
 curl -L -o pufferd $downloadUrl
 checkResponseCode
 
-chmod +x pufferd
-./pufferd -install -auth {{ settings.master_url }} -token {{ node.daemon_secret }}
+mkdir /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-chown -R pufferd:pufferd /srv/pufferd
+chmod +x pufferd
+./pufferd -install -auth {{ settings.master_url }} -token {{ node.daemon_secret }} -config /etc/pufferd/config.json
+checkResponseCode
+
+chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
 echo "Successfully installed the daemon"
