@@ -20,8 +20,7 @@
 
 namespace PufferPanel\Core;
 
-use \ORM,
-    \PufferPanel\Core\Components\Functions;
+use \ORM;
 
 $klein->respond('GET', '/admin/node', function($request, $response, $service) use($core) {
 

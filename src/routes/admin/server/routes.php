@@ -139,7 +139,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         );
 
         $updatedUrl = sprintf('%s/server/%s', Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen), $core->server->getData('hash'));
-        Debugger::log($updatedUrl);
 
         try {
             $unirest = Request::delete($updatedUrl, $header);

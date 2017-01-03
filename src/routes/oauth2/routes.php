@@ -111,5 +111,4 @@ $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
     $server = OAuthService::Get();
     $response = $server->handleInfoRequest($token);
     $res->json($response);
-    //$res->send();    
 });
