@@ -232,20 +232,6 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     $server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
     $daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
-    // Build Startup Variables
-    $startup_variables = [];
-    if ($request->param('daemon_variables') && !empty($request->param('daemon_variables'))) {
-
-        foreach (explode(PHP_EOL, $request->param('daemon_variables')) as $line => $contents) {
-
-            if (strpos($contents, '|')) {
-
-                list($var, $value) = explode('|', $contents);
-                $startup_variables[$var] = str_replace(array("\n", "\r"), "", $value);
-            }
-        }
-    }
-
     $server = ORM::forTable('servers')->create();
     $server->set(array(
         'hash' => $server_hash,
@@ -271,9 +257,15 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
      */
     $data = array(
         "name" => $server_hash,
-        "memory" => (int) $request->param('alloc_mem'),
         "type" => $request->param('plugin')
     );
+
+    foreach($request->paramsPost() as $k => $value) {
+        if($k === 'plugin' || $k === 'server_name' || $k === 'email') {
+            continue;
+        }
+        $data[$k] = $value;
+    }
 
     try {
 
