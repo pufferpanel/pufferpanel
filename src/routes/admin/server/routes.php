@@ -260,8 +260,12 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         "type" => $request->param('plugin')
     );
 
+    $ignoredFields = array(
+        "location", "plugin", "node", "server_name", "email"
+    );
+
     foreach($request->paramsPost() as $k => $value) {
-        if($k === 'plugin' || $k === 'server_name' || $k === 'email') {
+        if(in_array($k, $ignoredFields, false)) {
             continue;
         }
         $data[$k] = $value;
