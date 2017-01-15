@@ -85,12 +85,12 @@ class OAuthService {
             return array("error" => $username);
         }
 
-        if(!in_array('sftp', explode(' ', $keys['scope']))) {
+        if(!in_array('sftp', explode(' ', $keys['scopes']))) {
             return array('error' => $username);
         }
 
         $tokenId = $keys['id'];
-        return self::generateAccessToken($tokenId, 'sftp');
+        return self::generateAccessToken($tokenId, 'sftp '. $server['id']);
     }
 
     /**
