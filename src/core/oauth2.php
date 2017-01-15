@@ -68,7 +68,7 @@ class OAuthService {
         }
 
         if (!password_verify($password, $user['password'])) {
-            return array("error" => $password);
+            return array("error" => $username);
         }
 
         $serverQuery = $pdo->prepare("SELECT s.id FROM servers AS s LEFT JOIN subusers AS su ON su.server = s.id WHERE s.name = ? AND (s.owner_id = ? OR su.user = ?) LIMIT 1");
@@ -78,11 +78,15 @@ class OAuthService {
             return array("error" => $username);
         }
 
-        $query = $pdo->prepare("SELECT id FROM oauth_clients WHERE user_id = ? AND server_id = ?");
+        $query = $pdo->prepare("SELECT id, scopes FROM oauth_clients WHERE user_id = ? AND server_id = ?");
         $query->execute(array($user['id'], $server['id']));
         $keys = $query->fetch(\PDO::FETCH_ASSOC);
         if ($keys === false || count($keys) == 0) {
             return array("error" => $username);
+        }
+
+        if(!in_array('sftp', explode(' ', $keys['scope']))) {
+            return array('error' => $username);
         }
 
         $tokenId = $keys['id'];
@@ -199,7 +203,7 @@ class OAuthService {
     }
 
     public static function getUserScopes() {
-        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network';
+        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network sftp';
     }
 
     public static function getAdminScopes() {
