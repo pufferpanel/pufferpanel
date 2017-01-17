@@ -2,6 +2,10 @@
 
 <?php
 
+require_once __DIR__ . '/../src/core/oauth2.php';
+
+use \PDO as PDO,
+    \PufferPanel\Core\OAuthService as OauthService;
 
 echo "Enter MySQL information to update the panel\n";
 
@@ -17,7 +21,7 @@ if (strlen($port) == 0) {
     $port = '3306';
 }
 
-$db='pufferpanel';
+$db = 'pufferpanel';
 
 echo "User [root]: ";
 $user = trim(fgets(STDIN));
@@ -25,66 +29,122 @@ if (strlen($user) == 0) {
     $user = 'root';
 }
 
-function hide_term() {
+function hide_term()
+{
     if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
         system('stty -echo');
 }
 
-function restore_term() {
+function restore_term()
+{
     if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
         system('stty echo');
 }
 
 hide_term();
+$validCreds = false;
 do {
     echo "Password: ";
     $pass = rtrim(fgets(STDIN), PHP_EOL);
-} while (strlen($pass) == 0);
+    try {
+        $pdo = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db . ';', $user, $pass);
+        $validCreds = true;
+    } catch (PDOException $e) {
+        echo 'Failed to connect to database: ' . $e->getMessage();
+    }
+} while (!$validCreds);
 restore_term();
 
-//$config = json_decode(file_get_contents(__DIR__ . '/../config.json'));
-//$user = $config->mysql->username;
-//$pass = $config->mysql->password;
-//$host = $config->mysql->host;
-//$db = $config->mysql->database;
-//$port = $config->mysql->port;
-
-echo 'Will open a connection to ' . $host . ':' . $port . ' using ' . $user;
 echo "\n";
 
-//Assume old version, if this fails we do not care
-$query = 'ALTER TABLE nodes ADD COLUMN docker TINYINT(4) NOT NULL DEFAULT \'1\'';
-$cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
-system($cmd);
+echo 'Applying database changes';
 
-echo "If above failed with 'Duplicate column', that error may be ignored\n";
+try {
+    $pdo->prepare('
+      ALTER TABLE nodes ADD COLUMN docker TINYINT(4) NOT NULL DEFAULT \'1\'
+    ')->execute();
+} catch (PDOException $e) {
+    echo 'Failed to apply docker column addition, probably already exists: ' . $e->getMessage();
+    echo 'This error can be ignored if this is the case';
+}
 
-//Add changes to 0.9
-$query = 'CREATE TABLE IF NOT EXISTS oauth_clients (
-	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	client_id CHAR(16) NOT NULL ,
-	client_secret CHAR(64) NOT NULL ,
-	user_id INT(10) UNSIGNED NOT NULL,
-	server_id INT(10) UNSIGNED NOT NULL,
-	scopes VARCHAR(1000) NOT NULL DEFAULT \'\' ,
-	name VARCHAR(128) NOT NULL ,
-	description VARCHAR(1024) NOT NULL DEFAULT \'\' ,
-	PRIMARY KEY (id),
-	INDEX FK_oauth_clients_users (user_id),
-	INDEX FK_oauth_clients_servers (server_id),
-	INDEX client_id (client_id)
+try {
+    $pdo->prepare('
+CREATE TABLE IF NOT EXISTS `oauth_clients` (
+	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`client_id` CHAR(16) NOT NULL,
+	`client_secret` CHAR(64) NOT NULL,
+	`user_id` INT(10) UNSIGNED NOT NULL,
+	`server_id` INT(10) UNSIGNED NOT NULL,
+	`scopes` VARCHAR(1000) NOT NULL DEFAULT \'\',
+	`name` VARCHAR(128) NOT NULL,
+	`description` VARCHAR(1024) NOT NULL DEFAULT \'No description\',
+	PRIMARY KEY (`id`),
+	INDEX `FK_oauth_clients_users` (`user_id`),
+	INDEX `FK_oauth_clients_servers` (`server_id`),
+	INDEX `client_id` (`client_id`)
+) ENGINE=InnoDB;
+')->execute();
+
+    $pdo->prepare('
+CREATE TABLE IF NOT EXISTS `oauth_access_tokens` (
+  `access_token` CHAR(128) NOT NULL,
+  `oauthClientId` INT(10) UNSIGNED NOT NULL,
+  `expiretime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `scopes` VARCHAR(1000) NOT NULL DEFAULT \'\',
+  PRIMARY KEY (`access_token`),
+  UNIQUE INDEX `access_token` (`access_token`),
+  INDEX `FK_oauth_access_tokens_oauth_clients` (`oauthClientId`),
+  CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`oauthClientId`) REFERENCES `oauth_clients` (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS oauth_access_tokens (
-  access_token char(128) COLLATE utf8_unicode_ci NOT NULL,
-  client_id int(10) unsigned NOT NULL,
-  expiretime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  scopes varchar(1000) COLLATE utf8_unicode_ci NOT NULL DEFAULT \'\',
-  PRIMARY KEY (access_token),
-  UNIQUE KEY access_token (access_token)
-) ENGINE=InnoDB; ';
+DROP EVENT IF EXISTS `oauthTokenCleaner`;
+CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PRESERVE ENABLE COMMENT \'\' DO DELETE FROM oauthAccessTokens WHERE expireTime < NOW();
+')->execute();
 
-$cmd = sprintf('mysql -h %s -P %d -u %s --password=%s -D %s -e "%s"', $host, $port, $user, escapeshellcmd($pass), $db, $query);
-system($cmd);
+    $oauth = OAuthService::Get();
 
-echo "\n";
+    $serversQuery = $pdo->prepare('SELECT id, owner_id AS owner FROM servers');
+    $serversQuery->execute();
+    $servers = $serversQuery->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($servers as $server) {
+        $serverId = $server['id'];
+        $userId = $server['owner'];
+        $oauth->create($pdo,
+            $userId,
+            $serverId,
+            '.internal_' . $userId . '_' . $serverId,
+            OAuthService::getUserScopes(),
+            'internal_use',
+            'internal_use'
+        );
+    }
+} catch (PDOException $e) {
+    echo 'Error applying DB changes, panel will not function without updates';
+    echo "\n";
+    echo $e->getMessage();
+    exit(1);
+}
+
+try {
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN plugin')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_startup')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_variables')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN max_ram')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN disk_space')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN cpu_limit')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN block_io')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN server_ip')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN server_port')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN sftp_user')->execute();
+    $pdo->prepare('ALTER TABLE servers DROP COLUMN installed')->execute();
+    $pdo->prepare('ALTER TABLE nodes DROP COLUMN daemon_base_dir')->execute();
+} catch (PDOException $e) {
+    echo 'Failed to delete un-used columns from the database, this should not impact usage though:';
+    echo "\n";
+    echo $e->getMessage();
+}
+
+echo 'Database changes complete';
+
+exit(0);
