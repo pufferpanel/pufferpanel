@@ -1,7 +1,7 @@
 #!/bin/bash
 # pufferd Installation Script
 
-pufferdVersion=nightly
+pufferdVersion={{ majorVersion }}
 
 export DEBIAN_FRONTEND=noninteractive
 downloadUrl="https://dl.pufferpanel.com/pufferd/${pufferdVersion}/pufferd"
@@ -13,7 +13,7 @@ BOLD=$(tput bold)
 
 function checkResponseCode() {
     if [ $? -ne 0 ]; then
-        echo -e "${RED}An error occured while installing, halting...${NORMAL}"
+        echo -e "${RED}An error occurred while installing, halting...${NORMAL}"
         exit 1
     fi
 }

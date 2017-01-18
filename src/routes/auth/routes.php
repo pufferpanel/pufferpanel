@@ -322,7 +322,8 @@ $klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $respons
 
     $response->header('Content-Type', 'text/plain');
     $response->body($core->twig->render('templates/auto-deploy.tpl', array(
-                'node' => $node
+                'node' => $node,
+                'majorVersion' => Version::getMajor()
     )));
     $response->send();
     return;
