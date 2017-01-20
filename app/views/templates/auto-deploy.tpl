@@ -1,7 +1,7 @@
 #!/bin/bash
 # pufferd Installation Script
 
-pufferdVersion={{ majorVersion }}
+pufferdVersion={{ pufferdVersion }}
 
 export DEBIAN_FRONTEND=noninteractive
 downloadUrl="https://dl.pufferpanel.com/pufferd/${pufferdVersion}/pufferd"
