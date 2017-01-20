@@ -34,9 +34,9 @@ class Version {
 	public static function get() {
 		return trim(file_get_contents(SRC_DIR.'versions/current'));
 	}
-
-    public static function getMajor() {
-        return trim(file_get_contents(SRC_DIR.'versions/major'));
-    }
+	
+	public static function getPufferd() {
+		return trim(file_get_contents(SRC_DIR.'versions/pufferd'));
+	}
 
 }
