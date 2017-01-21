@@ -385,7 +385,8 @@ case $1 in
             echo "Installing pufferd daemon onto the local node"            
             nodeSecret=$(cat /proc/sys/kernel/random/uuid)
             nodeSecret=${nodeSecret^^}
-            sed -e "s/{{ settings.master_url }}/http:\/\/${siteUrl}/g" app/views/templates/auto-deploy.tpl | sed -e "s/{{ node.daemon_secret }}/${nodeSecret}/g" > /tmp/pufferd.sh
+            pufferdVersion=$(cat src/versions/pufferd)
+            sed -e "s/{{ settings.master_url }}/http:\/\/${siteUrl}/g" -e "s/{{ node.daemon_secret }}/${nodeSecret}/g" -e "s/{{ pufferdVersion }}/${pufferdVersion}/g" app/views/templates/auto-deploy.tpl > /tmp/pufferd.sh
             chmod +x /tmp/pufferd.sh
             /tmp/pufferd.sh
             installWorked=$?
