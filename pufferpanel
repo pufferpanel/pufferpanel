@@ -395,7 +395,7 @@ case $1 in
                     INSERT INTO nodes (name, location, fqdn, ip, daemon_secret,daemon_listen,daemon_sftp, allocate_memory, allocate_disk, ips, ports, public, docker)
                     VALUES('LocalNode', (SELECT id FROM locations WHERE short = 'Localhost'), '${siteUrl}', '127.0.0.1', '${nodeSecret}', 5656, 5657, 0, 0, '{}', '{}', 1, 0)"
             else
-                echo "${red}Installation of pufferd failed locally, you will have to create a node manually on this machine if needed"
+                echo "${red}Installation of pufferd failed locally, you will have to create a node manually on this machine if needed${normal}"
             fi
         fi
 

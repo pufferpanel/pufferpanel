@@ -309,21 +309,20 @@ $klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $respons
 
     $deploy = ORM::forTable('autodeploy')->where('code', $request->param('key'))->where_gt('expires', time())->findOne();
     if (!$deploy) {
-        $response->code(404)->body('echo "The requested URL does not exist."; exit 1')->send();
+        $response->code(404)->send();
         return;
     }
 
     $node = ORM::forTable('nodes')->findOne($deploy->node);
     if (!$node) {
-        $response->code(404)->body('404 Node')->send();
+        $response->code(404)->send();
         return;
     }
-    // Check Access IP here
 
     $response->header('Content-Type', 'text/plain');
     $response->body($core->twig->render('templates/auto-deploy.tpl', array(
                 'node' => $node,
-                'majorVersion' => Version::getMajor()
+                'pufferdVersion' => Version::getPufferd()
     )));
     $response->send();
     return;
