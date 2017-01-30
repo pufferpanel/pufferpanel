@@ -9,7 +9,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE IF NOT EXISTS `acp_settings` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `setting_ref` varchar(25) NOT NULL,
-  `setting_val` text NOT NULL,
+  `setting_val` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `setting_ref_unique` (`setting_ref`)
 ) ENGINE=InnoDB;
