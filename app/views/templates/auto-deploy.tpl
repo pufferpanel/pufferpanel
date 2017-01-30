@@ -70,6 +70,8 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
+systemctl start pufferd
+
 echo "Successfully installed the daemon"
 echo "Please start the daemon (if the service was installed, use systemctl start pufferd)"
 exit 0
