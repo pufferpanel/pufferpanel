@@ -19,6 +19,7 @@
 namespace PufferPanel\Core\Router\Node;
 
 use \ORM, \PufferPanel\Core\Settings;
+use PufferPanel\Core\OAuthService;
 
 class Users extends \PufferPanel\Core\Email
 {
@@ -99,6 +100,16 @@ class Users extends \PufferPanel\Core\Email
                 ))->save();
 
             }
+            $daemonPerms = self::_getDaemonPermissions($data->permissions);
+
+            OAuthService::Get()->create(ORM::get_db(),
+                $user->id(),
+                $this->server->getData('id'),
+                '.internal_' . $user->id . '_' . $this->server->getData('id'),
+                $daemonPerms,
+                'internal_use',
+                'internal_use'
+            );
 
             if ($checkUserExists) {
 
@@ -185,6 +196,23 @@ class Users extends \PufferPanel\Core\Email
                 'permission' => $permission
             ))->save();
 
+        }
+
+        $clientIds = ORM::forTable('oauth_clients')
+            ->where(array(
+                'user' => $select->user,
+                'server' => $this->server->getData('id')
+            ))->find_many();
+
+        $daemonPerms = self::_getDaemonPermissions($data->permissions);
+        $daemonPermsString = implode(" ", $daemonPerms);
+
+        foreach($clientIds as $key -> $client) {
+            ORM::forTable('oauth_access_tokens')
+                ->where('oauthClientId', $client->id)
+                ->deleteMany();
+            $client->scopes = $daemonPermsString;
+            $client->save();
         }
 
     }
@@ -283,9 +311,46 @@ class Users extends \PufferPanel\Core\Email
 
     }
 
-    protected function __getDaemonPermissions(array $data)
+    protected static function _getDaemonPermissions(array $data)
     {
-        return array();
+        $daemonPerms = array();
+        foreach($data as $key => $value) {
+            switch($value) {
+                case "console.view":
+                    $daemonPerms[] = "server.console";
+                    $daemonPerms[] = "server.stats";
+                    $daemonPerms[] = "server.network";
+                    break;
+                case "console.commands":
+                    $daemonPerms[] = "server.console.send";
+                    break;
+                case "console.power":
+                    $daemonPerms[] = "server.install";
+                    $daemonPerms[] = "server.start";
+                    $daemonPerms[] = "server.stop";
+                    break;
+                case "files.view":
+                    $daemonPerms[] = "server.file.get";
+                    break;
+                case "files.edit":
+                    $daemonPerms[] = "server.file.get";
+                    break;
+                case "files.save":
+                    $daemonPerms[] = "server.file.put";
+                    break;
+                case "files.download":
+                    $daemonPerms[] = "server.file.get";
+                    break;
+                case "files.zip":
+                    break;
+                case "manage.view":
+                    break;
+                case "manage.ftp":
+                    $daemonPerms[] = "sftp";
+                    break;
+            }
+        }
+        return $daemonPerms;
     }
 
 }
