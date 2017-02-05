@@ -68,7 +68,8 @@ chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
 systemctl start pufferd
+systemctl enable pufferd
 
 echo "Successfully installed the daemon"
-echo "Please start the daemon (if the service was installed, use systemctl start pufferd)"
+echo "Please start the daemon manually if you are running Ubuntu 14.04"
 exit 0
