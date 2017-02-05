@@ -127,6 +127,7 @@ CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PR
 }
 
 try {
+    $pdo->prepare('ALTER TABLE servers DROP FOREIGN KEY FK_servers_plugin')->execute();
     $pdo->prepare('ALTER TABLE servers DROP COLUMN plugin')->execute();
     $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_startup')->execute();
     $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_variables')->execute();
