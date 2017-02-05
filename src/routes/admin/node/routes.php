@@ -263,7 +263,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $internalip = $request->param('fqdn');
     }
     
-    if (!filter_var(gethostbyname($internalip, FILTER_VALIDATE_IP))) {
+    if (!filter_var(gethostbyname($internalip), FILTER_VALIDATE_IP)) {
 
         $service->flash('<div class="alert alert-danger">The node\'s internal is not valid. Domains must resolve to an IP.</div>');
         $response->redirect('/admin/node/view/' . $request->param('id'))->send();
