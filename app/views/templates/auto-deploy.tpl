@@ -50,18 +50,15 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
 else
     yum -y install openssl curl java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
 fi
-checkResponseCode
 
 # Ensure /srv exists
 mkdir -p /srv/pufferd
-checkResponseCode
 
 cd /srv/pufferd
 curl -L -o pufferd $downloadUrl
 checkResponseCode
 
 mkdir /var/lib/pufferd /etc/pufferd
-checkResponseCode
 
 chmod +x pufferd
 ./pufferd -install -auth {{ settings.master_url }} -token {{ node.daemon_secret }} -config /etc/pufferd/config.json
