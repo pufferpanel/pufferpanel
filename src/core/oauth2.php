@@ -213,13 +213,17 @@ class OAuthService {
     private static function generateAccessToken($tokenId, $scopes) {
         $accessToken = self::generateSecret();
         $pdo = ORM::get_db();
-        $expire = time() + 3600;
-        $pdo->prepare("INSERT INTO oauth_access_tokens VALUES (?, ?, ?, ?)")->execute(array(
+        $pdo->prepare("INSERT INTO oauth_access_tokens (access_token, oauthClientId, scopes) VALUES (?, ?, ?)")->execute(array(
             $accessToken,
             $tokenId,
-            date("Y-m-d H:i:s", $expire),
             $scopes
         ));
+        $pdo->prepare("UPDATE oauth_access_tokens SET expiretime = DATE_ADD(expiretime, INTERVAL 1 HOUR) WHERE access_token = ?")->execute(array(
+            $accessToken
+        ));
+        $expireTimeQuery = $pdo->prepare("SELECT expiretime FROM oauth_access_tokens WHERE access_token = ?");
+        $expireTimeQuery->execute(array($accessToken));
+        $expire = strtotime($expireTimeQuery->fetch(\PDO::FETCH_ASSOC)['expiretime']);
         return array(
             "access_token" => $accessToken,
             "expires" => $expire,
