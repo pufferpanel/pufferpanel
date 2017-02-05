@@ -45,7 +45,7 @@ shift $((OPTIND-1))
 echo "Cleaning up old language files"
 rawPath="${installPath}/app/languages/raw/"
 outputPath="${installPath}/app/languages/"
-rm -f ${outputPath}*.json
+#rm -f ${outputPath}*.json
 
 echo "Generating language files"
 
