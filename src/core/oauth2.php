@@ -161,7 +161,7 @@ class OAuthService {
 
     public function revoke($id) {
         $pdo = ORM::get_db();
-        $pdo->prepare("DELETE FROM oauth_access_tokens WHERE client_id = ?")->execute(array($id));
+        $pdo->prepare("DELETE FROM oauth_access_tokens WHERE oauthClientId = ?")->execute(array($id));
         $pdo->prepare("DELETE FROM oauth_clients WHERE id = ?")->execute(array($id));
     }
 
