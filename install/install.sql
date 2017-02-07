@@ -182,4 +182,4 @@ INSERT IGNORE INTO `locations` (`id`, `short`, `long`)
 VALUES (1, 'Localhost', 'Localhost');
 
 DROP EVENT IF EXISTS `oauthTokenCleaner`;
-CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PRESERVE ENABLE COMMENT '' DO DELETE FROM oauthAccessTokens WHERE expireTime < NOW();
+CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 12 HOUR ON COMPLETION NOT PRESERVE ENABLE COMMENT '' DO DELETE FROM oauthAccessTokens WHERE expireTime < NOW();
