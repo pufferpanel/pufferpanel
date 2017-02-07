@@ -251,7 +251,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         return;
     }
 
-    if (!filter_var(gethostbyname($request->param('fqdn')), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE)) {
+    if (!filter_var(gethostbyname($request->param('fqdn')), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) && !filter_var($request->param('fqdn'), FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE)) {
 
         $service->flash('<div class="alert alert-danger">The node Fully Qualified Domain Name is not valid. Domains must resolve to a non-reserved IP.</div>');
         $response->redirect('/admin/node/view/' . $request->param('id'))->send();
@@ -262,10 +262,10 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
     if (trim($internalip) === '') {
         $internalip = $request->param('fqdn');
     }
-    
-    if (!filter_var(gethostbyname($internalip), FILTER_VALIDATE_IP)) {
 
-        $service->flash('<div class="alert alert-danger">The node\'s internal is not valid. Domains must resolve to an IP.</div>');
+    if (!filter_var(gethostbyname($internalip), FILTER_VALIDATE_IP) && !filter_var($internalip, FILTER_VALIDATE_IP)) {
+
+        $service->flash('<div class="alert alert-danger">The node\'s internal IP is not valid. Domains must resolve to an IP.</div>');
         $response->redirect('/admin/node/view/' . $request->param('id'))->send();
         return;
     }
