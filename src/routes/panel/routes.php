@@ -211,19 +211,9 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($cor
         $response->code(403)->body($core->twig->render('errors/403.html'))->send();
         return;
     } else {
-
-        if (!ORM::forTable('servers')->where(array(
-                    'hash' => $request->param('goto')
-                ))->findOne()) {
-
-            $response->body($core->twig->render('errors/installing.html'))->send();
-            return;
-        } else {
-
-            $response->cookie('pp_server_hash', $request->param('goto'), 0);
-            $response->redirect('/node/index')->send();
-            return;
-        }
+        $response->cookie('pp_server_hash', $request->param('goto'), 0);
+        $response->redirect('/node/index')->send();
+        return;
     }
 });
 
