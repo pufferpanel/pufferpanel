@@ -293,8 +293,8 @@
                 socket.onmessage = function (event) {
                     data = event.data;
                     var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-                    if (total.length > 750) {
-                            total = total.slice(total.length - 750);
+                    if (total.length > 100) {
+                            total = total.slice(total.length - 100);
                     }
                     $("#live_console").val(total.join("\n"));
                     $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
