@@ -24,7 +24,7 @@ $klein->respond('GET', '/assets/[:type]/[*:file]', function($request, $response)
 
 	if(!file_exists($file)) {
 
-		$response->code(404)->body("The requested asset does not exist on this server.")->send();
+		$response->code(404)->body("The requested asset does not exist on this server.");
 
 	}
 
@@ -51,6 +51,6 @@ $klein->respond('GET', '/assets/[:type]/[*:file]', function($request, $response)
 	header('Expires: '.gmdate('D, d M Y H:i:s', time() + 60 * 60).' GMT');
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file)).' GMT');
 
-	$response->body(file_get_contents($file))->send();
+	$response->body(file_get_contents($file));
 
 });

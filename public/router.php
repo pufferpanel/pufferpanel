@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \Unirest, \stdClass, \PufferPanel\Core\Config;
+use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \stdClass, \Klein\Klein;
 session_start();
 
 if(!ini_get('date.timezone')) {
@@ -30,12 +30,20 @@ define('APP_DIR', BASE_DIR.'app/');
 define('PANEL_DIR', BASE_DIR.'panel/');
 define('SRC_DIR', BASE_DIR.'src/');
 
+require_once SRC_DIR.'core/autoloader.php';
+
+$logsDir = Config::config('logsDirectory');
+
+if ($logsDir == null) {
+    $logsDir = BASE_DIR.'/logs';
+}
+
+define('LOGS_DIR', $logsDir);
+
 /*
  * Handle Cloudflare usage
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
-
-require_once SRC_DIR.'core/autoloader.php';
 
 Twig_Autoloader::register();
 
@@ -45,9 +53,9 @@ Twig_Autoloader::register();
  * enough to figure out if it is a local or development environment.
  */
 if(Config::config('debugging') === true) {
-	Debugger::enable(Debugger::DEVELOPMENT, BASE_DIR.'/logs');
+	Debugger::enable(Debugger::DEVELOPMENT, LOGS_DIR);
 } else {
-	Debugger::enable(Debugger::PRODUCTION, BASE_DIR.'/logs');
+	Debugger::enable(Debugger::PRODUCTION, LOGS_DIR);
 }
 Debugger::$strictMode = true;
 
@@ -62,10 +70,7 @@ ORM::configure(array(
 		PDO::ATTR_PERSISTENT => true,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 	),
-	'logging' => true,
-	'logger' => function($query, $time) {
-		DatabaseManager::logQuery($query, $time);
-	},
+	'logging' => false,
 	'caching' => true,
 	'caching_auto_clear' => true
 ));
@@ -74,7 +79,7 @@ ORM::configure(array(
  * Initalize Global core
  */
 $core = new stdClass();
-$klein = new \Klein\Klein();
+$klein = new Klein();
 
 $core->auth = new Authentication();
 $core->user = new User();
@@ -97,16 +102,6 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
 
-//Check if panel is completely installed.
-//If no settings are found, then we should load configuration setup and skip anything else
-if(ORM::for_table("acp_settings")->count() == 0) {
-
-	include BASE_DIR.'install/configure.php';
-	$klein->dispatch();
-	return;
-
-}
-
 $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
@@ -114,12 +109,11 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/)', function($requ
 		if(!strpos($request->pathname(), "/ajax/")) {
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
-			$response->redirect('/auth/login')->send();
+			$response->redirect('/auth/login');
 
 		} else {
 
 			$response->code(403);
-			$response->body('Not Authenticated.')->send();
 
 		}
 
@@ -136,7 +130,7 @@ $klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $
 		// Redirect /auth/* requests to /index if they are logged in
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
 		if(0 !== strpos($request->pathname(), "/auth/logout") && 0 !== strpos($request->pathname(), "/auth/remote/")) {
-			$response->redirect('/index')->send();
+			$response->redirect('/index');
 			$klein->skipRemaining();
 		}
 
@@ -148,7 +142,7 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 
 	if(!$core->auth->isServer()) {
 
-		$response->code(403)->body($core->twig->render('errors/403.html'))->send();
+		$response->body($core->twig->render('errors/403.html'))->code(403);
 		$klein->skipRemaining();
 
 	}
@@ -159,8 +153,7 @@ $klein->respond('/admin/[*]', function($request, $response, $service, $app, $kle
 
 	if(!$core->auth->isAdmin()) {
 
-		$response->code(403);
-		$response->body($core->twig->render('errors/403.html'))->send();
+		$response->body($core->twig->render('errors/403.html'))->code(403);
 		$klein->skipRemaining();
 
 	}
@@ -176,15 +169,30 @@ include SRC_DIR.'routes/node/routes.php';
 include SRC_DIR.'routes/oauth2/routes.php';
 include SRC_DIR.'routes/daemon/routes.php';
 
-$klein->respond('*', function($request, $response) use ($core) {
+$klein->respond(function($request, $response) {
+    echo $response->isAltered();
+    if(!$response->isAltered()) {
+        $response->code(404);
+    }
+    if ($response->code() >= 400 || $response->code() < 200) {
+        $response->abort($response->code());
+    }
+});
 
-	if(!$response->isSent()) {
+$klein->onHttpError(function($code, $klein) use ($core) {
 
-		$response->code(404);
-		$response->body($core->twig->render('errors/404.html'))->send();
+    $response = $klein->response();
 
-	}
+    switch($code) {
+        case '404': {
+            if($klein->request()->method('get')) {
+                $response->body($core->twig->render('errors/404.html'));
+            }
+        }
+        break;
+    }
 
 });
 
-$klein->dispatch();
+$res = new PPResponse($klein);
+$klein->dispatch(null, $res);

@@ -30,7 +30,7 @@ $klein->respond('GET', '/account', function($request, $response, $service) use (
                 'flash' => $service->flashes(),
                 'notify_login_s' => $core->user->getData('notify_login_s'),
                 'notify_login_f' => $core->user->getData('notify_login_f')
-    )))->send();
+    )));
 });
 
 $klein->respond('POST', '/account/update/[:action]', function($request, $response, $service) use ($core) {
@@ -41,7 +41,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning">' . $core->language->render('error.xsrf') . '</div>');
-        $response->redirect('/account')->send();
+        $response->redirect('/account');
         return;
     }
 
@@ -51,21 +51,21 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
         if (!$core->auth->verifyPassword($core->user->getData('email'), $request->param('password'))) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.invalid_password') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
         if ($request->param('newemail') == $core->user->getData('email')) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.account.same_email') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
         if (!filter_var($request->param('newemail'), FILTER_VALIDATE_EMAIL)) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.invalid_email') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
@@ -74,7 +74,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
         $account->save();
 
         $service->flash('<div class="alert alert-success">' . printf($core->language->render('success.account.email'), $request->param('newemail')) . '</div>');
-        $response->redirect('/account')->send();
+        $response->redirect('/account');
     }
 
     // Update Account Password
@@ -83,32 +83,32 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
         if (!$core->auth->verifyPassword($core->user->getData('email'), $request->param('p_password'))) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.invalid_password') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
         if ($request->param('p_password_new') != $request->param('p_password_new_2')) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.password_mismatch') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
         if (!$core->auth->validatePasswordRequirements($request->param('p_password_new'))) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.password_strength') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
         if (!$core->routes->updatePassword($request->param('p_password_new'))) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.unhandled') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
         } else {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('success.account.password') . '</div>');
-            $response->redirect('/auth/login')->send();
+            $response->redirect('/auth/login');
         }
     }
 
@@ -118,7 +118,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
         if (!$core->auth->verifyPassword($core->user->getData('email'), $request->param('password'))) {
 
             $service->flash('<div class="alert alert-danger">' . $core->language->render('error.invalid_password') . '</div>');
-            $response->redirect('/account')->send();
+            $response->redirect('/account');
             return;
         }
 
@@ -128,7 +128,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
         $account->save();
 
         $service->flash('<div class="alert alert-success">' . $core->language->render('success.notifications.updated') . '</div>');
-        $response->redirect('/account')->send();
+        $response->redirect('/account');
     }
 });
 
@@ -178,7 +178,10 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
                 $ids)),
                 $header
             );
-            $results = array_merge($results, get_object_vars($unirest->body));
+
+            if ($unirest->code == 200) {
+                $results = array_merge($results, get_object_vars($unirest->body));
+            }
         } catch (\Exception $e) {
         }
     }
@@ -198,22 +201,19 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
      * List Servers
      */
     $response->body($core->twig->render('panel/index.html', array(
-                'servers' => $newServers,
-                'user' => $core->user->getData(),
-                'flash' => $service->flashes()
-    )))->send();
+        'servers' => $newServers,
+        'user' => $core->user->getData(),
+        'flash' => $service->flashes()
+    )));
 });
 
 $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($core) {
 
     if (!$core->server->nodeRedirect($request->param('goto'))) {
-
-        $response->code(403)->body($core->twig->render('errors/403.html'))->send();
-        return;
+        $response->code(403)->body($core->twig->render('errors/403.html'));
     } else {
         $response->cookie('pp_server_hash', $request->param('goto'), 0);
-        $response->redirect('/node/index')->send();
-        return;
+        $response->redirect('/node/index');
     }
 });
 
@@ -231,11 +231,9 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
         }
 
         $response->cookie("pp_language", $request->param('language'), time() + 2678400);
-        $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index')->send();
-    } else {
-
-        $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index')->send();
     }
+
+    $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index');
 });
 
 $klein->respond('GET', '/totp', function($request, $response, $service) use($core) {
@@ -244,7 +242,7 @@ $klein->respond('GET', '/totp', function($request, $response, $service) use($cor
                 'totp' => $core->user->getData('use_totp'),
                 'xsrf' => $core->auth->XSRF(),
                 'flash' => $service->flashes()
-    )))->send();
+    )));
 });
 
 $klein->respond('POST', '/totp', function($request, $response, $service) use($core) {
@@ -252,14 +250,14 @@ $klein->respond('POST', '/totp', function($request, $response, $service) use($co
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning">' . $core->language->render('error.xsrf') . '</div>');
-        $response->redirect('/totp')->send();
+        $response->redirect('/totp');
         return;
     }
 
     if (!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))) {
 
         $service->flash('<div class="alert alert-danger">Unable to validate that TOTP token for this account.</div>');
-        $response->redirect('/totp')->send();
+        $response->redirect('/totp');
         return;
     }
 
@@ -269,5 +267,5 @@ $klein->respond('POST', '/totp', function($request, $response, $service) use($co
     $user->save();
 
     $service->flash('<div class="alert alert-warning">TOTP has been disabled for this account.</div>');
-    $response->redirect('/totp')->send();
+    $response->redirect('/totp');
 });

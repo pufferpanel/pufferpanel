@@ -50,7 +50,7 @@ $klein->respond('POST', '/ajax/account/totp', function($request, $response) use 
 				'.$core->auth->XSRF().'
 			</form>
 		</div>
-	</div>')->send();
+	</div>');
 
 });
 
@@ -58,12 +58,12 @@ $klein->respond('POST', '/ajax/account/totp/verify', function($request, $respons
 
 	// Responding with body rather than a flash since this is an AJAX request.
 	if(!$core->auth->XSRF($request->param('xsrf'))) {
-		$response->body('<div class="alert alert-danger">Unable to verify XSRF token. Please reload the page and try again.</div>')->send();
+		$response->body('<div class="alert alert-danger">Unable to verify XSRF token. Please reload the page and try again.</div>');
 		return;
 	}
 
 	if(!$core->auth->validateTOTP($request->param('token'), $core->user->getData('totp_secret'))) {
-		$response->body('<div class="alert alert-danger">Unable to verify your TOTP token. Please try again.</div>')->send();
+		$response->body('<div class="alert alert-danger">Unable to verify your TOTP token. Please try again.</div>');
 		return;
 	}
 
@@ -71,6 +71,6 @@ $klein->respond('POST', '/ajax/account/totp/verify', function($request, $respons
 	$account->set('use_totp', 1);
 	$account->save();
 
-	$response->body('<div class="alert alert-success">Your account has been enabled with TOTP verification. Please click the close button on this box to finish.</div>')->send();
+	$response->body('<div class="alert alert-success">Your account has been enabled with TOTP verification. Please click the close button on this box to finish.</div>');
 
 });

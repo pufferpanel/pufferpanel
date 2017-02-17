@@ -28,7 +28,7 @@ $klein->respond('GET', '/auth/login', function($request, $response, $service) us
     $response->body($core->twig->render('auth/login.html', array(
                 'xsrf' => $core->auth->XSRF(),
                 'flash' => $service->flashes()
-    )))->send();
+    )));
 });
 
 $klein->respond('POST', '/auth/login', function($request, $response, $service) use ($core) {
@@ -36,7 +36,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-        $response->redirect('/auth/login')->send();
+        $response->redirect('/auth/login');
         return;
     }
 
@@ -53,13 +53,12 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
         }
 
         $service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> The username or password you submitted was incorrect.</div>');
-        $response->redirect('/auth/login')->send();
-        return;
+        $response->redirect('/auth/login');
     } else {
 
         if ($account->use_totp == 1 && !$core->auth->validateTOTP($request->param('totp_token'), $account->totp_secret)) {
             $service->flash('<div class="alert alert-danger"><strong>Oh snap!</strong> Your Two-Factor Authentication token was missing or incorrect.</div>');
-            $response->redirect('/auth/login')->send();
+            $response->redirect('/auth/login');
             return;
         }
 
@@ -81,26 +80,22 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
 
         $response->cookie('pp_auth_token', $cookie->token, $cookie->expires);        
         
-        $response->redirect('/index')->send();
-        return;
+        $response->redirect('/index');
     }
 });
 
 $klein->respond('POST', '/auth/login/totp', function($request, $response) {
 
     if (!$request->param('check')) {
-        $response->body('false')->send();
-        return;
+        $response->body('false');
     } else {
 
         $totp = ORM::forTable('users')->select('use_totp')->where('email', $request->param('check'))->findOne();
 
         if (!$totp) {
-            $response->body('false')->send();
-            return;
+            $response->body('false');
         } else {
-            $response->body(($totp->use_totp == 1) ? 'true' : 'false')->send();
-            return;
+            $response->body(($totp->use_totp == 1) ? 'true' : 'false');
         }
     }
 });
@@ -120,7 +115,7 @@ $klein->respond('GET', '/auth/logout', function($request, $response) use ($core)
         $logout->save();
     }
 
-    $response->redirect('/auth/login')->send();
+    $response->redirect('/auth/login');
 });
 
 
@@ -129,7 +124,7 @@ $klein->respond('GET', '/auth/password', function($request, $response, $service)
     $response->body($core->twig->render('auth/password.html', array(
                 'xsrf' => $core->auth->XSRF(),
                 'flash' => $service->flashes()
-    )))->send();
+    )));
 });
 
 $klein->respond('GET', '/auth/password/[:action]', function($request, $response, $service) use ($core) {
@@ -137,7 +132,7 @@ $klein->respond('GET', '/auth/password/[:action]', function($request, $response,
     $response->body($core->twig->render('auth/password.html', array(
                 'flash' => $service->flashes(),
                 'noshow' => true
-    )))->send();
+    )));
 });
 
 $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $response, $service) use ($core) {
@@ -147,7 +142,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
     if (!$query) {
 
         $service->flash('<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>');
-        $response->redirect('/auth/password')->send();
+        $response->redirect('/auth/password');
     } else {
 
         $password = $core->auth->keygen('12');
@@ -168,7 +163,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
         ))->dispatch($query->content, Settings::config()->company_name . ' - New Password');
 
         $service->flash('<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
-        $response->redirect('/auth/login')->send();
+        $response->redirect('/auth/login');
     }
 });
 
@@ -177,29 +172,28 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
     if ($core->auth->XSRF($request->param('xsrf')) !== true) {
 
         $service->flash('<div class="alert alert-warning">The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-        $response->redirect('/auth/password')->send();
+        $response->redirect('/auth/password');
     }
 
     try {
 
-        $unirest = Unirest\Request::get(
-                        "https://www.google.com/recaptcha/api/siteverify", array(), array(
-                    'secret' => Settings::config('captcha_priv'),
-                    'response' => $request->param('g-recaptcha-response'),
-                    'remoteip' => $request->ip()
-                        )
-        );
+        $unirest = Unirest\Request::get("https://www.google.com/recaptcha/api/siteverify", array(), array(
+            'secret' => Settings::config('captcha_priv'),
+            'response' => $request->param('g-recaptcha-response'),
+            'remoteip' => $request->ip()
+        ));
 
         if (!isset($unirest->body->success) || !$unirest->body->success) {
 
             $service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
-            $response->redirect('/auth/password')->send();
+            $response->redirect('/auth/password');
             return;
         }
+
     } catch (\Exception $e) {
 
         $service->flash('<div class="alert alert-danger">Unable to query the captcha validation servers. Please try it again.</div>');
-        $response->redirect('/auth/password')->send();
+        $response->redirect('/auth/password');
         return;
     }
 
@@ -223,11 +217,11 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
         ))->dispatch($request->param('email'), Settings::config()->company_name . ' - Reset Your Password');
 
         $service->flash('<div class="alert alert-success">We have sent an email to the address you provided in the previous step. Please follow the instructions included in that email to continue. The verification key will expire in 4 hours.</div>');
-        $response->redirect('/auth/password/pending')->send();
+        $response->redirect('/auth/password/pending');
     } else {
 
         $service->flash('<div class="alert alert-danger">We couldn\'t find that email in our database.</div>');
-        $response->redirect('/auth/password')->send();
+        $response->redirect('/auth/password');
     }
 });
 
@@ -237,7 +231,7 @@ $klein->respond('GET', '/auth/register/[:token]?', function($request, $response,
                 'xsrf' => $core->auth->XSRF(),
                 'token' => $request->param('token'),
                 'flash' => $service->flashes()
-    )))->send();
+    )));
 });
 
 $klein->respond('POST', '/auth/register', function($request, $response, $service) use ($core) {
@@ -245,7 +239,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
     if (!$request->param('token')) {
 
         $service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> No token was submitted with the request.</div>');
-        $response->redirect('/auth/register')->send();
+        $response->redirect('/auth/register');
         return;
     }
 
@@ -253,34 +247,34 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning"><i class="fa fa-warning"></i> Invalid XSRF token submitted with the form.</div>');
-        $response->redirect('/auth/register/' . $request->param('token'))->send();
+        $response->redirect('/auth/register/' . $request->param('token'));
         return;
     }
 
     $query = ORM::forTable('account_change')->where(array(
-                'type' => 'user_register',
-                'key' => $request->param('token'),
-                'verified' => 0
-            ))->findOne();
+        'type' => 'user_register',
+        'key' => $request->param('token'),
+        'verified' => 0
+    ))->findOne();
 
     if (!$query) {
 
         $service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The token you provided appears to be invalid.</div>');
-        $response->redirect('/auth/register/' . $request->param('token'))->send();
+        $response->redirect('/auth/register/' . $request->param('token'));
         return;
     }
 
     if (!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {
 
         $service->flash('<div class="alert alert-danger"><i class="fa fa-warning"></i> The username you entered does not meet the requirements. Must be at least 4 characters, and no more than 35. Username can only contain the following characters: a-zA-Z0-9_-</div>');
-        $response->redirect('/auth/register/' . $request->param('token'))->send();
+        $response->redirect('/auth/register/' . $request->param('token'));
         return;
     }
 
     if (!$core->auth->validatePasswordRequirements($request->param('password'))) {
 
         $service->flash('<div class="alert alert-danger">Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.</div>');
-        $response->redirect('/auth/register/' . $request->param('token'))->send();
+        $response->redirect('/auth/register/' . $request->param('token'));
         return;
     }
 
@@ -289,7 +283,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
     if ($user) {
 
         $service->flash('<div class="alert alert-danger">Account with that username or email already exists in the system.</div>');
-        $response->redirect('/auth/register/' . $request->param('token'))->send();
+        $response->redirect('/auth/register/' . $request->param('token'));
         return;
     }
 
@@ -302,28 +296,26 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
     $query->delete();
 
     $service->flash('<div class="alert alert-success">Your account has been created successfully, you may now login.</div>');
-    $response->redirect('/auth/login')->send();
+    $response->redirect('/auth/login');
 });
 
 $klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $response) use ($core) {
 
     $deploy = ORM::forTable('autodeploy')->where('code', $request->param('key'))->where_gt('expires', time())->findOne();
     if (!$deploy) {
-        $response->code(404)->send();
+        $response->code(404);
         return;
     }
 
     $node = ORM::forTable('nodes')->findOne($deploy->node);
     if (!$node) {
-        $response->code(404)->send();
+        $response->code(404);
         return;
     }
 
     $response->header('Content-Type', 'text/plain');
     $response->body($core->twig->render('templates/auto-deploy.tpl', array(
-                'node' => $node,
-                'pufferdVersion' => Version::getPufferd()
+        'node' => $node,
+        'pufferdVersion' => Version::getPufferd()
     )));
-    $response->send();
-    return;
 });

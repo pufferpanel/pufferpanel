@@ -23,7 +23,7 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 	if(!$core->permissions->has('manage.view')) {
 
 		$response->code(403);
-		$response->body($core->twig->render('node/403.html'))->send();
+		$response->body($core->twig->render('node/403.html'));
 		return;
 
 	}
@@ -33,12 +33,12 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 		'xsrf' => $core->auth->XSRF(),
 		'server' => array_merge($core->server->getData(), array('server_jar' => (str_replace(".jar", "", $core->server->getData('server_jar'))))),
 		'node' => $core->server->nodeData()
-	)))->send();
+	)));
 
 });
 
 $klein->respond('POST', '/node/settings/password', function($request, $response) use ($core) {
 
-	$response->body($core->auth->keygen(rand(6, 10))."-".$core->auth->keygen(rand(6, 14)))->send();
+	$response->body($core->auth->keygen(rand(6, 10))."-".$core->auth->keygen(rand(6, 14)));
 
 });

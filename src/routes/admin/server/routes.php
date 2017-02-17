@@ -61,6 +61,7 @@ $klein->respond('GET', '/admin/server', function($request, $response, $service) 
             );
             $results = array_merge($results, get_object_vars($unirest->body));
         } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         }
     }
     
@@ -76,9 +77,9 @@ $klein->respond('GET', '/admin/server', function($request, $response, $service) 
     }    
 
     $response->body($core->twig->render('admin/server/find.html', array(
-                'flash' => $service->flashes(),
-                'servers' => $newServers
-            )))->send();
+        'flash' => $service->flashes(),
+        'servers' => $newServers
+    )));
 });
 
 $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function($request, $response, $service, $app, $klein) use($core) {
@@ -87,31 +88,28 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
 
         if ($request->method('post')) {
 
-            $response->body('A server by that ID does not exist in the system.')->send();
+            $response->body('A server by that ID does not exist in the system.');
         } else {
 
             $service->flash('<div class="alert alert-danger">A server by that ID does not exist in the system.</div>');
-            $response->redirect('/admin/server')->send();
+            $response->redirect('/admin/server');
         }
 
         $klein->skipRemaining();
-        return;
     }
 
     if (!$core->user->rebuildData($core->server->getData('owner_id'))) {
-
         throw new Exception("This error should never occur. Attempting to access a server with an unknown user id.");
     }
 });
 
 $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
-
     $response->body($core->twig->render('admin/server/view.html', array(
         'flash' => $service->flashes(),
         'node' => $core->server->nodeData(),
         'server' => $core->server->getData(),
         'user' => $core->user->getData())
-    ))->send();
+    ));
 });
 
 $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($request, $response, $service) use ($core) {
@@ -148,7 +146,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         if ($unirest->code == 204 || $unirest->code == 200) {
             ORM::get_db()->commit();
             $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
-            $response->redirect('/admin/server')->send();
+            $response->redirect('/admin/server');
         } else {
             throw new Exception('<div class="alert alert-danger">pufferd returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
         }
@@ -161,14 +159,14 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             ORM::get_db()->commit();
 
             $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system. <strong>Because you requested a force delete this server has been removed from the panel regardless of the reason for the error. This server and its data may still exist on the pufferd instance.</strong></div>');
-            $response->redirect('/admin/server')->send();
-            return;
-        }
+            $response->redirect('/admin/server');
+        } else {
 
-        ORM::get_db()->rollBack();
-        $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
-        $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=delete')->send();
-        return;
+            ORM::get_db()->rollBack();
+            $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system.</div>');
+            $response->redirect('/admin/server/view/' . $request->param('id') . '?tab=delete');
+
+        }
     }
 });
 
@@ -177,7 +175,7 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
     $response->body($core->twig->render('admin/server/new.html', array(
         'locations' => ORM::forTable('locations')->findMany(),
         'flash' => $service->flashes())
-    ))->send();
+    ));
 });
 
 $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $response) use ($core) {
@@ -195,7 +193,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
     }
 
     $response->header('Content-Type', 'application/json');
-    $response->body(json_encode(array('accounts' => $resp), JSON_PRETTY_PRINT))->send();
+    $response->body(json_encode(array('accounts' => $resp), JSON_PRETTY_PRINT));
 });
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
@@ -209,14 +207,14 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     if (!$node) {
 
         $service->flash('<div class="alert alert-danger">The selected node does not exist on the system.</div>');
-        $response->redirect('/admin/server/new')->send();
+        $response->redirect('/admin/server/new');
         return;
     }
 
     if (!preg_match('/^[\w -]{4,35}$/', $request->param('server_name'))) {
 
         $service->flash('<div class="alert alert-danger">The name provided for the server did not meet server requirements. Server names must be between 4 and 35 characters long and contain no special characters.</div>');
-        $response->redirect('/admin/server/new')->send();
+        $response->redirect('/admin/server/new');
         return;
     }
 
@@ -225,7 +223,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     if (!$user) {
 
         $service->flash('<div class="alert alert-danger">The email provided does not match any account in the system.</div>');
-        $response->redirect('/admin/server/new')->send();
+        $response->redirect('/admin/server/new');
         return;
     }
 
@@ -289,26 +287,26 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         ORM::get_db()->rollBack();
 
         $service->flash('<div class="alert alert-danger">An error occurred while trying to connect to the remote node. Please check that the daemon is running and try again.<br />' . $e->getMessage() . '</div>');
-        $response->redirect('/admin/server/new')->send();
+        $response->redirect('/admin/server/new');
         return;
     }
 
     $service->flash('<div class="alert alert-success">Server created successfully.</div>');
-    $response->redirect('/admin/server/view/' . $server->id())->send();
+    $response->redirect('/admin/server/view/' . $server->id());
     
     //have daemon install server
     try {
         Request::post(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash . '/install', $header, json_encode($data));
     } catch (\Exception $ex) {
+    } catch (\Throwable $ex) {
     }
-    return;
 });
 
 $klein->respond('POST', '/admin/server/new/node-list', function($request, $response) use($core) {
 
     $response->body($core->twig->render('admin/server/node-list.html', array(
                 'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()
-    )))->send();
+    )));
 });
 
 $klein->respond('GET', '/admin/server/new/plugins', function($request, $response) {
@@ -317,5 +315,5 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
 
     $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/templates');
 
-    $response->json($unirest->body)->send();
+    $response->json($unirest->body);
 });

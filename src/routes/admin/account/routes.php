@@ -17,7 +17,7 @@
     along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
-use \ORM;
+use \ORM, \Tracy\Debugger;
 
 $klein->respond('GET', '/admin/account', function($request, $response, $service) use ($core) {
 
@@ -29,7 +29,7 @@ $klein->respond('GET', '/admin/account', function($request, $response, $service)
 			'flash' => $service->flashes(),
 			'users' => $users
 		)
-	))->send();
+	));
 
 });
 
@@ -40,7 +40,7 @@ $klein->respond('GET', '/admin/account/new', function($request, $response, $serv
 		array(
 			'flash' => $service->flashes()
 		)
-	))->send();
+	));
 
 });
 
@@ -49,7 +49,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 	if(!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {
 
 		$service->flash('<div class="alert alert-danger">The username provided is not valid. Usernames must be at least 4 characters, and no more than 35 characters long. Usernames may not contain special characters.</div>');
-		$response->redirect('/admin/account/new')->send();
+		$response->redirect('/admin/account/new');
 		return;
 
 	}
@@ -57,7 +57,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 	if(!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
 
 		$service->flash('<div class="alert alert-danger">The email provided was not valid.</div>');
-		$response->redirect('/admin/account/new')->send();
+		$response->redirect('/admin/account/new');
 		return;
 
 	}
@@ -65,7 +65,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 	if(!$core->auth->validatePasswordRequirements($request->param('pass')) || $request->param('pass') != $request->param('pass_2')) {
 
 		$service->flash('<div class="alert alert-danger">The password provided did not meet the requirements, or did not match.</div>');
-		$response->redirect('/admin/account/new')->send();
+		$response->redirect('/admin/account/new');
 		return;
 
 	}
@@ -75,7 +75,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 	if($query) {
 
 		$service->flash('<div class="alert alert-danger">An account with that username or email already exists in the system.</div>');
-		$response->redirect('/admin/account/new')->send();
+		$response->redirect('/admin/account/new');
 		return;
 
 	}
@@ -100,7 +100,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 	))->dispatch($request->param('email'), Settings::config()->company_name.' - Account Created');
 
 	$service->flash('<div class="alert alert-success">Account has been successfully created.</div>');
-	$response->redirect('/admin/account/view/'.$user->id())->send();
+	$response->redirect('/admin/account/view/'.$user->id());
 
 });
 
@@ -109,7 +109,7 @@ $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $respons
 	if(!$core->user->rebuildData($request->param('id'))) {
 
 		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
-		$response->redirect('/admin/account')->send();
+		$response->redirect('/admin/account');
 		return;
 
 	}
@@ -135,7 +135,7 @@ $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $respons
 			'user' => $user,
 			'servers' => $servers
 		)
-	))->send();
+	));
 
 });
 
@@ -144,7 +144,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
 		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
-		$response->redirect('/admin/account')->send();
+		$response->redirect('/admin/account');
 		return;
 
 	}
@@ -152,7 +152,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 	if(!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
 
 		$service->flash('<div class="alert alert-danger">The email provided was not valid.</div>');
-		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		$response->redirect('/admin/account/view/'.$request->param('id'));
 		return;
 
 	}
@@ -165,7 +165,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 	$user->save();
 
 	$service->flash('<div class="alert alert-success">Account has been updated.</div>');
-	$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+	$response->redirect('/admin/account/view/'.$request->param('id'));
 
 });
 
@@ -174,7 +174,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/password', function($request
 	if(!$core->user->rebuildData($request->param('id'))) {
 
 		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
-		$response->redirect('/admin/account')->send();
+		$response->redirect('/admin/account');
 		return;
 
 	}
@@ -201,7 +201,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/password', function($request
 	$user->save();
 
 	$service->flash('<div class="alert alert-success">Account password has been updated.</div>');
-	$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+	$response->redirect('/admin/account/view/'.$request->param('id'));
 
 });
 
@@ -210,7 +210,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
 		$service->flash('<div class="alert alert-danger">A user with that ID could not be found in the system.</div>');
-		$response->redirect('/admin/account')->send();
+		$response->redirect('/admin/account');
 		return;
 
 	}
@@ -219,13 +219,13 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 
 	if($user->root_admin > 0) {
 		$service->flash('<div class="alert alert-danger">Root administrator accounts cannot be deleted through the panel, they must be manually removed from the database.</div>');
-		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		$response->redirect('/admin/account/view/'.$request->param('id'));
 		return;
 	}
 
 	if(ORM::forTable('servers')->where('owner_id', $user->id)->count() > 0) {
 		$service->flash('<div class="alert alert-danger">You may not delete users who have a server associated with their account.</div>');
-		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
+		$response->redirect('/admin/account/view/'.$request->param('id'));
 		return;
 	}
 
@@ -242,17 +242,15 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 		ORM::get_db()->commit();
 
 		$service->flash('<div class="alert alert-success">User successfully deleted and all associated data was removed.</div>');
-		$response->redirect('/admin/account')->send();
-		return;
+		$response->redirect('/admin/account');
 
 	} catch (\Exception $e) {
                 
 		ORM::get_db()->rollBack();
-                \Tracy\Debugger::log($e);
+        Debugger::log($e);
 
 		$service->flash('<div class="alert alert-danger">There was an error encountered with this MySQL request.</div>');
-		$response->redirect('/admin/account/view/'.$request->param('id'))->send();
-		return;
+		$response->redirect('/admin/account/view/'.$request->param('id'));
 
 	}
 

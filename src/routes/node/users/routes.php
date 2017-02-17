@@ -27,8 +27,7 @@ $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $re
     if (Settings::config('allow_subusers') != 1 || !$core->permissions->has('users.view')) {
 
         $response->code(403);
-        $response->body($core->twig->render('node/403.html'))->send();
-        $klein->skipRemaining();
+        $response->body($core->twig->render('node/403.html'));
     }
 });
 
@@ -40,11 +39,11 @@ $klein->respond('GET', '/node/users', function($request, $response, $service) us
                     ))->findArray();
 
     $response->body($core->twig->render('node/users/index.html', array(
-                'flash' => $service->flashes(),
-                'users' => $select,
-                'server' => $core->server->getData(),
-                'node' => $core->server->nodeData()
-    )))->send();
+        'flash' => $service->flashes(),
+        'users' => $select,
+        'server' => $core->server->getData(),
+        'node' => $core->server->nodeData()
+    )));
 });
 
 $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $response, $service) use ($core) {
@@ -56,7 +55,7 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
                     'xsrf' => $core->auth->XSRF(),
                     'server' => $core->server->getData(),
                     'node' => $core->server->nodeData()
-        )))->send();
+        )));
     } else if ($request->param('action') == 'edit' && $request->param('email')) {
 
         $user = ORM::forTable('subusers')
@@ -72,7 +71,7 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
         if (!$user) {
 
             $service->flash('<div class="alert alert-danger">An error occured when trying to access that subuser.</div>');
-            $response->redirect('/node/users')->send();
+            $response->redirect('/node/users');
             return;
         }
 
@@ -83,7 +82,7 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
                     'user' => array('email' => $user->email, 'user_id' => $user->user_id),
                     'node' => $core->server->nodeData(),
                     'xsrf' => $core->auth->XSRF()
-        )))->send();
+        )));
     } else if ($request->param('action') == 'revoke' && $request->param('email')) {
 
         $core->routes = new Router\Router_Controller('Node\Users', $core->server);
@@ -100,19 +99,18 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
         if (!$query) {
 
             $service->flash('<div class="alert alert-danger">Unable to locate the requested user for revoking.</div>');
-            $response->redirect('/node/users')->send();
+            $response->redirect('/node/users');
             return;
         }
 
         if (!$core->routes->revokeActiveUserPermissions($query)) {
 
             $service->flash('<div class="alert alert-danger">Unable to revoke permissions for this user. (' . $core->routes->retrieveLastError(false) . ')</div>');
-            $response->redirect('/node/users')->send();
-            return;
+            $response->redirect('/node/users');
         } else {
 
             $service->flash('<div class="alert alert-success">Permissions have been successfully revoked for the requested user.</div>');
-            $response->redirect('/node/users')->send();
+            $response->redirect('/node/users');
         }
     }
 });
@@ -125,33 +123,33 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-        $response->redirect('/node/users')->send();
+        $response->redirect('/node/users');
+        return;
     }
 
     if (!filter_var($request->param('email'), FILTER_VALIDATE_EMAIL)) {
 
         $service->flash('<div class="alert alert-danger">The email provided is invalid.</div>');
-        $response->redirect('/node/users/add')->send();
+        $response->redirect('/node/users/add');
+        return;
     }
 
     if ($request->param('email') == $core->user->getData('email')) {
 
         $service->flash('<div class="alert alert-danger">You cannot add yourself as a subuser.</div>');
-        $response->redirect('/node/users/add')->send();
+        $response->redirect('/node/users/add');
+        return;
     }
 
-    if (!$response->isLocked()) {
+    if (!$core->routes->addSubuser($request->paramsPost())) {
 
-        if (!$core->routes->addSubuser($request->paramsPost())) {
+        $service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to add this subuser. Please try again.</div>');
+        $response->redirect('/node/users/add');
+        return;
+    } else {
 
-            $service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to add this subuser. Please try again.</div>');
-            $response->redirect('/node/users/add')->send();
-            return;
-        } else {
-
-            $service->flash('<div class="alert alert-success">Successfully added subuser.</div>');
-            $response->redirect('/node/users')->send();
-        }
+        $service->flash('<div class="alert alert-success">Successfully added subuser.</div>');
+        $response->redirect('/node/users');
     }
 });
 
@@ -163,20 +161,17 @@ $klein->respond('POST', '/node/users/edit', function($request, $response, $servi
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
         $service->flash('<div class="alert alert-warning"> The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
-        $response->redirect('/node/users')->send();
+        $response->redirect('/node/users');
+        return;
     }
 
-    if (!$response->isLocked()) {
+    if (!$core->routes->modifySubuser($request->paramsPost())) {
 
-        if (!$core->routes->modifySubuser($request->paramsPost())) {
+        $service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to modify this subuser. (' . $core->routes->retrieveLastError(false) . ')</div>');
+        $response->redirect('/node/users');
+    } else {
 
-            $service->flash('<div class="alert alert-danger">Something appears to have gone wrong when trying to modify this subuser. (' . $core->routes->retrieveLastError(false) . ')</div>');
-            $response->redirect('/node/users')->send();
-            return;
-        } else {
-
-            $service->flash('<div class="alert alert-success">Successfully modified subuser.</div>');
-            $response->redirect('/node/users')->send();
-        }
+        $service->flash('<div class="alert alert-success">Successfully modified subuser.</div>');
+        $response->redirect('/node/users');
     }
 });

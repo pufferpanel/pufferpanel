@@ -26,7 +26,7 @@ $klein->respond('GET', '/admin/settings/[:page]', function($request, $response, 
 		array(
 			'flash' => $service->flashes()
 		)
-	))->send();
+	));
 
 });
 
@@ -44,7 +44,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		);
 
 		$service->flash('<div class="alert alert-success">Your reCAPTCHA settings have been updated.</div>');
-		$response->redirect('/admin/settings/captcha')->send();
+		$response->redirect('/admin/settings/captcha');
 
 	}
 
@@ -56,7 +56,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		$query->save();
 
 		$service->flash('<div class="alert alert-success">Your company name has been successfully updated.</div>');
-		$response->redirect('/admin/settings/global')->send();
+		$response->redirect('/admin/settings/global');
 
 	}
 
@@ -91,7 +91,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		$response->redirect('/admin/settings/global')->send();
+		$response->redirect('/admin/settings/global');
 
 	}
 
@@ -102,7 +102,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		if(!in_array($request->param('transport_method'), array('php', 'postmark', 'mandrill', 'mailgun', 'sendgrid'))) {
 
 			$service->flash('<div class="alert alert-danger">The email method selected was not a valid choice.</div>');
-			$response->redirect('/admin/settings/email')->send();
+			$response->redirect('/admin/settings/email');
 			return;
 
 		}
@@ -110,7 +110,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		if(!filter_var($request->param('transport_email'), FILTER_VALIDATE_EMAIL)) {
 
 			$service->flash('<div class="alert alert-danger">The email provided as the sendmail address is not valid.</div>');
-			$response->redirect('/admin/settings/email')->send();
+			$response->redirect('/admin/settings/email');
 			return;
 
 		}
@@ -118,7 +118,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		if(empty($request->param('transport_token')) && ($request->param('transport_method') != 'php')) {
 
 			$service->flash('<div class="alert alert-danger">The API key was not provided for the selected method.</div>');
-			$response->redirect('/admin/settings/email')->send();
+			$response->redirect('/admin/settings/email');
 			return;
 
 		}
@@ -147,7 +147,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		$response->redirect('/admin/settings/email')->send();
+		$response->redirect('/admin/settings/email');
 
 	}
 
@@ -164,7 +164,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			if(!isset($url['host'])) {
 
 				$service->flash('<div class="alert alert-danger">At least one of the URLs provided was invalid and could not be processed.</div>');
-				$response->redirect('/admin/settings/urls')->send();
+				$response->redirect('/admin/settings/urls');
 				return;
 
 			}
@@ -199,7 +199,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		}
 
-		$response->redirect('/admin/settings/urls')->send();
+		$response->redirect('/admin/settings/urls');
 
 	}
 

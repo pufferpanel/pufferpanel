@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 
 $klein->respond('GET', '/admin/index', function($request, $response) use ($core) {
 
-	$response->body($core->twig->render('admin/index.html'))->send();
+	$response->body($core->twig->render('admin/index.html'));
 
 });
 
@@ -28,11 +28,11 @@ $klein->respond('GET', '/admin/passgen/[i:count]?', function($request, $response
 
 	if(!$request->param('count')) {
 
-		$response->body($core->auth->keygen(16))->send();
+		$response->body($core->auth->keygen(16));
 
 	} else {
 
-		$response->body($core->auth->keygen($request->param('count')))->send();
+		$response->body($core->auth->keygen($request->param('count')));
 
 	}
 

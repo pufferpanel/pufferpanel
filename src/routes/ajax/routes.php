@@ -22,7 +22,7 @@ use \ORM as ORM;
 $klein->respond('POST', '/ajax/status', function($request, $response) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
-		$response->body('#FF9900')->send();
+		$response->body('#FF9900');
 	} else {
 
 		if($request->param('server')) {
@@ -34,20 +34,20 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 				->findOne();
 
 			if(!$status) {
-				$response->body('#FF9900')->send();
+				$response->body('#FF9900');
 				return;
 			}
                         
-                        $core->daemon->reconstruct($status->id);
+            $core->daemon->reconstruct($status->id);
 
 			if($core->daemon->check_status() !== 1) {
-				$response->body('#E33200')->send();
+				$response->body('#E33200');
 			} else {
-				$response->body('#53B30C')->send();
+				$response->body('#53B30C');
 			}
 
 		} else {
-			$response->body('#FF9900')->send();
+			$response->body('#FF9900');
 		}
 
 	}
@@ -57,7 +57,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 $klein->respond('POST', '/ajax/status/node', function($request, $response) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
-		$response->body('#FF9900')->send();
+		$response->body('#FF9900');
 	} else {
 
 		if($request->param('node')) {
@@ -65,18 +65,18 @@ $klein->respond('POST', '/ajax/status/node', function($request, $response) use (
 			$status = ORM::forTable('nodes')->findOne($request->param('node'));
 
 			if(!$status) {
-				$response->body('#FF9900')->send();
+				$response->body('#FF9900');
 				return;
 			}
 
 			if(!$core->daemon->avaliable($status->ip, $status->daemon_listen, 1)) {
-				$response->body('#E33200')->send();
+				$response->body('#E33200');
 			} else {
-				$response->body('#53B30C')->send();
+				$response->body('#53B30C');
 			}
 
 		} else {
-			$response->body('#FF9900')->send();
+			$response->body('#FF9900');
 		}
 
 	}

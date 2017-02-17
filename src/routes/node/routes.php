@@ -37,18 +37,18 @@ $klein->respond('GET', '/node/index', function($request, $response, $service) us
     }
 
     $response->body($core->twig->render('node/index.html', array(
-                'server' => array_merge($core->server->getData(), array(
-                    'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
-                    'node' => $core->server->nodeData('node')
+        'server' => array_merge($core->server->getData(), array(
+            'daemon_secret' => ($core->permissions->get('daemon_secret')) ? $core->permissions->get('daemon_secret') : $core->server->getData('daemon_secret'),
+            'node' => $core->server->nodeData('node')
+        )),
+        'node' => array_merge($core->server->nodeData(),
+                array(
+                    'protocol' => $protocol
                 )),
-                'node' => array_merge($core->server->nodeData(),
-                        array(
-                            'protocol' => $protocol
-                        )),
-                'flash' => $service->flashes(),
-                'user' => $core->user->getData(),
-                'oauth' => OAuthService::Get()->getFor($core->user->getData('id'), $core->server->getData('id'))
-    )))->send();
+        'flash' => $service->flashes(),
+        'user' => $core->user->getData(),
+        'oauth' => OAuthService::Get()->getFor($core->user->getData('id'), $core->server->getData('id'))
+    )));
 });
 
 $klein->respond('DELETE', '/node/oauth/[i:id]', function($request, $response, $service) use ($core) {
@@ -56,10 +56,10 @@ $klein->respond('DELETE', '/node/oauth/[i:id]', function($request, $response, $s
     $id = $request->param('id');
     if(OAuthService::Get()->hasAccess($id, $core->user->getData('id'))) {
         OAuthService::Get()->revoke($id);
-        $response->code(200)->send();
+        $response->code(200);
         return;
     }
-    $response->code(401)->send();
+    $response->code(401);
 });
 
 $klein->respond('POST', '/node/oauth', function($request, $response, $service) use ($core) {
@@ -80,9 +80,7 @@ $klein->respond('POST', '/node/oauth', function($request, $response, $service) u
     $secret = OAuthService::Get()->create($pdo, $core->user->getData('id'), $core->server->getData('id'), $id, OAuthService::getUserScopes(), $name, $desc);
     $service->flash('<div class="alert alert-danger">Secret key generated: ' . $secret . '</div>');
 
-    $response->redirect('/node/index')->send();
-    //$response->code(200)->send();
-    return;
+    $response->redirect('/node/index');
 });
 
 include 'ajax/routes.php';

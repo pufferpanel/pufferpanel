@@ -24,32 +24,29 @@ use \ORM;
 
 $klein->respond('GET', '/admin/node', function($request, $response, $service) use($core) {
 
-    $response->body($core->twig->render(
-                    'admin/node/list.html', array(
-                'flash' => $service->flashes(),
-                'nodes' => ORM::forTable('nodes')
+    $response->body($core->twig->render('admin/node/list.html', array(
+            'flash' => $service->flashes(),
+            'nodes' => ORM::forTable('nodes')
                         ->select('nodes.*')->select('locations.long', 'l_location')
                         ->join('locations', array('nodes.location', '=', 'locations.id'))
                         ->findMany()
-                    )
-    ))->send();
+        )
+    ));
+
 });
 
 $klein->respond('GET', '/admin/node/new', function($request, $response, $service) use($core) {
 
     if (ORM::forTable('locations')->count() == 0) {
-
         $service->flash('<div class="alert alert-danger">You must have at least one location defined before creating a node.</div>');
-        $response->redirect('/admin/node/locations')->send();
-        return;
+        $response->redirect('/admin/node/locations');
+    } else {
+        $response->body($core->twig->render('admin/node/new.html', array(
+            'flash' => $service->flashes(),
+            'locations' => ORM::forTable('locations')->findMany()
+        )));
     }
 
-    $response->body($core->twig->render(
-                    'admin/node/new.html', array(
-                'flash' => $service->flashes(),
-                'locations' => ORM::forTable('locations')->findMany()
-                    )
-    ))->send();
 });
 
 $klein->respond('POST', '/admin/node/new', function($request, $response, $service) use($core) {
@@ -57,21 +54,21 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
     if (!is_numeric($request->param('daemon_listen'))) {
 
         $service->flash('<div class="alert alert-danger">You seem to have passed some non-integers through. Try double checking the daemon listening ports as well as the disk and memory allocation.</div>');
-        $response->redirect('/admin/node/new')->send();
+        $response->redirect('/admin/node/new');
         return;
     }
 
     if (!preg_match('/^[\w.-]{1,15}$/', $request->param('node_name'))) {
 
         $service->flash('<div class="alert alert-danger">The node name you passed does not meet server requirements. Names must be between 1 and 15 characters, and may not contain any special characters.</div>');
-        $response->redirect('/admin/node/new')->send();
+        $response->redirect('/admin/node/new');
         return;
     }
 
     if (!filter_var(gethostbyname($request->param('fqdn')), FILTER_VALIDATE_IP)) {
 
         $service->flash('<div class="alert alert-danger">The Fully Qualified Domain Name or Server IP provided were invalid.</div>');
-        $response->redirect('/admin/node/new')->send();
+        $response->redirect('/admin/node/new');
         return;
     }
 
@@ -81,7 +78,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
             ))->findOne()) {
 
         $service->flash('<div class="alert alert-danger">A node with that name or IP address is already in use on this system.</div>');
-        $response->redirect('/admin/node/new')->send();
+        $response->redirect('/admin/node/new');
         return;
     }
     
@@ -109,25 +106,23 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
     $node->save();
 
     $service->flash('<div class="alert alert-success">Node successfully created. Please make sure to setup the daemon properly on the node and then begin adding servers.</div>');
-    $response->redirect('/admin/node/view/' . $node->id())->send();
-    return;
+    $response->redirect('/admin/node/view/' . $node->id());
+
 });
 
 $klein->respond('GET', '/admin/node/locations', function($request, $response, $service) use($core) {
 
-    $response->body($core->twig->render(
-                    'admin/node/locations.html', array(
-                'flash' => $service->flashes(),
-                'locations' => ORM::forTable('locations')
-                        ->select_many('locations.*')
-                        ->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
-                        ->select_expr('COUNT(servers.id)', 'totalservers')
-                        ->left_outer_join('nodes', array('locations.id', '=', 'nodes.location'))
-                        ->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
-                        ->group_by('locations.id')
-                        ->find_many()
-                    )
-    ))->send();
+    $response->body($core->twig->render('admin/node/locations.html', array(
+        'flash' => $service->flashes(),
+        'locations' => ORM::forTable('locations')
+                ->select_many('locations.*')
+                ->select_expr('COUNT(DISTINCT nodes.id)', 'totalnodes')
+                ->select_expr('COUNT(servers.id)', 'totalservers')
+                ->left_outer_join('nodes', array('locations.id', '=', 'nodes.location'))
+                ->left_outer_join('servers', array('servers.node', '=', 'nodes.id'))
+                ->group_by('locations.id')
+                ->find_many()
+    )));
 });
 
 $klein->respond('POST', '/admin/node/locations', function($request, $response, $service) use($core) {
@@ -145,8 +140,8 @@ $klein->respond('POST', '/admin/node/locations', function($request, $response, $
     $location->save();
 
     $service->flash('<div class="alert alert-success">Successfully added a new location.</div>');
-    $response->redirect('/admin/node/locations')->send();
-    return;
+    $response->redirect('/admin/node/locations');
+
 });
 
 $klein->respond('GET', '/admin/node/locations/[:shortcode]/edit', function($request, $response) use($core) {

@@ -20,8 +20,6 @@
 
 namespace PufferPanel\Core;
 
-use \PufferPanel\Core\OAuthService as OAuthService;
-
 $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
 
     $grantType = $req->param("grant_type");
@@ -36,7 +34,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 if ($clientId === false || $clientSecret === false || $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
-                    $res->send();
+                    $res;
                 }
 
                 $server = OAuthService::Get();
@@ -48,7 +46,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 }
 
                 $res->json($response);
-                $res->send();
+                $res;
                 break;
             }
         case 'password': {
@@ -58,7 +56,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 if ($username === false || $password === false) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
-                    $res->send();
+                    $res;
                 }
 
                 $server = OAuthService::Get();
@@ -70,13 +68,13 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 }
 
                 $res->json($response);
-                $res->send();
+                $res;
                 break;
             }
         default: {
                 $res->code(400);
                 $res->json(array("error" => "unsupported_grant_type"));
-                $res->send();
+                $res;
                 break;
             }
     }
@@ -88,7 +86,6 @@ $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
     if ($authHeader === '' || count($parsedHeader) != 2 || $parsedHeader[0] !== 'Bearer') {
         $res->code(401);
         $res->json(array("error" => "invalid_token"));
-        $res->send();
         return;
     }
     
@@ -97,7 +94,6 @@ $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
     if ($node !== 1) {
         $res->code(401);
         $res->json(array("error" => "invalid_token"));
-        $res->send();
         return;
     }
     
@@ -105,7 +101,6 @@ $klein->respond('POST', '/oauth2/token/info', function($req, $res) {
     if ($token === false || $token == null) {
         $res->code(400);
         $res->json(array("error" => "invalid_request"));
-        $res->send();
         return;
     }
     $server = OAuthService::Get();

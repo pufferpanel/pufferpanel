@@ -23,15 +23,15 @@ $klein->respond('POST', '/node/ajax/console/power', function($request, $response
 	if(!$core->permissions->has('console.power')) {
 
 		$response->code(403);
-		$response->body('You do not have permission to perform this action.')->send();
+		$response->body('You do not have permission to perform this action.');
 		return;
 
 	}
 
 	if(!$core->daemon->powerOn()) {
-		$response->body("Unable to power on server due to a daemon error.")->send();
+		$response->body("Unable to power on server due to a daemon error.");
 	} else {
-		$response->body("ok")->send();
+		$response->body("ok");
 	}
 
 });
