@@ -170,7 +170,6 @@ include SRC_DIR.'routes/oauth2/routes.php';
 include SRC_DIR.'routes/daemon/routes.php';
 
 $klein->respond(function($request, $response) {
-    echo $response->isAltered();
     if(!$response->isAltered()) {
         $response->code(404);
     }
