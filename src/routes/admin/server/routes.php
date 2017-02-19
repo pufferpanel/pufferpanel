@@ -192,8 +192,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
         )));
     }
 
-    $response->header('Content-Type', 'application/json');
-    $response->body(json_encode(array('accounts' => $resp), JSON_PRETTY_PRINT));
+    $response->json(array('accounts' => $resp));
 });
 
 $klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
@@ -313,7 +312,13 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
 
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
 
-    $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/templates');
+    $unirest = null;
 
+    try {
+        $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/templates');
+    } catch (\Exception $ex) {
+        $response->code(503);
+        return;
+    }
     $response->json($unirest->body);
 });

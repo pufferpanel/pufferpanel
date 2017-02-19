@@ -1,281 +1,321 @@
 {% extends "base.html" %}
 
 {% block scripts %}
-	{{ parent() }}
-	<script src="/assets/javascript/chartjs/chart.core.js"></script>
-	<script src="/assets/javascript/chartjs/chart.bar.js"></script>
-        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="/assets/javascript/js-cookie.js"></script>
+{{ parent() }}
+<script src="/assets/javascript/chartjs/chart.core.js"></script>
+<script src="/assets/javascript/chartjs/chart.bar.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="/assets/javascript/js-cookie.js"></script>
 {% endblock %}
 
 {% block title %}Manage your Server{% endblock %}
 
 {% block content %}
 <div class="col-md-9">
-	{% if flash.info is defined %}
-		{{ flash.info.0|raw }}
-	{% endif %}
-	<ul class="nav nav-tabs" id="config_tabs">
-		<li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
-		<li><a href="#console" data-toggle="tab">Control Server</a></li>
-		<li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
-	</ul><br />
-	<div class="tab-content">
-		<div class="tab-pane active" id="stats">
-			<div class="row">
-				<div class="col-md-6">
-					<h3 class="nopad">Memory Usage</h3><hr />
-					<div class="row centered">
-						<canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>Memory Usage (MB)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>Memory Usage (%)</small></p>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<h3 class="nopad">CPU Usage</h3><hr />
-					<div class="row centered">
-						<canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
-						<p style="text-align:center;margin-top:-15px;" class="text-muted"><small>Time (2s Increments)</small></p>
-						<p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>CPU Usage (%)</small></p>
-						<p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>CPU Usage (%)</small></p>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12" id="stats_players" style="display: none;">
-					<h3 class="nopad">{{ l.render('node.overview.players_h5') }}</h3><hr />
-					<div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{ l.render('node.overview.collect_usage') }}</div>
-					<div id="toggle_players" style="display:none;">
-						<p class="text-muted">{{ l.render('node.overview.no_players') }}</p>
-                                        </div>
-				</div>
-				<div class="col-md-12">
-					<h3>{{ l.render('node.overview.information_h1') }}</h3><hr />
-					<table class="table table-striped table-bordered table-hover">
-						<tbody>
-							<tr>
-								<td><strong>{{ l.render('string.connection') }}</strong></td>
-								<td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
-							</tr>
-							<tr>
-								<td><strong>{{ l.render('string.node') }}</strong></td>
-								<td>{{ node.name }}</td>
-							</tr>
-							<tr>
-								<td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
-								<td>{{ server.max_ram }} MB</td>
-							</tr>
-                                                        <tr>
-								<td><strong>SFTP Connection</strong></td>
-								<td>{{ node.fqdn }}:{{ node.daemon_sftp }}</td>
-							</tr>
-                                                        <tr>
-								<td><strong>SFTP username</strong></td>
-								<td>{{ user.email }}|{{ server.name }}</td>
-							</tr>
-                                                        <tr>
-								<td><strong>SFTP password</strong></td>
-								<td>Same as your account password</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="tab-pane" id="console">
-			<div class="row">
-				<div class="col-md-12">
-					<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
-				</div>
-				<div class="col-md-6">
-					<hr />
-					{% if permission.has('console.commands') %}
-						<form action="#" method="post" id="console_command">
-							<fieldset>
-								<div class="input-group">
-									<input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ l.render('node.console.command_help') }}" />
-									<span class="input-group-btn">
+    {% if flash.info is defined %}
+    {{ flash.info.0|raw }}
+    {% endif %}
+    <ul class="nav nav-tabs" id="config_tabs">
+        <li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
+        <li><a href="#console" data-toggle="tab">Control Server</a></li>
+        <li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
+    </ul>
+    <br/>
+    <div class="tab-content">
+        <div class="tab-pane active" id="stats">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="nopad">Memory Usage</h3>
+                    <hr/>
+                    <div class="row centered">
+                        <canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
+                        <p style="text-align:center;margin-top:-15px;" class="text-muted">
+                            <small>Time (2s Increments)</small>
+                        </p>
+                        <p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;">
+                            <small>Memory Usage (MB)</small>
+                        </p>
+                        <p class="graph-yaxis hidden-lg hidden-md text-muted"
+                           style="margin-top:-65px !important;margin-left: 100px !important;">
+                            <small>Memory Usage (%)</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="nopad">CPU Usage</h3>
+                    <hr/>
+                    <div class="row centered">
+                        <canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
+                        <p style="text-align:center;margin-top:-15px;" class="text-muted">
+                            <small>Time (2s Increments)</small>
+                        </p>
+                        <p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;">
+                            <small>CPU Usage (%)</small>
+                        </p>
+                        <p class="graph-yaxis hidden-lg hidden-md text-muted"
+                           style="margin-top:-65px !important;margin-left: 100px !important;">
+                            <small>CPU Usage (%)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="stats_players" style="display: none;">
+                    <h3 class="nopad">{{ l.render('node.overview.players_h5') }}</h3>
+                    <hr/>
+                    <div id="players_notice" class="alert alert-info"><i class="fa fa-spinner fa-spin"></i> {{
+                        l.render('node.overview.collect_usage') }}
+                    </div>
+                    <div id="toggle_players" style="display:none;">
+                        <p class="text-muted">{{ l.render('node.overview.no_players') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <h3>{{ l.render('node.overview.information_h1') }}</h3>
+                    <hr/>
+                    <table class="table table-striped table-bordered table-hover">
+                        <tbody>
+                        <tr>
+                            <td><strong>{{ l.render('string.connection') }}</strong></td>
+                            <td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>{{ l.render('string.node') }}</strong></td>
+                            <td>{{ node.name }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
+                            <td>{{ server.max_ram }} MB</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SFTP Connection</strong></td>
+                            <td>{{ node.fqdn }}:{{ node.daemon_sftp }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SFTP username</strong></td>
+                            <td>{{ user.email }}|{{ server.name }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SFTP password</strong></td>
+                            <td>Same as your account password</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="console">
+            <div class="row">
+                <div class="col-md-12">
+                    <textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <hr/>
+                    {% if permission.has('console.commands') %}
+                    <form action="#" method="post" id="console_command">
+                        <fieldset>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="command" id="ccmd"
+                                       placeholder="{{ l.render('node.console.command_help') }}"/>
+                                <span class="input-group-btn">
 										<button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
 									</span>
-								</div>
-							</fieldset>
-						</form>
-						<div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-					{% endif %}
-				</div>
-				<div class="col-md-6" style="text-align:center;">
-					<hr />
-					{% if permission.has('console.power') %}
-						<button class="btn btn-success btn-sm start" id="server_start">{{ l.render('string.start') }}</button>
-						<button class="btn btn-primary btn-sm restart" id="server_restart">{{ l.render('string.restart') }}</button>
-						<button class="btn btn-danger btn-sm stop" id="server_stop">{{ l.render('string.stop') }}</button>
-                                                <button class="btn btn-danger btn-sm install" id="server_install">{{ l.render('string.install') }}</button>
-						<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause"></i></small></button>
-                                                <div style="margin-top:5px; display:none;" id="kill_process_text"><p class="text-muted"><small>My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill it</code>.</small></p></div>
-						<div id="pw_resp" style="display:none;margin-top: 15px;"></div>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-		<div class="tab-pane" id="remote">
-			<h3>Remote Connection Information</h3>
-			<p>Remote connections allows you to optionally control your server from outside of the panel. Using this feature you can create custom scripts to start or stop your server at specified times, or even track server information on another site.</p>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Connection Information</h3>
-				</div>
-				<div class="panel-body">
-                                        <table class="table table-hover" style="margin-bottom:0;">
-                                            <caption><strong>Connection Base - https://{{ node.fqdn }}:{{ node.daemon_listen }}/</strong></caption>
-                                            <thead>
-                                                <tr>
-                                                    <td>Client Id</td>
-                                                    <td>Name</td>
-                                                    <td>Client Description</td>
-                                                    <td>Revoke</td>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tokenBody">
-                                                {% for client in oauth %}
-                                                    <tr id="oauth_{{ client.id }}">
-                                                            <td>{{ client.client_id }}</td>
-                                                            <td>{{ client.name }}</td>
-                                                            <td>{{ client.description }}</td>
-                                                            <td><i class="fa applyUpdate fa-times-circle deleteOauth" style="color: rgb(227, 50, 0);" data-clientid="{{ client.id }}"></i></td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-					</table>
-                                </div>
-                            <div class="panel-footer">
-                                <form id="addOAuth" class="form-group" method="POST" action="/node/oauth">
-                                    <div class="input-group">
-                                        <label for="oauthId">OAuth Client Id</label>
-                                        <input class="form-control" type="text" required name="oauthId" />
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="oauthName">OAuth Client Name</label>
-                                        <input class="form-control" type="text" name="oauthName" />
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="oauthDesc">Description</label>
-                                        <textarea class="form-control" name="oauthDesc"></textarea>
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                            <button id="submitNewToken" class="btn btn-primary btn-sm">Create</button>
-                                        </span>
-                                    </div>
-                                </form>
                             </div>
-			</div>
-		</div>
-	</div>
+                        </fieldset>
+                    </form>
+                    <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6" style="text-align:center;">
+                    <hr/>
+                    {% if permission.has('console.power') %}
+                    <button class="btn btn-success btn-sm start" id="server_start">{{ l.render('string.start') }}
+                    </button>
+                    <button class="btn btn-primary btn-sm restart" id="server_restart">{{ l.render('string.restart')
+                        }}
+                    </button>
+                    <button class="btn btn-danger btn-sm stop" id="server_stop">{{ l.render('string.stop') }}</button>
+                    <button class="btn btn-danger btn-sm install" id="server_install">{{ l.render('string.install') }}
+                    </button>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole"
+                            id="pause_console">
+                        <small><i class="fa fa-pause"></i></small>
+                    </button>
+                    <div style="margin-top:5px; display:none;" id="kill_process_text">
+                        <p class="text-muted">
+                            <small>My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill
+                                it</code>.
+                            </small>
+                        </p>
+                    </div>
+                    <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="remote">
+            <h3>Remote Connection Information</h3>
+            <p>Remote connections allows you to optionally control your server from outside of the panel. Using this
+                feature you can create custom scripts to start or stop your server at specified times, or even track
+                server information on another site.</p>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Connection Information</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover" style="margin-bottom:0;">
+                        <caption><strong>Connection Base - https://{{ node.fqdn }}:{{ node.daemon_listen }}/</strong>
+                        </caption>
+                        <thead>
+                        <tr>
+                            <td>Client Id</td>
+                            <td>Name</td>
+                            <td>Client Description</td>
+                            <td>Revoke</td>
+                        </tr>
+                        </thead>
+                        <tbody id="tokenBody">
+                        {% for client in oauth %}
+                        <tr id="oauth_{{ client.id }}">
+                            <td>{{ client.client_id }}</td>
+                            <td>{{ client.name }}</td>
+                            <td>{{ client.description }}</td>
+                            <td><i class="fa applyUpdate fa-times-circle deleteOauth" style="color: rgb(227, 50, 0);"
+                                   data-clientid="{{ client.id }}"></i></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <form id="addOAuth" class="form-group" method="POST" action="/node/oauth">
+                        <div class="input-group">
+                            <label for="oauthId">OAuth Client Id</label>
+                            <input class="form-control" type="text" required id="oauthId" name="oauthId"/>
+                        </div>
+                        <div class="input-group">
+                            <label for="oauthName">OAuth Client Name</label>
+                            <input class="form-control" type="text" id="oauthName" name="oauthName"/>
+                        </div>
+                        <div class="input-group">
+                            <label for="oauthDesc">Description</label>
+                            <textarea class="form-control" id="oauthDesc" name="oauthDesc"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button id="submitNewToken" class="btn btn-primary btn-sm">Create</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="PauseConsole">{{ l.render('node.console.scrollstop_h1')|raw }}</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button id="scrollbot" type="button" class="btn btn-primary">Scroll To Bottom</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">{{ l.render('string.close') }}</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="PauseConsoleHeader">{{ l.render('node.console.scrollstop_h1')|raw }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="scrollbot" type="button" class="btn btn-primary">Scroll To Bottom</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ l.render('string.close') }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-        $(".deleteOauth").click(function() {
-            if(confirm("Are you sure you want to delete this token?")) {
-                console.log($(this).attr("data-clientid"));
-                $id = $(this).attr("data-clientid");
-                $.ajax({
-                    url: "/node/oauth/" + $id,
-                    method: "DELETE"
-                }).done(function() {
-                    $('#oauth_' + $id).remove();
-                }).fail(function() {
-                    $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
-                });
+    $(".deleteOauth").click(function () {
+        if (confirm("Are you sure you want to delete this token?")) {
+            console.log($(this).attr("data-clientid"));
+            $id = $(this).attr("data-clientid");
+            $.ajax({
+                url: "/node/oauth/" + $id,
+                method: "DELETE"
+            }).done(function () {
+                $('#oauth_' + $id).remove();
+            }).fail(function () {
+                $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
+            });
+        }
+    });
+
+    function fallbackToStatic() {
+        setInterval(getLogs, 1000);
+    }
+
+    function updatePlayerListVisibility(data) {
+        // Server is On or Starting
+        if (data == 1 || data == 3) {
+            $("#stats_players").show();
+        } else {
+            $("#stats_players").hide();
+        }
+    }
+
+    $isStatPinging = false;
+    function pingStats() {
+        if ($isStatPinging) {
+            return;
+        }
+        $isStatPinging = true;
+        $.ajax({
+            type: "GET",
+            url: '/daemon/server/{{ server.hash }}/stats',
+            timeout: 1000
+        }).done(function (data) {
+            memoryChart.removeData();
+            cpuChart.removeData();
+            if (data.error) {
+                memoryChart.addData(0, "");
+                cpuChart.addData(0, "");
+            } else {
+                memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
+                cpuChart.addData([parseInt(data.cpu)], "");
             }
+            $isStatPinging = false;
+        }).fail(function () {
+            $isStatPinging = false;
         });
-        
-        function fallbackToStatic() {
-                setInterval(getLogs, 1000);
-        }
-                
-        function updatePlayerListVisibility(data) {
-                // Server is On or Starting
-                if(data == 1 || data == 3) {
-                        $("#stats_players").show();
-                } else {
-                        $("#stats_players").hide();
-                }
-        }
+    }
 
-        $isStatPinging = false;
-        function pingStats() {
-            if ($isStatPinging) {
+    $isLogPinging = false;
+    function getLogs() {
+        if (!$("#console").hasClass("active") || $isLogPinging) {
+            return;
+        }
+        $isLogPinging = true;
+        $.ajax({
+            type: "GET",
+            url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
+            timeout: 1000
+        }).done(function (event) {
+            $epoch = event.epoch;
+            data = event.logs;
+            if (data === 'undefined') {
                 return;
             }
-            $isStatPinging = true;
-            $.ajax({
-                type: "GET",
-                url: '/daemon/server/{{ server.hash }}/stats',
-                timeout: 1000
-            }).done(function(data) {
-                memoryChart.removeData();
-                cpuChart.removeData();
-                if (data.error) {
-                    memoryChart.addData(0, "");
-                    cpuChart.addData(0, "");
-                } else {
-                    memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
-                    cpuChart.addData([parseInt(data.cpu)], "");
-                }
-                $isStatPinging = false;
-            }).fail(function() {
-                $isStatPinging = false;
-            });
-        }             
-
-        $isLogPinging = false;
-        function getLogs() {
-            if (!$("#console").hasClass("active") || $isLogPinging) {
-                return;
+            var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+            if (total.length > 750) {
+                total = total.slice(total.length - 750);
             }
-            $isLogPinging = true;
-            $.ajax({
-                type: "GET",
-                url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
-                timeout: 1000
-            }).done(function(event) {
-                $epoch = event.epoch;
-                data = event.logs;
-                if (data === 'undefined') {
-                    return;
-                }
-                var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-                if (total.length > 750) {
-                        total = total.slice(total.length - 750);
-                }
-                $("#live_console").val(total.join("\n"));
-                $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-                $isLogPinging = false;
-            }).fail(function() {
-                $isLogPinging = false;
-            });
-        }
+            $("#live_console").val(total.join("\n"));
+            $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+            $isLogPinging = false;
+        }).fail(function () {
+            $isLogPinging = false;
+        });
+    }
 
 	$(window).load(function(){
                 $epoch = 0;
@@ -354,107 +394,107 @@
 			scaleShowGridLines: false
 		});		
 
-		{% if permission.has('console.commands') %}
-			$("#console_command").submit(function(event){
-				event.preventDefault();
-				var ccmd = $("#ccmd").val();
-				if(ccmd != ""){
-					$.ajax({
-						type: "POST",
-						url: '/daemon/server/{{ server.hash }}/console',
-						timeout: 5000,
-						data: ccmd
-					}).done(function(data) {
-						$("#sending_command").html('&rarr;');
-						$("#ccmd").val('');
-					}).fail(function(jqXHR, textStatus, errorThrown) {
-						$("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
-						$("#sending_command").html('&rarr;');
-						$("#ccmd").val('');
-					});
-				}
-			});
-		{% endif %}
-		{% if permission.has('console.power') %}
-			$("#kill_proc").click(function(e){
-				e.preventDefault();
-				var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
-				if(killConfirm) {
-					$.ajax({
-						type: "GET",
-						url: '/daemon/server/{{ server.hash }}/kill',
-						timeout: 5000
-					}).done(function(data) {
-						$("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
-					}).fail(function(jqXHR, textStatus, errorThrown) {
-						$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-					});
-				}
-			});
-			$("#server_stop").click(function(e){
-				$.ajax({
-					type: "GET",
-					url: '/daemon/server/{{ server.hash }}/stop',
-					timeout: 5000
-				}).done(function(data) {
-					$("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-				});
-			});
-			$("#server_install").click(function(e){
-				e.preventDefault();
-				$.ajax({
-					type: "POST",
-					url: '/daemon/server/{{ server.hash }}/install',
-					timeout: 5000
-				}).done(function(data) {
-					$("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					$("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-				});
-			});
-			$("#server_restart").click(function(e){
-			e.preventDefault();
+        {% if permission.has('console.commands') %}
+        $("#console_command").submit(function (event) {
+            event.preventDefault();
+            var ccmd = $("#ccmd").val();
+            if (ccmd != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '/daemon/server/{{ server.hash }}/console',
+                    timeout: 5000,
+                    data: ccmd
+                }).done(function (data) {
+                    $("#sending_command").html('&rarr;');
+                    $("#ccmd").val('');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#sc_resp").html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+                    $("#sending_command").html('&rarr;');
+                    $("#ccmd").val('');
+                });
+            }
+        });
+        {% endif %}
+        {% if permission.has('console.power') %}
+        $("#kill_proc").click(function (e) {
+            e.preventDefault();
+            var killConfirm = confirm("WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.");
+            if (killConfirm) {
                 $.ajax({
                     type: "GET",
-                    url: '/daemon/server/{{ server.hash }}/stop',
-                    timeout: 0
-                }).done(function(data) {
-                    $.ajax({
-                        type: "GET",
-                        url: '/daemon/server/{{ server.hash }}/start',
-                        timeout: 0
-                    }).done(function(data) {
-                        $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
-                        can_run = true;
-                        return false;
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-                    });
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                    url: '/daemon/server/{{ server.hash }}/kill',
+                    timeout: 5000
+                }).done(function (data) {
+                    $("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
                 });
-			});
-			$("#server_start").click(function(e){
-				e.preventDefault();
-				start_server();
-			});
-			function start_server() {
-				$.ajax({
-					type: "GET",
-					url: '/daemon/server/{{ server.hash }}/start',
-					timeout: 5000
-				}).done(function(data) {
-						$("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-						$("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render('node.ajax.generic_error') }} ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-				});
-			}
+            }
+        });
+        $("#server_stop").click(function (e) {
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/stop',
+                timeout: 5000
+            }).done(function (data) {
+                $("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
+            });
+        });
+        $("#server_install").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: '/daemon/server/{{ server.hash }}/install',
+                timeout: 5000
+            }).done(function (data) {
+                $("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
+            });
+        });
+        $("#server_restart").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/stop',
+                timeout: 0
+            }).done(function (data) {
+                $.ajax({
+                    type: "GET",
+                    url: '/daemon/server/{{ server.hash }}/start',
+                    timeout: 0
+                }).done(function (data) {
+                    $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+                    can_run = true;
+                    return false;
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
+                });
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
+            });
+        });
+        $("#server_start").click(function (e) {
+            e.preventDefault();
+            start_server();
+        });
+        function start_server() {
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/start',
+                timeout: 5000
+            }).done(function (data) {
+                $("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
+            });
+        }
 
-		{% endif %}                
+        {% endif % }
 
-			setInterval(pingStats, 2000);
-	});
+        setInterval(pingStats, 2000);
+    });
 </script>
 {% endblock %}
