@@ -34,7 +34,6 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 if ($clientId === false || $clientSecret === false || $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
-                    $res;
                 }
 
                 $server = OAuthService::Get();
@@ -46,7 +45,6 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 }
 
                 $res->json($response);
-                $res;
                 break;
             }
         case 'password': {
@@ -74,7 +72,6 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
         default: {
                 $res->code(400);
                 $res->json(array("error" => "unsupported_grant_type"));
-                $res;
                 break;
             }
     }
