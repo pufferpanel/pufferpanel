@@ -243,11 +243,24 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     OAuthService::Get()->create(ORM::get_db(),
             $user->id(),
             $server->id(),
-            '.internal_' . $user->id . '_' . $server->id,
+            '.internal_' . $user->id() . '_' . $server->id(),
             OAuthService::getUserScopes(),
             'internal_use',
             'internal_use'
     );
+
+    //add admins to server
+    $adminUsers = ORM::forTable('users')->select('id')->where('root_admin', 1)->findMany();
+    foreach($adminUsers as $k => $adminUser) {
+        OAuthService::Get()->create(ORM::get_db(),
+            $adminUser->id(),
+            $server->id(),
+            '.internal_' . $adminUser->id() . '_' . $server->id(),
+            OAuthService::getUserScopes(),
+            'internal_use',
+            'internal_use'
+        );
+    }
 
     /*
      * Build Call

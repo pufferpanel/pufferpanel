@@ -164,6 +164,12 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 	));
 	$user->save();
 
+	if ($user->root_admin()) {
+        //TODO: Handle admin role changes and add to non-added servers
+    } else {
+        //TODO: Handle admin role changes and remove all servers they don't have access to
+    }
+
 	$service->flash('<div class="alert alert-success">Account has been updated.</div>');
 	$response->redirect('/admin/account/view/'.$request->param('id'));
 
@@ -237,6 +243,9 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 		ORM::forTable('subusers')->where('user', $user->id)->deleteMany();
 		ORM::forTable('account_change')->where('user_id', $user->id)->deleteMany();
 		ORM::forTable('actions_log')->where('user', $user->id)->deleteMany();
+        ORM::forTable('oauth_clients')->where('user_id', $user->id)->findMany();
+        ORM::forTable('oauth_access_tokens')->join('oauth_clients', array('oauth_access_tokens.oauthClientId', '=', 'oauth_clients.id'))->where('user_id', $user->id)->deleteMany();
+        ORM::forTable('oauth_clients')->where('user_id', $user->id)->deleteMany();
 		$user->delete();
 
 		ORM::get_db()->commit();
