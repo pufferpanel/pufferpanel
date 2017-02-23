@@ -59,7 +59,10 @@ $klein->respond('GET', '/admin/server', function($request, $response, $service) 
                         $ids)),
                         $header
             );
-            $results = array_merge($results, get_object_vars($unirest->body));
+            if($unirest->code == 200)
+            {
+                $results = array_merge($results, get_object_vars($unirest->body));
+            }
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
         }
