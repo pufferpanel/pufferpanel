@@ -157,17 +157,50 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 
 	}
 
-	$user = ORM::forTable('users')->findOne($request->param('id'));
+	$user = ORM::for_table('users')->find_one($request->param('id'));
 	$user->set(array(
 		'email' => $request->param('email'),
 		'root_admin' => $request->param('root_admin')
 	));
 	$user->save();
 
-	if ($user->root_admin()) {
-        //TODO: Handle admin role changes and add to non-added servers
+    $ownedServers = ORM::for_table('servers')->where('owner_id', $user->id())->select('servers.id', 'serverId')->find_array();
+    $subUserServers = ORM::for_table('subusers')->where('user', $user->id())->select('server', 'serverId')->find_array();
+    $servers = array();
+    foreach(array_merge($ownedServers, $subUserServers) as $server) {
+        $servers[] = $server['serverId'];
+    }
+
+    if ($request->param('root_admin') === '1') {
+        $newServers = ORM::for_table('servers');
+        if (count($servers) > 0) {
+            $newServers->where_not_in($servers);
+        }
+        foreach($newServers->find_many() as $k => $server) {
+            OAuthService::Get()->create(ORM::get_db(),
+                $user->id(),
+                $server->id(),
+                '.internal_' . $user->id() . '_' . $server->id(),
+                OAuthService::getUserScopes(),
+                'internal_use',
+                'internal_use'
+            );
+        }
+        $service->flash('<div class="alert alert-success">Account has been updated to grant access</div>');
     } else {
-        //TODO: Handle admin role changes and remove all servers they don't have access to
+        $tokenCleaner = ORM::for_table('oauth_access_tokens')->join('oauth_clients', array('oauth_access_tokens.oauthClientId', '=', 'oauth_clients.id'))->where('oauth_clients.user_id', $user->id())->select('access_token');
+
+        $clientCleaner = ORM::for_table('oauth_clients')->where('oauth_clients.user_id', $user->id());
+        if (count($servers) > 0) {
+            $tokenCleaner->where_not_in('oauth_clients.server_id', $servers);
+            $clientCleaner->where_not_in('server_id', $servers);
+        }
+        $tokens = $tokenCleaner->find_array();
+        if(count($tokens) > 0) {
+            ORM::for_table('oauth_access_tokens')->where_in('access_tokens', $tokens)->delete_many();
+        }
+        $clientCleaner->delete_many();
+        $service->flash('<div class="alert alert-success">Account has been updated to remove access</div>');
     }
 
 	$service->flash('<div class="alert alert-success">Account has been updated.</div>');
