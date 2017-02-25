@@ -82,15 +82,12 @@
 				</div>
 			</a>
 			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="manage.view" {% if permissions.manage_view is defined %}checked="checked"{% endif %}/> View Manager</label>
-				<p class="list-group-item-text">Gives user permission to view the server management page.</p>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-1 col-xs-1"><br /><br /></div>
-					<div class="col-md-11 col-xs-11">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp" {% if permissions.manage_ftp is defined %}checked="checked"{% endif %}/> SFTP Access</label>
-						<p class="list-group-item-text">Gives user permission to access the server using SFTP</p>
-					</div>
-				</div>
+				<label><input type="checkbox" name="permissions[]" value="manage.oauth2" {% if permissions.manage_oauth2 is defined %}checked="checked"{% endif %}/> OAuth2 Access</label>
+				<p class="list-group-item-text">Gives user permission to create their own API credentials</p>
+			</a>
+			<a href="#" class="list-group-item">
+				<label><input type="checkbox" name="permissions[]" value="sftp" {% if permissions.sftp is defined %}checked="checked"{% endif %}/> View Manager</label>
+				<p class="list-group-item-text">Gives user permission to access the server using SFTP</p>
 			</a>
 		</div>
 		<div class="form-group">

@@ -342,9 +342,9 @@ class Users extends \PufferPanel\Core\Email
                     break;
                 case "files.zip":
                     break;
-                case "manage.view":
+                case "manage.oauth2":
                     break;
-                case "manage.ftp":
+                case "sftp":
                     $daemonPerms[] = "sftp";
                     break;
             }

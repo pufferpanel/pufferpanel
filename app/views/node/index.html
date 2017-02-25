@@ -18,7 +18,9 @@
     <ul class="nav nav-tabs" id="config_tabs">
         <li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
         <li><a href="#console" data-toggle="tab">Control Server</a></li>
+        {% if permission.has('manage.oauth2') %}
         <li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
+        {% endif %}
     </ul>
     <br/>
     <div class="tab-content">
@@ -87,6 +89,7 @@
                             <td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
                             <td>{{ server.max_ram }} MB</td>
                         </tr>
+                        {% if permission.has('sftp') %}
                         <tr>
                             <td><strong>SFTP Connection</strong></td>
                             <td>{{ node.fqdn }}:{{ node.daemon_sftp }}</td>
@@ -99,6 +102,7 @@
                             <td><strong>SFTP password</strong></td>
                             <td>Same as your account password</td>
                         </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -153,6 +157,7 @@
                 </div>
             </div>
         </div>
+        {% if permission.has('manage.oauth2') %}
         <div class="tab-pane" id="remote">
             <h3>Remote Connection Information</h3>
             <p>Remote connections allows you to optionally control your server from outside of the panel. Using this
@@ -164,7 +169,11 @@
                 </div>
                 <div class="panel-body">
                     <table class="table table-hover" style="margin-bottom:0;">
-                        <caption><strong>Connection Base - https://{{ node.fqdn }}:{{ node.daemon_listen }}/</strong>
+                        <caption><strong>Connection Base - {{ settings.master_url }}daemon</strong>
+                        </caption>
+                        <caption><strong>Auth Base - {{ settings.master_url }}oauth2/token/request</strong>
+                        </caption>
+                        <caption><strong>Server Id - {{ server.hash }}</strong>
                         </caption>
                         <thead>
                         <tr>
@@ -210,6 +219,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
@@ -252,15 +262,6 @@
 
     function fallbackToStatic() {
         setInterval(getLogs, 1000);
-    }
-
-    function updatePlayerListVisibility(data) {
-        // Server is On or Starting
-        if (data == 1 || data == 3) {
-            $("#stats_players").show();
-        } else {
-            $("#stats_players").hide();
-        }
     }
 
     $isStatPinging = false;
