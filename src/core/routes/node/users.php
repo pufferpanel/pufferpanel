@@ -106,7 +106,7 @@ class Users extends \PufferPanel\Core\Email
                 $user->id(),
                 $this->server->getData('id'),
                 '.internal_' . $user->id . '_' . $this->server->getData('id'),
-                $daemonPerms,
+                implode(' ', $daemonPerms),
                 'internal_use',
                 'internal_use'
             );
@@ -169,19 +169,6 @@ class Users extends \PufferPanel\Core\Email
             'server' => $this->server->getData('id')
         ))->deleteMany();
 
-        $clientIds = ORM::forTable('oauth_clients')
-            ->where(array(
-                'user' => $data->user_id,
-                'server' => $this->server->getData('id')
-            ))->find_many();
-
-        foreach ($clientIds as $key => $client) {
-            ORM::forTable('oauth_access_tokens')
-                ->where('oauthClientId', $client->id)
-                ->deleteMany();
-            $client->delete();
-        }
-
         if (is_null($data->permissions) || !$data->permissions) {
             $data->permissions = array('console.view');
         }
@@ -200,20 +187,23 @@ class Users extends \PufferPanel\Core\Email
 
         $clientIds = ORM::forTable('oauth_clients')
             ->where(array(
-                'user' => $select->user,
-                'server' => $this->server->getData('id')
+                'user_id' => $select->user,
+                'server_id' => $this->server->getData('id')
             ))->find_many();
 
         $daemonPerms = self::_getDaemonPermissions($data->permissions);
-        $daemonPermsString = implode(" ", $daemonPerms);
+        $daemonPermsString = implode(' ', $daemonPerms);
 
-        foreach($clientIds as $key -> $client) {
+        foreach($clientIds as $client) {
             ORM::forTable('oauth_access_tokens')
                 ->where('oauthClientId', $client->id)
                 ->deleteMany();
+
             $client->scopes = $daemonPermsString;
             $client->save();
         }
+
+        return true;
 
     }
 
@@ -269,18 +259,23 @@ class Users extends \PufferPanel\Core\Email
                         'server' => $this->server->getData('id')
                     ))->delete_many();
 
-                $clientIds = ORM::forTable('oauth_clients')
+                $clientIds = ORM::for_table('oauth_clients')
                     ->where(array(
-                        'user' => $orm->user,
-                        'server' => $this->server->getData('id')
-                    ))->find_many();
+                        'user_id' => $orm->user,
+                        'server_id' => $this->server->getData('id')
+                    ))->find_array();
 
-                foreach ($clientIds as $key => $client) {
-                    ORM::forTable('oauth_access_tokens')
-                        ->where('oauthClientId', $client->id)
+                if (count($clientIds) > 0) {
+                    ORM::for_table('oauth_access_tokens')
+                        ->where_in('oauthClientId', $clientIds)
                         ->deleteMany();
-                    $client->delete();
                 }
+
+                ORM::for_table('oauth_clients')
+                    ->where(array(
+                        'user_id' => $orm->user,
+                        'server_id' => $this->server->getData('id')
+                    ))->delete_many();
 
                 $orm->delete();
 
@@ -288,7 +283,7 @@ class Users extends \PufferPanel\Core\Email
 
             } catch (\Exception $e) {
 
-                \Tracy\Debugger::log($e);
+                //\Tracy\Debugger::log($e, Debugger::Error);
                 self::_setError("An error occurred when trying to update the server.");
                 return false;
 
@@ -313,6 +308,10 @@ class Users extends \PufferPanel\Core\Email
 
     protected static function _getDaemonPermissions(array $data)
     {
+        if(!in_array('console.view', $data)) {
+            $data[] = 'console.view';
+        }
+
         $daemonPerms = array();
         foreach($data as $key => $value) {
             switch($value) {

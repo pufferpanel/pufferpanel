@@ -87,15 +87,8 @@
 				<div class="row" style="margin-top:10px;">
 					<div class="col-md-1 col-xs-1"><br /><br /></div>
 					<div class="col-md-11 col-xs-11">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp.details" {% if permissions.manage_ftp_details is defined %}checked="checked"{% endif %}/> View FTP Details</label>
-						<p class="list-group-item-text">Gives user permission to view the connection information (including username) for the server's FTP.</p>
-					</div>
-				</div>
-				<div class="row" style="margin-top:10px;">
-					<div class="col-md-1 col-xs-1"><br /><br /></div>
-					<div class="col-md-11 col-xs-11">
-						<label><input type="checkbox" name="permissions[]" value="manage.ftp.password" {% if permissions.manage_ftp_password is defined %}checked="checked"{% endif %}/> Modify FTP Password <span class="label label-danger">Danger</span></label>
-						<p class="list-group-item-text">Gives user permission to modify the server FTP password.</p>
+						<label><input type="checkbox" name="permissions[]" value="manage.ftp" {% if permissions.manage_ftp is defined %}checked="checked"{% endif %}/> SFTP Access</label>
+						<p class="list-group-item-text">Gives user permission to access the server using SFTP</p>
 					</div>
 				</div>
 			</a>
