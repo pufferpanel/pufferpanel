@@ -156,13 +156,13 @@ function configureUser() {
     password2=""
     while true; do
         while [ "${password}" == "" ]; do
-            echo "Password: "
+            echo -n "Password: "
             read -s password
             echo ""
         done
         
         while [ "${password2}" == "" ]; do
-            echo "Confirm Password: "
+            echo -n "Confirm Password: "
             read -s password2
             echo ""
         done
