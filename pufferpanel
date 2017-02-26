@@ -80,7 +80,8 @@ function configureMysql() {
 
     newUser="pufferpanel"
     newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-    newHost=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "SELECT host FROM information_schema.processlist WHERE ID=connection_id()" | head -n 3 | tail -n 1)
+    newHost=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -sN -e "SELECT USER()")
+	newHost=${newHost/${mysqlUser}@}
 
     mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
      GRANT ALL PRIVILEGES ON pufferpanel.* TO 'pufferpanel'@'${newHost}' IDENTIFIED BY '${newPw}';
