@@ -40,9 +40,7 @@ class PPResponse extends Response
 
     public function redirect($url, $code = 302)
     {
-        if(!is_null($url)) {
-            $this->setAltered();
-        }
+        $this->setAltered();
         return parent::redirect($url, $code);
     }
 

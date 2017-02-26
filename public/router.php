@@ -110,10 +110,11 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/)', function($requ
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 			$response->redirect('/auth/login');
+			$response->abort(302);
 
 		} else {
 
-			$response->code(403);
+			$response->abort(403);
 
 		}
 
@@ -142,8 +143,7 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 
 	if(!$core->auth->isServer()) {
 
-		$response->body($core->twig->render('errors/403.html'))->code(403);
-		$klein->skipRemaining();
+		$response->body($core->twig->render('errors/403.html'))->abort(403);
 
 	}
 
@@ -153,8 +153,7 @@ $klein->respond('/admin/[*]', function($request, $response, $service, $app, $kle
 
 	if(!$core->auth->isAdmin()) {
 
-		$response->body($core->twig->render('errors/403.html'))->code(403);
-		$klein->skipRemaining();
+		$response->body($core->twig->render('errors/403.html'))->abort(403);
 
 	}
 
@@ -171,7 +170,7 @@ include SRC_DIR.'routes/daemon/routes.php';
 
 $klein->respond(function($request, $response) {
     if(!$response->isAltered()) {
-        $response->code(404);
+        $response->abort(404);
     }
     if ($response->code() >= 400 || $response->code() < 200) {
         $response->abort($response->code());
