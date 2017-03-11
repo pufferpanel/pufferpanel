@@ -41,6 +41,17 @@ function restore_term()
         system('stty echo');
 }
 
+function attemptSql($pdo, $sql)
+{
+    try {
+        $pdo->prepare($sql)->execute();
+    } catch (PDOException $e) {
+        echo 'Failed to execute sql statement, this should not impact usage though:';
+        echo "\n";
+        echo $e->getMessage();
+    }
+}
+
 hide_term();
 $validCreds = false;
 do {
@@ -126,25 +137,20 @@ CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PR
     exit(1);
 }
 
-try {
-    $pdo->prepare('ALTER TABLE servers DROP FOREIGN KEY FK_servers_plugin')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN plugin')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_startup')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN daemon_variables')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN max_ram')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN disk_space')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN cpu_limit')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN block_io')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN server_ip')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN server_port')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN sftp_user')->execute();
-    $pdo->prepare('ALTER TABLE servers DROP COLUMN installed')->execute();
-    $pdo->prepare('ALTER TABLE nodes DROP COLUMN daemon_base_dir')->execute();
-} catch (PDOException $e) {
-    echo 'Failed to delete un-used columns from the database, this should not impact usage though:';
-    echo "\n";
-    echo $e->getMessage();
-}
+attemptSql($pdo, 'ALTER TABLE servers DROP FOREIGN KEY FK_servers_plugin');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN plugin');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN daemon_startup');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN daemon_variables');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN max_ram');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN disk_space');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN cpu_limit');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN block_io');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN server_ip');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN server_port');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN sftp_user');
+attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN installed');
+attemptSql($pdo, 'ALTER TABLE nodes DROP COLUMN daemon_base_dir');
+attemptSql($pdo, 'ALTER TABLE subusers DROP COLUMN daemon_secret');
 
 echo 'Database changes complete';
 

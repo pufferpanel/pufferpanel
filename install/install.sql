@@ -139,7 +139,6 @@ CREATE TABLE IF NOT EXISTS `subusers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user` int(10) unsigned NOT NULL,
   `server` int(10) unsigned NOT NULL,
-  `daemon_secret` char(36) NOT NULL,
   `daemon_permissions` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_server_key` (`user`, `server`),
