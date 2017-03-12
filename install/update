@@ -151,6 +151,7 @@ attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN sftp_user');
 attemptSql($pdo, 'ALTER TABLE servers DROP COLUMN installed');
 attemptSql($pdo, 'ALTER TABLE nodes DROP COLUMN daemon_base_dir');
 attemptSql($pdo, 'ALTER TABLE subusers DROP COLUMN daemon_secret');
+attemptSql($pdo, 'ALTER TABLE servers ADD UNIQUE KEY `name` (`name`)');
 
 echo 'Database changes complete';
 

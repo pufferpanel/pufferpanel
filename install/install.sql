@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
   PRIMARY KEY (`id`),
   KEY `FK_servers_users` (`owner_id`),
   KEY `FK_servers_nodes` (`node`),
+  UNIQUE KEY `name` (`name`),
   CONSTRAINT `FK_servers_nodes` FOREIGN KEY (`node`) REFERENCES `nodes` (`id`),
   CONSTRAINT `FK_servers_users` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`)
  ) ENGINE=InnoDB;
