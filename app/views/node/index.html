@@ -17,7 +17,7 @@
     {% endif %}
     <ul class="nav nav-tabs" id="config_tabs">
         <li class="active"><a href="#stats" data-toggle="tab">Statistics</a></li>
-        <li><a href="#console" data-toggle="tab">Control Server</a></li>
+        <li><a href="#console" data-toggle="tab">Console</a></li>
         {% if permission.has('manage.oauth2') %}
         <li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
         {% endif %}
@@ -77,18 +77,18 @@
                     <hr/>
                     <table class="table table-striped table-bordered table-hover">
                         <tbody>
-                        <tr>
+                        <!--<tr>
                             <td><strong>{{ l.render('string.connection') }}</strong></td>
                             <td><code>{{ server.server_ip }}:{{ server.server_port }}</code></td>
-                        </tr>
+                        </tr>-->
                         <tr>
                             <td><strong>{{ l.render('string.node') }}</strong></td>
                             <td>{{ node.name }}</td>
                         </tr>
-                        <tr>
+                        <!--<tr>
                             <td><strong>{{ l.render('string.mem_alloc') }}</strong></td>
                             <td>{{ server.max_ram }} MB</td>
-                        </tr>
+                        </tr>-->
                         {% if permission.has('sftp') %}
                         <tr>
                             <td><strong>SFTP Connection</strong></td>
