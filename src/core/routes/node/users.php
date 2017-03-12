@@ -65,7 +65,7 @@ class Users extends \PufferPanel\Core\Email
 
                 $user = ORM::forTable('users')->create()->set(array(
                     'uuid' => $this->generateUniqueUUID('users', 'uuid'),
-                    'username' => $data-email,
+                    'username' => $data->email,
                     'email' => $data->email,
                     'password' => password_hash(OAuthService::generateSecret(), PASSWORD_BCRYPT),
                     'language' => Settings::config('default_language'),

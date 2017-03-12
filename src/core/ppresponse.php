@@ -41,7 +41,8 @@ class PPResponse extends Response
     public function redirect($url, $code = 302)
     {
         $this->setAltered();
-        return parent::redirect($url, $code);
+        parent::redirect($url, $code);
+        $this->abort($code);
     }
 
     private function setAltered() {

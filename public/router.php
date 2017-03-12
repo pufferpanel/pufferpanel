@@ -110,7 +110,6 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/)', function($requ
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 			$response->redirect('/auth/login');
-			$response->abort(302);
 
 		} else {
 
@@ -132,7 +131,6 @@ $klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
 		if(0 !== strpos($request->pathname(), "/auth/logout") && 0 !== strpos($request->pathname(), "/auth/remote/")) {
 			$response->redirect('/index');
-			$klein->skipRemaining();
 		}
 
 	}
