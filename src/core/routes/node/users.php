@@ -266,9 +266,11 @@ class Users extends \PufferPanel\Core\Email
                     ))->find_array();
 
                 if (count($clientIds) > 0) {
-                    ORM::for_table('oauth_access_tokens')
-                        ->where_in('oauthClientId', $clientIds)
-                        ->deleteMany();
+                    foreach($clientIds as $v) {
+                        ORM::for_table('oauth_access_tokens')
+                            ->where('oauthClientId', $v)
+                            ->deleteMany();
+                    }
                 }
 
                 ORM::for_table('oauth_clients')
