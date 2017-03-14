@@ -58,7 +58,7 @@ Following the **PSR-1** formatting is absolutely required for your pull requests
 class My_Class {
 
 	public function myFunction() {
-	
+
 	}
 
 }
@@ -81,7 +81,7 @@ class My_Class{
 
 	public function myFunction()
 		{
-		
+
 		}
 
 }
@@ -125,11 +125,11 @@ class My_Foobar_Class {
 	public function __construct() {
 
 	}
-	
+
 	final public static function finalPubStatic() {
 
 	}
-	
+
 	protected static function _protectedFunction() {
 
 	}
