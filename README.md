@@ -2,13 +2,13 @@
 
 [Website](http://pufferpanel.com) |
 [Community Forums](https://community.pufferpanel.com) |
-[Community Chat](https://webchat.esper.net/?nick=&channels=pufferpanel) |
+[Community Chat](https://discord.gg/YwUXaD6) (or irc.esper.net #pufferpanel) |
 [Documentation](http://www.pufferpanel.com/docs) |
 [Translations](https://www.transifex.com/pufferpanel/pufferpanel/)
 
 ![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")
 
-#### PufferPanel is currently undergoing many changes. Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
+#### PufferPanel v1.0 has been released! Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
 
 ## What is PufferPanel?
 PufferPanel is a web-based Game Server Management System. PufferPanel allows you to manage multiple different game servers all from one central location. You can give other users their own servers or allow them access to your servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
@@ -19,8 +19,8 @@ PufferPanel is a web-based Game Server Management System. PufferPanel allows you
 ## What's different about PufferPanel?
 In addition to being a free and open source project, PufferPanel provides an easy to use interface for everyone from individual users to large networks or companies. We strive to create a friendly community and we would love for you to join us.
 
-### Scales
-PufferPanel works with the [pufferd](https://github.com/PufferPanel/pufferd) daemon, which is still in development.
+### Daemon
+PufferPanel now uses the [pufferd](https://github.com/PufferPanel/pufferd) daemon.
 
 ## Having issues or want to help?
 If you need help with PufferPanel or you'd like to help out you can contact us on IRC (irc.esper.net #pufferpanel) or ask a question on our [Community Support Forums](https://community.pufferpanel.com). Check out our [Documentation](http://www.pufferpanel.com/docs) for guides on how to install, update, and manage PufferPanel.
