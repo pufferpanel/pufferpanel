@@ -57,7 +57,6 @@
         makeDaemonCall('GET', path, {}, function (data) {
             fileModel.files.removeAll();
             data.forEach(function (e) {
-                console.log(e);
                 fileModel.files.push({
                     modifyDate: e.modifyTime,
                     name: e.name,
@@ -66,14 +65,6 @@
                 });
             });
         });
-    }
-
-    function downloadFile(path) {
-
-    }
-
-    function editFile(path) {
-
     }
 
     function makeDaemonCall(method, path, data, callback) {
@@ -101,7 +92,7 @@
             <div class="row" style="text-align:center;">
                 <div class="col-md-3 hidden-xs hidden-sm">
                     {% if permission.has('files.download') %}
-                    <a data-bind="attr: { href: '/daemon/server/{{ server.hash }}/file' + currentDir + name }"><span class="badge"><i class="fa fa-download"></i></span></a>
+                    <a data-bind="attr: { href: '/daemon/server/{{ server.hash }}/file' + currentDir + name, download: name }"><span class="badge"><i class="fa fa-download"></i></span></a>
                     {% endif %}
                 </div>
                 <div class="col-md-3">

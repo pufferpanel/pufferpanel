@@ -46,9 +46,13 @@ function handleProxy($url, $header, $request, $response) {
                 }
         }
         
-        $result = $unireq->body;
+        $result = $unireq->raw_body;
 
-        $response->code($unireq->code)->json($result);   
+        $headers = $unireq->headers;
+        foreach ($headers as $key => $value) {
+            $response->header($key, $value);
+        }
+        $response->code($unireq->code)->body($result);
 }
 
 $klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $klein) {
