@@ -109,3 +109,4 @@ $klein->respond('POST', '/node/oauth', function ($request, $response, $service) 
 include 'ajax/routes.php';
 include 'settings/routes.php';
 include 'users/routes.php';
+include 'files/routes.php';

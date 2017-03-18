@@ -119,7 +119,7 @@
 						<div class="list-group">
 							<a href="#" class="list-group-item list-group-item-heading"><strong>{{ l.render('sidebar.server.acc') }}</strong></a>
 							<a href="/node/index" class="list-group-item">{{ l.render('sidebar.overview') }}</a>
-							<!--{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ l.render('sidebar.files') }}</a>{% endif %}-->
+							{% if permission.has('files.view') %}<a href="/node/files" class="list-group-item">{{ l.render('sidebar.files') }}</a>{% endif %}
 							{% if permission.has('users.view') and settings.allow_subusers == 1 %}<a href="/node/users" class="list-group-item">{{ l.render('sidebar.manage_subusers') }}</a>{% endif %}
 							<!--{% if permission.has('manage.view') %}<a href="/node/settings" class="list-group-item">{{ l.render('sidebar.manage') }}</a>{% endif %}-->
 						</div>

@@ -3,194 +3,146 @@
 {% block title %}File Manager{% endblock %}
 
 {% block content %}
-	{% if flash.info is defined %}
-	<div class="col-md-9">
-		{{ flash.info.0|raw }}
-	</div>
-	{% endif %}
-	<div class="col-md-9" id="internal_alert">
-		<div class="alert alert-info">
-			<i class="fa fa-spinner fa-spin"></i> {{ l.render('node.files.loading') }}
-		</div>
-	</div>
-	<div class="col-md-9">
-		<div class="files_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
-	</div>
-	<div class="col-md-9" id="load_files"></div>
+{% if flash.info is defined %}
+<div class="col-md-9">
+    {{ flash.info.0|raw }}
+</div>
+{% endif %}
+<div class="col-md-9" id="load_files">
+    <h4 class="nopad"><span id="currentPath"></span> {% if ( permission.has('files.create') ) or (
+        permission.has('files.upload') )
+        %}
+        <small><a href="#" class="text-muted"><i class="fa fa-plus"></i></a></small>
+        {% endif %}
+    </h4>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th style="width:2%;text-align:center;"></th>
+            <th style="width:55%">{{ l.render('node.files.name') }}</th>
+            <th style="width:15%">{{ l.render('node.files.size') }}</th>
+            <th style="width:20%">{{ l.render('node.files.modified') }}</th>
+            <th style="width:10%;text-align:center;">{{ l.render('string.options') }}</th>
+        </tr>
+        </thead>
+        <tbody data-bind="template: {name: displayMode, foreach: files }">
+        </tbody>
+    </table>
+</div>
+
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js'></script>
+
 <script type="text/javascript">
-$(window).load(function(){
-	$("#sidebar_links").find("a[href='/node/files']").addClass('active');
-	$.urlParam = function(name, url){
-		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(decodeURIComponent(url));
-		if (results==null){
-			return null;
-		}else{
-			return results[1] || 0;
-		}
-	}
-	var doneLoad = false;
-	function handleLoader(show){
-		if(show === true){
-			var height = $("#load_files").height();
-			var width = $(".files_loading_box").width();
-			var center_height = (height / 2) - 30;
-			var center_width = (width / 2) - 30;
-			$("#position_me").css({"top": center_height, "left": center_width, "font-size": "60px"});
-			$(".files_loading_box").css("height", (height + 5)).fadeIn();
-		}else{
-			$(".files_loading_box").fadeOut(100);
-		}
-	}
-	function newLoad(){
-		$("a.load_new").click(function(event){
-			event.preventDefault();
-			handleLoader(true);
-			if($.urlParam('dir', $(this).attr("href")) != null){
-				var dir = $.urlParam('dir', $(this).attr("href"));
-				$.ajax({
-					type: "POST",
-					url: '/node/ajax/files/directory',
-					data: {'dir': dir},
-					success: function(data) {
-						handleLoader(false);
-						$("#load_files").slideUp(function(){
-							$("#load_files").html(data);
-							$("#load_files").slideDown();
-							newLoad();
-						});
-					}
-				});
-			}else{
-				$.ajax({
-					type: "POST",
-					url: '/node/ajax/files/directory',
-					data: {},
-					success: function(data) {
-						handleLoader(false);
-						$("#load_files").slideUp(function(){
-							$("#load_files").html(data);
-							$("#load_files").slideDown();
-							newLoad();
-						});
-					}
-				});
-			}
-		});
-		$(".delete_file").click(function(e){
-			e.preventDefault();
-			var clicked = $(this); //Fixes some strange bug going on
-			var deleteItemPath = clicked.attr("href");
+    var currentDir = '/';
+    var fileModel = {
+        files: ko.observableArray(),
+        displayMode: function (file) {
+            return file.isFile ? 'fm-file' : file.name == '..' ? 'fm-up' : 'fm-folder';
+        }
+    };
 
-			if (!confirm("Are you sure you want to delete " + deleteItemPath + "?")) {
-				return;
-			}
+    ko.applyBindings(fileModel);
 
-			$.ajax({
-				type: "POST",
-				url: '/node/ajax/files/delete',
-				data: {
-					'deleteItemPath': deleteItemPath
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					alert(jqXHR.responseText);
-				},
-				success: function(data) {
-					if(data != "ok") {
-						alert(data);
-					}else{
-						clicked.parent().parent().parent().parent().fadeOut();
-					}
-				}
-			});
-		});
-		$(".zip_file").click(function(e){
-			e.preventDefault();
-			clicked = $(this); //Fixes some strange bug going on
-			var zipItemPath = clicked.attr("href");
-			$.ajax({
-				type: "POST",
-				url: '/node/ajax/files/compress',
-				data: {
-					'zipItemPath': zipItemPath
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					alert(jqXHR.responseText);
-				},
-				success: function(data) {
-					if(data != "ok") {
-						alert(data);
-					} else {
-						firstLoad();
-					}
-				}
-			});
-		});
-		$(".unzip_file").click(function(e){
-			e.preventDefault();
-			clicked = $(this); //Fixes some strange bug going on
-			var unzipItemPath = clicked.attr("href");
-			$.ajax({
-				type: "POST",
-				url: '/node/ajax/files/compress',
-				data: {
-					'unzipItemPath': unzipItemPath
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					alert(jqXHR.responseText);
-				},
-				success: function(data) {
-					if(data != "ok") {
-						alert(data);
-					} else {
-						firstLoad();
-					}
-				}
-			});
-		});
-	}
-	function firstLoad() {
-		$("#loading_dir").fadeIn(200);
-		$("#internal_alert").slideDown();
-		if($.urlParam('dir', $(location).attr('href')) != null && doneLoad === false){
-			var dir = $.urlParam('dir', $(location).attr('href'));
-			$("#loading_dir").fadeIn(200);
-			$.ajax({
-				type: "POST",
-				url: '/node/ajax/files/directory',
-				data: {'dir': dir},
-				success: function(data) {
-					$("#load_files").slideUp(function(){
-						$("#load_files").html(data);
-						$("#internal_alert").delay(50).slideUp(function() {
-							$("#load_files").slideDown();
-							$("#loading_dir").fadeOut(200);
-							doneLoad = true;
-							newLoad();
-						});
-					});
-				}
-			});
-		}else{
-			$("#loading_dir").fadeIn(200);
-			$.ajax({
-				type: "POST",
-				url: '/node/ajax/files/directory',
-				data: {},
-				success: function(data) {
-					$("#load_files").slideUp(function(){
-						$("#load_files").html(data);
-						$("#internal_alert").delay(50).slideUp(function() {
-							$("#load_files").slideDown();
-							$("#loading_dir").fadeOut(200);
-							doneLoad = true;
-							newLoad();
-						});
-					});
-				}
-			});
-		}
-	}
-	firstLoad();
-});
+    $(window).load(function () {
+        $("#sidebar_links").find("a[href='/node/files']").addClass('active');
+    });
+
+    $(window).load(function () {
+        $("#currentPath").text(currentDir);
+
+        getFileList(currentDir);
+    });
+
+    function getFileList(path) {
+        makeDaemonCall('GET', path, {}, function (data) {
+            fileModel.files.removeAll();
+            data.forEach(function (e) {
+                console.log(e);
+                fileModel.files.push({
+                    modifyDate: e.modifyTime,
+                    name: e.name,
+                    size: e.size,
+                    isFile: e.isFile
+                });
+            });
+        });
+    }
+
+    function downloadFile(path) {
+
+    }
+
+    function editFile(path) {
+
+    }
+
+    function makeDaemonCall(method, path, data, callback) {
+        $.ajax({
+            method: method,
+            url: '/daemon/server/{{ server.hash }}/file' + path,
+
+        }).done(callback).error(displayError);
+    }
+
+    function displayError(err) {
+
+    }
 </script>
+
+<script type="text/html" id="fm-file">
+    <tr>
+        <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
+        <td>
+            <a href="#" class="edit_file" data-bind="text: name"></a>
+        </td>
+        <td data-bind="text: size"></td>
+        <td data-bind="text: modifyDate"></td>
+        <td style="text-align:center;">
+            <div class="row" style="text-align:center;">
+                <div class="col-md-3 hidden-xs hidden-sm">
+                    {% if permission.has('files.download') %}
+                    <a data-bind="attr: { href: '/daemon/server/{{ server.hash }}/file' + currentDir + name }"><span class="badge"><i class="fa fa-download"></i></span></a>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if permission.has('files.delete') %}
+                    <a href="#" class="delete_file"><span class="badge label-danger"><i
+                            class="fa fa-trash-o"></i></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script type="text/html" id="fm-folder">
+    <tr>
+        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
+        <td><a href="#" class="load_new" data-bind="text: name"></a></td>
+        <td data-bind="text: size"></td>
+        <td data-bind="text: modifyDate"></td>
+        <td style="text-align:center;">
+            <div class="row" style="text-align:center;">
+                <div class="col-md-3 hidden-xs hidden-sm"></div>
+                <div class="col-md-3">
+                    {% if permission.has('files.delete') %}
+                    <a href="#" class="delete_file"><span class="badge label-danger"><i
+                            class="fa fa-trash-o"></i></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script type="text/html" id="fm-up">
+    <tr>
+        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
+        <td><a href="#" class="load_new">&larr;</a></a></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</script>
+
 {% endblock %}
