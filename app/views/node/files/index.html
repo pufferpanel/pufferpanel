@@ -48,17 +48,17 @@
     });
 
     $(window).load(function () {
-        $(".load_folder").click(function(e) {
+        $(".load_folder").click(function (e) {
             console.log("triggered");
             var newPath = $(this).text();
             console.log("Update: " + newPath);
         });
 
-        getFileList(fileModel.currentDir());
+        getFileList();
     });
 
-    function getFileList(path) {
-        makeDaemonCall('GET', path, {}, function (data) {
+    function getFileList() {
+        makeDaemonCall('GET', fileModel.currentDir(), {}, function (data) {
             fileModel.files.removeAll();
             data.forEach(function (e) {
                 fileModel.files.push({
@@ -85,6 +85,13 @@
 
     }
 
+    function deleteFile(e) {
+        var element = $(e);
+        var path = element.attr('data-value');
+        var path = element.attr('data-value');
+        makeDaemonCall('DELETE', path, undefined, getFileList);
+    }
+
     function loadFolder(e) {
         var currentDir = fileModel.currentDir();
         var element = $(e);
@@ -94,12 +101,13 @@
         } else {
             currentDir += '/' + folderName
         }
-        if(currentDir == '') {
+        if (currentDir == '') {
             currentDir = '/';
         }
+        currentDir += '/';
         currentDir = currentDir.replace('//', '/');
         fileModel.currentDir(currentDir);
-        getFileList(currentDir);
+        getFileList();
     }
 </script>
 
@@ -120,8 +128,7 @@
                 </div>
                 <div class="col-md-3">
                     {% if permission.has('files.delete') %}
-                    <a href="#" class="delete_file"><span class="badge label-danger"><i
-                            class="fa fa-trash-o"></i></span></a>
+                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                     {% endif %}
                 </div>
             </div>
@@ -132,7 +139,8 @@
 <script type="text/html" id="fm-folder">
     <tr>
         <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-        <td><a href="#" class="load_folder" onclick="loadFolder(this);" data-bind="text: name, attr: {'data-value': name }"></a></td>
+        <td><a href="#" class="load_folder" onclick="loadFolder(this);"
+               data-bind="text: name, attr: {'data-value': name }"></a></td>
         <td data-bind="text: size"></td>
         <td data-bind="text: modifyDate"></td>
         <td style="text-align:center;">
@@ -140,8 +148,7 @@
                 <div class="col-md-3 hidden-xs hidden-sm"></div>
                 <div class="col-md-3">
                     {% if permission.has('files.delete') %}
-                    <a href="#" class="delete_file"><span class="badge label-danger"><i
-                            class="fa fa-trash-o"></i></span></a>
+                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                     {% endif %}
                 </div>
             </div>
