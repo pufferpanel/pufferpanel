@@ -19,9 +19,9 @@
         <thead>
         <tr>
             <th style="width:2%;text-align:center;"></th>
-            <th style="width:55%">{{ l.render('node.files.name') }}</th>
+            <th style="width:50%">{{ l.render('node.files.name') }}</th>
             <th style="width:15%">{{ l.render('node.files.size') }}</th>
-            <th style="width:20%">{{ l.render('node.files.modified') }}</th>
+            <th style="width:25%">{{ l.render('node.files.modified') }}</th>
             <th style="width:10%;text-align:center;">{{ l.render('string.options') }}</th>
         </tr>
         </thead>
@@ -60,15 +60,40 @@
     function getFileList() {
         makeDaemonCall('GET', fileModel.currentDir(), {}, function (data) {
             fileModel.files.removeAll();
+            var special = [];
+            var files = [];
+            var folders = [];
             data.forEach(function (e) {
-                fileModel.files.push({
-                    modifyDate: e.modifyTime,
-                    name: e.name,
-                    size: e.size,
-                    isFile: e.isFile,
-                    currentDir: fileModel.currentDir()
-                });
+                if(e.name == '..') {
+                    special.push({
+                        modifyDate: '',
+                        name: e.name,
+                        size: e.size,
+                        isFile: e.isFile,
+                        currentDir: fileModel.currentDir()
+                    });
+                } else if (!e.isFile) {
+                    folders.push({
+                        modifyDate: '',
+                        name: e.name,
+                        size: '',
+                        isFile: e.isFile,
+                        currentDir: fileModel.currentDir()
+                    });
+                } else {
+                    files.push({
+                        modifyDate: new Date(e.modifyTime * 1000).toLocaleString(),
+                        name: e.name,
+                        size: e.size,
+                        isFile: e.isFile,
+                        currentDir: fileModel.currentDir()
+                    });
+                }
             });
+
+            special.forEach(function (tempElem) {fileModel.files.push(tempElem) });
+            folders.forEach(function (tempElem) {fileModel.files.push(tempElem) });
+            files.forEach(function (tempElem) {fileModel.files.push(tempElem) });
             $("#filemanager").trigger("update");
         });
     }
@@ -89,11 +114,16 @@
         var element = $(e);
         var path = element.attr('data-value');
         var path = element.attr('data-value');
-        makeDaemonCall('DELETE', path, undefined, getFileList);
+        if(window.confirm("Are you sure you wish to delete " + path + "? WARNING, THIS CANNOT BE REVERTED")) {
+            makeDaemonCall('DELETE', path, undefined, getFileList);
+        }
     }
 
     function loadFolder(e) {
         var currentDir = fileModel.currentDir();
+        if (currentDir.charAt(currentDir.length - 1) == '/') {
+            currentDir = currentDir.substr(0, currentDir.length - 1);
+        }
         var element = $(e);
         var folderName = element.attr('data-value');
         if (folderName === '..') {
