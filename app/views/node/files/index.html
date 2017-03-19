@@ -12,10 +12,10 @@
     <h4 class="nopad"><span data-bind="text: currentDir"></span> {% if ( permission.has('files.create') ) or (
         permission.has('files.upload') )
         %}
-        <small><a href="#" class="text-muted"><i class="fa fa-plus"></i></a></small>
+        <small><a href="#" id="uploadFile" class="text-muted"><i class="fa fa-plus"></i></a></small>
         {% endif %}
     </h4>
-    <table class="table table-striped table-bordered table-hover" id="filemanager">
+    <table class="table table-striped table-bordered table-hover" id="fileManager">
         <thead>
         <tr>
             <th style="width:2%;text-align:center;"></th>
@@ -28,9 +28,18 @@
         <tbody data-bind="template: {name: displayMode, foreach: files }">
         </tbody>
     </table>
+
+    <div class="tab-pane hidden" id="upload">
+        <div class="well well-sm">
+            <form id="uploader" class="dropzone"></form>
+            <button id="cancelUpload" class="btn btn-default btn-xs">Close</button>
+        </div>
+    </div>
 </div>
 
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js'></script>
+<script type="text/javascript" src="/assets/javascript/dropzone.js"></script>
+<link rel="stylesheet" href="/assets/css/dropzone.css">
 
 <script type="text/javascript">
     var fileModel = {
@@ -43,6 +52,18 @@
 
     ko.applyBindings(fileModel);
 
+    Dropzone.options.uploader = {
+        url: function(files) {
+            return '/daemon/server/{{ server.hash }}/file' + fileModel.currentDir() + files[0].name;
+        },
+        maxFilesize: 10,
+        method: 'PUT',
+        addRemoveLinks: true,
+        init: function() {
+            this.on('success', getFileList);
+        }
+    };
+
     $(window).load(function () {
         $("#sidebar_links").find("a[href='/node/files']").addClass('active');
     });
@@ -52,6 +73,16 @@
             console.log("triggered");
             var newPath = $(this).text();
             console.log("Update: " + newPath);
+        });
+
+        $("#uploadFile").click(function(e) {
+           e.stopPropagation();
+           $("#upload").removeClass('hidden');
+        });
+
+        $("#cancelUpload").click(function(e) {
+            e.stopPropagation();
+            $("#upload").addClass('hidden');
         });
 
         getFileList();
@@ -94,7 +125,7 @@
             special.forEach(function (tempElem) {fileModel.files.push(tempElem) });
             folders.forEach(function (tempElem) {fileModel.files.push(tempElem) });
             files.forEach(function (tempElem) {fileModel.files.push(tempElem) });
-            $("#filemanager").trigger("update");
+            $("#fileManager").trigger("update");
         });
     }
 
