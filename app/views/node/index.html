@@ -277,7 +277,7 @@
         }).done(function (data) {
             memoryChart.removeData();
             cpuChart.removeData();
-            if (data.error) {
+            if (data === 'undefined' || data.error) {
                 memoryChart.addData(0, "");
                 cpuChart.addData(0, "");
             } else {
@@ -333,6 +333,9 @@
                 }
                 socket.onmessage = function (event) {
                     data = event.data;
+                    if (data === 'undefined') {
+                        return;
+                    }
                     var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
                     if (total.length > 100) {
                             total = total.slice(total.length - 100);
@@ -342,7 +345,7 @@
                 };
                 socket.onerror = function(event) {
                     fallbackToStatic();
-                }
+                };
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			$('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
 		});
