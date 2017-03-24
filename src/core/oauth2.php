@@ -189,7 +189,7 @@ class OAuthService {
         $query->execute(array('pufferpanel'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         if ($data === false || count($data) === 0) {
-            $this->create($pdo, 0, 0, 'pufferpanel', self::getUserScopes() . ' ' . self::getAdminScopes(), 'pufferpanel', 'PufferPanel Internal Auth');
+            $this->create($pdo, null, null, 'pufferpanel', self::getUserScopes() . ' ' . self::getAdminScopes(), 'pufferpanel', 'PufferPanel Internal Auth');
             return $this->getPanelAccessToken();
         }
         return $data['client_secret'];
