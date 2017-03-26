@@ -124,7 +124,6 @@ function configureSite() {
         INSERT INTO acp_settings (setting_ref, setting_val) VALUES
             ('company_name', 'PufferPanel'),
             ('master_url', 'http://${siteUrl}/'),
-            ('main_website', 'http://${siteUrl}/'),
             ('transport_token', NULL),
             ('transport_email', NULL),
             ('transport_method','php'),
@@ -242,11 +241,11 @@ function configureNginx() {
         fi
     fi
 
-    phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
-        phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+        phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpSocket}" = "" ]; then
-            phpSocket=$(grep "listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+            phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
             if [ "${phpSocket}" = "" ]; then
                 echo "Could not determine where PHP config is, cannot install config"
                 return
