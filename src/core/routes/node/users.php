@@ -85,8 +85,7 @@ class Users extends \PufferPanel\Core\Email
 
             ORM::forTable('subusers')->create()->set(array(
                 'user' => $user->id,
-                'server' => $this->server->getData('id'),
-                'daemon_permissions' => json_encode($data->permissions)
+                'server' => $this->server->getData('id')
             ))->save();
 
             $email = null;
@@ -259,33 +258,13 @@ class Users extends \PufferPanel\Core\Email
                         'server' => $this->server->getData('id')
                     ))->delete_many();
 
-                $clientIds = ORM::for_table('oauth_clients')
-                    ->where(array(
-                        'user_id' => $orm->user,
-                        'server_id' => $this->server->getData('id')
-                    ))->find_array();
-
-                if (count($clientIds) > 0) {
-                    foreach($clientIds as $v) {
-                        ORM::for_table('oauth_access_tokens')
-                            ->where('oauthClientId', $v)
-                            ->deleteMany();
-                    }
-                }
-
-                ORM::for_table('oauth_clients')
-                    ->where(array(
-                        'user_id' => $orm->user,
-                        'server_id' => $this->server->getData('id')
-                    ))->delete_many();
-
                 $orm->delete();
 
                 return true;
 
             } catch (\Exception $e) {
 
-                //\Tracy\Debugger::log($e, Debugger::Error);
+                \Tracy\Debugger::log($e, Debugger::Error);
                 self::_setError("An error occurred when trying to update the server.");
                 return false;
 
