@@ -21,7 +21,6 @@
 namespace PufferPanel\Core;
 
 use \ORM as ORM;
-use Tracy\Debugger;
 
 class OAuthService {
 
@@ -45,16 +44,15 @@ class OAuthService {
      * @return String Json-reply
      */
     public function handleTokenCredentials($clientId, $clientSecret) {
-        $pdo = ORM::get_db();
-        $query = $pdo->prepare("SELECT id, client_secret, scopes FROM oauth_clients WHERE client_id = ? AND client_secret = ?");
-        $query->execute(array($clientId, password_hash($clientSecret, PASSWORD_BCRYPT)));
-        $keys = $query->fetch(\PDO::FETCH_ASSOC);
-        if ($keys === false || count($keys) == 0) {
+        $key = ORM::for_table('oauth_clients')->where(array(
+            'client_id' => $clientId,
+            'client_secret' => password_hash($clientSecret, PASSWORD_BCRYPT)
+        ))->select(array('id', 'scopes'));
+
+        if ($key === false) {
             return array("error" => $clientId);
         }
-        $scopes = $keys['scopes'];
-        $tokenId = $keys['id'];
-        return self::generateAccessToken($tokenId, $scopes);
+        return self::generateAccessToken($key->id, $key->scopes);
     }
 
     public function handleResourceOwner($username, $password) {
@@ -160,7 +158,7 @@ class OAuthService {
      */
     public function getPanelAccessToken() {
         $this->getOrGenPanelSecret();
-        return $this->getAccessToken(0, 0);
+        return $this->getAccessToken(null, null);
     }
 
     public function getFor($userId, $serverId) {
@@ -178,39 +176,39 @@ class OAuthService {
     }
 
     public function revoke($id) {
-        $pdo = ORM::get_db();
-        $pdo->prepare("DELETE FROM oauth_access_tokens WHERE oauthClientId = ?")->execute(array($id));
-        $pdo->prepare("DELETE FROM oauth_clients WHERE id = ?")->execute(array($id));
+        ORM::for_table('oauth_clients')->where('id', $id)->delete_many();
     }
 
     /**
      * 
      * @return String secret key
      */
-    public function create($pdo, $userId, $serverId, $id, $scopes = '', $name = '', $description = '') {
+    public function create($userId, $serverId, $id, $scopes = '', $name = '', $description = '') {
         $secret = self::generateSecret();
-        $pdo->prepare('INSERT INTO oauth_clients VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)')->execute(array(
-            $id,
-            password_hash($secret, PASSWORD_BCRYPT),
-            $userId,
-            $serverId,
-            $scopes,
-            $name,
-            $description
-        ));
+
+        ORM::for_table('oauth_clients')->create(array(
+            'client_id' => $id,
+            'client_secret' => password_hash($secret, PASSWORD_BCRYPT),
+            'user_id' => $userId,
+            'server_id' => $serverId,
+            'scopes' => $scopes,
+            'name' => $name,
+            'description' => $description
+        ))->save();
+
         return $secret;
     }
 
     private function getOrGenPanelSecret() {
-        $pdo = ORM::get_db();
-        $query = $pdo->prepare("SELECT client_secret FROM oauth_clients WHERE client_id = ?");
-        $query->execute(array('pufferpanel'));
-        $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if ($data === false || count($data) === 0) {
-            $this->create($pdo, null, null, 'pufferpanel', self::getUserScopes() . ' ' . self::getAdminScopes(), 'pufferpanel', 'PufferPanel Internal Auth');
+        $data = ORM::for_table('oauth_clients')->select('client_secret')
+            ->where('client_id', 'pufferpanel')
+            ->find_one();
+
+        if ($data === false) {
+            $this->create(null, null, 'pufferpanel', self::getUserScopes() . ' ' . self::getAdminScopes(), 'pufferpanel', 'PufferPanel Internal Auth');
             return $this->getPanelAccessToken();
         }
-        return $data['client_secret'];
+        return $data->client_secret;
     }
 
     /**
