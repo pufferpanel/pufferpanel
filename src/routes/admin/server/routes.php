@@ -229,6 +229,13 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         return;
     }
 
+    $existingName = ORM::for_table('servers')->where('name', $request->param('server_name'))->find_one();
+    if ($existingName) {
+        $service->flash('<div class="alert alert-danger">That name is already in use by another server, please enter another name</div>');
+        $response->redirect('/admin/server/new');
+        return;
+    }
+
     $server_hash = $core->auth->generateUniqueUUID('servers', 'hash');
     $daemon_secret = $core->auth->generateUniqueUUID('servers', 'daemon_secret');
 
