@@ -177,8 +177,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
             $newServers->where_not_in($servers);
         }
         foreach($newServers->find_many() as $k => $server) {
-            OAuthService::Get()->create(ORM::get_db(),
-                $user->id(),
+            OAuthService::Get()->create($user->id(),
                 $server->id(),
                 '.internal_' . $user->id() . '_' . $server->id(),
                 OAuthService::getUserScopes(),

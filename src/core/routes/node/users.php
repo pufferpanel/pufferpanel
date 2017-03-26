@@ -101,8 +101,7 @@ class Users extends \PufferPanel\Core\Email
             }
             $daemonPerms = self::_getDaemonPermissions($data->permissions);
 
-            OAuthService::Get()->create(ORM::get_db(),
-                $user->id(),
+            OAuthService::Get()->create($user->id(),
                 $this->server->getData('id'),
                 '.internal_' . $user->id . '_' . $this->server->getData('id'),
                 implode(' ', $daemonPerms),
