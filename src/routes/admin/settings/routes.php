@@ -87,7 +87,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		} catch(\Exception $e) {
 
 			Debugger::log($e);
-			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			$service->flash('<div class="alert alert-danger">An error occurred while trying to perform this MySQL command.</div>');
 
 		}
 
@@ -143,7 +143,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		} catch(\Exception $e) {
 
 			Debugger::log($e);
-			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			$service->flash('<div class="alert alert-danger">An error occurred while trying to perform this MySQL command.</div>');
 
 		}
 
@@ -156,7 +156,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 
 		$urls = array();
 		foreach(array(
-			'main_url' => $request->param('main_url')
+			'master_url' => $request->param('master_url')
 		) as $id => $val) {
 
 			$url = parse_url($val);
@@ -195,7 +195,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 		} catch(\Exception $e) {
 
 			Debugger::log($e);
-			$service->flash('<div class="alert alert-danger">An error occured while trying to perform this MySQL command.</div>');
+			$service->flash('<div class="alert alert-danger">An error occurred while trying to perform this MySQL command.</div>');
 
 		}
 
