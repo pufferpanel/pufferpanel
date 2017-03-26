@@ -21,6 +21,7 @@
 namespace PufferPanel\Core;
 
 use \ORM as ORM;
+use Tracy\Debugger;
 
 class OAuthService {
 
@@ -120,21 +121,38 @@ class OAuthService {
     }
 
     public function getAccessToken($userid, $serverid) {
-        $pdo = ORM::get_db();
-        $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-                . "INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId "
-                . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW() ");
-        $query->execute(array($userid, $serverid));
-        $data = $query->fetch(\PDO::FETCH_ASSOC);
-        if ($data === false || count($data) == 0 || $data['access_token'] == '') {
-            $newquery = $pdo->prepare("SELECT id, scopes FROM oauth_clients "
-                    . "WHERE user_id = ? AND server_id = ? AND client_id = ?");
-            $newquery->execute(array($userid, $serverid, $userid == 0 && $serverid == 0 ? 'pufferpanel' : '.internal_' . $userid . '_' . $serverid));
-            $result = $newquery->fetch(\PDO::FETCH_ASSOC);
-            $newToken = $this->generateAccessToken($result['id'], $result['scopes']);
+
+        $tokenQuery = ORM::for_table('oauth_access_tokens')
+            ->select('access_token')
+            ->inner_join('oauth_clients', 'oauth_clients.id = oauth_access_tokens.oauthClientId')
+            ->where_raw('expiretime > NOW()');
+
+        if ($userid == null && $serverid == null) {
+            $tokenQuery = $tokenQuery->where_null('user_id')->where_null('server_id');
+        } else {
+            $tokenQuery = $tokenQuery->where(array('user_id' => $userid, 'server_id' => $serverid));
+        }
+        $data = $tokenQuery->find_one();
+        if ($data === false || $data->access_token == '') {
+            $oauthInfo = ORM::for_table('oauth_clients')
+                ->select(array('id', 'scopes'))
+                ->where('client_id', $userid == null && $serverid == null ? 'pufferpanel' : '.internal_' . $userid . '_' . $serverid);
+
+            if ($userid == null && $serverid == null) {
+                $oauthInfo = $oauthInfo->where_null('user_id')->where_null('server_id');
+            } else {
+                $oauthInfo = $oauthInfo->where(array(
+                    'user_id' => $userid,
+                    'server_id' => $serverid
+                ));
+            }
+            $result = $oauthInfo->find_one();
+            $clientId = $result->id;
+            $scopes = $result->scopes;
+            $newToken = $this->generateAccessToken($clientId, $scopes);
             return $newToken['access_token'];
         }
-        return $data['access_token'];
+        return $data->access_token;
     }
 
     /**
