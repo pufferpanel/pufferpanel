@@ -126,9 +126,9 @@ class OAuthService {
             ->where_raw('expiretime > NOW()');
 
         if ($userid == null && $serverid == null) {
-            $tokenQuery = $tokenQuery->where_null('user_id')->where_null('server_id');
+            $tokenQuery = $tokenQuery->where_null('oauth_clients.user_id')->where_null('oauth_clients.server_id');
         } else {
-            $tokenQuery = $tokenQuery->where(array('user_id' => $userid, 'server_id' => $serverid));
+            $tokenQuery = $tokenQuery->where(array('oauth_clients.user_id' => $userid, 'oauth_clients.server_id' => $serverid));
         }
         $data = $tokenQuery->find_one();
         if ($data === false || $data->access_token == '') {

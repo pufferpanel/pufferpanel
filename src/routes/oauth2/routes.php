@@ -31,7 +31,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 $internal = '.internal';
                 $length = strlen($internal);
 
-                if ($clientId === false || $clientSecret === false || $clientId = 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
+                if ($clientId === false || $clientSecret === false || $clientId == 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
                 }
