@@ -44,15 +44,24 @@ class OAuthService {
      * @return String Json-reply
      */
     public function handleTokenCredentials($clientId, $clientSecret) {
-        $key = ORM::for_table('oauth_clients')->where(array(
-            'client_id' => $clientId,
-            'client_secret' => password_hash($clientSecret, PASSWORD_BCRYPT)
-        ))->select(array('id', 'scopes'));
+        $clients = ORM::for_table('oauth_clients')->where(array(
+            'client_id' => $clientId
+        ))->select(array('id', 'client_secret', 'scopes'))->find_many();
 
-        if ($key === false) {
+        $client = false;
+
+        foreach($clients as $value) {
+            if (password_verify($clientSecret, $value['client_secret'])) {
+                $client = $value;
+                break;
+            }
+        }
+
+        if ($client === false) {
             return array("error" => $clientId);
         }
-        return self::generateAccessToken($key->id, $key->scopes);
+
+        return self::generateAccessToken($client['id'], $client['scopes']);
     }
 
     public function handleResourceOwner($username, $password) {

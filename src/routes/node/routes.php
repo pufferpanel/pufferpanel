@@ -100,7 +100,7 @@ $klein->respond('POST', '/node/oauth', function ($request, $response, $service) 
     }
 
     $secret = OAuthService::Get()->create($core->user->getData('id'), $core->server->getData('id'), $id, $scopes, $name, $desc);
-    $service->flash('<div class="alert alert-danger">Secret key generated: ' . $secret . '</div>');
+    $service->flash('<div class="alert alert-success">Secret key generated: ' . $secret . '</div>');
 
     $response->redirect('/node/index');
 });
