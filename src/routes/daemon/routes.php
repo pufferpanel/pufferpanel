@@ -55,53 +55,78 @@ function handleProxy($url, $header, $request, $response) {
         $response->code($unireq->code)->body($result);
 }
 
-$klein->respond('/daemon/[**:path]', function($request, $response) use ($core, $klein) {
+$klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $response) use ($core, $klein) {
 
-    $server = $request->cookies()['pp_server_hash'];
-    $auth = $request->cookies()['pp_auth_token'];
+    $oldHeaders = $request->headers();
+    $header = null;
+    $server = $request->param('serverid', $request->cookies()['pp_server_hash']);
 
-    if ($server === false || $auth === false) {
-        $response->code(401);
+    if ($server === false || $server == '' || $server === 'undefined') {
+        $response->code(404);
         return;
     }
 
     $serverObj = ORM::forTable('servers')->selectMany(array('id', 'node'))->where('hash', $server)->findOne();
-    $userObj = ORM::forTable('users')->where('session_id', $auth)->findOne();
 
-    if ($serverObj === false || $userObj === false) {
-        $response->code(402);
+    if ($serverObj === false) {
+        $response->code(401);
         return;
     }
 
     $nodeObj = ORM::forTable('nodes')->where('id', $serverObj->node)->findOne();
 
-    $pdo = ORM::get_db();
-    $query = $pdo->prepare("SELECT access_token FROM oauth_access_tokens AS oat "
-            . "INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId "
-            . "WHERE user_id = ? AND server_id = ? AND expiretime > NOW()");
-    $query->execute(array($userObj->id, $serverObj->id));
-    $data = $query->fetch(\PDO::FETCH_ASSOC);
-    $bearer = null;
-    if ($data === false || count($data) == 0) {
-        $clientInfo = $pdo->prepare("SELECT client_id, client_secret FROM oauth_clients "
-                . "WHERE user_id = ? AND server_id = ?");
-        $clientInfo->execute(array($userObj->id, $serverObj->id));
-        $info = $clientInfo->fetch(\PDO::FETCH_ASSOC);
-        $bearerArr = OAuthService::Get()->handleTokenCredentials($info['client_id'], $info['client_secret']);
-        if (array_key_exists('error', $bearerArr)) {
+    if ($nodeObj === false) {
+        $response->code(401);
+        return;
+    }
+
+    if ($oldHeaders->Authorization) {
+        $header = array (
+            'Authorization' => $oldHeaders->Authorization
+        );
+    } else {
+        $auth = $request->cookies()['pp_auth_token'];
+
+        if ($auth === false || $auth == '') {
             $response->code(403);
             return;
         }
-        $bearer = $bearerArr['access_token'];
-    } else {
-        $bearer = $data['access_token'];
+
+        $userObj = ORM::forTable('users')->where('session_id', $auth)->findOne();
+
+        if ($userObj === false) {
+            $response->code(401);
+            return;
+        }
+
+        $pdo = ORM::get_db();
+        $query = $pdo->prepare('SELECT access_token FROM oauth_access_tokens AS oat '
+            . 'INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId '
+            . 'WHERE user_id = ? AND server_id = ? AND expiretime > NOW()');
+        $query->execute(array($userObj->id, $serverObj->id));
+        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        $bearer = null;
+        if ($data === false || count($data) == 0) {
+            $clientInfo = $pdo->prepare('SELECT client_id, client_secret FROM oauth_clients '
+                . 'WHERE user_id = ? AND server_id = ?');
+            $clientInfo->execute(array($userObj->id, $serverObj->id));
+            $info = $clientInfo->fetch(\PDO::FETCH_ASSOC);
+            $bearerArr = OAuthService::Get()->handleTokenCredentials($info['client_id'], $info['client_secret']);
+            if (array_key_exists('error', $bearerArr)) {
+                $response->code(403);
+                return;
+            }
+            $bearer = $bearerArr['access_token'];
+        } else {
+            $bearer = $data['access_token'];
+        }
+
+        $header = array(
+            'Authorization' => 'Bearer ' . $bearer
+        );
     }
 
-    $header = array(
-        'Authorization' => 'Bearer ' . $bearer
-    );
-
-    $updatedUrl = sprintf("%s/%s", Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $request->param('path'));
+    $updatedUrl = sprintf('%s/server/%s/%s', Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $server, $request->param('path'));
 
     try {
         handleProxy($updatedUrl, $header, $request, $response);
