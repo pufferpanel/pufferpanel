@@ -102,7 +102,7 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
 
-$klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
