@@ -145,7 +145,7 @@
                             id="pause_console">
                         <small><i class="fa fa-pause"></i></small>
                     </button>
-                    <div style="margin-top:5px; display:none;" id="kill_process_text">
+                    <div style="margin-top:5px;" id="kill_process_text">
                         <p class="text-muted">
                             <small>My server isn't responding! Please <code id="kill_proc" style="cursor: pointer;">kill
                                 it</code>.
@@ -343,7 +343,7 @@
                     $("#live_console").val(total.join("\n"));
                     $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
                 };
-                socket.onerror = function(event) {
+                socket.onerror = function() {
                     fallbackToStatic();
                 };
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
