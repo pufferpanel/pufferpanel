@@ -38,8 +38,8 @@
 
     <div class="alert alert-danger" id="notifications" style="display:none;margin-top: 15px;"></div>
 
-    <div class="modal fade" id="editFile" role="dialog">
-        <div class="modal-dialog">
+    <div class="modal fade" id="editFile" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Editing file</h4>
@@ -47,7 +47,7 @@
                 <div class="modal-body" id="editor">
                 </div>
                 <div class="modal-footer">
-                    <button id="saveFile" class="btn btn-success btn-xs" data-dismiss="modal">Save</button>
+                    <button id="saveFile" class="btn btn-success btn-xs">Save</button>
                     <button id="cancelFile" class="btn btn-default btn-xs" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -86,14 +86,10 @@
         }
     };
 
+    var editor = undefined;
+
     $(window).load(function () {
         $("#sidebar_links").find("a[href='/node/files']").addClass('active');
-
-        $(".load_folder").click(function (e) {
-            console.log("triggered");
-            var newPath = $(this).text();
-            console.log("Update: " + newPath);
-        });
 
         $("#uploadFile").click(function(e) {
            e.stopPropagation();
@@ -105,14 +101,11 @@
             $("#upload").addClass('hidden');
         });
 
-        $("#cancelFile").click(function(e) {
-            var newDoc = CodeMirror.Doc('');
-            editor.swapDoc(newDoc);
+        $("#editor").on('hide', function(e) {
+            editor.setValue("");
         });
 
         getFileList();
-
-        var editor = ace.edit("editor");
     });
 
     function getFileList() {
@@ -126,7 +119,7 @@
                     special.push({
                         modifyDate: '',
                         name: e.name,
-                        size: '',
+                        size: 0,
                         isFile: false,
                         currentDir: fileModel.currentDir()
                     });
@@ -134,7 +127,7 @@
                     folders.push({
                         modifyDate: '',
                         name: e.name,
-                        size: '',
+                        size: 0,
                         isFile: e.isFile,
                         currentDir: fileModel.currentDir()
                     });
@@ -180,8 +173,14 @@
             return;
         }
         makeDaemonCall('GET', element.attr('data-value'), 'text', undefined, function(data) {
+            if (editor != undefined) {
+                editor.destroy();
+            }
             $("#editor").text(data);
-            $("#editFile").modal("show");
+            editor = ace.edit("editor");
+            $("#editFile").modal({
+                backdrop: 'static'
+            });
         });
     }
 
