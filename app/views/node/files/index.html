@@ -59,6 +59,7 @@
 <script type="text/javascript" src="/assets/javascript/dropzone.js"></script>
 <link rel="stylesheet" href="/assets/css/dropzone.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-modelist.js" type="text/javascript"></script>
 <script src="//cdn.filesizejs.com/filesize.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -87,6 +88,7 @@
     };
 
     var editor = undefined;
+    var modelist = ace.require("ace/ext/modelist");
 
     $(window).load(function () {
         $("#sidebar_links").find("a[href='/node/files']").addClass('active');
@@ -101,8 +103,8 @@
             $("#upload").addClass('hidden');
         });
 
-        $("#editor").on('hide', function(e) {
-            editor.setValue("");
+        $("#editor").on('hidden.bs.modal', function(e) {
+            editor.destroy();
         });
 
         getFileList();
@@ -135,7 +137,7 @@
                     files.push({
                         modifyDate: new Date(e.modifyTime * 1000).toLocaleString(),
                         name: e.name,
-                        size: e.size,
+                        size: e.size == undefined ? 0 : e.size,
                         isFile: e.isFile,
                         currentDir: fileModel.currentDir()
                     });
@@ -172,12 +174,12 @@
             displayError('Cannot open this file through the file editor, it exceeds the file limit of ' + filesize(MAX_FILE_SIZE));
             return;
         }
-        makeDaemonCall('GET', element.attr('data-value'), 'text', undefined, function(data) {
-            if (editor != undefined) {
-                editor.destroy();
-            }
+        var fileName = element.attr('data-value');
+        makeDaemonCall('GET', fileName, 'text', undefined, function(data) {
             $("#editor").text(data);
             editor = ace.edit("editor");
+            var mode = modelist.getModeForPath(fileName).mode;
+            editor.session.setMode(mode);
             $("#editFile").modal({
                 backdrop: 'static'
             });
