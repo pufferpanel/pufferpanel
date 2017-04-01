@@ -53,7 +53,60 @@
             </div>
         </div>
     </div>
-</div>
+</div><script type="text/html" id="fm-file">
+    <tr>
+        <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
+        <td class="fileName">
+            <a href="#editFile" class="edit_file" data-bind="text: name, attr: { 'data-value': currentDir + name }" onclick="loadFile(this);"></a>
+        </td>
+        <td class="fileSize" data-bind="text: filesize(size), attr: {'data-value': size}"></td>
+        <td class="modifyDate" data-bind="text: modifyDate"></td>
+        <td class="options" style="text-align:center;">
+            <div class="row" style="text-align:center;">
+                <div class="col-md-3 hidden-xs hidden-sm">
+                    {% if permission.has('files.download') %}
+                    <a data-bind="attr: { href: '/daemon/server/{{ server.hash }}/file' + currentDir + name, download: name }"><span class="badge"><i class="fa fa-download"></i></span></a>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if permission.has('files.delete') %}
+                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script type="text/html" id="fm-folder">
+    <tr>
+        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
+        <td><a href="#" class="load_folder" onclick="loadFolder(this);"
+               data-bind="text: name, attr: {'data-value': name }"></a></td>
+        <td></td>
+        <td></td>
+        <td style="text-align:center;">
+            <div class="row" style="text-align:center;">
+                <div class="col-md-3 hidden-xs hidden-sm"></div>
+                <div class="col-md-3">
+                    {% if permission.has('files.delete') %}
+                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script type="text/html" id="fm-up">
+    <tr>
+        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
+        <td><a href="#" class="load_folder" onclick="loadFolder(this);" data-value="..">&larr;</a></a></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</script>
 
 <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js'></script>
 <script type="text/javascript" src="/assets/javascript/dropzone.js"></script>
@@ -176,6 +229,9 @@
         }
         var fileName = element.attr('data-value');
         makeDaemonCall('GET', fileName, 'text', undefined, function(data) {
+            if (editor != undefined) {
+                editor.destroy();
+            }
             $("#editor").text(data);
             editor = ace.edit("editor");
             var mode = modelist.getModeForPath(fileName).mode;
@@ -214,61 +270,6 @@
         fileModel.currentDir(currentDir);
         getFileList();
     }
-</script>
-
-<script type="text/html" id="fm-file">
-    <tr>
-        <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
-        <td class="fileName">
-            <a href="#editFile" class="edit_file" data-bind="text: name, attr: { 'data-value': currentDir + name }" onclick="loadFile(this);"></a>
-        </td>
-        <td class="fileSize" data-bind="text: filesize(size), attr: {'data-value': size}"></td>
-        <td class="modifyDate" data-bind="text: modifyDate"></td>
-        <td class="options" style="text-align:center;">
-            <div class="row" style="text-align:center;">
-                <div class="col-md-3 hidden-xs hidden-sm">
-                    {% if permission.has('files.download') %}
-                    <a data-bind="attr: { href: '/daemon/server/{{ server.hash }}/file' + currentDir + name, download: name }"><span class="badge"><i class="fa fa-download"></i></span></a>
-                    {% endif %}
-                </div>
-                <div class="col-md-3">
-                    {% if permission.has('files.delete') %}
-                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
-                    {% endif %}
-                </div>
-            </div>
-        </td>
-    </tr>
-</script>
-
-<script type="text/html" id="fm-folder">
-    <tr>
-        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-        <td><a href="#" class="load_folder" onclick="loadFolder(this);"
-               data-bind="text: name, attr: {'data-value': name }"></a></td>
-        <td data-bind="text: size"></td>
-        <td data-bind="text: modifyDate"></td>
-        <td style="text-align:center;">
-            <div class="row" style="text-align:center;">
-                <div class="col-md-3 hidden-xs hidden-sm"></div>
-                <div class="col-md-3">
-                    {% if permission.has('files.delete') %}
-                    <a href="#" data-bind="attr: { 'data-value': currentDir + name }" onclick="deleteFile(this);" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
-                    {% endif %}
-                </div>
-            </div>
-        </td>
-    </tr>
-</script>
-
-<script type="text/html" id="fm-up">
-    <tr>
-        <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-        <td><a href="#" class="load_folder" onclick="loadFolder(this);" data-value="..">&larr;</a></a></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
 </script>
 
 {% endblock %}
