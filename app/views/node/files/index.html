@@ -37,6 +37,7 @@
     </div>
 
     <div class="alert alert-danger" id="notifications" style="display:none;margin-top: 15px;"></div>
+    <div class="alert alert-success" id="success-notifications" style="display:none;margin-top: 15px;"></div>
 
     <div class="modal fade" id="editFile" role="document">
         <div class="modal-dialog" role="document">
@@ -49,11 +50,14 @@
                 <div class="modal-footer">
                     <button id="saveFile" class="btn btn-success btn-xs">Save</button>
                     <button id="cancelFile" class="btn btn-default btn-xs" data-dismiss="modal">Cancel</button>
+                    <div class="alert alert-danger" id="notifications-modal" style="display:none;margin-top: 15px;"></div>
                 </div>
             </div>
         </div>
     </div>
-</div><script type="text/html" id="fm-file">
+</div>
+
+<script type="text/html" id="fm-file">
     <tr>
         <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
         <td class="fileName">
@@ -123,7 +127,8 @@
         displayMode: function (file) {
             return file.isFile ? 'fm-file' : file.name === '..' ? 'fm-up' : 'fm-folder';
         },
-        currentDir: ko.observable('/')
+        currentDir: ko.observable('/'),
+        activeFile: ko.observable()
     };
 
     ko.applyBindings(fileModel);
@@ -159,6 +164,8 @@
         $("#editor").on('hidden.bs.modal', function(e) {
             editor.destroy();
         });
+
+        $("#saveFile").click(saveFile);
 
         getFileList();
     });
@@ -239,6 +246,7 @@
             $("#editFile").modal({
                 backdrop: 'static'
             });
+            fileModel.activeFile(fileName);
         });
     }
 
@@ -269,6 +277,19 @@
         currentDir = currentDir.replace('//', '/');
         fileModel.currentDir(currentDir);
         getFileList();
+    }
+
+    function saveFile() {
+        var fileName = fileModel.activeFile();
+        makeDaemonCall('PUT', fileName + '?noform', 'text', editor.getValue(), function() {
+            editor.destroy();
+            $("#editFile").modal('hide');
+            $("#success-notifications").text('File has been saved').fadeIn().delay(5000).fadeOut();
+            getFileList();
+        }, function(e) {
+            console.log(e);
+            $("#notifications-modal").text(e).fadeIn().delay(5000).fadeOut();
+        });
     }
 </script>
 
