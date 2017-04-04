@@ -12,7 +12,7 @@
     <h4 class="nopad"><span data-bind="text: currentDir"></span> {% if ( permission.has('files.create') ) or (
         permission.has('files.upload') )
         %}
-        <small><a href="#" id="uploadFile" class="text-muted"><i class="fa fa-plus"></i></a></small>
+        <small><a href="#" class="text-muted" data-toggle="modal" data-target="#uploadModal"><i class="fa fa-plus"></i></a></small>
         {% endif %}
     </h4>
     <table class="table table-striped table-bordered table-hover" id="fileManager">
@@ -29,15 +29,26 @@
         </tbody>
     </table>
 
-    <div class="tab-pane hidden" id="upload">
-        <div class="well well-sm">
-            <form id="uploader" class="dropzone"></form>
-            <button id="cancelUpload" class="btn btn-default btn-xs">Close</button>
-        </div>
-    </div>
-
     <div class="alert alert-danger" id="notifications" style="display:none;margin-top: 15px;"></div>
     <div class="alert alert-success" id="success-notifications" style="display:none;margin-top: 15px;"></div>
+
+    <div class="modal fade" id="uploadModal" role="dialog">
+        <div class="modal-dialog" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload files</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well well-sm">
+                        <form id="uploader" class="dropzone"></form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default btn-xs" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="editFile" role="document">
         <div class="modal-dialog" role="document">
@@ -45,7 +56,7 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Editing file</h4>
                 </div>
-                <div class="modal-body" id="editor">
+                <div class="modal-body modal-body-lg" id="editor">
                 </div>
                 <div class="modal-footer">
                     <button id="saveFile" class="btn btn-success btn-xs">Save</button>
@@ -150,16 +161,6 @@
 
     $(window).load(function () {
         $("#sidebar_links").find("a[href='/node/files']").addClass('active');
-
-        $("#uploadFile").click(function(e) {
-           e.stopPropagation();
-           $("#upload").removeClass('hidden');
-        });
-
-        $("#cancelUpload").click(function(e) {
-            e.stopPropagation();
-            $("#upload").addClass('hidden');
-        });
 
         $("#editor").on('hidden.bs.modal', function(e) {
             editor.destroy();
