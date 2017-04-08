@@ -45,6 +45,10 @@ class Language extends User {
 			$this->language = $this->getData('language');
 		}
 
+        if(!$this->language) {
+            $this->language = 'en_US';
+        }
+
 		if(!file_exists(APP_DIR.'languages/'.$this->language.'.json')) {
 			throw new Exception('Unable to load the required language file! '.APP_DIR.'languages/'.$this->language.'.json');
 		}
