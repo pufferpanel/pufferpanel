@@ -59,9 +59,9 @@ $klein->respond('GET', '/admin/server', function($request, $response, $service) 
                         $ids)),
                         $header
             );
-            if($unirest->code == 200)
+            if($unirest->body->success)
             {
-                $results = array_merge($results, get_object_vars($unirest->body));
+                $results = array_merge($results, get_object_vars($unirest->body->data));
             }
         } catch (\Exception $e) {
         } catch (\Throwable $e) {
@@ -146,11 +146,11 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         } catch (\Exception $ex) {
             throw $ex;
         }
-        if ($unirest->code == 204 || $unirest->code == 200) {
+        if ($unirest->body->success) {
             ORM::get_db()->commit();
             $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
         } else {
-            throw new Exception('<div class="alert alert-danger">pufferd returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
+            throw new Exception('<div class="alert alert-danger">The daemon returned an error when trying to process your request. Daemon said: ' . $unirest->body->msg . ' [' . $unirest->body->code . ']</div>');
         }
     } catch (Exception $e) {
 
@@ -296,8 +296,8 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
 
         $unirest = Request::put(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($data));
 
-        if ($unirest->code !== 204 && $unirest->code !== 200) {
-            throw new \Exception("An error occurred trying to add a server. (" . $unirest->raw_body . ") [HTTP " . $unirest->code . "]");
+        if (!$unirest->body->success) {
+            throw new \Exception("An error occurred trying to add a server. (" . $unirest->body->msg . ") [" . $unirest->body->code . "]");
         }
 
         ORM::get_db()->commit();
@@ -340,5 +340,9 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
         $response->code(503);
         return;
     }
-    $response->json($unirest->body);
+    if ($unirest->body->success) {
+        $response->json($unirest->body->data);
+    } else {
+        $response->code(503);
+    }
 });

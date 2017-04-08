@@ -179,8 +179,8 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
                 $header
             );
 
-            if ($unirest->code == 200) {
-                $results = array_merge($results, get_object_vars($unirest->body));
+            if ($unirest->body->success) {
+                $results = array_merge($results, get_object_vars($unirest->body->data));
             }
         } catch (\Exception $e) {
         }

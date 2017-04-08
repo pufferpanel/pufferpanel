@@ -73,7 +73,7 @@ class Daemon extends Server
             return false;
         }
 
-		return (isset($request->body->status)) ? $request->body->status : false;
+		return (isset($request->body->success)) ? $request->body->success : false;
 
 	}
 
@@ -97,11 +97,11 @@ class Daemon extends Server
             /*
             * Valid Data was Returned
             */
-            if (!isset($request->body->status) || $request->body->status == 0) {
+            if (!$request->body->success) {
                 return false;
             }
 
-            $this->query_data = $request->body;
+            $this->query_data = $request->body->data;
             return true;
 
         } catch (\Exception $e) {
@@ -154,7 +154,7 @@ class Daemon extends Server
 
         }
 
-        return ($request->code != 200) ? false : true;
+        return ($request->body->success) ? false : true;
 
     }
 

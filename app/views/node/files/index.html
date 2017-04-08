@@ -172,8 +172,12 @@
     });
 
     function getFileList() {
-        makeDaemonCall('GET', fileModel.currentDir(), 'json', undefined, function (data) {
+        makeDaemonCall('GET', fileModel.currentDir(), 'json', undefined, function (dataSource) {
             fileModel.files.removeAll();
+            if (!dataSource.success) {
+                $("#notifications").text("Error loading data (" + dataSource.message + ") (" + dataSource.code + ")").fadeIn().delay(10000).fadeOut();
+            }
+            var data = dataSource.data;
             var special = [];
             var files = [];
             var folders = [];

@@ -8,18 +8,18 @@
 		{{ flash.info.0|raw }}
 	{% endif %}
 	{% if permission.has('manage.ftp.view') %}
-		<h3>Manage SFTP Information</h3><hr />
+		<h3>View SFTP Information</h3><hr />
 		{% if permission.has('manage.ftp.details') %}
 			<div class="form-group">
-				<label for="ftp_host" class="control-label">{{ l.render('string.host') }}</label>
+				<label for="sftp_host" class="control-label">{{ l.render('string.host') }}</label>
 				<div>
-					<input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }}" class="form-control" />
+					<input id="sftp_host" type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }}" class="form-control" />
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="sftp_user" class="control-label">{{ l.render('string.username') }}</label>
 				<div>
-					<input type="text" readonly="readonly" value="{{ user.email }}|{{ server.name }}" class="form-control" />
+					<input id="sftp_user" type="text" readonly="readonly" value="{{ user.email }}|{{ server.name }}" class="form-control" />
 				</div>
 			</div>
 		{% endif %}
@@ -27,16 +27,5 @@
 </div>
 <script type="text/javascript">
 $("#sidebar_links").find("a[href='/node/settings']").addClass('active');
-$("#gen_pass_bttn").click(function(){
-	return $.ajax({
-		type:"POST",
-		data: {xsrf: $("input[name='xsrf']").val()},
-		url:"/node/settings/password",
-		success: function(s){
-			return $("#gen_pass").html("<strong>{{ l.render('string.generated_pass') }}:</strong> "+s+" <br /><em>You should store this somewhere safe, it will not be shown again.</em>"),
-			$("#gen_pass").slideDown(),$('input[name="sftp_pass"]').val(s);
-		}
-	}),
-!1});
 </script>
 {% endblock %}

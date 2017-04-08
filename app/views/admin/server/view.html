@@ -40,7 +40,6 @@
 							<input type="text" readonly="readonly" value="{{ server.hash }}" class="form-control" />
 						</div>
 					</div>
-					<!--<input type="submit" value="Update Server Settings" class="btn btn-primary btn-sm" />-->
 				</fieldset>
 			</form>
 		</div>
@@ -160,58 +159,17 @@
 					<div class="form-group">
 						<label for="ftp_host" class="control-label">Host</label>
 						<div>
-							<input type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }} or {{ node.ip }}:{{ node.daemon_sftp }}" class="form-control" />
+							<input id="ftp_host" type="text" readonly="readonly" value="{{ node.fqdn }}:{{ node.daemon_sftp }} or {{ node.ip }}:{{ node.daemon_sftp }}" class="form-control" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="sftp_user" class="control-label">Username</label>
 						<div>
-							<input type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
+							<input id="sftp_user" type="text" readonly="readonly" value="{{ server.sftp_user }}" class="form-control" />
 						</div>
 					</div>
-					<div class="well">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
-							</div>
-							<div class="form-group col-md-6 nopad">
-								<label for="ftp_pass" class="control-label">New Password</label>
-								<div class="input-group">
-									<input type="password" autocomplete="off" name="sftp_pass" class="form-control" />
-									<span class="input-group-btn">
-										<button class="btn btn-success btn-sm" id="gen_pass_bttn" type="button">Generate</button>
-									</span>
-								</div>
-							</div>
-							<div class="form-group col-md-6 nopad-right">
-								<label for="ftp_pass_2" class="control-label">New Password (Again)</label>
-								<div>
-									<input type="password" autocomplete="off" name="sftp_pass_2" class="form-control" />
-								</div>
-								<div class="checkbox" style="margin-bottom:-20px;">
-									<label>
-										<input type="checkbox" name="email_user" /> Email new password to user.
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-					<input type="submit" value="Update Password" class="btn btn-primary btn-sm" />
 				</fieldset>
 			</form>
-		</div>
-		<div class="tab-pane" id="installer">
-			<h3>Install Progress</h3><hr />
-				<div class="alert alert-danger" id="socket_error" style="display:none;">
-					We were unable to connect to the main server, there may be network issues currently. This message will disappear when we are able to connect, you do not need to refresh.
-					<br /><br />
-					If this is your first time seeing this message it may be because you need to accept this servers SSL certificate. Please <a href="https://{{ node.fqdn }}:{{ node.daemon_listen }}" class="alert-link" target="_blank">click here</a> and accept the certificate (you can close the tab after doing so).
-				</div>
-				<div class="alert alert-danger">This is live data from the installer process. If you leave this page it will disappear and you will not be able to see what has already occured. <strong>This will not impact the install process, only what you can see of it.</strong></div>
-				<textarea id="live_console" class="form-control console" readonly="readonly"></textarea>
-				<form action="{{ server.id }}/override" id="overrideInstaller" method="POST">
-				    <input type="submit" name="override" class="btn btn-sm btn-danger" value="Force installer completion">
-				</form>
 		</div>
 		<div class="tab-pane" id="delete">
 			<h3>Delete Server</h3><hr />
@@ -238,67 +196,7 @@
 				$("#deleteCheckpoint").unbind('submit').submit();
 			}
 		});
-		$("form#forceDeleteCheckpoint").submit(function(e) {
-			e.preventDefault();
-			if(confirm("WARNING! USE WITH CAUTION! Are you absolutely positive that you want to delete this server? ALL SERVER FILES WILL BE IMMEDIATELY REMOVED FROM THE SYSTEM. If the pufferd instance is unable to delete the server it will still be removed from the panel. THIS SERVER AND ITS RELATED FILES AND USERS MAY CONTINUE TO EXIST ON THE PUFFERD INSTANCE AND THIS PANEL WILL BE UNABLE TO CONTROL IT.")){
-				$("#forceDeleteCheckpoint").unbind('submit').submit();
-			}
-		})
 		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
-		$("#reset_token").click(function(e){
-			e.preventDefault();
-			$.ajax({
-				type: "POST",
-				url: "/admin/server/view/{{ server.id }}/reset-token",
-				success: function(data) {
-					if(data.indexOf(' ') > 0) {
-						alert(data);
-					} else {
-						$("#reset_token_warn").show();
-						$("#form_daemon_token").val(data);
-					}
-				}
-			});
-		});
-		$("#server_ip").change(function() {
-			var ip = $(this).val().replace(/\./g, "\\.");
-			$("[id^=node_]").hide().prop("disabled", true);;
-			$("#node_"+ip).show().prop("disabled", false);
-		});
-		$('#rebuildContainer').click(function (event) {
-			event.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/admin/server/view/{{ server.id }}/rebuild-container',
-				dataType: 'text'
-			}).done(function (data) {
-				alert(data);
-			}).fail(function (jqXHR, textStatus) {
-				console.error(jqXHR);
-				alert('An error occured while attempting to process this request. Occasionally the rebuild may take some time to process causing this error to occur. Check your pufferd error logs to see if the build failed. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
-			});
-		});
-		$('#reinstallServer').click(function (event) {
-			event.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/admin/server/view/{{ server.id }}/reinstall-server',
-				dataType: 'text',
-				data: {
-					build_params: $('#reinstallBuildParams').val()
-				}
-			}).done(function (data) {
-				$("#live_console").val('');
-				$("#installerProgressTab").show(function () {
-					$("#installerProgressTab").tab('show');
-					$("#rebuild").removeClass('active');
-					$("#installer").addClass('active');
-				});
-			}).fail(function (jqXHR, textStatus) {
-				console.error(jqXHR);
-				alert('An error occured while attempting to process this request. HTTP/' + jqXHR.status + ' ' + jqXHR.responseText);
-			});
-		});
 	});
 </script>
 {% endblock %}

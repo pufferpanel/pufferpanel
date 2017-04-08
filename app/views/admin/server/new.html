@@ -157,9 +157,14 @@
                 'node': $('#getNode').val()
             },
             datatype: 'json'
-        }).done(function (data) {
+        }).done(function (dataSource) {
             pluginData.plugins.removeAll();
             pluginData.variables.removeAll();
+            if (!dataSource.success) {
+                $("#warning-popup").attr('class', 'alert alert-danger').html("Failed to get plugin information for the selected node, please check your logs (ERR " + dataSource.code + ")").fadeIn();
+                return
+            }
+            var data = dataSource.data;
             for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                     var displayname = data[key]["display"];
@@ -187,12 +192,8 @@
             }
             $("#warning-popup").hide();
             pluginData.active(pluginData.plugins()[0].id);
-        }).fail(function (data) {
-            if(data.status == 503) {
-                $("#warning-popup").attr('class', 'alert alert-danger').html("The selected node is offline, please start it").fadeIn();
-            } else {
-                $("#warning-popup").attr('class', 'alert alert-danger').html("Failed to get plugin information for the selected node, please check your logs").fadeIn();
-            }
+        }).fail(function () {
+            $("#warning-popup").attr('class', 'alert alert-danger').html("Failed to get plugin information for the selected node, please check your logs").fadeIn();
         });
     }
 

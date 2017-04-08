@@ -40,7 +40,7 @@ class Config {
     /**
      * Returns the internal Config instance of the global config.
      *
-     * @return Core\ConfigInterface
+     * @return \PufferPanel\Core\Config\ConfigInterface
      */
     public static function getInstance() {
 

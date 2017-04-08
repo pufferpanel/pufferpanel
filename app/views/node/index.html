@@ -301,8 +301,9 @@
             url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
             timeout: 1000
         }).done(function (event) {
-            $epoch = event.epoch;
-            data = event.logs;
+            var data = event.data;
+            $epoch = data.epoch;
+            var data = data.logs;
             if (data === 'undefined') {
                 return;
             }
@@ -470,7 +471,11 @@
                     url: '/daemon/server/{{ server.hash }}/start',
                     timeout: 0
                 }).done(function (data) {
-                    $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+                    if (data.success) {
+                        $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
+                    } else {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                    }
                     can_run = true;
                     return false;
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -490,7 +495,11 @@
                 url: '/daemon/server/{{ server.hash }}/start',
                 timeout: 5000
             }).done(function (data) {
-                $("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
+                if (data.success) {
+                    $("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
+                } else {
+                    $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
             });
