@@ -1,18 +1,41 @@
 {
-    "require": {
-    	"php": ">=5.5",
-    	"ext-pdo": "*",
-    	"christian-riesen/otp": "1.4.*",
-        "ircmaxell/random-lib": "1.1.0",
-        "j4mie/idiorm": "1.5.1",
-        "klein/klein": "2.1.*",
-    	"mandrill/mandrill": "1.0.54",
-        "mashape/unirest-php" : "2.6.*",
-    	"sendgrid/sendgrid": "~5.4",
-    	"tracy/tracy": "2.4.*",
-        "twig/twig": "1.23.*",
-        "wildbit/postmark-php": "1.3.*",
-        "mailgun/mailgun-php": "1.8.*",
-        "paragonie/random_compat": "*"
+  "name": "pufferpanel/pufferpanel",
+  "description": "A free open-source game management panel supporting Minecraft and SRCDS",
+  "type": "project",
+  "homepage": "http://www.pufferpanel.com",
+  "license": "GPL-3.0",
+  "support": {
+    "issues": "https://github.com/PufferPanel/PufferPanel/issues",
+    "forum": "https://community.pufferpanel.com/",
+    "irc": "irc://irc.esper.net/pufferpanel",
+    "source": "https://github.com/PufferPanel/PufferPanel",
+    "docs": "http://docs.pufferpanel.com"
+  },
+  "authors": [
+    {
+      "name": "Joshua Taylor",
+      "email": "jtaylor@ae97.net",
+      "role": "Developer"
+    },
+    {
+      "name": "puffrfish",
+      "role": "Founder"
     }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "ext-pdo": "*",
+    "christian-riesen/otp": "~2.4",
+    "ircmaxell/random-lib": "~1.2",
+    "j4mie/idiorm": "~1.5",
+    "klein/klein": "~2.1",
+    "mandrill/mandrill": "~1.0",
+    "mashape/unirest-php": "~3.0",
+    "sendgrid/sendgrid": "~5.4",
+    "tracy/tracy": "~2.4",
+    "twig/twig": "~2.3",
+    "wildbit/postmark-php": "~2.3",
+    "mailgun/mailgun-php": "~2.2",
+    "paragonie/random_compat": "~2.0"
+  }
 }

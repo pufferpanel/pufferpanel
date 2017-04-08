@@ -18,7 +18,7 @@
 	along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 namespace PufferPanel\Core;
-use \ORM, \PDO, \Twig_Autoloader, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \stdClass, \Klein\Klein;
+use \ORM, \PDO, \Twig_Environment, \Twig_Loader_Filesystem, \Tracy\Debugger, \stdClass, \Klein\Klein;
 session_start();
 
 if(!ini_get('date.timezone')) {
@@ -44,8 +44,6 @@ define('LOGS_DIR', $logsDir);
  * Handle Cloudflare usage
  */
 $_SERVER['REMOTE_ADDR'] = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR'];
-
-Twig_Autoloader::register();
 
 /*
  * Set Debugger::DETECT to Debugger::DEVELOPMENT to force errors to be displayed.

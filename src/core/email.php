@@ -150,16 +150,15 @@ class Email {
     protected function _sendWithMailgun() {
 
         try {
-
             list(, $domain) = explode('@', Settings::config()->transport_email);
 
-            $mail = new \Mailgun\Mailgun(Settings::config()->transport_token);
-            $mail->sendMessage($domain, array(
+            $mg = Mailgun::create(Settings::config()->transport_token);
+            $mg->message()->send($domain, [
                 'from' => Settings::config()->company_name . ' <' . Settings::config()->transport_email . '>',
                 'to' => $this->email . ' <' . $this->email . '>',
                 'subject' => $this->subject,
                 'html' => $this->message
-            ));
+            ]);
         } catch (\Exception $e) {
             Debugger::log($e);
         }
