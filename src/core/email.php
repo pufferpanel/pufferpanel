@@ -21,7 +21,8 @@
 namespace PufferPanel\Core;
 
 use \Tracy\Debugger,
-    \Exception;
+    \Exception,
+    \SendGrid;
 
 /**
  * PufferPanel Core Email Sending Class
@@ -109,16 +110,15 @@ class Email {
     protected function _sendWithSendgrid() {
 
         try {
+            $sendgrid = new SendGrid(Settings::config()->transport_token);
+            $to = new SendGrid\Email(null, $this->email);
+            $from = new SendGrid\Email(null, Settings::config()->transport_email);
+            $subject = $this->subject;
+            $body = new SendGrid\Content('text/html', $this->message);
 
-            $sendgrid = new \SendGrid(Settings::config()->transport_token);
-            $email = new \SendGrid\Email();
+            $request = new SendGrid\Mail($from, $subject, $to, $body);
 
-            $email->addTo($this->email)
-                    ->setFrom(Settings::config()->transport_email)
-                    ->setSubject($this->subject)
-                    ->setHtml($this->message);
-
-            $sendgrid->send($email);
+            $sendgrid->client->mail()->send()->post($request);
         } catch (\Exception $e) {
             Debugger::log($e);
         }
