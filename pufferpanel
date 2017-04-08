@@ -332,6 +332,34 @@ function configureNginx() {
     service nginx restart
 }
 
+function updateLogOwner() {
+    phpUser=$(grep "^user \?= \?" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    if [ "${phpUser}" = "" ]; then
+        phpUser=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+        if [ "${phpUser}" = "" ]; then
+            phpUser=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+            if [ "${phpUser}" = "" ]; then
+                echo "Could not determine PHP user, cannot correct log folder owner"
+                return
+            fi
+        fi
+    fi
+
+    phpGroup=$(grep "^user \?= \?" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    if [ "${phpOwner}" = "" ]; then
+        phpGroup=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+        if [ "${phpGroup}" = "" ]; then
+            phpGroup=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+            if [ "${phpGroup}" = "" ]; then
+                echo "Could not determine PHP group, cannot correct log folder owner"
+                return
+            fi
+        fi
+    fi
+
+    chown -R ${phpOwner}:${phpGroup} /srv/pufferpanel/logs
+}
+
 case $1 in
     install)
 
@@ -396,11 +424,12 @@ case $1 in
         if [ $? -eq 0 ]; then
             configureNginx
         else
-        type apache2 1>/dev/null 2>&1
-        if [ $? -eq 0 ]; then
-            configureApache
+            type apache2 1>/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                configureApache
+            fi
         fi
-        fi
+        updateLogOwner
 
         if [ "$installNode" -eq "1" ]; then
             echo "Installing pufferd daemon onto the local node"            
