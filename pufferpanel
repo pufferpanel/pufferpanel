@@ -365,7 +365,7 @@ case $1 in
             canInstall=false
         fi
 
-        extensions=("curl" "hash" "openssl" "mcrypt" "pdo" "pdo_mysql")
+        extensions=("curl" "hash" "openssl" "pdo" "pdo_mysql")
         canInstall=1
         for i in ${extensions[@]}; do
             phpcmd=$(php -r 'echo extension_loaded("'${i}'") ? 1 : 0;')

@@ -58,7 +58,12 @@ trait Authentication {
      */
     public function generate_iv() {
 
-        return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CBC), MCRYPT_RAND));
+        $isStrong = false;
+        $iv = base64_encode(openssl_cipher_iv_length('aes-256-cbc'), $isStrong);
+        if (!$isStrong) {
+            throw new Exception('Could not use crypto strong algorithm for IV generation');
+        }
+        return $iv;
     }
 
     /**
