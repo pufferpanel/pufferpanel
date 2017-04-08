@@ -149,7 +149,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
         if ($unirest->code == 204 || $unirest->code == 200) {
             ORM::get_db()->commit();
             $service->flash('<div class="alert alert-success">The requested server has been deleted from PufferPanel.</div>');
-            $response->redirect('/admin/server');
         } else {
             throw new Exception('<div class="alert alert-danger">pufferd returned an error when trying to process your request. Daemon said: ' . $unirest->raw_body . ' [HTTP/1.1 ' . $unirest->code . ']</div>');
         }
@@ -162,7 +161,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
             ORM::get_db()->commit();
 
             $service->flash('<div class="alert alert-danger">An error was encountered with the daemon while trying to delete this server from the system. <strong>Because you requested a force delete this server has been removed from the panel regardless of the reason for the error. This server and its data may still exist on the pufferd instance.</strong></div>');
-            $response->redirect('/admin/server');
         } else {
 
             ORM::get_db()->rollBack();
@@ -171,6 +169,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
         }
     }
+    $response->redirect('/admin/server');
 });
 
 $klein->respond('GET', '/admin/server/new', function($request, $response, $service) use ($core) {
