@@ -357,7 +357,7 @@ function updateLogOwner() {
         fi
     fi
 
-    chown -R ${phpOwner}:${phpGroup} /srv/pufferpanel/logs
+    chown -R ${phpUser}:${phpGroup} /srv/pufferpanel/logs
 }
 
 case $1 in
