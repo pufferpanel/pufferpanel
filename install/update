@@ -121,8 +121,7 @@ CREATE EVENT `oauthTokenCleaner` ON SCHEDULE EVERY 5 MINUTE ON COMPLETION NOT PR
     foreach ($servers as $server) {
         $serverId = $server['id'];
         $userId = $server['owner'];
-        $oauth->create($pdo,
-            $userId,
+        $oauth->create($userId,
             $serverId,
             '.internal_' . $userId . '_' . $serverId,
             OAuthService::getUserScopes(),
