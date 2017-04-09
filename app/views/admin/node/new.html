@@ -20,14 +20,14 @@
 					<div class="form-group col-md-6 nopad">
 						<label for="node_name" class="control-label">Node Short Name</label>
 						<div>
-							<input type="text" name="node_name" placeholder="shortname" class="form-control" />
+							<input id="node_name" type="text" name="node_name" placeholder="shortname" class="form-control" />
 							<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>15 character maximum (a-zA-Z0-9_-.).</em></small></p>
 						</div>
 					</div>
 					<div class="form-group col-md-6 nopad-right">
 						<label for="location" class="control-label">Location</label>
 						<div>
-							<select name="location" class="form-control">
+							<select id="location" name="location" class="form-control">
 								{% for location in locations %}
 									<option value="{{ location.id }}">{{ location.long }}</option>
 								{% endfor %}
@@ -57,7 +57,7 @@
 					<div class="form-group col-md-6 col-xs-6 nopad">
 						<label for="daemon_listen" class="control-label">Daemon Listening Port</label>
 						<div>
-							<input type="text" name="daemon_listen" class="form-control" value="5656" />
+							<input id="daemon_listen" type="text" name="daemon_listen" class="form-control" value="5656" />
 						</div>
 					</div>
 				</div>
