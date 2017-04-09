@@ -258,7 +258,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     );
 
     //add admins to server
-    $adminUsers = ORM::forTable('users')->select('id')->where('root_admin', 1)->findMany();
+    $adminUsers = ORM::forTable('users')->select('id')->where('root_admin', 1)->whereNotEqual('id', $user->id())->findMany();
     foreach($adminUsers as $k => $adminUser) {
         OAuthService::Get()->create($adminUser->id(),
             $server->id(),
@@ -340,9 +340,5 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
         $response->code(503);
         return;
     }
-    if ($unirest->body->success) {
-        $response->json($unirest->body->data);
-    } else {
-        $response->code(503);
-    }
+    $response->json($unirest->body);
 });
