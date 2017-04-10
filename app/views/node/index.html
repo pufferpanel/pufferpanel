@@ -277,15 +277,17 @@
         }).done(function (data) {
             memoryChart.removeData();
             cpuChart.removeData();
-            if (data === 'undefined' || data.error) {
+            if (!data.success) {
                 memoryChart.addData(0, "");
                 cpuChart.addData(0, "");
             } else {
-                memoryChart.addData([parseInt(data.memory / (1024 * 1024))], "");
-                cpuChart.addData([parseInt(data.cpu)], "");
+                memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
+                cpuChart.addData([parseInt(data.data.cpu)], "");
             }
             $isStatPinging = false;
         }).fail(function () {
+            memoryChart.addData(0, "");
+            cpuChart.addData(0, "");
             $isStatPinging = false;
         });
     }
@@ -359,7 +361,7 @@
 		});
 		var ctx = $("#memoryChart").get(0).getContext("2d");
 		var cty = $("#cpuChart").get(0).getContext("2d");
-                var chartSize = 30;
+        var chartSize = 30;
 		var memoryChartData = {
 			labels: Array.apply(null, Array(chartSize)).map(String.prototype.valueOf,""),
 			datasets: [{
