@@ -475,8 +475,10 @@ case $1 in
         configureApache
         ;;
     update)
-        #chmod +x install/update
-        #install/update
+        loadConfig
+        echo "Attempting to update database, please wait..."
+        mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < update/update.sql
+        echo "Database query executed, if no errors reported, then it worked"
         ;;
     *)
         echo "PufferPanel"
