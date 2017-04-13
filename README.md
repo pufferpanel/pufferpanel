@@ -6,7 +6,7 @@
 [Documentation](http://www.pufferpanel.com/docs) |
 [Translations](https://www.transifex.com/pufferpanel/pufferpanel/)
 
-![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")
+[![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")](https://pufferpanel.com)
 
 #### PufferPanel v1.0 has been released! Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
 
@@ -36,4 +36,4 @@ Some images used within PufferPanel are Copyright (c) their respective owners.
 
 Repositories graciously hosted by [packagecloud](https://packagecloud.io)
 
-![https://packagecloud.io](https://packagecloud.io/images/packagecloud-badge.png)
+[![packagecloud](https://packagecloud.io/images/packagecloud-badge.png)](https://packagecloud.io)
