@@ -475,8 +475,8 @@ case $1 in
         configureApache
         ;;
     update)
-        chmod +x install/update
-        install/update
+        #chmod +x install/update
+        #install/update
         ;;
     *)
         echo "PufferPanel"
