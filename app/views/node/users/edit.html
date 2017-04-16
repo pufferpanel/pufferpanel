@@ -8,7 +8,7 @@
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<form action="/node/users/edit" method="post">
-		<h3 class="nopad">Viewing Perissions for: {{ user.email }}</h3><hr />
+		<h3 class="nopad">Viewing Permissions for: {{ user.email }}</h3><hr />
 		<div class="list-group">
 			<a href="#" class="list-group-item">
 				<label><input type="checkbox" name="permissions[]" value="console.view" checked="checked" disabled/> View Console</label>
