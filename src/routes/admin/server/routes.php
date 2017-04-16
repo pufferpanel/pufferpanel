@@ -125,7 +125,6 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
 
     ORM::forTable('subusers')->where('server', $core->server->getData('id'))->deleteMany();
     ORM::forTable('permissions')->where('server', $core->server->getData('id'))->deleteMany();
-    ORM::forTable('downloads')->where('server', $core->server->getData('id'))->deleteMany();
     $clientIds = ORM::forTable('oauth_clients')->where('server_id', $core->server->getData('id'))->select('id')->findMany();
     foreach ($clientIds as $id) {
         ORM::forTable('oauth_access_tokens')->where('oauthClientId', $id->id)->deleteMany();
