@@ -49,10 +49,14 @@
 						<div>
 							<input type="hidden" name="action" value="details" />
 							<input type="submit" value="Update User" class="btn btn-primary btn-sm" />
+							</form>
+							<form action="../delete" method="POST">
+								<input type="hidden" name="id" value="{{ user.id }}" />
+								<input type="submit" value="Delete User" class="btn btn-danger btn-sm" />
+							</form>
 						</div>
 					</div>
 				</fieldset>
-			</form>
 		</div>
 		<div class="col-md-6 col-sm-6">
 			<div class="well">
