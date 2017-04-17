@@ -1,0 +1,124 @@
+string.email, Email
+string.password, Adgangskode
+string.login, Log ind
+string.reset_password, Nulstil adgangskode
+string.spam_protection, Spam Beskyttelse
+string.again, (Gentag)
+string.noservers, Ingen servere er tildelt til din konto endnu.
+string.node, Node
+string.name, Navn
+string.connect, Tilslut
+string.status, Status
+string.offline, Offline
+string.online, Online
+string.connection, Forbindelse
+string.mem_alloc, Allokeret Hukommelse
+string.disk_alloc, Allokeret Disk
+string.start, Start
+string.restart, Genstart
+string.stop, Stop
+string.options, Indstillinger
+string.search, Søg
+string.clear, Ryd
+string.refresh, Genopfrisk
+string.close, Luk
+string.generated_pass, Genereret Adgangskode
+string.modpacks, Modpacks
+string.ftp, FTP
+string.host, Vært
+string.username, Brugernavn
+string.generate, Generer
+string.description, Beskrivelse
+string.previous, Forrige
+string.next, Næste
+string.about, Om
+string.version, Version
+string.published, Udgivet
+string.versions, Versioner
+string.save, Gem
+string.token,Token
+string.language, Sprog
+string.acp, Administrationspanel
+string.logout, Log ud
+string.location, Lokation
+footer.license, PufferPanel er licenseret under et <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 Licens</a>.
+footer.version, Kører version %s distributeret af <a href="http://pufferpanel.com/">PufferPanel Development</a>.
+footer.generated, Generet på %s sekunder.
+footer.queries, Eksekverede %s database forespørgsler.
+sidebar.acc.actions, Kontohandlinger
+sidebar.server.acc, Serverhandlinger
+sidebar.server.sett, Serverindstillinger
+sidebar.settings, Indstillinger
+sidebar.servers, Mine servere
+sidebar.overview, Overblik
+sidebar.console, Live Konsol
+sidebar.files, Filhåndtering
+sidebar.manage, Serverhåndtering
+sidebar.plugins, Server Plugins
+sidebar.manage_subusers, Håndter underkontoer
+sidebar.totp_settings, TOTP Indstillinger
+header.account, Konto
+header.logout, Log ud
+header.admin, Admin KP
+login.login_h1, Log ind i PufferPanel
+reset.reset_h1, Nulstil din adgangskode
+settings.change_pass, Ændr adgangskode
+settings.update_email, Opdater email
+settings.current_pass, Nuværende adgangskode
+settings.new_pass, Ny adgangskode
+settings.new_email, Ny e-mail
+settings.notifications_h1, Opdater notifikationspræferencer
+settings.login_success, Succesfuldt log ind
+settings.failed_login, Fejlet log ind
+settings.notify.email_me, Send mig emails
+settings.notify.no_email_me, Send mig ikke emails
+settings.update_preferences, Opdater præferencer
+settings.subuser.h1, Underkonto token
+settings.subuser.help, Indtast venligst din token i feltet nedenunder, hvis du modtog en email fordi du blev tilføjet som underkonto
+settings.subuser.validate, Valider Token
+node.overview.stats_h1, Statistikker
+node.overview.collect_usage, Forsøger at indsamle informationer. Dette kan tage et øjeblik, sørg venligst for at serveren er online.
+node.overview.collect_disk, Indsamler diskforbrug, dette kan tage et øjeblik.
+node.overview.no_players, Der er ingen spillere online.
+node.overview.disk_h1, Brugt diskplads
+node.overview.space_used, Du bruger %s MB ud af %s MB af din diskplads.
+node.overview.information_h1, Serverinformation
+node.overview.players_h5, Spillere online
+node.overview.cpu_h5, CPU forbrug
+node.overview.memory_h5, Hukommelsesforbrug
+node.overview.ajax.no_conn, Kan ikke forbinde til noden.
+node.overview.ajax.no_exec, Kan ikke eksekvere kommandoen på serveren.
+node.console.command_help, Indtast kommando
+node.console.scrollstop_alert, Du har valgt tekst i konsollen. Konsollen opdaterer ikke imens. Dette er istandsat for at gøre det let at kopiere tekst fra konsollen. Fravælg teksten igen for at genoptage opdateringerne.
+node.console.scrollstop_h1, Scrollstop&trade; Konsolvindue
+node.console.ajax.server_started, Serveren blev startet.
+node.files.loading, Indlæser mappe. Vent venligst.
+node.files.name, Filnavn
+node.files.size, Filstørrelse
+node.files.modified, Sidst modificeret
+node.files.edit.daemon_error, Kan ikke forbinde til daemonen.
+node.files.edit.back, Tilbage til filhåndtering
+node.files.edit.type_error, Denne filtype kan ikke redigeres vha. filhåndteringen.
+node.files.edit.no_file, Ingen redigerbar fil er valgt.
+node.files.edit.error, Du kan vende tilbage til filhåndteringen ved at <a href="index.php">klikke her</a>.
+node.files.ajax.no_dir, Kunne ikke finde den forespurgte mappe. Fejlen er blevet logført.
+node.files.ajax.no_dl, Kunne ikke forbinde til serveren for at hente filerne. Prøv igen.
+node.files.ajax.saved, Filen blev gemt.
+node.files.ajax.no_save, Kunne ikke gemme filen.
+node.files.ajax.no_edit, Denne filtype kan ikke redigeres vha. filhåndteringen. Brug venligst en FTP-klient.
+node.files.ajax.file_404, Den specificerede fil kunne ikke findes på serveren.
+node.settings.jar.jar_h1, Server .jar-navn
+node.settings.jar.jarfile_name, Jarfil
+node.settings.jar.update, Opdater navn
+node.settings.ftp.ftp_h1, FTP-indstillinger
+node.ajax.generic_error, Der opstod en fejl ved den pågældende AJAX-forespørgsel.
+error.unhandled, En uventet fejl opstod imens forespørgslen blev behandlet. Prøv igen.
+error.xsrf, XSRF-tokenet var ikke gyldigt. Sørg venligst for at cookies er slået til og prøv igen.
+error.invalid_password, Vi kunne ikke godkende din adgangskode. Prøv igen.
+error.invalid_email, Ugyldig e-mail
+error.password_mismatch, Adgangskoderne matcher ikke
+error.password_strength, Din adgangskode er ikke kompleks nok. Benyt venligst mindst ét tal, og mindst ét stort og ét småt bogstav. Din adgangskode skal også være på mindst 8 tegn.
+error.account.same_email, Du kan ikke ændre din e-mail til den e-mail der allerede er tilknyttet til din adgangskode. Det ville ikke give mening!
+success.account.email, Din e-mail blev ændret til <em>%s</em>.
+success.account.password, Din adgangskode blev ændret! Log venligst ind igen.
+success.notifications.updated, Din kontos notifikationspræfencer blev opdateret.
