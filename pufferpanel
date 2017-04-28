@@ -477,7 +477,7 @@ case $1 in
     update)
         loadConfig
         echo "Attempting to update database, please wait..."
-        mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < update/update.sql
+        mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
         echo "Database query executed, if no errors reported, then it worked"
         ;;
     *)
