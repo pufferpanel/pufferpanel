@@ -194,7 +194,7 @@ CREATE TABLE `oauth_access_tokens` (
 );
 
 INSERT INTO acp_settings
-    SELECT * FROM acp_settings;
+    SELECT * FROM backup_acp_settings;
 
 INSERT INTO locations
     SELECT * FROM backup_locations;
