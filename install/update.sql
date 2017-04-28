@@ -221,7 +221,7 @@ INSERT INTO permissions
     SELECT * FROM backup_permissions;
 
 INSERT INTO subusers
-    SELECT * FROM backup_subusers;
+    SELECT id, user, server FROM backup_subusers;
 
 INSERT INTO oauth_clients
     SELECT * FROM oauth_clients;
