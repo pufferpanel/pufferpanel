@@ -6,7 +6,7 @@ DROP EVENT IF EXISTS oauthTokenCleaner;
 
 ALTER TABLE account_change DROP FOREIGN KEY FK_account_change_users;
 ALTER TABLE nodes DROP FOREIGN KEY FK_nodes_locations;
-ALTER TABLE actions_logs DROP FOREIGN KEY FK_actions_log_users;
+ALTER TABLE actions_log DROP FOREIGN KEY FK_actions_log_users;
 ALTER TABLE servers DROP FOREIGN KEY FK_servers_nodes;
 ALTER TABLE servers DROP FOREIGN KEY FK_servers_users;
 ALTER TABLE permissions DROP FOREIGN KEY FK_permissions_servers;
@@ -211,7 +211,7 @@ INSERT INTO nodes
 INSERT INTO autodeploy
     SELECT * FROM backup_autodeploy;
 
-INSERT INTO actions_logs
+INSERT INTO actions_log
     SELECT * FROM backup_actions_log;
 
 INSERT INTO servers
