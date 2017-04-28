@@ -224,7 +224,7 @@ INSERT INTO subusers
     SELECT id, user, server FROM backup_subusers;
 
 INSERT INTO oauth_clients
-    SELECT * FROM oauth_clients;
+    SELECT * FROM backup_oauth_clients;
 
 INSERT INTO oauth_access_tokens
     SELECT * FROM backup_oauth_access_tokens;
