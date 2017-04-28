@@ -6,7 +6,6 @@ DROP EVENT IF EXISTS oauthTokenCleaner;
 
 ALTER TABLE account_change DROP FOREIGN KEY FK_account_change_users;
 ALTER TABLE nodes DROP FOREIGN KEY FK_nodes_locations;
-ALTER TABLE autodeploy DROP FOREIGN KEY FK_autodeploy_nodes;
 ALTER TABLE action_logs DROP FOREIGN KEY FK_actions_log_users;
 ALTER TABLE servers DROP FOREIGN KEY FK_servers_nodes;
 ALTER TABLE servers DROP FOREIGN KEY FK_servers_users;
