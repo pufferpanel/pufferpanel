@@ -211,7 +211,7 @@ INSERT INTO nodes
 INSERT INTO autodeploy
     SELECT * FROM backup_autodeploy;
 
-INSERT INTO action_logs
+INSERT INTO actions_logs
     SELECT * FROM backup_actions_log;
 
 INSERT INTO servers
