@@ -146,7 +146,10 @@ class OAuthService {
                 ->where('client_id', $userid == null && $serverid == null ? 'pufferpanel' : '.internal_' . $userid . '_' . $serverid);
 
             if ($userid == null && $serverid == null) {
-                $oauthInfo = $oauthInfo->where_null('user_id')->where_null('server_id');
+                $oauthInfo = $oauthInfo->where(array(
+                    'user_id' => 0,
+                    'server_id' => 0
+                ));
             } else {
                 $oauthInfo = $oauthInfo->where(array(
                     'user_id' => $userid,

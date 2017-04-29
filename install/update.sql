@@ -4,6 +4,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP EVENT IF EXISTS oauthTokenCleaner;
 
+DELETE FROM oauth_clients
+WHERE id NOT IN (
+  SELECT * FROM (SELECT MAX(id) FROM oauth_clients GROUP BY client_id) d
+);
+
 ALTER TABLE account_change DROP FOREIGN KEY FK_account_change_users;
 ALTER TABLE nodes DROP FOREIGN KEY FK_nodes_locations;
 ALTER TABLE actions_log DROP FOREIGN KEY FK_actions_log_users;
