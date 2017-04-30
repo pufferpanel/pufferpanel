@@ -129,7 +129,9 @@ $klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $resp
     $updatedUrl = sprintf('%s/server/%s/%s', Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $server, $request->param('path'));
 
     foreach($oldHeaders as $k => $v) {
-        $header[$k] = $v;
+        if ($v !== '') {
+            $header[$k] = $v;
+        }
     }
 
     try {
