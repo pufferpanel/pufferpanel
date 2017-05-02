@@ -67,7 +67,7 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-initScript=$'
+initScript=$(cat << 'EOF'
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          pufferd
@@ -78,7 +78,7 @@ initScript=$'
 # Description:       pufferd daemon service
 ### END INIT INFO
 
-SCRIPT="/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json"
+SCRIPT="/srv/pufferd/pufferd --config=/etc/pufferd/config.json"
 RUNAS=pufferd
 
 PIDFILE=/var/run/pufferd.pid
@@ -164,7 +164,8 @@ case "$1" in
   *)
     echo "Usage: $0 {start|stop|status|restart|uninstall}"
 esac
-'
+EOF
+)
 
 if type systemctl &> /dev/null; then
   systemctl start pufferd
