@@ -85,14 +85,25 @@ PIDFILE=/var/run/pufferd.pid
 LOGFILE=/var/log/pufferd.log
 
 start() {
-  if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE"); then
+  if [ -f $PIDFILE ] && [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE); then
     echo 'Service already running' >&2
     return 1
   fi
   echo 'Starting service…' >&2
-  local CMD="$SCRIPT &> \"$LOGFILE\" && echo \$! > $PIDFILE"
-  su -c "$CMD" $RUNAS > "$LOGFILE"
-  echo 'Service started' >&2
+  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
+  su -c "$CMD" $RUNAS > "$PIDFILE"
+ # Try with this command line instead of above if not workable
+ # su -s /bin/sh $RUNAS -c "$CMD" > "$PIDFILE"
+
+  sleep 2
+  PID=$(cat $PIDFILE)
+    if pgrep -u $RUNAS -f $NAME > /dev/null
+    then
+      echo "pufferd is now running, the PID is $PID"
+    else
+      echo ''
+      echo "Error! Could not start pufferd"
+    fi
 }
 
 stop() {
