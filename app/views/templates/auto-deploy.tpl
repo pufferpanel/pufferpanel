@@ -67,9 +67,89 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-systemctl start pufferd
-systemctl enable pufferd
+initScript="
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          pufferd
+# Required-Start:    $local_fs $network $named $time $syslog
+# Required-Stop:     $local_fs $network $named $time $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Description:       pufferd daemon service
+### END INIT INFO
+
+SCRIPT=/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json
+RUNAS=pufferd
+
+PIDFILE=/var/run/pufferd.pid
+LOGFILE=/var/log/pufferd.log
+
+start() {
+  if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then
+    echo 'Service already running' >&2
+    return 1
+  fi
+  echo 'Starting service…' >&2
+  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
+  su -c "$CMD" $RUNAS > "$PIDFILE"
+  echo 'Service started' >&2
+}
+
+stop() {
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
+    echo 'Service not running' >&2
+    return 1
+  fi
+  echo 'Stopping service…' >&2
+  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
+  echo 'Service stopped' >&2
+}
+
+uninstall() {
+  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "
+  local SURE
+  read SURE
+  if [ "$SURE" = "yes" ]; then
+    stop
+    rm -f "$PIDFILE"
+    echo "Notice: log file is not be removed: '$LOGFILE'" >&2
+    update-rc.d -f pufferd remove
+    rm -fv "$0"
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  uninstall)
+    uninstall
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|uninstall}"
+esac
+"
+
+if [ command -v systemctl >/dev/null ]; then
+  systemctl start pufferd
+  systemctl enable pufferd
+else
+  echo "systemd not installed, installing init.d script"
+  echo "${initScript}" > /etc/init.d/pufferd
+  chmod +x "/etc/init.d/pufferd"
+  touch /var/log/pufferd.log
+  chown pufferd:pufferd /var/log/pufferd.log
+  update-rc.d pufferd defaults
+  service pufferd start
+fi
 
 echo "Successfully installed the daemon"
-echo "Please start the daemon manually if you are running Ubuntu 14.04"
+
 exit 0
