@@ -150,7 +150,7 @@ function configureUser() {
         echo -n "Email: "
         read email
     done
-    
+
     password=""
     password2=""
     while true; do
@@ -159,13 +159,13 @@ function configureUser() {
             read -s password
             echo ""
         done
-        
+
         while [ "${password2}" == "" ]; do
             echo -n "Confirm Password: "
             read -s password2
             echo ""
         done
-        
+
         if [ "${password}" != "${password2}" ]; then
             echo "Password does not match the confirm password! Please try again."
             password=""
@@ -174,7 +174,7 @@ function configureUser() {
             break
         fi
     done
-    
+
     password=$(php -r "echo password_hash('"${password}"', PASSWORD_BCRYPT);");
     time=$(php -r 'echo time();');
 
@@ -366,8 +366,8 @@ case $1 in
         installNode=1
         forceInstall=0
         for i in "$@"
-        do 
-        case $i in 
+        do
+        case $i in
             --force)
                 forceInstall=1
                 shift
@@ -432,7 +432,7 @@ case $1 in
         updateLogOwner
 
         if [ "$installNode" -eq "1" ]; then
-            echo "Installing pufferd daemon onto the local node"            
+            echo "Installing pufferd daemon onto the local node"
             nodeSecret=$(cat /proc/sys/kernel/random/uuid)
             nodeSecret=${nodeSecret^^}
             pufferdVersion=$(cat src/versions/pufferd)
@@ -476,6 +476,7 @@ case $1 in
         ;;
     update)
         loadConfig
+        updateLogOwner
         echo "Attempting to update database, please wait..."
         mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
         echo "Database query executed, if no errors reported, then it worked"
