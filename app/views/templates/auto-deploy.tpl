@@ -67,73 +67,73 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-initScript='
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:          pufferd
-# Required-Start:    $local_fs $network $named $time $syslog
-# Required-Stop:     $local_fs $network $named $time $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Description:       pufferd daemon service
-### END INIT INFO
-
-SCRIPT=/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json
-RUNAS=pufferd
-
-PIDFILE=/var/run/pufferd.pid
-LOGFILE=/var/log/pufferd.log
-
-start() {
-  if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then
-    echo 'Service already running' >&2
-    return 1
-  fi
-  echo 'Starting service…' >&2
-  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
-  su -c "$CMD" $RUNAS > "$PIDFILE"
-  echo 'Service started' >&2
-}
-
-stop() {
-  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
-    echo 'Service not running' >&2
-    return 1
-  fi
-  echo 'Stopping service…' >&2
-  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"
-  echo 'Service stopped' >&2
-}
-
-uninstall() {
-  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "
-  local SURE
-  read SURE
-  if [ "$SURE" = "yes" ]; then
-    stop
-    rm -f "$PIDFILE"
-    echo "Notice: log file is not be removed: '$LOGFILE'" >&2
-    update-rc.d -f pufferd remove
-    rm -fv "$0"
-  fi
-}
-
-case "$1" in
-  start)
-    start
-    ;;
-  stop)
-    stop
-    ;;
-  uninstall)
-    uninstall
-    ;;
-  restart)
-    stop
-    start
-    ;;
-  *)
-    echo "Usage: $0 {start|stop|restart|uninstall}"
+template='
+#!/bin/sh\n
+### BEGIN INIT INFO\n
+# Provides:          pufferd\n
+# Required-Start:    $local_fs $network $named $time $syslog\n
+# Required-Stop:     $local_fs $network $named $time $syslog\
+# Default-Start:     2 3 4 5\n
+# Default-Stop:      0 1 6\n
+# Description:       pufferd daemon service\n
+### END INIT INFO\n
+\n
+SCRIPT=/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json\n
+RUNAS=pufferd\n
+\n
+PIDFILE=/var/run/pufferd.pid\n
+LOGFILE=/var/log/pufferd.log\n
+\n
+start() {\n
+  if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then\n
+    echo \'Service already running\' >&2\n
+    return 1\n
+  fi\n
+  echo \'Starting service…\' >&2\n
+  local CMD="$SCRIPT &> \\"$LOGFILE\\" & echo \\$!"\n
+  su -c "$CMD" $RUNAS > "$PIDFILE"\n
+  echo \'Service started\' >&2\n
+}\n
+\n
+stop() {\n
+  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then\n
+    echo \'Service not running\' >&2\n
+    return 1\n
+  fi\n
+  echo \'Stopping service…\' >&2\n
+  kill -15 $(cat "$PIDFILE") && rm -f "$PIDFILE"\n
+  echo \'Service stopped\' >&2\n
+}\n
+\n
+uninstall() {\n
+  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "\n
+  local SURE\n
+  read SURE\n
+  if [ "$SURE" = "yes" ]; then\n
+    stop\n
+    rm -f "$PIDFILE"\n
+    echo "Notice: log file has not been removed: \'$LOGFILE\'" >&2\n
+    update-rc.d -f pufferd remove\n
+    rm -fv "$0"\n
+  fi\n
+}\n
+\n
+case "$1" in\n
+  start)\n
+    start\n
+    ;;\n
+  stop)\n
+    stop\n
+    ;;\n
+  uninstall)\n
+    uninstall\n
+    ;;\n
+  restart)\n
+    stop\n
+    start\n
+    ;;\n
+  *)\n
+    echo "Usage: $0 {start|stop|restart|uninstall}"\n
 esac
 '
 
