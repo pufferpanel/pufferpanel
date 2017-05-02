@@ -78,7 +78,7 @@ initScript=$'
 # Description:       pufferd daemon service
 ### END INIT INFO
 
-SCRIPT=/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json
+SCRIPT="/srv/pufferd/pufferd\ --config=/etc/pufferd/config.json"
 RUNAS=pufferd
 
 PIDFILE=/var/run/pufferd.pid
@@ -123,11 +123,26 @@ uninstall() {
   if [ "$SURE" = "yes" ]; then
     stop
     rm -f "$PIDFILE"
-    echo "Notice: log file is not be removed: '$LOGFILE'" >&2
+    echo "Notice: log file was not removed: $LOGFILE" >&2
     update-rc.d -f pufferd remove
     rm -fv "$0"
   fi
 }
+
+status() {
+    printf "%-50s" "Checking pufferd..."
+    if [ -f $PIDFILE ] && [ -s $PIDFILE ]; then
+        PID=$(cat $PIDFILE)
+            if [ -z "$(ps axf | grep ${PID} | grep -v grep)" ]; then
+                printf "%s\n" "The process appears to be dead but pidfile still exists"
+            else
+                echo "Running, the PID is $PID"
+            fi
+    else
+        printf "%s\n" "Service not running"
+    fi
+}
+
 
 case "$1" in
   start)
@@ -135,6 +150,9 @@ case "$1" in
     ;;
   stop)
     stop
+    ;;
+  status)
+    status
     ;;
   uninstall)
     uninstall
@@ -144,7 +162,7 @@ case "$1" in
     start
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart|uninstall}"
+    echo "Usage: $0 {start|stop|status|restart|uninstall}"
 esac
 '
 
