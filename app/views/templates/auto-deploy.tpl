@@ -67,7 +67,7 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-initScript='
+initScript=$'
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          pufferd
@@ -85,13 +85,13 @@ PIDFILE=/var/run/pufferd.pid
 LOGFILE=/var/log/pufferd.log
 
 start() {
-  if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then
+  if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE"); then
     echo 'Service already running' >&2
     return 1
   fi
   echo 'Starting service…' >&2
-  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
-  su -c "$CMD" $RUNAS > "$PIDFILE"
+  local CMD="$SCRIPT &> \"$LOGFILE\" && echo \$! > $PIDFILE"
+  su -c "$CMD" $RUNAS > "$LOGFILE"
   echo 'Service started' >&2
 }
 
