@@ -67,7 +67,7 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
 checkResponseCode
 
-initScript="
+initScript='
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          pufferd
@@ -135,9 +135,9 @@ case "$1" in
   *)
     echo "Usage: $0 {start|stop|restart|uninstall}"
 esac
-"
+'
 
-if [ command -v systemctl >/dev/null ]; then
+if type systemctl &> /dev/null; then
   systemctl start pufferd
   systemctl enable pufferd
 else
