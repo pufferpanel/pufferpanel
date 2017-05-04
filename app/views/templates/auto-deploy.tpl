@@ -53,6 +53,7 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         apt-get install -y openssl curl tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     elif [ $(lsb_release -sc) == 'trusty' ]; then
         sudo add-apt-repository -y ppa:openjdk-r/ppa
+        apt-get update
         apt-get install -y openssl curl openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     else
         apt-get install -y openssl curl openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
