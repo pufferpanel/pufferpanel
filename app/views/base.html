@@ -49,7 +49,7 @@
 				{% block servername %}
 					{% if server.name is defined %}
 					<ul class="nav navbar-nav">
-						<li class="active" id="{{ server.hash }}"><a href="/node/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ server.name }}</a></li>
+						<li class="active" id="{{ server.hash }}"><a href="/node/index"><!--<i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> -->{{ server.name }}</a></li>
 					</ul>
 					{% endif %}
 				{% endblock %}
