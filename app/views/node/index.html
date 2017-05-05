@@ -432,7 +432,15 @@
                     url: '/daemon/server/{{ server.hash }}/kill',
                     timeout: 5000
                 }).done(function (data) {
-                    $("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+                    if(data.success) {
+                        $("#pw_resp").attr('class', 'alert alert-success').html("Server has been killed successfully.").fadeIn().delay(5000).fadeOut();
+                    } else {
+                        if (data.msg) {
+                            $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                        } else {
+                            $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (no message)').fadeIn().delay(5000).fadeOut();
+                        }
+                    }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
                 });
@@ -444,7 +452,15 @@
                 url: '/daemon/server/{{ server.hash }}/stop',
                 timeout: 5000
             }).done(function (data) {
-                $("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+                if(data.success) {
+                    $("#pw_resp").attr('class', 'alert alert-success').html("Server has been stopped successfully.").fadeIn().delay(5000).fadeOut();
+                } else {
+                    if (data.msg) {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                    } else {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (no message)').fadeIn().delay(5000).fadeOut();
+                    }
+                }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
             });
@@ -456,7 +472,15 @@
                 url: '/daemon/server/{{ server.hash }}/install',
                 timeout: 5000
             }).done(function (data) {
-                $("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
+                if(data.success) {
+                    $("#pw_resp").attr('class', 'alert alert-success').html("Server has been told to install, please wait for it to process.").fadeIn().delay(5000).fadeOut();
+                } else {
+                    if (data.msg) {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                    } else {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (no message)').fadeIn().delay(5000).fadeOut();
+                    }
+                }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();
             });
@@ -476,7 +500,11 @@
                     if (data.success) {
                         $("#pw_resp").attr('class', 'alert alert-success').html("Server is now restarting...").fadeIn().delay(5000).fadeOut();
                     } else {
-                        $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                        if (data.msg) {
+                            $("#pw_resp").attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                        } else {
+                            $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (no message)').fadeIn().delay(5000).fadeOut();
+                        }
                     }
                     can_run = true;
                     return false;
@@ -500,7 +528,12 @@
                 if (data.success) {
                     $("#pw_resp").attr('class', 'alert alert-success').html("{{ l.render('node.console.ajax.server_started') }}").fadeIn().delay(5000).fadeOut();
                 } else {
-                    $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                    if (data.msg) {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + data.msg + ') [' + data.code + ']').fadeIn().delay(5000).fadeOut();
+                    } else {
+                        $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (no message)').fadeIn().delay(5000).fadeOut();
+                    }
+
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#pw_resp").attr('class', 'alert alert-danger').html('{{ l.render(node.ajax.generic_error) }} (' + errorThrown + ')').fadeIn().delay(5000).fadeOut();

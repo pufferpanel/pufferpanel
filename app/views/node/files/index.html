@@ -175,7 +175,11 @@
         makeDaemonCall('GET', fileModel.currentDir(), 'json', undefined, function (dataSource) {
             fileModel.files.removeAll();
             if (!dataSource.success) {
-                $("#notifications").text("Error loading data (" + dataSource.message + ") (" + dataSource.code + ")").fadeIn().delay(10000).fadeOut();
+                if(dataSource.message) {
+                    $("#notifications").text("Error loading data (" + dataSource.message + ") (" + dataSource.code + ")").fadeIn().delay(10000).fadeOut();
+                } else {
+                    $("#notifications").text("Error loading data (unknown cause)").fadeIn().delay(10000).fadeOut();
+                }
             }
             var data = dataSource.data;
             var special = [];
