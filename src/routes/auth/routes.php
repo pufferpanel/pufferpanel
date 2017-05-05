@@ -143,16 +143,16 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
 
         $service->flash('<div class="alert alert-danger">Unable to verify password recovery request.<br />Did the key expire? Please contact support for more help or try again.</div>');
         $response->redirect('/auth/password');
+
     } else {
 
         $password = $core->auth->keygen('12');
-        $query->verified = 1;
 
         $user = ORM::forTable('users')->where('email', $query->content)->findOne();
         $user->password = $core->auth->hash($password);
         $user->save();
 
-        $query->save();
+        $query->delete();
 
         /*
          * Send Email
@@ -162,7 +162,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
             'EMAIL' => $query->content
         ))->dispatch($query->content, Settings::config()->company_name . ' - New Password');
 
-        $service->flash('<div class="alert alert-success">You should recieve an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
+        $service->flash('<div class="alert alert-success">You should receive an email within the next 5 minutes (usually instantly) with your new account password. We suggest changing this once you log in.</div>');
         $response->redirect('/auth/login');
     }
 });
@@ -171,30 +171,39 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
 
     if ($core->auth->XSRF($request->param('xsrf')) !== true) {
 
-        $service->flash('<div class="alert alert-warning">The XSRF token recieved was not valid. Please make sure cookies are enabled and try your request again.</div>');
+        $service->flash('<div class="alert alert-warning">The XSRF token received was not valid. Please make sure cookies are enabled and try your request again.</div>');
         $response->redirect('/auth/password');
     }
 
-    try {
+    if (Settings::config('captcha_priv')) {
 
-        $unirest = Unirest\Request::get("https://www.google.com/recaptcha/api/siteverify", array(), array(
-            'secret' => Settings::config('captcha_priv'),
-            'response' => $request->param('g-recaptcha-response'),
-            'remoteip' => $request->ip()
-        ));
+        $failed = false;
 
-        if (!isset($unirest->body->success) || !$unirest->body->success) {
+        try {
 
-            $service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
+            $unirest = Unirest\Request::get("https://www.google.com/recaptcha/api/siteverify", array(), array(
+                'secret' => Settings::config('captcha_priv'),
+                'response' => $request->param('g-recaptcha-response'),
+                'remoteip' => $request->ip()
+            ));
+
+            if (!isset($unirest->body->success) || !$unirest->body->success) {
+
+                $service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
+                $failed = true;
+            }
+
+        } catch (\Exception $e) {
+
+            $service->flash('<div class="alert alert-danger">Unable to query the captcha validation servers. Please try it again.</div>');
+            $failed = true;
+        }
+
+        if ($failed) {
             $response->redirect('/auth/password');
             return;
         }
 
-    } catch (\Exception $e) {
-
-        $service->flash('<div class="alert alert-danger">Unable to query the captcha validation servers. Please try it again.</div>');
-        $response->redirect('/auth/password');
-        return;
     }
 
     $query = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
@@ -207,7 +216,8 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
             'type' => 'password',
             'content' => $request->param('email'),
             'key' => $key,
-            'time' => time() + 14400
+            'time' => time() + 14400,
+            'user_id' => $query->id()
         ))->save();
 
         $core->email->buildEmail('password_reset', array(
