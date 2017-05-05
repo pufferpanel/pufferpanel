@@ -271,19 +271,12 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 
 	try {
 
-		ORM::forTable('permissions')->where('user', $user->id)->deleteMany();
-		ORM::forTable('subusers')->where('user', $user->id)->deleteMany();
-		ORM::forTable('account_change')->where('user_id', $user->id)->deleteMany();
 		ORM::forTable('actions_log')->where('user', $user->id)->deleteMany();
-        ORM::forTable('oauth_clients')->where('user_id', $user->id)->findMany();
-        ORM::forTable('oauth_access_tokens')->join('oauth_clients', array('oauth_access_tokens.oauthClientId', '=', 'oauth_clients.id'))->where('user_id', $user->id)->deleteMany();
-        ORM::forTable('oauth_clients')->where('user_id', $user->id)->deleteMany();
 		$user->delete();
 
 		ORM::get_db()->commit();
 
 		$service->flash('<div class="alert alert-success">User successfully deleted and all associated data was removed.</div>');
-		$response->redirect('/admin/account');
 
 	} catch (\Exception $e) {
                 
@@ -294,5 +287,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, 
 		$response->redirect('/admin/account/view/'.$request->param('id'));
 
 	}
+
+    $response->redirect('/admin/account');
 
 });
