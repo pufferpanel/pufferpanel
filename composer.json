@@ -36,6 +36,7 @@
     "twig/twig": "~2.3",
     "wildbit/postmark-php": "~2.3",
     "mailgun/mailgun-php": "~2.2",
-    "paragonie/random_compat": "~2.0"
+    "paragonie/random_compat": "~2.0",
+    "php-http/guzzle6-adapter": "~1.1"
   }
 }

@@ -21,8 +21,7 @@
 namespace PufferPanel\Core;
 
 use \Tracy\Debugger,
-    \Exception,
-    \SendGrid;
+    \Exception;
 
 /**
  * PufferPanel Core Email Sending Class
@@ -110,13 +109,13 @@ class Email {
     protected function _sendWithSendgrid() {
 
         try {
-            $sendgrid = new SendGrid(Settings::config()->transport_token);
-            $to = new SendGrid\Email(null, $this->email);
-            $from = new SendGrid\Email(null, Settings::config()->transport_email);
+            $sendgrid = new \SendGrid(Settings::config()->transport_token);
+            $to = new \SendGrid\Email(null, $this->email);
+            $from = new \SendGrid\Email(null, Settings::config()->transport_email);
             $subject = $this->subject;
-            $body = new SendGrid\Content('text/html', $this->message);
+            $body = new \SendGrid\Content('text/html', $this->message);
 
-            $request = new SendGrid\Mail($from, $subject, $to, $body);
+            $request = new \SendGrid\Mail($from, $subject, $to, $body);
 
             $sendgrid->client->mail()->send()->post($request);
         } catch (\Exception $e) {
@@ -152,8 +151,8 @@ class Email {
         try {
             list(, $domain) = explode('@', Settings::config()->transport_email);
 
-            $mg = Mailgun::create(Settings::config()->transport_token);
-            $mg->message()->send($domain, [
+            $mg = \Mailgun\Mailgun::create(Settings::config()->transport_token);
+            $mg->messages()->send($domain, [
                 'from' => Settings::config()->company_name . ' <' . Settings::config()->transport_email . '>',
                 'to' => $this->email . ' <' . $this->email . '>',
                 'subject' => $this->subject,
