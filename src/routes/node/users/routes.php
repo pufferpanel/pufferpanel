@@ -27,7 +27,7 @@ $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $re
     if (Settings::config('allow_subusers') != 1 || !$core->permissions->has('users.view')) {
 
         $response->code(403);
-        $response->body($core->twig->render('node/403.html'));
+        $response->body($core->twig->render('error/403.html'));
     }
 });
 
