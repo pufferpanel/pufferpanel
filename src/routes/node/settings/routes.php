@@ -23,7 +23,7 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 	if(!$core->permissions->has('manage.view')) {
 
 		$response->code(403);
-		$response->body($core->twig->render('node/403.html'));
+		$response->body($core->twig->render('error/403.html'));
 		return;
 
 	}

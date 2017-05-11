@@ -24,7 +24,7 @@ $klein->respond(array('GET', 'POST'), '/node/files/[*]', function($request, $res
 	if(!$core->permissions->has('files.view')) {
 
 		$response->code(403);
-		$response->body($core->twig->render('node/403.html'))->send();
+		$response->body($core->twig->render('error/403.html'))->send();
 		$klein->skipRemaining();
 
 	}
