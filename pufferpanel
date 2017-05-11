@@ -40,6 +40,7 @@ function configureMysql() {
     fi
 
     echo "Thank you for using the PufferPanel installer!"
+    echo "Please do not run this installer if PufferPanel is already installed."
     echo "Before we can complete the installation, we need to ask you some questions"
     echo "These questions will help configure PufferPanel so that you can get to using it"
     printSeparator
@@ -229,7 +230,7 @@ function configureNginx() {
     if [ -d "/etc/nginx" ]; then
         echo "Installing nginx config (if possible)"
     else
-        echo "Nginx folder does not exist, will not install config"
+        echo "nginx folder does not exist, will not install config"
         return
     fi
     if [ "${siteUrl}" == "" ]; then
@@ -477,6 +478,30 @@ case $1 in
     update)
         loadConfig
         updateLogOwner
+        echo "Please do not run this update if your database schema is already up to date. Doing so can cause data loss."
+        printSeparator
+        echo "In order to update the database we need to login using elevated privileges."
+        echo "This is generally done by using the root MySQL account created when MySQL was installed."
+        echo -n "Enter the MySQL username (MUST HAVE GRANT ALL ON pufferpanel.*) [root]: "
+        read temp
+        if [ "${temp}" != "" ]; then
+            mysqlUser=${temp}
+        fi
+        notValid=true
+        while ${notValid}; do
+            echo -n "Enter the MySQL account password: "
+            read -s temp
+            if [ "${temp}" != "" ]; then
+                mysqlPass=${temp}
+            fi
+            if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
+                notValid=false
+            else
+                print "Database connection could not be established"
+            fi
+        done
+
+        echo ""
         echo "Attempting to update database, please wait..."
         mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
         echo "Database query executed, if no errors reported, then it worked"
