@@ -50,16 +50,16 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         sudo echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
         apt-get update
         apt-get install -y -t jessie-backports openjdk-8-jdk-headless
-        apt-get install -y openssl curl tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     elif [ $(lsb_release -sc) == 'trusty' ]; then
         sudo add-apt-repository -y ppa:openjdk-r/ppa
         apt-get update
-        apt-get install -y openssl curl openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     else
-        apt-get install -y openssl curl openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     fi
 else
-    yum -y install openssl curl java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
+    yum -y install openssl curl git java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
 fi
 
 # Ensure /srv exists
