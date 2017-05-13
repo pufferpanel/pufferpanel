@@ -8,7 +8,7 @@
 
 [![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")](https://pufferpanel.com)
 
-#### PufferPanel v1.0 has been released! Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
+#### PufferPanel v1.1.1 has been released! Please read our [announcements](https://community.pufferpanel.com/category/1/announcements) for more information.
 
 ## What is PufferPanel?
 PufferPanel is a web-based Game Server Management System. PufferPanel allows you to manage multiple different game servers all from one central location. You can give other users their own servers or allow them access to your servers. You can find pictures of our interfaces in our [General User Feature Tour](http://www.pufferpanel.com/docs/general-user-feature-tour) or in our [Administrative Feature Tour](http://www.pufferpanel.com/docs/administrative-feature-tour).
