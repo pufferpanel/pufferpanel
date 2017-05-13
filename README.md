@@ -30,10 +30,6 @@ Some Javascript and CSS used within the panel is licensed under a MIT, Apache 2.
 
 Some images used within PufferPanel are Copyright (c) their respective owners.
 
-`/app/assets/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
-
-`/app/assets/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
-
 Repositories graciously hosted by [packagecloud](https://packagecloud.io)
 
 [![packagecloud](https://packagecloud.io/images/packagecloud-badge.png)](https://packagecloud.io)
