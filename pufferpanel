@@ -482,6 +482,7 @@ case $1 in
         printSeparator
         echo "In order to update the database we need to login using elevated privileges."
         echo "This is generally done by using the root MySQL account created when MySQL was installed."
+        mysqlUser="root"
         echo -n "Enter the MySQL username (MUST HAVE GRANT ALL ON pufferpanel.*) [root]: "
         read temp
         if [ "${temp}" != "" ]; then
