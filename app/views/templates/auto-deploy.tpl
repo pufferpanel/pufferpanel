@@ -56,6 +56,7 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         apt-get update
         apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     else
+        apt-get update
         apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     fi
 else
