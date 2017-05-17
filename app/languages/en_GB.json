@@ -18,6 +18,7 @@
     "string.start": "Start",
     "string.restart": "Restart",
     "string.stop": "Stop",
+    "string.install": "Install",
     "string.options": "Options",
     "string.search": "Search",
     "string.clear": "Clear",

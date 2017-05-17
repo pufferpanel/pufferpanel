@@ -18,6 +18,7 @@
     "string.start": "Запуск",
     "string.restart": "Перезагрузка",
     "string.stop": "Выключение",
+    "string.install": "Install",
     "string.options": "Опции",
     "string.search": "Поиск",
     "string.clear": "Очистить",

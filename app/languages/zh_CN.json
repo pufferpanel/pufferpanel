@@ -18,6 +18,7 @@
     "string.start": "启动",
     "string.restart": "重启",
     "string.stop": "停止",
+    "string.install": "Install",
     "string.options": "设置",
     "string.search": "搜索",
     "string.clear": "清除",
