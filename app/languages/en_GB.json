@@ -63,7 +63,7 @@
     "header.admin": "Admin CP",
     "login.login_h1": "Login to PufferPanel",
     "reset.reset_h1": "Reset Your Password",
-    "settings.change_pass": "Change Passwort",
+    "settings.change_pass": "Change Password",
     "settings.update_email": "Update Email",
     "settings.current_pass": "Current Password",
     "settings.new_pass": "New Password",
