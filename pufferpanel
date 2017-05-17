@@ -503,6 +503,17 @@ case $1 in
         done
 
         echo ""
+        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+            SELECT metaValue FROM _meta WHERE metaKey='version'"
+        if [ "${dbVersion}" == "1.1.1" ]; then
+          echo "WARNING: DATABASE SCHEMA ALREADY UPDATED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE"
+          shopt -s nocasematch
+          echo -n "Are you sure you wish to run the update anyway? [yes/No]: "
+          read updateOverride
+          if [[ "${updateOverride}" == "yes" ]]; then
+              exit
+          fi
+        fi
         echo "Attempting to update database, please wait..."
         mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
         echo "Database query executed, if no errors reported, then it worked"
