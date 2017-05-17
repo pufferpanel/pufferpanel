@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` text,
-  `language` char(2) NOT NULL DEFAULT 'en_US',
+  `language` varchar(10) NOT NULL DEFAULT 'en_US',
   `register_time` int(15) unsigned NOT NULL,
   `session_id` char(12),
   `session_ip` varchar(50),
