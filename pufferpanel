@@ -130,7 +130,7 @@ function configureSite() {
             ('transport_method','php'),
             ('captcha_pub',NULL),
             ('captcha_priv',NULL),
-            ('default_language', 'en'),
+            ('default_language', 'en_US'),
             ('https', 0),
             ('allow_subusers', 0) ON DUPLICATE KEY UPDATE setting_val = VALUES(setting_val)"
     echo "Settings saved to database"
@@ -182,7 +182,7 @@ function configureUser() {
     echo ""
     echo "Installing user..."
     mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
-        INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
+        INSERT INTO users VALUES (NULL, '${uuid}', '${username}', '${email}', '${password}', 'en_US', ${time}, NULL, NULL, 1, 0, 1, 0, NULL) ON DUPLICATE KEY UPDATE password='${password}'"
 }
 
 function configureApache() {
