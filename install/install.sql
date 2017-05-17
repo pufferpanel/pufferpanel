@@ -168,6 +168,20 @@ CREATE TABLE IF NOT EXISTS `oauth_access_tokens` (
   CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`oauthClientId`) REFERENCES `oauth_clients` (`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `_meta` (
+  `metaId` INT(11) NOT NULL AUTO_INCREMENT,
+  `metaKey` VARCHAR(20) NOT NULL,
+  `metaValue` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`metaId`),
+  UNIQUE INDEX `UK_metaKey` (`metaKey`)
+);
+
+INSERT INTO _meta (metaKey, metaValue) VALUES
+  ('version', '1.1.1'),
+  ('originalVersion', '1.1.1'),
+  ('installDate', CURRENT_TIMESTAMP),
+  ('updateDate', CURRENT_TIMESTAMP);
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT IGNORE INTO `locations` (`id`, `short`, `long`)

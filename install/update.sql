@@ -198,6 +198,20 @@ CREATE TABLE `oauth_access_tokens` (
   CONSTRAINT `FK_oauth_access_tokens_oauth_clients` FOREIGN KEY (`oauthClientId`) REFERENCES `oauth_clients` (`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `_meta` (
+  `metaId` INT(11) NOT NULL AUTO_INCREMENT,
+  `metaKey` VARCHAR(20) NOT NULL,
+  `metaValue` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`metaId`),
+  UNIQUE INDEX `UK_metaKey` (`metaKey`)
+);
+
+INSERT INTO _meta (metaKey, metaValue) VALUES
+  ('version', '1.1.1'),
+  ('originalVersion', 'unknown'),
+  ('installDate', 'unknown'),
+  ('updateDate', CURRENT_TIMESTAMP);
+
 INSERT INTO acp_settings
     SELECT * FROM backup_acp_settings;
 
