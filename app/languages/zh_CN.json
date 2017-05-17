@@ -43,7 +43,7 @@
     "string.logout": "注销",
     "string.location": "位置",
     "footer.license": "PufferPanel 使用<a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3 许可证</a>授权。",
-    "footer.version": "版本号： （%s） ，由 <a href=\"http://pufferpanel.com/\">PufferPanel Development</a> 开发",
+    "footer.version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">Padduck, LLC</a>.",
     "footer.generated": "页面生成于 %s 秒",
     "footer.queries": "执行了 %s 次数据库查询",
     "sidebar.acc.actions": "帐户操作",

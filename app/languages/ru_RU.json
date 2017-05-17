@@ -43,7 +43,7 @@
     "string.logout": "Выход",
     "string.location": "Место нахождения",
     "footer.license": "PufferPanel лицензируется под <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">лицензией GPL v3</a>.",
-    "footer.version": "Версия %s, реализовано на основе <a href=\"http://pufferpanel.com\">PufferPanel</a>.",
+    "footer.version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">Padduck, LLC</a>.",
     "footer.generated": "Страница создана за %s секунд.",
     "footer.queries": "Выполнено %s запросов в БД.",
     "sidebar.acc.actions": "Действия аккаунта",

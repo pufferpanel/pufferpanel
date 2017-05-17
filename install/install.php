@@ -95,7 +95,7 @@ try {
 				('transport_method','php'),
 				('captcha_pub',NULL),
 				('captcha_priv',NULL),
-				('default_language', 'en'),
+				('default_language', 'en_US'),
 				('https', 0),
 				('allow_subusers', 0)");
 
@@ -113,7 +113,7 @@ try {
 		':username' => $params['adminName'],
 		':email' => $params['adminEmail'],
 		':password' => password_hash($params['adminPass'], PASSWORD_BCRYPT),
-		':language' => 'en',
+		':language' => 'en_US',
 		':time' => time()
 	));
 

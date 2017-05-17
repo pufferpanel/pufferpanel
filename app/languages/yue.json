@@ -43,7 +43,7 @@
     "string.logout": "登出",
     "string.location": "位置",
     "footer.license": "PufferPanel用緊<a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3許可</a>",
-    "footer.version": "呢格版本由<a href=\"http://pufferpanel.com/\">PufferPanel Development</a>發佈。",
+    "footer.version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">Padduck, LLC</a>.",
     "footer.generated": "呢個頁面用咗%s秒生成",
     "footer.queries": "行咗%s數據庫查詢。",
     "sidebar.acc.actions": "賬戶管理",

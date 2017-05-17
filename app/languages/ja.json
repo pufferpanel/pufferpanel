@@ -43,7 +43,7 @@
     "string.logout": "ログアウト",
     "string.location": "場所",
     "footer.license": "PufferPanelのライセンス <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\">GPL-v3 License</a>.",
-    "footer.version": "動作バージョン %s 配布元 <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
+    "footer.version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">Padduck, LLC</a>.",
     "footer.generated": "このページは %s 秒で表示されました。",
     "footer.queries": "%s のデータベースクエリが実行されました。",
     "sidebar.acc.actions": "アカウントアクション",

@@ -43,7 +43,7 @@
     "string.logout": "Log uit",
     "string.location": "Locatie",
     "footer.license": "PufferPanel is gelicenseerd onder de <a href=\"https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE\"> GPL-v3 Licentie</a>.",
-    "footer.version": "Draait versie %s gedistribueerd door <a href=\"http://pufferpanel.com/\">PufferPanel Development</a>.",
+    "footer.version": "Running Version %s distributed by <a href=\"http://pufferpanel.com/\">Padduck, LLC</a>.",
     "footer.generated": "Pagina gegenereerd in %s seconden.",
     "footer.queries": "%s database verzoeken uitgevoerd.",
     "sidebar.acc.actions": "Account instellingen",
