@@ -1,0 +1,120 @@
+string.email, Emailadres
+string.password, Wachtwoord
+string.login, Login
+string.reset_password, Reset Wachtwoord
+string.spam_protection, Anti Spam
+string.again, (Opnieuw)
+string.noservers, Er zijn nog geen servers aan uw account gebonden.
+string.node, Node
+string.name, Naam
+string.connect, Verbinden
+string.status, Status
+string.offline, Offline
+string.online, Online
+string.connection, Verbinding
+string.mem_alloc, Geheugen toegewezen
+string.disk_alloc, Schijfruimte toegewezen
+string.start, Opstarten
+string.restart, Opnieuw Opstarten
+string.stop, Stoppen
+string.options, Opties
+string.search, Zoeken
+string.clear, Reset
+string.refresh, Opnieuw Laden
+string.close, Sluiten
+string.generated_pass, Gegenereerd Wachtwoord
+string.modpacks, Modpacks
+string.ftp, ftp
+string.host, Host
+string.username, Gebruikersnaam
+string.generate, Genereren
+string.description, Omschrijving
+string.previous, Vorige
+string.next, Volgende
+string.about, Over
+string.version, Versie
+string.published, Uitgegeven
+string.versions, Versies
+string.save, Opslaan
+footer.license, PufferPanel wordt uitgegeven onder de <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">GPL-v3 License</a>.
+footer.version, Deze Versie van PufferPanel %s wordt uitgegeven door <a href="http://pufferpanel.com/">PufferPanel Development</a>.
+footer.generated, Pagina geladen in %s seconden.
+footer.queries, %s Database queries uitgevoerd.
+sidebar.acc_actions, Account acties
+sidebar.server_acc, Server acties
+sidebar.server_sett, Server Instellingen
+sidebar.settings, Instellingen
+sidebar.servers, Mijn Servers
+sidebar.overview, Overzicht
+sidebar.console, Live Console
+sidebar.files, Bestandbeheer
+sidebar.manage, Server Management
+sidebar.plugins, Server Plugins
+header.account, Account
+header.logout, Log Uit
+header.admin, Admin Paneel
+login.login_h1, Login op PufferPanel
+reset.reset_h1, Verander Uw Wachtwoord
+settings.change_pass, Wachtwoord Veranderen
+settings.update_email, Emailadres Veranderen
+settings.current_pass, Huidig Wachtwoord
+settings.new_pass, Nieuw Wachtwoord
+settings.new_email, Nieuw Emailadress
+settings.notifications_h1, Notificatie Instellingen Aanpassen
+settings.login_success, Login Succesvol
+settings.failed_login, Login Mislukt
+settings.notify.email_me, Email mij
+settings.notify.no_email_me, Email mij niet
+settings.update_preferences, Verander Voorkeuren
+node.overview.stats_h1, Statistieken
+node.overview.collect_usage, Proberen met informatie op te halen, dit kan even duren. Controleer of uw server online is.
+node.overview.collect_disk, Hardeschijf informatie ophalen, dit kan even duren.
+node.overview.no_players, Er zijn momenteel geen spelers online.
+node.overview.disk_h1, Hardeschijf Verbruik
+node.overview.space_used, U gebruikt %s MB van de %s MB hardeschijf.
+node.overview.information_h1, Server Informatie
+node.overview.players_h5, Spelers Online
+node.overview.cpu_h5, Processor Gebruik
+node.overview.memory_h5, Geheugen Gebruik
+node.overview.ajax.no_conn, Kon niet verbinden met de node.
+node.overview.ajax.no_exec, Kon het commando niet uitvoeren op de server.
+node.console.command_help, Voer een console commando in
+node.console.scrollstop_alert, U heeft tekst geselecteerd in de console. De console zal zichzelf niet updaten als u dit doet. Dit doen wij om het u gemakkelijk te maken om tekst te kopieëren. U kunt dit ongedaan maken door de tekst te on-selecteren.
+node.console.scrollstop_h1, Scrollstop&trade; Console Venster
+node.console.ajax.server_started, De server is succesvol opgestart.
+node.files.loading, Loading Directory. Een moment a.u.b.
+node.files.name, Bestandsnaam
+node.files.size, Bestandsgrootte
+node.files.modified, Laatst Aangepast
+node.files.edit.daemon_error, Kon niet verbinden met de daemon.
+node.files.edit.back, Terug naar bestandbeheer
+node.files.edit.type_error, Dit bestandsformaat kan niet worden aangepast met ons controlepaneel.
+node.files.edit.no_file, Er zijn geen bestanden geselecteerd die aangepast kunnen worden.
+node.files.edit.error, U kunt <a href="index.php">hier</a> terug gaan naar bestandbeheer.
+node.files.ajax.no_dir, Kon de map niet vinden. Error logged.
+node.files.ajax.no_dl, Kon niet met de server verbinden om bestanden op te halen. Probeer nogmaals.
+node.files.ajax.saved, Bestand succesvol opgeslagen.
+node.files.ajax.no_save, Kon het bestand niet opslaan.
+node.files.ajax.no_edit, Dit type bestand kan niet worden aangepast met ons controlepaneel. Gebruik een FTP client.
+node.files.ajax.file_404, Dit bestand kon niet worden gevonden op de server.
+node.settings.modpack.modpack_h1, Server Modpack Management
+node.settings.modpack.current, Huidige Modpack
+node.settings.modpack.install, Installeer Modpack
+node.settings.modpack.select, —- Kies een Modpack
+node.settings.jar.jar_h1, Server .jar Naam
+node.settings.jar.jarfile_name, Jar Bestand Naam
+node.settings.jar.update, Verander Naam
+node.settings.ftp.ftp_h1, ftp Instellingen
+node.settings.ajax.installing_modpack, Modpack Installeren
+node.settings.ajax.modpack_error, U kunt een uitgeschakeld input niet gebruiken als modpack.
+node.plugins.welcome_h1, Plugin Installer
+node.plugins.welcome, Welkom bij onze plugin installer. Deze installer haalt informatie op van Bukget en geeft ze hier simpel weer. De automatische instalatie is nog niet foutloos, vooral ingewikkelde plugins kunnen fouten veroorzaken. Wij raden u aan om plugins eerst naar u computer te downloaden.
+node.plugins.search_h1, Zoeken Naar Plugins
+node.plugins.plugin_name, Plugin Naam
+node.plugins.installed, De plugin is succesvol geïnstalleerd.
+node.plugins.installing, De plugin wordt geïnstalleerd. Dit kan even duren.
+node.plugins.installing_warning, Verlaat deze pagina niet!
+node.plugins.error.term, Ongeldige zoek parameter.
+node.plugins.view.author, Deze plugin is genaakt en onderhouden door %s.
+node.plugins.view.view, Bekijk deze plugin <a href="http://dev.bukkit.org/bukkit-plugins/%s/" target="_blank">op Bukkit</a>.
+node.ajax.generic_error, Error, er is iets misgegaan met uw AJAX request.
