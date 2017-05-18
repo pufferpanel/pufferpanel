@@ -504,7 +504,7 @@ case $1 in
 
         echo ""
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
-            SELECT metaValue FROM _meta WHERE metaKey='version'"
+            SELECT metaValue FROM _meta WHERE metaKey='version'")
         if [ "${dbVersion}" == "1.1.1" ]; then
           echo "WARNING: DATABASE SCHEMA ALREADY UPDATED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE"
           shopt -s nocasematch
