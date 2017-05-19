@@ -235,8 +235,8 @@ class Daemon extends Server
             try {
                 Unirest\Request::get(sprintf("http://%s:%s", $ip, $port));
                 return false;
-            } catch (\Exception $exe) {
-                throw new \Exception("Daemon not available");
+            } catch (\Exception $ex) {
+                throw new \Exception("Daemon not available", 0, $ex);
             }
         }
     }
