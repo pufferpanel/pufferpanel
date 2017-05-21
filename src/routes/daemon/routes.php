@@ -102,8 +102,8 @@ $klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $resp
         $pdo = ORM::get_db();
         $query = $pdo->prepare('SELECT access_token FROM oauth_access_tokens AS oat '
             . 'INNER JOIN oauth_clients AS oc ON oc.id = oat.oauthClientId '
-            . 'WHERE user_id = ? AND server_id = ? AND expiretime > NOW()');
-        $query->execute(array($userObj->id, $serverObj->id));
+            . 'WHERE user_id = ? AND server_id = ? AND expiretime > NOW() AND oat.scopes NOT LIKE ?');
+        $query->execute(array($userObj->id, $serverObj->id, 'sftp %'));
         $data = $query->fetch(\PDO::FETCH_ASSOC);
         $bearer = null;
         if ($data === false || count($data) == 0) {

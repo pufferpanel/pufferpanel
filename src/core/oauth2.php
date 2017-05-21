@@ -132,6 +132,7 @@ class OAuthService {
         $tokenQuery = ORM::for_table('oauth_access_tokens')
             ->select('access_token')
             ->inner_join('oauth_clients', 'oauth_clients.id = oauth_access_tokens.oauthClientId')
+            ->where_not_like('scopes', 'sftp %')
             ->where_raw('expiretime > NOW()');
 
         if ($userid == null && $serverid == null) {
