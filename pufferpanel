@@ -479,7 +479,7 @@ case $1 in
         loadConfig
         updateLogOwner
 
-        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'")
         ppVersion=$(<src/versions/current)
         echo "If an error appears above this line it is safe to ignore."
@@ -492,11 +492,16 @@ case $1 in
           read updateOverride
           if [[ "${updateOverride}" == "no" ]] || [[ "${updateOverride}" == "" ]]; then
               exit
+          elif [[ "${updateOverride}" != "yes" ]]; then
+                exit
           fi
         fi
-        echo "Running update"
-        mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
-        echo "Database query executed. If no errors were reported then the update was successful"
+
+        if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "yes" ]]; then
+          echo "Running update"
+          mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
+          echo "Database query executed. If no errors were reported then the update was successful"
+        fi
 
         ;;
     upgrade)
@@ -530,11 +535,17 @@ case $1 in
         done
 
         echo ""
-        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'")
 
         echo "If an error appears above this line it is safe to ignore."
         printSeparator
+
+        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
+          alreadyUpgraded=true
+        else
+          alreadyUpgraded=false
+        fi
 
         if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
           echo "WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE"
@@ -543,12 +554,16 @@ case $1 in
           read upgradeOverride
           if [[ "${upgradeOverride}" == "no" ]] || [[ "${upgradeOverride}" == "" ]]; then
               exit
+          elif [[ "${upgradeOverride}" != "yes" ]]; then
+              exit
           fi
         fi
 
-        echo "Attempting to upgrade database, please wait..."
-        mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/upgrade.sql
-        echo "Database query executed. If no errors were reported then the upgrade was successful"
+        if [[ "${alreadyUpgraded}" == "false" ]] || [[ "${upgradeOverride}" == "yes" ]]; then
+          echo "Attempting to upgrade database, please wait..."
+          mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/upgrade.sql
+          echo "Database query executed. If no errors were reported then the upgrade was successful"
+        fi
         ;;
     *)
         echo "PufferPanel"
