@@ -10,6 +10,10 @@ CREATE TABLE IF NOT EXISTS `_meta` (
   UNIQUE INDEX `UK_metaKey` (`metaKey`)
 );
 
+INSERT IGNORE INTO _meta (metaKey, metaValue) VALUES
+  ('originalVersion', '1.1.2'),
+  ('installDate', CURRENT_TIMESTAMP);
+
 INSERT INTO _meta (metaKey, metaValue) VALUES
   ('version', '1.1.2'),
   ('updateDate', CURRENT_TIMESTAMP)
