@@ -73,7 +73,7 @@ checkResponseCode
 mkdir /var/lib/pufferd /etc/pufferd
 
 chmod +x pufferd
-./pufferd -install -auth {{ settings.master_url }} -token {{ node.daemon_secret }} -config /etc/pufferd/config.json
+./pufferd -install -installService -auth {{ settings.master_url }} -token {{ node.daemon_secret }} -config /etc/pufferd/config.json
 checkResponseCode
 
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
