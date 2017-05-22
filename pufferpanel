@@ -482,8 +482,6 @@ case $1 in
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'")
         ppVersion=$(<src/versions/current)
-        echo "If an error appears above this line it is safe to ignore."
-        printSeparator
 
         if [[ "${dbVersion}" == "${ppVersion}" ]]; then
           echo "This update has already been run"
@@ -498,6 +496,8 @@ case $1 in
         fi
 
         if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "yes" ]]; then
+          echo "If an error appears above this line it is safe to ignore."
+          printSeparator
           echo "Running update"
           mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
           echo "Database query executed. If no errors were reported then the update was successful"
@@ -538,9 +538,6 @@ case $1 in
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'")
 
-        echo "If an error appears above this line it is safe to ignore."
-        printSeparator
-
         if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
           alreadyUpgraded=true
         else
@@ -560,6 +557,8 @@ case $1 in
         fi
 
         if [[ "${alreadyUpgraded}" == "false" ]] || [[ "${upgradeOverride}" == "yes" ]]; then
+          echo "If an error appears above this line it is safe to ignore."
+          printSeparator
           echo "Attempting to upgrade database, please wait..."
           mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/upgrade.sql
           echo "Database query executed. If no errors were reported then the upgrade was successful"
