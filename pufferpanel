@@ -536,7 +536,7 @@ case $1 in
         echo "If an error appears above this line it is safe to ignore."
         printSeparator
 
-        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "1.1.2" ]]; then
+        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
           echo "WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE"
           shopt -s nocasematch
           echo -n "Are you sure you wish to run the upgrade anyway? [yes/No]: "

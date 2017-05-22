@@ -11,11 +11,11 @@ CREATE TABLE IF NOT EXISTS `_meta` (
 );
 
 INSERT IGNORE INTO _meta (metaKey, metaValue) VALUES
-  ('originalVersion', '1.1.2'),
+  ('originalVersion', 'v1.1.2'),
   ('installDate', CURRENT_TIMESTAMP);
 
 INSERT INTO _meta (metaKey, metaValue) VALUES
-  ('version', '1.1.2'),
+  ('version', 'v1.1.2'),
   ('updateDate', CURRENT_TIMESTAMP)
   ON DUPLICATE KEY UPDATE
   metaKey=VALUES(metaKey),
