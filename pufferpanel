@@ -564,8 +564,16 @@ case $1 in
           echo "Database query executed. If no errors were reported then the upgrade was successful"
         fi
         ;;
+        version)
+          loadConfig
+          ppVersion=$(<src/versions/current)
+          dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
+              SELECT metaValue FROM _meta WHERE metaKey='version'")
+          echo "PufferPanel version ${ppVersion}"
+          echo "Database schema version ${dbVersion}"
+        ;;
     *)
         echo "PufferPanel"
-        echo "Usage: ./pufferpanel [install/update/upgrade/updatesite/addnginx/addapache/adduser]"
+        echo "Usage: ./pufferpanel [install/update/upgrade/updatesite/addnginx/addapache/adduser/version]"
         ;;
 esac
