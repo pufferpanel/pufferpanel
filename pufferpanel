@@ -487,21 +487,22 @@ case $1 in
         if [[ "${dbVersion}" == "${ppVersion}" ]]; then
           echo "This update has already been run"
           shopt -s nocasematch
-          echo -n "Are you sure you wish to run the update anyway? [yes/No]: "
+          echo -n "Are you sure you wish to run the update anyway? [y/N]: "
           read updateOverride
-          if [[ "${updateOverride}" == "no" ]] || [[ "${updateOverride}" == "" ]]; then
+          if [[ "${updateOverride}" == "n" ]] || [[ "${updateOverride}" == "" ]]; then
               exit
-          elif [[ "${updateOverride}" != "yes" ]]; then
+          elif [[ "${updateOverride}" != "y" ]]; then
                 exit
           fi
         fi
 
-        if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "yes" ]]; then
+        if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "y" ]]; then
           echo "If an error appears above this line it is safe to ignore."
           printSeparator
           echo "Running update"
           mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
           echo "Database query executed. If no errors were reported then the update was successful"
+          echo "Please make sure to update pufferd to the latest version as well"
         fi
 
         ;;
@@ -548,21 +549,22 @@ case $1 in
         if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
           echo "${red}WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE${normal}"
           shopt -s nocasematch
-          echo -n "Are you sure you wish to run the upgrade anyway? [yes/No]: "
+          echo -n "Are you sure you wish to run the upgrade anyway? [y/N]: "
           read upgradeOverride
-          if [[ "${upgradeOverride}" == "no" ]] || [[ "${upgradeOverride}" == "" ]]; then
+          if [[ "${upgradeOverride}" == "n" ]] || [[ "${upgradeOverride}" == "" ]]; then
               exit
-          elif [[ "${upgradeOverride}" != "yes" ]]; then
+          elif [[ "${upgradeOverride}" != "y" ]]; then
               exit
           fi
         fi
 
-        if [[ "${alreadyUpgraded}" == "false" ]] || [[ "${upgradeOverride}" == "yes" ]]; then
+        if [[ "${alreadyUpgraded}" == "false" ]] || [[ "${upgradeOverride}" == "y" ]]; then
           echo "If an error appears above this line it is safe to ignore."
           printSeparator
           echo "Attempting to upgrade database, please wait..."
           mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/upgrade.sql
           echo "Database query executed. If no errors were reported then the upgrade was successful"
+          echo "Please make sure to update pufferd to the latest version as well"
         fi
         ;;
         version)
