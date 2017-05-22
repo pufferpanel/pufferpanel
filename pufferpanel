@@ -40,7 +40,8 @@ function configureMysql() {
     fi
 
     echo "Thank you for using the PufferPanel installer!"
-    echo "Please do not run this installer if PufferPanel is already installed."
+    echo "${bold}Please do not run this installer if PufferPanel is already installed.${normal}"
+    echo ""
     echo "Before we can complete the installation, we need to ask you some questions"
     echo "These questions will help configure PufferPanel so that you can get to using it"
     printSeparator
@@ -509,7 +510,7 @@ case $1 in
         updateLogOwner
 
         echo "This will upgrade your database from v1.0.x to v1.1.x"
-        echo "Please do not run this upgrade if your database schema is already up to date (v1.1.x). Doing so can cause data loss."
+        echo "Please do not run this upgrade if your database schema is already up to date (v1.1.x). ${bold}Doing so can cause data loss.${normal}"
         printSeparator
 
         echo "In order to upgrade the database we need to login using elevated privileges."
@@ -545,7 +546,7 @@ case $1 in
         fi
 
         if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
-          echo "WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE"
+          echo "${red}WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE${normal}"
           shopt -s nocasematch
           echo -n "Are you sure you wish to run the upgrade anyway? [yes/No]: "
           read upgradeOverride
