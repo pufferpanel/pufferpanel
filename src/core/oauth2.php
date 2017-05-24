@@ -230,7 +230,7 @@ class OAuthService {
     }
 
     public static function getUserScopes() {
-        return 'server.start server.stop server.install server.file.get server.file.put server.console server.console.send server.stats server.network sftp';
+        return 'server.start server.stop server.install server.file.get server.file.put server.file.delete server.kill server.log server.console server.console.send server.stats server.network sftp';
     }
 
     public static function getAdminScopes() {
