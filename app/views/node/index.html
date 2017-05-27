@@ -16,7 +16,7 @@
     {{ flash.info.0|raw }}
     {% endif %}
     <ul class="nav nav-tabs" id="config_tabs">
-        <li><a href="#stats" data-toggle="tab">Statistics</a></li>
+        <li><a href="#stats" data-toggle="tab">Information</a></li>
         <li class="active"><a href="#console" data-toggle="tab">Console</a></li>
         {% if permission.has('manage.oauth2') %}
         <li><a href="#remote" data-toggle="tab">Remote Requests</a></li>
@@ -32,7 +32,7 @@
                     <div class="row centered">
                         <canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
                         <p style="text-align:center;margin-top:-15px;" class="text-muted">
-                            <small>Time (2s Increments)</small>
+                            <small>Time (10s Increments)</small>
                         </p>
                         <p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;">
                             <small>Memory Usage (MB)</small>
@@ -49,7 +49,7 @@
                     <div class="row centered">
                         <canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
                         <p style="text-align:center;margin-top:-15px;" class="text-muted">
-                            <small>Time (2s Increments)</small>
+                            <small>Time (10s Increments)</small>
                         </p>
                         <p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;">
                             <small>CPU Usage (%)</small>
