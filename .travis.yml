@@ -1,0 +1,14 @@
+language: go
+env:
+- GO_ENV=test
+
+before_script:
+  - psql -c 'create database pufferpanel_test;' -U postgres
+	- mysql -e 'CREATE DATABASE pufferpanel_test;'
+  - mkdir -p $TRAVIS_BUILD_DIR/public/assets
+
+go:
+  - 1.7.x
+  - master
+
+go_import_path: github.com/pufferpanel/pufferpanel
