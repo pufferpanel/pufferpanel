@@ -243,7 +243,7 @@ function configureNginx() {
         fi
     fi
 
-    phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
         phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpSocket}" = "" ]; then
@@ -335,7 +335,7 @@ function configureNginx() {
 }
 
 function updateLogOwner() {
-    phpUser=$(grep "^user \?= \?" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpUser=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpUser}" = "" ]; then
         phpUser=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpUser}" = "" ]; then
@@ -347,7 +347,7 @@ function updateLogOwner() {
         fi
     fi
 
-    phpGroup=$(grep "^user \?= \?" /etc/php5/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpGroup=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpOwner}" = "" ]; then
         phpGroup=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
         if [ "${phpGroup}" = "" ]; then
@@ -387,11 +387,11 @@ case $1 in
             exit 1;
         fi
 
-        result=$(php -r 'exit (version_compare(PHP_VERSION, "5.5.0") < 0 ? "1" : "0");');
+        result=$(php -r 'exit (version_compare(PHP_VERSION, "7.0.0") < 0 ? "1" : "0");');
         if [ "$result" == "0" ]; then
-            echo "PHP 5.5.0+: [${green}Installed${normal}]"
+            echo "PHP 7.0.0+: [${green}Installed${normal}]"
         else
-            echo "PHP 5.5.0+: [${red}Not Installed${normal}]"
+            echo "PHP 7.0.0+: [${red}Not Installed${normal}]"
             canInstall=false
         fi
 
@@ -536,13 +536,13 @@ case $1 in
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
 
-        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
+        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]] || [[ "${dbVersion}" == "v1.1.3" ]]; then
           alreadyUpgraded=true
         else
           alreadyUpgraded=false
         fi
 
-        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]]; then
+        if [[ "${alreadyUpgraded}" == "true" ]]; then
           echo "${red}WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE${normal}"
           shopt -s nocasematch
           echo -n "Are you sure you wish to run the upgrade anyway? [y/N]: "

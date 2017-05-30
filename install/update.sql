@@ -11,14 +11,18 @@ CREATE TABLE IF NOT EXISTS `_meta` (
 );
 
 INSERT IGNORE INTO _meta (metaKey, metaValue) VALUES
-  ('originalVersion', 'v1.1.2'),
+  ('originalVersion', 'v1.1.3'),
   ('installDate', CURRENT_TIMESTAMP);
 
 INSERT INTO _meta (metaKey, metaValue) VALUES
-  ('version', 'v1.1.2'),
+  ('version', 'v1.1.3'),
   ('updateDate', CURRENT_TIMESTAMP)
   ON DUPLICATE KEY UPDATE
   metaKey=VALUES(metaKey),
   metaValue=VALUES(metaValue);
+
+UPDATE IGNORE acp_settings
+SET setting_val='en_US'
+WHERE setting_ref='default_language';
 
 SET FOREIGN_KEY_CHECKS = 1;
