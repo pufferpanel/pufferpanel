@@ -1,0 +1,42 @@
+create_table("locations", func(t) {
+	t.Column("id", "int", {"primary": true})
+	t.Column("name", "string", { "size": 40 })
+	t.Column("description", "string", { "size": 200, "null": true })
+})
+
+add_index("locations", "name", {"unique": true})
+
+create_table("nodes", func(t) {
+	t.Column("id", "int", {"primary": true})
+	t.Column("name", "string", { "size": 40 })
+  t.Column("description", "string", { "size": 200, "null": true })
+  t.Column("location_id", "int", {})
+})
+
+add_index("nodes", "name", {"unique": true})
+add_index("nodes", "location_id", {})
+
+create_table("users", func(t) {
+	t.Column("id", "int", {"primary": true})
+	t.Column("uuid", "uuid", {})
+	t.Column("username", "string", {"size": 100})
+	t.Column("email", "string", {"size": 200})
+	t.Column("password", "string", {"size": 200})
+	t.Column("language", "string", {"size": 10})
+	t.Column("admin", "boolean", {"default": 0})
+})
+
+add_index("users", "username", {"unique": true})
+add_index("users", "email", {"unique": true})
+
+create_table("servers", func(t) {
+	t.Column("id", "int", {"primary": true})
+	t.Column("uuid", "uuid", {})
+	t.Column("name", "string", { "size": 40 })
+	t.Column("user_id", "int", {})
+	t.Column("node_id", "int", {})
+})
+
+add_index("servers", "user_id", {})
+add_index("servers", "node_id", {})
+add_index("servers", "name", {"unique": true})
