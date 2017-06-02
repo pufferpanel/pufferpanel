@@ -15,6 +15,9 @@ type Node struct {
 	Name        string  `json:"name" db:"name"`
 	Description string  `json:"description" db:"description"`
 	Location_ID int     `json:"location_id" db:"location_id"`
+	Public_Ip   string  `json:"public_ip" db:"public_ip"`
+	Private_Ip  string  `json:"private_ip" db:"private_ip"`
+	Port        int     `json:"port" db:"port"`
 }
 
 // String is not required by pop and may be deleted
@@ -23,29 +26,8 @@ func (n Node) String() string {
 	return string(jn)
 }
 
-// Nodes is not required by pop and may be deleted
-type Nodes []Node
-
-// String is not required by pop and may be deleted
-func (n Nodes) String() string {
-	jn, _ := json.Marshal(n)
-	return string(jn)
-}
-
 // Validate gets run everytime you call a "pop.Validate" method.
 // This method is not required and may be deleted.
 func (n *Node) Validate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
-
-// ValidateSave gets run everytime you call "pop.ValidateSave" method.
-// This method is not required and may be deleted.
-func (n *Node) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
-
-// ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
-// This method is not required and may be deleted.
-func (n *Node) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }

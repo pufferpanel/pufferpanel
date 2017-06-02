@@ -11,6 +11,9 @@ create_table("nodes", func(t) {
 	t.Column("name", "string", { "size": 40 })
   t.Column("description", "string", { "size": 200, "null": true })
   t.Column("location_id", "int", {})
+  t.Column("public_ip", "string", {})
+  t.Column("private_ip", "string", {})
+  t.Column("port", "int", {})
 })
 
 add_index("nodes", "name", {"unique": true})
