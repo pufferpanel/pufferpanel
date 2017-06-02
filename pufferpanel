@@ -277,6 +277,10 @@ function configureNginx() {
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
             include /etc/nginx/fastcgi_params;
         }
+        
+        location /.well-known/acme-challenge/ {
+            try_files $uri =404;
+        }
 
         location /assets {
             try_files /app/\$uri =404;
@@ -301,6 +305,9 @@ function configureNginx() {
     #        fastcgi_index router.php;
     #        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     #        include /etc/nginx/fastcgi_params;
+    #    }
+    #    location /.well-known/acme-challenge/ {
+    #        try_files $uri =404;
     #    }
     #
     #    location /assets {
