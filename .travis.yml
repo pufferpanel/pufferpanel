@@ -21,7 +21,7 @@ before_install:
 before_script:
   - psql -c 'create database pufferpanel_test;' -U postgres
   - mysql -u root -e 'CREATE DATABASE pufferpanel_test;'
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
   - mkdir -p $TRAVIS_BUILD_DIR/public/assets
   - go get -u -v github.com/gobuffalo/buffalo/buffalo
 
