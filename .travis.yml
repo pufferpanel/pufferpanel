@@ -9,9 +9,8 @@ before_script:
   - go get -u -v github.com/gobuffalo/buffalo/buffalo
 
 go:
-  - 1.7.x
-  - master
+  - 1.8.x
 
 go_import_path: github.com/pufferpanel/pufferpanel
 
-script: cd src/github.com/pufferpanel/pufferpanel && buffalo build
+script: cd $TRAVIS_BUILD_DIR && buffalo build
