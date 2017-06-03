@@ -7,7 +7,7 @@ development:
   password: "root"
 
 test:
-  url: {{envOr "TEST_DATABASE_URL" "mysql://root@127.0.0.1:3306/pufferpanel_test"}}
+  url: {{envOr "TEST_DATABASE_URL" "mysql://root:root@127.0.0.1:3306/pufferpanel_test"}}
 
 production:
   url: {{envOr "DATABASE_URL" "mysql://root:root@localhost:3306/pufferpanel_production"}}

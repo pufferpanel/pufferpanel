@@ -1,11 +1,14 @@
-language: go
-env:
-- GO_ENV=test
+dist: trusty
+sudo: false
 
+language: go
 go:
   - 1.8.x
 
 go_import_path: github.com/pufferpanel/pufferpanel
+
+env:
+- GO_ENV=test
 
 services:
   - mysql
@@ -17,7 +20,8 @@ before_install:
 
 before_script:
   - psql -c 'create database pufferpanel_test;' -U postgres
-  - mysql -e 'CREATE DATABASE pufferpanel_test;'
+  - mysql -u root -e 'CREATE DATABASE pufferpanel_test;'
+  - echo "USE pufferpanel_test;\nUPDATE user SET password=PASSWORD('') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
   - mkdir -p $TRAVIS_BUILD_DIR/public/assets
   - go get -u -v github.com/gobuffalo/buffalo/buffalo
 
