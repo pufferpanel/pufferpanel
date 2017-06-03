@@ -13,4 +13,4 @@ go:
 
 go_import_path: github.com/pufferpanel/pufferpanel
 
-script: cd $TRAVIS_BUILD_DIR && buffalo build
+script: cd $TRAVIS_BUILD_DIR && buffalo setup && buffalo build
