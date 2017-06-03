@@ -42,8 +42,9 @@ func (u User) SetPassword(password string) error {
 	if err != nil {
 		return err
 	}
-	u.password = pw
+	u.password = string(pw)
 	models.DB.ValidateAndSave(u)
+	return err
 }
 
 // Users is not required by pop and may be deleted
@@ -69,7 +70,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		validation.Field(&u.password, validation.Required),
 	)
 
-	errs := err.(validation.Errors{})
+	errs := err.(validation.Errors)
 
 	if err != nil && errs.Filter() != nil {
 		for k, v := range errs {

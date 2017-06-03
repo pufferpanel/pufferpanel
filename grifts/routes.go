@@ -5,11 +5,11 @@ import (
 	"os"
 	"text/tabwriter"
 
-	. "github.com/markbates/grift/grift"
 	"github.com/pufferpanel/pufferpanel/actions"
+	"github.com/markbates/grift/grift"
 )
 
-var _ = Add("routes", func(c *Context) error {
+var _ = grift.Add("routes", func(c *grift.Context) error {
 	a := actions.App()
 	routes := a.Routes()
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
