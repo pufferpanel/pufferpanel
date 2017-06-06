@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"github.com/markbates/pop"
 	"github.com/markbates/validate"
 	"github.com/satori/go.uuid"
@@ -10,6 +9,7 @@ import (
 	"github.com/gobuffalo/buffalo/examples/html-crud/models"
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"errors"
 )
 
 type User struct {
@@ -26,12 +26,6 @@ type User struct {
 	password  string    `json:"-" db:"password"`
 }
 
-// String is not required by pop and may be deleted
-func (u User) String() string {
-	ju, _ := json.Marshal(u)
-	return string(ju)
-}
-
 func (u User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password)) == nil
 }
@@ -45,15 +39,6 @@ func (u User) SetPassword(password string) error {
 	u.password = string(pw)
 	models.DB.ValidateAndSave(u)
 	return err
-}
-
-// Users is not required by pop and may be deleted
-type Users []User
-
-// String is not required by pop and may be deleted
-func (u Users) String() string {
-	ju, _ := json.Marshal(u)
-	return string(ju)
 }
 
 // Validate gets run every time you call a "pop.Validate" method.
@@ -79,4 +64,18 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	}
 
 	return resultErrs, nil
+}
+
+func (u *User) BeforeDestroy(tx *pop.Connection) error {
+	server := Server{}
+
+	exists, err := tx.BelongsTo(u).Exists(&server)
+
+	if err != nil {
+		return err
+	} else if exists {
+		return errors.New("user is associated with servers")
+	}
+
+	return nil
 }

@@ -1,11 +1,12 @@
 package models
 
 import (
-	"encoding/json"
 	"github.com/markbates/pop"
 	"github.com/markbates/validate"
 	"github.com/satori/go.uuid"
 	"time"
+	"github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 type Server struct {
@@ -18,35 +19,47 @@ type Server struct {
 	Node_ID   int       `json:"node_id" db:"node_id"`
 }
 
-// String is not required by pop and may be deleted
-func (s Server) String() string {
-	js, _ := json.Marshal(s)
-	return string(js)
-}
-
-// Servers is not required by pop and may be deleted
-type Servers []Server
-
-// String is not required by pop and may be deleted
-func (s Servers) String() string {
-	js, _ := json.Marshal(s)
-	return string(js)
-}
-
-// Validate gets run everytime you call a "pop.Validate" method.
+// Validate gets run every time you call a "pop.Validate" method.
 // This method is not required and may be deleted.
 func (s *Server) Validate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
+	resultErrs := validate.NewErrors()
 
-// ValidateSave gets run everytime you call "pop.ValidateSave" method.
-// This method is not required and may be deleted.
-func (s *Server) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
+	err := validation.ValidateStruct(&s,
+		validation.Field(&s.Uuid, validation.Required, is.UUID),
+		validation.Field(&s.Name, validation.Required),
+		validation.Field(&s.User_ID, validation.Required),
+		validation.Field(&s.Node_ID, validation.Required),
+	)
 
-// ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
-// This method is not required and may be deleted.
-func (s *Server) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
+	errs := err.(validation.Errors)
+
+	if err != nil && errs.Filter() != nil {
+		for k, v := range errs {
+			resultErrs.Add(k, v.Error())
+		}
+	}
+
+	node := &Node{}
+	err = tx.BelongsTo(s).All(&node)
+
+	if err != nil {
+		resultErrs.Add("node", err.Error())
+	}
+
+	if node == nil {
+		resultErrs.Add("node", "node does not exist")
+	}
+
+	user := &User{}
+	err = tx.BelongsTo(s).All(&user)
+
+	if err != nil {
+		resultErrs.Add("user", err.Error())
+	}
+
+	if user == nil {
+		resultErrs.Add("user", "user does not exist")
+	}
+
+	return resultErrs, nil
 }

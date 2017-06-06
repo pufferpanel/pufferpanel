@@ -1,6 +1,7 @@
 create_table("locations", func(t) {
 	t.Column("id", "int", {"primary": true})
 	t.Column("name", "string", { "size": 40 })
+	t.Column("code", "string", { "size": 10 })
 	t.Column("description", "string", { "size": 200, "null": true })
 })
 
