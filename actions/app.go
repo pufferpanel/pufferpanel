@@ -11,6 +11,7 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
+	"github.com/pufferpanel/pufferpanel/actions/api"
 )
 
 // ENV is used to help switch settings based on where the
@@ -45,7 +46,11 @@ func App() *buffalo.App {
 		}
 		app.Use(T.Middleware())
 
-		app.GET("/", HomeHandler)
+		//register root level
+		Register(app)
+
+		//register API
+		api.Register(app)
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 	}
