@@ -1,5 +1,5 @@
 create_table("locations", func(t) {
-	t.Column("id", "int", {"primary": true})
+	t.Column("id", "integer", {"primary": true})
 	t.Column("name", "string", { "size": 40 })
 	t.Column("code", "string", { "size": 10 })
 	t.Column("description", "string", { "size": 200, "null": true })
@@ -8,20 +8,20 @@ create_table("locations", func(t) {
 add_index("locations", "name", {"unique": true})
 
 create_table("nodes", func(t) {
-	t.Column("id", "int", {"primary": true})
+	t.Column("id", "integer", {"primary": true})
 	t.Column("name", "string", { "size": 40 })
   t.Column("description", "string", { "size": 200, "null": true })
-  t.Column("location_id", "int", {})
+  t.Column("location_id", "integer", {})
   t.Column("public_ip", "string", {})
   t.Column("private_ip", "string", {})
-  t.Column("port", "int", {})
+  t.Column("port", "integer", {})
 })
 
 add_index("nodes", "name", {"unique": true})
 add_index("nodes", "location_id", {})
 
 create_table("users", func(t) {
-	t.Column("id", "int", {"primary": true})
+	t.Column("id", "integer", {"primary": true})
 	t.Column("uuid", "uuid", {})
 	t.Column("username", "string", {"size": 100})
 	t.Column("email", "string", {"size": 200})
@@ -34,11 +34,11 @@ add_index("users", "username", {"unique": true})
 add_index("users", "email", {"unique": true})
 
 create_table("servers", func(t) {
-	t.Column("id", "int", {"primary": true})
+	t.Column("id", "integer", {"primary": true})
 	t.Column("uuid", "uuid", {})
 	t.Column("name", "string", { "size": 40 })
-	t.Column("user_id", "int", {})
-	t.Column("node_id", "int", {})
+	t.Column("user_id", "integer", {})
+	t.Column("node_id", "integer", {})
 })
 
 add_index("servers", "user_id", {})

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 	"github.com/markbates/pop"
 	"errors"
@@ -14,27 +13,24 @@ type Location struct {
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Name        string    `json:"name" db:"name"`
-	Code        string    `json:"code" db:"code`
+	Code        string    `json:"code" db:"code"`
 	Description string    `json:"description" db:"description"`
 }
 
-// String is not required by pop and may be deleted
-func (l Location) String() string {
-	jl, _ := json.Marshal(l)
-	return string(jl)
-}
+type Locations []Location
 
 func (l *Location) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	resultErrs := validate.NewErrors()
 
-	err := validation.ValidateStruct(&l,
+	err := validation.ValidateStruct(l,
 		validation.Field(&l.Name, validation.Required),
 		validation.Field(&l.Code, validation.Required, validation.Length(1, 10)),
+		validation.Field(&l.Description),
 	)
 
-	errs := err.(validation.Errors)
+	errs, ok := err.(validation.Errors)
 
-	if err != nil && errs.Filter() != nil {
+	if ok && (err != nil && errs.Filter() != nil) {
 		for k, v := range errs {
 			resultErrs.Add(k, v.Error())
 		}
@@ -44,7 +40,7 @@ func (l *Location) Validate(tx *pop.Connection) (*validate.Errors, error) {
 }
 
 func (l *Location) BeforeDestroy(tx *pop.Connection) error {
-	node := Node{}
+	node := &Node{}
 
 	exists, err := tx.BelongsTo(l).Exists(&node)
 

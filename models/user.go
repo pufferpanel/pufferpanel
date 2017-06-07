@@ -26,6 +26,16 @@ type User struct {
 	password  string    `json:"-" db:"password"`
 }
 
+type Users []User
+
+func CreateUser() *User {
+	return &User{
+		Uuid: uuid.NewV4(),
+		Language: "en_us",
+		Admin: false,
+	}
+}
+
 func (u User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password)) == nil
 }
@@ -55,9 +65,9 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		validation.Field(&u.password, validation.Required),
 	)
 
-	errs := err.(validation.Errors)
+	errs, ok := err.(validation.Errors)
 
-	if err != nil && errs.Filter() != nil {
+	if ok && (err != nil && errs.Filter() != nil) {
 		for k, v := range errs {
 			resultErrs.Add(k, v.Error())
 		}

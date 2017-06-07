@@ -19,6 +19,14 @@ type Server struct {
 	Node_ID   int       `json:"node_id" db:"node_id"`
 }
 
+type Servers []Server
+
+func CreateServer() *Server {
+	return &Server{
+		Uuid: uuid.NewV4(),
+	}
+}
+
 // Validate gets run every time you call a "pop.Validate" method.
 // This method is not required and may be deleted.
 func (s *Server) Validate(tx *pop.Connection) (*validate.Errors, error) {
@@ -31,33 +39,33 @@ func (s *Server) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		validation.Field(&s.Node_ID, validation.Required),
 	)
 
-	errs := err.(validation.Errors)
+	errs, ok := err.(validation.Errors)
 
-	if err != nil && errs.Filter() != nil {
+	if ok && (err != nil && errs.Filter() != nil) {
 		for k, v := range errs {
 			resultErrs.Add(k, v.Error())
 		}
 	}
 
-	node := &Node{}
+	node := &Nodes{}
 	err = tx.BelongsTo(s).All(&node)
 
 	if err != nil {
 		resultErrs.Add("node", err.Error())
 	}
 
-	if node == nil {
+	if node == nil || len(*node) == 0 {
 		resultErrs.Add("node", "node does not exist")
 	}
 
-	user := &User{}
+	user := &Users{}
 	err = tx.BelongsTo(s).All(&user)
 
 	if err != nil {
 		resultErrs.Add("user", err.Error())
 	}
 
-	if user == nil {
+	if user == nil || len(*user) == 0 {
 		resultErrs.Add("user", "user does not exist")
 	}
 

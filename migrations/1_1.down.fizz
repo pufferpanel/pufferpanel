@@ -1,0 +1,4 @@
+drop_table("servers")
+drop_table("users")
+drop_table("nodes")
+drop_table("locations")
