@@ -17,23 +17,21 @@ var _ = grift.Add("db:seed", func(c *grift.Context) error {
 
 		valErrs, err := tx.ValidateAndCreate(location)
 
-		if valErrs != nil {
-			fmt.Println(valErrs)
+		if valErrs != nil && len(valErrs.Errors) > 0 {
+			fmt.Println(valErrs.Error())
 			return errors.New(valErrs.Error())
 		} else if err != nil {
 			fmt.Println(err)
 			return err
 		}
 
-		fmt.Println(err)
-
 		node := models.CreateNode()
 		node.Name = "seednode"
-		node.Location_ID = location.ID
+		node.LocationId = location.ID
 		valErrs, err = tx.ValidateAndCreate(node)
 
-		if valErrs != nil {
-			fmt.Println(valErrs)
+		if valErrs != nil && len(valErrs.Errors) > 0{
+			fmt.Println(valErrs.Error())
 			return errors.New(valErrs.Error())
 		} else if err != nil {
 			fmt.Println(err)
@@ -46,7 +44,7 @@ var _ = grift.Add("db:seed", func(c *grift.Context) error {
 		user.SetPassword("seed")
 		valErrs, err = tx.ValidateAndCreate(user)
 
-		if valErrs != nil {
+		if valErrs != nil && len(valErrs.Errors) > 0 {
 			fmt.Println(valErrs)
 			return errors.New(valErrs.Error())
 		} else if err != nil {
@@ -56,11 +54,11 @@ var _ = grift.Add("db:seed", func(c *grift.Context) error {
 
 		server := models.CreateServer()
 		server.Name = "seedserver"
-		server.Node_ID = node.ID
-		server.User_ID = user.ID
+		server.NodeId = node.ID
+		server.UserId = user.ID
 		valErrs, err = tx.ValidateAndCreate(server)
 
-		if valErrs != nil {
+		if valErrs != nil && len(valErrs.Errors) > 0 {
 			fmt.Println(valErrs)
 			return errors.New(valErrs.Error())
 		} else if err != nil {

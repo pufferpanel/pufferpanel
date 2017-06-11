@@ -11,30 +11,30 @@ import (
 )
 
 type Node struct {
-	ID          int `json:"id" db:"id"`
+	ID          int       `json:"id" db:"id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
-	Uuid        uuid.UUID `json:"uuid" db:"uuid"`
-	Name        string  `json:"name" db:"name"`
-	Description string  `json:"description" db:"description"`
-	Location_ID int     `json:"location_id" db:"location_id"`
-	Public_Ip   string  `json:"public_ip" db:"public_ip"`
-	Private_Ip  string  `json:"private_ip" db:"private_ip"`
-	Port        int     `json:"port" db:"port"`
+	Uuid        string    `json:"uuid" db:"uuid"`
+	Name        string    `json:"name" db:"name"`
+	Description string    `json:"description" db:"description"`
+	LocationId  int       `json:"location_id" db:"location_id"`
+	PublicIp    string    `json:"public_ip" db:"public_ip"`
+	PrivateIp   string    `json:"private_ip" db:"private_ip"`
+	Port        int       `json:"port" db:"port"`
 }
 
 type Nodes []Node
 
 func CreateNode() *Node {
 	return &Node {
-		Uuid: uuid.NewV4(),
-		Public_Ip: "127.0.0.1",
-		Private_Ip: "127.0.0.1",
+		Uuid: uuid.NewV4().String(),
+		PublicIp: "127.0.0.1",
+		PrivateIp: "127.0.0.1",
 		Port: 5656,
 	}
 }
 
-// Validate gets run everytime you call a "pop.Validate" method.
+// Validate gets run every time you call a "pop.Validate" method.
 // This method is not required and may be deleted.
 func (n *Node) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	resultErrs := validate.NewErrors()
@@ -42,28 +42,30 @@ func (n *Node) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	err := validation.ValidateStruct(&n,
 		validation.Field(&n.Name, validation.Required),
 		validation.Field(&n.Description),
-		validation.Field(&n.Location_ID, validation.Required),
-		validation.Field(&n.Public_Ip, validation.Required, is.Host),
-		validation.Field(&n.Private_Ip, validation.Required, is.Host),
+		validation.Field(&n.LocationId, validation.Required),
+		validation.Field(&n.PublicIp, validation.Required, is.Host),
+		validation.Field(&n.PrivateIp, validation.Required, is.Host),
 		validation.Field(&n.Port, validation.Required, is.Port),
+		validation.Field(&n.Uuid, validation.Required),
 	)
 
 	errs, ok := err.(validation.Errors)
 
-	if ok && (err != nil && errs.Filter() != nil) {
+	if ok && (err != nil && errs.Filter() != nil && len(errs) > 0) {
 		for k, v := range errs {
 			resultErrs.Add(k, v.Error())
 		}
 	}
 
 	location := &Location{}
-	err = tx.BelongsTo(n).All(&location)
+
+	exists, err := tx.Where("id = ?", n.LocationId).Exists(location)
 
 	if err != nil {
 		resultErrs.Add("location", err.Error())
 	}
 
-	if location == nil {
+	if !exists {
 		resultErrs.Add("location", "location does not exist")
 	}
 

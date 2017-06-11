@@ -1,5 +1,7 @@
-package grifts
 
+package main
+
+import _ "github.com/pufferpanel/pufferpanel/grifts"
 import "os"
 import "log"
 import "github.com/markbates/grift/grift"

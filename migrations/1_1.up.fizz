@@ -9,6 +9,7 @@ add_index("locations", "name", {"unique": true})
 
 create_table("nodes", func(t) {
 	t.Column("id", "integer", {"primary": true})
+	t.Column("uuid", "uuid", {})
 	t.Column("name", "string", { "size": 40 })
   t.Column("description", "string", { "size": 200, "null": true })
   t.Column("location_id", "integer", {})

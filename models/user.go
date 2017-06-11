@@ -6,14 +6,13 @@ import (
 	"github.com/satori/go.uuid"
 	"time"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/gobuffalo/buffalo/examples/html-crud/models"
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	"errors"
 )
 
 type User struct {
-	ID        int `json:"id" db:"id"`
+	ID        int       `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 	Uuid      uuid.UUID `json:"uuid" db:"uuid"`
@@ -23,7 +22,7 @@ type User struct {
 	Admin     bool      `json:"admin" db:"admin"`
 
 	//private variable that's just backed by the database, we do not pass these outside this
-	password  string    `json:"-" db:"password"`
+	Password  string    `json:"-" db:"password"`
 }
 
 type Users []User
@@ -37,7 +36,7 @@ func CreateUser() *User {
 }
 
 func (u User) ComparePassword(password string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password)) == nil
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
 }
 
 func (u User) SetPassword(password string) error {
@@ -46,8 +45,7 @@ func (u User) SetPassword(password string) error {
 	if err != nil {
 		return err
 	}
-	u.password = string(pw)
-	models.DB.ValidateAndSave(u)
+	u.Password = string(pw)
 	return err
 }
 
@@ -62,7 +60,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		validation.Field(&u.Username, validation.Required),
 		validation.Field(&u.Language, validation.Required),
 		validation.Field(&u.Admin, validation.Required),
-		validation.Field(&u.password, validation.Required),
+		validation.Field(&u.Password, validation.Required),
 	)
 
 	errs, ok := err.(validation.Errors)

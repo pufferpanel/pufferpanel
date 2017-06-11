@@ -15,8 +15,8 @@ type Server struct {
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 	Uuid      uuid.UUID `json:"uuid" db:"uuid"`
 	Name      string    `json:"name" db:"name"`
-	User_ID   int       `json:"user_id" db:"user_id"`
-	Node_ID   int       `json:"node_id" db:"node_id"`
+	UserId    int       `json:"user_id" db:"user_id"`
+	NodeId    int       `json:"node_id" db:"node_id"`
 }
 
 type Servers []Server
@@ -35,8 +35,8 @@ func (s *Server) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	err := validation.ValidateStruct(&s,
 		validation.Field(&s.Uuid, validation.Required, is.UUID),
 		validation.Field(&s.Name, validation.Required),
-		validation.Field(&s.User_ID, validation.Required),
-		validation.Field(&s.Node_ID, validation.Required),
+		validation.Field(&s.UserId, validation.Required),
+		validation.Field(&s.NodeId, validation.Required),
 	)
 
 	errs, ok := err.(validation.Errors)
@@ -47,25 +47,27 @@ func (s *Server) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		}
 	}
 
-	node := &Nodes{}
-	err = tx.BelongsTo(s).All(&node)
+	node := &Node{}
+
+	exists, err := tx.Where("id = ?", s.NodeId).Exists(node)
 
 	if err != nil {
 		resultErrs.Add("node", err.Error())
 	}
 
-	if node == nil || len(*node) == 0 {
+	if !exists {
 		resultErrs.Add("node", "node does not exist")
 	}
 
-	user := &Users{}
-	err = tx.BelongsTo(s).All(&user)
+	user := &User{}
+
+	exists, err = tx.Where("id = ?", s.NodeId).Exists(user)
 
 	if err != nil {
 		resultErrs.Add("user", err.Error())
 	}
 
-	if user == nil || len(*user) == 0 {
+	if !exists {
 		resultErrs.Add("user", "user does not exist")
 	}
 
