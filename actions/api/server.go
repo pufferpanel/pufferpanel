@@ -9,7 +9,7 @@ import (
 //Lists all servers the given context has read access to (either owner or subuser)
 func ServerHandler(g buffalo.Context) error {
 	user := &models.User{
-		ID: 1,
+		ID: 2,
 	}
 	servers := &models.Servers{}
 	err := models.DB.BelongsTo(user).All(servers)
