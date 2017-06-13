@@ -1,9 +1,13 @@
 package middleware
 
-import "github.com/markbates/grift/grift"
+import (
+	"github.com/gobuffalo/buffalo"
+)
 
-func OauthHandler() func(c *grift.Context){
-	return func(c *grift.Context) {
+func OAuthHandler(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		//todo: add oauth as method of authentication
 
+		return next(c)
 	}
 }
