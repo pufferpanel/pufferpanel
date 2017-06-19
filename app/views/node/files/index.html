@@ -148,7 +148,7 @@
         url: function(files) {
             return '/daemon/server/{{ server.hash }}/file' + fileModel.currentDir() + files[0].name;
         },
-        maxFilesize: 10,
+        maxFilesize: 50,
         method: 'PUT',
         addRemoveLinks: true,
         init: function() {
