@@ -1,5 +1,2 @@
 <?php
-
 header('Location: /index');
-
-?>
