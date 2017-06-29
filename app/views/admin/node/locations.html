@@ -31,8 +31,8 @@
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalservers }}{% endif %}</td>
 				<td style="text-align:center;">
-					<a href="/admin/node/locations/{{ location.short }}/edit" class="edit_location"><span class="badge">Edit</span></a>
-					<a href="/admin/node/locations/{{ location.short }}/delete"><span class="badge label-danger">Delete</span></a>
+					<a href="/admin/node/locations/{{ location.id }}/edit" class="edit_location"><span class="badge">Edit</span></a>
+					<a href="/admin/node/locations/{{ location.id }}/delete"><span class="badge label-danger">Delete</span></a>
 				</td>
 			</tr>
 			{% endfor %}
