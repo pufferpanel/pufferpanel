@@ -144,15 +144,9 @@ $klein->respond('POST', '/admin/node/locations', function($request, $response, $
 
 });
 
-$klein->respond('GET', '/admin/node/locations/[:shortcode]/edit', function($request, $response) use($core) {
+$klein->respond('GET', '/admin/node/locations/[i:id]/edit', function($request, $response) use($core) {
 
-    if (!preg_match('/^[\w-]{1,10}$/', $request->param('shortcode'))) {
-
-        $response->code(404)->body('<div class="alert alert-danger">No location provided or the location was invalid.</div>')->send();
-        return;
-    }
-
-    $location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+    $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
     if (!$location) {
 
         $response->code(404)->body('<div class="alert alert-danger">That location could not be found in the system.</div>')->send();
@@ -160,15 +154,14 @@ $klein->respond('GET', '/admin/node/locations/[:shortcode]/edit', function($requ
     }
 
     $response->body($core->twig->render(
-                    'admin/node/location-popup.html', array(
-                'location' => $location
-                    )
+        'admin/node/location-popup.html',
+        [ 'location' => $location ]
     ))->send();
 });
 
-$klein->respond('GET', '/admin/node/locations/[:shortcode]/delete', function($request, $response, $service) use($core) {
+$klein->respond('GET', '/admin/node/locations/[i:id]/delete', function($request, $response, $service) use($core) {
 
-    $location = ORM::forTable('locations')->where('short', $request->param('shortcode'))->findOne();
+    $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
     if (!$location) {
 
         $service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
@@ -189,19 +182,19 @@ $klein->respond('GET', '/admin/node/locations/[:shortcode]/delete', function($re
 });
 
 
-$klein->respond('POST', '/admin/node/locations/[:shortcode]/edit', function($request, $response, $service) use($core) {
+$klein->respond('POST', '/admin/node/locations/[i:id]/edit', function($request, $response, $service) use($core) {
 
-    if (!preg_match('/^[\w-]{1,10}$/', $request->param('location-short'))) {
+    $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
+    if (!$location) {
 
-        $service->flash('<div class="alert alert-danger">Location shortcode must be between 1 and 10 characters, and not contain any special characters.</div>');
+        $service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
         $response->redirect('/admin/node/locations')->send();
         return;
     }
 
-    $location = ORM::forTable('locations')->where('short', $request->param('location-short'))->findOne();
-    if (!$location) {
+    if (!preg_match('/^[\w-]{1,10}$/', $request->param('location-short'))) {
 
-        $service->flash('<div class="alert alert-danger">The requested location could not be found in the system.</div>');
+        $service->flash('<div class="alert alert-danger">Location shortcode must be between 1 and 10 characters, and not contain any special characters.</div>');
         $response->redirect('/admin/node/locations')->send();
         return;
     }
