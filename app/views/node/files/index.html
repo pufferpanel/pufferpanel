@@ -234,6 +234,10 @@
             message = 'An error occurred while performing the selected operation';
         }
 
+        if (!(message instanceof String)) {
+            message = (message.responseText === 'undefined') ? JSON.stringify(message) : message.responseText;
+        }
+
         $("#notifications").text(message).fadeIn().delay(5000).fadeOut();
     }
 
@@ -244,7 +248,7 @@
             return;
         }
         var fileName = element.attr('data-value');
-        makeDaemonCall('GET', fileName, 'text', undefined, function(data) {
+        makeDaemonCall('GET', fileName + '.', 'text', undefined, function(data) {
             if (editor != undefined) {
                 editor.destroy();
             }
