@@ -248,7 +248,7 @@
             return;
         }
         var fileName = element.attr('data-value');
-        makeDaemonCall('GET', fileName + '.', 'text', undefined, function(data) {
+        makeDaemonCall('GET', fileName, 'text', undefined, function(data) {
             if (editor != undefined) {
                 editor.destroy();
             }
@@ -294,7 +294,7 @@
 
     function saveFile() {
         var fileName = fileModel.activeFile();
-        makeDaemonCall('PUT', fileName + '?noform', 'text', editor.getValue(), function() {
+        makeDaemonCall('PUT', fileName, 'text', editor.getValue(), function() {
             editor.destroy();
             $("#editFile").modal('hide');
             $("#success-notifications").text('File has been saved').fadeIn().delay(5000).fadeOut();
