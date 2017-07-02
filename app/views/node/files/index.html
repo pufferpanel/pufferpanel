@@ -235,7 +235,10 @@
         }
 
         if (!(message instanceof String)) {
-            message = (message.responseText === 'undefined') ? JSON.stringify(message) : message.responseText;
+            message = (message.responseText === 'undefined') ? JSON.stringify(message) : message.responseText.msg;
+            if (message.msg !== 'undefined') {
+                message = message.msg;
+            }
         }
 
         $("#notifications").text(message).fadeIn().delay(5000).fadeOut();
