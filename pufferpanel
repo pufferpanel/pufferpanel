@@ -407,7 +407,7 @@ case $1 in
             fi
         done
         if [ "${canInstall}" -eq "0" ]; then
-            if [ "$installNode" -eq "1" ]; then
+            if [ "${forceInstall}" -eq "1" ]; then
                 canInstall=1
                 echo "Forcing installer due to flag being present"
             else
