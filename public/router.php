@@ -25,8 +25,8 @@ if(!ini_get('date.timezone')) {
 	date_default_timezone_set('UTC');
 }
 
-$baseDir = str_replace('\\', '/', dirname(__FILE__).'/');
-if (!file_exists($baseDir.'pufferpanel')) {
+$baseDir = str_replace('\\', '/', dirname(dirname(__FILE__)).'/');
+if (!is_file($baseDir.'pufferpanel')) {
     $baseUrl = dirname($_SERVER['PHP_SELF']);
     $baseDir = str_replace('\\', '/', rtrim(dirname(dirname(dirname(__FILE__))), '\\/') . '/pufferpanel' . '/');
 }
