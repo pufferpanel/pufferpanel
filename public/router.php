@@ -61,7 +61,7 @@ if(Config::config('debugging') === true) {
 } else {
 	Debugger::enable(Debugger::PRODUCTION, LOGS_DIR);
 }
-Debugger::$strictMode = true;
+Debugger::$strictMode = E_PARSE;
 
 /*
 * MySQL PDO Connection Engine
@@ -107,14 +107,14 @@ $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
 $core->twig->addGlobal('basePath', BASE_URL);
 
-$klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('!@^'.BASE_URL.'(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
 		if(!strpos($request->pathname(), "{{basePath}}/ajax/")) {
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
-			$response->redirect('/auth/login');
+			$response->redirect(BASE_URL.'/auth/login');
 
 		} else {
 
@@ -128,21 +128,21 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', funct
 
 });
 
-$klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('@^'.BASE_URL.'(/auth/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if($core->auth->isLoggedIn()) {
 
 		// Redirect /auth/* requests to /index if they are logged in
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
 		if(0 !== strpos($request->pathname(), "{{basePath}}/auth/logout") && 0 !== strpos($request->pathname(), "{{basePath}}/auth/remote/")) {
-			$response->redirect('/index');
+			$response->redirect(BASE_URL.'/index');
 		}
 
 	}
 
 });
 
-$klein->respond('/node/[*]', function($request, $response, $service, $app, $klein) use($core) {
+$klein->respond(BASE_URL.'/node/[*]', function($request, $response, $service, $app, $klein) use($core) {
 
 	if(!$core->auth->isServer()) {
 
@@ -152,7 +152,7 @@ $klein->respond('/node/[*]', function($request, $response, $service, $app, $klei
 
 });
 
-$klein->respond('/admin/[*]', function($request, $response, $service, $app, $klein) use($core) {
+$klein->respond(BASE_URL.'/admin/[*]', function($request, $response, $service, $app, $klein) use($core) {
 
 	if(!$core->auth->isAdmin()) {
 
@@ -181,7 +181,6 @@ $klein->respond(function($request, $response) {
 });
 
 $klein->onHttpError(function($code, $klein) use ($core) {
-
     $request = $klein->request();
     $response = $klein->response();
 
@@ -197,7 +196,6 @@ $klein->onHttpError(function($code, $klein) use ($core) {
         }
         break;
     }
-
 });
 
 $res = new PPResponse($klein);

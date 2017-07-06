@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM, \Tracy\Debugger;
 
-$klein->respond('GET', '/admin/settings/[:page]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/settings/[:page]', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render(
 		'admin/settings/'.$request->param('page').'.html',
@@ -30,7 +30,7 @@ $klein->respond('GET', '/admin/settings/[:page]', function($request, $response, 
 
 });
 
-$klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/settings/[:page]/[:action]', function($request, $response, $service) use ($core) {
 
 	// Update Captcha
 	if($request->param('page') == "captcha" && $request->param('action') == "update") {

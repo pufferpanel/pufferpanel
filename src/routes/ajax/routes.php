@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 namespace PufferPanel\Core;
 use \ORM as ORM;
 
-$klein->respond('POST', '/ajax/status', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/ajax/status', function($request, $response) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 		$response->body('#FF9900');
@@ -54,7 +54,7 @@ $klein->respond('POST', '/ajax/status', function($request, $response) use ($core
 
 });
 
-$klein->respond('POST', '/ajax/status/node', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/ajax/status/node', function($request, $response) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 		$response->body('#FF9900');

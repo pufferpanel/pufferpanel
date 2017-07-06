@@ -23,7 +23,7 @@ namespace PufferPanel\Core;
 use \ORM,
     \Unirest\Request;
 
-$klein->respond('GET', '/account', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/account', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('panel/account.html', array(
                 'xsrf' => $core->auth->XSRF(),
@@ -33,7 +33,7 @@ $klein->respond('GET', '/account', function($request, $response, $service) use (
     )));
 });
 
-$klein->respond('POST', '/account/update/[:action]', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/account/update/[:action]', function($request, $response, $service) use ($core) {
 
     $core->routes = new Router\Router_Controller('Account', $core->user);
     $core->routes = $core->routes->loadClass();
@@ -132,7 +132,7 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
     }
 });
 
-$klein->respond('GET', '/[|index:index]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/[|index:index]', function($request, $response, $service) use ($core) {
 
     if ($core->auth->isAdmin()) {
 
@@ -207,7 +207,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     )));
 });
 
-$klein->respond('GET', '/index/[:goto]', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/index/[:goto]', function($request, $response) use ($core) {
 
     if (!$core->server->nodeRedirect($request->param('goto'))) {
         $response->code(403)->body($core->twig->render('errors/403.html'));
@@ -217,7 +217,7 @@ $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($cor
     }
 });
 
-$klein->respond('GET', '/language/[:language]', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/language/[:language]', function($request, $response) use ($core) {
 
     if (file_exists(APP_DIR . 'languages/' . $request->param('language') . '.json')) {
 
@@ -236,7 +236,7 @@ $klein->respond('GET', '/language/[:language]', function($request, $response) us
     $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index');
 });
 
-$klein->respond('GET', '/totp', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/totp', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render('panel/totp.html', array(
                 'totp' => $core->user->getData('use_totp'),
@@ -245,7 +245,7 @@ $klein->respond('GET', '/totp', function($request, $response, $service) use($cor
     )));
 });
 
-$klein->respond('POST', '/totp', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/totp', function($request, $response, $service) use($core) {
 
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 

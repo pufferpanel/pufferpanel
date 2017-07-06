@@ -22,7 +22,7 @@ namespace PufferPanel\Core;
 
 use \ORM;
 
-$klein->respond('GET', '/admin/node', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/admin/node', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render('admin/node/list.html', array(
             'flash' => $service->flashes(),
@@ -35,7 +35,7 @@ $klein->respond('GET', '/admin/node', function($request, $response, $service) us
 
 });
 
-$klein->respond('GET', '/admin/node/new', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/admin/node/new', function($request, $response, $service) use($core) {
 
     if (ORM::forTable('locations')->count() == 0) {
         $service->flash('<div class="alert alert-danger">You must have at least one location defined before creating a node.</div>');
@@ -49,7 +49,7 @@ $klein->respond('GET', '/admin/node/new', function($request, $response, $service
 
 });
 
-$klein->respond('POST', '/admin/node/new', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/new', function($request, $response, $service) use($core) {
 
     if (!is_numeric($request->param('daemon_listen'))) {
 
@@ -110,7 +110,7 @@ $klein->respond('POST', '/admin/node/new', function($request, $response, $servic
 
 });
 
-$klein->respond('GET', '/admin/node/locations', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/admin/node/locations', function($request, $response, $service) use($core) {
 
     $response->body($core->twig->render('admin/node/locations.html', array(
         'flash' => $service->flashes(),
@@ -125,7 +125,7 @@ $klein->respond('GET', '/admin/node/locations', function($request, $response, $s
     )));
 });
 
-$klein->respond('POST', '/admin/node/locations', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/locations', function($request, $response, $service) use($core) {
 
     if (!preg_match('/^[\w-]{1,10}$/', $request->param('shortcode'))) {
 
@@ -144,7 +144,7 @@ $klein->respond('POST', '/admin/node/locations', function($request, $response, $
 
 });
 
-$klein->respond('GET', '/admin/node/locations/[i:id]/edit', function($request, $response) use($core) {
+$klein->respond('GET', BASE_URL.'/admin/node/locations/[i:id]/edit', function($request, $response) use($core) {
 
     $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
     if (!$location) {
@@ -159,7 +159,7 @@ $klein->respond('GET', '/admin/node/locations/[i:id]/edit', function($request, $
     ))->send();
 });
 
-$klein->respond('GET', '/admin/node/locations/[i:id]/delete', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/admin/node/locations/[i:id]/delete', function($request, $response, $service) use($core) {
 
     $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
     if (!$location) {
@@ -182,7 +182,7 @@ $klein->respond('GET', '/admin/node/locations/[i:id]/delete', function($request,
 });
 
 
-$klein->respond('POST', '/admin/node/locations/[i:id]/edit', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/locations/[i:id]/edit', function($request, $response, $service) use($core) {
 
     $location = ORM::forTable('locations')->findOne((int) $request->param('id'));
     if (!$location) {
@@ -208,7 +208,7 @@ $klein->respond('POST', '/admin/node/locations/[i:id]/edit', function($request, 
     return;
 });
 
-$klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/node/view/[i:id]', function($request, $response, $service) use ($core) {
 
     $node = ORM::forTable('nodes')->findOne($request->param('id'));
 
@@ -230,7 +230,7 @@ $klein->respond('GET', '/admin/node/view/[i:id]', function($request, $response, 
     ))->send();
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/view/[i:id]/settings', function($request, $response, $service) use($core) {
 
     if (!preg_match('/^[\w.-]{1,15}$/', $request->param('name'))) {
 
@@ -278,7 +278,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
     }
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/generate-autodeploy', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/view/[i:id]/generate-autodeploy', function($request, $response, $service) use($core) {
 
     $node = ORM::forTable('nodes')->findOne($request->param('id'));
 
@@ -301,7 +301,7 @@ $klein->respond('POST', '/admin/node/view/[i:id]/generate-autodeploy', function(
     return;
 });
 
-$klein->respond('POST', '/admin/node/view/[i:id]/delete', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/node/view/[i:id]/delete', function($request, $response, $service) use($core) {
 
     $node = ORM::forTable('nodes')->findOne($request->param('id'));
 

@@ -20,7 +20,7 @@ namespace PufferPanel\Core;
 use \ORM, \Otp\GoogleAuthenticator;
 
 
-$klein->respond('POST', '/ajax/account/totp', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/ajax/account/totp', function($request, $response) use ($core) {
 
 	/*
 	* Generate the TOTP Token
@@ -54,7 +54,7 @@ $klein->respond('POST', '/ajax/account/totp', function($request, $response) use 
 
 });
 
-$klein->respond('POST', '/ajax/account/totp/verify', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/ajax/account/totp/verify', function($request, $response) use ($core) {
 
 	// Responding with body rather than a flash since this is an AJAX request.
 	if(!$core->auth->XSRF($request->param('xsrf'))) {

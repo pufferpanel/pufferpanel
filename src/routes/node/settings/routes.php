@@ -18,7 +18,7 @@
 */
 namespace PufferPanel\Core;
 
-$klein->respond('GET', '/node/settings', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/node/settings', function($request, $response, $service) use ($core) {
 
 	if(!$core->permissions->has('manage.view')) {
 
@@ -37,7 +37,7 @@ $klein->respond('GET', '/node/settings', function($request, $response, $service)
 
 });
 
-$klein->respond('POST', '/node/settings/password', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/node/settings/password', function($request, $response) use ($core) {
 
 	$response->body($core->auth->keygen(rand(6, 10))."-".$core->auth->keygen(rand(6, 14)));
 

@@ -18,7 +18,7 @@
 */
 namespace PufferPanel\Core;
 
-$klein->respond('GET', '/assets/[:type]/[*:file]', function($request, $response) {
+$klein->respond('GET', BASE_URL.'/assets/[:type]/[*:file]', function($request, $response) {
 
 	$file = APP_DIR.'assets/'.$request->param('type').'/'.$request->param('file');
 

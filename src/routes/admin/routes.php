@@ -18,13 +18,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 namespace PufferPanel\Core;
 
-$klein->respond('GET', '/admin/index', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/index', function($request, $response) use ($core) {
 
 	$response->body($core->twig->render('admin/index.html'));
 
 });
 
-$klein->respond('GET', '/admin/passgen/[i:count]?', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/passgen/[i:count]?', function($request, $response) use ($core) {
 
 	if(!$request->param('count')) {
 
