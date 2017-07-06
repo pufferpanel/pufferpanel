@@ -34,7 +34,7 @@
 {% block javascript %}
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#sidebar_links").find("a[href='/admin/account']").addClass('active');
+	$("#sidebar_links").find("a[href='{{basePath}}/admin/account']").addClass('active');
 });
 </script>
 {% endblock %}
