@@ -232,8 +232,7 @@ $klein->respond('GET', BASE_URL.'/language/[:language]', function($request, $res
 
         $response->cookie("pp_language", $request->param('language'), time() + 2678400);
     }
-
-    $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : '/index');
+    $response->redirect(($request->server()["HTTP_REFERER"]) ? $request->server()["HTTP_REFERER"] : BASE_URL.'/index');
 });
 
 $klein->respond('GET', BASE_URL.'/totp', function($request, $response, $service) use($core) {
