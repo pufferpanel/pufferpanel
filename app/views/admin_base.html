@@ -5,16 +5,16 @@
 		{% block scripts %}
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<link rel="icon" href="/assets/favicon.ico" />
-			<link rel="stylesheet" href="/assets/css/bootstrap.css">
-			<link rel="stylesheet" href="/assets/css/pufferpanel.css">
-			<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+			<link rel="icon" href="{{basePath}}/assets/favicon.ico" />
+			<link rel="stylesheet" href="{{basePath}}/assets/css/bootstrap.css">
+			<link rel="stylesheet" href="{{basePath}}/assets/css/pufferpanel.css">
+			<link rel="stylesheet" href="{{basePath}}//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 			<script src="/assets/javascript/jquery-ui.min.js"></script>
 			<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
 			<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-			<script src="/assets/javascript/admin.min.js"></script>
-			<script src="/assets/javascript/bootstrap-notify.min.js"></script>
+			<script src="{{basePath}}/assets/javascript/admin.min.js"></script>
+			<script src="{{basePath}}/assets/javascript/bootstrap-notify.min.js"></script>
 		{% endblock %}
 		<title>{{ settings.company_name }} Admin Control Panel - {% block title %}{% endblock %}</title>
 	{% endblock %}
@@ -28,7 +28,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/index">{{ settings.company_name }}</a>
+				<a class="navbar-brand" href="{{basePath}}/index">{{ settings.company_name }}</a>
 			</div>
 			<div class="navbar-collapse collapse navbar-responsive-collapse">
 				<ul class="nav navbar-nav hidden-md hidden-lg">
@@ -36,32 +36,32 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/admin/settings/global">Global Settings</a></li>
-							<li><a href="/admin/settings/urls">URL Settings</a></li>
-							<li><a href="/admin/settings/email">Email Settings</a></li>
-							<li><a href="/admin/settings/captcha">Captcha Settings</a></li>
+							<li><a href="{{basePath}}/admin/settings/global">Global Settings</a></li>
+							<li><a href="{{basePath}}/admin/settings/urls">URL Settings</a></li>
+							<li><a href="{{basePath}}/admin/settings/email">Email Settings</a></li>
+							<li><a href="{{basePath}}/admin/settings/captcha">Captcha Settings</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/admin/account">Find Account</a></li>
-							<li><a href="/admin/account/new">New Account</a></li>
+							<li><a href="{{basePath}}/admin/account">Find Account</a></li>
+							<li><a href="{{basePath}}/admin/account/new">New Account</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Server Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/admin/server">Find Server</a></li>
-							<li><a href="/admin/server/new">New Server</a></li>
+							<li><a href="{{basePath}}/admin/server">Find Server</a></li>
+							<li><a href="{{basePath}}/admin/server/new">New Server</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Node Management <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/admin/node">List Nodes</a></li>
-							<li><a href="/admin/node/new">Add Node</a></li>
-							<li><a href="/admin/node/locations">Manage Locations</a></li>
+							<li><a href="{{basePath}}/admin/node">List Nodes</a></li>
+							<li><a href="{{basePath}}/admin/node/new">Add Node</a></li>
+							<li><a href="{{basePath}}/admin/node/locations">Manage Locations</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -69,63 +69,63 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/language/en_US">English (US)</a></li>
-							<li><a href="/language/ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a></li>
-							<li><a href="/language/cs">Czech</a></li>
-							<li><a href="/language/de">Deutsch</a></li>
-							<li><a href="/language/en_GB">English (GB)</a></li>
-							<li><a href="/language/es">Espa&ntilde;ol</a></li>
-							<li><a href="/language/fr_FR">Fran&ccedil;ais (France)</a></li>
-							<li><a href="/language/hu">Hungarian</a></li>
-							<li><a href="/language/id_ID">Indonesian (Indonesia)</a></li>
-							<li><a href="/language/it">Italiano</a></li>
-							<li><a href="/language/ja">&#26085;&#26412;&#35486;</a></li>
-							<li><a href="/language/nl">Nederlands</a></li>
-							<li><a href="/language/nl_NL">Nederlands (Nederland)</a></li>
-							<li><a href="/language/pl">Polski</a></li>
-							<li><a href="/language/pt">Portugu&ecirc;s</a></li>
-							<li><a href="/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
-							<li><a href="/language/ru_RU">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081; (&#1056;&#1086;&#1089;&#1089;&#1080;&#1103;)</a></li>
-							<li><a href="/language/sv_SE">Svenska</a></li>
-							<li><a href="/language/yue">&#31908;&#35821;</a></li>
-							<li><a href="/language/zh_CN">&#20013;&#25991;&#65288;&#20013;&#22269;&#65289;</a></li>
-							<li><a href="/language/zh_HK">&#20013;&#25991;&#65288;&#39321;&#28207;&#65289;</a></li>
+							<li><a href="{{basePath}}/language/en_US">English (US)</a></li>
+							<li><a href="{{basePath}}/language/ar">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a></li>
+							<li><a href="{{basePath}}/language/cs">Czech</a></li>
+							<li><a href="{{basePath}}/language/de">Deutsch</a></li>
+							<li><a href="{{basePath}}/language/en_GB">English (GB)</a></li>
+							<li><a href="{{basePath}}/language/es">Espa&ntilde;ol</a></li>
+							<li><a href="{{basePath}}/language/fr_FR">Fran&ccedil;ais (France)</a></li>
+							<li><a href="{{basePath}}/language/hu">Hungarian</a></li>
+							<li><a href="{{basePath}}/language/id_ID">Indonesian (Indonesia)</a></li>
+							<li><a href="{{basePath}}/language/it">Italiano</a></li>
+							<li><a href="{{basePath}}/language/ja">&#26085;&#26412;&#35486;</a></li>
+							<li><a href="{{basePath}}/language/nl">Nederlands</a></li>
+							<li><a href="{{basePath}}/language/nl_NL">Nederlands (Nederland)</a></li>
+							<li><a href="{{basePath}}/language/pl">Polski</a></li>
+							<li><a href="{{basePath}}/language/pt">Portugu&ecirc;s</a></li>
+							<li><a href="{{basePath}}/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
+							<li><a href="{{basePath}}/language/ru_RU">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081; (&#1056;&#1086;&#1089;&#1089;&#1080;&#1103;)</a></li>
+							<li><a href="{{basePath}}/language/sv_SE">Svenska</a></li>
+							<li><a href="{{basePath}}/language/yue">&#31908;&#35821;</a></li>
+							<li><a href="{{basePath}}/language/zh_CN">&#20013;&#25991;&#65288;&#20013;&#22269;&#65289;</a></li>
+							<li><a href="{{basePath}}/language/zh_HK">&#20013;&#25991;&#65288;&#39321;&#28207;&#65289;</a></li>
 						</ul>
 					</li>
-					<li class="hidden-xs hidden-sm"><a href="/index"><i class="fa fa-list-alt"></i></a></li>
-					<li class="hidden-xs hidden-sm"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
-					<li class="hidden-md hidden-lg"><a href="/index">Server List</a></li>
-					<li class="hidden-md hidden-lg"><a href="/auth/logout">Logout</a></li>
+					<li class="hidden-xs hidden-sm"><a href="{{basePath}}/index"><i class="fa fa-list-alt"></i></a></li>
+					<li class="hidden-xs hidden-sm"><a href="{{basePath}}/auth/logout"><i class="fa fa-power-off"></i></a></li>
+					<li class="hidden-md hidden-lg"><a href="{{basePath}}/index">Server List</a></li>
+					<li class="hidden-md hidden-lg"><a href="{{basePath}}/auth/logout">Logout</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
 				<div class="list-group">
-					<a href="/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
+					<a href="{{basePath}}/admin/index" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-					<a href="/admin/settings/global" class="list-group-item">Global Settings</a>
-					<a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
-					<a href="/admin/settings/email" class="list-group-item">Email Settings</a>
-					<a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
+					<a href="{{basePath}}/admin/settings/global" class="list-group-item">Global Settings</a>
+					<a href="{{basePath}}/admin/settings/urls" class="list-group-item">URL Settings</a>
+					<a href="{{basePath}}/admin/settings/email" class="list-group-item">Email Settings</a>
+					<a href="{{basePath}}/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-					<a href="/admin/account" class="list-group-item">Find Account</a>
-					<a href="/admin/account/new" class="list-group-item">New Account</a>
+					<a href="{{basePath}}/admin/account" class="list-group-item">Find Account</a>
+					<a href="{{basePath}}/admin/account/new" class="list-group-item">New Account</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>
-					<a href="/admin/server" class="list-group-item">Find Server</a>
-					<a href="/admin/server/new" class="list-group-item">New Server</a>
+					<a href="{{basePath}}/admin/server" class="list-group-item">Find Server</a>
+					<a href="{{basePath}}/admin/server/new" class="list-group-item">New Server</a>
 				</div>
 				<div class="list-group">
 					<a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-					<a href="/admin/node" class="list-group-item">List Nodes</a>
-					<a href="/admin/node/new" class="list-group-item">Add Node</a>
-					<a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
+					<a href="{{basePath}}/admin/node" class="list-group-item">List Nodes</a>
+					<a href="{{basePath}}/admin/node/new" class="list-group-item">Add Node</a>
+					<a href="{{basePath}}/admin/node/locations" class="list-group-item">Manage Locations</a>
 				</div>
 			</div>
 			{% block content %}{% endblock %}

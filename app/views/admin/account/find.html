@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
 		<li class="active">Accounts</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -22,7 +22,7 @@
 		<tbody>
 			{% for user in users %}
 				<tr>
-					<td><a href="/admin/account/view/{{ user.id }}">{% if user.username != null %}{{ user.username }}{% else %}[ unregistered subuser ]{% endif %}</a> {% if user.root_admin == 1 %}<span class="badge">Administrator</span>{% endif %}</td>
+					<td><a href="{{basePath}}/admin/account/view/{{ user.id }}">{% if user.username != null %}{{ user.username }}{% else %}[ unregistered subuser ]{% endif %}</a> {% if user.root_admin == 1 %}<span class="badge">Administrator</span>{% endif %}</td>
 					<td>{{ user.email }}</td>
 				</tr>
 			{% endfor %}

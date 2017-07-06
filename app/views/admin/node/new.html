@@ -5,8 +5,8 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/node">Nodes</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/node">Nodes</a></li>
 		<li class="active">Add New Node</li>
 	</ul>
 	{% if flash.info is defined %}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
 		<li class="active">Nodes</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -48,7 +48,7 @@
 			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 			$.ajax({
 				type: "POST",
-				url: "/ajax/status/node",
+				url: "{{basePath}}/ajax/status/node",
 				data: { node: connection }
 			}).done(function(data) {
 				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");

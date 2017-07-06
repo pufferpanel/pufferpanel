@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
 		<li class="active">Servers</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -27,11 +27,11 @@
 			<tbody>
 				{% for server in servers %}
 					<tr class="dynUpdate" id="{{ server.hash }}">
-						<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+						<td><a href="{{basePath}}/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
 						<td><a href="server/view/{{ server.id }}">{{ server.name }}</a></td>
-						<td><a href="/admin/node/view/{{ server.node }}">{{ server.node_name }}</a></td>
+						<td><a href="{{basePath}}/admin/node/view/{{ server.node }}">{{ server.node_name }}</a></td>
 						<td><code>{{ server.connection }}</code></td>
-						<td><a href="/admin/account/view/{{ server.owner_id }}">{{ server.user_email }}</a></td>
+						<td><a href="{{basePath}}/admin/account/view/{{ server.owner_id }}">{{ server.user_email }}</a></td>
 						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
 					</tr>
 				{% endfor %}
@@ -49,7 +49,7 @@ $(document).ready(function(){
 			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 			$.ajax({
 				type: "POST",
-				url: "/ajax/status",
+				url: "{{basePath}}/ajax/status",
 				data: { server: connection }
 			}).done(function(data) {
 				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");

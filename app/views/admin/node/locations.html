@@ -5,8 +5,8 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/node">Nodes</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/node">Nodes</a></li>
 		<li class="active">Manage Locations</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -31,8 +31,8 @@
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalnodes }}{% endif %}</td>
 				<td>{% if location.totalnodes == null %}0{% else %}{{ location.totalservers }}{% endif %}</td>
 				<td style="text-align:center;">
-					<a href="/admin/node/locations/{{ location.id }}/edit" class="edit_location"><span class="badge">Edit</span></a>
-					<a href="/admin/node/locations/{{ location.id }}/delete"><span class="badge label-danger">Delete</span></a>
+					<a href="{{basePath}}/admin/node/locations/{{ location.id }}/edit" class="edit_location"><span class="badge">Edit</span></a>
+					<a href="{{basePath}}/admin/node/locations/{{ location.id }}/delete"><span class="badge label-danger">Delete</span></a>
 				</td>
 			</tr>
 			{% endfor %}

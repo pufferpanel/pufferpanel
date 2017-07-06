@@ -7,7 +7,7 @@
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="/node/users/edit" method="post">
+	<form action="{{basePath}}/node/users/edit" method="post">
 		<h3 class="nopad">Viewing Permissions for: {{ user.email }}</h3><hr />
 		<div class="list-group">
 			<a href="#" class="list-group-item">
@@ -95,7 +95,7 @@
 				{{ xsrf|raw }}
 				<input type="hidden" name="user_id" value="{{ user.user_id }}" />
 				<input type="submit" value="Update Permissions" class="btn btn-primary btn-sm" />
-				<a href="/node/users/revoke/{{ user.email }}"><button class="btn btn-sm btn-danger" type="button"/>Delete User</button></a>
+				<a href="{{basePath}}/node/users/revoke/{{ user.email }}"><button class="btn btn-sm btn-danger" type="button"{{basePath}}/>Delete User</button></a>
 			</div>
 		</div>
 	</form>

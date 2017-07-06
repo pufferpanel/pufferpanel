@@ -14,7 +14,7 @@
 	{% endif %}
 	{% if servers[0]|length > 0 %}
 		<!--<div class="text-right">
-			<a href="/bulkcmd" class="btn btn-primary btn-xs">Bulk Command Sender</a>
+			<a href="{{basePath}}/bulkcmd" class="btn btn-primary btn-xs">Bulk Command Sender</a>
 		</div>-->
 
 		<hr>
@@ -34,7 +34,7 @@
 				{% for server in servers %}
 					<tr class="dynUpdate" id="{{ server.hash }}">
 						{% if user.root_admin == 1 %}<td style="width:26px;">{% if server.owner_id == user.id %}<i class="fa fa-circle" style="color:#008cba;"></i>{% else %}<i class="fa fa-circle" style="color:#ddd;"></i>{% endif %}</td>{% endif %}
-						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
+						<td><a href="{{basePath}}/index/{{ server.hash }}">{{ server.name }}</a></td>
 						<td>{{ server.location }}</td>
 						<td>{{ server.node_name }}</td>
 						<td><code>{{ server.connection }}</code></td>
@@ -59,7 +59,7 @@ $(window).load(function() {
 			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 			$.ajax({
 				type: "POST",
-				url: "/ajax/status",
+				url: "{{basePath}}/ajax/status",
 				data: { server: connection }
 			}).done(function(data) {
 				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");

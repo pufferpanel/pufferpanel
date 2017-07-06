@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="col-md-6">
-	<form action="/auth/register" method="POST" id="login-form">
+	<form action="{{basePath}}/auth/register" method="POST" id="login-form">
 		<legend>Create Account</legend>
 		<fieldset>
 			{% if flash.info is defined %}

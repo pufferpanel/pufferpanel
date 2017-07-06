@@ -7,7 +7,7 @@
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
 	{% endif %}
-	<form action="/node/users/add" method="post">
+	<form action="{{basePath}}/node/users/add" method="post">
 		<h3 class="nopad">Permissions</h3>
 		<div class="list-group">
 			<a href="#" class="list-group-item">
@@ -16,79 +16,79 @@
 				<div class="row" style="margin-top:10px;">
 					<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 					<div class="col-md-11 col-sm-11 col-xs-11">
-						<label><input type="checkbox" name="permissions[]" value="console.commands"/> Send Commands</label>
+						<label><input type="checkbox" name="permissions[]" value="console.commands"{{basePath}}/> Send Commands</label>
 						<p class="list-group-item-text">Gives user permission to send commands to the server from the page.</p>
 					</div>
 				</div>
 				<div class="row" style="margin-top:10px;">
 					<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 					<div class="col-md-11 col-sm-11 col-xs-11">
-						<label><input type="checkbox" name="permissions[]" value="console.power"/> Control Power</label>
+						<label><input type="checkbox" name="permissions[]" value="console.power"{{basePath}}/> Control Power</label>
 						<p class="list-group-item-text">Gives user permission to start, stop, or restart the server.</p>
 					</div>
 				</div>
 			</a>
 			<a href="#" class="list-group-item">
-				<label><input id="toggle_files" type="checkbox" name="permissions[]" value="files.view"/> View Files</label>
+				<label><input id="toggle_files" type="checkbox" name="permissions[]" value="files.view"{{basePath}}/> View Files</label>
 				<p class="list-group-item-text">Gives user permission to view the file listing.</p>
 				<span id="toggle_files_list" style="display:none;">
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.edit"/> Edit File</label>
+							<label><input type="checkbox" name="permissions[]" value="files.edit"{{basePath}}/> Edit File</label>
 							<p class="list-group-item-text">Gives user permission to open a file for editing.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.save"/> Save Modifications</label>
+							<label><input type="checkbox" name="permissions[]" value="files.save"{{basePath}}/> Save Modifications</label>
 							<p class="list-group-item-text">Gives user permission to save a modified version of a file.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.download"/> Download Files</label>
+							<label><input type="checkbox" name="permissions[]" value="files.download"{{basePath}}/> Download Files</label>
 							<p class="list-group-item-text">Gives user permission to download files from the server.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.zip"/> Compress and Decompress Files</label>
+							<label><input type="checkbox" name="permissions[]" value="files.zip"{{basePath}}/> Compress and Decompress Files</label>
 							<p class="list-group-item-text">Gives user permission to unzip or untar files on the server as well as compress existing folders.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.create"/> Create Files</label>
+							<label><input type="checkbox" name="permissions[]" value="files.create"{{basePath}}/> Create Files</label>
 							<p class="list-group-item-text">Gives user permission to create files on the server.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.upload"/> Upload Files</label>
+							<label><input type="checkbox" name="permissions[]" value="files.upload"{{basePath}}/> Upload Files</label>
 							<p class="list-group-item-text">Gives user permission to upload files to the server.</p>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">
 						<div class="col-md-1 col-sm-1 col-xs-1"><br /><br /></div>
 						<div class="col-md-11 col-sm-11 col-xs-11">
-							<label><input type="checkbox" name="permissions[]" value="files.delete"/> Delete Files <span class="label label-danger">Danger</span></label>
+							<label><input type="checkbox" name="permissions[]" value="files.delete"{{basePath}}/> Delete Files <span class="label label-danger">Danger</span></label>
 							<p class="list-group-item-text">Gives user permission to delete files on the server.</p>
 						</div>
 					</div>
 				</span>
 			</a>
 			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="manage.oauth2"/> OAuth2 Access</label>
+				<label><input type="checkbox" name="permissions[]" value="manage.oauth2"{{basePath}}/> OAuth2 Access</label>
 				<p class="list-group-item-text">Gives user permission to create their own API credentials</p>
 			</a>
 			<a href="#" class="list-group-item">
-				<label><input type="checkbox" name="permissions[]" value="sftp"/> SFTP</label>
+				<label><input type="checkbox" name="permissions[]" value="sftp"{{basePath}}/> SFTP</label>
 				<p class="list-group-item-text">Gives user permission to access the server using SFTP</p>
 			</a>
 		</div>

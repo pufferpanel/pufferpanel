@@ -5,8 +5,8 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/server">Servers</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/server">Servers</a></li>
 		<li class="active">{{ server.name }}</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -17,7 +17,7 @@
 			<li class="active"><a href="#server_sett" data-toggle="tab">Settings</a></li>
 			<li><a href="#delete" data-toggle="tab">Delete</a></li>
 			<li><a href="#edit" data-toggle="tab">Edit</a></li>
-			<li><a href="/index/{{ server.hash }}">Server Control</a></li>
+			<li><a href="{{basePath}}/index/{{ server.hash }}">Server Control</a></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="server_sett">
