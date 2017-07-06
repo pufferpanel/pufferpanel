@@ -111,7 +111,7 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', funct
 
 	if(!$core->auth->isLoggedIn()) {
 
-		if(!strpos($request->pathname(), "/{{basePath}}/ajax/")) {
+		if(!strpos($request->pathname(), "{{basePath}}/ajax/")) {
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 			$response->redirect('/auth/login');
@@ -134,7 +134,7 @@ $klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $
 
 		// Redirect /auth/* requests to /index if they are logged in
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
-		if(0 !== strpos($request->pathname(), "/{{basePath}}/auth/logout") && 0 !== strpos($request->pathname(), "/{{basePath}}/auth/remote/")) {
+		if(0 !== strpos($request->pathname(), "{{basePath}}/auth/logout") && 0 !== strpos($request->pathname(), "{{basePath}}/auth/remote/")) {
 			$response->redirect('/index');
 		}
 
