@@ -25,15 +25,21 @@ if(!ini_get('date.timezone')) {
 	date_default_timezone_set('UTC');
 }
 
-define('BASE_DIR', dirname(__DIR__).'/');
+$baseDir = str_replace('\\', '/', dirname(__FILE__).'/');
+if (!file_exists($baseDir.'pufferpanel')) {
+    $baseUrl = dirname($_SERVER['PHP_SELF']);
+    $baseDir = str_replace('\\', '/', rtrim(dirname(dirname(dirname(__FILE__))), '\\/') . '/pufferpanel' . '/');
+}
+
+define('BASE_DIR', $baseDir);
 define('APP_DIR', BASE_DIR.'app/');
 define('PANEL_DIR', BASE_DIR.'panel/');
 define('SRC_DIR', BASE_DIR.'src/');
+define('BASE_URL', isset($baseUrl) ? $baseUrl : null);
 
 require_once SRC_DIR.'core/autoloader.php';
 
 $logsDir = Config::config('logsDirectory');
-
 if ($logsDir == null) {
     $logsDir = BASE_DIR.'/logs';
 }
@@ -79,15 +85,15 @@ ORM::configure(array(
 $core = new stdClass();
 $klein = new Klein();
 
-$core->auth = new Authentication();
-$core->user = new User();
-$core->server = new Server();
-$core->email = new Email();
-$core->log = new Log();
-$core->daemon = new Daemon();
-$core->files = new Files();
-$core->twig = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR.'views/'));
-$core->language = new Language();
+$core->auth        = new Authentication();
+$core->user        = new User();
+$core->server      = new Server();
+$core->email       = new Email();
+$core->log         = new Log();
+$core->daemon      = new Daemon();
+$core->files       = new Files();
+$core->twig        = new Twig_Environment(new Twig_Loader_Filesystem(APP_DIR . 'views/'));
+$core->language    = new Language();
 $core->permissions = new Permissions($core->server->getData('id'));
 
 /*
@@ -99,12 +105,13 @@ $core->twig->addGlobal('permission', $core->permissions);
 $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/current')));
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
+$core->twig->addGlobal('basePath', BASE_URL);
 
 $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
-		if(!strpos($request->pathname(), "/ajax/")) {
+		if(!strpos($request->pathname(), "/{{basePath}}/ajax/")) {
 
 			$service->flash('<div class="alert alert-danger">You must be logged in to access that page.</div>');
 			$response->redirect('/auth/login');
@@ -127,7 +134,7 @@ $klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $
 
 		// Redirect /auth/* requests to /index if they are logged in
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
-		if(0 !== strpos($request->pathname(), "/auth/logout") && 0 !== strpos($request->pathname(), "/auth/remote/")) {
+		if(0 !== strpos($request->pathname(), "/{{basePath}}/auth/logout") && 0 !== strpos($request->pathname(), "/{{basePath}}/auth/remote/")) {
 			$response->redirect('/index');
 		}
 
