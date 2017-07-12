@@ -196,3 +196,14 @@ DELIMITER ;
 DELIMITER //
 CREATE TRIGGER `subusers_before_delete` BEFORE DELETE ON `subusers` FOR EACH ROW DELETE FROM oauth_clients WHERE oauth_clients.user_id = OLD.user AND oauth_clients.server_id = OLD.server//
 DELIMITER ;
+
+INSERT INTO acp_settings (setting_ref, setting_val) VALUES
+            ('company_name', 'PufferPanel'),
+            ('transport_token', NULL),
+            ('transport_email', NULL),
+            ('transport_method','php'),
+            ('captcha_pub',NULL),
+            ('captcha_priv',NULL),
+            ('default_language', 'en_US'),
+            ('https', 0),
+            ('allow_subusers', 0) ON DUPLICATE KEY UPDATE setting_val = VALUES(setting_val)
