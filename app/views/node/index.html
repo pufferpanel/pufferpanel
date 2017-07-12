@@ -273,7 +273,7 @@
         $.ajax({
             type: "GET",
             url: '/daemon/server/{{ server.hash }}/stats',
-            timeout: 1000
+            timeout: 500
         }).done(function (data) {
             memoryChart.removeData();
             cpuChart.removeData();
@@ -301,7 +301,7 @@
         $.ajax({
             type: "GET",
             url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
-            timeout: 1000
+            timeout: 5000
         }).done(function (event) {
             var data = event.data;
             $epoch = data.epoch;
