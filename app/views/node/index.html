@@ -245,86 +245,86 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(".deleteOauth").click(function () {
-        if (confirm("Are you sure you want to delete this token?")) {
-            console.log($(this).attr("data-clientid"));
-            $id = $(this).attr("data-clientid");
-            $.ajax({
-                url: "/node/oauth/" + $id,
-                method: "DELETE"
-            }).done(function () {
-                $('#oauth_' + $id).remove();
-            }).fail(function () {
-                $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
-            });
-        }
-    });
-
-    function fallbackToStatic() {
-        setInterval(getLogs, 1000);
-    }
-
-    $isStatPinging = false;
-    function pingStats() {
-        if ($isStatPinging) {
-            return;
-        }
-        $isStatPinging = true;
-        $.ajax({
-            type: "GET",
-            url: '/daemon/server/{{ server.hash }}/stats',
-            timeout: 500
-        }).done(function (data) {
-            memoryChart.removeData();
-            cpuChart.removeData();
-            if (!data.success) {
-                memoryChart.addData(0, "");
-                cpuChart.addData(0, "");
-            } else {
-                memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
-                cpuChart.addData([parseInt(data.data.cpu)], "");
+	$(window).load(function(){
+        $(".deleteOauth").click(function () {
+            if (confirm("Are you sure you want to delete this token?")) {
+                console.log($(this).attr("data-clientid"));
+                $id = $(this).attr("data-clientid");
+                $.ajax({
+                    url: "/node/oauth/" + $id,
+                    method: "DELETE"
+                }).done(function () {
+                    $('#oauth_' + $id).remove();
+                }).fail(function () {
+                    $("#sc_resp").html('Error deleting credentials').fadeIn().delay(5000).fadeOut();
+                });
             }
-            $isStatPinging = false;
-        }).fail(function () {
-            memoryChart.addData(0, "");
-            cpuChart.addData(0, "");
-            $isStatPinging = false;
         });
-    }
 
-    $isLogPinging = false;
-    function getLogs() {
-        if (!$("#console").hasClass("active") || $isLogPinging) {
-            return;
+        function fallbackToStatic() {
+            setInterval(getLogs, 1000);
         }
-        $isLogPinging = true;
-        $.ajax({
-            type: "GET",
-            url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
-            timeout: 5000
-        }).done(function (event) {
-            var data = event.data;
-            $epoch = data.epoch;
-            var data = data.logs;
-            if (data === 'undefined') {
+
+        var $isStatPinging = false;
+        function pingStats() {
+            if ($isStatPinging) {
                 return;
             }
-            var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-            if (total.length > 750) {
-                total = total.slice(total.length - 750);
-            }
-            $("#live_console").val(total.join("\n"));
-            $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
-            $isLogPinging = false;
-        }).fail(function () {
-            $isLogPinging = false;
-        });
-    }
+            $isStatPinging = true;
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/stats',
+                timeout: 500
+            }).done(function (data) {
+                memoryChart.removeData();
+                cpuChart.removeData();
+                if (!data.success) {
+                    memoryChart.addData(0, "");
+                    cpuChart.addData(0, "");
+                } else {
+                    memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
+                    cpuChart.addData([parseInt(data.data.cpu)], "");
+                }
+                $isStatPinging = false;
+            }).fail(function () {
+                memoryChart.addData(0, "");
+                cpuChart.addData(0, "");
+                $isStatPinging = false;
+            });
+        }
 
-	$(window).load(function(){
-                $epoch = 0;
+        var $isLogPinging = false;
+        function getLogs() {
+            if (!$("#console").hasClass("active") || $isLogPinging) {
+                return;
+            }
+            $isLogPinging = true;
+            $.ajax({
+                type: "GET",
+                url: '/daemon/server/{{ server.hash }}/logs?time=' + $epoch,
+                timeout: 5000
+            }).done(function (event) {
+                var data = event.data;
+                $epoch = data.epoch;
+                var data = data.logs;
+                if (data === 'undefined') {
+                    return;
+                }
+                var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+                if (total.length > 750) {
+                    total = total.slice(total.length - 750);
+                }
+                $("#live_console").val(total.join("\n"));
+                $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                $isLogPinging = false;
+            }).fail(function () {
+                $isLogPinging = false;
+            });
+        }
+
+        var $epoch = 0;
 		$("#sidebar_links").find("a[href='/node/index']").addClass('active');
-                socket = {
+                var socket = {
                     onmessage: function(event) {}
                 };
                 try {
@@ -335,7 +335,7 @@
                     fallbackToStatic();
                 }
                 socket.onmessage = function (event) {
-                    data = event.data;
+                    var data = event.data;
                     if (data === 'undefined') {
                         return;
                     }
@@ -380,7 +380,7 @@
 				data: Array.apply(null, Array(chartSize)).map(Number.prototype.valueOf,0)
 			}]
 		};
-		memoryChart = new Chart(ctx).Bar(memoryChartData, {
+		var memoryChart = new Chart(ctx).Bar(memoryChartData, {
 			animation: false,
 			showScale: true,
 			barShowStroke: false,
@@ -390,7 +390,7 @@
 			barStrokeWidth: 1,
 			scaleShowGridLines: false
 		});
-		cpuChart = new Chart(cty).Bar(cpuChartData, {
+		var cpuChart = new Chart(cty).Bar(cpuChartData, {
 			animation: false,
 			showScale: true,
 			barShowStroke: false,
