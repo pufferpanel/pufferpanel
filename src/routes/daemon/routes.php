@@ -138,11 +138,13 @@ $klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $resp
         handleProxy($updatedUrl, $header, $request, $response);
     } catch (\Exception $ex) {
         $response->code(500)->json(array(
-                'error' => $ex->getMessage()
+                'success' => false,
+                'msg' => $ex->getMessage()
             ));
     } catch (\Throwable $ex) {
         $response->code(500)->json(array(
-            'error' => $ex->getMessage()
+                'success' => false,
+                'msg' => $ex->getMessage()
         ));
     }
 });
