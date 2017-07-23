@@ -175,11 +175,16 @@ $klein->respond(function($request, $response) {
 
 $klein->onHttpError(function($code, $klein) use ($core) {
 
+    $request = $klein->request();
     $response = $klein->response();
+
+    if(0 !== strpos($request->pathname(), "/daemon/") && 0 !== strpos($request->pathname(), "/daemon/")) {
+        return;
+    }
 
     switch($code) {
         case '404': {
-            if($klein->request()->method('get')) {
+            if($request->method('get')) {
                 $response->body($core->twig->render('errors/404.html'));
             }
         }
