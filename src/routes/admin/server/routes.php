@@ -25,7 +25,7 @@ use \ORM,
     \Tracy\Debugger,
     \Unirest\Request;
 
-$klein->respond('GET', '/admin/server', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/server', function($request, $response, $service) use ($core) {
 
     $servers = ORM::forTable('servers')->select('servers.*')->select('nodes.name', 'node_name')->select('users.email', 'user_email')
             ->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')
@@ -106,7 +106,7 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
     }
 });
 
-$klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
     $response->body($core->twig->render('admin/server/view.html', array(
         'flash' => $service->flashes(),
         'node' => $core->server->nodeData(),
@@ -115,7 +115,7 @@ $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response
     ));
 });
 
-$klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/server/view/[i:id]/delete/[:force]?', function($request, $response, $service) use ($core) {
 
     // Start Transaction so if the daemon errors we can rollback changes
     $bearer = OAuthService::Get()->getPanelAccessToken();
@@ -171,7 +171,7 @@ $klein->respond('POST', '/admin/server/view/[i:id]/delete/[:force]?', function($
     $response->redirect('/admin/server');
 });
 
-$klein->respond('GET', '/admin/server/new', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/server/new', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('admin/server/new.html', array(
         'locations' => ORM::forTable('locations')->findMany(),
@@ -179,7 +179,7 @@ $klein->respond('GET', '/admin/server/new', function($request, $response, $servi
     ));
 });
 
-$klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/server/accounts/[:email]', function($request, $response) use ($core) {
 
     $select = ORM::forTable('users')->where_raw('email LIKE ? OR username LIKE ?', array('%' . $request->param('email') . '%', '%' . $request->param('email') . '%'))->findMany();
 
@@ -196,7 +196,7 @@ $klein->respond('GET', '/admin/server/accounts/[:email]', function($request, $re
     $response->json(array('accounts' => $resp));
 });
 
-$klein->respond('POST', '/admin/server/new', function($request, $response, $service) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/server/new', function($request, $response, $service) use($core) {
 
     setcookie('__temporary_pp_admin_newserver', base64_encode(json_encode($_POST)), time() + 60);
     $bearer = OAuthService::Get()->getPanelAccessToken();
@@ -320,14 +320,14 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     }
 });
 
-$klein->respond('POST', '/admin/server/new/node-list', function($request, $response) use($core) {
+$klein->respond('POST', BASE_URL.'/admin/server/new/node-list', function($request, $response) use($core) {
 
     $response->body($core->twig->render('admin/server/node-list.html', array(
                 'nodes' => ORM::forTable('nodes')->where('location', $request->param('location'))->findMany()
     )));
 });
 
-$klein->respond('GET', '/admin/server/new/plugins', function($request, $response) {
+$klein->respond('GET', BASE_URL.'/admin/server/new/plugins', function($request, $response) {
 
     $node = ORM::forTable('nodes')->findOne($request->param('node'));
 

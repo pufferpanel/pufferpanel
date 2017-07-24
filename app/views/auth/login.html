@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="col-md-6">
-   	<form action="/auth/login" method="POST" id="login-form">
+   	<form action="{{basePath}}/auth/login" method="POST" id="login-form">
     	<legend>{{ l.render('login.login_h1') }}</legend>
     	<fieldset>
             {% if flash.info is defined %}
@@ -42,7 +42,7 @@
 </div>
 <div class="modal fade" id="openTOTP" tabindex="-1" role="dialog">
 	<div class="modal-dialog" style="width:400px;">
-		<form action="/auth/login" method="POST" id="totp-form">
+		<form action="{{basePath}}/auth/login" method="POST" id="totp-form">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title">Two-Factor Authentication Checkpoint</h4>
@@ -69,7 +69,7 @@ $(document).ready(function(){
 		var check_email = $("#email").val();
 		$.ajax({
 			type: "POST",
-			url: "/auth/login/totp",
+			url: "{{basePath}}/auth/login/totp",
 			async: false,
 			data: { check: check_email },
 			success: function(data){

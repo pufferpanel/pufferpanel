@@ -20,7 +20,7 @@
 
 namespace PufferPanel\Core;
 
-$klein->respond('POST', '/oauth2/token/request', function($req, $res) {
+$klein->respond('POST', BASE_URL.'/oauth2/token/request', function($req, $res) {
 
     $grantType = $req->param("grant_type");
 
@@ -77,7 +77,7 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
     }
 });
 
-$klein->respond('POST', '/oauth2/token/info', function($req, $res) {
+$klein->respond('POST', BASE_URL.'/oauth2/token/info', function($req, $res) {
     $authHeader = trim($req->headers()['Authorization']);
     $parsedHeader = explode(' ', $authHeader);
     if ($authHeader === '' || count($parsedHeader) != 2 || $parsedHeader[0] !== 'Bearer') {

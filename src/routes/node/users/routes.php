@@ -31,7 +31,7 @@ $klein->respond(array('POST', 'GET'), '/node/users/[*]?', function($request, $re
     }
 });
 
-$klein->respond('GET', '/node/users', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/node/users', function($request, $response, $service) use ($core) {
 
     $select = ORM::forTable('subusers')
                     ->raw_query("SELECT subusers.*, users.email, users.username, GROUP_CONCAT(permissions.permission SEPARATOR ', ') as user_permissions FROM subusers LEFT JOIN permissions ON subusers.user = permissions.user AND subusers.server = permissions.server LEFT JOIN users ON subusers.user = users.id WHERE subusers.server = :server GROUP BY subusers.id", array(
@@ -46,7 +46,7 @@ $klein->respond('GET', '/node/users', function($request, $response, $service) us
     )));
 });
 
-$klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/node/users/[:action]/[:email]?', function($request, $response, $service) use ($core) {
 
     if ($request->param('action') == 'add') {
 
@@ -115,7 +115,7 @@ $klein->respond('GET', '/node/users/[:action]/[:email]?', function($request, $re
     }
 });
 
-$klein->respond('POST', '/node/users/add', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/node/users/add', function($request, $response, $service) use ($core) {
 
     $core->routes = new Router\Router_Controller('Node\Users', $core->server);
     $core->routes = $core->routes->loadClass();
@@ -153,7 +153,7 @@ $klein->respond('POST', '/node/users/add', function($request, $response, $servic
     }
 });
 
-$klein->respond('POST', '/node/users/edit', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/node/users/edit', function($request, $response, $service) use ($core) {
 
     $core->routes = new Router\Router_Controller('Node\Users', $core->server);
     $core->routes = $core->routes->loadClass();

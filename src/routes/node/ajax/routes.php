@@ -18,7 +18,7 @@
 */
 namespace PufferPanel\Core;
 
-$klein->respond('POST', '/node/ajax/console/power', function($request, $response) use ($core) {
+$klein->respond('POST', BASE_URL.'/node/ajax/console/power', function($request, $response) use ($core) {
 
 	if(!$core->permissions->has('console.power')) {
 

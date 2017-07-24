@@ -2,8 +2,8 @@
 
 {% block scripts %}
 {{ parent() }}
-<link rel="stylesheet" type="text/css" href="/assets/css/selectize.css"/>
-<link rel="stylesheet" type="text/css" href="/assets/css/selectize.contacts.css"/>
+<link rel="stylesheet" type="text/css" href="{{basePath}}/assets/css/selectize.css"{{basePath}}/>
+<link rel="stylesheet" type="text/css" href="{{basePath}}/assets/css/selectize.contacts.css"{{basePath}}/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/js/standalone/selectize.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/Cookies.js/1.2.1/cookies.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
@@ -14,8 +14,8 @@
 {% block content %}
 <div class="col-md-9">
     <ul class="breadcrumb">
-        <li><a href="/admin/index">Admin Control</a></li>
-        <li><a href="/admin/server">Servers</a></li>
+        <li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+        <li><a href="{{basePath}}/admin/server">Servers</a></li>
         <li class="active">Create New Server</li>
     </ul>
     {% if flash.info is defined %}

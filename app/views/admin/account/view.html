@@ -5,8 +5,8 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/account">Accounts</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/account">Accounts</a></li>
 		<li class="active">{{ user.username }}</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -111,8 +111,8 @@
 					<tbody>
 							{% for server in servers %}
 								<tr>
-									<td><a href="/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
-									<td><a href="/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
+									<td><a href="{{basePath}}/index/{{ server.hash }}"><i class="fa fa-tachometer"></i></a></td>
+									<td><a href="{{basePath}}/admin/server/view/{{ server.id }}">{{ server.name }}</a></td>
 									<td>{{ server.node_name }}</td>
 									<td>{{ server.server_ip }}:{{ server.server_port }}</td>
 									<td>{% if server.active == true %}<span class="label label-success">Enabled</span>{% else %}<span class="label label-danger">Disabled</span>{% endif %}</td>
@@ -143,7 +143,7 @@
 		$("#gen_pass_bttn").click(function(){
 			$.ajax({
 				type: "GET",
-				url: "/admin/passgen/12",
+				url: "{{basePath}}/admin/passgen/12",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data);
 					$("#gen_pass").slideDown();

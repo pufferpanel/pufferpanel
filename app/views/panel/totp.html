@@ -14,7 +14,7 @@
         <div class="panel-body">
             <p>In order to disable TOTP on this account you will need to provide a valid TOTP token. Once validated TOTP protection on this account will be disabled.</p>
             <br />
-            <form action="/totp" method="post">
+            <form action="{{basePath}}/totp" method="post">
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">TOTP Token</span>
@@ -71,7 +71,7 @@
         $("#do_totp").submit(function (event) {
             $.ajax({
                 type: "POST",
-                url: "/ajax/account/totp",
+                url: "{{basePath}}/ajax/account/totp",
                 data: {action: "generate"},
                 timeout: 5000,
                 success: function (data) {
@@ -86,7 +86,7 @@
             $("#totp_token_verify").submit(function (event) {
                 $.ajax({
                     type: "POST",
-                    url: "/ajax/account/totp/verify",
+                    url: "{{basePath}}/ajax/account/totp/verify",
                     data: {token: $("#totp_token").val(), xsrf: $('input[name="xsrf"]').val()},
                     timeout: 5000,
                     success: function (data) {

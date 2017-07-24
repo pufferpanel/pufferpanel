@@ -23,7 +23,7 @@ namespace PufferPanel\Core;
 use \ORM,
     \Unirest;
 
-$klein->respond('GET', '/auth/login', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/login', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('auth/login.html', array(
                 'xsrf' => $core->auth->XSRF(),
@@ -31,7 +31,7 @@ $klein->respond('GET', '/auth/login', function($request, $response, $service) us
     )));
 });
 
-$klein->respond('POST', '/auth/login', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/auth/login', function($request, $response, $service) use ($core) {
 
     if (!$core->auth->XSRF($request->param('xsrf'))) {
 
@@ -84,7 +84,7 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
     }
 });
 
-$klein->respond('POST', '/auth/login/totp', function($request, $response) {
+$klein->respond('POST', BASE_URL.'/auth/login/totp', function($request, $response) {
 
     if (!$request->param('check')) {
         $response->body('false');
@@ -100,7 +100,7 @@ $klein->respond('POST', '/auth/login/totp', function($request, $response) {
     }
 });
 
-$klein->respond('GET', '/auth/logout', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/logout', function($request, $response) use ($core) {
 
     if ($core->auth->isLoggedIn()) {
 
@@ -119,7 +119,7 @@ $klein->respond('GET', '/auth/logout', function($request, $response) use ($core)
 });
 
 
-$klein->respond('GET', '/auth/password', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/password', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('auth/password.html', array(
                 'xsrf' => $core->auth->XSRF(),
@@ -127,7 +127,7 @@ $klein->respond('GET', '/auth/password', function($request, $response, $service)
     )));
 });
 
-$klein->respond('GET', '/auth/password/[:action]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/password/[:action]', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('auth/password.html', array(
                 'flash' => $service->flashes(),
@@ -135,7 +135,7 @@ $klein->respond('GET', '/auth/password/[:action]', function($request, $response,
     )));
 });
 
-$klein->respond('GET', '/auth/password/verify/[:key]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/password/verify/[:key]', function($request, $response, $service) use ($core) {
 
     $query = ORM::forTable('account_change')->where(array('key' => $request->param('key'), 'verified' => 0))->where_gt('time', time())->findOne();
 
@@ -167,7 +167,7 @@ $klein->respond('GET', '/auth/password/verify/[:key]', function($request, $respo
     }
 });
 
-$klein->respond('POST', '/auth/password', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/auth/password', function($request, $response, $service) use ($core) {
 
     if ($core->auth->XSRF($request->param('xsrf')) !== true) {
 
@@ -235,7 +235,7 @@ $klein->respond('POST', '/auth/password', function($request, $response, $service
     }
 });
 
-$klein->respond('GET', '/auth/register/[:token]?', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/register/[:token]?', function($request, $response, $service) use ($core) {
 
     $response->body($core->twig->render('auth/register.html', array(
                 'xsrf' => $core->auth->XSRF(),
@@ -244,7 +244,7 @@ $klein->respond('GET', '/auth/register/[:token]?', function($request, $response,
     )));
 });
 
-$klein->respond('POST', '/auth/register', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/auth/register', function($request, $response, $service) use ($core) {
 
     if (!$request->param('token')) {
 
@@ -309,7 +309,7 @@ $klein->respond('POST', '/auth/register', function($request, $response, $service
     $response->redirect('/auth/login');
 });
 
-$klein->respond('GET', '/auth/remote/deploy/[:key]', function($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/auth/remote/deploy/[:key]', function($request, $response) use ($core) {
 
     $deploy = ORM::forTable('autodeploy')->where('code', $request->param('key'))->where_gt('expires', time())->findOne();
     if (!$deploy) {

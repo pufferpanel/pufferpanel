@@ -22,11 +22,11 @@ namespace PufferPanel\Core;
 
 use ORM;
 
-$klein->respond('GET', '/node/[*]', function ($request, $response) use ($core) {
+$klein->respond('GET', BASE_URL.'/node/[*]', function ($request, $response) use ($core) {
     $response->cookie('accessToken', OAuthService::Get()->getAccessToken($core->user->getData('id'), $core->server->getData('id')));
 });
 
-$klein->respond('GET', '/node/index', function ($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/node/index', function ($request, $response, $service) use ($core) {
 
     $protocol = "wss";
 
@@ -62,7 +62,7 @@ $klein->respond('DELETE', '/node/oauth/[i:id]', function ($request, $response, $
     $response->code(401);
 });
 
-$klein->respond('POST', '/node/oauth', function ($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/node/oauth', function ($request, $response, $service) use ($core) {
     $service->validateParam('oauthId')->notNull();
     $id = $request->param('oauthId');
     $name = $request->param('oauthName');

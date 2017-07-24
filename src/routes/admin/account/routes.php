@@ -19,7 +19,7 @@
 namespace PufferPanel\Core;
 use \ORM, \Tracy\Debugger;
 
-$klein->respond('GET', '/admin/account', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/account', function($request, $response, $service) use ($core) {
 
 	$users = ORM::forTable('users')->findArray();
 
@@ -33,7 +33,7 @@ $klein->respond('GET', '/admin/account', function($request, $response, $service)
 
 });
 
-$klein->respond('GET', '/admin/account/new', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/account/new', function($request, $response, $service) use ($core) {
 
 	$response->body($core->twig->render(
 		'admin/account/new.html',
@@ -44,7 +44,7 @@ $klein->respond('GET', '/admin/account/new', function($request, $response, $serv
 
 });
 
-$klein->respond('POST', '/admin/account/new', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/account/new', function($request, $response, $service) use ($core) {
 
 	if(!preg_match('/^[\w-]{4,35}$/', $request->param('username'))) {
 
@@ -104,7 +104,7 @@ $klein->respond('POST', '/admin/account/new', function($request, $response, $ser
 
 });
 
-$klein->respond('GET', '/admin/account/view/[i:id]', function($request, $response, $service) use ($core) {
+$klein->respond('GET', BASE_URL.'/admin/account/view/[i:id]', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
@@ -139,7 +139,7 @@ $klein->respond('GET', '/admin/account/view/[i:id]', function($request, $respons
 
 });
 
-$klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/account/view/[i:id]/update', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
@@ -207,7 +207,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
 
 });
 
-$klein->respond('POST', '/admin/account/view/[i:id]/password', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/account/view/[i:id]/password', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
 
@@ -243,7 +243,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/password', function($request
 
 });
 
-$klein->respond('POST', '/admin/account/view/[i:id]/delete', function($request, $response, $service) use ($core) {
+$klein->respond('POST', BASE_URL.'/admin/account/view/[i:id]/delete', function($request, $response, $service) use ($core) {
 
 	if(!$core->user->rebuildData($request->param('id'))) {
 

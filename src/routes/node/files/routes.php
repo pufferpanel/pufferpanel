@@ -31,7 +31,7 @@ $klein->respond(array('GET', 'POST'), '/node/files/[*]', function($request, $res
 
 });
 
-$klein->respond('GET', '/node/files', function($request, $response, $service) use($core) {
+$klein->respond('GET', BASE_URL.'/node/files', function($request, $response, $service) use($core) {
 
 	$response->body($core->twig->render('node/files/index.html', array(
 		'server' => $core->server->getData(),

@@ -5,8 +5,8 @@
 {% block content %}
 <div class="col-md-9">
 	<ul class="breadcrumb">
-		<li><a href="/admin/index">Admin Control</a></li>
-		<li><a href="/admin/account">Accounts</a></li>
+		<li><a href="{{basePath}}/admin/index">Admin Control</a></li>
+		<li><a href="{{basePath}}/admin/account">Accounts</a></li>
 		<li class="active">Create New Account</li>
 	</ul>
 	{% if flash.info is defined %}
@@ -63,7 +63,7 @@
 			e.preventDefault();
 			$.ajax({
 				type: "GET",
-				url: "/admin/passgen/12",
+				url: "{{basePath}}/admin/passgen/12",
 				success: function(data) {
 					$("#gen_pass").html('<strong>Generated Password:</strong> '+data).slideDown();
 					$('input[name="pass"], input[name="pass_2"]').val(data);
