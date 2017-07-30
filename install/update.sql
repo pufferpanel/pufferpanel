@@ -15,7 +15,7 @@ INSERT IGNORE INTO _meta (metaKey, metaValue) VALUES
   ('installDate', CURRENT_TIMESTAMP);
 
 INSERT INTO _meta (metaKey, metaValue) VALUES
-  ('version', 'v1.1.3'),
+  ('version', 'v1.1.4'),
   ('updateDate', CURRENT_TIMESTAMP)
   ON DUPLICATE KEY UPDATE
   metaKey=VALUES(metaKey),
@@ -24,5 +24,10 @@ INSERT INTO _meta (metaKey, metaValue) VALUES
 UPDATE IGNORE acp_settings
 SET setting_val='en_US'
 WHERE setting_ref='default_language';
+
+UPDATE oauth_clients
+  JOIN users ON users.id = oauth_clients.user_id
+SET scopes = CONCAT(scopes , ' server.edit')
+WHERE scopes NOT LIKE '%server.edit%' AND users.root_admin = 1;
 
 SET FOREIGN_KEY_CHECKS = 1;

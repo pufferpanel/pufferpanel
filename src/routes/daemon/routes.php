@@ -55,7 +55,7 @@ function handleProxy($url, $header, $request, $response) {
         $response->code($unireq->code)->body($result);
 }
 
-$klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $response) use ($core, $klein) {
+$klein->respond('/daemon/server/[:serverid]/[**:path]?', function($request, $response) use ($core, $klein) {
 
     $oldHeaders = $request->headers();
     $header = null;
@@ -126,7 +126,12 @@ $klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $resp
         );
     }
 
-    $updatedUrl = sprintf('%s/server/%s/%s', Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $server, urlencode($request->param('path')));
+    $p = urlencode($request->param('path'));
+    if ($p !== '') {
+        $p += '/' + $p;
+    }
+
+    $updatedUrl = sprintf('%s/server/%s%s', Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $server, $p);
 
     foreach($oldHeaders as $k => $v) {
         if ($v !== '') {
@@ -139,12 +144,14 @@ $klein->respond('/daemon/server/[:serverid]/[**:path]', function($request, $resp
     } catch (\Exception $ex) {
         $response->code(500)->json(array(
                 'success' => false,
-                'msg' => $ex->getMessage()
+                'msg' => $ex->getMessage(),
+                'code' => 999
             ));
     } catch (\Throwable $ex) {
         $response->code(500)->json(array(
                 'success' => false,
-                'msg' => $ex->getMessage()
+                'msg' => $ex->getMessage(),
+                'code' => 999
         ));
     }
 });
