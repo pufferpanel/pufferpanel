@@ -104,6 +104,8 @@ $klein->respond(array('GET', 'POST'), '/admin/server/view/[i:id]/[*]?', function
     if (!$core->user->rebuildData($core->server->getData('owner_id'))) {
         throw new Exception("This error should never occur. Attempting to access a server with an unknown user id.");
     }
+
+    $response->cookie('accessToken', OAuthService::Get()->getAccessToken($core->user->getData('id'), $core->server->getData('id')));
 });
 
 $klein->respond('GET', '/admin/server/view/[i:id]', function($request, $response, $service) use ($core) {
