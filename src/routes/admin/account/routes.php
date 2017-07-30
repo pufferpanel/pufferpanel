@@ -180,7 +180,7 @@ $klein->respond('POST', '/admin/account/view/[i:id]/update', function($request, 
             OAuthService::Get()->create($user->id(),
                 $server->id(),
                 '.internal_' . $user->id() . '_' . $server->id(),
-                OAuthService::getUserScopes(),
+                OAuthService::getUserScopes() + " " + OAuthService::getAdminScopes(),
                 'internal_use',
                 'internal_use'
             );
