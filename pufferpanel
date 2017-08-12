@@ -168,7 +168,7 @@ function configureUser() {
         fi
     done
 
-    password=$(php -r "echo password_hash('"${password}"', PASSWORD_BCRYPT);");
+    password=$(php -r "echo password_hash('${password}', PASSWORD_BCRYPT);");
     time=$(php -r 'echo time();');
 
     echo ""
