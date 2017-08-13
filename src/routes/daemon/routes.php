@@ -50,6 +50,7 @@ function handleProxy($url, $header, $request, $response) {
             'Transfer-Encoding'
         );
 
+        $result = $unireq->raw_body;
         $headers = $unireq->headers;
         foreach ($headers as $key => $value) {
             if(!in_array($key, $ignored_keys)) {
