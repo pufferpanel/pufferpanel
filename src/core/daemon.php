@@ -229,7 +229,7 @@ class Daemon extends Server
     public static function doesNodeUseHTTPS($ip, $port)
     {
         try {
-            Unirest\Request::get(sprintf("https://%s:%s", $ip, $port));
+            Unirest\Request::head(sprintf("https://%s:%s", $ip, $port));
             return true;
         } catch (\Exception $ex) {
             try {
