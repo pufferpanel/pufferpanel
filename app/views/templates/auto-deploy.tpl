@@ -59,7 +59,7 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         apt-get update
         apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     fi
-else
+elif [ $OS_INSTALL_CMD == 'yum' ]; then
     yum -y install openssl curl git java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
 fi
 

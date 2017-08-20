@@ -97,10 +97,7 @@ function configureMysql() {
         \"database\": \"${mysqlDb}\",
         \"username\": \"${newUser}\",
         \"password\": \"${newPw}\",
-        \"port\": \"${mysqlPort}\",
-        \"ssl\": {
-            \"use\": false
-        }
+        \"port\": \"${mysqlPort}\"
     }
 }" > config.json
     echo "MySQL has been configured and the database was installed"
@@ -251,53 +248,53 @@ function configureNginx() {
     fi
 
     conf="server {
-        listen 80;
-        root ${PWD};
-        index index.php;
+    listen 80;
+    root ${PWD};
+    index index.php;
 
-        server_name ${siteUrl};
+    server_name ${siteUrl};
 
-        client_max_body_size 20m;
-        client_body_timeout 120s;
+    client_max_body_size 20m;
+    client_body_timeout 120s;
 
-        location / {
-            try_files /public/router.php =404;
-            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-            fastcgi_pass ${phpSocket};
-            fastcgi_index router.php;
-            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-            include /etc/nginx/fastcgi_params;
-        }
-
-        location /assets {
-            try_files /app/\$uri =404;
-        }
+    location / {
+        try_files /public/router.php =404;
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        fastcgi_pass ${phpSocket};
+        fastcgi_index router.php;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        include /etc/nginx/fastcgi_params;
     }
 
-    #server {
-    #    listen 443;
-    #    root ${PWD};
-    #    index index.php;
-    #
-    #    server_name ${siteUrl};
-    #
-    #    ssl on;
-    #    ssl_certificate     /etc/nginx/ssl/${siteUrl}.crt;
-    #    ssl_certificate_key /etc/nginx/ssl/${siteUrl}.key;
-    #
-    #    location / {
-    #        try_files /public/router.php =404;
-    #        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-    #        fastcgi_pass ${phpSocket};
-    #        fastcgi_index router.php;
-    #        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-    #        include /etc/nginx/fastcgi_params;
-    #    }
-    #
-    #    location /assets {
-    #        try_files /app/\$uri =404;
-    #    }
-    #}
+    location /assets {
+        try_files /app/\$uri =404;
+    }
+}
+
+#server {
+#    listen 443;
+#    root ${PWD};
+#    index index.php;
+#
+#    server_name ${siteUrl};
+#
+#    ssl on;
+#    ssl_certificate     /etc/nginx/ssl/${siteUrl}.crt;
+#    ssl_certificate_key /etc/nginx/ssl/${siteUrl}.key;
+#
+#    location / {
+#        try_files /public/router.php =404;
+#        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+#        fastcgi_pass ${phpSocket};
+#        fastcgi_index router.php;
+#        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+#        include /etc/nginx/fastcgi_params;
+#    }
+#
+#    location /assets {
+#        try_files /app/\$uri =404;
+#    }
+#}
     "
 
     if [ -d "/etc/nginx/sites-enabled" ]; then
