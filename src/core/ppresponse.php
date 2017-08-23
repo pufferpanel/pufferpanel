@@ -7,6 +7,7 @@ use \Klein\Response;
 class PPResponse extends Response
 {
     private $klein;
+    private $custom404 = true;
     private $altered = null;
 
     public function __construct($klein, $body = '', $status_code = null, array $headers = array())
@@ -54,5 +55,13 @@ class PPResponse extends Response
 
     public function isAltered() {
         return $this->altered;
+    }
+
+    public function disableCustomErrors() {
+        $this->custom404 = false;
+    }
+
+    public function useCustomErrors() {
+        return $this->custom404;
     }
 }

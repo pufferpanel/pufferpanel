@@ -69,6 +69,7 @@
 				</div>
 				<div class="alert alert-danger" id="dataLoadError">
 					<span>Failed to load the data for this server, is the daemon online?</span>
+					<br />
 					<span id="dataLoadErrorText"></span>
 				</div>
 				<div id="dataElements" class="hidden">
@@ -116,14 +117,28 @@
 		});
 		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 
-        $("#content-tabs").tabs({
-            beforeActivate: function (event, ui) {
-                var panel = ui.newPanel;
-                if (panel.attr("id") === 'edit') {
-
-				}
+		$.ajax({
+			method: 'GET',
+			url: '/daemon/server/{{ server.hash }}'
+		}).done(function(data) {
+		    console.log(data);
+            $("#dataLoading").hide();
+		}).error(function(err) {
+		    $("#dataLoading").hide();
+            $("#dataLoadError").show();
+            if (err.responseText) {
+                var result = JSON.parse(err.responseText);
+                if (result.msg) {
+                    $("#dataLoadErrorText").text(result.msg);
+                }
+                else {
+                    $("#dataLoadErrorText").text(JSON.stringify(err));
+                }
+			} else {
+                $("#dataLoadErrorText").text(JSON.stringify(err));
             }
         });
+
 	});
 </script>
 {% endblock %}
