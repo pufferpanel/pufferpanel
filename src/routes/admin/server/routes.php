@@ -220,7 +220,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         return;
     }
 
-    $user = ORM::forTable('users')->select('id')->where('email', $request->param('email'))->findOne();
+    $user = ORM::forTable('users')->select('id')->select('root_admin')->where('email', $request->param('email'))->findOne();
 
     if (!$user) {
 
@@ -245,7 +245,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         'daemon_secret' => $daemon_secret,
         'node' => $request->param('node'),
         'name' => $request->param('server_name'),
-        'owner_id' => $user->id,
+        'owner_id' => $user->id(),
         'date_added' => time(),
     ));
     $server->save();
@@ -253,7 +253,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     OAuthService::Get()->create($user->id(),
             $server->id(),
             '.internal_' . $user->id() . '_' . $server->id(),
-            OAuthService::getUserScopes(),
+            $user->root_admin ? OAuthService::getUserScopes() . ' ' . OAuthService::getAdminScopes() : OAuthService::getUserScopes(),
             'internal_use',
             'internal_use'
     );
@@ -264,7 +264,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         OAuthService::Get()->create($adminUser->id(),
             $server->id(),
             '.internal_' . $adminUser->id() . '_' . $server->id(),
-            OAuthService::getUserScopes() + " " + OAuthService::getAdminScopes(),
+            OAuthService::getUserScopes() . " " . OAuthService::getAdminScopes(),
             'internal_use',
             'internal_use'
         );
