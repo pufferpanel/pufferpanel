@@ -40,7 +40,7 @@ function configureMysql() {
     fi
 
     echo "Thank you for using the PufferPanel installer!"
-    echo "${bold}Please do not run this installer if PufferPanel is already installed.${normal}"
+    echo "${bold}Please do not run this installer if PufferPanel has already been installed without first running ./pufferpanel purge${normal}"
     echo ""
     echo "Before we can complete the installation, we need to ask you some questions"
     echo "These questions will help configure PufferPanel so that you can get to using it"
@@ -451,6 +451,18 @@ case $1 in
         printSeparator
         echo "Thank you for installing PufferPanel!"
         echo "Assuming that the installation completed, you will be able to visit your new panel at ${blue}http://${siteUrl}${normal}"
+        ;;
+    purge)
+        loadConfig
+        echo "${red}WARNING: This will remove the PufferPanel database, including all users and servers!${normal}"
+        shopt -s nocasematch
+        echo -n "Are you sure you wish delete the PufferPanel database? [y/N]: "
+        read upgradeOverride
+        if [[ "${upgradeOverride}" != "y" ]]; then
+            exit
+        fi
+        mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "DROP DATABASE pufferpanel;"
+        echo "Database deleted. You may now run ./pufferpanel install if you wish to reinstall PufferPanel."
         ;;
     updatesite)
         configureSite
