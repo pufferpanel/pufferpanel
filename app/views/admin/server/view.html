@@ -67,15 +67,29 @@
 						</div>
 					</div>
 				</div>
-				<div class="alert alert-danger" id="dataLoadError">
-					<span>Failed to load the data for this server, is the daemon online?</span>
+				<div class="alert alert-danger" style="display: none" id="dataLoadError">
+					<span>Failed to perform this action, is the daemon online?</span>
 					<br />
 					<span id="dataLoadErrorText"></span>
 				</div>
-				<div id="dataElements" class="hidden">
-					<form action="{{ server.id }}/edit">
-						<input type="submit" name="submit" class="btn btn-sm btn-primary" value="Update server" />
+				<div id="dataElements" style="display: none">
+					<form id="editForm" action= method="post">
+						<div data-bind="foreach: variables()">
+							<div class="row">
+								<div class="form-group col-md-8 nopad">
+									<label class="control-label" data-bind="text: display, attr: {for: key }"></label>
+									<div class="input-group">
+										<input type="text" autocomplete="off" class="form-control"
+											   data-bind="value: value, attr: {name: key, id: formkey}"/>
+										<p class="text-muted" style="margin: 0 0 -10.5px;">
+											<small><em data-bind="html: desc"></em></small>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
+					<input id="submitEdit" type="submit" name="submit" class="btn btn-sm btn-primary" value="Update server" />
 				</div>
 			</div>
 		</div>
@@ -103,10 +117,11 @@
 
 {% block javascript %}
 <script type="text/javascript">
-	var viewModel = ko.observableArray();
+	var viewModel = {
+	    variables: ko.observableArray()
+    };
 
 	ko.applyBindings(viewModel);
-
 
 	$(document).ready(function() {
 		$("form#deleteCheckpoint").submit(function(e) {
@@ -117,15 +132,82 @@
 		});
 		$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
 
-		$.ajax({
-			method: 'GET',
-			url: '/daemon/server/{{ server.hash }}'
-		}).done(function(data) {
-		    console.log(data);
+		$("#submitEdit").click(function(e) {
+		    e.preventDefault();
+
+		    var data = {};
+
+		    for(var i in viewModel.variables()) {
+				var variable = viewModel.variables()[i];
+				var element = $("#" + variable.formkey);
+				data[variable.key] = element.val();
+			}
+
+			console.log(data);
+
+		    $.ajax({
+				url: "/daemon/server/{{ server.hash }}",
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json',
+				dataType: "json"
+			}).done(function(d) {
+		        if(d.success) {
+                    window.location.reload();
+				} else {
+                    if (d.msg) {
+						$("#dataLoadErrorText").text(d.msg);
+                    } else {
+                        $("#dataLoadErrorText").text(JSON.stringify(d));
+                    }
+                    $("#dataLoadError").show();
+				}
+			}).fail(function(err) {
+                if (err.responseText) {
+                    var result = JSON.parse(err.responseText);
+                    if (result.msg) {
+                        $("#dataLoadErrorText").text(result.msg);
+                    }
+                    else {
+                        $("#dataLoadErrorText").text(JSON.stringify(err));
+                    }
+                } else {
+                    $("#dataLoadErrorText").text(JSON.stringify(err));
+                }
+                $("#dataLoadError").show();
+			});
+        });
+
+		$.get('/daemon/server/{{ server.hash }}').done(function(dataSource) {
+            var data = dataSource.data;
+            for (var key in data) {
+                var element = data[key];
+                if(element['internal']) {
+                    continue;
+				}
+                if (data.hasOwnProperty(key)) {
+                    var displayname = element["display"];
+                    if (displayname == undefined || displayname === '') {
+                        displayname = key;
+                    }
+                    var desc = element["desc"];
+                    var value = element["value"];
+                    var required = element["required"];
+
+                    viewModel.variables.push({
+                        key: key,
+                        display: displayname,
+                        desc: desc,
+						value: value,
+						required: required,
+						formkey: "editserver-" + key
+                    });
+                }
+            }
             $("#dataLoading").hide();
-		}).error(function(err) {
+            $("#dataElements").show();
+		}).fail(function(err) {
 		    $("#dataLoading").hide();
-            $("#dataLoadError").show();
             if (err.responseText) {
                 var result = JSON.parse(err.responseText);
                 if (result.msg) {
@@ -137,8 +219,8 @@
 			} else {
                 $("#dataLoadErrorText").text(JSON.stringify(err));
             }
+            $("#dataLoadError").show();
         });
-
 	});
 </script>
 {% endblock %}
