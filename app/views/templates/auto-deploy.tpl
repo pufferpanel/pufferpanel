@@ -27,6 +27,18 @@ if [ "$SUDO_USER" == "" ]; then
     SUDO_USER="root"
 fi
 
+if [ -f /srv/pufferd/pufferd ]; then
+    echo "WARNING: pufferd is already installed, continuing will DELETE the current pufferd installation and ALL SERVER FILES"
+    echo "It is highly recommended that you back up all data in /var/lib/pufferd prior to reinstalling"
+    shopt -s nocasematch
+    echo -n "Are you sure you wish DELETE ALL SERVER FILES and reinstall pufferd? [y/N]: "
+    read installOverride
+    if [[ "${installOverride}" != "y" ]]; then
+        exit
+    fi
+    /srv/pufferd/pufferd -uninstall
+fi
+
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version ]]; then
         echo -e "System detected as some variant of Ubuntu or Debian."
