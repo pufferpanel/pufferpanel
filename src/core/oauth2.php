@@ -79,8 +79,8 @@ class OAuthService {
             return array("error" => $username);
         }
 
-        $serverQuery = $pdo->prepare("SELECT s.id, hash FROM servers AS s LEFT JOIN subusers AS su ON su.server = s.id WHERE s.name = ? AND (s.owner_id = ? OR su.user = ?) LIMIT 1");
-        $serverQuery->execute(array($serverName, $user['id'], $user['id']));
+        $serverQuery = $pdo->prepare("SELECT s.id, hash FROM servers AS s WHERE s.name = ? LIMIT 1");
+        $serverQuery->execute(array($serverName));
         $server = $serverQuery->fetch(\PDO::FETCH_ASSOC);
         if ($server === false || count($server) == 0) {
             return array("error" => $username);
