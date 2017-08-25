@@ -536,7 +536,7 @@ case $1 in
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
 
-        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]] || [[ "${dbVersion}" == "v1.1.3" ]]; then
+        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]] || [[ "${dbVersion}" == "v1.1.3" ]] || [[ "${dbVersion}" == "v1.1.4" ]]; then
           alreadyUpgraded=true
         else
           alreadyUpgraded=false
