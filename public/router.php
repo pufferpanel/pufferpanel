@@ -100,7 +100,7 @@ $core->twig->addGlobal('fversion', trim(file_get_contents(SRC_DIR.'versions/curr
 $core->twig->addGlobal('admin', (bool) $core->user->getData('root_admin'));
 $core->twig->addGlobal('version', Version::get());
 
-$klein->respond('!@^/(auth|language|api|assets|oauth2|daemon)/**?', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', function($request, $response, $service, $app, $klein) use ($core) {
 
 	if(!$core->auth->isLoggedIn()) {
 
@@ -121,9 +121,9 @@ $klein->respond('!@^/(auth|language|api|assets|oauth2|daemon)/**?', function($re
 
 });
 
-$klein->respond('@^/(auth|oauth2|daemon)/**', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
 
-	if($core->auth->isLoggedIn()) {
+    if($core->auth->isLoggedIn()) {
 		// Redirect /auth/* requests to /index if they are logged in
 		// Skips redirect on requests to /auth/logout and /auth/remote/*
 		if(0 !== strpos($request->pathname(), "/auth/logout") && 0 !== strpos($request->pathname(), "/auth/remote/")) {
