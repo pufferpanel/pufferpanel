@@ -484,7 +484,6 @@
         });
         $("#server_install").click(function (e) {
             e.preventDefault();
-            $('#installConfirm').modal('hide');
             $.ajax({
                 type: "POST",
                 url: '/daemon/server/{{ server.hash }}/install',
