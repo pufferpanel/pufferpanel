@@ -234,7 +234,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{{ l.render('string.close') }}</button>
-        <button type="button" class="btn btn-warning" id="server_install">{{ l.render('string.install') }}</button>
+        <button type="button" class="btn btn-warning" data-dismiss="modal" id="server_install">{{ l.render('string.install') }}</button>
       </div>
     </div>
   </div>
@@ -483,8 +483,8 @@
             });
         });
         $("#server_install").click(function (e) {
-            $('#installConfirm').modal('hide');
             e.preventDefault();
+            $('#installConfirm').modal('hide');
             $.ajax({
                 type: "POST",
                 url: '/daemon/server/{{ server.hash }}/install',
