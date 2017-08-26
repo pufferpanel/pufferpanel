@@ -569,6 +569,6 @@ case $1 in
         ;;
     *)
         echo "PufferPanel"
-        echo "Usage: ./pufferpanel [install/update/upgrade/updatesite/addnginx/addapache/adduser/version]"
+        echo "Usage: ./pufferpanel [install/update/upgrade/purge/updatesite/addnginx/addapache/adduser/version]"
         ;;
 esac
