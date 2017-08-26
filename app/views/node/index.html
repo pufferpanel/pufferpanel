@@ -506,7 +506,7 @@
             e.preventDefault();
             $.ajax({
                 type: "GET",
-                url: '/daemon/server/{{ server.hash }}/stop',
+                url: '/daemon/server/{{ server.hash }}/stop?wait=true',
                 timeout: 0
             }).done(function (data) {
                 $.ajax({
