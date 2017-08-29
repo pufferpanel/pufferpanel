@@ -88,7 +88,6 @@ function configureMysql() {
     mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
      GRANT ALL PRIVILEGES ON pufferpanel.* TO 'pufferpanel'@'${newHost}' IDENTIFIED BY '${newPw}';
      GRANT ALL PRIVILEGES ON pufferpanel.* TO 'pufferpanel'@'localhost' IDENTIFIED BY '${newPw}';
-     GRANT ALL PRIVILEGES ON pufferpanel.* TO 'pufferpanel'@'172.17.42.%' IDENTIFIED BY '${newPw}';
     "
 
     echo "{
