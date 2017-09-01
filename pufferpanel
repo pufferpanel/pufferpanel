@@ -236,8 +236,12 @@ function configureNginx() {
         if [ "${phpSocket}" = "" ]; then
             phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
             if [ "${phpSocket}" = "" ]; then
-                echo "Could not determine where PHP config is, cannot install config"
-                return
+                # Arch Linux Support for Php-Fpm under /etc/php.
+                phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+            	if [ "${phpSocket}" = "" ]; then
+               		echo "Could not determine where PHP config is, cannot install config"
+	                return
+				fi
             fi
         fi
     fi
