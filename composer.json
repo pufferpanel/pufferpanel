@@ -31,7 +31,7 @@
     "j4mie/idiorm": "~1.5",
     "klein/klein": "~2.1",
     "mandrill/mandrill": "~1.0",
-    "mashape/unirest-php": "~3.0",
+    "mashape/unirest-php": "dev-master",
     "sendgrid/sendgrid": "~5.4",
     "tracy/tracy": "~2.4",
     "twig/twig": "~2.3",
