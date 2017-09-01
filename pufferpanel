@@ -71,7 +71,7 @@ function configureMysql() {
         if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
             notValid=false
         else
-            print "Database connection could not be established"
+            echo "Database connection could not be established"
         fi
     done
 
@@ -527,7 +527,7 @@ case $1 in
             if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
                 notValid=false
             else
-                print "Database connection could not be established"
+                echo "Database connection could not be established"
             fi
         done
 
