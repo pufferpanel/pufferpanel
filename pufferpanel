@@ -210,7 +210,11 @@ function configureApache() {
         return
     fi
 
-    service apache2 restart
+    if command -v systemctl >/dev/null; then
+        systemctl restart httpd
+    elif command -v service >/dev/null; then
+        service apache2 restart
+    fi
 }
 
 function configureNginx() {
