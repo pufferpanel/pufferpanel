@@ -230,20 +230,12 @@ function configureNginx() {
         fi
     fi
 
-    phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    getPhpConfLocation
+
+    phpSocket=$(grep "^listen[| ]\?=[| ]" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
-        phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpSocket}" = "" ]; then
-            phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpSocket}" = "" ]; then
-                # Arch Linux Support for Php-Fpm under /etc/php.
-                phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            	if [ "${phpSocket}" = "" ]; then
-               		echo "Could not determine where PHP config is, cannot install config"
-	                return
-				fi
-            fi
-        fi
+        echo -e "Could not determine where PHP config is, cannot install config"
+        return
     fi
 
     if [[ "$(echo ${phpSocket:0:1})" == "/" ]]; then
@@ -326,28 +318,18 @@ function configureNginx() {
 }
 
 function updateLogOwner() {
-    phpUser=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    getPhpConfLocation
+
+    phpUser=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpUser}" = "" ]; then
-        phpUser=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpUser}" = "" ]; then
-            phpUser=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpUser}" = "" ]; then
-                echo "Could not determine PHP user, cannot correct log folder owner"
-                return
-            fi
-        fi
+        echo -e "Could not determine PHP user, cannot correct log folder owner"
+        return
     fi
 
-    phpGroup=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpGroup=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpOwner}" = "" ]; then
-        phpGroup=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpGroup}" = "" ]; then
-            phpGroup=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpGroup}" = "" ]; then
-                echo "Could not determine PHP group, cannot correct log folder owner"
-                return
-            fi
-        fi
+        echo -e "Could not determine PHP group, cannot correct log folder owner"
+        return
     fi
 
     chown -R ${phpUser}:${phpGroup} /srv/pufferpanel/logs
