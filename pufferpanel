@@ -353,6 +353,25 @@ function updateLogOwner() {
     chown -R ${phpUser}:${phpGroup} /srv/pufferpanel/logs
 }
 
+function getPhpConfLocation(){
+    declare -a wwwConfLocations=(
+        "/etc/php/7.0/fpm/pool.d/www.conf"
+        "/etc/php/*/fpm/pool.d/www.conf"
+        "/etc/php-fpm.d/www.conf"
+        "/etc/php/php-fpm.d/www.conf"
+    )
+
+    phpWWWConfLocation=""
+
+    for loc in "${wwwConfLocations[@]}"; do
+        echo "$loc"
+        if [ -e $loc ]; then
+            phpWWWConfLocation="$loc"
+            break
+        fi
+    done
+}
+
 case $1 in
     install)
 
