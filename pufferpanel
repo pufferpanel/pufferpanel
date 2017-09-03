@@ -314,7 +314,11 @@ function configureNginx() {
         return
     fi
 
-    service nginx restart
+    if command -v systemctl >/dev/null; then
+        systemctl restart nginx
+    elif command -v service >/dev/null; then
+        service nginx restart
+    fi
 }
 
 function updateLogOwner() {
