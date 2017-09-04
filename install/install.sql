@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `uuid_unique` (`uuid`),
   UNIQUE KEY `email_unique` (`email`),
   UNIQUE KEY `username` (`username`)
-);
+)
+ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `account_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

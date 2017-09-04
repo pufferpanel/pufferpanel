@@ -50,6 +50,9 @@ if type apt-get &> /dev/null; then
 elif type yum &> /dev/null; then
     echo -e "System detected as CentOS variant."
     OS_INSTALL_CMD="yum"
+elif type pacman &> /dev/null; then
+    echo -e "System detected as Arch."
+    OS_INSTALL_CMD="pacman"
 else
     echo -e "${RED}This OS does not appear to be supported by this program, or apt-get/yum is not installed!${NORMAL}"
     exit 1
@@ -62,17 +65,25 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         sudo echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
         apt-get update
         apt-get install -y -t jessie-backports openjdk-8-jdk-headless
-        apt-get install -y openssl curl git tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     elif [ $(lsb_release -sc) == 'trusty' ]; then
         sudo add-apt-repository -y ppa:openjdk-r/ppa
         apt-get update
-        apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     else
         apt-get update
-        apt-get install -y openssl curl git openjdk-8-jdk-headless tar python lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     fi
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
-    yum -y install openssl curl git java-1.8.0-openjdk-devel tar python glibc.i686 libstdc++.i686
+    yum -y install openssl curl git java-1.8.0-openjdk-devel tar glibc.i686 libstdc++.i686
+elif [ $OS_INSTALL_CMD == 'pacman' ]; then
+    grep -e "^\[multilib\]$" /etc/pacman.conf &> /dev/null
+    if [ $? -eq 0 ]; then
+        pacman -S openssl curl git jdk8-openjdk tar lib32-glibc lib32-gcc-libs --noconfirm --needed
+    else
+        echo -e "Please enable [multilib] in /etc/pacman.conf for lib32 libraries"
+    fi
+
 fi
 
 # Ensure /srv exists

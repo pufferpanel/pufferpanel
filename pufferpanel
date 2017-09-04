@@ -71,7 +71,7 @@ function configureMysql() {
         if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
             notValid=false
         else
-            print "Database connection could not be established"
+            echo "Database connection could not be established"
         fi
     done
 
@@ -210,7 +210,11 @@ function configureApache() {
         return
     fi
 
-    service apache2 restart
+    if command -v systemctl >/dev/null; then
+        systemctl restart httpd
+    elif command -v service >/dev/null; then
+        service apache2 restart
+    fi
 }
 
 function configureNginx() {
@@ -230,16 +234,12 @@ function configureNginx() {
         fi
     fi
 
-    phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    getPhpConfLocation
+
+    phpSocket=$(grep "^listen[| ]\?=[| ]" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
-        phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpSocket}" = "" ]; then
-            phpSocket=$(grep "^listen[| ]\?=[| ]" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpSocket}" = "" ]; then
-                echo "Could not determine where PHP config is, cannot install config"
-                return
-            fi
-        fi
+        echo -e "Could not determine where PHP config is, cannot install config"
+        return
     fi
 
     if [[ "$(echo ${phpSocket:0:1})" == "/" ]]; then
@@ -318,35 +318,48 @@ function configureNginx() {
         return
     fi
 
-    service nginx restart
+    if command -v systemctl >/dev/null; then
+        systemctl restart nginx
+    elif command -v service >/dev/null; then
+        service nginx restart
+    fi
 }
 
 function updateLogOwner() {
-    phpUser=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    getPhpConfLocation
+
+    phpUser=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpUser}" = "" ]; then
-        phpUser=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpUser}" = "" ]; then
-            phpUser=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpUser}" = "" ]; then
-                echo "Could not determine PHP user, cannot correct log folder owner"
-                return
-            fi
-        fi
+        echo -e "Could not determine PHP user, cannot correct log folder owner"
+        return
     fi
 
-    phpGroup=$(grep "^user \?= \?" /etc/php/7.0/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpGroup=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpOwner}" = "" ]; then
-        phpGroup=$(grep "^user \?= \?" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-        if [ "${phpGroup}" = "" ]; then
-            phpGroup=$(grep "^user \?= \?" /etc/php-fpm.d/www.conf 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-            if [ "${phpGroup}" = "" ]; then
-                echo "Could not determine PHP group, cannot correct log folder owner"
-                return
-            fi
-        fi
+        echo -e "Could not determine PHP group, cannot correct log folder owner"
+        return
     fi
 
     chown -R ${phpUser}:${phpGroup} /srv/pufferpanel/logs
+}
+
+function getPhpConfLocation(){
+    declare -a wwwConfLocations=(
+        "/etc/php/7.0/fpm/pool.d/www.conf"
+        "/etc/php/*/fpm/pool.d/www.conf"
+        "/etc/php-fpm.d/www.conf"
+        "/etc/php/php-fpm.d/www.conf"
+    )
+
+    phpWWWConfLocation=""
+
+    for loc in "${wwwConfLocations[@]}"; do
+        echo "$loc"
+        if [ -e $loc ]; then
+            phpWWWConfLocation="$loc"
+            break
+        fi
+    done
 }
 
 case $1 in
@@ -527,7 +540,7 @@ case $1 in
             if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
                 notValid=false
             else
-                print "Database connection could not be established"
+                echo "Database connection could not be established"
             fi
         done
 
