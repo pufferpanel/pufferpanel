@@ -16,3 +16,4 @@ silent-sync.json
 /nbproject/
 .idea/
 logs/
+*.iml
