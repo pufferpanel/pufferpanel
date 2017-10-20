@@ -133,17 +133,10 @@ trait Authentication {
      * @return string
      * @static
      */
-    public static function keygen($amount, $keyset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') {
-
+    public static function keygen($amount) {
         $amount = ($amount >= 5) ? $amount : 5;
 
-        $factory = new \RandomLib\Factory;
-        $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
-
-        $string = $generator->generateString($amount - 3, $keyset);
-        $position = $generator->generateInt(0, $amount - 4);
-
-        return substr($string, 0, $position) . $generator->generateString(1, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') . $generator->generateInt(0, 9) . $generator->generateString(1, 'abcdefghijklmnopqrstuvwxyz') . substr($string, $position);
+        return base64_encode(openssl_random_pseudo_bytes($amount));
     }
 
     /**
