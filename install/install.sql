@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` text,
   `language` varchar(10) NOT NULL DEFAULT 'en_US',
   `register_time` int(15) unsigned NOT NULL,
-  `session_id` char(12),
+  `session_id` char(40),
   `session_ip` varchar(50),
   `root_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `notify_login_s` tinyint(1) unsigned NOT NULL DEFAULT '1',
