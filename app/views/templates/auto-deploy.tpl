@@ -87,14 +87,17 @@ elif [ $OS_INSTALL_CMD == 'pacman' ]; then
 fi
 
 # Ensure /srv exists
+echo -e "Creating /srv/pufferd"
 mkdir -p /srv/pufferd
 
 cd /srv/pufferd
+echo -e "Downloading pufferd from $downloadUrl"
 curl -L -o pufferd $downloadUrl
 checkResponseCode
 
 mkdir /var/lib/pufferd /etc/pufferd
 
+echo -e "Executing pufferd installation"
 chmod +x pufferd
 ./pufferd --install --installService --auth {{ settings.master_url }} --token {{ node.daemon_secret }} --config /etc/pufferd/config.json
 checkResponseCode
@@ -214,6 +217,10 @@ else
   update-rc.d pufferd defaults
   service pufferd start
 fi
+
+echo "Preparing for docker containers if enabled"
+groupadd --force --system docker
+usermod -a -G docker pufferd
 
 echo "Successfully installed the daemon"
 
