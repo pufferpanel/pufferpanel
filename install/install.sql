@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` char(36) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(128) NOT NULL,
   `password` text,
   `language` varchar(10) NOT NULL DEFAULT 'en_US',
   `register_time` int(15) unsigned NOT NULL,
