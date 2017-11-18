@@ -95,14 +95,14 @@ echo -e "Downloading pufferd from $downloadUrl"
 curl -L -o pufferd $downloadUrl
 checkResponseCode
 
-mkdir /var/lib/pufferd /etc/pufferd
+mkdir /var/lib/pufferd /etc/pufferd /var/log/pufferd
 
 echo -e "Executing pufferd installation"
 chmod +x pufferd
 ./pufferd --install --installService --auth {{ settings.master_url }} --token {{ node.daemon_secret }} --config /etc/pufferd/config.json
 checkResponseCode
 
-chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd
+chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
 checkResponseCode
 
 initScript=$(cat << 'EOF'
