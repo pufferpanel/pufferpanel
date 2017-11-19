@@ -217,6 +217,47 @@ function configureApache() {
     fi
 }
 
+function configureHttpd() {
+    if [ -d "/etc/httpd" ]; then
+        echo "Installing Apache HTTPD config (if possible)"
+    else
+        echo "Apache HTTPD folder does not exist, will not install config"
+        return
+    fi
+    if [ "${siteUrl}" == "" ]; then
+        loadConfig
+        siteUrl=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -e "
+            SELECT setting_val FROM acp_settings WHERE setting_ref='master_url'" | head -n 3 | tail -n 1 | sed 's/^http\(\|s\):\/\///g')
+        if [[ "${siteUrl}" == */ ]]; then
+            siteUrl="${siteUrl%?}"
+        fi
+    fi
+
+    conf="<VirtualHost *:80>
+        ServerName ${siteUrl}
+        DocumentRoot ${PWD}/public
+</VirtualHost>
+<Directory '/srv/pufferpanel/public'>
+        Require all granted
+        AllowOverride All
+</Directory>"
+
+    if [ -d "/etc/httpd/conf/extra" ]; then
+        echo "${conf}" > /etc/httpd/conf/extra/pufferpanel.conf
+	grep "Include conf/extra/pufferpanel.conf" /etc/httpd/conf/httpd.conf >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	    echo -e "\nInclude conf/extra/pufferpanel.conf\n" >> /etc/httpd/conf/httpd.conf
+        fi
+    else
+        echo "Could not determine where to install the config"
+        return
+    fi
+
+    sed -i 's|#LoadModule rewrite_module modules/mod_rewrite.so|LoadModule rewrite_module modules/mod_rewrite.so|' /etc/httpd/conf/httpd.conf
+
+    systemctl restart httpd
+}
+
 function configureNginx() {
 
     if [ -d "/etc/nginx" ]; then
@@ -429,6 +470,11 @@ case $1 in
             type apache2 1>/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 configureApache
+            else
+                type httpd 1>/dev/null 2>&1
+                if [ $? -eq 0 ]; then
+                    configureHttpd
+		fi
             fi
         fi
         updateLogOwner
@@ -487,6 +533,9 @@ case $1 in
         ;;
     addapache)
         configureApache
+	;;
+    addhttpd)
+        configureHttpd
         ;;
     update)
         loadConfig
@@ -581,6 +630,6 @@ case $1 in
         ;;
     *)
         echo "PufferPanel"
-        echo "Usage: ./pufferpanel [install/update/upgrade/purge/updatesite/addnginx/addapache/adduser/version]"
+        echo "Usage: ./pufferpanel [install/update/upgrade/purge/updatesite/addnginx/addapache/addhttpd/adduser/version]"
         ;;
 esac
