@@ -465,13 +465,49 @@ case $1 in
         echo "Assuming that the installation completed, you will be able to visit your new panel at ${blue}http://${siteUrl}${normal}"
         ;;
     purge)
-        loadConfig
         echo "${red}WARNING: This will remove the PufferPanel database, including all users and servers!${normal}"
         shopt -s nocasematch
         echo -n "Are you sure you wish delete the PufferPanel database? [y/N]: "
         read upgradeOverride
         if [[ "${upgradeOverride}" != "y" ]]; then
             exit
+        fi
+        loadConfig
+        if [ "${mysqlHost}" == "" ]; then
+          printSeparator
+          mysqlHost=""
+          mysqlPort="3306"
+          mysqlDb="pufferpanel"
+          mysqlUser="root"
+          echo "MySQL configuration not found, please provide the root MySQL credentials"
+          echo -n "Enter the MySQL host [localhost]: "
+          read temp
+          if [ "${temp}" != "" ]; then
+              mysqlHost=${temp}
+          fi
+          echo -n "Enter the MySQL port [3306]: "
+          read temp
+          if [ "${temp}" != "" ]; then
+              mysqlPort=${temp}
+          fi
+          echo -n "Enter the MySQL username (MUST HAVE GRANT) [root]: "
+          read temp
+          if [ "${temp}" != "" ]; then
+              mysqlUser=${temp}
+          fi
+          notValid=true
+          while ${notValid}; do
+              echo -n "Enter the MySQL account password: "
+              read -s temp
+              if [ "${temp}" != "" ]; then
+                  mysqlPass=${temp}
+              fi
+              if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
+                  notValid=false
+              else
+                  echo "Database connection could not be established"
+              fi
+          done
         fi
         mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "DROP DATABASE pufferpanel;"
         echo "Database deleted. You may now run ./pufferpanel install if you wish to reinstall PufferPanel."
