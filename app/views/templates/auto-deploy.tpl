@@ -3,6 +3,12 @@
 
 pufferdVersion={{ pufferdVersion }}
 
+pufferdRepo="pufferd"
+
+if [ "$pufferdVersion" == ""]; then
+    pufferdRepo="pufferd-test"
+fi
+
 export DEBIAN_FRONTEND=noninteractive
 downloadUrl="https://dl.pufferpanel.com/pufferd/${pufferdVersion}/pufferd"
 
@@ -61,6 +67,7 @@ fi
 # Install Other Dependencies
 echo "Installing some dependiencies."
 if [ $OS_INSTALL_CMD == 'apt' ]; then
+    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.deb.sh | bash
     if [ $(lsb_release -sc) == 'jessie' ]; then
         sudo echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
         apt-get update
@@ -75,6 +82,7 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
     fi
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
+    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.rpm.sh | bash
     yum -y install openssl curl git java-1.8.0-openjdk-devel tar glibc.i686 libstdc++.i686
 elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     grep -e "^\[multilib\]$" /etc/pacman.conf &> /dev/null
@@ -83,19 +91,28 @@ elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     else
         echo -e "Please enable [multilib] in /etc/pacman.conf for lib32 libraries"
     fi
-
 fi
 
 # Ensure /srv exists
 echo -e "Creating /srv/pufferd"
 mkdir -p /srv/pufferd
+cd /srv/pufferd
 
 cd /srv/pufferd
-echo -e "Downloading pufferd from $downloadUrl"
-curl -L -o pufferd $downloadUrl
-checkResponseCode
+echo -e "Installing pufferd using package manager"
+if [ $OS_INSTALL_CMD == 'apt' ]; then
+    apt-get update
+    apt-get install pufferd
+elif [ $OS_INSTALL_CMD == 'yum' ]; then
+    yum install -y pufferd
+else
+    echo -e "Downloading pufferd from $downloadUrl"
+    curl -L -o pufferd $downloadUrl
+    checkResponseCode
+fi
 
 mkdir /var/lib/pufferd /etc/pufferd /var/log/pufferd
+
 
 echo -e "Executing pufferd installation"
 chmod +x pufferd
@@ -105,117 +122,9 @@ checkResponseCode
 chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
 checkResponseCode
 
-initScript=$(cat << 'EOF'
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:          pufferd
-# Required-Start:    $local_fs $network $named $time $syslog
-# Required-Stop:     $local_fs $network $named $time $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Description:       pufferd daemon service
-### END INIT INFO
-
-SCRIPT="/srv/pufferd/pufferd --config=/etc/pufferd/config.json"
-RUNAS=pufferd
-
-PIDFILE=/var/run/pufferd.pid
-LOGFILE=/var/log/pufferd.log
-
-start() {
-  if [ -f $PIDFILE ] && [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE); then
-    echo 'Service already running' >&2
-    return 1
-  fi
-  echo 'Starting service…' >&2
-  local CMD="$SCRIPT &> \"$LOGFILE\" & echo \$!"
-  su -c "$CMD" $RUNAS > "$PIDFILE"
- # Try with this command line instead of above if not workable
- # su -s /bin/sh $RUNAS -c "$CMD" > "$PIDFILE"
-
-  sleep 2
-  PID=$(cat $PIDFILE)
-    if pgrep -u $RUNAS -f $NAME > /dev/null
-    then
-      echo "pufferd is now running, the PID is $PID"
-    else
-      echo ''
-      echo "Error! Could not start pufferd"
-    fi
-}
-
-stop() {
-  if [ ! -f "$PIDFILE" ] || ! kill -0 $(cat "$PIDFILE"); then
-    echo 'Service not running' >&2
-    return 1
-  fi
-  echo 'Stopping service…' >&2
-  $SCRIPT --shutdown $(cat "$PIDFILE") && rm -f "$PIDFILE"
-  echo 'Service stopped' >&2
-}
-
-uninstall() {
-  echo -n "Are you really sure you want to uninstall this service? That cannot be undone. [yes|No] "
-  local SURE
-  read SURE
-  if [ "$SURE" = "yes" ]; then
-    stop
-    rm -f "$PIDFILE"
-    echo "Notice: log file was not removed: $LOGFILE" >&2
-    update-rc.d -f pufferd remove
-    rm -fv "$0"
-  fi
-}
-
-status() {
-    printf "%-50s" "Checking pufferd..."
-    if [ -f $PIDFILE ] && [ -s $PIDFILE ]; then
-        PID=$(cat $PIDFILE)
-            if [ -z "$(ps axf | grep ${PID} | grep -v grep)" ]; then
-                printf "%s\n" "The process appears to be dead but pidfile still exists"
-            else
-                echo "Running, the PID is $PID"
-            fi
-    else
-        printf "%s\n" "Service not running"
-    fi
-}
-
-
-case "$1" in
-  start)
-    start
-    ;;
-  stop)
-    stop
-    ;;
-  status)
-    status
-    ;;
-  uninstall)
-    uninstall
-    ;;
-  restart)
-    stop
-    start
-    ;;
-  *)
-    echo "Usage: $0 {start|stop|status|restart|uninstall}"
-esac
-EOF
-)
-
 if type systemctl &> /dev/null; then
   systemctl start pufferd
   systemctl enable pufferd
-else
-  echo "systemd not installed, installing init.d script"
-  echo "${initScript}" > /etc/init.d/pufferd
-  chmod +x "/etc/init.d/pufferd"
-  touch /var/log/pufferd.log
-  chown pufferd:pufferd /var/log/pufferd.log
-  update-rc.d pufferd defaults
-  service pufferd start
 fi
 
 echo "Preparing for docker containers if enabled"
