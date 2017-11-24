@@ -93,27 +93,25 @@ elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     fi
 fi
 
-# Ensure /srv exists
-echo -e "Creating /srv/pufferd"
-mkdir -p /srv/pufferd
-cd /srv/pufferd
+mkdir /var/lib/pufferd /var/log/pufferd
 
-cd /srv/pufferd
 echo -e "Installing pufferd using package manager"
+pufferdLocation="/srv/pufferd"
 if [ $OS_INSTALL_CMD == 'apt' ]; then
     apt-get update
     apt-get install pufferd
+    pufferdLocation="/usr/bin/pufferd"
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
     yum install -y pufferd
+    pufferdLocation="/usr/bin/pufferd"
 else
     echo -e "Downloading pufferd from $downloadUrl"
-    curl -L -o pufferd $downloadUrl
+    mkdir -p /srv/pufferd
+    curl -L -o /srv/pufferd/pufferd $downloadUrl
     checkResponseCode
 fi
 
-mkdir /var/lib/pufferd /etc/pufferd /var/log/pufferd
-
-
+cd $pufferdLocation
 echo -e "Executing pufferd installation"
 chmod +x pufferd
 ./pufferd --install --installService --auth {{ settings.master_url }} --token {{ node.daemon_secret }} --config /etc/pufferd/config.json
