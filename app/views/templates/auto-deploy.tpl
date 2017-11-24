@@ -5,7 +5,7 @@ pufferdVersion={{ pufferdVersion }}
 
 pufferdRepo="pufferd"
 
-if [ "$pufferdVersion" == "nightly"]; then
+if [ "${pufferdVersion}" == "nightly" ]; then
     pufferdRepo="pufferd-test"
 fi
 
