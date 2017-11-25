@@ -33,7 +33,7 @@ if [ "$SUDO_USER" == "" ]; then
     SUDO_USER="root"
 fi
 
-if [ -f /srv/pufferd/pufferd ]; then
+if [ -f /srv/pufferd/pufferd || -f /usr/sbin/pufferd ]; then
     echo "${red}WARNING: pufferd is already installed, continuing will DELETE the current pufferd installation and ALL SERVER FILES${normal}"
     echo "It is highly recommended that you back up all data in ${bold}/var/lib/pufferd${normal} prior to reinstalling"
     shopt -s nocasematch
@@ -42,7 +42,11 @@ if [ -f /srv/pufferd/pufferd ]; then
     if [[ "${installOverride}" != "y" ]]; then
         exit
     fi
-    /srv/pufferd/pufferd -uninstall
+    if [ -f /srv/pufferd/pufferd ]; then
+        /srv/pufferd/pufferd -uninstall
+    else
+        /usr/sbin/pufferd -uninstall
+    fi
 fi
 
 if type apt-get &> /dev/null; then
@@ -117,8 +121,12 @@ chmod +x pufferd
 ./pufferd --install --installService --auth {{ settings.master_url }} --token {{ node.daemon_secret }} --config /etc/pufferd/config.json
 checkResponseCode
 
-chown -R pufferd:pufferd /srv/pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
+chown -R pufferd:pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
 checkResponseCode
+
+if [ -f /srv/pufferd ]; then
+    chown -R pufferd:pufferd /srv/pufferd
+fi
 
 if type systemctl &> /dev/null; then
   systemctl start pufferd
