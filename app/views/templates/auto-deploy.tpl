@@ -100,10 +100,10 @@ pufferdLocation="/srv/pufferd"
 if [ $OS_INSTALL_CMD == 'apt' ]; then
     apt-get update
     apt-get install pufferd
-    pufferdLocation="/usr/bin/pufferd"
+    pufferdLocation="/usr/sbin/"
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
     yum install -y pufferd
-    pufferdLocation="/usr/bin/pufferd"
+    pufferdLocation="/usr/sbin/"
 else
     echo -e "Downloading pufferd from $downloadUrl"
     mkdir -p /srv/pufferd
