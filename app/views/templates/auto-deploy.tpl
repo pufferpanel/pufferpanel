@@ -33,7 +33,7 @@ if [ "$SUDO_USER" == "" ]; then
     SUDO_USER="root"
 fi
 
-if [ -f /srv/pufferd/pufferd || -f /usr/sbin/pufferd ]; then
+if [ -f /srv/pufferd/pufferd ] || [ -f /usr/sbin/pufferd ]; then
     echo "${red}WARNING: pufferd is already installed, continuing will DELETE the current pufferd installation and ALL SERVER FILES${normal}"
     echo "It is highly recommended that you back up all data in ${bold}/var/lib/pufferd${normal} prior to reinstalling"
     shopt -s nocasematch
