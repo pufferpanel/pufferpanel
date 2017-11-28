@@ -124,18 +124,19 @@ checkResponseCode
 chown -R pufferd:pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
 checkResponseCode
 
+echo "Preparing for docker containers if enabled"
+groupadd --force --system docker
+usermod -a -G docker pufferd
+
 if [ -f /srv/pufferd ]; then
     chown -R pufferd:pufferd /srv/pufferd
 fi
 
 if type systemctl &> /dev/null; then
+    echo "Starting service"
   systemctl start pufferd
   systemctl enable pufferd
 fi
-
-echo "Preparing for docker containers if enabled"
-groupadd --force --system docker
-usermod -a -G docker pufferd
 
 echo "Successfully installed the daemon"
 
