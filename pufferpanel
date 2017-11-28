@@ -569,7 +569,7 @@ case $1 in
         ;;
     addapache)
         configureApache
-	;;
+	      ;;
     addhttpd)
         configureHttpd
         ;;
@@ -603,8 +603,8 @@ case $1 in
         loadConfig
         updateLogOwner
 
-        echo "This will upgrade your database from v1.0.x to v1.1.x"
-        echo "Please do not run this upgrade if your database schema is already up to date (v1.1.x). ${bold}Doing so can cause data loss.${normal}"
+        echo "This will upgrade your database from v1.1.x to v1.2.x"
+        echo "Please do not run this upgrade if your database schema is already up to date (v1.2.x). ${bold}Doing so can cause data loss.${normal}"
         printSeparator
 
         echo "In order to upgrade the database we need to login using elevated privileges."
@@ -633,7 +633,7 @@ case $1 in
         dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
             SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
 
-        if [[ "${dbVersion}" == "1.1.1" ]] || [[ "${dbVersion}" == "v1.1.2" ]] || [[ "${dbVersion}" == "v1.1.3" ]] || [[ "${dbVersion}" == "v1.1.4" ]]; then
+        if [[ "${dbVersion}" == "1.2.0" ]] || [[ "${dbVersion}" == "v1.2.1" ]]; then
           alreadyUpgraded=true
         else
           alreadyUpgraded=false
