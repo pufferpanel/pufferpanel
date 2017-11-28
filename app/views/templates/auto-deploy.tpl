@@ -71,6 +71,7 @@ if [ -f /srv/pufferd/pufferd ] || [ -f /usr/sbin/pufferd ]; then
         elif [ $OS_INSTALL_CMD == 'yum' ]; then
           yum remove pufferd
           rm -rf /etc/pufferd
+        fi
     fi
 fi
 
