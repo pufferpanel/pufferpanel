@@ -33,22 +33,7 @@ if [ "$SUDO_USER" == "" ]; then
     SUDO_USER="root"
 fi
 
-if [ -f /srv/pufferd/pufferd ] || [ -f /usr/sbin/pufferd ]; then
-    echo "${red}WARNING: pufferd is already installed, continuing will DELETE the current pufferd installation and ALL SERVER FILES${normal}"
-    echo "It is highly recommended that you back up all data in ${bold}/var/lib/pufferd${normal} prior to reinstalling"
-    shopt -s nocasematch
-    echo -n "Are you sure you wish DELETE ALL SERVER FILES and reinstall pufferd? [y/N]: "
-    read installOverride
-    if [[ "${installOverride}" != "y" ]]; then
-        exit
-    fi
-    if [ -f /srv/pufferd/pufferd ]; then
-        /srv/pufferd/pufferd -uninstall
-    else
-        /usr/sbin/pufferd -uninstall
-    fi
-fi
-
+# Determine distro type
 if type apt-get &> /dev/null; then
     if [[ -f /etc/debian_version ]]; then
         echo -e "System detected as some variant of Ubuntu or Debian."
@@ -66,6 +51,27 @@ elif type pacman &> /dev/null; then
 else
     echo -e "${RED}This OS does not appear to be supported by this program, or apt-get/yum is not installed!${NORMAL}"
     exit 1
+fi
+
+# Uninstall if already installed
+if [ -f /srv/pufferd/pufferd ] || [ -f /usr/sbin/pufferd ]; then
+    echo "${red}WARNING: pufferd is already installed, continuing will DELETE the current pufferd installation and ALL SERVER FILES${normal}"
+    echo "It is highly recommended that you back up all data in ${bold}/var/lib/pufferd${normal} prior to reinstalling"
+    shopt -s nocasematch
+    echo -n "Are you sure you wish DELETE ALL SERVER FILES and reinstall pufferd? [y/N]: "
+    read installOverride
+    if [[ "${installOverride}" != "y" ]]; then
+        exit
+    fi
+    if [ -f /srv/pufferd/pufferd ]; then
+        /srv/pufferd/pufferd --uninstall
+    elif [ -f /usr/sbin/pufferd ]; then
+        if [ $OS_INSTALL_CMD == 'apt' ]; then
+          apt-get remove --purge pufferd
+        elif [ $OS_INSTALL_CMD == 'yum' ]; then
+          yum remove pufferd
+          rm -rf /etc/pufferd
+    fi
 fi
 
 # Install Other Dependencies
