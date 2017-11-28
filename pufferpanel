@@ -376,7 +376,7 @@ function updateLogOwner() {
     fi
 
     phpGroup=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
-    if [ "${phpOwner}" = "" ]; then
+    if [ "${phpGroup}" = "" ]; then
         echo -e "Could not determine PHP group, cannot correct log folder owner"
         return
     fi
