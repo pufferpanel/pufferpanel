@@ -21,7 +21,7 @@
 					<th>Node</th>
 					<th>Bind Address</th>
 					<th>Owner Information</th>
-					<th></th>
+					<!--<th></th>-->
 				</tr>
 			</thead>
 			<tbody>
@@ -32,8 +32,7 @@
 						<td><a href="/admin/node/view/{{ server.node }}">{{ server.node_name }}</a></td>
 						<td><code>{{ server.connection }}</code></td>
 						<td><a href="/admin/account/view/{{ server.owner_id }}">{{ server.user_email }}</a></td>
-						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
-					</tr>
+						<!--<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>-->
 				{% endfor %}
 			</tbody>
 		</table>
