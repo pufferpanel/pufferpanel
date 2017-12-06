@@ -122,6 +122,13 @@ else
     checkResponseCode
 fi
 
+echo "Stopping service to prepare for installation"
+if type systemctl &> /dev/null; then
+    systemctl stop pufferd
+else
+    service pufferd stop
+fi
+
 cd $pufferdLocation
 echo -e "Executing pufferd installation"
 chmod +x pufferd
@@ -141,8 +148,10 @@ fi
 
 if type systemctl &> /dev/null; then
     echo "Starting service"
-  systemctl start pufferd
-  systemctl enable pufferd
+    systemctl start pufferd
+    systemctl enable pufferd
+else
+    service pufferd start
 fi
 
 echo "Successfully installed the daemon"
