@@ -141,7 +141,9 @@ function handleServerProxyCall($request, $response) {
 
     $p = '';
     if ($request->param('path', '') !== '') {
-        $p = '/' . urlencode($request->param('path'));
+        //$p = '/' . urlencode($request->param('path'));
+        $prefix = '/daemon/server/';
+        $p = substr($request->uri(), strlen($prefix));
     }
 
     $updatedUrl = sprintf('%s/server/%s%s', Daemon::buildBaseUrlForNode($nodeObj->ip, $nodeObj->daemon_listen), $server, $p);
