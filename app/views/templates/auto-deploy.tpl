@@ -81,20 +81,23 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
     curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.deb.sh | bash
     if [ $(lsb_release -sc) == 'jessie' ]; then
         sudo echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
+        dpkg --add-architecture i386
         apt-get update
         apt-get install -y -t jessie-backports openjdk-8-jdk-headless
-        apt-get install -y openssl curl git tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6 libcurl3-gnutls:i386
     elif [ $(lsb_release -sc) == 'trusty' ]; then
         sudo add-apt-repository -y ppa:openjdk-r/ppa
+        dpkg --add-architecture i386
         apt-get update
-        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6 libcurl3-gnutls:i386
     else
+        dpkg --add-architecture i386
         apt-get update
-        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6
+        apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6 libcurl3-gnutls:i386
     fi
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
     curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.rpm.sh | bash
-    yum -y install openssl curl git java-1.8.0-openjdk-devel tar glibc.i686 libstdc++.i686
+    yum -y install openssl curl git java-1.8.0-openjdk-devel tar glibc.i686 libstdc++.i686 libcurl.i686
 elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     grep -e "^\[multilib\]$" /etc/pacman.conf &> /dev/null
     if [ $? -eq 0 ]; then
@@ -122,10 +125,11 @@ else
     checkResponseCode
 fi
 
-echo "Stopping service to prepare for installation"
 if type systemctl &> /dev/null; then
+    echo "Stopping service to prepare for installation"
     systemctl stop pufferd
-else
+elif type service &> /dev/null; then
+    echo "Stopping service to prepare for installation"
     service pufferd stop
 fi
 
@@ -147,10 +151,11 @@ if [ -f /srv/pufferd ]; then
 fi
 
 if type systemctl &> /dev/null; then
-    echo "Starting service"
+    echo "Starting pufferd service"
     systemctl start pufferd
     systemctl enable pufferd
-else
+elif type service &> /dev/null; then
+    echo "Starting pufferd service"
     service pufferd start
 fi
 
