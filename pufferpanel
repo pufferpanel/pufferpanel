@@ -574,87 +574,30 @@ case $1 in
         configureHttpd
         ;;
     update)
-        loadConfig
-        updateLogOwner
-
-        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
-            SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
-        ppVersion=$(<src/versions/current)
-
-        if [[ "${dbVersion}" == "${ppVersion}" ]]; then
-          echo "This update has already been run"
-          shopt -s nocasematch
-          echo -n "Are you sure you wish to run the update anyway? [y/N]: "
-          read updateOverride
-          if [[ "${updateOverride}" != "y" ]]; then
-              exit
-          fi
-        fi
-
-        if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "y" ]]; then
-          echo "Running update"
-          mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
-          echo "Database query executed. If no errors were reported then the update was successful"
-          echo "Please make sure to update pufferd to the latest version as well"
-        fi
-
+          echo "The current install version is v1.2.0, there are no updates available yet."
         ;;
     upgrade)
-        loadConfig
-        updateLogOwner
+    loadConfig
+    updateLogOwner
 
-        echo "This will upgrade your database from v1.1.x to v1.2.x"
-        echo "Please do not run this upgrade if your database schema is already up to date (v1.2.x). ${bold}Doing so can cause data loss.${normal}"
-        printSeparator
+    dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
+        SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
+    ppVersion=$(<src/versions/current)
 
-        echo "In order to upgrade the database we need to login using elevated privileges."
-        echo "This is generally done by using the root MySQL account created when MySQL was installed."
-        mysqlUser="root"
-        echo -n "Enter the MySQL username (MUST HAVE GRANT ALL ON pufferpanel.*) [root]: "
-        read temp
-        if [ "${temp}" != "" ]; then
-            mysqlUser=${temp}
-        fi
-        notValid=true
-        while ${notValid}; do
-            echo -n "Enter the MySQL account password: "
-            read -s temp
-            if [ "${temp}" != "" ]; then
-                mysqlPass=${temp}
-            fi
-            if mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "exit"; then
-                notValid=false
-            else
-                echo "Database connection could not be established"
-            fi
-        done
+    if [[ "${dbVersion}" == "${ppVersion}" ]]; then
+      echo "This update has already been run"
+      shopt -s nocasematch
+      echo -n "Are you sure you wish to run the update anyway? [y/N]: "
+      read updateOverride
+      if [[ "${updateOverride}" != "y" ]]; then
+          exit
+      fi
+    fi
 
-        echo ""
-        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
-            SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
-
-        if [[ "${dbVersion}" == "1.2.0" ]] || [[ "${dbVersion}" == "v1.2.1" ]]; then
-          alreadyUpgraded=true
-        else
-          alreadyUpgraded=false
-        fi
-
-        if [[ "${alreadyUpgraded}" == "true" ]]; then
-          echo "${red}WARNING: DATABASE SCHEMA ALREADY UPGRADED, CONTINUING WILL LIKELY DAMAGE YOUR DATABASE${normal}"
-          shopt -s nocasematch
-          echo -n "Are you sure you wish to run the upgrade anyway? [y/N]: "
-          read upgradeOverride
-          if [[ "${upgradeOverride}" != "y" ]]; then
-              exit
-          fi
-        fi
-
-        if [[ "${alreadyUpgraded}" == "false" ]] || [[ "${upgradeOverride}" == "y" ]]; then
-          echo "Attempting to upgrade database, please wait..."
-          mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/upgrade.sql
-          echo "Database query executed. If no errors were reported then the upgrade was successful"
-          echo "Please make sure to update pufferd to the latest version as well"
-        fi
+    if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "y" ]]; then
+      echo "Running update"
+      mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
+      echo "Database query executed. If no errors were reported then the update was successful"
         ;;
         version)
           loadConfig
