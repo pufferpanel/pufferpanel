@@ -387,6 +387,7 @@ function updateLogOwner() {
 function getPhpConfLocation(){
     declare -a wwwConfLocations=(
         "/etc/php/7.0/fpm/pool.d/www.conf"
+        "/etc/php/7.1/fpm/pool.d/www.conf"
         "/etc/php/*/fpm/pool.d/www.conf"
         "/etc/php-fpm.d/www.conf"
         "/etc/php/php-fpm.d/www.conf"
