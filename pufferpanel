@@ -574,38 +574,39 @@ case $1 in
         configureHttpd
         ;;
     update)
-          echo "The current install version is v1.2.0, there are no updates available yet."
+        echo "The current install version is v1.2.0, there are no updates available yet."
         ;;
     upgrade)
-    loadConfig
-    updateLogOwner
+        loadConfig
+        updateLogOwner
 
-    dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
-        SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
-    ppVersion=$(<src/versions/current)
+        dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
+            SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
+        ppVersion=$(<src/versions/current)
 
-    if [[ "${dbVersion}" == "${ppVersion}" ]]; then
-      echo "This update has already been run"
-      shopt -s nocasematch
-      echo -n "Are you sure you wish to run the update anyway? [y/N]: "
-      read updateOverride
-      if [[ "${updateOverride}" != "y" ]]; then
-          exit
-      fi
-    fi
+        if [[ "${dbVersion}" == "${ppVersion}" ]]; then
+          echo "This update has already been run"
+          shopt -s nocasematch
+          echo -n "Are you sure you wish to run the update anyway? [y/N]: "
+          read updateOverride
+          if [[ "${updateOverride}" != "y" ]]; then
+              exit
+          fi
+        fi
 
-    if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "y" ]]; then
-      echo "Running update"
-      mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
-      echo "Database query executed. If no errors were reported then the update was successful"
+        if [[ "${dbVersion}" != "${ppVersion}" ]] || [[ "${updateOverride}" == "y" ]]; then
+          echo "Running update"
+          mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" < install/update.sql
+          echo "Database query executed. If no errors were reported then the update was successful"
+        fi
         ;;
-        version)
-          loadConfig
-          ppVersion=$(<src/versions/current)
-          dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
-              SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
-          echo "PufferPanel version ${ppVersion}"
-          echo "Database schema version ${dbVersion}"
+    version)
+      loadConfig
+      ppVersion=$(<src/versions/current)
+      dbVersion=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -N -e "
+          SELECT metaValue FROM _meta WHERE metaKey='version'" 2>/dev/null)
+      echo "PufferPanel version ${ppVersion}"
+      echo "Database schema version ${dbVersion}"
         ;;
     *)
         echo "PufferPanel"
