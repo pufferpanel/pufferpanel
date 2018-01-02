@@ -26,4 +26,6 @@ UPDATE oauth_clients
 SET scopes = CONCAT(scopes , ' server.edit')
 WHERE scopes NOT LIKE '%server.edit%' AND users.root_admin = 1;
 
+ALTER TABLE users MODIFY `session_id` char(40);
+
 SET FOREIGN_KEY_CHECKS = 1;
