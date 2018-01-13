@@ -126,7 +126,7 @@ if -f "${pufferdLocation}/pufferd" &> /dev/null; then
 fi
 
 if [ "$installed" != "1" ]; then
-    echo -e "Failed to install using package manager, manually installing
+    echo -e "Failed to install using package manager, manually installing"
     echo -e "Downloading pufferd from $downloadUrl"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
