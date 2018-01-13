@@ -128,6 +128,7 @@ fi
 if [ "$installed" != "1" ]; then
     echo -e "Failed to install using package manager, manually installing"
     echo -e "Downloading pufferd from $downloadUrl"
+    pufferdLocation="/srv/pufferd"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
     checkResponseCode
