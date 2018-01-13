@@ -76,9 +76,8 @@ if [ -f /srv/pufferd/pufferd ] || [ -f /usr/sbin/pufferd ]; then
 fi
 
 # Install Other Dependencies
-echo "Installing some dependiencies."
+echo "Installing some dependencies"
 if [ $OS_INSTALL_CMD == 'apt' ]; then
-    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.deb.sh | bash
     if [ $(lsb_release -sc) == 'jessie' ]; then
         sudo echo "deb http://http.debian.net/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
         dpkg --add-architecture i386
@@ -95,9 +94,10 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
         apt-get update
         apt-get install -y openssl curl git openjdk-8-jdk-headless tar lib32gcc1 lib32tinfo5 lib32z1 lib32stdc++6 libcurl3-gnutls:i386
     fi
+    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.deb.sh | bash
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
-    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.rpm.sh | bash
     yum -y install openssl curl git java-1.8.0-openjdk-devel tar glibc.i686 libstdc++.i686 libcurl.i686
+    curl -s https://packagecloud.io/install/repositories/pufferpanel/${pufferdRepo}/script.rpm.sh | bash
 elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     grep -e "^\[multilib\]$" /etc/pacman.conf &> /dev/null
     if [ $? -eq 0 ]; then
@@ -107,10 +107,11 @@ elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     fi
 fi
 
-mkdir /var/lib/pufferd /var/log/pufferd
+mkdir /var/lib/pufferd /var/log/pufferd /etc/pufferd
 
 echo -e "Installing pufferd using package manager"
 pufferdLocation="/srv/pufferd"
+installed=0
 if [ $OS_INSTALL_CMD == 'apt' ]; then
     apt-get update
     apt-get install pufferd
@@ -118,7 +119,14 @@ if [ $OS_INSTALL_CMD == 'apt' ]; then
 elif [ $OS_INSTALL_CMD == 'yum' ]; then
     yum install -y pufferd
     pufferdLocation="/usr/sbin/"
-else
+fi
+
+if -f "${pufferdLocation}/pufferd" &> /dev/null; then
+    installed=1
+fi
+
+if [ "$installed" != "1" ]; then
+    echo -e "Failed to install using package manager, manually installing
     echo -e "Downloading pufferd from $downloadUrl"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
@@ -140,7 +148,6 @@ chmod +x pufferd
 checkResponseCode
 
 chown -R pufferd:pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
-checkResponseCode
 
 echo "Preparing for docker containers if enabled"
 groupadd --force --system docker
