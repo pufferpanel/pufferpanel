@@ -24,6 +24,25 @@ function checkResponseCode() {
     fi
 }
 
+function writeServiceFile() {
+    echo -e "Installing service file"
+    echo -e "[Unit]
+Description=pufferd daemon service
+
+[Service]
+Type=simple
+WorkingDirectory=/var/lib/pufferd
+ExecStart=/usr/sbin/pufferd --run
+ExecStop=/usr/sbin/pufferd --shutdown $MAINPID
+User=pufferd
+Group=pufferd
+TimeoutStopSec=2m
+SendSIGKILL=no
+
+[Install]
+WantedBy=multi-user.target" > /usr/lib/systemd/system/pufferd.service
+}
+
 if [ "$(id -u)" != "0" ]; then
     echo "This script must be run as root!" 1>&2
     exit 1
@@ -107,7 +126,7 @@ elif [ $OS_INSTALL_CMD == 'pacman' ]; then
     fi
 fi
 
-mkdir /var/lib/pufferd /var/log/pufferd /etc/pufferd
+mkdir -p /var/lib/pufferd /var/log/pufferd /etc/pufferd
 
 echo -e "Installing pufferd using package manager"
 pufferdLocation="/srv/pufferd"
@@ -131,6 +150,8 @@ if [ "$installed" != "1" ]; then
     pufferdLocation="/srv/pufferd"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
+    chmod +x /srv/pufferd/pufferd
+    writeServiceFile
     checkResponseCode
 fi
 
@@ -144,19 +165,17 @@ fi
 
 cd $pufferdLocation
 echo -e "Executing pufferd installation"
-chmod +x pufferd
 ./pufferd --install --auth {{ settings.master_url }} --token {{ node.daemon_secret }} --config /etc/pufferd/config.json
 checkResponseCode
 
 chown -R pufferd:pufferd /var/lib/pufferd /etc/pufferd /var/log/pufferd
+if [ -f /srv/pufferd ]; then
+  chown -R pufferd:pufferd /srv/pufferd
+fi
 
 echo "Preparing for docker containers if enabled"
 groupadd --force --system docker
 usermod -a -G docker pufferd
-
-if [ -f /srv/pufferd ]; then
-    chown -R pufferd:pufferd /srv/pufferd
-fi
 
 if type systemctl &> /dev/null; then
     echo "Starting pufferd service"
