@@ -26,7 +26,7 @@ function checkResponseCode() {
 
 function writeServiceFile() {
     echo -e "Installing service file"
-    echo -e "[Unit]
+    echo "[Unit]
 Description=pufferd daemon service
 
 [Service]
@@ -40,7 +40,7 @@ TimeoutStopSec=2m
 SendSIGKILL=no
 
 [Install]
-WantedBy=multi-user.target" > /usr/lib/systemd/system/pufferd.service
+WantedBy=multi-user.target" > /lib/systemd/system/pufferd.service
 }
 
 if [ "$(id -u)" != "0" ]; then
