@@ -150,9 +150,12 @@ if [ "$installed" != "1" ]; then
     pufferdLocation="/srv/pufferd"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
+    checkResponseCode
     chmod +x /srv/pufferd/pufferd
+    checkResponseCode
     writeServiceFile
     checkResponseCode
+    useradd --system --home /var/lib/pufferd --user-group pufferd
 fi
 
 if type systemctl &> /dev/null; then
