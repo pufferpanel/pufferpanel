@@ -32,8 +32,8 @@ Description=pufferd daemon service
 [Service]
 Type=simple
 WorkingDirectory=/var/lib/pufferd
-ExecStart=/usr/sbin/pufferd --run
-ExecStop=/usr/sbin/pufferd --shutdown $MAINPID
+ExecStart=${pufferdLocation}pufferd --run
+ExecStop=${pufferdLocation}pufferd --shutdown $MAINPID
 User=pufferd
 Group=pufferd
 TimeoutStopSec=2m
@@ -147,7 +147,7 @@ fi
 if [ "$installed" != "1" ]; then
     echo -e "Failed to install using package manager, manually installing"
     echo -e "Downloading pufferd from $downloadUrl"
-    pufferdLocation="/srv/pufferd"
+    pufferdLocation="/srv/pufferd/"
     mkdir -p /srv/pufferd
     curl -L -o /srv/pufferd/pufferd $downloadUrl
     checkResponseCode
