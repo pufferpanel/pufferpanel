@@ -277,7 +277,7 @@ function configureNginx() {
 
     getPhpConfLocation
 
-    phpSocket=$(grep "^listen[| ]\?=[| ]" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpSocket=$(grep "^listen[| ]\?=[| ]" $phpWWWConfLocation 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
         echo -e "Could not determine where PHP config is, cannot install config"
         return
@@ -369,13 +369,13 @@ function configureNginx() {
 function updateLogOwner() {
     getPhpConfLocation
 
-    phpUser=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpUser=$(grep "^user \?= \?" $phpWWWConfLocation 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpUser}" = "" ]; then
         echo -e "Could not determine PHP user, cannot correct log folder owner"
         return
     fi
 
-    phpGroup=$(grep "^user \?= \?" "$phpWWWConfLocation" 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
+    phpGroup=$(grep "^user \?= \?" $phpWWWConfLocation 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpGroup}" = "" ]; then
         echo -e "Could not determine PHP group, cannot correct log folder owner"
         return
@@ -386,8 +386,6 @@ function updateLogOwner() {
 
 function getPhpConfLocation(){
     declare -a wwwConfLocations=(
-        "/etc/php/7.0/fpm/pool.d/www.conf"
-        "/etc/php/7.1/fpm/pool.d/www.conf"
         "/etc/php/*/fpm/pool.d/www.conf"
         "/etc/php-fpm.d/www.conf"
         "/etc/php/php-fpm.d/www.conf"
