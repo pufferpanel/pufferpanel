@@ -140,11 +140,9 @@ elif [ $OS_INSTALL_CMD == 'yum' ]; then
     pufferdLocation="/usr/sbin/"
 fi
 
-if -f "${pufferdLocation}/pufferd" &> /dev/null; then
-    installed=1
-fi
-
-if [ "$installed" != "1" ]; then
+if [ -f "${pufferdLocation}/pufferd" ]; then
+    echo "Detected installation via package successful"
+else
     echo -e "Failed to install using package manager, manually installing"
     echo -e "Downloading pufferd from $downloadUrl"
     pufferdLocation="/srv/pufferd/"
