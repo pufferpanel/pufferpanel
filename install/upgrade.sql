@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `_meta` (
 );
 
 INSERT INTO _meta (metaKey, metaValue) VALUES
-  ('version', 'v1.2.0'),
+  ('version', 'v1.2.1'),
   ('updateDate', CURRENT_TIMESTAMP)
   ON DUPLICATE KEY UPDATE
   metaKey=VALUES(metaKey),
