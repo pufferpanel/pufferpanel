@@ -427,12 +427,12 @@ case $1 in
             exit 1;
         fi
 
-        result=$(php -r 'exit (version_compare(PHP_VERSION, "7.0.0") < 0 ? "1" : "0");');
+        result=$(php -r 'exit (version_compare(PHP_VERSION, "7.1.0") < 0 ? "1" : "0");');
         if [ "$result" == "0" ]; then
-            echo "PHP 7.0.0+: [${green}Installed${normal}]"
+            echo "PHP 7.1.0+: [${green}Installed${normal}]"
         else
-            echo "PHP 7.0.0+: [${red}Not Installed${normal}]"
-            canInstall=false
+            echo "PHP 7.1.0+: [${red}Not Installed${normal}]"
+            canInstall=0
         fi
 
         extensions=("curl" "hash" "openssl" "pdo" "pdo_mysql")
