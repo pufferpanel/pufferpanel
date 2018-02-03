@@ -3,6 +3,9 @@
 {% block title %}Find a Server{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/assets/css/datatables.min.css">
+<script src="/assets/javascript/datatables.min.js"></script>
+
 <div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
@@ -13,7 +16,7 @@
 	{% endif %}
 	<div class="tab-pane" id="list_all">
 		<h3>All Servers</h3><hr />
-		<table class="table table-striped table-bordered table-hover">
+		<table class="table table-striped table-bordered table-hover" id="serverTable">
 			<thead>
 				<tr>
 					<th style="width:2%"></th>
@@ -60,6 +63,8 @@ $(document).ready(function(){
 	updateServerStatus();
 	setInterval(updateServerStatus, 30000);
 	$("#sidebar_links").find("a[href='/admin/server']").addClass('active');
+
+    $('#serverTable').DataTable();
 });
 </script>
 {% endblock %}
