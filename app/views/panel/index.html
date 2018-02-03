@@ -3,6 +3,9 @@
 {% block title %}Your Servers{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/assets/css/datatables.min.css">
+<script src="/assets/javascript/datatables.min.js"></script>
+
 <div class="col-md-9">
 	{% if flash.info is defined %}
 		{{ flash.info.0|raw }}
@@ -19,7 +22,7 @@
 
 		<hr>
 
-		<table class="table table-striped table-bordered table-hover">
+		<table id="serverTable" class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
 					{% if user.root_admin == 1 %}<th></th>{% endif %}
@@ -71,6 +74,8 @@ $(window).load(function() {
 	//updateServerStatus();
 	//setInterval(updateServerStatus, 30000);
 	$("#sidebar_links").find("a[href='/index']").addClass('active');
+
+    $('#serverTable').DataTable();
 });
 </script>
 {% endblock %}

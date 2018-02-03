@@ -3,6 +3,9 @@
 {% block title %}Find Users{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/assets/css/datatables.min.css">
+<script src="/assets/javascript/datatables.min.js"></script>
+
 <div class="col-md-9">
 	<ul class="breadcrumb">
 		<li><a href="/admin/index">Admin Control</a></li>
@@ -12,7 +15,7 @@
 		{{ flash.info.0|raw }}
 	{% endif %}
 	<h3>All Registered Users</h3><hr />
-	<table class="table table-striped table-bordered table-hover">
+	<table class="table table-striped table-bordered table-hover" id="userTable">
 		<thead>
 			<tr>
 				<th>Username</th>
@@ -35,6 +38,8 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#sidebar_links").find("a[href='/admin/account']").addClass('active');
+
+    $('#userTable').DataTable();
 });
 </script>
 {% endblock %}
