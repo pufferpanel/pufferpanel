@@ -40,6 +40,37 @@ $klein->respond('POST', '/auth/login', function($request, $response, $service) u
         return;
     }
 
+    if (Settings::config('captcha_priv')) {
+
+        $failed = false;
+
+        try {
+
+            $unirest = Unirest\Request::get("https://www.google.com/recaptcha/api/siteverify", array(), array(
+                'secret' => Settings::config('captcha_priv'),
+                'response' => $request->param('g-recaptcha-response'),
+                'remoteip' => $request->ip()
+            ));
+
+            if (!isset($unirest->body->success) || !$unirest->body->success) {
+
+                $service->flash('<div class="alert alert-danger">The spam prevention was not filled out correctly. Please try it again.</div>');
+                $failed = true;
+            }
+
+        } catch (\Exception $e) {
+
+            $service->flash('<div class="alert alert-danger">Unable to query the captcha validation servers. Please try it again.</div>');
+            $failed = true;
+        }
+
+        if ($failed) {
+            $response->redirect('/auth/login');
+            return;
+        }
+
+    }
+
     $account = ORM::forTable('users')->where('email', $request->param('email'))->findOne();
 
     if (!$core->auth->verifyPassword($request->param('email'), $request->param('password'))) {
