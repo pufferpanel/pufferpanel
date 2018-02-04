@@ -5,6 +5,11 @@
 {% block navbar %}{% endblock %}
 {% block sidebar %}{% endblock %}
 
+{% block scripts %}
+{{ parent() }}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
+
 {% block content %}
 <div class="col-md-6">
    	<form action="/auth/login" method="POST" id="login-form">
@@ -30,6 +35,14 @@
     				<label><input type="checkbox" name="remember_me" /> Remember Me</label>
     			</div>
     		</div>
+			{% if settings.captcha_priv %}
+			<div class="form-group">
+				<label for="recaptcha_response_field" class="control-label">{{ l.render('string.spam_protection') }} <a href="javascript:grecaptcha.reset()">{{ l.render('string.refresh') }}</a></label>
+				<div>
+					<div class="g-recaptcha" id="recaptcha_response_field" data-sitekey="{{ settings.captcha_pub }}"></div>
+				</div>
+			</div>
+			{% endif %}
     		<div class="form-group">
     			<div>
                     {{ xsrf|raw }}
