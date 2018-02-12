@@ -37,6 +37,7 @@
     "wildbit/postmark-php": "~2.3",
     "mailgun/mailgun-php": "~2.2",
     "paragonie/random_compat": "~2.0",
-    "php-http/guzzle6-adapter": "~1.1"
+    "php-http/guzzle6-adapter": "~1.1",
+    "symfony/options-resolver": "~3.4"
   }
 }
