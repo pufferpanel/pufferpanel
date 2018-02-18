@@ -15,7 +15,7 @@ func TestLocation_ValidatePass(t *testing.T) {
 	}
 
 	validationErrors, err := loc.Validate(nil)
-	assert.NoError(t, err, "location is not valid when it should be")
+	assert.NoError(t, err, "error thrown when there should have been", err)
 	assert.Falsef(t, validationErrors.HasAny(), "location is not valid: (%v)", validationErrors)
 }
 

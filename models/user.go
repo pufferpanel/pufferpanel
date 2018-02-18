@@ -42,13 +42,17 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	//validate id, username, email, and password are set
 	validationErrors := validate.NewErrors()
 
-	err := validation.ValidateStruct(&u,
+	err := validation.ValidateStruct(u,
 		validation.Field(&u.Email, validation.Required, is.Email),
 		validation.Field(&u.Username, validation.Required),
 		validation.Field(&u.HashedPassword, validation.Required),
 	)
 
 	errs, ok := err.(validation.Errors)
+
+	if err == nil {
+		ok = true
+	}
 
 	if ok && (err != nil && errs.Filter() != nil) {
 		for k, v := range errs {
