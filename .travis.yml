@@ -1,3 +1,20 @@
-branches:
-  only:
-    - 2.0.0
+language: go
+
+go:
+  - 1.9.x
+
+env:
+  - GO_ENV=test
+
+
+
+before_script:
+  - mkdir -p $TRAVIS_BUILD_DIR/public/assets
+
+go_import_path: github.com/pufferpanel/pufferpanel
+
+install:
+  - go get github.com/gobuffalo/buffalo/buffalo
+  - go get $(go list ./... | grep -v /vendor/)
+
+script: buffalo test

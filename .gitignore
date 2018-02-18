@@ -17,3 +17,4 @@ silent-sync.json
 .idea/
 logs/
 *.iml
+node_modules/

@@ -1,0 +1,23 @@
+development:
+  dialect: "mysql"
+  database: {{envOr "DATABASE_DB" "pufferpanel"}}
+  host: {{envOr "DATABASE_HOST" "localhost"}}
+  port: {{envOr "DATABASE_PASS" "3306"}}
+  user: {{envOr "DATABASE_USER" "pufferpanel"}}
+  password: {{envOr "DATABASE_PASSWORD" "pufferpanel"}}
+
+test:
+  dialect: "mysql"
+  database: {{envOr "DATABASE_DB" "pufferpanel"}}
+  host: {{envOr "DATABASE_HOST" "localhost"}}
+  port: {{envOr "DATABASE_PASS" "3306"}}
+  user: {{envOr "DATABASE_USER" "pufferpanel"}}
+  password: {{envOr "DATABASE_PASSWORD" "pufferpanel"}}
+
+production:
+  dialect: "mysql"
+  database: {{envOr "DATABASE_DB" "pufferpanel"}}
+  host: {{envOr "DATABASE_HOST" "localhost"}}
+  port: {{envOr "DATABASE_PASS" "3306"}}
+  user: {{envOr "DATABASE_USER" "pufferpanel"}}
+  password: {{envOr "DATABASE_PASSWORD" "pufferpanel"}}
