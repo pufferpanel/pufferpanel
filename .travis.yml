@@ -14,7 +14,7 @@ before_script:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS pufferpanel;'
-  - mysql -e 'GRANT ALL PRIVILEGES ON pufferpanel.* TO pufferpanel@127.0.0.1 IDENTIFIED BY 'pufferpanel';'
+  - mysql -e 'GRANT ALL PRIVILEGES ON pufferpanel.* TO pufferpanel@127.0.0.1 IDENTIFIED BY pufferpanel;'
 
 go_import_path: github.com/pufferpanel/pufferpanel
 
