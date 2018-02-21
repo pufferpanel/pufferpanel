@@ -251,6 +251,21 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $internalip = $request->param('fqdn');
     }
 
+    $port = $request->param('fqdnport');
+    $sftp = $request->param('fqdnsftp');
+
+    if ($port <= 0 || $port > 65535) {
+        $service->flash('<div class="alert alert-danger">The daemon port must be between 1 and 65535</div>');
+        $response->redirect('/admin/node/view/' . $request->param('id'))->send();
+        return;
+    }
+
+    if ($sftp <= 0 || $sftp > 65535) {
+        $service->flash('<div class="alert alert-danger">The daemon sftp port must be between 1 and 65535</div>');
+        $response->redirect('/admin/node/view/' . $request->param('id'))->send();
+        return;
+    }
+
     if (!filter_var(gethostbyname($internalip), FILTER_VALIDATE_IP) && !filter_var($internalip, FILTER_VALIDATE_IP)) {
 
         $service->flash('<div class="alert alert-danger">The node\'s internal IP is not valid. Domains must resolve to an IP.</div>');
@@ -267,6 +282,8 @@ $klein->respond('POST', '/admin/node/view/[i:id]/settings', function($request, $
         $node->location = $location->id;
         $node->fqdn = $request->param('fqdn');
         $node->ip = $internalip;
+        $node->daemon_listen = $port;
+        $node->daemon_sftp = $sftp;
         $node->save();
 
         $service->flash('<div class="alert alert-success">Your node settings have been updated.</div>');

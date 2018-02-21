@@ -49,14 +49,28 @@
 									<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>Please enter the PUBLIC IP for this node. If you do not have one please enter its IP address. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
 								</div>
 							</div>
-							<div class="form-group col-md-6 nopad">
-								<label for="fqdn" class="control-label">Node <abbr title="Internal IP">Private IP</abbr></label>
+							<div class="form-group col-md-3 nopad">
+								<label for="fqdnport" class="control-label">Node <abbr title="Port">HTTP Port</abbr></label>
 								<div>
-									<input id="internalip" type="text" name="internalip" class="form-control" value="{{ node.ip }}" />
-									<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>If the node is reachable through a different IP from the panel, enter that here, otherwise leave it blank. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+									<input id="fqdnport" type="number" name="fqdnport" class="form-control" value="{{ node.daemon_listen }}" />
+								</div>
+							</div>
+							<div class="form-group col-md-3 nopad">
+								<label for="fqdnsftp" class="control-label">Node <abbr title="Port">SFTP Port</abbr></label>
+								<div>
+									<input id="fqdnsftp" type="number" name="fqdnsftp" class="form-control" value="{{ node.daemon_sftp }}" />
 								</div>
 							</div>
 						</div>
+					<div class="row">
+						<div class="form-group col-md-6 nopad">
+							<label for="fqdn" class="control-label">Node <abbr title="Internal IP">Private IP</abbr></label>
+							<div>
+								<input id="internalip" type="text" name="internalip" class="form-control" value="{{ node.ip }}" />
+								<p class="text-muted" style="margin: 0 0 -10.5px;"><small><em>If the node is reachable through a different IP from the panel, enter that here, otherwise leave it blank. (Do not include the <code>http://</code>, <code>www</code>, or any trailing information. [i.e. enter only <code>node.example.com</code>])</em></small></p>
+							</div>
+						</div>
+					</div>
 					<div class="form-group">
 						<div>
 							<input type="hidden" name="nid" value="{{ node.id }}" />
