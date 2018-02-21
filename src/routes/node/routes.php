@@ -33,7 +33,9 @@ $klein->respond('GET', '/node/index', function ($request, $response, $service) u
     try {
         $protocol = Daemon::doesNodeUseHTTPS($core->server->nodeData()['fqdn'], $core->server->nodeData()['daemon_listen']) ? "wss" : "ws";
     } catch (\Exception $ex) {
-        $service->flash('<div class="alert alert-danger">The daemon does not report it is online, functionality is reduced until it is restarted</div>');
+        $service->flash('<div class="alert alert-danger">The daemon is not reachable, please make sure that it is online and properly reachable (<a href="'
+            . $core->server->nodeData()['fqdn'] . ':' . $core->server->nodeData()['daemon_listen']
+            . '">Daemon link</a>")' . '</div>');
     }
 
     $response->body($core->twig->render('node/index.html', array(

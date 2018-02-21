@@ -133,25 +133,56 @@ $klein->respond('POST', '/account/update/[:action]', function($request, $respons
 });
 
 $klein->respond('GET', '/[|index:index]', function($request, $response, $service) use ($core) {
-
     if ($core->auth->isAdmin()) {
 
         $servers = ORM::forTable('servers')
-                ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
-                ->join('nodes', array('servers.node', '=', 'nodes.id'))
-                ->join('locations', array('nodes.location', '=', 'locations.id'))
-                ->orderByDesc('active')
-                ->findArray();
+            ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
+            ->join('nodes', array('servers.node', '=', 'nodes.id'))
+            ->join('locations', array('nodes.location', '=', 'locations.id'))
+            ->orderByDesc('active')
+            ->findArray();
     } else {
 
         $servers = ORM::forTable('servers')
-                ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
-                ->join('nodes', array('servers.node', '=', 'nodes.id'))
-                ->join('locations', array('nodes.location', '=', 'locations.id'))
-                ->where('servers.active', 1)
-                ->where_in('servers.id', $core->permissions->listServers())
-                ->findArray();
+            ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
+            ->join('nodes', array('servers.node', '=', 'nodes.id'))
+            ->join('locations', array('nodes.location', '=', 'locations.id'))
+            ->where('servers.active', 1)
+            ->where_in('servers.id', $core->permissions->listServers())
+            ->findArray();
     }
+
+    /*
+     * List Servers
+     */
+    $response->body($core->twig->render('panel/index.html', array(
+        'servers' => $servers,
+        'user' => $core->user->getData(),
+        'flash' => $service->flashes()
+    )));
+});
+
+$klein->respond('GET', '/index/server-status', function($request, $response) use ($core) {
+    if ($core->auth->isAdmin()) {
+
+        $allowedServers = ORM::forTable('servers')
+            ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
+            ->join('nodes', array('servers.node', '=', 'nodes.id'))
+            ->join('locations', array('nodes.location', '=', 'locations.id'))
+            ->orderByDesc('active')
+            ->findArray();
+    } else {
+
+        $allowedServers = ORM::forTable('servers')
+            ->select('servers.*')->select('nodes.name', 'node_name')->select('nodes.ip', 'daemon_host')->select('nodes.daemon_listen', 'daemon_listen')->select('locations.long', 'location')
+            ->join('nodes', array('servers.node', '=', 'nodes.id'))
+            ->join('locations', array('nodes.location', '=', 'locations.id'))
+            ->where('servers.active', 1)
+            ->where_in('servers.id', $core->permissions->listServers())
+            ->findArray();
+    }
+
+    $sqlServers = $allowedServers;
 
     $bearer = OAuthService::Get()->getPanelAccessToken();
     $header = array(
@@ -160,17 +191,21 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
 
     $serverIds = array();
     $nodes = array();
-    foreach($servers as $server) {
+    foreach($sqlServers as $server) {
         $serverIds[] = $server['hash'];
         $nodes[] = $server["daemon_host"] . ":" . $server["daemon_listen"];
-    }
-    foreach($servers as $server) {
-        $serverIds[] = $server['hash'];
     }
 
     $ids = implode(",", $serverIds);
     $nodeConnections = array_unique($nodes);
-    $results = array();
+
+    $resultServers = array();
+
+    $nodeResults = array();
+
+    foreach($serverIds as $id) {
+        $nodeResults[$id] = '?';
+    }
 
     foreach ($nodeConnections as $nodeConnection) {
         try {
@@ -180,31 +215,40 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
             );
 
             if ($unirest->body->success) {
-                $results = array_merge($results, get_object_vars($unirest->body->data));
+                $serverData = get_object_vars($unirest->body->data);
+
+
+                foreach($serverData as $k => $v) {
+                    $nodeResults[$k] = $v;
+                }
             }
         } catch (\Exception $e) {
         }
     }
 
-    $newServers = array();
+    foreach ($sqlServers as $server) {
+        try {
+            $unirest = Request::get(vsprintf(Daemon::buildBaseUrlForNode($server["daemon_host"], $server["daemon_listen"]) .'/server/%s/status', array(
+                $server['hash'])),
+                $header
+            );
 
-    foreach($servers as $server) {
-        foreach($results as $key => $value) {
-            if ($server['hash'] == $key) {
-                $server['connection'] = $value;
+            if ($unirest->body->success) {
+                $running = get_object_vars($unirest->body->data)['running'];
+                $resultServers[$server['hash']] = array(
+                    "address" => $nodeResults[$server['hash']],
+                    "running" => $running
+                );
             }
+        } catch (\Exception $e) {
+            $resultServers[$server['hash']] = array(
+                "address" => $nodeResults[$server['hash']],
+                "running" => false
+            );
         }
-        $newServers[] = $server;
     }
 
-    /*
-     * List Servers
-     */
-    $response->body($core->twig->render('panel/index.html', array(
-        'servers' => $newServers,
-        'user' => $core->user->getData(),
-        'flash' => $service->flashes()
-    )));
+    $response->json($resultServers);
 });
 
 $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($core) {

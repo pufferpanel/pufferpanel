@@ -30,7 +30,7 @@
 					<th>{{ l.render('string.location') }}</th>
 					<th>{{ l.render('string.node') }}</th>
 					<th>Bind Address</th>
-					<!--<th></th>-->
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -40,8 +40,8 @@
 						<td><a href="/index/{{ server.hash }}">{{ server.name }}</a></td>
 						<td>{{ server.location }}</td>
 						<td>{{ server.node_name }}</td>
-						<td><code>{{ server.connection }}</code></td>
-						<!--<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>-->
+						<td><code class="applyConnectionUpdate"></code></td>
+						<td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyStatusUpdate"></i></td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -57,25 +57,34 @@ $(window).load(function() {
 	function updateServerStatus() {
 		$(".dynUpdate").each(function(index, data){
 			var element = $(this);
-			var connection = element.attr("id");
-			element.find(".applyUpdate").removeClass("fa-check-circle fa-times-circle").css({color: "#000"});
-			element.find(".applyUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
-			$.ajax({
-				type: "POST",
-				url: "/ajax/status",
-				data: { server: connection }
-			}).done(function(data) {
-				element.find(".applyUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-				var selector = (data == "#53B30C") ? "fa-check-circle" : "fa-times-circle";
-				element.find(".applyUpdate").addClass(selector).css({"color": data});
-			});
+			element.find(".applyStatusUpdate").removeClass("fa-check-circle fa-times-circle").css({color: "#000"});
+			element.find(".applyStatusUpdate").addClass("fa-circle-o-notch fa-spinner fa-spin");
 		});
+        $.ajax({
+            type: "GET",
+            url: "/index/server-status"
+        }).done(function(data) {
+            $(".dynUpdate").each(function(index){
+                var element = $(this);
+				var id = element.attr('id');
+
+                var address = data[id]['address'];
+                var running = data[id]['running'];
+                element.find(".applyConnectionUpdate").text(address);
+                element.find(".applyStatusUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+                if(running) {
+                    element.find(".applyStatusUpdate").addClass('fa-check-circle');
+                } else {
+                    element.find(".applyStatusUpdate").addClass('fa-times-circle');
+				}
+            });
+        });
 	}
-	//updateServerStatus();
-	//setInterval(updateServerStatus, 30000);
+
 	$("#sidebar_links").find("a[href='/index']").addClass('active');
 
     $('#serverTable').DataTable();
+    updateServerStatus();
 });
 </script>
 {% endblock %}
