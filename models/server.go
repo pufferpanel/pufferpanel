@@ -7,7 +7,7 @@ import (
 
 type Server struct {
 	ID        uuid.UUID `db:"id"`
-	NodeID    uuid.UUID `db:node_id`
+	Node      Node      `db:node_id belongs_to:node`
 	Name      string    `db:name`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`

@@ -47,7 +47,6 @@ func CreateLocation(code, name string) (location Location, err error) {
 		Name: name,
 	}
 
-	err = DB.Create(location)
 	return
 }
 
@@ -57,7 +56,10 @@ func (l *Location) Delete() (err error) {
 }
 
 func (l *Location) Save() (err error) {
-	err = DB.Save(l)
+	validationErrors, err := DB.ValidateAndSave(l)
+	if validationErrors != nil {
+		err = errors.New("model is invalid: " + validationErrors.Error())
+	}
 	return
 }
 
