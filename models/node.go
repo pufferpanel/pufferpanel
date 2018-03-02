@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/satori/go.uuid"
+	"github.com/gobuffalo/uuid"
 	"time"
 )
 
@@ -22,9 +22,9 @@ func CreateNode(location Location, name string) (node Node, err error) {
 	}
 
 	node = Node{
-		ID: id,
+		ID:       id,
 		Location: location,
-		Name: name,
+		Name:     name,
 	}
 
 	return

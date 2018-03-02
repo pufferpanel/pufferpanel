@@ -1,14 +1,14 @@
 package models
 
 import (
-	"github.com/pkg/errors"
-	"github.com/satori/go.uuid"
-	"golang.org/x/crypto/bcrypt"
-	"time"
-	"github.com/markbates/pop"
-	"github.com/markbates/validate"
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/uuid"
+	"github.com/gobuffalo/validate"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 type User struct {
@@ -64,7 +64,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 }
 
 func (u *User) BeforeCreate(tx *pop.Connection) error {
-	validateEmailUser := &User {
+	validateEmailUser := &User{
 		Email: u.Email,
 	}
 
@@ -78,7 +78,7 @@ func (u *User) BeforeCreate(tx *pop.Connection) error {
 		return errors.New("email already in use")
 	}
 
-	validateUsernameUser := &User {
+	validateUsernameUser := &User{
 		Username: u.Username,
 	}
 

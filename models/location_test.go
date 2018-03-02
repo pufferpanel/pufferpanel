@@ -1,15 +1,15 @@
 package models
 
 import (
-	"testing"
+	"github.com/gobuffalo/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/satori/go.uuid"
+	"testing"
 )
 
 func TestLocation_ValidatePass(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	loc := &Location{
-		ID: uuid,
+		ID:   uuid,
 		Code: "test",
 		Name: "Code Test",
 	}
@@ -22,7 +22,7 @@ func TestLocation_ValidatePass(t *testing.T) {
 func TestLocation_ValidateFailNoCode(t *testing.T) {
 	uuid, _ := uuid.NewV4()
 	loc := &Location{
-		ID: uuid,
+		ID:   uuid,
 		Name: "Code Test",
 	}
 
@@ -34,7 +34,7 @@ func TestLocation_ValidateFailNoCode(t *testing.T) {
 func TestLocation_ValidateFailNoName(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	loc := &Location{
-		ID: uuid,
+		ID:   uuid,
 		Code: "test",
 	}
 

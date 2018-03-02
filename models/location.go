@@ -4,11 +4,11 @@ import (
 	"errors"
 	"time"
 
-	"github.com/markbates/pop"
-	"github.com/markbates/validate"
-	"github.com/satori/go.uuid"
-	"github.com/go-ozzo/ozzo-validation"
 	"fmt"
+	"github.com/go-ozzo/ozzo-validation"
+	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/uuid"
+	"github.com/gobuffalo/validate"
 )
 
 type Location struct {
@@ -42,7 +42,7 @@ func GetLocationByCode(code string) (location Location, err error) {
 func CreateLocation(code, name string) (location Location, err error) {
 	id, err := uuid.NewV4()
 	location = Location{
-		ID: id,
+		ID:   id,
 		Code: code,
 		Name: name,
 	}

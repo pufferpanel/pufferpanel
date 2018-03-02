@@ -1,20 +1,20 @@
 package models
 
 import (
-	"testing"
+	"github.com/gobuffalo/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/satori/go.uuid"
+	"testing"
 )
 
-const RawPw = "test";
+const RawPw = "test"
 const HashedPw = "$2a$10$iwgb1AVO0if235/tbdd2H.yx.7DfzT/FfHijXkAL.p2H.1YpuOrcG" //test
 
 func TestUser_ValidatePass(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	user := &User{
-		ID: uuid,
-		Username: "testuser",
-		Email: "test@example.com",
+		ID:             uuid,
+		Username:       "testuser",
+		Email:          "test@example.com",
 		HashedPassword: HashedPw,
 	}
 
@@ -26,8 +26,8 @@ func TestUser_ValidatePass(t *testing.T) {
 func TestUser_ValidateNoUsername(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	user := &User{
-		ID: uuid,
-		Email: "test@example.com",
+		ID:             uuid,
+		Email:          "test@example.com",
 		HashedPassword: HashedPw,
 	}
 
@@ -39,8 +39,8 @@ func TestUser_ValidateNoUsername(t *testing.T) {
 func TestUser_ValidateNoEmail(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	user := &User{
-		ID: uuid,
-		Username: "testuser",
+		ID:             uuid,
+		Username:       "testuser",
 		HashedPassword: HashedPw,
 	}
 
@@ -52,9 +52,9 @@ func TestUser_ValidateNoEmail(t *testing.T) {
 func TestUser_ValidateNoPassword(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	user := &User{
-		ID: uuid,
+		ID:       uuid,
 		Username: "testuser",
-		Email: "test@example.com",
+		Email:    "test@example.com",
 	}
 
 	validationErrors, err := user.Validate(nil)
@@ -65,9 +65,9 @@ func TestUser_ValidateNoPassword(t *testing.T) {
 func TestUser_ValidateBadEmail(t *testing.T) {
 	uuid, err := uuid.NewV4()
 	user := &User{
-		ID: uuid,
-		Username: "testuser",
-		Email: "testexample.com",
+		ID:             uuid,
+		Username:       "testuser",
+		Email:          "testexample.com",
 		HashedPassword: HashedPw,
 	}
 
@@ -77,8 +77,7 @@ func TestUser_ValidateBadEmail(t *testing.T) {
 }
 
 func TestUser_ValidatePassChange(t *testing.T) {
-	user := &User{
-	}
+	user := &User{}
 
 	err := user.ChangePassword("test")
 	assert.NoError(t, err, "error thrown generating new password", err)
