@@ -276,10 +276,15 @@ function configureNginx() {
     fi
 
     getPhpConfLocation
+    
+    if [ "${phpWWWConfLocation}" = "" ]; then
+        echo -e "Could not determine where PHP config is, cannot install config"
+        return
+    fi
 
     phpSocket=$(grep "^listen[| ]\?=[| ]" $phpWWWConfLocation 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpSocket}" = "" ]; then
-        echo -e "Could not determine where PHP config is, cannot install config"
+        echo -e "Could not determine where PHP is listening, cannot install config"
         return
     fi
 
