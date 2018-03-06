@@ -373,6 +373,11 @@ function configureNginx() {
 
 function updateLogOwner() {
     getPhpConfLocation
+    
+    if [ "${phpWWWConfLocation}" = "" ]; then
+        echo -e "Could not determine where PHP config is, cannot install config"
+        return
+    fi
 
     phpUser=$(grep "^user \?= \?" $phpWWWConfLocation 2>/dev/null | awk -F'[=&]' '{print $2}' | sed -e 's/ //')
     if [ "${phpUser}" = "" ]; then
