@@ -18,3 +18,4 @@ silent-sync.json
 logs/
 *.iml
 node_modules/
+tmp/

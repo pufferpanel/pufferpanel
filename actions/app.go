@@ -62,4 +62,5 @@ func registerApiRoutes(app *buffalo.App) {
 	api.RegisterLocationRoutes(app)
 	api.RegisterUserRoutes(app)
 	api.RegisterServerRoutes(app)
+	api.RegisterNodeRoutes(app)
 }
