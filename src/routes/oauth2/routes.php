@@ -22,18 +22,54 @@ namespace PufferPanel\Core;
 
 $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
 
+    $header = $req->headers()['Authorization'];
+
+    $id = NULL;
+    $secret = NULL;
+
+    if ($header != NULL) {
+        $prefix = 'Basic ';
+
+        if (substr($prefix, 0, strlen($prefix)) == $prefix) {
+            $header = trim(substr($header, strlen($prefix)));
+        } else {
+            $res->code(400);
+            $res->json(array("error" => "invalid_request"));
+            return;
+        }
+        $decoded = base64_decode($header, true);
+
+        if ($decoded === false) {
+            $res->code(400);
+            $res->json(array("error" => "invalid_request"));
+            return;
+        }
+
+        $parts = explode(":", $decoded, 2);
+
+        if (count($parts) != 2) {   $res->code(400);
+            $res->code(400);
+            $res->json(array("error" => "invalid_request"));
+            return;
+        }
+
+        $id = $parts[1];
+        $secret = $parts[2];
+    }
+
     $grantType = $req->param("grant_type");
 
     switch ($grantType) {
         case 'client_credentials': {
-                $clientId = $req->param("client_id");
-                $clientSecret = $req->param("client_secret");
+                $clientId = $id == NULL ? $req->param("client_id") : $id;
+                $clientSecret = $secret === NULL ? $req->param("client_secret") : $secret;
                 $internal = '.internal';
                 $length = strlen($internal);
 
                 if ($clientId === false || $clientSecret === false || $clientId == 'pufferpanel' || substr($clientId, 0, $length) === $internal) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
+                    return;
                 }
 
                 $server = OAuthService::Get();
@@ -48,13 +84,13 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 break;
             }
         case 'password': {
-                $username = $req->param('username');
-                $password = $req->param('password');
+                $username = $id == NULL ? $req->param('username') : $id;
+                $password = $secret == NULL ? $req->param('password') : $secret;
                 
                 if ($username === false || $password === false) {
                     $res->code(400);
                     $res->json(array("error" => "invalid_request"));
-                    $res;
+                    return;
                 }
 
                 $server = OAuthService::Get();
