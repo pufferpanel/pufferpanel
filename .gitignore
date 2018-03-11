@@ -1,17 +1,8 @@
-# osx noise
+
 .DS_Store
 *HASHFILE*
 *.lock
-vendor
-composer.phar
-src/logs/*.log
-src/logs/*.html
-src/cache/*
-!src/cache/downloads/.githold
-!src/cache/uploads/.githold
 config.json
-backup
-tools/composer.phar
 silent-sync.json
 /nbproject/
 .idea/
@@ -19,3 +10,8 @@ logs/
 *.iml
 node_modules/
 tmp/
+public/assets/*.eot
+!public/assets/*.min.css
+!public/assets/*.min.js
+public/assets/*.*.css
+public/assets/*.*.js
