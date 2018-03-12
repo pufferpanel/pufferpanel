@@ -16,13 +16,7 @@ type Node struct {
 type Nodes []Node
 
 func CreateNode(location Location, name string) (node Node, err error) {
-	id, err := uuid.NewV4()
-	if err != nil {
-		return
-	}
-
 	node = Node{
-		ID:       id,
 		Location: location,
 		Name:     name,
 	}

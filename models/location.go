@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"github.com/go-ozzo/ozzo-validation"
 	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
+	"github.com/gobuffalo/uuid"
 )
 
 type Location struct {
-	ID        uuid.UUID `json:"id" db:id`
+	ID        uuid.UUID	`json:"id" db:"id"`
 	Code      string    `json:"code" db:"code"`
 	Name      string    `json:"name" db:"name"`
 	CreatedAt time.Time `json:"-" db:"created_at"`
@@ -40,9 +40,7 @@ func GetLocationByCode(code string) (location Location, err error) {
 }
 
 func CreateLocation(code, name string) (location Location, err error) {
-	id, err := uuid.NewV4()
 	location = Location{
-		ID:   id,
 		Code: code,
 		Name: name,
 	}
@@ -66,12 +64,7 @@ func (l *Location) Save() (err error) {
 func (l *Location) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	validationErrors := validate.NewErrors()
 
-	if l.ID == uuid.Nil {
-		validationErrors.Add("id", "id is required")
-	}
-
 	err := validation.ValidateStruct(l,
-		validation.Field(&l.ID, validation.Required),
 		validation.Field(&l.Code, validation.Required),
 		validation.Field(&l.Name, validation.Required),
 	)
@@ -93,11 +86,8 @@ func (l *Location) Validate(tx *pop.Connection) (*validate.Errors, error) {
 }
 
 func (l *Location) BeforeCreate(tx *pop.Connection) error {
-	validateCode := &Location{
-		Code: l.Code,
-	}
 
-	count, err := tx.Count(validateCode)
+	count, err := tx.Where("code = ?", l.Code).Count(l)
 
 	if err != nil {
 		return err
@@ -111,7 +101,7 @@ func (l *Location) BeforeCreate(tx *pop.Connection) error {
 		Name: l.Name,
 	}
 
-	count, err = tx.Count(validateName)
+	count, err = tx.Where("name = ?", l.Name).Count(validateName)
 
 	if err != nil {
 		return err
