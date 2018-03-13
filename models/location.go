@@ -23,7 +23,7 @@ type Locations []Location
 
 func GetLocations() (locations Locations, err error) {
 	locations = Locations{}
-	err = DB.All(locations)
+	err = DB.All(&locations)
 	return
 }
 
@@ -35,7 +35,11 @@ func GetLocationById(id string) (location Location, err error) {
 
 func GetLocationByCode(code string) (location Location, err error) {
 	location = Location{}
-	err = DB.Where("code = ?", code).First(&location)
+	query := DB.Where("code = ?", code)
+	exists, err := query.Exists(&location)
+	if exists {
+		err = DB.Where("code = ?", code).First(&location)
+	}
 	return
 }
 
@@ -55,7 +59,7 @@ func (l *Location) Delete() (err error) {
 
 func (l *Location) Save() (err error) {
 	validationErrors, err := DB.ValidateAndSave(l)
-	if validationErrors != nil {
+	if validationErrors != nil && validationErrors.Count() > 0 {
 		err = errors.New("model is invalid: " + validationErrors.Error())
 	}
 	return
