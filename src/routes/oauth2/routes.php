@@ -28,33 +28,42 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
     $secret = NULL;
 
     if ($header != NULL) {
-        $prefix = 'Basic ';
+        $basicPrefix = 'Basic';
+        $bearerPrefix = 'Bearer';
 
-        if (substr($prefix, 0, strlen($prefix)) == $prefix) {
-            $header = trim(substr($header, strlen($prefix)));
+        $method = explode(' ', $header, 2)[0];
+        $header = explode(' ', $header, 2)[1];
+
+        if ($method === $basicPrefix) {
+            $decoded = base64_decode($header, true);
+
+            if ($decoded === false) {
+                $res->code(400);
+                $res->json(array("error" => "invalid_requestasdf"));
+                return;
+            }
+
+            $parts = explode(":", $decoded, 2);
+
+            if (count($parts) != 2) {   $res->code(400);
+                $res->code(400);
+                $res->json(array("error" => "invalid_request"));
+                return;
+            }
+
+            $id = $parts[1];
+            $secret = $parts[2];
+        } else if ($method === $bearerPrefix) {
+            if ($header === '') {
+                $res->code(400);
+                $res->json(array("error" => "invalid_request"));
+                return;
+            }
         } else {
             $res->code(400);
             $res->json(array("error" => "invalid_request"));
             return;
         }
-        $decoded = base64_decode($header, true);
-
-        if ($decoded === false) {
-            $res->code(400);
-            $res->json(array("error" => "invalid_request"));
-            return;
-        }
-
-        $parts = explode(":", $decoded, 2);
-
-        if (count($parts) != 2) {   $res->code(400);
-            $res->code(400);
-            $res->json(array("error" => "invalid_request"));
-            return;
-        }
-
-        $id = $parts[1];
-        $secret = $parts[2];
     }
 
     $grantType = $req->param("grant_type");
@@ -84,6 +93,23 @@ $klein->respond('POST', '/oauth2/token/request', function($req, $res) {
                 break;
             }
         case 'password': {
+                //only permit nodes to access this endpoint
+                $authHeader = trim($req->headers()['Authorization']);
+                $parsedHeader = explode(' ', $authHeader);
+                if ($authHeader === '' || count($parsedHeader) != 2 || $parsedHeader[0] !== 'Bearer') {
+                    $res->code(401);
+                    $res->json(array("error" => "invalid_token"));
+                    return;
+                }
+
+                $node = \ORM::forTable('nodes')->where_equal('daemon_secret', $parsedHeader[1])->count();
+
+                if ($node !== 1) {
+                    $res->code(401);
+                    $res->json(array("error" => "invalid_token"));
+                    return;
+                }
+
                 $username = $id == NULL ? $req->param('username') : $id;
                 $password = $secret == NULL ? $req->param('password') : $secret;
                 
