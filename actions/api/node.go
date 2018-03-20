@@ -1,33 +1,79 @@
 package api
 
-import "github.com/gobuffalo/buffalo"
+import (
+	"github.com/gobuffalo/buffalo"
+	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/gobuffalo/buffalo/render"
+	"github.com/gobuffalo/uuid"
+	"github.com/pkg/errors"
+)
 
 func RegisterNodeRoutes (app *buffalo.App) {
 	app.POST("/node", createNode)
-	app.PUT("/node/{id}", createNodeWithId)
-	app.GET("/node/{id}", getNode)
+	app.PUT("/node/{code}", createNodeWithCode)
+	app.GET("/node/{code}", getNode)
 	app.GET("/node", getNodes)
-	app.DELETE("/node/{id}", deleteNode)
-	app.POST("/node/{id}", editNode)
+	app.DELETE("/node/{code}", deleteNode)
+	app.POST("/node/{code}", editNode)
 }
 
 func createNode(c buffalo.Context) (err error) {
 	return
 }
 
-func createNodeWithId(c buffalo.Context) (err error) {
+func createNodeWithCode(c buffalo.Context) (err error) {
 	return
 }
 
 func getNodes(c buffalo.Context) (err error) {
+	nodes, err := models.GetNodes()
+
+	if SendIfError(c, err) {
+		err = nil
+		return
+	} else {
+		c.Render(200, render.JSON(nodes))
+	}
 	return
 }
 
 func getNode(c buffalo.Context) (err error) {
+	code := c.Param("code")
+
+	node, err := models.GetNodeByCode(code)
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+
+	if node.ID == uuid.Nil {
+		Send404(c, errors.New(ERROR_NONODECODE))
+	} else {
+		c.Render(200, render.JSON(node))
+	}
+
 	return
 }
 
 func deleteNode(c buffalo.Context) (err error) {
+	code := c.Param("code")
+
+	node, err := models.GetNodeByCode(code)
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+	
+	err = node.Delete()
+
+	if SendIfError(c, err) {
+		err = nil
+	} else if node.ID == uuid.Nil {
+		Send404(c, errors.New(ERROR_NONODECODE))
+	} else {
+		c.Render(200, render.JSON(node))
+	}
+
 	return
 }
 

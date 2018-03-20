@@ -101,11 +101,7 @@ func (l *Location) BeforeCreate(tx *pop.Connection) error {
 		return errors.New("code already in use")
 	}
 
-	validateName := &Location{
-		Name: l.Name,
-	}
-
-	count, err = tx.Where("name = ?", l.Name).Count(validateName)
+	count, err = tx.Where("name = ?", l.Name).Count(l)
 
 	if err != nil {
 		return err

@@ -5,19 +5,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/uuid"
-)
-
-type newLocation struct {
-	Name string
-}
-
-type editLocation struct {
-	Name string
-}
-
-const (
-	ERROR_NOLOCATIONID = "no location with given id"
-	ERROR_NOLOCATIONCODE = "no location with given code"
+	"errors"
 )
 
 func RegisterLocationRoutes (app *buffalo.App) {
@@ -31,7 +19,7 @@ func RegisterLocationRoutes (app *buffalo.App) {
 func createLocation(c buffalo.Context) (err error) {
 	code := c.Param("code")
 
-	loc := newLocation{}
+	loc := models.Location{}
 
 	err = c.Bind(&loc)
 
@@ -41,30 +29,22 @@ func createLocation(c buffalo.Context) (err error) {
 		err = location.Save()
 	}
 
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if SendIfError(c, err) {
 		err = nil
-		return
+	} else {
+		c.Render(200, render.JSON(location))
 	}
-
-	c.Render(200, render.JSON(location))
 	return
 }
 
 func getLocations(c buffalo.Context) (err error) {
 	locations, err := models.GetLocations()
 
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if SendIfError(c, err) {
 		err = nil
-		return
+	} else {
+		c.Render(200, render.JSON(locations))
 	}
-
-	c.Render(200, render.JSON(locations))
 	return
 }
 
@@ -72,18 +52,10 @@ func getLocation(c buffalo.Context) (err error) {
 	code := c.Param("code")
 
 	location, err := models.GetLocationByCode(code)
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if SendIfError(c, err) {
 		err = nil
-		return
-	}
-
-	if location.ID == uuid.Nil {
-		err := make(map[string]string)
-		err["err"] = ERROR_NOLOCATIONCODE
-		c.Render(404, render.JSON(err))
+	} else if location.ID == uuid.Nil {
+		Send404(c, errors.New(ERROR_NOLOCATIONCODE))
 		err = nil
 	} else {
 		c.Render(200, render.JSON(location))
@@ -97,10 +69,7 @@ func deleteLocation(c buffalo.Context) (err error) {
 
 	location, err := models.GetLocationByCode(code)
 
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if SendIfError(c, err) {
 		err = nil
 		return
 	}
@@ -108,9 +77,7 @@ func deleteLocation(c buffalo.Context) (err error) {
 	err = location.Delete()
 
 	if location.ID == uuid.Nil {
-		err := make(map[string]string)
-		err["err"] = ERROR_NOLOCATIONCODE
-		c.Render(404, render.JSON(err))
+		Send404(c, errors.New(ERROR_NOLOCATIONCODE))
 		err = nil
 	} else {
 		c.Render(200, render.JSON(location))
@@ -124,21 +91,16 @@ func editLocationName(c buffalo.Context) (err error) {
 	location, err := models.GetLocationByCode(code)
 
 	if location.ID == uuid.Nil {
-		errRes := make(map[string]string)
-		errRes["err"] = ERROR_NOLOCATIONCODE
-		c.Render(404, render.JSON(errRes))
+		Send404(c, errors.New(ERROR_NOLOCATIONCODE))
 		err = nil
 		return
 	}
 
-	name := editLocation{}
+	name := models.Location{}
 
 	err = c.Bind(&name)
 
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if SendIfError(c, err) {
 		err = nil
 		return
 	}
@@ -146,12 +108,9 @@ func editLocationName(c buffalo.Context) (err error) {
 	location.Name = name.Name
 	err = location.Save()
 
-	if err != nil {
-		errRes := make(map[string]string)
-		errRes["err"] = err.Error()
-		c.Render(500, render.JSON(errRes))
+	if location.ID == uuid.Nil {
+		Send404(c, errors.New(ERROR_NOLOCATIONCODE))
 		err = nil
-		return
 	} else {
 		c.Render(200, render.JSON(location))
 	}
