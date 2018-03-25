@@ -1,22 +1,23 @@
 package models
 
 import (
-	"github.com/gobuffalo/uuid"
-	"time"
 	"errors"
-	"github.com/gobuffalo/pop"
-	"github.com/go-ozzo/ozzo-validation"
-	"github.com/gobuffalo/validate"
 	"fmt"
+	"github.com/go-ozzo/ozzo-validation"
+	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/uuid"
+	"github.com/gobuffalo/validate"
+	"time"
 )
 
 type Node struct {
-	ID        uuid.UUID `json:"id" db:"id"`
-	Location  *Location  `json:"location" db:"location_id" belongs_to:"location"`
-	Code 	  string    `json:"code" db:"code"`
-	Name      string    `json:"name" db:"name"`
-	CreatedAt time.Time `json:"-" db:"created_at"`
-	UpdatedAt time.Time `json:"-" db:"updated_at"`
+	ID         uuid.UUID  `json:"id" db:"id"`
+	Location   *Location  `json:"location" belongs_to:"location" fk_id:"location_id"`
+	LocationID string 	  `json:"locationId" db:"location_id"`
+	Code       string     `json:"code" db:"code"`
+	Name       string     `json:"name" db:"name"`
+	CreatedAt  time.Time  `json:"-" db:"created_at"`
+	UpdatedAt  time.Time  `json:"-" db:"updated_at"`
 }
 
 type Nodes []Node
@@ -25,7 +26,7 @@ func CreateNode(location *Location, code, name string) (node Node, err error) {
 	node = Node{
 		Location: location,
 		Name:     name,
-		Code:	  code,
+		Code:     code,
 	}
 
 	return
@@ -33,7 +34,7 @@ func CreateNode(location *Location, code, name string) (node Node, err error) {
 
 func GetNodes() (nodes Nodes, err error) {
 	nodes = Nodes{}
-	err = DB.All(&nodes)
+	err = DB.Eager().All(&nodes)
 	return
 }
 

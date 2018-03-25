@@ -12,17 +12,17 @@ const (
 
 func SendIfError(c buffalo.Context, err error) bool {
 	if err != nil {
-		sendCodeWithError(c, 500, err)
+		SendCodeWithError(c, 500, err)
 		return true
 	}
 	return false
 }
 
 func Send404(c buffalo.Context, err error) {
-	sendCodeWithError(c, 404, err)
+	SendCodeWithError(c, 404, err)
 }
 
-func sendCodeWithError(c buffalo.Context, code int, err error) {
+func SendCodeWithError(c buffalo.Context, code int, err error) {
 	errRes := make(map[string]string)
 	errRes["err"] = err.Error()
 	c.Render(code, render.JSON(errRes))

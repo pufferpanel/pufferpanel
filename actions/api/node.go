@@ -9,8 +9,7 @@ import (
 )
 
 func RegisterNodeRoutes (app *buffalo.App) {
-	app.POST("/node", createNode)
-	app.PUT("/node/{code}", createNodeWithCode)
+	app.PUT("/node/{code}", createNode)
 	app.GET("/node/{code}", getNode)
 	app.GET("/node", getNodes)
 	app.DELETE("/node/{code}", deleteNode)
@@ -18,10 +17,31 @@ func RegisterNodeRoutes (app *buffalo.App) {
 }
 
 func createNode(c buffalo.Context) (err error) {
-	return
-}
+	node := models.Node{}
 
-func createNodeWithCode(c buffalo.Context) (err error) {
+	err = c.Bind(&node)
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+
+	location, err := models.GetLocationById(node.LocationID)
+
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+
+	node.Location = &location
+
+	err = node.Save()
+	if SendIfError(c, err) {
+		err = nil
+		return
+	} else {
+		c.Render(200, render.JSON(node))
+	}
+
 	return
 }
 
@@ -78,6 +98,6 @@ func deleteNode(c buffalo.Context) (err error) {
 }
 
 func editNode(c buffalo.Context) (err error) {
-	return
+	return c.Render(501, nil)
 }
 
