@@ -43,15 +43,6 @@ func GetLocationByCode(code string) (location Location, err error) {
 	return
 }
 
-func CreateLocation(code, name string) (location Location, err error) {
-	location = Location{
-		Code: code,
-		Name: name,
-	}
-
-	return
-}
-
 func (l *Location) Delete() (err error) {
 	err = DB.Destroy(l)
 	return

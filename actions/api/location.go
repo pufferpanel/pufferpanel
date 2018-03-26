@@ -19,15 +19,13 @@ func RegisterLocationRoutes (app *buffalo.App) {
 func createLocation(c buffalo.Context) (err error) {
 	code := c.Param("code")
 
-	loc := models.Location{}
+	location := models.Location{}
 
-	err = c.Bind(&loc)
+	err = c.Bind(&location)
 
-	location, err := models.CreateLocation(code, loc.Name)
+	location.Code = code
 
-	if err == nil {
-		err = location.Save()
-	}
+	err = location.Save()
 
 	if SendIfError(c, err) {
 		err = nil

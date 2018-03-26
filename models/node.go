@@ -11,26 +11,20 @@ import (
 )
 
 type Node struct {
-	ID         uuid.UUID  `json:"id" db:"id"`
-	Location   *Location  `json:"location" belongs_to:"location" fk_id:"location_id"`
-	LocationID string 	  `json:"locationId" db:"location_id"`
-	Code       string     `json:"code" db:"code"`
-	Name       string     `json:"name" db:"name"`
-	CreatedAt  time.Time  `json:"-" db:"created_at"`
-	UpdatedAt  time.Time  `json:"-" db:"updated_at"`
+	ID         uuid.UUID `json:"id" db:"id"`
+	Location   *Location `json:"location" belongs_to:"location" fk_id:"location_id"`
+	LocationID string    `json:"locationId" db:"location_id"`
+	Code       string    `json:"code" db:"code"`
+	Name       string    `json:"name" db:"name"`
+	ExternalIP string    `json:"externalIP" db:"external_ip"`
+	InternalIP string    `json:"internalIP" db:"internal_ip"`
+	Port       int       `json:"port" db:"port"`
+	SFTPPort   int       `json:"sftpPort" db:"sftp_port"`
+	CreatedAt  time.Time `json:"-" db:"created_at"`
+	UpdatedAt  time.Time `json:"-" db:"updated_at"`
 }
 
 type Nodes []Node
-
-func CreateNode(location *Location, code, name string) (node Node, err error) {
-	node = Node{
-		Location: location,
-		Name:     name,
-		Code:     code,
-	}
-
-	return
-}
 
 func GetNodes() (nodes Nodes, err error) {
 	nodes = Nodes{}
@@ -67,6 +61,10 @@ func (n *Node) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	err := validation.ValidateStruct(n,
 		validation.Field(&n.Code, validation.Required),
 		validation.Field(&n.Name, validation.Required),
+		validation.Field(&n.ExternalIP, validation.Required),
+		validation.Field(&n.InternalIP, validation.Required),
+		validation.Field(&n.Port, validation.Required, validation.Min(1), validation.Max(65565)),
+		validation.Field(&n.SFTPPort, validation.Required, validation.Min(1), validation.Max(65565)),
 	)
 	errs, ok := err.(validation.Errors)
 
