@@ -9,6 +9,7 @@ import (
 )
 
 func RegisterNodeRoutes (app *buffalo.App) {
+	app.PUT("/node", createNode)
 	app.PUT("/node/{code}", createNode)
 	app.GET("/node/{code}", getNode)
 	app.GET("/node", getNodes)
@@ -19,7 +20,13 @@ func RegisterNodeRoutes (app *buffalo.App) {
 func createNode(c buffalo.Context) (err error) {
 	node := models.Node{}
 
+	code := c.Param("code")
+
 	err = c.Bind(&node)
+	if code != "" {
+		node.Code = code
+	}
+
 	if SendIfError(c, err) {
 		err = nil
 		return

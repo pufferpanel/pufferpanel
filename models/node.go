@@ -43,7 +43,7 @@ func GetNodeByCode(code string) (node Node, err error) {
 	query := DB.Where("code = ?", code)
 	exists, err := query.Exists(&node)
 	if exists {
-		err = DB.Where("code = ?", code).First(&node)
+		err = DB.Eager().Where("code = ?", code).First(&node)
 	}
 	return
 }
