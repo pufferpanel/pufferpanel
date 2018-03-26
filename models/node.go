@@ -63,8 +63,8 @@ func (n *Node) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		validation.Field(&n.Name, validation.Required),
 		validation.Field(&n.ExternalIP, validation.Required),
 		validation.Field(&n.InternalIP, validation.Required),
-		validation.Field(&n.Port, validation.Required, validation.Min(1), validation.Max(65565)),
-		validation.Field(&n.SFTPPort, validation.Required, validation.Min(1), validation.Max(65565)),
+		validation.Field(&n.Port, validation.Required, validation.Min(1), validation.Max(65535)),
+		validation.Field(&n.SFTPPort, validation.Required, validation.Min(1), validation.Max(65535)),
 	)
 	errs, ok := err.(validation.Errors)
 

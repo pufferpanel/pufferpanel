@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS `pufferpanel`;
-CREATE DATABASE IF NOT EXISTS `pufferpanel`
+CREATE DATABASE IF NOT EXISTS `pufferpanel`;
 USE `pufferpanel`;
 
 CREATE TABLE IF NOT EXISTS `locations` (
@@ -12,15 +12,19 @@ CREATE TABLE IF NOT EXISTS `locations` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `nodes` (
-  `id` binary(16) NOT NULL DEFAULT 'UUID()',
-  `location_id` binary(16) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK__locations` (`location_id`),
-  CONSTRAINT `FK__locations` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+CREATE TABLE `nodes` (
+	`id` BINARY(36) NOT NULL DEFAULT 'UUID()',
+	`location_id` BINARY(36) NOT NULL,
+	`code` VARCHAR(20) NOT NULL,
+	`name` VARCHAR(100) NOT NULL,
+	`external_ip` VARCHAR(45) NOT NULL,
+	`internal_ip` VARCHAR(45) NOT NULL,
+	`port` SMALLINT(6) NOT NULL,
+	`sftp_port` SMALLINT(6) NOT NULL,
+	`created_at` TIMESTAMP NOT NULL DEFAULT '',
+	`updated_at` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `FK__locations` (`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `servers` (
