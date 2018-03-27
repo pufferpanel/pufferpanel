@@ -111,3 +111,14 @@ func (n *Node) BeforeCreate(tx *pop.Connection) error {
 
 	return nil
 }
+
+func (n *Node) CopyFrom(n2 Node) {
+	n.LocationID = n2.LocationID
+	n.Location = n2.Location
+	n.Code = n2.Code
+	n.Name = n2.Name
+	n.ExternalIP = n2.ExternalIP
+	n.InternalIP = n2.InternalIP
+	n.Port = n2.Port
+	n.SFTPPort = n2.SFTPPort
+}

@@ -18,7 +18,8 @@ func RegisterNodeRoutes (app *buffalo.App) {
 }
 
 func createNode(c buffalo.Context) (err error) {
-	node := models.Node{}
+	node := models.Node{
+	}
 
 	code := c.Param("code")
 
@@ -105,6 +106,24 @@ func deleteNode(c buffalo.Context) (err error) {
 }
 
 func editNode(c buffalo.Context) (err error) {
-	return c.Render(501, nil)
+	code := c.Param("code")
+
+	newNode := models.Node{}
+	err = c.Bind(&newNode)
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+
+	node, err := models.GetNodeByCode(code)
+	if SendIfError(c, err) {
+		err = nil
+		return
+	}
+
+	node.CopyFrom(newNode)
+	node.Save()
+
+	return c.Render(200, render.JSON(node))
 }
 
