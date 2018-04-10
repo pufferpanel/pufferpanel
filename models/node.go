@@ -13,7 +13,7 @@ import (
 type Node struct {
 	ID         uuid.UUID `json:"id" db:"id"`
 	Location   *Location `json:"location" belongs_to:"location" fk_id:"location_id"`
-	LocationID string    `json:"locationId" db:"location_id"`
+	LocationID uuid.UUID `json:"locationId" db:"location_id" rw:"r"`
 	Code       string    `json:"code" db:"code"`
 	Name       string    `json:"name" db:"name"`
 	ExternalIP string    `json:"externalIP" db:"external_ip"`
