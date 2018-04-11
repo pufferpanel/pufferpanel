@@ -27,7 +27,7 @@ func GetLocations() (locations Locations, err error) {
 	return
 }
 
-func GetLocationById(id string) (location Location, err error) {
+func GetLocationById(id uuid.UUID) (location Location, err error) {
 	location = Location{}
 	err = DB.Find(&location, id)
 	return

@@ -3,6 +3,11 @@ package models
 import (
 	"github.com/gobuffalo/uuid"
 	"time"
+	"github.com/gobuffalo/pop"
+	"github.com/go-ozzo/ozzo-validation"
+	"fmt"
+	"github.com/gobuffalo/validate"
+	"errors"
 )
 
 type Client struct {
@@ -43,4 +48,28 @@ func (c *Client) GetScopesAsString() string {
 	}
 
 	return result
+}
+
+func (c *Client) Validate(tx *pop.Connection) (*validate.Errors, error) {
+	validationErrors := validate.NewErrors()
+
+	err := validation.ValidateStruct(c,
+		validation.Field(&c.Description, validation.Required),
+		validation.Field(&c.HashedSecret, validation.Required),
+	)
+	errs, ok := err.(validation.Errors)
+
+	if err == nil {
+		ok = true
+	}
+
+	if ok && (err != nil && errs.Filter() != nil) {
+		for k, v := range errs {
+			validationErrors.Add(k, v.Error())
+		}
+	} else if !ok {
+		return validationErrors, errors.New(fmt.Sprintf("could not cast to validation.Errors (%T)", err))
+	}
+
+	return validationErrors, nil
 }
