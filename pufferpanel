@@ -405,7 +405,7 @@ function getPhpConfLocation(){
 
     for loc in "${wwwConfLocations[@]}"; do
         echo "$loc"
-        if [ -e "${loc}" ]; then
+        if compgen -G "$loc"; then
             phpWWWConfLocation="$loc"
             break
         fi
