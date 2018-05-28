@@ -416,14 +416,9 @@ case $1 in
     install)
 
         installNode=1
-        forceInstall=0
         for i in "$@"
         do
-        case $i in
-            --force)
-                forceInstall=1
-                shift
-                ;;
+        case ${i} in
             --withoutDaemon)
                 installNode=0
                 shift
@@ -438,7 +433,7 @@ case $1 in
         fi
 
         result=$(php -r 'exit (version_compare(PHP_VERSION, "7.1.0") < 0 ? "1" : "0");');
-        if [ "$result" == "0" ]; then
+        if [ "${result}" == "0" ]; then
             echo "PHP 7.1.0+: [${green}Installed${normal}]"
         else
             echo "PHP 7.1.0+: [${red}Not Installed${normal}]"
@@ -457,13 +452,8 @@ case $1 in
             fi
         done
         if [ "${canInstall}" -eq "0" ]; then
-            if [ "${forceInstall}" -eq "1" ]; then
-                canInstall=1
-                echo "Forcing installer due to flag being present"
-            else
-                echo "Dependencies are missing, cannot install"
-                exit 1
-            fi
+            echo "Dependencies are missing, cannot install"
+            exit 1
         fi
 
         printSeparator
