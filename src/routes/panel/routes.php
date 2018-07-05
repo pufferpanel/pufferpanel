@@ -162,7 +162,7 @@ $klein->respond('GET', '/[|index:index]', function($request, $response, $service
     )));
 });
 
-$klein->respond('GET', '/index/server-status', function($request, $response) use ($core) {
+$klein->respond('GET', '/index/server-status', function($request, $response) use ($core, $klein) {
     if ($core->auth->isAdmin()) {
 
         $allowedServers = ORM::forTable('servers')
@@ -249,6 +249,7 @@ $klein->respond('GET', '/index/server-status', function($request, $response) use
     }
 
     $response->json($resultServers);
+    $klein->skipRemaining();
 });
 
 $klein->respond('GET', '/index/[:goto]', function($request, $response) use ($core) {
