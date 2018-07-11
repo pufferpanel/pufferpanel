@@ -1,5 +1,5 @@
 -- Remove existing database and create new
-CREATE DATABASE IF NOT EXISTS `pufferpanel`;
+CREATE DATABASE IF NOT EXISTS `pufferpanel` CHARACTER SET `utf8`;
 USE `pufferpanel`;
 
 -- Disable Foreign keys to avoid errors in dropping
