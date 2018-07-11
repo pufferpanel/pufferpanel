@@ -40,8 +40,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `uuid_unique` (`uuid`),
   UNIQUE KEY `email_unique` (`email`),
   UNIQUE KEY `username` (`username`)
-)
-ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `account_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -178,8 +177,8 @@ CREATE TABLE IF NOT EXISTS `_meta` (
 );
 
 INSERT INTO _meta (metaKey, metaValue) VALUES
-  ('version', 'v1.2.1'),
-  ('originalVersion', 'v1.2.1'),
+  ('version', 'v1.2.4'),
+  ('originalVersion', 'v1.2.4'),
   ('installDate', CURRENT_TIMESTAMP),
   ('updateDate', CURRENT_TIMESTAMP);
 
