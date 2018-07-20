@@ -205,5 +205,4 @@ INSERT INTO acp_settings (setting_ref, setting_val) VALUES
             ('captcha_pub',NULL),
             ('captcha_priv',NULL),
             ('default_language', 'en_US'),
-            ('https', 0),
             ('allow_subusers', 1) ON DUPLICATE KEY UPDATE setting_val = VALUES(setting_val)

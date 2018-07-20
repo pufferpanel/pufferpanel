@@ -28,4 +28,20 @@ WHERE scopes NOT LIKE '%server.edit%' AND users.root_admin = 1;
 
 ALTER TABLE users MODIFY `session_id` char(40);
 
+UPDATE acp_settings
+SET setting_val = IF(
+  # is https enabled?
+  (SELECT setting_val FROM acp_settings WHERE setting_ref = 'https') = '1',
+  IF(
+    # if it is, check if current master url has http:// prefix
+    setting_val LIKE 'http://%',
+    # if it does, replace with https://
+    CONCAT('https://', SUBSTRING(setting_val, 8)),
+    setting_val
+  ),
+  setting_val
+) WHERE setting_ref = 'master_url';
+
+DELETE FROM acp_settings WHERE setting_ref = 'https';
+
 SET FOREIGN_KEY_CHECKS = 1;
