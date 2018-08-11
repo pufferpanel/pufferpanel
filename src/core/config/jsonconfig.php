@@ -40,7 +40,28 @@ class JsonConfig implements ConfigInterface {
         $this->config = json_decode(file_get_contents(BASE_DIR . $path), $array);
 
         if (json_last_error() != "JSON_ERROR_NONE") {
-            throw new Exception("An error occured when trying decode " . $path . ". " . json_last_error());
+            $errMsg = 'Unknown error';
+
+            switch (json_last_error()) {
+                case JSON_ERROR_DEPTH:
+                    $errMsg = 'Maximum stack depth exceeded';
+                    break;
+                case JSON_ERROR_STATE_MISMATCH:
+                    $errMsg = 'Underflow or the modes mismatch';
+                    break;
+                case JSON_ERROR_CTRL_CHAR:
+                    $errMsg = 'Unexpected control character found';
+                    break;
+                case JSON_ERROR_SYNTAX:
+                    $errMsg = 'Syntax error, malformed JSON';
+                    break;
+                case JSON_ERROR_UTF8:
+                    $errMsg = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+                    break;
+            }
+
+
+            throw new Exception("An error occurred when trying decode " . $path . ". " . $errMsg);
         }
     }
 
