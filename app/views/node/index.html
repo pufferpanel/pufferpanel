@@ -281,6 +281,7 @@
 
         function fallbackToStatic() {
             setInterval(getLogs, 1000);
+            setInterval(pingStats, 10000);
         }
 
         var $isStatPinging = false;
@@ -325,7 +326,7 @@
                 var data = event.data;
                 $epoch = data.epoch;
                 var data = data.logs;
-                if (data === 'undefined') {
+                if (data === 'undefined' || data.length === 0) {
                     return;
                 }
                 var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
@@ -356,12 +357,24 @@
                     if (data === 'undefined') {
                         return;
                     }
-                    var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
-                    if (total.length > 750) {
+                    if (data.type === "console") {
+                        var total = (($("#live_console").val() ? $("#live_console").val() : "") + data.data.line).split("\n");
+                        if (total.length > 750) {
                             total = total.slice(total.length - 750);
+                        }
+                        $("#live_console").val(total.join("\n"));
+                        $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
+                    } else if (data.type === "stats") {
+                        memoryChart.removeData();
+                        cpuChart.removeData();
+                        if (!data.success) {
+                            memoryChart.addData(0, "");
+                            cpuChart.addData(0, "");
+                        } else {
+                            memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], "");
+                            cpuChart.addData([parseInt(data.data.cpu)], "");
+                        }
                     }
-                    $("#live_console").val(total.join("\n"));
-                    $('#live_console').scrollTop($('#live_console')[0].scrollHeight - $('#live_console').height());
                 };
                 socket.onerror = function() {
                     fallbackToStatic();
@@ -558,8 +571,6 @@
         }
 
         {% endif %}
-
-        setInterval(pingStats, 10000);
     });
 </script>
 {% endblock %}
