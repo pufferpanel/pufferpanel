@@ -234,7 +234,7 @@ class OAuthService {
     }
 
     public static function getAdminScopes() {
-        return 'server.create server.delete server.edit server.reload node.stop';
+        return 'server.create server.delete server.edit server.reload node.stop node.templates';
     }
 
     private static function generateAccessToken($tokenId, $scopes) {
