@@ -335,8 +335,13 @@ $klein->respond('GET', '/admin/server/new/plugins', function($request, $response
 
     $unirest = null;
 
+    $bearer = OAuthService::Get()->getPanelAccessToken();
+    $header = array(
+        'Authorization' => 'Bearer ' . $bearer
+    );
+
     try {
-        $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/templates');
+        $unirest = Request::get(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/_templates', $header, nil);
     } catch (\Exception $ex) {
         $response->code(503);
         return;
