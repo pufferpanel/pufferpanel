@@ -26,6 +26,11 @@ UPDATE oauth_clients
 SET scopes = CONCAT(scopes , ' server.edit')
 WHERE scopes NOT LIKE '%server.edit%' AND users.root_admin = 1;
 
+UPDATE oauth_clients
+  JOIN users ON users.id = oauth_clients.user_id
+SET scopes = CONCAT(scopes , ' node.templates')
+WHERE scopes NOT LIKE '%node.templates%' AND users.root_admin = 1;
+
 ALTER TABLE users MODIFY `session_id` char(40);
 
 SET FOREIGN_KEY_CHECKS = 1;
