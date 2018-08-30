@@ -62,22 +62,24 @@ $(window).load(function() {
 		});
         $.ajax({
             type: "GET",
-            url: "/index/server-status"
-        }).done(function(data) {
-            $(".dynUpdate").each(function(index){
-                var element = $(this);
-				var id = element.attr('id');
+            url: "/index/server-status",
+			async: true,
+            success: function (data) {
+                $(".dynUpdate").each(function (index) {
+                    var element = $(this);
+                    var id = element.attr('id');
 
-                var address = data[id]['address'];
-                var running = data[id]['running'];
-                element.find(".applyConnectionUpdate").text(address);
-                element.find(".applyStatusUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
-                if(running) {
-                    element.find(".applyStatusUpdate").addClass('fa-check-circle');
-                } else {
-                    element.find(".applyStatusUpdate").addClass('fa-times-circle');
-				}
-            });
+                    var address = data[id]['address'];
+                    var running = data[id]['running'];
+                    element.find(".applyConnectionUpdate").text(address);
+                    element.find(".applyStatusUpdate").removeClass("fa-circle-o-notch fa-spinner fa-spin");
+                    if (running) {
+                        element.find(".applyStatusUpdate").addClass('fa-check-circle');
+                    } else {
+                        element.find(".applyStatusUpdate").addClass('fa-times-circle');
+                    }
+                })
+            }
         });
 	}
 
