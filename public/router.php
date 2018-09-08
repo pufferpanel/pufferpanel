@@ -121,7 +121,7 @@ $klein->respond('!@^(/auth/|/language/|/api/|/assets/|/oauth2/|/daemon/)', funct
 
 });
 
-$klein->respond('@^(/auth/|/oauth2/)', function($request, $response, $service, $app, $klein) use ($core) {
+$klein->respond('@^(/auth/)', function($request, $response, $service, $app, $klein) use ($core) {
 
     if($core->auth->isLoggedIn()) {
 		// Redirect /auth/* requests to /index if they are logged in
