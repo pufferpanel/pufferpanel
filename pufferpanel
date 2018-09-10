@@ -81,7 +81,7 @@ function configureMysql() {
     mysql -h ${mysqlHost} -P ${mysqlPort} -u ${mysqlUser} --password="${mysqlPass}" -e "SET GLOBAL event_scheduler = ON;"
 
     newUser="pufferpanel"
-    newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9,;.:-_#+*~@&%' | fold -w 32 | head -n 1)
+    newPw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9,.:\-@[]-_\-#+*~&%' | fold -w 32 | head -n 1)
     newHost=$(mysql -h ${mysqlHost} -P ${mysqlPort} -D ${mysqlDb} -u ${mysqlUser} --password="${mysqlPass}" -sN -e "SELECT USER()")
 	newHost=${newHost/${mysqlUser}@}
 
