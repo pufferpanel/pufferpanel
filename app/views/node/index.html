@@ -326,11 +326,30 @@
 
         function parseConsole(source) {
             $epoch = source.epoch;
-            var data = source.logs;
+            let data = source.logs;
             if (data === 'undefined' || data === '') {
                 return;
             }
-            var total = (($("#live_console").val() ? $("#live_console").val() : "") + data).split("\n");
+            let total = (($("#live_console").val() ? $("#live_console").val() : "")).split("\n");
+            if (total.length === 1 && total[0] === '') {
+                total = [];
+            }
+            let lines = [];
+            if (Array.isArray(data)) {
+                for (let i=0; i < data.length; i++) {
+                    let d = data[i].split("\n");
+                    for (let j=0; j < d.length; j++) {
+                        if (d[j] !== '') {
+                            lines.push(d[j]);
+                        }
+                    }
+                }
+            } else {
+                lines = data.split("\n");
+            }
+            for (let i=0; i < lines.length; i++) {
+                total.push(lines[i]);
+            }
             if (total.length > 750) {
                 total = total.slice(total.length - 750);
             }
