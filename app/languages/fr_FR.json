@@ -88,7 +88,7 @@
     "node.overview.players_h5": "Joueurs en ligne",
     "node.overview.cpu_h5": "Utilisation du CPU",
     "node.overview.memory_h5": "Utilisation de la mémoire",
-    "node.overview.ajax.no_conn": "Impossible de se connecter a la node.",
+    "node.overview.ajax.no_conn": "Impossible de se connecter à la node.",
     "node.overview.ajax.no_exec": "Impossible d’exécuter la commande sur le serveur.",
     "node.console.command_help": "Entrez une commande",
     "node.console.scrollstop_alert": "Vous avez sélectionné du texte dans la console. La console ne sera pas mise à jour automatique lorsque cela se produit. Ceci est fait pour vous permettre de facilement copier ou sélectionnez du texte dans la console. Pour permettre le rafraîchissement automatique de nouveau, désélectionnez simplement  le texte.",
