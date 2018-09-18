@@ -81,7 +81,7 @@
     "node.overview.stats_h1": "Statistiques de la vue d'ensemble",
     "node.overview.collect_usage": "Acquisition des informations d'utilisation, cela peut prendre quelques secondes. S'il vous plaît assurer vous que le serveur est en ligne.",
     "node.overview.collect_disk": "Acquisition des informations du disque, cette opération peut prendre quelques secondes.",
-    "node.overview.no_players": "Aucun joueurs en ligne.",
+    "node.overview.no_players": "Aucun joueur en ligne.",
     "node.overview.disk_h1": "Espace disque utilisé",
     "node.overview.space_used": "Vous utilisez %s MB de votre maximum %s MB d'espace disque.",
     "node.overview.information_h1": "Informations du serveur",
