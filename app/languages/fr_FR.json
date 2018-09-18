@@ -105,7 +105,7 @@
     "node.files.edit.error": "Vous pouvez retourner au manager en <a href=\"index.php\">cliquant ici</a>.",
     "node.files.ajax.no_dir": "Impossible de localiser le répertoire demander. Erreur.",
     "node.files.ajax.no_dl": "Impossible de se connecter au serveur pour récupérer les fichiers. Merci de réessayer.",
-    "node.files.ajax.saved": "Fichier enregistrer avec succès.",
+    "node.files.ajax.saved": "Fichier enregistré avec succès.",
     "node.files.ajax.no_save": "Impossible d'enregistrer le fichier.",
     "node.files.ajax.no_edit": "Ce type de fichier ne peu être modifier via le manager. Merci d'utiliser une client FTP.",
     "node.files.ajax.file_404": "Le fichier spécifié n'a pas été trouver le sur serveur.",
