@@ -76,7 +76,7 @@
     "settings.notify.no_email_me": "Don't Email Me",
     "settings.update_preferences": "Update Preferences",
     "settings.subuser.h1": "Sub-User Token",
-    "settings.subuser.help": "If you have recieved an email because you were added as a subuser on a server please enter that token in the box below.",
+    "settings.subuser.help": "If you have received an email because you were added as a subuser on a server please enter that token in the box below.",
     "settings.subuser.validate": "Validate Token",
     "node.overview.stats_h1": "Statistics Overview",
     "node.overview.collect_usage": "Attempting to collect usage information, this could take a few seconds. Please ensure server is online.",
