@@ -70,15 +70,11 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			ORM::forTable('acp_settings')->rawExecute(
 				"UPDATE acp_settings SET setting_val = CASE setting_ref
                     WHEN 'use_api' THEN :enable_api
-                    WHEN 'https' THEN :https
                     WHEN 'allow_subusers' THEN :allow_subusers
-                    WHEN 'master_url' THEN :master_url
                     ELSE setting_val
                 END", array(
 					'enable_api' => (!in_array('use_api', $permissionsParam)) ? 0 : 1,
-					'https' => (!in_array('https', $permissionsParam)) ? 0 : 1,
 					'allow_subusers' => (!in_array('allow_subusers', $permissionsParam)) ? 0 : 1,
-					'master_url' => (in_array('https', $permissionsParam)) ? str_replace("http://", "https://", Settings::config()->master_url) : str_replace("https://", "http://", Settings::config()->master_url)
 				)
 			);
 
@@ -172,7 +168,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			$url['path'] = (isset($url['path'])) ? $url['path'] : null;
 			$url['port'] = (isset($url['port'])) ? ':'.$url['port'] : null;
 
-			$urls[$id] = (Settings::config()->https == 1) ? 'https://'.$url['host'].$url['port'].$url['path'] : 'http://'.$url['host'].$url['port'].$url['path'];
+			$urls[$id] = $url['host'].$url['port'].$url['path'];
 			$urls[$id] = rtrim($urls[$id], '/').'/';
 
 		}
