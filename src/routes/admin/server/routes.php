@@ -273,9 +273,11 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
     /*
      * Build Call
      */
-    $data = array(
+    $createData = array(
         "name" => $server_hash,
-        "type" => $request->param('plugin')
+        "type" => $request->param('plugin'),
+        "data" => array(),
+        "environment" => array()
     );
 
     $ignoredFields = array(
@@ -286,7 +288,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
         if(in_array($k, $ignoredFields, false)) {
             continue;
         }
-        $data[$k] = $value;
+        $createData["data"][$k] = $value;
     }
 
     try {
@@ -295,7 +297,7 @@ $klein->respond('POST', '/admin/server/new', function($request, $response, $serv
             'Authorization' => 'Bearer ' . $bearer
         );
 
-        $unirest = Request::put(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($data));
+        $unirest = Request::put(Daemon::buildBaseUrlForNode($node->ip, $node->daemon_listen) . '/server/' . $server_hash, $header, json_encode($createData));
 
         if (!$unirest->body->success) {
             throw new \Exception("An error occurred trying to add a server. (" . $unirest->body->msg . ") [" . $unirest->body->code . "]");
