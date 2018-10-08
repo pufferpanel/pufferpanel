@@ -96,10 +96,8 @@ try {
 				('captcha_pub',NULL),
 				('captcha_priv',NULL),
 				('default_language', 'en_US'),
-				('https', 0),
 				('allow_subusers', 0)");
 
-    $params['siteUrl'] = preg_replace("(^https?:\/\/)", "", $params['siteUrl']);
 	$query->execute(array(
 		':cname' => $params['companyName'],
 		':murl' => 'http://' . $params['siteUrl'] . '/',

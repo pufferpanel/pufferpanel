@@ -30,12 +30,6 @@
 			<div class="row">
 				<div class="form-group col-md-6 col-sm-6">
 					<div>
-						<label><input type="checkbox" name="permissions[]" value="https" {% if settings.https == 1 %}checked="checked"{% endif %}/> Require Secure Connection</label><br />
-						<p><small class="text-muted"><em>Checking this box will require that all connections to the panel and API be made over a secure (https) connection. Any requests to the panel from a non-secure conenction will redirect, and non-secure API connections will fail.</em></small></p>
-					</div>
-				</div>
-				<div class="form-group col-md-6 col-sm-6">
-					<div>
 						<label><input type="checkbox" name="permissions[]" value="allow_subusers" {% if settings.allow_subusers == 1 %}checked="checked"{% endif %}/> Allow Sub-Users</label><br />
 						<p><small class="text-muted"><em>Checking this box will allow for users to manually add users to their servers who can access certain settings of the panel to control their server.</em></small></p>
 					</div>
