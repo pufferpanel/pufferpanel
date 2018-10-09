@@ -168,9 +168,7 @@ $klein->respond('POST', '/admin/settings/[:page]/[:action]', function($request, 
 			$url['path'] = (isset($url['path'])) ? $url['path'] : null;
 			$url['port'] = (isset($url['port'])) ? ':'.$url['port'] : null;
 
-			$urls[$id] = $url['host'].$url['port'].$url['path'];
-			$urls[$id] = rtrim($urls[$id], '/').'/';
-
+			$urls[$id] = rtrim($url['scheme'].'://'.$url['host'].$url['port'], '/').'/';
 		}
 
 		try {
