@@ -1,19 +1,33 @@
-# osx noise
-.DS_Store
-*HASHFILE*
-*.lock
-vendor
-composer.phar
-src/logs/*.log
-src/logs/*.html
-src/cache/*
-!src/cache/downloads/.githold
-!src/cache/uploads/.githold
-config.json
-backup
-tools/composer.phar
-silent-sync.json
-/nbproject/
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+
+*.exe
+*.test
+*.prof
 .idea/
-logs/
 *.iml
+
+.DS_Store
+
+vendor/
+config.json
+!resources/config.json
+logs/
