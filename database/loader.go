@@ -11,36 +11,28 @@
  limitations under the License.
 */
 
-package main
+package database
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/pufferpanel/apufferi/config"
-	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/web"
-	"os"
 )
 
-func main() {
-	r := gin.Default()
-	web.RegisterRoutes(r)
+func Load() error {
+	return OpenConnection()
+}
 
-	configPath, exists := os.LookupEnv("PUFFERPANEL_CONFIG")
 
-	if !exists {
-		configPath = "config.json"
-	}
+func OpenConnection() error {
+	dialect := config.GetStringOrDefault("database.dialect", "mysql")
+	connString := config.GetString("database.url")
 
-	config.Load(configPath)
-
-	logging.Init()
-
-	err := database.Load()
-
+	//attempt to open database connection to validate
+	_, err := gorm.Open(dialect, connString)
 	if err != nil {
-		logging.Error("Error connecting to database", err)
+		return err
 	}
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	return nil
 }
