@@ -11,16 +11,20 @@
  limitations under the License.
 */
 
-package web
+package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/web/api"
+	"github.com/pufferpanel/pufferpanel/shared"
 )
 
-func RegisterRoutes(e *gin.Engine) {
-	apiGroup := e.Group("/api")
-	{
-		api.Register(apiGroup)
-	}
+func registerUsers(g *gin.RouterGroup) {
+	g.Handle("GET", "", shared.NotImplemented)
+	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
+
+	g.Handle("PUT", "/:id", shared.NotImplemented)
+	g.Handle("GET", "/:id", shared.NotImplemented)
+	g.Handle("POST", "/:id", shared.NotImplemented)
+	g.Handle("DELETE", "/:id", shared.NotImplemented)
+	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
