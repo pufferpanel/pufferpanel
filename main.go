@@ -42,5 +42,7 @@ func main() {
 		logging.Error("Error connecting to database", err)
 	}
 
+	defer database.Close()
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
