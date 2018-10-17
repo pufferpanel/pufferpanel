@@ -13,8 +13,14 @@
 
 package models
 
+import "time"
+
 type Location struct {
 	Id int `gorm:"PRIMARY_KEY"`
 	Code string `gorm:"type:char(10);UNIQUE_INDEX"`
 	Name string `gorm:"type:varchar(100)"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
+
+type Locations []Location

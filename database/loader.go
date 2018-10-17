@@ -19,20 +19,36 @@ import (
 	"github.com/pufferpanel/apufferi/config"
 )
 
+var dbConn *gorm.DB
+
 func Load() error {
-	return OpenConnection()
-}
-
-
-func OpenConnection() error {
-	dialect := config.GetStringOrDefault("database.dialect", "mysql")
-	connString := config.GetString("database.url")
-
-	//attempt to open database connection to validate
-	_, err := gorm.Open(dialect, connString)
+	err := openConnection()
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func openConnection() (error) {
+	dialect := config.GetStringOrDefault("database.dialect", "mysql")
+	connString := config.GetString("database.url")
+
+	//attempt to open database connection to validate
+	var err error
+	dbConn, err = gorm.Open(dialect, connString)
+	return err
+}
+
+func GetConnection() (*gorm.DB, error) {
+	var err error
+	if dbConn == nil {
+		err = openConnection()
+	}
+
+	return dbConn, err
+}
+
+func Close() {
+	dbConn.Close()
 }

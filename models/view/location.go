@@ -26,3 +26,8 @@ func FromLocation (loc models.Location) LocationViewModel {
 		DisplayName: loc.Name,
 	}
 }
+
+func (loc LocationViewModel) CopyToModel(newModel models.Location) {
+	newModel.Code = loc.Code
+	newModel.Name = loc.DisplayName
+}
