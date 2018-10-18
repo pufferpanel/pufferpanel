@@ -11,23 +11,18 @@
  limitations under the License.
 */
 
-package view
+package models
 
-import "github.com/pufferpanel/pufferpanel/models"
+import "time"
 
-type LocationViewModel struct {
-	Code string	`json:"id"`
-	DisplayName string `json:"name"`
-}
-
-func FromLocation (loc models.Location) LocationViewModel {
-	return LocationViewModel{
-		Code: loc.Code,
-		DisplayName: loc.Name,
-	}
-}
-
-func (loc LocationViewModel) CopyToModel(newModel models.Location) {
-	newModel.Code = loc.Code
-	newModel.Name = loc.DisplayName
+type Node struct {
+	Id int `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Name string `gorm:"size:100;UNIQUE;NOT NULL"`
+	PublicHost string	`gorm:"size:100;NOT NULL"`
+	PrivateHost string `gorm:"size:100;NOT NULL"`
+	PublicPort int `gorm:"DEFAULT:5656;NOT NULL"`
+	PrivatePort int `gorm:"DEFAULT:5656;NOT NULL"`
+	SFTPPort int `gorm:"DEFAULT:5657;NOT NULL"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

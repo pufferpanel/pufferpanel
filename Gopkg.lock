@@ -2,25 +2,6 @@
 
 
 [[projects]]
-  digest = "1:b62a3c5b37db602bf1158e921da1a762315a4c37855fd418a14498aa87a342d5"
-  name = "cloud.google.com/go"
-  packages = ["civil"]
-  pruneopts = "UT"
-  revision = "dfffe386c33fb24c34ee501e5723df5b97b98514"
-  version = "v0.30.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:0fd9da444782c2defb1352dc098f55b8b42c538787e29e45677a1dc40ff0ab11"
-  name = "github.com/denisenkom/go-mssqldb"
-  packages = [
-    ".",
-    "internal/cp",
-  ]
-  pruneopts = "UT"
-  revision = "4e0d7dc8888fbb59764060e99b7b68e77a6f9698"
-
-[[projects]]
   branch = "master"
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
@@ -57,14 +38,11 @@
   revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
-  digest = "1:4d28d632da146ec6e632bdd29676a95e0874f1ad837fff06aef6610b3b6b4728"
+  digest = "1:b6f4477f09f11785097a121811f3a90d8d26cab73c1aa71abda859bdf6ad2334"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/mssql",
     "dialects/mysql",
-    "dialects/postgres",
-    "dialects/sqlite",
   ]
   pruneopts = "UT"
   revision = "6ed508ec6a4ecb3531899a69cbc746ccf65a4166"
@@ -87,31 +65,11 @@
   version = "1.0.0"
 
 [[projects]]
-  digest = "1:b18ffc558326ebaed3b4a175617f1e12ed4e3f53d6ebfe5ba372a3de16d22278"
-  name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "hstore",
-    "oid",
-  ]
-  pruneopts = "UT"
-  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
-  version = "v1.0.0"
-
-[[projects]]
   digest = "1:fa610f9fe6a93f4a75e64c83673dfff9bf1a34bbb21e6102021b6bc7850834a3"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "UT"
   revision = "57fdcb988a5c543893cc61bce354a6e24ab70022"
-
-[[projects]]
-  digest = "1:3cafc6a5a1b8269605d9df4c6956d43d8011fc57f266ca6b9d04da6c09dee548"
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "25ecb14adfc7543176f7d85291ec7dba82c6f7e4"
-  version = "v1.9.0"
 
 [[projects]]
   digest = "1:85587ffd4f9a5362258437022b84f58410e264a980131f0fb64256c805db1b3b"
@@ -131,14 +89,6 @@
   packages = ["codec"]
   pruneopts = "UT"
   revision = "c88ee250d0221a57af388746f5cf03768c21d6e2"
-
-[[projects]]
-  branch = "master"
-  digest = "1:7d80d5561efbfcfdc3e4720bf5e331d574fd6f1e531b115ecf568aab3e2b656d"
-  name = "golang.org/x/crypto"
-  packages = ["md4"]
-  pruneopts = "UT"
-  revision = "0c41d7ab0a0ee717d4590a44bcb987dfd9e183eb"
 
 [[projects]]
   branch = "master"
@@ -176,12 +126,11 @@
   analyzer-version = 1
   input-imports = [
     "github.com/gin-gonic/gin",
-    "github.com/jinzhu/gorm/dialects/mssql",
+    "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
-    "github.com/jinzhu/gorm/dialects/postgres",
-    "github.com/jinzhu/gorm/dialects/sqlite",
     "github.com/pufferpanel/apufferi/config",
     "github.com/pufferpanel/apufferi/http",
+    "github.com/pufferpanel/apufferi/logging",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
