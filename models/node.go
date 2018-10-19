@@ -23,6 +23,7 @@ type Node struct {
 	PublicPort int `gorm:"DEFAULT:5656;NOT NULL"`
 	PrivatePort int `gorm:"DEFAULT:5656;NOT NULL"`
 	SFTPPort int `gorm:"DEFAULT:5657;NOT NULL"`
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
