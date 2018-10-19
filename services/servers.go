@@ -23,41 +23,41 @@ func GetServerService() (*ServerService, error) {
 	return service, nil
 }
 
-func (ss *ServerService) GetAll() (models.Server, error) {
-	servers := models.Server{}
+func (ss *ServerService) GetAll() (*models.Servers, error) {
+	servers := &models.Servers{}
 
-	res := ss.db.Find(&servers)
+	res := ss.db.Find(servers)
 
 	return servers, res.Error
 }
 
 //TODO: Waiting on user objects with rights to implement correctly
-func (ss *ServerService) GetForUser(userId int) (models.Server, error) {
-	servers := models.Server{}
+func (ss *ServerService) GetForUser(userId uint) (*models.Servers, error) {
+	servers := &models.Servers{}
 
-	res := ss.db.Find(&servers)
+	res := ss.db.Find(servers)
 
 	return servers, res.Error
 }
 
-func (ss *ServerService) Get(id int) (models.Server, bool, error) {
-	model := models.Server{}
+func (ss *ServerService) Get(id uint) (*models.Server, bool, error) {
+	model := &models.Server{}
 
-	res := ss.db.First(&model, id)
+	res := ss.db.First(model, id)
 
-	return model, model.Id != 0, res.Error
+	return model, model.ID != 0, res.Error
 }
 
-func (ss *ServerService) Update(node models.Server) error {
-	res := ss.db.Update(&node)
+func (ss *ServerService) Update(model *models.Server) error {
+	res := ss.db.Update(model)
 	return res.Error
 }
 
-func (ss *ServerService) Delete(id int) error {
-	model := models.Server{
-		Id: id,
+func (ss *ServerService) Delete(id uint) error {
+	model := &models.Server{
+		ID: id,
 	}
 
-	res := ss.db.Delete(&model)
+	res := ss.db.Delete(model)
 	return res.Error
 }

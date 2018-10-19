@@ -27,3 +27,5 @@ type Node struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+type Nodes []*Node
