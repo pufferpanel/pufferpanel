@@ -12,8 +12,8 @@ type NodeViewModel struct {
 	SFTPPort    int    `json:"sftpPort"`
 }
 
-func FromNode (n models.Node) NodeViewModel {
-	return NodeViewModel{
+func FromNode (n *models.Node) *NodeViewModel {
+	return &NodeViewModel{
 		Id: n.Id,
 		Name: n.Name,
 		PublicHost: n.PublicHost,
@@ -24,7 +24,7 @@ func FromNode (n models.Node) NodeViewModel {
 	}
 }
 
-func (n NodeViewModel) CopyToModel(newModel models.Node) {
+func (n *NodeViewModel) CopyToModel(newModel *models.Node) {
 	if n.Name != "" {
 		newModel.Name = n.Name
 	}
