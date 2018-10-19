@@ -36,32 +36,32 @@ func GetNodeService() (*NodeService, error) {
 	return service, nil
 }
 
-func (ns *NodeService) GetAll() (models.Node, error) {
-	nodes := models.Node{}
+func (ns *NodeService) GetAll() (*models.Nodes, error) {
+	nodes := &models.Nodes{}
 
-	res := ns.db.Find(&nodes)
+	res := ns.db.Find(nodes)
 
 	return nodes, res.Error
 }
 
-func (ns *NodeService) Get(id int) (models.Node, bool, error) {
-	model := models.Node{}
+func (ns *NodeService) Get(id int) (*models.Node, bool, error) {
+	model := &models.Node{}
 
-	res := ns.db.First(&model, id)
+	res := ns.db.First(model, id)
 
-	return model, model.Id != 0, res.Error
+	return model, model.ID != 0, res.Error
 }
 
-func (ns *NodeService) Update(node models.Node) error {
-	res := ns.db.Update(&node)
+func (ns *NodeService) Update(node *models.Node) error {
+	res := ns.db.Update(node)
 	return res.Error
 }
 
-func (ns *NodeService) Delete(id int) error {
-	model := models.Node{
-		Id: id,
+func (ns *NodeService) Delete(id uint) error {
+	model := &models.Node{
+		ID: id,
 	}
 
-	res := ns.db.Delete(&model)
+	res := ns.db.Delete(model)
 	return res.Error
 }
