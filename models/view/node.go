@@ -3,7 +3,7 @@ package view
 import "github.com/pufferpanel/pufferpanel/models"
 
 type NodeViewModel struct {
-	Id          int    `json:"id"`
+	Id          uint   `json:"id"`
 	Name        string `json:"name"`
 	PublicHost  string `json:"publicHost"`
 	PrivateHost string `json:"privateHost"`
@@ -12,15 +12,15 @@ type NodeViewModel struct {
 	SFTPPort    int    `json:"sftpPort"`
 }
 
-func FromNode (n *models.Node) *NodeViewModel {
+func FromNode(n *models.Node) *NodeViewModel {
 	return &NodeViewModel{
-		Id: n.Id,
-		Name: n.Name,
-		PublicHost: n.PublicHost,
+		Id:          n.ID,
+		Name:        n.Name,
+		PublicHost:  n.PublicHost,
 		PrivateHost: n.PrivateHost,
-		PublicPort: n.PublicPort,
+		PublicPort:  n.PublicPort,
 		PrivatePort: n.PrivatePort,
-		SFTPPort: n.SFTPPort,
+		SFTPPort:    n.SFTPPort,
 	}
 }
 

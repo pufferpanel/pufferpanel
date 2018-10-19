@@ -16,7 +16,7 @@ package models
 import "time"
 
 type Node struct {
-	Id int `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	ID uint `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
 	Name string `gorm:"size:100;UNIQUE;NOT NULL"`
 	PublicHost string	`gorm:"size:100;NOT NULL"`
 	PrivateHost string `gorm:"size:100;NOT NULL"`

@@ -22,9 +22,9 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("GET", "", shared.NotImplemented)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:id", shared.NotImplemented)
-	g.Handle("GET", "/:id", shared.NotImplemented)
-	g.Handle("POST", "/:id", shared.NotImplemented)
-	g.Handle("DELETE", "/:id", shared.NotImplemented)
-	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("PUT", "/:username", shared.NotImplemented)
+	g.Handle("GET", "/:username", shared.NotImplemented)
+	g.Handle("POST", "/:username", shared.NotImplemented)
+	g.Handle("DELETE", "/:username", shared.NotImplemented)
+	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
