@@ -6,13 +6,13 @@ import (
 )
 
 type Server struct {
-	Id    int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Name  string `gorm:"UNIQUE;size:20"`
-	UUID  uuid.UUID
+	ID   uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
+	Name string `gorm:"UNIQUE;size:20"`
+	UUID uuid.UUID
+
+	NodeID uint
+	Node   Node `gorm:"association_autoupdate:false"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
-
-	NodeId int
-	Node   Node
 }

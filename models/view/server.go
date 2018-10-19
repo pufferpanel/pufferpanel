@@ -6,18 +6,18 @@ import (
 )
 
 type ServerViewModel struct {
-	Id     int       `json:"id"`
+	Id     uint      `json:"id"`
 	Name   string    `json:"name"`
 	UUID   uuid.UUID `json:"uuid"`
-	NodeId int       `json:"nodeId"`
+	NodeId uint      `json:"nodeId"`
 }
 
 func FromServer(server *models.Server) *ServerViewModel {
 	return &ServerViewModel{
-		Id:     server.Id,
+		Id:     server.ID,
 		Name:   server.Name,
 		UUID:   server.UUID,
-		NodeId: server.NodeId,
+		NodeId: server.NodeID,
 	}
 }
 
