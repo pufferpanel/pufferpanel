@@ -17,6 +17,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/pufferpanel/apufferi/config"
+	"github.com/pufferpanel/pufferpanel/models"
 )
 
 var dbConn *gorm.DB
@@ -25,6 +26,16 @@ func Load() error {
 	err := openConnection()
 	if err != nil {
 		return err
+	}
+
+	dbObjects := []interface{} {
+		&models.Node{},
+		&models.Server{},
+		&models.User{},
+	}
+
+	for _, v := range dbObjects {
+		dbConn.AutoMigrate(v)
 	}
 
 	return nil
