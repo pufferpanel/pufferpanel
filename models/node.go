@@ -13,8 +13,6 @@
 
 package models
 
-import "time"
-
 type Node struct {
 	ID uint `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
 	Name string `gorm:"size:100;UNIQUE;NOT NULL"`
@@ -24,8 +22,8 @@ type Node struct {
 	PrivatePort int `gorm:"DEFAULT:5656;NOT NULL"`
 	SFTPPort int `gorm:"DEFAULT:5657;NOT NULL"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	//CreatedAt time.Time
+	//UpdatedAt time.Time
 }
 
 type Nodes []*Node

@@ -2,7 +2,6 @@ package models
 
 import (
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 type User struct {
@@ -11,8 +10,8 @@ type User struct {
 	Email          string `gorm:"UNIQUE_INDEX;NOT NULL"`
 	HashedPassword string `gorm:"column:password;NOT NULL"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	//CreatedAt time.Time
+	//UpdatedAt time.Time
 }
 
 type Users []*User

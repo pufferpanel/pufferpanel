@@ -21,7 +21,7 @@ import (
 )
 
 func NotImplemented (c *gin.Context) {
-	http.Respond(c).Fail().Status(netHttp.StatusNotImplemented).Message("not implemented")
+	http.Respond(c).Fail().Status(netHttp.StatusNotImplemented).Message("not implemented").Send()
 }
 
 func CreateOptions(options ...string) gin.HandlerFunc {
