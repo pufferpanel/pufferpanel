@@ -24,6 +24,16 @@ func FromNode(n *models.Node) *NodeViewModel {
 	}
 }
 
+func FromNodes(n *models.Nodes) []*NodeViewModel {
+	result := make([]*NodeViewModel, len(*n))
+
+	for k, v := range *n {
+		result[k] = FromNode(v)
+	}
+
+	return result
+}
+
 func (n *NodeViewModel) CopyToModel(newModel *models.Node) {
 	if n.Name != "" {
 		newModel.Name = n.Name

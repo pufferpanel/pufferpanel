@@ -15,16 +15,75 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/models/view"
+	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	builder "github.com/pufferpanel/apufferi/http"
+	"net/http"
+	"strconv"
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", shared.NotImplemented)
+	g.Handle("GET", "", GetAllNodes)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
 	g.Handle("PUT", "/:id", shared.NotImplemented)
-	g.Handle("GET", "/:id", shared.NotImplemented)
+	g.Handle("GET", "/:id", GetNode)
 	g.Handle("POST", "/:id", shared.NotImplemented)
 	g.Handle("DELETE", "/:id", shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+}
+
+func GetAllNodes(c *gin.Context) {
+	response := builder.Respond(c)
+
+	ns, err := services.GetNodeService()
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	nodes, err := ns.GetAll()
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	data := view.FromNodes(nodes)
+
+	response.Data(data).Send()
+}
+
+func GetNode(c *gin.Context) {
+	response := builder.Respond(c)
+
+	ns, err := services.GetNodeService()
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	param := c.Param("id")
+
+	id, err := strconv.Atoi(param)
+
+	if err != nil {
+		response.Fail().Message("id must be a number").Send()
+		return
+	}
+
+	node, exists, err := ns.Get(id)
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		return
+	}
+
+	data := view.FromNode(node)
+
+	response.Data(data).Send()
 }
