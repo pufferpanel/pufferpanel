@@ -72,10 +72,9 @@
   revision = "57fdcb988a5c543893cc61bce354a6e24ab70022"
 
 [[projects]]
-  digest = "1:85587ffd4f9a5362258437022b84f58410e264a980131f0fb64256c805db1b3b"
+  digest = "1:addfa713a647de3d8ae049c83f0561c8b20ffe4308684eb030303aa0f8300e18"
   name = "github.com/pufferpanel/apufferi"
   packages = [
-    "config",
     "http",
     "logging",
   ]
@@ -147,7 +146,6 @@
     "github.com/gin-gonic/gin",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
-    "github.com/pufferpanel/apufferi/config",
     "github.com/pufferpanel/apufferi/http",
     "github.com/pufferpanel/apufferi/logging",
     "github.com/satori/go.uuid",

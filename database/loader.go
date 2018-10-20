@@ -16,7 +16,7 @@ package database
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/pufferpanel/apufferi/config"
+	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/models"
 )
 
@@ -42,8 +42,11 @@ func Load() error {
 }
 
 func openConnection() (error) {
-	dialect := config.GetStringOrDefault("database.dialect", "mysql")
-	connString := config.GetString("database.url")
+	dialect := config.Get().Database.Dialect
+	if dialect == "" {
+		dialect = "mysql"
+	}
+	connString := config.Get().Database.Url
 
 	//attempt to open database connection to validate
 	var err error

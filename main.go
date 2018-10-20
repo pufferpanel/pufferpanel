@@ -14,9 +14,10 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/config"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/web"
 	"os"
@@ -32,11 +33,38 @@ func main() {
 		configPath = "config.json"
 	}
 
-	config.Load(configPath)
+	cfg, err := os.Open(configPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			file, err := os.Create(configPath)
+			if err != nil {
+				logging.Error("Error creating config", err)
+				return
+			}
+			data := config.Config{Database: config.Database{}}
+			encoder := json.NewEncoder(file)
+			encoder.SetIndent("", "  ")
+			encoder.SetEscapeHTML(true)
+			err = encoder.Encode(&data)
+			if err != nil {
+				logging.Error("Error creating config", err)
+				return
+			}
+		} else {
+			if err != nil {
+				logging.Error("Error reading config", err)
+				return
+			}
+			return
+		}
+	}
+
+	config.Load(cfg)
+	cfg.Close()
 
 	logging.Init()
 
-	err := database.Load()
+	err = database.Load()
 
 	if err != nil {
 		logging.Error("Error connecting to database", err)
