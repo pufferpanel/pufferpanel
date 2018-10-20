@@ -17,7 +17,7 @@ type Database struct {
 var config Config
 
 func Load(reader io.Reader) error {
-	config := Config{}
+	config = Config{}
 	return json.NewDecoder(reader).Decode(&config)
 }
 
