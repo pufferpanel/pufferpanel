@@ -25,7 +25,7 @@
     "string.refresh": "Újratölt",
     "string.close": "Bezár",
     "string.generated_pass": "Generált jelszó",
-    "string.modpacks": "Modpackok",
+    "string.modpacks": "Mod csomagok",
     "string.ftp": "FTP",
     "string.host": "Kiszolgáló",
     "string.username": "Felhasználónév",
@@ -97,14 +97,14 @@
     "node.files.loading": "Könyvtárak betöltése. Kérem várjon...",
     "node.files.name": "Fájlnév",
     "node.files.size": "Fájlméret",
-    "node.files.modified": "Legutóbb módosítva",
+    "node.files.modified": "Utolsó módosítás",
     "node.files.edit.daemon_error": "Nem lehet csatlakozni a kiszolgálóhoz.",
     "node.files.edit.back": "Vissza a Fájlkezelőhöz",
     "node.files.edit.type_error": "Ez a fájltípus nem szerkeszthető a vezérlő panelben.",
     "node.files.edit.no_file": "Nincs fájl kijelölve módosításra.",
     "node.files.edit.error": "Visszaléphetsz a fájlkezelőre <a href=\"index.php\">ide kattintva</a>.",
     "node.files.ajax.no_dir": "Sikertelen a kért könyvtár lekérése. Hiba rögzítve.",
-    "node.files.ajax.no_dl": "Nem sikerült csatlakozni a szerverhez, a fájlok lekéréséhez. Próbáld újra később.",
+    "node.files.ajax.no_dl": "Nem sikerült csatlakozni a szerverhez a fájlok lekéréséhez. Próbáld újra később.",
     "node.files.ajax.saved": "Fájl sikeresen mentve.",
     "node.files.ajax.no_save": "Fájl mentése sikertelen.",
     "node.files.ajax.no_edit": "Ez a fájl nem szerkeszthető az online fájlkezelőn keresztül. Kérlek, használj FTP klienst.",
@@ -123,5 +123,5 @@
     "error.account.same_email": "Sajnálom, nem módosíthatod email címedet a fiókodban jelenleg használt email címre, annak nem lenne értelme!",
     "success.account.email": "Az email címed frissítve lett a következőre: <em>%s</em>",
     "success.account.password": "A jelszavad sikeresen megváltozott. Lépj be újra az új jelszavad használva!",
-    "success.notifications.updated": "A fiók értesítése beállításaid frissítve lettek."
+    "success.notifications.updated": "A fiók értesítési beállításaid frissítve lettek."
 }
