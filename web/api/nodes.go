@@ -15,11 +15,11 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
-	builder "github.com/pufferpanel/apufferi/http"
 	"net/http"
 	"strconv"
 )
@@ -32,6 +32,8 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("GET", "/:id", GetNode)
 	g.Handle("POST", "/:id", UpdateNode)
 	g.Handle("DELETE", "/:id", DeleteNode)
+	g.Handle("GET", "/:id/deployment", shared.NotImplemented)
+	g.Handle("POST", "/:id/reset", shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -40,12 +42,12 @@ func GetAllNodes(c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	if ns, err = services.GetNodeService(); handleError(response, err) {
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
 		return
 	}
 
 	var nodes *models.Nodes
-	if nodes, err = ns.GetAll(); handleError(response, err) {
+	if nodes, err = ns.GetAll(); shared.HandleError(response, err) {
 		return
 	}
 
@@ -59,7 +61,7 @@ func GetNode(c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	if ns, err = services.GetNodeService(); handleError(response, err) {
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
 		return
 	}
 
@@ -69,7 +71,7 @@ func GetNode(c *gin.Context) {
 	}
 
 	node, exists, err := ns.Get(id)
-	if handleError(response, err) {
+	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
@@ -86,16 +88,18 @@ func CreateNode (c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	if ns, err = services.GetNodeService(); handleError(response, err) {
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
 		return
 	}
 
 	model := view.NodeViewModel{}
-	c.BindJSON(&model)
+	if err = c.BindJSON(&model); shared.HandleError(response, err) {
+		return
+	}
 
 	create := &models.Node{}
 	model.CopyToModel(create)
-	if err = ns.Create(create); handleError(response, err) {
+	if err = ns.Create(create); shared.HandleError(response, err) {
 		return
 	}
 
@@ -107,12 +111,14 @@ func UpdateNode (c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	if ns, err = services.GetNodeService(); handleError(response, err) {
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
 		return
 	}
 
 	viewModel := &view.NodeViewModel{}
-	c.BindJSON(viewModel)
+	if err = c.BindJSON(viewModel); shared.HandleError(response, err) {
+		return
+	}
 
 	id, ok := validateId(c, response)
 	if !ok {
@@ -120,7 +126,7 @@ func UpdateNode (c *gin.Context) {
 	}
 
 	node, exists, err := ns.Get(id)
-	if handleError(response, err) {
+	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
@@ -128,7 +134,7 @@ func UpdateNode (c *gin.Context) {
 	}
 
 	viewModel.CopyToModel(node)
-	if err = ns.Update(node); handleError(response, err) {
+	if err = ns.Update(node); shared.HandleError(response, err) {
 		return
 	}
 
@@ -140,7 +146,7 @@ func DeleteNode (c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	if ns, err = services.GetNodeService(); handleError(response, err) {
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
 		return
 	}
 
@@ -150,7 +156,7 @@ func DeleteNode (c *gin.Context) {
 	}
 
 	node, exists, err := ns.Get(id)
-	if handleError(response, err) {
+	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
@@ -158,7 +164,7 @@ func DeleteNode (c *gin.Context) {
 	}
 
 	err = ns.Delete(node.ID)
-	if handleError(response, err) {
+	if shared.HandleError(response, err) {
 		return
 	}
 
@@ -178,10 +184,3 @@ func validateId(c *gin.Context, response builder.Builder) (uint, bool) {
 	return uint(id), true
 }
 
-func handleError(response builder.Builder, err error) bool {
-	if err != nil {
-		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
-		return true
-	}
-	return false
-}

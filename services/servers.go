@@ -49,7 +49,7 @@ func (ss *ServerService) Get(id uint) (*models.Server, bool, error) {
 }
 
 func (ss *ServerService) Update(model *models.Server) error {
-	res := ss.db.Update(model)
+	res := ss.db.Save(model)
 	return res.Error
 }
 

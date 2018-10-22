@@ -24,38 +24,37 @@ func GetUserService() (*UserService, error) {
 	return service, nil
 }
 
-func (us *UserService) GetAll() (*models.Users, error) {
-	users := &models.Users{}
+func (us *UserService) Get(username string) (*models.User, bool, error) {
+	model := &models.User{
+		Username: username,
+	}
 
-	res := us.db.Find(users)
-
-	return users, res.Error
-}
-
-func (us *UserService) Get(id uint) (*models.User, bool, error) {
-	model := &models.User{}
-
-	res := us.db.First(model, id)
+	res := us.db.First(model)
 
 	return model, model.ID != 0, res.Error
 }
 
 func (us *UserService) Update(model *models.User) error {
-	res := us.db.Update(model)
+	res := us.db.Save(model)
 	return res.Error
 }
 
-func (us *UserService) Delete(id uint) error {
-	model := &models.Server{
-		ID: id,
+func (us *UserService) Delete(username string) error {
+	model := &models.User{
+		Username: username,
 	}
 
 	res := us.db.Delete(model)
 	return res.Error
 }
 
-func (us *UserService) ChangePassword(id uint, newPass string) error {
-	user, exists, err := us.Get(id)
+func (us *UserService) Create(user *models.User) error {
+	res := us.db.Create(user)
+	return res.Error
+}
+
+func (us *UserService) ChangePassword(username string, newPass string) error {
+	user, exists, err := us.Get(username)
 
 	if err != nil {
 		return err
