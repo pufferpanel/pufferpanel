@@ -30,8 +30,8 @@ func registerNodes(g *gin.RouterGroup) {
 
 	g.Handle("PUT", "", CreateNode)
 	g.Handle("GET", "/:id", GetNode)
-	g.Handle("POST", "/:id", shared.NotImplemented)
-	g.Handle("DELETE", "/:id", shared.NotImplemented)
+	g.Handle("POST", "/:id", UpdateNode)
+	g.Handle("DELETE", "/:id", DeleteNode)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -40,13 +40,13 @@ func GetAllNodes(c *gin.Context) {
 
 	ns, err := services.GetNodeService()
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
 	nodes, err := ns.GetAll()
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
@@ -60,7 +60,7 @@ func GetNode(c *gin.Context) {
 
 	ns, err := services.GetNodeService()
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
@@ -69,13 +69,13 @@ func GetNode(c *gin.Context) {
 	id, err := strconv.Atoi(param)
 
 	if err != nil || id <= 0 {
-		response.Fail().Message("id must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number").Send()
 		return
 	}
 
 	node, exists, err := ns.Get(uint(id))
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
@@ -94,7 +94,7 @@ func CreateNode (c *gin.Context) {
 
 	ns, err := services.GetNodeService()
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
@@ -106,9 +106,90 @@ func CreateNode (c *gin.Context) {
 	err = ns.Create(create)
 
 	if err != nil {
-		response.Fail().Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
 		return
 	}
 
 	response.Data(create).Send()
+}
+
+func UpdateNode (c *gin.Context) {
+	response := builder.Respond(c)
+
+	ns, err := services.GetNodeService()
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	viewModel := &view.NodeViewModel{}
+	c.BindJSON(viewModel)
+
+	param := c.Param("id")
+
+	id, err := strconv.Atoi(param)
+
+	if err != nil || id <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number").Send()
+		return
+	}
+
+	node, exists, err := ns.Get(uint(id))
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		return
+	}
+
+	viewModel.CopyToModel(node)
+	err = ns.Update(node)
+
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	response.Data(node).Send()
+}
+
+func DeleteNode (c *gin.Context) {
+	response := builder.Respond(c)
+
+	ns, err := services.GetNodeService()
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	param := c.Param("id")
+
+	id, err := strconv.Atoi(param)
+
+	if err != nil || id <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number").Send()
+		return
+	}
+
+	node, exists, err := ns.Get(uint(id))
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		return
+	}
+	err = ns.Delete(node.ID)
+
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return
+	}
+
+	response.Data(node).Send()
 }
