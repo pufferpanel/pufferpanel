@@ -15,13 +15,13 @@ package shared
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/http"
-	netHttp "net/http"
+	builder "github.com/pufferpanel/apufferi/http"
+	"net/http"
 	"strings"
 )
 
 func NotImplemented (c *gin.Context) {
-	http.Respond(c).Fail().Status(netHttp.StatusNotImplemented).Message("not implemented").Send()
+	builder.Respond(c).Fail().Status(http.StatusNotImplemented).Message("not implemented").Send()
 }
 
 func CreateOptions(options ...string) gin.HandlerFunc {
@@ -39,6 +39,14 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Headers", "authorization, origin, content-type, accept")
 		c.Header("Allow", response)
 		c.Header("Content-Type", "application/json")
-		c.AbortWithStatus(netHttp.StatusOK)
+		c.AbortWithStatus(http.StatusOK)
 	}
+}
+
+func HandleError(response builder.Builder, err error) bool {
+	if err != nil {
+		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		return true
+	}
+	return false
 }
