@@ -23,4 +23,9 @@ func RegisterRoutes(e *gin.Engine) {
 	{
 		api.Register(apiGroup)
 	}
+
+	assetsGroup := e.Group("/assets")
+	{
+		assetsGroup.Static("", "assets/web")
+	}
 }
