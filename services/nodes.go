@@ -53,7 +53,7 @@ func (ns *NodeService) Get(id uint) (*models.Node, bool, error) {
 }
 
 func (ns *NodeService) Update(model *models.Node) error {
-	res := ns.db.Update(model)
+	res := ns.db.Save(model)
 	return res.Error
 }
 
