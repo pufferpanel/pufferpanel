@@ -5,13 +5,13 @@ import (
 )
 
 type User struct {
-	ID             uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Username       string `gorm:"UNIQUE_INDEX;NOT NULL"`
-	Email          string `gorm:"UNIQUE_INDEX;NOT NULL"`
-	HashedPassword string `gorm:"column:password;NOT NULL"`
+	ID             uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT",json:"-"`
+	Username       string `gorm:"UNIQUE_INDEX;NOT NULL",json:"-"`
+	Email          string `gorm:"UNIQUE_INDEX;NOT NULL",json:"-"`
+	HashedPassword string `gorm:"column:password;NOT NULL",json:"-"`
 
-	//CreatedAt time.Time
-	//UpdatedAt time.Time
+	//CreatedAt time.Time `json:"-"`
+	//UpdatedAt time.Time `json:"-"`
 }
 
 type Users []*User

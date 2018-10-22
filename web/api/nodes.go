@@ -15,6 +15,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
@@ -27,7 +28,7 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("GET", "", GetAllNodes)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:id", shared.NotImplemented)
+	g.Handle("PUT", "", CreateNode)
 	g.Handle("GET", "/:id", GetNode)
 	g.Handle("POST", "/:id", shared.NotImplemented)
 	g.Handle("DELETE", "/:id", shared.NotImplemented)
@@ -67,12 +68,12 @@ func GetNode(c *gin.Context) {
 
 	id, err := strconv.Atoi(param)
 
-	if err != nil {
-		response.Fail().Message("id must be a number").Send()
+	if err != nil || id <= 0 {
+		response.Fail().Message("id must be a positive number").Send()
 		return
 	}
 
-	node, exists, err := ns.Get(id)
+	node, exists, err := ns.Get(uint(id))
 	if err != nil {
 		response.Fail().Message(err.Error()).Send()
 		return
@@ -86,4 +87,28 @@ func GetNode(c *gin.Context) {
 	data := view.FromNode(node)
 
 	response.Data(data).Send()
+}
+
+func CreateNode (c *gin.Context) {
+	response := builder.Respond(c)
+
+	ns, err := services.GetNodeService()
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	model := view.NodeViewModel{}
+	c.BindJSON(&model)
+
+	create := &models.Node{}
+	model.CopyToModel(create)
+	err = ns.Create(create)
+
+	if err != nil {
+		response.Fail().Message(err.Error()).Send()
+		return
+	}
+
+	response.Data(create).Send()
 }
