@@ -5,15 +5,15 @@ import (
 )
 
 type Server struct {
-	ID   uint      `gorm:"PRIMARY_KEY;AUTO_INCREMENT"`
-	Name string    `gorm:"UNIQUE_INDEX;size:20;NOT NULL"`
-	UUID uuid.UUID `gorm:"UNIQUE_INDEX;NOT NULL"`
+	ID   uint      `gorm:"PRIMARY_KEY;AUTO_INCREMENT",json:"-"`
+	Name string    `gorm:"UNIQUE_INDEX;size:20;NOT NULL",json:"-"`
+	UUID uuid.UUID `gorm:"UNIQUE_INDEX;NOT NULL",json:"-"`
 
-	NodeID uint	`gorm:"NOT NULL"`
-	Node   Node `gorm:"association_autoupdate:false"`
+	NodeID uint `gorm:"NOT NULL",json:"-"`
+	Node   Node `gorm:"association_autoupdate:false",json:"-"`
 
-	//CreatedAt time.Time
-	//UpdatedAt time.Time
+	//CreatedAt time.Time `json:"-"`
+	//UpdatedAt time.Time `json:"-"`
 }
 
 type Servers []*Server

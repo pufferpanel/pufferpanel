@@ -44,10 +44,10 @@ func (ns *NodeService) GetAll() (*models.Nodes, error) {
 	return nodes, res.Error
 }
 
-func (ns *NodeService) Get(id int) (*models.Node, bool, error) {
+func (ns *NodeService) Get(id uint) (*models.Node, bool, error) {
 	model := &models.Node{}
 
-	res := ns.db.First(model, id)
+	res := ns.db.FirstOrInit(model, id)
 
 	return model, model.ID != 0, res.Error
 }
@@ -63,5 +63,10 @@ func (ns *NodeService) Delete(id uint) error {
 	}
 
 	res := ns.db.Delete(model)
+	return res.Error
+}
+
+func (ns *NodeService) Create(node *models.Node) error {
+	res := ns.db.Create(node)
 	return res.Error
 }
