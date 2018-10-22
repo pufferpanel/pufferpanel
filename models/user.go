@@ -5,10 +5,10 @@ import (
 )
 
 type User struct {
-	ID             uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT",json:"-"`
-	Username       string `gorm:"UNIQUE_INDEX;NOT NULL",json:"-"`
-	Email          string `gorm:"UNIQUE_INDEX;NOT NULL",json:"-"`
-	HashedPassword string `gorm:"column:password;NOT NULL",json:"-"`
+	ID             uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	Username       string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-"`
+	Email          string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-"`
+	HashedPassword string `gorm:"column:password;NOT NULL" json:"-"`
 
 	//CreatedAt time.Time `json:"-"`
 	//UpdatedAt time.Time `json:"-"`
