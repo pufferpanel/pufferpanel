@@ -14,13 +14,13 @@
 package models
 
 type Node struct {
-	ID          uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT",json:"-"`
-	Name        string `gorm:"size:100;UNIQUE;NOT NULL",json:"-"`
-	PublicHost  string `gorm:"size:100;NOT NULL",json:"-"`
-	PrivateHost string `gorm:"size:100;NOT NULL",json:"-"`
-	PublicPort  int    `gorm:"DEFAULT:5656;NOT NULL",json:"-"`
-	PrivatePort int    `gorm:"DEFAULT:5656;NOT NULL",json:"-"`
-	SFTPPort    int    `gorm:"DEFAULT:5657;NOT NULL",json:"-"`
+	ID          uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-"`
+	PublicHost  string `gorm:"size:100;NOT NULL" json:"-"`
+	PrivateHost string `gorm:"size:100;NOT NULL" json:"-"`
+	PublicPort  int    `gorm:"DEFAULT:5656;NOT NULL" json:"-"`
+	PrivatePort int    `gorm:"DEFAULT:5656;NOT NULL" json:"-"`
+	SFTPPort    int    `gorm:"DEFAULT:5657;NOT NULL" json:"-"`
 
 	//CreatedAt time.Time `json:"-"`
 	//UpdatedAt time.Time `json:"-"`
