@@ -29,7 +29,7 @@ func (us *UserService) Get(username string) (*models.User, bool, error) {
 		Username: username,
 	}
 
-	res := us.db.First(model)
+	res := us.db.Where(model).FirstOrInit(model)
 
 	return model, model.ID != 0, res.Error
 }

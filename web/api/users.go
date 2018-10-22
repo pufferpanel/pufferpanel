@@ -29,8 +29,8 @@ func registerUsers(g *gin.RouterGroup) {
 
 	g.Handle("PUT", "/:username", CreateUser)
 	g.Handle("GET", "/:username", GetUser)
-	g.Handle("POST", "/:username", shared.NotImplemented)
-	g.Handle("DELETE", "/:username", shared.NotImplemented)
+	g.Handle("POST", "/:username", UpdateUser)
+	g.Handle("DELETE", "/:username", DeleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -75,6 +75,62 @@ func GetUser(c *gin.Context) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	response.Data(view.FromUser(user)).Send()
+}
+
+func UpdateUser(c *gin.Context) {
+	var us *services.UserService
+	var err error
+	response := builder.Respond(c)
+
+	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+		return
+	}
+
+	username := c.Param("username")
+
+	var viewModel view.UserViewModel
+	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+		return
+	}
+
+	user, exists, err := us.Get(username)
+	if shared.HandleError(response, err) {
+		return
+	} else if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	viewModel.CopyToModel(user)
+	us.Update(user)
+
+	response.Data(view.FromUser(user)).Send()
+}
+
+func DeleteUser(c *gin.Context) {
+	var us *services.UserService
+	var err error
+	response := builder.Respond(c)
+
+	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+		return
+	}
+
+	username := c.Param("username")
+
+	user, exists, err := us.Get(username)
+	if shared.HandleError(response, err) {
+		return
+	} else if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	if err = us.Delete(user.Username); shared.HandleError(response, err) {
 		return
 	}
 
