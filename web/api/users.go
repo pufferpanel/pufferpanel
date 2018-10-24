@@ -21,17 +21,58 @@ import (
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"net/http"
+	"strconv"
 )
 
+const MAX_PAGE_SIZE = 100
+
 func registerUsers(g *gin.RouterGroup) {
-	//g.Handle("GET", "", shared.NotImplemented)
-	//g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
+	g.Handle("GET", "", SearchUsers)
+	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
 	g.Handle("PUT", "/:username", CreateUser)
 	g.Handle("GET", "/:username", GetUser)
 	g.Handle("POST", "/:username", UpdateUser)
 	g.Handle("DELETE", "/:username", DeleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+}
+
+func SearchUsers (c *gin.Context) {
+	var us *services.UserService
+	var err error
+	response := builder.Respond(c)
+
+	usernameFilter := c.DefaultQuery("username", "*")
+	emailFilter := c.DefaultQuery("email", "*")
+	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(MAX_PAGE_SIZE))
+	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
+
+	pageSize, err := strconv.Atoi(pageSizeQuery)
+	if err != nil || pageSize <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number").Send()
+		return
+	}
+
+	if pageSize > MAX_PAGE_SIZE {
+		pageSize = MAX_PAGE_SIZE
+	}
+
+	page, err := strconv.Atoi(pageQuery)
+	if err != nil || page <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number").Send()
+		return
+	}
+
+	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+		return
+	}
+
+	var results *models.Users
+	if results, err = us.Search(usernameFilter, emailFilter, pageSize, page); shared.HandleError(response, err) {
+		return
+	}
+
+	response.Data(view.FromUsers(results)).Send()
 }
 
 func CreateUser(c *gin.Context) {

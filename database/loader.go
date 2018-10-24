@@ -18,6 +18,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/models"
+	"os"
 )
 
 var dbConn *gorm.DB
@@ -51,6 +52,11 @@ func openConnection() (error) {
 	//attempt to open database connection to validate
 	var err error
 	dbConn, err = gorm.Open(dialect, connString)
+
+	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "YES" {
+		dbConn.LogMode(true)
+	}
+
 	return err
 }
 
