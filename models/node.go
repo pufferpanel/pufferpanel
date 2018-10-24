@@ -13,17 +13,40 @@
 
 package models
 
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/shared"
+	"gopkg.in/go-playground/validator.v9"
+)
+
 type Node struct {
 	ID          uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
-	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-"`
-	PublicHost  string `gorm:"size:100;NOT NULL" json:"-"`
-	PrivateHost string `gorm:"size:100;NOT NULL" json:"-"`
-	PublicPort  int    `gorm:"DEFAULT:5656;NOT NULL" json:"-"`
-	PrivatePort int    `gorm:"DEFAULT:5656;NOT NULL" json:"-"`
-	SFTPPort    int    `gorm:"DEFAULT:5657;NOT NULL" json:"-"`
+	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii,excludesall=0x20"`
+	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|ip_addr|hostname|fqdn"`
+	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|ip_addr|hostname|fqdn"`
+	PublicPort  uint    `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	PrivatePort uint    `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	SFTPPort    uint    `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
 	//CreatedAt time.Time `json:"-"`
 	//UpdatedAt time.Time `json:"-"`
 }
 
 type Nodes []*Node
+
+func (n *Node) IsValid() (err error) {
+	err = validator.New().Struct(n)
+	if err != nil {
+		err = shared.GenerateValidationMessage(err)
+	}
+	return
+}
+
+func (n *Node) BeforeSave() (err error) {
+	err = n.IsValid()
+	return
+}
+
+func (n *Node) BeforeDelete(tx *gorm.DB) (err error) {
+	return
+}
