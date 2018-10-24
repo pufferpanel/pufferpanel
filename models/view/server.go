@@ -21,6 +21,16 @@ func FromServer(server *models.Server) *ServerViewModel {
 	}
 }
 
+func FromServers(servers *models.Servers) []*ServerViewModel {
+	result := make([]*ServerViewModel, len(*servers))
+
+	for k, v := range *servers {
+		result[k] = FromServer(v)
+	}
+
+	return result
+}
+
 func (model *ServerViewModel) CopyToModel(newModel *models.Server) {
 	if model.Name != "" {
 		newModel.Name = model.Name

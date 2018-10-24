@@ -15,11 +15,17 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	builder "github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/pufferpanel/pufferpanel/models/view"
+	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"net/http"
+	"strconv"
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", shared.NotImplemented)
+	g.Handle("GET", "", SearchServers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
 	g.Handle("PUT", "/:id", shared.NotImplemented)
@@ -27,4 +33,48 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("POST", "/:id", shared.NotImplemented)
 	g.Handle("DELETE", "/:id", shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+}
+
+func SearchServers (c *gin.Context) {
+	var ss *services.ServerService
+	var err error
+	response := builder.Respond(c)
+
+	nodeQuery := c.DefaultQuery("node", "0")
+	nameFilter := c.DefaultQuery("name", "*")
+	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DEFAULT_PAGE_SIZE))
+	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
+
+	pageSize, err := strconv.Atoi(pageSizeQuery)
+	if err != nil || pageSize <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number").Send()
+		return
+	}
+
+	if pageSize > MAX_PAGE_SIZE {
+		pageSize = MAX_PAGE_SIZE
+	}
+
+	page, err := strconv.Atoi(pageQuery)
+	if err != nil || page <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number").Send()
+		return
+	}
+
+	node, err := strconv.Atoi(nodeQuery)
+	if err != nil || page <= 0 {
+		response.Fail().Status(http.StatusBadRequest).Message("node id is invalid").Send()
+		return
+	}
+
+	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+		return
+	}
+
+	var results *models.Servers
+	if results, err = ss.Search(uint(node), nameFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
+		return
+	}
+
+	response.Data(view.FromServers(results)).Send()
 }
