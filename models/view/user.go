@@ -16,6 +16,16 @@ func FromUser(model *models.User) *UserViewModel {
 	}
 }
 
+func FromUsers(users *models.Users) []*UserViewModel {
+	result := make([]*UserViewModel, len(*users))
+
+	for k, v := range *users {
+		result[k] = FromUser(v)
+	}
+
+	return result
+}
+
 func (model *UserViewModel) CopyToModel(newModel *models.User) {
 	if model.Username != "" {
 		newModel.Username = model.Username

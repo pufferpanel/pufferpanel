@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
+	"strings"
 )
 
 type UserService struct {
@@ -79,4 +80,25 @@ func (us *UserService) ChangePassword(username string, newPass string) error {
 		return err
 	}
 	return us.Update(user)
+}
+
+func (us *UserService) Search (usernameFilter, emailFilter string, pageSize, page int) (*models.Users, error) {
+	users := &models.Users{}
+
+	query := us.db.Offset((page - 1) * pageSize).Limit(pageSize)
+
+	usernameFilter = strings.Replace(usernameFilter, "*", "%", -1)
+	emailFilter = strings.Replace(emailFilter, "*", "%", -1)
+
+	if usernameFilter != "" && usernameFilter != "%" {
+		query = query.Where("username LIKE ?", usernameFilter)
+	}
+
+	if emailFilter != "" && emailFilter != "%" {
+		query = query.Where("email LIKE ?", emailFilter)
+	}
+
+	res := query.Find(users)
+
+	return users, res.Error
 }
