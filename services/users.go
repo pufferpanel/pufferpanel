@@ -34,6 +34,16 @@ func (us *UserService) Get(username string) (*models.User, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
+func (us *UserService) GetByEmail(email string) (*models.User, bool, error) {
+	model := &models.User{
+		Email: email,
+	}
+
+	res := us.db.Where(model).FirstOrInit(model)
+
+	return model, model.ID != 0, res.Error
+}
+
 func (us *UserService) Update(model *models.User) error {
 	res := us.db.Save(model)
 	return res.Error

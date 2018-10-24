@@ -59,7 +59,11 @@ func main() {
 		}
 	}
 
-	config.Load(cfg)
+	err = config.Load(cfg)
+	if err != nil {
+		logging.Error("Error reading config", err)
+		return
+	}
 	cfg.Close()
 
 	logging.Init()
