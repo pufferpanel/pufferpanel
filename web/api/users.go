@@ -25,6 +25,7 @@ import (
 )
 
 const MAX_PAGE_SIZE = 100
+const DEFAULT_PAGE_SIZE = 20
 
 func registerUsers(g *gin.RouterGroup) {
 	g.Handle("GET", "", SearchUsers)
@@ -44,7 +45,7 @@ func SearchUsers (c *gin.Context) {
 
 	usernameFilter := c.DefaultQuery("username", "*")
 	emailFilter := c.DefaultQuery("email", "*")
-	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(MAX_PAGE_SIZE))
+	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DEFAULT_PAGE_SIZE))
 	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
