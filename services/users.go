@@ -82,7 +82,7 @@ func (us *UserService) ChangePassword(username string, newPass string) error {
 	return us.Update(user)
 }
 
-func (us *UserService) Search (usernameFilter, emailFilter string, pageSize, page int) (*models.Users, error) {
+func (us *UserService) Search (usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error) {
 	users := &models.Users{}
 
 	query := us.db.Offset((page - 1) * pageSize).Limit(pageSize)

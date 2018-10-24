@@ -69,7 +69,7 @@ func SearchUsers (c *gin.Context) {
 	}
 
 	var results *models.Users
-	if results, err = us.Search(usernameFilter, emailFilter, pageSize, page); shared.HandleError(response, err) {
+	if results, err = us.Search(usernameFilter, emailFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
 		return
 	}
 
