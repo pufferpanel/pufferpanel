@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
+	"strings"
 )
 
 type ServerService struct {
@@ -23,10 +24,22 @@ func GetServerService() (*ServerService, error) {
 	return service, nil
 }
 
-func (ss *ServerService) GetAll() (*models.Servers, error) {
+func (ss *ServerService) Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
 	servers := &models.Servers{}
 
-	res := ss.db.Find(servers)
+	query := ss.db.Offset((page - 1) * pageSize).Limit(pageSize)
+
+	if nodeId != 0 {
+		query = query.Where(&models.Server{NodeID: nodeId})
+	}
+
+	nameFilter = strings.Replace(nameFilter, "*", "%", -1)
+
+	if nameFilter != "" && nameFilter != "%" {
+		query = query.Where("name LIKE ?", nameFilter)
+	}
+
+	res := query.Find(servers)
 
 	return servers, res.Error
 }
