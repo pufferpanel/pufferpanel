@@ -76,5 +76,9 @@ func main() {
 
 	defer database.Close()
 
+	if err != nil {
+		return
+	}
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

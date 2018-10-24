@@ -39,7 +39,9 @@ func Load() error {
 		dbConn.AutoMigrate(v)
 	}
 
-	return nil
+	err = models.MigrateServerModel(dbConn)
+
+	return err
 }
 
 func openConnection() (error) {

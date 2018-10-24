@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/jinzhu/gorm"
 	"github.com/satori/go.uuid"
 )
 
@@ -17,3 +18,8 @@ type Server struct {
 }
 
 type Servers []*Server
+
+func MigrateServerModel(db *gorm.DB) (err error) {
+	err = db.Model(&Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	return
+}
