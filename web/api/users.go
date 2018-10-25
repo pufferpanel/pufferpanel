@@ -24,9 +24,6 @@ import (
 	"strconv"
 )
 
-const MAX_PAGE_SIZE = 100
-const DEFAULT_PAGE_SIZE = 20
-
 func registerUsers(g *gin.RouterGroup) {
 	g.Handle("GET", "", SearchUsers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
@@ -45,7 +42,7 @@ func SearchUsers (c *gin.Context) {
 
 	usernameFilter := c.DefaultQuery("username", "*")
 	emailFilter := c.DefaultQuery("email", "*")
-	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DEFAULT_PAGE_SIZE))
+	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DefaultPageSize))
 	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
@@ -54,8 +51,8 @@ func SearchUsers (c *gin.Context) {
 		return
 	}
 
-	if pageSize > MAX_PAGE_SIZE {
-		pageSize = MAX_PAGE_SIZE
+	if pageSize > MaxPageSize {
+		pageSize = MaxPageSize
 	}
 
 	page, err := strconv.Atoi(pageQuery)
@@ -73,7 +70,7 @@ func SearchUsers (c *gin.Context) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MAX_PAGE_SIZE).Data(view.FromUsers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromUsers(results)).Send()
 }
 
 func CreateUser(c *gin.Context) {

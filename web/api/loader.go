@@ -15,6 +15,9 @@ package api
 
 import "github.com/gin-gonic/gin"
 
+const MaxPageSize = 100
+const DefaultPageSize = 20
+
 func Register(rg *gin.RouterGroup) {
 	var g *gin.RouterGroup
 

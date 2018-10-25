@@ -97,6 +97,10 @@ func CreateNode (c *gin.Context) {
 		return
 	}
 
+	if err = model.Valid(); shared.HandleError(response, err) {
+		return
+	}
+
 	create := &models.Node{}
 	model.CopyToModel(create)
 	if err = ns.Create(create); shared.HandleError(response, err) {
@@ -122,6 +126,10 @@ func UpdateNode (c *gin.Context) {
 
 	id, ok := validateId(c, response)
 	if !ok {
+		return
+	}
+
+	if err = viewModel.Valid(); shared.HandleError(response, err) {
 		return
 	}
 
