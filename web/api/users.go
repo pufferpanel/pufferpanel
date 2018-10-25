@@ -73,7 +73,7 @@ func SearchUsers (c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUsers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MAX_PAGE_SIZE).Data(view.FromUsers(results)).Send()
 }
 
 func CreateUser(c *gin.Context) {
