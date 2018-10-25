@@ -21,12 +21,12 @@ import (
 
 type Node struct {
 	ID          uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
-	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii,excludesall=0x20"`
-	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|ip_addr|hostname|fqdn"`
-	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|ip_addr|hostname|fqdn"`
-	PublicPort  uint    `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
-	PrivatePort uint    `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
-	SFTPPort    uint    `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
+	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii"`
+	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`
+	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`
+	PublicPort  uint   `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	PrivatePort uint   `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
+	SFTPPort    uint   `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
 	//CreatedAt time.Time `json:"-"`
 	//UpdatedAt time.Time `json:"-"`

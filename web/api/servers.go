@@ -42,7 +42,7 @@ func SearchServers (c *gin.Context) {
 
 	nodeQuery := c.DefaultQuery("node", "0")
 	nameFilter := c.DefaultQuery("name", "*")
-	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DEFAULT_PAGE_SIZE))
+	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DefaultPageSize))
 	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
@@ -51,8 +51,8 @@ func SearchServers (c *gin.Context) {
 		return
 	}
 
-	if pageSize > MAX_PAGE_SIZE {
-		pageSize = MAX_PAGE_SIZE
+	if pageSize > MaxPageSize {
+		pageSize = MaxPageSize
 	}
 
 	page, err := strconv.Atoi(pageQuery)
@@ -76,5 +76,5 @@ func SearchServers (c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromServers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromServers(results)).Send()
 }
