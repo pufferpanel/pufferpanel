@@ -14,7 +14,6 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -44,9 +43,5 @@ func (n *Node) IsValid() (err error) {
 
 func (n *Node) BeforeSave() (err error) {
 	err = n.IsValid()
-	return
-}
-
-func (n *Node) BeforeDelete(tx *gorm.DB) (err error) {
 	return
 }
