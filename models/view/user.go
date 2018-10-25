@@ -1,6 +1,11 @@
 package view
 
-import "github.com/pufferpanel/pufferpanel/models"
+import (
+	"errors"
+	"github.com/pufferpanel/pufferpanel/models"
+	"gopkg.in/go-playground/validator.v9"
+	"net/url"
+)
 
 type UserViewModel struct {
 	Username string `json:"username"`
@@ -38,4 +43,31 @@ func (model *UserViewModel) CopyToModel(newModel *models.User) {
 	if model.Password != "" {
 		newModel.SetPassword(model.Password)
 	}
+}
+
+func (model *UserViewModel) Valid() error {
+	validate := validator.New()
+
+	if validate.Var(model.Username, "required") != nil {
+		return errors.New("username is required")
+	}
+
+	if validate.Var(model.Username, "printascii") != nil {
+		return errors.New("username must be printable ascii characters")
+	}
+
+	testName := url.QueryEscape(model.Username)
+	if testName != model.Username {
+		return errors.New("username must not contain characters which cannot be used in URIs")
+	}
+
+	if validate.Var(model.Email, "required") != nil {
+		return errors.New("email is required")
+	}
+
+	if validate.Var(model.Email, "email") != nil {
+		return errors.New("email must be in a valid email format")
+	}
+
+	return nil
 }

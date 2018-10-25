@@ -14,6 +14,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/models"
@@ -88,6 +89,15 @@ func CreateUser(c *gin.Context) {
 	}
 	viewModel.Username = c.Param("username")
 
+	if err = viewModel.Valid(); shared.HandleError(response, err) {
+		return
+	}
+
+	if viewModel.Password == "" {
+		shared.HandleError(response, errors.New("password is required"))
+		return
+	}
+
 	user := &models.User{}
 	viewModel.CopyToModel(user)
 
@@ -133,6 +143,10 @@ func UpdateUser(c *gin.Context) {
 
 	var viewModel view.UserViewModel
 	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+		return
+	}
+
+	if err = viewModel.Valid(); shared.HandleError(response, err) {
 		return
 	}
 
