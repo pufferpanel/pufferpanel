@@ -89,7 +89,7 @@ func CreateUser(c *gin.Context) {
 	}
 	viewModel.Username = c.Param("username")
 
-	if err = viewModel.Valid(); shared.HandleError(response, err) {
+	if err = viewModel.Valid(false); shared.HandleError(response, err) {
 		return
 	}
 
@@ -146,7 +146,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err = viewModel.Valid(); shared.HandleError(response, err) {
+	if err = viewModel.Valid(true); shared.HandleError(response, err) {
 		return
 	}
 

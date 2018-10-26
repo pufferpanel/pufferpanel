@@ -97,7 +97,7 @@ func CreateNode (c *gin.Context) {
 		return
 	}
 
-	if err = model.Valid(); shared.HandleError(response, err) {
+	if err = model.Valid(false); shared.HandleError(response, err) {
 		return
 	}
 
@@ -129,7 +129,7 @@ func UpdateNode (c *gin.Context) {
 		return
 	}
 
-	if err = viewModel.Valid(); shared.HandleError(response, err) {
+	if err = viewModel.Valid(true); shared.HandleError(response, err) {
 		return
 	}
 

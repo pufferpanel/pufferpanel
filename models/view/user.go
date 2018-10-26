@@ -45,14 +45,14 @@ func (model *UserViewModel) CopyToModel(newModel *models.User) {
 	}
 }
 
-func (model *UserViewModel) Valid() error {
+func (model *UserViewModel) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
-	if validate.Var(model.Username, "required") != nil {
+	if !allowEmpty && validate.Var(model.Username, "required") != nil {
 		return errors.New("username is required")
 	}
 
-	if validate.Var(model.Username, "printascii") != nil {
+	if validate.Var(model.Username, "optional|printascii") != nil {
 		return errors.New("username must be printable ascii characters")
 	}
 
@@ -61,11 +61,11 @@ func (model *UserViewModel) Valid() error {
 		return errors.New("username must not contain characters which cannot be used in URIs")
 	}
 
-	if validate.Var(model.Email, "required") != nil {
+	if !allowEmpty && validate.Var(model.Email, "required") != nil {
 		return errors.New("email is required")
 	}
 
-	if validate.Var(model.Email, "email") != nil {
+	if validate.Var(model.Email, "optional|email") != nil {
 		return errors.New("email must be in a valid email format")
 	}
 

@@ -78,11 +78,27 @@ func (ss *ServerService) Delete(id uint) error {
 	return res.Error
 }
 
-func (ss *ServerService) Create(model *models.Server) error {
+func (ss *ServerService) Create(model *models.Server, serverData interface{}) (err error) {
 	uuid := uuid2.NewV4()
 	generatedId := strings.ToUpper(uuid.String())[0:8]
 	model.Identifier = generatedId
 
-	res := ss.db.Create(model)
-	return res.Error
+	conn := ss.db.Begin()
+	successful := false
+
+	defer func() {
+		if successful && err == nil {
+			conn.Commit()
+		} else {
+			conn.Rollback()
+		}
+	}()
+
+	res := conn.Create(model)
+	if res.Error != nil {
+		err = res.Error
+		return
+	}
+
+	return
 }
