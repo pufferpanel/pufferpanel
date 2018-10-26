@@ -65,14 +65,14 @@ func (n *NodeViewModel) CopyToModel(newModel *models.Node) {
 	}
 }
 
-func (n *NodeViewModel) Valid() error {
+func (n *NodeViewModel) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
-	if validate.Var(n.Name, "required") != nil {
+	if !allowEmpty && validate.Var(n.Name, "required") != nil {
 		return errors.New("name is required")
 	}
 
-	if validate.Var(n.Name, "printascii") != nil {
+	if validate.Var(n.Name, "optional|printascii") != nil {
 		return errors.New("name must be printable ascii characters")
 	}
 
@@ -81,39 +81,53 @@ func (n *NodeViewModel) Valid() error {
 		return errors.New("name must not contain characters which cannot be used in URIs")
 	}
 
-	if validate.Var(n.PublicHost, "required") != nil {
+	if !allowEmpty && validate.Var(n.PublicHost, "required") != nil {
 		return errors.New("publicHost is required")
 	}
 
-	if validate.Var(n.PublicHost, "ip|fqdn") != nil {
+	if validate.Var(n.PublicHost, "optional|ip|fqdn") != nil {
 		return errors.New("publicHost must be a valid IP or FQDN")
 	}
 
-	if validate.Var(n.PrivateHost, "required") != nil {
+	if !allowEmpty && validate.Var(n.PrivateHost, "required") != nil {
 		return errors.New("privateHost is required")
 	}
 
-	if validate.Var(n.PrivateHost, "ip_addr|fqdn") != nil {
+	if validate.Var(n.PrivateHost, "optional|ip_addr|fqdn") != nil {
 		return errors.New("privateHost must be a valid IP or FQDN")
 	}
 
-	if validate.Var(n.PublicPort, "min=1,max=65535") != nil {
-		return errors.New("publicPort must be between 1 and 65535")
+	if allowEmpty {
+		if validate.Var(n.PublicPort, "max=65535") != nil {
+			return errors.New("publicPort must not be larger than 65535")
+		}
+
+		if validate.Var(n.PrivatePort, "max=65535") != nil {
+			return errors.New("privatePort must not be larger than 65535")
+		}
+
+		if validate.Var(n.SFTPPort, "max=65535") != nil {
+			return errors.New("sftpPort must not be larger than 65535")
+		}
+	} else {
+		if validate.Var(n.PublicPort, "min=1,max=65535") != nil {
+			return errors.New("publicPort must be between 1 and 65535")
+		}
+
+		if validate.Var(n.PrivatePort, "min=1,max=65535") != nil {
+			return errors.New("privatePort must be between 1 and 65535")
+		}
+
+		if validate.Var(n.SFTPPort, "min=1,max=65535") != nil {
+			return errors.New("sftpPort must be between 1 and 65535")
+		}
 	}
 
-	if validate.Var(n.PrivatePort, "min=1,max=65535") != nil {
-		return errors.New("privatePort must be between 1 and 65535")
-	}
-
-	if validate.Var(n.SFTPPort, "min=1,max=65535") != nil {
-		return errors.New("sftpPort must be between 1 and 65535")
-	}
-
-	if n.SFTPPort == n.PublicPort {
+	if n.SFTPPort != 0 && n.SFTPPort == n.PublicPort {
 		return errors.New("sftpPort cannot be the same as the public port")
 	}
 
-	if n.SFTPPort == n.PrivatePort {
+	if n.SFTPPort != 0 && n.SFTPPort == n.PrivatePort {
 		return errors.New("sftpPort cannot be the same as the private port")
 	}
 

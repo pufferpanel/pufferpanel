@@ -2,6 +2,8 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/shared"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type Server struct {
@@ -20,5 +22,18 @@ type Servers []*Server
 
 func MigrateServerModel(db *gorm.DB) (err error) {
 	err = db.Model(&Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	return
+}
+
+func (s *Server) IsValid() (err error) {
+	err = validator.New().Struct(s)
+	if err != nil {
+		err = shared.GenerateValidationMessage(err)
+	}
+	return
+}
+
+func (s *Server) BeforeSave() (err error) {
+	err = s.IsValid()
 	return
 }
