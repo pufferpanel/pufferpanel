@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
+	uuid2 "github.com/satori/go.uuid"
 	"strings"
 )
 
@@ -53,10 +54,12 @@ func (ss *ServerService) GetForUser(userId uint) (*models.Servers, error) {
 	return servers, res.Error
 }
 
-func (ss *ServerService) Get(id uint) (*models.Server, bool, error) {
-	model := &models.Server{}
+func (ss *ServerService) Get(id string) (*models.Server, bool, error) {
+	model := &models.Server{
+		Identifier: id,
+	}
 
-	res := ss.db.First(model, id)
+	res := ss.db.First(model)
 
 	return model, model.ID != 0, res.Error
 }
@@ -72,5 +75,14 @@ func (ss *ServerService) Delete(id uint) error {
 	}
 
 	res := ss.db.Delete(model)
+	return res.Error
+}
+
+func (ss *ServerService) Create(model *models.Server) error {
+	uuid := uuid2.NewV4()
+	generatedId := strings.ToUpper(uuid.String())[0:8]
+	model.Identifier = generatedId
+
+	res := ss.db.Create(model)
 	return res.Error
 }

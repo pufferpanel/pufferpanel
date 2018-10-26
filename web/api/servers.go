@@ -28,8 +28,8 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", SearchServers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:id", shared.NotImplemented)
-	g.Handle("GET", "/:id", shared.NotImplemented)
+	g.Handle("PUT", "", shared.NotImplemented)
+	g.Handle("GET", "/:id", GetServer)
 	g.Handle("POST", "/:id", shared.NotImplemented)
 	g.Handle("DELETE", "/:id", shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
@@ -77,4 +77,29 @@ func SearchServers (c *gin.Context) {
 	}
 
 	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromServers(results)).Send()
+}
+
+func GetServer(c *gin.Context) {
+	var ss *services.ServerService
+	var err error
+	response := builder.Respond(c)
+
+	id := c.Param("id")
+
+	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+		return
+	}
+
+	var result *models.Server
+	var exists bool
+	if result, exists, err = ss.Get(id); shared.HandleError(response, err) {
+		return
+	}
+
+	if !exists {
+		response.Fail().Status(http.StatusNotFound).Send()
+		return
+	}
+
+	response.Data(result).Send()
 }
