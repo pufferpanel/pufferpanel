@@ -2,22 +2,20 @@ package view
 
 import (
 	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/satori/go.uuid"
 )
 
 type ServerViewModel struct {
-	Id     uint      `json:"id"`
-	Name   string    `json:"name"`
-	UUID   uuid.UUID `json:"uuid"`
-	NodeId uint      `json:"nodeId"`
+	//Id         uint   `json:"id"`
+	Identifier string `json:"id"`
+	Name       string `json:"name"`
+	NodeId     uint   `json:"nodeId"`
 }
 
 func FromServer(server *models.Server) *ServerViewModel {
 	return &ServerViewModel{
-		Id:     server.ID,
-		Name:   server.Name,
-		UUID:   server.UUID,
-		NodeId: server.NodeID,
+		Name:       server.Name,
+		Identifier: server.Identifier,
+		NodeId:     server.NodeID,
 	}
 }
 

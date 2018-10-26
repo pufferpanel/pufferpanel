@@ -2,13 +2,12 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/satori/go.uuid"
 )
 
 type Server struct {
-	ID   uint      `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
-	Name string    `gorm:"UNIQUE_INDEX;size:20;NOT NULL" json:"-"`
-	UUID uuid.UUID `gorm:"UNIQUE_INDEX;NOT NULL" json:"-"`
+	ID         uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	Name       string `gorm:"UNIQUE_INDEX;size:20;NOT NULL" json:"-"`
+	Identifier string `gorm:"UNIQUE_INDEX;NOT NULL;size:8" json:"-"`
 
 	NodeID uint `gorm:"NOT NULL" json:"-"`
 	Node   Node `gorm:"association_autoupdate:false" json:"-"`
