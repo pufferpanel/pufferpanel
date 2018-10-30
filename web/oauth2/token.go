@@ -2,27 +2,21 @@ package oauth2
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"gopkg.in/oauth2.v3/manage"
 )
 
 func registerTokens(g *gin.RouterGroup) {
-	g.POST("/request", requestToken)
+	handle()
+	g.POST("/request", shared.NotImplemented)
 	g.OPTIONS("/request", shared.CreateOptions("POST"))
 
-	g.POST("/info", tokenInfo)
+	g.POST("/info", shared.NotImplemented)
 	g.OPTIONS("/info", shared.CreateOptions("POST"))
 }
 
-func requestToken(c *gin.Context) {
-	response := builder.Respond(c)
-
-	response.Send()
-}
-
-
-func tokenInfo(c *gin.Context) {
-	response := builder.Respond(c)
-
-	response.Send()
+func handle() {
+	manager := manage.NewDefaultManager()
+	manager.MapClientStorage(&oauth2.ClientStore{})
 }
