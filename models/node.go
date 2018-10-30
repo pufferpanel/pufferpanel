@@ -19,7 +19,7 @@ import (
 )
 
 type Node struct {
-	ID          uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	ID          uint   `json:"-"`
 	Name        string `gorm:"size:100;UNIQUE;NOT NULL" json:"-" validate:"required,printascii"`
 	PublicHost  string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`
 	PrivateHost string `gorm:"size:100;NOT NULL" json:"-" validate:"required,ip|fqdn"`

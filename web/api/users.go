@@ -26,17 +26,17 @@ import (
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", SearchUsers)
+	g.Handle("GET", "", searchUsers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:username", CreateUser)
-	g.Handle("GET", "/:username", GetUser)
-	g.Handle("POST", "/:username", UpdateUser)
-	g.Handle("DELETE", "/:username", DeleteUser)
+	g.Handle("PUT", "/:username", createUser)
+	g.Handle("GET", "/:username", getUser)
+	g.Handle("POST", "/:username", updateUser)
+	g.Handle("DELETE", "/:username", deleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
-func SearchUsers (c *gin.Context) {
+func searchUsers (c *gin.Context) {
 	var us *services.UserService
 	var err error
 	response := builder.Respond(c)
@@ -74,7 +74,7 @@ func SearchUsers (c *gin.Context) {
 	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromUsers(results)).Send()
 }
 
-func CreateUser(c *gin.Context) {
+func createUser(c *gin.Context) {
 	var us *services.UserService
 	var err error
 	response := builder.Respond(c)
@@ -108,7 +108,7 @@ func CreateUser(c *gin.Context) {
 	response.Data(view.FromUser(user)).Send()
 }
 
-func GetUser(c *gin.Context) {
+func getUser(c *gin.Context) {
 	var us *services.UserService
 	var err error
 	response := builder.Respond(c)
@@ -130,7 +130,7 @@ func GetUser(c *gin.Context) {
 	response.Data(view.FromUser(user)).Send()
 }
 
-func UpdateUser(c *gin.Context) {
+func updateUser(c *gin.Context) {
 	var us *services.UserService
 	var err error
 	response := builder.Respond(c)
@@ -164,7 +164,7 @@ func UpdateUser(c *gin.Context) {
 	response.Data(view.FromUser(user)).Send()
 }
 
-func DeleteUser(c *gin.Context) {
+func deleteUser(c *gin.Context) {
 	var us *services.UserService
 	var err error
 	response := builder.Respond(c)

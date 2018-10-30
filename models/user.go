@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID             uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	ID             uint   `json:"-"`
 	Username       string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-" validate:"required,printascii"`
 	Email          string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-" validate:"required,email"`
 	HashedPassword string `gorm:"column:password;NOT NULL" json:"-" validate:"required"`

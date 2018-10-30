@@ -33,6 +33,8 @@ func Load() error {
 		&models.Node{},
 		&models.Server{},
 		&models.User{},
+		&models.OauthClient{},
+		&models.OauthAccessToken{},
 	}
 
 	for _, v := range dbObjects {
