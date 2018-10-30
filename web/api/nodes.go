@@ -25,19 +25,19 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", GetAllNodes)
+	g.Handle("GET", "", getAllNodes)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "", CreateNode)
-	g.Handle("GET", "/:id", GetNode)
-	g.Handle("POST", "/:id", UpdateNode)
-	g.Handle("DELETE", "/:id", DeleteNode)
+	g.Handle("PUT", "", createNode)
+	g.Handle("GET", "/:id", getNode)
+	g.Handle("POST", "/:id", updateNode)
+	g.Handle("DELETE", "/:id", deleteNode)
 	g.Handle("GET", "/:id/deployment", shared.NotImplemented)
 	g.Handle("POST", "/:id/reset", shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
-func GetAllNodes(c *gin.Context) {
+func getAllNodes(c *gin.Context) {
 	var ns *services.NodeService
 	var err error
 	response := builder.Respond(c)
@@ -56,7 +56,7 @@ func GetAllNodes(c *gin.Context) {
 	response.Data(data).Send()
 }
 
-func GetNode(c *gin.Context) {
+func getNode(c *gin.Context) {
 	var ns *services.NodeService
 	var err error
 	response := builder.Respond(c)
@@ -83,7 +83,7 @@ func GetNode(c *gin.Context) {
 	response.Data(data).Send()
 }
 
-func CreateNode (c *gin.Context) {
+func createNode (c *gin.Context) {
 	var ns *services.NodeService
 	var err error
 	response := builder.Respond(c)
@@ -110,7 +110,7 @@ func CreateNode (c *gin.Context) {
 	response.Data(create).Send()
 }
 
-func UpdateNode (c *gin.Context) {
+func updateNode (c *gin.Context) {
 	var ns *services.NodeService
 	var err error
 	response := builder.Respond(c)
@@ -149,7 +149,7 @@ func UpdateNode (c *gin.Context) {
 	response.Data(node).Send()
 }
 
-func DeleteNode (c *gin.Context) {
+func deleteNode (c *gin.Context) {
 	var ns *services.NodeService
 	var err error
 	response := builder.Respond(c)

@@ -16,6 +16,7 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/web/api"
+	"github.com/pufferpanel/pufferpanel/web/oauth2"
 )
 
 func RegisterRoutes(e *gin.Engine) {
@@ -27,5 +28,10 @@ func RegisterRoutes(e *gin.Engine) {
 	assetsGroup := e.Group("/assets")
 	{
 		assetsGroup.Static("", "assets/web")
+	}
+
+	oauthGroup := e.Group("/oauth2")
+	{
+		oauth2.Register(oauthGroup)
 	}
 }

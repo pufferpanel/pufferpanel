@@ -7,7 +7,7 @@ import (
 )
 
 type Server struct {
-	ID         uint   `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"-"`
+	ID         uint   `json:"-"`
 	Name       string `gorm:"UNIQUE_INDEX;size:20;NOT NULL" json:"-"`
 	Identifier string `gorm:"UNIQUE_INDEX;NOT NULL;size:8" json:"-"`
 
