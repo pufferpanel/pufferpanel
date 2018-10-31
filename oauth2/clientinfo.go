@@ -1,7 +1,20 @@
 package oauth2
 
-import store "gopkg.in/oauth2.v3"
-
 type ClientInfo struct {
-	store.ClientInfo
+}
+
+func (ci *ClientInfo) GetSecret() string {
+	return "test"
+}
+
+func (ci *ClientInfo) GetID() string {
+	return "test"
+}
+
+func (ci *ClientInfo) GetDomain() string {
+	return "*"
+}
+
+func (ci *ClientInfo) GetUserID() string {
+	return "test"
 }
