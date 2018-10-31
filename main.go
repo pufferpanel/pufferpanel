@@ -27,9 +27,6 @@ const Hash = "none"
 const Version = "2.0.0-DEV"
 
 func main() {
-	r := gin.Default()
-	web.RegisterRoutes(r)
-
 	configPath, exists := os.LookupEnv("PUFFERPANEL_CONFIG")
 
 	if !exists {
@@ -82,6 +79,9 @@ func main() {
 	if err != nil {
 		return
 	}
+
+	r := gin.Default()
+	web.RegisterRoutes(r)
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
