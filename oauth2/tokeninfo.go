@@ -1,8 +1,10 @@
 package oauth2
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
+	"strconv"
 	"time"
 )
 
@@ -12,7 +14,7 @@ type TokenInfo struct {
 	ClientID string
 	Client   ClientInfo
 
-	UserID string
+	UserID uint
 	User   models.User
 
 	Scope            string
@@ -32,19 +34,26 @@ func (ti *TokenInfo) New() oauth2.TokenInfo {
 }
 
 func (ti *TokenInfo) GetClientID() string {
-	panic("implement me")
+	return ti.ClientID
 }
 
-func (ti *TokenInfo) SetClientID(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetClientID(clientId string) {
+	ti.ClientID = clientId
 }
 
 func (ti *TokenInfo) GetUserID() string {
-	panic("implement me")
+	return strconv.Itoa(int(ti.UserID))
 }
 
-func (ti *TokenInfo) SetUserID(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetUserID(id string) {
+	result, err := strconv.Atoi(id)
+	if err != nil {
+		panic(err)
+	}
+	if result < 0 {
+		panic(errors.New("cannot set user id as negative number"))
+	}
+	ti.UserID = uint(result)
 }
 
 func (ti *TokenInfo) GetRedirectURI() string {
@@ -52,84 +61,85 @@ func (ti *TokenInfo) GetRedirectURI() string {
 }
 
 func (ti *TokenInfo) SetRedirectURI(string) {
+	//NO-OP
 }
 
 func (ti *TokenInfo) GetScope() string {
-	panic("implement me")
+	return ti.Scope
 }
 
-func (ti *TokenInfo) SetScope(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetScope(scope string) {
+	ti.Scope = scope
 }
 
 func (ti *TokenInfo) GetCode() string {
-	panic("implement me")
+	return ti.Code
 }
 
-func (ti *TokenInfo) SetCode(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetCode(code string) {
+	ti.Code = code
 }
 
 func (ti *TokenInfo) GetCodeCreateAt() time.Time {
-	panic("implement me")
+	return ti.CodeCreateAt
 }
 
-func (ti *TokenInfo) SetCodeCreateAt(time.Time) {
-	panic("implement me")
+func (ti *TokenInfo) SetCodeCreateAt(time time.Time) {
+	ti.CodeCreateAt = time
 }
 
 func (ti *TokenInfo) GetCodeExpiresIn() time.Duration {
-	panic("implement me")
+	return ti.CodeExpiresIn
 }
 
-func (ti *TokenInfo) SetCodeExpiresIn(time.Duration) {
-	panic("implement me")
+func (ti *TokenInfo) SetCodeExpiresIn(dur time.Duration) {
+	ti.CodeExpiresIn = dur
 }
 
 func (ti *TokenInfo) GetAccess() string {
-	panic("implement me")
+	return ti.Access
 }
 
-func (ti *TokenInfo) SetAccess(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetAccess(access string) {
+	ti.Access = access
 }
 
 func (ti *TokenInfo) GetAccessCreateAt() time.Time {
-	panic("implement me")
+	return ti.AccessCreateAt
 }
 
-func (ti *TokenInfo) SetAccessCreateAt(time.Time) {
-	panic("implement me")
+func (ti *TokenInfo) SetAccessCreateAt(t time.Time) {
+	ti.AccessCreateAt = t
 }
 
 func (ti *TokenInfo) GetAccessExpiresIn() time.Duration {
-	panic("implement me")
+	return ti.AccessExpiresIn
 }
 
-func (ti *TokenInfo) SetAccessExpiresIn(time.Duration) {
-	panic("implement me")
+func (ti *TokenInfo) SetAccessExpiresIn(dur time.Duration) {
+	ti.AccessExpiresIn = dur
 }
 
 func (ti *TokenInfo) GetRefresh() string {
-	panic("implement me")
+	return ti.Refresh
 }
 
-func (ti *TokenInfo) SetRefresh(string) {
-	panic("implement me")
+func (ti *TokenInfo) SetRefresh(ref string) {
+	ti.Refresh = ref
 }
 
 func (ti *TokenInfo) GetRefreshCreateAt() time.Time {
-	panic("implement me")
+	return ti.RefreshCreateAt
 }
 
-func (ti *TokenInfo) SetRefreshCreateAt(time.Time) {
-	panic("implement me")
+func (ti *TokenInfo) SetRefreshCreateAt(t time.Time) {
+	ti.RefreshCreateAt = t
 }
 
 func (ti *TokenInfo) GetRefreshExpiresIn() time.Duration {
-	panic("implement me")
+	return ti.RefreshExpiresIn
 }
 
-func (ti *TokenInfo) SetRefreshExpiresIn(time.Duration) {
-	panic("implement me")
+func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
+	ti.RefreshExpiresIn = dur
 }
