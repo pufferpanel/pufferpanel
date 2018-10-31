@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/oauth2.v3/errors"
@@ -25,6 +26,12 @@ func handle() func(*gin.Context){
 	manager.MapClientStorage(&oauth2.ClientStore{})
 	manager.MapTokenStorage(&oauth2.TokenStore{})
 
+	db, err := database.GetConnection()
+	if err != nil {
+		panic(err)
+	}
+
+	db.AutoMigrate(&oauth2.ClientInfo{}, &oauth2.TokenInfo{})
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)

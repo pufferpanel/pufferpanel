@@ -1,14 +1,24 @@
 package oauth2
 
+import (
+	"github.com/pufferpanel/pufferpanel/models"
+	"strconv"
+)
+
 type ClientInfo struct {
+	ID       uint
+	ClientID string
+	Secret   string
+	UserID   uint
+	User     models.User
 }
 
 func (ci *ClientInfo) GetSecret() string {
-	return "test"
+	return ci.Secret
 }
 
 func (ci *ClientInfo) GetID() string {
-	return "test"
+	return ci.ClientID
 }
 
 func (ci *ClientInfo) GetDomain() string {
@@ -16,5 +26,5 @@ func (ci *ClientInfo) GetDomain() string {
 }
 
 func (ci *ClientInfo) GetUserID() string {
-	return "test"
+	return strconv.Itoa(int(ci.UserID))
 }
