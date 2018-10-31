@@ -17,7 +17,7 @@ func (cs *ClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
 	ci := &ClientInfo{
 		ClientID: id,
 	}
-	res := db.Where(&ci).FirstOrInit(ci)
+	res := db.Where(ci).FirstOrInit(ci)
 
 	return ci, res.Error
 }
