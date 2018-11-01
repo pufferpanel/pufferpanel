@@ -22,11 +22,11 @@ func registerTokens(g *gin.RouterGroup) {
 	g.OPTIONS("/info", shared.CreateOptions("POST"))
 }
 
-func handle() func(*gin.Context){
+func handle() func(*gin.Context) {
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&oauth2.ClientStore{})
 	manager.MapTokenStorage(&oauth2.TokenStore{})
-	manager.MapAccessGenerate(oauth2.NewJWTAccessGenerate([]byte("00000000"), jwt.SigningMethodHS512))
+	manager.MapAccessGenerate(oauth2.NewJWTAccessGenerate([]byte(oauth2.GetJWTSecret()), jwt.SigningMethodHS512))
 
 	db, err := database.GetConnection()
 	if err != nil {
@@ -37,7 +37,6 @@ func handle() func(*gin.Context){
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
-	srv.SetClientScopeHandler(handleScopes)
 
 	srv.SetInternalErrorHandler(func(err error) (re *errors.Response) {
 		log.Println("Internal Error:", err.Error())
@@ -58,8 +57,4 @@ func handleTokenRequest(srv *server.Server, c *gin.Context) {
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func handleScopes(clientID, scope string) (allowed bool, err error) {
-	return true, nil
 }
