@@ -1,6 +1,7 @@
 package oauth2
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/oauth2"
@@ -25,6 +26,7 @@ func handle() func(*gin.Context){
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&oauth2.ClientStore{})
 	manager.MapTokenStorage(&oauth2.TokenStore{})
+	manager.MapAccessGenerate(oauth2.NewJWTAccessGenerate([]byte("00000000"), jwt.SigningMethodHS512))
 
 	db, err := database.GetConnection()
 	if err != nil {
