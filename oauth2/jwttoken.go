@@ -63,3 +63,7 @@ func (a *JWTAccessGenerate) Token(data *oauth2.GenerateBasic, isGenRefresh bool)
 
 	return
 }
+
+func (a *JWTAccessGenerate) Validate(token string) bool {
+
+}
