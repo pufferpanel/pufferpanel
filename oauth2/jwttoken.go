@@ -47,9 +47,8 @@ func (a *JWTAccessGenerate) Token(data *oauth2.GenerateBasic, isGenRefresh bool)
 		ClientID:  data.Client.GetID(),
 		UserID:    data.UserID,
 		ExpiredAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
-		Scopes: data.TokenInfo.GetScope(),
+		Scopes:    data.TokenInfo.GetScope(),
 	}
-
 
 	token := jwt.NewWithClaims(a.SignedMethod, claims)
 	access, err = token.SignedString(a.SignedKey)
