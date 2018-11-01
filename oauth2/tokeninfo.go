@@ -143,3 +143,21 @@ func (ti *TokenInfo) GetRefreshExpiresIn() time.Duration {
 func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
 	ti.RefreshExpiresIn = dur
 }
+
+func Copy(info oauth2.TokenInfo) *TokenInfo {
+	userId, _ := strconv.Atoi(info.GetUserID())
+	return &TokenInfo{
+		ClientID: info.GetClientID(),
+		UserID: uint(userId),
+		Scope: info.GetScope(),
+		Code: info.GetCode(),
+		CodeCreateAt: info.GetCodeCreateAt(),
+		CodeExpiresIn: info.GetCodeExpiresIn(),
+		Access: info.GetAccess(),
+		AccessCreateAt: info.GetAccessCreateAt(),
+		AccessExpiresIn: info.GetAccessExpiresIn(),
+		Refresh: info.GetRefresh(),
+		RefreshCreateAt: info.GetRefreshCreateAt(),
+		RefreshExpiresIn: info.GetRefreshExpiresIn(),
+	}
+}
