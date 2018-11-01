@@ -13,20 +13,27 @@ import (
 	"net/http"
 )
 
+var oauth2Server *server.Server
+var jwtService *oauth2.JWTAccessGenerate
+
 func registerTokens(g *gin.RouterGroup) {
-	handle()
-	g.POST("/token", handle())
+	configureServer()
+
+	g.POST("/token", handleTokenRequest)
 	g.OPTIONS("/token", shared.CreateOptions("POST"))
 
-	g.POST("/info", shared.NotImplemented)
-	g.OPTIONS("/info", shared.CreateOptions("POST"))
+	g.POST("/validate", shared.NotImplemented)
+	g.OPTIONS("/validate", shared.CreateOptions("POST"))
 }
 
-func handle() func(*gin.Context) {
+func configureServer() {
+
+	jwtService = oauth2.NewJWTAccessGenerate([]byte(oauth2.GetJWTSecret()), jwt.SigningMethodHS512)
+
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&oauth2.ClientStore{})
 	manager.MapTokenStorage(&oauth2.TokenStore{})
-	manager.MapAccessGenerate(oauth2.NewJWTAccessGenerate([]byte(oauth2.GetJWTSecret()), jwt.SigningMethodHS512))
+	manager.MapAccessGenerate(jwtService)
 
 	db, err := database.GetConnection()
 	if err != nil {
@@ -47,14 +54,21 @@ func handle() func(*gin.Context) {
 		log.Println("Response Error:", re.Error.Error())
 	})
 
-	return func(c *gin.Context) {
-		handleTokenRequest(srv, c)
-	}
+	oauth2Server = srv
 }
 
-func handleTokenRequest(srv *server.Server, c *gin.Context) {
-	err := srv.HandleTokenRequest(c.Writer, c.Request)
+func handleTokenRequest(c *gin.Context) {
+	err := oauth2Server.HandleTokenRequest(c.Writer, c.Request)
 	if err != nil {
 		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func handleValidate(c *gin.Context) {
+	type body struct {
+		token string
+	}
+	msg := &body{}
+	c.BindJSON(msg)
+	c.JSON(200, jwtService.Validate(msg.token))
 }

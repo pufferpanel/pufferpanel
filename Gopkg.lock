@@ -152,23 +152,23 @@
     "blowfish",
   ]
   pruneopts = "UT"
-  revision = "85e1b3f9139abd58575d728a509643924e3b2ebf"
+  revision = "4d3f4d9ffa16a13f451c3b2999e9c49e9750bf06"
 
 [[projects]]
   branch = "master"
-  digest = "1:008fb9f84ae9bf7994228b9c78810d44162071ec13caf28291677897dca819ee"
+  digest = "1:35560529f5721d65f36dc23aa15fbf7306c5091cdc3f29f65881af5031b80cc8"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "d989b31c87461dc8ab2f1cac6792814e27fadea9"
+  revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
-  version = "v1.2.0"
+  revision = "4a4468ece617fc8205e99368fa2200e9d1fad421"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:cbc72c4c4886a918d6ab4b95e347ffe259846260f99ebdd8a198c2331cf2b2e9"
@@ -179,12 +179,12 @@
   version = "v8.18.2"
 
 [[projects]]
-  digest = "1:ac3731dc825de45ed32a21b671864202b29d9cfb7502986508c82d86d72f16a5"
+  digest = "1:e8f2c13faf20d6bd2edce6956422f11eb251e766e0884c95645fbb5fd7b6b831"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
   pruneopts = "UT"
-  revision = "f8af4b15dbe132b53d3a53e7c3724271040e82e7"
-  version = "v9.21.1"
+  revision = "3be31424000e9263ddc36f27b1de4c18f657f02e"
+  version = "v9.22.0"
 
 [[projects]]
   digest = "1:60a88657808cce93b955dddcf363a469c2426d718b4e8ad8052e83f0ab2010f7"
@@ -227,6 +227,7 @@
     "gopkg.in/oauth2.v3/errors",
     "gopkg.in/oauth2.v3/manage",
     "gopkg.in/oauth2.v3/server",
+    "gopkg.in/oauth2.v3/utils/uuid",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
