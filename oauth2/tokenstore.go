@@ -16,7 +16,8 @@ func (ts *TokenStore) Create(info oauth2.TokenInfo) error {
 		return err
 	}
 
-	return db.Create(info).Error
+	model := Copy(info)
+	return db.Create(model).Error
 }
 
 // delete the authorization code
