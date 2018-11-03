@@ -21,3 +21,7 @@ func (cs *ClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
 
 	return ci, res.Error
 }
+
+func (cs *ClientStore) Create(id string) (oauth2.ClientInfo, error) {
+	return &ClientInfo{}, nil
+}

@@ -6,6 +6,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/pufferpanel/pufferpanel/shared"
+	builder "github.com/pufferpanel/apufferi/http"
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
@@ -22,7 +23,7 @@ func registerTokens(g *gin.RouterGroup) {
 	g.POST("/token", handleTokenRequest)
 	g.OPTIONS("/token", shared.CreateOptions("POST"))
 
-	g.POST("/validate", shared.NotImplemented)
+	g.POST("/validate", handleValidate)
 	g.OPTIONS("/validate", shared.CreateOptions("POST"))
 }
 
@@ -69,6 +70,16 @@ func handleValidate(c *gin.Context) {
 		token string
 	}
 	msg := &body{}
-	c.BindJSON(msg)
-	c.JSON(200, jwtService.Validate(msg.token))
+
+	if token := c.PostForm("token"); token != "" {
+		msg.token = token
+	} else {
+		err := c.BindJSON(msg)
+		if err != nil {
+			builder.Respond(c).Status(http.StatusBadRequest).Fail().Message(err.Error()).Send()
+			return
+		}
+	}
+
+	builder.Respond(c).Data(jwtService.Validate(msg.token)).Send()
 }
