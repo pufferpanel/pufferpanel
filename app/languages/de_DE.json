@@ -1,7 +1,7 @@
 {
     "string.email": "Email",
     "string.password": "Passwort",
-    "string.login": "Login",
+    "string.login": "Anmelden",
     "string.reset_password": "Passwort zurücksetzen",
     "string.spam_protection": "Spam-Schutz",
     "string.again": "(Wiederholen)",
