@@ -36,7 +36,7 @@ func registerServers(g *gin.RouterGroup) {
 }
 
 func searchServers (c *gin.Context) {
-	var ss *services.ServerService
+	var ss services.ServerService
 	var err error
 	response := builder.Respond(c)
 
@@ -80,7 +80,7 @@ func searchServers (c *gin.Context) {
 }
 
 func getServer(c *gin.Context) {
-	var ss *services.ServerService
+	var ss services.ServerService
 	var err error
 	response := builder.Respond(c)
 

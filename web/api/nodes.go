@@ -38,7 +38,7 @@ func registerNodes(g *gin.RouterGroup) {
 }
 
 func getAllNodes(c *gin.Context) {
-	var ns *services.NodeService
+	var ns services.NodeService
 	var err error
 	response := builder.Respond(c)
 
@@ -57,7 +57,7 @@ func getAllNodes(c *gin.Context) {
 }
 
 func getNode(c *gin.Context) {
-	var ns *services.NodeService
+	var ns services.NodeService
 	var err error
 	response := builder.Respond(c)
 
@@ -84,7 +84,7 @@ func getNode(c *gin.Context) {
 }
 
 func createNode (c *gin.Context) {
-	var ns *services.NodeService
+	var ns services.NodeService
 	var err error
 	response := builder.Respond(c)
 
@@ -111,7 +111,7 @@ func createNode (c *gin.Context) {
 }
 
 func updateNode (c *gin.Context) {
-	var ns *services.NodeService
+	var ns services.NodeService
 	var err error
 	response := builder.Respond(c)
 
@@ -150,7 +150,7 @@ func updateNode (c *gin.Context) {
 }
 
 func deleteNode (c *gin.Context) {
-	var ns *services.NodeService
+	var ns services.NodeService
 	var err error
 	response := builder.Respond(c)
 

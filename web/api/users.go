@@ -36,8 +36,8 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
-func searchUsers (c *gin.Context) {
-	var us *services.UserService
+func searchUsers(c *gin.Context) {
+	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
@@ -75,7 +75,7 @@ func searchUsers (c *gin.Context) {
 }
 
 func createUser(c *gin.Context) {
-	var us *services.UserService
+	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
@@ -109,7 +109,7 @@ func createUser(c *gin.Context) {
 }
 
 func getUser(c *gin.Context) {
-	var us *services.UserService
+	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
@@ -131,7 +131,7 @@ func getUser(c *gin.Context) {
 }
 
 func updateUser(c *gin.Context) {
-	var us *services.UserService
+	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
@@ -159,13 +159,16 @@ func updateUser(c *gin.Context) {
 	}
 
 	viewModel.CopyToModel(user)
-	us.Update(user)
+
+	if err = us.Update(user); shared.HandleError(response, err) {
+		return
+	}
 
 	response.Data(view.FromUser(user)).Send()
 }
 
 func deleteUser(c *gin.Context) {
-	var us *services.UserService
+	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
