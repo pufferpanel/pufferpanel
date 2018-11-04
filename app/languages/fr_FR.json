@@ -10,7 +10,7 @@
     "string.name": "Nom du serveur",
     "string.connect": "Connexion",
     "string.status": "Statut",
-    "string.offline": "Hors ligne",
+    "string.offline": "Hors-ligne",
     "string.online": "En ligne",
     "string.connection": "IP:PORT",
     "string.mem_alloc": "Mémoire allouée",
