@@ -214,7 +214,6 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/dgrijalva/jwt-go",
     "github.com/gin-gonic/gin",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
@@ -227,7 +226,6 @@
     "gopkg.in/oauth2.v3/errors",
     "gopkg.in/oauth2.v3/manage",
     "gopkg.in/oauth2.v3/server",
-    "gopkg.in/oauth2.v3/utils/uuid",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
