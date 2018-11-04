@@ -8,24 +8,38 @@ import (
 	"strings"
 )
 
-type ServerService struct {
+type ServerService interface {
+	Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error)
+
+	GetForUser(userId uint) (*models.Servers, error)
+
+	Get(id string) (*models.Server, bool, error)
+
+	Update(model *models.Server) error
+
+	Delete(id uint) error
+
+	Create(model *models.Server, serverData interface{}) (err error)
+}
+
+type serverService struct {
 	db *gorm.DB
 }
 
-func GetServerService() (*ServerService, error) {
+func GetServerService() (ServerService, error) {
 	db, err := database.GetConnection()
 	if err != nil {
 		return nil, err
 	}
 
-	service := &ServerService{
+	service := &serverService{
 		db: db,
 	}
 
 	return service, nil
 }
 
-func (ss *ServerService) Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
+func (ss *serverService) Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
 	servers := &models.Servers{}
 
 	query := ss.db.Offset((page - 1) * pageSize).Limit(pageSize)
@@ -46,7 +60,7 @@ func (ss *ServerService) Search(nodeId uint, nameFilter string, pageSize, page u
 }
 
 //TODO: Waiting on user objects with rights to implement correctly
-func (ss *ServerService) GetForUser(userId uint) (*models.Servers, error) {
+func (ss *serverService) GetForUser(userId uint) (*models.Servers, error) {
 	servers := &models.Servers{}
 
 	res := ss.db.Find(servers)
@@ -54,7 +68,7 @@ func (ss *ServerService) GetForUser(userId uint) (*models.Servers, error) {
 	return servers, res.Error
 }
 
-func (ss *ServerService) Get(id string) (*models.Server, bool, error) {
+func (ss *serverService) Get(id string) (*models.Server, bool, error) {
 	model := &models.Server{
 		Identifier: id,
 	}
@@ -64,12 +78,12 @@ func (ss *ServerService) Get(id string) (*models.Server, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
-func (ss *ServerService) Update(model *models.Server) error {
+func (ss *serverService) Update(model *models.Server) error {
 	res := ss.db.Save(model)
 	return res.Error
 }
 
-func (ss *ServerService) Delete(id uint) error {
+func (ss *serverService) Delete(id uint) error {
 	model := &models.Server{
 		ID: id,
 	}
@@ -78,7 +92,7 @@ func (ss *ServerService) Delete(id uint) error {
 	return res.Error
 }
 
-func (ss *ServerService) Create(model *models.Server, serverData interface{}) (err error) {
+func (ss *serverService) Create(model *models.Server, serverData interface{}) (err error) {
 	uuid := uuid2.NewV4()
 	generatedId := strings.ToUpper(uuid.String())[0:8]
 	model.Identifier = generatedId

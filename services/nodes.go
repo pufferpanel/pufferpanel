@@ -19,24 +19,36 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 )
 
-type NodeService struct {
+type NodeService interface {
+	GetAll() (*models.Nodes, error)
+
+	Get(id uint) (*models.Node, bool, error)
+
+	Update(model *models.Node) error
+
+	Delete(id uint) error
+
+	Create(node *models.Node) error
+}
+
+type nodeService struct {
 	db *gorm.DB
 }
 
-func GetNodeService() (*NodeService, error) {
+func GetNodeService() (NodeService, error) {
 	db, err := database.GetConnection()
 	if err != nil {
 		return nil, err
 	}
 
-	service := &NodeService{
+	service := &nodeService{
 		db: db,
 	}
 
 	return service, nil
 }
 
-func (ns *NodeService) GetAll() (*models.Nodes, error) {
+func (ns *nodeService) GetAll() (*models.Nodes, error) {
 	nodes := &models.Nodes{}
 
 	res := ns.db.Find(nodes)
@@ -44,7 +56,7 @@ func (ns *NodeService) GetAll() (*models.Nodes, error) {
 	return nodes, res.Error
 }
 
-func (ns *NodeService) Get(id uint) (*models.Node, bool, error) {
+func (ns *nodeService) Get(id uint) (*models.Node, bool, error) {
 	model := &models.Node{}
 
 	res := ns.db.FirstOrInit(model, id)
@@ -52,12 +64,12 @@ func (ns *NodeService) Get(id uint) (*models.Node, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
-func (ns *NodeService) Update(model *models.Node) error {
+func (ns *nodeService) Update(model *models.Node) error {
 	res := ns.db.Save(model)
 	return res.Error
 }
 
-func (ns *NodeService) Delete(id uint) error {
+func (ns *nodeService) Delete(id uint) error {
 	model := &models.Node{
 		ID: id,
 	}
@@ -66,7 +78,7 @@ func (ns *NodeService) Delete(id uint) error {
 	return res.Error
 }
 
-func (ns *NodeService) Create(node *models.Node) error {
+func (ns *nodeService) Create(node *models.Node) error {
 	res := ns.db.Create(node)
 	return res.Error
 }

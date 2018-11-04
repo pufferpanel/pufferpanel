@@ -8,24 +8,40 @@ import (
 	"strings"
 )
 
-type UserService struct {
+type UserService interface {
+	Get(username string) (*models.User, bool, error)
+
+	GetByEmail(email string) (*models.User, bool, error)
+
+	Update(model *models.User) error
+
+	Delete(username string) error
+
+	Create(user *models.User) error
+
+	ChangePassword(username string, newPass string) error
+
+	Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error)
+}
+
+type userService struct {
 	db *gorm.DB
 }
 
-func GetUserService() (*UserService, error) {
+func GetUserService() (UserService, error) {
 	db, err := database.GetConnection()
 	if err != nil {
 		return nil, err
 	}
 
-	service := &UserService{
+	service := &userService{
 		db: db,
 	}
 
 	return service, nil
 }
 
-func (us *UserService) Get(username string) (*models.User, bool, error) {
+func (us *userService) Get(username string) (*models.User, bool, error) {
 	model := &models.User{
 		Username: username,
 	}
@@ -35,7 +51,7 @@ func (us *UserService) Get(username string) (*models.User, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
-func (us *UserService) GetByEmail(email string) (*models.User, bool, error) {
+func (us *userService) GetByEmail(email string) (*models.User, bool, error) {
 	model := &models.User{
 		Email: email,
 	}
@@ -45,12 +61,12 @@ func (us *UserService) GetByEmail(email string) (*models.User, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
-func (us *UserService) Update(model *models.User) error {
+func (us *userService) Update(model *models.User) error {
 	res := us.db.Save(model)
 	return res.Error
 }
 
-func (us *UserService) Delete(username string) error {
+func (us *userService) Delete(username string) error {
 	model := &models.User{
 		Username: username,
 	}
@@ -59,12 +75,12 @@ func (us *UserService) Delete(username string) error {
 	return res.Error
 }
 
-func (us *UserService) Create(user *models.User) error {
+func (us *userService) Create(user *models.User) error {
 	res := us.db.Create(user)
 	return res.Error
 }
 
-func (us *UserService) ChangePassword(username string, newPass string) error {
+func (us *userService) ChangePassword(username string, newPass string) error {
 	user, exists, err := us.Get(username)
 
 	if err != nil {
@@ -82,7 +98,7 @@ func (us *UserService) ChangePassword(username string, newPass string) error {
 	return us.Update(user)
 }
 
-func (us *UserService) Search (usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error) {
+func (us *userService) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error) {
 	users := &models.Users{}
 
 	query := us.db.Offset((page - 1) * pageSize).Limit(pageSize)
