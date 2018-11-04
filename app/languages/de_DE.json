@@ -60,7 +60,7 @@
     "sidebar.manage_subusers": "Subuser verwalten",
     "sidebar.totp_settings": "TOTP Einstellungen",
     "header.account": "Konto",
-    "header.logout": "Logout",
+    "header.logout": "Abmelden",
     "header.admin": "Admin CP",
     "login.login_h1": "In PufferPanel anmelden",
     "reset.reset_h1": "Setze dein Passwort zurück",
