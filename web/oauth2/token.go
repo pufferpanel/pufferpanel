@@ -1,12 +1,11 @@
 package oauth2
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/pufferpanel/pufferpanel/shared"
-	builder "github.com/pufferpanel/apufferi/http"
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
@@ -15,7 +14,6 @@ import (
 )
 
 var oauth2Server *server.Server
-var jwtService *oauth2.JWTAccessGenerate
 
 func registerTokens(g *gin.RouterGroup) {
 	configureServer()
@@ -28,13 +26,9 @@ func registerTokens(g *gin.RouterGroup) {
 }
 
 func configureServer() {
-
-	jwtService = oauth2.NewJWTAccessGenerate([]byte(oauth2.GetJWTSecret()), jwt.SigningMethodHS512)
-
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&oauth2.ClientStore{})
 	manager.MapTokenStorage(&oauth2.TokenStore{})
-	manager.MapAccessGenerate(jwtService)
 
 	db, err := database.GetConnection()
 	if err != nil {
@@ -81,5 +75,5 @@ func handleValidate(c *gin.Context) {
 		}
 	}
 
-	builder.Respond(c).Data(jwtService.Validate(msg.token)).Send()
+	builder.Respond(c).Data(true).Send()
 }
