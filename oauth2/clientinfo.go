@@ -16,10 +16,11 @@ type ClientInfo struct {
 }
 
 type ClientServerScopes struct {
-	ID       uint
-	ServerId uint
-	Server   models.Server
-	Scope    string
+	ID           uint
+	ClientInfoID uint
+	ServerId     uint
+	Server       models.Server
+	Scope        string
 }
 
 func (ci *ClientInfo) GetSecret() string {

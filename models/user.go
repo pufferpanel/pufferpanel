@@ -4,6 +4,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/shared"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
+	"time"
 )
 
 type User struct {
@@ -12,8 +13,8 @@ type User struct {
 	Email          string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-" validate:"required,email"`
 	HashedPassword string `gorm:"column:password;NOT NULL" json:"-" validate:"required"`
 
-	//CreatedAt time.Time `json:"-"`
-	//UpdatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 type Users []*User

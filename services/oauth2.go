@@ -82,7 +82,7 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	client := o2.ClientInfo{
 		ClientID: item.GetClientID(),
 	}
-	err = db.Where(&client).First(&client).Error
+	err = db.Set("gorm:auto_preload", true).Where(&client).First(&client).Error
 	if err != nil {
 		return
 	}
