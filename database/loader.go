@@ -100,13 +100,27 @@ func migrateModels() (err error) {
 		dbConn.AutoMigrate(v)
 	}
 
-	dbConn.AutoMigrate(&models.Node{}, &models.Server{})
 	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
 	if err != nil {
 		return
 	}
 
-	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	err = dbConn.Model(&models.ClientInfo{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.ClientServerScopes{}).AddForeignKey("server_id", "servers(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.ClientServerScopes{}).AddForeignKey("client_info_id", "client_infos(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.TokenInfo{}).AddForeignKey("client_info_id", "client_infos(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
 		return
 	}

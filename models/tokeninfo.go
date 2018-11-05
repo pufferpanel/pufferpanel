@@ -10,11 +10,8 @@ import (
 type TokenInfo struct {
 	ID uint
 
-	ClientID string
-	Client   ClientInfo
-
-	UserID uint
-	User   User
+	ClientInfoID uint
+	Client       ClientInfo
 
 	//Scope            string
 	//Code             string
@@ -33,15 +30,15 @@ func (ti *TokenInfo) New() oauth2.TokenInfo {
 }
 
 func (ti *TokenInfo) GetClientID() string {
-	return ti.ClientID
+	return ti.Client.ClientID
 }
 
 func (ti *TokenInfo) SetClientID(clientId string) {
-	ti.ClientID = clientId
+	ti.Client.ClientID = clientId
 }
 
 func (ti *TokenInfo) GetUserID() string {
-	return strconv.Itoa(int(ti.UserID))
+	return strconv.Itoa(int(ti.Client.UserID))
 }
 
 func (ti *TokenInfo) SetUserID(id string) {
@@ -52,7 +49,7 @@ func (ti *TokenInfo) SetUserID(id string) {
 	if result < 0 {
 		panic(errors.New("cannot set user id as negative number"))
 	}
-	ti.UserID = uint(result)
+	ti.Client.UserID = uint(result)
 }
 
 func (ti *TokenInfo) GetRedirectURI() string {
@@ -153,8 +150,10 @@ func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
 func Copy(info oauth2.TokenInfo) *TokenInfo {
 	userId, _ := strconv.Atoi(info.GetUserID())
 	return &TokenInfo{
-		ClientID: info.GetClientID(),
-		UserID:   uint(userId),
+		Client: ClientInfo{
+			ClientID: info.GetClientID(),
+			UserID:   uint(userId),
+		},
 		//Scope: info.GetScope(),
 		//Code: info.GetCode(),
 		//CodeCreateAt: info.GetCodeCreateAt(),
