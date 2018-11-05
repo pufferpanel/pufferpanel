@@ -40,7 +40,7 @@ func configureServer() error {
 		return err
 	}
 
-	db.AutoMigrate(&o2.ClientInfo{}, &o2.TokenInfo{})
+	db.AutoMigrate(&o2.ClientInfo{}, &o2.TokenInfo{}, &o2.ClientServerScopes{})
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
@@ -74,8 +74,21 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 		return
 	}
 
+	db, err := database.GetConnection()
+	if err != nil {
+		return
+	}
+
+	client := o2.ClientInfo{
+		ClientID: item.GetClientID(),
+	}
+	err = db.Where(&client).First(&client).Error
+	if err != nil {
+		return
+	}
+
 	//see if the access token expiration is after now
-	info = view.FromTokenInfo(item)
+	info = view.FromTokenInfo(item, client)
 	valid = info.Active
 
 	return
