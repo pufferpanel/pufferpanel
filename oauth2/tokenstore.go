@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
 )
 
@@ -16,7 +17,7 @@ func (ts *TokenStore) Create(info oauth2.TokenInfo) error {
 		return err
 	}
 
-	model := Copy(info)
+	model := models.Copy(info)
 	return db.Create(model).Error
 }
 
@@ -27,7 +28,7 @@ func (ts *TokenStore) RemoveByCode(code string) error {
 
 // use the access token to delete the token information
 func (ts *TokenStore) RemoveByAccess(access string) error {
-	obj := &TokenInfo{
+	obj := &models.TokenInfo{
 		Access: access,
 	}
 
@@ -53,7 +54,7 @@ func (ts *TokenStore) GetByCode(code string) (oauth2.TokenInfo, error) {
 
 // use the access token for token information data
 func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
-	obj := &TokenInfo{
+	obj := &models.TokenInfo{
 		Access: access,
 	}
 

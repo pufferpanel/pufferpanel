@@ -1,7 +1,6 @@
-package oauth2
+package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/models"
 	"strconv"
 )
 
@@ -10,7 +9,7 @@ type ClientInfo struct {
 	ClientID string
 	Secret   string
 	UserID   uint
-	User     models.User
+	User     User
 
 	ServerScopes []ClientServerScopes
 }
@@ -19,7 +18,7 @@ type ClientServerScopes struct {
 	ID           uint
 	ClientInfoID uint
 	ServerId     uint
-	Server       models.Server
+	Server       Server
 	Scope        string
 }
 

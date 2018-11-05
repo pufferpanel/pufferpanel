@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
 )
 
@@ -14,7 +15,7 @@ func (cs *ClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
 		return nil, err
 	}
 
-	ci := &ClientInfo{
+	ci := &models.ClientInfo{
 		ClientID: id,
 	}
 	res := db.Where(ci).FirstOrInit(ci)
@@ -23,5 +24,5 @@ func (cs *ClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
 }
 
 func (cs *ClientStore) Create(id string) (oauth2.ClientInfo, error) {
-	return &ClientInfo{}, nil
+	return &models.ClientInfo{}, nil
 }
