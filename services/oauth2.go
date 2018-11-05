@@ -1,9 +1,8 @@
 package services
 
 import (
-	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/oauth2"
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
@@ -14,6 +13,8 @@ import (
 
 type OAuthService interface {
 	HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request)
+
+	GetInfo(token string) (info view.OAuthTokenInfoViewModel, valid bool, err error)
 }
 
 type oauthService struct {
@@ -64,21 +65,6 @@ func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, r
 	}
 }
 
-func handleValidate(c *gin.Context) {
-	type body struct {
-		token string
-	}
-	msg := &body{}
-
-	if token := c.PostForm("token"); token != "" {
-		msg.token = token
-	} else {
-		err := c.BindJSON(msg)
-		if err != nil {
-			builder.Respond(c).Status(http.StatusBadRequest).Fail().Message(err.Error()).Send()
-			return
-		}
-	}
-
-	builder.Respond(c).Data(true).Send()
+func (oauth2 *oauthService) GetInfo(token string) (info view.OAuthTokenInfoViewModel, valid bool, err error) {
+	return
 }
