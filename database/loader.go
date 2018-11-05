@@ -19,6 +19,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/models"
 	"os"
+	"strings"
 )
 
 var dbConn *gorm.DB
@@ -50,6 +51,26 @@ func openConnection() (error) {
 		dialect = "mysql"
 	}
 	connString := config.Get().Database.Url
+
+	if dialect == "mysql" {
+		if !strings.Contains(connString, "charset=utf8") {
+			if !strings.Contains(connString, "?") {
+				connString += "?"
+			} else {
+				connString += "&"
+			}
+			connString += "charset=utf8"
+		}
+
+		if !strings.Contains(connString, "parseTime=true") {
+			if !strings.Contains(connString, "?") {
+				connString += "?"
+			} else {
+				connString += "&"
+			}
+			connString += "parseTime=true"
+		}
+	}
 
 	//attempt to open database connection to validate
 	var err error

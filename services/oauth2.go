@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models/view"
-	"github.com/pufferpanel/pufferpanel/oauth2"
+	o2 "github.com/pufferpanel/pufferpanel/oauth2"
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
@@ -14,7 +14,7 @@ import (
 type OAuthService interface {
 	HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request)
 
-	GetInfo(token string) (info view.OAuthTokenInfoViewModel, valid bool, err error)
+	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
 }
 
 type oauthService struct {
@@ -32,15 +32,15 @@ func GetOAuthService() (service OAuthService, err error) {
 
 func configureServer() error {
 	manager := manage.NewDefaultManager()
-	manager.MapClientStorage(&oauth2.ClientStore{})
-	manager.MapTokenStorage(&oauth2.TokenStore{})
+	manager.MapClientStorage(&o2.ClientStore{})
+	manager.MapTokenStorage(&o2.TokenStore{})
 
 	db, err := database.GetConnection()
 	if err != nil {
 		return err
 	}
 
-	db.AutoMigrate(&oauth2.ClientInfo{}, &oauth2.TokenInfo{})
+	db.AutoMigrate(&o2.ClientInfo{}, &o2.TokenInfo{})
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
@@ -65,6 +65,18 @@ func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, r
 	}
 }
 
-func (oauth2 *oauthService) GetInfo(token string) (info view.OAuthTokenInfoViewModel, valid bool, err error) {
+func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
+	ts := &o2.TokenStore{}
+
+	item, err := ts.GetByAccess(token)
+
+	if err != nil {
+		return
+	}
+
+	//see if the access token expiration is after now
+	info = view.FromTokenInfo(item)
+	valid = info.Active
+
 	return
 }
