@@ -6,11 +6,11 @@ import (
 )
 
 type ClientInfo struct {
-	ID       uint
-	ClientID string
-	Secret   string
-	UserID   uint
-	User     models.User
+	ID           uint
+	ClientID     string
+	Secret       string
+	UserID       uint
+	User         models.User
 }
 
 func (ci *ClientInfo) GetSecret() string {

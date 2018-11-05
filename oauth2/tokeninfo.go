@@ -17,16 +17,16 @@ type TokenInfo struct {
 	UserID uint
 	User   models.User
 
-	Scope            string
-	Code             string
-	CodeCreateAt     time.Time
-	CodeExpiresIn    time.Duration
-	Access           string
-	AccessCreateAt   time.Time
-	AccessExpiresIn  time.Duration
-	Refresh          string
-	RefreshCreateAt  time.Time
-	RefreshExpiresIn time.Duration
+	//Scope            string
+	//Code             string
+	//CodeCreateAt     time.Time
+	//CodeExpiresIn    time.Duration
+	Access          string
+	AccessCreateAt  time.Time
+	AccessExpiresIn time.Duration
+	//Refresh          string
+	//RefreshCreateAt  time.Time
+	//RefreshExpiresIn time.Duration
 }
 
 func (ti *TokenInfo) New() oauth2.TokenInfo {
@@ -65,35 +65,39 @@ func (ti *TokenInfo) SetRedirectURI(string) {
 }
 
 func (ti *TokenInfo) GetScope() string {
-	return ti.Scope
+	//return ti.Scope
+	return ""
 }
 
 func (ti *TokenInfo) SetScope(scope string) {
-	ti.Scope = scope
+	//ti.Scope = scope
 }
 
 func (ti *TokenInfo) GetCode() string {
-	return ti.Code
+	//return ti.Code
+	return ""
 }
 
 func (ti *TokenInfo) SetCode(code string) {
-	ti.Code = code
+	//ti.Code = code
 }
 
 func (ti *TokenInfo) GetCodeCreateAt() time.Time {
-	return ti.CodeCreateAt
+	//return ti.CodeCreateAt
+	return time.Now()
 }
 
 func (ti *TokenInfo) SetCodeCreateAt(time time.Time) {
-	ti.CodeCreateAt = time
+	//ti.CodeCreateAt = time
 }
 
 func (ti *TokenInfo) GetCodeExpiresIn() time.Duration {
-	return ti.CodeExpiresIn
+	//return ti.CodeExpiresIn
+	return 0
 }
 
 func (ti *TokenInfo) SetCodeExpiresIn(dur time.Duration) {
-	ti.CodeExpiresIn = dur
+	//ti.CodeExpiresIn = dur
 }
 
 func (ti *TokenInfo) GetAccess() string {
@@ -121,43 +125,46 @@ func (ti *TokenInfo) SetAccessExpiresIn(dur time.Duration) {
 }
 
 func (ti *TokenInfo) GetRefresh() string {
-	return ti.Refresh
+	//return ti.Refresh
+	return ""
 }
 
 func (ti *TokenInfo) SetRefresh(ref string) {
-	ti.Refresh = ref
+	//ti.Refresh = ref
 }
 
 func (ti *TokenInfo) GetRefreshCreateAt() time.Time {
-	return ti.RefreshCreateAt
+	//return ti.RefreshCreateAt
+	return time.Now()
 }
 
 func (ti *TokenInfo) SetRefreshCreateAt(t time.Time) {
-	ti.RefreshCreateAt = t
+	//ti.RefreshCreateAt = t
 }
 
 func (ti *TokenInfo) GetRefreshExpiresIn() time.Duration {
-	return ti.RefreshExpiresIn
+	//return ti.RefreshExpiresIn
+	return 0
 }
 
 func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
-	ti.RefreshExpiresIn = dur
+	//ti.RefreshExpiresIn = dur
 }
 
 func Copy(info oauth2.TokenInfo) *TokenInfo {
 	userId, _ := strconv.Atoi(info.GetUserID())
 	return &TokenInfo{
 		ClientID: info.GetClientID(),
-		UserID: uint(userId),
-		Scope: info.GetScope(),
-		Code: info.GetCode(),
-		CodeCreateAt: info.GetCodeCreateAt(),
-		CodeExpiresIn: info.GetCodeExpiresIn(),
-		Access: info.GetAccess(),
-		AccessCreateAt: info.GetAccessCreateAt(),
+		UserID:   uint(userId),
+		//Scope: info.GetScope(),
+		//Code: info.GetCode(),
+		//CodeCreateAt: info.GetCodeCreateAt(),
+		//CodeExpiresIn: info.GetCodeExpiresIn(),
+		Access:          info.GetAccess(),
+		AccessCreateAt:  info.GetAccessCreateAt(),
 		AccessExpiresIn: info.GetAccessExpiresIn(),
-		Refresh: info.GetRefresh(),
-		RefreshCreateAt: info.GetRefreshCreateAt(),
-		RefreshExpiresIn: info.GetRefreshExpiresIn(),
+		//Refresh: info.GetRefresh(),
+		//RefreshCreateAt: info.GetRefreshCreateAt(),
+		//RefreshExpiresIn: info.GetRefreshExpiresIn(),
 	}
 }
