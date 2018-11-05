@@ -30,17 +30,7 @@ func Load() error {
 		return err
 	}
 
-	dbObjects := []interface{} {
-		&models.Node{},
-		&models.Server{},
-		&models.User{},
-	}
-
-	for _, v := range dbObjects {
-		dbConn.AutoMigrate(v)
-	}
-
-	err = models.MigrateServerModel(dbConn)
+	migrateModels()
 
 	return err
 }
@@ -94,4 +84,32 @@ func GetConnection() (*gorm.DB, error) {
 
 func Close() {
 	dbConn.Close()
+}
+
+func migrateModels() (err error) {
+	dbObjects := []interface{} {
+		&models.Node{},
+		&models.Server{},
+		&models.User{},
+		&models.ClientInfo{},
+		&models.ClientServerScopes{},
+		&models.TokenInfo{},
+	}
+
+	for _, v := range dbObjects {
+		dbConn.AutoMigrate(v)
+	}
+
+	dbConn.AutoMigrate(&models.Node{}, &models.Server{})
+	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	if err != nil {
+		return
+	}
+
+	return
 }

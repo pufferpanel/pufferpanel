@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
 	"gopkg.in/oauth2.v3/errors"
@@ -34,13 +35,6 @@ func configureServer() error {
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&o2.ClientStore{})
 	manager.MapTokenStorage(&o2.TokenStore{})
-
-	db, err := database.GetConnection()
-	if err != nil {
-		return err
-	}
-
-	db.AutoMigrate(&o2.ClientInfo{}, &o2.TokenInfo{}, &o2.ClientServerScopes{})
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
@@ -79,10 +73,10 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 		return
 	}
 
-	client := o2.ClientInfo{
+	client := &models.ClientInfo{
 		ClientID: item.GetClientID(),
 	}
-	err = db.Set("gorm:auto_preload", true).Where(&client).First(&client).Error
+	err = db.Set("gorm:auto_preload", true).Where(client).First(client).Error
 	if err != nil {
 		return
 	}

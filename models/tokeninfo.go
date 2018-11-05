@@ -1,8 +1,7 @@
-package oauth2
+package models
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
 	"strconv"
 	"time"
@@ -15,7 +14,7 @@ type TokenInfo struct {
 	Client   ClientInfo
 
 	UserID uint
-	User   models.User
+	User   User
 
 	//Scope            string
 	//Code             string
