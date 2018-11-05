@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/go-playground/validator.v9"
+	"time"
 )
 
 type Server struct {
@@ -14,13 +15,14 @@ type Server struct {
 	NodeID uint `gorm:"NOT NULL" json:"-"`
 	Node   Node `gorm:"association_autoupdate:false" json:"-"`
 
-	//CreatedAt time.Time `json:"-"`
-	//UpdatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 type Servers []*Server
 
 func MigrateServerModel(db *gorm.DB) (err error) {
+	db.AutoMigrate(&Node{}, &Server{})
 	err = db.Model(&Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
 	return
 }

@@ -16,6 +16,7 @@ package models
 import (
 	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/go-playground/validator.v9"
+	"time"
 )
 
 type Node struct {
@@ -27,8 +28,8 @@ type Node struct {
 	PrivatePort uint   `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
 	SFTPPort    uint   `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
-	//CreatedAt time.Time `json:"-"`
-	//UpdatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 type Nodes []*Node
