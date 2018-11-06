@@ -8,18 +8,18 @@ import (
 )
 
 type TokenInfo struct {
-	ID uint
+	ID uint `json:"-"`
 
-	ClientInfoID uint
-	Client       ClientInfo
+	ClientInfoID uint       `gorm:"NOT NULL" json:"-"`
+	ClientInfo   ClientInfo `gorm:"save_associations:false" json:"-"`
 
 	//Scope            string
 	//Code             string
 	//CodeCreateAt     time.Time
 	//CodeExpiresIn    time.Duration
-	Access          string
-	AccessCreateAt  time.Time
-	AccessExpiresIn time.Duration
+	Access          string        `json:"-"`
+	AccessCreateAt  time.Time     `json:"-"`
+	AccessExpiresIn time.Duration `json:"-"`
 	//Refresh          string
 	//RefreshCreateAt  time.Time
 	//RefreshExpiresIn time.Duration
@@ -30,15 +30,15 @@ func (ti *TokenInfo) New() oauth2.TokenInfo {
 }
 
 func (ti *TokenInfo) GetClientID() string {
-	return ti.Client.ClientID
+	return ti.ClientInfo.ClientID
 }
 
 func (ti *TokenInfo) SetClientID(clientId string) {
-	ti.Client.ClientID = clientId
+	ti.ClientInfo.ClientID = clientId
 }
 
 func (ti *TokenInfo) GetUserID() string {
-	return strconv.Itoa(int(ti.Client.UserID))
+	return strconv.Itoa(int(ti.ClientInfo.UserID))
 }
 
 func (ti *TokenInfo) SetUserID(id string) {
@@ -49,7 +49,7 @@ func (ti *TokenInfo) SetUserID(id string) {
 	if result < 0 {
 		panic(errors.New("cannot set user id as negative number"))
 	}
-	ti.Client.UserID = uint(result)
+	ti.ClientInfo.UserID = uint(result)
 }
 
 func (ti *TokenInfo) GetRedirectURI() string {
@@ -150,7 +150,7 @@ func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
 func Copy(info oauth2.TokenInfo) *TokenInfo {
 	userId, _ := strconv.Atoi(info.GetUserID())
 	return &TokenInfo{
-		Client: ClientInfo{
+		ClientInfo: ClientInfo{
 			ClientID: info.GetClientID(),
 			UserID:   uint(userId),
 		},

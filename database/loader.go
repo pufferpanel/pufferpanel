@@ -66,7 +66,7 @@ func openConnection() (error) {
 	var err error
 	dbConn, err = gorm.Open(dialect, connString)
 
-	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "YES" {
+	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "TRUE" {
 		dbConn.LogMode(true)
 	}
 
