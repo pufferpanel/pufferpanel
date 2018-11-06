@@ -18,6 +18,20 @@ func (ts *TokenStore) Create(info oauth2.TokenInfo) error {
 	}
 
 	model := models.Copy(info)
+
+	if model.ClientInfoID == 0 {
+		client := &models.ClientInfo{
+			ClientID: info.GetClientID(),
+		}
+
+		err = db.Where(client).First(client).Error
+		if err != nil {
+			return err
+		}
+		model.ClientInfoID = client.ID
+		model.ClientInfo = *client
+	}
+
 	return db.Create(model).Error
 }
 

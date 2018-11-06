@@ -5,21 +5,21 @@ import (
 )
 
 type ClientInfo struct {
-	ID       uint
-	ClientID string
-	Secret   string
-	UserID   uint
-	User     User
+	ID       uint   `json:"-"`
+	ClientID string `gorm:"NOT NULL" json:"-"`
+	Secret   string `gorm:"NOT NULL" json:"-"`
+	UserID   uint   `gorm:"NOT NULL" json:"-"`
+	User     User   `gorm:"save_associations:false" json:"-"`
 
-	ServerScopes []ClientServerScopes
+	ServerScopes []ClientServerScopes `gorm:"save_associations:false" json:"-"`
 }
 
 type ClientServerScopes struct {
-	ID           uint
-	ClientInfoID uint
-	ServerId     uint
-	Server       Server
-	Scope        string
+	ID           uint   `json:"-"`
+	ClientInfoID uint   `gorm:"NOT NULL" json:"-"`
+	ServerId     uint   `json:"-"`
+	Server       Server `gorm:"save_associations:false" json:"-"`
+	Scope        string `gorm:"NOT NULL" json:"-"`
 }
 
 func (ci *ClientInfo) GetSecret() string {
