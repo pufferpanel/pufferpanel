@@ -61,6 +61,7 @@ func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, r
 
 func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
 	ts := &o2.TokenStore{}
+	info = &view.OAuthTokenInfoViewModel{Active: false}
 
 	item, err := ts.GetByAccess(token)
 
