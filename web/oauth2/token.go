@@ -5,7 +5,6 @@ import (
 	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
-	"net/http"
 )
 
 func registerTokens(g *gin.RouterGroup) {
@@ -30,34 +29,18 @@ func handleTokenRequest(c *gin.Context) {
 }
 
 func handleInfoRequest(c *gin.Context) {
-	response := builder.Respond(c)
-
 	var oauth services.OAuthService
 	var err error
-	if oauth, err = services.GetOAuthService(); shared.HandleError(response, err) {
+	if oauth, err = services.GetOAuthService(); err != nil {
+		c.Status(500)
 		return
 	}
-
-	type body struct {
-		token string
-	}
-	msg := &body{}
 
 	if token := c.PostForm("token"); token != "" {
-		msg.token = token
+		info, _, _ := oauth.GetInfo(token)
+		c.JSON(200, info)
 	} else {
-		err := c.BindJSON(msg)
-		if err != nil {
-			response.Status(http.StatusBadRequest).Fail().Message(err.Error()).Send()
-			return
-		}
-	}
-
-	info, _, err := oauth.GetInfo(msg.token)
-	if err != nil {
-		response.Status(http.StatusBadRequest).Fail().Message(err.Error()).Send()
+		c.Status(400)
 		return
 	}
-
-	response.Data(info).Send()
 }
