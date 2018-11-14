@@ -16,6 +16,16 @@ type OAuthService interface {
 	HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request)
 
 	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
+
+	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, err error)
+
+	UpdateScopes(clientId string, scopes []string) (err error)
+
+	Delete(clientId string) (err error)
+
+	GetByClientId(clientId string) (client *models.ClientInfo, err error)
+
+	GetByUserServer(user *models.User, server *models.Server) (client *models.ClientInfo, err error)
 }
 
 type oauthService struct {
@@ -86,5 +96,25 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	info = view.FromTokenInfo(item, client)
 	valid = info.Active
 
+	return
+}
+
+func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string) (clientSecret string, err error) {
+	return
+}
+
+func (oauth2 *oauthService) UpdateScopes(clientId string, scopes []string) (err error) {
+	return
+}
+
+func (oauth2 *oauthService) Delete(clientId string) (err error) {
+	return
+}
+
+func (oauth2 *oauthService) GetByClientId(clientId string) (client *models.ClientInfo, err error) {
+	return
+}
+
+func (oauth2 *oauthService) GetByUserServer(user *models.User, server *models.Server) (client *models.ClientInfo, err error) {
 	return
 }

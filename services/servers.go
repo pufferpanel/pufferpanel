@@ -114,5 +114,6 @@ func (ss *serverService) Create(model *models.Server, serverData interface{}) (e
 		return
 	}
 
+	successful = true
 	return
 }
