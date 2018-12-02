@@ -9,9 +9,7 @@ import (
 )
 
 type ServerService interface {
-	Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error)
-
-	GetForUser(userId uint) (*models.Servers, error)
+	Search(username string, nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error)
 
 	Get(id string) (*models.Server, bool, error)
 
@@ -39,13 +37,20 @@ func GetServerService() (ServerService, error) {
 	return service, nil
 }
 
-func (ss *serverService) Search(nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
+func (ss *serverService) Search(username string, nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
 	servers := &models.Servers{}
 
 	query := ss.db.Offset((page - 1) * pageSize).Limit(pageSize)
 
 	if nodeId != 0 {
 		query = query.Where(&models.Server{NodeID: nodeId})
+	}
+
+	if username != "" {
+		query = query.Joins("JOIN client_server_scopes css ON css.server_id = servers.id")
+		query = query.Joins("JOIN client_infos ci ON ci.id = css.client_info_id")
+		query = query.Joins("JOIN users u ON u.id = ci.user_id")
+		query = query.Where("u.username = ?", username)
 	}
 
 	nameFilter = strings.Replace(nameFilter, "*", "%", -1)
@@ -55,15 +60,6 @@ func (ss *serverService) Search(nodeId uint, nameFilter string, pageSize, page u
 	}
 
 	res := query.Find(servers)
-
-	return servers, res.Error
-}
-
-//TODO: Waiting on user objects with rights to implement correctly
-func (ss *serverService) GetForUser(userId uint) (*models.Servers, error) {
-	servers := &models.Servers{}
-
-	res := ss.db.Find(servers)
 
 	return servers, res.Error
 }
@@ -117,3 +113,4 @@ func (ss *serverService) Create(model *models.Server, serverData interface{}) (e
 	successful = true
 	return
 }
+

@@ -8,10 +8,16 @@ import (
 
 type ServerViewModel struct {
 	//Id         uint   `json:"id"`
-	Identifier string      `json:"id"`
-	Name       string      `json:"name"`
-	NodeId     uint        `json:"nodeId"`
-	Data       interface{} `json:"data,omitempty"`
+	Identifier string                `json:"id"`
+	Name       string                `json:"name"`
+	NodeId     uint                  `json:"nodeId"`
+	Data       interface{}           `json:"data,omitempty"`
+	Users      []ServerViewModelUser `json:"users,omitempty"`
+}
+
+type ServerViewModelUser struct {
+	Username string   `json:"username"`
+	Scopes   []string `json:"scopes"`
 }
 
 func FromServer(server *models.Server) *ServerViewModel {

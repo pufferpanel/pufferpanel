@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/satori/go.uuid"
 	"net/http"
 	"strconv"
 )
@@ -28,18 +29,21 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", searchServers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "", shared.NotImplemented)
+	g.Handle("POST", "", createServer)
 	g.Handle("GET", "/:id", getServer)
-	g.Handle("POST", "/:id", shared.NotImplemented)
-	g.Handle("DELETE", "/:id", shared.NotImplemented)
+	g.Handle("PUT", "/:id", createServer)
+	g.Handle("DELETE", "/:id", deleteServer)
+	g.Handle("GET", "/:id/users", getServerUsers)
+	g.Handle("POST", "/:id/users", editServerUsers)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
-func searchServers (c *gin.Context) {
+func searchServers(c *gin.Context) {
 	var ss services.ServerService
 	var err error
 	response := builder.Respond(c)
 
+	username := c.DefaultQuery("username", "")
 	nodeQuery := c.DefaultQuery("node", "0")
 	nameFilter := c.DefaultQuery("name", "*")
 	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DefaultPageSize))
@@ -72,7 +76,7 @@ func searchServers (c *gin.Context) {
 	}
 
 	var results *models.Servers
-	if results, err = ss.Search(uint(node), nameFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
+	if results, err = ss.Search(username, uint(node), nameFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
 		return
 	}
 
@@ -102,4 +106,93 @@ func getServer(c *gin.Context) {
 	}
 
 	response.Data(result).Send()
+}
+
+func createServer(c *gin.Context) {
+	var ss services.ServerService
+	var ns services.NodeService
+	var err error
+	response := builder.Respond(c)
+
+	serverId := c.Param("id")
+	if serverId == "" {
+		serverId = uuid.NewV4().String()[:8]
+	}
+
+	postBody := view.ServerViewModel{}
+	err = c.Bind(&postBody)
+	postBody.Identifier = serverId
+	if err != nil {
+		response.Status(http.StatusBadRequest).Message(err.Error()).Fail().Send()
+		return
+	}
+
+	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+		return
+	}
+
+	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+		return
+	}
+
+	node, exists, err := ns.Get(postBody.NodeId)
+
+	if shared.HandleError(response, err) {
+		return
+	}
+
+	if !exists {
+		response.Status(http.StatusBadRequest).Message("no node with given id").Fail().Send()
+	}
+
+	server := &models.Server{}
+	postBody.CopyToModel(server)
+
+	server.NodeID = node.ID
+
+	err = ss.Create(server, postBody.Data)
+	if err != nil {
+		response.Status(http.StatusInternalServerError).Message(err.Error()).Fail().Send()
+		return
+	}
+
+	postBody.Data = nil
+	response.Data(postBody).Send()
+}
+
+func deleteServer(c *gin.Context) {
+	var ss services.ServerService
+	var err error
+	response := builder.Respond(c)
+
+	serverId := c.Param("id")
+
+	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+		return
+	}
+
+	server, exists, err := ss.Get(serverId)
+	if shared.HandleError(response, err) {
+		return
+	}
+
+	if !exists {
+		response.Status(http.StatusNotFound).Message("no server with given id").Fail().Send()
+	}
+
+	err = ss.Delete(server.ID)
+	if shared.HandleError(response, err) {
+		return
+	} else {
+		v := view.FromServer(server)
+		response.Status(http.StatusOK).Data(v).Send()
+	}
+}
+
+func getServerUsers(c *gin.Context){
+
+}
+
+func editServerUsers(c *gin.Context) {
+
 }
