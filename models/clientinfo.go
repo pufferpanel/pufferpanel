@@ -14,6 +14,8 @@ type ClientInfo struct {
 	ServerScopes []ClientServerScopes `gorm:"save_associations:false" json:"-"`
 }
 
+type ClientInfos []ClientInfo
+
 type ClientServerScopes struct {
 	ID           uint   `json:"-"`
 	ClientInfoID uint   `gorm:"NOT NULL" json:"-"`
