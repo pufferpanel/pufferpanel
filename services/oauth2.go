@@ -19,13 +19,13 @@ type OAuthService interface {
 
 	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, err error)
 
-	UpdateScopes(clientId string, scopes []string) (err error)
+	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes []string) (err error)
 
 	Delete(clientId string) (err error)
 
-	GetByClientId(clientId string) (client *models.ClientInfo, err error)
+	GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error)
 
-	GetByUserServer(user *models.User, server *models.Server) (client *models.ClientInfo, err error)
+	GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error)
 }
 
 type oauthService struct {
@@ -103,18 +103,73 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 	return
 }
 
-func (oauth2 *oauthService) UpdateScopes(clientId string, scopes []string) (err error) {
+func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes []string) (err error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return err
+	}
+
+	deleteIds := make([]int, 0)
+	for k, v := range client.ServerScopes {
+		if v.Server.ID == server.ID {
+			deleteIds = append(deleteIds, k)
+		}
+	}
+
+	for index := len(deleteIds) - 1; index >= 0; index-- {
+		client.ServerScopes = append(client.ServerScopes[:index], client.ServerScopes[index+1:]...)
+	}
+
+	//re-add new values
+	for _, v := range scopes {
+		replacement := &models.ClientServerScopes{
+			ServerId: server.ID,
+			Scope: v,
+			ClientInfoID: client.ID,
+		}
+
+		db.Create(replacement)
+		client.ServerScopes = append(client.ServerScopes, *replacement)
+	}
+
+	db.Save(client)
+
 	return
 }
 
 func (oauth2 *oauthService) Delete(clientId string) (err error) {
-	return
+	db, err := database.GetConnection()
+	if err != nil {
+		return err
+	}
+
+	model := &models.ClientInfo{ClientID: clientId}
+
+	return db.Delete(model).Error
 }
 
-func (oauth2 *oauthService) GetByClientId(clientId string) (client *models.ClientInfo, err error) {
-	return
+func (oauth2 *oauthService) GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return nil, false, err
+	}
+
+	model := &models.ClientInfo{ClientID: clientId}
+
+	res := db.Where(model).First(model)
+
+	return model, model.ID != 0, res.Error
 }
 
-func (oauth2 *oauthService) GetByUserServer(user *models.User, server *models.Server) (client *models.ClientInfo, err error) {
-	return
+func (oauth2 *oauthService) GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return nil, false, err
+	}
+
+	model := &models.ClientInfo{UserID: user.ID}
+
+	res := db.Where(model).First(model)
+
+	return model, model.ID != 0, res.Error
 }
