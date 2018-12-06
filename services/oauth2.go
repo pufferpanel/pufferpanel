@@ -17,7 +17,7 @@ type OAuthService interface {
 
 	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
 
-	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, err error)
+	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, existing bool, err error)
 
 	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes []string) (err error)
 
@@ -99,7 +99,7 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	return
 }
 
-func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string) (clientSecret string, err error) {
+func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string) (clientSecret string, existing bool, err error) {
 	return
 }
 
@@ -111,7 +111,7 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 
 	deleteIds := make([]int, 0)
 	for k, v := range client.ServerScopes {
-		if v.Server.ID == server.ID {
+		if v.Server.ID == server.ID || (v.Server.ID == 0 && server == nil){
 			deleteIds = append(deleteIds, k)
 		}
 	}
@@ -123,9 +123,11 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 	//re-add new values
 	for _, v := range scopes {
 		replacement := &models.ClientServerScopes{
-			ServerId: server.ID,
 			Scope: v,
 			ClientInfoID: client.ID,
+		}
+		if server != nil {
+			replacement.ServerId = server.ID
 		}
 
 		db.Create(replacement)
