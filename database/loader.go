@@ -16,6 +16,7 @@ package database
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/models"
 	"os"
@@ -35,7 +36,7 @@ func Load() error {
 	return err
 }
 
-func openConnection() (error) {
+func openConnection() (err error) {
 	dialect := config.Get().Database.Dialect
 	if dialect == "" {
 		dialect = "mysql"
@@ -63,14 +64,13 @@ func openConnection() (error) {
 	}
 
 	//attempt to open database connection to validate
-	var err error
 	dbConn, err = gorm.Open(dialect, connString)
 
 	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "TRUE" {
 		dbConn.LogMode(true)
 	}
 
-	return err
+	return
 }
 
 func GetConnection() (*gorm.DB, error) {
