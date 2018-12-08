@@ -95,7 +95,7 @@ function configureMysql() {
         \"host\": \"${mysqlHost}\",
         \"database\": \"${mysqlDb}\",
         \"username\": \"${newUser}\",
-        \"password\": \"${newPw}\",
+        \"password\": \"$(echo $newPw | awk '{gsub(/\\/, "\\\\"); print}')\",
         \"port\": \"${mysqlPort}\"
     }
 }" > config.json
