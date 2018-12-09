@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
@@ -110,8 +111,21 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 		return err
 	}
 
+	if server != nil && server.ID == 0 {
+		res := db.Where(server).First(server)
+		if res.Error != nil {
+			return res.Error
+		}
+	}
+
 	if client.ID == 0 {
-		res := db.Where(client).First(client)
+		var query *gorm.DB
+		if server != nil && server.ID != 0 {
+			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+		} else {
+			query = db.Preload("ServerScopes", "server_id IS NULL")
+		}
+		res := query.Where(client).First(client)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -120,38 +134,40 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 		}
 	}
 
-	if server.ID == 0 {
-		res := db.Where(server).First(server)
-		if res.Error != nil {
-			return res.Error
+	//delete ones which don't exist on the new list
+	for _, v := range client.ServerScopes {
+		toDelete := true
+		for _, s := range scopes {
+			if s == v.Scope {
+				toDelete = false
+				break
+			}
 		}
-		if client.ID == 0 {
-			return errors.New("no server with given information")
-		}
-	}
-
-	deleteIds := make([]int, 0)
-	for k, v := range client.ServerScopes {
-		if v.Server.ID == server.ID || (v.Server.ID == 0 && server == nil) {
-			deleteIds = append(deleteIds, k)
+		if toDelete {
+			db.Delete(v)
 		}
 	}
 
-	for index := len(deleteIds) - 1; index >= 0; index-- {
-		client.ServerScopes = append(client.ServerScopes[:index], client.ServerScopes[index+1:]...)
-	}
-
-	//re-add new values
+	//add new values
 	for _, v := range scopes {
-		replacement := &models.ClientServerScopes{
-			Scope: v,
-			ClientInfoID: client.ID,
+		toAdd := true
+		for _, s := range client.ServerScopes {
+			if v == s.Scope {
+				toAdd = false
+				break
+			}
 		}
-		if server != nil {
-			replacement.ServerId = server.ID
-		}
+		if toAdd {
+			replacement := &models.ClientServerScopes{
+				Scope: v,
+				ClientInfoID: client.ID,
+			}
+			if server != nil && server.ID != 0{
+				replacement.ServerId = &server.ID
+			}
 
-		db.Create(replacement)
+			db.Create(replacement)
+		}
 	}
 
 	return

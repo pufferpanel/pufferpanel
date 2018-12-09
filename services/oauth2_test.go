@@ -13,9 +13,9 @@ func Test(t *testing.T) {
 	}
 
 	ci := &models.ClientInfo{ClientID: "test"}
-	server := &models.Server{Name: "test"}
+	//server := &models.Server{Name: "test"}
 
-	err = service.UpdateScopes(ci, server, "newscope2")
+	err = service.UpdateScopes(ci, nil, "newscope2", "newscope")
 	if err != nil {
 		t.Error(err)
 		return

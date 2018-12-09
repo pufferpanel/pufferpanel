@@ -19,7 +19,7 @@ type ClientInfos []ClientInfo
 type ClientServerScopes struct {
 	ID           uint   `json:"-"`
 	ClientInfoID uint   `gorm:"NOT NULL" json:"-"`
-	ServerId     uint   `json:"-"`
+	ServerId     *uint   `json:"-"`
 	Server       Server `gorm:"save_associations:false" json:"-"`
 	Scope        string `gorm:"NOT NULL" json:"-"`
 }
