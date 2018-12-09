@@ -1,11 +1,12 @@
 package services
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
-	"gopkg.in/oauth2.v3/errors"
+	oauthErrors "gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
 	"log"
@@ -19,7 +20,7 @@ type OAuthService interface {
 
 	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, existing bool, err error)
 
-	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes []string) (err error)
+	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error)
 
 	Delete(clientId string) (err error)
 
@@ -49,12 +50,12 @@ func configureServer() error {
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
 
-	srv.SetInternalErrorHandler(func(err error) (re *errors.Response) {
+	srv.SetInternalErrorHandler(func(err error) (re *oauthErrors .Response) {
 		log.Println("Internal Error:", err.Error())
 		return
 	})
 
-	srv.SetResponseErrorHandler(func(re *errors.Response) {
+	srv.SetResponseErrorHandler(func(re *oauthErrors.Response) {
 		log.Println("Response Error:", re.Error.Error())
 	})
 
@@ -103,15 +104,35 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 	return
 }
 
-func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes []string) (err error) {
+func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error) {
 	db, err := database.GetConnection()
 	if err != nil {
 		return err
 	}
 
+	if client.ID == 0 {
+		res := db.Where(client).First(client)
+		if res.Error != nil {
+			return res.Error
+		}
+		if client.ID == 0 {
+			return errors.New("no client with given information")
+		}
+	}
+
+	if server.ID == 0 {
+		res := db.Where(server).First(server)
+		if res.Error != nil {
+			return res.Error
+		}
+		if client.ID == 0 {
+			return errors.New("no server with given information")
+		}
+	}
+
 	deleteIds := make([]int, 0)
 	for k, v := range client.ServerScopes {
-		if v.Server.ID == server.ID || (v.Server.ID == 0 && server == nil){
+		if v.Server.ID == server.ID || (v.Server.ID == 0 && server == nil) {
 			deleteIds = append(deleteIds, k)
 		}
 	}
@@ -131,10 +152,7 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 		}
 
 		db.Create(replacement)
-		client.ServerScopes = append(client.ServerScopes, *replacement)
 	}
-
-	db.Save(client)
 
 	return
 }
