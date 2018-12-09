@@ -27,48 +27,11 @@ const Hash = "none"
 const Version = "2.0.0-DEV"
 
 func main() {
-	configPath, exists := os.LookupEnv("PUFFERPANEL_CONFIG")
 
-	if !exists {
-		configPath = "config.json"
-	}
-
-	cfg, err := os.Open(configPath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			file, err := os.Create(configPath)
-			if err != nil {
-				logging.Error("Error creating config", err)
-				return
-			}
-			data := config.Config{Database: config.Database{}}
-			encoder := json.NewEncoder(file)
-			encoder.SetIndent("", "  ")
-			encoder.SetEscapeHTML(true)
-			err = encoder.Encode(&data)
-			if err != nil {
-				logging.Error("Error creating config", err)
-				return
-			}
-		} else {
-			if err != nil {
-				logging.Error("Error reading config", err)
-				return
-			}
-			return
-		}
-	}
-
-	err = config.Load(cfg)
-	if err != nil {
-		logging.Error("Error reading config", err)
-		return
-	}
-	cfg.Close()
 
 	logging.Init()
 
-	err = database.Load()
+	err := database.Load()
 
 	if err != nil {
 		logging.Error("Error connecting to database", err)
