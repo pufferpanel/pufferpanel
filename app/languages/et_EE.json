@@ -109,9 +109,9 @@
     "node.files.ajax.no_save": "Faili salvestamine ebaõnnestus.",
     "node.files.ajax.no_edit": "This type of file cannot be edited via our online file manager. Please use a FTP client.",
     "node.files.ajax.file_404": "The file specified could not be found on the server.",
-    "node.settings.jar.jar_h1": "Server .jar Name",
-    "node.settings.jar.jarfile_name": "Jarfile Name",
-    "node.settings.jar.update": "Update Name",
+    "node.settings.jar.jar_h1": "Server.jar Nimi",
+    "node.settings.jar.jarfile_name": "Jarfaili Nimi",
+    "node.settings.jar.update": "Uuenda nime",
     "node.settings.ftp.ftp_h1": "FTP seaded",
     "node.ajax.generic_error": "An error was encountered with this AJAX request.",
     "error.unhandled": "An unhandled error occured while processing this request. Please go back and try again.",
@@ -121,7 +121,7 @@
     "error.password_mismatch": "The passwords you provided did not match each other.",
     "error.password_strength": "Your password is not complex enough. Please make sure to include at least one number, and some type of mixed case. Your new password must also be at least 8 characters long.",
     "error.account.same_email": "Sorry, you can't change your email to the email address you are currently using for the account, that wouldn't make sense!",
-    "success.account.email": "Your email address has been successfully updated to <em>%s</em>.",
-    "success.account.password": "Your password has been successfully changed! Please login again using your new password.",
+    "success.account.email": "Sinu e-maili address on uuendatud <em>%s</em>.",
+    "success.account.password": "Sinu salasõna on õnnelikult vahetatud, palun logi uuesti sinu uue parooliga.",
     "success.notifications.updated": "Your account notification preferences have been updated."
 }
