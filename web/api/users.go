@@ -21,18 +21,19 @@ import (
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"net/http"
 	"strconv"
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", searchUsers)
+	g.Handle("GET", "", handlers.OAuth2("users.edit", false), searchUsers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:username", createUser)
-	g.Handle("GET", "/:username", getUser)
-	g.Handle("POST", "/:username", updateUser)
-	g.Handle("DELETE", "/:username", deleteUser)
+	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit", false), createUser)
+	g.Handle("GET", "/:username", handlers.OAuth2("users.view", false), getUser)
+	g.Handle("POST", "/:username", handlers.OAuth2("users.edit", false), updateUser)
+	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit", false), deleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
