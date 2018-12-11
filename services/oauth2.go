@@ -7,11 +7,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
+	oauth "gopkg.in/oauth2.v3"
 	oauthErrors "gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
 	"log"
 	"net/http"
+	"time"
 )
 
 type OAuthService interface {
@@ -28,6 +30,10 @@ type OAuthService interface {
 	GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error)
 
 	GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error)
+
+	HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error)
+
+	HasTokenExpired(info oauth.TokenInfo) (expired bool)
 }
 
 type oauthService struct {
@@ -208,4 +214,44 @@ func (oauth2 *oauthService) GetByUser(user *models.User) (client *models.ClientI
 	res := db.Where(model).First(model)
 
 	return model, model.ID != 0, res.Error
+}
+
+func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error) {
+	ts := o2.TokenStore{}
+
+	var ti oauth.TokenInfo
+	if  ti, err = ts.GetByAccess(accessToken); err != nil {
+		return
+	}
+	if oauth2.HasTokenExpired(ti) {
+		return
+	}
+
+	converted, ok := ti.(*models.TokenInfo)
+	if !ok {
+		err = errors.New("token info state was invalid")
+		return
+	}
+
+	for _, v := range converted.ClientInfo.ServerScopes {
+		if (v.ServerId == nil && serverId == nil) || (v.ServerId == serverId) {
+			if v.Scope == scope {
+				return &converted.ClientInfo, true, nil
+			}
+		}
+	}
+
+	return &converted.ClientInfo, false, nil
+}
+
+func (oauth2 *oauthService) HasTokenExpired(info oauth.TokenInfo) (expired bool) {
+	if info == nil {
+		return true
+	}
+
+	if info.GetAccessCreateAt().Add(info.GetCodeExpiresIn()).Before(time.Now()) {
+		return true
+	}
+
+	return false
 }

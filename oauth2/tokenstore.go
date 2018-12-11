@@ -1,6 +1,7 @@
 package oauth2
 
 import (
+	"errors"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
@@ -78,8 +79,17 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 		return nil, err
 	}
 
-	res := db.Where(&obj).FirstOrInit(&obj)
-	return obj, res.Error
+	res := db.Where(&obj).First(&obj)
+	err = res.Error
+	if obj.ID == 0 {
+		obj = nil
+	}
+
+	if obj == nil && err == nil {
+		err = errors.New("token is invalid")
+	}
+
+	return obj, err
 }
 
 // use the refresh token for token information data

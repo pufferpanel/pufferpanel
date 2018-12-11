@@ -35,10 +35,10 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
 	g.Handle("GET", "/:id/deployment", shared.NotImplemented)
-	g.Handle("OPTIONS", "/:id", shared.CreateOptions("GET"))
+	g.Handle("OPTIONS", "/:id/deployment", shared.CreateOptions("GET"))
 
 	g.Handle("POST", "/:id/reset", shared.NotImplemented)
-	g.Handle("OPTIONS", "/:id", shared.CreateOptions("POST"))
+	g.Handle("OPTIONS", "/:id/reset", shared.CreateOptions("POST"))
 }
 
 func getAllNodes(c *gin.Context) {
