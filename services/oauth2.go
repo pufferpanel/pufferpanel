@@ -234,7 +234,7 @@ func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope 
 	}
 
 	for _, v := range converted.ClientInfo.ServerScopes {
-		if (v.ServerId == nil && serverId == nil) || (v.ServerId == serverId) {
+		if v.ServerId == nil || v.ServerId == serverId {
 			if v.Scope == scope {
 				return &converted.ClientInfo, true, nil
 			}
