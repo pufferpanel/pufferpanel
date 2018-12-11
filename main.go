@@ -43,5 +43,8 @@ func main() {
 	r := gin.Default()
 	web.RegisterRoutes(r)
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	err = r.Run() // listen and serve on 0.0.0.0:8080
+	if err != nil {
+		logging.Error("Error running web service", err)
+	}
 }
