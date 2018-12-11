@@ -31,7 +31,7 @@ func Load() error {
 		return err
 	}
 
-	migrateModels()
+	err = migrateModels()
 
 	return err
 }
