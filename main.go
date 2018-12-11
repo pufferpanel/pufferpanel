@@ -24,8 +24,6 @@ const Hash = "none"
 const Version = "2.0.0-DEV"
 
 func main() {
-
-
 	logging.Init()
 
 	err := database.Load()
