@@ -20,24 +20,25 @@ import (
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"net/http"
 	"strconv"
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", getAllNodes)
+	g.Handle("GET", "", handlers.OAuth2("nodes.view", false), getAllNodes)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:id", createNode)
-	g.Handle("GET", "/:id", getNode)
-	g.Handle("POST", "/:id", updateNode)
-	g.Handle("DELETE", "/:id", deleteNode)
+	g.Handle("PUT", "/:id", handlers.OAuth2("nodes.edit", false), createNode)
+	g.Handle("GET", "/:id", handlers.OAuth2("nodes.view", false), getNode)
+	g.Handle("POST", "/:id", handlers.OAuth2("nodes.edit", false), updateNode)
+	g.Handle("DELETE", "/:id", handlers.OAuth2("nodes.edit", false), deleteNode)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", shared.NotImplemented)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2("nodes.deploy", false), shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id/deployment", shared.CreateOptions("GET"))
 
-	g.Handle("POST", "/:id/reset", shared.NotImplemented)
+	g.Handle("POST", "/:id/reset", handlers.OAuth2("nodes.deploy", false), shared.NotImplemented)
 	g.Handle("OPTIONS", "/:id/reset", shared.CreateOptions("POST"))
 }
 

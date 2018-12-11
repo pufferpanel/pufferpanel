@@ -5,6 +5,7 @@ import (
 	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel/web/handlers"
 )
 
 func registerTokens(g *gin.RouterGroup) {
@@ -14,7 +15,7 @@ func registerTokens(g *gin.RouterGroup) {
 	g.POST("/validate", shared.NotImplemented)
 	g.OPTIONS("/validate", shared.CreateOptions("POST"))
 
-	g.POST("/info", handleInfoRequest)
+	g.POST("/info", handlers.OAuth2("oauth2.info", false), handleInfoRequest)
 	g.OPTIONS("/info", shared.CreateOptions("POST"))
 }
 

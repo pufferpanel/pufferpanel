@@ -20,21 +20,22 @@ import (
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"github.com/satori/go.uuid"
 	"net/http"
 	"strconv"
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", searchServers)
+	g.Handle("GET", "", handlers.OAuth2("servers.view", false), searchServers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("POST", "", createServer)
-	g.Handle("GET", "/:id", getServer)
-	g.Handle("PUT", "/:id", createServer)
-	g.Handle("DELETE", "/:id", deleteServer)
-	g.Handle("GET", "/:id/users", getServerUsers)
-	g.Handle("POST", "/:id/users", editServerUsers)
+	g.Handle("POST", "", handlers.OAuth2("servers.edit", false), createServer)
+	g.Handle("GET", "/:id", handlers.OAuth2("servers.view", true), getServer)
+	g.Handle("PUT", "/:id", handlers.OAuth2("servers.edit", false), createServer)
+	g.Handle("DELETE", "/:id", handlers.OAuth2("servers.edit", false), deleteServer)
+	g.Handle("GET", "/:id/users", handlers.OAuth2("servers.edit", true), getServerUsers)
+	g.Handle("POST", "/:id/users", handlers.OAuth2("servers.edit", true), editServerUsers)
 	g.Handle("OPTIONS", "/:id", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
