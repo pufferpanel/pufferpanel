@@ -34,6 +34,8 @@ type OAuthService interface {
 	HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error)
 
 	HasTokenExpired(info oauth.TokenInfo) (expired bool)
+
+	ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error)
 }
 
 type oauthService struct {
@@ -75,6 +77,10 @@ func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, r
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func (oauth2 *oauthService) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error){
+	return oauth2.server.ValidationBearerToken(r)
 }
 
 func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
