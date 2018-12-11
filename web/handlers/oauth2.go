@@ -28,11 +28,19 @@ func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
 			serverId = &id
 		}
 
-		ci, allowed, err := os.HasRights("", serverId, scope)
+		ti, err := os.ValidationBearerToken(c.Request)
+		if err != nil {
+			http.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+			c.Abort()
+			return
+		}
+
+		ci, allowed, err := os.HasRights(ti.GetAccess(), serverId, scope)
 		if err != nil {
 			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail().Send()
 			logging.Errorf("error validating credentials", err)
 			c.Abort()
+			return
 		}
 
 		if !allowed {
@@ -44,6 +52,7 @@ func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
 				c.Abort()
 			}
 		} else {
+			c.Set("accessToken", ti.GetAccess())
 			c.Next()
 		}
 	}
