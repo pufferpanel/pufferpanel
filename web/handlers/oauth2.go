@@ -10,6 +10,14 @@ import (
 )
 
 func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
+	return oauth2Handler(scope, requireServer, false)
+}
+
+func OAuth2WithLimit(scope string, requireServer bool) gin.HandlerFunc {
+	return oauth2Handler(scope, requireServer, true)
+}
+
+func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		os, err := services.GetOAuthService()
 		if err != nil {
@@ -21,11 +29,17 @@ func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
 		var serverId *uint
 		var id uint
 
-		if requireServer {
-			i := c.Query("id")
+		i := c.Query("serverId")
+		if i != "" {
 			t, _ := strconv.Atoi(i)
 			id = uint(t)
 			serverId = &id
+		}
+
+		if requireServer && serverId == nil {
+			http.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+			c.Abort()
+			return
 		}
 
 		ti, err := os.ValidationBearerToken(c.Request)
@@ -41,6 +55,15 @@ func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
 			logging.Errorf("error validating credentials", err)
 			c.Abort()
 			return
+		}
+
+		if !allowed && permitWithLimit {
+			for _, v := range ci.ServerScopes {
+				if v.Scope == scope {
+					allowed = true
+					break
+				}
+			}
 		}
 
 		if !allowed {
