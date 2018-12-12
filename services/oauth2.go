@@ -255,7 +255,7 @@ func (oauth2 *oauthService) HasTokenExpired(info oauth.TokenInfo) (expired bool)
 		return true
 	}
 
-	if info.GetAccessCreateAt().Add(info.GetCodeExpiresIn()).Before(time.Now()) {
+	if info.GetAccessCreateAt().Add(info.GetAccessExpiresIn()).Before(time.Now()) {
 		return true
 	}
 
