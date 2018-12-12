@@ -59,7 +59,7 @@ func (ss *serverService) Search(username string, nodeId uint, nameFilter string,
 		query = query.Where("name LIKE ?", nameFilter)
 	}
 
-	res := query.Find(servers)
+	res := query.Select("DISTINCT servers.*").Find(servers)
 
 	return servers, res.Error
 }

@@ -79,7 +79,7 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 		return nil, err
 	}
 
-	res := db.Where(&obj).First(&obj)
+	res := db.Preload("ClientInfo").Where(&obj).First(&obj)
 	err = res.Error
 	if obj.ID == 0 {
 		obj = nil
@@ -89,6 +89,7 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 		err = errors.New("token is invalid")
 	}
 
+	db.Preload("ServerScopes").Preload("User").Where(&obj.ClientInfo).First(&obj.ClientInfo)
 	return obj, err
 }
 

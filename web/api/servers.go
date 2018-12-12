@@ -78,7 +78,7 @@ func searchServers(c *gin.Context) {
 
 	//see if user has access to view all others, otherwise we can't permit search without their username
 	os, _ := services.GetOAuthService()
-	if ci, global, _ := os.HasRights(c.GetString("accessToken"), nil, "server.view"); !global {
+	if ci, global, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view"); !global {
 		username = ci.User.Username
 	}
 
