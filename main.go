@@ -34,10 +34,6 @@ func main() {
 
 	defer database.Close()
 
-	if err != nil {
-		return
-	}
-
 	r := gin.Default()
 	web.RegisterRoutes(r)
 

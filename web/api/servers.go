@@ -30,7 +30,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2WithLimit("servers.view", false), searchServers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2("servers.edit", false), createServer)
+	g.Handle("POST", "", handlers.OAuth2("servers.create", false), createServer)
 	g.Handle("GET", "/:serverId", handlers.OAuth2("servers.view", true), getServer)
 	g.Handle("PUT", "/:serverId", handlers.OAuth2("servers.edit", false), createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2("servers.edit", false), deleteServer)

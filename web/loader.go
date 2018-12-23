@@ -16,22 +16,15 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/web/api"
+	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
 )
 
 func RegisterRoutes(e *gin.Engine) {
-	apiGroup := e.Group("/api")
-	{
-		api.Register(apiGroup)
-	}
+	e.LoadHTMLGlob("assets/web/**/*")
 
-	assetsGroup := e.Group("/assets")
-	{
-		assetsGroup.Static("", "assets/web")
-	}
-
-	oauthGroup := e.Group("/oauth2")
-	{
-		oauth2.Register(oauthGroup)
-	}
+	api.Register(e.Group("/api"))
+	e.Group("/assets").Static("", "assets/web")
+	oauth2.Register(e.Group("/oauth2"))
+	auth.Register(e.Group("/auth"))
 }
