@@ -14,17 +14,52 @@
 package web
 
 import (
+	"fmt"
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
+	"path/filepath"
+	"strings"
 )
 
 func RegisterRoutes(e *gin.Engine) {
-	e.LoadHTMLGlob("assets/web/**/*")
+	e.HTMLRender = loadTemplates()
 
 	api.Register(e.Group("/api"))
 	e.Group("/assets").Static("", "assets/web")
 	oauth2.Register(e.Group("/oauth2"))
 	auth.Register(e.Group("/auth"))
+}
+
+func loadTemplates() multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+
+	prefix := "assets/web/"
+
+	layouts, err := filepath.Glob(prefix + "base.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	includes, err := filepath.Glob(prefix + "**/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for _, include := range includes {
+		templateName := strings.TrimPrefix(include, prefix)
+		if templateName == include {
+			templateName = strings.TrimPrefix(include, strings.Replace(prefix, "/", "\\", 2))
+		}
+		templateName = strings.Replace(strings.TrimSuffix(templateName, ".html"), "\\", "/", -1)
+		layoutCopy := make([]string, len(layouts))
+		copy(layoutCopy, layouts)
+		files := append(layoutCopy, include)
+		logging.Debugf(fmt.Sprintf("Adding template [%s] with %s", templateName, files))
+		r.AddFromFiles(templateName, files...)
+	}
+	return r
 }
