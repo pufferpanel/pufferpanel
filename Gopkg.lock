@@ -30,6 +30,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:f6ac83c385d65e7a5dc5b55ed0c9327edf58507211854b823e3cef6dd3b8cd0c"
+  name = "github.com/gin-contrib/multitemplate"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "00e8d5e7d32717deae36e0ce4f0069842a93aec8"
+
+[[projects]]
+  branch = "master"
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
@@ -257,6 +265,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/gin-contrib/multitemplate",
     "github.com/gin-gonic/gin",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mssql",

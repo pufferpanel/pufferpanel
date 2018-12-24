@@ -25,6 +25,7 @@ const Version = "2.0.0-DEV"
 
 func main() {
 	logging.Init()
+	logging.SetLevel(logging.DEBUG)
 
 	err := database.Load()
 
