@@ -283,7 +283,6 @@ func (oauth2 *oauthService) UpdateExpirationTime(tokenInfo oauth.TokenInfo, dura
 		return
 	}
 
-	model := &models.TokenInfo{}
-	res := db.Model(model).Where(model).Update("access_create_at", time.Now())
+	res := db.Set("gorm:association_save_reference", false).Model(tokenInfo).Update("access_create_at", time.Now())
 	return res.Error
 }
