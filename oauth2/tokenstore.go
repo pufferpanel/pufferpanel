@@ -5,6 +5,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
+	"time"
 )
 
 type TokenStore struct {
@@ -85,11 +86,15 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 		obj = nil
 	}
 
+	if obj.GetAccessCreateAt().Add(obj.GetAccessExpiresIn()).Before(time.Now()) {
+		return nil, err
+	}
+
 	if obj == nil || err != nil {
 		if err == nil {
 			err = errors.New("token is invalid")
 		}
-		return nil, err
+		return nil, nil
 	}
 
 	db.Preload("ServerScopes").Preload("User").Where(&obj.ClientInfo).First(&obj.ClientInfo)
