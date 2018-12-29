@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Database Database `json:"database"`
+	Session  Session  `json:"session"`
 }
 
 type Database struct {
@@ -17,7 +18,11 @@ type Database struct {
 	Dialect string `json:"dialect"`
 }
 
-var config Config
+type Session struct {
+	Timeout int `json:"timeout"`
+}
+
+var config *Config
 var loaded bool
 var locker sync.Locker = &sync.Mutex{}
 
@@ -34,11 +39,12 @@ func LoadDefault() error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			file, err := os.Create(configPath)
+			defer file.Close()
 			if err != nil {
 				logging.Error("Error creating config", err)
 				return err
 			}
-			data := Config{Database: Database{}}
+			data := getDefault()
 			encoder := json.NewEncoder(file)
 			encoder.SetIndent("", "  ")
 			encoder.SetEscapeHTML(true)
@@ -47,6 +53,7 @@ func LoadDefault() error {
 				logging.Error("Error creating config", err)
 				return err
 			}
+
 		} else {
 			if err != nil {
 				logging.Error("Error reading config", err)
@@ -66,13 +73,23 @@ func LoadDefault() error {
 }
 
 func Load(reader io.Reader) error {
-	config = Config{}
-	return json.NewDecoder(reader).Decode(&config)
+	config = &Config{}
+	return json.NewDecoder(reader).Decode(config)
 }
 
-func Get() Config {
+func Get() (*Config, error) {
+	var err error = nil
 	if !loaded {
-		LoadDefault()
+		err = LoadDefault()
 	}
-	return config
+	return config, err
+}
+
+func getDefault() *Config {
+	return &Config{
+		Database: Database{},
+		Session: Session{
+			Timeout: 60,
+		},
+	}
 }

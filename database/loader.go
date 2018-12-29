@@ -37,11 +37,16 @@ func Load() error {
 }
 
 func openConnection() (err error) {
-	dialect := config.Get().Database.Dialect
+	cfg, err := config.Get()
+	if err != nil {
+		return
+	}
+
+	dialect := cfg.Database.Dialect
 	if dialect == "" {
 		dialect = "mysql"
 	}
-	connString := config.Get().Database.Url
+	connString := cfg.Database.Url
 
 	if dialect == "mysql" {
 		if !strings.Contains(connString, "charset=utf8") {

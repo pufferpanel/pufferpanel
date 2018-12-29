@@ -18,21 +18,8 @@ import "github.com/gin-gonic/gin"
 const MaxPageSize = 100
 const DefaultPageSize = 20
 
-func Register(rg *gin.RouterGroup) {
-	var g *gin.RouterGroup
-
-	g = rg.Group("/nodes")
-	{
-		registerNodes(g)
-	}
-
-	g = rg.Group("/servers")
-	{
-		registerServers(g)
-	}
-
-	g = rg.Group("/users")
-	{
-		registerUsers(g)
-	}
+func RegisterRoutes(rg *gin.RouterGroup) {
+	registerNodes(rg.Group("/nodes"))
+	registerServers(rg.Group("/servers"))
+	registerUsers(rg.Group("/users"))
 }

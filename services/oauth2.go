@@ -36,6 +36,10 @@ type OAuthService interface {
 	HasTokenExpired(info oauth.TokenInfo) (expired bool)
 
 	ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error)
+
+	GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error)
+
+	UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error)
 }
 
 type oauthService struct {
@@ -84,32 +88,15 @@ func (oauth2 *oauthService) ValidationBearerToken(r *http.Request) (ti oauth.Tok
 }
 
 func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
-	ts := &o2.TokenStore{}
-	info = &view.OAuthTokenInfoViewModel{Active: false}
+	tokenInfo, client, err := oauth2.GetByToken(token)
 
-	item, err := ts.GetByAccess(token)
-
-	if err != nil {
-		return
-	}
-
-	db, err := database.GetConnection()
-	if err != nil {
-		return
-	}
-
-	client := &models.ClientInfo{
-		ClientID: item.GetClientID(),
-	}
-	err = db.Set("gorm:auto_preload", true).Where(client).First(client).Error
-	if err != nil {
-		return
+	if tokenInfo == nil || client == nil {
+		return nil, false, nil
 	}
 
 	//see if the access token expiration is after now
-	info = view.FromTokenInfo(item, client)
-	valid = info.Active
-
+	info = view.FromTokenInfo(tokenInfo, client)
+	valid = oauth2.HasTokenExpired(tokenInfo)
 	return
 }
 
@@ -260,4 +247,43 @@ func (oauth2 *oauthService) HasTokenExpired(info oauth.TokenInfo) (expired bool)
 	}
 
 	return false
+}
+
+func (oauth2 *oauthService) GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error) {
+	ts := &o2.TokenStore{}
+	tokenInfo, err = ts.GetByAccess(token)
+
+	if err != nil {
+		return
+	}
+
+	if oauth2.HasTokenExpired(tokenInfo) {
+		return nil, nil, nil
+	}
+
+	db, err := database.GetConnection()
+	if err != nil {
+		return
+	}
+
+	client = &models.ClientInfo{
+		ClientID: tokenInfo.GetClientID(),
+	}
+	err = db.Set("gorm:auto_preload", true).Where(client).First(client).Error
+	if err != nil {
+		return
+	}
+
+	return tokenInfo, client, err
+}
+
+func (oauth2 *oauthService) UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return
+	}
+
+	model := &models.TokenInfo{}
+	res := db.Model(model).Where(model).Update("access_create_at", time.Now())
+	return res.Error
 }

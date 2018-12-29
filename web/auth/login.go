@@ -6,13 +6,5 @@ import (
 )
 
 func Login(c *gin.Context) {
-	c.HTML(http.StatusOK, "auth/login", gin.H{
-		"title": "Login",
-	})
-}
-
-func Logout(c *gin.Context) {
-	c.HTML(http.StatusOK, "auth/logout", gin.H{
-		"title": "Logout",
-	})
+	c.HTML(http.StatusOK, "auth/login", gin.H{})
 }
