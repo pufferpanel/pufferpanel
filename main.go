@@ -31,6 +31,7 @@ func main() {
 
 	if err != nil {
 		logging.Error("Error connecting to database", err)
+		return
 	}
 
 	defer database.Close()

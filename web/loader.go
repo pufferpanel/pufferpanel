@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
+	"github.com/pufferpanel/pufferpanel/web/server"
 	"path/filepath"
 	"strings"
 )
@@ -28,10 +29,11 @@ import (
 func RegisterRoutes(e *gin.Engine) {
 	e.HTMLRender = loadTemplates()
 
-	api.Register(e.Group("/api"))
 	e.Group("/assets").Static("", "assets/web")
-	oauth2.Register(e.Group("/oauth2"))
-	auth.Register(e.Group("/auth"))
+	api.RegisterRoutes(e.Group("/api"))
+	oauth2.RegisterRoutes(e.Group("/oauth2"))
+	auth.RegisterRoutes(e.Group("/auth"))
+	server.RegisterRoutes(e.Group("/server"))
 }
 
 func loadTemplates() multitemplate.Renderer {

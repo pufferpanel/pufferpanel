@@ -6,12 +6,11 @@
     <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <title>{{ block "title" . }} {{ .title }} {{ end }}</title>
+    <title>{{ block "title" . }} {{ with .title }} {{ else }} PufferPanel {{ end }} {{ end }}</title>
 </head>
 
 <body>
 {{ block "body" . }}
 {{ end }}
-    <p>BASE</p>
 </body>
 </html>
