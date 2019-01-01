@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func AuthMiddleware (c *gin.Context) {
+func AuthMiddleware(c *gin.Context) {
 
 	cookie, err := c.Cookie("puffer_auth")
 
@@ -42,7 +42,21 @@ func AuthMiddleware (c *gin.Context) {
 		return
 	}
 
-	err = srv.UpdateExpirationTime(info, 60 * time.Minute)
+	//does this token have a login scope
+	valid := false
+	for _, v := range client.ServerScopes {
+		if v.ServerId == nil && v.Scope == "login" {
+			valid = true
+		}
+	}
+
+	if !valid {
+		c.Redirect(302, "/auth/login")
+		c.Abort()
+		return
+	}
+
+	err = srv.UpdateExpirationTime(info, 60*time.Minute)
 	if err != nil {
 		logging.Error("error extending session", err)
 		c.Redirect(500, "/error/500")
