@@ -1,0 +1,54 @@
+.theme--light.application {
+  background: $body-color;
+}
+
+a {
+  text-transform: none;
+  text-decoration: none;
+}
+
+html {
+  font-size: $font-size-general + 2!important;
+}
+
+.category {
+  font-size: $font-size-general;
+}
+
+.theme--light.v-icon {
+  color: $gray-light;
+}
+
+blockquote {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 40px;
+  margin-inline-end: 40px;
+
+  p {
+    font-style: italic;
+    color: $blockquote-color;
+    font-weight: $font-weight-bolder;
+  }
+
+  small {
+    font-size: 70%;
+  }
+}
+
+b,
+strong {
+  font-size: $font-size-small;
+  font-weight: $font-weight-bolder;
+}
+
+.v-list--three-line .v-list__tile {
+  height: auto;
+}
+
+@include drawer-active-colors('primary', $brand-primary);
+@include drawer-active-colors('success', $brand-success);
+@include drawer-active-colors('danger', $brand-danger);
+@include drawer-active-colors('info', $brand-info);
+@include drawer-active-colors('warning', $brand-warning);

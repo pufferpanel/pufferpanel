@@ -1,0 +1,32 @@
+.theme--light.v-table tbody tr:not(:last-child),
+.theme--light.v-table thead tr:first-child {
+  border-bottom: 1px solid $table-border-color!important;
+}
+
+table.v-table thead tr {
+  height: $table-head-height;
+}
+
+.theme--light.v-table tbody tr:hover:not(.v-datatable__expand-row) {
+  background: $table-hover-color !important;
+}
+
+table.v-table tbody td {
+  font-size: $font-size-general;
+  font-weight: $font-weight-lighter;
+}
+
+table.v-table tbody td:first-child, table.v-table tbody td:not(:first-child),
+table.v-table tbody th:first-child, table.v-table tbody th:not(:first-child),
+table.v-table thead td:first-child, table.v-table thead td:not(:first-child),
+table.v-table thead th:first-child, table.v-table thead th:not(:first-child) {
+  padding: $padding-small + 2 $tabs-text-box-padding;
+}
+
+.v-datatable__progress {
+  display: none;
+}
+
+table thead tr th span{
+  font-size: 1.0625rem !important;
+}

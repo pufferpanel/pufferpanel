@@ -1,0 +1,167 @@
+// Importing All Material Design Colors
+@import "./colors";
+
+//  Brand Colors
+$brand-primary:                    $purple !default;
+$brand-success:                    $green !default;
+$brand-danger:                     $red !default;
+$brand-warning:                    $orange !default;
+$brand-info:                       $cyan !default;
+
+// Paddings
+$padding-logo:                      15px !default;
+$padding-avatar-title:              5px  !default;
+$padding-x-footer:                  24px !default;
+
+// Line Height
+$line-height:                       30px !default;
+$line-height-base:                  1.5em !default;
+$line-height-footer-items:          1.8 !default;
+$line-height-higher:                22px !default;
+$line-height-high:                  56px !default;
+
+// Sidebar List Items Icons
+$icon-width:                        $line-height;
+
+// Sidebar List Items
+$padding-small:                     10px !default;
+$padding-general:                   15px !default;
+$margin-general:                    $padding-general;
+$margin-small:                      $padding-small;
+$font-size-general:                 14px !default;
+$list-item-hover:                   rgba(200, 200, 200, .2) !default;
+$list-item-icon-opacity:            .8 !default;
+$list-item-height:                  48px !default;
+$badge-border:                      1px solid $white !default;
+$badge-dimension:                   20px !default;
+
+// Border Radius
+$border-radius-base:                3px !default;
+
+// Sidebar Avatar Margins
+$margin-list-right:                 11px !default;
+$margin-list-left:                  25px !default;
+
+// Sidebar Divider
+$divider-width:                     calc(100% - 30px) !default;
+$divider-margins:                   -1px !default;
+$divider-border:                    1px solid #eee;
+
+// Sidebar Background
+$sidebar-bg:                        rgba(27, 27, 27, .74) !default;
+
+// Font size
+$font-size-mini:                    9px !default;
+$font-size-small:                   12px !default;
+$font-size-default:                 14px !default;
+$font-size-avatar-title:            18px !default;
+$font-size-alert-icon:              30px !default;
+$font-size-big:                     36px !default;
+$font-size-small-tag:               65% !default;
+$font-size-toolbar-title:           $font-size-avatar-title;
+$font-size-toolbar-items:           20px !default;
+$font-size-h1:                      3.3125rem;
+$font-size-h2:                      2.25rem !default;
+$font-size-h3:                      1.5625rem;
+$font-size-h4:                      1.125rem !default;
+$font-size-h5:                      1.0625rem !default;
+$font-size-h6:                      0.75rem !default;
+$font-paragraph:                    $font-size-default !default;
+$font-size-chart-label:             .730rem !default;
+
+// Font Weight
+$font-weight-lighter:               300 !default;
+$font-weight-base:                  400 !default;
+$font-weight-bolder:                500 !default;
+
+// Opacity Colors
+$black-opacity-3:                   rgba(180, 180, 180, .3) !default;
+
+// Image from Avatar
+$top-dim:                           1px !default;
+
+// Shadows
+$mdb-shadow-key-umbra-opacity:      .2  !default;
+$mdb-shadow-key-penumbra-opacity:   .14 !default;
+$mdb-shadow-ambient-shadow-opacity: .12 !default;
+
+//  Toolbar Height
+$toolbar-min-height:                70px !default;
+
+// Toolbar Margin
+$toolbar-margin-left:               260px !default;
+
+//  Body Background Color
+$body-color:                        #eee !default;
+
+// Black Color
+$black-color:                       #495057 !default;
+$blockquote-color:                  rgba(0, 0, 0, .87) !default;
+
+// Gray Color
+$gray-light:                        #999 !default;
+$gray:                              lighten(#000, 33.5%) !default;
+
+// Inputs Color
+$input-color:                       #d2d2d2 !default;
+$label-color:                       #aaa !default;
+
+//  Footer Border
+$footer-border-color:               #e7e7e7 !default;
+$footer-border-top:                 1px solid $footer-border-color !default;
+
+// Cards
+$card-shadow:                       0 1px 4px 0 rgba(0,0,0,0.14) !default;
+$card-margin:                       25px !default;
+$card-content-x-padding:            20px !default;
+$card-actions-y-margin:             $card-content-x-padding;
+$card-title-margin:                 5px !default;
+$card-offset:                       -20px !default;
+$card-chart-min-height:             160px !default;
+$card-stats-offset:                 85px !default;
+$card-stats-icons-dim:              56px !default;
+$card-profile-avatar-pos:           -50px !default;
+
+// Typography
+$font-family-sans-serif:            'Roboto', 'Helvetica', 'Arial', sans-serif !default;
+$font-family-serif:                 'Roboto Slab', 'Times New Roman', serif !default;
+
+// Tooltips
+$tooltip-min-width:                 130px !default;
+$tooltip-max-width:                 200px !default;
+$tooltip-border:                    5px !default;
+$tooltip-top-border-pos:            16px !default;
+$tooltip-arrow-align:               .255em !default;
+
+//  Buttons
+$btn-icon-dim:                      41px !default;
+$btn-y-large-padding:               1.125rem !default;
+$btn-x-large-padding:               2.25rem !default;
+$btn-large-line-height:             1.333333 !default;
+$btn-y-small-padding:               .40625rem !default;
+$btn-x-small-padding:               1.25rem !default;
+$btn-round-padding:                 30px !default;
+$btn-font-size-icon:                1.25rem !default;
+$btn-margin-icon:                   7px !default;
+$btn-fixed-icon-size:               1.8rem !default;
+$btn-fixed-width:                   64px !default;
+
+// Tabs
+$tabs-active-line:                  rgba(255, 255, 255, .3) !default;
+$tabs-text-box-padding:             8px !default;
+
+// Table
+$table-hover-color:                 #f5f5f5 !default;
+$table-border-color:                rgba(0,0,0,.06) !default;
+$table-head-height:                 32px !default;
+
+// Social Buttons
+$social-facebook: 			            #3b5998 !default;
+$social-twitter: 			              #55acee !default;
+
+// Dropdown
+$font-size-dropdown:                .8125rem !default;
+$border-radius-dropdown:            10px !default;
+
+// Box-shadow
+$box-shadow-general:                0 2px 5px 0 rgba($black, .26);

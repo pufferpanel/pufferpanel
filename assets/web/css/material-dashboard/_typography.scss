@@ -1,0 +1,76 @@
+body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4 {
+  font-family: $font-family-sans-serif !important;
+  font-weight: $font-weight-lighter !important;
+  line-height: $line-height-base !important;
+}
+
+h1,h2,h3,.h1,.h2,.h3{
+    margin-top: $margin-general + 5;
+    margin-bottom: $margin-small;
+}
+
+h4,h5,h6,.h4,.h5,.h6{
+    margin-top: $margin-small;
+    margin-bottom: $margin-small;
+}
+
+h1, .h1 {
+    font-size: $font-size-h1 !important;
+    line-height: 1.15em !important;
+}
+h2, .h2{
+    font-size: $font-size-h2 !important;
+    line-height: $line-height-base !important;
+}
+h3, .h3{
+    font-size: $font-size-h3 !important;
+    line-height: 1.4em !important;
+}
+h4, .h4{
+    font-size: $font-size-h4 !important;
+    line-height: $line-height-base !important;
+}
+h5, .h5 {
+    font-size: $font-size-h5 !important;
+    line-height: 1.55em !important;
+    margin-bottom: $margin-general;
+}
+h6, .h6{
+    font-size: $font-size-h6 !important;
+    text-transform: uppercase;
+    font-weight: $font-weight-bolder;
+}
+
+p{
+    font-size: $font-paragraph !important;
+    margin: 0 0 $margin-small;
+}
+
+h2.title{
+    margin-bottom: $margin-general * 2;
+}
+
+.description,
+.card-description,
+.footer-big p{
+    color: $gray-light;
+}
+
+.text-warning {
+  color: $brand-warning !important;
+}
+.text-primary {
+  color: $brand-primary !important;
+}
+.text-danger {
+  color: $brand-danger !important;
+}
+.text-success {
+  color: $brand-success !important;
+}
+.text-info {
+  color: $brand-info !important;
+}
+.text-gray{
+    color: $gray-light !important;
+}
