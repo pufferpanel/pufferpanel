@@ -1,0 +1,76 @@
+.v-toolbar {
+  min-height: $toolbar-min-height;
+  border-radius: $border-radius-base;
+  margin-bottom: $margin-general;
+
+  &:not(.v-toolbar--fixed) .v-toolbar__content {
+    margin-left: $toolbar-margin-left;
+  }
+
+  @include toolbar-colors('bg-danger', $brand-danger);
+  @include toolbar-colors('bg-warning', $brand-warning);
+  @include toolbar-colors('bg-primary', $brand-primary);
+  @include toolbar-colors('bg-info', $brand-info);
+  @include toolbar-colors('bg-success', $brand-success);
+  @include toolbar-colors('bg-default', $gray-light);
+
+  &[class*="bg-"] {
+    .v-toolbar__title,
+    .v-btn__content,
+    .v-ripple__container {
+      color: $white !important;
+    }
+  }
+
+  .v-toolbar__content {
+    min-height: $toolbar-min-height;
+    padding-bottom: $padding-small;
+    padding-top: $padding-small;
+
+    .v-toolbar__title {
+      font-size: $font-size-toolbar-title;
+      letter-spacing: unset;
+      color: $black-color;
+    }
+
+    .v-toolbar__items {
+      & > div {
+        padding: 0 !important;
+      }
+
+      .toolbar-items{
+        align-items: center;
+        border-radius: $border-radius-base;
+        display: flex;
+        min-height: $list-item-height;
+        padding: $padding-small $padding-general;
+
+        .v-badge__badge {
+          border: $badge-border !important;
+          font-size: $font-size-mini;
+          height: $badge-dimension;
+          line-height: normal;
+          right: -7px;
+          top: -12px;
+          width: $badge-dimension;
+          font-weight: $font-weight-base;
+        }
+
+        .v-icon {
+          font-size: $font-size-toolbar-items;
+        }
+      }
+
+      .v-input {
+        margin: 0 !important;
+        padding: 0;
+      }
+    }
+  }
+}
+
+@media all and (max-width: 990px) {
+  .v-toolbar:not(.v-toolbar--fixed) .v-toolbar__content {
+    margin-left: 0;
+  }
+}

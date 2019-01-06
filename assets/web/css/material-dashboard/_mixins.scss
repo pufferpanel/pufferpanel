@@ -1,0 +1,162 @@
+@mixin shadow-big(){
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, $mdb-shadow-key-penumbra-opacity * 3),
+              0  4px 25px 0px rgba(0, 0, 0, $mdb-shadow-ambient-shadow-opacity),
+              0  8px 10px -5px rgba(0, 0, 0, $mdb-shadow-key-umbra-opacity);
+}
+
+@mixin shadow-2dp-color($color){
+  box-shadow: 0 2px 2px 0 rgba($color, $mdb-shadow-key-penumbra-opacity),
+  0 3px 1px -2px rgba($color, $mdb-shadow-key-umbra-opacity),
+  0 1px 5px 0 rgba($color, $mdb-shadow-ambient-shadow-opacity) !important;
+}
+
+@mixin button-shadow-color($color){
+    box-shadow: 0 14px 26px -12px rgba($color, $mdb-shadow-key-penumbra-opacity * 3),
+    0  4px 23px 0px rgba(0,0,0, $mdb-shadow-ambient-shadow-opacity),
+    0  8px 10px -5px rgba($color, $mdb-shadow-key-umbra-opacity) !important;
+}
+
+@mixin shadow-8dp(){
+  box-shadow: 0 8px 10px 1px rgba(0, 0, 0, $mdb-shadow-key-penumbra-opacity),
+  0 3px 14px 2px rgba(0, 0, 0, $mdb-shadow-ambient-shadow-opacity),
+  0 5px 5px -3px rgba(0, 0, 0, $mdb-shadow-key-umbra-opacity);
+}
+
+@mixin shadow-big-color($color){
+  box-shadow: 0 12px 20px -10px rgba($color, $mdb-shadow-key-penumbra-opacity * 2),
+              0  4px 20px 0px rgba(0,0,0, $mdb-shadow-ambient-shadow-opacity),
+              0  7px 8px -5px rgba($color, $mdb-shadow-key-umbra-opacity) !important;
+}
+
+@mixin material-placeholder() {
+  &::-moz-placeholder {@content; } // Firefox
+  &:-ms-input-placeholder {@content; } // Internet Explorer 10+
+  &::-webkit-input-placeholder  {@content; } // Safari and Chrome
+}
+
+@mixin inputs-color($color, $color-name) {
+  .v-text-field.#{$color-name}-input > .v-input__control > .v-input__slot:after {
+    border-color: $color;
+  }
+}
+
+@mixin drawer-active-colors($color-name, $color) {
+  .v-navigation-drawer .v-list .v-list-item .v-list__tile.v-list__tile--active.#{$color-name} {
+    background-color: $color !important;
+    @include shadow-big-color($color);
+  }
+}
+
+@mixin toolbar-colors($color-name, $color) {
+  &.#{$color-name} {
+    background-color: $color !important;
+    @include shadow-big-color($color);
+  }
+}
+
+@mixin fixed-plugin-colors($color-name, $color) {
+  &.color-#{$color-name}{
+    background-color: $color;
+  }
+}
+
+@mixin notifications-color($color-name, $color) {
+  .v-snack__wrapper.#{$color-name} {
+    background-color: $color !important;
+    border-color: $color !important
+  }
+}
+
+@mixin card-header-color($color, $shadow-color, $color-400, $color-600) {
+  .v-card.#{$color} {
+    background: linear-gradient(60deg, $color-400, $color-600) !important;
+    @include shadow-big-color($shadow-color);
+  }
+}
+
+@mixin alert-shadow($color-name, $shadow-color) {
+  &.#{$color-name} {
+    @include shadow-big-color($shadow-color);
+  }
+}
+
+@mixin transition-except-props($property...){
+    transition: all $property;
+}
+
+@mixin dropdown-menu-color($color) {
+  background-color: $color !important;
+  @include button-shadow-color($color);
+}
+
+@mixin button-color($color) {
+  background-color: $color !important;
+  @include shadow-2dp-color($color);
+
+  &:focus,
+  &:active,
+  &:hover{
+    // remove this line if you want black shadows
+    @include button-shadow-color($color);
+    background-color: darken($color, 3%) !important;
+  }
+
+  &.v-btn--simple{
+      &,
+      &:hover,
+      &:focus,
+      &:active,
+      &.active,
+      &:active:focus,
+      &:active:hover,
+      &.active:focus,
+      &.active:hover{
+        background-color: transparent !important;
+        color: $color !important;
+        box-shadow: none !important;
+
+        i{
+          color: $color !important;
+        }
+      }
+  }
+}
+
+@mixin social-buttons-color ($color){
+    background-color: $color !important;
+    color: $white;
+    @include shadow-2dp-color($color);
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active,
+    &:active:focus,
+    &:active:hover,
+    &.active:focus,
+    &.active:hover{
+        background-color: $color !important;
+        color: $white;
+        @include button-shadow-color($color);
+    }
+
+    &.v-btn--simple{
+      &,
+      &:hover,
+      &:focus,
+      &:active,
+      &.active,
+      &:active:focus,
+      &:active:hover,
+      &.active:focus,
+      &.active:hover{
+        color: $color !important;
+        background-color: transparent;
+        box-shadow: none;
+
+        i{
+          color: $color !important;
+        }
+      }
+    }
+}

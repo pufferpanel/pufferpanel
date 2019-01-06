@@ -1,0 +1,34 @@
+.theme--light.v-text-field .v-input__slot:before {
+  border-color: $input-color !important;
+}
+
+.input--is-focused .v-input__control .v-input__slot:after{
+  border-color: red !important;
+}
+
+.v-text-field__slot {
+  input {
+    @include material-placeholder{
+      color: $input-color;
+    };
+  }
+
+  .v-label {
+    color: $label-color !important;
+    font-size: $font-size-default;
+    font-weight: $font-weight-base;
+  }
+}
+
+.theme--light.v-input:not(.v-input--is-disabled) input,
+.theme--light.v-input:not(.v-input--is-disabled) textarea {
+  color: $black-color;
+  font-size: $font-size-default;
+}
+
+@include inputs-color($brand-primary, 'purple');
+@include inputs-color($brand-warning, 'orange');
+@include inputs-color($brand-info, 'info');
+@include inputs-color($brand-danger, 'danger');
+@include inputs-color($brand-success, 'success');
+@include inputs-color($brand-success, 'primary');
