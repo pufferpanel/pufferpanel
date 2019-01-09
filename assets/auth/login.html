@@ -1,0 +1,40 @@
+{{ define "content" }}
+
+    {{ block "sidebar" . }} {{`""`}} {{ end }}
+
+    {{ block "footer" . }} {{`""`}} {{ end }}
+
+    {{ block "title" . }} Login {{ end }}
+
+    {{ block "body" . }}
+        <v-layout align-center justify-center>
+            <v-flex xs12 sm8 md4>
+                <material-card color="green" title="Login" text="asdf" >
+                    <v-container>
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
+                            <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
+                        </v-form>
+                    </v-card-text>
+                    </v-container>
+                    <v-container>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary">Login</v-btn>
+                    </v-card-actions>
+                    </v-container>
+                </material-card>
+            </v-flex>
+        </v-layout>
+    {{ end }}
+
+    {{ block "styles" . }}
+        <style>
+            .v-toolbar__content {
+                margin-left: 0;
+            }
+        </style>
+    {{ end }}
+
+{{ end }}
