@@ -21,6 +21,7 @@
 
 <div id="app">
     <v-app>
+        {{ block "sidebar" . }}
         <v-navigation-drawer id="app-drawer" app dark floating persistent mobile-break-point="991"
                              width="260">
             <v-layout class="fill-height" tag="v-list" column>
@@ -36,8 +37,8 @@
                     <v-list-tile-title v-text="link.text" />
                 </v-list-tile>
             </v-layout>
-
         </v-navigation-drawer>
+        {{ end }}
 
         <v-content>
             <div id="core-view">
@@ -97,6 +98,9 @@
         z-index: 0;
     }
 </style>
+
+{{ block "styles" . }}
+{{ end }}
 
 </body>
 </html>

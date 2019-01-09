@@ -1,9 +1,11 @@
 {{ define "content" }}
 
+    {{ /* this is needed to remove the sidebar completely */}}
+    {{ block "sidebar" . }} {{`""`}} {{ end }}
+
     {{ block "title" . }} Login {{ end }}
 
     {{ block "body" . }}
-
     {{ end }}
 
 {{ end }}
