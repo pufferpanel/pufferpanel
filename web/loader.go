@@ -34,6 +34,10 @@ func RegisterRoutes(e *gin.Engine) {
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
 	server.RegisterRoutes(e.Group("/server"))
+
+	e.Handle("GET", "/", func (c *gin.Context) {
+		c.Redirect(302, "/server")
+	})
 }
 
 func loadTemplates() multitemplate.Renderer {
