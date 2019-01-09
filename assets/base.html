@@ -47,13 +47,15 @@
                     {{ end }}
                 </v-fade-transition>
             </div>
-            <v-footer id="core-footer" absolute height="82">
-                <div class="footer-items">
-            <span v-for="link in footerlinks" :key="link.name">
-                <a :href="link.Link" class="tertiary--text footer-links">${ link.name }</a>
-            </span>
-                </div>
-            </v-footer>
+            {{ block "footer" . }}
+                <v-footer id="core-footer" absolute height="82">
+                    <div class="footer-items">
+                        <span v-for="link in footerlinks" :key="link.name">
+                            <a :href="link.Link" class="tertiary--text footer-links">${ link.name }</a>
+                        </span>
+                    </div>
+                </v-footer>
+            {{ end }}
         </v-content>
     </v-app>
 </div>
@@ -89,6 +91,10 @@
         el: "#app"
     });
 </script>
+
+<!--<script src="/assets/js/material.js"></script>-->
+<script src="/assets/js/helper-offset.js"></script>
+<script src="/assets/js/material-card.js"></script>
 
 {{ block "scripts" .}}
 {{ end }}

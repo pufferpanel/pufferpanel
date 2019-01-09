@@ -29,7 +29,7 @@ import (
 func RegisterRoutes(e *gin.Engine) {
 	e.HTMLRender = loadTemplates()
 
-	e.Group("/assets").Static("", "assets/web")
+	e.Group("/assets").Static("", "assets/")
 	api.RegisterRoutes(e.Group("/api"))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
@@ -43,7 +43,7 @@ func RegisterRoutes(e *gin.Engine) {
 func loadTemplates() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
 
-	prefix := "assets/web/"
+	prefix := "assets/"
 
 	layouts, err := filepath.Glob(prefix + "base.html")
 	if err != nil {
