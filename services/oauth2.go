@@ -7,12 +7,14 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
+	"github.com/satori/go.uuid"
 	oauth "gopkg.in/oauth2.v3"
 	oauthErrors "gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -21,7 +23,7 @@ type OAuthService interface {
 
 	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
 
-	Create(user *models.User, server *models.Server, clientId string) (clientSecret string, existing bool, err error)
+	Create(user *models.User, server *models.Server, clientId string, scopes ...string) (clientSecret string, err error)
 
 	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error)
 
@@ -40,6 +42,8 @@ type OAuthService interface {
 	GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error)
 
 	UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error)
+
+	CreateSession(user *models.User) (sessionToken string, err error)
 }
 
 type oauthService struct {
@@ -100,7 +104,40 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	return
 }
 
-func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string) (clientSecret string, existing bool, err error) {
+func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string, scopes ...string) (clientSecret string, err error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return
+	}
+
+	clientSecret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
+
+	ci := &models.ClientInfo{
+		ClientID: clientId,
+		UserID: user.ID,
+		Secret: clientSecret,
+	}
+
+	res := db.Create(ci)
+
+	if res.Error != nil {
+		return "", res.Error
+	}
+
+	for _, s := range scopes {
+		scopeInfo := &models.ClientServerScopes{
+			ClientInfoID: ci.ID,
+			Scope: s,
+		}
+		if server != nil {
+			scopeInfo.ServerId = &server.ID
+		}
+		err = db.Create(scopeInfo).Error
+		if err != nil {
+			return "", err
+		}
+	}
+
 	return
 }
 
@@ -285,4 +322,38 @@ func (oauth2 *oauthService) UpdateExpirationTime(tokenInfo oauth.TokenInfo, dura
 
 	res := db.Set("gorm:association_save_reference", false).Model(tokenInfo).Update("access_create_at", time.Now())
 	return res.Error
+}
+
+func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken string, err error) {
+	db, err := database.GetConnection()
+
+	if err != nil {
+		return
+	}
+
+	ci, _, err := oauth2.GetByUser(user)
+
+	if err != nil {
+		return
+	}
+	if ci == nil || ci.ID == 0 {
+		err = errors.New("no such user")
+		return
+	}
+
+	sessionToken = strings.Replace(uuid.NewV4().String(), "-", "", -1)
+
+	ti := &models.TokenInfo{
+		ClientInfoID: ci.ID,
+		AccessCreateAt: time.Now(),
+		AccessExpiresIn: 1 * time.Hour,
+		Access: sessionToken,
+	}
+
+	err = db.Create(ti).Error
+
+	if err != nil {
+		sessionToken = ""
+	}
+	return
 }

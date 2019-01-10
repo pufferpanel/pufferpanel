@@ -13,8 +13,8 @@
                     <v-container>
                     <v-card-text>
                         <v-form>
-                            <v-text-field prepend-icon="person" name="email" label="Email" type="text"></v-text-field>
-                            <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
+                            <v-text-field v-model.trim="email" prepend-icon="person" name="email" label="Email" type="text"></v-text-field>
+                            <v-text-field v-model="password" id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
                         </v-form>
                     </v-card-text>
                     </v-container>
@@ -38,33 +38,33 @@
     {{ end }}
 
     {{ block "scripts" . }}
-
         <script type="application/javascript" src="/assets/js/helper-offset.js"></script>
         <script type="application/javascript" src="/assets/js/material-card.js"></script>
+        <script type="application/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
         <script>
             mixin = {
                 methods: {
                     submit: function() {
-                        this.loginDisabled = true;
+                        //this.loginDisabled = true;
+
+                        axios.post('/auth/login', {
+                            data: {
+                                email: this.email,
+                                password: this.password
+                            }
+                        });
                     }
                 },
                 data: function() {
                     return {
-                        username: {
-                            type: String,
-                            default: undefined
-                        },
-                        password: {
-                            type: String,
-                            default: undefined
-                        },
+                        email: "",
+                        password: "",
                         loginDisabled: false
                     }
                 }
             };
         </script>
-
     {{ end }}
 
 {{ end }}
