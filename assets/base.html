@@ -101,14 +101,12 @@
     });
 </script>
 
-<script>
-    window.addEventListener("load", function(){
-        app.$mount("#app")
-    });
-</script>
-
 {{ block "styles" . }}
 {{ end }}
+
+<script>
+    app.$mount("#app")
+</script>
 
 </body>
 </html>
