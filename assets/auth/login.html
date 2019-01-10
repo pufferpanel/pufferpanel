@@ -9,11 +9,11 @@
     {{ block "body" . }}
         <v-layout align-center justify-center>
             <v-flex xs12 sm8 md4>
-                <material-card color="green" title="Login" text="asdf" >
+                <material-card color="blue" title="Login" >
                     <v-container>
                     <v-card-text>
                         <v-form>
-                            <v-text-field prepend-icon="person" name="login" label="Login" type="text"></v-text-field>
+                            <v-text-field prepend-icon="person" name="email" label="Email" type="text"></v-text-field>
                             <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
                         </v-form>
                     </v-card-text>
@@ -21,7 +21,7 @@
                     <v-container>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary">Login</v-btn>
+                        <v-btn color="blue">Login</v-btn>
                     </v-card-actions>
                     </v-container>
                 </material-card>

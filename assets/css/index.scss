@@ -15,3 +15,20 @@
 @import "material-dashboard/alerts";
 @import "material-dashboard/fixed-plugin";
 @import "material-dashboard/dropdown";
+
+.v-card--material {
+  &__header {
+    &.v-card {
+      border-radius: 4px;
+    }
+  }
+}
+
+.v-offset {
+  margin: 0 auto;
+  max-width: calc(100% - 32px);
+  position: relative;
+}
+.v-offset--full-width {
+  max-width: 100%;
+}

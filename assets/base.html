@@ -18,6 +18,8 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
 <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+<script src="/assets/js/helper-offset.js"></script>
+<script src="/assets/js/material-card.js"></script>
 
 <div id="app">
     <v-app>
@@ -87,17 +89,18 @@
                 }
             ],
             responsive: false
-        },
-        el: "#app"
+        }
     });
 </script>
 
-<!--<script src="/assets/js/material.js"></script>-->
-<script src="/assets/js/helper-offset.js"></script>
-<script src="/assets/js/material-card.js"></script>
-
 {{ block "scripts" .}}
 {{ end }}
+
+<script>
+    window.addEventListener("load", function(){
+        app.$mount("#app")
+    });
+</script>
 
 <style>
     #core-footer {
