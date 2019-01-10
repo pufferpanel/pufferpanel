@@ -21,7 +21,7 @@
                     <v-container>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue">Login</v-btn>
+                        <v-btn :disabled="loginDisabled" color="blue" v-on:click="submit">Login</v-btn>
                     </v-card-actions>
                     </v-container>
                 </material-card>
@@ -35,6 +35,33 @@
                 margin-left: 0;
             }
         </style>
+    {{ end }}
+
+    {{ block "scripts" . }}
+
+        <script>
+            mixin = {
+                methods: {
+                    submit: function() {
+                        this.loginDisabled = true;
+                    }
+                },
+                data: function() {
+                    return {
+                        username: {
+                            type: String,
+                            default: undefined
+                        },
+                        password: {
+                            type: String,
+                            default: undefined
+                        },
+                        loginDisabled: false
+                    }
+                }
+            };
+        </script>
+
     {{ end }}
 
 {{ end }}

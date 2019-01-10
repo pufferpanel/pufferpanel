@@ -63,7 +63,15 @@
 </div>
 
 <script>
+    mixin = {}
+</script>
+
+{{ block "scripts" . }}
+{{ end }}
+
+<script>
     app = new Vue({
+        mixins: [mixin],
         delimiters: ['${', '}'],
         data: {
             footerlinks: [
@@ -93,20 +101,11 @@
     });
 </script>
 
-{{ block "scripts" .}}
-{{ end }}
-
 <script>
     window.addEventListener("load", function(){
         app.$mount("#app")
     });
 </script>
-
-<style>
-    #core-footer {
-        z-index: 0;
-    }
-</style>
 
 {{ block "styles" . }}
 {{ end }}
