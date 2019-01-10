@@ -5,6 +5,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
+	"golang.org/x/crypto/bcrypt"
+	"strconv"
 	"strings"
 )
 
@@ -22,6 +24,8 @@ type UserService interface {
 	ChangePassword(username string, newPass string) error
 
 	Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error)
+
+	Login(email string, password string) (sessionToken string, err error)
 }
 
 type userService struct {
@@ -51,6 +55,40 @@ func (us *userService) Get(username string) (*models.User, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
+func (us *userService) Login(email string, password string) (sessionToken string, err error) {
+	oauth2, err := GetOAuthService()
+
+	if err != nil {
+		return
+	}
+
+	model := &models.User{
+		Email: email,
+	}
+
+	err = us.db.Where(model).First(model).Error
+
+	if err != nil && !gorm.IsRecordNotFoundError(err) {
+		return
+	}
+
+	if model.ID == 0 || gorm.IsRecordNotFoundError(err) {
+		err = errors.New("invalid credentials")
+		return
+	}
+
+	providedPw := []byte(password)
+	correctPw := []byte(model.HashedPassword)
+
+	if bcrypt.CompareHashAndPassword(correctPw, providedPw) != nil {
+		err = errors.New("invalid credentials")
+		return
+	}
+
+	sessionToken, err = oauth2.CreateSession(model)
+	return
+}
+
 func (us *userService) GetByEmail(email string) (*models.User, bool, error) {
 	model := &models.User{
 		Email: email,
@@ -76,8 +114,26 @@ func (us *userService) Delete(username string) error {
 }
 
 func (us *userService) Create(user *models.User) error {
+	oauth, err  := GetOAuthService()
+
+	if err != nil {
+		return err
+	}
+
 	res := us.db.Create(user)
-	return res.Error
+	if res.Error != nil {
+		return res.Error
+	}
+
+	name := ".internal_" + strconv.Itoa(int(user.ID))
+
+	_, err = oauth.Create(user, nil, name, "login")
+
+	if err != nil {
+		us.db.Delete(user)
+	}
+
+	return err
 }
 
 func (us *userService) ChangePassword(username string, newPass string) error {
