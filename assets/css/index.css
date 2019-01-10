@@ -151,6 +151,23 @@ h2.title {
   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
+#app-drawer .v-list__tile {
+  border-radius: 4px;
+}
+#app-drawer .v-list__tile--buy {
+  margin-top: auto;
+  margin-bottom: 17px;
+}
+#app-drawer .v-image__image--contain {
+  top: 9px;
+  height: 60%;
+}
+#app-drawer .search-input {
+  margin-bottom: 30px !important;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 .v-toolbar {
   min-height: 70px;
   border-radius: 3px;
@@ -1019,6 +1036,20 @@ table thead tr th span {
 .dropdown-menu .v-list__tile:focus .v-list__tile__title, .dropdown-menu .v-list__tile:active,
 .dropdown-menu .v-list__tile:active .v-list__tile__title {
   color: #ffffff !important;
+}
+
+.v-card--material__header.v-card {
+  border-radius: 4px;
+}
+
+.v-offset {
+  margin: 0 auto;
+  max-width: calc(100% - 32px);
+  position: relative;
+}
+
+.v-offset--full-width {
+  max-width: 100%;
 }
 
 /*# sourceMappingURL=index.css.map */
