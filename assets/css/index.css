@@ -1052,4 +1052,13 @@ table thead tr th span {
   max-width: 100%;
 }
 
+#core-footer {
+  z-index: 0;
+}
+
+.v-alert--notification {
+  border-radius: 4px !important;
+  border-top: none !important;
+}
+
 /*# sourceMappingURL=index.css.map */
