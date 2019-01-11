@@ -114,7 +114,7 @@ func (us *userService) Delete(username string) error {
 }
 
 func (us *userService) Create(user *models.User) error {
-	oauth, err  := GetOAuthService()
+	oauth, err := GetOAuthService()
 
 	if err != nil {
 		return err
@@ -127,7 +127,7 @@ func (us *userService) Create(user *models.User) error {
 
 	name := ".internal_" + strconv.Itoa(int(user.ID))
 
-	_, err = oauth.Create(user, nil, name, "login")
+	_, err = oauth.Create(user, nil, name, true, "login")
 
 	if err != nil {
 		us.db.Delete(user)

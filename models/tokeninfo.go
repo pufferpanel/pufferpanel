@@ -17,7 +17,7 @@ type TokenInfo struct {
 	//Code             string
 	//CodeCreateAt     time.Time
 	//CodeExpiresIn    time.Duration
-	Access          string        `json:"-"`
+	Access          string        `gorm:"UNIQUE_INDEX" json:"-"`
 	AccessCreateAt  time.Time     `json:"-"`
 	AccessExpiresIn time.Duration `json:"-"`
 	//Refresh          string
