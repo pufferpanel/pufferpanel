@@ -30,14 +30,6 @@
         </v-layout>
     {{ end }}
 
-    {{ block "styles" . }}
-        <style>
-            .v-toolbar__content {
-                margin-left: 0;
-            }
-        </style>
-    {{ end }}
-
     {{ block "scripts" . }}
         <script type="application/javascript" src="/assets/js/helper-offset.js"></script>
         <script type="application/javascript" src="/assets/js/material-card.js"></script>
@@ -69,7 +61,14 @@
                                 password: this.password
                             }
                         }).then(function (response) {
-                            data.loginDisabled = false;
+                            let responseData = response.data;
+                            if (responseData.success) {
+                                Cookies.set("puffer_auth", responseData.data);
+                                window.location.href = "/server";
+                            } else {
+                                data.error = responseData.msg;
+                                data.loginDisabled = false;
+                            }
                         }).catch(function (error) {
                             let msg = error.response.data.msg;
                             if (!msg) {
