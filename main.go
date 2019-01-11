@@ -17,7 +17,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web"
+	"os"
 )
 
 const Hash = "none"
@@ -36,6 +39,62 @@ func main() {
 
 	defer database.Close()
 
+	args := os.Args[1:]
+
+	run := false
+
+	if len(args) > 0 {
+		counter := 0
+		for counter < len(args) {
+			arg := args[counter]
+			switch arg {
+			case "--addUser":
+				{
+					if counter+3 >= len(args) {
+						logging.Errorf("not enough arguments to create user")
+						return
+					}
+					username := args[counter+1]
+					email := args[counter+2]
+					password := args[counter+3]
+					counter += 3
+
+					us, err := services.GetUserService()
+					if err != nil {
+						logging.Error("could not load user service", err)
+						return
+					}
+					user := &models.User{Email: email, Username: username}
+					err = user.SetPassword(password)
+
+					if err != nil {
+						logging.Error("could not create user", err)
+						return
+					}
+
+					err = us.Create(user)
+					if err != nil {
+						logging.Error("could not create user", err)
+						return
+					}
+				}
+			case "--run", "-r":
+				{
+					run = true
+				}
+			default:
+				{
+					logging.Warnf("unknown argument: %s", arg)
+				}
+			}
+			counter++
+		}
+	}
+
+	if !run {
+		return
+	}
+
 	r := gin.Default()
 	web.RegisterRoutes(r)
 
@@ -43,4 +102,8 @@ func main() {
 	if err != nil {
 		logging.Error("Error running web service", err)
 	}
+}
+
+func createUser(username, email, password string) {
+
 }
