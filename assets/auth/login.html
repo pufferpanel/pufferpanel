@@ -17,6 +17,7 @@
                             <v-text-field v-model="password" id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
                         </v-form>
                     </v-card-text>
+                        <material-notification v-if="error" v-text="error" color="error"></material-notification>
                     </v-container>
                     <v-container>
                     <v-card-actions>
@@ -40,19 +41,42 @@
     {{ block "scripts" . }}
         <script type="application/javascript" src="/assets/js/helper-offset.js"></script>
         <script type="application/javascript" src="/assets/js/material-card.js"></script>
+        <script type="application/javascript" src="/assets/js/material-notification.js"></script>
         <script type="application/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
         <script>
             mixin = {
                 methods: {
                     submit: function() {
-                        //this.loginDisabled = true;
+                        let data = this;
+                        data.error = "";
+
+                        if (!data.email) {
+                            data.error = "Email required";
+                            return;
+                        }
+
+                        if (!data.password) {
+                            data.error = "Password required";
+                            return;
+                        }
+
+                        this.loginDisabled = true;
 
                         axios.post('/auth/login', {
                             data: {
                                 email: this.email,
                                 password: this.password
                             }
+                        }).then(function (response) {
+                            data.loginDisabled = false;
+                        }).catch(function (error) {
+                            let msg = error.response.data.msg;
+                            if (!msg) {
+                                msg = error;
+                            }
+                            data.error = msg;
+                            data.loginDisabled = false;
                         });
                     }
                 },
@@ -60,7 +84,8 @@
                     return {
                         email: "",
                         password: "",
-                        loginDisabled: false
+                        loginDisabled: false,
+                        error: ""
                     }
                 }
             };
