@@ -23,7 +23,7 @@ type OAuthService interface {
 
 	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
 
-	Create(user *models.User, server *models.Server, clientId string, scopes ...string) (clientSecret string, err error)
+	Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error)
 
 	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error)
 
@@ -104,7 +104,7 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	return
 }
 
-func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string, scopes ...string) (clientSecret string, err error) {
+func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error) {
 	db, err := database.GetConnection()
 	if err != nil {
 		return
@@ -116,6 +116,7 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 		ClientID: clientId,
 		UserID: user.ID,
 		Secret: clientSecret,
+		Panel: panel,
 	}
 
 	res := db.Create(ci)
@@ -228,7 +229,7 @@ func (oauth2 *oauthService) GetByClientId(clientId string) (client *models.Clien
 
 	model := &models.ClientInfo{ClientID: clientId}
 
-	res := db.Where(model).First(model)
+	res := db.Set("gorm:auto_preload", true).Where(model).First(model)
 
 	return model, model.ID != 0, res.Error
 }
@@ -239,9 +240,9 @@ func (oauth2 *oauthService) GetByUser(user *models.User) (client *models.ClientI
 		return nil, false, err
 	}
 
-	model := &models.ClientInfo{UserID: user.ID}
+	model := &models.ClientInfo{UserID: user.ID, Panel: true}
 
-	res := db.Where(model).First(model)
+	res := db.Set("gorm:auto_preload", true).Where(model).First(model)
 
 	return model, model.ID != 0, res.Error
 }
@@ -338,6 +339,19 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken strin
 	}
 	if ci == nil || ci.ID == 0 {
 		err = errors.New("no such user")
+		return
+	}
+
+	valid := false
+	for _, v := range ci.ServerScopes {
+		if v.ServerId == nil && v.Scope == "login" {
+			valid = true
+			break
+		}
+	}
+
+	if !valid {
+		err = errors.New("login not permitted")
 		return
 	}
 
