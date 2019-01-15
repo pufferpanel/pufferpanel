@@ -95,6 +95,8 @@ func main() {
 		return
 	}
 
+	services.LoadEmailService()
+
 	r := gin.Default()
 	web.RegisterRoutes(r)
 

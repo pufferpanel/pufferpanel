@@ -22,6 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
 	"github.com/pufferpanel/pufferpanel/web/server"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -43,7 +44,7 @@ func RegisterRoutes(e *gin.Engine) {
 func loadTemplates() multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
 
-	prefix := "assets/"
+	prefix := "assets" + string(os.PathSeparator)
 
 	layouts, err := filepath.Glob(prefix + "base.html")
 	if err != nil {
@@ -55,7 +56,21 @@ func loadTemplates() multitemplate.Renderer {
 		panic(err.Error())
 	}
 
+	excludes := make([]string, 0)
+	excludes = append(excludes, "email")
+
 	for _, include := range includes {
+		excluded := false
+		for _, v := range excludes {
+			if strings.HasPrefix(include, prefix + v) {
+				excluded = true
+				break
+			}
+		}
+		if excluded {
+			continue
+		}
+
 		templateName := strings.TrimPrefix(include, prefix)
 		if templateName == include {
 			templateName = strings.TrimPrefix(include, strings.Replace(prefix, "/", "\\", 2))
