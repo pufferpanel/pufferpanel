@@ -37,7 +37,7 @@ func Load() error {
 }
 
 func openConnection() (err error) {
-	cfg, err := config.Get()
+	cfg, err := config.GetCore()
 	if err != nil {
 		return
 	}

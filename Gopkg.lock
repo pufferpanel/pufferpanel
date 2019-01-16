@@ -85,6 +85,14 @@
   version = "v1.4.1"
 
 [[projects]]
+  digest = "1:bd342004ef1bb83bee8709e2ad630e47a95d069f7fcb60ee1b8bceb4bbbe14ae"
+  name = "github.com/gobuffalo/envy"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "801d7253ade1f895f74596b9a96147ed2d3b087e"
+  version = "v1.6.11"
+
+[[projects]]
   digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
@@ -115,6 +123,14 @@
   revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
+  digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "23d116af351c84513e1946b527c88823e476be13"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
   name = "github.com/json-iterator/go"
   packages = ["."]
@@ -141,6 +157,14 @@
   pruneopts = "UT"
   revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:cbd169f49979ba0bc483cd418da756a21bba0081526d8af0fb0e9218deac2a08"
+  name = "github.com/mailgun/mailgun-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4071f66f00fb74b08ae720f28ee9fcd98ebfd69e"
+  version = "v2.0.0"
 
 [[projects]]
   digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
@@ -176,6 +200,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:9729648bfd610b93e5636062a4925798e76399b121c0f9403d2b2ad4112545eb"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ffb6e22f01932bf7ac35e0bad9be11f01d1c8685"
+
+[[projects]]
+  branch = "master"
   digest = "1:bcc0741a9d83c8d1c9fc7c1bd16fd2a6f662b82185cd7b0ed8403c52815ba1a4"
   name = "github.com/pufferpanel/apufferi"
   packages = [
@@ -184,6 +216,18 @@
   ]
   pruneopts = "UT"
   revision = "25ae967fb995ab32895e474b8eea2e3ca30a52eb"
+
+[[projects]]
+  digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
+  name = "github.com/rogpeppe/go-internal"
+  packages = [
+    "modfile",
+    "module",
+    "semver",
+  ]
+  pruneopts = "UT"
+  revision = "68d1cb014f030acd0f10ac553801e43c0e5da629"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
@@ -280,6 +324,7 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
+    "github.com/mailgun/mailgun-go",
     "github.com/pufferpanel/apufferi/http",
     "github.com/pufferpanel/apufferi/logging",
     "github.com/satori/go.uuid",
