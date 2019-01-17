@@ -59,24 +59,7 @@ func main() {
 					password := args[counter+3]
 					counter += 3
 
-					us, err := services.GetUserService()
-					if err != nil {
-						logging.Error("could not load user service", err)
-						return
-					}
-					user := &models.User{Email: email, Username: username}
-					err = user.SetPassword(password)
-
-					if err != nil {
-						logging.Error("could not create user", err)
-						return
-					}
-
-					err = us.Create(user)
-					if err != nil {
-						logging.Error("could not create user", err)
-						return
-					}
+					createUser(username, email, password)
 				}
 			case "--run", "-r":
 				{
@@ -107,5 +90,22 @@ func main() {
 }
 
 func createUser(username, email, password string) {
+	us, err := services.GetUserService()
+	if err != nil {
+		logging.Error("could not load user service", err)
+		return
+	}
+	user := &models.User{Email: email, Username: username}
+	err = user.SetPassword(password)
 
+	if err != nil {
+		logging.Error("could not create user", err)
+		return
+	}
+
+	err = us.Create(user)
+	if err != nil {
+		logging.Error("could not create user", err)
+		return
+	}
 }
