@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/mailgun/mailgun-go"
+	"fmt"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/errors"
@@ -64,33 +64,15 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 		return err
 	}
 
-	cfg := config.Get()
-
-	domain, exist := cfg.GetString("email.domain")
+	provider, exist := config.Get().GetString("email.provider")
 	if !exist {
-		return errors.NewEmailNotConfigured("no domain defined")
+		return errors.NewEmailNotConfigured("no email provider configured")
 	}
 
-	from, exist := cfg.GetString("email.from")
-	if !exist {
-		return errors.NewEmailNotConfigured("no from email defined")
+	switch provider {
+	case "mailgun":
+		return sendEmailViaMailgun(to, subject, builder.String(), async)
+	default:
+		return errors.NewEmailNotConfigured(fmt.Sprintf("unknown email provider %s", provider))
 	}
-
-	key, exist := cfg.GetString("email.key")
-	if !exist {
-		return errors.NewEmailNotConfigured("no api key defined")
-	}
-
-	mg := mailgun.NewMailgun(domain, key)
-	message := mg.NewMessage(from, subject, builder.String(), to)
-
-	if async {
-		go func(mgI *mailgun.MailgunImpl, messageI *mailgun.Message) {
-			mgI.Send(messageI)
-		}(mg, message)
-	} else {
-		_, _, err = mg.Send(message)
-	}
-
-	return
 }
