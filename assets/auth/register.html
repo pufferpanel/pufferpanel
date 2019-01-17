@@ -79,6 +79,30 @@
                         if (!this.validPassword) {
                             this.error = "Password is not valid"
                         }
+                        this.registerDisabled = true;
+
+                        axios.post('/auth/register', {
+                            data: {
+                                email: this.email,
+                                password: this.password,
+                                username: this.username
+                            }
+                        }).then(function (response) {
+                            let responseData = response.data;
+                            if (responseData.success) {
+                                window.location.href = "/auth/login";
+                            } else {
+                                data.error = responseData.msg;
+                                data.registerDisabled = false;
+                            }
+                        }).catch(function (error) {
+                            let msg = error.response.data.msg;
+                            if (!msg) {
+                                msg = error;
+                            }
+                            data.error = msg;
+                            data.registerDisabled = false;
+                        });
                     }
                 },
                 data: function() {
