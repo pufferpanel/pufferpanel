@@ -3,6 +3,7 @@
  * for more information on routes, see the
  * official documentation https://router.vuejs.org/en/
  */
+
 export default [
   {
     path: '/dashboard',
@@ -44,5 +45,10 @@ export default [
     path: '/404',
     name: 'Error',
     view: 'Error-404'
+  },
+  {
+    path: '/auth/login',
+    name: 'Login',
+    view: 'Login'
   }
 ]
