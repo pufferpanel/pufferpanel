@@ -18,18 +18,36 @@ import (
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
+	"strings"
 )
+
+const ClientPath = "client/dist"
+const IndexFile = ClientPath + "/index.html"
+
+var noHandle404 = []string{"/api", "/oauth2"}
 
 func RegisterRoutes(e *gin.Engine) {
 	api.RegisterRoutes(e.Group("/api"))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
 
-	e.Static("/css", "client/dist/css")
-	e.Static("/fonts", "client/dist/fonts")
-	e.Static("/img", "client/dist/img")
-	e.Static("/js", "client/dist/js")
-	e.StaticFile("/favicon.png", "client/dist/favicon.png")
-	e.StaticFile("/favicon.ico", "client/dist/favicon.ico")
-	e.StaticFile("/", "client/dist/index.html")
+	e.Static("/css", ClientPath+"/css")
+	e.Static("/fonts", ClientPath+"/fonts")
+	e.Static("/img", ClientPath+"/img")
+	e.Static("/js", ClientPath+"/js")
+	e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
+	e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
+	e.StaticFile("/", IndexFile)
+	e.NoRoute(handle404)
+}
+
+func handle404(c *gin.Context) {
+	for _, v := range noHandle404 {
+		if strings.HasPrefix(c.Request.URL.Path, v) {
+			c.AbortWithStatus(404)
+			return
+		}
+	}
+
+	c.File(IndexFile)
 }
