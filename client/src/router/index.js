@@ -15,6 +15,8 @@ import Meta from 'vue-meta'
 // Routes
 import paths from './paths'
 
+import Cookies from 'js-cookie'
+
 function route (path, view, name) {
   return {
     name: name || view,
@@ -43,6 +45,22 @@ const router = new Router({
     }
     return { x: 0, y: 0 }
   }
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to)
+  let cookie = Cookies.get('puffer_auth')
+  if (cookie === undefined) {
+    cookie = ''
+  }
+  console.log(cookie)
+  if (cookie === '') {
+    if (to.path !== '/auth/login' && to.path !== '/auth/logout' && to.path !== '/auth/register') {
+      next('/auth/login')
+      return
+    }
+  }
+  next()
 })
 
 Vue.use(Meta)
