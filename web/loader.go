@@ -14,73 +14,22 @@
 package web
 
 import (
-	"fmt"
-	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
-	"github.com/pufferpanel/pufferpanel/web/server"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 func RegisterRoutes(e *gin.Engine) {
-	e.HTMLRender = loadTemplates()
-
-	e.Group("/assets").Static("", "assets/")
 	api.RegisterRoutes(e.Group("/api"))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
-	server.RegisterRoutes(e.Group("/server"))
 
-	e.Handle("GET", "/", func (c *gin.Context) {
-		c.Redirect(302, "/server")
-	})
-}
-
-func loadTemplates() multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
-
-	prefix := "assets" + string(os.PathSeparator)
-
-	layouts, err := filepath.Glob(prefix + "base.html")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	includes, err := filepath.Glob(prefix + "**/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-
-	excludes := make([]string, 0)
-	excludes = append(excludes, "email")
-
-	for _, include := range includes {
-		excluded := false
-		for _, v := range excludes {
-			if strings.HasPrefix(include, prefix + v) {
-				excluded = true
-				break
-			}
-		}
-		if excluded {
-			continue
-		}
-
-		templateName := strings.TrimPrefix(include, prefix)
-		if templateName == include {
-			templateName = strings.TrimPrefix(include, strings.Replace(prefix, "/", "\\", 2))
-		}
-		templateName = strings.Replace(strings.TrimSuffix(templateName, ".html"), "\\", "/", -1)
-		layoutCopy := make([]string, len(layouts))
-		copy(layoutCopy, layouts)
-		files := append(layoutCopy, include)
-		logging.Debugf(fmt.Sprintf("Adding template [%s] with %s", templateName, files))
-		r.AddFromFiles(templateName, files...)
-	}
-	return r
+	e.Static("/css", "client/dist/css")
+	e.Static("/fonts", "client/dist/fonts")
+	e.Static("/img", "client/dist/img")
+	e.Static("/js", "client/dist/js")
+	e.StaticFile("/favicon.png", "client/dist/favicon.png")
+	e.StaticFile("/favicon.ico", "client/dist/favicon.ico")
+	e.StaticFile("/", "client/dist/index.html")
 }
