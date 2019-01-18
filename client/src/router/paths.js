@@ -42,7 +42,7 @@ export default [
   },
   {
     path: '/404',
-    view: '404',
-    error: true
+    name: 'Error',
+    view: 'Error-404'
   }
 ]
