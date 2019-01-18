@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <core-filter />
+    <core-filter v-if="$route.error" />
 
-    <core-toolbar />
+    <core-toolbar v-if="$route.error" />
 
-    <core-drawer />
+    <core-drawer  v-if="$route.error" />
 
     <core-view />
   </v-app>
