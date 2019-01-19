@@ -44,11 +44,17 @@ export default [
   {
     path: '/404',
     name: 'Error',
-    view: 'Error-404'
+    view: 'Error-404',
+    meta: {
+      noAuth: true
+    }
   },
   {
     path: '/auth/login',
     name: 'Login',
-    view: 'Login'
+    view: 'Login',
+    meta: {
+      noAuth: true
+    }
   }
 ]
