@@ -17,13 +17,26 @@ import paths from './paths'
 
 import Cookies from 'js-cookie'
 
-function route (path, view, name) {
+function route (path, view, name, meta) {
   return {
     name: name || view,
     path,
-    component: (resovle) => import(
+    component: (resolve) => import(
       `@/views/${view}.vue`
-    ).then(resovle)
+    ).then(resolve),
+    meta: meta
+  }
+}
+
+function checkLoginState (next) {
+  let cookie = Cookies.get('puffer_auth')
+  if (cookie === undefined) {
+    cookie = ''
+  }
+  if (cookie === '') {
+    next('/auth/login')
+  } else {
+    next()
   }
 }
 
@@ -32,7 +45,7 @@ Vue.use(Router)
 // Create a new router
 const router = new Router({
   mode: 'history',
-  routes: paths.map(path => route(path.path, path.view, path.name)).concat([
+  routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
     { path: '/', redirect: '/dashboard' },
     { path: '*', redirect: '/404' }
   ]),
@@ -48,19 +61,11 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to)
-  let cookie = Cookies.get('puffer_auth')
-  if (cookie === undefined) {
-    cookie = ''
+  if (to.matched.some(r => r.meta.noAuth)) {
+    next()
+  } else {
+    checkLoginState(next)
   }
-  console.log(cookie)
-  if (cookie === '') {
-    if (to.path !== '/auth/login' && to.path !== '/auth/logout' && to.path !== '/auth/register') {
-      next('/auth/login')
-      return
-    }
-  }
-  next()
 })
 
 Vue.use(Meta)
