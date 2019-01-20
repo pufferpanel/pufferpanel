@@ -47,7 +47,7 @@ const router = new Router({
   mode: 'history',
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
     { path: '/', redirect: '/dashboard' },
-    { path: '*', redirect: '/404' }
+    { path: '*', redirect: '/error/404' }
   ]),
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {

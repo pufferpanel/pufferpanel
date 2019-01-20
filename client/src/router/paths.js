@@ -54,7 +54,21 @@ export default [
     name: 'Login',
     view: 'Login',
     meta: {
-      noAuth: true
+      noAuth: true,
+      noSidebar: true,
+      noFooter: true,
+      noHeader: true
+    }
+  },
+  {
+    path: '/auth/register',
+    name: 'Register',
+    view: 'Register',
+    meta: {
+      noAuth: true,
+      noSidebar: true,
+      noFooter: true,
+      noHeader: true
     }
   }
 ]
