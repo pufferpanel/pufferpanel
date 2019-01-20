@@ -1,10 +1,8 @@
 <template>
   <v-app>
-    <core-filter />
+    <core-toolbar v-if="!$route.meta.noHeader"/>
 
-    <core-toolbar />
-
-    <core-drawer />
+    <core-drawer v-if="!$route.meta.noSidebar"/>
 
     <core-view />
   </v-app>
