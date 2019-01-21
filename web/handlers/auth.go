@@ -13,8 +13,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	if err != nil || cookie == "" {
 		c.SetCookie("puffer_auth", "", 3600, "/", "", false, false)
-		c.Redirect(302, "/auth/login")
-		c.Abort()
+		c.AbortWithStatus(403)
 		return
 	}
 
@@ -22,8 +21,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	if err != nil {
 		logging.Error("oauth service unavailable", err)
-		c.Redirect(302, "/error/500")
-		c.Abort()
+		c.AbortWithStatus(500)
 		return
 	}
 
@@ -31,8 +29,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	if err != nil {
 		logging.Error("oauth service unavailable", err)
-		c.Redirect(302, "/error/500")
-		c.Abort()
+		c.AbortWithStatus(500)
 		return
 	}
 
@@ -51,16 +48,14 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	if !valid {
-		c.Redirect(302, "/auth/login")
-		c.Abort()
+		c.AbortWithStatus(403)
 		return
 	}
 
 	err = srv.UpdateExpirationTime(info, 60*time.Minute)
 	if err != nil {
 		logging.Error("error extending session", err)
-		c.Redirect(500, "/error/500")
-		c.Abort()
+		c.AbortWithStatus(500)
 		return
 	}
 
