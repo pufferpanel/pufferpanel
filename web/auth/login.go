@@ -4,12 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
-	"net/http"
 )
-
-func Login(c *gin.Context) {
-	c.HTML(http.StatusOK, "auth/login", gin.H{})
-}
 
 func LoginPost(c *gin.Context) {
 	response := builder.Respond(c)

@@ -6,12 +6,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
 	"gopkg.in/go-playground/validator.v9"
-	"net/http"
 )
-
-func Register(c *gin.Context) {
-	c.HTML(http.StatusOK, "auth/register", gin.H{})
-}
 
 func RegisterPost(c *gin.Context) {
 	response := builder.Respond(c)
