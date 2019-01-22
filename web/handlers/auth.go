@@ -4,10 +4,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/services"
+	"strings"
 	"time"
 )
 
+var noLogin = []string{"/auth/","/error/"}
+
 func AuthMiddleware(c *gin.Context) {
+	for _, v := range noLogin {
+		if strings.HasPrefix(c.Request.URL.Path, v) {
+			return
+		}
+	}
 
 	cookie, err := c.Cookie("puffer_auth")
 
