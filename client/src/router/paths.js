@@ -6,8 +6,8 @@
 
 export default [
   {
-    path: '/dashboard',
-    view: 'Dashboard'
+    path: '/server',
+    view: 'Servers'
   },
   {
     path: '/error/404',
