@@ -9,10 +9,12 @@ import (
 )
 
 var noLogin = []string{"/auth/","/error/"}
+var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
 
 func AuthMiddleware(c *gin.Context) {
 	for _, v := range noLogin {
 		if strings.HasPrefix(c.Request.URL.Path, v) {
+			c.Next()
 			return
 		}
 	}
@@ -20,8 +22,21 @@ func AuthMiddleware(c *gin.Context) {
 	cookie, err := c.Cookie("puffer_auth")
 
 	if err != nil || cookie == "" {
-		c.SetCookie("puffer_auth", "", 3600, "/", "", false, false)
-		c.AbortWithStatus(403)
+		//determine if it's an asset, otherwise, we can redirect if it's a GET
+		//dev only requirement?
+		for _, v := range assetFiles {
+			if strings.HasSuffix(c.Request.URL.Path, v) {
+				c.AbortWithStatus(404)
+				return
+			}
+		}
+
+		if c.Request.Method != "GET" {
+			c.AbortWithStatus(403)
+ 		} else {
+ 			c.Redirect(302, "/auth/login")
+ 			c.Abort()
+		}
 		return
 	}
 

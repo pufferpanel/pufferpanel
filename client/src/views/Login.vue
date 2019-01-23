@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Cookies from 'js-cookie'
 
 export default {
@@ -55,7 +54,7 @@ export default {
 
       this.loginDisabled = true
 
-      axios.post('/auth/login', {
+      this.axios.post('/auth/login', {
         data: {
           email: this.email,
           password: this.password
