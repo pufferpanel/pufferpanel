@@ -120,8 +120,8 @@
     "error.invalid_email": "Sağladığınız E-Posta adresi geçerli değil.",
     "error.password_mismatch": "Sağladığınız şifreler birbirleriyle uyuşmadı.",
     "error.password_strength": "Şifreniz yeterince karmaşık değil. Lütfen en az bir sayı ve küçük/büyük harf karışımı içerdiğinden emin olun. Yeni şifreniz ayrıca en az 8 karakter uzunluğunda olmalıdır.",
-    "error.account.same_email": "Sorry, you can't change your email to the email address you are currently using for the account, that wouldn't make sense!",
-    "success.account.email": "Your email address has been successfully updated to <em>%s</em>.",
-    "success.account.password": "Your password has been successfully changed! Please login again using your new password.",
-    "success.notifications.updated": "Your account notification preferences have been updated."
+    "error.account.same_email": "Üzgünüz, E-Posta adresinizi şu anda bu hesap için kullandığınız E-Posta adresine değiştiremezsiniz, bu mantıklı olmazdı!",
+    "success.account.email": "E-Posta adresiniz başarıyla <em>%s</em> adresiyle değiştirildi.",
+    "success.account.password": "Şifreniz başarıyla değiştirildi! Lütfen yeni şifrenizi kullanarak yeniden giriş yapın.",
+    "success.notifications.updated": "Hesap bildirim tercihleriniz güncellendi."
 }
