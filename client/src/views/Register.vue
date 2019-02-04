@@ -51,7 +51,8 @@
                 prepend-icon="mdi-lock"
                 name="confirmPassword"
                 label="Confirm Password"
-                type="password" />
+                type="password"
+                @keyup.enter="submit" />
             </v-form>
           </v-card-text>
         </v-container>

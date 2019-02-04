@@ -23,7 +23,8 @@
                 prepend-icon="mdi-lock"
                 name="password"
                 label="Password"
-                type="password" />
+                type="password"
+                @keyup.enter="submit" />
             </v-form>
           </v-card-text>
           <material-notification
