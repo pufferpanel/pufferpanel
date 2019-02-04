@@ -1,5 +1,5 @@
 <template>
   <v-container>
-    <div>404 CATS NOT FOUND</div>
+    <div>404 FISH NOT FOUND</div>
   </v-container>
 </template>
