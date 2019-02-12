@@ -22,7 +22,7 @@
         >
           <v-data-table
             :headers="headers"
-            :items="items"
+            :items="servers"
             hide-actions
           >
             <template
@@ -35,13 +35,13 @@
               />
             </template>
             <template
-              slot="servers"
+              slot="items"
               slot-scope="{ item }"
             >
               <td>{{ item.name }}</td>
-              <td>{{ item.node }}</td>
-              <td>{{ item.address }}</td>
-              <td class="text-xs-right">{{ item.online }}</td>
+              <td></td>
+              <td></td>
+              <td class="text-xs-right"></td>
             </template>
           </v-data-table>
         </material-card>
@@ -84,24 +84,28 @@ export default {
   },
   methods: {
     loadData() {
-      this.createRequest().post('/api/servers').then(function (response) {
+      let vueData = this
+      this.createRequest().get('/api/servers').then(function (response) {
         let responseData = response.data
         if (responseData.success) {
-          console.log(responseData)
+          vueData.servers = responseData.data
         } else {
-          data.error = responseData.msg
+          vueData.error = responseData.msg
         }
       }).catch(function (error) {
-        let msg = error.response.data.msg
-        if (!msg) {
+        let data = error.response.data
+        let msg =  'unknown error'
+        if (data) {
           msg = error
+        } else if (msg.msg) {
+          msg = msg.msg
         }
-        data.error = msg
+        vueData.error = msg
       })
     }
   },
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 }
 </script>
