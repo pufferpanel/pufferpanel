@@ -8,8 +8,8 @@ import (
 )
 
 type UserViewModel struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	Username string `json:"username,omitempty"`
+	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
 	Password string `json:"password,omitempty"`
 }

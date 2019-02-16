@@ -8,9 +8,10 @@ import (
 
 type ServerViewModel struct {
 	//Id         uint   `json:"id"`
-	Identifier string                `json:"id"`
-	Name       string                `json:"name"`
-	NodeId     uint                  `json:"nodeId"`
+	Identifier string                `json:"id,omitempty"`
+	Name       string                `json:"name,omitempty"`
+	NodeId     uint                  `json:"nodeId,omitempty"`
+	Node       *NodeViewModel         `json:"node,omitempty"`
 	Data       interface{}           `json:"data,omitempty"`
 	Users      []ServerViewModelUser `json:"users,omitempty"`
 }
@@ -21,11 +22,17 @@ type ServerViewModelUser struct {
 }
 
 func FromServer(server *models.Server) *ServerViewModel {
-	return &ServerViewModel{
+	model := &ServerViewModel{
 		Name:       server.Name,
 		Identifier: server.Identifier,
 		NodeId:     server.NodeID,
 	}
+
+	if server.Node.ID != 0 {
+		model.Node = FromNode(&server.Node)
+	}
+
+	return model
 }
 
 func FromServers(servers *models.Servers) []*ServerViewModel {
@@ -60,4 +67,23 @@ func (s *ServerViewModel) Valid(allowEmpty bool) error {
 	}
 
 	return nil
+}
+
+func RemoveServerPrivateInfoFromAll (servers []*ServerViewModel) []*ServerViewModel{
+	for k, v := range servers {
+		servers[k] = RemoveServerPrivateInfo(v)
+	}
+	return servers
+}
+
+func RemoveServerPrivateInfo(server *ServerViewModel) *ServerViewModel {
+	//SCRUB DATA FROM REGULAR USERS
+	if server.Node != nil {
+		server.Node.Id = 0
+		server.NodeId = 0
+		server.Node.PrivateHost = ""
+		server.Node.PrivatePort = 0
+	}
+
+	return server
 }

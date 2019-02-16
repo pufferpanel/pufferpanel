@@ -39,9 +39,9 @@
               slot-scope="{ item }"
             >
               <td>{{ item.name }}</td>
-              <td></td>
-              <td></td>
-              <td class="text-xs-right"></td>
+              <td>{{ item.node }}</td>
+              <td>{{ item.address }}</td>
+              <td class="text-xs-right" />
             </template>
           </v-data-table>
         </material-card>
@@ -82,19 +82,30 @@ export default {
       error: null
     }
   },
+  mounted () {
+    this.loadData()
+  },
   methods: {
-    loadData() {
+    loadData () {
       let vueData = this
       this.createRequest().get('/api/servers').then(function (response) {
         let responseData = response.data
         if (responseData.success) {
-          vueData.servers = responseData.data
+          for (let i in responseData.data) {
+            let server = responseData.data[i]
+            vueData.servers.push({
+              name: server.name,
+              node: server.node.name,
+              address: '',
+              online: false
+            })
+          }
         } else {
           vueData.error = responseData.msg
         }
       }).catch(function (error) {
         let data = error.response.data
-        let msg =  'unknown error'
+        let msg = 'unknown error'
         if (data) {
           msg = error
         } else if (msg.msg) {
@@ -103,9 +114,6 @@ export default {
         vueData.error = msg
       })
     }
-  },
-  mounted() {
-    this.loadData()
   }
 }
 </script>

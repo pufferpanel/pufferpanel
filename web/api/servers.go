@@ -83,11 +83,18 @@ func searchServers(c *gin.Context) {
 	}
 
 	var results *models.Servers
-	if results, err = ss.Search(username, uint(node), nameFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
+	searchCriteria := services.ServerSearch{
+		Username: username,
+		NodeId: uint(node),
+		Name: nameFilter,
+		PageSize: uint(pageSize),
+		Page: uint(page),
+	}
+	if results, err = ss.Search(searchCriteria); shared.HandleError(response, err) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromServers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.RemoveServerPrivateInfoFromAll(view.FromServers(results))).Send()
 }
 
 func getServer(c *gin.Context) {
@@ -112,7 +119,7 @@ func getServer(c *gin.Context) {
 		return
 	}
 
-	response.Data(result).Send()
+	response.Data(view.RemoveServerPrivateInfo(view.FromServer(result))).Send()
 }
 
 func createServer(c *gin.Context) {
