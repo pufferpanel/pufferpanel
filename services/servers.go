@@ -9,7 +9,7 @@ import (
 )
 
 type ServerService interface {
-	Search(username string, nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error)
+	Search(searchCriteria ServerSearch) (*models.Servers, error)
 
 	Get(id string) (*models.Server, bool, error)
 
@@ -22,6 +22,15 @@ type ServerService interface {
 
 type serverService struct {
 	db *gorm.DB
+}
+
+type ServerSearch struct {
+	Username string
+	NodeId   uint
+	NodeName string
+	Name     string
+	PageSize uint
+	Page     uint
 }
 
 func GetServerService() (ServerService, error) {
@@ -37,29 +46,31 @@ func GetServerService() (ServerService, error) {
 	return service, nil
 }
 
-func (ss *serverService) Search(username string, nodeId uint, nameFilter string, pageSize, page uint) (*models.Servers, error) {
+func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, error) {
 	servers := &models.Servers{}
 
-	query := ss.db.Offset((page - 1) * pageSize).Limit(pageSize)
+	query := ss.db.Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize)
 
-	if nodeId != 0 {
-		query = query.Where(&models.Server{NodeID: nodeId})
+	if searchCriteria.NodeId != 0 {
+		query = query.Where(&models.Server{NodeID: searchCriteria.NodeId})
+	} else if searchCriteria.NodeName != "" {
+
 	}
 
-	if username != "" {
-		query = query.Joins("JOIN client_server_scopes css ON css.server_id = servers.id")
+	if searchCriteria.Username != "" {
+		query = query.Joins("JOIN client_server_scopes css ON css.server_id = servers.id AND css.scope = 'servers.view'")
 		query = query.Joins("JOIN client_infos ci ON ci.id = css.client_info_id")
-		query = query.Joins("JOIN users u ON u.id = ci.user_id")
-		query = query.Where("u.username = ?", username)
+		query = query.Joins("JOIN users ON users.id = ci.user_id")
+		query = query.Where("users.username = ?", searchCriteria.Username)
 	}
 
-	nameFilter = strings.Replace(nameFilter, "*", "%", -1)
+	nameFilter := strings.Replace(searchCriteria.Name, "*", "%", -1)
 
 	if nameFilter != "" && nameFilter != "%" {
 		query = query.Where("name LIKE ?", nameFilter)
 	}
 
-	res := query.Select("DISTINCT servers.*").Find(servers)
+	res := query.Preload("Node").Find(servers)
 
 	return servers, res.Error
 }
@@ -113,4 +124,3 @@ func (ss *serverService) Create(model *models.Server, serverData interface{}) (e
 	successful = true
 	return
 }
-

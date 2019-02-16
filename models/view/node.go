@@ -8,13 +8,13 @@ import (
 )
 
 type NodeViewModel struct {
-	Id          uint   `json:"id"`
-	Name        string `json:"name"`
-	PublicHost  string `json:"publicHost"`
-	PrivateHost string `json:"privateHost"`
-	PublicPort  uint   `json:"publicPort"`
-	PrivatePort uint   `json:"privatePort"`
-	SFTPPort    uint   `json:"sftpPort"`
+	Id          uint   `json:"id,omitempty"`
+	Name        string `json:"name,omitempty"`
+	PublicHost  string `json:"publicHost,omitempty"`
+	PrivateHost string `json:"privateHost,omitempty"`
+	PublicPort  uint   `json:"publicPort,omitempty"`
+	PrivatePort uint   `json:"privatePort,omitempty"`
+	SFTPPort    uint   `json:"sftpPort,omitempty"`
 }
 
 func FromNode(n *models.Node) *NodeViewModel {
