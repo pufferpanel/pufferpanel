@@ -14,6 +14,9 @@ type Server struct {
 	NodeID uint `gorm:"NOT NULL" json:"-"`
 	Node   Node `gorm:"association_autoupdate:false" json:"-"`
 
+	IP   string `gorm:"" json:"-"`
+	Port uint   `gorm:"" json:"-"`
+
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }

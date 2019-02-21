@@ -96,23 +96,35 @@ export default {
             vueData.servers.push({
               name: server.name,
               node: server.node.name,
-              address: '',
+              address: server.ip ? server.ip + ':' + server.port : '',
               online: false
             })
           }
+          setInterval(vueData.pollServerStatus, 30 * 1000)
         } else {
           vueData.error = responseData.msg
         }
       }).catch(function (error) {
-        let data = error.response.data
-        let msg = 'unknown error'
-        if (data) {
-          msg = error
-        } else if (msg.msg) {
-          msg = msg.msg
+        if (error.response) {
+          if (error.response.status === 403) {
+            vueData.error = 'You do not have permissions to view servers'
+          } else {
+            let data = error.response.data
+            let msg = 'unknown error'
+            if (data) {
+              msg = error
+            } else if (msg.msg) {
+              msg = msg.msg
+            }
+            vueData.error = msg
+          }
+        } else {
+          vueData.error = error
         }
-        vueData.error = msg
       })
+    },
+    pollServerStatus () {
+
     }
   }
 }

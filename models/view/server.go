@@ -11,9 +11,11 @@ type ServerViewModel struct {
 	Identifier string                `json:"id,omitempty"`
 	Name       string                `json:"name,omitempty"`
 	NodeId     uint                  `json:"nodeId,omitempty"`
-	Node       *NodeViewModel         `json:"node,omitempty"`
+	Node       *NodeViewModel        `json:"node,omitempty"`
 	Data       interface{}           `json:"data,omitempty"`
 	Users      []ServerViewModelUser `json:"users,omitempty"`
+	IP         string                `json:"ip,omitempty"`
+	Port       uint                  `json:"port,omitempty"`
 }
 
 type ServerViewModelUser struct {
@@ -26,6 +28,8 @@ func FromServer(server *models.Server) *ServerViewModel {
 		Name:       server.Name,
 		Identifier: server.Identifier,
 		NodeId:     server.NodeID,
+		IP:         server.IP,
+		Port:       server.Port,
 	}
 
 	if server.Node.ID != 0 {
@@ -66,10 +70,14 @@ func (s *ServerViewModel) Valid(allowEmpty bool) error {
 		return errors.New("node id must be a positive non-zero number")
 	}
 
+	if !allowEmpty && validate.Var(s.IP, "optional|min:0,max:65535") != nil {
+		return errors.New("port must either not be included or be between 0 and 65535")
+	}
+
 	return nil
 }
 
-func RemoveServerPrivateInfoFromAll (servers []*ServerViewModel) []*ServerViewModel{
+func RemoveServerPrivateInfoFromAll(servers []*ServerViewModel) []*ServerViewModel {
 	for k, v := range servers {
 		servers[k] = RemoveServerPrivateInfo(v)
 	}
