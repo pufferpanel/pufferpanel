@@ -96,7 +96,7 @@ export default {
             vueData.servers.push({
               name: server.name,
               node: server.node.name,
-              address: server.ip ? server.ip + ':' + server.port : '',
+              address: server.ip ? server.ip + ':' + server.port : server.node.publicHost,
               online: false
             })
           }
