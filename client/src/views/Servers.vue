@@ -94,10 +94,12 @@ export default {
           for (let i in responseData.data) {
             let server = responseData.data[i]
             vueData.servers.push({
+              id: server.id,
               name: server.name,
               node: server.node.name,
               address: server.ip ? server.ip + ':' + server.port : server.node.publicHost,
-              online: false
+              online: false,
+              nodeAddress: server.node.publicHost + ':' + server.node.publicPort
             })
           }
           setInterval(vueData.pollServerStatus, 30 * 1000)
@@ -124,7 +126,15 @@ export default {
       })
     },
     pollServerStatus () {
+      let http = this.createRequest()
+      let vueData = this;
 
+      for (let i in this.servers) {
+        let server = vueData.servers[i]
+        /*http.get('/daemon/' + server.id + '/status').then(function (response) {
+
+        })*/
+      }
     }
   }
 }
