@@ -56,5 +56,11 @@ func handle404(c *gin.Context) {
 		return
 	}
 
+	if strings.HasSuffix(c.Request.URL.Path, ".css") {
+		c.Writer.Header().Set("Content-Type", "application/css")
+		c.File(ClientPath + c.Request.URL.Path)
+		return
+	}
+
 	c.File(IndexFile)
 }
