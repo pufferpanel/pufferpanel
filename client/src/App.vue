@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <core-toolbar v-if="!$route.meta.noHeader"/>
+    <!--<core-toolbar v-if="!$route.meta.noHeader"/>-->
 
     <core-drawer v-if="!$route.meta.noSidebar"/>
 
