@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var noLogin = []string{"/auth/","/error/"}
+var noLogin = []string{"/auth/","/error/", "/daemon/", "/api/"}
 var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
 
 func AuthMiddleware(c *gin.Context) {
