@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/services"
 	webHttp "net/http"
 	"strconv"
+	"strings"
 )
 
 func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
@@ -15,6 +16,16 @@ func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
 
 func OAuth2WithLimit(scope string, requireServer bool) gin.HandlerFunc {
 	return oauth2Handler(scope, requireServer, true)
+}
+
+func HasOAuth2Token(c *gin.Context) {
+	authHeader := c.Request.Header.Get("Authorization")
+	authHeader = strings.TrimSpace(authHeader)
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") && strings.TrimPrefix(authHeader, "Bearer ") != "" {
+		c.AbortWithStatus(403)
+	} else {
+		c.Next()
+	}
 }
 
 func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {

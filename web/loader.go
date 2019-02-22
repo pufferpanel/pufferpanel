@@ -17,6 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
+	"github.com/pufferpanel/pufferpanel/web/daemon"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/web/oauth2"
 	"strings"
@@ -25,12 +26,13 @@ import (
 const ClientPath = "client/dist"
 const IndexFile = ClientPath + "/index.html"
 
-var noHandle404 = []string{"/api/", "/oauth2/"}
+var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/"}
 
 func RegisterRoutes(e *gin.Engine) {
-	api.RegisterRoutes(e.Group("/api"))
+	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
+	daemon.RegisterRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
 
 	e.Static("/css", ClientPath+"/css")
 	e.Static("/fonts", ClientPath+"/fonts")
