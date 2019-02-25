@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"errors"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
@@ -82,19 +83,16 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 
 	res := db.Preload("ClientInfo").Where(obj).First(obj)
 	err = res.Error
-	if obj.ID == 0 {
-		obj = nil
+
+	if obj == nil || obj.ID == 0 || err != nil {
+		if err == nil || gorm.IsRecordNotFoundError(err) {
+			err = errors.New("token is invalid")
+		}
+		return nil, err
 	}
 
 	if obj.GetAccessCreateAt().Add(obj.GetAccessExpiresIn()).Before(time.Now()) {
 		return nil, err
-	}
-
-	if obj == nil || err != nil {
-		if err == nil {
-			err = errors.New("token is invalid")
-		}
-		return nil, nil
 	}
 
 	db.Preload("ServerScopes").Preload("User").Where(&obj.ClientInfo).First(&obj.ClientInfo)

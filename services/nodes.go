@@ -20,6 +20,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"io"
 	"net/http"
+	url2 "net/url"
+	"strings"
 )
 
 var nodeClient = http.Client{}
@@ -91,14 +93,19 @@ func (ns *nodeService) Create(node *models.Node) error {
 }
 
 func (ns *nodeService) CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error) {
-	_, err := createNodeURL(node, path)
+	fullUrl, err := createNodeURL(node, path)
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := url2.Parse(fullUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	request := &http.Request{
 		Method: method,
-		URL: nil,
+		URL: url,
 		Header: headers,
 	}
 
@@ -127,6 +134,14 @@ func createNodeURL(node *models.Node, path string) (string, error) {
 	ssl, err := doesDaemonUseSSL(node)
 	if err != nil {
 		return "", err
+	}
+
+	if strings.HasPrefix(path, "/") {
+		path = strings.TrimPrefix(path, "/")
+	}
+
+	if strings.HasSuffix(path, "/") {
+		path = strings.TrimSuffix(path, "/")
 	}
 
 	protocol := "http"
