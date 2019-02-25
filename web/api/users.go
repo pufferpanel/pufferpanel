@@ -68,11 +68,12 @@ func searchUsers(c *gin.Context) {
 	}
 
 	var results *models.Users
-	if results, err = us.Search(usernameFilter, emailFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
+	var total uint
+	if results, total, err = us.Search(usernameFilter, emailFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize).Data(view.FromUsers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.FromUsers(results)).Send()
 }
 
 func createUser(c *gin.Context) {

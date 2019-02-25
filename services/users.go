@@ -23,7 +23,7 @@ type UserService interface {
 
 	ChangePassword(username string, newPass string) error
 
-	Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error)
+	Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, uint, error)
 
 	Login(email string, password string) (sessionToken string, err error)
 }
@@ -154,7 +154,7 @@ func (us *userService) ChangePassword(username string, newPass string) error {
 	return us.Update(user)
 }
 
-func (us *userService) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, error) {
+func (us *userService) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, uint, error) {
 	users := &models.Users{}
 
 	query := us.db.Offset((page - 1) * pageSize).Limit(pageSize)
@@ -172,5 +172,12 @@ func (us *userService) Search(usernameFilter, emailFilter string, pageSize, page
 
 	res := query.Find(users)
 
-	return users, res.Error
+	var count uint
+	err := query.Count(&count).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return users, count, res.Error
 }
