@@ -9,7 +9,7 @@ import (
 )
 
 type ServerService interface {
-	Search(searchCriteria ServerSearch) (*models.Servers, error)
+	Search(searchCriteria ServerSearch) (*models.Servers, uint, error)
 
 	Get(id string) (*models.Server, bool, error)
 
@@ -46,7 +46,7 @@ func GetServerService() (ServerService, error) {
 	return service, nil
 }
 
-func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, error) {
+func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, uint, error) {
 	servers := &models.Servers{}
 
 	query := ss.db.Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize)
@@ -54,7 +54,7 @@ func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, e
 	if searchCriteria.NodeId != 0 {
 		query = query.Where(&models.Server{NodeID: searchCriteria.NodeId})
 	} else if searchCriteria.NodeName != "" {
-
+		query = query.Joins("JOIN nodes n ON servers.node_id = n.id AND n.name = ?", searchCriteria.NodeName)
 	}
 
 	if searchCriteria.Username != "" {
@@ -72,7 +72,14 @@ func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, e
 
 	res := query.Preload("Node").Find(servers)
 
-	return servers, res.Error
+	var count uint
+	err := query.Count(&count).Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return servers, count, res.Error
 }
 
 func (ss *serverService) Get(id string) (*models.Server, bool, error) {
