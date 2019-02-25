@@ -30,18 +30,22 @@ func proxyServerRequest(c *gin.Context) {
 	ss, err := services.GetServerService()
 	if err != nil {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		return
 	}
 
 	ns, err := services.GetNodeService()
 	if err != nil {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		return
 	}
 
 	server, exists, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		return
 	} else if !exists {
 		http.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
+		return
 	}
 
 	response, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
@@ -50,13 +54,16 @@ func proxyServerRequest(c *gin.Context) {
 	//so if error, use our response messenger, otherwise copy response from node to client
 	if err != nil {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		return
 	}
 
+	//Even though apache isn't going to be in place, we can't set certain headers
 	newHeaders := make(map[string]string, 0)
-
 	for k, v := range response.Header {
 		switch k {
 		case "Transfer-Encoding":
+		case "Content-Type":
+		case "Content-Length":
 			continue
 		default:
 			newHeaders[k] = strings.Join(v, ", ")

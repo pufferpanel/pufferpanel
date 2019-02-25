@@ -39,6 +39,11 @@ func handleInfoRequest(c *gin.Context) {
 
 	if token := c.PostForm("token"); token != "" {
 		info, _, _ := oauth.GetInfo(token)
+		if info == nil {
+			data := make(map[string]interface{})
+			data["active"] = false
+			c.JSON(200, data)
+		}
 		c.JSON(200, info)
 	} else {
 		c.Status(400)

@@ -87,7 +87,7 @@ func (ss *serverService) Get(id string) (*models.Server, bool, error) {
 		Identifier: id,
 	}
 
-	res := ss.db.Where(model).First(model)
+	res := ss.db.Where(model).Preload("Node").First(model)
 
 	return model, model.ID != 0, res.Error
 }
