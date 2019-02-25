@@ -6,6 +6,7 @@ import (
 	"github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
 	netHttp "net/http"
+	"strings"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
@@ -24,15 +25,43 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
+	path := "/server/" + serverId + "/" + c.Param("path")
+
 	ss, err := services.GetServerService()
 	if err != nil {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
 	}
 
-	_, exists, err := ss.Get(serverId)
+	ns, err := services.GetNodeService()
+	if err != nil {
+		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+	}
+
+	server, exists, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
 	} else if !exists {
 		http.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
 	}
+
+	response, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+
+	//this only will throw an error if we can't get to the node
+	//so if error, use our response messenger, otherwise copy response from node to client
+	if err != nil {
+		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+	}
+
+	newHeaders := make(map[string]string, 0)
+
+	for k, v := range response.Header {
+		switch k {
+		case "Transfer-Encoding":
+			continue
+		default:
+			newHeaders[k] = strings.Join(v, ", ")
+		}
+	}
+
+	c.DataFromReader(response.StatusCode, response.ContentLength, response.Header.Get("Content-Type"), response.Body, newHeaders)
 }

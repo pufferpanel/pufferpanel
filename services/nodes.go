@@ -14,10 +14,15 @@
 package services
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
+	"io"
+	"net/http"
 )
+
+var nodeClient = http.Client{}
 
 type NodeService interface {
 	GetAll() (*models.Nodes, error)
@@ -29,6 +34,8 @@ type NodeService interface {
 	Delete(id uint) error
 
 	Create(node *models.Node) error
+
+	CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error)
 }
 
 type nodeService struct {
@@ -81,4 +88,51 @@ func (ns *nodeService) Delete(id uint) error {
 func (ns *nodeService) Create(node *models.Node) error {
 	res := ns.db.Create(node)
 	return res.Error
+}
+
+func (ns *nodeService) CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error) {
+	_, err := createNodeURL(node, path)
+	if err != nil {
+		return nil, err
+	}
+
+	request := &http.Request{
+		Method: method,
+		URL: nil,
+		Header: headers,
+	}
+
+	if method != "GET" && body != nil {
+		request.Body = body
+	}
+
+	response, err := nodeClient.Do(request)
+	return response, err
+}
+
+func doesDaemonUseSSL(node *models.Node) (bool, error) {
+	path := fmt.Sprintf("://%s:%d", node.PrivateHost, node.PrivatePort)
+
+	_, err := http.Get("https" + path)
+
+	if err != nil {
+		_, err = http.Get("http" + path)
+		return false, err
+	}
+
+	return true, nil
+}
+
+func createNodeURL(node *models.Node, path string) (string, error) {
+	ssl, err := doesDaemonUseSSL(node)
+	if err != nil {
+		return "", err
+	}
+
+	protocol := "http"
+	if ssl {
+		protocol = "https"
+	}
+
+	return fmt.Sprintf("%s://%s:%d/%s", protocol, node.PrivateHost, node.PrivatePort, path), nil
 }
