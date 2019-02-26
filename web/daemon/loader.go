@@ -25,7 +25,7 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	path := "/server/" + serverId + "/" + c.Param("path")
+	path := "/server/" + serverId + c.Param("path")
 
 	ss, err := services.GetServerService()
 	if err != nil {

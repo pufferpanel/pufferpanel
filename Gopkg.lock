@@ -30,11 +30,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:38f00d85208f9f51e51063b0b90687d72f3ad61a7b6135d3ab6cb21e7b68dff2"
+  digest = "1:44ff04468ffd7a0d0e690065cb330823ebea495bc9e5c8754b86021c2233025b"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a7658810eb745c2f22927282dea478278103a897"
+  revision = "996076df5b3348fd04ff02aa5f9abd971c2d2d28"
 
 [[projects]]
   digest = "1:d5083934eb25e45d17f72ffa86cae3814f4a9d6c073c4f16b64147169b245606"
@@ -207,7 +207,7 @@
     "logging",
   ]
   pruneopts = "UT"
-  revision = "04673ac93f1979ae6ac041fc764187f0b72669df"
+  revision = "560dd0d5053093e18482c38306780157c108f8a9"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
