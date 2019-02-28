@@ -33,7 +33,7 @@ steps:
 - script: |
     export GOOS=windows
     dep ensure -v
-    go build -o $(GOPATH)/build/pufferpanel -v github.com/pufferpanel/pufferpanel
+    go build -o $(GOPATH)/build/pufferpanel.exe -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Windows Build'
 
