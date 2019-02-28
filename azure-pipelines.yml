@@ -54,7 +54,7 @@ steps:
   inputs:
     command: 'custom'
     customCommand: 'run build'
-    workingDir: '$(modulePath)'
+    workingDir: '$(modulePath)/client'
 
 - script: |
     mkdir -p $(GOPATH)\build\client\dist
