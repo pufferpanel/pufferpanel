@@ -52,6 +52,11 @@ steps:
 
 - task: Npm@1
   inputs:
+    command: 'install'
+    workingDir: '$(modulePath)/client'
+
+- task: Npm@1
+  inputs:
     command: 'custom'
     customCommand: 'run build'
     workingDir: '$(modulePath)/client'
