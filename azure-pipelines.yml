@@ -31,18 +31,19 @@ steps:
   displayName: 'Download dep and run `dep ensure`'
 
 - script: |
-    export GOOS=linux
-    dep ensure -v
-    go build -o $(GOPATH)/build/pufferpanel -v github.com/pufferpanel/pufferpanel
-  workingDirectory: '$(modulePath)'
-  displayName: 'Linux Build'
-
-- script: |
     export GOOS=windows
     dep ensure -v
     go build -o $(GOPATH)/build/pufferpanel -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Windows Build'
+
+- script: |
+    export GOOS=linux
+    dep ensure -v
+    rm -f *.syso
+    go build -o $(GOPATH)/build/pufferpanel -v github.com/pufferpanel/pufferpanel
+  workingDirectory: '$(modulePath)'
+  displayName: 'Linux Build'
 
 - task: UseRubyVersion@0
   inputs:
@@ -56,8 +57,9 @@ steps:
     workingDir: '$(modulePath)'
 
 - script: |
-    mkdir -p $(GOPATH)\client\dist
-    cp -r $(modulePath)\client\dist\* $(GOPATH)\client\dist
+    mkdir -p $(GOPATH)\build\client\dist
+    cp -r $(modulePath)\client\dist\* $(GOPATH)\build\client\dist
+    cp -r $(modulePath)\assets $(GOPATH)\build\assets
   workingDirectory: '$(modulePath)'
   displayName: 'Copy assets'
 
