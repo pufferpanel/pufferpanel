@@ -28,7 +28,7 @@ steps:
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     dep version
   workingDirectory: '$(modulePath)'
-  displayName: 'Download dep and run `dep ensure`'
+  displayName: 'Download dep'
 
 - script: |
     export GOOS=windows
@@ -54,17 +54,19 @@ steps:
   inputs:
     command: 'install'
     workingDir: '$(modulePath)/client'
+  displayName: 'NPM install'
 
 - task: Npm@1
   inputs:
     command: 'custom'
     customCommand: 'run build'
     workingDir: '$(modulePath)/client'
+  displayName: 'NPM Build client files'
 
 - script: |
-    mkdir -p $(GOPATH)\build\client\dist
-    cp -r $(modulePath)\client\dist\* $(GOPATH)\build\client\dist
-    cp -r $(modulePath)\assets $(GOPATH)\build\assets
+    mkdir -p $(GOPATH)/build/client/dist
+    cp -r client/dist/* $(GOPATH)/build/client/dist
+    cp -r assets $(GOPATH)/build/assets
   workingDirectory: '$(modulePath)'
   displayName: 'Copy assets'
 
