@@ -102,6 +102,7 @@ export default {
               nodeAddress: server.node.publicHost + ':' + server.node.publicPort
             })
           }
+          vueData.pollServerStatus()
           setInterval(vueData.pollServerStatus, 30 * 1000)
         } else {
           vueData.error = responseData.msg
@@ -127,13 +128,19 @@ export default {
     },
     pollServerStatus () {
       let http = this.createRequest()
-      let vueData = this;
+      let vueData = this
 
       for (let i in this.servers) {
         let server = vueData.servers[i]
-        /*http.get('/daemon/' + server.id + '/status').then(function (response) {
-
-        })*/
+        http.get('/daemon/server/' + server.id + '/status').then(function (response) {
+          let data = response.data
+          if (data) {
+            let msg = data.data
+            if (msg && msg.running) {
+              server.online = true
+            }
+          }
+        })
       }
     }
   }

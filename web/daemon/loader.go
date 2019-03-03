@@ -43,7 +43,7 @@ func proxyServerRequest(c *gin.Context) {
 	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
 		return
-	} else if !exists {
+	} else if !exists || server == nil {
 		http.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
 		return
 	}

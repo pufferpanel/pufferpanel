@@ -49,7 +49,7 @@ func GetServerService() (ServerService, error) {
 func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, uint, error) {
 	servers := &models.Servers{}
 
-	query := ss.db.Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize)
+	query := ss.db
 
 	if searchCriteria.NodeId != 0 {
 		query = query.Where(&models.Server{NodeID: searchCriteria.NodeId})
@@ -70,14 +70,14 @@ func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, u
 		query = query.Where("name LIKE ?", nameFilter)
 	}
 
-	res := query.Preload("Node").Find(servers)
-
 	var count uint
-	err := query.Count(&count).Error
+	err := query.Model(&servers).Count(&count).Error
 
 	if err != nil {
 		return nil, 0, err
 	}
+
+	res := query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Find(servers)
 
 	return servers, count, res.Error
 }
