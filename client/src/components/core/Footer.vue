@@ -21,7 +21,7 @@
 export default {
   data: () => ({
     links: [
-      { name: 'Servers', Link: '/servers' },
+      { name: 'Servers', Link: '/servers' }
     ]
   })
 }
