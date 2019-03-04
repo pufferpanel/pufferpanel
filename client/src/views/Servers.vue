@@ -23,7 +23,9 @@
           <v-data-table
             :headers="headers"
             :items="servers"
-            hide-actions
+            :pagination.sync="pagination"
+            :total-items="totalServers"
+            :loading="loading"
           >
             <template
               slot="headerCell"
@@ -81,16 +83,38 @@ export default {
       ],
       servers: [
       ],
-      error: null
+      error: null,
+      loading: true,
+      totalServers: 0,
+      pagination: {
+        rowsPerPage: 10
+      }
+    }
+  },
+  watch: {
+    pagination: {
+      handler () {
+        this.loadData()
+      },
+      deep: true
     }
   },
   mounted () {
-    this.loadData()
+    this.pollServerStatus()
+    setInterval(this.pollServerStatus, 30 * 1000)
   },
   methods: {
     loadData () {
       let vueData = this
-      this.createRequest().get('/api/servers').then(function (response) {
+      vueData.loading = true
+      const { page, rowsPerPage } = this.pagination
+      vueData.servers = []
+      this.createRequest().get('/api/servers', {
+        params: {
+          page: page,
+          limit: rowsPerPage
+        }
+      }).then(function (response) {
         let responseData = response.data
         if (responseData.success) {
           for (let i in responseData.data) {
@@ -104,8 +128,8 @@ export default {
               nodeAddress: server.node.publicHost + ':' + server.node.publicPort
             })
           }
-          vueData.pollServerStatus()
-          setInterval(vueData.pollServerStatus, 30 * 1000)
+          let paging = responseData.metadata.paging
+          vueData.totalServers = paging.total
         } else {
           vueData.error = responseData.msg
         }
@@ -126,6 +150,8 @@ export default {
         } else {
           vueData.error = error
         }
+      }).then(function () {
+        vueData.loading = false
       })
     },
     pollServerStatus () {
