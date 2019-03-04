@@ -10,6 +10,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-regular-svg-icons": "^5.7.2",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
     "chartist": "0.11.0",
     "js-cookie": "^2.2.0",
     "node-sass": "^4.9.3",
@@ -20,6 +24,7 @@
     "vuetify": "^1.2.5"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.7.2",
     "@mdi/font": "^2.5.94",
     "@vue/cli-plugin-babel": "^3.0.1",
     "@vue/cli-plugin-eslint": "^3.0.1",

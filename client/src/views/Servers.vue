@@ -41,7 +41,14 @@
               <td>{{ item.name }}</td>
               <td>{{ item.node }}</td>
               <td>{{ item.address }}</td>
-              <td class="text-xs-right" />
+              <td>
+                <font-awesome-icon
+                  v-if="item.online"
+                  :icon= "['far','check-circle']"/>
+                <font-awesome-icon
+                  v-if="!item.online"
+                  :icon= "['far','times-circle']"/>
+              </td>
             </template>
           </v-data-table>
         </material-card>
@@ -56,25 +63,20 @@ export default {
     return {
       headers: [
         {
-          sortable: false,
           text: 'Name',
           value: 'name'
         },
         {
-          sortable: false,
           text: 'Node',
           value: 'node'
         },
         {
-          sortable: false,
           text: 'Address',
           value: 'address'
         },
         {
-          sortable: false,
           text: 'Online',
-          value: 'online',
-          align: 'right'
+          value: 'online'
         }
       ],
       servers: [

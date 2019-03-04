@@ -16,6 +16,13 @@ import App from './App'
 import i18n from '@/i18n'
 import router from '@/router'
 import store from '@/store'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faCheckCircle, faTimesCircle)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // Sync store with router
 sync(store, router)
