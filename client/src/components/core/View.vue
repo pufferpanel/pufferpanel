@@ -13,7 +13,7 @@
 export default {
   metaInfo () {
     return {
-      title: 'Dashboard'
+      title: 'Servers'
     }
   }
 }
