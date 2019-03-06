@@ -57,7 +57,6 @@ export default {
     links: [
       {
         to: '/server',
-        icon: 'mdi-view-dashboard',
         text: 'Servers'
       }
     ],

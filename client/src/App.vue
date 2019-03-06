@@ -1,7 +1,5 @@
 <template>
   <v-app>
-    <!--<core-toolbar v-if="!$route.meta.noHeader"/>-->
-
     <core-drawer v-if="!$route.meta.noSidebar"/>
 
     <core-view />
@@ -9,10 +7,12 @@
 </template>
 
 <style lang="scss">
-@import '@/styles/index.scss';
+  @import '~bootstrap/scss/bootstrap';
+  @import '~bootstrap-vue/src/index.scss';
+</style>
 
-/* Remove in 1.2 */
-.v-datatable thead th.column.sortable i {
-  vertical-align: unset;
-}
+<style lang="css">
+  @import '~animate.css/animate.css';
+  @import '~selectize/dist/css/selectize.css';
+  @import 'styles/pufferpanel.css';
 </style>
