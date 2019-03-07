@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <core-header v-if="!$route.meta.noHeader"/>
 
     <b-container fluid>
@@ -7,13 +7,17 @@
         <core-drawer v-if="!$route.meta.noSidebar"/>
 
         <main
+          v-if="!$route.meta.noBase"
           role="main"
           class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          <!--<core-view />-->
+          <b-container>
+            <router-view/>
+          </b-container>
         </main>
+        <router-view v-else />
       </b-row>
     </b-container>
-  </v-app>
+  </div>
 </template>
 
 <style lang="scss">
@@ -24,5 +28,6 @@
 <style lang="css">
   @import '~animate.css/animate.css';
   @import '~selectize/dist/css/selectize.css';
+  @import '~vuetify/dist/vuetify.min.css';
   @import 'styles/pufferpanel.css';
 </style>

@@ -24,10 +24,11 @@ func AuthMiddleware(c *gin.Context) {
 	if err != nil || cookie == "" {
 		//determine if it's an asset, otherwise, we can redirect if it's a GET
 		//dev only requirement?
-		for _, v := range assetFiles {
-			if strings.HasSuffix(c.Request.URL.Path, v) {
-				c.AbortWithStatus(404)
-				return
+		if c.Request.Method == "GET" && strings.Count(c.Request.URL.Path, "/") == 1 {
+			for _, v := range assetFiles {
+				if strings.HasSuffix(c.Request.URL.Path, v) {
+					return
+				}
 			}
 		}
 
