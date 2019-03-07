@@ -1,10 +1,11 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
 
 // Components
 import './components'
+import BootstrapVue from 'bootstrap-vue'
+import Vuetify from 'vuetify'
 
 // Plugins
 import './plugins'
@@ -26,6 +27,7 @@ library.add(faCheckCircle, faTimesCircle)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(BootstrapVue)
+Vue.use(Vuetify)
 
 // Sync store with router
 sync(store, router)

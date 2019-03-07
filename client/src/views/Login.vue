@@ -1,51 +1,44 @@
 <template>
-  <v-layout
-    align-center
-    justify-center>
-    <v-flex
-      xs12
-      sm8
-      md4>
-      <material-card
-        color="blue"
-        title="Login">
-        <v-container>
-          <v-card-text>
-            <v-form>
-              <v-text-field
-                v-model.trim="email"
-                prepend-icon="mdi-account"
-                name="email"
-                label="Email"
-                type="text" />
-              <v-text-field
-                v-model="password"
-                prepend-icon="mdi-lock"
-                name="password"
-                label="Password"
-                type="password"
-                @keyup.enter="submit" />
-            </v-form>
-          </v-card-text>
-          <material-notification
-            v-if="error"
-            color="error"
-            v-text="error"
-          />
-        </v-container>
-        <v-container>
-          <v-card-actions>
-            <a href="/auth/register">Register</a>
-            <v-spacer />
-            <v-btn
-              :disabled="loginDisabled"
-              color="blue"
-              @click="submit">Login</v-btn>
-          </v-card-actions>
-        </v-container>
-      </material-card>
-    </v-flex>
-  </v-layout>
+  <b-col md="6" sm="8" offset-md="3" offset-sm="2">
+    <v-card
+      title="Login">
+      <v-container>
+        <v-card-text>
+          <v-form>
+            <v-text-field
+              v-model.trim="email"
+              prepend-icon="mdi-account"
+              name="email"
+              label="Email"
+              type="text"/>
+            <v-text-field
+              v-model="password"
+              prepend-icon="mdi-lock"
+              name="password"
+              label="Password"
+              type="password"
+              @keyup.enter="submit"/>
+          </v-form>
+        </v-card-text>
+        <v-alert
+          v-if="error"
+          color="error"
+          v-text="error"
+        />
+      </v-container>
+      <v-container>
+        <v-card-actions>
+          <a href="/auth/register">Register</a>
+          <v-spacer/>
+          <v-btn
+            :disabled="loginDisabled"
+            color="blue"
+            @click="submit">Login
+          </v-btn>
+        </v-card-actions>
+      </v-container>
+    </v-card>
+  </b-col>
 </template>
 
 <script>
