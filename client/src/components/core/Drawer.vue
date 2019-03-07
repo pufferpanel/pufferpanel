@@ -1,121 +1,23 @@
 <template>
-  <v-navigation-drawer
-    id="app-drawer"
-    v-model="inputValue"
-    app
-    dark
-    floating
-    persistent
-    mobile-break-point="991"
-    width="260"
-  >
-    <v-layout
-      class="fill-height"
-      tag="v-list"
-      column
-    >
-      <v-list-tile avatar>
-        <v-list-tile-avatar>
-          <v-img
-            :src="logo"
-          />
-        </v-list-tile-avatar>
-        <v-list-tile-title class="title">
-          PufferPanel
-        </v-list-tile-title>
-      </v-list-tile>
-      <v-divider/>
-      <v-list-tile
-        v-for="(link, i) in links"
-        :key="i"
-        :to="link.to"
-        :active-class="color"
-        avatar
-        class="v-list-item"
-      >
-        <v-list-tile-action>
-          <v-icon>{{ link.icon }}</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title
-          v-text="link.text"
-        />
-      </v-list-tile>
-    </v-layout>
-  </v-navigation-drawer>
+  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+    <div class="sidebar-sticky">
+      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span>General</span>
+      </h6>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Account Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Servers</a>
+        </li>
+      </ul>
+
+      <footer class="footer">
+        <div class="container">
+          <p><a href="https://pufferpanel.com/">PufferPanel</a> is licensed under the <a href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">Apache License</a>.<br>Running Version v2.0.0</p>
+        </div>
+      </footer>
+    </div>
+  </nav>
 </template>
-
-<script>
-// Utilities
-import {
-  mapMutations,
-  mapState
-} from 'vuex'
-
-export default {
-  data: () => ({
-    logo: '/img/favicon.png',
-    links: [
-      {
-        to: '/server',
-        text: 'Servers'
-      }
-    ],
-    responsive: false
-  }),
-  computed: {
-    ...mapState('app', ['image', 'color']),
-    inputValue: {
-      get () {
-        return this.$store.state.app.drawer
-      },
-      set (val) {
-        this.setDrawer(val)
-      }
-    },
-    items () {
-      return this.$t('Layout.View.items')
-    }
-  },
-  mounted () {
-    this.onResponsiveInverted()
-    window.addEventListener('resize', this.onResponsiveInverted)
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.onResponsiveInverted)
-  },
-  methods: {
-    ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-    onResponsiveInverted () {
-      if (window.innerWidth < 991) {
-        this.responsive = true
-      } else {
-        this.responsive = false
-      }
-    }
-  }
-}
-</script>
-
-<style lang="scss">
-  #app-drawer {
-    .v-list__tile {
-      border-radius: 4px;
-
-      &--buy {
-        margin-top: auto;
-        margin-bottom: 17px;
-      }
-    }
-
-    .v-image__image--contain {
-      top: 9px;
-      height: 60%;
-    }
-
-    .search-input {
-      margin-bottom: 30px !important;
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-  }
-</style>
