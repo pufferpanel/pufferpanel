@@ -1,8 +1,18 @@
 <template>
   <v-app>
-    <core-drawer v-if="!$route.meta.noSidebar"/>
+    <core-header v-if="!$route.meta.noHeader"/>
 
-    <core-view />
+    <b-container fluid>
+      <b-row>
+        <core-drawer v-if="!$route.meta.noSidebar"/>
+
+        <main
+          role="main"
+          class="col-md-9 ml-sm-auto col-lg-10 px-4">
+          <!--<core-view />-->
+        </main>
+      </b-row>
+    </b-container>
   </v-app>
 </template>
 

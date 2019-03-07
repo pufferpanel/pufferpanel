@@ -5,7 +5,6 @@
         <router-view />
       </v-fade-transition>
     </div>
-    <core-footer v-if="!$route.meta.noFooter" />
   </v-content>
 </template>
 
