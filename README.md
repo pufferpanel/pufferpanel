@@ -4,7 +4,7 @@
 [Community Forums](https://community.pufferpanel.com) |
 Community Chat: [Discord](https://discord.gg/YwUXaD6) or [irc.esper.net #pufferpanel](https://webchat.esper.net/?nick=&channels=pufferpanel) |
 [Documentation](http://www.pufferpanel.com/docs) |
-[Translations](https://www.transifex.com/pufferpanel/pufferpanel/)
+[Translations](https://crowdin.com/project/pufferpanel)
 
 [![PufferPanel logo](http://i.imgur.com/YCy8Md2.png "PufferPanel")](https://pufferpanel.com)
 
