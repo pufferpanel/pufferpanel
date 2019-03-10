@@ -15,9 +15,8 @@ export default [
     view: 'errors/404',
     meta: {
       noAuth: true,
-      noSidebar: true,
+      noSidebar: false,
       noFooter: true,
-      noHeader: true,
       noBase: true
     }
   },
@@ -29,7 +28,6 @@ export default [
       noAuth: true,
       noSidebar: true,
       noFooter: true,
-      noHeader: true,
       noBase: true
     }
   },
