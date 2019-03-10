@@ -1,23 +1,26 @@
 <template>
-  <div>
+  <v-app>
     <core-header v-if="!$route.meta.noHeader"/>
 
     <b-container fluid>
       <b-row>
         <core-drawer v-if="!$route.meta.noSidebar"/>
 
-        <main
-          v-if="!$route.meta.noBase"
-          role="main"
-          class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          <b-container>
+        <b-col
+          v-if="$route.meta.noBase"
+          :cols="[$route.meta.noSidebar ? '12' : '10']">
+          <main role="main">
             <router-view/>
-          </b-container>
-        </main>
-        <router-view v-else />
+          </main>
+        </b-col>
+        <b-col v-else class="cols-md-11 cols-sm-12">
+          <main role="main">
+            <router-view/>
+          </main>
+        </b-col>
       </b-row>
     </b-container>
-  </div>
+  </v-app>
 </template>
 
 <style lang="scss">

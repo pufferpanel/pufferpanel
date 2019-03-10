@@ -1,67 +1,49 @@
 <template>
-  <v-container
-    fill-height
-    fluid
-    grid-list-xl
-  >
-    <v-layout
-      justify-center
-      wrap
+  <v-container>
+    <v-card
+      color="blue"
+      title="Servers"
     >
-      <v-flex
-        md12
+      <v-data-table
+        :headers="headers"
+        :items="servers"
+        :pagination.sync="pagination"
+        :total-items="totalServers"
+        :loading="loading"
       >
-        <material-notification
-          v-if="error"
-          color="error"
-          v-text="error"
-        />
-        <material-card
-          color="blue"
-          title="Servers"
+        <template
+          slot="headerCell"
+          slot-scope="{ header }"
         >
-          <v-data-table
-            :headers="headers"
-            :items="servers"
-            :pagination.sync="pagination"
-            :total-items="totalServers"
-            :loading="loading"
-          >
-            <template
-              slot="headerCell"
-              slot-scope="{ header }"
-            >
               <span
                 class="subheading font-weight-light text-success text--darken-3"
                 v-text="header.text"
               />
-            </template>
-            <template
-              slot="items"
-              slot-scope="{ item }"
-            >
-              <td>{{ item.name }}</td>
-              <td>{{ item.node }}</td>
-              <td>{{ item.address }}</td>
-              <td>
-                <font-awesome-icon
-                  v-if="item.online"
-                  :icon= "['far','check-circle']"/>
-                <font-awesome-icon
-                  v-if="!item.online"
-                  :icon= "['far','times-circle']"/>
-              </td>
-            </template>
-          </v-data-table>
-        </material-card>
-      </v-flex>
-    </v-layout>
+        </template>
+        <template
+          slot="items"
+          slot-scope="{ item }"
+        >
+          <td>{{ item.name }}</td>
+          <td>{{ item.node }}</td>
+          <td>{{ item.address }}</td>
+          <td>
+            <font-awesome-icon
+              v-if="item.online"
+              :icon="['far','check-circle']"/>
+            <font-awesome-icon
+              v-if="!item.online"
+              :icon="['far','times-circle']"/>
+          </td>
+        </template>
+      </v-data-table>
+    </v-card>
   </v-container>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       headers: [
         {
@@ -81,8 +63,7 @@ export default {
           value: 'online'
         }
       ],
-      servers: [
-      ],
+      servers: [],
       error: null,
       loading: true,
       totalServers: 0,
@@ -93,21 +74,21 @@ export default {
   },
   watch: {
     pagination: {
-      handler () {
+      handler() {
         this.loadData()
       },
       deep: true
     }
   },
-  mounted () {
+  mounted() {
     this.pollServerStatus()
     setInterval(this.pollServerStatus, 30 * 1000)
   },
   methods: {
-    loadData () {
+    loadData() {
       let vueData = this
       vueData.loading = true
-      const { page, rowsPerPage } = this.pagination
+      const {page, rowsPerPage} = this.pagination
       vueData.servers = []
       this.createRequest().get('/api/servers', {
         params: {
@@ -154,7 +135,7 @@ export default {
         vueData.loading = false
       })
     },
-    pollServerStatus () {
+    pollServerStatus() {
       let http = this.createRequest()
       let vueData = this
 

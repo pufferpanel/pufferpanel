@@ -30,11 +30,12 @@
         <v-card-actions>
           <a href="/auth/register">Register</a>
           <v-spacer/>
-          <v-btn
-            :disabled="loginDisabled"
-            color="blue"
+          <b-btn
+            :disabled="cannotSubmit"
+            variant="primary"
+            size="sm"
             @click="submit">Login
-          </v-btn>
+          </b-btn>
         </v-card-actions>
       </v-container>
     </v-card>
@@ -51,6 +52,11 @@ export default {
       password: '',
       loginDisabled: false,
       error: ''
+    }
+  },
+  computed: {
+    cannotSubmit: function () {
+      return this.loginDisabled || this.email === '' || this.password === ''
     }
   },
   methods: {
