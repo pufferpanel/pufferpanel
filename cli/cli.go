@@ -1,9 +1,12 @@
 /*
- Copyright 2018 Padduck, LLC
+ Copyright 2019 Padduck, LLC
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
+
  	http://www.apache.org/licenses/LICENSE-2.0
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,21 +14,18 @@
  limitations under the License.
 */
 
-package main
+package cli
 
 import (
-	"fmt"
-	"github.com/pufferpanel/pufferpanel/cli"
+	"github.com/pufferpanel/apufferi/cli"
+	"github.com/pufferpanel/pufferpanel/cli/commands"
 )
 
-const Hash = "none"
-const Version = "2.0.0-DEV"
-
-func main() {
-	err := cli.Run()
-
-	if err != nil {
-		fmt.Printf("Error running commands")
-		fmt.Printf(err.Error())
+func Run() error {
+	//define command order here
+	cmds := []cli.Command{
+		&commands.Run{},
 	}
+
+	return cli.Run(cmds)
 }
