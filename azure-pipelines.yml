@@ -1,6 +1,5 @@
 trigger:
 - kraken
-- theme
 
 pool:
   vmImage: 'Ubuntu-16.04'
