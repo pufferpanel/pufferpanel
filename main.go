@@ -18,16 +18,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/cli"
 )
 
-const Hash = "none"
-const Version = "2.0.0-DEV"
-
 func main() {
+	defer logging.Close()
+
 	err := cli.Run()
 
 	if err != nil {
 		logging.Error("Error running commands")
 		logging.Error(err.Error())
 	}
-
-	logging.Close()
 }

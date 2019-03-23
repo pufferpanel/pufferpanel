@@ -10,7 +10,7 @@ variables:
   GOROOT: '/usr/local/go1.11' # Go installation path
   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
   modulePath: '$(GOPATH)/src/github.com/pufferpanel/pufferpanel' # Path to the module's code
-  version: 2.0.0
+  version: 2.0.0.$(Build.BuildId)
 
 steps:
 - script: |
@@ -34,7 +34,7 @@ steps:
 - script: |
     export GOOS=windows
     dep ensure -v
-    go build -o $(GOPATH)/build/pufferpanel.exe -v github.com/pufferpanel/pufferpanel
+    go build -o $(GOPATH)/build/pufferpanel.exe -ldflags "-X version.Hash=$(Build.SourceVersion) -X version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Windows Build'
 
@@ -42,7 +42,7 @@ steps:
     export GOOS=linux
     dep ensure -v
     rm -f *.syso
-    go build -o $(GOPATH)/build/pufferpanel -v github.com/pufferpanel/pufferpanel
+    go build -o $(GOPATH)/build/pufferpanel -ldflags "-X version.Hash=$(Build.SourceVersion) -X version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Linux Build'
 
