@@ -44,21 +44,24 @@ func (*Run) ShouldRunNext() bool {
 }
 
 func (r *Run) Run() error {
-	logging.Init()
-	logging.SetLevel(logging.DEBUG)
+	err := logging.WithLogDirectory("logs", logging.DEBUG, nil)
+	if err != nil {
+		return err
+	}
 
-	err := database.Load()
-
+	err = database.Load()
 	if err != nil {
 		return err
 	}
 
 	defer database.Close()
 
-
 	services.LoadEmailService()
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
+	router.Use(gin.LoggerWithWriter(logging.Writer))
+
 	web.RegisterRoutes(router)
 
 	return router.Run() // listen and serve on 0.0.0.0:8080

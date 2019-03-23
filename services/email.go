@@ -35,14 +35,14 @@ func LoadEmailService() {
 		templateName := strings.TrimSuffix(strings.TrimPrefix(tmpl, prefix), ".html")
 		renderedTemplate, err := template.New(templateName).ParseFiles(tmpl)
 		if err != nil {
-			logging.Error("Error processing email template "+tmpl, err)
+			logging.Error("Error processing email template %s: %s", tmpl, err.Error())
 			continue
 		}
 		globalEmailService.templates[templateName] = renderedTemplate
 	}
 
 	for k := range globalEmailService.templates {
-		logging.Debugf("Email template registered: %s", k)
+		logging.Debug("Email template registered: %s", k)
 	}
 }
 
