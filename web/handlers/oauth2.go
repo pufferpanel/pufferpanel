@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/services"
 	webHttp "net/http"
 	"strconv"
@@ -31,10 +32,14 @@ func HasOAuth2Token(c *gin.Context) {
 func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		os, err := services.GetOAuthService()
-		if err != nil {
+		if err != nil || os == nil {
 			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("oauth2 service is not available").Fail().Send()
-			logging.Errorf("oauth2 service is not available", err)
+			if err == nil {
+				err = errors.New("oauth2 service is null")
+			}
+			logging.Error("oauth2 service is not available: %s", err.Error())
 			c.Abort()
+			return
 		}
 
 		var serverId *uint
@@ -63,7 +68,7 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 		ci, allowed, err := os.HasRights(ti.GetAccess(), serverId, scope)
 		if err != nil {
 			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail().Send()
-			logging.Errorf("error validating credentials", err)
+			logging.Error("error validating credentials: %s", err.Error())
 			c.Abort()
 			return
 		}

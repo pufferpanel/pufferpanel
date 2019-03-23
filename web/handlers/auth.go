@@ -44,7 +44,7 @@ func AuthMiddleware(c *gin.Context) {
 	srv, err := services.GetOAuthService()
 
 	if err != nil {
-		logging.Error("oauth service unavailable", err)
+		logging.Error("oauth service unavailable: %s", err.Error())
 		c.AbortWithStatus(500)
 		return
 	}
@@ -52,7 +52,7 @@ func AuthMiddleware(c *gin.Context) {
 	info, client, err := srv.GetByToken(cookie)
 
 	if err != nil {
-		logging.Error("oauth service unavailable", err)
+		logging.Error("oauth service unavailable: %s", err.Error())
 		c.AbortWithStatus(500)
 		return
 	}
@@ -78,7 +78,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	err = srv.UpdateExpirationTime(info, 60*time.Minute)
 	if err != nil {
-		logging.Error("error extending session", err)
+		logging.Error("error extending session: %s", err.Error())
 		c.AbortWithStatus(500)
 		return
 	}

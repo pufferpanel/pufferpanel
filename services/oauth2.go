@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
@@ -12,7 +13,6 @@ import (
 	oauthErrors "gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -67,13 +67,13 @@ func configureServer() error {
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
 
-	srv.SetInternalErrorHandler(func(err error) (re *oauthErrors .Response) {
-		log.Println("Internal Error:", err.Error())
+	srv.SetInternalErrorHandler(func(err error) (re *oauthErrors.Response) {
+		logging.Error("Internal Error: %s", err.Error())
 		return
 	})
 
 	srv.SetResponseErrorHandler(func(re *oauthErrors.Response) {
-		log.Println("Response Error:", re.Error.Error())
+		logging.Error("Response Error: %s", re.Error.Error())
 	})
 
 	_oauthService = &oauthService{server: srv}

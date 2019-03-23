@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"github.com/pufferpanel/apufferi/common"
 	"github.com/pufferpanel/apufferi/logging"
 	"io"
 	"os"
@@ -39,9 +40,9 @@ func LoadDefault() error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			file, err := os.Create(configPath)
-			defer file.Close()
+			defer common.Close(file)
 			if err != nil {
-				logging.Error("Error creating config", err)
+				logging.Error("Error creating config: %s", err.Error())
 				return err
 			}
 			data := getDefault()
@@ -50,13 +51,13 @@ func LoadDefault() error {
 			encoder.SetEscapeHTML(true)
 			err = encoder.Encode(&data)
 			if err != nil {
-				logging.Error("Error creating config", err)
+				logging.Error("Error creating config: %s", err.Error())
 				return err
 			}
 
 		} else {
 			if err != nil {
-				logging.Error("Error reading config", err)
+				logging.Error("Error reading config: %s", err.Error())
 				return err
 			}
 			return err
@@ -65,7 +66,7 @@ func LoadDefault() error {
 
 	err = Load(cfg)
 	if err != nil {
-		logging.Error("Error reading config", err)
+		logging.Error("Error reading config: %s", err.Error())
 		return err
 	}
 	loaded = true

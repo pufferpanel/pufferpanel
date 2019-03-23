@@ -200,14 +200,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b72c9a4ba9ba96afebd5264ac23b990599a735c988d1d3be9bca836b42d0fab9"
+  digest = "1:5803896ff170517feaf2d6b155a3ebbda8279b4d964c819cfec64868e3241ba1"
   name = "github.com/pufferpanel/apufferi"
   packages = [
+    "cli",
+    "common",
     "http",
     "logging",
   ]
   pruneopts = "UT"
-  revision = "a3eae583cb995a55aacfb68e58d155f399d4960e"
+  revision = "0525bd38e9caf77ee488497e9b17bb709c001fd0"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
@@ -247,7 +249,7 @@
     "md4",
   ]
   pruneopts = "UT"
-  revision = "a1f597ede03a7bef967a422b5b3a5bd08805a01e"
+  revision = "b7391e95e576cacdcdd422573063bc057239113d"
 
 [[projects]]
   branch = "master"
@@ -255,15 +257,15 @@
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "6c81ef8f67ca3f42fc9cd71dfbd5f35b0c4b5771"
+  revision = "f49334f85ddcf0f08d7fb6dd7363e9e6d6b777eb"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
-  version = "v1.4.0"
+  revision = "54a98f90d1c46b7731eb8fb305d2a321c30ef610"
+  version = "v1.5.0"
 
 [[projects]]
   digest = "1:cbc72c4c4886a918d6ab4b95e347ffe259846260f99ebdd8a198c2331cf2b2e9"
@@ -316,6 +318,8 @@
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
     "github.com/mailgun/mailgun-go",
+    "github.com/pufferpanel/apufferi/cli",
+    "github.com/pufferpanel/apufferi/common",
     "github.com/pufferpanel/apufferi/http",
     "github.com/pufferpanel/apufferi/logging",
     "github.com/satori/go.uuid",

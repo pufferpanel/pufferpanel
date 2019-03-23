@@ -17,6 +17,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/pufferpanel/apufferi/common"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/models"
 	"os"
@@ -71,6 +72,10 @@ func openConnection() (err error) {
 	//attempt to open database connection to validate
 	dbConn, err = gorm.Open(dialect, connString)
 
+	if err != nil {
+		return
+	}
+
 	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "TRUE" {
 		dbConn.LogMode(true)
 	}
@@ -88,7 +93,7 @@ func GetConnection() (*gorm.DB, error) {
 }
 
 func Close() {
-	dbConn.Close()
+	common.Close(dbConn)
 }
 
 func migrateModels() (err error) {
