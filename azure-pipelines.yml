@@ -33,7 +33,7 @@ steps:
 - script: |
     export GOOS=windows
     dep ensure -v
-    go build -o $(GOPATH)/build/pufferpanel.exe -ldflags "-X version.Hash=$(Build.SourceVersion) -X version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
+    go build -o $(GOPATH)/build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Windows Build'
 
@@ -41,7 +41,7 @@ steps:
     export GOOS=linux
     dep ensure -v
     rm -f *.syso
-    go build -o $(GOPATH)/build/pufferpanel -ldflags "-X version.Hash=$(Build.SourceVersion) -X version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
+    go build -o $(GOPATH)/build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
   workingDirectory: '$(modulePath)'
   displayName: 'Linux Build'
 
