@@ -70,6 +70,54 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Copy assets'
 
+- script: |
+    fpm -s dir -t deb \
+      --name pufferpanel -v $(version) \
+      --maintainer dev@pufferpanel.com \
+      --deb-user pufferpanel --deb-group pufferpanel \
+      --deb-systemd servicefiles/systemd/pufferpanel \
+      --before-install scripts/preinst.sh \
+      --after-upgrade scripts/postupgrade.sh \
+      --before-remove scripts/prerm.sh \
+      --deb-after-purge scripts/purge.sh \
+      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel
+
+    mkdir $(GOPATH)/build/xenial
+    mv *.deb $(GOPATH)/build/xenial
+  displayName: 'Create packages'
+  workingDirectory: systemd/pufferpanel/xenial
+
+- script: |
+    fpm -s deb -t rpm \
+      --name pufferpanel \
+      --maintainer dev@pufferpanel.com \
+      --rpm-user pufferpanel --rpm-group pufferpanel \
+      --before-install scripts/preinst.sh \
+      --after-upgrade scripts/postupgrade.sh \
+      --before-remove scripts/prerm.sh \
+      $(GOPATH)/build/xenial/pufferpanel_*_amd64.deb
+
+    mkdir $(GOPATH)/build/rpm
+    mv *.rpm $(GOPATH)/build/rpm
+  displayName: 'Create packages'
+  workingDirectory: systemd/pufferpanel/rpm7
+
+- script: |
+    fpm -s dir -t deb \
+      --name pufferpanel -v $(version) \
+      --maintainer dev@pufferpanel.com \
+      --deb-user pufferpanel --deb-group pufferpanel \
+      --deb-init servicefiles/initd/pufferpanel \
+      --before-install scripts/preinst.sh \
+      --before-remove scripts/prerm.sh \
+      --deb-after-purge scripts/purge.sh \
+      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel
+
+    mkdir $(GOPATH)/build/trusty
+    mv *.deb $(GOPATH)/build/trusty
+  displayName: 'Create packages'
+  workingDirectory: systemd/pufferpanel/trusty
+
 - task: PublishPipelineArtifact@0
   inputs:
     artifactName: 'pufferpanel'
