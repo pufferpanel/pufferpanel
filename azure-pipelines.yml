@@ -11,7 +11,7 @@ variables:
   GOROOT: '/usr/local/go1.11' # Go installation path
   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
   modulePath: '$(GOPATH)/src/github.com/pufferpanel/pufferpanel' # Path to the module's code
-  version: $(name)
+  version: $(Build.BuildNumber)
 
 steps:
 - script: |
