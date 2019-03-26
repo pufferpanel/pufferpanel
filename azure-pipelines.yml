@@ -75,6 +75,12 @@ steps:
   displayName: 'Get supporting files'
 
 - script: |
+    gem install --no-ri --no-rdoc rake
+    gem install --no-ri --no-rdoc fpm && fpm -v
+    gem install --no-ri --no-rdoc package_cloud && package_cloud version
+  displayName: 'Install gem deps'
+
+- script: |
     fpm -s dir -t deb \
       --name pufferpanel -v $(version) \
       --maintainer dev@pufferpanel.com \
