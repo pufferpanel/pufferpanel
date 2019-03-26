@@ -71,6 +71,10 @@ steps:
   displayName: 'Copy assets'
 
 - script: |
+    git clone https://github.com/PufferPanel/systemd
+  displayName: 'Get supporting files'
+
+- script: |
     fpm -s dir -t deb \
       --name pufferpanel -v $(version) \
       --maintainer dev@pufferpanel.com \
