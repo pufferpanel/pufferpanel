@@ -1,68 +1,41 @@
 <template>
   <v-container>
-    <v-card
-      color="blue"
-      title="Servers"
-    >
-      <v-data-table
-        :headers="headers"
-        :items="servers"
-        :pagination.sync="pagination"
-        :total-items="totalServers"
-        :loading="loading"
-      >
-        <template
-          slot="headerCell"
-          slot-scope="{ header }"
-        >
-              <span
-                class="subheading font-weight-light text-success text--darken-3"
-                v-text="header.text"
-              />
-        </template>
-        <template
-          slot="items"
-          slot-scope="{ item }"
-        >
-          <td>{{ item.name }}</td>
-          <td>{{ item.node }}</td>
-          <td>{{ item.address }}</td>
-          <td>
-            <font-awesome-icon
-              v-if="item.online"
-              :icon="['far','check-circle']"/>
-            <font-awesome-icon
-              v-if="!item.online"
-              :icon="['far','times-circle']"/>
-          </td>
-        </template>
-      </v-data-table>
-    </v-card>
+    <b-table striped hover :items="servers" :fields="fields" :busy="loading">
+      <template slot="online" slot-scope="data">
+        <font-awesome-icon
+          v-if="data.value"
+          :icon="['far','check-circle']"/>
+        <font-awesome-icon
+          v-if="!data.value"
+          :icon="['far','times-circle']"/>
+      </template>
+
+      <div slot="table-busy" class="text-center text-danger my-2">
+        <b-spinner class="align-middle"/>
+        <strong>Loading...</strong>
+      </div>
+    </b-table>
   </v-container>
 </template>
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      headers: [
-        {
-          text: 'Name',
-          value: 'name'
+      fields: {
+        'name': {
+          sortable: true
         },
-        {
-          text: 'Node',
-          value: 'node'
+        'node': {
+          sortable: true
         },
-        {
-          text: 'Address',
-          value: 'address'
+        'address': {
+          sortable: true
         },
-        {
-          text: 'Online',
-          value: 'online'
+        'online': {
+          sortable: true
         }
-      ],
+      },
       servers: [],
       error: null,
       loading: true,
@@ -74,21 +47,22 @@ export default {
   },
   watch: {
     pagination: {
-      handler() {
+      handler () {
         this.loadData()
       },
       deep: true
     }
   },
-  mounted() {
+  mounted () {
+    this.loadData()
     this.pollServerStatus()
     setInterval(this.pollServerStatus, 30 * 1000)
   },
   methods: {
-    loadData() {
+    loadData () {
       let vueData = this
       vueData.loading = true
-      const {page, rowsPerPage} = this.pagination
+      const { page, rowsPerPage } = this.pagination
       vueData.servers = []
       this.createRequest().get('/api/servers', {
         params: {
@@ -135,7 +109,7 @@ export default {
         vueData.loading = false
       })
     },
-    pollServerStatus() {
+    pollServerStatus () {
       let http = this.createRequest()
       let vueData = this
 

@@ -6,8 +6,8 @@
   name = "cloud.google.com/go"
   packages = ["civil"]
   pruneopts = "UT"
-  revision = "2fa99f4c25c422525316dcb1fd3d5b94e1944cfd"
-  version = "v0.37.1"
+  revision = "458e1f376a2b44413160b5d301183b65debaa3f6"
+  version = "v0.37.2"
 
 [[projects]]
   branch = "master"
@@ -200,7 +200,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5803896ff170517feaf2d6b155a3ebbda8279b4d964c819cfec64868e3241ba1"
+  digest = "1:7ba6e2202630e945c34f55c3a24db087645d420d6656e0b19234ffb35c943f64"
   name = "github.com/pufferpanel/apufferi"
   packages = [
     "cli",
@@ -209,7 +209,7 @@
     "logging",
   ]
   pruneopts = "UT"
-  revision = "0525bd38e9caf77ee488497e9b17bb709c001fd0"
+  revision = "304b67574e508628bedced09faae00e18ca7929a"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
@@ -249,7 +249,7 @@
     "md4",
   ]
   pruneopts = "UT"
-  revision = "b7391e95e576cacdcdd422573063bc057239113d"
+  revision = "a5d413f7728c81fb97d96a2b722368945f651e78"
 
 [[projects]]
   branch = "master"
