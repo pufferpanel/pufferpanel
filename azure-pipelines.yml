@@ -92,7 +92,8 @@ steps:
       --after-upgrade scripts/postupgrade.sh \
       --before-remove scripts/prerm.sh \
       --deb-after-purge scripts/purge.sh \
-      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel
+      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
+      $(GOPATH)/client/dist=/var/www/pufferpanel/client/dist/
 
     mkdir $(GOPATH)/build/xenial
     mv *.deb $(GOPATH)/build/xenial
@@ -123,7 +124,8 @@ steps:
       --before-install scripts/preinst.sh \
       --before-remove scripts/prerm.sh \
       --deb-after-purge scripts/purge.sh \
-      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel
+      $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
+      $(GOPATH)/client/dist=/var/www/pufferpanel/client/dist/
 
     mkdir $(GOPATH)/build/trusty
     mv *.deb $(GOPATH)/build/trusty
