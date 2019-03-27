@@ -97,7 +97,7 @@ func Close() {
 }
 
 func migrateModels() (err error) {
-	dbObjects := []interface{} {
+	dbObjects := []interface{}{
 		&models.Node{},
 		&models.Server{},
 		&models.User{},
