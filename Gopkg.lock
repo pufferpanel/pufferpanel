@@ -18,7 +18,7 @@
     "internal/cp",
   ]
   pruneopts = "UT"
-  revision = "a8ed825ac8537383ef814eaf5a16174751796a2b"
+  revision = "2183450503ad9159289b6c3e4f2c583ef87f4aff"
 
 [[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
@@ -200,7 +200,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7ba6e2202630e945c34f55c3a24db087645d420d6656e0b19234ffb35c943f64"
+  digest = "1:041f6569196228b8844d06015508d4b45bfdaf89699a85e6c9509e22ed593d36"
   name = "github.com/pufferpanel/apufferi"
   packages = [
     "cli",
@@ -209,7 +209,7 @@
     "logging",
   ]
   pruneopts = "UT"
-  revision = "304b67574e508628bedced09faae00e18ca7929a"
+  revision = "8db70bd97fefc7d6e621edf77b5ca37e50c6c5ce"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
@@ -253,11 +253,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5637b3b43405643229e55140bb3049dfa7d73957ba9ecfccc31cdadbfbe0b1f9"
+  digest = "1:c9a4e761695039425d21448d3289ff280c3a98f0c8145fa7417d9889556006b7"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "f49334f85ddcf0f08d7fb6dd7363e9e6d6b777eb"
+  revision = "9eb1bfa1ce65ae8a6ff3114b0aaf9a41a6cf3560"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
