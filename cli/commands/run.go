@@ -24,6 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web"
+	"os"
 )
 
 type Run struct {
@@ -49,6 +50,8 @@ func (r *Run) Run() error {
 		return err
 	}
 
+	logging.SetLevel(os.Stdout, logging.DEBUG)
+
 	err = database.Load()
 	if err != nil {
 		return err
@@ -60,7 +63,7 @@ func (r *Run) Run() error {
 
 	router := gin.New()
 	router.Use(gin.Recovery())
-	router.Use(gin.LoggerWithWriter(logging.Writer))
+	router.Use(gin.LoggerWithWriter(logging.AsWriter(logging.INFO)))
 
 	web.RegisterRoutes(router)
 

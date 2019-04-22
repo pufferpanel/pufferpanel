@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/pufferpanel/shared"
 )
 
 func LoginPost(c *gin.Context) {
@@ -14,13 +15,12 @@ func LoginPost(c *gin.Context) {
 
 	err := c.BindJSON(request)
 	if err != nil {
-		response.Message("invalid request").Status(400).Fail()
+		response.Message("invalid request").Status(400).Data(err.Error()).Fail()
 		return
 	}
 
 	us, err := services.GetUserService()
-	if err != nil {
-		response.Message("error loading user service").Fail().Status(500)
+	if shared.HandleError(response, err) {
 		return
 	}
 

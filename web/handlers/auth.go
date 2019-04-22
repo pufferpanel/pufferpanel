@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/pufferpanel/shared"
 	"strings"
 	"time"
 )
 
-var noLogin = []string{"/auth/","/error/", "/daemon/", "/api/"}
+var noLogin = []string{"/auth/", "/error/", "/daemon/", "/api/"}
 var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
 
 func AuthMiddleware(c *gin.Context) {
@@ -34,26 +35,25 @@ func AuthMiddleware(c *gin.Context) {
 
 		if c.Request.Method != "GET" {
 			c.AbortWithStatus(403)
- 		} else {
- 			c.Redirect(302, "/auth/login")
- 			c.Abort()
+		} else {
+			c.Redirect(302, "/auth/login")
+			c.Abort()
 		}
 		return
 	}
 
 	srv, err := services.GetOAuthService()
 
-	if err != nil {
-		logging.Error("oauth service unavailable: %s", err.Error())
-		c.AbortWithStatus(500)
+	response := http.Respond(c)
+	if shared.HandleError(response, err) {
+		c.Abort()
 		return
 	}
 
 	info, client, err := srv.GetByToken(cookie)
 
-	if err != nil {
-		logging.Error("oauth service unavailable: %s", err.Error())
-		c.AbortWithStatus(500)
+	if shared.HandleError(response, err) {
+		c.Abort()
 		return
 	}
 
@@ -77,9 +77,8 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	err = srv.UpdateExpirationTime(info, 60*time.Minute)
-	if err != nil {
-		logging.Error("error extending session: %s", err.Error())
-		c.AbortWithStatus(500)
+	if shared.HandleError(response, err) {
+		c.Abort()
 		return
 	}
 
