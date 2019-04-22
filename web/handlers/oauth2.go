@@ -6,6 +6,7 @@ import (
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/pufferpanel/shared"
 	webHttp "net/http"
 	"strconv"
 	"strings"
@@ -33,11 +34,13 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 	return func(c *gin.Context) {
 		os, err := services.GetOAuthService()
 		if err != nil || os == nil {
-			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("oauth2 service is not available").Fail().Send()
 			if err == nil {
-				err = errors.New("oauth2 service is null")
+				err = errors.New("oauth2 service is nil")
 			}
-			logging.Error("oauth2 service is not available: %s", err.Error())
+
+			response := http.Respond(c)
+
+			shared.HandleError(response, err)
 			c.Abort()
 			return
 		}
@@ -68,7 +71,7 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 		ci, allowed, err := os.HasRights(ti.GetAccess(), serverId, scope)
 		if err != nil {
 			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail().Send()
-			logging.Error("error validating credentials: %s", err.Error())
+			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
 			c.Abort()
 			return
 		}

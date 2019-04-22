@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
 	"gopkg.in/go-playground/validator.v9"
@@ -31,7 +32,8 @@ func RegisterPost(c *gin.Context) {
 
 	us, err := services.GetUserService()
 	if err != nil {
-		response.Fail().Status(400).Data(err)
+		response.Fail().Status(400).Message("error loading user service").Data(err)
+		logging.Build(logging.ERROR).WithMessage("error loading user service").WithError(err).Log()
 		return
 	}
 

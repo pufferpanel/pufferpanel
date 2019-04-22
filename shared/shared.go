@@ -16,6 +16,7 @@ package shared
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/apufferi/logging"
 	"net/http"
 	"strings"
 )
@@ -46,6 +47,7 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 func HandleError(response builder.Builder, err error) bool {
 	if err != nil {
 		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		logging.Build(logging.ERROR).WithError(err).Log()
 		return true
 	}
 	return false

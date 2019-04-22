@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/pufferpanel/shared"
 	netHttp "net/http"
 	"strings"
 )
@@ -19,6 +20,8 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 }
 
 func proxyServerRequest(c *gin.Context) {
+	response := http.Respond(c)
+
 	serverId := c.Param("id")
 	if serverId == "" {
 		c.AbortWithStatus(404)
@@ -28,27 +31,24 @@ func proxyServerRequest(c *gin.Context) {
 	path := "/server/" + serverId + c.Param("path")
 
 	ss, err := services.GetServerService()
-	if err != nil {
-		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+	if shared.HandleError(response, err) {
 		return
 	}
 
 	ns, err := services.GetNodeService()
-	if err != nil {
-		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+	if shared.HandleError(response, err) {
 		return
 	}
 
 	server, exists, err := ss.Get(serverId)
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
-		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+	if err != nil && !gorm.IsRecordNotFoundError(err) && shared.HandleError(response, err) {
 		return
 	} else if !exists || server == nil {
 		http.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
 		return
 	}
 
-	response, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+	callResponse, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
 
 	//this only will throw an error if we can't get to the node
 	//so if error, use our response messenger, otherwise copy response from node to client
@@ -59,7 +59,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//Even though apache isn't going to be in place, we can't set certain headers
 	newHeaders := make(map[string]string, 0)
-	for k, v := range response.Header {
+	for k, v := range callResponse.Header {
 		switch k {
 		case "Transfer-Encoding":
 		case "Content-Type":
@@ -70,5 +70,5 @@ func proxyServerRequest(c *gin.Context) {
 		}
 	}
 
-	c.DataFromReader(response.StatusCode, response.ContentLength, response.Header.Get("Content-Type"), response.Body, newHeaders)
+	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 }

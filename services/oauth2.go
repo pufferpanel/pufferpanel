@@ -68,12 +68,12 @@ func configureServer() error {
 	srv.SetClientInfoHandler(server.ClientFormHandler)
 
 	srv.SetInternalErrorHandler(func(err error) (re *oauthErrors.Response) {
-		logging.Error("Internal Error: %s", err.Error())
+		logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
 		return
 	})
 
 	srv.SetResponseErrorHandler(func(re *oauthErrors.Response) {
-		logging.Error("Response Error: %s", re.Error.Error())
+		logging.Build(logging.ERROR).WithMessage("response error on oauth2 service").WithError(re.Error).Log()
 	})
 
 	_oauthService = &oauthService{server: srv}

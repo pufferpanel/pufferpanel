@@ -24,7 +24,6 @@ func main() {
 	err := cli.Run()
 
 	if err != nil {
-		logging.Error("Error running commands")
-		logging.Error(err.Error())
+		logging.Build(logging.ERROR).WithMessage("Error running commands").WithError(err).Log()
 	}
 }

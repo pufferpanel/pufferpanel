@@ -81,10 +81,10 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 		return nil, err
 	}
 
-	res := db.Preload("ClientInfo").Where(obj).First(obj)
+	res := db.Preload("ClientInfo").Where(obj).FirstOrInit(obj)
 	err = res.Error
 
-	if obj == nil || obj.ID == 0 || err != nil {
+	if obj.ID == 0 || err != nil {
 		if err == nil || gorm.IsRecordNotFoundError(err) {
 			err = errors.New("token is invalid")
 		}
