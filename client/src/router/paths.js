@@ -7,11 +7,12 @@
 export default [
   {
     path: '/server',
-    view: 'Servers'
+    view: 'Servers',
+    name: 'Server'
   },
   {
     path: '/error/404',
-    name: 'Error',
+    name: 'Error/404',
     view: 'errors/404',
     meta: {
       noAuth: true,

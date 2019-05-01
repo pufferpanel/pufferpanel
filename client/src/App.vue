@@ -8,7 +8,7 @@
 
         <b-col
           v-if="$route.meta.noBase"
-          :cols="[$route.meta.noSidebar ? '12' : '10']">
+          :cols="$route.meta.noSidebar ? '12' : '10'">
           <main role="main">
             <router-view/>
           </main>

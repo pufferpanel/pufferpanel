@@ -28,7 +28,7 @@
       </v-container>
       <v-container>
         <v-card-actions>
-          <a href="/auth/register">Register</a>
+          <router-link to="/auth/register">Register</router-link>
           <v-spacer/>
           <b-btn
             :disabled="cannotSubmit"
@@ -85,16 +85,17 @@ export default {
         let responseData = response.data
         if (responseData.success) {
           Cookies.set('puffer_auth', responseData.data)
-          window.location.href = '/server'
+          this.$router.push('/server')
         } else {
           data.error = responseData.msg
           data.loginDisabled = false
         }
       }).catch(function (error) {
-        let msg = error.response.data.msg
-        if (!msg) {
-          msg = error
+        let msg = error.message
+        if (error && error.response && error.response.data && error.response.data.msg) {
+          msg = error.response.data.msg
         }
+
         data.error = msg
         data.loginDisabled = false
       })
