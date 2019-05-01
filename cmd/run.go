@@ -1,32 +1,28 @@
 /*
  Copyright 2019 Padduck, LLC
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- 	http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  	http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
-package commands
+package cmd
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/cli"
 	"github.com/pufferpanel/apufferi/common"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 	"net"
@@ -37,24 +33,13 @@ import (
 	"syscall"
 )
 
-type Run struct {
-	cli.Command
-	run bool
+var runCmd = &cobra.Command{
+	Use: "run",
+	Short: "Runs the panel",
+	Run: root,
 }
 
-func (r *Run) Load() {
-	flag.BoolVar(&r.run, "run", false, "Runs the service")
-}
-
-func (r *Run) ShouldRun() bool {
-	return r.run
-}
-
-func (*Run) ShouldRunNext() bool {
-	return false
-}
-
-func (r *Run) Run() error {
+func executeRun(cmd *cobra.Command, args []string) error {
 	err := config.Load()
 	if err != nil {
 		return err
@@ -82,10 +67,6 @@ func (r *Run) Run() error {
 
 	web.RegisterRoutes(router)
 
-	return r.runEndpoints(router) // listen and serve on 0.0.0.0:8080
-}
-
-func (r *Run) runEndpoints(router *gin.Engine) error {
 	c := make(chan error)
 
 	srv := &http.Server{
@@ -163,7 +144,5 @@ func (r *Run) runEndpoints(router *gin.Engine) error {
 		c <- nil
 	}()
 
-	err := <- c
-
-	return err
+	return <- c
 }

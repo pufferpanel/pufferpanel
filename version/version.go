@@ -9,5 +9,5 @@ var (
 )
 
 func init() {
-	Display = fmt.Sprintf("pufferd %s (%s)", Version, Hash)
+	Display = fmt.Sprintf("PufferPanel %s (%s)", Version, Hash)
 }
