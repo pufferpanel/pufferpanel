@@ -229,11 +229,13 @@ body {
 
 .sidebar {
     position: fixed;
-    top: 40px;
-    bottom: 0;
+    /*top: 20px;
     left: 20px;
-    z-index: 100;
+     */
+    bottom: 0;
     padding: 64px 0 0;
+
+    z-index: 100;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
@@ -290,9 +292,11 @@ body {
  */
 
 .navbar {
+    /*
     margin-top: 30px;
     margin-left: 20px;
     margin-right: 20px;
+     */
 }
 
 .navbar-brand {
@@ -332,4 +336,8 @@ body {
     /*height: 60px;
     line-height: 60px;
     background-color: #f5f5f5;*/
+}
+
+.footer .container {
+    padding: 0px;
 }
