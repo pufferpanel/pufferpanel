@@ -3,8 +3,8 @@ package services
 import (
 	"fmt"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/spf13/viper"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -64,8 +64,8 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 		return err
 	}
 
-	provider, exist := config.Get().GetString("email.provider")
-	if !exist {
+	provider := viper.GetString("email.provider")
+	if provider == "" {
 		return errors.NewEmailNotConfigured("no email provider configured")
 	}
 
