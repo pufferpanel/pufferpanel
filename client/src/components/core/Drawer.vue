@@ -7,10 +7,10 @@
         </h6>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="#">Account Settings</a>
+            <router-link to="/account" class="nav-link">Account Settings</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Servers</a>
+            <router-link to="/server" class="nav-link">Servers</router-link>
           </li>
         </ul>
 

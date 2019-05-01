@@ -1,21 +1,22 @@
 <template>
-  <v-container>
-    <b-table striped hover :items="servers" :fields="fields" :busy="loading">
-      <template slot="online" slot-scope="data">
-        <font-awesome-icon
-          v-if="data.value"
-          :icon="['far','check-circle']"/>
-        <font-awesome-icon
-          v-if="!data.value"
-          :icon="['far','times-circle']"/>
-      </template>
+  <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields" :busy="loading">
+    <template slot="name" slot-scope="data">
+      <strong v-text="data.value"></strong>
+    </template>
+    <template slot="online" slot-scope="data">
+      <font-awesome-icon
+        v-if="data.value"
+        :icon="['far','check-circle']"/>
+      <font-awesome-icon
+        v-if="!data.value"
+        :icon="['far','times-circle']"/>
+    </template>
 
-      <div slot="table-busy" class="text-center text-danger my-2">
-        <b-spinner class="align-middle"/>
-        <strong>Loading...</strong>
-      </div>
-    </b-table>
-  </v-container>
+    <div slot="table-busy" class="text-center text-danger my-2">
+      <b-spinner class="align-middle"/>
+      <strong>Loading...</strong>
+    </div>
+  </b-table>
 </template>
 
 <script>
@@ -125,6 +126,9 @@ export default {
           }
         })
       }
+    },
+    rowSelected (items) {
+      this.$router.push('/server/' + items[0].id)
     }
   }
 }

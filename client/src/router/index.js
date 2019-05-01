@@ -11,7 +11,6 @@ import Vue from 'vue'
 import VueAnalytics from 'vue-analytics'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
-
 // Routes
 import paths from './paths'
 
@@ -23,7 +22,7 @@ function route (path, view, name, meta) {
     path,
     component: (resolve) => import(
       `@/views/${view}.vue`
-    ).then(resolve),
+      ).then(resolve),
     meta: meta
   }
 }
@@ -47,7 +46,11 @@ const router = new Router({
   mode: 'history',
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
     { path: '/', redirect: '/server' },
-    { path: '*', redirect: '/error/404' }
+    {
+      path: '*', component: (resolve) => import(
+        `@/views/errors/404.vue`
+        ).then(resolve)
+    }
   ]),
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {

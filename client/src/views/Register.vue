@@ -12,7 +12,9 @@
         <v-container>
           <v-card-text>
             <v-card-text v-if="username && !validUsername">
-              <material-notification color="error">Username must be at least 8 characters and only contain alphanumerics, _, or -.</material-notification>
+              <material-notification color="error">Username must be at least 8 characters and only contain
+                alphanumerics, _, or -.
+              </material-notification>
             </v-card-text>
             <v-card-text v-if="email && !validEmail">
               <material-notification color="error">Email is not valid</material-notification>
@@ -23,13 +25,13 @@
                 prepend-icon="mdi-account"
                 name="username"
                 label="Username"
-                type="text" />
+                type="text"/>
               <v-text-field
                 v-model.trim="email"
                 prepend-icon="mdi-account"
                 name="email"
                 label="Email"
-                type="text" />
+                type="text"/>
             </v-form>
           </v-card-text>
           <v-card-text>
@@ -45,14 +47,14 @@
                 prepend-icon="mdi-lock"
                 name="password"
                 label="Password"
-                type="password" />
+                type="password"/>
               <v-text-field
                 v-model="confirmPassword"
                 prepend-icon="mdi-lock"
                 name="confirmPassword"
                 label="Confirm Password"
                 type="password"
-                @keyup.enter="submit" />
+                @keyup.enter="submit"/>
             </v-form>
           </v-card-text>
         </v-container>
@@ -60,15 +62,16 @@
           <v-card-text v-if="error">
             <material-notification
               color="error"
-              v-text="error" />
+              v-text="error"/>
           </v-card-text>
           <v-card-actions>
-            <a href="/auth/login">Login</a>
-            <v-spacer />
+            <router-link to="/auth/login">Login</router-link>
+            <v-spacer/>
             <v-btn
               :disabled="!canComplete"
               color="blue"
-              @click="submit">Register</v-btn>
+              @click="submit">Register
+            </v-btn>
           </v-card-actions>
         </v-container>
       </material-card>
@@ -142,7 +145,7 @@ export default {
       }).then(function (response) {
         let responseData = response.data
         if (responseData.success) {
-          window.location.href = '/auth/login'
+          this.$router.push('/auth/login')
         } else {
           this.error = responseData.msg
           this.registerDisabled = false

@@ -4,7 +4,9 @@
     variant="dark"
     class="fixed-top">
 
-    <b-navbar-brand href="/">PufferPanel</b-navbar-brand>
+    <router-link to="/">
+      <b-navbar-brand>PufferPanel</b-navbar-brand>
+    </router-link>
     <b-collapse
       id="nav_collapse"
       is-nav>
@@ -17,8 +19,8 @@
         <b-nav-item-dropdown
           text="Account"
           right>
-          <b-dropdown-item href="/account">Settings</b-dropdown-item>
-          <b-dropdown-item href="/auth/logout">Logout</b-dropdown-item>
+          <router-link to="/account"><b-dropdown-item>Settings</b-dropdown-item></router-link>
+          <router-link to="/auth/logout"><b-dropdown-item>Logout</b-dropdown-item></router-link>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
