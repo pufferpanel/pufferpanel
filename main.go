@@ -15,15 +15,11 @@ package main
 
 import (
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/cli"
+	"github.com/pufferpanel/pufferpanel/cmd"
 )
 
 func main() {
 	defer logging.Close()
 
-	err := cli.Run()
-
-	if err != nil {
-		logging.Build(logging.ERROR).WithMessage("Error running commands").WithError(err).Log()
-	}
+	cmd.Execute()
 }
