@@ -3,25 +3,23 @@ package services
 import (
 	"github.com/mailgun/mailgun-go"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/spf13/viper"
 )
 
 func sendEmailViaMailgun(to, subject, body string, async bool) error {
-	cfg := config.Get()
-
-	domain, exist := cfg.GetString("email.domain")
-	if !exist {
+	domain := viper.GetString("email.domain")
+	if domain == "" {
 		return errors.NewEmailNotConfigured("no domain defined")
 	}
 
-	from, exist := cfg.GetString("email.from")
-	if !exist {
+	from := viper.GetString("email.from")
+	if from == "" {
 		return errors.NewEmailNotConfigured("no from email defined")
 	}
 
-	key, exist := cfg.GetString("email.key")
-	if !exist {
+	key := viper.GetString("email.key")
+	if key == "" {
 		return errors.NewEmailNotConfigured("no api key defined")
 	}
 

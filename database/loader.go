@@ -18,9 +18,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pufferpanel/apufferi/common"
-	"github.com/pufferpanel/pufferpanel/config"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/models"
-	"os"
+	"github.com/spf13/viper"
 	"strings"
 )
 
@@ -38,16 +38,11 @@ func Load() error {
 }
 
 func openConnection() (err error) {
-	cfg, err := config.GetCore()
-	if err != nil {
-		return
-	}
-
-	dialect := cfg.Database.Dialect
+	dialect := viper.GetString("database.dialect")
 	if dialect == "" {
 		dialect = "mysql"
 	}
-	connString := cfg.Database.Url
+	connString := viper.GetString("database.url")
 
 	if dialect == "mysql" {
 		if !strings.Contains(connString, "charset=utf8") {
@@ -76,7 +71,8 @@ func openConnection() (err error) {
 		return
 	}
 
-	if val, _ := os.LookupEnv("PUFFERPANEL_DBLOG"); val == "TRUE" {
+	if viper.GetBool("database.log") {
+		logging.Info("Database logging enabled")
 		dbConn.LogMode(true)
 	}
 

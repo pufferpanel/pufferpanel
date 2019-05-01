@@ -18,13 +18,23 @@ package commands
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/cli"
+	"github.com/pufferpanel/apufferi/common"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web"
+	"github.com/spf13/viper"
+	"log"
+	"net"
+	"net/http"
 	"os"
+	"os/signal"
+	"runtime"
+	"syscall"
 )
 
 type Run struct {
@@ -45,7 +55,12 @@ func (*Run) ShouldRunNext() bool {
 }
 
 func (r *Run) Run() error {
-	err := logging.WithLogDirectory("logs", logging.DEBUG, nil)
+	err := config.Load()
+	if err != nil {
+		return err
+	}
+
+	err = logging.WithLogDirectory("logs", logging.DEBUG, nil)
 	if err != nil {
 		return err
 	}
@@ -67,5 +82,88 @@ func (r *Run) Run() error {
 
 	web.RegisterRoutes(router)
 
-	return router.Run() // listen and serve on 0.0.0.0:8080
+	return r.runEndpoints(router) // listen and serve on 0.0.0.0:8080
+}
+
+func (r *Run) runEndpoints(router *gin.Engine) error {
+	c := make(chan error)
+
+	srv := &http.Server{
+		Addr: viper.GetString("web.host") + ":" + viper.GetString("web.port"),
+		Handler: router,
+	}
+
+	httpsKey := viper.GetString("https.private")
+	httpsCert := viper.GetString("https.public")
+
+	if httpsKey != "" && httpsCert != "" {
+		if _, err := os.Stat(httpsKey); err != nil {
+			return err
+		}
+
+		if _, err := os.Stat(httpsCert); err != nil {
+			return err
+		}
+
+		go func() {
+			logging.Info("Listening for HTTPS requests on %s", srv.Addr)
+			if err := srv.ListenAndServeTLS(httpsCert, httpsKey); err != nil && err != http.ErrServerClosed {
+				c <- err
+			}
+		}()
+	} else {
+		go func() {
+			logging.Info("Listening for HTTP requests on %s", srv.Addr)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				c <- err
+			}
+		}()
+	}
+
+	if runtime.GOOS == "linux" {
+		go func() {
+			file := viper.GetString("web.socket")
+
+			if file == "" {
+				return
+			}
+
+			err := os.Remove(file)
+			if err != nil && !os.IsNotExist(err) {
+				logging.Exception(fmt.Sprintf("Error deleting %s", file), err)
+				return
+			}
+
+			listener, err := net.Listen("unix", file)
+			defer common.Close(listener)
+			if err != nil {
+				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
+				return
+			}
+
+			err = os.Chmod(file, 0777)
+			if err != nil {
+				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
+				return
+			}
+
+			logging.Info("Listening for socket requests")
+			c <- http.Serve(listener, router)
+		}()
+	}
+
+	go func() {
+		quit := make(chan os.Signal)
+		// kill (no param) default send syscall.SIGTERM
+		// kill -2 is syscall.SIGINT
+		// kill -9 is syscall.SIGKILL but can"t be catch, so don't need add it
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+		log.Println("Shutting down web server ...")
+		c <- nil
+	}()
+
+	err := <- c
+
+	return err
 }
