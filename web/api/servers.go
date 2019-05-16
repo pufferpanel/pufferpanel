@@ -138,7 +138,7 @@ func createServer(c *gin.Context) {
 	err = c.Bind(&postBody)
 	postBody.Identifier = serverId
 	if err != nil {
-		response.Status(http.StatusBadRequest).Message(err.Error()).Fail().Send()
+		response.Status(http.StatusBadRequest).Error(err).Fail().Send()
 		return
 	}
 
@@ -167,7 +167,7 @@ func createServer(c *gin.Context) {
 
 	err = ss.Create(server, postBody.Data)
 	if err != nil {
-		response.Status(http.StatusInternalServerError).Message(err.Error()).Fail().Send()
+		response.Status(http.StatusInternalServerError).Error(err).Fail().Send()
 		return
 	}
 

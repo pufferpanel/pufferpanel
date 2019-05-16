@@ -35,7 +35,7 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 		os, err := services.GetOAuthService()
 		if err != nil || os == nil {
 			if err == nil {
-				err = errors.New("oauth2 service is nil")
+				err = errors.ErrServiceNotAvailable
 			}
 
 			shared.HandleError(response.Respond(c), err)

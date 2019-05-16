@@ -15,4 +15,6 @@ package errors
 
 import "github.com/pufferpanel/apufferi"
 
-var ErrInvalidCredentials = apufferi.CreateError("invalid credentials", "Invalid credentials", 1)
+var ErrUnknownError = apufferi.CreateError("unknown error", "An unknown error has occurred", 1)
+var ErrInvalidCredentials = apufferi.CreateError("invalid credentials", "Invalid credentials", 2)
+var ErrServiceNotAvailable = apufferi.CreateError("service not available", "Service is not available", 3)
