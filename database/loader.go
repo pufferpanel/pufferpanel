@@ -17,7 +17,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/pufferpanel/apufferi/common"
+	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/spf13/viper"
@@ -89,7 +89,7 @@ func GetConnection() (*gorm.DB, error) {
 }
 
 func Close() {
-	common.Close(dbConn)
+	apufferi.Close(dbConn)
 }
 
 func migrateModels() (err error) {

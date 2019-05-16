@@ -16,7 +16,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/common"
+	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/config"
 	"github.com/pufferpanel/pufferpanel/database"
@@ -116,7 +116,7 @@ func executeRun(cmd *cobra.Command, args []string) error {
 			}
 
 			listener, err := net.Listen("unix", file)
-			defer common.Close(listener)
+			defer apufferi.Close(listener)
 			if err != nil {
 				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
 				return

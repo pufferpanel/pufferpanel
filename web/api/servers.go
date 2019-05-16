@@ -15,7 +15,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
+	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"

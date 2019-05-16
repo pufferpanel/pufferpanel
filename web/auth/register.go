@@ -2,8 +2,8 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/apufferi/logging"
+	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
 	"gopkg.in/go-playground/validator.v9"

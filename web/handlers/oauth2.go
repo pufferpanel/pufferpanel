@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
@@ -38,9 +38,7 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 				err = errors.New("oauth2 service is nil")
 			}
 
-			response := http.Respond(c)
-
-			shared.HandleError(response, err)
+			shared.HandleError(response.Respond(c), err)
 			c.Abort()
 			return
 		}
@@ -56,21 +54,21 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 		}
 
 		if requireServer && serverId == nil {
-			http.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
 			c.Abort()
 			return
 		}
 
 		ti, err := os.ValidationBearerToken(c.Request)
 		if err != nil {
-			http.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
 			c.Abort()
 			return
 		}
 
 		ci, allowed, err := os.HasRights(ti.GetAccess(), serverId, scope)
 		if err != nil {
-			http.Respond(c).Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail().Send()
+			response.Respond(c).Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail().Send()
 			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
 			c.Abort()
 			return
@@ -87,10 +85,10 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 
 		if !allowed {
 			if ci == nil {
-				http.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+				response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
 				c.Abort()
 			} else {
-				http.Respond(c).Status(webHttp.StatusForbidden).Fail().Send()
+				response.Respond(c).Status(webHttp.StatusForbidden).Fail().Send()
 				c.Abort()
 			}
 		} else {
