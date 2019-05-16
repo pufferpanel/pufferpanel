@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	netHttp "net/http"
@@ -31,11 +32,17 @@ func proxyServerRequest(c *gin.Context) {
 	path := "/server/" + serverId + c.Param("path")
 
 	ss, err := services.GetServerService()
+	if ss == nil && err == nil {
+		err = errors.ErrServiceNotAvailable
+	}
 	if shared.HandleError(res, err) {
 		return
 	}
 
 	ns, err := services.GetNodeService()
+	if ns == nil && err == nil {
+		err = errors.ErrServiceNotAvailable
+	}
 	if shared.HandleError(res, err) {
 		return
 	}
@@ -53,7 +60,7 @@ func proxyServerRequest(c *gin.Context) {
 	//this only will throw an error if we can't get to the node
 	//so if error, use our response messenger, otherwise copy response from node to client
 	if err != nil {
-		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Error(err).Send()
 		return
 	}
 

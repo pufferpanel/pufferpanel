@@ -79,7 +79,7 @@ func getNode(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		response.Fail().Status(http.StatusNotFound).Send()
 		return
 	}
 
@@ -142,7 +142,7 @@ func updateNode (c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		response.Fail().Status(http.StatusNotFound).Send()
 		return
 	}
 
@@ -172,7 +172,7 @@ func deleteNode (c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no node with given id").Send()
+		response.Fail().Status(http.StatusNotFound).Send()
 		return
 	}
 
