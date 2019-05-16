@@ -10,7 +10,7 @@
       <h6
         slot="header"
         class="mb-0"
-        align="center">Login</h6>
+        align="center">Login - PufferPanel</h6>
       <b-form>
         <b-row class="my-1">
           <b-col sm="1"/>
@@ -42,7 +42,7 @@
         <b-row>
           <b-col sm="1"/>
           <b-col sm="2">
-            <router-link to="/auth/register">Register</router-link>
+            <b-link :to="{name: 'Register'}">Register</b-link>
           </b-col>
           <b-col sm="6"/>
           <b-col sm="2">
@@ -107,7 +107,7 @@ export default {
 
       this.loginDisabled = true
 
-      this.axios.post('/auth/login', {
+      this.axios.post(this.$route.path, {
         data: {
           email: this.email,
           password: this.password
@@ -116,7 +116,7 @@ export default {
         let responseData = response.data
         if (responseData.success) {
           Cookies.set('puffer_auth', responseData.data)
-          data.$router.push('/server')
+          data.$router.push({ name: 'Servers' })
         } else {
           data.errorMsg = responseData.msg + ''
         }

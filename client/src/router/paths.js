@@ -40,7 +40,6 @@ export default [
       noAuth: true,
       noSidebar: true,
       noFooter: true,
-      noHeader: true,
       noBase: true
     }
   }
