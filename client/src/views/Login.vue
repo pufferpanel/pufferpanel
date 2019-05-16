@@ -7,41 +7,44 @@
     <b-card
       header-tag="header"
       footer-tag="footer">
-      <h6 slot="header" class="mb-0" align="center">Login</h6>
+      <h6
+        slot="header"
+        class="mb-0"
+        align="center">Login</h6>
       <b-form>
         <b-row class="my-1">
-          <b-col sm="1"></b-col>
+          <b-col sm="1"/>
           <b-col sm="10">
             <b-form-input
+              id="email"
               v-model.trim="email"
               prepend-icon="mdi-account"
               name="email"
-              id="email"
               placeholder="Email"
               type="text"/>
           </b-col>
         </b-row>
         <b-row class="my-1">
-          <b-col sm="1"></b-col>
+          <b-col sm="1"/>
           <b-col sm="10">
             <b-form-input
+              id="password"
               v-model="password"
               prepend-icon="mdi-lock"
               name="password"
               placeholder="Password"
               type="password"
-              id="password"
               @keyup.enter="submit"/>
           </b-col>
         </b-row>
       </b-form>
       <div slot="footer">
         <b-row>
-          <b-col sm="1"></b-col>
+          <b-col sm="1"/>
           <b-col sm="2">
             <router-link to="/auth/register">Register</router-link>
           </b-col>
-          <b-col sm="6"></b-col>
+          <b-col sm="6"/>
           <b-col sm="2">
             <b-btn
               :disabled="!canSubmit"
@@ -50,15 +53,15 @@
               @click="submit">Login
             </b-btn>
           </b-col>
-          <b-col sm="1"></b-col>
+          <b-col sm="1"/>
         </b-row>
         <b-row v-if="errorMsg">
-          <b-col sm="1"></b-col>
+          <b-col sm="1"/>
           <b-col sm="10">
             <b-alert
+              :show="dismissCountDown"
               fade
               dismissible
-              show="5"
               variant="danger"
             >{{ errorMsg }}
             </b-alert>
@@ -78,7 +81,8 @@ export default {
       email: '',
       password: '',
       loginDisabled: false,
-      errorMsg: ''
+      errorMsg: '',
+      dismissCountDown: 5
     }
   },
   computed: {
@@ -112,7 +116,7 @@ export default {
         let responseData = response.data
         if (responseData.success) {
           Cookies.set('puffer_auth', responseData.data)
-          this.$router.push('/server')
+          data.$router.push('/server')
         } else {
           data.errorMsg = responseData.msg + ''
         }
