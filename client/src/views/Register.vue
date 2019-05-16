@@ -1,82 +1,152 @@
 <template>
-  <v-layout
-    align-center
-    justify-center>
-    <v-flex
-      xs12
-      sm8
-      md4>
-      <material-card
-        color="blue"
-        title="Register">
-        <v-container>
-          <v-card-text>
-            <v-card-text v-if="username && !validUsername">
-              <material-notification color="error">Username must be at least 8 characters and only contain
-                alphanumerics, _, or -.
-              </material-notification>
-            </v-card-text>
-            <v-card-text v-if="email && !validEmail">
-              <material-notification color="error">Email is not valid</material-notification>
-            </v-card-text>
-            <v-form>
-              <v-text-field
-                v-model.trim="username"
-                prepend-icon="mdi-account"
-                name="username"
-                label="Username"
-                type="text"/>
-              <v-text-field
-                v-model.trim="email"
-                prepend-icon="mdi-account"
-                name="email"
-                label="Email"
-                type="text"/>
-            </v-form>
-          </v-card-text>
-          <v-card-text>
-            <v-card-text v-if="password && confirmPassword && !samePassword">
-              <material-notification color="error">Passwords must be the same</material-notification>
-            </v-card-text>
-            <v-card-text v-if="password && !validPassword">
-              <material-notification color="error">Passwords must be at least 8 characters</material-notification>
-            </v-card-text>
-            <v-form>
-              <v-text-field
-                v-model="password"
-                prepend-icon="mdi-lock"
-                name="password"
-                label="Password"
-                type="password"/>
-              <v-text-field
-                v-model="confirmPassword"
-                prepend-icon="mdi-lock"
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                @keyup.enter="submit"/>
-            </v-form>
-          </v-card-text>
-        </v-container>
-        <v-container>
-          <v-card-text v-if="error">
-            <material-notification
-              color="error"
-              v-text="error"/>
-          </v-card-text>
-          <v-card-actions>
-            <router-link to="/auth/login">Login</router-link>
-            <v-spacer/>
-            <v-btn
+  <b-col
+    md="6"
+    sm="8"
+    offset-md="3"
+    offset-sm="2">
+    <b-card
+      header-tag="header"
+      footer-tag="footer">
+      <h6
+        slot="header"
+        class="mb-0"
+        align="center">Register - PufferPanel</h6>
+      <b-form>
+        <b-row>
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-alert
+              v-if="username && !validUsername"
+              fade
+              show
+              variant="danger"
+            >Username must be at least 8 characters and only contain alphanumerics, _, or -.
+            </b-alert>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-alert
+              v-if="email && !validEmail"
+              fade
+              show
+              variant="danger"
+            >Email is not valid
+            </b-alert>
+          </b-col>
+        </b-row>
+
+        <b-row class="my-1">
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-form-input
+              id="username"
+              v-model.trim="username"
+              prepend-icon="mdi-account"
+              name="username"
+              placeholder="Username"
+              type="text"/>
+          </b-col>
+        </b-row>
+
+        <b-row class="my-1">
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-form-input
+              id="email"
+              v-model.trim="email"
+              prepend-icon="mdi-account"
+              name="email"
+              placeholder="Email"
+              type="text"/>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-alert
+              v-if="password && !validPassword"
+              fade
+              show
+              variant="danger"
+            >Passwords must be at least 8 characters
+            </b-alert>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-alert
+              v-if="password && confirmPassword && !samePassword"
+              fade
+              show
+              variant="danger"
+            >Passwords must be the same
+            </b-alert>
+          </b-col>
+        </b-row>
+
+        <b-row class="my-1">
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-form-input
+              id="password"
+              v-model="password"
+              prepend-icon="mdi-lock"
+              name="password"
+              placeholder="Password"
+              type="password"/>
+          </b-col>
+        </b-row>
+
+        <b-row class="my-1">
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-form-input
+              id="confirmPassword"
+              v-model="confirmPassword"
+              prepend-icon="mdi-lock"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              type="password"
+              @keyup.enter="submit"/>
+          </b-col>
+        </b-row>
+      </b-form>
+      <div slot="footer">
+        <b-row>
+          <b-col sm="1"/>
+          <b-col sm="2">
+            <b-link :to="{name: 'Login'}">Login</b-link>
+          </b-col>
+          <b-col sm="6"/>
+          <b-col sm="2">
+            <b-btn
               :disabled="!canComplete"
-              color="blue"
+              variant="primary"
+              size="sm"
               @click="submit">Register
-            </v-btn>
-          </v-card-actions>
-        </v-container>
-      </material-card>
-    </v-flex>
-  </v-layout>
+            </b-btn>
+          </b-col>
+          <b-col sm="1"/>
+        </b-row>
+        <b-row v-if="errorMsg">
+          <b-col sm="1"/>
+          <b-col sm="10">
+            <b-alert
+              :show="dismissCountDown"
+              fade
+              dismissible
+              variant="danger"
+            >{{ errorMsg }}
+            </b-alert>
+          </b-col>
+        </b-row>
+      </div>
+    </b-card>
+  </b-col>
 </template>
 
 <script>
@@ -88,7 +158,8 @@ export default {
       password: '',
       confirmPassword: '',
       registerDisabled: false,
-      error: ''
+      errorMsg: '',
+      dismissCountDown: 5
     }
   },
   computed: {
@@ -121,22 +192,25 @@ export default {
   methods: {
     submit: function () {
       if (!this.username) {
-        this.error = 'Username is required'
+        this.errorMsg = 'Username is required'
         return
       }
       if (!this.email) {
-        this.error = 'Email is required'
+        this.errorMsg = 'Email is required'
         return
       }
       if (!this.password) {
-        this.error = 'Password is required'
+        this.errorMsg = 'Password is required'
         return
       }
       if (!this.validPassword) {
-        this.error = 'Password is not valid'
+        this.errorMsg = 'Password is not valid'
       }
       this.registerDisabled = true
-      this.axios.post('/auth/register', {
+
+      let data = this
+
+      this.axios.post(this.$route.path, {
         data: {
           email: this.email,
           password: this.password,
@@ -145,18 +219,18 @@ export default {
       }).then(function (response) {
         let responseData = response.data
         if (responseData.success) {
-          this.$router.push('/auth/login')
+          data.$router.push({ name: 'Login' })
         } else {
-          this.error = responseData.msg
-          this.registerDisabled = false
+          data.error = responseData.msg
+          data.registerDisabled = false
         }
       }).catch(function (error) {
-        let msg = error.response.data.msg
+        let msg = error.response.data.msg + ''
         if (!msg) {
-          msg = error
+          msg = error + ''
         }
-        this.error = msg
-        this.registerDisabled = false
+        data.errorMsg = msg
+        data.registerDisabled = false
       })
     }
   }
