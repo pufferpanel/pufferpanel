@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"strings"
@@ -44,15 +44,15 @@ func AuthMiddleware(c *gin.Context) {
 
 	srv, err := services.GetOAuthService()
 
-	response := http.Respond(c)
-	if shared.HandleError(response, err) {
+	res := response.Respond(c)
+	if shared.HandleError(res, err) {
 		c.Abort()
 		return
 	}
 
 	info, client, err := srv.GetByToken(cookie)
 
-	if shared.HandleError(response, err) {
+	if shared.HandleError(res, err) {
 		c.Abort()
 		return
 	}
@@ -77,7 +77,7 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	err = srv.UpdateExpirationTime(info, 60*time.Minute)
-	if shared.HandleError(response, err) {
+	if shared.HandleError(res, err) {
 		c.Abort()
 		return
 	}

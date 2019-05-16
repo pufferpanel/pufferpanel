@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
+	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 )

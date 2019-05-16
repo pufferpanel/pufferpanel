@@ -260,16 +260,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:40c87bfa077f4206a72750192db53b0508ba6002650d31e3cc72b50cbef8145c"
+  digest = "1:5dd200ff8b105f4ecbf796af9953d39bf6adf84b30781ebb584bcc58031957eb"
   name = "github.com/pufferpanel/apufferi"
   packages = [
-    "cli",
-    "common",
-    "http",
+    ".",
     "logging",
+    "response",
   ]
   pruneopts = "UT"
-  revision = "d083bef65c742bd637f884beac10cd9c72662c62"
+  revision = "300602f69ef9e64f3f9962629f3a9e34d212c3c5"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
@@ -426,12 +425,12 @@
   version = "v3.10.0"
 
 [[projects]]
-  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "UT"
-  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
-  version = "v2.2.2"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -444,10 +443,9 @@
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
     "github.com/mailgun/mailgun-go",
-    "github.com/pufferpanel/apufferi/cli",
-    "github.com/pufferpanel/apufferi/common",
-    "github.com/pufferpanel/apufferi/http",
+    "github.com/pufferpanel/apufferi",
     "github.com/pufferpanel/apufferi/logging",
+    "github.com/pufferpanel/apufferi/response",
     "github.com/satori/go.uuid",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",

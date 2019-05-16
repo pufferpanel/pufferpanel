@@ -15,8 +15,8 @@ package shared
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/http"
 	"github.com/pufferpanel/apufferi/logging"
+	builder "github.com/pufferpanel/apufferi/response"
 	"net/http"
 	"strings"
 )

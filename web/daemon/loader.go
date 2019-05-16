@@ -3,7 +3,7 @@ package daemon
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/http"
+	"github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	netHttp "net/http"
@@ -20,7 +20,7 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 }
 
 func proxyServerRequest(c *gin.Context) {
-	response := http.Respond(c)
+	res := response.Respond(c)
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -31,20 +31,20 @@ func proxyServerRequest(c *gin.Context) {
 	path := "/server/" + serverId + c.Param("path")
 
 	ss, err := services.GetServerService()
-	if shared.HandleError(response, err) {
+	if shared.HandleError(res, err) {
 		return
 	}
 
 	ns, err := services.GetNodeService()
-	if shared.HandleError(response, err) {
+	if shared.HandleError(res, err) {
 		return
 	}
 
 	server, exists, err := ss.Get(serverId)
-	if err != nil && !gorm.IsRecordNotFoundError(err) && shared.HandleError(response, err) {
+	if err != nil && !gorm.IsRecordNotFoundError(err) && shared.HandleError(res, err) {
 		return
 	} else if !exists || server == nil {
-		http.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
+		response.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
 		return
 	}
 
@@ -53,7 +53,7 @@ func proxyServerRequest(c *gin.Context) {
 	//this only will throw an error if we can't get to the node
 	//so if error, use our response messenger, otherwise copy response from node to client
 	if err != nil {
-		http.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
+		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Message(err.Error()).Send()
 		return
 	}
 
