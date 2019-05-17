@@ -1,7 +1,7 @@
 package view
 
 import (
-	"errors"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
@@ -69,66 +69,66 @@ func (n *NodeViewModel) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(n.Name, "required") != nil {
-		return errors.New("name is required")
+		return errors.ErrFieldRequired("name")
 	}
 
 	if validate.Var(n.Name, "optional|printascii") != nil {
-		return errors.New("name must be printable ascii characters")
+		return errors.ErrFieldMustBePrintable("name")
 	}
 
 	testName := url.QueryEscape(n.Name)
 	if testName != n.Name {
-		return errors.New("name must not contain characters which cannot be used in URIs")
+		return errors.ErrFieldHasURICharacters("name")
 	}
 
 	if !allowEmpty && validate.Var(n.PublicHost, "required") != nil {
-		return errors.New("publicHost is required")
+		return errors.ErrFieldMustBePrintable("publicHost")
 	}
 
 	if validate.Var(n.PublicHost, "optional|ip|fqdn") != nil {
-		return errors.New("publicHost must be a valid IP or FQDN")
+		return errors.ErrFieldIsInvalidHost("publicHost")
 	}
 
 	if !allowEmpty && validate.Var(n.PrivateHost, "required") != nil {
-		return errors.New("privateHost is required")
+		return errors.ErrFieldMustBePrintable("privateHost")
 	}
 
 	if validate.Var(n.PrivateHost, "optional|ip_addr|fqdn") != nil {
-		return errors.New("privateHost must be a valid IP or FQDN")
+		return errors.ErrFieldIsInvalidHost("privateHost")
 	}
 
 	if allowEmpty {
-		if validate.Var(n.PublicPort, "max=65535") != nil {
-			return errors.New("publicPort must not be larger than 65535")
+		if validate.Var(n.PublicPort, "min=0,max=65535") != nil {
+			return errors.ErrFieldTooLarge("publicPort", 65535)
 		}
 
-		if validate.Var(n.PrivatePort, "max=65535") != nil {
-			return errors.New("privatePort must not be larger than 65535")
+		if validate.Var(n.PrivatePort, "min=0,max=65535") != nil {
+			return errors.ErrFieldTooLarge("privatePort", 65535)
 		}
 
-		if validate.Var(n.SFTPPort, "max=65535") != nil {
-			return errors.New("sftpPort must not be larger than 65535")
+		if validate.Var(n.SFTPPort, "min=0,max=65535") != nil {
+			return errors.ErrFieldTooLarge("sftpPort", 65535)
 		}
 	} else {
 		if validate.Var(n.PublicPort, "min=1,max=65535") != nil {
-			return errors.New("publicPort must be between 1 and 65535")
+			return errors.ErrFieldNotBetween("publicPort", 1, 65535)
 		}
 
 		if validate.Var(n.PrivatePort, "min=1,max=65535") != nil {
-			return errors.New("privatePort must be between 1 and 65535")
+			return errors.ErrFieldNotBetween("privatePort", 1, 65535)
 		}
 
 		if validate.Var(n.SFTPPort, "min=1,max=65535") != nil {
-			return errors.New("sftpPort must be between 1 and 65535")
+			return errors.ErrFieldNotBetween("sftpPort", 1, 65535)
 		}
 	}
 
 	if n.SFTPPort != 0 && n.SFTPPort == n.PublicPort {
-		return errors.New("sftpPort cannot be the same as the public port")
+		return errors.ErrFieldEqual("sftpPort", "publicPort")
 	}
 
 	if n.SFTPPort != 0 && n.SFTPPort == n.PrivatePort {
-		return errors.New("sftpPort cannot be the same as the private port")
+		return errors.ErrFieldEqual("sftpPort", "privatePort")
 	}
 
 	return nil

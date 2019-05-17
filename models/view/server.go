@@ -1,7 +1,7 @@
 package view
 
 import (
-	"errors"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -49,9 +49,9 @@ func FromServers(servers *models.Servers) []*ServerViewModel {
 	return result
 }
 
-func (model *ServerViewModel) CopyToModel(newModel *models.Server) {
-	if model.Name != "" {
-		newModel.Name = model.Name
+func (s *ServerViewModel) CopyToModel(newModel *models.Server) {
+	if s.Name != "" {
+		newModel.Name = s.Name
 	}
 }
 
@@ -59,19 +59,23 @@ func (s *ServerViewModel) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(s.Name, "required") != nil {
-		return errors.New("name is required")
+		return errors.ErrFieldRequired("name")
 	}
 
 	if validate.Var(s.Name, "optional|printascii") != nil {
-		return errors.New("name must be printable ascii characters")
+		return errors.ErrFieldMustBePrintable("name")
 	}
 
 	if !allowEmpty && validate.Var(s.NodeId, "required,min:1") != nil {
-		return errors.New("node id must be a positive non-zero number")
+		return errors.ErrFieldTooSmall("node", 1)
 	}
 
-	if !allowEmpty && validate.Var(s.IP, "optional|min:0,max:65535") != nil {
-		return errors.New("port must either not be included or be between 0 and 65535")
+	if validate.Var(s.IP, "optional|ip_addr") != nil {
+		return errors.ErrFieldIsInvalidIP("ip")
+	}
+
+	if validate.Var(s.Port, "optional|min:0,max:65535") != nil {
+		return errors.ErrFieldNotBetween("port", 1, 65535)
 	}
 
 	return nil

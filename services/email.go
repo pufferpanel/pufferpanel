@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/spf13/viper"
@@ -54,7 +53,7 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 	tmpl := es.templates[template]
 
 	if tmpl == nil {
-		return errors.New("no template with name " + template)
+		return errors.ErrNoTemplate(template)
 	}
 
 	builder := &strings.Builder{}
@@ -66,13 +65,13 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 
 	provider := viper.GetString("email.provider")
 	if provider == "" {
-		return errors.NewEmailNotConfigured("no email provider configured")
+		return errors.ErrEmailNotConfigured
 	}
 
 	switch provider {
 	case "mailgun":
 		return sendEmailViaMailgun(to, subject, builder.String(), async)
 	default:
-		return errors.NewEmailNotConfigured(fmt.Sprintf("unknown email provider %s", provider))
+		return errors.ErrServiceInvalidProvider("email", provider)
 	}
 }

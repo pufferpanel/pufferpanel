@@ -10,17 +10,17 @@ import (
 func sendEmailViaMailgun(to, subject, body string, async bool) error {
 	domain := viper.GetString("email.domain")
 	if domain == "" {
-		return errors.NewEmailNotConfigured("no domain defined")
+		return errors.ErrSettingNotConfigured("domain")
 	}
 
 	from := viper.GetString("email.from")
 	if from == "" {
-		return errors.NewEmailNotConfigured("no from email defined")
+		return errors.ErrSettingNotConfigured("email.from")
 	}
 
 	key := viper.GetString("email.key")
 	if key == "" {
-		return errors.NewEmailNotConfigured("no api key defined")
+		return errors.ErrSettingNotConfigured("email.key")
 	}
 
 	mg := mailgun.NewMailgun(domain, key)
