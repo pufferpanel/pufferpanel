@@ -128,7 +128,7 @@ export default {
       }
     },
     rowSelected (items) {
-      this.$router.push('/server/' + items[0].id)
+      this.$router.push('/server/?id=' + items[0].id)
     }
   }
 }
