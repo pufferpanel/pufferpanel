@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"gopkg.in/oauth2.v3"
 	"strconv"
 	"time"
@@ -47,7 +47,7 @@ func (ti *TokenInfo) SetUserID(id string) {
 		panic(err)
 	}
 	if result < 0 {
-		panic(errors.New("cannot set user id as negative number"))
+		panic(errors.ErrFieldTooSmall("node id", 1))
 	}
 	ti.ClientInfo.UserID = uint(result)
 }

@@ -1,7 +1,7 @@
 package view
 
 import (
-	"errors"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
@@ -49,24 +49,24 @@ func (model *UserViewModel) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(model.Username, "required") != nil {
-		return errors.New("username is required")
+		return errors.ErrFieldRequired("username")
 	}
 
 	if validate.Var(model.Username, "optional|printascii") != nil {
-		return errors.New("username must be printable ascii characters")
+		return errors.ErrFieldMustBePrintable("username")
 	}
 
 	testName := url.QueryEscape(model.Username)
 	if testName != model.Username {
-		return errors.New("username must not contain characters which cannot be used in URIs")
+		return errors.ErrFieldHasURICharacters("username")
 	}
 
 	if !allowEmpty && validate.Var(model.Email, "required") != nil {
-		return errors.New("email is required")
+		return errors.ErrFieldRequired("email")
 	}
 
 	if validate.Var(model.Email, "optional|email") != nil {
-		return errors.New("email must be in a valid email format")
+		return errors.ErrFieldNotEmail("email")
 	}
 
 	return nil

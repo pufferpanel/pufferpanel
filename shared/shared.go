@@ -46,7 +46,7 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 
 func HandleError(response builder.Builder, err error) bool {
 	if err != nil {
-		response.Fail().Status(http.StatusInternalServerError).Message(err.Error()).Send()
+		response.Fail().Status(http.StatusInternalServerError).Error(err).Send()
 		logging.Build(logging.ERROR).WithError(err).Log()
 		return true
 	}

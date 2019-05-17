@@ -1,9 +1,9 @@
 package services
 
 import (
-	"errors"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
@@ -73,7 +73,7 @@ func (us *userService) Login(email string, password string) (sessionToken string
 	}
 
 	if model.ID == 0 || gorm.IsRecordNotFoundError(err) {
-		err = errors.New("invalid credentials")
+		err = errors.ErrInvalidCredentials
 		return
 	}
 
@@ -81,7 +81,7 @@ func (us *userService) Login(email string, password string) (sessionToken string
 	correctPw := []byte(model.HashedPassword)
 
 	if bcrypt.CompareHashAndPassword(correctPw, providedPw) != nil {
-		err = errors.New("invalid credentials")
+		err = errors.ErrInvalidCredentials
 		return
 	}
 
@@ -144,7 +144,7 @@ func (us *userService) ChangePassword(username string, newPass string) error {
 	}
 
 	if !exists {
-		return errors.New("no such user")
+		return errors.ErrUserNotFound
 	}
 
 	err = user.SetPassword(newPass)

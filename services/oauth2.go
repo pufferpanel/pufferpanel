@@ -1,10 +1,10 @@
 package services
 
 import (
-	"errors"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/database"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
@@ -167,7 +167,7 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 			return res.Error
 		}
 		if client.ID == 0 {
-			return errors.New("no client with given information")
+			return errors.ErrClientNotFound
 		}
 	}
 
@@ -260,7 +260,7 @@ func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope 
 
 	converted, ok := ti.(*models.TokenInfo)
 	if !ok {
-		err = errors.New("token info state was invalid")
+		err = errors.ErrInvalidTokenState
 		return
 	}
 
@@ -338,7 +338,7 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken strin
 		return
 	}
 	if ci == nil || ci.ID == 0 {
-		err = errors.New("no such user")
+		err = errors.ErrUserNotFound
 		return
 	}
 
@@ -351,7 +351,7 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken strin
 	}
 
 	if !valid {
-		err = errors.New("login not permitted")
+		err = errors.ErrLoginNotPermitted
 		return
 	}
 
