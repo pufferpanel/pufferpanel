@@ -122,8 +122,12 @@ export default {
         }
       }).catch(function (error) {
         let msg = error.message + ''
-        if (error && error.response && error.response.data && error.response.data.msg) {
-          msg = error.response.data.msg + ''
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = data.$t('errors.' + (error.response.data.error.code + ''))
+          } else {
+            msg = error.response.data.error.msg
+          }
         }
 
         data.errorMsg = msg

@@ -1,3 +1,5 @@
 {
-  "needHelp": "Need Help?"
+  "errors": {
+    "ErrInvalidCredentials": "Invalid credentials"
+  }
 }
