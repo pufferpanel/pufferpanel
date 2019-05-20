@@ -260,7 +260,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:445c5d69fd26485a7a22258bf00325c7306e45cb336d91cbe6ed9089c9218efc"
+  digest = "1:31a20d68d76b57c35abce610ef55ec789d526f359ce9a631e158e491c4c35b02"
   name = "github.com/pufferpanel/apufferi"
   packages = [
     ".",
@@ -268,7 +268,7 @@
     "response",
   ]
   pruneopts = "UT"
-  revision = "cb7979c7b51b042d1d64f7364ef527ab955ebe55"
+  revision = "f4157a76e0f28354d4083bd06594d22fb7ee355f"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
