@@ -22,7 +22,7 @@ var ErrEmailNotConfigured = apufferi.CreateError("email not configured", "ErrEma
 var ErrTokenInvalid = apufferi.CreateError("token is invalid", "ErrTokenInvalid")
 var ErrClientNotFound = apufferi.CreateError("client not found", "ErrClientNotFound")
 var ErrUserNotFound = apufferi.CreateError("user not found", "ErrUserNotFound")
-var ErrLoginNotPermitted = apufferi.CreateError("client not found", "ErrLoginNotPermitted")
+var ErrLoginNotPermitted = apufferi.CreateError("login not permitted", "ErrLoginNotPermitted")
 var ErrInvalidTokenState = apufferi.CreateError("invalid token state", "ErrInvalidTokenState")
 
 var ErrSettingNotConfigured = func (name string) apufferi.Error {
