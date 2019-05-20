@@ -1,3 +1,25 @@
 {
-  "ErrInvalidCredentials": "Invalid credentials"
+  "ErrUnknownError": "Unknown error",
+  "ErrInvalidCredentials": "Invalid credentials",
+  "ErrServiceNotAvailable": "Service not available",
+  "ErrEmailNotConfigured": "Email not configured",
+  "ErrTokenInvalid": "Token is invalid",
+  "ErrClientNotFound": "Client not found",
+  "ErrUserNotFound": "User not found",
+  "ErrLoginNotPermitted": "Login not permitted",
+  "ErrInvalidTokenState": "Invalid token state",
+  "ErrSettingNotConfigured": "{setting} is not configured",
+  "ErrNoTemplate": "No template with name '{name}' was found",
+  "ErrServiceInvalidProvider": "{service} does not support {provider}",
+  "ErrFieldRequired": "{field} is required",
+  "ErrFieldMustBePrintable": "{field} must be printable ascii characters",
+  "ErrFieldHasURICharacters": "{field} must not contain characters which cannot be used in URIs",
+  "ErrFieldIsInvalidHost": "{field} must be a valid IP or FQDN",
+  "ErrFieldIsInvalidIP": "{field} must be a valid IP",
+  "ErrFieldTooLarge": "{field} cannot be larger than {max}",
+  "ErrFieldTooSmall": "{field} cannot be smaller than {min}",
+  "ErrFieldNotBetween": "{field} must be between {min} and {max}",
+  "ErrFieldEqual": "{field1} cannot be equal to {field2}",
+  "ErrFieldNotEqual": "{field1} is not equal to {field2}",
+  "ErrFieldNotEmail": "{field} is not a valid email"
 }
