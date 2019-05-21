@@ -1,0 +1,21 @@
+{
+  "Name": "Name",
+  "Node": "Node",
+  "Address": "Address",
+  "Online": "Online",
+  "Loading": "Loading...",
+  "Server": "Server",
+  "Servers": "Servers",
+  "AccountSettings": "Account Settings",
+  "General": "General",
+  "Language": "Language",
+  "Settings": "Settings",
+  "Account": "Account",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Register": "Register",
+  "Username": "Username",
+  "Password": "Password",
+  "ConfirmPassword": "Confirm Password",
+  "Email": "Email"
+}
