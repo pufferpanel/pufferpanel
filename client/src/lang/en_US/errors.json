@@ -21,5 +21,11 @@
   "ErrFieldNotBetween": "{field} must be between {min} and {max}",
   "ErrFieldEqual": "{field1} cannot be equal to {field2}",
   "ErrFieldNotEqual": "{field1} is not equal to {field2}",
-  "ErrFieldNotEmail": "{field} is not a valid email"
+  "ErrFieldNotEmail": "{field} is not a valid email",
+  "ErrFieldLength": "{field} must be at least {length} characters",
+  "ErrNoPermission": "You do not have permission to perform this action",
+
+  "ErrPasswordRequirements": "Password must be at least 8 characters",
+  "ErrUsernameRequirements": "Username must be at least 8 characters and only contain alphanumerics, _, or -",
+  "ErrPasswordsNotIdentical": "Passwords are not the same"
 }

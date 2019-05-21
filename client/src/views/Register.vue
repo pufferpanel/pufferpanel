@@ -10,17 +10,19 @@
       <h6
         slot="header"
         class="mb-0"
-        align="center">Register - PufferPanel</h6>
+        align="center"
+        v-text="$t('common.Register')"></h6>
       <b-form>
         <b-row>
           <b-col sm="1"/>
           <b-col sm="10">
             <b-alert
               v-if="username && !validUsername"
+              v-text="$t('errors.ErrUsernameRequirements')"
               fade
               show
               variant="danger"
-            >Username must be at least 8 characters and only contain alphanumerics, _, or -.
+            >
             </b-alert>
           </b-col>
         </b-row>
@@ -29,10 +31,11 @@
           <b-col sm="10">
             <b-alert
               v-if="email && !validEmail"
+              v-text="$t('errors.ErrFieldNotEmail', {'field': $t('common.Email')})"
               fade
               show
               variant="danger"
-            >Email is not valid
+            >
             </b-alert>
           </b-col>
         </b-row>
@@ -45,7 +48,7 @@
               v-model.trim="username"
               prepend-icon="mdi-account"
               name="username"
-              placeholder="Username"
+              :placeholder="$t('common.Username')"
               type="text"/>
           </b-col>
         </b-row>
@@ -58,7 +61,7 @@
               v-model.trim="email"
               prepend-icon="mdi-account"
               name="email"
-              placeholder="Email"
+              :placeholder="$t('common.Email')"
               type="text"/>
           </b-col>
         </b-row>
@@ -68,10 +71,11 @@
           <b-col sm="10">
             <b-alert
               v-if="password && !validPassword"
+              v-text="$t('errors.ErrPasswordRequirements')"
               fade
               show
               variant="danger"
-            >Passwords must be at least 8 characters
+            >
             </b-alert>
           </b-col>
         </b-row>
@@ -80,10 +84,11 @@
           <b-col sm="10">
             <b-alert
               v-if="password && confirmPassword && !samePassword"
+              v-text="$t('errors.ErrPasswordsNotIdentical')"
               fade
               show
               variant="danger"
-            >Passwords must be the same
+            >
             </b-alert>
           </b-col>
         </b-row>
@@ -96,7 +101,7 @@
               v-model="password"
               prepend-icon="mdi-lock"
               name="password"
-              placeholder="Password"
+              :placeholder="$t('common.Password')"
               type="password"/>
           </b-col>
         </b-row>
@@ -109,7 +114,7 @@
               v-model="confirmPassword"
               prepend-icon="mdi-lock"
               name="confirmPassword"
-              placeholder="Confirm Password"
+              :placeholder="$t('common.ConfirmPassword')"
               type="password"
               @keyup.enter="submit"/>
           </b-col>
@@ -119,7 +124,7 @@
         <b-row>
           <b-col sm="1"/>
           <b-col sm="2">
-            <b-link :to="{name: 'Login'}">Login</b-link>
+            <b-link :to="{name: 'Login'}" v-text="$t('common.Login')"></b-link>
           </b-col>
           <b-col sm="6"/>
           <b-col sm="2">
@@ -127,7 +132,8 @@
               :disabled="!canComplete"
               variant="primary"
               size="sm"
-              @click="submit">Register
+              v-text="$t('common.Register')"
+              @click="submit">
             </b-btn>
           </b-col>
           <b-col sm="1"/>
@@ -192,19 +198,19 @@ export default {
   methods: {
     submit: function () {
       if (!this.username) {
-        this.errorMsg = 'Username is required'
+        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Username') })
         return
       }
       if (!this.email) {
-        this.errorMsg = 'Email is required'
+        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Email') })
         return
       }
       if (!this.password) {
-        this.errorMsg = 'Password is required'
+        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
         return
       }
       if (!this.validPassword) {
-        this.errorMsg = 'Password is not valid'
+        return
       }
       this.registerDisabled = true
 
@@ -225,11 +231,16 @@ export default {
           data.registerDisabled = false
         }
       }).catch(function (error) {
-        let msg = error.response.data.msg + ''
-        if (!msg) {
-          msg = error + ''
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
         }
-        data.errorMsg = msg
+
+        data.errorMsg = data.$(msg)
         data.registerDisabled = false
       })
     }

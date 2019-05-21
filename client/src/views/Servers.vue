@@ -1,5 +1,6 @@
 <template>
-  <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields" :busy="loading">
+  <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields"
+           :busy="loading">
     <template slot="name" slot-scope="data">
       <strong v-text="data.value"></strong>
     </template>
@@ -14,7 +15,7 @@
 
     <div slot="table-busy" class="text-center text-danger my-2">
       <b-spinner class="align-middle"/>
-      <strong>Loading...</strong>
+      <strong :text="$t('common.Loading')">Loading...</strong>
     </div>
   </b-table>
 </template>
@@ -25,16 +26,20 @@ export default {
     return {
       fields: {
         'name': {
-          sortable: true
+          sortable: true,
+          label: this.$t('common.Name')
         },
         'node': {
-          sortable: true
+          sortable: true,
+          label: this.$t('common.Node')
         },
         'address': {
-          sortable: true
+          sortable: true,
+          label: this.$t('common.Address')
         },
         'online': {
-          sortable: true
+          sortable: true,
+          label: this.$t('common.Online')
         }
       },
       servers: [],
@@ -72,40 +77,30 @@ export default {
         }
       }).then(function (response) {
         let responseData = response.data
-        if (responseData.success) {
-          for (let i in responseData.data) {
-            let server = responseData.data[i]
-            vueData.servers.push({
-              id: server.id,
-              name: server.name,
-              node: server.node.name,
-              address: server.ip ? server.ip + ':' + server.port : server.node.publicHost,
-              online: false,
-              nodeAddress: server.node.publicHost + ':' + server.node.publicPort
-            })
-          }
-          let paging = responseData.metadata.paging
-          vueData.totalServers = paging.total
-        } else {
-          vueData.error = responseData.msg
+        for (let i in responseData.data) {
+          let server = responseData.data[i]
+          vueData.servers.push({
+            id: server.id,
+            name: server.name,
+            node: server.node.name,
+            address: server.ip ? server.ip + ':' + server.port : server.node.publicHost,
+            online: false,
+            nodeAddress: server.node.publicHost + ':' + server.node.publicPort
+          })
         }
+        let paging = responseData.metadata.paging
+        vueData.totalServers = paging.total
       }).catch(function (error) {
-        if (error.response) {
-          if (error.response.status === 403) {
-            vueData.error = 'You do not have permissions to view servers'
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
           } else {
-            let data = error.response.data
-            let msg = 'unknown error'
-            if (data) {
-              msg = error
-            } else if (msg.msg) {
-              msg = msg.msg
-            }
-            vueData.error = msg
+            msg = error.response.data.error.msg
           }
-        } else {
-          vueData.error = error
         }
+
+        vueData.error = vueData.$(msg)
       }).then(function () {
         vueData.loading = false
       })

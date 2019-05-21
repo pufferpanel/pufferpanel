@@ -8,9 +8,10 @@
       header-tag="header"
       footer-tag="footer">
       <h6
+        v-text="$t('common.Login')"
         slot="header"
         class="mb-0"
-        align="center">Login - PufferPanel</h6>
+        align="center"></h6>
       <b-form>
         <b-row class="my-1">
           <b-col sm="1"/>
@@ -20,7 +21,7 @@
               v-model.trim="email"
               prepend-icon="mdi-account"
               name="email"
-              placeholder="Email"
+              :placeholder="$t('common.Email')"
               type="text"/>
           </b-col>
         </b-row>
@@ -32,7 +33,7 @@
               v-model="password"
               prepend-icon="mdi-lock"
               name="password"
-              placeholder="Password"
+              :placeholder="$t('common.Password')"
               type="password"
               @keyup.enter="submit"/>
           </b-col>
@@ -42,15 +43,16 @@
         <b-row>
           <b-col sm="1"/>
           <b-col sm="2">
-            <b-link :to="{name: 'Register'}">Register</b-link>
+            <b-link :to="{name: 'Register'}" v-text="$t('common.Register')"></b-link>
           </b-col>
           <b-col sm="6"/>
           <b-col sm="2">
             <b-btn
               :disabled="!canSubmit"
+              v-text="$t('common.Login')"
               variant="primary"
               size="sm"
-              @click="submit">Login
+              @click="submit">
             </b-btn>
           </b-col>
           <b-col sm="1"/>
@@ -96,12 +98,12 @@ export default {
       data.errorMsg = ''
 
       if (!data.email) {
-        data.errorMsg = 'Email required'
+        data.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Email') })
         return
       }
 
       if (!data.password) {
-        data.errorMsg = 'Password required'
+        data.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
         return
       }
 
@@ -121,16 +123,16 @@ export default {
           data.errorMsg = responseData.msg + ''
         }
       }).catch(function (error) {
-        let msg = error.message + ''
+        let msg = 'errors.ErrUnknownError'
         if (error && error.response && error.response.data.error) {
           if (error.response.data.error.code) {
-            msg = data.$t('errors.' + (error.response.data.error.code + ''))
+            msg = 'errors.' + error.response.data.error.code
           } else {
             msg = error.response.data.error.msg
           }
         }
 
-        data.errorMsg = msg
+        data.errorMsg = data.$(msg)
       }).finally(function () {
         data.loginDisabled = false
       })
