@@ -24,6 +24,7 @@ var ErrClientNotFound = apufferi.CreateError("client not found", "ErrClientNotFo
 var ErrUserNotFound = apufferi.CreateError("user not found", "ErrUserNotFound")
 var ErrLoginNotPermitted = apufferi.CreateError("login not permitted", "ErrLoginNotPermitted")
 var ErrInvalidTokenState = apufferi.CreateError("invalid token state", "ErrInvalidTokenState")
+var ErrNoPermission = apufferi.CreateError("no permission to perform action", "ErrNoPermission")
 
 var ErrSettingNotConfigured = func(name string) apufferi.Error {
 	return apufferi.CreateError("%v is not configured", "ErrSettingNotConfigured").Set(name).Metadata(map[string]interface{}{"setting": name})
@@ -79,4 +80,8 @@ var ErrFieldNotEqual = func(fieldName1, fieldName2 string) apufferi.Error {
 
 var ErrFieldNotEmail = func(fieldName string) apufferi.Error {
 	return apufferi.CreateError("%v is not a valid email", "ErrFieldNotEmail").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+}
+
+var ErrFieldLength = func(fieldName string, length int) apufferi.Error {
+	return apufferi.CreateError("%v must be at least %v characters", "ErrFieldLength").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName, "length": length})
 }
