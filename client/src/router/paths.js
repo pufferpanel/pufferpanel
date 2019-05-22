@@ -11,6 +11,11 @@ export default [
     name: 'Servers'
   },
   {
+    path: '/server/:id',
+    view: 'Server',
+    name: 'Server'
+  },
+  {
     path: '/error/404',
     name: 'Error/404',
     view: 'errors/404',
