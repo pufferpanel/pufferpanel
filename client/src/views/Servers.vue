@@ -48,7 +48,8 @@ export default {
       totalServers: 0,
       pagination: {
         rowsPerPage: 10
-      }
+      },
+      task: null
     }
   },
   watch: {
@@ -62,7 +63,7 @@ export default {
   mounted () {
     this.loadData()
     this.pollServerStatus()
-    setInterval(this.pollServerStatus, 30 * 1000)
+    this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
   methods: {
     loadData () {
@@ -123,7 +124,12 @@ export default {
       }
     },
     rowSelected (items) {
-      this.$router.push('/server/?id=' + items[0].id)
+      this.$router.push({ name: 'Server', params: { id: items[0].id } })
+    }
+  },
+  beforeDestroy: function() {
+    if (this.task != null) {
+      clearInterval(this.task)
     }
   }
 }
