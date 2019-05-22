@@ -100,7 +100,7 @@ export default {
           }
         }
 
-        vueData.error = vueData.$(msg)
+        vueData.error = vueData.$t(msg)
       }).then(function () {
         vueData.loading = false
       })
