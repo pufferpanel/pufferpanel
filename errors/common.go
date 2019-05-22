@@ -27,61 +27,61 @@ var ErrInvalidTokenState = apufferi.CreateError("invalid token state", "ErrInval
 var ErrNoPermission = apufferi.CreateError("no permission to perform action", "ErrNoPermission")
 
 var ErrSettingNotConfigured = func(name string) apufferi.Error {
-	return apufferi.CreateError("%v is not configured", "ErrSettingNotConfigured").Set(name).Metadata(map[string]interface{}{"setting": name})
+	return apufferi.CreateError("{setting} is not configured", "ErrSettingNotConfigured").Metadata(map[string]interface{}{"setting": name})
 }
 
 var ErrNoTemplate = func(template string) apufferi.Error {
-	return apufferi.CreateError("no template with given name", "ErrNoTemplate").Metadata(map[string]interface{}{"template": template})
+	return apufferi.CreateError("no template with name {name}", "ErrNoTemplate").Metadata(map[string]interface{}{"template": template})
 }
 
 var ErrServiceInvalidProvider = func(service, provider string) apufferi.Error {
-	return apufferi.CreateError("%v does not support %v", "ErrServiceInvalidProvider").Set(service, provider).Metadata(map[string]interface{}{"service": service, "provider": provider})
+	return apufferi.CreateError("{service} does not support {provider}", "ErrServiceInvalidProvider").Metadata(map[string]interface{}{"service": service, "provider": provider})
 }
 
 var ErrFieldRequired = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v is required", "ErrFieldRequired").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} is required", "ErrFieldRequired").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldMustBePrintable = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v must be printable ascii characters", "ErrFieldMustBePrintable").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} must be printable ascii characters", "ErrFieldMustBePrintable").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldHasURICharacters = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v must not contain characters which cannot be used in URIs", "ErrFieldHasURICharacters").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} must not contain characters which cannot be used in URIs", "ErrFieldHasURICharacters").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldIsInvalidHost = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v must be a valid IP or FQDN", "ErrFieldIsInvalidHost").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} must be a valid IP or FQDN", "ErrFieldIsInvalidHost").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldIsInvalidIP = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v must be a valid IP", "ErrFieldIsInvalidIP").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} must be a valid IP", "ErrFieldIsInvalidIP").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldTooLarge = func(fieldName string, value int64) apufferi.Error {
-	return apufferi.CreateError("%v cannot be larger than %v", "ErrFieldTooLarge").Set(fieldName, value).Metadata(map[string]interface{}{"field": fieldName, "max": value})
+	return apufferi.CreateError("{field} cannot be larger than {max}", "ErrFieldTooLarge").Metadata(map[string]interface{}{"field": fieldName, "max": value})
 }
 
 var ErrFieldTooSmall = func(fieldName string, value int64) apufferi.Error {
-	return apufferi.CreateError("%v cannot be smaller than %v", "ErrFieldTooSmall").Set(fieldName, value).Metadata(map[string]interface{}{"field": fieldName, "min": value})
+	return apufferi.CreateError("{field} cannot be smaller than {min}", "ErrFieldTooSmall").Metadata(map[string]interface{}{"field": fieldName, "min": value})
 }
 
 var ErrFieldNotBetween = func(fieldName string, min, max int64) apufferi.Error {
-	return apufferi.CreateError("%v must be between %v and %v", "ErrFieldNotBetween").Set(fieldName, min, max).Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
+	return apufferi.CreateError("{field} must be between {min} and {max}", "ErrFieldNotBetween").Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
 }
 
 var ErrFieldEqual = func(fieldName1, fieldName2 string) apufferi.Error {
-	return apufferi.CreateError("%v cannot be equal to %v", "ErrFieldEqual").Set(fieldName1, fieldName2).Metadata(map[string]interface{}{"field1": fieldName1, "field2": fieldName2})
+	return apufferi.CreateError("{field1} cannot be equal to {field2}", "ErrFieldEqual").Metadata(map[string]interface{}{"field1": fieldName1, "field2": fieldName2})
 }
 
 var ErrFieldNotEqual = func(fieldName1, fieldName2 string) apufferi.Error {
-	return apufferi.CreateError("%v is not equal to %v", "ErrFieldNotEqual").Set(fieldName1, fieldName2).Metadata(map[string]interface{}{"field1": fieldName1, "field2": fieldName2})
+	return apufferi.CreateError("{field1} is not equal to {field2}", "ErrFieldNotEqual").Metadata(map[string]interface{}{"field1": fieldName1, "field2": fieldName2})
 }
 
 var ErrFieldNotEmail = func(fieldName string) apufferi.Error {
-	return apufferi.CreateError("%v is not a valid email", "ErrFieldNotEmail").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName})
+	return apufferi.CreateError("{field} is not a valid email", "ErrFieldNotEmail").Metadata(map[string]interface{}{"field": fieldName})
 }
 
 var ErrFieldLength = func(fieldName string, length int) apufferi.Error {
-	return apufferi.CreateError("%v must be at least %v characters", "ErrFieldLength").Set(fieldName).Metadata(map[string]interface{}{"field": fieldName, "length": length})
+	return apufferi.CreateError("{field} must be at least {length} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "length": length})
 }
