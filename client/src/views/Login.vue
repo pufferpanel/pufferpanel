@@ -132,7 +132,7 @@ export default {
           }
         }
 
-        data.errorMsg = data.$(msg)
+        data.errorMsg = data.$t(msg)
       }).finally(function () {
         data.loginDisabled = false
       })

@@ -45,7 +45,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
-    { path: '/', redirect: '/server' },
+    { path: '/', redirect: 'Servers' },
     {
       path: '*', component: (resolve) => import(
         `@/views/errors/404.vue`

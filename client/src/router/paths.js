@@ -8,7 +8,7 @@ export default [
   {
     path: '/server',
     view: 'Servers',
-    name: 'Server'
+    name: 'Servers'
   },
   {
     path: '/error/404',
