@@ -75,6 +75,7 @@ steps:
 - script: |
     git clone https://github.com/PufferPanel/systemd
   displayName: 'Get supporting files'
+  workingDirectory: '$(modulePath)'
 
 - script: |
     gem install --no-ri --no-rdoc rake
@@ -98,7 +99,7 @@ steps:
     mkdir $(GOPATH)/build/xenial
     mv *.deb $(GOPATH)/build/xenial
   displayName: 'Create packages'
-  workingDirectory: systemd/pufferpanel/xenial
+  workingDirectory: '$(modulePath)/systemd/pufferpanel/xenial'
 
 - script: |
     fpm -s deb -t rpm \
@@ -113,7 +114,7 @@ steps:
     mkdir $(GOPATH)/build/rpm
     mv *.rpm $(GOPATH)/build/rpm
   displayName: 'Create packages'
-  workingDirectory: systemd/pufferpanel/rpm7
+  workingDirectory: '$(modulePath)/systemd/pufferpanel/rpm7'
 
 - script: |
     fpm -s dir -t deb \
@@ -130,7 +131,7 @@ steps:
     mkdir $(GOPATH)/build/trusty
     mv *.deb $(GOPATH)/build/trusty
   displayName: 'Create packages'
-  workingDirectory: systemd/pufferpanel/trusty
+  workingDirectory: '$(modulePath)/systemd/pufferpanel/trusty'
 
 - task: PublishPipelineArtifact@0
   inputs:
