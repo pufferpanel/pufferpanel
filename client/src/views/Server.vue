@@ -16,7 +16,7 @@ export default {
   data () {
     return {
       loading: true,
-      type:
+      type: 'generic'
     }
   }
 }
