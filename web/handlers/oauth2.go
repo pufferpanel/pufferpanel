@@ -46,7 +46,7 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 		var serverId *uint
 		var id uint
 
-		i := c.Query("serverId")
+		i := c.Param("serverId")
 		if i != "" {
 			t, _ := strconv.Atoi(i)
 			id = uint(t)

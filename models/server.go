@@ -17,6 +17,8 @@ type Server struct {
 	IP   string `gorm:"" json:"-"`
 	Port uint   `gorm:"" json:"-"`
 
+	Type string `gorm:"NOT NULL;default='generic'" json:"-"`
+
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
