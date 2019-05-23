@@ -16,6 +16,7 @@ type ServerViewModel struct {
 	Users      []ServerViewModelUser `json:"users,omitempty"`
 	IP         string                `json:"ip,omitempty"`
 	Port       uint                  `json:"port,omitempty"`
+	Type       string                `json:"type"`
 }
 
 type ServerViewModelUser struct {
@@ -30,6 +31,7 @@ func FromServer(server *models.Server) *ServerViewModel {
 		NodeId:     server.NodeID,
 		IP:         server.IP,
 		Port:       server.Port,
+		Type:       server.Type,
 	}
 
 	if server.Node.ID != 0 {
@@ -60,6 +62,10 @@ func (s *ServerViewModel) Valid(allowEmpty bool) error {
 
 	if !allowEmpty && validate.Var(s.Name, "required") != nil {
 		return errors.ErrFieldRequired("name")
+	}
+
+	if !allowEmpty && validate.Var(s.Type, "required") != nil {
+		return errors.ErrFieldRequired("type")
 	}
 
 	if validate.Var(s.Name, "optional|printascii") != nil {
