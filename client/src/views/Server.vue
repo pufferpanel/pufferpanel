@@ -4,7 +4,7 @@
       <!--<keep-alive>-->
         <!--<core-servers-minecraft v-if="server.type === 'minecraft'"></core-servers-minecraft>
         <core-servers-generic v-else v-bind:server="server"></core-servers-generic>-->
-      <core-servers-generic v-bind:server="server"></core-servers-generic>
+      <core-servers-type-generic v-bind:server="server"></core-servers-type-generic>
       <!--</keep-alive>-->
     </div>
     <b-row v-else>
@@ -31,7 +31,6 @@ export default {
     loadServer () {
       let vue = this
       this.createRequest().get('/api/servers/' + this.$route.params.id).then(function (response) {
-        console.log(response)
         vue.server = response.data.data
       })
     }
