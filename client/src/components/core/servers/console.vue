@@ -9,64 +9,75 @@ export default {
   props: {
     server: Object
   },
-  data () {
+  data() {
     return {
       console: '',
-      consoleTracker: null,
+      connection: null,
       statTracker: null
     }
   },
   methods: {
-    openConnection () {
+    openConnection() {
       try {
-        this.consoleTracker = new WebSocket('/daemon/server/' + this.server.id + '/console')
-        this.consoleTracker.onopen = function () {
-          this.consoleTracker.onmessage = function (event) {
+        this.connection = new WebSocket('/daemon/server/' + this.server.id + '/console')
+        this.connection.onopen = function () {
+          this.connection.onmessage = function (event) {
             let data = JSON.parse(event.data)
             if (data === 'undefined') {
               return
             }
             switch (data.type) {
               case 'console': {
-                this.parseConsole(data)
+                this.parseConsole(data.data)
                 break
               }
               case 'stat': {
-                this.parseStats(data)
+                this.parseStats(data.data)
                 break
               }
             }
 
-            this.statTracker = setInterval(this.callStats, 1000)
+            this.statTracker = setInterval(this.callStats, 10000)
           }
         }
-        this.consoleTracker.onerror = function (event) {
+        this.connection.onerror = function (event) {
           console.log(event)
         }
       } catch (ex) {
         console.log(ex)
-        this.consoleTracker = null
+        this.connection = null
       }
     },
-    callStats () {
+    callStats() {
+      if (this.connection) {
+        this.connection.send(JSON.stringify({
+          "type": "statsRequest"
+        }))
+      } else {
+        this.createRequest().get("/daemon/server/" + server.id + "/stats", {timeout: 1000}).then(function (response) {
+          console.log(data)
+          this.parseStats(response.data.data)
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }
+    },
+    parseStats(data) {
 
     },
-    parseStats (data) {
-
-    },
-    parseConsole (data) {
-    
+    parseConsole(data) {
+      console = console + data.logs
     }
   },
-  mounted () {
+  mounted() {
     this.openConnection()
   },
   beforeDestroy: function () {
-    if (this.consoleTracker) {
-      if (this.consoleTracker instanceof WebSocket) {
-        this.consoleTracker.close()
+    if (this.connection) {
+      if (this.connection instanceof WebSocket) {
+        this.connection.close()
       } else {
-        clearInterval(this.consoleTracker)
+        clearInterval(this.connection)
       }
     }
 
