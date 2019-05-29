@@ -20,8 +20,15 @@ func OAuth2WithLimit(scope string, requireServer bool) gin.HandlerFunc {
 }
 
 func HasOAuth2Token(c *gin.Context) {
+	//if there's a cookie with the token, use that
+	cookie, _ := c.Cookie("puffer_auth")
+	if cookie != "" {
+		c.Request.Header.Set("Authorization", "Bearer "+cookie)
+	}
+
 	authHeader := c.Request.Header.Get("Authorization")
 	authHeader = strings.TrimSpace(authHeader)
+
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") && strings.TrimPrefix(authHeader, "Bearer ") != "" {
 		c.AbortWithStatus(403)
 	} else {
@@ -29,7 +36,7 @@ func HasOAuth2Token(c *gin.Context) {
 	}
 }
 
-func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
+func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		os, err := services.GetOAuthService()
 		if err != nil || os == nil {
