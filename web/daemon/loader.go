@@ -3,8 +3,10 @@ package daemon
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	netHttp "net/http"
@@ -55,6 +57,14 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
+	if c.GetHeader("Upgrade") == "websocket" {
+		proxySocketRequest(c, path, ns, server)
+	} else {
+		proxyHttpRequest(c, path, ns, server)
+	}
+}
+
+func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, server *models.Server) {
 	callResponse, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
 
 	//this only will throw an error if we can't get to the node
@@ -78,4 +88,13 @@ func proxyServerRequest(c *gin.Context) {
 	}
 
 	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
+}
+
+func proxySocketRequest(c *gin.Context, path string, ns services.NodeService, server *models.Server) {
+	err := ns.OpenSocket(&server.Node, path, c.Writer, c.Request)
+	if err != nil {
+		logging.Exception("error opening socket", err)
+		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Error(err).Send()
+		return
+	}
 }

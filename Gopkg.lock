@@ -101,6 +101,14 @@
   version = "v1.3.1"
 
 [[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
   name = "github.com/hashicorp/hcl"
   packages = [
@@ -437,6 +445,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/gin-gonic/gin",
+    "github.com/gorilla/websocket",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mssql",
     "github.com/jinzhu/gorm/dialects/mysql",

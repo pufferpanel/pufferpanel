@@ -9,3 +9,6 @@
 [prune]
   go-tests = true
   unused-packages = true
+[[constraint]]
+  name = "github.com/gorilla/websocket"
+  version = "1.4.0"

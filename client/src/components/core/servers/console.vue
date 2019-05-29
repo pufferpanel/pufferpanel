@@ -9,7 +9,7 @@ export default {
   props: {
     server: Object
   },
-  data() {
+  data () {
     return {
       console: '',
       connection: null,
@@ -17,45 +17,46 @@ export default {
     }
   },
   methods: {
-    openConnection() {
+    openConnection () {
       try {
-        let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host;
+        let root = this
+        let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host
         this.connection = new WebSocket(base + '/daemon/server/' + this.server.id + '/console')
-        this.connection.onopen = function () {
-          this.connection.onmessage = function (event) {
+        this.connection.addEventListener('open', function () {
+          root.connection.addEventListener('message', function (event) {
             let data = JSON.parse(event.data)
             if (data === 'undefined') {
               return
             }
             switch (data.type) {
               case 'console': {
-                this.parseConsole(data.data)
+                root.parseConsole(data.data)
                 break
               }
               case 'stat': {
-                this.parseStats(data.data)
+                root.parseStats(data.data)
                 break
               }
             }
 
-            this.statTracker = setInterval(this.callStats, 10000)
-          }
-        }
-        this.connection.onerror = function (event) {
+            root.statTracker = setInterval(this.callStats, 10000)
+          })
+        })
+        this.connection.addEventListener('error', function (event) {
           console.log(event)
-        }
+        })
       } catch (ex) {
         console.log(ex)
         this.connection = null
       }
     },
-    callStats() {
+    callStats () {
       if (this.connection) {
         this.connection.send(JSON.stringify({
-          "type": "statsRequest"
+          'type': 'statsRequest'
         }))
       } else {
-        this.createRequest().get("/daemon/server/" + server.id + "/stats", {timeout: 1000}).then(function (response) {
+        this.createRequest().get('/daemon/server/' + server.id + '/stats', { timeout: 1000 }).then(function (response) {
           console.log(data)
           this.parseStats(response.data.data)
         }).catch(function (error) {
@@ -63,19 +64,20 @@ export default {
         })
       }
     },
-    parseStats(data) {
+    parseStats (data) {
 
     },
-    parseConsole(data) {
+    parseConsole (data) {
       console = console + data.logs
     }
   },
-  mounted() {
+  mounted () {
     this.openConnection()
   },
   beforeDestroy: function () {
     if (this.connection) {
-      if (this.connection instanceof WebSocket) {
+      if (this.connection.close) {
+        console.log('Closing websocket')
         this.connection.close()
       } else {
         clearInterval(this.connection)
