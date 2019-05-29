@@ -2,21 +2,18 @@ import Vue from 'vue'
 
 // Lib imports
 import axios from 'axios'
-import Cookies from 'js-cookie'
 
-Vue.prototype.$http = axios
-Vue.prototype.axios = axios
+Vue.prototype.$http = createClient()
+Vue.prototype.axios = Vue.prototype.$http
 
+/**
+ * @deprecated Use $http instead
+ * @returns {AxiosInstance}
+ */
 Vue.prototype.createRequest = function () {
-  let cookie = Cookies.get('puffer_auth')
-  if (cookie === undefined) {
-    cookie = ''
-  }
-  if (cookie === '') {
-    return axios.create()
-  } else {
-    return axios.create({
-      headers: { 'Authorization': 'Bearer ' + cookie }
-    })
-  }
+  return Vue.prototype.$http
+}
+
+function createClient() {
+  return axios.create()
 }
