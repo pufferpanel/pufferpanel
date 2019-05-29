@@ -56,7 +56,7 @@ export default {
           'type': 'statsRequest'
         }))
       } else {
-        this.createRequest().get('/daemon/server/' + server.id + '/stats', { timeout: 1000 }).then(function (response) {
+        this.$http.get('/daemon/server/' + server.id + '/stats', { timeout: 1000 }).then(function (response) {
           console.log(data)
           this.parseStats(response.data.data)
         }).catch(function (error) {
@@ -68,7 +68,7 @@ export default {
 
     },
     parseConsole (data) {
-      console = console + data.logs
+      this.console = this.console + data.logs
     }
   },
   mounted () {
