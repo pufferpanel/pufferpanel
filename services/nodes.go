@@ -15,16 +15,27 @@ package services
 
 import (
 	"fmt"
+	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"io"
+	"log"
 	"net/http"
-	url2 "net/url"
+	"net/url"
 	"strings"
 )
 
 var nodeClient = http.Client{}
+
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 type NodeService interface {
 	GetAll() (*models.Nodes, error)
@@ -38,6 +49,8 @@ type NodeService interface {
 	Create(node *models.Node) error
 
 	CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error)
+
+	OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error
 }
 
 type nodeService struct {
@@ -98,14 +111,14 @@ func (ns *nodeService) CallNode(node *models.Node, method string, path string, b
 		return nil, err
 	}
 
-	url, err := url2.Parse(fullUrl)
+	addr, err := url.Parse(fullUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	request := &http.Request{
 		Method: method,
-		URL: url,
+		URL:    addr,
 		Header: headers,
 	}
 
@@ -115,6 +128,52 @@ func (ns *nodeService) CallNode(node *models.Node, method string, path string, b
 
 	response, err := nodeClient.Do(request)
 	return response, err
+}
+
+func (ns *nodeService) OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error {
+	ssl, err := doesDaemonUseSSL(node)
+	if err != nil {
+		return err
+	}
+
+	scheme := "ws"
+	if ssl {
+		scheme = "wss"
+	}
+	addr := fmt.Sprintf("%s:%d", node.PrivateHost, node.PrivatePort)
+
+	u := url.URL{Scheme: scheme, Host: addr, Path: path}
+	log.Printf("connecting to %s", u.String())
+
+	header := http.Header{}
+	header.Set("Authorization", request.Header.Get("Authorization"))
+
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), header)
+	if err != nil {
+		return err
+	}
+
+	conn, err := wsupgrader.Upgrade(writer, request, nil)
+	if err != nil {
+		return err
+	}
+
+	go func(daemon *websocket.Conn, client *websocket.Conn) {
+		defer daemon.Close()
+		defer client.Close()
+
+		ch := make(chan error)
+		go proxyRead(daemon, client, ch)
+		go proxyRead(client, daemon, ch)
+
+		err := <-ch
+
+		if err != nil {
+			logging.Exception("error proxying socket", err)
+		}
+	}(c, conn)
+
+	return nil
 }
 
 func doesDaemonUseSSL(node *models.Node) (bool, error) {
@@ -150,4 +209,20 @@ func createNodeURL(node *models.Node, path string) (string, error) {
 	}
 
 	return fmt.Sprintf("%s://%s:%d/%s", protocol, node.PrivateHost, node.PrivatePort, path), nil
+}
+
+func proxyRead(source, dest *websocket.Conn, ch chan error) {
+	for {
+		messageType, data, err := source.ReadMessage()
+
+		if err != nil {
+			ch <- err
+			return
+		}
+		err = dest.WriteMessage(messageType, data)
+		if err != nil {
+			ch <- err
+			return
+		}
+	}
 }
