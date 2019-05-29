@@ -62,7 +62,6 @@ export default {
   },
   mounted () {
     this.loadData()
-    this.pollServerStatus()
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
   methods: {
@@ -104,6 +103,7 @@ export default {
         vueData.error = vueData.$t(msg)
       }).then(function () {
         vueData.loading = false
+        vueData.pollServerStatus()
       })
     },
     pollServerStatus () {
