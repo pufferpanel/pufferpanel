@@ -19,7 +19,8 @@ export default {
   methods: {
     openConnection() {
       try {
-        this.connection = new WebSocket('/daemon/server/' + this.server.id + '/console')
+        let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host;
+        this.connection = new WebSocket(base + '/daemon/server/' + this.server.id + '/console')
         this.connection.onopen = function () {
           this.connection.onmessage = function (event) {
             let data = JSON.parse(event.data)
