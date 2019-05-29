@@ -8,7 +8,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	webHttp "net/http"
-	"strconv"
 	"strings"
 )
 
@@ -43,15 +42,31 @@ func oauth2Handler (scope string, requireServer bool, permitWithLimit bool) gin.
 			return
 		}
 
+		ss, err := services.GetServerService()
+		if err != nil || ss == nil {
+			if err == nil {
+				err = errors.ErrServiceNotAvailable
+			}
+
+			shared.HandleError(response.Respond(c), err)
+			c.Abort()
+			return
+		}
+
 		var serverId *uint
-		var id uint
 
 		i := c.Param("serverId")
-		if i != "" {
-			t, _ := strconv.Atoi(i)
-			id = uint(t)
-			serverId = &id
+		server, exists, err := ss.Get(i)
+
+		if server == nil || server.ID == 0 || !exists || err != nil {
+			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
+			c.Abort()
+			return
 		}
+
+		var id uint
+		id = server.ID
+		serverId = &id
 
 		if requireServer && serverId == nil {
 			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()

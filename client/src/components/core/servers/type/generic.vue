@@ -13,7 +13,7 @@
 
 <template>
   <b-container>
-
+    <core-servers-console v-bind:server="server"></core-servers-console>
   </b-container>
 </template>
 
