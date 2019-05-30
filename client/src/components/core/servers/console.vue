@@ -1,10 +1,8 @@
 <template>
-  <div class="col-md-12">
-    <b-card
-      :title="$t('common.Console')">
-      <textarea id="server_console" class="form-control console" readonly="readonly" v-text="console"></textarea>
-    </b-card>
-  </div>
+  <b-card
+    :title="$t('common.Console')">
+    <textarea ref="console" class="form-control console" readonly="readonly" v-text="console"></textarea>
+  </b-card>
 </template>
 
 <script>
@@ -16,11 +14,15 @@ export default {
     return {
       console: '',
       connection: null,
-      statTracker: null
+      statTracker: null,
+      consoleRecover: null
     }
   },
   methods: {
     openConnection () {
+      this.consoleRecover = null
+      console.log('opening connection')
+
       try {
         let root = this
         let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host
@@ -42,15 +44,22 @@ export default {
               }
             }
 
-            root.statTracker = setInterval(this.callStats, 10000)
+            root.statTracker = setInterval(this.callStats, 10 * 1000)
           })
         })
         this.connection.addEventListener('error', function (event) {
           console.log(event)
+          root.connection = null
+
+          root.consoleRecover = setTimeout(root.openConnection, 10 * 1000)
+          console.log('recover scheduled as ' + root.consoleRecover)
         })
       } catch (ex) {
         console.log(ex)
         this.connection = null
+
+        this.consoleRecover = setTimeout(this.openConnection, 10 * 1000)
+        console.log('recover scheduled as ' + this.consoleRecover)
       }
     },
     callStats () {
@@ -58,19 +67,25 @@ export default {
         this.connection.send(JSON.stringify({
           'type': 'statsRequest'
         }))
-      } else {
-        this.$http.get('/daemon/server/' + server.id + '/stats', { timeout: 1000 }).then(function (response) {
-          this.parseStats(response.data.data)
-        }).catch(function (error) {
-          console.log(error)
-        })
       }
     },
     parseStats (data) {
 
     },
     parseConsole (data) {
-      this.console = this.console + data.logs
+      let textArea = this.$refs['console']
+
+      let msg = ''
+      if (data.logs instanceof Array) {
+        data.logs.forEach(function (element) {
+          msg += element
+        })
+      } else {
+        msg = data.logs
+      }
+
+      this.console = this.console + msg
+      textArea.scrollTop = textArea.scrollHeight
     }
   },
   mounted () {
@@ -88,6 +103,10 @@ export default {
 
     if (this.statTracker) {
       clearInterval(this.statTracker)
+    }
+
+    if (this.consoleRecover) {
+      clearTimeout(this.consoleRecover)
     }
   }
 }

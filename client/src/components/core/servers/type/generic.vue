@@ -13,7 +13,13 @@
 
 <template>
   <b-container>
-    <core-servers-console v-bind:server="server"></core-servers-console>
+    <h2 v-text="server.name"></h2>
+    <br>
+    <b-row>
+      <b-col>
+        <core-servers-console v-bind:server="server"></core-servers-console>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 

@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div v-if="this.server">
-      <!--<keep-alive>-->
-        <!--<core-servers-minecraft v-if="server.type === 'minecraft'"></core-servers-minecraft>
-        <core-servers-generic v-else v-bind:server="server"></core-servers-generic>-->
-      <core-servers-type-generic v-bind:server="server"></core-servers-type-generic>
-      <!--</keep-alive>-->
-    </div>
+    <core-servers-type-generic v-if="this.server" v-bind:server="server"></core-servers-type-generic>
     <b-row v-else>
       <b-col cols="5"/>
       <b-col cols="2">
