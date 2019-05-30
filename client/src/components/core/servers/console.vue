@@ -1,6 +1,9 @@
 <template>
-  <div>
-
+  <div class="col-md-12">
+    <b-card
+      :title="$t('common.Console')">
+      <textarea id="server_console" class="form-control console" readonly="readonly" v-text="console"></textarea>
+    </b-card>
   </div>
 </template>
 
@@ -57,7 +60,6 @@ export default {
         }))
       } else {
         this.$http.get('/daemon/server/' + server.id + '/stats', { timeout: 1000 }).then(function (response) {
-          console.log(data)
           this.parseStats(response.data.data)
         }).catch(function (error) {
           console.log(error)
@@ -90,3 +92,21 @@ export default {
   }
 }
 </script>
+
+<style>
+  .console {
+    font: 85% 'Droid Sans Mono', monospace;
+    color: #333;
+    height: 300px !important;
+    text-wrap: normal;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 0;
+    resize: none
+  }
+
+  .console[readonly=readonly] {
+    background: #fefefe;
+    cursor: default
+  }
+</style>
