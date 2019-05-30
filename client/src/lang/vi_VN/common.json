@@ -17,5 +17,6 @@
   "Username": "Username",
   "Password": "Password",
   "ConfirmPassword": "Confirm Password",
-  "Email": "Email"
+  "Email": "Email",
+  "Console": "Console"
 }
