@@ -29,6 +29,7 @@
     "vue": "^2.5.17",
     "vue-chartist": "^2.1.2",
     "vue-meta": "^1.5.2",
+    "vue-native-websocket": "^2.0.13",
     "vuetify": "^1.5.5"
   },
   "devDependencies": {
