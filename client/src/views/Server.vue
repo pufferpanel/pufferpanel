@@ -28,7 +28,7 @@ export default {
       this.$http.get('/api/servers/' + this.$route.params.id).then(function (response) {
         vue.server = response.data.data
         let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host
-        let url = base + '/daemon/server/' + vue.server.id + '/console'
+        let url = base + '/daemon/server/' + vue.server.id + '/socket'
         vue.$connect(url)
       })
     }
