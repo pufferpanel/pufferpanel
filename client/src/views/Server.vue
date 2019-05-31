@@ -1,6 +1,6 @@
 <template>
   <div>
-    <core-servers-type-generic v-if="this.server" v-bind:server="server"></core-servers-type-generic>
+    <core-servers-type-generic v-if="this.server" :server="server"></core-servers-type-generic>
     <b-row v-else>
       <b-col cols="5"/>
       <b-col cols="2">
@@ -15,7 +15,8 @@
 export default {
   data () {
     return {
-      server: null
+      server: null,
+      recover: null
     }
   },
   mounted () {
@@ -24,10 +25,16 @@ export default {
   methods: {
     loadServer () {
       let vue = this
-      this.createRequest().get('/api/servers/' + this.$route.params.id).then(function (response) {
+      this.$http.get('/api/servers/' + this.$route.params.id).then(function (response) {
         vue.server = response.data.data
+        let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host
+        let url = base + '/daemon/server/' + vue.server.id + '/console'
+        vue.$connect(url)
       })
     }
+  },
+  beforeDestroy: function () {
+    this.$disconnect()
   }
 }
 </script>
