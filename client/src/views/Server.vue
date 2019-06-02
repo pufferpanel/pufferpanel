@@ -1,6 +1,7 @@
 <template>
   <div>
-    <core-servers-type-generic v-if="this.server" :server="server"></core-servers-type-generic>
+    <!--<core-servers-type-generic v-if="this.server" :server="server"></core-servers-type-generic>-->
+    <server-render v-if="this.server" :server="server"></server-render>
     <b-row v-else>
       <b-col cols="5"/>
       <b-col cols="2">
@@ -13,17 +14,17 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       server: null,
       recover: null
     }
   },
-  mounted () {
+  mounted() {
     this.server = this.loadServer()
   },
   methods: {
-    loadServer () {
+    loadServer() {
       let vue = this
       this.$http.get('/api/servers/' + this.$route.params.id).then(function (response) {
         vue.server = response.data.data

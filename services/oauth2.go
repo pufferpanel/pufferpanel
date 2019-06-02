@@ -87,7 +87,7 @@ func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, r
 	}
 }
 
-func (oauth2 *oauthService) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error){
+func (oauth2 *oauthService) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error) {
 	return oauth2.server.ValidationBearerToken(r)
 }
 
@@ -114,9 +114,9 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 
 	ci := &models.ClientInfo{
 		ClientID: clientId,
-		UserID: user.ID,
-		Secret: clientSecret,
-		Panel: panel,
+		UserID:   user.ID,
+		Secret:   clientSecret,
+		Panel:    panel,
 	}
 
 	res := db.Create(ci)
@@ -128,7 +128,7 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 	for _, s := range scopes {
 		scopeInfo := &models.ClientServerScopes{
 			ClientInfoID: ci.ID,
-			Scope: s,
+			Scope:        s,
 		}
 		if server != nil {
 			scopeInfo.ServerId = &server.ID
@@ -196,10 +196,10 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 		}
 		if toAdd {
 			replacement := &models.ClientServerScopes{
-				Scope: v,
+				Scope:        v,
 				ClientInfoID: client.ID,
 			}
-			if server != nil && server.ID != 0{
+			if server != nil && server.ID != 0 {
 				replacement.ServerId = &server.ID
 			}
 
@@ -251,7 +251,7 @@ func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope 
 	ts := o2.TokenStore{}
 
 	var ti oauth.TokenInfo
-	if  ti, err = ts.GetByAccess(accessToken); err != nil {
+	if ti, err = ts.GetByAccess(accessToken); err != nil {
 		return
 	}
 	if oauth2.HasTokenExpired(ti) {
@@ -265,10 +265,8 @@ func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope 
 	}
 
 	for _, v := range converted.ClientInfo.ServerScopes {
-		if v.ServerId == nil || v.ServerId == serverId {
-			if v.Scope == scope {
-				return &converted.ClientInfo, true, nil
-			}
+		if (v.ServerId == nil || *v.ServerId == *serverId) && v.Scope == scope {
+			return &converted.ClientInfo, true, nil
 		}
 	}
 
@@ -358,10 +356,10 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken strin
 	sessionToken = strings.Replace(uuid.NewV4().String(), "-", "", -1)
 
 	ti := &models.TokenInfo{
-		ClientInfoID: ci.ID,
-		AccessCreateAt: time.Now(),
+		ClientInfoID:    ci.ID,
+		AccessCreateAt:  time.Now(),
 		AccessExpiresIn: 1 * time.Hour,
-		Access: sessionToken,
+		Access:          sessionToken,
 	}
 
 	err = db.Create(ti).Error
