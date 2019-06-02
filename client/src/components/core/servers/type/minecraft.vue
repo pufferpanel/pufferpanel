@@ -1,5 +1,5 @@
 <template>
-
+  <div>Minecraft view</div>
 </template>
 
 <script>
