@@ -1,7 +1,14 @@
 <template>
   <b-card
-    :title="$t('common.Console')">
+    header-tag="header"
+    footer-tag="footer">
+    <h6 slot="header" class="mb-0" v-text="$t('common.Console')"></h6>
     <textarea ref="console" class="form-control console" readonly="readonly" v-text="console"></textarea>
+
+    <b-btn slot="footer" v-b-modal.console-copy v-text="$t('common.Pause')" @click="popoutConsole"></b-btn>
+    <b-modal id="console-copy" size="xl" v-bind:title="$t('common.Console')">
+      <textarea ref="console" class="form-control console" readonly="readonly" v-text="consoleReadonly"></textarea>
+    </b-modal>
   </b-card>
 </template>
 
@@ -12,7 +19,8 @@ export default {
   },
   data () {
     return {
-      console: ''
+      console: '',
+      consoleReadonly: ''
     }
   },
   methods: {
@@ -30,6 +38,9 @@ export default {
 
       this.console = this.console + msg
       textArea.scrollTop = textArea.scrollHeight
+    },
+    popoutConsole () {
+      this.consoleReadonly = this.console
     }
   },
   mounted () {

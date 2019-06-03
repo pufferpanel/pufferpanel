@@ -21,7 +21,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
+      <b-col sm="12" md="4">
         <core-servers-controls></core-servers-controls>
       </b-col>
     </b-row>
