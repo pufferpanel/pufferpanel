@@ -21,20 +21,34 @@ export default {
     return {
       console: '',
       consoleReadonly: '',
-      maxConsoleLength: 10000
+      maxConsoleLength: 10000,
+      buffer: [],
+      refreshInterval: null
     }
   },
   methods: {
     parseConsole (data) {
-      let textArea = this.$refs['console']
+      let vue = this
 
-      let msg = ''
       if (data.logs instanceof Array) {
         data.logs.forEach(function (element) {
-          msg += element
+          vue.buffer.push(element)
         })
       } else {
-        msg = data.logs
+        this.buffer.push(data.logs)
+      }
+    },
+    popoutConsole () {
+      this.consoleReadonly = this.console
+    },
+    updateConsole () {
+      if (this.buffer.length === 0) {
+        return
+      }
+
+      let msg = this.buffer.shift()
+      while (this.buffer.length > 0) {
+        msg += this.buffer.shift()
       }
 
       let newConsole = this.console + msg
@@ -42,10 +56,11 @@ export default {
         newConsole = newConsole.substring(newConsole.length - this.maxConsoleLength, newConsole.length)
       }
       this.console = newConsole
-      textArea.scrollTop = textArea.scrollHeight
-    },
-    popoutConsole () {
-      this.consoleReadonly = this.console
+
+      let textArea = this.$refs['console']
+      this.$nextTick(function () {
+        textArea.scrollTop = textArea.scrollHeight
+      })
     }
   },
   mounted () {
@@ -59,6 +74,12 @@ export default {
         root.parseConsole(data.data)
       }
     })
+    this.refreshInterval = setInterval(this.updateConsole, 1000)
+  },
+  beforeDestroy () {
+    if (this.refreshInterval !== null) {
+      clearInterval(this.refreshInterval)
+    }
   }
 }
 </script>
