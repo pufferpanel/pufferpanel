@@ -20,7 +20,8 @@ export default {
   data () {
     return {
       console: '',
-      consoleReadonly: ''
+      consoleReadonly: '',
+      maxConsoleLength: 10000
     }
   },
   methods: {
@@ -36,7 +37,11 @@ export default {
         msg = data.logs
       }
 
-      this.console = this.console + msg
+      let newConsole = this.console + msg
+      if (newConsole.length > this.maxConsoleLength) {
+        newConsole = newConsole.substring(newConsole.length - this.maxConsoleLength, newConsole.length)
+      }
+      this.console = newConsole
       textArea.scrollTop = textArea.scrollHeight
     },
     popoutConsole () {
