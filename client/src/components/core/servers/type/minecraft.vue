@@ -1,5 +1,5 @@
 <template>
-  <div>Minecraft view</div>
+  <core-servers-type-generic :server="server"></core-servers-type-generic>
 </template>
 
 <script>
