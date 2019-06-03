@@ -12,11 +12,15 @@
   -->
 
 <template>
-  <b-button-group>
-    <b-button variant="success" v-on:click="start">Start</b-button>
-    <b-button variant="warning" v-on:click="stop">Stop</b-button>
-    <b-button variant="danger" v-on:click="kill">Kill</b-button>
-  </b-button-group>
+  <b-card
+    header-tag="header">
+    <h6 slot="header" class="mb-0" v-text="$t('common.Controls')"></h6>
+    <b-button-group>
+      <b-button variant="success" v-on:click="start" v-text="$t('common.Start')"></b-button>
+      <b-button variant="warning" v-on:click="stop" v-text="$t('common.Stop')"></b-button>
+      <b-button variant="danger" v-on:click="kill" v-text="$t('common.Kill')"></b-button>
+    </b-button-group>
+  </b-card>
 </template>
 
 <script>
