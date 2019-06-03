@@ -18,5 +18,11 @@
   "Password": "Password",
   "ConfirmPassword": "Confirm Password",
   "Email": "Email",
-  "Console": "Console"
+  "Console": "Console",
+  "Controls": "Controls",
+  "Start": "Start",
+  "Stop": "Stop",
+  "Kill": "Kill",
+  "Send": "Send",
+  "Pause": "Pause"
 }
