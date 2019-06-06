@@ -30,7 +30,8 @@
     "vue-chartist": "^2.1.2",
     "vue-meta": "^1.5.2",
     "vue-native-websocket": "^2.0.13",
-    "vuetify": "^1.5.5"
+    "vuetify": "^1.5.5",
+    "vue-chartjs": "latest"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.7.2",
