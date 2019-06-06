@@ -16,6 +16,11 @@
     <h2 v-text="server.name"></h2>
     <br>
     <b-row>
+      <b-col cols="6">
+        <core-servers-cpu v-bind:server="server"></core-servers-cpu>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col>
         <core-servers-console v-bind:server="server"></core-servers-console>
       </b-col>
