@@ -13,21 +13,24 @@
 
 <template>
   <b-container>
-    <h2 v-text="server.name"></h2>
+    <h2 v-text="server.name"/>
     <br>
     <b-row>
-      <b-col cols="6">
-        <core-servers-cpu v-bind:server="server"></core-servers-cpu>
+      <b-col>
+        <core-servers-console v-bind:server="server"/>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="12" md="6" offset-md="6">
+        <core-servers-controls/>
       </b-col>
     </b-row>
     <b-row>
       <b-col>
-        <core-servers-console v-bind:server="server"></core-servers-console>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col sm="12" md="4">
-        <core-servers-controls></core-servers-controls>
+        <b-card-group>
+          <core-servers-cpu/>
+          <core-servers-memory/>
+        </b-card-group>
       </b-col>
     </b-row>
   </b-container>

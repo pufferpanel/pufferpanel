@@ -31,7 +31,8 @@
     "vue-meta": "^1.5.2",
     "vue-native-websocket": "^2.0.13",
     "vuetify": "^1.5.5",
-    "vue-chartjs": "latest"
+    "vue-chartjs": "^3.4.2",
+    "chart.js": "^2.8.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.7.2",
@@ -41,7 +42,7 @@
     "@vue/cli-plugin-eslint": "^3.0.1",
     "@vue/cli-service": "^3.8.0",
     "@vue/eslint-config-standard": "^3.0.1",
-    "axios": "^0.17.1",
+    "axios": "^0.19.0",
     "css-loader": "^2.1.0",
     "eslint": "^5.0.0",
     "eslint-plugin-node": "^8.0.1",

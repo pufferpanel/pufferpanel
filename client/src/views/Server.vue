@@ -14,28 +14,36 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       server: null,
-      recover: null
+      recover: null,
+      statRequest: null
     }
   },
-  mounted() {
+  mounted () {
     this.server = this.loadServer()
   },
   methods: {
-    loadServer() {
+    loadServer () {
       let vue = this
       this.$http.get('/api/servers/' + this.$route.params.id).then(function (response) {
         vue.server = response.data.data
         let base = location.protocol === 'https' ? 'wss://' : 'ws:/' + location.host
         let url = base + '/daemon/server/' + vue.server.id + '/socket'
         vue.$connect(url)
+        vue.statRequest = setInterval(vue.callStats, 3000)
       })
+    },
+    callStats () {
+      this.$socket.sendObj({ type: 'stat' })
     }
   },
   beforeDestroy: function () {
     this.$disconnect()
+    if (this.statRequest) {
+      clearInterval(this.statRequest)
+    }
   }
 }
 </script>
