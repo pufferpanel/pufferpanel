@@ -61,7 +61,7 @@ type registerRequest struct {
 }
 
 type registerRequestData struct {
-	Username string `json:"username" validate:"min=8,printascii,required"`
+	Username string `json:"username" validate:"min=3,printascii,required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
