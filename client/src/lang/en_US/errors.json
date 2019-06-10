@@ -25,6 +25,6 @@
   "ErrFieldLength": "{field} must be at least {length} characters",
   "ErrNoPermission": "You do not have permission to perform this action",
   "ErrPasswordRequirements": "Password must be at least 8 characters",
-  "ErrUsernameRequirements": "Username must be at least 8 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Passwords are not the same"
 }
