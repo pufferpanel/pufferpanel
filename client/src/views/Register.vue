@@ -179,7 +179,7 @@ export default {
       return this.email && /^\S+@\S+\.\S+$/.test(this.email)
     },
     validUsername: function () {
-      return this.username && /^([0-9A-Za-z_-]){8,}$/.test(this.username)
+      return this.username && /^([0-9A-Za-z_-]){3,}$/.test(this.username)
     },
     canComplete: function () {
       if (this.registerDisabled) {
