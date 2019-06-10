@@ -15,7 +15,7 @@
   <b-card
     header-tag="header"
     footer-tag="footer">
-    <h6 slot="header" class="mb-0" v-text="$t('common.CPU')"></h6>
+    <h6 slot="header" class="mb-0" v-text="$t('common.Memory')"></h6>
     <line-chart :chart-data="datacollection" :options="options"></line-chart>
   </b-card>
 </template>
@@ -30,12 +30,12 @@ export default {
   data () {
     return {
       maxPoints: 20,
-      cpu: Array.apply(null, Array(this.maxPoints)).map(Number.prototype.valueOf, 0),
+      memory: Array.apply(null, Array(this.maxPoints)).map(Number.prototype.valueOf, 0),
       label: Array.apply(null, Array(this.maxPoints)).map(String.prototype.valueOf, ''),
       datacollection: {
         datasets: [
           {
-            label: this.$t('common.CPU'),
+            label: this.$t('common.Memory'),
             backgroundColor: '#65a5f8',
             data: []
           }
@@ -56,18 +56,18 @@ export default {
   },
   methods: {
     updateStats (data) {
-      if (this.cpu.length === this.maxPoints) {
-        this.cpu.shift()
+      if (this.memory.length === this.maxPoints) {
+        this.memory.shift()
         this.label.shift()
       }
 
       this.label.push(new Date().toLocaleTimeString())
-      this.cpu.push(data.cpu)
+      this.memory.push(data.memory)
 
-      let newCpu = []
+      let newMemory = []
       let newLabel = []
-      for (let i = 0; i < this.cpu.length; i++) {
-        newCpu[i] = this.cpu[i]
+      for (let i = 0; i < this.memory.length; i++) {
+        newMemory[i] = this.memory[i]
         newLabel[i] = this.label[i]
       }
 
@@ -75,9 +75,9 @@ export default {
         labels: newLabel,
         datasets: [
           {
-            label: this.$t('common.CPU'),
+            label: this.$t('common.Memory'),
             backgroundColor: '#65a5f8',
-            data: newCpu
+            data: newMemory
           }
         ]
       }
