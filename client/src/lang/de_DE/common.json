@@ -24,5 +24,7 @@
   "Stop": "Stop",
   "Kill": "Kill",
   "Send": "Send",
-  "Pause": "Pause"
+  "Pause": "Pause",
+  "CPU": "CPU",
+  "Memory": "Memory"
 }
