@@ -42,7 +42,6 @@ steps:
   - script: |
       export GOOS=linux
       dep ensure -v
-      rm -f *.syso
       go build -o $(GOPATH)/build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
     workingDirectory: '$(modulePath)'
     displayName: 'Linux Build'
