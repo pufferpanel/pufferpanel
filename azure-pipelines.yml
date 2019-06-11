@@ -78,9 +78,9 @@ steps:
     workingDirectory: '$(modulePath)'
 
   - script: |
-      gem install --no-ri --no-rdoc rake
-      gem install --no-ri --no-rdoc fpm && fpm -v
-      gem install --no-ri --no-rdoc package_cloud && package_cloud version
+      gem install --no-doc rake
+      gem install --no-doc fpm && fpm -v
+      gem install --no-doc package_cloud && package_cloud version
     displayName: 'Install gem deps'
 
   - script: |
