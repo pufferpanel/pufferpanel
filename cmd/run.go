@@ -129,7 +129,11 @@ func executeRun(cmd *cobra.Command, args []string) error {
 			}
 
 			logging.Info("Listening for socket requests")
-			c <- http.Serve(listener, router)
+			err = http.Serve(listener, router)
+			if err != nil {
+				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
+				return
+			}
 		}()
 	}
 
