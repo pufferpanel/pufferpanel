@@ -53,7 +53,7 @@ func RegisterPost(c *gin.Context) {
 		response.Fail().Status(400).Error(err)
 		return
 	}
-	response.Success()
+	response.Success().Message("")
 }
 
 type registerRequest struct {
