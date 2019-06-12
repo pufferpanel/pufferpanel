@@ -53,6 +53,25 @@ func RegisterPost(c *gin.Context) {
 		response.Fail().Status(400).Error(err)
 		return
 	}
+
+	os, err := services.GetOAuthService()
+	if err != nil {
+		response.Fail().Status(400).Error(err)
+		return
+	}
+
+	client, _, err := os.GetByUser(user)
+	if err != nil {
+		response.Fail().Status(400).Error(err)
+		return
+	}
+
+	err = os.AddScope(client, nil, "servers.view")
+	if err != nil {
+		response.Fail().Status(400).Error(err)
+		return
+	}
+
 	response.Success().Message("")
 }
 
