@@ -25,7 +25,9 @@ type OAuthService interface {
 
 	Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error)
 
-	UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error)
+	AddScope(client *models.ClientInfo, server *models.Server, scope string) (err error)
+
+	RemoveScope(client *models.ClientInfo, server *models.Server, scope string) (err error)
 
 	Delete(clientId string) (err error)
 
@@ -140,6 +142,97 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 	}
 
 	return
+}
+
+func (oauth2 *oauthService) RemoveScope(client *models.ClientInfo, server *models.Server, scope string) error {
+	db, err := database.GetConnection()
+	if err != nil {
+		return err
+	}
+
+	if server != nil && server.ID == 0 {
+		res := db.Where(server).First(server)
+		if res.Error != nil {
+			return res.Error
+		}
+	}
+
+	if client.ID == 0 {
+		var query *gorm.DB
+		if server != nil && server.ID != 0 {
+			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+		} else {
+			query = db.Preload("ServerScopes", "server_id IS NULL")
+		}
+		res := query.Where(client).First(client)
+		if res.Error != nil {
+			return res.Error
+		}
+		if client.ID == 0 {
+			return errors.ErrClientNotFound
+		}
+	}
+
+	for _, v := range client.ServerScopes {
+		if v.Scope == scope {
+			res := db.Delete(v)
+			return res.Error
+		}
+	}
+
+	return nil
+}
+
+func (oauth2 *oauthService) AddScope(client *models.ClientInfo, server *models.Server, scope string) error {
+	db, err := database.GetConnection()
+	if err != nil {
+		return err
+	}
+
+	if server != nil && server.ID == 0 {
+		res := db.Where(server).First(server)
+		if res.Error != nil {
+			return res.Error
+		}
+	}
+
+	if client.ID == 0 {
+		var query *gorm.DB
+		if server != nil && server.ID != 0 {
+			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+		} else {
+			query = db.Preload("ServerScopes", "server_id IS NULL")
+		}
+		res := query.Where(client).First(client)
+		if res.Error != nil {
+			return res.Error
+		}
+		if client.ID == 0 {
+			return errors.ErrClientNotFound
+		}
+	}
+
+	toAdd := true
+	for _, s := range client.ServerScopes {
+		if s.Scope == scope {
+			toAdd = false
+			break
+		}
+	}
+	if toAdd {
+		replacement := &models.ClientServerScopes{
+			Scope:        scope,
+			ClientInfoID: client.ID,
+		}
+		if server != nil && server.ID != 0 {
+			replacement.ServerId = &server.ID
+		}
+
+		res := db.Create(replacement)
+		return res.Error
+	}
+
+	return nil
 }
 
 func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error) {
