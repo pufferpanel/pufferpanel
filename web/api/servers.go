@@ -78,18 +78,22 @@ func searchServers(c *gin.Context) {
 
 	//see if user has access to view all others, otherwise we can't permit search without their username
 	os, _ := services.GetOAuthService()
-	if ci, global, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view"); !global {
-		username = ci.User.Username
+	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view");
+	if !allowed {
+		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]view.ServerViewModel, 0)).Send()
+		return
 	}
+
+	username = ci.User.Username
 
 	var results *models.Servers
 	var total uint
 	searchCriteria := services.ServerSearch{
 		Username: username,
-		NodeId: uint(node),
-		Name: nameFilter,
+		NodeId:   uint(node),
+		Name:     nameFilter,
 		PageSize: uint(pageSize),
-		Page: uint(page),
+		Page:     uint(page),
 	}
 	if results, total, err = ss.Search(searchCriteria); shared.HandleError(response, err) {
 		return
@@ -204,7 +208,7 @@ func deleteServer(c *gin.Context) {
 	}
 }
 
-func getServerUsers(c *gin.Context){
+func getServerUsers(c *gin.Context) {
 
 }
 
