@@ -83,6 +83,9 @@ func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, u
 }
 
 func (ss *serverService) Get(id string) (*models.Server, bool, error) {
+	if id == "" {
+		return nil, false, nil
+	}
 	model := &models.Server{
 		Identifier: id,
 	}

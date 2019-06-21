@@ -4,6 +4,12 @@
     footer-tag="footer">
     <h6 slot="header" class="mb-0" v-text="$t('common.Console')"></h6>
     <textarea ref="console" class="form-control console" readonly="readonly" v-text="console"></textarea>
+    <b-input-group class="mt-3">
+      <b-form-input v-model="consoleCommand" placeholder="Command..." @keyup.enter="sendCommand"></b-form-input>
+      <b-input-group-append>
+        <b-button @click="sendCommand" variant="info">Send</b-button>
+      </b-input-group-append>
+    </b-input-group>
 
     <b-btn slot="footer" v-b-modal.console-copy v-text="$t('common.Pause')" @click="popoutConsole"></b-btn>
     <b-modal id="console-copy" size="xl" v-bind:title="$t('common.Console')">
@@ -23,7 +29,8 @@ export default {
       consoleReadonly: '',
       maxConsoleLength: 10000,
       buffer: [],
-      refreshInterval: null
+      refreshInterval: null,
+      consoleCommand: ''
     }
   },
   methods: {
@@ -61,6 +68,15 @@ export default {
       this.$nextTick(function () {
         textArea.scrollTop = textArea.scrollHeight
       })
+    },
+    sendCommand () {
+      if (this.consoleCommand.length === 0) {
+        return
+      }
+
+      this.$socket.sendObj({type: 'console', command: this.consoleCommand})
+
+      this.consoleCommand = ''
     }
   },
   mounted () {
