@@ -65,17 +65,11 @@ func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.H
 		i := c.Param("serverId")
 		server, exists, err := ss.Get(i)
 
-		if server == nil || server.ID == 0 || !exists || err != nil {
-			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
-			c.Abort()
-			return
+		if server != nil {
+			serverId = &server.ID
 		}
 
-		var id uint
-		id = server.ID
-		serverId = &id
-
-		if requireServer && serverId == nil {
+		if requireServer && (server == nil || server.ID == 0 || !exists || err != nil) {
 			response.Respond(c).Status(webHttp.StatusUnauthorized).Fail().Send()
 			c.Abort()
 			return

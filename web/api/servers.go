@@ -107,7 +107,7 @@ func getServer(c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	id := c.Param("id")
+	id := c.Param("serverId")
 
 	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
 		return
