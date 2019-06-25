@@ -33,6 +33,11 @@
         </b-card-group>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col>
+        <core-servers-files/>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 

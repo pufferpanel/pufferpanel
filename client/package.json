@@ -19,6 +19,7 @@
     "binaryjs": "^0.2.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.13",
+    "chart.js": "^2.8.0",
     "dropzone": "^5.5.1",
     "filesize": "^4.1.2",
     "jquery": "^3.4.1",
@@ -28,11 +29,10 @@
     "selectize": "^0.12.6",
     "vue": "^2.5.17",
     "vue-chartist": "^2.1.2",
+    "vue-chartjs": "^3.4.2",
     "vue-meta": "^1.5.2",
     "vue-native-websocket": "^2.0.13",
-    "vuetify": "^1.5.5",
-    "vue-chartjs": "^3.4.2",
-    "chart.js": "^2.8.0"
+    "vuetify": "^1.5.5"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.7.2",
