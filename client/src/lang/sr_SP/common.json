@@ -26,5 +26,9 @@
   "Send": "Send",
   "Pause": "Pause",
   "CPU": "CPU",
-  "Memory": "Memory"
+  "Memory": "Memory",
+  "Size": "Size",
+  "LastModified": "Last Modified",
+  "Actions": "Actions",
+  "FileManager": "File Manager"
 }
