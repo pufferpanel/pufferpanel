@@ -15,7 +15,8 @@
   <b-card
     header-tag="header">
     <h6 slot="header" class="mb-0" v-text="$t('common.FileManager') + ' - ' + currentPath"></h6>
-    <b-table hover selectable select-mode="single" @row-selected="itemClicked" :items="files" :fields="fields" :busy="loading">
+    <b-table hover selectable select-mode="single" @row-selected="itemClicked" :items="files" :fields="fields"
+             :busy="loading">
       <div slot="table-busy" class="text-center text-danger my-2">
         <b-spinner class="align-middle"/>
         <strong :text="$t('common.Loading')">Loading...</strong>
@@ -60,7 +61,10 @@ export default {
           sortable: false,
           label: this.$t('common.Actions')
         }
-      }
+      },
+      currentFile: '',
+      fileContents: '',
+      toEdit: false
     }
   },
   methods: {
@@ -78,13 +82,26 @@ export default {
       if (rows === 'undefined' || rows.length === 0) {
         return
       }
+
+      if (this.loading) {
+        return
+      }
+
       let item = rows[0]
       if (item === undefined) {
         return
       }
 
       if (item.isFile) {
-
+        this.loading = true
+        let path = this.currentPath
+        if (path === '/') {
+          path += item.name
+        } else {
+          path += '/' + item.name
+        }
+        this.currentFile = item.name
+        this.$socket.sendObj({ type: 'file', action: 'get', path: path })
       } else {
         if (item.name === '..') {
           let parts = this.currentPath.split('/')
@@ -102,6 +119,16 @@ export default {
         }
         this.fetchItems(this.currentPath)
       }
+    },
+    download(filename, text) {
+      let element = document.createElement('a');
+      element.setAttribute('href', 'data:application/octet-stream;charset=utf-8;base64,' + text);
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
     }
   },
   mounted () {
@@ -116,16 +143,31 @@ export default {
         return
       }
       if (data.type === 'file') {
+        if (data.data) {
+          let files = data.data.files
 
-        let files = data.data.files
+          //if we have a list of files, show them
+          if (files) {
+            vue.files = []
+            for (let i in files) {
+              let file = files[i]
+              vue.files.push(file)
+            }
+          }
+          //otherwise, it's an actual file, so we need to show it
+          else {
+            //if we got the data in the buffer, we have it already
+            if (data.data.contents) {
+              if (this.toEdit) {
 
-        vue.files = []
-        for (let i in files) {
-          let file = files[i]
-          vue.files.push(file)
+              } else {
+                vue.download(data.data.name, data.data.contents)
+              }
+            }
+          }
+
+          vue.loading = false
         }
-
-        vue.loading = false
       }
     })
   }
