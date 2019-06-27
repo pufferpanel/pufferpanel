@@ -19,7 +19,6 @@ WORKDIR /go/src/github.com/pufferpanel/pufferpanel/client
 RUN npm install && \
     npm run dev-build && \
     mkdir /go/bin/client && \
-    ls && \
     mkdir -p /pufferpanel/client/ && \
     mv dist /pufferpanel/client/
 
