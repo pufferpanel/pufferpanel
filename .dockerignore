@@ -1,0 +1,6 @@
+.idea/**
+.github/**
+vendor/**
+logs/**
+config.json
+**/node_modules/**

@@ -40,28 +40,23 @@ func Load() error {
 func openConnection() (err error) {
 	dialect := viper.GetString("database.dialect")
 	if dialect == "" {
-		dialect = "mysql"
+		dialect = "sqlite3"
 	}
 	connString := viper.GetString("database.url")
+	if connString == "" {
+		switch dialect {
+		case "mysql":
+			connString = "pufferpanel:pufferpanel@/pufferpanel"
+		case "sqlite3":
+			connString = "file:pufferpanel.db?cache=shared&mode=memory"
+		}
+	}
 
 	if dialect == "mysql" {
-		if !strings.Contains(connString, "charset=utf8") {
-			if !strings.Contains(connString, "?") {
-				connString += "?"
-			} else {
-				connString += "&"
-			}
-			connString += "charset=utf8"
-		}
-
-		if !strings.Contains(connString, "parseTime=true") {
-			if !strings.Contains(connString, "?") {
-				connString += "?"
-			} else {
-				connString += "&"
-			}
-			connString += "parseTime=true"
-		}
+		connString = addConnectionSetting(connString, "charset=utf8")
+		connString = addConnectionSetting(connString, "parseTime=true")
+	} else if dialect == "sqlite3"{
+		connString = addConnectionSetting(connString, "_loc=auto")
 	}
 
 	//attempt to open database connection to validate
@@ -106,6 +101,11 @@ func migrateModels() (err error) {
 		dbConn.AutoMigrate(v)
 	}
 
+	dialect := viper.GetString("database.dialect")
+	if dialect == "" || dialect == "sqlite3" {
+		return
+	}
+
 	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
 	if err != nil {
 		return
@@ -132,4 +132,19 @@ func migrateModels() (err error) {
 	}
 
 	return
+}
+
+func addConnectionSetting(connString, setting string) string {
+	if strings.Contains(connString, setting) {
+		return connString
+	}
+
+	if !strings.Contains(connString, "?") {
+		connString += "?"
+	} else {
+		connString += "&"
+	}
+	connString += "charset=utf8"
+
+	return connString
 }
