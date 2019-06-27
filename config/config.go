@@ -13,8 +13,8 @@ func init() {
 	viper.AddConfigPath(".")
 
 	viper.SetDefault("database.session", 60)
-	viper.SetDefault("database.dialect", "mysql")
-	viper.SetDefault("database.url", "pufferpanel:pufferpanel@/pufferpanel?parseTime=true&charset=utf8")
+	viper.SetDefault("database.dialect", "sqlite3")
+	viper.SetDefault("database.url", "file:pufferpanel.db?cache=shared&mode=memory")
 
 	viper.SetDefault("web.host", "0.0.0.0")
 	viper.SetDefault("web.port", "8080")
