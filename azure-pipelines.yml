@@ -72,6 +72,15 @@ steps:
     workingDirectory: '$(modulePath)'
     displayName: 'Copy assets'
 
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'Docker'
+      repository: 'pufferpanel'
+      command: 'buildAndPush'
+      Dockerfile: '.azure/Dockerfile'
+      buildContext: '$(GOPATH)/build'
+      tags: 'kraken'
+
   - script: |
       git clone https://github.com/PufferPanel/systemd
     displayName: 'Get supporting files'
