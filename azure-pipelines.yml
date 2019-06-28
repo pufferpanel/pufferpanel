@@ -75,7 +75,7 @@ steps:
   - task: Docker@2
     inputs:
       containerRegistry: 'Docker'
-      repository: 'pufferpanel'
+      repository: 'pufferpanel/pufferpanel'
       command: 'buildAndPush'
       Dockerfile: '.azure/Dockerfile'
       buildContext: '$(GOPATH)/build'
