@@ -19,6 +19,7 @@
       <b-button variant="success" v-on:click="start" v-text="$t('common.Start')"></b-button>
       <b-button variant="warning" v-on:click="stop" v-text="$t('common.Stop')"></b-button>
       <b-button variant="danger" v-on:click="kill" v-text="$t('common.Kill')"></b-button>
+      <b-button variant="danger" v-on:click="install" v-text="$t('common.Install')"></b-button>
     </b-button-group>
   </b-card>
 </template>
@@ -34,6 +35,9 @@ export default {
     },
     kill () {
       this.$socket.sendObj({ type: 'kill' })
+    },
+    install () {
+      this.$socket.sendObj({ type: 'install' })
     }
   }
 }
