@@ -15,8 +15,7 @@
   <b-card
     header-tag="header">
     <h6 slot="header" class="mb-0" v-text="$t('common.FileManager') + ' - ' + currentPath"></h6>
-    <b-table hover selectable select-mode="single" :items="files" :fields="fields"
-             :busy="loading">
+    <b-table hover :items="files" :fields="fields" :busy="loading">
       <div slot="table-busy" class="text-center text-danger my-2">
         <b-spinner class="align-middle"/>
         <strong :text="$t('common.Loading')">Loading...</strong>
@@ -31,16 +30,15 @@
         <span v-if="data.value" v-text="toDate(data.value)"></span>
       </template>
       <template slot="isFile" slot-scope="data">
-        <span v-if="data.value"><font-awesome-icon icon="download"></font-awesome-icon></span>
-        <span v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon icon="edit"></font-awesome-icon></span>
-        <span><font-awesome-icon icon="trash"></font-awesome-icon></span>
+        <a v-on:click="downloadButton(data.item)" v-if="data.value"><font-awesome-icon icon="download"></font-awesome-icon></a>
+        <a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon icon="edit"></font-awesome-icon></a>
+        <a v-on:click="deleteButton(data.item)"><font-awesome-icon icon="trash"></font-awesome-icon></a>
       </template>
     </b-table>
   </b-card>
 </template>
 
 <script>
-
 import filesize from 'filesize'
 
 export default {
@@ -74,15 +72,9 @@ export default {
     }
   },
   methods: {
-    fetchItems(path) {
+    fetchItems(path, edit=false) {
       this.loading = true
-      this.$socket.sendObj({type: 'file', action: 'get', path: path})
-    },
-    toFileSize(size) {
-      return filesize(size)
-    },
-    toDate(epoch) {
-      return new Date(epoch * 1000).toLocaleString()
+      this.$socket.sendObj({type: 'file', action: 'get', path: path, edit: edit})
     },
     itemClicked(item) {
       if (this.loading) {
@@ -112,21 +104,47 @@ export default {
         this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
       }
     },
-    editItem(item) {
-
-    },
-    downloadButton(item) {
+    editButton(item) {
+      this.toEdit = true
       if (this.currentPath === '/') {
         this.currentPath = '/' + item.name
       } else {
         this.currentPath = this.currentPath + '/' + item.name
       }
-      this.currentFile = item.name
+      this.fetchItems(this.currentPath, true)
+    },
+    downloadButton(item) {
+      this.toEdit = false
+      if (this.currentPath === '/') {
+        this.currentPath = '/' + item.name
+      } else {
+        this.currentPath = this.currentPath + '/' + item.name
+      }
       this.fetchItems(this.currentPath)
     },
-    download(filename, text) {
+    deleteButton(item) {
+      this.toEdit = false
+      let path = ''
+      if (this.currentPath === '/') {
+        path = '/' + item.name
+      } else {
+        path = this.currentPath + '/' + item.name
+      }
+      this.loading = true
+      this.$socket.sendObj({type: 'file', action: 'delete', path: path})
+    },
+
+    //utility
+    toFileSize(size) {
+      return filesize(size)
+    },
+    toDate(epoch) {
+      return new Date(epoch * 1000).toLocaleString()
+    },
+    download(filename, link) {
       let element = document.createElement('a');
-      element.setAttribute('href', 'data:application/octet-stream;charset=utf-8;base64,' + text);
+      element.setAttribute('href', link);
+
       element.setAttribute('download', filename);
 
       element.style.display = 'none';
@@ -148,6 +166,13 @@ export default {
       }
       if (data.type === 'file') {
         if (data.data) {
+          console.log(data.data)
+          if (data.data.error) {
+            console.log(data.data.error)
+            vue.isLoading = false
+            return
+          }
+
           let files = data.data.files
 
           //if we have a list of files, show them
@@ -160,16 +185,11 @@ export default {
           }
           //otherwise, it's an actual file, so we need to show it
           else {
-            //if we got the data in the buffer, we have it already
-            if (data.data.contents) {
-              if (this.toEdit) {
-
-              } else {
-                vue.download(data.data.name, data.data.contents)
-              }
+            if (vue.toEdit) {
+            } else {
+              vue.download(data.data.name, data.data.link)
             }
           }
-
           vue.loading = false
         }
       }
