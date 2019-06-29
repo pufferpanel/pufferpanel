@@ -452,7 +452,6 @@
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
     "github.com/mailgun/mailgun-go",
-    "github.com/mattn/go-sqlite3",
     "github.com/pufferpanel/apufferi",
     "github.com/pufferpanel/apufferi/logging",
     "github.com/pufferpanel/apufferi/response",

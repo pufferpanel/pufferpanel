@@ -15,20 +15,25 @@
   <b-card
     header-tag="header">
     <h6 slot="header" class="mb-0" v-text="$t('common.FileManager') + ' - ' + currentPath"></h6>
-    <b-table hover selectable select-mode="single" @row-selected="itemClicked" :items="files" :fields="fields"
+    <b-table hover selectable select-mode="single" :items="files" :fields="fields"
              :busy="loading">
       <div slot="table-busy" class="text-center text-danger my-2">
         <b-spinner class="align-middle"/>
         <strong :text="$t('common.Loading')">Loading...</strong>
       </div>
       <template slot="name" slot-scope="data">
-        <strong v-text="data.value"></strong>
+        <strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong>
       </template>
       <template slot="size" slot-scope="data">
         <span v-if="data.value" v-text="toFileSize(data.value)"></span>
       </template>
       <template slot="modifyTime" slot-scope="data">
         <span v-if="data.value" v-text="toDate(data.value)"></span>
+      </template>
+      <template slot="isFile" slot-scope="data">
+        <span v-if="data.value"><font-awesome-icon icon="download"></font-awesome-icon></span>
+        <span v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon icon="edit"></font-awesome-icon></span>
+        <span><font-awesome-icon icon="trash"></font-awesome-icon></span>
       </template>
     </b-table>
   </b-card>
@@ -39,7 +44,7 @@
 import filesize from 'filesize'
 
 export default {
-  data () {
+  data() {
     return {
       files: [],
       currentPath: '/',
@@ -64,45 +69,29 @@ export default {
       },
       currentFile: '',
       fileContents: '',
-      toEdit: false
+      toEdit: false,
+      maxEditSize: 1024 * 1024 * 20
     }
   },
   methods: {
-    fetchItems (path) {
+    fetchItems(path) {
       this.loading = true
-      this.$socket.sendObj({ type: 'file', action: 'get', path: path })
+      this.$socket.sendObj({type: 'file', action: 'get', path: path})
     },
-    toFileSize (size) {
+    toFileSize(size) {
       return filesize(size)
     },
-    toDate (epoch) {
+    toDate(epoch) {
       return new Date(epoch * 1000).toLocaleString()
     },
-    itemClicked (rows) {
-      if (rows === 'undefined' || rows.length === 0) {
-        return
-      }
-
+    itemClicked(item) {
       if (this.loading) {
         return
       }
 
-      let item = rows[0]
-      if (item === undefined) {
-        return
-      }
-
-      if (item.isFile) {
+      if (!item.isFile) {
         this.loading = true
-        let path = this.currentPath
-        if (path === '/') {
-          path += item.name
-        } else {
-          path += '/' + item.name
-        }
-        this.currentFile = item.name
-        this.$socket.sendObj({ type: 'file', action: 'get', path: path })
-      } else {
+
         if (item.name === '..') {
           let parts = this.currentPath.split('/')
           parts.pop()
@@ -111,14 +100,29 @@ export default {
             this.currentPath = '/'
           }
         } else {
-          if (this.currentPath === '/') {
-            this.currentPath = '/' + item.name
+          let path = this.currentPath
+          if (path === '/') {
+            path += item.name
           } else {
-            this.currentPath = this.currentPath + '/' + item.name
+            path += '/' + item.name
           }
+          this.currentPath = path
         }
-        this.fetchItems(this.currentPath)
+
+        this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
       }
+    },
+    editItem(item) {
+
+    },
+    downloadButton(item) {
+      if (this.currentPath === '/') {
+        this.currentPath = '/' + item.name
+      } else {
+        this.currentPath = this.currentPath + '/' + item.name
+      }
+      this.currentFile = item.name
+      this.fetchItems(this.currentPath)
     },
     download(filename, text) {
       let element = document.createElement('a');
@@ -131,7 +135,7 @@ export default {
       document.body.removeChild(element);
     }
   },
-  mounted () {
+  mounted() {
     let vue = this
     this.$socket.addEventListener('open', function (event) {
       vue.fetchItems(vue.currentPath)
