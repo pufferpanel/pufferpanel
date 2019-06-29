@@ -21,7 +21,7 @@
         <strong :text="$t('common.Loading')">Loading...</strong>
       </div>
       <template slot="name" slot-scope="data">
-        <strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong>
+        <a><strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong></a>
       </template>
       <template slot="size" slot-scope="data">
         <span v-if="data.value" v-text="toFileSize(data.value)"></span>
@@ -77,10 +77,6 @@ export default {
       this.$socket.sendObj({type: 'file', action: 'get', path: path, edit: edit})
     },
     itemClicked(item) {
-      if (this.loading) {
-        return
-      }
-
       if (!item.isFile) {
         this.loading = true
 
@@ -102,6 +98,8 @@ export default {
         }
 
         this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
+      } else {
+        this.downloadButton(item)
       }
     },
     editButton(item) {
@@ -166,9 +164,7 @@ export default {
       }
       if (data.type === 'file') {
         if (data.data) {
-          console.log(data.data)
           if (data.data.error) {
-            console.log(data.data.error)
             vue.isLoading = false
             return
           }
