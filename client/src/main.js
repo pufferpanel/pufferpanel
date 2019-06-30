@@ -4,6 +4,7 @@ import Vue from 'vue'
 // Components
 import './components'
 import BootstrapVue from 'bootstrap-vue'
+import { VBTooltipPlugin } from 'bootstrap-vue'
 import Vuetify from 'vuetify'
 // Plugins
 import './plugins'
@@ -25,6 +26,7 @@ library.add(faCheckCircle, faTimesCircle, faDownload, faEdit, faTrash)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(BootstrapVue)
+Vue.use(VBTooltipPlugin)
 Vue.use(Vuetify)
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,

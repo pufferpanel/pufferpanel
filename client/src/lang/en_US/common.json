@@ -31,5 +31,8 @@
   "LastModified": "Last Modified",
   "Actions": "Actions",
   "FileManager": "File Manager",
-  "Install": "Install"
+  "Install": "Install",
+  "Download": "Download",
+  "Edit": "Edit",
+  "Delete": "Delete"
 }
