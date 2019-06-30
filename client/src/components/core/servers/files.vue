@@ -30,9 +30,11 @@
         <span v-if="data.value" v-text="toDate(data.value)"></span>
       </template>
       <template slot="isFile" slot-scope="data">
-        <a v-on:click="downloadButton(data.item)" v-if="data.value"><font-awesome-icon icon="download"></font-awesome-icon></a>
-        <a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon icon="edit"></font-awesome-icon></a>
-        <a v-on:click="deleteButton(data.item)"><font-awesome-icon icon="trash"></font-awesome-icon></a>
+        <a v-on:click="downloadButton(data.item)" v-if="data.value"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Download')" icon="download"></font-awesome-icon></a>
+        <span class="p-1"></span>
+        <a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Edit')" icon="edit"></font-awesome-icon></a>
+        <span class="p-1"></span>
+        <a v-on:click="deleteButton(data.item)"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Delete')" icon="trash"></font-awesome-icon></a>
       </template>
     </b-table>
   </b-card>
