@@ -21,7 +21,8 @@
         <strong :text="$t('common.Loading')">Loading...</strong>
       </div>
       <template slot="name" slot-scope="data">
-        <a><strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong></a>
+        <a v-if="data.item.isFile" v-bind:href="createDownloadLink(data.item)" v-bind:download="data.item.name"><strong v-text="data.value"></strong></a>
+        <a v-else><strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong></a>
       </template>
       <template slot="size" slot-scope="data">
         <span v-if="data.value" v-text="toFileSize(data.value)"></span>
@@ -30,7 +31,7 @@
         <span v-if="data.value" v-text="toDate(data.value)"></span>
       </template>
       <template slot="isFile" slot-scope="data">
-        <a v-on:click="downloadButton(data.item)" v-if="data.value"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Download')" icon="download"></font-awesome-icon></a>
+        <a v-bind:href="createDownloadLink(data.item)" v-bind:download="data.item.name" v-if="data.value"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Download')" icon="download"></font-awesome-icon></a>
         <span class="p-1"></span>
         <a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Edit')" icon="edit"></font-awesome-icon></a>
         <span class="p-1"></span>
@@ -44,6 +45,9 @@
 import filesize from 'filesize'
 
 export default {
+  prop: {
+    server: Object
+  },
   data() {
     return {
       files: [],
@@ -100,8 +104,6 @@ export default {
         }
 
         this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
-      } else {
-        this.downloadButton(item)
       }
     },
     editButton(item) {
@@ -112,15 +114,6 @@ export default {
         this.currentPath = this.currentPath + '/' + item.name
       }
       this.fetchItems(this.currentPath, true)
-    },
-    downloadButton(item) {
-      this.toEdit = false
-      if (this.currentPath === '/') {
-        this.currentPath = '/' + item.name
-      } else {
-        this.currentPath = this.currentPath + '/' + item.name
-      }
-      this.fetchItems(this.currentPath)
     },
     deleteButton(item) {
       this.toEdit = false
@@ -141,16 +134,8 @@ export default {
     toDate(epoch) {
       return new Date(epoch * 1000).toLocaleString()
     },
-    download(filename, link) {
-      let element = document.createElement('a');
-      element.setAttribute('href', link);
-
-      element.setAttribute('download', filename);
-
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+    createDownloadLink(item) {
+      return this.$router.resolve('/daemon/server/' + this.$attrs.server.id + '/file' + this.currentPath + item.name).href
     }
   },
   mounted() {
@@ -185,7 +170,9 @@ export default {
           else {
             if (vue.toEdit) {
             } else {
-              vue.download(data.data.name, data.data.link)
+              let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url);
+              console.log(url)
+              vue.download(data.data.name, url.href)
             }
           }
           vue.loading = false
@@ -197,4 +184,7 @@ export default {
 </script>
 
 <style scoped>
+  a {
+    color: inherit;
+  }
 </style>
