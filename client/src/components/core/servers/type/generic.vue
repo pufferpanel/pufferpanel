@@ -35,7 +35,7 @@
     </b-row>
     <b-row>
       <b-col>
-        <core-servers-files/>
+        <core-servers-files v-bind:server="server"/>
       </b-col>
     </b-row>
   </b-container>

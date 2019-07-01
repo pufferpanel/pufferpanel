@@ -20,9 +20,6 @@
 
 <script>
 export default {
-  props: {
-    server: Object
-  },
   data () {
     return {
       console: '',
