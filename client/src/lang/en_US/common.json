@@ -34,5 +34,8 @@
   "Install": "Install",
   "Download": "Download",
   "Edit": "Edit",
-  "Delete": "Delete"
+  "Delete": "Delete",
+  "NewFolder": "New Folder",
+  "Create": "Create",
+  "Cancel": "Cancel"
 }

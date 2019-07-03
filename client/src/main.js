@@ -17,11 +17,11 @@ import router from '@/router'
 import store from '@/store'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-regular-svg-icons'
-import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueNativeSocket from 'vue-native-websocket'
 
-library.add(faCheckCircle, faTimesCircle, faDownload, faEdit, faTrash)
+library.add(faCheckCircle, faTimesCircle, faDownload, faEdit, faTrash, faPlus)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

@@ -14,7 +14,15 @@
 <template>
   <b-card
     header-tag="header">
-    <h6 slot="header" class="mb-0" v-text="$t('common.FileManager') + ' - ' + currentPath"></h6>
+    <h6 slot="header" class="mb-0">
+      <span v-text="$t('common.FileManager') + ' - ' + currentPath + '          '"></span>
+      <a v-if="!createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
+      <div v-if="createFolder">
+        <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('common.NewFolder')"></b-form-input>
+        <b-btn varient="primary" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>
+        <b-btn variant="warning" @click="cancelFolderCreate" v-text="$t('common.Cancel')"></b-btn>
+      </div>
+    </h6>
     <b-table hover :items="files" :fields="fields" :busy="loading">
       <div slot="table-busy" class="text-center text-danger my-2">
         <b-spinner class="align-middle"/>
@@ -74,7 +82,9 @@ export default {
       currentFile: '',
       fileContents: '',
       toEdit: false,
-      maxEditSize: 1024 * 1024 * 20
+      maxEditSize: 1024 * 1024 * 20,
+      createFolder: false,
+      newFolderName: ''
     }
   },
   methods: {
@@ -136,6 +146,22 @@ export default {
     },
     createDownloadLink(item) {
       return this.$router.resolve('/daemon/server/' + this.$attrs.server.id + '/file' + this.currentPath + item.name).href
+    },
+    cancelFolderCreate() {
+      this.createFolder = false
+      this.newFolderName = ''
+    },
+    submitNewFolder() {
+      let path = this.currentPath
+      if (path === '/') {
+        path = path + this.newFolderName
+      } else {
+        path = path + '/' + this.newFolderName
+      }
+
+      this.$socket.sendObj({type: 'file', action: 'create', path: path})
+      this.createFolder = false
+      this.newFolderName = ''
     }
   },
   mounted() {
@@ -175,6 +201,7 @@ export default {
               vue.download(data.data.name, url.href)
             }
           }
+          vue.currentPath = data.data.path
           vue.loading = false
         }
       }
@@ -186,5 +213,9 @@ export default {
 <style scoped>
   a {
     color: inherit;
+  }
+
+  .input-small {
+    width: 200px
   }
 </style>
