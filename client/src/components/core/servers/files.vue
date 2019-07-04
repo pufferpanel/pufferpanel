@@ -29,8 +29,8 @@
         <strong :text="$t('common.Loading')">Loading...</strong>
       </div>
       <template slot="name" slot-scope="data">
-        <a v-if="data.item.isFile" v-bind:href="createDownloadLink(data.item)" v-bind:download="data.item.name"><strong v-text="data.value"></strong></a>
-        <a v-else><strong v-on:dblclick="itemClicked(data.item)" v-text="data.value"></strong></a>
+        <strong v-if="data.item.isFile"><strong v-text="data.value"></strong></strong>
+        <a v-else><strong v-on:click="itemClicked(data.item)" v-text="data.value"></strong></a>
       </template>
       <template slot="size" slot-scope="data">
         <span v-if="data.value" v-text="toFileSize(data.value)"></span>
@@ -46,11 +46,16 @@
         <a v-on:click="deleteButton(data.item)"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Delete')" icon="trash"></font-awesome-icon></a>
       </template>
     </b-table>
+
+    <b-modal id="modal-editor" size="xl">
+      <editor v-model="fileContents" ref="fileEditor" @init="editorInit" lang="html" theme="chrome" width="500" height="500"></editor>
+    </b-modal>
   </b-card>
 </template>
 
 <script>
 import filesize from 'filesize'
+import { Base64 } from 'js-base64'
 
 export default {
   prop: {
@@ -84,7 +89,9 @@ export default {
       toEdit: false,
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
-      newFolderName: ''
+      newFolderName: '',
+      showEditor: false,
+      editor: null
     }
   },
   methods: {
@@ -118,12 +125,14 @@ export default {
     },
     editButton(item) {
       this.toEdit = true
+      let path = ''
       if (this.currentPath === '/') {
-        this.currentPath = '/' + item.name
+        path = '/' + item.name
       } else {
-        this.currentPath = this.currentPath + '/' + item.name
+        path = this.currentPath + '/' + item.name
       }
-      this.fetchItems(this.currentPath, true)
+      this.currentFile = item.name
+      this.fetchItems(path, true)
     },
     deleteButton(item) {
       this.toEdit = false
@@ -162,6 +171,14 @@ export default {
       this.$socket.sendObj({type: 'file', action: 'create', path: path})
       this.createFolder = false
       this.newFolderName = ''
+    },
+    editorInit: function () {
+      require('brace/ext/language_tools') //language extension prerequsite...
+      require('brace/mode/html')
+      require('brace/mode/javascript')    //language
+      require('brace/mode/less')
+      require('brace/theme/chrome')
+      require('brace/snippets/javascript') //snippet
     }
   },
   mounted() {
@@ -195,18 +212,24 @@ export default {
           //otherwise, it's an actual file, so we need to show it
           else {
             if (vue.toEdit) {
+              vue.fileContents = Base64.decode(data.data.contents)
+              vue.$root.$emit('bv::show::modal', 'modal-editor')
             } else {
-              let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url);
-              console.log(url)
+              let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url)
               vue.download(data.data.name, url.href)
             }
           }
-          vue.currentPath = data.data.path
+          if (data.data.path !== '') {
+            vue.currentPath = data.data.path
+          }
           vue.loading = false
         }
       }
     })
-  }
+  },
+  components: {
+    editor: require('vue2-ace-editor'),
+  },
 }
 </script>
 
