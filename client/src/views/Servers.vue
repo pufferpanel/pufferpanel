@@ -70,7 +70,7 @@ export default {
       vueData.loading = true
       const { page, rowsPerPage } = this.pagination
       vueData.servers = []
-      this.createRequest().get('/api/servers', {
+      this.$http.get('/api/servers', {
         params: {
           page: page,
           limit: rowsPerPage

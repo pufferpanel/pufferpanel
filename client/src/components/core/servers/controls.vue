@@ -16,13 +16,13 @@
     header-tag="header">
     <h6 slot="header" class="mb-0" v-text="$t('common.Controls')"></h6>
     <b-button-group>
-      <b-button variant="success" v-on:click="start" v-text="$t('common.Start')"></b-button>
+      <b-button variant="success" v-on:click="action('start')" v-text="$t('common.Start')"></b-button>
       <span class="p-1"></span>
-      <b-button variant="warning" v-on:click="stop" v-text="$t('common.Stop')"></b-button>
+      <b-button variant="warning" v-on:click="action('stop')" v-text="$t('common.Stop')"></b-button>
       <span class="p-1"></span>
-      <b-button variant="danger" v-on:click="kill" v-text="$t('common.Kill')"></b-button>
+      <b-button variant="danger" v-on:click="action('kill')" v-text="$t('common.Kill')"></b-button>
       <span class="p-1"></span>
-      <b-button variant="danger" v-on:click="install" v-text="$t('common.Install')"></b-button>
+      <b-button variant="danger" v-on:click="action('install')" v-text="$t('common.Install')"></b-button>
     </b-button-group>
   </b-card>
 </template>
@@ -30,17 +30,8 @@
 <script>
 export default {
   methods: {
-    start () {
-      this.$socket.sendObj({ type: 'start' })
-    },
-    stop () {
-      this.$socket.sendObj({ type: 'stop' })
-    },
-    kill () {
-      this.$socket.sendObj({ type: 'kill' })
-    },
-    install () {
-      this.$socket.sendObj({ type: 'install' })
+    action (act) {
+      this.$socket.sendObj({ type: act })
     }
   }
 }
