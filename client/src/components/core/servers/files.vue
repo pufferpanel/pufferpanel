@@ -15,10 +15,10 @@
   <b-card
     header-tag="header">
     <h6 slot="header" class="mb-0">
-      <span v-text="$t('common.FileManager') + ' - ' + currentPath + '          '"></span>
+      <span v-text="$t('files.FileManager') + ' - ' + currentPath + '          '"></span>
       <a v-if="!createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
       <div v-if="createFolder">
-        <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('common.NewFolder')"></b-form-input>
+        <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('files.NewFolder')"></b-form-input>
         <b-btn varient="primary" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>
         <b-btn variant="warning" @click="cancelFolderCreate" v-text="$t('common.Cancel')"></b-btn>
       </div>
@@ -50,6 +50,9 @@
     <!--<b-modal id="modal-editor" size="xl">
       <editor v-model="fileContents" ref="fileEditor" @init="editorInit" lang="html" theme="chrome" width="500" height="500"></editor>
     </b-modal>-->
+    <b-modal id="confirm-delete">
+      <span v-text="$t('files.ConfirmDelete')"></span>
+    </b-modal>
   </b-card>
 </template>
 
@@ -121,15 +124,24 @@ export default {
       }
     },
     deleteButton(item) {
-      this.toEdit = false
-      let path = ''
-      if (this.currentPath === '/') {
-        path = '/' + item.name
-      } else {
-        path = this.currentPath + '/' + item.name
-      }
-      this.loading = true
-      this.$socket.sendObj({type: 'file', action: 'delete', path: path})
+      this.$bvModal.msgBoxConfirm(this.$t('files.ConfirmDelete'))
+        .then(value => {
+          if (!value) {
+            return
+          }
+          this.toEdit = false
+          let path = ''
+          if (this.currentPath === '/') {
+            path = '/' + item.name
+          } else {
+            path = this.currentPath + '/' + item.name
+          }
+          this.loading = true
+          this.$socket.sendObj({type: 'file', action: 'delete', path: path})
+        })
+        .catch(err => {
+          // An error occurred
+        })
     },
 
     //utility
