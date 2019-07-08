@@ -53,7 +53,12 @@
 
     <div>
       <b-form-file v-model="uploadFiles" multiple v-bind:placeholder="$t('files.Upload')"></b-form-file>
-      <b-button size="sm" variant="primary" v-if="uploadFiles.length > 0" v-text="$t('files.Upload')"></b-button>
+      <div v-for="file in uploadFiles">
+        <div>
+          <span>{{ file.name }}</span><b-progress v-if="file.uploading" :value="file.progress" :max="file.size" show-progress animated></b-progress>
+        </div>
+      </div>
+      <b-button @click="transmitFiles" size="sm" variant="primary" v-if="uploadFiles.length > 0" v-text="$t('files.Upload')"></b-button>
     </div>
   </b-card>
 </template>
@@ -175,6 +180,33 @@ export default {
       this.$socket.sendObj({type: 'file', action: 'create', path: path})
       this.createFolder = false
       this.newFolderName = ''
+    },
+    transmitFiles() {
+      let tasks = []
+      let vue = this
+      for (let i in this.uploadFiles) {
+        tasks.push(this.uploadSingleFile(this.uploadFiles[i]))
+      }
+      /*this.$http.all(tasks).then(function() {
+        vue.uploadFiles = []
+      })*/
+    },
+    uploadSingleFile(item) {
+      let path = this.currentPath
+      if (path === '/') {
+        path += item.name
+      } else {
+        path += '/' + item.name
+      }
+      item.uploading = true
+      return this.$http({
+        method: 'put',
+        url: '/daemon/server/' + this.$attrs.server.id + '/file' + path,
+        data: item,
+        onUploadProgress: function(event) {
+          item.progress = event.loaded
+        }
+      })
     }
   },
   mounted() {
