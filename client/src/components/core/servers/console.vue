@@ -11,7 +11,7 @@
       </b-input-group-append>
     </b-input-group>
 
-    <b-btn slot="footer" v-b-modal.console-copy v-text="$t('common.Pause')" @click="popoutConsole"></b-btn>
+    <b-button size="sm" variant="secondary" v-b-modal.console-copy v-text="$t('common.Pause')" @click="popoutConsole"></b-button>
     <b-modal id="console-copy" size="xl" v-bind:title="$t('common.Console')">
       <textarea ref="console" class="form-control console" readonly="readonly" v-text="consoleReadonly"></textarea>
     </b-modal>
