@@ -41,21 +41,20 @@
       <template slot="isFile" slot-scope="data">
         <a v-bind:href="createDownloadLink(data.item)" v-bind:download="data.item.name" v-if="data.value"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Download')" icon="download"></font-awesome-icon></a>
         <span class="p-1"></span>
-        <a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Edit')" icon="edit"></font-awesome-icon></a>
-        <span class="p-1"></span>
+        <!--<a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Edit')" icon="edit"></font-awesome-icon></a>
+        <span class="p-1"></span>-->
         <a v-on:click="deleteButton(data.item)"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Delete')" icon="trash"></font-awesome-icon></a>
       </template>
     </b-table>
 
-    <b-modal id="modal-editor" size="xl">
+    <!--<b-modal id="modal-editor" size="xl">
       <editor v-model="fileContents" ref="fileEditor" @init="editorInit" lang="html" theme="chrome" width="500" height="500"></editor>
-    </b-modal>
+    </b-modal>-->
   </b-card>
 </template>
 
 <script>
 import filesize from 'filesize'
-import { Base64 } from 'js-base64'
 
 export default {
   prop: {
@@ -89,9 +88,7 @@ export default {
       toEdit: false,
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
-      newFolderName: '',
-      showEditor: false,
-      editor: null
+      newFolderName: ''
     }
   },
   methods: {
@@ -123,17 +120,6 @@ export default {
         this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
       }
     },
-    editButton(item) {
-      this.toEdit = true
-      let path = ''
-      if (this.currentPath === '/') {
-        path = '/' + item.name
-      } else {
-        path = this.currentPath + '/' + item.name
-      }
-      this.currentFile = item.name
-      this.fetchItems(path, true)
-    },
     deleteButton(item) {
       this.toEdit = false
       let path = ''
@@ -154,7 +140,13 @@ export default {
       return new Date(epoch * 1000).toLocaleString()
     },
     createDownloadLink(item) {
-      return this.$router.resolve('/daemon/server/' + this.$attrs.server.id + '/file' + this.currentPath + item.name).href
+      let path = this.currentPath
+      if (path === '/') {
+        path += item.name
+      } else {
+        path += '/' + item.name
+      }
+      return this.$router.resolve('/daemon/server/' + this.$attrs.server.id + '/file' + path).href
     },
     cancelFolderCreate() {
       this.createFolder = false
@@ -171,14 +163,6 @@ export default {
       this.$socket.sendObj({type: 'file', action: 'create', path: path})
       this.createFolder = false
       this.newFolderName = ''
-    },
-    editorInit: function () {
-      require('brace/ext/language_tools') //language extension prerequsite...
-      require('brace/mode/html')
-      require('brace/mode/javascript')    //language
-      require('brace/mode/less')
-      require('brace/theme/chrome')
-      require('brace/snippets/javascript') //snippet
     }
   },
   mounted() {
@@ -211,13 +195,8 @@ export default {
           }
           //otherwise, it's an actual file, so we need to show it
           else {
-            if (vue.toEdit) {
-              vue.fileContents = Base64.decode(data.data.contents)
-              vue.$root.$emit('bv::show::modal', 'modal-editor')
-            } else {
-              let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url)
-              vue.download(data.data.name, url.href)
-            }
+            let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url)
+            vue.download(data.data.name, url.href)
           }
           if (data.data.path !== '') {
             vue.currentPath = data.data.path
@@ -226,10 +205,7 @@ export default {
         }
       }
     })
-  },
-  components: {
-    editor: require('vue2-ace-editor'),
-  },
+  }
 }
 </script>
 
