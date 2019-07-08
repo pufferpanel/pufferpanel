@@ -21,7 +21,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col sm="12" md="6" offset-md="6">
+      <b-col>
         <core-servers-controls/>
       </b-col>
     </b-row>
