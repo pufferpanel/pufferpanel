@@ -28,14 +28,11 @@
   "CPU": "CPU",
   "Memory": "Memory",
   "Size": "Size",
-  "LastModified": "Last Modified",
-  "Actions": "Actions",
-  "FileManager": "File Manager",
   "Install": "Install",
   "Download": "Download",
   "Edit": "Edit",
   "Delete": "Delete",
-  "NewFolder": "New Folder",
   "Create": "Create",
-  "Cancel": "Cancel"
+  "Cancel": "Cancel",
+  "Actions": "Actions"
 }
