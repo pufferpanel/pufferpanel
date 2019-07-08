@@ -19,7 +19,6 @@
     "binaryjs": "^0.2.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.24",
-    "brace": "^0.11.1",
     "chart.js": "^2.8.0",
     "dropzone": "^5.5.1",
     "filesize": "^4.1.2",
@@ -33,7 +32,6 @@
     "vue-chartjs": "^3.4.2",
     "vue-meta": "^1.6.0",
     "vue-native-websocket": "^2.0.13",
-    "vue2-ace-editor": "0.0.13",
     "vuetify": "^1.5.16",
     "js-base64": "latest"
   },
