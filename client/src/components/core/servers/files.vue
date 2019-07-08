@@ -19,8 +19,8 @@
       <a v-if="!createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
       <div v-if="createFolder">
         <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('files.NewFolder')"></b-form-input>
-        <b-btn varient="primary" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>
-        <b-btn variant="warning" @click="cancelFolderCreate" v-text="$t('common.Cancel')"></b-btn>
+        <b-btn variant="primary" size="sm" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>
+        <b-btn variant="secondary" size="sm" @click="cancelFolderCreate" v-text="$t('common.Cancel')"></b-btn>
       </div>
     </h6>
     <b-table hover :items="files" :fields="fields" :busy="loading">
@@ -50,9 +50,11 @@
     <!--<b-modal id="modal-editor" size="xl">
       <editor v-model="fileContents" ref="fileEditor" @init="editorInit" lang="html" theme="chrome" width="500" height="500"></editor>
     </b-modal>-->
-    <b-modal id="confirm-delete">
-      <span v-text="$t('files.ConfirmDelete')"></span>
-    </b-modal>
+
+    <div>
+      <b-form-file v-model="uploadFiles" multiple v-bind:placeholder="$t('files.Upload')"></b-form-file>
+      <b-button size="sm" variant="primary" v-if="uploadFiles.length > 0" v-text="$t('files.Upload')"></b-button>
+    </div>
   </b-card>
 </template>
 
@@ -79,7 +81,7 @@ export default {
         },
         'modifyTime': {
           sortable: true,
-          label: this.$t('common.LastModified')
+          label: this.$t('files.LastModified')
         },
         'isFile': {
           sortable: false,
@@ -91,7 +93,8 @@ export default {
       toEdit: false,
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
-      newFolderName: ''
+      newFolderName: '',
+      uploadFiles: []
     }
   },
   methods: {
@@ -138,9 +141,6 @@ export default {
           }
           this.loading = true
           this.$socket.sendObj({type: 'file', action: 'delete', path: path})
-        })
-        .catch(err => {
-          // An error occurred
         })
     },
 
