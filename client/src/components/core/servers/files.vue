@@ -52,7 +52,7 @@
     </b-modal>-->
 
     <div>
-      <b-form-file v-model="uploadFiles" multiple v-bind:placeholder="$t('files.Upload')"></b-form-file>
+      <b-form-file v-model="uploadFiles" multiple :file-name-formatter="formatNames" v-bind:placeholder="$t('files.Upload')"></b-form-file>
       <div v-if="uploading">
         <b-progress :value="uploadCurrent" :max="uploadSize" show-progress animated></b-progress>
       </div>
@@ -222,6 +222,13 @@ export default {
           vue.uploadSize = event.total
         }
       })
+    },
+    formatNames(files) {
+      if (files.length === 1) {
+        return files[0].name
+      } else {
+        return `${files.length} files selected`
+      }
     }
   },
   mounted() {
