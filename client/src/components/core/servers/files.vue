@@ -53,9 +53,12 @@
 
     <div>
       <b-form-file v-model="uploadFiles" multiple v-bind:placeholder="$t('files.Upload')"></b-form-file>
+      <div v-if="uploading">
+        <b-progress :value="uploadCurrent" :max="uploadSize" show-progress animated></b-progress>
+      </div>
       <div v-for="file in uploadFiles">
         <div>
-          <span>{{ file.name }}</span><b-progress v-if="file.uploading" :value="file.progress" :max="file.size" show-progress animated></b-progress>
+          <span>{{ file.name }}</span>
         </div>
       </div>
       <b-button @click="transmitFiles" size="sm" variant="primary" v-if="uploadFiles.length > 0" v-text="$t('files.Upload')"></b-button>
@@ -99,7 +102,10 @@ export default {
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
       newFolderName: '',
-      uploadFiles: []
+      uploadFiles: [],
+      uploading: false,
+      uploadCurrent: 0,
+      uploadSize: 0
     }
   },
   methods: {
@@ -182,14 +188,19 @@ export default {
       this.newFolderName = ''
     },
     transmitFiles() {
-      let tasks = []
-      let vue = this
-      for (let i in this.uploadFiles) {
-        tasks.push(this.uploadSingleFile(this.uploadFiles[i]))
-      }
-      /*this.$http.all(tasks).then(function() {
-        vue.uploadFiles = []
-      })*/
+      this.uploading = true
+      this.uploadNextItem(this)
+    },
+    uploadNextItem(vue) {
+      this.uploadSingleFile(vue.uploadFiles[0]).then(function() {
+        vue.uploadFiles.shift()
+        if (vue.uploadFiles.length === 0) {
+          vue.uploading = false
+          vue.fetchItems(vue.currentPath)
+          return
+        }
+        vue.uploadNextItem(vue)
+      })
     },
     uploadSingleFile(item) {
       let path = this.currentPath
@@ -198,13 +209,17 @@ export default {
       } else {
         path += '/' + item.name
       }
-      item.uploading = true
+      this.uploadCurrent = 0
+      this.uploadSize = item.size
+
+      let vue = this
       return this.$http({
         method: 'put',
         url: '/daemon/server/' + this.$attrs.server.id + '/file' + path,
         data: item,
         onUploadProgress: function(event) {
-          item.progress = event.loaded
+          vue.uploadCurrent = event.loaded
+          vue.uploadSize = event.total
         }
       })
     }
