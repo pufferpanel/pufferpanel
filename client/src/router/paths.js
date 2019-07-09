@@ -11,6 +11,11 @@ export default [
     name: 'Servers'
   },
   {
+    path: '/account',
+    view: 'Account',
+    name: 'Account'
+  },
+  {
     path: '/server/:id',
     view: 'Server',
     name: 'Server'

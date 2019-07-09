@@ -27,13 +27,15 @@ import (
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2("users.edit", false), searchUsers)
-	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
+	g.Handle("GET", "", handlers.OAuth2("users.view", false), getSelf)
+	//g.Handle("PUT", "", handlers.OAuth2("users.edit", false), updateSelf)
+	g.Handle("POST", "", handlers.OAuth2("users.edit", false), searchUsers)
+	g.Handle("OPTIONS", "", shared.CreateOptions("GET", "PUT", "POST"))
 
-	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit", false), createUser)
-	g.Handle("GET", "/:username", handlers.OAuth2("users.view", false), getUser)
-	g.Handle("POST", "/:username", handlers.OAuth2("users.edit", false), updateUser)
-	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit", false), deleteUser)
+	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit.all", false), createUser)
+	g.Handle("GET", "/:username", handlers.OAuth2("users.view.all", false), getUser)
+	g.Handle("POST", "/:username", handlers.OAuth2("users.edit.all", false), updateUser)
+	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit.all", false), deleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -122,6 +124,36 @@ func getUser(c *gin.Context) {
 	username := c.Param("username")
 
 	user, exists, err := us.Get(username)
+	if shared.HandleError(response, err) {
+		return
+	} else if !exists {
+		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	response.Data(view.FromUser(user)).Send()
+}
+
+func getSelf(c *gin.Context) {
+	var us services.UserService
+	var os services.OAuthService
+	var err error
+	response := builder.Respond(c)
+
+	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+		return
+	}
+
+	if os, err = services.GetOAuthService(); shared.HandleError(response, err) {
+		return
+	}
+
+	_, ci, err := os.GetByToken(c.GetString("access_token"))
+	if shared.HandleError(response, err) {
+		return
+	}
+
+	user, exists, err := us.Get(ci.User.Username)
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
