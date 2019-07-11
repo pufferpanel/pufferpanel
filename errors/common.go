@@ -25,6 +25,7 @@ var ErrUserNotFound = apufferi.CreateError("user not found", "ErrUserNotFound")
 var ErrLoginNotPermitted = apufferi.CreateError("login not permitted", "ErrLoginNotPermitted")
 var ErrInvalidTokenState = apufferi.CreateError("invalid token state", "ErrInvalidTokenState")
 var ErrNoPermission = apufferi.CreateError("no permission to perform action", "ErrNoPermission")
+var ErrServerNotFound = apufferi.CreateError("server not found", "ErrServerNotFound")
 
 var ErrSettingNotConfigured = func(name string) apufferi.Error {
 	return apufferi.CreateError("{setting} is not configured", "ErrSettingNotConfigured").Metadata(map[string]interface{}{"setting": name})

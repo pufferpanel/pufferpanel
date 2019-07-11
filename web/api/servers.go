@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
@@ -103,28 +104,21 @@ func searchServers(c *gin.Context) {
 }
 
 func getServer(c *gin.Context) {
-	var ss services.ServerService
-	var err error
 	response := builder.Respond(c)
 
-	id := c.Param("serverId")
+	t, exist := c.Get("server")
 
-	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+	if !exist {
+		shared.HandleError(response, errors.ErrServerNotFound)
 		return
 	}
 
-	var result *models.Server
-	var exists bool
-	if result, exists, err = ss.Get(id); shared.HandleError(response, err) {
-		return
+	server, ok := t.(*models.Server)
+	if !ok {
+		shared.HandleError(response, errors.ErrServerNotFound)
 	}
 
-	if !exists {
-		response.Fail().Status(http.StatusNotFound).Send()
-		return
-	}
-
-	response.Data(view.RemoveServerPrivateInfo(view.FromServer(result))).Send()
+	response.Data(view.RemoveServerPrivateInfo(view.FromServer(server))).Send()
 }
 
 func createServer(c *gin.Context) {
@@ -184,19 +178,20 @@ func deleteServer(c *gin.Context) {
 	var err error
 	response := builder.Respond(c)
 
-	serverId := c.Param("id")
-
 	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
 		return
 	}
 
-	server, exists, err := ss.Get(serverId)
-	if shared.HandleError(response, err) {
+	t, exist := c.Get("server")
+
+	if !exist {
+		shared.HandleError(response, errors.ErrServerNotFound)
 		return
 	}
 
-	if !exists {
-		response.Status(http.StatusNotFound).Message("no server with given id").Fail().Send()
+	server, ok := t.(*models.Server)
+	if !ok {
+		shared.HandleError(response, errors.ErrServerNotFound)
 	}
 
 	err = ss.Delete(server.ID)
