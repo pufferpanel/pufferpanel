@@ -27,15 +27,16 @@ import (
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2("users.view", false), getSelf)
-	//g.Handle("PUT", "", handlers.OAuth2("users.edit", false), updateSelf)
-	g.Handle("POST", "", handlers.OAuth2("users.edit", false), searchUsers)
+	//if you can log in, you can see and edit yourself
+	g.Handle("GET", "", handlers.OAuth2("login", false), getSelf)
+	//g.Handle("PUT", "", handlers.OAuth2("login", false), updateSelf)
+	g.Handle("POST", "", handlers.OAuth2("users.view", false), searchUsers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET", "PUT", "POST"))
 
-	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit.all", false), createUser)
-	g.Handle("GET", "/:username", handlers.OAuth2("users.view.all", false), getUser)
-	g.Handle("POST", "/:username", handlers.OAuth2("users.edit.all", false), updateUser)
-	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit.all", false), deleteUser)
+	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit", false), createUser)
+	g.Handle("GET", "/:username", handlers.OAuth2("users.view", false), getUser)
+	g.Handle("POST", "/:username", handlers.OAuth2("users.edit", false), updateUser)
+	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit", false), deleteUser)
 	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -113,9 +114,10 @@ func createUser(c *gin.Context) {
 }
 
 func getUser(c *gin.Context) {
+	response := builder.Respond(c)
+
 	var us services.UserService
 	var err error
-	response := builder.Respond(c)
 
 	if us, err = services.GetUserService(); shared.HandleError(response, err) {
 		return
@@ -135,28 +137,12 @@ func getUser(c *gin.Context) {
 }
 
 func getSelf(c *gin.Context) {
-	var us services.UserService
-	var os services.OAuthService
-	var err error
 	response := builder.Respond(c)
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
-		return
-	}
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
 
-	if os, err = services.GetOAuthService(); shared.HandleError(response, err) {
-		return
-	}
-
-	_, ci, err := os.GetByToken(c.GetString("access_token"))
-	if shared.HandleError(response, err) {
-		return
-	}
-
-	user, exists, err := us.Get(ci.User.Username)
-	if shared.HandleError(response, err) {
-		return
-	} else if !exists {
+	if !exist || !ok {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
 		return
 	}

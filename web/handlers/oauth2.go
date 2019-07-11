@@ -109,6 +109,8 @@ func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.H
 			}
 		} else {
 			c.Set("accessToken", ti.GetAccess())
+			c.Set("server", server)
+			c.Set("user", &ci.User)
 			c.Next()
 		}
 	}

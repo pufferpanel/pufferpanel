@@ -16,17 +16,17 @@
     <b-card header-tag="header"
             footer-tag="footer">
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.Username')"
-                    label-for="input-sm">
-        <b-form-input v-model="username" id="input-sm" size="sm"></b-form-input>
+                    label-for="input-1">
+        <b-form-input v-model="username" id="input-1" size="sm"></b-form-input>
       </b-form-group>
 
-      <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.Email')" label-for="input-sm">
-        <b-form-input v-model="email" id="input-sm" size="sm" type="password"></b-form-input>
+      <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.Email')" label-for="input-2">
+        <b-form-input v-model="email" id="input-2" size="sm"></b-form-input>
       </b-form-group>
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.ConfirmPassword')"
-                    label-for="input-sm">
-        <b-form-input id="input-sm" size="sm" type="password"></b-form-input>
+                    label-for="input-3">
+        <b-form-input id="input-3" size="sm" type="password"></b-form-input>
       </b-form-group>
 
       <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.Update')"></b-button>
@@ -38,18 +38,18 @@
     <b-card header-tag="header"
             footer-tag="footer">
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.OldPassword')"
-                    label-for="input-sm">
-        <b-form-input v-model="oldPassword" id="input-sm" size="sm" type="password"></b-form-input>
+                    label-for="input-4">
+        <b-form-input v-model="oldPassword" id="input-4" size="sm" type="password"></b-form-input>
       </b-form-group>
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.NewPassword')"
-                    label-for="input-sm">
-        <b-form-input v-model="newPassword" id="input-sm" size="sm" type="password"></b-form-input>
+                    label-for="input-5">
+        <b-form-input v-model="newPassword" id="input-5" size="sm" type="password"></b-form-input>
       </b-form-group>
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.ConfirmPassword')"
-                    label-for="input-sm">
-        <b-form-input v-model="newPassword2" id="input-sm" size="sm" type="password"></b-form-input>
+                    label-for="input-6">
+        <b-form-input v-model="newPassword2" id="input-6" size="sm" type="password"></b-form-input>
       </b-form-group>
 
       <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.ChangePassword')"></b-button>
@@ -70,7 +70,12 @@ export default {
     }
   },
   mounted () {
-
+    let vue = this
+    this.$http.get('/api/users').then(function(data) {
+      let user = data.data.data
+      vue.username = user.username
+      vue.email = user.email
+    })
   }
 }
 </script>
