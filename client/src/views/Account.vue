@@ -69,9 +69,23 @@ export default {
       newPassword2: ''
     }
   },
+  computed: {
+    validPassword: function () {
+      return validator.validPassword(this.password)
+    },
+    samePassword: function (pass1, pass2) {
+      return validator.samePassword(pass1, pass2)
+    },
+    validUsername: function () {
+      return validator.validUsername(this.username)
+    },
+    validEmail: function () {
+      return validator.validEmail(this.email)
+    }
+  },
   mounted () {
     let vue = this
-    this.$http.get('/api/users').then(function(data) {
+    this.$http.get('/api/users').then(function (data) {
       let user = data.data.data
       vue.username = user.username
       vue.email = user.email
