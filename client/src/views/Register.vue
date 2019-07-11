@@ -156,6 +156,8 @@
 </template>
 
 <script>
+import { validator } from '@/plugins'
+
 export default {
   data () {
     return {
@@ -169,18 +171,6 @@ export default {
     }
   },
   computed: {
-    validPassword: function () {
-      return this.password.length >= 8
-    },
-    samePassword: function () {
-      return this.password && this.confirmPassword && this.password === this.confirmPassword
-    },
-    validEmail: function () {
-      return this.email && /^\S+@\S+\.\S+$/.test(this.email)
-    },
-    validUsername: function () {
-      return this.username && /^([0-9A-Za-z_-]){3,}$/.test(this.username)
-    },
     canComplete: function () {
       if (this.registerDisabled) {
         return false
@@ -193,9 +183,22 @@ export default {
       }
 
       return !(!this.validPassword || !this.samePassword)
+    },
+    validPassword: function () {
+      return validator.validPassword(this.password)
+    },
+    samePassword: function () {
+      return validator.samePassword(this.password, this.confirmPassword)
+    },
+    validUsername: function () {
+      return validator.validUsername(this.username)
+    },
+    validEmail: function() {
+      return validator.validEmail(this.email)
     }
   },
   methods: {
+    //real methods
     submit: function () {
       if (!this.username) {
         this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Username') })
@@ -209,7 +212,7 @@ export default {
         this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
         return
       }
-      if (!this.validPassword) {
+      if (!validator.validPassword(this.password)) {
         return
       }
       this.registerDisabled = true
