@@ -38,5 +38,7 @@
   "Delete": "Delete",
   "Create": "Create",
   "Cancel": "Cancel",
-  "Actions": "Actions"
+  "Actions": "Actions",
+  "InfoChanged": "Your information has been changed",
+  "PasswordChanged": "Your password has been changed"
 }

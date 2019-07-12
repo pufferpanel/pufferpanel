@@ -13,6 +13,31 @@
 
 <template>
   <b-container>
+    <b-row v-if="errorMsg">
+      <b-col sm="1"/>
+      <b-col sm="10">
+        <b-alert
+          :show="dismissCountDown"
+          fade
+          dismissible
+          variant="danger"
+        >{{ errorMsg }}
+        </b-alert>
+      </b-col>
+    </b-row>
+    <b-row v-if="successMsg">
+      <b-col sm="1"/>
+      <b-col sm="10">
+        <b-alert
+          :show="dismissCountDown"
+          fade
+          dismissible
+          variant="primary"
+        >{{ successMsg }}
+        </b-alert>
+      </b-col>
+    </b-row>
+
     <b-card header-tag="header"
             footer-tag="footer">
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.Username')"
@@ -30,7 +55,7 @@
       </b-form-group>
 
       <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.Update')"
-                v-bind:disabled="!canSubmitInfoChange"></b-button>
+                v-bind:disabled="!canSubmitInfoChange" @click="submitInfoChange"></b-button>
     </b-card>
 
 
@@ -54,7 +79,7 @@
       </b-form-group>
 
       <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.ChangePassword')"
-                v-bind:disabled="!canSubmitPassChange"></b-button>
+                v-bind:disabled="!canSubmitPassChange" @click="submitPassChange"></b-button>
     </b-card>
   </b-container>
 </template>
@@ -70,7 +95,10 @@ export default {
       confirmPassword: '',
       oldPassword: '',
       newPassword: '',
-      newPassword2: ''
+      newPassword2: '',
+      errorMsg: '',
+      successMsg: '',
+      dismissCountDown: 5
     }
   },
   computed: {
@@ -91,6 +119,67 @@ export default {
     },
     canSubmitPassChange: function () {
       return this.oldPassword && this.validPassword && this.samePassword
+    }
+  },
+  methods: {
+    submitInfoChange () {
+      let vue = this
+      this.$http.post('/api/users', {
+        username: this.username,
+        email: this.email
+      }).then(function (result) {
+        if (result.data.success) {
+          vue.successMsg = data.$t('common.InfoChanged')
+        } else {
+          let msg = 'errors.ErrUnknownError'
+          if (result.data.error.code) {
+            msg = 'errors.' + result.data.error.code
+          } else {
+            msg = result.data.error.msg
+          }
+          vue.errorMsg = data.$t(msg)
+        }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.errorMsg = data.$t(msg)
+      })
+    },
+    submitPassChange () {
+      let vue = this
+      this.$http.put('/api/users', {
+        password: this.newPassword
+      }).then(function (result) {
+        if (result.data.success) {
+          vue.successMsg = data.$t('common.PasswordChanged')
+        } else {
+          let msg = 'errors.ErrUnknownError'
+          if (result.data.error.code) {
+            msg = 'errors.' + result.data.error.code
+          } else {
+            msg = result.data.error.msg
+          }
+          vue.errorMsg = data.$t(msg)
+        }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.errorMsg = data.$t(msg)
+      })
     }
   },
   mounted () {
