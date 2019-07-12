@@ -1,7 +1,7 @@
 FROM alpine
 
-COPY pufferpanel /pufferpanel/
-COPY client/dist /pufferpanel/client/dist/
+COPY . /pufferpanel/
+RUN ls -l /pufferpanel/
 RUN echo '{}' > /pufferpanel/config.json
 
 ENV PATH "/pufferpanel:${PATH}"
