@@ -1,7 +1,7 @@
-FROM alpine
+FROM debian:10-slim
 
-COPY . /pufferpanel/
-RUN ls -l /pufferpanel/
+COPY pufferpanel /pufferpanel/
+COPY client/dist /pufferpanel/client/dist/
 RUN echo '{}' > /pufferpanel/config.json
 
 ENV PATH "/pufferpanel:${PATH}"
