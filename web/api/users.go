@@ -14,9 +14,9 @@
 package api
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
@@ -29,7 +29,7 @@ import (
 func registerUsers(g *gin.RouterGroup) {
 	//if you can log in, you can see and edit yourself
 	g.Handle("GET", "", handlers.OAuth2("login", false), getSelf)
-	//g.Handle("PUT", "", handlers.OAuth2("login", false), updateSelf)
+	g.Handle("PUT", "", handlers.OAuth2("login", false), updateSelf)
 	g.Handle("POST", "", handlers.OAuth2("users.view", false), searchUsers)
 	g.Handle("OPTIONS", "", shared.CreateOptions("GET", "PUT", "POST"))
 
@@ -99,7 +99,7 @@ func createUser(c *gin.Context) {
 	}
 
 	if viewModel.Password == "" {
-		shared.HandleError(response, errors.New("password is required"))
+		shared.HandleError(response, errors.ErrFieldRequired("password"))
 		return
 	}
 
@@ -144,6 +144,50 @@ func getSelf(c *gin.Context) {
 
 	if !exist || !ok {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	response.Data(view.FromUser(user)).Send()
+}
+
+func updateSelf(c *gin.Context) {
+	var us services.UserService
+	var err error
+	response := builder.Respond(c)
+
+	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+		return
+	}
+
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
+
+	if !exist || !ok {
+		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		return
+	}
+
+	var viewModel view.UserViewModel
+	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+		return
+	}
+
+	if err = viewModel.Valid(true); shared.HandleError(response, err) {
+		return
+	}
+
+	if viewModel.Password == "" {
+		return
+	}
+
+	if us.IsValidCredentials(user, viewModel.Password) {
+		shared.HandleError(response, errors.ErrInvalidCredentials)
+		return
+	}
+
+	viewModel.CopyToModel(user)
+
+	if err = us.Update(user); shared.HandleError(response, err) {
 		return
 	}
 

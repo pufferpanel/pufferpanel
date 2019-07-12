@@ -26,6 +26,8 @@ type UserService interface {
 	Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, uint, error)
 
 	Login(email string, password string) (sessionToken string, err error)
+
+	IsValidCredentials(user *models.User, password string) bool
 }
 
 type userService struct {
@@ -77,16 +79,17 @@ func (us *userService) Login(email string, password string) (sessionToken string
 		return
 	}
 
-	providedPw := []byte(password)
-	correctPw := []byte(model.HashedPassword)
-
-	if bcrypt.CompareHashAndPassword(correctPw, providedPw) != nil {
+	if !us.IsValidCredentials(model, password) {
 		err = errors.ErrInvalidCredentials
 		return
 	}
 
 	sessionToken, err = oauth2.CreateSession(model)
 	return
+}
+
+func (us *userService) IsValidCredentials(user *models.User, password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password)) != nil
 }
 
 func (us *userService) GetByEmail(email string) (*models.User, bool, error) {
