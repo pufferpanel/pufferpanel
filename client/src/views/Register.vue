@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { validator } from '@/plugins'
+import validate from '@/plugins/validate.js'
 
 export default {
   data () {
@@ -185,16 +185,16 @@ export default {
       return !(!this.validPassword || !this.samePassword)
     },
     validPassword: function () {
-      return validator.validPassword(this.password)
+      return validate.validPassword(this.password)
     },
     samePassword: function () {
-      return validator.samePassword(this.password, this.confirmPassword)
+      return validate.samePassword(this.password, this.confirmPassword)
     },
     validUsername: function () {
-      return validator.validUsername(this.username)
+      return validate.validUsername(this.username)
     },
     validEmail: function() {
-      return validator.validEmail(this.email)
+      return validate.validEmail(this.email)
     }
   },
   methods: {
@@ -212,7 +212,7 @@ export default {
         this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
         return
       }
-      if (!validator.validPassword(this.password)) {
+      if (!validate.validPassword(this.password)) {
         return
       }
       this.registerDisabled = true

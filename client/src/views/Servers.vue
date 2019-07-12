@@ -107,12 +107,11 @@ export default {
       })
     },
     pollServerStatus () {
-      let http = this.createRequest()
       let vueData = this
 
       for (let i in this.servers) {
         let server = vueData.servers[i]
-        http.get('/daemon/server/' + server.id + '/status').then(function (response) {
+        vueData.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
           let data = response.data
           if (data) {
             let msg = data.data
