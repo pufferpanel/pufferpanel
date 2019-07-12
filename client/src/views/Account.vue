@@ -26,10 +26,11 @@
 
       <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" :label="$t('common.ConfirmPassword')"
                     label-for="input-3">
-        <b-form-input id="input-3" size="sm" type="password"></b-form-input>
+        <b-form-input v-model="confirmPassword" id="input-3" size="sm" type="password"></b-form-input>
       </b-form-group>
 
-      <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.Update')"></b-button>
+      <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.Update')"
+                v-bind:disabled="!canSubmitInfoChange"></b-button>
     </b-card>
 
 
@@ -52,12 +53,15 @@
         <b-form-input v-model="newPassword2" id="input-6" size="sm" type="password"></b-form-input>
       </b-form-group>
 
-      <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.ChangePassword')"></b-button>
+      <b-button slot="footer" variant="primary" size="sm" v-text="$t('common.ChangePassword')"
+                v-bind:disabled="!canSubmitPassChange"></b-button>
     </b-card>
   </b-container>
 </template>
 
 <script>
+import validate from '@/plugins/validate.js'
+
 export default {
   data () {
     return {
@@ -71,16 +75,22 @@ export default {
   },
   computed: {
     validPassword: function () {
-      return validator.validPassword(this.password)
+      return validate.validPassword(this.newPassword)
     },
-    samePassword: function (pass1, pass2) {
-      return validator.samePassword(pass1, pass2)
+    samePassword: function () {
+      return validate.samePassword(this.newPassword, this.newPassword2)
     },
     validUsername: function () {
-      return validator.validUsername(this.username)
+      return validate.validUsername(this.username)
     },
     validEmail: function () {
-      return validator.validEmail(this.email)
+      return validate.validEmail(this.email)
+    },
+    canSubmitInfoChange: function () {
+      return this.validUsername && this.validEmail && this.confirmPassword
+    },
+    canSubmitPassChange: function () {
+      return this.oldPassword && this.validPassword && this.samePassword
     }
   },
   mounted () {

@@ -11,7 +11,7 @@
  *  limitations under the License.
  */
 
-let validator = {
+export default {
   validPassword: function (password) {
     return password.length >= 8
   },
@@ -23,7 +23,5 @@ let validator = {
   },
   validUsername: function (username) {
     return username && /^([0-9A-Za-z_-]){3,}$/.test(username)
-  },
+  }
 }
-
-export default validator
