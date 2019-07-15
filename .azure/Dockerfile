@@ -7,4 +7,6 @@ RUN echo '{}' > /pufferpanel/config.json
 ENV PATH "/pufferpanel:${PATH}"
 EXPOSE 8080
 
+WORKDIR "/pufferpanel"
+
 CMD ["pufferpanel"]
