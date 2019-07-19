@@ -38,6 +38,11 @@
         <core-servers-files v-bind:server="server"/>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col>
+        <core-servers-sftp v-bind:server="server"/>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
