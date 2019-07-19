@@ -46,6 +46,14 @@ steps:
     workingDirectory: '$(modulePath)'
     displayName: 'Linux Build'
 
+  - script: |
+      export GOOS=linux
+      export GOARCH=arm
+      dep ensure -v
+      go build -o $(GOPATH)/build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
+    workingDirectory: '$(modulePath)'
+    displayName: 'Linux Build - ARM'
+
   - task: UseRubyVersion@0
     inputs:
       versionSpec: '>= 2.4'
@@ -141,6 +149,24 @@ steps:
       mv *.deb $(GOPATH)/build/trusty
     displayName: 'Create packages - trusty'
     workingDirectory: '$(modulePath)/systemd/pufferpanel/trusty'
+
+  - script: |
+      fpm -s dir -t deb \
+        --name pufferpanel -v $(version) \
+        --maintainer dev@pufferpanel.com \
+        --deb-user pufferpanel --deb-group pufferpanel \
+        --deb-systemd servicefiles/systemd/pufferpanel \
+        --before-install scripts/preinst.sh \
+        --after-upgrade scripts/postupgrade.sh \
+        --before-remove scripts/prerm.sh \
+        --deb-after-purge scripts/purge.sh \
+        $(GOPATH)/build/pufferpanel-arm=/usr/sbin/pufferpanel \
+        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/
+
+      mkdir $(GOPATH)/build/buster-arm
+      mv *.deb $(GOPATH)/build/buster-arm
+    displayName: 'Create packages - buster'
+    workingDirectory: '$(modulePath)/systemd/pufferpanel/xenial'
 
   - task: PublishPipelineArtifact@0
     inputs:
