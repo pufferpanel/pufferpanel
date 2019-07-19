@@ -40,5 +40,8 @@
   "Cancel": "Cancel",
   "Actions": "Actions",
   "InfoChanged": "Your information has been changed",
-  "PasswordChanged": "Your password has been changed"
+  "PasswordChanged": "Your password has been changed",
+  "SFTPInfo": "SFTP Information",
+  "HostPort": "Host:Port",
+  "AccountPassword": "Account Password"
 }
