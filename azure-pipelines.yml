@@ -23,10 +23,10 @@ steps:
       echo '##vso[task.prependpath]$(GOBIN)'
       echo '##vso[task.prependpath]$(GOROOT)/bin'
       mkdir $(GOPATH)/build
-      echo {} > $(GOATH)/build/config.json
+      echo {} > $(GOPATH)/build/config.json
       go version
       sudo apt-get update
-      sudo apt-get install -y arm-none-eabi-gcc
+      sudo apt-get install -y gcc-arm-none-eabi
     displayName: 'Set up the Go workspace'
 
   - script: |
