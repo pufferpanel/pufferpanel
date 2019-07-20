@@ -23,6 +23,7 @@ steps:
       echo '##vso[task.prependpath]$(GOBIN)'
       echo '##vso[task.prependpath]$(GOROOT)/bin'
       mkdir $(GOPATH)/build
+      echo {} > $(GOATH)/build/config.json
       go version
     displayName: 'Set up the Go workspace'
 
@@ -34,6 +35,8 @@ steps:
 
   - script: |
       export GOOS=windows
+      export GOARCH=amd64
+      export CGO_ENABLED=1
       dep ensure -v
       go build -o $(GOPATH)/build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
     workingDirectory: '$(modulePath)'
@@ -41,6 +44,8 @@ steps:
 
   - script: |
       export GOOS=linux
+      export GOARCH=amd64
+      export CGO_ENABLED=1
       dep ensure -v
       go build -o $(GOPATH)/build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
     workingDirectory: '$(modulePath)'
@@ -49,6 +54,7 @@ steps:
   - script: |
       export GOOS=linux
       export GOARCH=arm
+      export CGO_ENABLED=1
       dep ensure -v
       go build -o $(GOPATH)/build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
     workingDirectory: '$(modulePath)'
@@ -111,7 +117,8 @@ steps:
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
         $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/
+        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
+        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
 
       mkdir $(GOPATH)/build/xenial
       mv *.deb $(GOPATH)/build/xenial
@@ -143,7 +150,8 @@ steps:
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
         $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/
+        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
+        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
 
       mkdir $(GOPATH)/build/trusty
       mv *.deb $(GOPATH)/build/trusty
@@ -162,7 +170,8 @@ steps:
         --deb-after-purge scripts/purge.sh \
         -a armhf \
         $(GOPATH)/build/pufferpanel-arm=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/
+        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
+        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
 
       mkdir $(GOPATH)/build/buster-arm
       mv *.deb $(GOPATH)/build/buster-arm
