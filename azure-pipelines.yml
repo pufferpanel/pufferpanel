@@ -160,7 +160,7 @@ steps:
         --after-upgrade scripts/postupgrade.sh \
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
-        -a arm \
+        -a armhf \
         $(GOPATH)/build/pufferpanel-arm=/usr/sbin/pufferpanel \
         $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/
 
