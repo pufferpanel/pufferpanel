@@ -26,7 +26,7 @@ steps:
       echo {} > $(GOPATH)/build/config.json
       go version
       sudo apt-get update
-      sudo apt-get install -y gcc-arm-none-eabi
+      sudo apt-get install gcc-arm-linux-gnueabihf
     displayName: 'Set up the Go workspace'
 
   - script: |
@@ -56,10 +56,10 @@ steps:
   - script: |
       export GOOS=linux
       export GOARCH=arm
-      export CGO_ENABLED=1
       export CC=arm-linux-gnueabihf-gcc
       export CXX=arm-linux-gnueabihf-g++
-      export GOARM=7 \
+      export CGO_ENABLED=1 
+      export GOARM=7
       dep ensure -v
       go build -o $(GOPATH)/build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel/version.Version=$(version)" -v github.com/pufferpanel/pufferpanel
     workingDirectory: '$(modulePath)'
