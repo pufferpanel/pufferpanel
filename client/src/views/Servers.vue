@@ -17,6 +17,10 @@
       <b-spinner class="align-middle"/>
       <strong :text="$t('common.Loading')">Loading...</strong>
     </div>
+
+    <div slot="header">
+      <b-btn :text="$t('common.AddServer')"></b-btn>
+    </div>
   </b-table>
 </template>
 
@@ -49,7 +53,8 @@ export default {
       pagination: {
         rowsPerPage: 10
       },
-      task: null
+      task: null,
+      canAddServer: this.hasScope('servers.create')
     }
   },
   watch: {
@@ -126,7 +131,7 @@ export default {
       this.$router.push({ name: 'Server', params: { id: items[0].id } })
     }
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     if (this.task != null) {
       clearInterval(this.task)
     }

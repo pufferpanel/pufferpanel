@@ -419,21 +419,20 @@ func (oauth2 *oauthService) UpdateExpirationTime(tokenInfo oauth.TokenInfo, dura
 	return res.Error
 }
 
-func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken string, err error) {
+func (oauth2 *oauthService) CreateSession(user *models.User) (string, error) {
 	db, err := database.GetConnection()
 
 	if err != nil {
-		return
+		return "", err
 	}
 
 	ci, _, err := oauth2.GetByUser(user)
 
 	if err != nil {
-		return
+		return "", err
 	}
 	if ci == nil || ci.ID == 0 {
-		err = errors.ErrUserNotFound
-		return
+		return "", errors.ErrUserNotFound
 	}
 
 	valid := false
@@ -445,23 +444,21 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (sessionToken strin
 	}
 
 	if !valid {
-		err = errors.ErrLoginNotPermitted
-		return
+		return "", errors.ErrLoginNotPermitted
 	}
-
-	sessionToken = strings.Replace(uuid.NewV4().String(), "-", "", -1)
 
 	ti := &models.TokenInfo{
 		ClientInfoID:    ci.ID,
 		AccessCreateAt:  time.Now(),
 		AccessExpiresIn: 1 * time.Hour,
-		Access:          sessionToken,
+		Access:          strings.Replace(uuid.NewV4().String(), "-", "", -1),
 	}
 
 	err = db.Create(ti).Error
 
 	if err != nil {
-		sessionToken = ""
+		ti.Access = ""
 	}
-	return
+
+	return ti.Access, err
 }

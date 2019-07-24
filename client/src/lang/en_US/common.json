@@ -43,5 +43,6 @@
   "PasswordChanged": "Your password has been changed",
   "SFTPInfo": "SFTP Information",
   "HostPort": "Host:Port",
-  "AccountPassword": "Account Password"
+  "AccountPassword": "Account Password",
+  "AddServer": "Add Server"
 }
