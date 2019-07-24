@@ -117,7 +117,8 @@ export default {
       }).then(function (response) {
         let responseData = response.data
         if (responseData.success) {
-          Cookies.set('puffer_auth', responseData.data)
+          Cookies.set('puffer_auth', responseData.data.session)
+          localStorage.setItem('scopes', JSON.stringify(responseData.data.scopes))
           data.$router.push({ name: 'Servers' })
         } else {
           data.errorMsg = responseData.msg + ''
