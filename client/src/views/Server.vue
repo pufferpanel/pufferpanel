@@ -6,7 +6,7 @@
       <b-col cols="5"/>
       <b-col cols="2">
         <b-spinner class="align-middle"/>
-        <strong :text="$t('common.Loading')" v-text="$t('common.Loading')"></strong>
+        <strong v-text="$t('common.Loading')"></strong>
       </b-col>
     </b-row>
   </div>

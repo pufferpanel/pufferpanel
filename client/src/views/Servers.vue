@@ -1,27 +1,32 @@
 <template>
-  <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields"
-           :busy="loading">
-    <template slot="name" slot-scope="data">
-      <strong v-text="data.value"></strong>
-    </template>
-    <template slot="online" slot-scope="data">
-      <font-awesome-icon
-        v-if="data.value"
-        :icon="['far','check-circle']"/>
-      <font-awesome-icon
-        v-if="!data.value"
-        :icon="['far','times-circle']"/>
-    </template>
-
-    <div slot="table-busy" class="text-center text-danger my-2">
-      <b-spinner class="align-middle"/>
-      <strong :text="$t('common.Loading')">Loading...</strong>
+  <b-container>
+    <div v-if="canAddServer" style="padding-bottom: 20px">
+      <b-btn size="sm" variant="primary">
+        <font-awesome-icon :icon="['fa', 'plus']"></font-awesome-icon>
+        <span v-text="' ' + $t('common.AddServer')"></span>
+      </b-btn>
     </div>
 
-    <div slot="header">
-      <b-btn :text="$t('common.AddServer')"></b-btn>
-    </div>
-  </b-table>
+    <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields"
+             :busy="loading">
+      <template slot="name" slot-scope="data">
+        <strong v-text="data.value"></strong>
+      </template>
+      <template slot="online" slot-scope="data">
+        <font-awesome-icon
+          v-if="data.value"
+          :icon="['far','check-circle']"/>
+        <font-awesome-icon
+          v-if="!data.value"
+          :icon="['far','times-circle']"/>
+      </template>
+
+      <div slot="table-busy" class="text-center text-danger my-2">
+        <b-spinner class="align-middle"/>
+        <strong v-text="$t('common.Loading')"></strong>
+      </div>
+    </b-table>
+  </b-container>
 </template>
 
 <script>
