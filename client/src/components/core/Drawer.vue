@@ -1,9 +1,6 @@
 <template>
-  <b-col cols="1" class="sidebar-collapse">
-    <nav class="bg-light sidebar sidebar-sticky">
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span :text="$t('common.General')"></span>
-      </h6>
+  <div class="sidebar-collapse">
+    <nav class="bg-light sidebar sidebar-sticky" type="dark">
       <ul class="nav flex-column">
         <li class="nav-item">
           <b-link class="nav-link" to="/account" v-text="$t('common.AccountSettings')"></b-link>
@@ -12,20 +9,12 @@
           <b-link class="nav-link" :to="{name: 'Servers'}" v-text="$t('common.Servers')"></b-link>
         </li>
       </ul>
-
-      <footer class="footer">
-        <div class="container">
-          <p><a href="https://pufferpanel.com/">PufferPanel</a> is licensed under the <a
-            href="https://github.com/PufferPanel/PufferPanel/blob/master/LICENSE">Apache License</a>.<br>Running
-            Version v2.0.0</p>
-        </div>
-      </footer>
     </nav>
-  </b-col>
+  </div>
 </template>
 
 <style lang="css">
-  @media (min-width: 992px) {
+  /*@media (min-width: 992px) {
     .sidebar-collapse {
       display: block !important;
     }
@@ -35,5 +24,5 @@
     .sidebar-collapse {
       display: none !important;
     }
-  }
+  }*/
 </style>
