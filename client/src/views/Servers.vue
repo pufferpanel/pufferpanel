@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <div v-if="canAddServer" style="padding-bottom: 20px">
-      <b-btn size="sm" variant="primary">
+      <b-btn size="sm" variant="primary" :to="{name: 'AddServer'}">
         <font-awesome-icon :icon="['fa', 'plus']"></font-awesome-icon>
         <span v-text="' ' + $t('common.AddServer')"></span>
       </b-btn>
