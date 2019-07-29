@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import validate from '@/plugins/validate.js'
+import validate from '@/utils/validate'
 
 export default {
   data () {
