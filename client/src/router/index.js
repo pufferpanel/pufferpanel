@@ -47,11 +47,7 @@ const router = new Router({
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
     { path: '/', redirect: 'Servers' },
     { path: '', redirect: 'Servers' },
-    {
-      path: '*', component: (resolve) => import(
-        `@/views/errors/404.vue`
-        ).then(resolve)
-    }
+    { path: '*', redirect: 'Errors/404' }
   ]),
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {

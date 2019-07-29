@@ -11,6 +11,11 @@ export default [
     name: 'Servers'
   },
   {
+    path: '/addserver',
+    view: 'AddServer',
+    name: 'AddServer'
+  },
+  {
     path: '/account',
     view: 'Account',
     name: 'Account'
@@ -21,8 +26,8 @@ export default [
     name: 'Server'
   },
   {
-    path: '/error/404',
-    name: 'Error/404',
+    path: '/errors/404',
+    name: 'Errors/404',
     view: 'errors/404',
     meta: {
       noAuth: true,
