@@ -44,5 +44,6 @@
   "SFTPInfo": "SFTP Information",
   "HostPort": "Host:Port",
   "AccountPassword": "Account Password",
-  "AddServer": "Add Server"
+  "AddServer": "Add Server",
+  "Template": "Template"
 }
