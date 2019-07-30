@@ -10,6 +10,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	netHttp "net/http"
+	"strconv"
 	"strings"
 )
 
@@ -19,6 +20,12 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
 		g.Any("/:id/*path", proxyServerRequest)
+	}
+	r := rg.Group("/node")
+	{
+		//g.Any("", proxyServerRequest)
+		r.Any("/:id", proxyNodeRequest)
+		r.Any("/:id/*path", proxyNodeRequest)
 	}
 }
 
@@ -58,14 +65,53 @@ func proxyServerRequest(c *gin.Context) {
 	}
 
 	if c.GetHeader("Upgrade") == "websocket" {
-		proxySocketRequest(c, path, ns, server)
+		proxySocketRequest(c, path, ns, &server.Node)
 	} else {
-		proxyHttpRequest(c, path, ns, server)
+		proxyHttpRequest(c, path, ns, &server.Node)
 	}
 }
 
-func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, server *models.Server) {
-	callResponse, err := ns.CallNode(&server.Node, c.Request.Method, path, c.Request.Body, c.Request.Header)
+func proxyNodeRequest(c *gin.Context) {
+	path := c.Param("path")
+
+	res := response.Respond(c)
+
+	nodeId := c.Param("id")
+	if nodeId == "" {
+		c.AbortWithStatus(404)
+		return
+	}
+
+	ns, err := services.GetNodeService()
+	if ns == nil && err == nil {
+		err = errors.ErrServiceNotAvailable
+	}
+	if shared.HandleError(res, err) {
+		return
+	}
+
+	id, err := strconv.ParseUint(nodeId, 10, 32)
+	if shared.HandleError(res, err) {
+		return
+	}
+
+	node, exists, err := ns.Get(uint(id))
+	if shared.HandleError(res, err) {
+		return
+	} else if !exists {
+		c.AbortWithStatus(404)
+		return
+	}
+
+	if c.GetHeader("Upgrade") == "websocket" {
+		proxySocketRequest(c, path, ns, node)
+	} else {
+		proxyHttpRequest(c, path, ns, node)
+	}
+}
+
+func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, node *models.Node) {
+	callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
 
 	//this only will throw an error if we can't get to the node
 	//so if error, use our response messenger, otherwise copy response from node to client
@@ -90,8 +136,8 @@ func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, serv
 	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 }
 
-func proxySocketRequest(c *gin.Context, path string, ns services.NodeService, server *models.Server) {
-	err := ns.OpenSocket(&server.Node, path, c.Writer, c.Request)
+func proxySocketRequest(c *gin.Context, path string, ns services.NodeService, node *models.Node) {
+	err := ns.OpenSocket(node, path, c.Writer, c.Request)
 	if err != nil {
 		logging.Exception("error opening socket", err)
 		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Error(err).Send()
