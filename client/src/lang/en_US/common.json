@@ -45,5 +45,7 @@
   "HostPort": "Host:Port",
   "AccountPassword": "Account Password",
   "AddServer": "Add Server",
-  "Template": "Template"
+  "Template": "Template",
+  "SelectNode": "Please select node",
+  "SelectTemplate": "Please select template"
 }
