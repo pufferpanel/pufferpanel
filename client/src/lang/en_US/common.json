@@ -18,7 +18,7 @@
   "Password": "Password",
   "Update": "Update",
   "OldPassword": "Old Password",
-  "NewPassword":  "New Password",
+  "NewPassword": "New Password",
   "ConfirmPassword": "Confirm Password",
   "ChangePassword": "Change Password",
   "Email": "Email",
@@ -47,5 +47,7 @@
   "AddServer": "Add Server",
   "Template": "Template",
   "SelectNode": "Please select node",
-  "SelectTemplate": "Please select template"
+  "SelectTemplate": "Please select template",
+  "Users": "Users",
+  "Options": "Options"
 }
