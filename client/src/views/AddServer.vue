@@ -13,24 +13,55 @@
 
 <template>
   <b-container>
-    <b-row>
-      <b-col cols="2">
-        <label :for="`nodeSelect`"><strong v-text="$t('common.Node')"></strong></label>
-      </b-col>
-      <b-col cols="10">
-        <b-form-select :disabled="loadingNodes" id="nodeSelect" v-model="selectedNode" :options="nodes"></b-form-select>
-      </b-col>
-    </b-row>
+    <b-card header-tag="header" footer-tag="footer">
+      <h6 slot="header" class="mb-0"><span v-text="$t('common.AddServer')"></span></h6>
+      <b-btn slot="footer" variant="primary" :disabled="!canCreate" v-text="$t('common.Create')"></b-btn>
+      <b-card-text>
+        <b-row>
+          <b-col sm="12" md="10">
+            <b-card header-tag="header">
+              <h6 slot="header" class="mb-0"><span v-text="$t('common.Node')"></span></h6>
+              <b-card-text>
+                <b-form-select :disabled="loadingNodes" id="nodeSelect" v-model="selectedNode"
+                               :options="nodes"></b-form-select>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
 
-    <b-row>
-      <b-col cols="2">
-        <label :for="`templateSelect`"><strong v-text="$t('common.Template')"></strong></label>
-      </b-col>
-      <b-col cols="10">
-        <b-form-select :disabled="loadingTemplates" id="templateSelect" v-model="selectedTemplate"
-                       :options="templates"></b-form-select>
-      </b-col>
-    </b-row>
+        <b-row>
+          <b-col sm="12" md="10">
+            <b-card header-tag="header">
+              <h6 slot="header" class="mb-0"><span v-text="$t('common.Template')"></span></h6>
+              <b-card-text>
+                <b-form-select :disabled="loadingTemplates" id="templateSelect" v-model="selectedTemplate"
+                               :options="templates"></b-form-select>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col sm="12" md="10">
+            <b-card header-tag="header">
+              <h6 slot="header" class="mb-0"><span v-text="$t('common.Users')"></span></h6>
+              <b-card-text>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col sm="12" md="10">
+            <b-card header-tag="header">
+              <h6 slot="header" class="mb-0"><span v-text="$t('common.Options')"></span></h6>
+              <b-card-text>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
+      </b-card-text>
+    </b-card>
   </b-container>
 </template>
 
@@ -55,9 +86,13 @@ export default {
       this.getTemplates()
     }
   },
+  computed: {
+    canCreate: function () {
+      return !this.loadingTemplates && !this.loadingNodes
+    }
+  },
   methods: {
     getTemplates () {
-      console.log('Getting templates for node ' + this.selectedNode)
       let vue = this
       this.loadingTemplates = true
       this.templates = [{
