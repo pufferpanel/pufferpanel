@@ -56,6 +56,19 @@
             <b-card header-tag="header">
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Options')"></span></h6>
               <b-card-text>
+                <div v-if="selectedTemplate" v-for="item in formData">
+                  <b-card header-tag="header" v-if="!item.internal">
+                    <h6 slot="header" v-text="item.display"></h6>
+                    <b-card-text>
+                      <span v-html="item.desc"></span>
+                      <b-form-input v-if="item.type === 'integer'" type="number" v-model="item.value"
+                                    :required="item.required"></b-form-input>
+                      <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
+                                       :required="item.required"></b-form-checkbox>
+                      <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
+                    </b-card-text>
+                  </b-card>
+                </div>
               </b-card-text>
             </b-card>
           </b-col>
@@ -84,6 +97,9 @@ export default {
   watch: {
     selectedNode: function (newVal, oldVal) {
       this.getTemplates()
+    },
+    selectedTemplate: function (newVal, oldVal) {
+      this.formData = this.templateData[newVal].data
     }
   },
   computed: {
