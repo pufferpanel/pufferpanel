@@ -65,6 +65,8 @@
                                     :required="item.required"></b-form-input>
                       <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
                                        :required="item.required"></b-form-checkbox>
+                      <b-form-select v-else-if="item.type === 'option'" :options="item.options">
+                      </b-form-select>
                       <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
                     </b-card-text>
                   </b-card>
