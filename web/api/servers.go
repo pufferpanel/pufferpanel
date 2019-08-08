@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
@@ -41,7 +42,6 @@ func registerServers(g *gin.RouterGroup) {
 }
 
 func searchServers(c *gin.Context) {
-	var ss services.ServerService
 	var err error
 	response := builder.From(c)
 
@@ -73,12 +73,15 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
-	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
 
+	ss := &services.Server{DB: db}
+	os := services.GetOAuth(db)
+
 	//see if user has access to view all others, otherwise we can't permit search without their username
-	os, _ := services.GetOAuthService()
 	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view");
 	if !allowed {
 		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]view.ServerViewModel, 0))
@@ -122,8 +125,6 @@ func getServer(c *gin.Context) {
 }
 
 func createServer(c *gin.Context) {
-	var ss services.ServerService
-	var ns services.NodeService
 	var err error
 	response := builder.From(c)
 
@@ -140,13 +141,13 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
-		return
-	}
+	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
@@ -176,13 +177,15 @@ func createServer(c *gin.Context) {
 }
 
 func deleteServer(c *gin.Context) {
-	var ss services.ServerService
 	var err error
 	response := builder.From(c)
 
-	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ss := &services.Server{DB: db}
 
 	t, exist := c.Get("server")
 

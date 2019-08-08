@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
@@ -40,21 +40,13 @@ func proxyServerRequest(c *gin.Context) {
 
 	path := "/server/" + serverId + c.Param("path")
 
-	ss, err := services.GetServerService()
-	if ss == nil && err == nil {
-		err = errors.ErrServiceNotAvailable
-	}
+	db, err := database.GetConnection()
 	if shared.HandleError(res, err) {
 		return
 	}
 
-	ns, err := services.GetNodeService()
-	if ns == nil && err == nil {
-		err = errors.ErrServiceNotAvailable
-	}
-	if shared.HandleError(res, err) {
-		return
-	}
+	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
 
 	server, exists, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && shared.HandleError(res, err) {
@@ -82,13 +74,12 @@ func proxyNodeRequest(c *gin.Context) {
 		return
 	}
 
-	ns, err := services.GetNodeService()
-	if ns == nil && err == nil {
-		err = errors.ErrServiceNotAvailable
-	}
+	db, err := database.GetConnection()
 	if shared.HandleError(res, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	id, err := strconv.ParseUint(nodeId, 10, 32)
 	if shared.HandleError(res, err) {
@@ -110,7 +101,7 @@ func proxyNodeRequest(c *gin.Context) {
 	}
 }
 
-func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, node *models.Node) {
+func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
 
 	//this only will throw an error if we can't get to the node
@@ -137,7 +128,7 @@ func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, node
 	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 }
 
-func proxySocketRequest(c *gin.Context, path string, ns services.NodeService, node *models.Node) {
+func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	err := ns.OpenSocket(node, path, c.Writer, c.Request)
 	if err != nil {
 		logging.Exception("error opening socket", err)

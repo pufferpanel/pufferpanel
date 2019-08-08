@@ -3,6 +3,7 @@ package oauth2
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
@@ -20,25 +21,31 @@ func registerTokens(g *gin.RouterGroup) {
 }
 
 func handleTokenRequest(c *gin.Context) {
-	var oauth services.OAuthService
-	var err error
-	if oauth, err = services.GetOAuthService(); shared.HandleError(builder.Respond(c), err) {
+	response := builder.From(c)
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
 
-	oauth.HandleHTTPTokenRequest(c.Writer, c.Request)
+	os := services.GetOAuth(db)
+
+	response.Discard()
+	os.HandleHTTPTokenRequest(c.Writer, c.Request)
 }
 
 func handleInfoRequest(c *gin.Context) {
-	var oauth services.OAuthService
-	var err error
-	if oauth, err = services.GetOAuthService(); err != nil {
-		c.Status(500)
+	response := builder.From(c)
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
 
+	response.Discard()
+
+	os := services.GetOAuth(db)
+
 	if token := c.PostForm("token"); token != "" {
-		info, _, _ := oauth.GetInfo(token)
+		info, _, _ := os.GetInfo(token)
 		if info == nil {
 			data := make(map[string]interface{})
 			data["active"] = false

@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
@@ -43,13 +44,15 @@ func registerNodes(g *gin.RouterGroup) {
 }
 
 func getAllNodes(c *gin.Context) {
-	var ns services.NodeService
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	var nodes *models.Nodes
 	if nodes, err = ns.GetAll(); shared.HandleError(response, err) {
@@ -58,17 +61,19 @@ func getAllNodes(c *gin.Context) {
 
 	data := view.FromNodes(nodes)
 
-	response.Data(data).Send()
+	response.Data(data)
 }
 
 func getNode(c *gin.Context) {
-	var ns services.NodeService
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c, response)
 	if !ok {
@@ -85,17 +90,19 @@ func getNode(c *gin.Context) {
 
 	data := view.FromNode(node)
 
-	response.Data(data).Send()
+	response.Data(data)
 }
 
-func createNode (c *gin.Context) {
-	var ns services.NodeService
+func createNode(c *gin.Context) {
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	model := view.NodeViewModel{}
 	if err = c.BindJSON(&model); shared.HandleError(response, err) {
@@ -112,17 +119,19 @@ func createNode (c *gin.Context) {
 		return
 	}
 
-	response.Data(create).Send()
+	response.Data(create)
 }
 
-func updateNode (c *gin.Context) {
-	var ns services.NodeService
+func updateNode(c *gin.Context) {
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	viewModel := &view.NodeViewModel{}
 	if err = c.BindJSON(viewModel); shared.HandleError(response, err) {
@@ -154,14 +163,16 @@ func updateNode (c *gin.Context) {
 	response.Data(node).Send()
 }
 
-func deleteNode (c *gin.Context) {
-	var ns services.NodeService
+func deleteNode(c *gin.Context) {
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	if ns, err = services.GetNodeService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c, response)
 	if !ok {
@@ -172,7 +183,7 @@ func deleteNode (c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Send()
+		response.Fail().Status(http.StatusNotFound)
 		return
 	}
 
@@ -181,7 +192,7 @@ func deleteNode (c *gin.Context) {
 		return
 	}
 
-	response.Data(node).Send()
+	response.Data(node)
 }
 
 func validateId(c *gin.Context, response builder.Builder) (uint, bool) {
@@ -196,4 +207,3 @@ func validateId(c *gin.Context, response builder.Builder) (uint, bool) {
 
 	return uint(id), true
 }
-

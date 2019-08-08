@@ -2,26 +2,13 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	uuid2 "github.com/satori/go.uuid"
 	"strings"
 )
 
-type ServerService interface {
-	Search(searchCriteria ServerSearch) (*models.Servers, uint, error)
-
-	Get(id string) (*models.Server, bool, error)
-
-	Update(model *models.Server) error
-
-	Delete(id uint) error
-
-	Create(model *models.Server, serverData interface{}) (err error)
-}
-
-type serverService struct {
-	db *gorm.DB
+type Server struct {
+	DB *gorm.DB
 }
 
 type ServerSearch struct {
@@ -33,23 +20,10 @@ type ServerSearch struct {
 	Page     uint
 }
 
-func GetServerService() (ServerService, error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return nil, err
-	}
-
-	service := &serverService{
-		db: db,
-	}
-
-	return service, nil
-}
-
-func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, uint, error) {
+func (ss *Server) Search(searchCriteria ServerSearch) (*models.Servers, uint, error) {
 	servers := &models.Servers{}
 
-	query := ss.db
+	query := ss.DB
 
 	if searchCriteria.NodeId != 0 {
 		query = query.Where(&models.Server{NodeID: searchCriteria.NodeId})
@@ -82,7 +56,7 @@ func (ss *serverService) Search(searchCriteria ServerSearch) (*models.Servers, u
 	return servers, count, res.Error
 }
 
-func (ss *serverService) Get(id string) (*models.Server, bool, error) {
+func (ss *Server) Get(id string) (*models.Server, bool, error) {
 	if id == "" {
 		return nil, false, nil
 	}
@@ -90,47 +64,34 @@ func (ss *serverService) Get(id string) (*models.Server, bool, error) {
 		Identifier: id,
 	}
 
-	res := ss.db.Where(model).Preload("Node").First(model)
+	res := ss.DB.Where(model).Preload("Node").First(model)
 
 	return model, model.ID != 0, res.Error
 }
 
-func (ss *serverService) Update(model *models.Server) error {
-	res := ss.db.Save(model)
+func (ss *Server) Update(model *models.Server) error {
+	res := ss.DB.Save(model)
 	return res.Error
 }
 
-func (ss *serverService) Delete(id uint) error {
+func (ss *Server) Delete(id uint) error {
 	model := &models.Server{
 		ID: id,
 	}
 
-	res := ss.db.Delete(model)
+	res := ss.DB.Delete(model)
 	return res.Error
 }
 
-func (ss *serverService) Create(model *models.Server, serverData interface{}) (err error) {
+func (ss *Server) Create(model *models.Server, serverData interface{}) (err error) {
 	uuid := uuid2.NewV4()
 	generatedId := strings.ToUpper(uuid.String())[0:8]
 	model.Identifier = generatedId
 
-	conn := ss.db.Begin()
-	successful := false
-
-	defer func() {
-		if successful && err == nil {
-			conn.Commit()
-		} else {
-			conn.Rollback()
-		}
-	}()
-
-	res := conn.Create(model)
+	res := ss.DB.Create(model)
 	if res.Error != nil {
 		err = res.Error
 		return
 	}
-
-	successful = true
 	return
 }

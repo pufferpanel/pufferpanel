@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
@@ -18,50 +17,21 @@ import (
 	"time"
 )
 
-type OAuthService interface {
-	HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request)
+var oauthServer *server.Server
 
-	GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error)
-
-	Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error)
-
-	AddScope(client *models.ClientInfo, server *models.Server, scope string) (err error)
-
-	RemoveScope(client *models.ClientInfo, server *models.Server, scope string) (err error)
-
-	Delete(clientId string) (err error)
-
-	GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error)
-
-	GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error)
-
-	HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error)
-
-	HasTokenExpired(info oauth.TokenInfo) (expired bool)
-
-	ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error)
-
-	GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error)
-
-	UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error)
-
-	CreateSession(user *models.User) (sessionToken string, err error)
-}
-
-type oauthService struct {
+type OAuth struct {
 	server *server.Server
+	DB     *gorm.DB
 }
 
-var _oauthService *oauthService
-
-func GetOAuthService() (service OAuthService, err error) {
-	if _oauthService == nil {
-		err = configureServer()
+func GetOAuth(db *gorm.DB) *OAuth {
+	if oauthServer == nil {
+		configureServer()
 	}
-	return _oauthService, err
+	return &OAuth{server: oauthServer, DB: db}
 }
 
-func configureServer() error {
+func configureServer() {
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&o2.ClientStore{})
 	manager.MapTokenStorage(&o2.TokenStore{})
@@ -78,22 +48,21 @@ func configureServer() error {
 		logging.Build(logging.ERROR).WithMessage("response error on oauth2 service").WithError(re.Error).Log()
 	})
 
-	_oauthService = &oauthService{server: srv}
-	return nil
+	oauthServer = srv
 }
 
-func (oauth2 *oauthService) HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request) {
+func (oauth2 *OAuth) HandleHTTPTokenRequest(writer http.ResponseWriter, request *http.Request) {
 	err := oauth2.server.HandleTokenRequest(writer, request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-func (oauth2 *oauthService) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error) {
+func (oauth2 *OAuth) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo, err error) {
 	return oauth2.server.ValidationBearerToken(r)
 }
 
-func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
+func (oauth2 *OAuth) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
 	tokenInfo, client, err := oauth2.GetByToken(token)
 
 	if tokenInfo == nil || client == nil {
@@ -106,12 +75,7 @@ func (oauth2 *oauthService) GetInfo(token string) (info *view.OAuthTokenInfoView
 	return
 }
 
-func (oauth2 *oauthService) Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return
-	}
-
+func (oauth2 *OAuth) Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error) {
 	clientSecret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
 
 	ci := &models.ClientInfo{
@@ -121,7 +85,7 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 		Panel:    panel,
 	}
 
-	res := db.Create(ci)
+	res := oauth2.DB.Create(ci)
 
 	if res.Error != nil {
 		return "", res.Error
@@ -135,7 +99,7 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 		if server != nil {
 			scopeInfo.ServerId = &server.ID
 		}
-		err = db.Create(scopeInfo).Error
+		err = oauth2.DB.Create(scopeInfo).Error
 		if err != nil {
 			return "", err
 		}
@@ -144,14 +108,9 @@ func (oauth2 *oauthService) Create(user *models.User, server *models.Server, cli
 	return
 }
 
-func (oauth2 *oauthService) RemoveScope(client *models.ClientInfo, server *models.Server, scope string) error {
-	db, err := database.GetConnection()
-	if err != nil {
-		return err
-	}
-
+func (oauth2 *OAuth) RemoveScope(client *models.ClientInfo, server *models.Server, scope string) error {
 	if server != nil && server.ID == 0 {
-		res := db.Where(server).First(server)
+		res := oauth2.DB.Where(server).First(server)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -160,9 +119,9 @@ func (oauth2 *oauthService) RemoveScope(client *models.ClientInfo, server *model
 	if client.ID == 0 {
 		var query *gorm.DB
 		if server != nil && server.ID != 0 {
-			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+			query = oauth2.DB.Preload("ServerScopes", "server_id = ?", server.ID)
 		} else {
-			query = db.Preload("ServerScopes", "server_id IS NULL")
+			query = oauth2.DB.Preload("ServerScopes", "server_id IS NULL")
 		}
 		res := query.Where(client).First(client)
 		if res.Error != nil {
@@ -175,7 +134,7 @@ func (oauth2 *oauthService) RemoveScope(client *models.ClientInfo, server *model
 
 	for _, v := range client.ServerScopes {
 		if v.Scope == scope {
-			res := db.Delete(v)
+			res := oauth2.DB.Delete(v)
 			return res.Error
 		}
 	}
@@ -183,14 +142,9 @@ func (oauth2 *oauthService) RemoveScope(client *models.ClientInfo, server *model
 	return nil
 }
 
-func (oauth2 *oauthService) AddScope(client *models.ClientInfo, server *models.Server, scope string) error {
-	db, err := database.GetConnection()
-	if err != nil {
-		return err
-	}
-
+func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, scope string) error {
 	if server != nil && server.ID == 0 {
-		res := db.Where(server).First(server)
+		res := oauth2.DB.Where(server).First(server)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -199,9 +153,9 @@ func (oauth2 *oauthService) AddScope(client *models.ClientInfo, server *models.S
 	if client.ID == 0 {
 		var query *gorm.DB
 		if server != nil && server.ID != 0 {
-			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+			query = oauth2.DB.Preload("ServerScopes", "server_id = ?", server.ID)
 		} else {
-			query = db.Preload("ServerScopes", "server_id IS NULL")
+			query = oauth2.DB.Preload("ServerScopes", "server_id IS NULL")
 		}
 		res := query.Where(client).First(client)
 		if res.Error != nil {
@@ -228,21 +182,16 @@ func (oauth2 *oauthService) AddScope(client *models.ClientInfo, server *models.S
 			replacement.ServerId = &server.ID
 		}
 
-		res := db.Create(replacement)
+		res := oauth2.DB.Create(replacement)
 		return res.Error
 	}
 
 	return nil
 }
 
-func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return err
-	}
-
+func (oauth2 *OAuth) UpdateScopes(client *models.ClientInfo, server *models.Server, scopes ...string) (err error) {
 	if server != nil && server.ID == 0 {
-		res := db.Where(server).First(server)
+		res := oauth2.DB.Where(server).First(server)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -251,9 +200,9 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 	if client.ID == 0 {
 		var query *gorm.DB
 		if server != nil && server.ID != 0 {
-			query = db.Preload("ServerScopes", "server_id = ?", server.ID)
+			query = oauth2.DB.Preload("ServerScopes", "server_id = ?", server.ID)
 		} else {
-			query = db.Preload("ServerScopes", "server_id IS NULL")
+			query = oauth2.DB.Preload("ServerScopes", "server_id IS NULL")
 		}
 		res := query.Where(client).First(client)
 		if res.Error != nil {
@@ -274,7 +223,7 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 			}
 		}
 		if toDelete {
-			db.Delete(v)
+			oauth2.DB.Delete(v)
 		}
 	}
 
@@ -296,51 +245,36 @@ func (oauth2 *oauthService) UpdateScopes(client *models.ClientInfo, server *mode
 				replacement.ServerId = &server.ID
 			}
 
-			db.Create(replacement)
+			oauth2.DB.Create(replacement)
 		}
 	}
 
 	return
 }
 
-func (oauth2 *oauthService) Delete(clientId string) (err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return err
-	}
-
+func (oauth2 *OAuth) Delete(clientId string) (err error) {
 	model := &models.ClientInfo{ClientID: clientId}
 
-	return db.Delete(model).Error
+	return oauth2.DB.Delete(model).Error
 }
 
-func (oauth2 *oauthService) GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return nil, false, err
-	}
-
+func (oauth2 *OAuth) GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error) {
 	model := &models.ClientInfo{ClientID: clientId}
 
-	res := db.Set("gorm:auto_preload", true).Where(model).First(model)
+	res := oauth2.DB.Set("gorm:auto_preload", true).Where(model).First(model)
 
 	return model, model.ID != 0, res.Error
 }
 
-func (oauth2 *oauthService) GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return nil, false, err
-	}
-
+func (oauth2 *OAuth) GetByUser(user *models.User) (client *models.ClientInfo, exists bool, err error) {
 	model := &models.ClientInfo{UserID: user.ID, Panel: true}
 
-	res := db.Set("gorm:auto_preload", true).Where(model).First(model)
+	res := oauth2.DB.Set("gorm:auto_preload", true).Where(model).First(model)
 
 	return model, model.ID != 0, res.Error
 }
 
-func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error) {
+func (oauth2 *OAuth) HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error) {
 	ts := o2.TokenStore{}
 
 	var ti oauth.TokenInfo
@@ -369,7 +303,7 @@ func (oauth2 *oauthService) HasRights(accessToken string, serverId *uint, scope 
 	return &converted.ClientInfo, false, nil
 }
 
-func (oauth2 *oauthService) HasTokenExpired(info oauth.TokenInfo) (expired bool) {
+func (oauth2 *OAuth) HasTokenExpired(info oauth.TokenInfo) (expired bool) {
 	if info == nil {
 		return true
 	}
@@ -381,7 +315,7 @@ func (oauth2 *oauthService) HasTokenExpired(info oauth.TokenInfo) (expired bool)
 	return false
 }
 
-func (oauth2 *oauthService) GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error) {
+func (oauth2 *OAuth) GetByToken(token string) (tokenInfo oauth.TokenInfo, client *models.ClientInfo, err error) {
 	ts := &o2.TokenStore{}
 	tokenInfo, err = ts.GetByAccess(token)
 
@@ -393,15 +327,10 @@ func (oauth2 *oauthService) GetByToken(token string) (tokenInfo oauth.TokenInfo,
 		return nil, nil, nil
 	}
 
-	db, err := database.GetConnection()
-	if err != nil {
-		return
-	}
-
 	client = &models.ClientInfo{
 		ClientID: tokenInfo.GetClientID(),
 	}
-	err = db.Set("gorm:auto_preload", true).Where(client).First(client).Error
+	err = oauth2.DB.Set("gorm:auto_preload", true).Where(client).First(client).Error
 	if err != nil {
 		return
 	}
@@ -409,23 +338,12 @@ func (oauth2 *oauthService) GetByToken(token string) (tokenInfo oauth.TokenInfo,
 	return tokenInfo, client, err
 }
 
-func (oauth2 *oauthService) UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return
-	}
-
-	res := db.Set("gorm:association_save_reference", false).Model(tokenInfo).Update("access_create_at", time.Now())
+func (oauth2 *OAuth) UpdateExpirationTime(tokenInfo oauth.TokenInfo, duration time.Duration) (err error) {
+	res := oauth2.DB.Set("gorm:association_save_reference", false).Model(tokenInfo).Update("access_create_at", time.Now())
 	return res.Error
 }
 
-func (oauth2 *oauthService) CreateSession(user *models.User) (string, error) {
-	db, err := database.GetConnection()
-
-	if err != nil {
-		return "", err
-	}
-
+func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 	ci, _, err := oauth2.GetByUser(user)
 
 	if err != nil {
@@ -454,7 +372,7 @@ func (oauth2 *oauthService) CreateSession(user *models.User) (string, error) {
 		Access:          strings.Replace(uuid.NewV4().String(), "-", "", -1),
 	}
 
-	err = db.Create(ti).Error
+	err = oauth2.DB.Create(ti).Error
 
 	if err != nil {
 		ti.Access = ""
