@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/models/view"
@@ -41,7 +42,6 @@ func registerUsers(g *gin.RouterGroup) {
 }
 
 func searchUsers(c *gin.Context) {
-	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
@@ -52,7 +52,7 @@ func searchUsers(c *gin.Context) {
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
 	if err != nil || pageSize <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
 		return
 	}
 
@@ -62,13 +62,16 @@ func searchUsers(c *gin.Context) {
 
 	page, err := strconv.Atoi(pageQuery)
 	if err != nil || page <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
 		return
 	}
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	var results *models.Users
 	var total uint
@@ -76,17 +79,19 @@ func searchUsers(c *gin.Context) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.FromUsers(results)).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.FromUsers(results))
 }
 
 func createUser(c *gin.Context) {
-	var us services.UserService
 	var err error
 	response := builder.Respond(c)
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	var viewModel view.UserViewModel
 	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
@@ -110,18 +115,18 @@ func createUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }
 
 func getUser(c *gin.Context) {
 	response := builder.Respond(c)
 
-	var us services.UserService
-	var err error
-
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	username := c.Param("username")
 
@@ -129,11 +134,11 @@ func getUser(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }
 
 func getSelf(c *gin.Context) {
@@ -143,27 +148,28 @@ func getSelf(c *gin.Context) {
 	user, ok := t.(*models.User)
 
 	if !exist || !ok {
-		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }
 
 func updateSelf(c *gin.Context) {
-	var us services.UserService
-	var err error
 	response := builder.Respond(c)
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
 	user, ok := t.(*models.User)
 
 	if !exist || !ok {
-		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
@@ -191,17 +197,18 @@ func updateSelf(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }
 
 func updateUser(c *gin.Context) {
-	var us services.UserService
-	var err error
 	response := builder.Respond(c)
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	username := c.Param("username")
 
@@ -218,7 +225,7 @@ func updateUser(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
@@ -228,17 +235,18 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }
 
 func deleteUser(c *gin.Context) {
-	var us services.UserService
-	var err error
 	response := builder.Respond(c)
 
-	if us, err = services.GetUserService(); shared.HandleError(response, err) {
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
 
 	username := c.Param("username")
 
@@ -246,7 +254,7 @@ func deleteUser(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Message("no user with username").Send()
+		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
@@ -254,5 +262,5 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user)).Send()
+	response.Data(view.FromUser(user))
 }

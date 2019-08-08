@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"strings"
@@ -42,13 +43,14 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	srv, err := services.GetOAuthService()
+	res := response.From(c)
 
-	res := response.Respond(c)
+	db, err := database.GetConnection()
 	if shared.HandleError(res, err) {
 		c.Abort()
-		return
 	}
+
+	srv := services.GetOAuth(db)
 
 	info, client, err := srv.GetByToken(cookie)
 

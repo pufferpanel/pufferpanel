@@ -18,7 +18,6 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"io"
 	"log"
@@ -37,75 +36,46 @@ var wsupgrader = websocket.Upgrader{
 	},
 }
 
-type NodeService interface {
-	GetAll() (*models.Nodes, error)
-
-	Get(id uint) (*models.Node, bool, error)
-
-	Update(model *models.Node) error
-
-	Delete(id uint) error
-
-	Create(node *models.Node) error
-
-	CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error)
-
-	OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error
+type Node struct {
+	DB *gorm.DB
 }
 
-type nodeService struct {
-	db *gorm.DB
-}
-
-func GetNodeService() (NodeService, error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return nil, err
-	}
-
-	service := &nodeService{
-		db: db,
-	}
-
-	return service, nil
-}
-
-func (ns *nodeService) GetAll() (*models.Nodes, error) {
+func (ns *Node) GetAll() (*models.Nodes, error) {
 	nodes := &models.Nodes{}
 
-	res := ns.db.Find(nodes)
+	res := ns.DB.Find(nodes)
 
 	return nodes, res.Error
 }
 
-func (ns *nodeService) Get(id uint) (*models.Node, bool, error) {
+func (ns *Node) Get(id uint) (*models.Node, bool, error) {
 	model := &models.Node{}
 
-	res := ns.db.FirstOrInit(model, id)
+	res := ns.DB.FirstOrInit(model, id)
 
 	return model, model.ID != 0, res.Error
 }
 
-func (ns *nodeService) Update(model *models.Node) error {
-	res := ns.db.Save(model)
+func (ns *Node) Update(model *models.Node) error {
+	res := ns.DB.Save(model)
 	return res.Error
 }
 
-func (ns *nodeService) Delete(id uint) error {
+func (ns *Node) Delete(id uint) error {
 	model := &models.Node{
 		ID: id,
 	}
 
-	res := ns.db.Delete(model)
+	res := ns.DB.Delete(model)
 	return res.Error
 }
 
-func (ns *nodeService) Create(node *models.Node) error {
-	res := ns.db.Create(node)
+func (ns *Node) Create(node *models.Node) error {
+	res := ns.DB.Create(node)
 	return res.Error
 }
 
-func (ns *nodeService) CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error) {
+func (ns *Node) CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error) {
 	fullUrl, err := createNodeURL(node, path)
 	if err != nil {
 		return nil, err
@@ -130,7 +100,7 @@ func (ns *nodeService) CallNode(node *models.Node, method string, path string, b
 	return response, err
 }
 
-func (ns *nodeService) OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error {
+func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseWriter, request *http.Request) error {
 	ssl, err := doesDaemonUseSSL(node)
 	if err != nil {
 		return err
@@ -159,8 +129,10 @@ func (ns *nodeService) OpenSocket(node *models.Node, path string, writer http.Re
 	}
 
 	go func(daemon *websocket.Conn, client *websocket.Conn) {
-		defer daemon.Close()
-		defer client.Close()
+		defer func() {
+			_ = daemon.Close()
+			_ = client.Close()
+		}()
 
 		ch := make(chan error)
 		go proxyRead(daemon, client, ch)

@@ -2,11 +2,11 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/logging"
 	builder "github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -30,15 +30,13 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
-	us, err := services.GetUserService()
-	if us == nil && err == nil {
-		err = errors.ErrServiceNotAvailable
-	}
-	if err != nil {
-		response.Fail().Status(400).Error(err)
-		logging.Build(logging.ERROR).WithMessage("error loading user service").WithError(err).Log()
+	db, err := database.GetConnection()
+	if shared.HandleError(response, err) {
 		return
 	}
+
+	us := &services.User{DB: db}
+	os := services.GetOAuth(db)
 
 	user := &models.User{Username: request.Data.Username, Email: request.Data.Email}
 	err = user.SetPassword(request.Data.Password)
@@ -48,12 +46,6 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	err = us.Create(user)
-	if err != nil {
-		response.Fail().Status(400).Error(err)
-		return
-	}
-
-	os, err := services.GetOAuthService()
 	if err != nil {
 		response.Fail().Status(400).Error(err)
 		return
