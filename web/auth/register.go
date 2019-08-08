@@ -11,10 +11,9 @@ import (
 )
 
 func RegisterPost(c *gin.Context) {
-	response := builder.Respond(c)
+	response := builder.From(c)
 	response.Fail()
 	response.Message("unknown error occurred")
-	defer response.Send()
 
 	request := &registerRequest{}
 	err := c.BindJSON(request)

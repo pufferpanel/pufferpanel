@@ -9,8 +9,7 @@ import (
 )
 
 func LoginPost(c *gin.Context) {
-	response := builder.Respond(c)
-	defer response.Send()
+	response := builder.From(c)
 
 	request := &loginRequest{}
 

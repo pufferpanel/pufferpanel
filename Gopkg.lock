@@ -268,15 +268,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:977803ea329f0a9668d4612401c091e8cadca6ce31a6e6c7e5a2c82318a58453"
+  digest = "1:a6853a3e93c0b8209abee020938c724ecb71da93cf1eade562c9fd9b601d4d47"
   name = "github.com/pufferpanel/apufferi"
   packages = [
     ".",
     "logging",
+    "middleware",
     "response",
   ]
   pruneopts = "UT"
-  revision = "950206c075c618bad3f66edd6fd42059f21b631b"
+  revision = "f930d3cb6457561310f22c88fd465589eebb7c0d"
 
 [[projects]]
   digest = "1:e09ada96a5a41deda4748b1659cc8953961799e798aea557257b56baee4ecaf3"
@@ -454,6 +455,7 @@
     "github.com/mailgun/mailgun-go",
     "github.com/pufferpanel/apufferi",
     "github.com/pufferpanel/apufferi/logging",
+    "github.com/pufferpanel/apufferi/middleware",
     "github.com/pufferpanel/apufferi/response",
     "github.com/satori/go.uuid",
     "github.com/spf13/cobra",

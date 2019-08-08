@@ -21,32 +21,32 @@ import (
 	"strings"
 )
 
-func NotImplemented (c *gin.Context) {
-	builder.Respond(c).Fail().Status(http.StatusNotImplemented).Message("not implemented").Send()
+func NotImplemented(c *gin.Context) {
+	builder.From(c).Fail().Status(http.StatusNotImplemented).Message("not implemented")
 }
 
 func CreateOptions(options ...string) gin.HandlerFunc {
-
-	replacement := make([]string, len(options) + 1)
+	replacement := make([]string, len(options)+1)
 
 	copy(replacement, options)
 
 	replacement[len(options)] = "OPTIONS"
 	response := strings.Join(replacement, ",")
 
-	return func (c *gin.Context) {
+	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", response)
 		c.Header("Access-Control-Allow-Headers", "authorization, origin, content-type, accept")
 		c.Header("Allow", response)
 		c.Header("Content-Type", "application/json")
+		builder.From(c).Discard()
 		c.AbortWithStatus(http.StatusOK)
 	}
 }
 
 func HandleError(response builder.Builder, err error) bool {
 	if err != nil {
-		response.Fail().Status(http.StatusInternalServerError).Error(err).Send()
+		response.Fail().Status(http.StatusInternalServerError).Error(err)
 		logging.Build(logging.ERROR).WithError(err).Log()
 		return true
 	}
