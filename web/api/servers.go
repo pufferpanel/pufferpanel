@@ -43,7 +43,7 @@ func registerServers(g *gin.RouterGroup) {
 func searchServers(c *gin.Context) {
 	var ss services.ServerService
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
 	username := c.DefaultQuery("username", "")
 	nodeQuery := c.DefaultQuery("node", "0")
@@ -53,7 +53,7 @@ func searchServers(c *gin.Context) {
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
 	if err != nil || pageSize <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
 		return
 	}
 
@@ -63,13 +63,13 @@ func searchServers(c *gin.Context) {
 
 	page, err := strconv.Atoi(pageQuery)
 	if err != nil || page <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
 		return
 	}
 
 	node, err := strconv.Atoi(nodeQuery)
 	if err != nil || page <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("node id is invalid").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("node id is invalid")
 		return
 	}
 
@@ -81,7 +81,7 @@ func searchServers(c *gin.Context) {
 	os, _ := services.GetOAuthService()
 	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view");
 	if !allowed {
-		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]view.ServerViewModel, 0)).Send()
+		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]view.ServerViewModel, 0))
 		return
 	}
 
@@ -100,11 +100,11 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.RemoveServerPrivateInfoFromAll(view.FromServers(results))).Send()
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.RemoveServerPrivateInfoFromAll(view.FromServers(results)))
 }
 
 func getServer(c *gin.Context) {
-	response := builder.Respond(c)
+	response := builder.From(c)
 
 	t, exist := c.Get("server")
 
@@ -118,14 +118,14 @@ func getServer(c *gin.Context) {
 		shared.HandleError(response, errors.ErrServerNotFound)
 	}
 
-	response.Data(view.RemoveServerPrivateInfo(view.FromServer(server))).Send()
+	response.Data(view.RemoveServerPrivateInfo(view.FromServer(server)))
 }
 
 func createServer(c *gin.Context) {
 	var ss services.ServerService
 	var ns services.NodeService
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -136,7 +136,7 @@ func createServer(c *gin.Context) {
 	err = c.Bind(&postBody)
 	postBody.Identifier = serverId
 	if err != nil {
-		response.Status(http.StatusBadRequest).Error(err).Fail().Send()
+		response.Status(http.StatusBadRequest).Error(err).Fail()
 		return
 	}
 
@@ -155,7 +155,7 @@ func createServer(c *gin.Context) {
 	}
 
 	if !exists {
-		response.Status(http.StatusBadRequest).Message("no node with given id").Fail().Send()
+		response.Status(http.StatusBadRequest).Message("no node with given id").Fail()
 	}
 
 	server := &models.Server{}
@@ -165,18 +165,20 @@ func createServer(c *gin.Context) {
 
 	err = ss.Create(server, postBody.Data)
 	if err != nil {
-		response.Status(http.StatusInternalServerError).Error(err).Fail().Send()
+		response.Status(http.StatusInternalServerError).Error(err).Fail()
 		return
 	}
 
+	//nodeResponse, err := ns.CallNode(node, "PUT", "/server/" + server.Identifier)
+
 	postBody.Data = nil
-	response.Data(postBody).Send()
+	response.Data(postBody)
 }
 
 func deleteServer(c *gin.Context) {
 	var ss services.ServerService
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
 	if ss, err = services.GetServerService(); shared.HandleError(response, err) {
 		return
@@ -199,7 +201,7 @@ func deleteServer(c *gin.Context) {
 		return
 	} else {
 		v := view.FromServer(server)
-		response.Status(http.StatusOK).Data(v).Send()
+		response.Status(http.StatusOK).Data(v)
 	}
 }
 

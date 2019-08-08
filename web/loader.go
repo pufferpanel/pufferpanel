@@ -15,6 +15,7 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi/middleware"
 	"github.com/pufferpanel/pufferpanel/web/api"
 	"github.com/pufferpanel/pufferpanel/web/auth"
 	"github.com/pufferpanel/pufferpanel/web/daemon"
@@ -29,6 +30,10 @@ const IndexFile = ClientPath + "/index.html"
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/"}
 
 func RegisterRoutes(e *gin.Engine) {
+	e.Use(func(c *gin.Context) {
+		middleware.Recover(c)
+	})
+
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))

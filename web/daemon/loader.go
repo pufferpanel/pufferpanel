@@ -30,11 +30,11 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 }
 
 func proxyServerRequest(c *gin.Context) {
-	res := response.Respond(c)
+	res := response.From(c)
 
 	serverId := c.Param("id")
 	if serverId == "" {
-		c.AbortWithStatus(404)
+		res.Fail().Status(404)
 		return
 	}
 
@@ -60,7 +60,7 @@ func proxyServerRequest(c *gin.Context) {
 	if err != nil && !gorm.IsRecordNotFoundError(err) && shared.HandleError(res, err) {
 		return
 	} else if !exists || server == nil {
-		response.Respond(c).Status(netHttp.StatusNotFound).Fail().Send()
+		res.Status(netHttp.StatusNotFound).Fail()
 		return
 	}
 
@@ -74,11 +74,11 @@ func proxyServerRequest(c *gin.Context) {
 func proxyNodeRequest(c *gin.Context) {
 	path := c.Param("path")
 
-	res := response.Respond(c)
+	res := response.From(c)
 
 	nodeId := c.Param("id")
 	if nodeId == "" {
-		c.AbortWithStatus(404)
+		res.Status(404).Fail()
 		return
 	}
 
@@ -99,7 +99,7 @@ func proxyNodeRequest(c *gin.Context) {
 	if shared.HandleError(res, err) {
 		return
 	} else if !exists {
-		c.AbortWithStatus(404)
+		res.Fail().Status(404)
 		return
 	}
 
@@ -116,7 +116,7 @@ func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, node
 	//this only will throw an error if we can't get to the node
 	//so if error, use our response messenger, otherwise copy response from node to client
 	if err != nil {
-		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Error(err).Send()
+		response.From(c).Status(netHttp.StatusInternalServerError).Fail().Error(err)
 		return
 	}
 
@@ -133,6 +133,7 @@ func proxyHttpRequest(c *gin.Context, path string, ns services.NodeService, node
 		}
 	}
 
+	response.From(c).Discard()
 	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
 }
 
@@ -140,7 +141,8 @@ func proxySocketRequest(c *gin.Context, path string, ns services.NodeService, no
 	err := ns.OpenSocket(node, path, c.Writer, c.Request)
 	if err != nil {
 		logging.Exception("error opening socket", err)
-		response.Respond(c).Status(netHttp.StatusInternalServerError).Fail().Error(err).Send()
+		response.From(c).Status(netHttp.StatusInternalServerError).Fail().Error(err)
 		return
 	}
+	response.From(c).Discard()
 }

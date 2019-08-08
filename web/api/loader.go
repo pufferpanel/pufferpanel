@@ -13,12 +13,18 @@
 
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi/middleware"
+)
 
 const MaxPageSize = 100
 const DefaultPageSize = 20
 
 func RegisterRoutes(rg *gin.RouterGroup) {
+	rg.Use(func(c *gin.Context) {
+		middleware.ResponseAndRecover(c)
+	})
 	registerNodes(rg.Group("/nodes"))
 	registerServers(rg.Group("/servers"))
 	registerUsers(rg.Group("/users"))
