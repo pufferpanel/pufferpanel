@@ -83,7 +83,7 @@ func (ss *Server) Delete(id uint) error {
 	return res.Error
 }
 
-func (ss *Server) Create(model *models.Server, serverData interface{}) (err error) {
+func (ss *Server) Create(model *models.Server) (err error) {
 	uuid := uuid2.NewV4()
 	generatedId := strings.ToUpper(uuid.String())[0:8]
 	model.Identifier = generatedId

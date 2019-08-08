@@ -14,7 +14,10 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi"
 	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
@@ -24,6 +27,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"github.com/satori/go.uuid"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -146,8 +150,17 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	ss := &services.Server{DB: db}
-	ns := &services.Node{DB: db}
+	//time for a transaction!
+	trans := db.Begin()
+	success := false
+	defer func() {
+		if !success {
+			trans.Rollback()
+		}
+	}()
+
+	ss := &services.Server{DB: trans}
+	ns := &services.Node{DB: trans}
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
@@ -164,16 +177,40 @@ func createServer(c *gin.Context) {
 
 	server.NodeID = node.ID
 
-	err = ss.Create(server, postBody.Data)
+	err = ss.Create(server)
 	if err != nil {
 		response.Status(http.StatusInternalServerError).Error(err).Fail()
 		return
 	}
 
-	//nodeResponse, err := ns.CallNode(node, "PUT", "/server/" + server.Identifier)
+	apiServer := apufferi.Server{
+		Variables:      nil,
+		Display:        "",
+		Environment:    apufferi.TypeWithMetadata{},
+		Installation:   nil,
+		Uninstallation: nil,
+		Type:           "",
+		Identifier:     "",
+		Execution:      apufferi.Execution{},
+	}
+
+	data, _ := json.Marshal(apiServer)
+	reader := newFakeReader(data)
+	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, nil)
+
+	if shared.HandleError(response, err) {
+		return
+	}
+
+	if nodeResponse.StatusCode != http.StatusOK {
+		return
+	}
 
 	postBody.Data = nil
-	response.Data(postBody)
+	response.Data(node)
+
+	trans.Commit()
+	success = true
 }
 
 func deleteServer(c *gin.Context) {
@@ -214,4 +251,21 @@ func getServerUsers(c *gin.Context) {
 
 func editServerUsers(c *gin.Context) {
 
+}
+
+//This class exists
+type fakeReader struct {
+	reader io.Reader
+}
+
+func newFakeReader(data []byte) *fakeReader {
+	return &fakeReader{reader: bytes.NewReader(data)}
+}
+
+func (fr *fakeReader) Read(p []byte) (int, error) {
+	return fr.reader.Read(p)
+}
+
+func (fr *fakeReader) Close() error {
+	return nil
 }
