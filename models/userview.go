@@ -1,28 +1,40 @@
-package view
+/*
+ Copyright 2019 Padduck, LLC
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  	http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/errors"
-	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
 )
 
-type UserViewModel struct {
+type UserView struct {
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
 	Password string `json:"password,omitempty"`
 }
 
-func FromUser(model *models.User) *UserViewModel {
-	return &UserViewModel{
+func FromUser(model *User) *UserView {
+	return &UserView{
 		Username: model.Username,
 		Email:    model.Email,
 	}
 }
 
-func FromUsers(users *models.Users) []*UserViewModel {
-	result := make([]*UserViewModel, len(*users))
+func FromUsers(users *Users) []*UserView {
+	result := make([]*UserView, len(*users))
 
 	for k, v := range *users {
 		result[k] = FromUser(v)
@@ -31,7 +43,7 @@ func FromUsers(users *models.Users) []*UserViewModel {
 	return result
 }
 
-func (model *UserViewModel) CopyToModel(newModel *models.User) {
+func (model *UserView) CopyToModel(newModel *User) {
 	if model.Username != "" {
 		newModel.Username = model.Username
 	}
@@ -41,11 +53,11 @@ func (model *UserViewModel) CopyToModel(newModel *models.User) {
 	}
 
 	if model.Password != "" {
-		newModel.SetPassword(model.Password)
+		_ = newModel.SetPassword(model.Password)
 	}
 }
 
-func (model *UserViewModel) Valid(allowEmpty bool) error {
+func (model *UserView) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(model.Username, "required") != nil {

@@ -18,7 +18,6 @@ import (
 	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
@@ -59,7 +58,7 @@ func getAllNodes(c *gin.Context) {
 		return
 	}
 
-	data := view.FromNodes(nodes)
+	data := models.FromNodes(nodes)
 
 	response.Data(data)
 }
@@ -84,11 +83,11 @@ func getNode(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Send()
+		response.Fail().Status(http.StatusNotFound)
 		return
 	}
 
-	data := view.FromNode(node)
+	data := models.FromNode(node)
 
 	response.Data(data)
 }
@@ -104,8 +103,8 @@ func createNode(c *gin.Context) {
 
 	ns := &services.Node{DB: db}
 
-	model := view.NodeViewModel{}
-	if err = c.BindJSON(&model); shared.HandleError(response, err) {
+	model := &models.NodeView{}
+	if err = c.BindJSON(model); shared.HandleError(response, err) {
 		return
 	}
 
@@ -133,7 +132,7 @@ func updateNode(c *gin.Context) {
 
 	ns := &services.Node{DB: db}
 
-	viewModel := &view.NodeViewModel{}
+	viewModel := &models.NodeView{}
 	if err = c.BindJSON(viewModel); shared.HandleError(response, err) {
 		return
 	}
@@ -151,7 +150,7 @@ func updateNode(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else if !exists {
-		response.Fail().Status(http.StatusNotFound).Send()
+		response.Fail().Status(http.StatusNotFound)
 		return
 	}
 
@@ -160,7 +159,7 @@ func updateNode(c *gin.Context) {
 		return
 	}
 
-	response.Data(node).Send()
+	response.Data(node)
 }
 
 func deleteNode(c *gin.Context) {
@@ -201,7 +200,7 @@ func validateId(c *gin.Context, response builder.Builder) (uint, bool) {
 	id, err := strconv.Atoi(param)
 
 	if err != nil || id <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number").Send()
+		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number")
 		return 0, false
 	}
 

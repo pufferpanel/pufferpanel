@@ -5,7 +5,6 @@ import (
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/pufferpanel/pufferpanel/models/view"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/satori/go.uuid"
 	oauth "gopkg.in/oauth2.v3"
@@ -62,7 +61,7 @@ func (oauth2 *OAuth) ValidationBearerToken(r *http.Request) (ti oauth.TokenInfo,
 	return oauth2.server.ValidationBearerToken(r)
 }
 
-func (oauth2 *OAuth) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, valid bool, err error) {
+func (oauth2 *OAuth) GetInfo(token string) (info *models.TokenInfoView, valid bool, err error) {
 	tokenInfo, client, err := oauth2.GetByToken(token)
 
 	if tokenInfo == nil || client == nil {
@@ -70,7 +69,7 @@ func (oauth2 *OAuth) GetInfo(token string) (info *view.OAuthTokenInfoViewModel, 
 	}
 
 	//see if the access token expiration is after now
-	info = view.FromTokenInfo(tokenInfo, client)
+	info = models.FromTokenInfo(tokenInfo, client)
 	valid = oauth2.HasTokenExpired(tokenInfo)
 	return
 }
