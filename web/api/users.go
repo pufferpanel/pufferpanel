@@ -19,7 +19,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
@@ -79,7 +78,7 @@ func searchUsers(c *gin.Context) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.FromUsers(results))
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.FromUsers(results))
 }
 
 func createUser(c *gin.Context) {
@@ -93,7 +92,7 @@ func createUser(c *gin.Context) {
 
 	us := &services.User{DB: db}
 
-	var viewModel view.UserViewModel
+	var viewModel models.UserView
 	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
 		return
 	}
@@ -115,7 +114,7 @@ func createUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }
 
 func getUser(c *gin.Context) {
@@ -138,7 +137,7 @@ func getUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }
 
 func getSelf(c *gin.Context) {
@@ -152,7 +151,7 @@ func getSelf(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }
 
 func updateSelf(c *gin.Context) {
@@ -173,7 +172,7 @@ func updateSelf(c *gin.Context) {
 		return
 	}
 
-	var viewModel view.UserViewModel
+	var viewModel models.UserView
 	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
 		return
 	}
@@ -197,7 +196,7 @@ func updateSelf(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }
 
 func updateUser(c *gin.Context) {
@@ -212,7 +211,7 @@ func updateUser(c *gin.Context) {
 
 	username := c.Param("username")
 
-	var viewModel view.UserViewModel
+	var viewModel models.UserView
 	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
 		return
 	}
@@ -235,7 +234,7 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }
 
 func deleteUser(c *gin.Context) {
@@ -262,5 +261,5 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
-	response.Data(view.FromUser(user))
+	response.Data(models.FromUser(user))
 }

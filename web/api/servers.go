@@ -18,17 +18,18 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi"
+	"github.com/pufferpanel/apufferi/logging"
 	builder "github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/pufferpanel/pufferpanel/models/view"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"github.com/satori/go.uuid"
 	"io"
 	"net/http"
+	"reflect"
 	"strconv"
 )
 
@@ -86,9 +87,9 @@ func searchServers(c *gin.Context) {
 	os := services.GetOAuth(db)
 
 	//see if user has access to view all others, otherwise we can't permit search without their username
-	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view");
+	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view")
 	if !allowed {
-		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]view.ServerViewModel, 0))
+		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
 		return
 	}
 
@@ -107,7 +108,7 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(view.RemoveServerPrivateInfoFromAll(view.FromServers(results)))
+	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.RemoveServerPrivateInfoFromAll(models.FromServers(results)))
 }
 
 func getServer(c *gin.Context) {
@@ -125,7 +126,7 @@ func getServer(c *gin.Context) {
 		shared.HandleError(response, errors.ErrServerNotFound)
 	}
 
-	response.Data(view.RemoveServerPrivateInfo(view.FromServer(server)))
+	response.Data(models.RemoveServerPrivateInfo(models.FromServer(server)))
 }
 
 func createServer(c *gin.Context) {
@@ -137,8 +138,8 @@ func createServer(c *gin.Context) {
 		serverId = uuid.NewV4().String()[:8]
 	}
 
-	postBody := view.ServerViewModel{}
-	err = c.Bind(&postBody)
+	postBody := &serverCreation{}
+	err = c.Bind(postBody)
 	postBody.Identifier = serverId
 	if err != nil {
 		response.Status(http.StatusBadRequest).Error(err).Fail()
@@ -172,10 +173,14 @@ func createServer(c *gin.Context) {
 		response.Status(http.StatusBadRequest).Message("no node with given id").Fail()
 	}
 
-	server := &models.Server{}
-	postBody.CopyToModel(server)
-
-	server.NodeID = node.ID
+	server := &models.Server{
+		Name:       getFromDataOrDefault(postBody.Variables, "name", "No Name").(string),
+		Identifier: postBody.Identifier,
+		NodeID:     node.ID,
+		IP:         getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0").(string),
+		Port:       getFromDataOrDefault(postBody.Variables, "ip", uint(0)).(uint),
+		Type:       postBody.Type,
+	}
 
 	err = ss.Create(server)
 	if err != nil {
@@ -183,18 +188,7 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	apiServer := apufferi.Server{
-		Variables:      nil,
-		Display:        "",
-		Environment:    apufferi.TypeWithMetadata{},
-		Installation:   nil,
-		Uninstallation: nil,
-		Type:           "",
-		Identifier:     "",
-		Execution:      apufferi.Execution{},
-	}
-
-	data, _ := json.Marshal(apiServer)
+	data, _ := json.Marshal(postBody.Server)
 	reader := newFakeReader(data)
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, nil)
 
@@ -206,8 +200,20 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	postBody.Data = nil
-	response.Data(node)
+	apiResponse := &builder.Response{}
+	err = json.NewDecoder(nodeResponse.Body).Decode(apiResponse)
+
+	if shared.HandleError(response, err) {
+		return
+	}
+
+	if !apiResponse.Success {
+		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(apiResponse).Log()
+		shared.HandleError(response, errors.ErrUnknownError)
+		return
+	}
+
+	response.Data(server.Identifier)
 
 	trans.Commit()
 	success = true
@@ -240,7 +246,7 @@ func deleteServer(c *gin.Context) {
 	if shared.HandleError(response, err) {
 		return
 	} else {
-		v := view.FromServer(server)
+		v := models.FromServer(server)
 		response.Status(http.StatusOK).Data(v)
 	}
 }
@@ -268,4 +274,32 @@ func (fr *fakeReader) Read(p []byte) (int, error) {
 
 func (fr *fakeReader) Close() error {
 	return nil
+}
+
+type serverCreation struct {
+	apufferi.Server
+
+	NodeId uint `json:"node"`
+}
+
+func getFromData(variables map[string]apufferi.Variable, key string) interface{} {
+	for k, v := range variables {
+		if k == key {
+			return v.Value
+		}
+	}
+	return nil
+}
+
+//this will enforce whatever the type val is defined as will be what is returned
+func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, val interface{}) interface{} {
+	res := getFromData(variables, key)
+
+	if res != nil {
+		if reflect.TypeOf(val).AssignableTo(reflect.TypeOf(res)) {
+			return res
+		}
+	}
+
+	return val
 }

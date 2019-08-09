@@ -41,3 +41,4 @@ func (u *User) BeforeSave() (err error) {
 	err = u.IsValid()
 	return
 }
+

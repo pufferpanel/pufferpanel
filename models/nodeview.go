@@ -1,13 +1,25 @@
-package view
+/*
+ Copyright 2019 Padduck, LLC
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  	http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/errors"
-	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
 )
 
-type NodeViewModel struct {
+type NodeView struct {
 	Id          uint   `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"`
 	PublicHost  string `json:"publicHost,omitempty"`
@@ -17,8 +29,8 @@ type NodeViewModel struct {
 	SFTPPort    uint   `json:"sftpPort,omitempty"`
 }
 
-func FromNode(n *models.Node) *NodeViewModel {
-	return &NodeViewModel{
+func FromNode(n *Node) *NodeView {
+	return &NodeView{
 		Id:          n.ID,
 		Name:        n.Name,
 		PublicHost:  n.PublicHost,
@@ -29,8 +41,8 @@ func FromNode(n *models.Node) *NodeViewModel {
 	}
 }
 
-func FromNodes(n *models.Nodes) []*NodeViewModel {
-	result := make([]*NodeViewModel, len(*n))
+func FromNodes(n *Nodes) []*NodeView {
+	result := make([]*NodeView, len(*n))
 
 	for k, v := range *n {
 		result[k] = FromNode(v)
@@ -39,7 +51,7 @@ func FromNodes(n *models.Nodes) []*NodeViewModel {
 	return result
 }
 
-func (n *NodeViewModel) CopyToModel(newModel *models.Node) {
+func (n *NodeView) CopyToModel(newModel *Node) {
 	if n.Name != "" {
 		newModel.Name = n.Name
 	}
@@ -65,7 +77,7 @@ func (n *NodeViewModel) CopyToModel(newModel *models.Node) {
 	}
 }
 
-func (n *NodeViewModel) Valid(allowEmpty bool) error {
+func (n *NodeView) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(n.Name, "required") != nil {
