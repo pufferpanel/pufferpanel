@@ -12,7 +12,7 @@ type Server struct {
 	Identifier string `gorm:"UNIQUE_INDEX;NOT NULL;size:8" json:"-"`
 
 	NodeID uint `gorm:"NOT NULL" json:"-"`
-	Node   Node `gorm:"association_autoupdate:false" json:"-"`
+	Node   Node `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	IP   string `gorm:"" json:"-"`
 	Port uint   `gorm:"" json:"-"`
