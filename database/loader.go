@@ -55,7 +55,7 @@ func openConnection() (err error) {
 	if dialect == "mysql" {
 		connString = addConnectionSetting(connString, "charset=utf8")
 		connString = addConnectionSetting(connString, "parseTime=true")
-	} else if dialect == "sqlite3"{
+	} else if dialect == "sqlite3" {
 		connString = addConnectionSetting(connString, "_loc=auto")
 	}
 
@@ -95,6 +95,7 @@ func migrateModels() (err error) {
 		&models.ClientInfo{},
 		&models.ClientServerScopes{},
 		&models.TokenInfo{},
+		&models.Template{},
 	}
 
 	for _, v := range dbObjects {

@@ -97,9 +97,6 @@ export default {
     }
   },
   watch: {
-    selectedNode: function (newVal, oldVal) {
-      this.getTemplates()
-    },
     selectedTemplate: function (newVal, oldVal) {
       this.formData = this.templateData[newVal].data
     }
@@ -120,7 +117,7 @@ export default {
       }]
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/daemon/node/' + this.selectedNode + '/templates').then(function (res) {
+      this.$http.get('/api/templates').then(function (res) {
         let response = res.data
         if (response.success) {
           vue.templates = [{
@@ -144,38 +141,42 @@ export default {
           vue.loadingTemplates = false
         }
       })
+    },
+    getNodes () {
+      let vue = this
+      this.$http.get('/api/nodes').then(function (res) {
+        let callResult = res.data
+        if (callResult.success) {
+          for (let i = 0; i < callResult.data.length; i++) {
+            let node = callResult.data[i]
+            vue.nodes = [{
+              value: null,
+              disabled: true,
+              text: vue.$t('common.SelectNode')
+            }]
+            vue.nodes.push({
+              value: node.id,
+              text: node.name
+            })
+          }
+
+          if (vue.nodes.length === 2) {
+            vue.selectedNode = vue.nodes[1].value
+          }
+
+          vue.loadingNodes = false
+        }
+      })
     }
   },
   mounted () {
-    let vue = this
     this.nodes = [{
       value: null,
       disabled: true,
       text: this.$t('common.Loading')
     }]
-    this.$http.get('/api/nodes').then(function (res) {
-      let callResult = res.data
-      if (callResult.success) {
-        for (let i = 0; i < callResult.data.length; i++) {
-          let node = callResult.data[i]
-          vue.nodes = [{
-            value: null,
-            disabled: true,
-            text: vue.$t('common.SelectNode')
-          }]
-          vue.nodes.push({
-            value: node.id,
-            text: node.name
-          })
-        }
-
-        if (vue.nodes.length === 2) {
-          vue.selectedNode = vue.nodes[1].value
-        }
-
-        vue.loadingNodes = false
-      }
-    })
+    this.getTemplates()
+    this.getNodes()
   }
 }
 </script>

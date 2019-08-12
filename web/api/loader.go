@@ -28,4 +28,5 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 	registerNodes(rg.Group("/nodes"))
 	registerServers(rg.Group("/servers"))
 	registerUsers(rg.Group("/users"))
+	registerTemplates(rg.Group("/templates"))
 }
