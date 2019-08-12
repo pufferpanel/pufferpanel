@@ -15,7 +15,8 @@
   <b-container>
     <b-card header-tag="header" footer-tag="footer">
       <h6 slot="header" class="mb-0"><span v-text="$t('common.AddServer')"></span></h6>
-      <b-btn slot="footer" variant="primary" :disabled="!canCreate" v-text="$t('common.Create')"></b-btn>
+      <b-btn slot="footer" variant="primary" :disabled="!canCreate" v-on:click="submitCreate"
+             v-text="$t('common.Create')"></b-btn>
       <b-card-text>
         <b-row>
           <b-col sm="12" md="10">
@@ -65,7 +66,7 @@
                                     :required="item.required"></b-form-input>
                       <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
                                        :required="item.required"></b-form-checkbox>
-                      <b-form-select v-else-if="item.type === 'option'" :options="item.options">
+                      <b-form-select v-else-if="item.type === 'option'" :options="item.options" v-model="item.value">
                       </b-form-select>
                       <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
                     </b-card-text>
@@ -103,7 +104,25 @@ export default {
   },
   computed: {
     canCreate: function () {
-      return !this.loadingTemplates && !this.loadingNodes
+      if (this.loadingTemplates || this.loadingNodes) {
+        return false
+      }
+
+      if (!this.selectedTemplate) {
+        return false
+      }
+
+      for (let k in this.templateData[this.selectedTemplate].data) {
+        let data = this.templateData[this.selectedTemplate].data[k]
+        if (data.type === 'boolean') {
+          continue
+        }
+        if (data.required && !data.value) {
+          return false
+        }
+      }
+
+      return true
     }
   },
   methods: {
@@ -167,6 +186,16 @@ export default {
           vue.loadingNodes = false
         }
       })
+    },
+    submitCreate () {
+      let vue = this
+      let data = this.templateData[this.selectedTemplate]
+      data.node = this.selectedNode
+      this.$http.post('/api/servers', data).then(function (response) {
+        console.log(response)
+      }).catch(function (response) {
+        console.log(response)
+      })
     }
   },
   mounted () {
@@ -180,7 +209,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

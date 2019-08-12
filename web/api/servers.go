@@ -201,6 +201,8 @@ func createServer(c *gin.Context) {
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
+		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(nodeResponse.StatusCode).Log()
+		shared.HandleError(response, errors.ErrUnknownError)
 		return
 	}
 
