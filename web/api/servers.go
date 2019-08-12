@@ -190,7 +190,11 @@ func createServer(c *gin.Context) {
 
 	data, _ := json.Marshal(postBody.Server)
 	reader := newFakeReader(data)
-	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, nil)
+
+	headers := http.Header{}
+	headers.Set("Authorization", c.GetHeader("Authorization"))
+
+	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
 
 	if shared.HandleError(response, err) {
 		return
