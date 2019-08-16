@@ -12,10 +12,10 @@ type ClientInfo struct {
 	User     User   `gorm:"save_associations:false" json:"-"`
 	Panel    bool   `gorm:"NOT NULL; DEFAULT:0"`
 
-	ServerScopes []ClientServerScopes `gorm:"save_associations:false" json:"-"`
+	ServerScopes []ClientServerScopes `gorm:"save_associations:false preload:false" json:"-"`
 }
 
-type ClientInfos []ClientInfo
+type ClientInfos []*ClientInfo
 
 type ClientServerScopes struct {
 	ID           uint   `json:"-"`
@@ -53,7 +53,7 @@ func (ci *ClientInfo) MergeServers() (map[string][]string, []string) {
 		temp = append(temp, v.Scope)
 
 		mapping[v.Server.Identifier] = temp
-		plain = append(plain, v.Server.Identifier + ":" + v.Scope)
+		plain = append(plain, v.Server.Identifier+":"+v.Scope)
 	}
 
 	return mapping, plain

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/pufferpanel/errors"
@@ -76,6 +77,11 @@ func (oauth2 *OAuth) GetInfo(token string) (info *models.TokenInfoView, valid bo
 
 func (oauth2 *OAuth) Create(user *models.User, server *models.Server, clientId string, panel bool, scopes ...string) (clientSecret string, err error) {
 	clientSecret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
+
+	if clientId == "" {
+		panel = true
+		clientId = fmt.Sprintf("internal_%d_%d", user.ID, server.ID)
+	}
 
 	ci := &models.ClientInfo{
 		ClientID: clientId,
@@ -273,6 +279,30 @@ func (oauth2 *OAuth) GetByUser(user *models.User) (client *models.ClientInfo, ex
 	return model, model.ID != 0, res.Error
 }
 
+func (oauth2 *OAuth) GetByScope(scope string, userId, serverId *uint, internal bool) (*models.ClientInfos, error) {
+	model := &models.ClientInfos{}
+
+	query := oauth2.DB.Set("gorm:auto_preload", true)
+
+	scopes := &models.ClientServerScopes{Scope: scope}
+	query = query.Where(scopes).Model(scopes)
+
+	if serverId != nil {
+		query = query.Where(&models.Server{ID: *serverId})
+	}
+	if userId != nil {
+		query = query.Where(&models.User{ID: *userId})
+	}
+
+	err := query.Find(scopes).Error
+	if err != nil {
+		return model, err
+	}
+
+	res := oauth2.DB.Set("gorm:auto_preload", true).Model(scopes).Where("panel = true").Related(model)
+	return model, res.Error
+}
+
 func (oauth2 *OAuth) HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error) {
 	ts := o2.TokenStore{}
 
@@ -378,4 +408,18 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 	}
 
 	return ti.Access, err
+}
+
+func GetDefaultUserServerScopes() []string {
+	return []string{
+		"servers.view",
+		"servers.console",
+		"servers.stop",
+		"servers.start",
+		"servers.kill",
+		"servers.stats",
+		"servers.files",
+		"servers.files.get",
+		"servers.files.put",
+	}
 }
