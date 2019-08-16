@@ -162,6 +162,8 @@ func createServer(c *gin.Context) {
 
 	ss := &services.Server{DB: trans}
 	ns := &services.Node{DB: trans}
+	os := services.GetOAuth(trans)
+	us := &services.User{DB: trans}
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
@@ -174,18 +176,48 @@ func createServer(c *gin.Context) {
 	}
 
 	server := &models.Server{
-		Name:       getFromDataOrDefault(postBody.Variables, "name", "No Name").(string),
+		Name:       getFromDataOrDefault(postBody.Variables, "name", postBody.Identifier).(string),
 		Identifier: postBody.Identifier,
 		NodeID:     node.ID,
 		IP:         getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0").(string),
-		Port:       getFromDataOrDefault(postBody.Variables, "ip", uint(0)).(uint),
+		Port:       getFromDataOrDefault(postBody.Variables, "port", uint(0)).(uint),
 		Type:       postBody.Type,
+	}
+
+	users := make([]*models.User, len(postBody.Users))
+
+	for k, v := range postBody.Users {
+		user, exists, err := us.Get(v)
+		if shared.HandleError(response, err) {
+			return
+		}
+		if !exists {
+			shared.HandleError(response, errors.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
+			return
+		}
+
+		users[k] = user
+	}
+
+	admins, err := os.GetByScope("servers.admin", nil, nil, true)
+	if shared.HandleError(response, err) {
+		return
+	}
+	for _, v := range *admins {
+		users = append(users, &v.User)
 	}
 
 	err = ss.Create(server)
 	if err != nil {
 		response.Status(http.StatusInternalServerError).Error(err).Fail()
 		return
+	}
+
+	for _, v := range users {
+		_, err := os.Create(v, server, "", true, services.GetDefaultUserServerScopes()...)
+		if shared.HandleError(response, err) {
+			return
+		}
 	}
 
 	data, _ := json.Marshal(postBody.Server)
@@ -285,7 +317,8 @@ func (fr *fakeReader) Close() error {
 type serverCreation struct {
 	apufferi.Server
 
-	NodeId uint `json:"node"`
+	NodeId uint     `json:"node"`
+	Users  []string `json:"users"`
 }
 
 func getFromData(variables map[string]apufferi.Variable, key string) interface{} {
