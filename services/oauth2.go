@@ -283,24 +283,24 @@ func (oauth2 *OAuth) GetByScope(scope string, userId, serverId *uint, internal b
 	model := &models.ClientInfos{}
 
 	query := oauth2.DB.Set("gorm:auto_preload", true)
+	query = query.Joins("JOIN client_server_scopes ON client_server_scopes.client_info_id = client_infos.id")
 
 	scopes := &models.ClientServerScopes{Scope: scope}
-	query = query.Where(scopes).Model(scopes)
-
 	if serverId != nil {
+		query = query.Joins("JOIN servers ON servers.id = client_server_scopes.server_id")
 		query = query.Where(&models.Server{ID: *serverId})
 	}
 	if userId != nil {
+		query = query.Joins("JOIN users ON users.id = client_infos.user_id")
 		query = query.Where(&models.User{ID: *userId})
 	}
 
-	err := query.Find(scopes).Error
+	err := query.Where(scopes).Find(model).Error
 	if err != nil {
-		return model, err
+		return nil, err
 	}
 
-	res := oauth2.DB.Set("gorm:auto_preload", true).Model(scopes).Where("panel = true").Related(model)
-	return model, res.Error
+	return model, err
 }
 
 func (oauth2 *OAuth) HasRights(accessToken string, serverId *uint, scope string) (client *models.ClientInfo, allowed bool, err error) {
