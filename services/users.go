@@ -134,7 +134,7 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 	res := query.Find(users)
 
 	var count uint
-	err := query.Count(&count).Error
+	err := query.Model(users).Count(&count).Error
 
 	if err != nil {
 		return nil, 0, err
