@@ -47,6 +47,10 @@
             <b-card header-tag="header">
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Users')"></span></h6>
               <b-card-text>
+                <b-form-input v-model="userInput"></b-form-input>
+
+                <b-form-select :disabled="searchingUsers" id="userSelect" v-model="selectedUser"
+                               :options="users"></b-form-select>
               </b-card-text>
             </b-card>
           </b-col>
@@ -82,6 +86,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+
+const CancelToken = axios.CancelToken
+
 export default {
   data () {
     return {
@@ -94,12 +102,21 @@ export default {
       readme: '',
 
       loadingNodes: true,
-      loadingTemplates: true
+      loadingTemplates: true,
+
+      searchingUsers: true,
+      users: [],
+      selectedUser: null,
+      userInput: '',
+      userCancelSearch: CancelToken.source()
     }
   },
   watch: {
     selectedTemplate: function (newVal, oldVal) {
       this.formData = this.templateData[newVal].data
+    },
+    userInput: function (newVal, oldVal) {
+      this.findUsers(newVal)
     }
   },
   computed: {
@@ -109,6 +126,10 @@ export default {
       }
 
       if (!this.selectedTemplate) {
+        return false
+      }
+
+      if (!this.selectedUser) {
         return false
       }
 
@@ -187,12 +208,39 @@ export default {
         }
       })
     },
+    findUsers () {
+      let vue = this
+      this.userCancelSearch.cancel()
+      this.userCancelSearch = CancelToken.source()
+      this.searchingUsers = true
+      this.users = []
+      this.$http.post('/api/users', {
+        username: this.userInput + '*'
+      }, {
+        cancelToken: this.userCancelSearch.token
+      }).then(function (response) {
+        let msg = response.data
+        if (msg.success) {
+          for (let i = 0; i < msg.data.length; i++) {
+            let user = msg.data[i]
+            vue.users.push({
+              value: user.username,
+              text: user.username + ' <' + user.email + '>'
+            })
+          }
+        }
+        vue.searchingUsers = false
+      })
+    },
     submitCreate () {
       let vue = this
       let data = this.templateData[this.selectedTemplate]
       data.node = this.selectedNode
       this.$http.post('/api/servers', data).then(function (response) {
-        console.log(response)
+        let msg = response.data
+        if (msg.success) {
+          vue.$router.push({ name: 'Server', params: { id: msg.data.id } })
+        }
       }).catch(function (response) {
         console.log(response)
       })

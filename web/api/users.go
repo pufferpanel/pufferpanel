@@ -23,7 +23,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"net/http"
-	"strconv"
 )
 
 func registerUsers(g *gin.RouterGroup) {
@@ -42,25 +41,23 @@ func registerUsers(g *gin.RouterGroup) {
 
 func searchUsers(c *gin.Context) {
 	var err error
-	response := builder.Respond(c)
+	response := builder.From(c)
 
-	usernameFilter := c.DefaultQuery("username", "*")
-	emailFilter := c.DefaultQuery("email", "*")
-	pageSizeQuery := c.DefaultQuery("limit", strconv.Itoa(DefaultPageSize))
-	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
-
-	pageSize, err := strconv.Atoi(pageSizeQuery)
-	if err != nil || pageSize <= 0 {
+	search := newUserSearch()
+	err = c.BindJSON(search)
+	if shared.HandleError(response, err) {
+		return
+	}
+	if search.PageLimit <= 0 {
 		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
 		return
 	}
 
-	if pageSize > MaxPageSize {
-		pageSize = MaxPageSize
+	if search.PageLimit > MaxPageSize {
+		search.PageLimit = MaxPageSize
 	}
 
-	page, err := strconv.Atoi(pageQuery)
-	if err != nil || page <= 0 {
+	if search.Page <= 0 {
 		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
 		return
 	}
@@ -74,11 +71,11 @@ func searchUsers(c *gin.Context) {
 
 	var results *models.Users
 	var total uint
-	if results, total, err = us.Search(usernameFilter, emailFilter, uint(pageSize), uint(page)); shared.HandleError(response, err) {
+	if results, total, err = us.Search(search.Username, search.Email, uint(search.PageLimit), uint(search.Page)); shared.HandleError(response, err) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.FromUsers(results))
+	response.PageInfo(uint(search.Page), uint(search.PageLimit), MaxPageSize, total).Data(models.FromUsers(results))
 }
 
 func createUser(c *gin.Context) {
@@ -262,4 +259,20 @@ func deleteUser(c *gin.Context) {
 	}
 
 	response.Data(models.FromUser(user))
+}
+
+type UserSearch struct {
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	PageLimit int    `json:"limit"`
+	Page      int    `json:"page"`
+}
+
+func newUserSearch() *UserSearch {
+	return &UserSearch{
+		Username:  "*",
+		Email:     "*",
+		PageLimit: DefaultPageSize,
+		Page:      1,
+	}
 }
