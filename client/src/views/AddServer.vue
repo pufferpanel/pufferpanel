@@ -24,7 +24,11 @@
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Node')"></span></h6>
               <b-card-text>
                 <b-form-select :disabled="loadingNodes" id="nodeSelect" v-model="selectedNode"
-                               :options="nodes"></b-form-select>
+                               :options="nodes">
+                  <template slot="first">
+                    <option value="" disabled v-text="$t('common.SelectNode')"></option>
+                  </template>
+                </b-form-select>
               </b-card-text>
             </b-card>
           </b-col>
@@ -36,7 +40,11 @@
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Template')"></span></h6>
               <b-card-text>
                 <b-form-select :disabled="loadingTemplates" id="templateSelect" v-model="selectedTemplate"
-                               :options="templates"></b-form-select>
+                               :options="templates">
+                  <template slot="first">
+                    <option value="" disabled v-text="$t('common.SelectTemplate')"></option>
+                  </template>
+                </b-form-select>
               </b-card-text>
             </b-card>
           </b-col>
@@ -47,10 +55,20 @@
             <b-card header-tag="header">
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Users')"></span></h6>
               <b-card-text>
-                <b-form-input v-model="userInput"></b-form-input>
+                <b-form-input v-model="userInput" autocomplete="off"></b-form-input>
 
-                <b-form-select :disabled="searchingUsers" id="userSelect" v-model="selectedUser"
-                               :options="users"></b-form-select>
+                <b-form-select autocomplete="off" :disabled="searchingUsers" id="userSelect" v-model="selectedUser"
+                               :options="users">
+                  <template slot="first">
+                    <option value="" disabled v-text="$t('common.SelectUser')"></option>
+                  </template>
+                </b-form-select>
+                <div v-if="selectedUsers.length > 0">
+                  <strong v-text="$t('common.Users')"></strong>
+                  <div v-for="user in selectedUsers">
+                    <span v-text="user"></span>
+                  </div>
+                </div>
               </b-card-text>
             </b-card>
           </b-col>
@@ -94,10 +112,10 @@ export default {
   data () {
     return {
       nodes: [],
-      selectedNode: null,
+      selectedNode: '',
       templates: [],
       templateData: {},
-      selectedTemplate: null,
+      selectedTemplate: '',
       formData: {},
       readme: '',
 
@@ -106,17 +124,38 @@ export default {
 
       searchingUsers: true,
       users: [],
-      selectedUser: null,
+      selectedUser: '',
+      selectedUsers: [],
       userInput: '',
       userCancelSearch: CancelToken.source()
     }
   },
   watch: {
     selectedTemplate: function (newVal, oldVal) {
+      if (!newVal || newVal === '') {
+        return
+      }
       this.formData = this.templateData[newVal].data
     },
     userInput: function (newVal, oldVal) {
+      if (!newVal || newVal === '') {
+        return
+      }
       this.findUsers(newVal)
+    },
+    selectedUser: function (newVal, oldVal) {
+      if (!newVal || newVal === '') {
+        return
+      }
+      for (let i = 0; i < this.selectedUsers.length; i++) {
+        if (this.selectedUsers[i] === newVal) {
+          return
+        }
+      }
+      this.userInput = ''
+      this.selectedUsers.push(newVal)
+      this.selectedUser = ''
+      this.users = []
     }
   },
   computed: {
@@ -125,11 +164,11 @@ export default {
         return false
       }
 
-      if (!this.selectedTemplate) {
+      if (!this.selectedTemplate || this.selectedTemplate === '') {
         return false
       }
 
-      if (!this.selectedUser) {
+      if (this.selectedUsers.length === 0) {
         return false
       }
 
@@ -160,12 +199,8 @@ export default {
       this.$http.get('/api/templates').then(function (res) {
         let response = res.data
         if (response.success) {
-          vue.templates = [{
-            value: null,
-            disabled: true,
-            text: vue.$t('common.SelectTemplate')
-          }]
           vue.templateData = response.data
+          vue.templates = []
           for (let k in vue.templateData) {
             vue.templates.push({
               text: vue.templateData[k].display,
@@ -173,9 +208,8 @@ export default {
             })
           }
 
-          if (vue.templates.length === 2) {
-            vue.selectedTemplate = vue.templates[1].value
-          } else {
+          if (vue.templates.length === 1) {
+            vue.selectedTemplate = vue.templates[0].value
           }
 
           vue.loadingTemplates = false
@@ -187,21 +221,17 @@ export default {
       this.$http.get('/api/nodes').then(function (res) {
         let callResult = res.data
         if (callResult.success) {
+          vue.nodes = []
           for (let i = 0; i < callResult.data.length; i++) {
             let node = callResult.data[i]
-            vue.nodes = [{
-              value: null,
-              disabled: true,
-              text: vue.$t('common.SelectNode')
-            }]
             vue.nodes.push({
               value: node.id,
               text: node.name
             })
           }
 
-          if (vue.nodes.length === 2) {
-            vue.selectedNode = vue.nodes[1].value
+          if (vue.nodes.length === 1) {
+            vue.selectedNode = vue.nodes[0].value
           }
 
           vue.loadingNodes = false
@@ -221,7 +251,7 @@ export default {
       }).then(function (response) {
         let msg = response.data
         if (msg.success) {
-          for (let i = 0; i < msg.data.length; i++) {
+          for (let i = 0; i < Math.max(msg.data.length, 5); i++) {
             let user = msg.data[i]
             vue.users.push({
               value: user.username,
@@ -236,6 +266,7 @@ export default {
       let vue = this
       let data = this.templateData[this.selectedTemplate]
       data.node = this.selectedNode
+      data.users = this.selectedUsers
       this.$http.post('/api/servers', data).then(function (response) {
         let msg = response.data
         if (msg.success) {
