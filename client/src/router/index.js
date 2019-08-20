@@ -45,9 +45,9 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([
-    { path: '/', redirect: 'Servers' },
-    { path: '', redirect: 'Servers' },
-    { path: '*', redirect: 'Errors/404' }
+    { path: '/', redirect: 'server' },
+    { path: '', redirect: 'server' },
+    { path: '*', redirect: 'errors/404' }
   ]),
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
