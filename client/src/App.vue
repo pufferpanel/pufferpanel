@@ -4,20 +4,7 @@
 
     <b-container fluid>
       <b-row>
-        <b-col col md="1" cols="0" v-if="!$route.meta.noSidebar">
-          <core-drawer/>
-        </b-col>
-
-        <b-col
-          v-if="$route.meta.noBase"
-          cols="12"
-          :md="$route.meta.noSidebar ? '12' : '11'">
-          <main role="main">
-            <router-view/>
-          </main>
-        </b-col>
-        <b-col v-else cols="12"
-               :md="$route.meta.noSidebar ? '12' : '11'">
+        <b-col cols="12">
           <main role="main">
             <router-view/>
           </main>
