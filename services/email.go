@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/spf13/viper"
 	"html/template"
 	"os"
@@ -53,7 +53,7 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 	tmpl := es.templates[template]
 
 	if tmpl == nil {
-		return errors.ErrNoTemplate(template)
+		return pufferpanel.ErrNoTemplate(template)
 	}
 
 	builder := &strings.Builder{}
@@ -65,13 +65,13 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 
 	provider := viper.GetString("email.provider")
 	if provider == "" {
-		return errors.ErrEmailNotConfigured
+		return pufferpanel.ErrEmailNotConfigured
 	}
 
 	switch provider {
 	case "mailgun":
 		return sendEmailViaMailgun(to, subject, builder.String(), async)
 	default:
-		return errors.ErrServiceInvalidProvider("email", provider)
+		return pufferpanel.ErrServiceInvalidProvider("email", provider)
 	}
 }

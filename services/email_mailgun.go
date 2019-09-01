@@ -3,24 +3,24 @@ package services
 import (
 	"github.com/mailgun/mailgun-go"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/spf13/viper"
 )
 
 func sendEmailViaMailgun(to, subject, body string, async bool) error {
 	domain := viper.GetString("email.domain")
 	if domain == "" {
-		return errors.ErrSettingNotConfigured("domain")
+		return pufferpanel.ErrSettingNotConfigured("domain")
 	}
 
 	from := viper.GetString("email.from")
 	if from == "" {
-		return errors.ErrSettingNotConfigured("email.from")
+		return pufferpanel.ErrSettingNotConfigured("email.from")
 	}
 
 	key := viper.GetString("email.key")
 	if key == "" {
-		return errors.ErrSettingNotConfigured("email.key")
+		return pufferpanel.ErrSettingNotConfigured("email.key")
 	}
 
 	mg := mailgun.NewMailgun(domain, key)

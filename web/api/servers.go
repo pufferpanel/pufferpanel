@@ -20,11 +20,10 @@ import (
 	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"github.com/satori/go.uuid"
 	"io"
@@ -35,7 +34,7 @@ import (
 
 func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2WithLimit("servers.view", false), searchServers)
-	g.Handle("OPTIONS", "", shared.CreateOptions("GET"))
+	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
 
 	g.Handle("POST", "", handlers.OAuth2("servers.create", false), createServer)
 	g.Handle("GET", "/:serverId", handlers.OAuth2("servers.view", true), getServer)
@@ -43,7 +42,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2("servers.edit", false), deleteServer)
 	g.Handle("GET", "/:serverId/users", handlers.OAuth2("servers.edit", true), getServerUsers)
 	g.Handle("POST", "/:serverId/users", handlers.OAuth2("servers.edit", true), editServerUsers)
-	g.Handle("OPTIONS", "/:serverId", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("OPTIONS", "/:serverId", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 func searchServers(c *gin.Context) {
@@ -79,7 +78,7 @@ func searchServers(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -104,7 +103,7 @@ func searchServers(c *gin.Context) {
 		PageSize: uint(pageSize),
 		Page:     uint(page),
 	}
-	if results, total, err = ss.Search(searchCriteria); shared.HandleError(response, err) {
+	if results, total, err = ss.Search(searchCriteria); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -117,13 +116,13 @@ func getServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		shared.HandleError(response, errors.ErrServerNotFound)
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		shared.HandleError(response, errors.ErrServerNotFound)
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
 	}
 
 	response.Data(models.RemoveServerPrivateInfo(models.FromServer(server)))
@@ -147,7 +146,7 @@ func createServer(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -167,7 +166,7 @@ func createServer(c *gin.Context) {
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -188,11 +187,11 @@ func createServer(c *gin.Context) {
 
 	for k, v := range postBody.Users {
 		user, exists, err := us.Get(v)
-		if shared.HandleError(response, err) {
+		if pufferpanel.HandleError(response, err) {
 			return
 		}
 		if !exists {
-			shared.HandleError(response, errors.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
+			pufferpanel.HandleError(response, pufferpanel.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
 			return
 		}
 
@@ -200,7 +199,7 @@ func createServer(c *gin.Context) {
 	}
 
 	admins, err := os.GetByScope("servers.admin", nil, nil, true)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 	for _, v := range *admins {
@@ -215,7 +214,7 @@ func createServer(c *gin.Context) {
 
 	for _, v := range users {
 		_, err := os.Create(v, server, "", true, services.GetDefaultUserServerScopes()...)
-		if shared.HandleError(response, err) {
+		if pufferpanel.HandleError(response, err) {
 			return
 		}
 	}
@@ -228,26 +227,26 @@ func createServer(c *gin.Context) {
 
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
 
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
 		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(nodeResponse.StatusCode).Log()
-		shared.HandleError(response, errors.ErrUnknownError)
+		pufferpanel.HandleError(response, pufferpanel.ErrUnknownError)
 		return
 	}
 
 	apiResponse := &builder.Response{}
 	err = json.NewDecoder(nodeResponse.Body).Decode(apiResponse)
 
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
 	if !apiResponse.Success {
 		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(apiResponse).Log()
-		shared.HandleError(response, errors.ErrUnknownError)
+		pufferpanel.HandleError(response, pufferpanel.ErrUnknownError)
 		return
 	}
 
@@ -262,7 +261,7 @@ func deleteServer(c *gin.Context) {
 	response := builder.From(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -271,17 +270,17 @@ func deleteServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		shared.HandleError(response, errors.ErrServerNotFound)
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		shared.HandleError(response, errors.ErrServerNotFound)
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
 	}
 
 	err = ss.Delete(server.ID)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	} else {
 		v := models.FromServer(server)

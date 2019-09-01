@@ -11,7 +11,7 @@
  limitations under the License.
 */
 
-package shared
+package pufferpanel
 
 import (
 	"github.com/gin-gonic/gin"

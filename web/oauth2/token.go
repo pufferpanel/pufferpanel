@@ -3,27 +3,27 @@ package oauth2
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 )
 
 func registerTokens(g *gin.RouterGroup) {
 	g.POST("/token", handleTokenRequest)
-	g.OPTIONS("/token", shared.CreateOptions("POST"))
+	g.OPTIONS("/token", pufferpanel.CreateOptions("POST"))
 
-	g.POST("/validate", shared.NotImplemented)
-	g.OPTIONS("/validate", shared.CreateOptions("POST"))
+	g.POST("/validate", pufferpanel.NotImplemented)
+	g.OPTIONS("/validate", pufferpanel.CreateOptions("POST"))
 
 	g.POST("/info", handlers.OAuth2("oauth2.info", false), handleInfoRequest)
-	g.OPTIONS("/info", shared.CreateOptions("POST"))
+	g.OPTIONS("/info", pufferpanel.CreateOptions("POST"))
 }
 
 func handleTokenRequest(c *gin.Context) {
 	response := builder.From(c)
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -36,7 +36,7 @@ func handleTokenRequest(c *gin.Context) {
 func handleInfoRequest(c *gin.Context) {
 	response := builder.From(c)
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 

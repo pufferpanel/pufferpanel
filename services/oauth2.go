@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/models"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
 	"github.com/satori/go.uuid"
@@ -133,7 +133,7 @@ func (oauth2 *OAuth) RemoveScope(client *models.ClientInfo, server *models.Serve
 			return res.Error
 		}
 		if client.ID == 0 {
-			return errors.ErrClientNotFound
+			return pufferpanel.ErrClientNotFound
 		}
 	}
 
@@ -167,7 +167,7 @@ func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, 
 			return res.Error
 		}
 		if client.ID == 0 {
-			return errors.ErrClientNotFound
+			return pufferpanel.ErrClientNotFound
 		}
 	}
 
@@ -214,7 +214,7 @@ func (oauth2 *OAuth) UpdateScopes(client *models.ClientInfo, server *models.Serv
 			return res.Error
 		}
 		if client.ID == 0 {
-			return errors.ErrClientNotFound
+			return pufferpanel.ErrClientNotFound
 		}
 	}
 
@@ -316,7 +316,7 @@ func (oauth2 *OAuth) HasRights(accessToken string, serverId *uint, scope string)
 
 	converted, ok := ti.(*models.TokenInfo)
 	if !ok {
-		err = errors.ErrInvalidTokenState
+		err = pufferpanel.ErrInvalidTokenState
 		return
 	}
 
@@ -379,7 +379,7 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 		return "", err
 	}
 	if ci == nil || ci.ID == 0 {
-		return "", errors.ErrUserNotFound
+		return "", pufferpanel.ErrUserNotFound
 	}
 
 	valid := false
@@ -391,7 +391,7 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 	}
 
 	if !valid {
-		return "", errors.ErrLoginNotPermitted
+		return "", pufferpanel.ErrLoginNotPermitted
 	}
 
 	ti := &models.TokenInfo{

@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/models"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
@@ -37,12 +37,12 @@ func (us *User) Login(email string, password string) (sessionToken string, err e
 	}
 
 	if model.ID == 0 || gorm.IsRecordNotFoundError(err) {
-		err = errors.ErrInvalidCredentials
+		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
 	if !us.IsValidCredentials(model, password) {
-		err = errors.ErrInvalidCredentials
+		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
@@ -105,7 +105,7 @@ func (us *User) ChangePassword(username string, newPass string) error {
 	}
 
 	if !exists {
-		return errors.ErrUserNotFound
+		return pufferpanel.ErrUserNotFound
 	}
 
 	err = user.SetPassword(newPass)

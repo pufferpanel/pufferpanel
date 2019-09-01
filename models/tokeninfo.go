@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"gopkg.in/oauth2.v3"
 	"strconv"
 	"time"
@@ -47,7 +47,7 @@ func (ti *TokenInfo) SetUserID(id string) {
 		panic(err)
 	}
 	if result < 0 {
-		panic(errors.ErrFieldTooSmall("node id", 1))
+		panic(pufferpanel.ErrFieldTooSmall("node id", 1))
 	}
 	ti.ClientInfo.UserID = uint(result)
 }

@@ -3,10 +3,10 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -31,7 +31,7 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 

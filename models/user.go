@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
 	"time"
@@ -32,7 +32,7 @@ func (u *User) SetPassword(pw string) error {
 func (u *User) IsValid() (err error) {
 	err = validator.New().Struct(u)
 	if err != nil {
-		err = shared.GenerateValidationMessage(err)
+		err = pufferpanel.GenerateValidationMessage(err)
 	}
 	return
 }

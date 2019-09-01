@@ -3,9 +3,9 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 )
 
 func LoginPost(c *gin.Context) {
@@ -20,7 +20,7 @@ func LoginPost(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -28,7 +28,7 @@ func LoginPost(c *gin.Context) {
 	os := services.GetOAuth(db)
 
 	session, err := us.Login(request.Data.Email, request.Data.Password)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -37,7 +37,7 @@ func LoginPost(c *gin.Context) {
 
 	_, client, err := os.GetByToken(data.Session)
 
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
