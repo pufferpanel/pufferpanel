@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/version"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +23,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of PufferPanel",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(version.Display)
+		fmt.Println(pufferpanel.Display)
 	},
 }

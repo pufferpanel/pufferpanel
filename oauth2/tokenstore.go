@@ -3,7 +3,7 @@ package oauth2
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/models"
 	"gopkg.in/oauth2.v3"
 	"time"
@@ -86,7 +86,7 @@ func (ts *TokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 
 	if obj.ID == 0 || err != nil {
 		if err == nil || gorm.IsRecordNotFoundError(err) {
-			err = errors.ErrTokenInvalid
+			err = pufferpanel.ErrTokenInvalid
 		}
 		return nil, err
 	}

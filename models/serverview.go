@@ -14,7 +14,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/errors"
+	"github.com/pufferpanel/pufferpanel"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -66,27 +66,27 @@ func (s *ServerView) Valid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(s.Name, "required") != nil {
-		return errors.ErrFieldRequired("name")
+		return pufferpanel.ErrFieldRequired("name")
 	}
 
 	if !allowEmpty && validate.Var(s.Type, "required") != nil {
-		return errors.ErrFieldRequired("type")
+		return pufferpanel.ErrFieldRequired("type")
 	}
 
 	if validate.Var(s.Name, "optional|printascii") != nil {
-		return errors.ErrFieldMustBePrintable("name")
+		return pufferpanel.ErrFieldMustBePrintable("name")
 	}
 
 	if !allowEmpty && validate.Var(s.NodeId, "required,min:1") != nil {
-		return errors.ErrFieldTooSmall("node", 1)
+		return pufferpanel.ErrFieldTooSmall("node", 1)
 	}
 
 	if validate.Var(s.IP, "optional|ip_addr") != nil {
-		return errors.ErrFieldIsInvalidIP("ip")
+		return pufferpanel.ErrFieldIsInvalidIP("ip")
 	}
 
 	if validate.Var(s.Port, "optional|min:0,max:65535") != nil {
-		return errors.ErrFieldNotBetween("port", 1, 65535)
+		return pufferpanel.ErrFieldNotBetween("port", 1, 65535)
 	}
 
 	return nil

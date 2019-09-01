@@ -18,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel/config"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web"
@@ -40,7 +40,7 @@ var runCmd = &cobra.Command{
 }
 
 func executeRun(cmd *cobra.Command, args []string) error {
-	err := config.Load()
+	err := pufferpanel.LoadConfig()
 	if err != nil {
 		return err
 	}

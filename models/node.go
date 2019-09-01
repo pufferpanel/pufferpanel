@@ -14,7 +14,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/shared"
+	"github.com/pufferpanel/pufferpanel"
 	"gopkg.in/go-playground/validator.v9"
 	"time"
 )
@@ -37,7 +37,7 @@ type Nodes []*Node
 func (n *Node) IsValid() (err error) {
 	err = validator.New().Struct(n)
 	if err != nil {
-		err = shared.GenerateValidationMessage(err)
+		err = pufferpanel.GenerateValidationMessage(err)
 	}
 	return
 }

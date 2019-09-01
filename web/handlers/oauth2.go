@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 	webHttp "net/http"
 	"strings"
 )
@@ -42,7 +42,7 @@ func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.H
 
 		db, err := database.GetConnection()
 
-		if shared.HandleError(res, err) {
+		if pufferpanel.HandleError(res, err) {
 			return
 		}
 

@@ -16,11 +16,10 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/errors"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/shared"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 	"net/http"
 )
@@ -30,13 +29,13 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2("login", false), getSelf)
 	g.Handle("PUT", "", handlers.OAuth2("login", false), updateSelf)
 	g.Handle("POST", "", handlers.OAuth2("users.view", false), searchUsers)
-	g.Handle("OPTIONS", "", shared.CreateOptions("GET", "PUT", "POST"))
+	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET", "PUT", "POST"))
 
 	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit", false), createUser)
 	g.Handle("GET", "/:username", handlers.OAuth2("users.view", false), getUser)
 	g.Handle("POST", "/:username", handlers.OAuth2("users.edit", false), updateUser)
 	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit", false), deleteUser)
-	g.Handle("OPTIONS", "/:username", shared.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("OPTIONS", "/:username", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 func searchUsers(c *gin.Context) {
@@ -45,7 +44,7 @@ func searchUsers(c *gin.Context) {
 
 	search := newUserSearch()
 	err = c.BindJSON(search)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 	if search.PageLimit <= 0 {
@@ -63,7 +62,7 @@ func searchUsers(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -71,7 +70,7 @@ func searchUsers(c *gin.Context) {
 
 	var results *models.Users
 	var total uint
-	if results, total, err = us.Search(search.Username, search.Email, uint(search.PageLimit), uint(search.Page)); shared.HandleError(response, err) {
+	if results, total, err = us.Search(search.Username, search.Email, uint(search.PageLimit), uint(search.Page)); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -83,31 +82,31 @@ func createUser(c *gin.Context) {
 	response := builder.Respond(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+	if err = c.BindJSON(&viewModel); pufferpanel.HandleError(response, err) {
 		return
 	}
 	viewModel.Username = c.Param("username")
 
-	if err = viewModel.Valid(false); shared.HandleError(response, err) {
+	if err = viewModel.Valid(false); pufferpanel.HandleError(response, err) {
 		return
 	}
 
 	if viewModel.Password == "" {
-		shared.HandleError(response, errors.ErrFieldRequired("password"))
+		pufferpanel.HandleError(response, pufferpanel.ErrFieldRequired("password"))
 		return
 	}
 
 	user := &models.User{}
 	viewModel.CopyToModel(user)
 
-	if err = us.Create(user); shared.HandleError(response, err) {
+	if err = us.Create(user); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -118,7 +117,7 @@ func getUser(c *gin.Context) {
 	response := builder.Respond(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -127,7 +126,7 @@ func getUser(c *gin.Context) {
 	username := c.Param("username")
 
 	user, exists, err := us.Get(username)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username")
@@ -155,7 +154,7 @@ func updateSelf(c *gin.Context) {
 	response := builder.Respond(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -170,11 +169,11 @@ func updateSelf(c *gin.Context) {
 	}
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+	if err = c.BindJSON(&viewModel); pufferpanel.HandleError(response, err) {
 		return
 	}
 
-	if err = viewModel.Valid(true); shared.HandleError(response, err) {
+	if err = viewModel.Valid(true); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -183,13 +182,13 @@ func updateSelf(c *gin.Context) {
 	}
 
 	if us.IsValidCredentials(user, viewModel.Password) {
-		shared.HandleError(response, errors.ErrInvalidCredentials)
+		pufferpanel.HandleError(response, pufferpanel.ErrInvalidCredentials)
 		return
 	}
 
 	viewModel.CopyToModel(user)
 
-	if err = us.Update(user); shared.HandleError(response, err) {
+	if err = us.Update(user); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -200,7 +199,7 @@ func updateUser(c *gin.Context) {
 	response := builder.Respond(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -209,16 +208,16 @@ func updateUser(c *gin.Context) {
 	username := c.Param("username")
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); shared.HandleError(response, err) {
+	if err = c.BindJSON(&viewModel); pufferpanel.HandleError(response, err) {
 		return
 	}
 
-	if err = viewModel.Valid(true); shared.HandleError(response, err) {
+	if err = viewModel.Valid(true); pufferpanel.HandleError(response, err) {
 		return
 	}
 
 	user, exists, err := us.Get(username)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username")
@@ -227,7 +226,7 @@ func updateUser(c *gin.Context) {
 
 	viewModel.CopyToModel(user)
 
-	if err = us.Update(user); shared.HandleError(response, err) {
+	if err = us.Update(user); pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -238,7 +237,7 @@ func deleteUser(c *gin.Context) {
 	response := builder.Respond(c)
 
 	db, err := database.GetConnection()
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	}
 
@@ -247,14 +246,14 @@ func deleteUser(c *gin.Context) {
 	username := c.Param("username")
 
 	user, exists, err := us.Get(username)
-	if shared.HandleError(response, err) {
+	if pufferpanel.HandleError(response, err) {
 		return
 	} else if !exists {
 		response.Fail().Status(http.StatusNotFound).Message("no user with username")
 		return
 	}
 
-	if err = us.Delete(user.Username); shared.HandleError(response, err) {
+	if err = us.Delete(user.Username); pufferpanel.HandleError(response, err) {
 		return
 	}
 

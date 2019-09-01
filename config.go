@@ -1,4 +1,4 @@
-package config
+package pufferpanel
 
 import (
 	"github.com/spf13/viper"
@@ -23,6 +23,6 @@ func init() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 }
 
-func Load() error {
+func LoadConfig() error {
 	return viper.ReadInConfig()
 }
