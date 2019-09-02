@@ -57,7 +57,7 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
-	err = os.AddScope(client, nil, "servers.view")
+	err = os.AddScope(client, nil, pufferpanel.ScopeLogin, pufferpanel.ScopeViewServers)
 	if err != nil {
 		response.Fail().Status(400).Error(err)
 		return

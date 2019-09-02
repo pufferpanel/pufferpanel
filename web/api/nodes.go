@@ -26,19 +26,19 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2("nodes.view", false), getAllNodes)
+	g.Handle("GET", "", handlers.OAuth2(pufferpanel.ScopeViewNodes, false), getAllNodes)
 	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
 
-	g.Handle("PUT", "/:id", handlers.OAuth2("nodes.edit", false), createNode)
-	g.Handle("GET", "/:id", handlers.OAuth2("nodes.view", false), getNode)
-	g.Handle("POST", "/:id", handlers.OAuth2("nodes.edit", false), updateNode)
-	g.Handle("DELETE", "/:id", handlers.OAuth2("nodes.edit", false), deleteNode)
+	g.Handle("PUT", "/:id", handlers.OAuth2(pufferpanel.ScopeEditNode, false), createNode)
+	g.Handle("GET", "/:id", handlers.OAuth2(pufferpanel.ScopeViewNodes, false), getNode)
+	g.Handle("POST", "/:id", handlers.OAuth2(pufferpanel.ScopeEditNode, false), updateNode)
+	g.Handle("DELETE", "/:id", handlers.OAuth2(pufferpanel.ScopeEditNode, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", handlers.OAuth2("nodes.deploy", false), pufferpanel.NotImplemented)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2(pufferpanel.ScopeDeployNode, false), pufferpanel.NotImplemented)
 	g.Handle("OPTIONS", "/:id/deployment", pufferpanel.CreateOptions("GET"))
 
-	g.Handle("POST", "/:id/reset", handlers.OAuth2("nodes.deploy", false), pufferpanel.NotImplemented)
+	g.Handle("POST", "/:id/reset", handlers.OAuth2(pufferpanel.ScopeDeployNode, false), pufferpanel.NotImplemented)
 	g.Handle("OPTIONS", "/:id/reset", pufferpanel.CreateOptions("POST"))
 }
 

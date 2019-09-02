@@ -147,9 +147,19 @@ func (oauth2 *OAuth) RemoveScope(client *models.ClientInfo, server *models.Serve
 	return nil
 }
 
-func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, scope string) error {
+func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, scopes... string) error {
+	trans := oauth2.DB.Begin()
+	commit := false
+	defer func() {
+		if commit {
+			trans.Commit()
+		} else {
+			trans.Rollback()
+		}
+	}()
+
 	if server != nil && server.ID == 0 {
-		res := oauth2.DB.Where(server).First(server)
+		res := trans.Where(server).First(server)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -158,9 +168,9 @@ func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, 
 	if client.ID == 0 {
 		var query *gorm.DB
 		if server != nil && server.ID != 0 {
-			query = oauth2.DB.Preload("ServerScopes", "server_id = ?", server.ID)
+			query = trans.Preload("ServerScopes", "server_id = ?", server.ID)
 		} else {
-			query = oauth2.DB.Preload("ServerScopes", "server_id IS NULL")
+			query = trans.Preload("ServerScopes", "server_id IS NULL")
 		}
 		res := query.Where(client).First(client)
 		if res.Error != nil {
@@ -171,26 +181,29 @@ func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, 
 		}
 	}
 
-	toAdd := true
-	for _, s := range client.ServerScopes {
-		if s.Scope == scope {
-			toAdd = false
-			break
+	for _, scope := range scopes {
+		toAdd := true
+		for _, s := range client.ServerScopes {
+			if s.Scope == scope {
+				toAdd = false
+				break
+			}
+		}
+		if toAdd {
+			replacement := &models.ClientServerScopes{
+				Scope:        scope,
+				ClientInfoID: client.ID,
+			}
+			if server != nil && server.ID != 0 {
+				replacement.ServerId = &server.ID
+			}
+
+			res := trans.Create(replacement)
+			return res.Error
 		}
 	}
-	if toAdd {
-		replacement := &models.ClientServerScopes{
-			Scope:        scope,
-			ClientInfoID: client.ID,
-		}
-		if server != nil && server.ID != 0 {
-			replacement.ServerId = &server.ID
-		}
 
-		res := oauth2.DB.Create(replacement)
-		return res.Error
-	}
-
+	commit = true
 	return nil
 }
 
