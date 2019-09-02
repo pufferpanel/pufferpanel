@@ -26,15 +26,15 @@ import (
 
 func registerUsers(g *gin.RouterGroup) {
 	//if you can log in, you can see and edit yourself
-	g.Handle("GET", "", handlers.OAuth2("login", false), getSelf)
-	g.Handle("PUT", "", handlers.OAuth2("login", false), updateSelf)
-	g.Handle("POST", "", handlers.OAuth2("users.view", false), searchUsers)
+	g.Handle("GET", "", handlers.OAuth2(pufferpanel.ScopeLogin, false), getSelf)
+	g.Handle("PUT", "", handlers.OAuth2(pufferpanel.ScopeLogin, false), updateSelf)
+	g.Handle("POST", "", handlers.OAuth2(pufferpanel.ScopeViewUsers, false), searchUsers)
 	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET", "PUT", "POST"))
 
-	g.Handle("PUT", "/:username", handlers.OAuth2("users.edit", false), createUser)
-	g.Handle("GET", "/:username", handlers.OAuth2("users.view", false), getUser)
-	g.Handle("POST", "/:username", handlers.OAuth2("users.edit", false), updateUser)
-	g.Handle("DELETE", "/:username", handlers.OAuth2("users.edit", false), deleteUser)
+	g.Handle("PUT", "/:username", handlers.OAuth2(pufferpanel.ScopeEditUsers, false), createUser)
+	g.Handle("GET", "/:username", handlers.OAuth2(pufferpanel.ScopeViewUsers, false), getUser)
+	g.Handle("POST", "/:username", handlers.OAuth2(pufferpanel.ScopeEditUsers, false), updateUser)
+	g.Handle("DELETE", "/:username", handlers.OAuth2(pufferpanel.ScopeEditUsers, false), deleteUser)
 	g.Handle("OPTIONS", "/:username", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 

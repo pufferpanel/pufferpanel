@@ -23,7 +23,7 @@ import (
 )
 
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2("templates.view", false), getAllTemplates)
+	g.Handle("GET", "", handlers.OAuth2(pufferpanel.ScopeViewTemplates, false), getAllTemplates)
 	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
 }
 

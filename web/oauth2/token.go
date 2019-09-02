@@ -16,7 +16,7 @@ func registerTokens(g *gin.RouterGroup) {
 	g.POST("/validate", pufferpanel.NotImplemented)
 	g.OPTIONS("/validate", pufferpanel.CreateOptions("POST"))
 
-	g.POST("/info", handlers.OAuth2("oauth2.info", false), handleInfoRequest)
+	g.POST("/info", handlers.OAuth2(pufferpanel.ScopeOauth2Info, false), handleInfoRequest)
 	g.OPTIONS("/info", pufferpanel.CreateOptions("POST"))
 }
 

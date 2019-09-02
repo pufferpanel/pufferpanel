@@ -33,15 +33,15 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2WithLimit("servers.view", false), searchServers)
+	g.Handle("GET", "", handlers.OAuth2WithLimit(pufferpanel.ScopeViewServers, false), searchServers)
 	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2("servers.create", false), createServer)
-	g.Handle("GET", "/:serverId", handlers.OAuth2("servers.view", true), getServer)
-	g.Handle("PUT", "/:serverId", handlers.OAuth2("servers.edit", false), createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2("servers.edit", false), deleteServer)
-	g.Handle("GET", "/:serverId/users", handlers.OAuth2("servers.edit", true), getServerUsers)
-	g.Handle("POST", "/:serverId/users", handlers.OAuth2("servers.edit", true), editServerUsers)
+	g.Handle("POST", "", handlers.OAuth2(pufferpanel.ScopeCreateServers, false), createServer)
+	g.Handle("GET", "/:serverId", handlers.OAuth2(pufferpanel.ScopeViewServers, true), getServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), deleteServer)
+	g.Handle("GET", "/:serverId/users", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
+	g.Handle("POST", "/:serverId/users", handlers.OAuth2(pufferpanel.ScopeEditServers, true), editServerUsers)
 	g.Handle("OPTIONS", "/:serverId", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -86,7 +86,7 @@ func searchServers(c *gin.Context) {
 	os := services.GetOAuth(db)
 
 	//see if user has access to view all others, otherwise we can't permit search without their username
-	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, "servers.view")
+	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, pufferpanel.ScopeViewServers)
 	if !allowed {
 		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
 		return
@@ -198,7 +198,7 @@ func createServer(c *gin.Context) {
 		users[k] = user
 	}
 
-	admins, err := os.GetByScope("servers.admin", nil, nil, true)
+	admins, err := os.GetByScope(pufferpanel.ScopeServerAdmin, nil, nil, true)
 	if pufferpanel.HandleError(response, err) {
 		return
 	}
