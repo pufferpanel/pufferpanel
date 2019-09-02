@@ -213,7 +213,7 @@ func createServer(c *gin.Context) {
 	}
 
 	for _, v := range users {
-		_, err := os.Create(v, server, "", true, services.GetDefaultUserServerScopes()...)
+		_, err := os.Create(v, server, "", true, pufferpanel.GetDefaultUserServerScopes()...)
 		if pufferpanel.HandleError(response, err) {
 			return
 		}

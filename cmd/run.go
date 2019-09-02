@@ -34,9 +34,9 @@ import (
 )
 
 var runCmd = &cobra.Command{
-	Use: "run",
+	Use:   "run",
 	Short: "Runs the panel",
-	Run: root,
+	Run:   root,
 }
 
 func executeRun(cmd *cobra.Command, args []string) error {
@@ -52,11 +52,6 @@ func executeRun(cmd *cobra.Command, args []string) error {
 
 	logging.SetLevel(os.Stdout, logging.DEBUG)
 
-	err = database.Load()
-	if err != nil {
-		return err
-	}
-
 	defer database.Close()
 
 	services.LoadEmailService()
@@ -70,7 +65,7 @@ func executeRun(cmd *cobra.Command, args []string) error {
 	c := make(chan error)
 
 	srv := &http.Server{
-		Addr: viper.GetString("web.host") + ":" + viper.GetString("web.port"),
+		Addr:    viper.GetString("web.host") + ":" + viper.GetString("web.port"),
 		Handler: router,
 	}
 
@@ -148,5 +143,5 @@ func executeRun(cmd *cobra.Command, args []string) error {
 		c <- nil
 	}()
 
-	return <- c
+	return <-c
 }
