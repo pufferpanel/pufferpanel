@@ -22,22 +22,22 @@ import (
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/spf13/viper"
 	"strings"
+	"sync"
 )
 
 var dbConn *gorm.DB
-
-func Load() error {
-	err := openConnection()
-	if err != nil {
-		return err
-	}
-
-	err = migrateModels()
-
-	return err
-}
+var lock sync.Mutex
 
 func openConnection() (err error) {
+	//lock system so we can only connect once
+	lock.Lock()
+	defer lock.Unlock()
+
+	//if we had 2 calls to this before it was established, quick out since it's already created
+	if dbConn != nil {
+		return
+	}
+
 	dialect := viper.GetString("database.dialect")
 	if dialect == "" {
 		dialect = "sqlite3"
@@ -71,6 +71,7 @@ func openConnection() (err error) {
 		dbConn.LogMode(true)
 	}
 
+	err = migrateModels()
 	return
 }
 

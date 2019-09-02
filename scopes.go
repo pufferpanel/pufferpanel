@@ -12,6 +12,15 @@ const ScopeViewServers = "servers.view"
 const ScopeEditServers = "servers.edit"
 const ScopeCreateServers = "servers.create"
 
+const ScopeServerConsole = "servers.console"
+const ScopeStopServers = "servers.stop"
+const ScopeStartServers = "servers.start"
+const ScopeKillServers = "servers.kill"
+const ScopeStatServers = "servers.stats"
+const ScopeFilesServers = "servers.files"
+const ScopeGetFilesServers = "servers.files.get"
+const ScopePutFilesServers = "servers.files.put"
+
 //node
 const ScopeViewNodes = "nodes.view"
 const ScopeEditNode = "nodes.edit"
@@ -23,3 +32,17 @@ const ScopeViewTemplates = "templates.view"
 //user
 const ScopeViewUsers = "users.view"
 const ScopeEditUsers = "users.edit"
+
+func GetDefaultUserServerScopes() []string {
+	return []string{
+		ScopeViewServers,
+		ScopeServerConsole,
+		ScopeStopServers,
+		ScopeStartServers,
+		ScopeKillServers,
+		ScopeStatServers,
+		ScopeFilesServers,
+		ScopeGetFilesServers,
+		ScopePutFilesServers,
+	}
+}

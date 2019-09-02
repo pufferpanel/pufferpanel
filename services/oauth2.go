@@ -422,17 +422,3 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 
 	return ti.Access, err
 }
-
-func GetDefaultUserServerScopes() []string {
-	return []string{
-		"servers.view",
-		"servers.console",
-		"servers.stop",
-		"servers.start",
-		"servers.kill",
-		"servers.stats",
-		"servers.files",
-		"servers.files.get",
-		"servers.files.put",
-	}
-}
