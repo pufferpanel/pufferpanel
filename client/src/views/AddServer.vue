@@ -26,7 +26,7 @@
                 <b-form-select :disabled="loadingNodes" id="nodeSelect" v-model="selectedNode"
                                :options="nodes">
                   <template slot="first">
-                    <option value="" disabled v-text="$t('common.SelectNode')"></option>
+                    <option :value="null" disabled v-text="$t('common.SelectNode')"></option>
                   </template>
                 </b-form-select>
               </b-card-text>
@@ -42,7 +42,7 @@
                 <b-form-select :disabled="loadingTemplates" id="templateSelect" v-model="selectedTemplate"
                                :options="templates">
                   <template slot="first">
-                    <option value="" disabled v-text="$t('common.SelectTemplate')"></option>
+                    <option :value="null" disabled v-text="$t('common.SelectTemplate')"></option>
                   </template>
                 </b-form-select>
               </b-card-text>
@@ -56,19 +56,16 @@
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Users')"></span></h6>
               <b-card-text>
                 <b-form-input v-model="userInput" autocomplete="off"></b-form-input>
-
-                <b-form-select autocomplete="off" :disabled="searchingUsers" id="userSelect" v-model="selectedUser"
-                               :options="users">
-                  <template slot="first">
-                    <option value="" disabled v-text="$t('common.SelectUser')"></option>
-                  </template>
-                </b-form-select>
-                <div v-if="selectedUsers.length > 0">
-                  <strong v-text="$t('common.Users')"></strong>
-                  <div v-for="user in selectedUsers">
-                    <span v-text="user"></span>
-                  </div>
-                </div>
+                <b-list-group>
+                  <b-list-group-item v-for="user in users" v-bind:key="user.value" button event="click"
+                                     v-on:click="selectUser(user.value)" v-text="user.text"></b-list-group-item>
+                </b-list-group>
+                <b-list-group v-for="user in selectedUsers">
+                  <b-list-group-item>
+                    <span v-on:click="removeUser(user)"><font-awesome-icon :icon="['far','times-circle']"/></span>
+                      {{ user }}
+                  </b-list-group-item>
+                </b-list-group>
               </b-card-text>
             </b-card>
           </b-col>
@@ -79,21 +76,19 @@
             <b-card header-tag="header">
               <h6 slot="header" class="mb-0"><span v-text="$t('common.Options')"></span></h6>
               <b-card-text>
-                <div v-if="selectedTemplate" v-for="item in formData">
-                  <b-card header-tag="header" v-if="!item.internal">
-                    <h6 slot="header" v-text="item.display"></h6>
-                    <b-card-text>
-                      <span v-html="item.desc"></span>
-                      <b-form-input v-if="item.type === 'integer'" type="number" v-model="item.value"
-                                    :required="item.required"></b-form-input>
-                      <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
-                                       :required="item.required"></b-form-checkbox>
-                      <b-form-select v-else-if="item.type === 'option'" :options="item.options" v-model="item.value">
-                      </b-form-select>
-                      <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
-                    </b-card-text>
-                  </b-card>
-                </div>
+                <b-card header-tag="header" v-for="item in formData" v-if="!item.internal">
+                  <h6 slot="header" v-text="item.display"></h6>
+                  <b-card-text>
+                    <span v-html="item.desc"></span>
+                    <b-form-input v-if="item.type === 'integer'" type="number" v-model="item.value"
+                                  :required="item.required"></b-form-input>
+                    <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
+                                     :required="item.required"></b-form-checkbox>
+                    <b-form-select v-else-if="item.type === 'option'" :options="item.options" v-model="item.value">
+                    </b-form-select>
+                    <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
+                  </b-card-text>
+                </b-card>
               </b-card-text>
             </b-card>
           </b-col>
@@ -112,10 +107,10 @@ export default {
   data () {
     return {
       nodes: [],
-      selectedNode: '',
+      selectedNode: null,
       templates: [],
       templateData: {},
-      selectedTemplate: '',
+      selectedTemplate: null,
       formData: {},
       readme: '',
 
@@ -124,9 +119,9 @@ export default {
 
       searchingUsers: true,
       users: [],
-      selectedUser: '',
+      selectedUser: null,
       selectedUsers: [],
-      userInput: '',
+      userInput: null,
       userCancelSearch: CancelToken.source()
     }
   },
@@ -139,23 +134,13 @@ export default {
     },
     userInput: function (newVal, oldVal) {
       if (!newVal || newVal === '') {
-        return
+        this.users = []
+      } else {
+        new Promise((resolve, reject) => {
+          this.findUsers(newVal)
+          resolve()
+        })
       }
-      this.findUsers(newVal)
-    },
-    selectedUser: function (newVal, oldVal) {
-      if (!newVal || newVal === '') {
-        return
-      }
-      for (let i = 0; i < this.selectedUsers.length; i++) {
-        if (this.selectedUsers[i] === newVal) {
-          return
-        }
-      }
-      this.userInput = ''
-      this.selectedUsers.push(newVal)
-      this.selectedUser = ''
-      this.users = []
     }
   },
   computed: {
@@ -240,10 +225,9 @@ export default {
     },
     findUsers () {
       let vue = this
+      this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
-      this.searchingUsers = true
-      this.users = []
       this.$http.post('/api/users', {
         username: this.userInput + '*'
       }, {
@@ -251,7 +235,8 @@ export default {
       }).then(function (response) {
         let msg = response.data
         if (msg.success) {
-          for (let i = 0; i < Math.max(msg.data.length, 5); i++) {
+          vue.users = []
+          for (let i = 0; i < Math.min(msg.data.length, 5); i++) {
             let user = msg.data[i]
             vue.users.push({
               value: user.username,
@@ -260,6 +245,7 @@ export default {
           }
         }
         vue.searchingUsers = false
+      }).catch(function (e) {
       })
     },
     submitCreate () {
@@ -275,6 +261,28 @@ export default {
       }).catch(function (response) {
         console.log(response)
       })
+    },
+    selectUser: function (username) {
+      if (!username || username === '') {
+        return
+      }
+      for (let i = 0; i < this.selectedUsers.length; i++) {
+        if (this.selectedUsers[i] === username) {
+          return
+        }
+      }
+      this.userInput = null
+      this.selectedUsers.push(username)
+      this.selectedUser = null
+      this.users = []
+    },
+    removeUser: function (username) {
+      for (let i = 0; i < this.selectedUsers.length; i++) {
+        if (this.selectedUsers[i] === username) {
+          this.selectedUsers.splice(i, 1);
+          return
+        }
+      }
     }
   },
   mounted () {
