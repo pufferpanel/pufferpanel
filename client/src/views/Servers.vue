@@ -89,11 +89,22 @@ export default {
         let responseData = response.data
         for (let i in responseData.data) {
           let server = responseData.data[i]
+          let ip = ""
+
+          if (server.ip && server.ip !== "" && server.ip !== "0.0.0.0") {
+            ip = server.ip
+            if (server.port) {
+              ip += ":" + server.port
+            }
+          } else {
+            ip = server.node.publicHost
+          }
+
           vueData.servers.push({
             id: server.id,
             name: server.name,
             node: server.node.name,
-            address: server.ip ? server.ip + ':' + server.port : server.node.publicHost,
+            address: ip,
             online: false,
             nodeAddress: server.node.publicHost + ':' + server.node.publicPort
           })
