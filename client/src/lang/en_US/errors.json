@@ -1,4 +1,5 @@
 {
+  "ErrGeneric": "Unknown error",
   "ErrUnknownError": "Unknown error",
   "ErrInvalidCredentials": "Invalid credentials",
   "ErrServiceNotAvailable": "Service not available",
@@ -24,6 +25,7 @@
   "ErrFieldNotEmail": "{field} is not a valid email",
   "ErrFieldLength": "{field} must be at least {length} characters",
   "ErrNoPermission": "You do not have permission to perform this action",
+  "ErrDatabaseNotAvailable": "Database is not available",
 
   "ErrPasswordRequirements": "Password must be at least 8 characters",
   "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",

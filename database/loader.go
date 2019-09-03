@@ -19,6 +19,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/spf13/viper"
 	"strings"
@@ -63,7 +64,9 @@ func openConnection() (err error) {
 	dbConn, err = gorm.Open(dialect, connString)
 
 	if err != nil {
-		return
+		dbConn = nil
+		logging.Exception("Error connecting to database", err)
+		return pufferpanel.ErrDatabaseNotAvailable
 	}
 
 	if viper.GetBool("database.log") {
