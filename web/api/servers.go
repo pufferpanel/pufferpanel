@@ -39,11 +39,12 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("POST", "", handlers.OAuth2(pufferpanel.ScopeCreateServers, false), createServer)
 	g.Handle("GET", "/:serverId", handlers.OAuth2(pufferpanel.ScopeViewServers, true), getServer)
 	g.Handle("PUT", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServerAsUser, true), createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), deleteServer)
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
-	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), removeServerUser)
+	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -279,6 +280,7 @@ func deleteServer(c *gin.Context) {
 	server, ok := t.(*models.Server)
 	if !ok {
 		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
 	}
 
 	err = ss.Delete(server.ID)
@@ -291,15 +293,145 @@ func deleteServer(c *gin.Context) {
 }
 
 func getServerUsers(c *gin.Context) {
+	var err error
+	response := builder.From(c)
 
+	db, err := database.GetConnection()
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	os := services.GetOAuth(db)
+
+	t, exist := c.Get("server")
+
+	if !exist {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	server, ok := t.(*models.Server)
+	if !ok {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	clients, err := os.GetForServer(server.ID, false)
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	users := make([]userScopes, 0)
+	for _, client := range *clients {
+		scopes := make([]string, 0)
+
+		for _, scope := range client.ServerScopes {
+			scopes = append(scopes, scope.Scope)
+		}
+
+		users = append(users, userScopes{
+			Username: client.User.Username,
+			Scopes:   scopes,
+		})
+	}
+
+	response.Data(users)
 }
 
 func editServerUser(c *gin.Context) {
+	var err error
+	response := builder.From(c)
 
+	username := c.Param("username")
+	if username == "" {
+		return
+	}
+
+	replacement := &userScopes{}
+	err = c.BindJSON(replacement)
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+	replacement.Username = username
+
+	db, err := database.GetConnection()
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	us := &services.User{DB: db}
+	os := services.GetOAuth(db)
+
+	t, exist := c.Get("server")
+
+	if !exist {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	server, ok := t.(*models.Server)
+	if !ok {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	user, exists, err := us.Get(username)
+	if !exists || pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	clientId := services.CreateInternalClientId(user, server)
+	client, exists, err := os.GetByClientId(clientId)
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+	if !exist {
+		_, err = os.Create(user, server, clientId, true, replacement.Scopes...)
+	} else {
+		err = os.UpdateScopes(client, server, replacement.Scopes...)
+	}
+	
+	pufferpanel.HandleError(response, err)
 }
 
 func removeServerUser(c *gin.Context) {
+	var err error
+	response := builder.From(c)
 
+	username := c.Param("username")
+	if username == "" {
+		return
+	}
+
+	db, err := database.GetConnection()
+	if pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	us := &services.User{DB: db}
+	os := services.GetOAuth(db)
+
+	t, exist := c.Get("server")
+
+	if !exist {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	server, ok := t.(*models.Server)
+	if !ok {
+		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		return
+	}
+
+	user, exists, err := us.Get(username)
+	if !exists || pufferpanel.HandleError(response, err) {
+		return
+	}
+
+	err = os.Delete(services.CreateInternalClientId(user, server))
+
+	pufferpanel.HandleError(response, err)
 }
 
 //This class exists
@@ -346,4 +478,9 @@ func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, va
 	}
 
 	return val
+}
+
+type userScopes struct {
+	Username string   `json:"username,omitempty"`
+	Scopes   []string `json:"scopes,omitempty"`
 }
