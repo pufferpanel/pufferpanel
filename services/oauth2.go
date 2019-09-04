@@ -80,7 +80,7 @@ func (oauth2 *OAuth) Create(user *models.User, server *models.Server, clientId s
 
 	if clientId == "" {
 		panel = true
-		clientId = fmt.Sprintf("internal_%d_%d", user.ID, server.ID)
+		clientId = CreateInternalClientId(user, server)
 	}
 
 	ci := &models.ClientInfo{
@@ -147,7 +147,7 @@ func (oauth2 *OAuth) RemoveScope(client *models.ClientInfo, server *models.Serve
 	return nil
 }
 
-func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, scopes... string) error {
+func (oauth2 *OAuth) AddScope(client *models.ClientInfo, server *models.Server, scopes ...string) error {
 	trans := oauth2.DB.Begin()
 	commit := false
 	defer func() {
@@ -397,7 +397,7 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 
 	valid := false
 	for _, v := range ci.ServerScopes {
-		if v.ServerId == nil && v.Scope == "login" {
+		if v.ServerId == nil && v.Scope == pufferpanel.ScopeLogin {
 			valid = true
 			break
 		}
@@ -421,4 +421,40 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 	}
 
 	return ti.Access, err
+}
+
+func (oauth2 *OAuth) GetForServer(serverId uint, includeAdmin bool) (*models.ClientInfos, error) {
+	model := &models.ClientInfos{}
+
+	var exclude []string
+	//exclusion list
+	if !includeAdmin {
+		query := oauth2.DB.Set("gorm:auto_preload", true)
+		query = query.Joins("JOIN client_server_scopes ON client_server_scopes.client_info_id = client_infos.id")
+		query = query.Joins("JOIN servers ON servers.id = client_server_scopes.server_id")
+		err := query.Select("client_id").Find(&exclude).Error
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	query := oauth2.DB.Set("gorm:auto_preload", true)
+	query = query.Joins("JOIN client_server_scopes ON client_server_scopes.client_info_id = client_infos.id")
+	query = query.Joins("JOIN servers ON servers.id = client_server_scopes.server_id")
+	query = query.Where(&models.Server{ID: serverId})
+	query = query.Where("client_infos.panel = 1")
+	if len(exclude) != 0 {
+		query = query.Not("client_id", exclude)
+	}
+
+	err := query.Find(model).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return model, err
+}
+
+func CreateInternalClientId(user *models.User, server *models.Server) string {
+	return fmt.Sprintf("internal_%d_%d", user.ID, server.ID)
 }

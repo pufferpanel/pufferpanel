@@ -10,6 +10,8 @@ const ScopeOauth2Info = "oauth2.info"
 const ScopeServerAdmin = "servers.admin"
 const ScopeViewServers = "servers.view"
 const ScopeEditServers = "servers.edit"
+const ScopeEditServerAsUser = "servers.edit.user"
+const ScopeEditServerUsers = "servers.edit.users"
 const ScopeCreateServers = "servers.create"
 
 const ScopeServerConsole = "servers.console"
