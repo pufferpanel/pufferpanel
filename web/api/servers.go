@@ -40,8 +40,10 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "/:serverId", handlers.OAuth2(pufferpanel.ScopeViewServers, true), getServer)
 	g.Handle("PUT", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), deleteServer)
-	g.Handle("GET", "/:serverId/users", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
-	g.Handle("POST", "/:serverId/users", handlers.OAuth2(pufferpanel.ScopeEditServers, true), editServerUsers)
+	g.Handle("GET", "/:serverId/user", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
+	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServers, true), removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -292,7 +294,11 @@ func getServerUsers(c *gin.Context) {
 
 }
 
-func editServerUsers(c *gin.Context) {
+func editServerUser(c *gin.Context) {
+
+}
+
+func removeServerUser(c *gin.Context) {
 
 }
 
