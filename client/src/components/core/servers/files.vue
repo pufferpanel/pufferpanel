@@ -16,7 +16,7 @@
     header-tag="header">
     <h6 slot="header" class="mb-0">
       <span v-text="$t('files.FileManager') + ' - ' + currentPath + '          '"></span>
-      <a v-if="!createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
+      <a v-if="hasScope('servers.files.put') && !createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
       <div v-if="createFolder">
         <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('files.NewFolder')"></b-form-input>
         <b-btn variant="primary" size="sm" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>

@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <div v-if="canAddServer" style="padding-bottom: 20px">
+    <div v-if="hasScope('servers.create')" style="padding-bottom: 20px">
       <b-btn size="sm" variant="primary" :to="{name: 'AddServer'}">
         <font-awesome-icon :icon="['fa', 'plus']"></font-awesome-icon>
         <span v-text="' ' + $t('common.AddServer')"></span>
@@ -58,8 +58,7 @@ export default {
       pagination: {
         rowsPerPage: 10
       },
-      task: null,
-      canAddServer: this.hasScope('servers.create')
+      task: null
     }
   },
   watch: {

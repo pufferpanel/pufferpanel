@@ -15,7 +15,7 @@
   <b-container>
     <h2 v-text="server.name"/>
     <br>
-    <b-row>
+    <b-row v-if="hasScope('servers.console')">
       <b-col>
         <core-servers-console v-bind:server="server"/>
       </b-col>
@@ -25,7 +25,7 @@
         <core-servers-controls/>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row v-if="hasScope('servers.stats')">
       <b-col>
         <b-card-group>
           <core-servers-cpu/>
@@ -33,12 +33,12 @@
         </b-card-group>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row v-if="hasScope('servers.files.get')">
       <b-col>
         <core-servers-files v-bind:server="server"/>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row v-if="hasScope('servers.files')">
       <b-col>
         <core-servers-sftp v-bind:server="server"/>
       </b-col>
