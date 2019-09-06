@@ -2,8 +2,8 @@ package oauth2
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/apufferi/scope"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
@@ -11,36 +11,36 @@ import (
 
 func registerTokens(g *gin.RouterGroup) {
 	g.POST("/token", handleTokenRequest)
-	g.OPTIONS("/token", pufferpanel.CreateOptions("POST"))
+	g.OPTIONS("/token", response.CreateOptions("POST"))
 
-	g.POST("/validate", pufferpanel.NotImplemented)
-	g.OPTIONS("/validate", pufferpanel.CreateOptions("POST"))
+	g.POST("/validate", response.NotImplemented)
+	g.OPTIONS("/validate", response.CreateOptions("POST"))
 
-	g.POST("/info", handlers.OAuth2(pufferpanel.ScopeOauth2Info, false), handleInfoRequest)
-	g.OPTIONS("/info", pufferpanel.CreateOptions("POST"))
+	g.POST("/info", handlers.OAuth2(scope.OAuth2Info, false), handleInfoRequest)
+	g.OPTIONS("/info", response.CreateOptions("POST"))
 }
 
 func handleTokenRequest(c *gin.Context) {
-	response := builder.From(c)
+	res := response.From(c)
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	os := services.GetOAuth(db)
 
-	response.Discard()
+	res.Discard()
 	os.HandleHTTPTokenRequest(c.Writer, c.Request)
 }
 
 func handleInfoRequest(c *gin.Context) {
-	response := builder.From(c)
+	res := response.From(c)
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
-	response.Discard()
+	res.Discard()
 
 	os := services.GetOAuth(db)
 

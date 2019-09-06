@@ -16,27 +16,27 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/apufferi/scope"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 	"github.com/pufferpanel/pufferpanel/web/handlers"
 )
 
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2(pufferpanel.ScopeViewTemplates, false), getAllTemplates)
-	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
+	g.Handle("GET", "", handlers.OAuth2(scope.TemplatesView, false), getAllTemplates)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 }
 
 func getAllTemplates(c *gin.Context) {
 	res := response.From(c)
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 	ts := &services.Template{DB: db}
 	templates, err := ts.GetAll()
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 

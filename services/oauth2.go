@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
+	"github.com/pufferpanel/apufferi/scope"
 	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/models"
 	o2 "github.com/pufferpanel/pufferpanel/oauth2"
@@ -397,7 +398,7 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 
 	valid := false
 	for _, v := range ci.ServerScopes {
-		if v.ServerId == nil && v.Scope == pufferpanel.ScopeLogin {
+		if v.ServerId == nil && v.Scope == scope.Login {
 			valid = true
 			break
 		}

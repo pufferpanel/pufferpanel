@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/logging"
 	"github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
 	"github.com/pufferpanel/pufferpanel/services"
@@ -41,7 +40,7 @@ func proxyServerRequest(c *gin.Context) {
 	path := "/server/" + serverId + c.Param("path")
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -49,7 +48,7 @@ func proxyServerRequest(c *gin.Context) {
 	ns := &services.Node{DB: db}
 
 	server, exists, err := ss.Get(serverId)
-	if err != nil && !gorm.IsRecordNotFoundError(err) && pufferpanel.HandleError(res, err) {
+	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(res, err) {
 		return
 	} else if !exists || server == nil {
 		res.Status(netHttp.StatusNotFound).Fail()
@@ -75,19 +74,19 @@ func proxyNodeRequest(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	ns := &services.Node{DB: db}
 
 	id, err := strconv.ParseUint(nodeId, 10, 32)
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	node, exists, err := ns.Get(uint(id))
-	if pufferpanel.HandleError(res, err) {
+	if response.HandleError(res, err) {
 		return
 	} else if !exists {
 		res.Fail().Status(404)

@@ -2,25 +2,24 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	builder "github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/apufferi/response"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/services"
 )
 
 func LoginPost(c *gin.Context) {
-	response := builder.From(c)
+	res := response.From(c)
 
 	request := &loginRequest{}
 
 	err := c.BindJSON(request)
 	if err != nil {
-		response.Message("invalid request").Status(400).Error(err).Fail()
+		res.Message("invalid request").Status(400).Error(err).Fail()
 		return
 	}
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -28,7 +27,7 @@ func LoginPost(c *gin.Context) {
 	os := services.GetOAuth(db)
 
 	session, err := us.Login(request.Data.Email, request.Data.Password)
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -37,7 +36,7 @@ func LoginPost(c *gin.Context) {
 
 	_, client, err := os.GetByToken(data.Session)
 
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -59,7 +58,7 @@ func LoginPost(c *gin.Context) {
 		data.ServerScopes[serverName] = m
 	}
 
-	response.Data(data)
+	res.Data(data)
 }
 
 type loginRequest struct {
