@@ -19,7 +19,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi"
 	"github.com/pufferpanel/apufferi/logging"
-	builder "github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/apufferi/response"
+	"github.com/pufferpanel/apufferi/scope"
 	"github.com/pufferpanel/pufferpanel"
 	"github.com/pufferpanel/pufferpanel/database"
 	"github.com/pufferpanel/pufferpanel/models"
@@ -33,24 +34,24 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2WithLimit(pufferpanel.ScopeViewServers, false), searchServers)
-	g.Handle("OPTIONS", "", pufferpanel.CreateOptions("GET"))
+	g.Handle("GET", "", handlers.OAuth2WithLimit(scope.ServersView, false), searchServers)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2(pufferpanel.ScopeCreateServers, false), createServer)
-	g.Handle("GET", "/:serverId", handlers.OAuth2(pufferpanel.ScopeViewServers, true), getServer)
-	g.Handle("PUT", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), createServer)
-	g.Handle("POST", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServerAsUser, true), createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2(pufferpanel.ScopeEditServers, false), deleteServer)
-	g.Handle("GET", "/:serverId/user", handlers.OAuth2(pufferpanel.ScopeEditServers, true), getServerUsers)
-	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(pufferpanel.ScopeEditServerUsers, true), removeServerUser)
-	g.Handle("OPTIONS", "/:serverId", pufferpanel.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("POST", "", handlers.OAuth2(scope.ServersCreate, false), createServer)
+	g.Handle("GET", "/:serverId", handlers.OAuth2(scope.ServersView, true), getServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2(scope.ServersCreate, false), createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2(scope.ServersEdit, true), createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, false), deleteServer)
+	g.Handle("GET", "/:serverId/user", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
+	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), removeServerUser)
+	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 func searchServers(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	username := c.DefaultQuery("username", "")
 	nodeQuery := c.DefaultQuery("node", "0")
@@ -60,7 +61,7 @@ func searchServers(c *gin.Context) {
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
 	if err != nil || pageSize <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
+		res.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
 		return
 	}
 
@@ -70,18 +71,18 @@ func searchServers(c *gin.Context) {
 
 	page, err := strconv.Atoi(pageQuery)
 	if err != nil || page <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
+		res.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
 		return
 	}
 
 	node, err := strconv.Atoi(nodeQuery)
 	if err != nil || page <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("node id is invalid")
+		res.Fail().Status(http.StatusBadRequest).Message("node id is invalid")
 		return
 	}
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -89,9 +90,9 @@ func searchServers(c *gin.Context) {
 	os := services.GetOAuth(db)
 
 	//see if user has access to view all others, otherwise we can't permit search without their username
-	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, pufferpanel.ScopeViewServers)
+	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, scope.ServersView)
 	if !allowed {
-		response.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
+		res.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
 		return
 	}
 
@@ -106,34 +107,34 @@ func searchServers(c *gin.Context) {
 		PageSize: uint(pageSize),
 		Page:     uint(page),
 	}
-	if results, total, err = ss.Search(searchCriteria); pufferpanel.HandleError(response, err) {
+	if results, total, err = ss.Search(searchCriteria); response.HandleError(res, err) {
 		return
 	}
 
-	response.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.RemoveServerPrivateInfoFromAll(models.FromServers(results)))
+	res.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.RemoveServerPrivateInfoFromAll(models.FromServers(results)))
 }
 
 func getServer(c *gin.Context) {
-	response := builder.From(c)
+	res := response.From(c)
 
 	t, exist := c.Get("server")
 
 	if !exist {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 	}
 
-	response.Data(models.RemoveServerPrivateInfo(models.FromServer(server)))
+	res.Data(models.RemoveServerPrivateInfo(models.FromServer(server)))
 }
 
 func createServer(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -144,12 +145,12 @@ func createServer(c *gin.Context) {
 	err = c.Bind(postBody)
 	postBody.Identifier = serverId
 	if err != nil {
-		response.Status(http.StatusBadRequest).Error(err).Fail()
+		res.Status(http.StatusBadRequest).Error(err).Fail()
 		return
 	}
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -169,12 +170,12 @@ func createServer(c *gin.Context) {
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	if !exists {
-		response.Status(http.StatusBadRequest).Message("no node with given id").Fail()
+		res.Status(http.StatusBadRequest).Message("no node with given id").Fail()
 	}
 
 	server := &models.Server{
@@ -190,19 +191,19 @@ func createServer(c *gin.Context) {
 
 	for k, v := range postBody.Users {
 		user, exists, err := us.Get(v)
-		if pufferpanel.HandleError(response, err) {
+		if response.HandleError(res, err) {
 			return
 		}
 		if !exists {
-			pufferpanel.HandleError(response, pufferpanel.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
+			response.HandleError(res, pufferpanel.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
 			return
 		}
 
 		users[k] = user
 	}
 
-	admins, err := os.GetByScope(pufferpanel.ScopeServerAdmin, nil, nil, true)
-	if pufferpanel.HandleError(response, err) {
+	admins, err := os.GetByScope(scope.ServersAdmin, nil, nil, true)
+	if response.HandleError(res, err) {
 		return
 	}
 	for _, v := range *admins {
@@ -211,13 +212,13 @@ func createServer(c *gin.Context) {
 
 	err = ss.Create(server)
 	if err != nil {
-		response.Status(http.StatusInternalServerError).Error(err).Fail()
+		res.Status(http.StatusInternalServerError).Error(err).Fail()
 		return
 	}
 
 	for _, v := range users {
-		_, err := os.Create(v, server, "", true, pufferpanel.GetDefaultUserServerScopes()...)
-		if pufferpanel.HandleError(response, err) {
+		_, err := os.Create(v, server, "", true, scope.ServersDefaultUser()...)
+		if response.HandleError(res, err) {
 			return
 		}
 	}
@@ -230,30 +231,30 @@ func createServer(c *gin.Context) {
 
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
 
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
 		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(nodeResponse.StatusCode).Log()
-		pufferpanel.HandleError(response, pufferpanel.ErrUnknownError)
+		response.HandleError(res, pufferpanel.ErrUnknownError)
 		return
 	}
 
-	apiResponse := &builder.Response{}
+	apiResponse := &response.Response{}
 	err = json.NewDecoder(nodeResponse.Body).Decode(apiResponse)
 
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
 	if !apiResponse.Success {
 		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(apiResponse).Log()
-		pufferpanel.HandleError(response, pufferpanel.ErrUnknownError)
+		response.HandleError(res, pufferpanel.ErrUnknownError)
 		return
 	}
 
-	response.Data(server.Identifier)
+	res.Data(server.Identifier)
 
 	trans.Commit()
 	success = true
@@ -261,10 +262,10 @@ func createServer(c *gin.Context) {
 
 func deleteServer(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -273,31 +274,31 @@ func deleteServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	err = ss.Delete(server.ID)
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	} else {
 		v := models.FromServer(server)
-		response.Status(http.StatusOK).Data(v)
+		res.Status(http.StatusOK).Data(v)
 	}
 }
 
 func getServerUsers(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -306,18 +307,18 @@ func getServerUsers(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	clients, err := os.GetForServer(server.ID, false)
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -335,12 +336,12 @@ func getServerUsers(c *gin.Context) {
 		})
 	}
 
-	response.Data(users)
+	res.Data(users)
 }
 
 func editServerUser(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	username := c.Param("username")
 	if username == "" {
@@ -349,13 +350,13 @@ func editServerUser(c *gin.Context) {
 
 	replacement := &userScopes{}
 	err = c.BindJSON(replacement)
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 	replacement.Username = username
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -365,24 +366,24 @@ func editServerUser(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	user, exists, err := us.Get(username)
-	if !exists || pufferpanel.HandleError(response, err) {
+	if !exists || response.HandleError(res, err) {
 		return
 	}
 
 	clientId := services.CreateInternalClientId(user, server)
 	client, exists, err := os.GetByClientId(clientId)
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 	if !exist {
@@ -391,12 +392,12 @@ func editServerUser(c *gin.Context) {
 		err = os.UpdateScopes(client, server, replacement.Scopes...)
 	}
 	
-	pufferpanel.HandleError(response, err)
+	response.HandleError(res, err)
 }
 
 func removeServerUser(c *gin.Context) {
 	var err error
-	response := builder.From(c)
+	res := response.From(c)
 
 	username := c.Param("username")
 	if username == "" {
@@ -404,7 +405,7 @@ func removeServerUser(c *gin.Context) {
 	}
 
 	db, err := database.GetConnection()
-	if pufferpanel.HandleError(response, err) {
+	if response.HandleError(res, err) {
 		return
 	}
 
@@ -414,24 +415,24 @@ func removeServerUser(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		pufferpanel.HandleError(response, pufferpanel.ErrServerNotFound)
+		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
 
 	user, exists, err := us.Get(username)
-	if !exists || pufferpanel.HandleError(response, err) {
+	if !exists || response.HandleError(res, err) {
 		return
 	}
 
 	err = os.Delete(services.CreateInternalClientId(user, server))
 
-	pufferpanel.HandleError(response, err)
+	response.HandleError(res, err)
 }
 
 //This class exists
