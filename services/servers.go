@@ -51,7 +51,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (*models.Servers, uint, er
 		return nil, 0, err
 	}
 
-	res := query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Find(servers)
+	res := query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Order("servers.name").Find(servers)
 
 	return servers, count, res.Error
 }
@@ -84,9 +84,11 @@ func (ss *Server) Delete(id uint) error {
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {
-	uuid := uuid2.NewV4()
-	generatedId := strings.ToUpper(uuid.String())[0:8]
-	model.Identifier = generatedId
+	if model.Identifier == "" {
+		uuid := uuid2.NewV4()
+		generatedId := strings.ToUpper(uuid.String())[0:8]
+		model.Identifier = generatedId
+	}
 
 	res := ss.DB.Create(model)
 	if res.Error != nil {
