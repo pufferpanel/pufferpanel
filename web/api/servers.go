@@ -322,12 +322,30 @@ func getServerUsers(c *gin.Context) {
 		return
 	}
 
+	caller, _ := c.Get("user")
+	user := caller.(*models.User)
 	users := make([]userScopes, 0)
 	for _, client := range *clients {
+		if client.User.Username == user.Username {
+			continue
+		}
+
+		skip := false
+		for _, v := range users {
+			if v.Username == client.User.Username {
+				skip = true
+				break
+			}
+		}
+
+		if skip {
+			continue
+		}
+
 		scopes := make([]string, 0)
 
-		for _, scope := range client.ServerScopes {
-			scopes = append(scopes, scope.Scope)
+		for _, s := range client.ServerScopes {
+			scopes = append(scopes, s.Scope)
 		}
 
 		users = append(users, userScopes{
@@ -391,7 +409,7 @@ func editServerUser(c *gin.Context) {
 	} else {
 		err = os.UpdateScopes(client, server, replacement.Scopes...)
 	}
-	
+
 	response.HandleError(res, err)
 }
 
