@@ -50,5 +50,7 @@
   "SelectTemplate": "Please select template",
   "SelectUser": "Please select user",
   "Users": "Users",
-  "Options": "Options"
+  "Options": "Options",
+  "Environment": "Environment",
+  "SelectEnvironment": "Please select environment"
 }

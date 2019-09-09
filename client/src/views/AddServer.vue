@@ -63,9 +63,34 @@
                 <b-list-group v-for="user in selectedUsers">
                   <b-list-group-item>
                     <span v-on:click="removeUser(user)"><font-awesome-icon :icon="['far','times-circle']"/></span>
-                      {{ user }}
+                    {{ user }}
                   </b-list-group-item>
                 </b-list-group>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col sm="12" md="10">
+            <b-card header-tag="header">
+              <h6 slot="header" class="mb-0"><span v-text="$t('common.Environment')"></span></h6>
+              <b-card-text>
+                <b-form-select :disabled="loadingTemplates" id="environmentSelect" v-model="selectedEnvironment"
+                               :options="environments">
+                  <template slot="first">
+                    <option :value="null" disabled v-text="$t('common.SelectEnvironment')"></option>
+                  </template>
+                </b-form-select>
+                <b-card-text v-if="selectedEnvironment && environments[selectedEnvironment]">
+                  <b-card header-tag="header" v-for="(val, key) in environments[selectedEnvironment].metadata">
+                    <h6 slot="header" v-text="$t('env.' + environments[selectedEnvironment].type + '.' + key)"></h6>
+                    <b-card-text>
+                      <b-form-input
+                        v-model="environments[selectedEnvironment].metadata[key]"></b-form-input>
+                    </b-card-text>
+                  </b-card>
+                </b-card-text>
               </b-card-text>
             </b-card>
           </b-col>
@@ -122,7 +147,10 @@ export default {
       selectedUser: null,
       selectedUsers: [],
       userInput: null,
-      userCancelSearch: CancelToken.source()
+      userCancelSearch: CancelToken.source(),
+
+      selectedEnvironment: null,
+      environments: []
     }
   },
   watch: {
@@ -131,6 +159,33 @@ export default {
         return
       }
       this.formData = this.templateData[newVal].data
+      this.environments = []
+      for (let k in this.templateData[newVal].supportedEnvironments) {
+        let env = this.templateData[newVal].supportedEnvironments[k]
+        this.environments.push({
+          value: k,
+          text: this.$t('env.' + env.type + '.name'),
+          metadata: env.metadata,
+          type: env.type
+        })
+      }
+
+      let env = this.templateData[newVal].environment
+      let def = null
+      if (env && env.type) {
+        def = env.type
+      }
+
+      if (def) {
+        for (let k in this.environments) {
+          if (this.environments[k].type === def) {
+            this.selectedEnvironment = k
+            break
+          }
+        }
+      } else {
+        this.selectedEnvironment = null
+      }
     },
     userInput: function (newVal, oldVal) {
       if (!newVal || newVal === '') {
@@ -154,6 +209,10 @@ export default {
       }
 
       if (this.selectedUsers.length === 0) {
+        return false
+      }
+
+      if (!this.selectedEnvironment) {
         return false
       }
 
@@ -253,6 +312,10 @@ export default {
       let data = this.templateData[this.selectedTemplate]
       data.node = this.selectedNode
       data.users = this.selectedUsers
+      data.environment = {
+        type: this.environments[this.selectedEnvironment].type,
+        metadata: this.environments[this.selectedEnvironment].metadata
+      }
       this.$http.post('/api/servers', data).then(function (response) {
         let msg = response.data
         if (msg.success) {
@@ -279,7 +342,7 @@ export default {
     removeUser: function (username) {
       for (let i = 0; i < this.selectedUsers.length; i++) {
         if (this.selectedUsers[i] === username) {
-          this.selectedUsers.splice(i, 1);
+          this.selectedUsers.splice(i, 1)
           return
         }
       }
