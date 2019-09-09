@@ -427,13 +427,13 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 func (oauth2 *OAuth) GetForServer(serverId uint, includeAdmin bool) (*models.ClientInfos, error) {
 	model := &models.ClientInfos{}
 
-	var exclude []string
+	exclude := &models.ClientInfos{}
 	//exclusion list
 	if !includeAdmin {
 		query := oauth2.DB.Set("gorm:auto_preload", true)
+		query = query.Table("client_infos")
 		query = query.Joins("JOIN client_server_scopes ON client_server_scopes.client_info_id = client_infos.id")
-		query = query.Joins("JOIN servers ON servers.id = client_server_scopes.server_id")
-		err := query.Select("client_id").Find(&exclude).Error
+		err := query.Select("client_id").Where("scope = 'servers.admin'").Find(&exclude).Error
 		if err != nil {
 			return nil, err
 		}
@@ -444,8 +444,12 @@ func (oauth2 *OAuth) GetForServer(serverId uint, includeAdmin bool) (*models.Cli
 	query = query.Joins("JOIN servers ON servers.id = client_server_scopes.server_id")
 	query = query.Where(&models.Server{ID: serverId})
 	query = query.Where("client_infos.panel = 1")
-	if len(exclude) != 0 {
-		query = query.Not("client_id", exclude)
+	if len(*exclude) != 0 {
+		ids := make([]string, len(*exclude))
+		for k, v := range *exclude {
+			ids[k] = v.ClientID
+		}
+		query = query.Not("client_id", ids)
 	}
 
 	err := query.Find(model).Error
