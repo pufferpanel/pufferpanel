@@ -274,7 +274,7 @@ func (oauth2 *OAuth) UpdateScopes(client *models.ClientInfo, server *models.Serv
 func (oauth2 *OAuth) Delete(clientId string) (err error) {
 	model := &models.ClientInfo{ClientID: clientId}
 
-	return oauth2.DB.Delete(model).Error
+	return oauth2.DB.Where(model).Delete(model).Error
 }
 
 func (oauth2 *OAuth) GetByClientId(clientId string) (client *models.ClientInfo, exists bool, err error) {
@@ -461,5 +461,5 @@ func (oauth2 *OAuth) GetForServer(serverId uint, includeAdmin bool) (*models.Cli
 }
 
 func CreateInternalClientId(user *models.User, server *models.Server) string {
-	return fmt.Sprintf("internal_%d_%d", user.ID, server.ID)
+	return fmt.Sprintf(".internal_%d_%d", user.ID, server.ID)
 }
