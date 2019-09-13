@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/middleware"
+	"github.com/pufferpanel/apufferi/v3/middleware"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {

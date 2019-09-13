@@ -15,7 +15,7 @@ package models
 
 import (
 	"encoding/json"
-	"github.com/pufferpanel/apufferi"
+	"github.com/pufferpanel/apufferi/v3"
 	"strings"
 )
 

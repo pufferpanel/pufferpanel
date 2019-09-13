@@ -7,50 +7,29 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  GOBIN:  '$(GOPATH)/bin' # Go binaries path
-  GOROOT: '/usr/local/go1.11' # Go installation path
-  GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-  modulePath: '$(GOPATH)/src/github.com/pufferpanel/pufferpanel' # Path to the module's code
   version: $(Build.BuildNumber)
 
 steps:
   - script: |
-      mkdir -p '$(GOBIN)'
-      mkdir -p '$(GOPATH)/pkg'
-      mkdir -p '$(modulePath)'
-      shopt -s extglob
-      mv !(gopath) '$(modulePath)'
-      echo '##vso[task.prependpath]$(GOBIN)'
-      echo '##vso[task.prependpath]$(GOROOT)/bin'
-      mkdir $(GOPATH)/build
-      echo {} > $(GOPATH)/build/config.json
+      mkdir /build
+      echo {} > /build/config.json
       go version
       sudo apt-get update
       sudo apt-get install gcc-arm-linux-gnueabihf
     displayName: 'Set up the Go workspace'
 
   - script: |
-      curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      dep version
-    workingDirectory: '$(modulePath)'
-    displayName: 'Download dep'
-
-  - script: |
       export GOOS=windows
       export GOARCH=amd64
       export CGO_ENABLED=1
-      dep ensure -v
-      go build -o $(GOPATH)/build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
-    workingDirectory: '$(modulePath)'
+      go build -o /build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
     displayName: 'Windows Build'
 
   - script: |
       export GOOS=linux
       export GOARCH=amd64
       export CGO_ENABLED=1
-      dep ensure -v
-      go build -o $(GOPATH)/build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
-    workingDirectory: '$(modulePath)'
+      go build -o /build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
     displayName: 'Linux Build'
 
   - script: |
@@ -60,9 +39,7 @@ steps:
       export CXX=arm-linux-gnueabihf-g++
       export CGO_ENABLED=1 
       export GOARM=7
-      dep ensure -v
-      go build -o $(GOPATH)/build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
-    workingDirectory: '$(modulePath)'
+      go build -o /build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/cmd
     displayName: 'Linux Build - ARM'
 
   - task: UseRubyVersion@0
@@ -74,21 +51,20 @@ steps:
   - task: Npm@1
     inputs:
       command: 'install'
-      workingDir: '$(modulePath)/client'
+      workingDir: 'client'
     displayName: 'Install NPM'
 
   - task: Npm@1
     inputs:
       command: 'custom'
       customCommand: 'run build'
-      workingDir: '$(modulePath)/client'
+      workingDir: 'client'
     displayName: 'NPM Build client files'
 
   - script: |
-      mkdir -p $(GOPATH)/build/client/dist
-      cp -r client/dist/* $(GOPATH)/build/client/dist
-      cp -r assets $(GOPATH)/build/assets
-    workingDirectory: '$(modulePath)'
+      mkdir -p /build/client/dist
+      cp -r client/dist/* /build/client/dist
+      cp -r assets /build/assets
     displayName: 'Copy assets'
 
   - task: Docker@2
@@ -97,13 +73,12 @@ steps:
       repository: 'pufferpanel/pufferpanel'
       command: 'buildAndPush'
       Dockerfile: '.azure/Dockerfile'
-      buildContext: '$(GOPATH)/build'
+      buildContext: '/build'
       tags: 'kraken'
 
   - script: |
       git clone https://github.com/PufferPanel/systemd
     displayName: 'Get supporting files'
-    workingDirectory: '$(modulePath)'
 
   - script: |
       gem install --no-doc rake
@@ -121,14 +96,14 @@ steps:
         --after-upgrade scripts/postupgrade.sh \
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
-        $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
-        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
+        /build/pufferpanel=/usr/sbin/pufferpanel \
+        /build/client/dist=/var/www/pufferpanel/client/dist/ \
+        /build/config.json=/etc/pufferpanel/config.json
 
-      mkdir $(GOPATH)/build/xenial
-      mv *.deb $(GOPATH)/build/xenial
+      mkdir /build/xenial
+      mv *.deb /build/xenial
     displayName: 'Create packages - xenial'
-    workingDirectory: '$(modulePath)/systemd/pufferpanel/xenial'
+    workingDirectory: 'systemd/pufferpanel/xenial'
 
   - script: |
       fpm -s deb -t rpm \
@@ -138,12 +113,12 @@ steps:
         --before-install scripts/preinst.sh \
         --after-upgrade scripts/postupgrade.sh \
         --before-remove scripts/prerm.sh \
-        $(GOPATH)/build/xenial/pufferpanel_*_amd64.deb
+        /build/xenial/pufferpanel_*_amd64.deb
 
-      mkdir $(GOPATH)/build/rpm
-      mv *.rpm $(GOPATH)/build/rpm
+      mkdir /build/rpm
+      mv *.rpm /build/rpm
     displayName: 'Create packages - rpm'
-    workingDirectory: '$(modulePath)/systemd/pufferpanel/rpm7'
+    workingDirectory: 'systemd/pufferpanel/rpm7'
 
   - script: |
       fpm -s dir -t deb \
@@ -154,14 +129,14 @@ steps:
         --before-install scripts/preinst.sh \
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
-        $(GOPATH)/build/pufferpanel=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
-        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
+        /build/pufferpanel=/usr/sbin/pufferpanel \
+        /build/client/dist=/var/www/pufferpanel/client/dist/ \
+        /build/config.json=/etc/pufferpanel/config.json
 
-      mkdir $(GOPATH)/build/trusty
-      mv *.deb $(GOPATH)/build/trusty
+      mkdir /build/trusty
+      mv *.deb /build/trusty
     displayName: 'Create packages - trusty'
-    workingDirectory: '$(modulePath)/systemd/pufferpanel/trusty'
+    workingDirectory: 'systemd/pufferpanel/trusty'
 
   - script: |
       fpm -s dir -t deb \
@@ -174,17 +149,17 @@ steps:
         --before-remove scripts/prerm.sh \
         --deb-after-purge scripts/purge.sh \
         -a armhf \
-        $(GOPATH)/build/pufferpanel-arm=/usr/sbin/pufferpanel \
-        $(GOPATH)/build/client/dist=/var/www/pufferpanel/client/dist/ \
-        $(GOPATH)/build/config.json=/etc/pufferpanel/config.json
+        /build/pufferpanel-arm=/usr/sbin/pufferpanel \
+        /build/client/dist=/var/www/pufferpanel/client/dist/ \
+        /build/config.json=/etc/pufferpanel/config.json
 
-      mkdir $(GOPATH)/build/buster-arm
-      mv *.deb $(GOPATH)/build/buster-arm
+      mkdir /build/buster-arm
+      mv *.deb /build/buster-arm
     displayName: 'Create packages - buster'
-    workingDirectory: '$(modulePath)/systemd/pufferpanel/xenial'
+    workingDirectory: 'systemd/pufferpanel/xenial'
 
   - task: PublishPipelineArtifact@0
     inputs:
       artifactName: 'pufferpanel'
-      targetPath: '$(GOPATH)/build/.'
+      targetPath: '/build/.'
     displayName: 'Publish'

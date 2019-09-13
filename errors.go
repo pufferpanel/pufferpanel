@@ -2,7 +2,7 @@ package pufferpanel
 
 import (
 	"errors"
-	"github.com/pufferpanel/apufferi"
+	"github.com/pufferpanel/apufferi/v3"
 	"gopkg.in/go-playground/validator.v9"
 	"strings"
 )

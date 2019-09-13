@@ -15,13 +15,13 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/apufferi/scope"
-	"github.com/pufferpanel/pufferpanel"
-	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/models"
-	"github.com/pufferpanel/pufferpanel/services"
-	"github.com/pufferpanel/pufferpanel/web/handlers"
+	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"net/http"
 )
 

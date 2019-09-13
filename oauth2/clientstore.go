@@ -1,8 +1,8 @@
 package oauth2
 
 import (
-	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gopkg.in/oauth2.v3"
 )
 

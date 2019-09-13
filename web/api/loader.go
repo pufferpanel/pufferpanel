@@ -15,7 +15,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/middleware"
+	"github.com/pufferpanel/apufferi/v3/middleware"
 )
 
 const MaxPageSize = 100

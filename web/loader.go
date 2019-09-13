@@ -15,12 +15,12 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/middleware"
-	"github.com/pufferpanel/pufferpanel/web/api"
-	"github.com/pufferpanel/pufferpanel/web/auth"
-	"github.com/pufferpanel/pufferpanel/web/daemon"
-	"github.com/pufferpanel/pufferpanel/web/handlers"
-	"github.com/pufferpanel/pufferpanel/web/oauth2"
+	"github.com/pufferpanel/apufferi/v3/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/web/api"
+	"github.com/pufferpanel/pufferpanel/v2/web/auth"
+	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
+	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
 	"strings"
 )
 

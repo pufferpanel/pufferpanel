@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/pufferpanel"
-	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"strings"

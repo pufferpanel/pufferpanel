@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"gopkg.in/oauth2.v3"
 	"strconv"
 	"time"
