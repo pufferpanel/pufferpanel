@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/pufferpanel/apufferi/logging"
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/viper"
 	"html/template"
 	"os"

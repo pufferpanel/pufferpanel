@@ -14,7 +14,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"gopkg.in/go-playground/validator.v9"
 )
 

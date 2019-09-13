@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/cobra"
 )
 

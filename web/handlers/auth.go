@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/response"
-	"github.com/pufferpanel/pufferpanel/database"
-	"github.com/pufferpanel/pufferpanel/services"
+	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"strings"
 	"time"
 )

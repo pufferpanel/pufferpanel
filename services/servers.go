@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/pufferpanel/models"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	uuid2 "github.com/satori/go.uuid"
 	"strings"
 )
