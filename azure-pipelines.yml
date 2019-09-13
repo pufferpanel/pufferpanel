@@ -8,6 +8,7 @@ pool:
 
 variables:
   version: $(Build.BuildNumber)
+  packageVersion: v2
 
 steps:
   - script: |
@@ -22,14 +23,14 @@ steps:
       export GOOS=windows
       export GOARCH=amd64
       export CGO_ENABLED=1
-      go build -o /build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/v3/cmd
+      go build -o /build/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/$(packageVersion)/cmd
     displayName: 'Windows Build'
 
   - script: |
       export GOOS=linux
       export GOARCH=amd64
       export CGO_ENABLED=1
-      go build -o /build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/v3/cmd
+      go build -o /build/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/$(packageVersion)/cmd
     displayName: 'Linux Build'
 
   - script: |
@@ -39,7 +40,7 @@ steps:
       export CXX=arm-linux-gnueabihf-g++
       export CGO_ENABLED=1 
       export GOARM=7
-      go build -o /build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/v3/cmd
+      go build -o /build/pufferpanel-arm -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=$(Build.SourceVersion) -X github.com/pufferpanel/pufferpanel.Version=$(version)" -v github.com/pufferpanel/pufferpanel/$(packageVersion)/cmd
     displayName: 'Linux Build - ARM'
 
   - task: UseRubyVersion@0
