@@ -1,0 +1,40 @@
+name: Go
+on: 
+  push:
+    branches:
+    - master
+    path:
+    - '*'
+    - '!azure-pipelines.yml'
+    - '!.travis.yml'
+    - '!*.md'
+    
+    
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-18.04,windows-2019]
+        arch: [amd64, arm]
+        go: [ '1.12' ]
+        exclude:
+          - os: windows-2019
+            arch: arm
+
+    steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      
+    - name: Build
+      run: |
+        go build -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
