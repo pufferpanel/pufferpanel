@@ -2,7 +2,7 @@ name: Go
 on: 
   push:
     branches:
-    - master
+    - kraken
     path:
     - '*'
     - '!azure-pipelines.yml'
