@@ -51,7 +51,7 @@ func (us *User) Login(email string, password string) (sessionToken string, err e
 }
 
 func (us *User) IsValidCredentials(user *models.User, password string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password)) != nil
+	return bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password)) == nil
 }
 
 func (us *User) GetByEmail(email string) (*models.User, bool, error) {
