@@ -36,10 +36,17 @@ import (
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Runs the panel",
-	Run:   root,
+	Run:   executeRun,
 }
 
-func executeRun(cmd *cobra.Command, args []string) error {
+func executeRun(cmd *cobra.Command, args []string) {
+	err := internalRun(cmd, args)
+	if err != nil {
+		logging.Exception("An error has occurred while executing", err)
+	}
+}
+
+func internalRun(cmd *cobra.Command, args []string) error {
 	err := pufferpanel.LoadConfig()
 	if err != nil {
 		return err

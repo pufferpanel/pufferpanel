@@ -22,7 +22,9 @@ import (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of PufferPanel",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(pufferpanel.Display)
-	},
+	Run: executeVersion,
+}
+
+func executeVersion(cmd *cobra.Command, args []string) {
+	fmt.Println(pufferpanel.Display)
 }
