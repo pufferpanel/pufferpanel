@@ -14,7 +14,7 @@ func init() {
 
 	viper.SetDefault("database.session", 60)
 	viper.SetDefault("database.dialect", "sqlite3")
-	viper.SetDefault("database.url", "file:pufferpanel.db?cache=shared&mode=memory")
+	viper.SetDefault("database.url", "file:pufferpanel.db?cache=shared")
 
 	viper.SetDefault("web.host", "0.0.0.0")
 	viper.SetDefault("web.port", "8080")

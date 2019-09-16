@@ -15,7 +15,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -23,7 +23,6 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "pufferpanel",
 	Short: "Game Server Management Panel",
-	Run:   root,
 }
 
 func init() {
@@ -33,15 +32,10 @@ func init() {
 }
 
 func Execute() {
+	rootCmd.SetVersionTemplate(pufferpanel.Display)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
-	}
-}
-
-func root(cmd *cobra.Command, args []string) {
-	err := executeRun(cmd, args)
-	if err != nil {
-		logging.Exception("An error has occurred while executing", err)
 	}
 }
