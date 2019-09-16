@@ -19,10 +19,15 @@ jobs:
       matrix:
         os: [ubuntu-18.04,windows-2019]
         arch: [amd64, arm]
+        filename: [pufferpanel, pufferpanel.exe]
         go: [ '1.12' ]
         exclude:
           - os: windows-2019
             arch: arm
+          - os: windows-2019
+            filename: pufferpanel
+          - os: ubuntu-18.04
+            filename: pufferpanel.exe
 
     steps:
 
@@ -37,4 +42,4 @@ jobs:
       
     - name: Build
       run: |
-        go build -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
