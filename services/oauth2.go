@@ -1,8 +1,16 @@
 package services
 
 import (
+	"bytes"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -11,9 +19,12 @@ import (
 	"github.com/satori/go.uuid"
 	oauth "gopkg.in/oauth2.v3"
 	oauthErrors "gopkg.in/oauth2.v3/errors"
+	"gopkg.in/oauth2.v3/generates"
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/server"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -36,6 +47,60 @@ func configureServer() {
 	manager := manage.NewDefaultManager()
 	manager.MapClientStorage(&o2.ClientStore{})
 	manager.MapTokenStorage(&o2.TokenStore{})
+
+	var key bytes.Buffer
+	privKeyFile, err := os.OpenFile("private.pem", os.O_RDONLY, 0600)
+	defer apufferi.Close(privKeyFile)
+
+	if os.IsNotExist(err) {
+		privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+
+		privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
+		privKeyFile, err = os.OpenFile("private.pem", os.O_CREATE|os.O_WRONLY, 0600)
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+		err = pem.Encode(privKeyFile, &pem.Block{Type: "PRIVATE KEY", Bytes: privKeyEncoded})
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+		err = pem.Encode(&key, &pem.Block{Type: "PRIVATE KEY", Bytes: privKeyEncoded})
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+
+		pubKey := &privKey.PublicKey
+		pubKeyEncoded, err := x509.MarshalPKIXPublicKey(pubKey)
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+
+		pubKeyFile, err := os.OpenFile("public.pem", os.O_CREATE|os.O_WRONLY, 0600)
+		defer apufferi.Close(pubKeyFile)
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+		err = pem.Encode(pubKeyFile, &pem.Block{Type: "PUBLIC KEY", Bytes: pubKeyEncoded})
+		if err != nil {
+			logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+			return
+		}
+	} else if err != nil {
+		logging.Build(logging.ERROR).WithMessage("internal error on oauth2 service").WithError(err).Log()
+	} else {
+		_, _ = io.Copy(&key, privKeyFile)
+	}
+
+	manager.MapAccessGenerate(generates.NewJWTAccessGenerate(key.Bytes(), jwt.SigningMethodES256))
 
 	srv := server.NewServer(server.NewConfig(), manager)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
@@ -408,20 +473,23 @@ func (oauth2 *OAuth) CreateSession(user *models.User) (string, error) {
 		return "", pufferpanel.ErrLoginNotPermitted
 	}
 
-	ti := &models.TokenInfo{
-		ClientInfoID:    ci.ID,
-		AccessCreateAt:  time.Now(),
-		AccessExpiresIn: 1 * time.Hour,
-		Access:          strings.Replace(uuid.NewV4().String(), "-", "", -1),
-	}
-
-	err = oauth2.DB.Create(ti).Error
+	token, err := oauth2.server.Manager.GenerateAccessToken(oauth.PasswordCredentials, &oauth.TokenGenerateRequest{
+		ClientID:     ci.ClientID,
+		ClientSecret: ci.Secret,
+		//UserID:         ci.UserID,
+		//RedirectURI:    "",
+		Scope: "",
+		//Code:           "",
+		//Refresh:        "",
+		AccessTokenExp: 1 * time.Hour,
+		//Request:        nil,
+	})
 
 	if err != nil {
-		ti.Access = ""
+		return "", err
 	}
 
-	return ti.Access, err
+	return token.GetAccess(), err
 }
 
 func (oauth2 *OAuth) GetForServer(serverId uint, includeAdmin bool) (*models.ClientInfos, error) {

@@ -11,3 +11,4 @@ config.json
 */node_modules/*
 vendor/
 client/dist/
+*.pem
