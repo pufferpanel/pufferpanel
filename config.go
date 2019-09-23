@@ -24,5 +24,12 @@ func init() {
 }
 
 func LoadConfig() error {
-	return viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			//this is just a missing config, since ENV is supported, ignore
+		} else {
+			return err
+		}
+	}
+	return nil
 }
