@@ -128,11 +128,11 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 }
 
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
+	response.From(c).Discard()
 	err := ns.OpenSocket(node, path, c.Writer, c.Request)
 	if err != nil {
 		logging.Exception("error opening socket", err)
 		response.From(c).Status(netHttp.StatusInternalServerError).Fail().Error(err)
 		return
 	}
-	response.From(c).Discard()
 }
