@@ -28,10 +28,21 @@ func HasOAuth2Token(c *gin.Context) {
 	authHeader := c.Request.Header.Get("Authorization")
 	authHeader = strings.TrimSpace(authHeader)
 
-	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") && strings.TrimPrefix(authHeader, "Bearer ") != "" {
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) != 2 {
 		c.AbortWithStatus(403)
-	} else {
+	}
+
+	if parts[0] != "Bearer" || parts[1] == "" {
+		c.AbortWithStatus(403)
+	}
+
+	token, err := services.ParseToken(parts[1], &services.JWTAccessClaims{})
+
+	if err == nil && token.Valid {
 		c.Next()
+	} else {
+		c.AbortWithStatus(403)
 	}
 }
 
