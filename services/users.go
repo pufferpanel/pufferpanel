@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/pufferpanel/pufferpanel/v2/oauth2/claims"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"strings"
@@ -23,30 +24,28 @@ func (us *User) Get(username string) (*models.User, bool, error) {
 	return model, model.ID != 0, res.Error
 }
 
-func (us *User) Login(email string, password string) (sessionToken string, err error) {
-	oauth2 := GetOAuth(us.DB)
-
-	model := &models.User{
+func (us *User) Login(email string, password string) (user *models.User, sessionToken string, err error) {
+	user = &models.User{
 		Email: email,
 	}
 
-	err = us.DB.Where(model).First(model).Error
+	err = us.DB.Where(user).First(user).Error
 
 	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		return
 	}
 
-	if model.ID == 0 || gorm.IsRecordNotFoundError(err) {
+	if user.ID == 0 || gorm.IsRecordNotFoundError(err) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
-	if !us.IsValidCredentials(model, password) {
+	if !us.IsValidCredentials(user, password) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
 
-	sessionToken, err = oauth2.CreateSession(model)
+	sessionToken, err = Generate(claims.NewUserClaim(user))
 	return
 }
 

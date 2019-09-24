@@ -4,9 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/pufferpanel/pufferpanel/v2/oauth2/claims"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"strings"
-	"time"
 )
 
 var noLogin = []string{"/auth/", "/error/", "/daemon/", "/api/"}
@@ -49,16 +50,26 @@ func AuthMiddleware(c *gin.Context) {
 		c.Abort()
 	}
 
-	srv := services.GetOAuth(db)
+	token, err := services.ParseToken(cookie, &claims.UserClaims{})
 
-	info, client, err := srv.GetByToken(cookie)
-
-	if response.HandleError(res, err) {
+	if err != nil || !token.Valid {
+		c.Redirect(302, "/auth/login")
 		c.Abort()
 		return
 	}
 
-	if info == nil || client == nil {
+	userClaims := token.Claims.(*claims.UserClaims)
+
+	srv := services.GetOAuth(db)
+	client, _, err := srv.GetByUser(&models.User{ID: userClaims.UserId})
+
+	if response.HandleError(res, err) {
+		c.Redirect(302, "/auth/login")
+		c.Abort()
+		return
+	}
+
+	if client == nil {
 		c.Redirect(302, "/auth/login")
 		c.Abort()
 		return
@@ -74,12 +85,6 @@ func AuthMiddleware(c *gin.Context) {
 
 	if !valid {
 		c.AbortWithStatus(403)
-		return
-	}
-
-	err = srv.UpdateExpirationTime(info, 60*time.Minute)
-	if response.HandleError(res, err) {
-		c.Abort()
 		return
 	}
 

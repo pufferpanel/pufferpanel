@@ -26,7 +26,7 @@ func LoginPost(c *gin.Context) {
 	us := &services.User{DB: db}
 	os := services.GetOAuth(db)
 
-	session, err := us.Login(request.Data.Email, request.Data.Password)
+	user, session, err := us.Login(request.Data.Email, request.Data.Password)
 	if response.HandleError(res, err) {
 		return
 	}
@@ -34,7 +34,7 @@ func LoginPost(c *gin.Context) {
 	data := &loginResponse{}
 	data.Session = session
 
-	_, client, err := os.GetByToken(data.Session)
+	client, _, err := os.GetByUser(user)
 
 	if response.HandleError(res, err) {
 		return

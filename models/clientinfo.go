@@ -8,7 +8,7 @@ type ClientInfo struct {
 	ID       uint   `json:"-"`
 	ClientID string `gorm:"NOT NULL" json:"-"`
 	Secret   string `gorm:"NOT NULL" json:"-"`
-	UserID   uint   `gorm:"NOT NULL" json:"-"`
+	UserID   uint   `json:"-"`
 	User     User   `gorm:"save_associations:false" json:"-"`
 	Panel    bool   `gorm:"NOT NULL; DEFAULT:0"`
 

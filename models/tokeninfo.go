@@ -17,12 +17,12 @@ type TokenInfo struct {
 	//Code             string
 	//CodeCreateAt     time.Time
 	//CodeExpiresIn    time.Duration
-	Access          string        `gorm:"UNIQUE_INDEX" json:"-"`
-	AccessCreateAt  time.Time     `json:"-"`
-	AccessExpiresIn time.Duration `json:"-"`
-	//Refresh          string
-	//RefreshCreateAt  time.Time
-	//RefreshExpiresIn time.Duration
+	Access           string        `gorm:"UNIQUE_INDEX" json:"-"`
+	AccessCreateAt   time.Time     `json:"-"`
+	AccessExpiresIn  time.Duration `json:"-"`
+	Refresh          string        `json:"-"`
+	RefreshCreateAt  time.Time     `json:"-"`
+	RefreshExpiresIn time.Duration `json:"-"`
 }
 
 func (ti *TokenInfo) New() oauth2.TokenInfo {
@@ -121,30 +121,27 @@ func (ti *TokenInfo) SetAccessExpiresIn(dur time.Duration) {
 }
 
 func (ti *TokenInfo) GetRefresh() string {
-	//return ti.Refresh
-	return ""
+	return ti.Refresh
 }
 
 func (ti *TokenInfo) SetRefresh(ref string) {
-	//ti.Refresh = ref
+	ti.Refresh = ref
 }
 
 func (ti *TokenInfo) GetRefreshCreateAt() time.Time {
-	//return ti.RefreshCreateAt
-	return time.Now()
+	return ti.RefreshCreateAt
 }
 
 func (ti *TokenInfo) SetRefreshCreateAt(t time.Time) {
-	//ti.RefreshCreateAt = t
+	ti.RefreshCreateAt = t
 }
 
 func (ti *TokenInfo) GetRefreshExpiresIn() time.Duration {
-	//return ti.RefreshExpiresIn
-	return 0
+	return ti.RefreshExpiresIn
 }
 
 func (ti *TokenInfo) SetRefreshExpiresIn(dur time.Duration) {
-	//ti.RefreshExpiresIn = dur
+	ti.RefreshExpiresIn = dur
 }
 
 func Copy(info oauth2.TokenInfo) *TokenInfo {
@@ -158,11 +155,11 @@ func Copy(info oauth2.TokenInfo) *TokenInfo {
 		//Code: info.GetCode(),
 		//CodeCreateAt: info.GetCodeCreateAt(),
 		//CodeExpiresIn: info.GetCodeExpiresIn(),
-		Access:          info.GetAccess(),
-		AccessCreateAt:  info.GetAccessCreateAt(),
-		AccessExpiresIn: info.GetAccessExpiresIn(),
-		//Refresh: info.GetRefresh(),
-		//RefreshCreateAt: info.GetRefreshCreateAt(),
-		//RefreshExpiresIn: info.GetRefreshExpiresIn(),
+		Access:           info.GetAccess(),
+		AccessCreateAt:   info.GetAccessCreateAt(),
+		AccessExpiresIn:  info.GetAccessExpiresIn(),
+		Refresh:          info.GetRefresh(),
+		RefreshCreateAt:  info.GetRefreshCreateAt(),
+		RefreshExpiresIn: info.GetRefreshExpiresIn(),
 	}
 }
