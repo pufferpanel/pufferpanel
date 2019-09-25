@@ -3,8 +3,7 @@
 import Vue from 'vue'
 // Components
 import './components'
-import BootstrapVue from 'bootstrap-vue'
-import { VBTooltipPlugin } from 'bootstrap-vue'
+import BootstrapVue, { VBTooltipPlugin } from 'bootstrap-vue'
 import Vuetify from 'vuetify'
 // Plugins
 import './plugins'
@@ -16,10 +15,19 @@ import i18n from '@/i18n'
 import router from '@/router'
 import store from '@/store'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-regular-svg-icons'
-import { faDownload, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faTimesCircle
+} from '@fortawesome/free-regular-svg-icons'
+import {
+  faDownload,
+  faEdit,
+  faTrash,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueNativeSocket from 'vue-native-websocket'
+import vuetify from './plugins/vuetify'
 
 library.add(faCheckCircle, faTimesCircle, faDownload, faEdit, faTrash, faPlus)
 
@@ -45,5 +53,6 @@ new Vue({
   i18n,
   router,
   store,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')

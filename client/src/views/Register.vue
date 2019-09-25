@@ -1,158 +1,84 @@
 <template>
-  <b-col
+  <v-col
+    lg="4"
     md="6"
     sm="8"
+    offset-lg="4"
     offset-md="3"
-    offset-sm="2">
-    <b-card
-      header-tag="header"
-      footer-tag="footer">
-      <h6
-        slot="header"
-        class="mb-0"
-        align="center"
-        v-text="$t('common.Register')"></h6>
-      <b-form>
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              v-if="username && !validUsername"
-              v-text="$t('errors.ErrUsernameRequirements')"
-              fade
-              show
-              variant="danger"
-            >
-            </b-alert>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              v-if="email && !validEmail"
-              v-text="$t('errors.ErrFieldNotEmail', {'field': $t('common.Email')})"
-              fade
-              show
-              variant="danger"
-            >
-            </b-alert>
-          </b-col>
-        </b-row>
-
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="username"
-              v-model.trim="username"
-              prepend-icon="mdi-account"
-              name="username"
-              :placeholder="$t('common.Username')"
-              type="text"/>
-          </b-col>
-        </b-row>
-
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="email"
-              v-model.trim="email"
-              prepend-icon="mdi-account"
-              name="email"
-              :placeholder="$t('common.Email')"
-              type="text"/>
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              v-if="password && !validPassword"
-              v-text="$t('errors.ErrPasswordRequirements')"
-              fade
-              show
-              variant="danger"
-            >
-            </b-alert>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              v-if="password && confirmPassword && !samePassword"
-              v-text="$t('errors.ErrPasswordsNotIdentical')"
-              fade
-              show
-              variant="danger"
-            >
-            </b-alert>
-          </b-col>
-        </b-row>
-
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="password"
-              v-model="password"
-              prepend-icon="mdi-lock"
-              name="password"
-              :placeholder="$t('common.Password')"
-              type="password"/>
-          </b-col>
-        </b-row>
-
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="confirmPassword"
-              v-model="confirmPassword"
-              prepend-icon="mdi-lock"
-              name="confirmPassword"
-              :placeholder="$t('common.ConfirmPassword')"
-              type="password"
-              @keyup.enter="submit"/>
-          </b-col>
-        </b-row>
-      </b-form>
-      <div slot="footer">
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="2">
-            <b-link :to="{name: 'Login'}" v-text="$t('common.Login')"></b-link>
-          </b-col>
-          <b-col sm="6"/>
-          <b-col sm="2">
-            <b-btn
-              :disabled="!canComplete"
-              variant="primary"
-              size="sm"
+    offset-sm="2"
+  >
+    <v-card :loading="registerDisabled">
+      <v-card-title class="d-flex justify-center">
+        <p v-text="$t('common.Register')" />
+      </v-card-title>
+      <v-card-text>
+        <v-alert
+          v-if="errors.form"
+          dense
+          outlined
+          dismissible
+          type="error"
+        >
+          {{ errors.form }}
+        </v-alert>
+        <v-row>
+          <v-col cols="12">
+            <v-form>
+              <v-text-field
+                id="username"
+                v-model.trim="username"
+                outlined
+                :label="$t('common.Username')"
+                :error-messages="errors.username"
+                prepend-inner-icon="mdi-account"
+                name="username"
+                type="text"
+                @keyup.enter="submit"
+              />
+              <v-text-field
+                id="email"
+                v-model.trim="email"
+                outlined
+                :label="$t('common.Email')"
+                :error-messages="errors.email"
+                prepend-inner-icon="mdi-email"
+                name="email"
+                type="text"
+                @keyup.enter="submit"
+              />
+              <v-text-field
+                id="password"
+                v-model="password"
+                outlined
+                :label="$t('common.Password')"
+                :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements') : errors.password"
+                prepend-inner-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                name="password"
+                :type="!showPassword ? 'password' : 'text'"
+                @click:append="showPassword = !showPassword"
+                @keyup.enter="submit"
+              />
+            </v-form>
+            <v-btn
+              color="primary"
+              class="body-1 mb-5"
+              large
+              block
+              @click="submit"
               v-text="$t('common.Register')"
-              @click="submit">
-            </b-btn>
-          </b-col>
-          <b-col sm="1"/>
-        </b-row>
-        <b-row v-if="errorMsg">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              :show="dismissCountDown"
-              fade
-              dismissible
-              variant="danger"
-            >{{ errorMsg }}
-            </b-alert>
-          </b-col>
-        </b-row>
-      </div>
-    </b-card>
-  </b-col>
+            />
+            <v-btn
+              text
+              block
+              :to="{name: 'Login'}"
+              v-text="$t('common.LoginLink')"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
@@ -164,10 +90,14 @@ export default {
       username: '',
       email: '',
       password: '',
-      confirmPassword: '',
       registerDisabled: false,
-      errorMsg: '',
-      dismissCountDown: 5
+      showPassword: false,
+      errors: {
+        form: '',
+        username: '',
+        email: '',
+        password: ''
+      }
     }
   },
   computed: {
@@ -187,29 +117,30 @@ export default {
     validPassword: function () {
       return validate.validPassword(this.password)
     },
-    samePassword: function () {
-      return validate.samePassword(this.password, this.confirmPassword)
-    },
     validUsername: function () {
       return validate.validUsername(this.username)
     },
-    validEmail: function() {
+    validEmail: function () {
       return validate.validEmail(this.email)
     }
   },
   methods: {
-    //real methods
+    // real methods
     submit: function () {
+      this.errors.form = ''
+      this.errors.username = ''
+      this.errors.email = ''
+      this.errors.password = ''
       if (!this.username) {
-        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Username') })
+        this.errors.username = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Username') })
         return
       }
       if (!this.email) {
-        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Email') })
+        this.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Email') })
         return
       }
       if (!this.password) {
-        this.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
+        this.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Password') })
         return
       }
       if (!validate.validPassword(this.password)) {
@@ -217,7 +148,7 @@ export default {
       }
       this.registerDisabled = true
 
-      let data = this
+      const vue = this
 
       this.axios.post(this.$route.path, {
         data: {
@@ -226,12 +157,12 @@ export default {
           username: this.username
         }
       }).then(function (response) {
-        let responseData = response.data
-        if (responseData.success) {
-          data.$router.push({ name: 'Login' })
+        if (response.data.success) {
+          localStorage.setItem('registered', 'true')
+          vue.$router.push({ name: 'Login' })
         } else {
-          data.error = responseData.msg
-          data.registerDisabled = false
+          vue.errors.form = response.data.msg
+          vue.registerDisabled = false
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -243,8 +174,8 @@ export default {
           }
         }
 
-        data.errorMsg = data.$(msg)
-        data.registerDisabled = false
+        vue.errors.form = vue.$t(msg)
+        vue.registerDisabled = false
       })
     }
   }

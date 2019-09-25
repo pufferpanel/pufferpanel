@@ -1,4 +1,5 @@
 {
+  "Id": "ID",
   "Name": "Name",
   "Node": "Node",
   "Address": "Address",
@@ -12,8 +13,11 @@
   "Settings": "Settings",
   "Account": "Account",
   "Login": "Login",
+  "LoginLink": "Or login here",
   "Logout": "Logout",
   "Register": "Register",
+  "RegisterLink": "Or register here",
+  "RegisterSuccess": "You have successfully registered",
   "Username": "Username",
   "Password": "Password",
   "Update": "Update",
@@ -21,6 +25,7 @@
   "NewPassword": "New Password",
   "ConfirmPassword": "Confirm Password",
   "ChangePassword": "Change Password",
+  "ChangeInfo": "Change Account Details",
   "Email": "Email",
   "Console": "Console",
   "Controls": "Controls",
@@ -52,5 +57,11 @@
   "Users": "Users",
   "Options": "Options",
   "Environment": "Environment",
-  "SelectEnvironment": "Please select environment"
+  "SelectEnvironment": "Please select environment",
+  "Collapse": "Collapse",
+  "Copied": "Copied to clipboard",
+  "AddUser": "Add User",
+  "TypeUsername": "Type a username",
+  "ServerName": "Server Name",
+  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page"
 }

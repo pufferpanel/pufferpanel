@@ -1,24 +1,69 @@
 <template>
-  <b-card
-    header-tag="header"
-    footer-tag="footer">
-    <h6 slot="header" class="mb-0" v-text="$t('common.Console')"></h6>
-    <textarea ref="console" class="form-control console" readonly="readonly" v-text="console"></textarea>
-    <b-input-group class="mt-3">
-      <b-form-input v-model="consoleCommand" placeholder="Command..." @keyup.enter="sendCommand"></b-form-input>
-      <b-input-group-append>
-        <b-button @click="sendCommand" variant="info">Send</b-button>
-      </b-input-group-append>
-    </b-input-group>
-
-    <b-button size="sm" variant="secondary" v-b-modal.console-copy v-text="$t('common.Pause')" @click="popoutConsole"></b-button>
-    <b-modal id="console-copy" size="xl" v-bind:title="$t('common.Console')">
-      <textarea ref="console" class="form-control console" readonly="readonly" v-text="consoleReadonly"></textarea>
-    </b-modal>
-  </b-card>
+  <v-card>
+    <v-card-title v-text="$t('common.Console')" />
+    <v-card-text>
+      <v-textarea
+        id="console"
+        v-model="console"
+        rows="20"
+        background-color="secondary"
+        readonly
+        solo
+        no-resize
+      />
+      <v-text-field
+        v-model="consoleCommand"
+        outlined
+        placeholder="Command..."
+        append-icon="mdi-send"
+        append-outer-icon="mdi-pause"
+        @click:append="sendCommand"
+        @click:append-outer="popoutConsole"
+        @keyup.enter="sendCommand"
+      />
+      <v-overlay :value="consolePopup">
+        <v-card
+          :dark="isDark()"
+          :light="!isDark()"
+          class="d-flex flex-column"
+          height="90vh"
+          width="90vw"
+        >
+          <v-card-title>
+            <span v-text="$t('common.Console')" />
+            <div class="flex-grow-1" />
+            <v-btn
+              icon
+              @click="consolePopup = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text
+            id="popup"
+            class="flex-grow-1"
+          >
+            <v-textarea
+              id="popupText"
+              ref="popup"
+              v-model="consoleReadonly"
+              style="height: 100%"
+              background-color="secondary"
+              solo
+              hide-details
+              no-resize
+              readonly
+            />
+          </v-card-text>
+        </v-card>
+      </v-overlay>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
+import { isDark } from '@/utils/dark'
+
 export default {
   data () {
     return {
@@ -27,12 +72,31 @@ export default {
       maxConsoleLength: 10000,
       buffer: [],
       refreshInterval: null,
-      consoleCommand: ''
+      consoleCommand: '',
+      consolePopup: false
+    }
+  },
+  mounted () {
+    const root = this
+    this.$socket.addEventListener('message', function (event) {
+      const data = JSON.parse(event.data)
+      if (data === 'undefined') {
+        return
+      }
+      if (data.type === 'console') {
+        root.parseConsole(data.data)
+      }
+    })
+    this.refreshInterval = setInterval(this.updateConsole, 1000)
+  },
+  beforeDestroy () {
+    if (this.refreshInterval !== null) {
+      clearInterval(this.refreshInterval)
     }
   },
   methods: {
     parseConsole (data) {
-      let vue = this
+      const vue = this
 
       if (data.logs instanceof Array) {
         data.logs.forEach(function (element) {
@@ -44,6 +108,15 @@ export default {
     },
     popoutConsole () {
       this.consoleReadonly = this.console
+      this.consolePopup = true
+      this.$nextTick(function () {
+        this.$refs.popup.$el.style.height = '100%'
+        this.$refs.popup.$el.children[0].style.height = '100%'
+        this.$refs.popup.$el.children[0].children[0].style.height = '100%'
+        this.$refs.popup.$el.children[0].children[0].children[0].style.height = '100%'
+        this.$el.querySelector('#popupText').style.height = '100%'
+        this.$el.querySelector('#popupText').scrollTop = this.$el.querySelector('#popupText').scrollHeight
+      })
     },
     updateConsole () {
       if (this.buffer.length === 0) {
@@ -61,7 +134,7 @@ export default {
       }
       this.console = newConsole
 
-      let textArea = this.$refs['console']
+      const textArea = this.$el.querySelector('#console')
       this.$nextTick(function () {
         textArea.scrollTop = textArea.scrollHeight
       })
@@ -71,46 +144,17 @@ export default {
         return
       }
 
-      this.$socket.sendObj({type: 'console', command: this.consoleCommand})
+      this.$socket.sendObj({ type: 'console', command: this.consoleCommand })
 
       this.consoleCommand = ''
-    }
-  },
-  mounted () {
-    let root = this
-    this.$socket.addEventListener('message', function (event) {
-      let data = JSON.parse(event.data)
-      if (data === 'undefined') {
-        return
-      }
-      if (data.type === 'console') {
-        root.parseConsole(data.data)
-      }
-    })
-    this.refreshInterval = setInterval(this.updateConsole, 1000)
-  },
-  beforeDestroy () {
-    if (this.refreshInterval !== null) {
-      clearInterval(this.refreshInterval)
-    }
+    },
+    isDark
   }
 }
 </script>
 
 <style>
-  .console {
-    font: 85% 'Droid Sans Mono', monospace;
-    color: #333;
-    height: 300px !important;
-    text-wrap: normal;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    border: 0;
-    resize: none
-  }
-
-  .console[readonly=readonly] {
-    background: #fefefe;
-    cursor: default
+  #popup .v-input__slot {
+    height: 100%;
   }
 </style>

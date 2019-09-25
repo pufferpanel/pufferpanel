@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,38 +12,134 @@
   -->
 
 <template>
-  <b-card
-    header-tag="header">
-    <h6 slot="header" class="mb-0" v-text="$t('common.SFTPInfo')"></h6>
-    <b-input-group :prepend="$t('common.HostPort')" class="mt-3">
-      <b-form-input readonly v-bind:value="host"></b-form-input>
-    </b-input-group>
-    <b-input-group :prepend="$t('common.Username')" class="mt-3" >
-      <b-form-input readonly v-bind:value="username"></b-form-input>
-    </b-input-group>
-    <!--<b-input-group :prepend="$t('common.Password')" class="mt-3">
-      <b-form-input readonly v-bind:value="$t('common.AccountPassword')"></b-form-input>
-    </b-input-group>-->
-  </b-card>
+  <v-card>
+    <v-card-title v-text="$t('common.SFTPInfo')" />
+    <v-card-text class="body-1 text--primary">
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+          md="2"
+          v-text="$t('common.HostPort')"
+        />
+        <v-col
+          cols="12"
+          sm="6"
+          md="10"
+        >
+          <input
+            ref="host"
+            :value="host"
+            readonly
+          >
+          <v-chip
+            v-if="copiedHost"
+            color="success"
+            class="mx-2"
+            v-text="$t('common.Copied')"
+          />
+          <v-btn
+            icon
+            @click="copyHost"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-divider />
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+          md="2"
+          v-text="$t('common.Username')"
+        />
+        <v-col
+          cols="12"
+          sm="6"
+          md="10"
+        >
+          <input
+            ref="username"
+            :value="username"
+            readonly
+          >
+          <v-chip
+            v-if="copiedUsername"
+            color="success"
+            class="mx-2"
+            v-text="$t('common.Copied')"
+          />
+          <v-btn
+            icon
+            @click="copyUsername"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-divider />
+      <v-row>
+        <v-col
+          cols="12"
+          sm="6"
+          md="2"
+          v-text="$t('common.Password')"
+        />
+        <!-- 00A0 is the unicode code point for a non breaking space and required here because js makes &nbsp; print as literal text and not using a non breaking space makes it behave extra dumb on small devices... -->
+        <v-col
+          cols="12"
+          sm="6"
+          md="10"
+          v-text="$t('common.AccountPassword').replace(' ', '\u00A0')"
+        />
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 export default {
   prop: {
-    server: Object
+    server: { type: Object, default: function () { return {} } }
   },
   data () {
     return {
-      host: this.$attrs.server.node.publicHost + ":" + this.$attrs.server.node.sftpPort,
-      username: ""
+      host: '',
+      username: '',
+      copiedHost: false,
+      copiedUsername: false
     }
   },
   mounted () {
-    let vue = this
+    this.host = this.$attrs.server.node.publicHost + ':' + this.$attrs.server.node.sftpPort
+    const vue = this
     this.$http.get('/api/users').then(function (data) {
-      let user = data.data.data
-      vue.username = user.email + "|" + vue.$attrs.server.id
+      const user = data.data.data
+      vue.username = user.email + '|' + vue.$attrs.server.id
     })
+  },
+  methods: {
+    copyHost () {
+      const vue = this
+      vue.$refs.host.select()
+      document.execCommand('copy')
+      vue.copiedUsername = false
+      vue.copiedHost = true
+      setTimeout(function () {
+        vue.copiedHost = false
+      }, 6000)
+    },
+    copyUsername () {
+      const vue = this
+      vue.$refs.username.select()
+      document.execCommand('copy')
+      vue.copiedHost = false
+      vue.copiedUsername = true
+      setTimeout(function () {
+        vue.copiedUsername = false
+      }, 6000)
+    }
   }
 }
 </script>

@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,16 +12,20 @@
   -->
 
 <template>
-  <b-card
-    header-tag="header"
-    footer-tag="footer">
-    <h6 slot="header" class="mb-0" v-text="$t('common.CPU')"></h6>
-    <line-chart :chart-data="datacollection" :options="options"></line-chart>
-  </b-card>
+  <v-card>
+    <v-card-title v-text="$t('common.CPU')" />
+    <v-card-text class="pt-4">
+      <line-chart
+        :chart-data="datacollection"
+        :options="options"
+      />
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 import LineChart from './LineChart.js'
+import { isDark } from '@/utils/dark'
 
 export default {
   components: {
@@ -35,24 +39,50 @@ export default {
       datacollection: {
         datasets: [
           {
-            label: this.$t('common.CPU'),
-            backgroundColor: '#65a5f8',
+            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
             data: []
           }
         ]
       },
       options: {
         scales: {
+          xAxes: [{
+            ticks: {
+              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+            },
+            gridLines: {
+              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+            }
+          }],
           yAxes: [{
             ticks: {
-              beginAtZero: true
+              beginAtZero: true,
+              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+            },
+            gridLines: {
+              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
             }
           }]
         },
-        responsive: false,
+        legend: {
+          display: false
+        },
+        responsive: true,
         animation: false
       }
     }
+  },
+  mounted () {
+    const root = this
+    this.$socket.addEventListener('message', function (event) {
+      const data = JSON.parse(event.data)
+      if (data === 'undefined') {
+        return
+      }
+      if (data.type === 'stat') {
+        root.updateStats(data.data)
+      }
+    })
   },
   methods: {
     updateStats (data) {
@@ -64,8 +94,8 @@ export default {
       this.label.push(new Date().toLocaleTimeString())
       this.cpu.push(data.cpu)
 
-      let newCpu = []
-      let newLabel = []
+      const newCpu = []
+      const newLabel = []
       for (let i = 0; i < this.cpu.length; i++) {
         newCpu[i] = this.cpu[i]
         newLabel[i] = this.label[i]
@@ -75,25 +105,13 @@ export default {
         labels: newLabel,
         datasets: [
           {
-            label: this.$t('common.CPU'),
-            backgroundColor: '#65a5f8',
+            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
             data: newCpu
           }
         ]
       }
-    }
-  },
-  mounted () {
-    let root = this
-    this.$socket.addEventListener('message', function (event) {
-      let data = JSON.parse(event.data)
-      if (data === 'undefined') {
-        return
-      }
-      if (data.type === 'stat') {
-        root.updateStats(data.data)
-      }
-    })
+    },
+    isDark
   }
 }
 </script>

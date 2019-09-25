@@ -1,11 +1,11 @@
 <template>
-  <core-servers-type-generic :server="server"></core-servers-type-generic>
+  <core-servers-type-generic :server="server" />
 </template>
 
 <script>
 export default {
   props: {
-    server: Object
+    server: { type: Object, default: function () { return {} } }
   }
 }
 </script>

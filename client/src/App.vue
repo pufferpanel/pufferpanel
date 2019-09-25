@@ -1,27 +1,159 @@
 <template>
   <v-app>
-    <core-header v-if="!$route.meta.noHeader"/>
+    <v-app-bar
+      app
+      dark
+      clipped-left
+    >
+      <v-app-bar-nav-icon
+        v-if="loggedIn && $vuetify.breakpoint.smAndDown"
+        @click="drawer = !drawer"
+      />
+      <v-toolbar-title class="headline">
+        <span
+          v-if="appConfig"
+          v-text="appConfig.branding.name"
+        />
+      </v-toolbar-title>
+      <div class="flex-grow-1" />
+      <v-btn
+        icon
+        @click="toggleDark"
+      >
+        <v-icon>mdi-lightbulb</v-icon>
+      </v-btn>
+    </v-app-bar>
 
-    <b-container fluid>
-      <b-row>
-        <b-col cols="12">
-          <main role="main">
-            <router-view/>
-          </main>
-        </b-col>
-      </b-row>
-    </b-container>
+    <v-navigation-drawer
+      v-if="loggedIn"
+      v-model="drawer"
+      :mini-variant="minified"
+      app
+      clipped
+    >
+      <v-list>
+        <v-list-item
+          :to="{name: 'Account'}"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="$t('common.Account')" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          :to="{name: 'Servers'}"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-server</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="$t('common.Servers')" />
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <template v-slot:append>
+        <v-list>
+          <v-list-item
+            v-if="!$vuetify.breakpoint.smAndDown"
+            link
+            @click="minified = !minified"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="minified ? 'mdi-chevron-right' : 'mdi-chevron-left'" />
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="$t('common.Collapse')" />
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            link
+            @click="logout"
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="$t('common.Logout')" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </v-navigation-drawer>
+
+    <v-content>
+      <v-container fluid>
+        <div
+          v-if="!appConfig"
+          class="d-flex flex-column"
+          style="width:100%; height:100%;"
+        >
+          <div
+            class="d-flex align-self-center flex-row"
+            style="height:100%;"
+          >
+            <v-progress-circular
+              indeterminate
+              size="100"
+              class="align-self-center"
+            />
+          </div>
+        </div>
+        <router-view
+          v-else
+          @logged-in="loggedIn = true"
+        />
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
-<style lang="scss">
-  @import '~bootstrap/scss/bootstrap';
-  @import '~bootstrap-vue/src/index.scss';
-</style>
+<script>
+import Cookies from 'js-cookie'
+import config from './config'
+import { toggleDark as doToggleDark, isDark } from './utils/dark'
 
-<style lang="css">
-  @import '~animate.css/animate.css';
-  @import '~selectize/dist/css/selectize.css';
-  @import '~vuetify/dist/vuetify.min.css';
-  @import 'styles/pufferpanel.css';
-</style>
+export default {
+  data () {
+    return {
+      appConfig: false,
+      loggedIn: false,
+      drawer: null,
+      minified: false
+    }
+  },
+  created () {
+    this.loadConfig()
+
+    this.$vuetify.theme.dark = isDark()
+
+    if ((Cookies.get('puffer_auth') || '')) {
+      this.loggedIn = true
+    } else {
+      this.loggedIn = false
+    }
+  },
+  methods: {
+    loadConfig () {
+      const vue = this
+      this.$http.get('/api/config').then(function (response) {
+        vue.appConfig = response.data.data
+      }).catch(function (error) {
+        vue.appConfig = config.defaultAppConfig
+        return error
+      })
+    },
+    toggleDark () {
+      doToggleDark(this.$vuetify)
+    },
+    logout () {
+      Cookies.remove('puffer_auth')
+      this.loggedIn = false
+      this.$router.push({ name: 'Login' })
+    }
+  }
+}
+</script>

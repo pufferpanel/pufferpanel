@@ -11,17 +11,16 @@
  *  limitations under the License.
  */
 
-export default {
-  validPassword: function (password) {
-    return password.length >= 8
-  },
-  samePassword: function (pass1, pass2) {
-    return pass1 && pass2 && pass1 === pass2
-  },
-  validUsername: function (username) {
-    return username && /^([0-9A-Za-z_-]){3,}$/.test(username)
-  },
-  validEmail: function (email) {
-    return email && /^\S+@\S+\.\S+$/.test(email)
+export function isDark () {
+  return (localStorage.getItem('dark') || '') === 'true'
+}
+
+export function toggleDark (vuetify) {
+  if (isDark()) {
+    localStorage.removeItem('dark')
+    vuetify.theme.dark = false
+  } else {
+    localStorage.setItem('dark', true)
+    vuetify.theme.dark = true
   }
 }

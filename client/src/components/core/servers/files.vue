@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,90 +12,153 @@
   -->
 
 <template>
-  <b-card
-    header-tag="header">
-    <h6 slot="header" class="mb-0">
-      <span v-text="$t('files.FileManager') + ' - ' + currentPath + '          '"></span>
-      <a v-if="hasScope('servers.files.put') && !createFolder" @click="createFolder = true"><font-awesome-icon icon="plus"></font-awesome-icon></a>
+  <v-card>
+    <v-card-title>
+      <span v-text="$t('files.FileManager') + ' - ' + currentPath" />
+      <v-btn
+        v-if="hasScope('servers.files.put', $attrs.server.id) && !createFolder"
+        icon
+        @click="createFolder = true"
+      >
+        <v-icon>mdi-folder-plus</v-icon>
+      </v-btn>
       <div v-if="createFolder">
-        <b-form-input size="sm" class="input-small" v-model="newFolderName" v-bind:placeholder="$t('files.NewFolder')"></b-form-input>
-        <b-btn variant="primary" size="sm" @click="submitNewFolder" v-text="$t('common.Create')"></b-btn>
-        <b-btn variant="secondary" size="sm" @click="cancelFolderCreate" v-text="$t('common.Cancel')"></b-btn>
+        <v-text-field
+          v-model="newFolderName"
+          hide-details
+          class="input-small ml-2 mt-0 pt-0"
+          :placeholder="$t('files.NewFolder')"
+        />
+        <v-btn
+          icon
+          color="success"
+          @click="submitNewFolder"
+        >
+          <v-icon>mdi-check</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          color="error"
+          @click="cancelFolderCreate"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </div>
-    </h6>
-    <b-table hover :items="files" :fields="fields" :busy="loading">
-      <div slot="table-busy" class="text-center text-danger my-2">
-        <b-spinner class="align-middle"/>
-        <strong :text="$t('common.Loading')">Loading...</strong>
-      </div>
-      <template slot="name" slot-scope="data">
-        <strong v-if="data.item.isFile"><strong v-text="data.value"></strong></strong>
-        <a v-else><strong v-on:click="itemClicked(data.item)" v-text="data.value"></strong></a>
-      </template>
-      <template slot="size" slot-scope="data">
-        <span v-if="data.value" v-text="toFileSize(data.value)"></span>
-      </template>
-      <template slot="modifyTime" slot-scope="data">
-        <span v-if="data.value" v-text="toDate(data.value)"></span>
-      </template>
-      <template slot="isFile" slot-scope="data">
-        <a v-bind:href="createDownloadLink(data.item)" v-bind:download="data.item.name" v-if="data.value"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Download')" icon="download"></font-awesome-icon></a>
-        <span class="p-1"></span>
-        <!--<a v-on:click="editButton(data.item)" v-if="data.value && data.item.size < maxEditSize"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Edit')" icon="edit"></font-awesome-icon></a>
-        <span class="p-1"></span>-->
-        <a v-on:click="deleteButton(data.item)"><font-awesome-icon v-b-tooltip.hover v-bind:title="$t('common.Delete')" icon="trash"></font-awesome-icon></a>
-      </template>
-    </b-table>
-
-    <!--<b-modal id="modal-editor" size="xl">
-      <editor v-model="fileContents" ref="fileEditor" @init="editorInit" lang="html" theme="chrome" width="500" height="500"></editor>
-    </b-modal>-->
-
-    <div>
-      <b-form-file v-model="uploadFiles" multiple :file-name-formatter="formatNames" v-bind:placeholder="$t('files.Upload')"></b-form-file>
-      <div v-if="uploading">
-        <b-progress :value="uploadCurrent" :max="uploadSize" show-progress animated></b-progress>
-      </div>
-      <div v-for="file in uploadFiles">
-        <div>
-          <span>{{ file.name }}</span>
+    </v-card-title>
+    <v-card-text>
+      <v-data-table
+        :items-per-page="-1"
+        :headers="headers"
+        :no-data-text="$t('common.NoFiles')"
+        hide-default-footer
+        :items="files"
+        @click:row="itemClicked"
+      >
+        <template v-slot:item.size="{ item }">
+          {{ item.size ? toFileSize(item.size) : '' }}
+        </template>
+        <template v-slot:item.modifyTime="{ item }">
+          {{ item.modifyTime ? toDate(item.modifyTime) : '' }}
+        </template>
+        <template v-slot:item.isFile="{ item }">
+          <v-tooltip
+            v-if="item.isFile"
+            bottom
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                :href="createDownloadLink(item)"
+                target="_blank"
+                v-on="on"
+              >
+                <v-icon>mdi-download</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Download')" />
+          </v-tooltip>
+          <v-tooltip
+            v-if="item.name !== '..'"
+            bottom
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+                @click="deleteButton(item)"
+              >
+                <v-icon>mdi-trash-can</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Delete')" />
+          </v-tooltip>
+        </template>
+      </v-data-table>
+      <div>
+        <v-file-input
+          v-model="uploadFiles"
+          multiple
+          chips
+          show-size
+          counter
+          :placeholder="$t('files.Upload')"
+          class="mb-4"
+        />
+        <div v-if="uploading">
+          <v-progress-linear
+            :value="(uploadCurrent / uploadSize) * 100"
+            buffer-value="0"
+            stream
+            class="mb-4"
+          />
         </div>
+        <v-btn
+          block
+          color="primary"
+          :disabled="!(uploadFiles.length > 0) || uploading"
+          @click="transmitFiles"
+          v-text="$t('files.Upload')"
+        />
       </div>
-      <b-button @click="transmitFiles" size="sm" variant="primary" v-if="uploadFiles.length > 0" v-text="$t('files.Upload')"></b-button>
-    </div>
-  </b-card>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 import filesize from 'filesize'
+import config from '../../../config'
 
 export default {
   prop: {
     server: Object
   },
-  data() {
+  data () {
     return {
       files: [],
       currentPath: '/',
       loading: true,
-      fields: {
-        'name': {
-          sortable: true,
-          label: this.$t('common.Name')
+      headers: [
+        {
+          value: 'name',
+          text: this.$t('common.Name'),
+          sortable: true
         },
-        'size': {
-          sortable: true,
-          label: this.$t('common.Size')
+        {
+          value: 'size',
+          text: this.$t('common.Size'),
+          sortable: true
         },
-        'modifyTime': {
-          sortable: true,
-          label: this.$t('files.LastModified')
+        {
+          value: 'modifyTime',
+          text: this.$t('files.LastModified'),
+          sortable: true
         },
-        'isFile': {
-          sortable: false,
-          label: this.$t('common.Actions')
+        {
+          value: 'isFile',
+          text: this.$t('common.Actions'),
+          sortable: false
         }
-      },
+      ],
       currentFile: '',
       fileContents: '',
       toEdit: false,
@@ -108,17 +171,49 @@ export default {
       uploadSize: 0
     }
   },
+  mounted () {
+    const vue = this
+    this.$socket.addEventListener('open', function (event) {
+      vue.fetchItems(vue.currentPath)
+    })
+
+    this.$socket.addEventListener('message', function (event) {
+      const data = JSON.parse(event.data)
+      if (data === 'undefined') {
+        return
+      }
+      if (data.type === 'file') {
+        if (data.data) {
+          if (data.data.error) {
+            vue.isLoading = false
+            return
+          }
+
+          vue.files = (data.data.files || []).sort(function (a, b) {
+            if (!a.size && !b.size) return 0
+            if (a.size && b.size) return 0
+            if (a.size && !b.size) return 1
+            return -1
+          })
+          if (data.data.path !== '') {
+            vue.currentPath = data.data.path
+          }
+          vue.loading = false
+        }
+      }
+    })
+  },
   methods: {
-    fetchItems(path, edit=false) {
+    fetchItems (path, edit = false) {
       this.loading = true
-      this.$socket.sendObj({type: 'file', action: 'get', path: path, edit: edit})
+      this.$socket.sendObj({ type: 'file', action: 'get', path: path, edit: edit })
     },
-    itemClicked(item) {
+    itemClicked (item) {
       if (!item.isFile) {
         this.loading = true
 
         if (item.name === '..') {
-          let parts = this.currentPath.split('/')
+          const parts = this.currentPath.split('/')
           parts.pop()
           this.currentPath = parts.join('/')
           if (this.currentPath === '') {
@@ -134,10 +229,10 @@ export default {
           this.currentPath = path
         }
 
-        this.$socket.sendObj({type: 'file', action: 'get', path: this.currentPath})
+        this.$socket.sendObj({ type: 'file', action: 'get', path: this.currentPath })
       }
     },
-    deleteButton(item) {
+    deleteButton (item) {
       this.$bvModal.msgBoxConfirm(this.$t('files.ConfirmDelete'))
         .then(value => {
           if (!value) {
@@ -151,31 +246,31 @@ export default {
             path = this.currentPath + '/' + item.name
           }
           this.loading = true
-          this.$socket.sendObj({type: 'file', action: 'delete', path: path})
+          this.$socket.sendObj({ type: 'file', action: 'delete', path: path })
         })
     },
 
-    //utility
-    toFileSize(size) {
+    // utility
+    toFileSize (size) {
       return filesize(size)
     },
-    toDate(epoch) {
+    toDate (epoch) {
       return new Date(epoch * 1000).toLocaleString()
     },
-    createDownloadLink(item) {
+    createDownloadLink (item) {
       let path = this.currentPath
       if (path === '/') {
         path += item.name
       } else {
         path += '/' + item.name
       }
-      return this.$router.resolve('/daemon/server/' + this.$attrs.server.id + '/file' + path).href
+      return config.baseUrl + '/daemon/server/' + this.$attrs.server.id + '/file' + path
     },
-    cancelFolderCreate() {
+    cancelFolderCreate () {
       this.createFolder = false
       this.newFolderName = ''
     },
-    submitNewFolder() {
+    submitNewFolder () {
       let path = this.currentPath
       if (path === '/') {
         path = path + this.newFolderName
@@ -183,16 +278,16 @@ export default {
         path = path + '/' + this.newFolderName
       }
 
-      this.$socket.sendObj({type: 'file', action: 'create', path: path})
+      this.$socket.sendObj({ type: 'file', action: 'create', path: path })
       this.createFolder = false
       this.newFolderName = ''
     },
-    transmitFiles() {
+    transmitFiles () {
       this.uploading = true
       this.uploadNextItem(this)
     },
-    uploadNextItem(vue) {
-      this.uploadSingleFile(vue.uploadFiles[0]).then(function() {
+    uploadNextItem (vue) {
+      this.uploadSingleFile(vue.uploadFiles[0]).then(function () {
         vue.uploadFiles.shift()
         if (vue.uploadFiles.length === 0) {
           vue.uploading = false
@@ -202,7 +297,7 @@ export default {
         vue.uploadNextItem(vue)
       })
     },
-    uploadSingleFile(item) {
+    uploadSingleFile (item) {
       let path = this.currentPath
       if (path === '/') {
         path += item.name
@@ -212,65 +307,17 @@ export default {
       this.uploadCurrent = 0
       this.uploadSize = item.size
 
-      let vue = this
+      const vue = this
       return this.$http({
         method: 'put',
         url: '/daemon/server/' + this.$attrs.server.id + '/file' + path,
         data: item,
-        onUploadProgress: function(event) {
+        onUploadProgress: function (event) {
           vue.uploadCurrent = event.loaded
           vue.uploadSize = event.total
         }
       })
-    },
-    formatNames(files) {
-      if (files.length === 1) {
-        return files[0].name
-      } else {
-        return `${files.length} files selected`
-      }
     }
-  },
-  mounted() {
-    let vue = this
-    this.$socket.addEventListener('open', function (event) {
-      vue.fetchItems(vue.currentPath)
-    })
-
-    this.$socket.addEventListener('message', function (event) {
-      let data = JSON.parse(event.data)
-      if (data === 'undefined') {
-        return
-      }
-      if (data.type === 'file') {
-        if (data.data) {
-          if (data.data.error) {
-            vue.isLoading = false
-            return
-          }
-
-          let files = data.data.files
-
-          //if we have a list of files, show them
-          if (files) {
-            vue.files = []
-            for (let i in files) {
-              let file = files[i]
-              vue.files.push(file)
-            }
-          }
-          //otherwise, it's an actual file, so we need to show it
-          else {
-            let url = vue.$router.resolve('/daemon/' + vue.$attrs.server.id + '/file' + data.data.url)
-            vue.download(data.data.name, url.href)
-          }
-          if (data.data.path !== '') {
-            vue.currentPath = data.data.path
-          }
-          vue.loading = false
-        }
-      }
-    })
   }
 }
 </script>
@@ -281,6 +328,7 @@ export default {
   }
 
   .input-small {
-    width: 200px
+    width: 200px;
+    display: inline-block;
   }
 </style>

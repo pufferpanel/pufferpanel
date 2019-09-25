@@ -1,62 +1,88 @@
 <template>
-  <b-container>
-    <div v-if="hasScope('servers.create')" style="padding-bottom: 20px">
-      <b-btn size="sm" variant="primary" :to="{name: 'AddServer'}">
-        <font-awesome-icon :icon="['fa', 'plus']"></font-awesome-icon>
-        <span v-text="' ' + $t('common.AddServer')"></span>
-      </b-btn>
+  <v-container>
+    <v-data-table
+      hide-default-footer
+      style="cursor: pointer;"
+      :headers="headers"
+      :items="servers"
+      :loading="loading"
+      :items-per-page="pagination.rowsPerPage"
+      :page.sync="pagination.page"
+      :server-items-length="totalServers"
+      @click:row="rowSelected"
+      @page-count="updatePage"
+    >
+      <template v-slot:item.online="{ item }">
+        <v-icon
+          v-if="item.online"
+          color="success"
+        >
+          mdi-check-circle
+        </v-icon>
+        <v-icon
+          v-if="!item.online"
+          color="error"
+        >
+          mdi-alert-circle
+        </v-icon>
+      </template>
+    </v-data-table>
+    <div class="text-center pt-2 mb-6">
+      <v-pagination
+        v-model="pagination.page"
+        :length="pagination.pageCount"
+      />
     </div>
-
-    <b-table hover selectable select-mode="single" @row-selected="rowSelected" :items="servers" :fields="fields"
-             :busy="loading">
-      <template slot="name" slot-scope="data">
-        <strong v-text="data.value"></strong>
-      </template>
-      <template slot="online" slot-scope="data">
-        <font-awesome-icon
-          v-if="data.value"
-          :icon="['far','check-circle']"/>
-        <font-awesome-icon
-          v-if="!data.value"
-          :icon="['far','times-circle']"/>
-      </template>
-
-      <div slot="table-busy" class="text-center text-danger my-2">
-        <b-spinner class="align-middle"/>
-        <strong v-text="$t('common.Loading')"></strong>
-      </div>
-    </b-table>
-  </b-container>
+    <v-btn
+      v-show="hasScope('servers.create')"
+      color="primary"
+      bottom
+      right
+      fixed
+      fab
+      dark
+      large
+      :to="{name: 'AddServer'}"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+  </v-container>
 </template>
 
 <script>
 export default {
   data () {
     return {
-      fields: {
-        'name': {
-          sortable: true,
-          label: this.$t('common.Name')
+      headers: [
+        {
+          text: this.$t('common.Name'),
+          value: 'name',
+          sortable: true
         },
-        'node': {
-          sortable: true,
-          label: this.$t('common.Node')
+        {
+          text: this.$t('common.Node'),
+          value: 'node',
+          sortable: true
         },
-        'address': {
-          sortable: true,
-          label: this.$t('common.Address')
+        {
+          text: this.$t('common.Address'),
+          value: 'address',
+          sortable: true
         },
-        'online': {
-          sortable: true,
-          label: this.$t('common.Online')
+        {
+          text: this.$t('common.Online'),
+          value: 'online',
+          sortable: true
         }
-      },
+      ],
       servers: [],
       error: null,
       loading: true,
       totalServers: 0,
       pagination: {
-        rowsPerPage: 10
+        page: 1,
+        rowsPerPage: 10,
+        pageCount: 1
       },
       task: null
     }
@@ -72,44 +98,62 @@ export default {
   mounted () {
     this.loadData()
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
+    this.pagination.page = 1
+  },
+  beforeDestroy: function () {
+    if (this.task != null) {
+      clearInterval(this.task)
+    }
   },
   methods: {
     loadData () {
-      let vueData = this
-      vueData.loading = true
+      const vue = this
+      vue.loading = true
       const { page, rowsPerPage } = this.pagination
-      vueData.servers = []
+      vue.servers = []
       this.$http.get('/api/servers', {
         params: {
           page: page,
           limit: rowsPerPage
         }
       }).then(function (response) {
-        let responseData = response.data
-        for (let i in responseData.data) {
-          let server = responseData.data[i]
-          let ip = ""
+        const responseData = response.data
+        for (const i in responseData.data) {
+          const server = responseData.data[i]
 
-          if (server.ip && server.ip !== "" && server.ip !== "0.0.0.0") {
-            ip = server.ip
-            if (server.port) {
-              ip += ":" + server.port
+          let serverInList = false
+
+          vue.servers.forEach(function (elem) {
+            if (server.id === elem.id) {
+              serverInList = true
             }
-          } else {
-            ip = server.node.publicHost
-          }
-
-          vueData.servers.push({
-            id: server.id,
-            name: server.name,
-            node: server.node.name,
-            address: ip,
-            online: false,
-            nodeAddress: server.node.publicHost + ':' + server.node.publicPort
           })
+
+          if (!serverInList) {
+            let ip = ''
+
+            if (server.ip && server.ip !== '' && server.ip !== '0.0.0.0') {
+              ip = server.ip
+              if (server.port) {
+                ip += ':' + server.port
+              }
+            } else {
+              ip = server.node.publicHost
+            }
+
+            vue.servers.push({
+              id: server.id,
+              name: server.name,
+              node: server.node.name,
+              address: ip,
+              online: false,
+              nodeAddress: server.node.publicHost + ':' + server.node.publicPort
+            })
+          }
         }
-        let paging = responseData.metadata.paging
-        vueData.totalServers = paging.total
+        const paging = responseData.metadata.paging
+        vue.totalServers = paging.total
+        vue.pagination.pageCount = Math.ceil(paging.total / vue.pagination.rowsPerPage)
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
         if (error && error.response && error.response.data.error) {
@@ -120,21 +164,21 @@ export default {
           }
         }
 
-        vueData.error = vueData.$t(msg)
+        vue.error = vue.$t(msg)
       }).then(function () {
-        vueData.loading = false
-        vueData.pollServerStatus()
+        vue.loading = false
+        vue.pollServerStatus()
       })
     },
     pollServerStatus () {
-      let vueData = this
+      const vue = this
 
-      for (let i in this.servers) {
-        let server = vueData.servers[i]
-        vueData.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
-          let data = response.data
+      for (const i in this.servers) {
+        const server = vue.servers[i]
+        vue.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
+          const data = response.data
           if (data) {
-            let msg = data.data
+            const msg = data.data
             if (msg && msg.running) {
               server.online = true
             }
@@ -142,13 +186,11 @@ export default {
         })
       }
     },
-    rowSelected (items) {
-      this.$router.push({ name: 'Server', params: { id: items[0].id } })
-    }
-  },
-  beforeDestroy: function () {
-    if (this.task != null) {
-      clearInterval(this.task)
+    rowSelected (item) {
+      this.$router.push({ name: 'Server', params: { id: item.id } })
+    },
+    updatePage (newPage) {
+      this.pagination.page = newPage
     }
   }
 }

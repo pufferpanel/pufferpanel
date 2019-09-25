@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,23 +12,42 @@
   -->
 
 <template>
-  <b-card
-    header-tag="header">
-    <h6 slot="header" class="mb-0" v-text="$t('common.Controls')"></h6>
-    <b-button-group>
-      <b-button variant="success" v-on:click="action('start')" v-text="$t('common.Start')"></b-button>
-      <span class="p-1"></span>
-      <b-button variant="warning" v-on:click="action('stop')" v-text="$t('common.Stop')"></b-button>
-      <span class="p-1"></span>
-      <b-button variant="danger" v-on:click="action('kill')" v-text="$t('common.Kill')"></b-button>
-      <span class="p-1"></span>
-      <b-button variant="danger" v-on:click="action('install')" v-text="$t('common.Install')"></b-button>
-    </b-button-group>
-  </b-card>
+  <v-container>
+    <v-btn
+      v-if="hasScope('servers.start', server.id)"
+      class="mr-4"
+      color="success"
+      @click="action('start')"
+      v-text="$t('common.Start')"
+    />
+    <v-btn
+      v-if="hasScope('servers.stop', server.id)"
+      class="mr-4"
+      color="warning"
+      @click="action('stop')"
+      v-text="$t('common.Stop')"
+    />
+    <v-btn
+      v-if="hasScope('servers.stop', server.id)"
+      class="mr-4"
+      color="error"
+      @click="action('kill')"
+      v-text="$t('common.Kill')"
+    />
+    <v-btn
+      v-if="hasScope('servers.install', server.id)"
+      color="error"
+      @click="action('install')"
+      v-text="$t('common.Install')"
+    />
+  </v-container>
 </template>
 
 <script>
 export default {
+  props: {
+    server: { type: Object, default: function () { return {} } }
+  },
   methods: {
     action (act) {
       this.$socket.sendObj({ type: act })

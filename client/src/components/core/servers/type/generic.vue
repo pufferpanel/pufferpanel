@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,43 +12,44 @@
   -->
 
 <template>
-  <b-container>
-    <h2 v-text="server.name"/>
-    <br>
-    <b-row v-if="hasScope('servers.console', server.id)">
-      <b-col>
-        <core-servers-console v-bind:server="server"/>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <core-servers-controls/>
-      </b-col>
-    </b-row>
-    <b-row v-if="hasScope('servers.stats', server.id)">
-      <b-col>
-        <b-card-group>
-          <core-servers-cpu/>
-          <core-servers-memory/>
-        </b-card-group>
-      </b-col>
-    </b-row>
-    <b-row v-if="hasScope('servers.files.get', server.id)">
-      <b-col>
-        <core-servers-files v-bind:server="server"/>
-      </b-col>
-    </b-row>
-    <b-row v-if="hasScope('servers.files', server.id)">
-      <b-col>
-        <core-servers-sftp v-bind:server="server"/>
-      </b-col>
-    </b-row>
-    <b-row v-if="hasScope('servers.edit.users', server.id)">
-      <b-col>
-        <core-servers-users v-bind:server="server"/>
-      </b-col>
-    </b-row>
-  </b-container>
+  <v-container>
+    <h1
+      style="float: left;"
+      v-text="server.name"
+    />
+    <div style="float: right;">
+      <core-servers-controls :server="server" />
+    </div>
+    <div style="clear: both;" />
+    <v-row v-if="hasScope('servers.console', server.id)">
+      <v-col>
+        <core-servers-console :server="server" />
+      </v-col>
+    </v-row>
+    <v-row v-if="hasScope('servers.stats', server.id)">
+      <v-col md="6">
+        <core-servers-cpu />
+      </v-col>
+      <v-col md="6">
+        <core-servers-memory />
+      </v-col>
+    </v-row>
+    <v-row v-if="hasScope('servers.files.get', server.id)">
+      <v-col>
+        <core-servers-files :server="server" />
+      </v-col>
+    </v-row>
+    <v-row v-if="hasScope('servers.files', server.id)">
+      <v-col>
+        <core-servers-sftp :server="server" />
+      </v-col>
+    </v-row>
+    <v-row v-if="hasScope('servers.edit.users', server.id)">
+      <v-col>
+        <core-servers-users :server="server" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
