@@ -55,7 +55,7 @@
 <script>
 export default {
   props: {
-    server: Object
+    server: { type: Object, default: function () { return {} } }
   }
 }
 </script>

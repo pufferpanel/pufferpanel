@@ -101,6 +101,13 @@
                   type="password"
                   :label="$t('common.NewPassword')"
                 />
+                <v-text-field
+                  v-model="confirmNewPassword"
+                  outlined
+                  prepend-inner-icon="mdi-lock"
+                  type="password"
+                  :label="$t('common.ConfirmPassword')"
+                />
                 <v-btn
                   large
                   block
@@ -129,6 +136,7 @@ export default {
       confirmPassword: '',
       oldPassword: '',
       newPassword: '',
+      confirmNewPassword: '',
       errorMsg: '',
       successMsg: '',
       dismissCountDown: 5
@@ -148,7 +156,7 @@ export default {
       return this.validUsername && this.validEmail && this.confirmPassword
     },
     canSubmitPassChange: function () {
-      return this.oldPassword && this.validPassword
+      return this.oldPassword && this.validPassword && this.newPassword === this.confirmNewPassword
     }
   },
   mounted () {

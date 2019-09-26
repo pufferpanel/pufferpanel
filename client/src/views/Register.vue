@@ -59,12 +59,26 @@
                 @click:append="showPassword = !showPassword"
                 @keyup.enter="submit"
               />
+              <v-text-field
+                id="confirmPassword"
+                v-model="confirmPassword"
+                outlined
+                :label="$t('common.ConfirmPassword')"
+                :error-messages="(confirmPassword !== '' && !samePassword) ? $t('errors.ErrPasswordsNotIdentical') : ''"
+                prepend-inner-icon="mdi-lock"
+                :append-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                name="password"
+                :type="!showConfirmPassword ? 'password' : 'text'"
+                @click:append="showConfirmPassword = !showConfirmPassword"
+                @keyup.enter="submit"
+              />
             </v-form>
             <v-btn
               color="primary"
               class="body-1 mb-5"
               large
               block
+              :disabled="!canComplete"
               @click="submit"
               v-text="$t('common.Register')"
             />
@@ -90,8 +104,10 @@ export default {
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
       registerDisabled: false,
       showPassword: false,
+      showConfirmPassword: false,
       errors: {
         form: '',
         username: '',
@@ -116,6 +132,9 @@ export default {
     },
     validPassword: function () {
       return validate.validPassword(this.password)
+    },
+    samePassword: function () {
+      return validate.samePassword(this.password, this.confirmPassword)
     },
     validUsername: function () {
       return validate.validUsername(this.username)
