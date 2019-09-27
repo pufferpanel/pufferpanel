@@ -47,10 +47,10 @@ func proxyServerRequest(c *gin.Context) {
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 
-	server, exists, err := ss.Get(serverId)
+	server, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(res, err) {
 		return
-	} else if !exists || server == nil {
+	} else if server == nil || server.Identifier == "" {
 		res.Status(netHttp.StatusNotFound).Fail()
 		return
 	}

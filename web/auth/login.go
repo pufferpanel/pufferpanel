@@ -24,39 +24,14 @@ func LoginPost(c *gin.Context) {
 	}
 
 	us := &services.User{DB: db}
-	os := services.GetOAuth(db)
 
-	user, session, err := us.Login(request.Data.Email, request.Data.Password)
+	_, session, err := us.Login(request.Data.Email, request.Data.Password)
 	if response.HandleError(res, err) {
 		return
 	}
 
 	data := &loginResponse{}
 	data.Session = session
-
-	client, _, err := os.GetByUser(user)
-
-	if response.HandleError(res, err) {
-		return
-	}
-
-	data.ServerScopes = make(map[string][]string)
-
-	for _, v := range client.ServerScopes {
-		var serverName string
-		if v.ServerId != nil {
-			serverName = v.Server.Identifier
-		} else {
-			serverName = ""
-		}
-		m := data.ServerScopes[serverName]
-		if m == nil {
-			m = []string{v.Scope}
-		} else {
-			m = append(m, v.Scope)
-		}
-		data.ServerScopes[serverName] = m
-	}
 
 	res.Data(data)
 }

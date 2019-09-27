@@ -6,16 +6,14 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/pem"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
-	"gopkg.in/oauth2.v3"
-	"gopkg.in/oauth2.v3/errors"
-	"gopkg.in/oauth2.v3/utils/uuid"
+	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"os"
-	"strings"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -24,18 +22,94 @@ var signingMethod = jwt.SigningMethodES256
 var privateKey *ecdsa.PrivateKey
 var locker sync.Mutex
 
-func NewJWTAccessGenerate() oauth2.AccessGenerate {
-	validateTokenLoaded()
-	return &jwtAccessGenerate{}
+type Claim struct {
+	jwt.StandardClaims
+	PanelClaims PanelClaims `json:"pufferpanel,omitempty"`
+}
+
+type PanelClaims struct {
+	Permissions map[string][]string `json:"permissions"`
 }
 
 func Generate(claims jwt.Claims) (string, error) {
+	validateTokenLoaded()
 	token := jwt.NewWithClaims(signingMethod, claims)
 	return token.SignedString(privateKey)
 }
 
-func ParseToken(token string, claims jwt.Claims) (*jwt.Token, error) {
-	return jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+func GenerateSession(id uint) (string, error) {
+	claims := &Claim{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "session",
+			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
+			IssuedAt:  time.Now().Unix(),
+			Subject:   strconv.Itoa(int(id)),
+		},
+	}
+
+	return Generate(claims)
+}
+
+func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return "", err
+	}
+	ps := &Permission{DB: db}
+
+	var permissions []*models.Permissions
+
+	if serverId == nil {
+		permissions, err = ps.GetForUser(userId)
+	} else {
+		var perm *models.Permissions
+		perm, err = ps.GetForUserAndServer(userId, serverId)
+		if err == nil {
+			permissions = []*models.Permissions{perm}
+		}
+	}
+
+	if err != nil {
+		return "", err
+	}
+
+	claims := &Claim{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "oauth2",
+			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
+			IssuedAt:  time.Now().Unix(),
+			Subject:   strconv.Itoa(int(userId)),
+		},
+		PanelClaims: PanelClaims{},
+	}
+
+	for _, perm := range permissions {
+		var existing []string
+		if perm.ServerIdentifier == nil {
+			existing = claims.PanelClaims.Permissions[""]
+		} else {
+			existing = claims.PanelClaims.Permissions[*perm.ServerIdentifier]
+		}
+
+		if existing == nil {
+			existing = make([]string, 0)
+		}
+
+		existing = append(existing, perm.ToScopes()...)
+
+		if perm.ServerIdentifier == nil {
+			claims.PanelClaims.Permissions[""] = existing
+		} else {
+			claims.PanelClaims.Permissions[*perm.ServerIdentifier] = existing
+		}
+	}
+
+	return Generate(claims)
+}
+
+func ParseToken(token string) (*jwt.Token, error) {
+	validateTokenLoaded()
+	return jwt.ParseWithClaims(token, &Claim{}, func(token *jwt.Token) (interface{}, error) {
 		return &privateKey.PublicKey, nil
 	})
 }
@@ -105,44 +179,6 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	err = pem.Encode(&key, &pem.Block{Type: "PRIVATE KEY", Bytes: privKeyEncoded})
 	if err != nil {
 		return
-	}
-
-	return
-}
-
-type JWTAccessClaims struct {
-	jwt.StandardClaims
-}
-
-// Valid claims verification
-func (a *JWTAccessClaims) Valid() error {
-	if time.Unix(a.ExpiresAt, 0).Before(time.Now()) {
-		return errors.ErrInvalidAccessToken
-	}
-	return nil
-}
-
-// JWTAccessGenerate generate the jwt access token
-type jwtAccessGenerate struct {
-}
-
-func (a *jwtAccessGenerate) Token(data *oauth2.GenerateBasic, isGenRefresh bool) (access, refresh string, err error) {
-	claims := &JWTAccessClaims{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  data.Client.GetID(),
-			Subject:   data.UserID,
-			ExpiresAt: data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix(),
-		},
-	}
-
-	access, err = Generate(claims)
-	if err != nil {
-		return
-	}
-
-	if isGenRefresh {
-		refresh = base64.URLEncoding.EncodeToString(uuid.NewSHA1(uuid.Must(uuid.NewRandom()), []byte(access)).Bytes())
-		refresh = strings.ToUpper(strings.TrimRight(refresh, "="))
 	}
 
 	return

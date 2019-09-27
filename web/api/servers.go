@@ -190,7 +190,7 @@ func createServer(c *gin.Context) {
 	users := make([]*models.User, len(postBody.Users))
 
 	for k, v := range postBody.Users {
-		user, exists, err := us.Get(v)
+		user, err := us.Get(v)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -317,7 +317,7 @@ func getServerUsers(c *gin.Context) {
 		return
 	}
 
-	clients, err := os.GetForServer(server.ID, false)
+	clients, err := os.GetForServer(server.Identifier, false)
 	if response.HandleError(res, err) {
 		return
 	}
@@ -394,8 +394,8 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
-	user, exists, err := us.Get(username)
-	if !exists || response.HandleError(res, err) {
+	user, err := us.Get(username)
+	if response.HandleError(res, err) {
 		return
 	}
 

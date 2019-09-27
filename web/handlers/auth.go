@@ -4,8 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/pufferpanel/pufferpanel/v2/oauth2/claims"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"strings"
 )
@@ -50,7 +48,7 @@ func AuthMiddleware(c *gin.Context) {
 		c.Abort()
 	}
 
-	token, err := services.ParseToken(cookie, &claims.UserClaims{})
+	token, err := services.ParseToken(cookie)
 
 	if err != nil || !token.Valid {
 		c.Redirect(302, "/auth/login")
@@ -58,10 +56,7 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	userClaims := token.Claims.(*claims.UserClaims)
-
-	srv := services.GetOAuth(db)
-	client, _, err := srv.GetByUser(&models.User{ID: userClaims.UserId})
+	userClaims := token.Claims.(*services.Claim)
 
 	if response.HandleError(res, err) {
 		c.Redirect(302, "/auth/login")
@@ -69,28 +64,14 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	if client == nil {
+	us := services.User{DB: db}
+	user, err := us.Get(userClaims.Subject)
+	if response.HandleError(res, err) {
 		c.Redirect(302, "/auth/login")
 		c.Abort()
 		return
 	}
 
-	//does this token have a login scope
-	valid := false
-	for _, v := range client.ServerScopes {
-		if v.ServerId == nil && v.Scope == "login" {
-			valid = true
-		}
-	}
-
-	if !valid {
-		c.AbortWithStatus(403)
-		return
-	}
-
-	c.Set("client_id", client.ID)
-	c.Set("user_id", client.UserID)
-	c.Set("user", &client.User)
-
+	c.Set("user", user)
 	c.Next()
 }
