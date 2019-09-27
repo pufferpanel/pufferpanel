@@ -2,11 +2,15 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	webHttp "net/http"
+	"strconv"
 	"strings"
 )
 
@@ -37,16 +41,18 @@ func HasOAuth2Token(c *gin.Context) {
 		c.AbortWithStatus(403)
 	}
 
-	token, err := services.ParseToken(parts[1], &services.JWTAccessClaims{})
+	token, err := services.ParseToken(parts[1])
 
-	if err == nil && token.Valid {
-		c.Next()
-	} else {
+	if err != nil || !token.Valid {
 		c.AbortWithStatus(403)
+		return
 	}
+
+	c.Set("token", token)
+	c.Next()
 }
 
-func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
+func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		res := response.From(c)
 
@@ -56,61 +62,118 @@ func oauth2Handler(scope string, requireServer bool, permitWithLimit bool) gin.H
 			return
 		}
 
-		os := services.GetOAuth(db)
-		ss := &services.Server{DB: db}
-
-		var serverId *uint
-
-		i := c.Param("serverId")
-		server, exists, err := ss.Get(i)
-
-		if server != nil {
-			serverId = &server.ID
-		}
-
-		if requireServer && (server == nil || server.ID == 0 || !exists || err != nil) {
-			res.Status(webHttp.StatusUnauthorized).Fail()
+		token, ok := c.Get("token")
+		if !ok {
+			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
+			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
 			c.Abort()
 			return
 		}
-
-		ti, err := os.ValidationBearerToken(c.Request)
-		if err != nil {
-			res.Status(webHttp.StatusUnauthorized).Fail()
-			c.Abort()
-			return
-		}
-
-		ci, allowed, err := os.HasRights(ti.GetAccess(), serverId, scope)
-		if err != nil {
+		ti, ok := token.(*services.Claim)
+		if !ok {
 			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
 			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
 			c.Abort()
 			return
 		}
 
-		if !allowed && permitWithLimit {
-			for _, v := range ci.ServerScopes {
-				if v.Scope == scope {
+		ss := &services.Server{DB: db}
+		us := &services.User{DB: db}
+
+		var serverId string
+
+		i := c.Param("serverId")
+		server, err := ss.Get(i)
+
+		if err != nil {
+			res.Status(webHttp.StatusUnauthorized).Fail()
+			c.Abort()
+			return
+		}
+
+		if requireServer && (server == nil || server.Identifier == "") {
+			res.Status(webHttp.StatusUnauthorized).Fail()
+			c.Abort()
+			return
+		} else if requireServer {
+			serverId = server.Identifier
+		}
+
+		ui, err := strconv.Atoi(ti.Subject)
+		if err != nil {
+			res.Status(webHttp.StatusUnauthorized).Fail()
+			c.Abort()
+			return
+		}
+
+		user, err := us.GetById(uint(ui))
+		if err != nil {
+			res.Status(webHttp.StatusUnauthorized).Fail()
+			c.Abort()
+			return
+		}
+
+		allowed := false
+
+		//if this is an audience of oauth2, we can use token directly
+		if ti.Audience == "oauth2" {
+			scopes := ti.PanelClaims.Permissions[serverId]
+			if scopes != nil && apufferi.ContainsValue(scopes, requiredScope) {
+				allowed = true
+			} else {
+				//if there isn't a defined rule, is this user an admin?
+				scopes := ti.PanelClaims.Permissions[""]
+				if scopes != nil && apufferi.ContainsValue(scopes, scope.ServersAdmin) {
 					allowed = true
-					break
 				}
 			}
+		} else if ti.Audience == "session" {
+			//otherwise, we have to look at what the user has since session based
+			ps := &services.Permission{DB: db}
+			var perms *models.Permissions
+			if serverId == "" {
+				perms, err = ps.GetForUserAndServer(user.ID, nil)
+			} else {
+				perms, err = ps.GetForUserAndServer(user.ID, &serverId)
+			}
+			if err != nil {
+				res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
+				logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
+				c.Abort()
+				return
+			}
+			if apufferi.ContainsValue(perms.ToScopes(), requiredScope) {
+				allowed = true
+			} else if serverId != "" {
+				perms, err = ps.GetForUserAndServer(user.ID, nil)
+				if err != nil {
+					res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
+					logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
+					c.Abort()
+					return
+				}
+				if apufferi.ContainsValue(perms.ToScopes(), scope.ServersAdmin) {
+					allowed = true
+				}
+			}
+		} else {
+			res.Status(webHttp.StatusForbidden).Fail()
+			c.Abort()
+			return
 		}
 
 		if !allowed {
-			if ci == nil {
-				res.Status(webHttp.StatusUnauthorized).Fail()
-				c.Abort()
-			} else {
-				res.Status(webHttp.StatusForbidden).Fail()
-				c.Abort()
-			}
-		} else {
-			c.Set("accessToken", ti.GetAccess())
-			c.Set("server", server)
-			c.Set("user", &ci.User)
-			c.Next()
+			res.Status(webHttp.StatusForbidden).Fail()
+			c.Abort()
+			return
 		}
+
+		c.Set("server", server)
+		c.Set("user", user)
+		c.Next()
 	}
+}
+
+func sessionHandler() {
+
 }

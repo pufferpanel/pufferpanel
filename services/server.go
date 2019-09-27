@@ -20,8 +20,8 @@ type ServerSearch struct {
 	Page     uint
 }
 
-func (ss *Server) Search(searchCriteria ServerSearch) (*models.Servers, uint, error) {
-	servers := &models.Servers{}
+func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total uint, err error) {
+	records = &models.Servers{}
 
 	query := ss.DB
 
@@ -44,29 +44,31 @@ func (ss *Server) Search(searchCriteria ServerSearch) (*models.Servers, uint, er
 		query = query.Where("name LIKE ?", nameFilter)
 	}
 
-	var count uint
-	err := query.Model(&servers).Count(&count).Error
+	err = query.Model(&records).Count(&total).Error
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	res := query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Order("servers.name").Find(servers)
+	err = query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Order("servers.name").Find(records).Error
 
-	return servers, count, res.Error
+	return
 }
 
-func (ss *Server) Get(id string) (*models.Server, bool, error) {
+func (ss *Server) Get(id string) (*models.Server, error) {
 	if id == "" {
-		return nil, false, nil
+		return nil, gorm.ErrRecordNotFound
 	}
 	model := &models.Server{
 		Identifier: id,
 	}
 
-	res := ss.DB.Where(model).Preload("Node").First(model)
+	err := ss.DB.Where(model).Preload("Node").First(model).Error
+	if err != nil {
+		return nil, err
+	}
 
-	return model, model.ID != 0, res.Error
+	return model, nil
 }
 
 func (ss *Server) Update(model *models.Server) error {
@@ -74,9 +76,9 @@ func (ss *Server) Update(model *models.Server) error {
 	return res.Error
 }
 
-func (ss *Server) Delete(id uint) error {
+func (ss *Server) Delete(id string) error {
 	model := &models.Server{
-		ID: id,
+		Identifier: id,
 	}
 
 	res := ss.DB.Delete(model)

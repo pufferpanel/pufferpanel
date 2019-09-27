@@ -1,4 +1,4 @@
-package services
+package impl
 
 import (
 	"github.com/mailgun/mailgun-go"
@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func sendEmailViaMailgun(to, subject, body string, async bool) error {
+func SendEmailViaMailgun(to, subject, body string, async bool) error {
 	domain := viper.GetString("email.domain")
 	if domain == "" {
 		return pufferpanel.ErrSettingNotConfigured("domain")

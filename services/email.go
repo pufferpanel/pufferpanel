@@ -3,9 +3,11 @@ package services
 import (
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/services/impl"
 	"github.com/spf13/viper"
 	"html/template"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -24,7 +26,7 @@ func LoadEmailService() {
 	globalEmailService = &emailService{templates: make(map[string]*template.Template)}
 
 	//validate all emails in the email folder are valid and register templates
-	prefix := "assets" + string(os.PathSeparator) + "email" + string(os.PathSeparator)
+	prefix := path.Join("assets", "email") + string(os.PathSeparator)
 	templates, err := filepath.Glob(prefix + "*.html")
 	if err != nil {
 		panic(err.Error())
@@ -70,7 +72,7 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 
 	switch provider {
 	case "mailgun":
-		return sendEmailViaMailgun(to, subject, builder.String(), async)
+		return impl.SendEmailViaMailgun(to, subject, builder.String(), async)
 	default:
 		return pufferpanel.ErrServiceInvalidProvider("email", provider)
 	}

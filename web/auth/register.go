@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -36,7 +35,6 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	us := &services.User{DB: db}
-	os := services.GetOAuth(db)
 
 	user := &models.User{Username: request.Data.Username, Email: request.Data.Email}
 	err = user.SetPassword(request.Data.Password)
@@ -46,18 +44,6 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	err = us.Create(user)
-	if err != nil {
-		res.Fail().Status(400).Error(err)
-		return
-	}
-
-	client, _, err := os.GetByUser(user)
-	if err != nil {
-		res.Fail().Status(400).Error(err)
-		return
-	}
-
-	err = os.AddScope(client, nil, scope.Login, scope.ServersView)
 	if err != nil {
 		res.Fail().Status(400).Error(err)
 		return

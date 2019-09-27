@@ -4,9 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/pufferpanel/pufferpanel/v2/oauth2/claims"
 	"golang.org/x/crypto/bcrypt"
-	"strconv"
 	"strings"
 )
 
@@ -14,14 +12,30 @@ type User struct {
 	DB *gorm.DB
 }
 
-func (us *User) Get(username string) (*models.User, bool, error) {
+func (us *User) Get(username string) (*models.User, error) {
 	model := &models.User{
 		Username: username,
 	}
 
-	res := us.DB.Where(model).FirstOrInit(model)
+	err := us.DB.Where(model).FirstOrInit(model).Error
 
-	return model, model.ID != 0, res.Error
+	if err != nil {
+		return nil, err
+	}
+	return model, nil
+}
+
+func (us *User) GetById(id uint) (*models.User, error) {
+	model := &models.User{
+		ID: id,
+	}
+
+	err := us.DB.Where(model).FirstOrInit(model).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return model, nil
 }
 
 func (us *User) Login(email string, password string) (user *models.User, sessionToken string, err error) {
@@ -45,7 +59,7 @@ func (us *User) Login(email string, password string) (user *models.User, session
 		return
 	}
 
-	sessionToken, err = Generate(claims.NewUserClaim(user))
+	sessionToken, err = GenerateSession(user.ID)
 	return
 }
 
@@ -53,14 +67,17 @@ func (us *User) IsValidCredentials(user *models.User, password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(password)) == nil
 }
 
-func (us *User) GetByEmail(email string) (*models.User, bool, error) {
+func (us *User) GetByEmail(email string) (*models.User, error) {
 	model := &models.User{
 		Email: email,
 	}
 
-	res := us.DB.Where(model).FirstOrInit(model)
+	err := us.DB.Where(model).First(model).Error
 
-	return model, model.ID != 0, res.Error
+	if err != nil {
+		return nil, err
+	}
+	return model, nil
 }
 
 func (us *User) Update(model *models.User) error {
@@ -78,33 +95,14 @@ func (us *User) Delete(username string) error {
 }
 
 func (us *User) Create(user *models.User) error {
-	oauth2 := GetOAuth(us.DB)
-
-	res := us.DB.Create(user)
-	if res.Error != nil {
-		return res.Error
-	}
-
-	name := ".internal_" + strconv.Itoa(int(user.ID))
-
-	_, err := oauth2.Create(user, nil, name, true, "login")
-
-	if err != nil {
-		us.DB.Delete(user)
-	}
-
-	return err
+	return us.DB.Create(user).Error
 }
 
 func (us *User) ChangePassword(username string, newPass string) error {
-	user, exists, err := us.Get(username)
+	user, err := us.Get(username)
 
 	if err != nil {
 		return err
-	}
-
-	if !exists {
-		return pufferpanel.ErrUserNotFound
 	}
 
 	err = user.SetPassword(newPass)

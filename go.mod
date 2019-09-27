@@ -5,6 +5,8 @@ go 1.12
 require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20190906004059-62cf760a6c9e // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/go-metrics v0.0.1 // indirect
 	github.com/facebookgo/ensure v0.0.0-20160127193407-b4ab57deab51 // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/facebookgo/subset v0.0.0-20150612182917-8dac2c3c4870 // indirect
@@ -19,6 +21,8 @@ require (
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
+	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
+	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/pufferpanel/apufferi/v3 v3.0.1
 	github.com/rogpeppe/go-internal v1.3.1 // indirect
