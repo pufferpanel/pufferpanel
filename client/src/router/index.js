@@ -8,7 +8,6 @@
 
 // Lib imports
 import Vue from 'vue'
-import VueAnalytics from 'vue-analytics'
 import Router from 'vue-router'
 // Routes
 import paths from './paths'
@@ -64,18 +63,5 @@ router.beforeEach((to, from, next) => {
     checkLoginState(next)
   }
 })
-
-// Bootstrap Analytics
-// Set in .env
-// https://github.com/MatteoGabriele/vue-analytics
-if (process.env.GOOGLE_ANALYTICS) {
-  Vue.use(VueAnalytics, {
-    id: process.env.GOOGLE_ANALYTICS,
-    router,
-    autoTracking: {
-      page: process.env.NODE_ENV !== 'development'
-    }
-  })
-}
 
 export default router
