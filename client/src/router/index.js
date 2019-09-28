@@ -12,7 +12,7 @@ import Router from 'vue-router'
 // Routes
 import paths from './paths'
 
-import Cookies from 'js-cookie'
+import { hasAuth } from '@/utils/auth'
 
 function route (path, view, name, meta) {
   return {
@@ -24,9 +24,7 @@ function route (path, view, name, meta) {
 }
 
 function checkLoginState (next) {
-  const cookie = Cookies.get('puffer_auth') || ''
-
-  if (cookie === '') {
+  if (!hasAuth()) {
     next('/auth/login')
   } else {
     next()

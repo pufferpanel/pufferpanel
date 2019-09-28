@@ -93,6 +93,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import { hasAuth } from '@/utils/auth'
 
 function getReauthReason () {
   const reason = localStorage.getItem('reauth_reason') || ''
@@ -128,6 +129,7 @@ export default {
     }
   },
   mounted () {
+    if (hasAuth()) this.$router.push({ name: 'Servers' })
     this.reauthReason = getReauthReason()
     this.registered = getRegistered()
   },

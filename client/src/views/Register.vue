@@ -97,6 +97,7 @@
 
 <script>
 import validate from '@/utils/validate'
+import { hasAuth } from '@/utils/auth'
 
 export default {
   data () {
@@ -142,6 +143,9 @@ export default {
     validEmail: function () {
       return validate.validEmail(this.email)
     }
+  },
+  mounted () {
+    if (hasAuth()) this.$router.push({ name: 'Servers' })
   },
   methods: {
     // real methods
