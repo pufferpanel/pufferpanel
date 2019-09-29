@@ -26,6 +26,21 @@ export default [
     name: 'Server'
   },
   {
+    path: '/node',
+    view: 'Nodes',
+    name: 'Nodes'
+  },
+  {
+    path: '/node/:id',
+    view: 'Node',
+    name: 'Node'
+  },
+  {
+    path: '/addnode',
+    view: 'AddNode',
+    name: 'AddNode'
+  },
+  {
     path: '/errors/404',
     name: 'Errors/404',
     view: 'errors/404',

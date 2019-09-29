@@ -2,6 +2,7 @@
   "Id": "ID",
   "Name": "Name",
   "Node": "Node",
+  "Nodes": "Nodes",
   "Address": "Address",
   "Online": "Online",
   "Loading": "Loading...",
@@ -63,5 +64,14 @@
   "AddUser": "Add User",
   "TypeUsername": "Type a username",
   "ServerName": "Server Name",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page"
+  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
+  "EditNode": "Edit Node",
+  "AddNode": "Add Node",
+  "UpdateNode": "Update Node",
+  "DeleteNode": "Delete Node",
+  "PublicHost": "Public Host",
+  "PublicPort": "Public Port",
+  "PrivateHost": "Private Host",
+  "PrivatePort": "Private Port",
+  "SftpPort": "SFTP Port"
 }
