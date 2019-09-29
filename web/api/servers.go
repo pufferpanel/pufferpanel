@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/response"
@@ -87,16 +88,29 @@ func searchServers(c *gin.Context) {
 	}
 
 	ss := &services.Server{DB: db}
-	os := services.GetOAuth(db)
+	ps := &services.Permission{DB: db}
 
-	//see if user has access to view all others, otherwise we can't permit search without their username
-	ci, allowed, _ := os.HasRights(c.GetString("accessToken"), nil, scope.ServersView)
-	if !allowed {
-		res.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
+	user := c.MustGet("user").(*models.User)
+
+	perms, err := ps.GetForUser(user.ID)
+	if response.HandleError(res, err) {
 		return
 	}
 
-	username = ci.User.Username
+	isAdmin := false
+	for _, p := range perms {
+		if p.Admin {
+			isAdmin = true
+			break
+		}
+	}
+
+	if !isAdmin && username != "" {
+		res.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
+		return
+	} else if !isAdmin {
+		username = user.Username
+	}
 
 	var results *models.Servers
 	var total uint
@@ -165,8 +179,8 @@ func createServer(c *gin.Context) {
 
 	ss := &services.Server{DB: trans}
 	ns := &services.Node{DB: trans}
-	os := services.GetOAuth(trans)
 	us := &services.User{DB: trans}
+	ps := &services.Permission{DB: trans}
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
@@ -202,14 +216,6 @@ func createServer(c *gin.Context) {
 		users[k] = user
 	}
 
-	admins, err := os.GetByScope(scope.ServersAdmin, nil, nil, true)
-	if response.HandleError(res, err) {
-		return
-	}
-	for _, v := range *admins {
-		users = append(users, &v.User)
-	}
-
 	err = ss.Create(server)
 	if err != nil {
 		res.Status(http.StatusInternalServerError).Error(err).Fail()
@@ -217,7 +223,14 @@ func createServer(c *gin.Context) {
 	}
 
 	for _, v := range users {
-		_, err := os.Create(v, server, "", true, scope.ServersDefaultUser()...)
+		perm, err := ps.GetForUserAndServer(v.ID, &server.Identifier)
+		if response.HandleError(res, err) {
+			return
+		}
+
+		perm.SetDefaults()
+
+		err = ps.UpdatePermissions(perm)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -284,7 +297,7 @@ func deleteServer(c *gin.Context) {
 		return
 	}
 
-	err = ss.Delete(server.ID)
+	err = ss.Delete(server.Identifier)
 	if response.HandleError(res, err) {
 		return
 	} else {
@@ -296,13 +309,6 @@ func deleteServer(c *gin.Context) {
 func getServerUsers(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	os := services.GetOAuth(db)
 
 	t, exist := c.Get("server")
 
@@ -317,41 +323,30 @@ func getServerUsers(c *gin.Context) {
 		return
 	}
 
-	clients, err := os.GetForServer(server.Identifier, false)
+	db, err := database.GetConnection()
 	if response.HandleError(res, err) {
 		return
 	}
 
-	caller, _ := c.Get("user")
-	user := caller.(*models.User)
-	users := make([]userScopes, 0)
-	for _, client := range *clients {
-		if client.User.Username == user.Username {
-			continue
+	ps := &services.Permission{DB: db}
+
+	perms, err := ps.GetForServer(server.Identifier)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	caller, _ := c.MustGet("user").(*models.User)
+
+	for i := 0; i < len(perms); i++ {
+		if *perms[i].UserId == caller.ID {
+			perms = append(perms[:i], perms[i+1:]...)
+			i--
 		}
+	}
 
-		skip := false
-		for _, v := range users {
-			if v.Username == client.User.Username {
-				skip = true
-				break
-			}
-		}
-
-		if skip {
-			continue
-		}
-
-		scopes := make([]string, 0)
-
-		for _, s := range client.ServerScopes {
-			scopes = append(scopes, s.Scope)
-		}
-
-		users = append(users, userScopes{
-			Username: client.User.Username,
-			Scopes:   scopes,
-		})
+	users := make([]*models.PermissionView, len(perms))
+	for k, v := range perms {
+		users[k] = models.FromPermission(v)
 	}
 
 	res.Data(users)
@@ -366,12 +361,12 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
-	replacement := &userScopes{}
-	err = c.BindJSON(replacement)
+	perms := &models.PermissionView{}
+	err = c.BindJSON(perms)
 	if response.HandleError(res, err) {
 		return
 	}
-	replacement.Username = username
+	perms.Username = username
 
 	db, err := database.GetConnection()
 	if response.HandleError(res, err) {
@@ -379,7 +374,7 @@ func editServerUser(c *gin.Context) {
 	}
 
 	us := &services.User{DB: db}
-	os := services.GetOAuth(db)
+	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -399,16 +394,12 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
-	clientId := services.CreateInternalClientId(user, server)
-	client, exists, err := os.GetByClientId(clientId)
+	existing, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
 	if response.HandleError(res, err) {
 		return
 	}
-	if !exist {
-		_, err = os.Create(user, server, clientId, true, replacement.Scopes...)
-	} else {
-		err = os.UpdateScopes(client, server, replacement.Scopes...)
-	}
+	perms.CopyTo(existing)
+	err = ps.UpdatePermissions(existing)
 
 	response.HandleError(res, err)
 }
@@ -428,7 +419,7 @@ func removeServerUser(c *gin.Context) {
 	}
 
 	us := &services.User{DB: db}
-	os := services.GetOAuth(db)
+	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -443,12 +434,20 @@ func removeServerUser(c *gin.Context) {
 		return
 	}
 
-	user, exists, err := us.Get(username)
-	if !exists || response.HandleError(res, err) {
+	user, err := us.Get(username)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		return
+	} else if response.HandleError(res, err) {
 		return
 	}
 
-	err = os.Delete(services.CreateInternalClientId(user, server))
+	perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	err = ps.Remove(perms)
 
 	response.HandleError(res, err)
 }
@@ -497,9 +496,4 @@ func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, va
 	}
 
 	return val
-}
-
-type userScopes struct {
-	Username string   `json:"username,omitempty"`
-	Scopes   []string `json:"scopes,omitempty"`
 }

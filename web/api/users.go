@@ -15,6 +15,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -126,11 +127,11 @@ func getUser(c *gin.Context) {
 
 	username := c.Param("username")
 
-	user, exists, err := us.Get(username)
-	if response.HandleError(res, err) {
-		return
-	} else if !exists {
+	user, err := us.Get(username)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
 		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		return
+	} else if response.HandleError(res, err) {
 		return
 	}
 
@@ -217,11 +218,11 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	user, exists, err := us.Get(username)
-	if response.HandleError(res, err) {
-		return
-	} else if !exists {
+	user, err := us.Get(username)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
 		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		return
+	} else if response.HandleError(res, err) {
 		return
 	}
 
@@ -246,11 +247,11 @@ func deleteUser(c *gin.Context) {
 
 	username := c.Param("username")
 
-	user, exists, err := us.Get(username)
-	if response.HandleError(res, err) {
-		return
-	} else if !exists {
+	user, err := us.Get(username)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
 		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		return
+	} else if response.HandleError(res, err) {
 		return
 	}
 
