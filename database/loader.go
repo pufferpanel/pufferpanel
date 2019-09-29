@@ -97,6 +97,7 @@ func migrateModels() (err error) {
 		&models.Server{},
 		&models.User{},
 		&models.Template{},
+		&models.Permissions{},
 	}
 
 	for _, v := range dbObjects {

@@ -32,9 +32,8 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, 
 	}
 
 	if searchCriteria.Username != "" {
-		query = query.Joins("JOIN client_server_scopes css ON css.server_id = servers.id AND css.scope = 'servers.view'")
-		query = query.Joins("JOIN client_infos ci ON ci.id = css.client_info_id")
 		query = query.Joins("JOIN users ON users.id = ci.user_id")
+		query = query.Joins("JOIN permissions p ON p.user_id = u.user.id AND servers.identifier = p.server_identifier")
 		query = query.Where("users.username = ?", searchCriteria.Username)
 	}
 
