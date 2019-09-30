@@ -98,6 +98,7 @@ func migrateModels() (err error) {
 		&models.User{},
 		&models.Template{},
 		&models.Permissions{},
+		&models.Client{},
 	}
 
 	for _, v := range dbObjects {
@@ -110,6 +111,21 @@ func migrateModels() (err error) {
 	}
 
 	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE").Error
+	if err != nil {
+		return
+	}
+
+	err = dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE").Error
 	if err != nil {
 		return
 	}

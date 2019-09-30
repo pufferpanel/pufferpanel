@@ -42,7 +42,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "/:serverId", handlers.OAuth2(scope.ServersView, true), getServer)
 	g.Handle("PUT", "/:serverId", handlers.OAuth2(scope.ServersCreate, false), createServer)
 	g.Handle("POST", "/:serverId", handlers.OAuth2(scope.ServersEdit, true), createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, false), deleteServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, true), deleteServer)
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
 	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
 	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), editServerUser)
@@ -143,7 +143,31 @@ func getServer(c *gin.Context) {
 		response.HandleError(res, pufferpanel.ErrServerNotFound)
 	}
 
-	res.Data(models.RemoveServerPrivateInfo(models.FromServer(server)))
+	_, includePerms := c.GetQuery("perms")
+	var perms *models.PermissionView
+	if includePerms {
+		db, err := database.GetConnection()
+		if response.HandleError(res, err) {
+			return
+		}
+
+		u := c.MustGet("user").(*models.User)
+
+		ps := &services.Permission{DB: db}
+
+		p, err := ps.GetForUserAndServer(u.ID, &server.Identifier)
+		if response.HandleError(res, err) {
+			return
+		}
+		perms = models.FromPermission(p)
+	}
+
+	data := &GetServerResponse{
+		Server: models.RemoveServerPrivateInfo(models.FromServer(server)),
+		Perms:  perms,
+	}
+
+	res.Data(data)
 }
 
 func createServer(c *gin.Context) {
@@ -496,4 +520,9 @@ func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, va
 	}
 
 	return val
+}
+
+type GetServerResponse struct {
+	Server *models.ServerView     `json:"server"`
+	Perms  *models.PermissionView `json:"permissions"`
 }

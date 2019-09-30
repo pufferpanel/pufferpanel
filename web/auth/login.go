@@ -24,14 +24,21 @@ func LoginPost(c *gin.Context) {
 	}
 
 	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
 
-	_, session, err := us.Login(request.Data.Email, request.Data.Password)
+	user, session, err := us.Login(request.Data.Email, request.Data.Password)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	perms, err := ps.GetForUserAndServer(user.ID, nil)
 	if response.HandleError(res, err) {
 		return
 	}
 
 	data := &loginResponse{}
 	data.Session = session
+	data.Admin = perms.Admin
 
 	res.Data(data)
 }
@@ -46,6 +53,6 @@ type loginRequestData struct {
 }
 
 type loginResponse struct {
-	Session      string              `json:"session"`
-	ServerScopes map[string][]string `json:"scopes"`
+	Session string `json:"session"`
+	Admin   bool   `json:"admin,omitempty"`
 }
