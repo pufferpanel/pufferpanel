@@ -140,6 +140,13 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	}
 
 	go func() {
+		_, err := database.GetConnection()
+		if err != nil {
+			logging.Exception("Error connecting to database", err)
+		}
+	}()
+
+	go func() {
 		quit := make(chan os.Signal)
 		// kill (no param) default send syscall.SIGTERM
 		// kill -2 is syscall.SIGINT

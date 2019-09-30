@@ -11,25 +11,25 @@ type Permission struct {
 }
 
 func (p *Permission) GetForUser(id uint) ([]*models.Permissions, error) {
-	allPerms := models.MultiplePermissions{}
+	allPerms := &models.MultiplePermissions{}
 	permissions := &models.Permissions{
 		UserId: &id,
 	}
 
-	err := p.DB.Preload("User").Preload("Server").Where(permissions).Find(allPerms).Error
+	err := p.DB.Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
 
-	return allPerms, err
+	return *allPerms, err
 }
 
 func (p *Permission) GetForServer(serverId string) ([]*models.Permissions, error) {
-	allPerms := models.MultiplePermissions{}
+	allPerms := &models.MultiplePermissions{}
 	permissions := &models.Permissions{
 		ServerIdentifier: &serverId,
 	}
 
-	err := p.DB.Preload("User").Preload("Server").Where(permissions).Find(allPerms).Error
+	err := p.DB.Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
 
-	return allPerms, err
+	return *allPerms, err
 }
 
 func (p *Permission) GetForUserAndServer(userId uint, serverId *string) (*models.Permissions, error) {
@@ -38,21 +38,25 @@ func (p *Permission) GetForUserAndServer(userId uint, serverId *string) (*models
 		ServerIdentifier: serverId,
 	}
 
-	err := p.DB.Preload("User").Preload("Server").Where(permissions).FirstOrCreate(permissions).Error
+	err := p.DB.Preload("User").Preload("Server").Where(permissions).First(permissions).Error
+
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		return permissions, nil
+	}
 
 	return permissions, err
 }
 
 func (p *Permission) GetForClient(id uint) ([]*models.Permissions, error) {
-	allPerms := models.MultiplePermissions{}
+	allPerms := &models.MultiplePermissions{}
 
 	permissions := &models.Permissions{
 		ClientId: &id,
 	}
 
-	err := p.DB.Preload("ClientId").Preload("User").Preload("Server").Where(permissions).Find(allPerms).Error
+	err := p.DB.Preload("ClientId").Preload("User").Preload("Server").Where(permissions).Find(&allPerms).Error
 
-	return allPerms, err
+	return *allPerms, err
 }
 
 func (p *Permission) GetForClientAndServer(id uint, serverId *string) (*models.Permissions, error) {

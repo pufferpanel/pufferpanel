@@ -1,12 +1,11 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3/scope"
 )
 
 type Permissions struct {
-	gorm.Model `json:"-"`
+	Id uint `gorm:"PRIMARY_KEY,AUTO_INCREMEMT"`
 
 	//owners of this permission set
 	UserId *uint `json:"-"`
@@ -20,20 +19,20 @@ type Permissions struct {
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	//and here are all the perms we support
-	Admin bool `gorm:"NOT NULL;DEFAULT 0" oneOf:""`
+	Admin bool `gorm:"NOT NULL;DEFAULT:0" oneOf:""`
 	//these only will exist if tied to a server
-	EditServerData    bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	InstallServer     bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	UpdateServer      bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""` //this is unused currently
-	ViewServerConsole bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	SendServerConsole bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	StopServer        bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	StartServer       bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	ViewServerStats   bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	ViewServerFiles   bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	SFTPServer        bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
-	PutServerFiles    bool `gorm:"NOT NULL;DEFAULT 0" json:"-" oneOf:""`
+	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	InstallServer     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	UpdateServer      bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""` //this is unused currently
+	ViewServerConsole bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	SendServerConsole bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	StopServer        bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	StartServer       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewServerStats   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewServerFiles   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	SFTPServer        bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	PutServerFiles    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 }
 
 type MultiplePermissions []*Permissions

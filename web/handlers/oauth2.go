@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
@@ -69,7 +70,15 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 			c.Abort()
 			return
 		}
-		ti, ok := token.(*services.Claim)
+		jwtToken, ok := token.(*jwt.Token)
+		if !ok {
+			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
+			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
+			c.Abort()
+			return
+		}
+
+		ti, ok := jwtToken.Claims.(*services.Claim)
 		if !ok {
 			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
 			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
@@ -82,13 +91,16 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 
 		var serverId string
 
-		i := c.Param("serverId")
-		server, err := ss.Get(i)
+		var server *models.Server
 
-		if err != nil {
-			res.Status(webHttp.StatusUnauthorized).Fail()
-			c.Abort()
-			return
+		i := c.Param("serverId")
+		if requireServer {
+			server, err = ss.Get(i)
+			if err != nil {
+				res.Status(webHttp.StatusUnauthorized).Fail()
+				c.Abort()
+				return
+			}
 		}
 
 		if requireServer && (server == nil || server.Identifier == "") {
@@ -144,7 +156,7 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 			}
 			if apufferi.ContainsValue(perms.ToScopes(), requiredScope) {
 				allowed = true
-			} else if serverId != "" {
+			} else {
 				perms, err = ps.GetForUserAndServer(user.ID, nil)
 				if err != nil {
 					res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
