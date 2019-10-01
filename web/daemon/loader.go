@@ -1,26 +1,31 @@
 package daemon
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	netHttp "net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
-	g := rg.Group("/server")
+	g := rg.Group("/server", handlers.HasOAuth2Token)
 	{
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
 		g.Any("/:id/*path", proxyServerRequest)
 	}
-	r := rg.Group("/node")
+	r := rg.Group("/node", handlers.HasOAuth2Token)
 	{
 		//g.Any("", proxyServerRequest)
 		r.Any("/:id", proxyNodeRequest)
@@ -53,6 +58,19 @@ func proxyServerRequest(c *gin.Context) {
 	} else if server == nil || server.Identifier == "" {
 		res.Status(netHttp.StatusNotFound).Fail()
 		return
+	}
+
+	token := c.MustGet("token").(*apufferi.Claim)
+
+	//if a session-token, we need to convert it to an oauth2 token instead
+	if token.Audience == "session" {
+		newToken, err := generateOAuth2Token(token, server)
+		if response.HandleError(res, err) {
+			return
+		}
+
+		//set new header
+		c.Header("Authorization", "Bearer "+newToken)
 	}
 
 	if c.GetHeader("Upgrade") == "websocket" {
@@ -91,6 +109,19 @@ func proxyNodeRequest(c *gin.Context) {
 	} else if !exists {
 		res.Fail().Status(404)
 		return
+	}
+
+	token := c.MustGet("token").(*apufferi.Claim)
+
+	//if a session-token, we need to convert it to an oauth2 token instead
+	if token.Audience == "session" {
+		newToken, err := generateOAuth2Token(token, nil)
+		if response.HandleError(res, err) {
+			return
+		}
+
+		//set new header
+		c.Header("Authorization", "Bearer "+newToken)
 	}
 
 	if c.GetHeader("Upgrade") == "websocket" {
@@ -135,4 +166,55 @@ func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *mo
 		response.From(c).Status(netHttp.StatusInternalServerError).Fail().Error(err)
 		return
 	}
+}
+
+func generateOAuth2Token(token *apufferi.Claim, server *models.Server) (string, error) {
+	db, err := database.GetConnection()
+	if err != nil {
+		return "", err
+	}
+
+	ps := &services.Permission{DB: db}
+
+	userId, err := strconv.Atoi(token.Subject)
+	if err != nil {
+		return "", err
+	}
+
+	var serverId *string
+	if server != nil {
+		serverId = &server.Identifier
+	}
+
+	perms, err := ps.GetForUserAndServer(uint(userId), serverId)
+	if err != nil {
+		return "", err
+	}
+
+	scopes := make(map[string][]scope.Scope)
+
+	if serverId != nil {
+		scopes[*serverId] = perms.ToScopes()
+	} else {
+		scopes[""] = perms.ToScopes()
+	}
+
+	claims := &apufferi.Claim{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "oauth2",
+			ExpiresAt: token.ExpiresAt,
+			IssuedAt:  time.Now().Unix(),
+			Subject:   token.Subject,
+		},
+		PanelClaims: apufferi.PanelClaims{
+			Scopes: scopes,
+		},
+	}
+
+	newToken, err := services.Generate(claims)
+	if err != nil {
+		return "", err
+	}
+
+	return newToken, nil
 }
