@@ -56,8 +56,6 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	userClaims := token.Claims.(*services.Claim)
-
 	if response.HandleError(res, err) {
 		c.Redirect(302, "/auth/login")
 		c.Abort()
@@ -65,7 +63,7 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	us := services.User{DB: db}
-	user, err := us.Get(userClaims.Subject)
+	user, err := us.Get(token.Claims.Subject)
 	if response.HandleError(res, err) {
 		c.Redirect(302, "/auth/login")
 		c.Abort()

@@ -43,8 +43,8 @@ func (p *Permissions) BeforeSave() {
 	}
 }
 
-func (p *Permissions) ToScopes() []string {
-	scopes := make([]string, 0)
+func (p *Permissions) ToScopes() []scope.Scope {
+	scopes := make([]scope.Scope, 0)
 
 	if p.Admin {
 		scopes = append(scopes, scope.ServersAdmin)
@@ -71,7 +71,7 @@ func (p *Permissions) ToScopes() []string {
 		}
 
 		if p.UpdateServer {
-			//scopes = append(scopes, scope.ServersUpdate)
+			scopes = append(scopes, scope.ServersUpdate)
 		}
 
 		if p.ViewServerConsole {
@@ -103,7 +103,7 @@ func (p *Permissions) ToScopes() []string {
 		}
 
 		if p.SFTPServer {
-			scopes = append(scopes, scope.ServersFiles)
+			scopes = append(scopes, scope.ServersSFTP)
 		}
 	}
 

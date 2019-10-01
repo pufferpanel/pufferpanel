@@ -10,8 +10,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"io"
 	"os"
 	"strconv"
 	"sync"
@@ -22,15 +24,6 @@ var signingMethod = jwt.SigningMethodES256
 var privateKey *ecdsa.PrivateKey
 var locker sync.Mutex
 
-type Claim struct {
-	jwt.StandardClaims
-	PanelClaims PanelClaims `json:"pufferpanel,omitempty"`
-}
-
-type PanelClaims struct {
-	Permissions map[string][]string `json:"permissions"`
-}
-
 func Generate(claims jwt.Claims) (string, error) {
 	validateTokenLoaded()
 	token := jwt.NewWithClaims(signingMethod, claims)
@@ -38,7 +31,7 @@ func Generate(claims jwt.Claims) (string, error) {
 }
 
 func GenerateSession(id uint) (string, error) {
-	claims := &Claim{
+	claims := &apufferi.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "session",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
@@ -73,45 +66,43 @@ func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 		return "", err
 	}
 
-	claims := &Claim{
+	claims := &apufferi.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 			Subject:   strconv.Itoa(int(userId)),
 		},
-		PanelClaims: PanelClaims{},
+		PanelClaims: apufferi.PanelClaims{},
 	}
 
 	for _, perm := range permissions {
-		var existing []string
+		var existing []scope.Scope
 		if perm.ServerIdentifier == nil {
-			existing = claims.PanelClaims.Permissions[""]
+			existing = claims.PanelClaims.Scopes[""]
 		} else {
-			existing = claims.PanelClaims.Permissions[*perm.ServerIdentifier]
+			existing = claims.PanelClaims.Scopes[*perm.ServerIdentifier]
 		}
 
 		if existing == nil {
-			existing = make([]string, 0)
+			existing = make([]scope.Scope, 0)
 		}
 
 		existing = append(existing, perm.ToScopes()...)
 
 		if perm.ServerIdentifier == nil {
-			claims.PanelClaims.Permissions[""] = existing
+			claims.PanelClaims.Scopes[""] = existing
 		} else {
-			claims.PanelClaims.Permissions[*perm.ServerIdentifier] = existing
+			claims.PanelClaims.Scopes[*perm.ServerIdentifier] = existing
 		}
 	}
 
 	return Generate(claims)
 }
 
-func ParseToken(token string) (*jwt.Token, error) {
+func ParseToken(token string) (*apufferi.Token, error) {
 	validateTokenLoaded()
-	return jwt.ParseWithClaims(token, &Claim{}, func(token *jwt.Token) (interface{}, error) {
-		return &privateKey.PublicKey, nil
-	})
+	return apufferi.ParseToken(&privateKey.PublicKey, token)
 }
 
 func validateTokenLoaded() {
@@ -125,10 +116,15 @@ func validateTokenLoaded() {
 func load() {
 	var privKey *ecdsa.PrivateKey
 	privKeyFile, err := os.OpenFile("private.pem", os.O_CREATE|os.O_RDWR, 0600)
+	defer apufferi.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
 	} else if err == nil {
-		privKey, err = ecdsa.GenerateKey(elliptic.P256(), privKeyFile)
+		var buf bytes.Buffer
+		_, _ = io.Copy(&buf, privKeyFile)
+		block, _ := pem.Decode(buf.Bytes())
+
+		privKey, err = ecdsa.GenerateKey(elliptic.P256(), bytes.NewReader(block.Bytes))
 	}
 
 	if err != nil {
