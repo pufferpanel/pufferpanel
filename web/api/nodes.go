@@ -28,8 +28,8 @@ import (
 func registerNodes(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2(scope.NodesView, false), getAllNodes)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
+	g.Handle("POST", "", handlers.OAuth2(scope.NodesEdit, false), createNode)
 
-	g.Handle("PUT", "/:id", handlers.OAuth2(scope.NodesEdit, false), createNode)
 	g.Handle("GET", "/:id", handlers.OAuth2(scope.NodesView, false), getNode)
 	g.Handle("POST", "/:id", handlers.OAuth2(scope.NodesEdit, false), updateNode)
 	g.Handle("DELETE", "/:id", handlers.OAuth2(scope.NodesEdit, false), deleteNode)
