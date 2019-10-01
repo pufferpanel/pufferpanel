@@ -15,11 +15,11 @@ import (
 	"strings"
 )
 
-func OAuth2(scope string, requireServer bool) gin.HandlerFunc {
+func OAuth2(scope scope.Scope, requireServer bool) gin.HandlerFunc {
 	return oauth2Handler(scope, requireServer, false)
 }
 
-func OAuth2WithLimit(scope string, requireServer bool) gin.HandlerFunc {
+func OAuth2WithLimit(scope scope.Scope, requireServer bool) gin.HandlerFunc {
 	return oauth2Handler(scope, requireServer, true)
 }
 
@@ -53,7 +53,7 @@ func HasOAuth2Token(c *gin.Context) {
 	c.Next()
 }
 
-func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
+func oauth2Handler(requiredScope scope.Scope, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		res := response.From(c)
 
@@ -78,7 +78,7 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 			return
 		}
 
-		ti, ok := jwtToken.Claims.(*services.Claim)
+		ti, ok := jwtToken.Claims.(*apufferi.Claim)
 		if !ok {
 			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
 			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
@@ -129,13 +129,13 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 
 		//if this is an audience of oauth2, we can use token directly
 		if ti.Audience == "oauth2" {
-			scopes := ti.PanelClaims.Permissions[serverId]
-			if scopes != nil && apufferi.ContainsValue(scopes, requiredScope) {
+			scopes := ti.PanelClaims.Scopes[serverId]
+			if scopes != nil && apufferi.Contains(scopes, requiredScope) {
 				allowed = true
 			} else {
 				//if there isn't a defined rule, is this user an admin?
-				scopes := ti.PanelClaims.Permissions[""]
-				if scopes != nil && apufferi.ContainsValue(scopes, scope.ServersAdmin) {
+				scopes := ti.PanelClaims.Scopes[""]
+				if scopes != nil && apufferi.Contains(scopes, scope.ServersAdmin) {
 					allowed = true
 				}
 			}
@@ -154,7 +154,7 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 				c.Abort()
 				return
 			}
-			if apufferi.ContainsValue(perms.ToScopes(), requiredScope) {
+			if apufferi.Contains(perms.ToScopes(), requiredScope) {
 				allowed = true
 			} else {
 				perms, err = ps.GetForUserAndServer(user.ID, nil)
@@ -164,7 +164,7 @@ func oauth2Handler(requiredScope string, requireServer bool, permitWithLimit boo
 					c.Abort()
 					return
 				}
-				if apufferi.ContainsValue(perms.ToScopes(), scope.ServersAdmin) {
+				if apufferi.Contains(perms.ToScopes(), scope.ServersAdmin) {
 					allowed = true
 				}
 			}
