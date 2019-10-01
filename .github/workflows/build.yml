@@ -11,8 +11,8 @@ on:
     
     
 jobs:
-  build:
-    name: Build
+  build-binaries:
+    name: Build Binaries
     runs-on: ${{ matrix.os }}
     
     strategy:
@@ -21,6 +21,7 @@ jobs:
         arch: [amd64, arm]
         filename: [pufferpanel, pufferpanel.exe]
         go: [ '1.12' ]
+        node-version: [ '12.x' ]
         exclude:
           - os: windows-2019
             arch: arm
@@ -31,15 +32,28 @@ jobs:
 
     steps:
 
-    - name: Set up Go
+    - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go }}
       id: go
 
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
+
+    - name: npm install, build
+      run: |
+        npm install
+        npm run build
+      env:
+        CI: true
+      working-directory: "client"
       
     - name: Build
       run: |
-        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
