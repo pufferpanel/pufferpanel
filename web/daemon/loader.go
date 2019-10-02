@@ -60,17 +60,17 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	token := c.MustGet("token").(*apufferi.Claim)
+	token := c.MustGet("token").(*apufferi.Token)
 
 	//if a session-token, we need to convert it to an oauth2 token instead
-	if token.Audience == "session" {
-		newToken, err := generateOAuth2Token(token, server)
+	if token.Claims.Audience == "session" {
+		newToken, err := generateOAuth2Token(token.Claims, server)
 		if response.HandleError(res, err) {
 			return
 		}
 
 		//set new header
-		c.Header("Authorization", "Bearer "+newToken)
+		c.Request.Header.Set("Authorization", "Bearer "+newToken)
 	}
 
 	if c.GetHeader("Upgrade") == "websocket" {
@@ -195,6 +195,13 @@ func generateOAuth2Token(token *apufferi.Claim, server *models.Server) (string, 
 
 	if serverId != nil {
 		scopes[*serverId] = perms.ToScopes()
+
+		//also include global scopes
+		perms, err = ps.GetForUserAndServer(uint(userId), nil)
+		if err != nil {
+			return "", err
+		}
+		scopes[""] = append(scopes[""], perms.ToScopes()...)
 	} else {
 		scopes[""] = perms.ToScopes()
 	}
