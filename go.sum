@@ -182,6 +182,8 @@ github.com/pufferpanel/apufferi/v3 v3.0.1 h1:38wWptmygh+IOxSlkgJ4R5MNp+jmP67jNj6
 github.com/pufferpanel/apufferi/v3 v3.0.1/go.mod h1:qQqJi4UavXGFWGWtk/h20FpF8YTBJ8Xmh4vOzynkijU=
 github.com/pufferpanel/apufferi/v3 v3.0.2 h1:mgVckRz+7Dm88nUXR7zUt2mY5q14yNFRgUQxo6AeX3g=
 github.com/pufferpanel/apufferi/v3 v3.0.2/go.mod h1:BQe7tbY1OVgQBKHfUXdYy46LQ6O3Itg9hbw9QdT+w/M=
+github.com/pufferpanel/apufferi/v3 v3.0.3 h1:u3bVqv/hlLQjQkK9YlyMDYtBR2BtFn2s2QNx6mtCbYQ=
+github.com/pufferpanel/apufferi/v3 v3.0.3/go.mod h1:BQe7tbY1OVgQBKHfUXdYy46LQ6O3Itg9hbw9QdT+w/M=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
 github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
