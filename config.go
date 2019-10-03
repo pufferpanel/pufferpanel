@@ -16,8 +16,7 @@ func init() {
 	viper.SetDefault("database.dialect", "sqlite3")
 	viper.SetDefault("database.url", "file:pufferpanel.db?cache=shared")
 
-	viper.SetDefault("web.host", "0.0.0.0")
-	viper.SetDefault("web.port", "8080")
+	viper.SetDefault("web.host", "0.0.0.0:8080")
 	viper.SetDefault("web.socket", "/var/run/pufferpanel.sock")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
