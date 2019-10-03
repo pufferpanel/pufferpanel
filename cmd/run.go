@@ -72,7 +72,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	c := make(chan error)
 
 	srv := &http.Server{
-		Addr:    viper.GetString("web.host") + ":" + viper.GetString("web.port"),
+		Addr:    viper.GetString("web.host"),
 		Handler: router,
 	}
 
