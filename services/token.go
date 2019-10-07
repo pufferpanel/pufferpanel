@@ -13,6 +13,7 @@ import (
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/spf13/viper"
 	"io"
 	"os"
 	"strconv"
@@ -25,7 +26,7 @@ var privateKey *ecdsa.PrivateKey
 var locker sync.Mutex
 
 func Generate(claims jwt.Claims) (string, error) {
-	validateTokenLoaded()
+	ValidateTokenLoaded()
 	token := jwt.NewWithClaims(signingMethod, claims)
 	return token.SignedString(privateKey)
 }
@@ -101,11 +102,11 @@ func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 }
 
 func ParseToken(token string) (*apufferi.Token, error) {
-	validateTokenLoaded()
+	ValidateTokenLoaded()
 	return apufferi.ParseToken(&privateKey.PublicKey, token)
 }
 
-func validateTokenLoaded() {
+func ValidateTokenLoaded() {
 	locker.Lock()
 	defer locker.Unlock()
 	if privateKey == nil {
@@ -115,7 +116,7 @@ func validateTokenLoaded() {
 
 func load() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile("private.pem", os.O_CREATE|os.O_RDWR, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_RDWR, 0600)
 	defer apufferi.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -141,7 +142,7 @@ func load() {
 		return
 	}
 
-	pubKeyFile, err := os.OpenFile("public.pem", os.O_CREATE|os.O_RDWR, 0644)
+	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_CREATE|os.O_RDWR, 0644)
 	defer apufferi.Close(pubKeyFile)
 	if err != nil {
 		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()

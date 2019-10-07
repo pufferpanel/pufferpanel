@@ -28,6 +28,8 @@ type Node struct {
 	PrivatePort uint   `gorm:"DEFAULT:5656;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=SFTPPort"`
 	SFTPPort    uint   `gorm:"DEFAULT:5657;NOT NULL" json:"-" validate:"required,min=1,max=65535,nefield=PublicPort,nefield=PrivatePort"`
 
+	Secret string `gorm:"size=36;NOT NULL" json:"-" validate:"required"`
+
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
