@@ -5,7 +5,7 @@ import (
 )
 
 type Permissions struct {
-	Id uint `gorm:"PRIMARY_KEY,AUTO_INCREMEMT"`
+	ID uint `gorm:"PRIMARY_KEY,AUTO_INCREMEMT"`
 
 	//owners of this permission set
 	UserId *uint `json:"-"`

@@ -1,21 +1,27 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"fmt"
+	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
+	"strings"
 )
 
 type Client struct {
-	gorm.Model
+	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
+	ClientId           string `gorm:"NOT NULL"`
+	HashedClientSecret string `gorm:"column:client_secret;NOT NULL"`
 
-	ClientId           string
-	HashedClientSecret string
+	UserId uint `gorm:"NOT NULL"`
+	User   *User
 
-	UserId uint
-	User   User
+	Scopes    map[string][]scope.Scope `gorm:"-"`
+	RawScopes string                   `gorm:"column:scopes;NOT NULL;size:4000"`
 }
+
+type Clients []*Client
 
 func (c *Client) SetClientSecret(secret string) error {
 	res, err := bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)
@@ -25,6 +31,10 @@ func (c *Client) SetClientSecret(secret string) error {
 	}
 
 	return err
+}
+
+func (c *Client) ValidateSecret(secret string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(c.HashedClientSecret), []byte(secret)) == nil
 }
 
 func (c *Client) IsValid() (err error) {
@@ -39,5 +49,34 @@ func (c *Client) IsValid() (err error) {
 
 func (c *Client) BeforeSave() (err error) {
 	err = c.IsValid()
+
+	scopes := make([]string, 0)
+
+	for id, s := range c.Scopes {
+		for _, v := range s {
+			scopes = append(scopes, fmt.Sprintf("%s:%s", id, v))
+		}
+	}
+	c.RawScopes = strings.Join(scopes, " ")
+
+	return
+}
+
+func (c *Client) AfterFind() (err error) {
+	c.Scopes = make(map[string][]scope.Scope)
+
+	for _, v := range strings.Split(c.RawScopes, " ") {
+		parts := strings.SplitN(v, ":", 2)
+		id := parts[0]
+		s := parts[1]
+		existing := c.Scopes[id]
+		if existing == nil {
+			existing = []scope.Scope{scope.Scope(s)}
+		} else {
+			existing = append(existing, scope.Scope(s))
+		}
+		c.Scopes[id] = existing
+	}
+
 	return
 }

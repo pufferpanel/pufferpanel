@@ -44,6 +44,37 @@ func GenerateSession(id uint) (string, error) {
 	return Generate(claims)
 }
 
+func GenerateOAuthForClient(client *models.Client) (string, error) {
+	claims := &apufferi.Claim{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "oauth2",
+			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		PanelClaims: apufferi.PanelClaims{
+			Scopes: client.Scopes,
+		},
+	}
+
+	return Generate(claims)
+}
+
+func GenerateOAuthForNode(nodeId uint) (string, error) {
+	claims := &apufferi.Claim{
+		StandardClaims: jwt.StandardClaims{
+			Audience:  "oauth2",
+			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		PanelClaims: apufferi.PanelClaims{
+			Scopes: map[string][]scope.Scope{
+				"": {scope.OAuth2Auth},
+			},
+		},
+	}
+	return Generate(claims)
+}
+
 func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 	db, err := database.GetConnection()
 	if err != nil {
@@ -72,7 +103,6 @@ func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 			Audience:  "oauth2",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
-			Subject:   strconv.Itoa(int(userId)),
 		},
 		PanelClaims: apufferi.PanelClaims{},
 	}
