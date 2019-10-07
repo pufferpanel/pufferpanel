@@ -1,6 +1,7 @@
 package oauth2
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/apufferi/v3"
@@ -8,6 +9,7 @@ import (
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"strconv"
 	"strings"
 )
 
@@ -33,11 +35,81 @@ func handleTokenRequest(c *gin.Context) {
 		return
 	}
 
-	switch strings.ToLower(request.GrantType) {
-	/*case "client_credentials":
-	{
+	db, err := database.GetConnection()
+	if err != nil {
+		c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+		return
+	}
 
-	}*/
+	switch strings.ToLower(request.GrantType) {
+	case "client_credentials":
+		{
+			if strings.HasPrefix(request.ClientId, ".node_") {
+				nodeId := strings.TrimPrefix(request.ClientId, ".node_")
+				id, err := strconv.Atoi(nodeId)
+				if err != nil || id <= 0 {
+					if err == nil {
+						err = errors.New("node id must be positive")
+					}
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client", ErrorDescription: err.Error()})
+					return
+				}
+				ns := &services.Node{DB: db}
+				node, exist, err := ns.Get(uint(id))
+				if err != nil {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					return
+				}
+				if !exist {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
+					return
+				}
+
+				if node.Secret != request.ClientSecret {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client"})
+					return
+				}
+				//at this point, we've validate it's a node, we can issue the token
+				ts, err := services.GenerateOAuthForNode(node.ID)
+				if err != nil {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					return
+				}
+
+				c.JSON(200, &oauth2TokenResponse{
+					AccessToken: ts,
+					TokenType:   "Bearer",
+					Scope:       string(scope.OAuth2Auth),
+				})
+
+				return
+			} else {
+				os := &services.OAuth2{DB: db}
+				client, err := os.Get(request.ClientId)
+				if err != nil {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					return
+				}
+
+				if !client.ValidateSecret(request.ClientSecret) {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client"})
+					return
+				}
+
+				token, err := services.GenerateOAuthForClient(client)
+				if err != nil {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					return
+				}
+
+				c.JSON(200, &oauth2TokenResponse{
+					AccessToken: token,
+					TokenType:   "Bearer",
+					Scope:       string(scope.OAuth2Auth),
+				})
+				return
+			}
+		}
 	case "password":
 		{
 			auth := strings.TrimSpace(c.GetHeader("Authorization"))
@@ -61,8 +133,6 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(400, &oauth2TokenResponse{Error: "unauthorized_client"})
 				return
 			}
-
-			db, err := database.GetConnection()
 			us := &services.User{DB: db}
 			ss := &services.Server{DB: db}
 
@@ -87,7 +157,7 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
-			if perms.Id == 0 {
+			if perms.ID == 0 {
 				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
