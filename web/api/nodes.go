@@ -14,6 +14,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
@@ -21,8 +22,12 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	uuid "github.com/satori/go.uuid"
+	"github.com/spf13/viper"
+	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func registerNodes(g *gin.RouterGroup) {
@@ -38,8 +43,8 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("GET", "/:id/deployment", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 
-	g.Handle("POST", "/:id/reset", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
-	g.Handle("OPTIONS", "/:id/reset", response.CreateOptions("POST"))
+	//g.Handle("POST", "/:id/reset", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
+	//g.Handle("OPTIONS", "/:id/reset", response.CreateOptions("POST"))
 }
 
 func getAllNodes(c *gin.Context) {
@@ -114,6 +119,7 @@ func createNode(c *gin.Context) {
 
 	create := &models.Node{}
 	model.CopyToModel(create)
+	create.Secret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
 	if err = ns.Create(create); response.HandleError(res, err) {
 		return
 	}
@@ -194,6 +200,46 @@ func deleteNode(c *gin.Context) {
 	res.Data(node)
 }
 
+func deployNode(c *gin.Context) {
+	var err error
+	res := response.From(c)
+
+	db, err := database.GetConnection()
+	if response.HandleError(res, err) {
+		return
+	}
+
+	ns := &services.Node{DB: db}
+
+	id, ok := validateId(c, res)
+	if !ok {
+		return
+	}
+
+	node, exists, err := ns.Get(id)
+	if response.HandleError(res, err) {
+		return
+	} else if !exists {
+		res.Fail().Status(http.StatusNotFound)
+		return
+	}
+
+	services.ValidateTokenLoaded()
+	file, err := ioutil.ReadFile(viper.GetString("token.private"))
+	if response.HandleError(res, err) {
+		return
+	}
+
+	data := &deployment{
+		ClientId:     fmt.Sprintf(".node_%d", node.ID),
+		ClientSecret: node.Secret,
+		BaseUrl:      fmt.Sprintf("%s://%s", c.Request.URL.Scheme, c.Request.URL.Host),
+		PublicKey:    string(file),
+	}
+
+	res.Data(data)
+}
+
 func validateId(c *gin.Context, response response.Builder) (uint, bool) {
 	param := c.Param("id")
 
@@ -205,4 +251,11 @@ func validateId(c *gin.Context, response response.Builder) (uint, bool) {
 	}
 
 	return uint(id), true
+}
+
+type deployment struct {
+	ClientId     string `json:"clientId"`
+	ClientSecret string `json:"clientSecret"`
+	BaseUrl      string `json:"baseUrl"`
+	PublicKey    string `json:"publicKey"`
 }
