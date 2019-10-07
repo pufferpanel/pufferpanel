@@ -10,12 +10,23 @@ import (
 
 var noLogin = []string{"/auth/", "/error/", "/daemon/", "/api/"}
 var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
+var overrideRequireLogin = []string{"/auth/reauth"}
 
 func AuthMiddleware(c *gin.Context) {
 	for _, v := range noLogin {
 		if strings.HasPrefix(c.Request.URL.Path, v) {
-			c.Next()
-			return
+			//and now we see if it's actually one we override
+			skip := false
+			for _, o := range overrideRequireLogin {
+				if o == c.Request.URL.Path {
+					skip = true
+					break
+				}
+			}
+			if !skip {
+				c.Next()
+				return
+			}
 		}
 	}
 
