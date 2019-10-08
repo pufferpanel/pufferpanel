@@ -35,4 +35,4 @@ RUN echo "{}" > /pufferpanel/config.json
 WORKDIR /pufferpanel
 
 EXPOSE 8080
-CMD ["/pufferpanel/pufferpanel"]
+CMD ["/pufferpanel/pufferpanel run"]
