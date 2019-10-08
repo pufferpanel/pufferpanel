@@ -14,6 +14,7 @@ RUN git clone https://github.com/pufferpanel/apufferi /build/apufferi
 
 WORKDIR /build/pufferpanel
 COPY . .
+RUN echo 'replace github.com/pufferpanel/apufferi/v3 => ../apufferi' >> go.mod
 RUN go build -v -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd
 
 WORKDIR /build/pufferpanel/client
