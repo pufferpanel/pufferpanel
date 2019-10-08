@@ -39,6 +39,21 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
+      with:
+        path: pufferpanel
+        
+    - name: Pull deps
+      uses: actions/checkout@v1
+      with:
+        repository: pufferpanel/apufferi
+        path: apufferi
+        ref: master
+        
+    - name: Build
+      working-directory: pufferpanel
+      run: |
+        echo 'replace github.com/pufferpanel/apufferi/v3 => ../apufferi' >> go.mod
+        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
 
     - name: npm install, build
       run: |
@@ -46,16 +61,4 @@ jobs:
         npm run build
       env:
         CI: true
-      working-directory: "client"
-    
-    - name: Pull deps
-      uses: actions/checkout@v1
-      with:
-        repository: pufferpanel/apufferi
-        path: ../apufferi
-        ref: master
-    
-    - name: Build
-      run: |
-        echo 'replace github.com/pufferpanel/apufferi/v3 => ../apufferi' >> go.mod
-        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
+      working-directory: pufferpanel/client
