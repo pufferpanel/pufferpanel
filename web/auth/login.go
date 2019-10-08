@@ -3,12 +3,15 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 )
 
 func LoginPost(c *gin.Context) {
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
 
 	request := &loginRequest{}
 
@@ -17,14 +20,6 @@ func LoginPost(c *gin.Context) {
 		res.Message("invalid request").Status(400).Error(err).Fail()
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	us := &services.User{DB: db}
-	ps := &services.Permission{DB: db}
 
 	user, session, err := us.Login(request.Data.Email, request.Data.Password)
 	if response.HandleError(res, err) {

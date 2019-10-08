@@ -19,7 +19,6 @@ import (
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
@@ -43,6 +42,8 @@ func registerUsers(g *gin.RouterGroup) {
 func searchUsers(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
 
 	search := newUserSearch()
 	err = c.BindJSON(search)
@@ -63,13 +64,6 @@ func searchUsers(c *gin.Context) {
 		return
 	}
 
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	us := &services.User{DB: db}
-
 	var results *models.Users
 	var total uint
 	if results, total, err = us.Search(search.Username, search.Email, uint(search.PageLimit), uint(search.Page)); response.HandleError(res, err) {
@@ -82,12 +76,7 @@ func searchUsers(c *gin.Context) {
 func createUser(c *gin.Context) {
 	var err error
 	res := response.Respond(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
@@ -117,12 +106,7 @@ func createUser(c *gin.Context) {
 
 func getUser(c *gin.Context) {
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	username := c.Param("username")
@@ -154,12 +138,7 @@ func getSelf(c *gin.Context) {
 
 func updateSelf(c *gin.Context) {
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -171,11 +150,11 @@ func updateSelf(c *gin.Context) {
 	}
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); response.HandleError(res, err) {
+	if err := c.BindJSON(&viewModel); response.HandleError(res, err) {
 		return
 	}
 
-	if err = viewModel.Valid(true); response.HandleError(res, err) {
+	if err := viewModel.Valid(true); response.HandleError(res, err) {
 		return
 	}
 
@@ -190,7 +169,7 @@ func updateSelf(c *gin.Context) {
 
 	viewModel.CopyToModel(user)
 
-	if err = us.Update(user); response.HandleError(res, err) {
+	if err := us.Update(user); response.HandleError(res, err) {
 		return
 	}
 
@@ -199,22 +178,17 @@ func updateSelf(c *gin.Context) {
 
 func updateUser(c *gin.Context) {
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	username := c.Param("username")
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); response.HandleError(res, err) {
+	if err := c.BindJSON(&viewModel); response.HandleError(res, err) {
 		return
 	}
 
-	if err = viewModel.Valid(true); response.HandleError(res, err) {
+	if err := viewModel.Valid(true); response.HandleError(res, err) {
 		return
 	}
 
@@ -237,12 +211,7 @@ func updateUser(c *gin.Context) {
 
 func deleteUser(c *gin.Context) {
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	username := c.Param("username")

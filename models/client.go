@@ -17,8 +17,11 @@ type Client struct {
 	UserId uint `gorm:"NOT NULL"`
 	User   *User
 
-	Scopes    map[string][]scope.Scope `gorm:"-"`
-	RawScopes string                   `gorm:"column:scopes;NOT NULL;size:4000"`
+	ServerId string `gorm:"NOT NULL"`
+	Server   *Server
+
+	Scopes    []scope.Scope `gorm:"-"`
+	RawScopes string        `gorm:"column:scopes;NOT NULL;size:4000"`
 }
 
 type Clients []*Client
@@ -63,19 +66,11 @@ func (c *Client) BeforeSave() (err error) {
 }
 
 func (c *Client) AfterFind() (err error) {
-	c.Scopes = make(map[string][]scope.Scope)
+	split := strings.Split(c.RawScopes, " ")
+	c.Scopes = make([]scope.Scope, len(split))
 
-	for _, v := range strings.Split(c.RawScopes, " ") {
-		parts := strings.SplitN(v, ":", 2)
-		id := parts[0]
-		s := parts[1]
-		existing := c.Scopes[id]
-		if existing == nil {
-			existing = []scope.Scope{scope.Scope(s)}
-		} else {
-			existing = append(existing, scope.Scope(s))
-		}
-		c.Scopes[id] = existing
+	for i, v := range split {
+		c.Scopes[i] = scope.Scope(v)
 	}
 
 	return

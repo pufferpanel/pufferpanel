@@ -3,14 +3,17 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"gopkg.in/go-playground/validator.v9"
 )
 
 func RegisterPost(c *gin.Context) {
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+
 	res.Fail()
 	res.Message("unknown error occurred")
 
@@ -28,13 +31,6 @@ func RegisterPost(c *gin.Context) {
 		res.Fail().Status(400).Data(err)
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	us := &services.User{DB: db}
 
 	user := &models.User{Username: request.Data.Username, Email: request.Data.Email}
 	err = user.SetPassword(request.Data.Password)
