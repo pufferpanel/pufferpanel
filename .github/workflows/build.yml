@@ -2,7 +2,7 @@ name: Go
 on: 
   push:
     branches:
-    - kraken    
+    - kraken
     
 jobs:
   build-binaries:
@@ -13,16 +13,11 @@ jobs:
       matrix:
         os: [ubuntu-18.04,windows-2019]
         arch: [amd64, arm]
-        filename: [pufferpanel, pufferpanel.exe]
         go: [ '1.12' ]
         node-version: [ '12.x' ]
         exclude:
           - os: windows-2019
             arch: arm
-          - os: windows-2019
-            filename: pufferpanel
-          - os: ubuntu-18.04
-            filename: pufferpanel.exe
 
     steps:
 
@@ -50,11 +45,16 @@ jobs:
         ref: master
         
     - name: Build
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
-        cd pufferpanel
-        ls -l
-        echo "replace github.com/pufferpanel/apufferi/v3 => ../apufferi" >> go.mod
-        go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
+        echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
+        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        
+    - name: Build
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        echo replace github.com/pufferpanel/apufferi/v3 =^> ../apufferi >> go.mod
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
 
     - name: npm install, build
       run: |
@@ -62,4 +62,4 @@ jobs:
         npm run build
       env:
         CI: true
-      working-directory: pufferpanel/client
+      working-directory: client
