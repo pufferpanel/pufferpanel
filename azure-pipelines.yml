@@ -17,6 +17,7 @@ steps:
       go version
       sudo apt-get update
       sudo apt-get install gcc-arm-linux-gnueabihf
+      echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
     displayName: 'Set up the Go workspace'
 
   - script: |
