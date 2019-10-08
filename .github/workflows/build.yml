@@ -50,8 +50,8 @@ jobs:
         ref: master
         
     - name: Build
-      working-directory: pufferpanel
       run: |
+        cd pufferpanel
         ls -l
         echo "replace github.com/pufferpanel/apufferi/v3 => ../apufferi" >> go.mod
         go build -o ${{ matrix.filename }} -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
