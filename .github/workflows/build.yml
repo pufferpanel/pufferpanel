@@ -2,13 +2,7 @@ name: Go
 on: 
   push:
     branches:
-    - kraken
-    paths:
-    - '*'
-    - '!azure-pipelines.yml'
-    - '!.travis.yml'
-    - '!*.md'
-    
+    - kraken    
     
 jobs:
   build-binaries:
