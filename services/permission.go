@@ -86,6 +86,8 @@ func (p *Permission) UpdatePermissions(perms *models.Permissions) error {
 		}
 	}
 
+	//update oauth2 with new information
+
 	if shouldDelete {
 		return p.Remove(perms)
 	} else {
@@ -94,5 +96,7 @@ func (p *Permission) UpdatePermissions(perms *models.Permissions) error {
 }
 
 func (p *Permission) Remove(perms *models.Permissions) error {
+	//update oauth2 with new information
+
 	return p.DB.Where(perms).Delete(perms).Error
 }

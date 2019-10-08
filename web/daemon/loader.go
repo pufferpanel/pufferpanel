@@ -19,13 +19,13 @@ import (
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
-	g := rg.Group("/server", handlers.HasOAuth2Token)
+	g := rg.Group("/server", handlers.HasOAuth2Token, handlers.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
 		g.Any("/:id/*path", proxyServerRequest)
 	}
-	r := rg.Group("/node", handlers.HasOAuth2Token)
+	r := rg.Group("/node", handlers.HasOAuth2Token, handlers.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		r.Any("/:id", proxyNodeRequest)
@@ -35,6 +35,9 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 
 func proxyServerRequest(c *gin.Context) {
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -43,14 +46,6 @@ func proxyServerRequest(c *gin.Context) {
 	}
 
 	path := "/server/" + serverId + c.Param("path")
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	ss := &services.Server{DB: db}
-	ns := &services.Node{DB: db}
 
 	server, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(res, err) {
@@ -64,7 +59,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := generateOAuth2Token(token.Claims, server)
+		newToken, err := generateOAuth2Token(token.Claims, server, db)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -82,21 +77,15 @@ func proxyServerRequest(c *gin.Context) {
 
 func proxyNodeRequest(c *gin.Context) {
 	path := c.Param("path")
-
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	ns := &services.Node{DB: db}
 
 	nodeId := c.Param("id")
 	if nodeId == "" {
 		res.Status(404).Fail()
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	ns := &services.Node{DB: db}
 
 	id, err := strconv.ParseUint(nodeId, 10, 32)
 	if response.HandleError(res, err) {
@@ -115,7 +104,7 @@ func proxyNodeRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Audience == "session" {
-		newToken, err := generateOAuth2Token(token, nil)
+		newToken, err := generateOAuth2Token(token, nil, db)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -168,10 +157,13 @@ func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *mo
 	}
 }
 
-func generateOAuth2Token(token *apufferi.Claim, server *models.Server) (string, error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return "", err
+func generateOAuth2Token(token *apufferi.Claim, server *models.Server, db *gorm.DB) (string, error) {
+	var err error
+	if db == nil {
+		db, err = database.GetConnection()
+		if err != nil {
+			return "", err
+		}
 	}
 
 	ps := &services.Permission{DB: db}

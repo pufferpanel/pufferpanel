@@ -38,21 +38,24 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2WithLimit(scope.ServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2(scope.ServersCreate, false), createServer)
+	g.Handle("POST", "", handlers.OAuth2(scope.ServersCreate, false), handlers.HasTransaction, createServer)
 	g.Handle("GET", "/:serverId", handlers.OAuth2(scope.ServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", handlers.OAuth2(scope.ServersCreate, false), createServer)
-	g.Handle("POST", "/:serverId", handlers.OAuth2(scope.ServersEdit, true), createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, true), deleteServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2(scope.ServersCreate, false), handlers.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2(scope.ServersEdit, true), handlers.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, true), handlers.HasTransaction, deleteServer)
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
 	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), removeServerUser)
+	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), handlers.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), handlers.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 func searchServers(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	ss := &services.Server{DB: db}
+	ps := &services.Permission{DB: db}
 
 	username := c.DefaultQuery("username", "")
 	nodeQuery := c.DefaultQuery("node", "0")
@@ -81,14 +84,6 @@ func searchServers(c *gin.Context) {
 		res.Fail().Status(http.StatusBadRequest).Message("node id is invalid")
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	ss := &services.Server{DB: db}
-	ps := &services.Permission{DB: db}
 
 	user := c.MustGet("user").(*models.User)
 
@@ -173,6 +168,11 @@ func getServer(c *gin.Context) {
 func createServer(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -186,25 +186,6 @@ func createServer(c *gin.Context) {
 		res.Status(http.StatusBadRequest).Error(err).Fail()
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	//time for a transaction!
-	trans := db.Begin()
-	success := false
-	defer func() {
-		if !success {
-			trans.Rollback()
-		}
-	}()
-
-	ss := &services.Server{DB: trans}
-	ns := &services.Node{DB: trans}
-	us := &services.User{DB: trans}
-	ps := &services.Permission{DB: trans}
 
 	node, exists, err := ns.Get(postBody.NodeId)
 
@@ -291,10 +272,11 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	res.Data(server.Identifier)
+	if response.HandleError(res, db.Commit().Error) {
+		return
+	}
 
-	trans.Commit()
-	success = true
+	res.Data(server.Identifier)
 }
 
 func deleteServer(c *gin.Context) {
@@ -305,6 +287,7 @@ func deleteServer(c *gin.Context) {
 	if response.HandleError(res, err) {
 		return
 	}
+	db.Begin()
 
 	ss := &services.Server{DB: db}
 
@@ -324,15 +307,21 @@ func deleteServer(c *gin.Context) {
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(res, err) {
 		return
-	} else {
-		v := models.FromServer(server)
-		res.Status(http.StatusOK).Data(v)
 	}
+
+	if response.HandleError(res, db.Commit().Error) {
+		return
+	}
+
+	v := models.FromServer(server)
+	res.Status(http.StatusOK).Data(v)
 }
 
 func getServerUsers(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -346,13 +335,6 @@ func getServerUsers(c *gin.Context) {
 		response.HandleError(res, pufferpanel.ErrServerNotFound)
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	ps := &services.Permission{DB: db}
 
 	perms, err := ps.GetForServer(server.Identifier)
 	if response.HandleError(res, err) {
@@ -379,6 +361,9 @@ func getServerUsers(c *gin.Context) {
 func editServerUser(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
 
 	username := c.Param("username")
 	if username == "" {
@@ -391,14 +376,6 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 	perms.Username = username
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	us := &services.User{DB: db}
-	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -425,25 +402,26 @@ func editServerUser(c *gin.Context) {
 	perms.CopyTo(existing)
 	err = ps.UpdatePermissions(existing)
 
-	response.HandleError(res, err)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	if response.HandleError(res, db.Commit().Error) {
+		return
+	}
 }
 
 func removeServerUser(c *gin.Context) {
 	var err error
 	res := response.From(c)
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
 
 	username := c.Param("username")
 	if username == "" {
 		return
 	}
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
-	us := &services.User{DB: db}
-	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -473,7 +451,13 @@ func removeServerUser(c *gin.Context) {
 
 	err = ps.Remove(perms)
 
-	response.HandleError(res, err)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	if response.HandleError(res, db.Commit().Error) {
+		return
+	}
 }
 
 //This class exists

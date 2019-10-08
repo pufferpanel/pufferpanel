@@ -10,7 +10,7 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 	rg.Use(func(c *gin.Context) {
 		middleware.ResponseAndRecover(c)
 	})
-	rg.POST("login", LoginPost)
-	rg.POST("register", RegisterPost)
-	rg.POST("reauth", handlers.AuthMiddleware, Reauth)
+	rg.POST("login", handlers.NeedsDatabase, LoginPost)
+	rg.POST("register", handlers.NeedsDatabase, RegisterPost)
+	rg.POST("reauth", handlers.AuthMiddleware, handlers.NeedsDatabase, Reauth)
 }

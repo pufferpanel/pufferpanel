@@ -18,7 +18,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
@@ -50,12 +49,7 @@ func registerNodes(g *gin.RouterGroup) {
 func getAllNodes(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var nodes *models.Nodes
@@ -71,12 +65,7 @@ func getAllNodes(c *gin.Context) {
 func getNode(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c, res)
@@ -100,12 +89,7 @@ func getNode(c *gin.Context) {
 func createNode(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	model := &models.NodeView{}
@@ -130,12 +114,7 @@ func createNode(c *gin.Context) {
 func updateNode(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	viewModel := &models.NodeView{}
@@ -171,12 +150,7 @@ func updateNode(c *gin.Context) {
 func deleteNode(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c, res)
@@ -203,12 +177,7 @@ func deleteNode(c *gin.Context) {
 func deployNode(c *gin.Context) {
 	var err error
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
-
+	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c, res)
@@ -240,7 +209,7 @@ func deployNode(c *gin.Context) {
 	res.Data(data)
 }
 
-func validateId(c *gin.Context, response response.Builder) (uint, bool) {
+func validateId(c *gin.Context, response *response.Builder) (uint, bool) {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)

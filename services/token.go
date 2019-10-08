@@ -52,7 +52,9 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 			IssuedAt:  time.Now().Unix(),
 		},
 		PanelClaims: apufferi.PanelClaims{
-			Scopes: client.Scopes,
+			Scopes: map[string][]scope.Scope{
+				client.ServerId: client.Scopes,
+			},
 		},
 	}
 

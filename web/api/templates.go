@@ -17,7 +17,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 )
@@ -29,12 +28,9 @@ func registerTemplates(g *gin.RouterGroup) {
 
 func getAllTemplates(c *gin.Context) {
 	res := response.From(c)
-
-	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		return
-	}
+	db := handlers.GetDatabase(c)
 	ts := &services.Template{DB: db}
+
 	templates, err := ts.GetAll()
 	if response.HandleError(res, err) {
 		return
