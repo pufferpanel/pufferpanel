@@ -3,7 +3,7 @@ on:
   push:
     branches:
     - kraken
-    path:
+    paths:
     - '*'
     - '!azure-pipelines.yml'
     - '!.travis.yml'
@@ -59,6 +59,7 @@ jobs:
       with:
         repository: pufferpanel/apufferi
         path: apufferi
+        ref: master
     
     - name: Build
       run: |
