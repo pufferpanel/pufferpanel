@@ -32,6 +32,11 @@ jobs:
         repository: pufferpanel/apufferi
         path: apufferi
         ref: master
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      with:
+        path: pufferpanel
         
     - name: Build
       if: startsWith(matrix.os, 'ubuntu')
