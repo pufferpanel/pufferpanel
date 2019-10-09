@@ -14,7 +14,6 @@ jobs:
         os: [ubuntu-18.04,windows-2019]
         arch: [amd64, arm]
         go: [ '1.12' ]
-        node-version: [ '12.x' ]
         exclude:
           - os: windows-2019
             arch: arm
@@ -27,16 +26,6 @@ jobs:
         go-version: ${{ matrix.go }}
       id: go
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-      with:
-        path: pufferpanel
-        
     - name: Pull deps
       uses: actions/checkout@v1
       with:
@@ -54,15 +43,7 @@ jobs:
       if: startsWith(matrix.os, 'windows')
       run: |
         echo replace github.com/pufferpanel/apufferi/v3 =^> ../apufferi >> go.mod
-        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd     
-
-    - name: npm install, build
-      run: |
-        npm install
-        npm run build
-      env:
-        CI: true
-      working-directory: client
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       
     - name: Publish Binary
       uses: actions/upload-artifact@v1
@@ -70,32 +51,50 @@ jobs:
       with:
         name: Windows ${{ matrix.arch }} - Binary
         path: pufferpanel.exe
-        
-    - name: Publish Supporting
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'windows')
-      with:
-        name: Windows ${{ matrix.arch }} - Supporting
-        path: client/dist
-        
+
     - name: Publish Binary
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'ubuntu')
       with:
         name: Linux ${{ matrix.arch }} - Binary
         path: pufferpanel
-        
-    - name: Publish Supporting
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'ubuntu')
-      with:
-        name: Linux ${{ matrix.arch }} - Supporting
-        path: client/dist
+
+  produce-webartifacts:
+    name: Generate web artifacts
+    runs-on: ubuntu-18.04
+    needs: [build-binaries]
+
+    strategry:
+      matrix:
+        node-version: [ '12.x' ]
+
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: npm install, build
+          run: |
+            npm install
+            npm run build
+          env:
+            CI: true
+          working-directory: client
+
+      - name: Publish Supporting
+        uses: actions/upload-artifact@v1
+        with:
+          name: Web Artifacts
+          path: client/dist
 
   produce-release:
     name: Generate release artifacts
     runs-on: ubuntu-18.04
-    needs: [build-binaries]
+    needs: [produce-webartifacts]
         
     steps:
       - uses: actions/setup-ruby@v1
@@ -122,11 +121,13 @@ jobs:
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
-          name: Linux amd64 - Supporting
+          name: Web Artifacts
           path: client/dist
           
       - name: Build packages
         run: |
+          echo { "web": { "files": "/var/www/pufferpanel/" } } > config.json
+
           fpm -s dir -t deb \
           --name pufferpanel -v ${{ github.sha }} \
           --maintainer dev@pufferpanel.com \
@@ -137,7 +138,8 @@ jobs:
           --before-remove scripts/prerm.sh \
           --deb-after-purge scripts/purge.sh \
           binaries/pufferpanel=/usr/sbin/pufferpanel \
-          client/dist=/var/www/pufferpanel/client/dist/
+          client/dist=/var/www/pufferpanel/ \
+          config.json=/etc/pufferpanel/config.json
           
           mkdir -p build/xenial
           mv *.dep build/xenial
@@ -163,7 +165,8 @@ jobs:
           --before-remove scripts/prerm.sh \
           --deb-after-purge scripts/purge.sh \
           binaries/pufferpanel=/usr/sbin/pufferpanel \
-          client/dist=/var/www/pufferpanel/client/dist/
+          client/dist=/var/www/pufferpanel/client/dist/ \
+          config.json=/etc/pufferpanel/config.json
 
           mkdir -p build/trusty
           mv *.deb build/trusty
