@@ -21,6 +21,7 @@ func init() {
 
 	viper.SetDefault("web.host", "0.0.0.0:8080")
 	viper.SetDefault("web.socket", "/var/run/pufferpanel.sock")
+	viper.SetDefault("web.files", "www")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 }

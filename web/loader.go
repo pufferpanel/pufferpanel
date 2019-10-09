@@ -21,11 +21,12 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
+	"github.com/spf13/viper"
 	"strings"
 )
 
-const ClientPath = "client/dist"
-const IndexFile = ClientPath + "/index.html"
+var ClientPath string
+var IndexFile string
 
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/"}
 
@@ -33,6 +34,9 @@ func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)
 	})
+
+	ClientPath = viper.GetString("web.files")
+	IndexFile = ClientPath + "/index.html"
 
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
