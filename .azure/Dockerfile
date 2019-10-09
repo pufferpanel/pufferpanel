@@ -1,12 +1,9 @@
-FROM debian:10-slim
+FROM alpine
 
 COPY pufferpanel /pufferpanel/
 COPY client/dist /pufferpanel/client/dist/
 RUN echo '{}' > /pufferpanel/config.json
 
-ENV PATH "/pufferpanel:${PATH}"
-EXPOSE 8080
-
 WORKDIR "/pufferpanel"
-
-CMD ["pufferpanel"]
+EXPOSE 8080
+CMD ["/pufferpanel/pufferpanel run"]

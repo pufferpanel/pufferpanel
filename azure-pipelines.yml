@@ -9,6 +9,7 @@ pool:
 variables:
   version: $(Build.BuildNumber)
   packageVersion: v2
+  apiVersion: v2
 
 steps:
   - script: |
@@ -17,8 +18,12 @@ steps:
       go version
       sudo apt-get update
       sudo apt-get install gcc-arm-linux-gnueabihf
-      echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
     displayName: 'Set up the Go workspace'
+
+  - script: |
+      git clone https://github.com/pufferpanel/apufferi ../apufferi
+      echo replace github.com/pufferpanel/apufferi/$(apiVersion) =\> ../apufferi >> go.mod
+    displaynNme: 'Pull in API'
 
   - script: |
       export GOOS=windows
