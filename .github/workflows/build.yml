@@ -68,28 +68,28 @@ jobs:
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'windows')
       with:
-        name: Windows ${{ matric.arch }} - Binary
+        name: Windows ${{ matrix.arch }} - Binary
         path: pufferpanel.exe
         
     - name: Publish Supporting
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'windows')
       with:
-        name: Windows ${{ matric.arch }} - Supporting
+        name: Windows ${{ matrix.arch }} - Supporting
         path: client/dist
         
     - name: Publish Binary
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'ubuntu')
       with:
-        name: Linux ${{ matric.arch }} - Binary
+        name: Linux ${{ matrix.arch }} - Binary
         path: pufferpanel
         
     - name: Publish Supporting
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'ubuntu')
       with:
-        name: Windows ${{ matric.arch }} - Supporting
+        name: Windows ${{ matrix.arch }} - Supporting
         path: client/dist
 
   produce-release:
@@ -155,7 +155,7 @@ jobs:
           mv *.rpm build/rpm
           
           fpm -s dir -t deb \
-          --name pufferpanel -v $(version) \
+          --name pufferpanel -v ${{ github.sha }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
           --deb-init servicefiles/initd/pufferpanel \
