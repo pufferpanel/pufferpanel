@@ -23,7 +23,7 @@ steps:
   - script: |
       git clone https://github.com/pufferpanel/apufferi ../apufferi
       echo replace github.com/pufferpanel/apufferi/$(apiVersion) =\> ../apufferi >> go.mod
-    displaynNme: 'Pull in API'
+    displaynName: 'Pull in API'
 
   - script: |
       export GOOS=windows
