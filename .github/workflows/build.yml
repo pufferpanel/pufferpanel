@@ -1,4 +1,4 @@
-name: Go
+name: Build
 on: 
   push:
     branches:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-18.04
     needs: [build-binaries]
 
-    strategry:
+    strategy:
       matrix:
         node-version: [ '12.x' ]
 
