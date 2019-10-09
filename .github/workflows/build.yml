@@ -54,7 +54,7 @@ jobs:
       if: startsWith(matrix.os, 'windows')
       run: |
         echo replace github.com/pufferpanel/apufferi/v3 =^> ../apufferi >> go.mod
-        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd        
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd     
 
     - name: npm install, build
       run: |
@@ -63,3 +63,115 @@ jobs:
       env:
         CI: true
       working-directory: client
+    
+    - name: Gather artifacts      
+      
+    - name: Publish Binary
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'windows')
+      with:
+        name: Windows ${{ matric.arch }} - Binary
+        path: pufferpanel.exe
+        
+    - name: Publish Supporting
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'windows')
+      with:
+        name: Windows ${{ matric.arch }} - Supporting
+        path: client/dist
+        
+    - name: Publish Binary
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'ubuntu')
+      with:
+        name: Linux ${{ matric.arch }} - Binary
+        path: pufferpanel
+        
+    - name: Publish Supporting
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'ubuntu')
+      with:
+        name: Windows ${{ matric.arch }} - Supporting
+        path: client/dist
+
+  produce-release:
+    name: Generate release artifacts
+    runs-on: ubuntu-18.04
+    needs: [build-binaries]
+        
+    steps:
+      - uses: actions/setup-ruby@v1
+        
+      - name: Install gems
+        run: |
+          gem install --no-doc rake
+          gem install --no-doc fpm && fpm -v
+          gem install --no-doc package_cloud && package_cloud version
+          
+      - name: Pull deps
+        uses: actions/checkout@v1
+        with:
+          repository: pufferpanel/systemd
+          path: systemd
+          ref: master
+          
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: Linux amd64 - Binary
+          path: binaries
+        
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: Linux amd64 - Supporting
+          path: client/dist
+          
+      - name: Build packages
+        run: |
+          fpm -s dir -t deb \
+          --name pufferpanel -v ${{ github.sha }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd servicefiles/systemd/pufferpanel \
+          --before-install scripts/preinst.sh \
+          --after-upgrade scripts/postupgrade.sh \
+          --before-remove scripts/prerm.sh \
+          --deb-after-purge scripts/purge.sh \
+          binaries/pufferpanel=/usr/sbin/pufferpanel \
+          client/dist=/var/www/pufferpanel/client/dist/
+          
+          mkdir -p build/xenial
+          mv *.dep build/xenial
+          
+          fpm -s deb -t rpm \
+          --name pufferpanel \
+          --maintainer dev@pufferpanel.com \
+          --rpm-user pufferpanel --rpm-group pufferpanel \
+          --before-install scripts/preinst.sh \
+          --after-upgrade scripts/postupgrade.sh \
+          --before-remove scripts/prerm.sh \
+          build/xenial/pufferpanel_*_amd64.deb
+
+          mkdir -p build/rpm
+          mv *.rpm build/rpm
+          
+          fpm -s dir -t deb \
+          --name pufferpanel -v $(version) \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-init servicefiles/initd/pufferpanel \
+          --before-install scripts/preinst.sh \
+          --before-remove scripts/prerm.sh \
+          --deb-after-purge scripts/purge.sh \
+          binaries/pufferpanel=/usr/sbin/pufferpanel \
+          client/dist=/var/www/pufferpanel/client/dist/
+
+          mkdir -p build/trusty
+          mv *.deb build/trusty
+          
+      - name: Publish Packages
+        uses: actions/upload-artifact@v1
+        with:
+          name: Packages
+          path: build
