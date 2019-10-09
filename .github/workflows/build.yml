@@ -78,12 +78,12 @@ jobs:
         uses: actions/checkout@v1
 
       - name: npm install, build
-          run: |
-            npm install
-            npm run build
-          env:
-            CI: true
-          working-directory: client
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: true
+        working-directory: client
 
       - name: Publish Supporting
         uses: actions/upload-artifact@v1
