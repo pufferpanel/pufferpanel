@@ -89,7 +89,7 @@ jobs:
       uses: actions/upload-artifact@v1
       if: startsWith(matrix.os, 'ubuntu')
       with:
-        name: Windows ${{ matrix.arch }} - Supporting
+        name: Linux ${{ matrix.arch }} - Supporting
         path: client/dist
 
   produce-release:
