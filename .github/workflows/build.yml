@@ -63,8 +63,6 @@ jobs:
       env:
         CI: true
       working-directory: client
-    
-    - name: Gather artifacts      
       
     - name: Publish Binary
       uses: actions/upload-artifact@v1
