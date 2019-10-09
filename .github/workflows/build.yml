@@ -137,11 +137,11 @@ jobs:
           --name pufferpanel -v ${{ github.sha }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/xenial/servicefiles/systemd/pufferpanel \
-          --before-install systemd/xenial/scripts/preinst.sh \
-          --after-upgrade systemd/xenial/scripts/postupgrade.sh \
-          --before-remove systemd/xenial/scripts/prerm.sh \
-          --deb-after-purge systemd/xenial/scripts/purge.sh \
+          --deb-systemd systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
+          --before-install systemd/pufferpanel/xenial/scripts/preinst.sh \
+          --after-upgrade systemd/pufferpanel/xenial/scripts/postupgrade.sh \
+          --before-remove systemd/pufferpanel/xenial/scripts/prerm.sh \
+          --deb-after-purge systemd/pufferpanel/xenial/scripts/purge.sh \
           binaries/pufferpanel=/usr/sbin/pufferpanel \
           client/dist=/var/www/pufferpanel/ \
           config.json=/etc/pufferpanel/config.json
@@ -153,9 +153,9 @@ jobs:
           --name pufferpanel \
           --maintainer dev@pufferpanel.com \
           --rpm-user pufferpanel --rpm-group pufferpanel \
-          --before-install systemd/rpm/scripts/preinst.sh \
-          --after-upgrade systemd/rpm/scripts/postupgrade.sh \
-          --before-remove systemd/rpm/scripts/prerm.sh \
+          --before-install systemd/pufferpanel/rpm/scripts/preinst.sh \
+          --after-upgrade systemd/pufferpanel/rpm/scripts/postupgrade.sh \
+          --before-remove systemd/pufferpanel/rpm/scripts/prerm.sh \
           build/xenial/pufferpanel_*_amd64.deb
 
           mkdir -p build/rpm
@@ -165,10 +165,10 @@ jobs:
           --name pufferpanel -v ${{ github.sha }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-init systemd/trusty/servicefiles/initd/pufferpanel \
-          --before-install systemd/trusty/scripts/preinst.sh \
-          --before-remove systemd/trusty/scripts/prerm.sh \
-          --deb-after-purge systemd/trusty/scripts/purge.sh \
+          --deb-init systemd/pufferpanel/trusty/servicefiles/initd/pufferpanel \
+          --before-install systemd/pufferpanel/trusty/scripts/preinst.sh \
+          --before-remove systemd/pufferpanel/trusty/scripts/prerm.sh \
+          --deb-after-purge systemd/pufferpanel/trusty/scripts/purge.sh \
           binaries/pufferpanel=/usr/sbin/pufferpanel \
           client/dist=/var/www/pufferpanel/client/dist/ \
           config.json=/etc/pufferpanel/config.json
