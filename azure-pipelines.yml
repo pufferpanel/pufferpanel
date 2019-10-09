@@ -21,7 +21,7 @@ steps:
     displayName: 'Set up the Go workspace'
 
   - script: |
-      git clone https://github.com/pufferpanel/apufferi ../apufferi
+      git clone https://github.com/pufferpanel/apufferi $(Build.SourcesDirectory)/../apufferi
       echo replace github.com/pufferpanel/apufferi/$(apiVersion) =\> ../apufferi >> go.mod
     displayName: 'Pull in API'
 
