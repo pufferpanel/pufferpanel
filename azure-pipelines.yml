@@ -1,5 +1,5 @@
 trigger:
-- kraken
+- master
 
 name: 2.0.0$(Rev:.r)
 
