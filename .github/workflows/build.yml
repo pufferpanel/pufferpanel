@@ -7,16 +7,20 @@ on:
 jobs:
   build-binaries:
     name: Build Binaries
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-18.04
     
     strategy:
       matrix:
-        os: [ubuntu-18.04,windows-2019]
-        arch: [amd64, arm]
+        os: [ linux, windows ]
+        arch: [ amd64, arm ]
         go: [ '1.12' ]
         exclude:
-          - os: windows-2019
+          - os: windows
             arch: arm
+
+    env:
+      GOOS: ${{ matrix.os }}
+      GOARCH: ${{ matrix.arch }}
 
     steps:
 
@@ -39,7 +43,7 @@ jobs:
         path: pufferpanel
         
     - name: Build
-      if: startsWith(matrix.os, 'ubuntu')
+      if: startsWith(matrix.os, 'linux')
       run: |
         echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
         go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
@@ -49,19 +53,12 @@ jobs:
       run: |
         echo replace github.com/pufferpanel/apufferi/v3 =^> ../apufferi >> go.mod
         go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
-      
-    - name: Publish Binary
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'windows')
-      with:
-        name: Windows ${{ matrix.arch }} - Binary
-        path: pufferpanel.exe
 
     - name: Publish Binary
       uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'ubuntu')
+      if: startsWith(matrix.os, 'linux')
       with:
-        name: Linux ${{ matrix.arch }} - Binary
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
         path: pufferpanel
 
   produce-webartifacts:
@@ -120,7 +117,7 @@ jobs:
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
-          name: Linux amd64 - Binary
+          name: linux amd64 - Binary
           path: binaries
         
       - name: Pull files
@@ -148,14 +145,14 @@ jobs:
           
           mkdir -p build/xenial
           mv *.deb build/xenial
-          
+
           fpm -s deb -t rpm \
           --name pufferpanel \
           --maintainer dev@pufferpanel.com \
           --rpm-user pufferpanel --rpm-group pufferpanel \
-          --before-install ../systemd/pufferpanel/rpm/scripts/preinst.sh \
-          --after-upgrade ../systemd/pufferpanel/rpm/scripts/postupgrade.sh \
-          --before-remove ../systemd/pufferpanel/rpm/scripts/prerm.sh \
+          --before-install ../systemd/pufferpanel/rpm7/scripts/preinst.sh \
+          --after-upgrade ../systemd/pufferpanel/rpm7/scripts/postupgrade.sh \
+          --before-remove ../systemd/pufferpanel/rpm7/scripts/prerm.sh \
           build/xenial/pufferpanel_*_amd64.deb
 
           mkdir -p build/rpm
