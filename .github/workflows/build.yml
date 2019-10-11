@@ -147,7 +147,7 @@ jobs:
           config.json=/etc/pufferpanel/config.json
           
           mkdir -p build/xenial
-          mv *.dep build/xenial
+          mv *.deb build/xenial
           
           fpm -s deb -t rpm \
           --name pufferpanel \
