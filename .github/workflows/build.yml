@@ -41,17 +41,19 @@ jobs:
       uses: actions/checkout@v1
       with:
         path: pufferpanel
+
+    - name: Sync go.mod
+      run: |
+        echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
         
     - name: Build
       if: startsWith(matrix.os, 'linux')
       run: |
-        echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
         go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
-        
+
     - name: Build
       if: startsWith(matrix.os, 'windows')
       run: |
-        echo replace github.com/pufferpanel/apufferi/v3 =^> ../apufferi >> go.mod
         go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: Publish Binary
