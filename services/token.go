@@ -147,7 +147,7 @@ func ValidateTokenLoaded() {
 
 func load() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_RDWR, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
 	defer apufferi.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -197,6 +197,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
 	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	defer apufferi.Close(privKeyFile)
 	if err != nil {
 		return
 	}
