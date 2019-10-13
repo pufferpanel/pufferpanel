@@ -30,7 +30,6 @@ func Generate(claims jwt.Claims) (string, error) {
 	token := jwt.NewWithClaims(signingMethod, claims)
 	return token.SignedString(privateKey)
 }
-
 func GenerateSession(id uint) (string, error) {
 	claims := &apufferi.Claim{
 		StandardClaims: jwt.StandardClaims{
@@ -197,7 +196,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile("private.pem", os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
 		return
 	}
