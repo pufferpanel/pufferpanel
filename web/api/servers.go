@@ -35,18 +35,18 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2WithLimit(scope.ServersView, false), searchServers)
+	g.Handle("GET", "", handlers.OAuth2Handler(scope.ServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2(scope.ServersCreate, false), handlers.HasTransaction, createServer)
-	g.Handle("GET", "/:serverId", handlers.OAuth2(scope.ServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", handlers.OAuth2(scope.ServersCreate, false), handlers.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", handlers.OAuth2(scope.ServersEdit, true), handlers.HasTransaction, createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2(scope.ServersDelete, true), handlers.HasTransaction, deleteServer)
-	g.Handle("GET", "/:serverId/user", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
-	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), handlers.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2(scope.ServersEditUsers, true), handlers.HasTransaction, removeServerUser)
+	g.Handle("POST", "", handlers.OAuth2Handler(scope.ServersCreate, false), handlers.HasTransaction, createServer)
+	g.Handle("GET", "/:serverId", handlers.OAuth2Handler(scope.ServersView, true), getServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(scope.ServersCreate, false), handlers.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(scope.ServersEdit, true), handlers.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(scope.ServersDelete, true), handlers.HasTransaction, deleteServer)
+	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(scope.ServersEditUsers, true), getServerUsers)
+	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 

@@ -22,7 +22,7 @@ import (
 )
 
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2(scope.TemplatesView, false), getAllTemplates)
+	g.Handle("GET", "", handlers.OAuth2Handler(scope.TemplatesView, false), getAllTemplates)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 }
 

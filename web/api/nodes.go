@@ -30,16 +30,16 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2(scope.NodesView, false), getAllNodes)
+	g.Handle("GET", "", handlers.OAuth2Handler(scope.NodesView, false), getAllNodes)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
-	g.Handle("POST", "", handlers.OAuth2(scope.NodesEdit, false), createNode)
+	g.Handle("POST", "", handlers.OAuth2Handler(scope.NodesEdit, false), createNode)
 
-	g.Handle("GET", "/:id", handlers.OAuth2(scope.NodesView, false), getNode)
-	g.Handle("PUT", "/:id", handlers.OAuth2(scope.NodesEdit, false), updateNode)
-	g.Handle("DELETE", "/:id", handlers.OAuth2(scope.NodesEdit, false), deleteNode)
+	g.Handle("GET", "/:id", handlers.OAuth2Handler(scope.NodesView, false), getNode)
+	g.Handle("PUT", "/:id", handlers.OAuth2Handler(scope.NodesEdit, false), updateNode)
+	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.NodesEdit, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(scope.NodesDeploy, false), response.NotImplemented)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 
 	//g.Handle("POST", "/:id/reset", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)

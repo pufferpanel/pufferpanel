@@ -14,14 +14,6 @@ import (
 	"strings"
 )
 
-func OAuth2(scope scope.Scope, requireServer bool) gin.HandlerFunc {
-	return oauth2Handler(scope, requireServer, false)
-}
-
-func OAuth2WithLimit(scope scope.Scope, requireServer bool) gin.HandlerFunc {
-	return oauth2Handler(scope, requireServer, true)
-}
-
 func HasOAuth2Token(c *gin.Context) {
 	//if there's a cookie with the token, use that
 	cookie, _ := c.Cookie("puffer_auth")
@@ -52,7 +44,7 @@ func HasOAuth2Token(c *gin.Context) {
 	c.Next()
 }
 
-func oauth2Handler(requiredScope scope.Scope, requireServer bool, permitWithLimit bool) gin.HandlerFunc {
+func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		res := response.From(c)
 
@@ -177,8 +169,4 @@ func oauth2Handler(requiredScope scope.Scope, requireServer bool, permitWithLimi
 		c.Set("user", user)
 		c.Next()
 	}
-}
-
-func sessionHandler() {
-
 }
