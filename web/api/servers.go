@@ -100,7 +100,7 @@ func searchServers(c *gin.Context) {
 		}
 	}
 
-	if !isAdmin && username != "" {
+	if !isAdmin && username != "" && user.Username != username {
 		res.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
 		return
 	} else if !isAdmin {
