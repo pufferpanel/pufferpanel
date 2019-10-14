@@ -27,15 +27,15 @@ import (
 
 func registerUsers(g *gin.RouterGroup) {
 	//if you can log in, you can see and edit yourself
-	g.Handle("GET", "", handlers.OAuth2(scope.Login, false), getSelf)
-	g.Handle("PUT", "", handlers.OAuth2(scope.Login, false), updateSelf)
-	g.Handle("POST", "", handlers.OAuth2(scope.UsersView, false), searchUsers)
+	g.Handle("GET", "", handlers.OAuth2Handler(scope.Login, false), getSelf)
+	g.Handle("PUT", "", handlers.OAuth2Handler(scope.Login, false), updateSelf)
+	g.Handle("POST", "", handlers.OAuth2Handler(scope.UsersView, false), searchUsers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT", "POST"))
 
-	g.Handle("PUT", "/:username", handlers.OAuth2(scope.UsersEdit, false), createUser)
-	g.Handle("GET", "/:username", handlers.OAuth2(scope.UsersView, false), getUser)
-	g.Handle("POST", "/:username", handlers.OAuth2(scope.UsersEdit, false), updateUser)
-	g.Handle("DELETE", "/:username", handlers.OAuth2(scope.UsersEdit, false), deleteUser)
+	g.Handle("PUT", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), createUser)
+	g.Handle("GET", "/:username", handlers.OAuth2Handler(scope.UsersView, false), getUser)
+	g.Handle("POST", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), updateUser)
+	g.Handle("DELETE", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
 	g.Handle("OPTIONS", "/:username", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
