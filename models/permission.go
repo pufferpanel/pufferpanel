@@ -21,6 +21,7 @@ type Permissions struct {
 	//and here are all the perms we support
 	Admin bool `gorm:"NOT NULL;DEFAULT:0" oneOf:""`
 	//these only will exist if tied to a server
+	ViewServer        bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	InstallServer     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
@@ -58,6 +59,10 @@ func (p *Permissions) ToScopes() []scope.Scope {
 
 	//these only apply if there is a server involved
 	if p.ServerIdentifier != nil {
+		if p.ViewServer {
+			scopes = append(scopes, scope.ServersView)
+		}
+
 		if p.EditServerData {
 			scopes = append(scopes, scope.ServersEdit)
 		}
@@ -124,5 +129,6 @@ func (p *Permissions) SetDefaults() {
 		p.ViewServerFiles = true
 		p.SFTPServer = true
 		p.PutServerFiles = true
+		p.ViewServer = true
 	}
 }
