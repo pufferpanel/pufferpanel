@@ -57,7 +57,7 @@
         </v-list-item>
 
         <v-list-item
-          v-if="hasScope('nodes.view')"
+          v-if="isAdmin()"
           :to="{name: 'Nodes'}"
           link
         >

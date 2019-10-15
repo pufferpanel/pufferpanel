@@ -16,3 +16,7 @@ import Cookies from 'js-cookie'
 export function hasAuth () {
   return !((Cookies.get('puffer_auth') || '') === '')
 }
+
+export function isAdmin () {
+  return localStorage.getItem('admin') === 'true'
+}

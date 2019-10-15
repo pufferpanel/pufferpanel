@@ -21,12 +21,12 @@
       <core-servers-controls :server="server" />
     </div>
     <div style="clear: both;" />
-    <v-row v-if="hasScope('servers.console', server.id)">
+    <v-row v-if="server.permissions.viewServerConsole || isAdmin()">
       <v-col>
         <core-servers-console :server="server" />
       </v-col>
     </v-row>
-    <v-row v-if="hasScope('servers.stats', server.id)">
+    <v-row v-if="server.permissions.viewServerStats || isAdmin()">
       <v-col md="6">
         <core-servers-cpu />
       </v-col>
@@ -34,17 +34,17 @@
         <core-servers-memory />
       </v-col>
     </v-row>
-    <v-row v-if="hasScope('servers.files.get', server.id)">
+    <v-row v-if="server.permissions.viewServerFiles || isAdmin()">
       <v-col>
         <core-servers-files :server="server" />
       </v-col>
     </v-row>
-    <v-row v-if="hasScope('servers.files', server.id)">
+    <v-row v-if="server.permissions.sftpServer || isAdmin()">
       <v-col>
         <core-servers-sftp :server="server" />
       </v-col>
     </v-row>
-    <v-row v-if="hasScope('servers.edit.users', server.id)">
+    <v-row v-if="server.permissions.editServerUsers || isAdmin()">
       <v-col>
         <core-servers-users :server="server" />
       </v-col>

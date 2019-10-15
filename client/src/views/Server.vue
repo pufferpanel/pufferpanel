@@ -40,9 +40,10 @@ export default {
   methods: {
     loadServer () {
       const vue = this
-      this.$http.get('/api/servers/' + this.$route.params.id).then(function (response) {
-        vue.server = response.data.data
-        const url = config.websocketBaseUrl + '/daemon/server/' + vue.server.id + '/socket'
+      this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(function (response) {
+        vue.server = response.data.data.server
+        vue.server.permissions = response.data.data.permissions
+        const url = config.websocketBaseUrl + `/daemon/server/${vue.server.id}/socket`
         vue.$connect(url)
         vue.statRequest = setInterval(vue.callStats, 3000)
       })

@@ -12,22 +12,12 @@
  */
 
 import Vue from 'vue'
+import { hasAuth, isAdmin } from '@/utils/auth'
 
-Vue.prototype.hasScope = function (scope, server = '') {
-  const data = localStorage.scopes
-  if (!data) {
-    return false
-  }
+Vue.prototype.hasAuth = function () {
+  return hasAuth()
+}
 
-  const scopeMap = JSON.parse(data)
-  if (!scopeMap) {
-    return false
-  }
-
-  const scopes = scopeMap[server]
-  if (!scopes) {
-    return false
-  }
-
-  return scopes.indexOf(scope) !== -1
+Vue.prototype.isAdmin = function () {
+  return isAdmin()
 }

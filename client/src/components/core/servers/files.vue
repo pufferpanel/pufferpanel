@@ -16,7 +16,7 @@
     <v-card-title>
       <span v-text="$t('files.FileManager') + ' - ' + currentPath" />
       <v-btn
-        v-if="hasScope('servers.files.put', $attrs.server.id) && !createFolder"
+        v-if="(server.permissions.putServerFiles || isAdmin()) && !createFolder"
         icon
         @click="createFolder = true"
       >
@@ -94,7 +94,7 @@
           </v-tooltip>
         </template>
       </v-data-table>
-      <div>
+      <div v-if="server.permissions.putServerFiles || isAdmin()">
         <v-file-input
           v-model="uploadFiles"
           multiple
@@ -129,8 +129,8 @@ import filesize from 'filesize'
 import config from '../../../config'
 
 export default {
-  prop: {
-    server: Object
+  props: {
+    server: { type: Object, default: function () { return {} } }
   },
   data () {
     return {

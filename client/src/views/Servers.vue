@@ -34,7 +34,7 @@
       />
     </div>
     <v-btn
-      v-show="hasScope('servers.create')"
+      v-show="isAdmin()"
       color="primary"
       bottom
       right

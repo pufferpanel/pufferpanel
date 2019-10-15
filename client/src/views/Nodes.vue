@@ -9,7 +9,7 @@
       @click:row="rowClicked"
     />
     <v-btn
-      v-show="hasScope('nodes.deploy')"
+      v-show="isAdmin()"
       color="primary"
       bottom
       right

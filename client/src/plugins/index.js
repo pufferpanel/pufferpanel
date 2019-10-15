@@ -1,2 +1,2 @@
 import './axios'
-import './cookies'
+import './auth'

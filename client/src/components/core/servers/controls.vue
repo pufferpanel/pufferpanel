@@ -14,28 +14,28 @@
 <template>
   <v-container>
     <v-btn
-      v-if="hasScope('servers.start', server.id)"
+      v-if="server.permissions.startServer || isAdmin()"
       class="mr-4"
       color="success"
       @click="action('start')"
       v-text="$t('common.Start')"
     />
     <v-btn
-      v-if="hasScope('servers.stop', server.id)"
+      v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="warning"
       @click="action('stop')"
       v-text="$t('common.Stop')"
     />
     <v-btn
-      v-if="hasScope('servers.stop', server.id)"
+      v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="error"
       @click="action('kill')"
       v-text="$t('common.Kill')"
     />
     <v-btn
-      v-if="hasScope('servers.install', server.id)"
+      v-if="server.permissions.installServer || isAdmin()"
       color="error"
       @click="action('install')"
       v-text="$t('common.Install')"

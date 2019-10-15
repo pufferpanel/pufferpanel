@@ -161,7 +161,7 @@ export default {
         const responseData = response.data
         if (responseData.success) {
           Cookies.set('puffer_auth', responseData.data.session)
-          localStorage.setItem('scopes', JSON.stringify(responseData.data.scopes))
+          localStorage.setItem('admin', responseData.data.admin)
           data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
