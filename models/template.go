@@ -26,6 +26,8 @@ type Template struct {
 	ID       uint   `json:"-"`
 	Name     string `gorm:"type:varchar(100)" json:"name"`
 	RawValue string `gorm:"type:text" json:"-"`
+
+	Readme string `gorm:"type:text" json:"readme,omitempty"`
 }
 
 type Templates []*Template
