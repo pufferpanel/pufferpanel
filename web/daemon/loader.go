@@ -92,11 +92,8 @@ func proxyNodeRequest(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(uint(id))
+	node, err := ns.Get(uint(id))
 	if response.HandleError(res, err) {
-		return
-	} else if !exists {
-		res.Fail().Status(404)
 		return
 	}
 

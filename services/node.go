@@ -48,12 +48,12 @@ func (ns *Node) GetAll() (*models.Nodes, error) {
 	return nodes, res.Error
 }
 
-func (ns *Node) Get(id uint) (*models.Node, bool, error) {
+func (ns *Node) Get(id uint) (*models.Node, error) {
 	model := &models.Node{}
 
-	res := ns.DB.FirstOrInit(model, id)
+	res := ns.DB.First(model, id)
 
-	return model, model.ID != 0, res.Error
+	return model, res.Error
 }
 
 func (ns *Node) Update(model *models.Node) error {
