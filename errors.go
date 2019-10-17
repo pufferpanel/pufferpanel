@@ -84,7 +84,7 @@ func GenerateValidationMessage(err error) error {
 	if errs, ok := err.(validator.ValidationErrors); ok {
 		msg := make([]string, 0)
 		for _, e := range errs {
-			t := e.Field()+": "+e.ActualTag()
+			t := e.Field() + ": " + e.ActualTag()
 			if e.Param() != "" {
 				t += " (" + e.Param() + ")"
 			}

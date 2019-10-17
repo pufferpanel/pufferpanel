@@ -187,14 +187,12 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(postBody.NodeId)
+	node, err := ns.Get(postBody.NodeId)
 
-	if response.HandleError(res, err) {
-		return
-	}
-
-	if !exists {
+	if gorm.IsRecordNotFoundError(err) {
 		res.Status(http.StatusBadRequest).Message("no node with given id").Fail()
+	} else if response.HandleError(res, err) {
+		return
 	}
 
 	server := &models.Server{
@@ -211,10 +209,6 @@ func createServer(c *gin.Context) {
 	for k, v := range postBody.Users {
 		user, err := us.Get(v)
 		if response.HandleError(res, err) {
-			return
-		}
-		if !exists {
-			response.HandleError(res, pufferpanel.ErrUserNotFound.Metadata(map[string]interface{}{"username": v}))
 			return
 		}
 

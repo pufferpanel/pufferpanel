@@ -73,11 +73,8 @@ func getNode(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(id)
+	node, err := ns.Get(id)
 	if response.HandleError(res, err) {
-		return
-	} else if !exists {
-		res.Fail().Status(http.StatusNotFound)
 		return
 	}
 
@@ -131,11 +128,8 @@ func updateNode(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(id)
+	node, err := ns.Get(id)
 	if response.HandleError(res, err) {
-		return
-	} else if !exists {
-		res.Fail().Status(http.StatusNotFound)
 		return
 	}
 
@@ -158,11 +152,8 @@ func deleteNode(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(id)
+	node, err := ns.Get(id)
 	if response.HandleError(res, err) {
-		return
-	} else if !exists {
-		res.Fail().Status(http.StatusNotFound)
 		return
 	}
 
@@ -185,16 +176,13 @@ func deployNode(c *gin.Context) {
 		return
 	}
 
-	node, exists, err := ns.Get(id)
+	node, err := ns.Get(id)
 	if response.HandleError(res, err) {
-		return
-	} else if !exists {
-		res.Fail().Status(http.StatusNotFound)
 		return
 	}
 
 	services.ValidateTokenLoaded()
-	file, err := ioutil.ReadFile(viper.GetString("token.private"))
+	file, err := ioutil.ReadFile(viper.GetString("token.public"))
 	if response.HandleError(res, err) {
 		return
 	}

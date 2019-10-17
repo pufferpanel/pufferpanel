@@ -13,7 +13,7 @@ require (
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gorilla/websocket v1.4.1
-	github.com/jinzhu/gorm v1.9.10
+	github.com/jinzhu/gorm v1.9.11
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect

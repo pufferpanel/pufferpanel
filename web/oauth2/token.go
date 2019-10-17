@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/response"
 	"github.com/pufferpanel/apufferi/v3/scope"
@@ -55,13 +56,12 @@ func handleTokenRequest(c *gin.Context) {
 					return
 				}
 				ns := &services.Node{DB: db}
-				node, exist, err := ns.Get(uint(id))
-				if err != nil {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
-					return
-				}
-				if !exist {
+				node, err := ns.Get(uint(id))
+				if err == gorm.ErrRecordNotFound {
 					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
+					return
+				} else if err != nil {
+					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid request"})
 					return
 				}
 
