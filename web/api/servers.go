@@ -199,7 +199,7 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	port, err := getFromDataOrDefault(postBody.Variables, "port", uint(0))
+	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
 	if response.HandleError(res, err) {
 		return
 	}
