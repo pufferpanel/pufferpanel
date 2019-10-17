@@ -30,7 +30,6 @@ import (
 	"github.com/satori/go.uuid"
 	"io"
 	"net/http"
-	"reflect"
 	"strconv"
 )
 
@@ -195,12 +194,27 @@ func createServer(c *gin.Context) {
 		return
 	}
 
+	name, err := getFromDataOrDefault(postBody.Variables, "name", postBody.Identifier)
+	if response.HandleError(res, err) {
+		return
+	}
+
+	port, err := getFromDataOrDefault(postBody.Variables, "port", uint(0))
+	if response.HandleError(res, err) {
+		return
+	}
+
+	ip, err := getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0")
+	if response.HandleError(res, err) {
+		return
+	}
+
 	server := &models.Server{
-		Name:       getFromDataOrDefault(postBody.Variables, "name", postBody.Identifier).(string),
+		Name:       name.(string),
 		Identifier: postBody.Identifier,
 		NodeID:     node.ID,
-		IP:         getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0").(string),
-		Port:       getFromDataOrDefault(postBody.Variables, "port", uint(0)).(uint),
+		IP:         ip.(string),
+		Port:       port.(uint16),
 		Type:       postBody.Type,
 	}
 
@@ -487,17 +501,14 @@ func getFromData(variables map[string]apufferi.Variable, key string) interface{}
 	return nil
 }
 
-//this will enforce whatever the type val is defined as will be what is returned
-func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, val interface{}) interface{} {
+func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, val interface{}) (interface{}, error) {
 	res := getFromData(variables, key)
 
 	if res != nil {
-		if reflect.TypeOf(val).AssignableTo(reflect.TypeOf(res)) {
-			return res
-		}
+		return apufferi.Convert(res, val)
 	}
 
-	return val
+	return val, nil
 }
 
 type GetServerResponse struct {

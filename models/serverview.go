@@ -26,7 +26,7 @@ type ServerView struct {
 	Data       interface{}      `json:"data,omitempty"`
 	Users      []ServerUserView `json:"users,omitempty"`
 	IP         string           `json:"ip,omitempty"`
-	Port       uint             `json:"port,omitempty"`
+	Port       uint16           `json:"port,omitempty"`
 	Type       string           `json:"type"`
 }
 
