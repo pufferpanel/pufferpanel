@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/pufferpanel/apufferi/v3/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -55,10 +54,8 @@ func (c *Client) BeforeSave() (err error) {
 
 	scopes := make([]string, 0)
 
-	for id, s := range c.Scopes {
-		for _, v := range s {
-			scopes = append(scopes, fmt.Sprintf("%s:%s", id, v))
-		}
+	for _, s := range c.Scopes {
+		scopes = append(scopes, string(s))
 	}
 	c.RawScopes = strings.Join(scopes, " ")
 
