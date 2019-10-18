@@ -256,13 +256,18 @@ func createServer(c *gin.Context) {
 	headers.Set("Authorization", c.GetHeader("Authorization"))
 
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
+	if nodeResponse != nil {
+		defer apufferi.Close(nodeResponse.Body)
+	}
 
 	if response.HandleError(res, err) {
 		return
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
-		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(nodeResponse.StatusCode).Log()
+		buf := new(bytes.Buffer)
+		_, _ = buf.ReadFrom(nodeResponse.Body)
+		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v\n%s").WithArgs(nodeResponse.StatusCode, buf.String()).Log()
 		response.HandleError(res, pufferpanel.ErrUnknownError)
 		return
 	}
