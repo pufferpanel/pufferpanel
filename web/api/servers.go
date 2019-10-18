@@ -407,7 +407,7 @@ func editServerUser(c *gin.Context) {
 	if response.HandleError(res, err) {
 		return
 	}
-	perms.CopyTo(existing)
+	perms.CopyTo(existing, false)
 	err = ps.UpdatePermissions(existing)
 
 	if response.HandleError(res, err) {
