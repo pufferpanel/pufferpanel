@@ -73,12 +73,12 @@ func (p *Permission) GetForClientAndServer(id uint, serverId *string) (*models.P
 func (p *Permission) UpdatePermissions(perms *models.Permissions) error {
 	shouldDelete := true
 
-	t := reflect.TypeOf(p)
+	t := reflect.TypeOf(perms)
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		_, exists := f.Tag.Lookup("oneOf")
 
-		fv := reflect.ValueOf(p).FieldByName(f.Name)
+		fv := reflect.ValueOf(perms).FieldByName(f.Name)
 
 		if exists && f.Type.Name() == "bool" && fv.Bool() {
 			shouldDelete = false
