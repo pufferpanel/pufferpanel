@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/pufferpanel/apufferi/v3/scope"
+	"reflect"
 )
 
 type Permissions struct {
@@ -180,4 +181,37 @@ func (p *Permissions) SetDefaults() {
 		p.SFTPServer = true
 		p.PutServerFiles = true
 	}
+}
+
+func (p *Permissions) ShouldDelete() bool {
+	val := reflect.ValueOf(p)
+
+	// If it's an interface or a pointer, unwrap it.
+	if val.Kind() == reflect.Ptr && val.Elem().Kind() == reflect.Struct {
+		val = val.Elem()
+	}
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		fieldKind := field.Kind()
+
+		if fieldKind != reflect.Bool {
+			continue
+		}
+
+		typeField := val.Type().Field(i)
+
+		// Get the field tag value.
+		_, exist := typeField.Tag.Lookup("oneOf")
+
+		if !exist {
+			continue
+		}
+
+		if field.Bool() {
+			return false
+		}
+	}
+
+	return true
 }
