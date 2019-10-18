@@ -37,6 +37,10 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("POST", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), updateUser)
 	g.Handle("DELETE", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
 	g.Handle("OPTIONS", "/:username", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+
+	g.Handle("GET", "/:username/perms", handlers.OAuth2Handler(scope.UsersView, false), response.NotImplemented)
+	g.Handle("PUT", "/:username/perms", handlers.OAuth2Handler(scope.UsersEdit, false), response.NotImplemented)
+	g.Handle("OPTIONS", "/:username/perms", response.CreateOptions("PUT", "GET"))
 }
 
 func searchUsers(c *gin.Context) {
