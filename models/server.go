@@ -13,8 +13,8 @@ type Server struct {
 	NodeID uint `gorm:"NOT NULL" json:"-" validate:"required,min=1"`
 	Node   Node `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	IP   string `gorm:"" json:"-" validate:"optional|ip|fqdn"`
-	Port uint16 `gorm:"" json:"-" validate:"optional"`
+	IP   string `gorm:"" json:"-" validate:"omitempty,ip|fqdn"`
+	Port uint16 `gorm:"" json:"-" validate:"omitempty"`
 
 	Type string `gorm:"NOT NULL;default='generic'" json:"-" validate:"required,printascii"`
 

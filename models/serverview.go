@@ -73,7 +73,7 @@ func (s *ServerView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("type")
 	}
 
-	if validate.Var(s.Name, "optional|printascii") != nil {
+	if validate.Var(s.Name, "omitempty|printascii") != nil {
 		return pufferpanel.ErrFieldMustBePrintable("name")
 	}
 
@@ -81,12 +81,8 @@ func (s *ServerView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldTooSmall("node", 1)
 	}
 
-	if validate.Var(s.IP, "optional|ip_addr") != nil {
+	if validate.Var(s.IP, "omitempty,ip|fqdn") != nil {
 		return pufferpanel.ErrFieldIsInvalidIP("ip")
-	}
-
-	if validate.Var(s.Port, "optional|min:0,max:65535") != nil {
-		return pufferpanel.ErrFieldNotBetween("port", 1, 65535)
 	}
 
 	return nil
