@@ -105,7 +105,9 @@ func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		PanelClaims: apufferi.PanelClaims{},
+		PanelClaims: apufferi.PanelClaims{
+			Scopes: map[string][]scope.Scope{},
+		},
 	}
 
 	for _, perm := range permissions {
