@@ -252,8 +252,14 @@ func createServer(c *gin.Context) {
 	data, _ := json.Marshal(postBody.Server)
 	reader := newFakeReader(data)
 
+	//we need to get your new token
+	token, err := services.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
+	if response.HandleError(res, err) {
+		return
+	}
+
 	headers := http.Header{}
-	headers.Set("Authorization", c.GetHeader("Authorization"))
+	headers.Set("Authorization", "Bearer "+token)
 
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
 	if nodeResponse != nil {
