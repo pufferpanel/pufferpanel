@@ -5,7 +5,7 @@ import (
 )
 
 type Permissions struct {
-	ID uint `gorm:"PRIMARY_KEY,AUTO_INCREMEMT"`
+	ID uint `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
 
 	//owners of this permission set
 	UserId *uint `json:"-"`
@@ -19,9 +19,19 @@ type Permissions struct {
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	//and here are all the perms we support
-	Admin      bool `gorm:"NOT NULL;DEFAULT:0" oneOf:""`
-	ViewServer bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	//these only will exist if tied to a server
+	Admin           bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewServer      bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	CreateServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewNodes       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditNodes       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	DeployNodes     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewTemplates   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+
+	//these only will exist if tied to a server, and for a user
 	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	InstallServer     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
@@ -54,6 +64,44 @@ func (p *Permissions) ToScopes() []scope.Scope {
 			scopes = append(scopes, scope.ServersCreate, scope.NodesView, scope.NodesDeploy, scope.NodesEdit, scope.TemplatesView, scope.UsersView, scope.UsersEdit)
 		} else {
 			scopes = append(scopes, scope.ServersDelete, scope.ServersEditAdmin)
+		}
+	} else {
+		if p.ServerIdentifier == nil {
+			if p.CreateServer {
+				scopes = append(scopes, scope.ServersCreate)
+			}
+
+			if p.ViewNodes {
+				scopes = append(scopes, scope.NodesView)
+			}
+
+			if p.EditNodes {
+				scopes = append(scopes, scope.NodesEdit)
+			}
+
+			if p.ViewTemplates {
+				scopes = append(scopes, scope.TemplatesView)
+			}
+
+			if p.EditUsers {
+				scopes = append(scopes, scope.UsersEdit)
+			}
+
+			if p.ViewUsers {
+				scopes = append(scopes, scope.UsersView)
+			}
+
+			if p.DeployNodes {
+				scopes = append(scopes, scope.NodesDeploy)
+			}
+		} else {
+			if p.DeleteServer {
+				scopes = append(scopes, scope.ServersDelete)
+			}
+
+			if p.EditServerAdmin {
+				scopes = append(scopes, scope.ServersEditAdmin)
+			}
 		}
 	}
 
