@@ -8,6 +8,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/scope"
@@ -90,8 +91,17 @@ func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 	} else {
 		var perm *models.Permissions
 		perm, err = ps.GetForUserAndServer(userId, serverId)
-		if err == nil {
-			permissions = []*models.Permissions{perm}
+		if err != nil {
+			return "", err
+		}
+		permissions = []*models.Permissions{perm}
+
+		perm, err = ps.GetForUserAndServer(userId, nil)
+		if err != nil && !gorm.IsRecordNotFoundError(err) {
+			return "", err
+		}
+		if perm.ID != 0 && !gorm.IsRecordNotFoundError(err) {
+			permissions = append(permissions, perm)
 		}
 	}
 
