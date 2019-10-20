@@ -1,21 +1,18 @@
 package daemon
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v3"
 	"github.com/pufferpanel/apufferi/v3/logging"
 	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	"github.com/spf13/cast"
 	netHttp "net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
@@ -59,7 +56,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := generateOAuth2Token(token.Claims, server, db)
+		newToken, err := services.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &server.Identifier)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -97,11 +94,11 @@ func proxyNodeRequest(c *gin.Context) {
 		return
 	}
 
-	token := c.MustGet("token").(*apufferi.Claim)
+	token := c.MustGet("token").(*apufferi.Token)
 
 	//if a session-token, we need to convert it to an oauth2 token instead
-	if token.Audience == "session" {
-		newToken, err := generateOAuth2Token(token, nil, db)
+	if token.Claims.Audience == "session" {
+		newToken, err := services.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), nil)
 		if response.HandleError(res, err) {
 			return
 		}
@@ -152,65 +149,4 @@ func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *mo
 		response.From(c).Status(netHttp.StatusInternalServerError).Fail().Error(err)
 		return
 	}
-}
-
-func generateOAuth2Token(token *apufferi.Claim, server *models.Server, db *gorm.DB) (string, error) {
-	var err error
-	if db == nil {
-		db, err = database.GetConnection()
-		if err != nil {
-			return "", err
-		}
-	}
-
-	ps := &services.Permission{DB: db}
-
-	userId, err := strconv.Atoi(token.Subject)
-	if err != nil {
-		return "", err
-	}
-
-	var serverId *string
-	if server != nil {
-		serverId = &server.Identifier
-	}
-
-	perms, err := ps.GetForUserAndServer(uint(userId), serverId)
-	if err != nil {
-		return "", err
-	}
-
-	scopes := make(map[string][]scope.Scope)
-
-	if serverId != nil {
-		scopes[*serverId] = perms.ToScopes()
-
-		//also include global scopes
-		perms, err = ps.GetForUserAndServer(uint(userId), nil)
-		if err != nil {
-			return "", err
-		}
-		scopes[""] = append(scopes[""], perms.ToScopes()...)
-	} else {
-		scopes[""] = perms.ToScopes()
-	}
-
-	claims := &apufferi.Claim{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  "oauth2",
-			ExpiresAt: token.ExpiresAt,
-			IssuedAt:  time.Now().Unix(),
-			Subject:   token.Subject,
-		},
-		PanelClaims: apufferi.PanelClaims{
-			Scopes: scopes,
-		},
-	}
-
-	newToken, err := services.Generate(claims)
-	if err != nil {
-		return "", err
-	}
-
-	return newToken, nil
 }
