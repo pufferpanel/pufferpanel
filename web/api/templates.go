@@ -15,10 +15,11 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	"net/http"
 )
 
 func registerTemplates(g *gin.RouterGroup) {
@@ -27,14 +28,13 @@ func registerTemplates(g *gin.RouterGroup) {
 }
 
 func getAllTemplates(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templates, err := ts.GetAll()
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(templates)
+	c.JSON(http.StatusOK, templates)
 }

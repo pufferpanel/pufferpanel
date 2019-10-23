@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"

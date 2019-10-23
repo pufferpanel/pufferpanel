@@ -2,7 +2,7 @@ package impl
 
 import (
 	"github.com/mailgun/mailgun-go"
-	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/viper"
 )

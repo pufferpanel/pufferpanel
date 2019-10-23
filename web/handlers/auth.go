@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"net/http"
 	"strings"
 )
 
@@ -43,41 +44,24 @@ func AuthMiddleware(c *gin.Context) {
 			}
 		}
 
-		if c.Request.Method != "GET" {
-			c.AbortWithStatus(403)
-		} else {
-			c.Redirect(302, "/auth/login")
-			c.Abort()
-		}
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
-	res := response.From(c)
-
 	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
-		c.Abort()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
 	}
 
 	token, err := services.ParseToken(cookie)
 
-	if err != nil || !token.Valid {
-		c.Redirect(302, "/auth/login")
-		c.Abort()
-		return
-	}
-
-	if response.HandleError(res, err) {
-		c.Redirect(302, "/auth/login")
-		c.Abort()
+	if response.HandleError(c, err, http.StatusForbidden) || !token.Valid {
 		return
 	}
 
 	us := services.User{DB: db}
 	user, err := us.Get(token.Claims.Subject)
-	if response.HandleError(res, err) {
-		c.Redirect(302, "/auth/login")
-		c.Abort()
+	if response.HandleError(c, err, http.StatusForbidden) {
 		return
 	}
 

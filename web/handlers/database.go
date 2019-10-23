@@ -3,10 +3,11 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/v3/logging"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/logging"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
+	"net/http"
 )
 
 func NeedsDatabase(c *gin.Context) {
@@ -17,7 +18,7 @@ func NeedsDatabase(c *gin.Context) {
 		err = pufferpanel.ErrDatabaseNotAvailable
 	}
 
-	if response.HandleError(response.From(c), err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 

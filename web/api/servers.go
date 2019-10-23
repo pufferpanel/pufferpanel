@@ -18,10 +18,10 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/v3"
-	"github.com/pufferpanel/apufferi/v3/logging"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4"
+	"github.com/pufferpanel/apufferi/v4/logging"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -51,7 +51,6 @@ func registerServers(g *gin.RouterGroup) {
 
 func searchServers(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ps := &services.Permission{DB: db}
@@ -63,8 +62,8 @@ func searchServers(c *gin.Context) {
 	pageQuery := c.DefaultQuery("page", strconv.Itoa(1))
 
 	pageSize, err := strconv.Atoi(pageSizeQuery)
-	if err != nil || pageSize <= 0 {
-		res.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
+	if response.HandleError(c, err, http.StatusBadRequest) || pageSize <= 0 {
+		response.HandleError(c, pufferpanel.ErrFieldTooSmall("pageSize", 0), http.StatusBadRequest)
 		return
 	}
 
@@ -73,21 +72,21 @@ func searchServers(c *gin.Context) {
 	}
 
 	page, err := strconv.Atoi(pageQuery)
-	if err != nil || page <= 0 {
-		res.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
+	if response.HandleError(c, err, http.StatusBadRequest) || page <= 0 {
+		response.HandleError(c, pufferpanel.ErrFieldTooSmall("page", 0), http.StatusBadRequest)
 		return
 	}
 
 	node, err := strconv.Atoi(nodeQuery)
-	if err != nil || page <= 0 {
-		res.Fail().Status(http.StatusBadRequest).Message("node id is invalid")
+	if response.HandleError(c, err, http.StatusBadRequest) || page <= 0 {
+		response.HandleError(c, pufferpanel.ErrFieldTooSmall("nodeId", 0), http.StatusBadRequest)
 		return
 	}
 
 	user := c.MustGet("user").(*models.User)
 
 	perms, err := ps.GetForUser(user.ID)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -100,7 +99,15 @@ func searchServers(c *gin.Context) {
 	}
 
 	if !isAdmin && username != "" && user.Username != username {
-		res.PageInfo(uint(page), uint(pageSize), MaxPageSize, 0).Data(make([]models.ServerView, 0))
+		c.JSON(http.StatusOK, &ServerSearchResponse{
+			Servers: []*models.ServerView{},
+			Metadata: &response.Metadata{Paging: &response.Paging{
+				Page:    1,
+				Size:    0,
+				MaxSize: MaxPageSize,
+				Total:   0,
+			}},
+		})
 		return
 	} else if !isAdmin {
 		username = user.Username
@@ -115,33 +122,39 @@ func searchServers(c *gin.Context) {
 		PageSize: uint(pageSize),
 		Page:     uint(page),
 	}
-	if results, total, err = ss.Search(searchCriteria); response.HandleError(res, err) {
+	if results, total, err = ss.Search(searchCriteria); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.PageInfo(uint(page), uint(pageSize), MaxPageSize, total).Data(models.RemoveServerPrivateInfoFromAll(models.FromServers(results)))
+	c.JSON(http.StatusOK, &ServerSearchResponse{
+		Servers: models.RemoveServerPrivateInfoFromAll(models.FromServers(results)),
+		Metadata: &response.Metadata{Paging: &response.Paging{
+			Page:    uint(page),
+			Size:    uint(pageSize),
+			MaxSize: MaxPageSize,
+			Total:   total,
+		}},
+	})
 }
 
 func getServer(c *gin.Context) {
-	res := response.From(c)
-
 	t, exist := c.Get("server")
 
 	if !exist {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 	}
 
 	_, includePerms := c.GetQuery("perms")
 	var perms *models.PermissionView
 	if includePerms {
 		db, err := database.GetConnection()
-		if response.HandleError(res, err) {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
@@ -150,7 +163,7 @@ func getServer(c *gin.Context) {
 		ps := &services.Permission{DB: db}
 
 		p, err := ps.GetForUserAndServer(u.ID, &server.Identifier)
-		if response.HandleError(res, err) {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 		perms = models.FromPermission(p)
@@ -161,12 +174,11 @@ func getServer(c *gin.Context) {
 		Perms:  perms,
 	}
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }
 
 func createServer(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
@@ -181,31 +193,30 @@ func createServer(c *gin.Context) {
 	postBody := &serverCreation{}
 	err = c.Bind(postBody)
 	postBody.Identifier = serverId
-	if err != nil {
-		res.Status(http.StatusBadRequest).Error(err).Fail()
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	node, err := ns.Get(postBody.NodeId)
 
 	if gorm.IsRecordNotFoundError(err) {
-		res.Status(http.StatusBadRequest).Message("no node with given id").Fail()
-	} else if response.HandleError(res, err) {
+		response.HandleError(c, pufferpanel.ErrNodeInvalid, http.StatusBadRequest)
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	name, err := getFromDataOrDefault(postBody.Variables, "name", postBody.Identifier)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	ip, err := getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0")
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
@@ -222,7 +233,7 @@ func createServer(c *gin.Context) {
 
 	for k, v := range postBody.Users {
 		user, err := us.Get(v)
-		if response.HandleError(res, err) {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
@@ -230,21 +241,20 @@ func createServer(c *gin.Context) {
 	}
 
 	err = ss.Create(server)
-	if err != nil {
-		res.Status(http.StatusInternalServerError).Error(err).Fail()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	for _, v := range users {
 		perm, err := ps.GetForUserAndServer(v.ID, &server.Identifier)
-		if response.HandleError(res, err) {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 
 		perm.SetDefaults()
 
 		err = ps.UpdatePermissions(perm)
-		if response.HandleError(res, err) {
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 	}
@@ -254,7 +264,7 @@ func createServer(c *gin.Context) {
 
 	//we need to get your new token
 	token, err := services.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -266,7 +276,7 @@ func createServer(c *gin.Context) {
 		defer apufferi.Close(nodeResponse.Body)
 	}
 
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -274,36 +284,22 @@ func createServer(c *gin.Context) {
 		buf := new(bytes.Buffer)
 		_, _ = buf.ReadFrom(nodeResponse.Body)
 		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v\n%s").WithArgs(nodeResponse.StatusCode, buf.String()).Log()
-		response.HandleError(res, pufferpanel.ErrUnknownError)
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
 
-	apiResponse := &response.Response{}
-	err = json.NewDecoder(nodeResponse.Body).Decode(apiResponse)
-
-	if response.HandleError(res, err) {
+	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
 
-	if !apiResponse.Success {
-		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v").WithArgs(apiResponse).Log()
-		response.HandleError(res, pufferpanel.ErrUnknownError)
-		return
-	}
-
-	if response.HandleError(res, db.Commit().Error) {
-		return
-	}
-
-	res.Data(server.Identifier)
+	c.JSON(http.StatusOK, &CreateServerResponse{Id: serverId})
 }
 
 func deleteServer(c *gin.Context) {
 	var err error
-	res := response.From(c)
 
 	db, err := database.GetConnection()
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 	db.Begin()
@@ -313,50 +309,48 @@ func deleteServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
 
 	err = ss.Delete(server.Identifier)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	if response.HandleError(res, db.Commit().Error) {
+	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
 
-	v := models.FromServer(server)
-	res.Status(http.StatusOK).Data(v)
+	c.Status(http.StatusNoContent)
 }
 
 func getServerUsers(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
 
 	if !exist {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	perms, err := ps.GetForServer(server.Identifier)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -374,12 +368,11 @@ func getServerUsers(c *gin.Context) {
 		users[k] = models.FromPermission(v)
 	}
 
-	res.Data(users)
+	c.JSON(http.StatusOK, users)
 }
 
 func editServerUser(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
@@ -391,7 +384,7 @@ func editServerUser(c *gin.Context) {
 
 	perms := &models.PermissionView{}
 	err = c.BindJSON(perms)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 	perms.Username = username
@@ -399,40 +392,41 @@ func editServerUser(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		response.HandleError(c, pufferpanel.ErrServerNotFound, http.StatusInternalServerError)
 		return
 	}
 
 	user, err := us.Get(username)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	existing, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 	perms.CopyTo(existing, false)
 	err = ps.UpdatePermissions(existing)
 
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	if response.HandleError(res, db.Commit().Error) {
+	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
+
+	c.Status(http.StatusNoContent)
 }
 
 func removeServerUser(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
@@ -445,36 +439,36 @@ func removeServerUser(c *gin.Context) {
 	t, exist := c.Get("server")
 
 	if !exist {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
 	server, ok := t.(*models.Server)
 	if !ok {
-		response.HandleError(res, pufferpanel.ErrServerNotFound)
+		response.HandleError(c, pufferpanel.ErrServerNotFound, http.StatusInternalServerError)
 		return
 	}
 
 	user, err := us.Get(username)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		c.AbortWithStatus(http.StatusNotFound)
 		return
-	} else if response.HandleError(res, err) {
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	err = ps.Remove(perms)
 
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	if response.HandleError(res, db.Commit().Error) {
+	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
 }
@@ -525,4 +519,13 @@ func getFromDataOrDefault(variables map[string]apufferi.Variable, key string, va
 type GetServerResponse struct {
 	Server *models.ServerView     `json:"server"`
 	Perms  *models.PermissionView `json:"permissions"`
+}
+
+type CreateServerResponse struct {
+	Id string `json:"id"`
+}
+
+type ServerSearchResponse struct {
+	Servers []*models.ServerView `json:"servers"`
+	*response.Metadata
 }

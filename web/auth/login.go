@@ -2,52 +2,47 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	"net/http"
 )
 
 func LoginPost(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
-	request := &loginRequest{}
+	request := &LoginRequestData{}
 
 	err := c.BindJSON(request)
-	if err != nil {
-		res.Message("invalid request").Status(400).Error(err).Fail()
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	user, session, err := us.Login(request.Data.Email, request.Data.Password)
-	if response.HandleError(res, err) {
+	user, session, err := us.Login(request.Email, request.Password)
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	perms, err := ps.GetForUserAndServer(user.ID, nil)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	data := &loginResponse{}
+	data := &LoginResponse{}
 	data.Session = session
 	data.Admin = perms.Admin
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }
 
-type loginRequest struct {
-	Data loginRequestData `json:"data"`
-}
-
-type loginRequestData struct {
+type LoginRequestData struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type loginResponse struct {
+type LoginResponse struct {
 	Session string `json:"session"`
 	Admin   bool   `json:"admin,omitempty"`
 }

@@ -15,13 +15,14 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/middleware"
+	"github.com/pufferpanel/apufferi/v4/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/web/api"
 	"github.com/pufferpanel/pufferpanel/v2/web/auth"
 	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
 	"github.com/spf13/viper"
+	"net/http"
 	"strings"
 )
 
@@ -56,7 +57,7 @@ func RegisterRoutes(e *gin.Engine) {
 func handle404(c *gin.Context) {
 	for _, v := range noHandle404 {
 		if strings.HasPrefix(c.Request.URL.Path, v) {
-			c.AbortWithStatus(404)
+			c.AbortWithStatus(http.StatusNotFound)
 			return
 		}
 	}

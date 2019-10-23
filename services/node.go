@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"io"
 	"log"

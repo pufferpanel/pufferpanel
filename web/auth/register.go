@@ -2,50 +2,40 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"gopkg.in/go-playground/validator.v9"
+	"net/http"
 )
 
 func RegisterPost(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
-
-	res.Fail()
-	res.Message("unknown error occurred")
 
 	request := &registerRequest{}
 	err := c.BindJSON(request)
 
-	if err != nil {
-		res.Fail().Status(400).Data(err)
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	validate := validator.New()
 	err = validate.Struct(request.Data)
-	if err != nil {
-		res.Fail().Status(400).Data(err)
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	user := &models.User{Username: request.Data.Username, Email: request.Data.Email}
 	err = user.SetPassword(request.Data.Password)
-	if err != nil {
-		res.Fail().Status(400).Error(err)
-		return
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 	}
 
 	err = us.Create(user)
-	if err != nil {
-		res.Fail().Status(400).Error(err)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
-
-	res.Success().Message("")
 }
 
 type registerRequest struct {

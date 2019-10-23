@@ -2,32 +2,32 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
+	"net/http"
 )
 
 func Reauth(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	user, _ := c.MustGet("user").(*models.User)
 
 	perms, err := ps.GetForUserAndServer(user.ID, nil)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	session, err := services.GenerateSession(user.ID)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	data := &loginResponse{}
+	data := &LoginResponse{}
 	data.Session = session
 	data.Admin = perms.Admin
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }

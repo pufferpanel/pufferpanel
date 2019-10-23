@@ -18,12 +18,12 @@ require (
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
-	github.com/mattn/go-sqlite3 v1.11.0 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
-	github.com/pufferpanel/apufferi/v3 v3.0.5
+	github.com/pufferpanel/apufferi/v4 v4.0.0
 	github.com/rogpeppe/go-internal v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.2.2 // indirect
+	github.com/spf13/cast v1.3.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
