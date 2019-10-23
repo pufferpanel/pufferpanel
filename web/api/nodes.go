@@ -16,8 +16,9 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
@@ -48,169 +49,163 @@ func registerNodes(g *gin.RouterGroup) {
 
 func getAllNodes(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var nodes *models.Nodes
-	if nodes, err = ns.GetAll(); response.HandleError(res, err) {
+	if nodes, err = ns.GetAll(); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	data := models.FromNodes(nodes)
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }
 
 func getNode(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
-	id, ok := validateId(c, res)
+	id, ok := validateId(c)
 	if !ok {
 		return
 	}
 
 	node, err := ns.Get(id)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	data := models.FromNode(node)
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }
 
 func createNode(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	model := &models.NodeView{}
-	if err = c.BindJSON(model); response.HandleError(res, err) {
+	if err = c.BindJSON(model); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	if err = model.Valid(false); response.HandleError(res, err) {
+	if err = model.Valid(false); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	create := &models.Node{}
 	model.CopyToModel(create)
 	create.Secret = strings.Replace(uuid.NewV4().String(), "-", "", -1)
-	if err = ns.Create(create); response.HandleError(res, err) {
+	if err = ns.Create(create); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(create)
+	c.JSON(http.StatusOK, create)
 }
 
 func updateNode(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	viewModel := &models.NodeView{}
-	if err = c.BindJSON(viewModel); response.HandleError(res, err) {
+	if err = c.BindJSON(viewModel); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	id, ok := validateId(c, res)
+	id, ok := validateId(c)
 	if !ok {
 		return
 	}
 
-	if err = viewModel.Valid(true); response.HandleError(res, err) {
+	if err = viewModel.Valid(true); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	node, err := ns.Get(id)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	viewModel.CopyToModel(node)
-	if err = ns.Update(node); response.HandleError(res, err) {
+	if err = ns.Update(node); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(node)
+	c.JSON(http.StatusOK, node)
 }
 
 func deleteNode(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
-	id, ok := validateId(c, res)
+	id, ok := validateId(c)
 	if !ok {
 		return
 	}
 
 	node, err := ns.Get(id)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	err = ns.Delete(node.ID)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(node)
+	c.Status(http.StatusNoContent)
 }
 
 func deployNode(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
-	id, ok := validateId(c, res)
+	id, ok := validateId(c)
 	if !ok {
 		return
 	}
 
 	node, err := ns.Get(id)
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	services.ValidateTokenLoaded()
 	file, err := ioutil.ReadFile(viper.GetString("token.public"))
-	if response.HandleError(res, err) {
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	data := &deployment{
+	data := &Deployment{
 		ClientId:     fmt.Sprintf(".node_%d", node.ID),
 		ClientSecret: node.Secret,
 		BaseUrl:      fmt.Sprintf("%s://%s", c.Request.URL.Scheme, c.Request.URL.Host),
 		PublicKey:    string(file),
 	}
 
-	res.Data(data)
+	c.JSON(http.StatusOK, data)
 }
 
-func validateId(c *gin.Context, response *response.Builder) (uint, bool) {
+func validateId(c *gin.Context) (uint, bool) {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)
 
-	if err != nil || id <= 0 {
-		response.Fail().Status(http.StatusBadRequest).Message("id must be a positive number")
+	if response.HandleError(c, err, http.StatusBadRequest) || id <= 0 {
+		response.HandleError(c, pufferpanel.ErrFieldTooSmall("id", 0), http.StatusBadRequest)
 		return 0, false
 	}
 
 	return uint(id), true
 }
 
-type deployment struct {
+type Deployment struct {
 	ClientId     string `json:"clientId"`
 	ClientSecret string `json:"clientSecret"`
 	BaseUrl      string `json:"baseUrl"`

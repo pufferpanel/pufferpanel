@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/middleware"
+	"github.com/pufferpanel/apufferi/v4/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 )
 

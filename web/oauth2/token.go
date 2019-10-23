@@ -5,11 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/v3"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -20,8 +21,6 @@ func registerTokens(g *gin.RouterGroup) {
 }
 
 func handleTokenRequest(c *gin.Context) {
-	response.From(c).Discard()
-
 	c.Header("Cache-Control", "no-store")
 	c.Header("Pragma", "no-cache")
 
@@ -32,13 +31,13 @@ func handleTokenRequest(c *gin.Context) {
 	var request oauth2TokenRequest
 	err := c.BindWith(&request, binding.FormMultipart)
 	if err != nil {
-		c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 		return
 	}
 
 	db, err := database.GetConnection()
 	if err != nil {
-		c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 		return
 	}
 
@@ -52,31 +51,31 @@ func handleTokenRequest(c *gin.Context) {
 					if err == nil {
 						err = errors.New("node id must be positive")
 					}
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client", ErrorDescription: err.Error()})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_client", ErrorDescription: err.Error()})
 					return
 				}
 				ns := &services.Node{DB: db}
 				node, err := ns.Get(uint(id))
 				if err == gorm.ErrRecordNotFound {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
 					return
 				} else if err != nil {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid request"})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid request"})
 					return
 				}
 
 				if node.Secret != request.ClientSecret {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client"})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_client"})
 					return
 				}
 				//at this point, we've validate it's a node, we can issue the token
 				ts, err := services.GenerateOAuthForNode(node.ID)
 				if err != nil {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 					return
 				}
 
-				c.JSON(200, &oauth2TokenResponse{
+				c.JSON(http.StatusOK, &oauth2TokenResponse{
 					AccessToken: ts,
 					TokenType:   "Bearer",
 					Scope:       string(scope.OAuth2Auth),
@@ -87,22 +86,22 @@ func handleTokenRequest(c *gin.Context) {
 				os := &services.OAuth2{DB: db}
 				client, err := os.Get(request.ClientId)
 				if err != nil {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 					return
 				}
 
 				if !client.ValidateSecret(request.ClientSecret) {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_client"})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_client"})
 					return
 				}
 
 				token, err := services.GenerateOAuthForClient(client)
 				if err != nil {
-					c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 					return
 				}
 
-				c.JSON(200, &oauth2TokenResponse{
+				c.JSON(http.StatusOK, &oauth2TokenResponse{
 					AccessToken: token,
 					TokenType:   "Bearer",
 					Scope:       string(scope.OAuth2Auth),
@@ -115,7 +114,7 @@ func handleTokenRequest(c *gin.Context) {
 			auth := strings.TrimSpace(c.GetHeader("Authorization"))
 			if auth == "" || !strings.HasPrefix(auth, "Bearer ") {
 				c.Header("WWW-Authenticate", "Bearer")
-				c.JSON(401, &oauth2TokenResponse{Error: "invalid_client"})
+				c.JSON(http.StatusUnauthorized, &oauth2TokenResponse{Error: "invalid_client"})
 				return
 			}
 
@@ -123,14 +122,14 @@ func handleTokenRequest(c *gin.Context) {
 			auth = strings.TrimPrefix(auth, "Bearer ")
 			token, err := services.ParseToken(auth)
 			if err != nil {
-				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
 
 			//validate token can auth on behalf of users
 			scopes := token.Claims.PanelClaims.Scopes[""]
 			if scopes == nil || len(scopes) == 0 || !apufferi.ContainsScope(scopes, scope.OAuth2Auth) {
-				c.JSON(400, &oauth2TokenResponse{Error: "unauthorized_client"})
+				c.JSON(http.StatusOK, &oauth2TokenResponse{Error: "unauthorized_client"})
 				return
 			}
 			us := &services.User{DB: db}
@@ -140,13 +139,13 @@ func handleTokenRequest(c *gin.Context) {
 			parts := strings.SplitN(request.Username, "|", 2)
 			user, err := us.GetByEmail(parts[0])
 			if err != nil {
-				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
 
 			server, err := ss.Get(parts[1])
 			if err != nil {
-				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
 
@@ -154,11 +153,11 @@ func handleTokenRequest(c *gin.Context) {
 			ps := &services.Permission{DB: db}
 			perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
 			if err != nil {
-				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
 			if perms.ID == 0 {
-				c.JSON(400, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
 
@@ -167,7 +166,7 @@ func handleTokenRequest(c *gin.Context) {
 
 			c.Header("Cache-Control", "no-store")
 			c.Header("Pragma", "no-cache")
-			c.JSON(200, &oauth2TokenResponse{
+			c.JSON(http.StatusOK, &oauth2TokenResponse{
 				AccessToken: jwtToken,
 				TokenType:   "Bearer",
 				//TODO: Follow OAuth2 more and give better scope information
@@ -175,7 +174,7 @@ func handleTokenRequest(c *gin.Context) {
 			})
 		}
 	default:
-		c.JSON(400, &oauth2TokenResponse{Error: "unsupported_grant_type"})
+		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "unsupported_grant_type"})
 	}
 }
 

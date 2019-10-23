@@ -16,8 +16,8 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3"
-	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/apufferi/v4"
+	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"

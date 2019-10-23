@@ -16,8 +16,8 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -45,17 +45,12 @@ func registerUsers(g *gin.RouterGroup) {
 
 func searchUsers(c *gin.Context) {
 	var err error
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	search := newUserSearch()
 	err = c.BindJSON(search)
-	if response.HandleError(res, err) {
-		return
-	}
-	if search.PageLimit <= 0 {
-		res.Fail().Status(http.StatusBadRequest).Message("page size must be a positive number")
+	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
@@ -63,53 +58,54 @@ func searchUsers(c *gin.Context) {
 		search.PageLimit = MaxPageSize
 	}
 
-	if search.Page <= 0 {
-		res.Fail().Status(http.StatusBadRequest).Message("page must be a positive number")
-		return
-	}
-
 	var results *models.Users
 	var total uint
-	if results, total, err = us.Search(search.Username, search.Email, uint(search.PageLimit), uint(search.Page)); response.HandleError(res, err) {
+	if results, total, err = us.Search(search.Username, search.Email, search.PageLimit, search.Page); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.PageInfo(uint(search.Page), uint(search.PageLimit), MaxPageSize, total).Data(models.FromUsers(results))
+	c.JSON(http.StatusOK, &UserSearchResponse{
+		Users: models.FromUsers(results),
+		Metadata: &response.Metadata{Paging: &response.Paging{
+			Page:    search.Page,
+			Size:    search.PageLimit,
+			MaxSize: MaxPageSize,
+			Total:   total,
+		}},
+	})
 }
 
 func createUser(c *gin.Context) {
 	var err error
-	res := response.Respond(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
-	if err = c.BindJSON(&viewModel); response.HandleError(res, err) {
+	if err = c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 	viewModel.Username = c.Param("username")
 
-	if err = viewModel.Valid(false); response.HandleError(res, err) {
+	if err = viewModel.Valid(false); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	if viewModel.Password == "" {
-		response.HandleError(res, pufferpanel.ErrFieldRequired("password"))
+		response.HandleError(c, pufferpanel.ErrFieldRequired("password"), http.StatusBadRequest)
 		return
 	}
 
 	user := &models.User{}
 	viewModel.CopyToModel(user)
 
-	if err = us.Create(user); response.HandleError(res, err) {
+	if err = us.Create(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	c.Status(http.StatusNoContent)
 }
 
 func getUser(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
@@ -117,31 +113,28 @@ func getUser(c *gin.Context) {
 
 	user, err := us.Get(username)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		c.AbortWithStatus(http.StatusNotFound)
 		return
-	} else if response.HandleError(res, err) {
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	c.JSON(http.StatusOK, models.FromUser(user))
 }
 
 func getSelf(c *gin.Context) {
-	res := response.From(c)
-
 	t, exist := c.Get("user")
 	user, ok := t.(*models.User)
 
 	if !exist || !ok {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	c.JSON(http.StatusOK, models.FromUser(user))
 }
 
 func updateSelf(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
@@ -149,72 +142,71 @@ func updateSelf(c *gin.Context) {
 	user, ok := t.(*models.User)
 
 	if !exist || !ok {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
 
 	var viewModel models.UserView
-	if err := c.BindJSON(&viewModel); response.HandleError(res, err) {
+	if err := c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	if err := viewModel.Valid(true); response.HandleError(res, err) {
+	if err := viewModel.Valid(true); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	if viewModel.Password == "" {
+		response.HandleError(c, pufferpanel.ErrFieldRequired("password"), http.StatusBadRequest)
 		return
 	}
 
 	if us.IsValidCredentials(user, viewModel.Password) {
-		response.HandleError(res, pufferpanel.ErrInvalidCredentials)
+		response.HandleError(c, pufferpanel.ErrInvalidCredentials, http.StatusInternalServerError)
 		return
 	}
 
 	viewModel.CopyToModel(user)
 
-	if err := us.Update(user); response.HandleError(res, err) {
+	if err := us.Update(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	c.Status(http.StatusNoContent)
 }
 
 func updateUser(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	username := c.Param("username")
 
 	var viewModel models.UserView
-	if err := c.BindJSON(&viewModel); response.HandleError(res, err) {
+	if err := c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	if err := viewModel.Valid(true); response.HandleError(res, err) {
+	if err := viewModel.Valid(true); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
 	user, err := us.Get(username)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		c.AbortWithStatus(http.StatusNotFound)
 		return
-	} else if response.HandleError(res, err) {
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	viewModel.CopyToModel(user)
 
-	if err = us.Update(user); response.HandleError(res, err) {
+	if err = us.Update(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	c.Status(http.StatusNoContent)
 }
 
 func deleteUser(c *gin.Context) {
-	res := response.From(c)
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
@@ -222,24 +214,29 @@ func deleteUser(c *gin.Context) {
 
 	user, err := us.Get(username)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
-		res.Fail().Status(http.StatusNotFound).Message("no user with username")
+		c.AbortWithStatus(http.StatusNotFound)
 		return
-	} else if response.HandleError(res, err) {
-		return
-	}
-
-	if err = us.Delete(user.Username); response.HandleError(res, err) {
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	res.Data(models.FromUser(user))
+	if err = us.Delete(user.Username); response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 type UserSearch struct {
 	Username  string `json:"username"`
 	Email     string `json:"email"`
-	PageLimit int    `json:"limit"`
-	Page      int    `json:"page"`
+	PageLimit uint   `json:"limit"`
+	Page      uint   `json:"page"`
+}
+
+type UserSearchResponse struct {
+	Users []*models.UserView `json:"users"`
+	*response.Metadata
 }
 
 func newUserSearch() *UserSearch {

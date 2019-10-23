@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"reflect"
 )
 

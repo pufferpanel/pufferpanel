@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/pufferpanel/apufferi/v3/logging"
+	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/services/impl"
 	"github.com/spf13/viper"

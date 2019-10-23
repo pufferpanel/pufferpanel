@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3/response"
+	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"net/http"
 )
 
 func HasTransaction(c *gin.Context) {
@@ -13,7 +14,7 @@ func HasTransaction(c *gin.Context) {
 		NeedsDatabase(c)
 		db = GetDatabase(c)
 		if db == nil {
-			response.HandleError(response.From(c), pufferpanel.ErrDatabaseNotAvailable)
+			response.HandleError(c, pufferpanel.ErrDatabaseNotAvailable, http.StatusInternalServerError)
 			return
 		}
 	}

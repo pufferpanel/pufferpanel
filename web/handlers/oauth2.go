@@ -2,14 +2,13 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v3"
-	"github.com/pufferpanel/apufferi/v3/logging"
-	"github.com/pufferpanel/apufferi/v3/response"
-	"github.com/pufferpanel/apufferi/v3/scope"
+	"github.com/pufferpanel/apufferi/v4"
+	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
-	webHttp "net/http"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -26,17 +25,17 @@ func HasOAuth2Token(c *gin.Context) {
 
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 {
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 	}
 
 	if parts[0] != "Bearer" || parts[1] == "" {
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 	}
 
 	token, err := services.ParseToken(parts[1])
 
 	if err != nil || !token.Valid {
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
@@ -46,26 +45,19 @@ func HasOAuth2Token(c *gin.Context) {
 
 func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		res := response.From(c)
-
 		db, err := database.GetConnection()
 
-		if response.HandleError(res, err) {
-			return
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 		}
 
 		token, ok := c.Get("token")
 		if !ok {
-			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
-			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
-			c.Abort()
+			response.HandleError(c, err, http.StatusInternalServerError)
 			return
 		}
 		jwtToken, ok := token.(*apufferi.Token)
 		if !ok {
-			res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
-			logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
-			c.Abort()
+			response.HandleError(c, err, http.StatusInternalServerError)
 			return
 		}
 
@@ -82,15 +74,13 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 		if requireServer {
 			server, err = ss.Get(i)
 			if err != nil {
-				res.Status(webHttp.StatusUnauthorized).Fail()
-				c.Abort()
+				c.AbortWithStatus(http.StatusUnauthorized)
 				return
 			}
 		}
 
 		if requireServer && (server == nil || server.Identifier == "") {
-			res.Status(webHttp.StatusUnauthorized).Fail()
-			c.Abort()
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		} else if requireServer {
 			serverId = server.Identifier
@@ -98,15 +88,13 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 
 		ui, err := strconv.Atoi(ti.Subject)
 		if err != nil {
-			res.Status(webHttp.StatusUnauthorized).Fail()
-			c.Abort()
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		user, err := us.GetById(uint(ui))
 		if err != nil {
-			res.Status(webHttp.StatusUnauthorized).Fail()
-			c.Abort()
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
@@ -133,20 +121,16 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 			} else {
 				perms, err = ps.GetForUserAndServer(user.ID, &serverId)
 			}
-			if err != nil {
-				res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
-				logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
-				c.Abort()
+
+			if response.HandleError(c, err, http.StatusInternalServerError) {
 				return
 			}
+
 			if apufferi.ContainsScope(perms.ToScopes(), requiredScope) {
 				allowed = true
 			} else {
 				perms, err = ps.GetForUserAndServer(user.ID, nil)
-				if err != nil {
-					res.Status(webHttp.StatusInternalServerError).Message("error validating credentials").Fail()
-					logging.Build(logging.ERROR).WithMessage("error validating credentials").WithError(err).Log()
-					c.Abort()
+				if response.HandleError(c, err, http.StatusInternalServerError) {
 					return
 				}
 				if apufferi.ContainsScope(perms.ToScopes(), scope.ServersAdmin) {
@@ -154,14 +138,12 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 				}
 			}
 		} else {
-			res.Status(webHttp.StatusForbidden).Fail()
-			c.Abort()
+			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
 		if !allowed {
-			res.Status(webHttp.StatusForbidden).Fail()
-			c.Abort()
+			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
 
