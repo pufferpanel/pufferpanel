@@ -47,6 +47,16 @@ func registerNodes(g *gin.RouterGroup) {
 	//g.Handle("OPTIONS", "/:id/reset", response.CreateOptions("POST"))
 }
 
+// @Summary Get nodes
+// @Description Gets all nodes registered to the panel
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.NodesView "Nodes"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /nodes [get]
 func getAllNodes(c *gin.Context) {
 	var err error
 	db := handlers.GetDatabase(c)
@@ -62,6 +72,16 @@ func getAllNodes(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+// @Summary Get node
+// @Description Gets information about a single node
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.NodeView "Nods"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
 	db := handlers.GetDatabase(c)
@@ -82,6 +102,17 @@ func getNode(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+// @Summary Create node
+// @Description Creates a node
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.NodeView "Node created"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Node Identifier"
+// @Router /nodes [post]
 func createNode(c *gin.Context) {
 	var err error
 	db := handlers.GetDatabase(c)
@@ -106,6 +137,17 @@ func createNode(c *gin.Context) {
 	c.JSON(http.StatusOK, create)
 }
 
+// @Summary Update node
+// @Description Updates a node with given information
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Node Id"
+// @Router /nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
 	db := handlers.GetDatabase(c)
@@ -135,9 +177,20 @@ func updateNode(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, node)
+	c.Status(http.StatusNoContent)
 }
 
+// @Summary Deletes a node
+// @Description Deletes the node
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Node Id"
+// @Router /nodes/{id} [delete]
 func deleteNode(c *gin.Context) {
 	var err error
 	db := handlers.GetDatabase(c)

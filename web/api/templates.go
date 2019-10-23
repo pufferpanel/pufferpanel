@@ -27,6 +27,16 @@ func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 }
 
+// @Summary Get templates
+// @Description Gets all templates registered
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Templates
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /templates [get]
 func getAllTemplates(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	ts := &services.Template{DB: db}

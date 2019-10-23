@@ -29,6 +29,8 @@ type NodeView struct {
 	SFTPPort    uint   `json:"sftpPort,omitempty"`
 }
 
+type NodesView []*NodeView
+
 func FromNode(n *Node) *NodeView {
 	return &NodeView{
 		Id:          n.ID,
@@ -41,14 +43,14 @@ func FromNode(n *Node) *NodeView {
 	}
 }
 
-func FromNodes(n *Nodes) []*NodeView {
-	result := make([]*NodeView, len(*n))
+func FromNodes(n *Nodes) *NodesView {
+	result := NodesView{}
 
 	for k, v := range *n {
 		result[k] = FromNode(v)
 	}
 
-	return result
+	return &result
 }
 
 func (n *NodeView) CopyToModel(newModel *Node) {

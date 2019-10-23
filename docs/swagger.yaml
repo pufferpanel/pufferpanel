@@ -1,3 +1,216 @@
+definitions:
+  apufferi.Error:
+    properties:
+      code:
+        type: string
+      metadata:
+        type: object
+      msg:
+        type: string
+    type: object
+  apufferi.Execution:
+    properties:
+      arguments:
+        items:
+          type: string
+        type: array
+      autorecover:
+        type: boolean
+      autorestart:
+        type: boolean
+      autostart:
+        type: boolean
+      disabled:
+        type: boolean
+      environmentVars:
+        type: object
+      post:
+        items:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: array
+      pre:
+        items:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: array
+      program:
+        type: string
+      stop:
+        type: string
+      stopCode:
+        type: integer
+    type: object
+  apufferi.TypeWithMetadata:
+    properties:
+      metadata:
+        type: object
+      type:
+        type: string
+    type: object
+  apufferi.Variable:
+    properties:
+      desc:
+        type: string
+      display:
+        type: string
+      internal:
+        type: boolean
+      options:
+        items:
+          $ref: '#/definitions/apufferi.VariableOption'
+        type: array
+      required:
+        type: boolean
+      type:
+        type: string
+      userEdit:
+        type: boolean
+      value:
+        type: object
+    type: object
+  apufferi.VariableOption:
+    properties:
+      display:
+        type: string
+      value:
+        type: string
+    type: object
+  apufferi.Variables:
+    additionalProperties:
+      properties:
+        desc:
+          type: string
+        display:
+          type: string
+        internal:
+          type: boolean
+        options:
+          items:
+            $ref: '#/definitions/apufferi.VariableOption'
+          type: array
+        required:
+          type: boolean
+        type:
+          type: string
+        userEdit:
+          type: boolean
+        value:
+          type: object
+      type: object
+    type: object
+  models.NodeView:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      privateHost:
+        type: string
+      privatePort:
+        type: integer
+      publicHost:
+        type: string
+      publicPort:
+        type: integer
+      sftpPort:
+        type: integer
+    type: object
+  models.NodesView:
+    items:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        privateHost:
+          type: string
+        privatePort:
+          type: integer
+        publicHost:
+          type: string
+        publicPort:
+          type: integer
+        sftpPort:
+          type: integer
+      type: object
+    type: array
+  models.Template:
+    properties:
+      data:
+        $ref: '#/definitions/apufferi.Variables'
+        type: object
+      display:
+        type: string
+      environment:
+        $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: object
+      id:
+        type: string
+      install:
+        items:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: array
+      name:
+        type: string
+      readme:
+        type: string
+      run:
+        $ref: '#/definitions/apufferi.Execution'
+        type: object
+      supportedEnvironments:
+        items:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: array
+      type:
+        type: string
+      uninstall:
+        items:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+        type: array
+    type: object
+  models.Templates:
+    items:
+      properties:
+        data:
+          $ref: '#/definitions/apufferi.Variables'
+          type: object
+        display:
+          type: string
+        environment:
+          $ref: '#/definitions/apufferi.TypeWithMetadata'
+          type: object
+        id:
+          type: string
+        install:
+          items:
+            $ref: '#/definitions/apufferi.TypeWithMetadata'
+          type: array
+        name:
+          type: string
+        readme:
+          type: string
+        run:
+          $ref: '#/definitions/apufferi.Execution'
+          type: object
+        supportedEnvironments:
+          items:
+            $ref: '#/definitions/apufferi.TypeWithMetadata'
+          type: array
+        type:
+          type: string
+        uninstall:
+          items:
+            $ref: '#/definitions/apufferi.TypeWithMetadata'
+          type: array
+      type: object
+    type: array
+  response.Empty:
+    type: object
+  response.Error:
+    properties:
+      error:
+        $ref: '#/definitions/apufferi.Error'
+        type: object
+    type: object
 info:
   contact:
     name: PufferPanel
@@ -8,5 +221,194 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: PufferPanel API
   version: "2.0"
-paths: {}
+paths:
+  /nodes:
+    get:
+      consumes:
+      - application/json
+      description: Gets all nodes registered to the panel
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Nodes
+          schema:
+            $ref: '#/definitions/models.NodesView'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Get nodes
+    post:
+      consumes:
+      - application/json
+      description: Creates a node
+      parameters:
+      - description: Node Identifier
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Node created
+          schema:
+            $ref: '#/definitions/models.NodeView'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Create node
+  /nodes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the node
+      parameters:
+      - description: Node Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/response.Empty'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Deletes a node
+    get:
+      consumes:
+      - application/json
+      description: Gets information about a single node
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Nods
+          schema:
+            $ref: '#/definitions/models.NodeView'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Get node
+    put:
+      consumes:
+      - application/json
+      description: Updates a node with given information
+      parameters:
+      - description: Node Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/response.Empty'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Update node
+  /templates:
+    get:
+      consumes:
+      - application/json
+      description: Gets all templates registered
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Templates'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Get templates
 swagger: "2.0"
