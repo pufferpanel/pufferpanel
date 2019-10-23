@@ -1,0 +1,17 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "PufferPanel web interface",
+        "title": "PufferPanel API",
+        "contact": {
+            "name": "PufferPanel",
+            "url": "https://pufferpanel.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "2.0"
+    },
+    "paths": {}
+}

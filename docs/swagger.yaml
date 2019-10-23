@@ -1,0 +1,12 @@
+info:
+  contact:
+    name: PufferPanel
+    url: https://pufferpanel.com
+  description: PufferPanel web interface
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: PufferPanel API
+  version: "2.0"
+paths: {}
+swagger: "2.0"
