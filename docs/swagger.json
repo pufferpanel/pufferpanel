@@ -373,84 +373,6 @@
                 }
             }
         },
-        "apufferi.Variable": {
-            "type": "object",
-            "properties": {
-                "desc": {
-                    "type": "string"
-                },
-                "display": {
-                    "type": "string"
-                },
-                "internal": {
-                    "type": "boolean"
-                },
-                "options": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/apufferi.VariableOption"
-                    }
-                },
-                "required": {
-                    "type": "boolean"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "userEdit": {
-                    "type": "boolean"
-                },
-                "value": {
-                    "type": "object"
-                }
-            }
-        },
-        "apufferi.VariableOption": {
-            "type": "object",
-            "properties": {
-                "display": {
-                    "type": "string"
-                },
-                "value": {
-                    "type": "string"
-                }
-            }
-        },
-        "apufferi.Variables": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "object",
-                "properties": {
-                    "desc": {
-                        "type": "string"
-                    },
-                    "display": {
-                        "type": "string"
-                    },
-                    "internal": {
-                        "type": "boolean"
-                    },
-                    "options": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/definitions/apufferi.VariableOption"
-                        }
-                    },
-                    "required": {
-                        "type": "boolean"
-                    },
-                    "type": {
-                        "type": "string"
-                    },
-                    "userEdit": {
-                        "type": "boolean"
-                    },
-                    "value": {
-                        "type": "object"
-                    }
-                }
-            }
-        },
         "models.NodeView": {
             "type": "object",
             "properties": {
@@ -510,8 +432,7 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "object",
-                    "$ref": "#/definitions/apufferi.Variables"
+                    "type": "object"
                 },
                 "display": {
                     "type": "string"
@@ -562,8 +483,7 @@
                 "type": "object",
                 "properties": {
                     "data": {
-                        "type": "object",
-                        "$ref": "#/definitions/apufferi.Variables"
+                        "type": "object"
                     },
                     "display": {
                         "type": "string"

@@ -46,57 +46,6 @@ definitions:
       type:
         type: string
     type: object
-  apufferi.Variable:
-    properties:
-      desc:
-        type: string
-      display:
-        type: string
-      internal:
-        type: boolean
-      options:
-        items:
-          $ref: '#/definitions/apufferi.VariableOption'
-        type: array
-      required:
-        type: boolean
-      type:
-        type: string
-      userEdit:
-        type: boolean
-      value:
-        type: object
-    type: object
-  apufferi.VariableOption:
-    properties:
-      display:
-        type: string
-      value:
-        type: string
-    type: object
-  apufferi.Variables:
-    additionalProperties:
-      properties:
-        desc:
-          type: string
-        display:
-          type: string
-        internal:
-          type: boolean
-        options:
-          items:
-            $ref: '#/definitions/apufferi.VariableOption'
-          type: array
-        required:
-          type: boolean
-        type:
-          type: string
-        userEdit:
-          type: boolean
-        value:
-          type: object
-      type: object
-    type: object
   models.NodeView:
     properties:
       id:
@@ -136,7 +85,6 @@ definitions:
   models.Template:
     properties:
       data:
-        $ref: '#/definitions/apufferi.Variables'
         type: object
       display:
         type: string
@@ -171,7 +119,6 @@ definitions:
     items:
       properties:
         data:
-          $ref: '#/definitions/apufferi.Variables'
           type: object
         display:
           type: string
