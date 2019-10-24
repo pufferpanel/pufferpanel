@@ -11,7 +11,8 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
+	"strings"
 )
 
 var AddCmd = &cobra.Command{
@@ -32,54 +33,57 @@ func init() {
 func runAdd(cmd *cobra.Command, args []string) {
 	err := pufferpanel.LoadConfig()
 	if err != nil {
-		fmt.Printf("Error loading config: %s", err.Error())
+		fmt.Printf("Error loading config: %s\n", err.Error())
 		os.Exit(1)
 		return
 	}
 
-	template, err := openTemplate(args[0])
+	err = importTemplate(templateName, args[0], readme, nil)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err.Error())
+		os.Exit(1)
+		return
+	}
+}
+
+func importTemplate(name, templatePath, readmePath string, service *services.Template) error {
+	template, err := openTemplate(templatePath)
 
 	if err != nil {
-		fmt.Printf("Error parsing template: %s", err.Error())
-		os.Exit(1)
-		return
+		return err
 	}
 
-	if templateName == "" {
-		templateName = path.Base(args[0])
+	if name == "" {
+		name = strings.TrimSuffix(filepath.Base(templatePath), filepath.Ext(templatePath))
 	}
 
 	model := &models.Template{
 		Template: template,
-		Name:     templateName,
+		Name:     name,
 		Readme:   "",
 	}
 
-	if readme != "" {
-		data, err := openReadme(readme)
+	if readmePath != "" {
+		data, err := openReadme(readmePath)
 		if err != nil {
-			fmt.Printf("Error reading readme: %s", err.Error())
-			os.Exit(1)
-			return
+			fmt.Printf("No readme located at %s, will still import template\n", readmePath)
+			//return err
 		}
 		model.Readme = data
 	}
 
-	db, err := database.GetConnection()
-	if err != nil {
-		fmt.Printf("Error getting connection to database: %s", err.Error())
-		os.Exit(1)
-		return
+	if service == nil {
+		db, err := database.GetConnection()
+		if err != nil {
+			return err
+		}
+		defer apufferi.Close(db)
+
+		service = &services.Template{DB: db}
 	}
 
-	ts := &services.Template{DB: db}
-	err = ts.Save(model)
-	if err != nil {
-		fmt.Printf("Error saving template: %s", err.Error())
-		os.Exit(1)
-		return
-	}
-	fmt.Printf("Template added: %s", templateName)
+	err = service.Save(model)
+	return err
 }
 
 func openTemplate(path string) (t apufferi.Template, err error) {
