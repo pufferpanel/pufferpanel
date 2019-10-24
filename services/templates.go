@@ -30,3 +30,7 @@ func (t *Template) GetAll() (*models.Templates, error) {
 	}
 	return templates, err
 }
+
+func (t *Template) Save(template *models.Template) error {
+	return t.DB.Save(template).Error
+}
