@@ -16,15 +16,13 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v4/middleware"
-	_ "github.com/pufferpanel/pufferpanel/v2/docs"
 	"github.com/pufferpanel/pufferpanel/v2/web/api"
+	"github.com/pufferpanel/pufferpanel/v2/web/api/swagger"
 	"github.com/pufferpanel/pufferpanel/v2/web/auth"
 	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
 	"github.com/spf13/viper"
-	"github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"strings"
 )
@@ -42,7 +40,7 @@ func RegisterRoutes(e *gin.Engine) {
 	ClientPath = viper.GetString("web.files")
 	IndexFile = ClientPath + "/index.html"
 
-	e.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	swagger.Load(e)
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
