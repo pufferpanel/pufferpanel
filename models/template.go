@@ -23,8 +23,7 @@ import (
 type Template struct {
 	apufferi.Template `gorm:"-"`
 
-	ID       uint   `json:"-"`
-	Name     string `gorm:"type:varchar(100)" json:"name"`
+	Name     string `gorm:"type:varchar(100);PRIMARY_KEY" json:"name"`
 	RawValue string `gorm:"type:text" json:"-"`
 
 	Readme string `gorm:"type:text" json:"readme,omitempty"`
