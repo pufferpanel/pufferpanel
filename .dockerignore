@@ -1,17 +1,12 @@
 .idea/**
 .github/**
-azure-pipelines.yml
 .azure/*
-.gitignore
+.git/**
 *.md
-*.sys0
-LICENSE
-crowdin.yml
-
-vendor/**
+*.syso
 **/node_modules/**
 
-logs/**
-config.json
-*.exe
-*.pem
+.gitignore
+LICENSE
+azure-pipelines.yml
+crowdin.yml
