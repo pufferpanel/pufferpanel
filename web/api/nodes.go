@@ -40,7 +40,7 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.NodesEdit, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(scope.NodesDeploy, false), response.NotImplemented)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(scope.NodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 
 	//g.Handle("POST", "/:id/reset", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
@@ -238,7 +238,6 @@ func deployNode(c *gin.Context) {
 	data := &Deployment{
 		ClientId:     fmt.Sprintf(".node_%d", node.ID),
 		ClientSecret: node.Secret,
-		BaseUrl:      fmt.Sprintf("%s://%s", c.Request.URL.Scheme, c.Request.URL.Host),
 		PublicKey:    string(file),
 	}
 
@@ -261,6 +260,5 @@ func validateId(c *gin.Context) (uint, bool) {
 type Deployment struct {
 	ClientId     string `json:"clientId"`
 	ClientSecret string `json:"clientSecret"`
-	BaseUrl      string `json:"baseUrl"`
 	PublicKey    string `json:"publicKey"`
 }
