@@ -3,6 +3,8 @@
 ###
 FROM golang:alpine AS builder
 
+ARG tags=none
+
 ENV CGOENABLED=1
 
 RUN go version && \
@@ -14,15 +16,13 @@ RUN git clone https://github.com/pufferpanel/apufferi /build/apufferi
 
 WORKDIR /build/pufferpanel
 COPY . .
-RUN echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
-RUN go build -v -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd
+RUN echo replace github.com/pufferpanel/apufferi/v4 =\> ../apufferi >> go.mod
+RUN go build -v -tags $tags -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd
 
 WORKDIR /build/pufferpanel/client
 RUN npm install && \
     npm run dev-build && \
-    mkdir /go/bin/client && \
-    mkdir -p /pufferpanel/client/ && \
-    mv dist /pufferpanel/client/
+    mv dist /pufferpanel/www/
 
 ###
 # Generate final image
@@ -31,9 +31,9 @@ RUN npm install && \
 FROM alpine
 COPY --from=builder /pufferpanel /pufferpanel
 
-RUN echo "{}" > /pufferpanel/config.json
+ENV PATH=$PATH:/pufferpanel
 
 WORKDIR /pufferpanel
 
 EXPOSE 8080
-CMD ["/pufferpanel/pufferpanel run"]
+CMD ["/pufferpanel/pufferpanel", "run"]
