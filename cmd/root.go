@@ -29,7 +29,8 @@ func init() {
 	rootCmd.AddCommand(
 		runCmd,
 		versionCmd,
-		templatesCmd)
+		templatesCmd,
+		userCmd)
 }
 
 func Execute() {

@@ -3,6 +3,7 @@ module github.com/pufferpanel/pufferpanel/v2
 go 1.12
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.0.4
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/denisenkom/go-mssqldb v0.0.0-20190906004059-62cf760a6c9e // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -33,7 +34,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.3
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550

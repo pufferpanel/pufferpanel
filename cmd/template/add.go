@@ -1,4 +1,4 @@
-package templates
+package template
 
 import (
 	"encoding/json"
@@ -28,6 +28,8 @@ var readme string
 func init() {
 	AddCmd.Flags().StringVar(&templateName, "name", "", "process id of daemon")
 	AddCmd.Flags().StringVar(&readme, "readme", "", "path to readme file")
+	_ = AddCmd.MarkFlagFilename("name", "*.json")
+	_ = AddCmd.MarkFlagFilename("readme", "*.md")
 }
 
 func runAdd(cmd *cobra.Command, args []string) {
