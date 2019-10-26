@@ -64,7 +64,7 @@ func (model *UserView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("username")
 	}
 
-	if validate.Var(model.Username, "omitempty|printascii") != nil {
+	if validate.Var(model.Username, "omitempty,printascii") != nil {
 		return pufferpanel.ErrFieldMustBePrintable("username")
 	}
 
@@ -77,7 +77,7 @@ func (model *UserView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("email")
 	}
 
-	if validate.Var(model.Email, "omitempty|email") != nil {
+	if validate.Var(model.Email, "omitempty,email") != nil {
 		return pufferpanel.ErrFieldNotEmail("email")
 	}
 

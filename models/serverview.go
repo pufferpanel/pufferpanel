@@ -21,12 +21,12 @@ import (
 type ServerView struct {
 	Identifier string           `json:"id,omitempty"`
 	Name       string           `json:"name,omitempty"`
-	NodeId     uint             `json:"nodeId,omitempty"`
+	NodeId     uint             `json:"nodeId,omitempty,string"`
 	Node       *NodeView        `json:"node,omitempty"`
 	Data       interface{}      `json:"data,omitempty"`
 	Users      []ServerUserView `json:"users,omitempty"`
 	IP         string           `json:"ip,omitempty"`
-	Port       uint16           `json:"port,omitempty"`
+	Port       uint16           `json:"port,omitempty,string"`
 	Type       string           `json:"type"`
 }
 
@@ -73,7 +73,7 @@ func (s *ServerView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("type")
 	}
 
-	if validate.Var(s.Name, "omitempty|printascii") != nil {
+	if validate.Var(s.Name, "omitempty,printascii") != nil {
 		return pufferpanel.ErrFieldMustBePrintable("name")
 	}
 
