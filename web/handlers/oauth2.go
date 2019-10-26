@@ -26,10 +26,12 @@ func HasOAuth2Token(c *gin.Context) {
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 {
 		c.AbortWithStatus(http.StatusForbidden)
+		return
 	}
 
 	if parts[0] != "Bearer" || parts[1] == "" {
 		c.AbortWithStatus(http.StatusForbidden)
+		return
 	}
 
 	token, err := services.ParseToken(parts[1])
