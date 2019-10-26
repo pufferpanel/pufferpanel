@@ -153,19 +153,16 @@ export default {
       this.loginDisabled = true
 
       this.axios.post(this.$route.path, {
-        data: {
-          email: this.email,
-          password: this.password
-        }
+        email: this.email,
+        password: this.password
       }).then(function (response) {
-        const responseData = response.data
-        if (responseData.success) {
-          Cookies.set('puffer_auth', responseData.data.session)
-          localStorage.setItem('admin', responseData.data.admin)
+        if (response.status >= 200 && response.status < 300) {
+          Cookies.set('puffer_auth', response.data.session)
+          localStorage.setItem('admin', response.data.admin)
           data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
-          data.errors.form = responseData.msg + ''
+          data.errors.form = response.data.msg + ''
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'

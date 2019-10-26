@@ -96,9 +96,9 @@ export default {
     }
   },
   mounted () {
+    this.pagination.page = 1
     this.loadData()
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
-    this.pagination.page = 1
   },
   beforeDestroy: function () {
     if (this.task != null) {
@@ -117,9 +117,8 @@ export default {
           limit: rowsPerPage
         }
       }).then(function (response) {
-        const responseData = response.data
-        for (const i in responseData.data) {
-          const server = responseData.data[i]
+        for (const i in response.data.servers) {
+          const server = response.data.servers[i]
 
           let serverInList = false
 
@@ -151,7 +150,7 @@ export default {
             })
           }
         }
-        const paging = responseData.metadata.paging
+        const paging = response.data.paging
         vue.totalServers = paging.total
         vue.pagination.pageCount = Math.ceil(paging.total / vue.pagination.rowsPerPage)
       }).catch(function (error) {

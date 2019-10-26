@@ -73,5 +73,6 @@
   "PublicPort": "Public Port",
   "PrivateHost": "Private Host",
   "PrivatePort": "Private Port",
-  "SftpPort": "SFTP Port"
+  "SftpPort": "SFTP Port",
+  "NodeDeploymentData": "View node deployment data"
 }

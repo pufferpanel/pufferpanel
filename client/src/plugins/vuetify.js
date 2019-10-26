@@ -15,7 +15,7 @@ const opts = {
         accent: '#65a5f8'
       },
       dark: {
-        primary: '#07a7e3',
+        primary: '#3b8db8',
         secondary: '#535353',
         tertiary: '#999',
         accent: '#65a5f8'

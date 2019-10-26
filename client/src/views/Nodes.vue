@@ -67,9 +67,8 @@ export default {
       ctx.loading = true
       ctx.nodes = []
       ctx.$http.get('/api/nodes').then(function (response) {
-        console.log('response', response)
-        if (response.data.success) {
-          response.data.data.forEach(function (node) {
+        if (response.status >= 200 && response.status < 300) {
+          response.data.forEach(function (node) {
             ctx.nodes.push(node)
           })
           ctx.loading = false

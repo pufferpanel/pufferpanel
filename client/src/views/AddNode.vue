@@ -51,8 +51,8 @@ export default {
   methods: {
     submit () {
       const ctx = this
-      ctx.$http.put(`/api/nodes`, node).then(function (response) {
-        if (response.data.success) ctx.$router.push({ name: 'Nodes' })
+      ctx.$http.post('/api/nodes', ctx.node).then(function (response) {
+        if (response.status >= 200 && response.status < 300) ctx.$router.push({ name: 'Nodes' })
       })
     }
   }

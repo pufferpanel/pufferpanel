@@ -111,7 +111,7 @@ export default {
     loadUsers () {
       const vue = this
       this.$http.get('/api/servers/' + this.$route.params.id + '/user').then(function (response) {
-        vue.users = response.data.data
+        vue.users = response.data
       })
     },
     updateUser (user) {
@@ -132,6 +132,7 @@ export default {
       }
     },
     deleteUser (username) {
+      const vue = this
       this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + username).then(function (response) {
         vue.loadUsers()
       })

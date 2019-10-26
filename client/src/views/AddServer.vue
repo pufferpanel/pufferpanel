@@ -345,9 +345,8 @@ export default {
       }]
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/api/templates').then(function (res) {
-        const response = res.data
-        if (response.success) {
+      this.$http.get('/api/templates').then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
           vue.templateData = response.data
           vue.templates = []
           for (const k in vue.templateData) {
@@ -367,12 +366,11 @@ export default {
     },
     getNodes () {
       const vue = this
-      this.$http.get('/api/nodes').then(function (res) {
-        const callResult = res.data
-        if (callResult.success) {
+      this.$http.get('/api/nodes').then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
           vue.nodes = []
-          for (let i = 0; i < callResult.data.length; i++) {
-            const node = callResult.data[i]
+          for (let i = 0; i < response.data.length; i++) {
+            const node = response.data[i]
             vue.nodes.push({
               value: node.id,
               text: node.name
@@ -397,11 +395,10 @@ export default {
       }, {
         cancelToken: this.userCancelSearch.token
       }).then(function (response) {
-        const msg = response.data
-        if (msg.success) {
+        if (response.status >= 200 && response.status < 300) {
           vue.users = []
-          for (let i = 0; i < Math.min(msg.data.length, 5); i++) {
-            const user = msg.data[i]
+          for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
+            const user = response.data.users[i]
             vue.users.push({
               value: user.username,
               text: user.username + ' <' + user.email + '>'
@@ -423,9 +420,8 @@ export default {
         metadata: this.environments[this.selectedEnvironment].metadata
       }
       this.$http.post('/api/servers', data).then(function (response) {
-        const msg = response.data
-        if (msg.success) {
-          vue.$router.push({ name: 'Server', params: { id: msg.data.id } })
+        if (response.status >= 200 && response.status < 300) {
+          vue.$router.push({ name: 'Server', params: { id: response.data.id } })
         }
       }).catch(function (response) {
         console.log(response)

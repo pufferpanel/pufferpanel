@@ -131,6 +131,7 @@ import validate from '@/utils/validate'
 export default {
   data () {
     return {
+      currentUsername: '',
       username: '',
       email: '',
       confirmPassword: '',
@@ -162,7 +163,8 @@ export default {
   mounted () {
     const vue = this
     this.$http.get('/api/users').then(function (data) {
-      const user = data.data.data
+      const user = data.data
+      vue.currentUsername = user.username
       vue.username = user.username
       vue.email = user.email
     })
@@ -170,13 +172,13 @@ export default {
   methods: {
     submitInfoChange () {
       const vue = this
-      this.$http.post('/api/users', {
+      this.$http.post(`/api/users/${this.currentUsername}`, {
         username: this.username,
         email: this.email,
         password: this.confirmPassword
       }).then(function (result) {
-        if (result.data.success) {
-          vue.successMsg = data.$t('common.InfoChanged')
+        if (result.status >= 200 && result.status < 300) {
+          vue.successMsg = vue.$t('common.InfoChanged')
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
@@ -184,7 +186,7 @@ export default {
           } else {
             msg = result.data.error.msg
           }
-          vue.errorMsg = data.$t(msg)
+          vue.errorMsg = vue.$t(msg)
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -196,17 +198,17 @@ export default {
           }
         }
 
-        vue.errorMsg = data.$t(msg)
+        vue.errorMsg = vue.$t(msg)
       })
     },
     submitPassChange () {
       const vue = this
-      this.$http.put('/api/users', {
+      this.$http.post(`/api/users/${this.currentUsername}`, {
         password: this.oldPassword,
         newPassword: this.newPassword
       }).then(function (result) {
-        if (result.data.success) {
-          vue.successMsg = data.$t('common.PasswordChanged')
+        if (result.status >= 200 && result.status < 300) {
+          vue.successMsg = vue.$t('common.PasswordChanged')
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
@@ -214,7 +216,7 @@ export default {
           } else {
             msg = result.data.error.msg
           }
-          vue.errorMsg = data.$t(msg)
+          vue.errorMsg = vue.$t(msg)
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -226,7 +228,7 @@ export default {
           }
         }
 
-        vue.errorMsg = data.$t(msg)
+        vue.errorMsg = vue.$t(msg)
       })
     }
   }

@@ -180,7 +180,7 @@ export default {
           username: this.username
         }
       }).then(function (response) {
-        if (response.data.success) {
+        if (response.status >= 200 && response.status < 300) {
           localStorage.setItem('registered', 'true')
           vue.$router.push({ name: 'Login' })
         } else {

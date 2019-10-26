@@ -115,7 +115,7 @@ export default {
     this.host = this.$attrs.server.node.publicHost + ':' + this.$attrs.server.node.sftpPort
     const vue = this
     this.$http.get('/api/users').then(function (data) {
-      const user = data.data.data
+      const user = data.data
       vue.username = user.email + '|' + vue.$attrs.server.id
     })
   },
