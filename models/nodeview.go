@@ -20,13 +20,13 @@ import (
 )
 
 type NodeView struct {
-	Id          uint   `json:"id,omitempty"`
+	Id          uint   `json:"id,omitempty,string"`
 	Name        string `json:"name,omitempty"`
 	PublicHost  string `json:"publicHost,omitempty"`
 	PrivateHost string `json:"privateHost,omitempty"`
-	PublicPort  uint   `json:"publicPort,omitempty"`
-	PrivatePort uint   `json:"privatePort,omitempty"`
-	SFTPPort    uint   `json:"sftpPort,omitempty"`
+	PublicPort  uint   `json:"publicPort,omitempty,string"`
+	PrivatePort uint   `json:"privatePort,omitempty,string"`
+	SFTPPort    uint   `json:"sftpPort,omitempty,string"`
 }
 
 type NodesView []*NodeView
@@ -86,7 +86,7 @@ func (n *NodeView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("name")
 	}
 
-	if validate.Var(n.Name, "optional|printascii") != nil {
+	if validate.Var(n.Name, "omitempty,printascii") != nil {
 		return pufferpanel.ErrFieldMustBePrintable("name")
 	}
 
@@ -99,7 +99,7 @@ func (n *NodeView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldMustBePrintable("publicHost")
 	}
 
-	if validate.Var(n.PublicHost, "optional|ip|fqdn") != nil {
+	if validate.Var(n.PublicHost, "omitempty,ip|fqdn") != nil {
 		return pufferpanel.ErrFieldIsInvalidHost("publicHost")
 	}
 
@@ -107,7 +107,7 @@ func (n *NodeView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldMustBePrintable("privateHost")
 	}
 
-	if validate.Var(n.PrivateHost, "optional|ip_addr|fqdn") != nil {
+	if validate.Var(n.PrivateHost, "omitempty,ip_addr|fqdn") != nil {
 		return pufferpanel.ErrFieldIsInvalidHost("privateHost")
 	}
 
