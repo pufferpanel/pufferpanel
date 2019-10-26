@@ -53,7 +53,7 @@ func RegisterRoutes(e *gin.Engine) {
 	e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
 	e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
 	//e.StaticFile("/", IndexFile)
-	e.NoRoute(handlers.AuthMiddleware, handle404)
+	e.NoRoute(/*handlers.AuthMiddleware,*/ handle404)
 }
 
 func handle404(c *gin.Context) {
