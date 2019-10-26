@@ -205,11 +205,6 @@ func createServer(c *gin.Context) {
 		return
 	}
 
-	name, err := getFromDataOrDefault(postBody.Variables, "name", postBody.Identifier)
-	if response.HandleError(c, err, http.StatusBadRequest) {
-		return
-	}
-
 	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -220,8 +215,12 @@ func createServer(c *gin.Context) {
 		return
 	}
 
+	if postBody.Name == "" {
+		postBody.Name = postBody.Identifier
+	}
+
 	server := &models.Server{
-		Name:       name.(string),
+		Name:       postBody.Name,
 		Identifier: postBody.Identifier,
 		NodeID:     node.ID,
 		IP:         ip.(string),
@@ -495,6 +494,7 @@ type serverCreation struct {
 
 	NodeId uint     `json:"node"`
 	Users  []string `json:"users"`
+	Name   string   `json:"name"`
 }
 
 func getFromData(variables map[string]apufferi.Variable, key string) interface{} {
