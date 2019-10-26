@@ -44,7 +44,7 @@ func FromNode(n *Node) *NodeView {
 }
 
 func FromNodes(n *Nodes) *NodesView {
-	result := NodesView{}
+	result := make(NodesView, len(*n))
 
 	for k, v := range *n {
 		result[k] = FromNode(v)
