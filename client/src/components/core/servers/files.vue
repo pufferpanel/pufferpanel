@@ -126,7 +126,6 @@
 
 <script>
 import filesize from 'filesize'
-import config from '../../../config'
 
 export default {
   props: {
@@ -264,7 +263,7 @@ export default {
       } else {
         path += '/' + item.name
       }
-      return config.baseUrl + '/daemon/server/' + this.$attrs.server.id + '/file' + path
+      return '/daemon/server/' + this.$attrs.server.id + '/file' + path
     },
     cancelFolderCreate () {
       this.createFolder = false

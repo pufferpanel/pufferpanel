@@ -18,8 +18,6 @@
 </template>
 
 <script>
-import config from '../config'
-
 export default {
   data () {
     return {
@@ -43,7 +41,7 @@ export default {
       this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(function (response) {
         vue.server = response.data.server
         vue.server.permissions = response.data.permissions
-        const url = config.websocketBaseUrl + `/daemon/server/${vue.server.id}/socket`
+        const url = `/daemon/server/${vue.server.id}/socket`
         vue.$connect(url)
         vue.statRequest = setInterval(vue.callStats, 3000)
       })
