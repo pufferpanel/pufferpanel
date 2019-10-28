@@ -262,7 +262,7 @@ func createServer(c *gin.Context) {
 	reader := newFakeReader(data)
 
 	//we need to get your new token
-	token, err := services.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
+	token, err := ps.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

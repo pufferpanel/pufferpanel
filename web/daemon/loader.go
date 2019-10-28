@@ -33,6 +33,7 @@ func proxyServerRequest(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
+	ps := &services.Permission{DB: db}
 
 	serverId := c.Param("id")
 	if serverId == "" {
@@ -54,7 +55,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := services.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &server.Identifier)
+		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &server.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -74,6 +75,7 @@ func proxyNodeRequest(c *gin.Context) {
 	path := c.Param("path")
 	db := handlers.GetDatabase(c)
 	ns := &services.Node{DB: db}
+	ps := &services.Permission{DB: db}
 
 	nodeId := c.Param("id")
 	if nodeId == "" {
@@ -95,7 +97,7 @@ func proxyNodeRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := services.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), nil)
+		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), nil)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}

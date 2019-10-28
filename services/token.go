@@ -12,7 +12,6 @@ import (
 	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/apufferi/v4/scope"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/spf13/viper"
 	"io"
@@ -77,13 +76,8 @@ func GenerateOAuthForNode(nodeId uint) (string, error) {
 	return Generate(claims)
 }
 
-func GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
-	db, err := database.GetConnection()
-	if err != nil {
-		return "", err
-	}
-	ps := &Permission{DB: db}
-
+func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
+	var err error
 	var permissions []*models.Permissions
 
 	if serverId == nil {
