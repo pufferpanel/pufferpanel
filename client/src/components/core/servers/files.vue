@@ -263,7 +263,7 @@ export default {
       } else {
         path += '/' + item.name
       }
-      return '/daemon/server/' + this.$attrs.server.id + '/file' + path
+      return '/daemon/server/' + this.server.id + '/file' + path
     },
     cancelFolderCreate () {
       this.createFolder = false
@@ -309,7 +309,7 @@ export default {
       const vue = this
       return this.$http({
         method: 'put',
-        url: '/daemon/server/' + this.$attrs.server.id + '/file' + path,
+        url: '/daemon/server/' + this.server.id + '/file' + path,
         data: item,
         onUploadProgress: function (event) {
           vue.uploadCurrent = event.loaded
