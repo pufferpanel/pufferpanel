@@ -30,6 +30,12 @@ const DefaultPageSize = 20
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func RegisterRoutes(rg *gin.RouterGroup) {
+
+	rg.Use(func(c *gin.Context) {
+		c.Header("Cache-Control", "no-store")
+		c.Next()
+	})
+
 	rg.Use(middleware.ResponseAndRecover)
 	rg.Use(handlers.NeedsDatabase)
 	registerNodes(rg.Group("/nodes"))
