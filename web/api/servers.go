@@ -492,7 +492,7 @@ func (fr *fakeReader) Close() error {
 type serverCreation struct {
 	apufferi.Server
 
-	NodeId uint     `json:"node"`
+	NodeId uint     `json:"node,string"`
 	Users  []string `json:"users"`
 	Name   string   `json:"name"`
 }
