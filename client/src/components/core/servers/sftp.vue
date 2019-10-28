@@ -32,18 +32,19 @@
             :value="host"
             readonly
           >
-          <v-chip
-            v-if="copiedHost"
-            color="success"
-            class="mx-2"
-            v-text="$t('common.Copied')"
-          />
           <v-btn
             icon
             @click="copyHost"
           >
             <v-icon>mdi-content-copy</v-icon>
           </v-btn>
+          <v-chip
+            v-if="copiedHost"
+            color="success"
+            class="mx-2"
+            v-text="$t('common.Copied')"
+          />
+	  {{ host }}
         </v-col>
       </v-row>
       <v-divider />
@@ -63,19 +64,21 @@
             ref="username"
             :value="username"
             readonly
+	    style=""
           >
-          <v-chip
-            v-if="copiedUsername"
-            color="success"
-            class="mx-2"
-            v-text="$t('common.Copied')"
-          />
           <v-btn
             icon
             @click="copyUsername"
           >
             <v-icon>mdi-content-copy</v-icon>
           </v-btn>
+          <v-chip
+            v-if="copiedUsername"
+            color="success"
+            class="mx-2"
+            v-text="$t('common.Copied')"
+          />
+	  {{ username }}
         </v-col>
       </v-row>
       <v-divider />
@@ -97,6 +100,12 @@
     </v-card-text>
   </v-card>
 </template>
+
+<style>
+input {
+  width: 0;
+}
+</style>
 
 <script>
 export default {
