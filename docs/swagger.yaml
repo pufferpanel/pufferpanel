@@ -41,8 +41,6 @@ definitions:
     type: object
   apufferi.TypeWithMetadata:
     properties:
-      metadata:
-        type: object
       type:
         type: string
     type: object
