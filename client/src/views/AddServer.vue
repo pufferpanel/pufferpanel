@@ -313,6 +313,12 @@ export default {
       } else {
         this.selectedEnvironment = null
       }
+
+      for (const key in this.formData) {
+        if (this.formData[key].type === 'boolean') {
+          this.formData[key].value = this.formData[key].value === 'true'
+        }
+      }
     },
     userInput: function (newVal) {
       if (!newVal || newVal === '') {
