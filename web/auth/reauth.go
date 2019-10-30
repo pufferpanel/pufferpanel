@@ -27,7 +27,7 @@ func Reauth(c *gin.Context) {
 
 	data := &LoginResponse{}
 	data.Session = session
-	data.Admin = perms.Admin
+	data.Scopes = perms.ToScopes()
 
 	c.JSON(http.StatusOK, data)
 }
