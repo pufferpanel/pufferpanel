@@ -45,3 +45,5 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.29.1
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
+
+replace github.com/pufferpanel/apufferi/v4 => ../apufferi

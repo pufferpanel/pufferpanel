@@ -1,45 +1,72 @@
 package services
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/services/impl"
 	"github.com/spf13/viper"
 	"html/template"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
 
 type EmailService interface {
-	SendEmail(to string, subject string, template string, data interface{}, async bool) error
+	SendEmail(to string, template string, data interface{}, async bool) error
+}
+
+type emailTemplate struct {
+	Subject *template.Template
+	Body    *template.Template
+}
+
+type emailDeclaration struct {
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 }
 
 var globalEmailService *emailService
 
 type emailService struct {
-	templates map[string]*template.Template
+	templates map[string]*emailTemplate
 }
 
 func LoadEmailService() {
-	globalEmailService = &emailService{templates: make(map[string]*template.Template)}
+	globalEmailService = &emailService{templates: make(map[string]*emailTemplate)}
 
-	//validate all emails in the email folder are valid and register templates
-	prefix := path.Join("assets", "email") + string(os.PathSeparator)
-	templates, err := filepath.Glob(prefix + "*.html")
+	jsonPath := viper.GetString("email.templates")
+	parentDir := filepath.Dir(jsonPath)
+	emailDefinition, err := os.Open(viper.GetString("email.templates"))
+	if err != nil {
+		panic(err.Error())
+	}
+	defer apufferi.Close(emailDefinition)
+
+	var mapping map[string]*emailDeclaration
+	err = json.NewDecoder(emailDefinition).Decode(&mapping)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	for _, tmpl := range templates {
-		templateName := strings.TrimSuffix(strings.TrimPrefix(tmpl, prefix), ".html")
-		renderedTemplate, err := template.New(templateName).ParseFiles(tmpl)
+	for templateName, data := range mapping {
+		subjectTemplate, err := template.New(templateName).Parse(data.Subject)
 		if err != nil {
-			logging.Error("Error processing email template %s: %s", tmpl, err.Error())
-			continue
+			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
 		}
-		globalEmailService.templates[templateName] = renderedTemplate
+
+		renderedTemplate, err := template.New(templateName).ParseFiles(filepath.Join(parentDir, data.Body))
+		if err != nil {
+			panic(errors.New(fmt.Sprintf("Error processing email template body %s: %s", templateName, err.Error())))
+		}
+
+		globalEmailService.templates[templateName] = &emailTemplate{
+			Subject: subjectTemplate,
+			Body:    renderedTemplate,
+		}
 	}
 
 	for k := range globalEmailService.templates {
@@ -51,16 +78,21 @@ func GetEmailService() EmailService {
 	return globalEmailService
 }
 
-func (es *emailService) SendEmail(to, subject, template string, data interface{}, async bool) (err error) {
+func (es *emailService) SendEmail(to, template string, data interface{}, async bool) (err error) {
 	tmpl := es.templates[template]
 
 	if tmpl == nil {
 		return pufferpanel.ErrNoTemplate(template)
 	}
 
-	builder := &strings.Builder{}
+	subjectBuilder := &strings.Builder{}
+	err = tmpl.Subject.Execute(subjectBuilder, data)
+	if err != nil {
+		return err
+	}
 
-	err = tmpl.Execute(builder, data)
+	bodyBuilder := &strings.Builder{}
+	err = tmpl.Body.Execute(bodyBuilder, data)
 	if err != nil {
 		return err
 	}
@@ -72,7 +104,7 @@ func (es *emailService) SendEmail(to, subject, template string, data interface{}
 
 	switch provider {
 	case "mailgun":
-		return impl.SendEmailViaMailgun(to, subject, builder.String(), async)
+		return impl.SendEmailViaMailgun(to, subjectBuilder.String(), bodyBuilder.String(), async)
 	default:
 		return pufferpanel.ErrServiceInvalidProvider("email", provider)
 	}

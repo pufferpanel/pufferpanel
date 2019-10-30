@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/apufferi/v4/scope"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"net/http"
@@ -32,7 +33,7 @@ func LoginPost(c *gin.Context) {
 
 	data := &LoginResponse{}
 	data.Session = session
-	data.Admin = perms.Admin
+	data.Scopes = perms.ToScopes()
 
 	c.JSON(http.StatusOK, data)
 }
@@ -44,5 +45,5 @@ type LoginRequestData struct {
 
 type LoginResponse struct {
 	Session string `json:"session"`
-	Admin   bool   `json:"admin,omitempty"`
+	Scopes   []scope.Scope   `json:"scopes,omitempty"`
 }

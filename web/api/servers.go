@@ -28,7 +28,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"github.com/satori/go.uuid"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -259,7 +259,7 @@ func createServer(c *gin.Context) {
 	}
 
 	data, _ := json.Marshal(postBody.Server)
-	reader := newFakeReader(data)
+	reader := ioutil.NopCloser(bytes.NewReader(data))
 
 	//we need to get your new token
 	token, err := ps.GenerateOAuthForUser(c.MustGet("user").(*models.User).ID, nil)
@@ -389,7 +389,6 @@ func editServerUser(c *gin.Context) {
 	perms.Email = email
 
 	t, exist := c.Get("server")
-
 	if !exist {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -402,8 +401,24 @@ func editServerUser(c *gin.Context) {
 	}
 
 	user, err := us.GetByEmail(email)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
+	} else if gorm.IsRecordNotFoundError(err) {
+		//we need to create the user here, since it's a new email we've not seen
+
+		user = &models.User{
+			Username: uuid.NewV4().String(),
+			Email:    email,
+		}
+		err = user.SetPassword(uuid.NewV4().String())
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+
+		err = us.Create(user)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 	}
 
 	existing, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
@@ -419,6 +434,14 @@ func editServerUser(c *gin.Context) {
 
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
+	}
+
+	//now we can send emails to the people
+	es := services.GetEmailService()
+	err = es.SendEmail(user.Email, "NewSubuser", nil, true)
+	if err != nil {
+		//since we don't want to tell the user it failed, we'll log and move on
+		logging.Exception("Error sending email", err)
 	}
 
 	c.Status(http.StatusNoContent)
@@ -470,23 +493,6 @@ func removeServerUser(c *gin.Context) {
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
-}
-
-//This class exists
-type fakeReader struct {
-	reader io.Reader
-}
-
-func newFakeReader(data []byte) *fakeReader {
-	return &fakeReader{reader: bytes.NewReader(data)}
-}
-
-func (fr *fakeReader) Read(p []byte) (int, error) {
-	return fr.reader.Read(p)
-}
-
-func (fr *fakeReader) Close() error {
-	return nil
 }
 
 type serverCreation struct {
