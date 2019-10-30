@@ -1,0 +1,6 @@
+{
+  "accountCreation": {
+    "subject": "Your account has been created",
+    "body": "account-creation.html"
+  }
+}

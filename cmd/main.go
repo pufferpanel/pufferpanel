@@ -14,11 +14,23 @@
 package main
 
 import (
+	"fmt"
 	"github.com/pufferpanel/apufferi/v4/logging"
+	"os"
+	"runtime/debug"
 )
 
 func main() {
 	defer logging.Close()
+
+	defer func() {
+		if err := recover(); err != nil {
+			stacktrace := debug.Stack()
+			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s\n", err))
+			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s\n", stacktrace))
+			os.Exit(2)
+		}
+	}()
 
 	Execute()
 }

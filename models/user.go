@@ -9,9 +9,9 @@ import (
 
 type User struct {
 	ID             uint   `json:"-"`
-	Username       string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-" validate:"required,printascii"`
-	Email          string `gorm:"UNIQUE_INDEX;NOT NULL" json:"-" validate:"required,email"`
-	HashedPassword string `gorm:"column:password;NOT NULL" json:"-" validate:"required"`
+	Username       string `gorm:"UNIQUE_INDEX;NOT NULL;size:100" json:"-" validate:"required,printascii,max=100,min=5"`
+	Email          string `gorm:"UNIQUE_INDEX;NOT NULL;size:255" json:"-" validate:"required,email,max=255"`
+	HashedPassword string `gorm:"column:password;NOT NULL;size:200" json:"-" validate:"required,max=200"`
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`

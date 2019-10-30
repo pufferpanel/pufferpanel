@@ -23,6 +23,9 @@ func init() {
 	viper.SetDefault("web.socket", "/var/run/pufferpanel.sock")
 	viper.SetDefault("web.files", "www")
 
+	viper.SetDefault("email.templates", "email/emails.json")
+	viper.SetDefault("email.provider", "")
+
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 }
 
