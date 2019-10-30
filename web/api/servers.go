@@ -43,9 +43,9 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(scope.ServersEdit, true), handlers.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(scope.ServersDelete, true), handlers.HasTransaction, deleteServer)
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(scope.ServersEditUsers, true), getServerUsers)
-	g.Handle("GET", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:username", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, removeServerUser)
+	g.Handle("GET", "/:serverId/user/:email", handlers.OAuth2Handler(scope.ServersEditUsers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:email", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(scope.ServersEditUsers, true), handlers.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
@@ -376,8 +376,8 @@ func editServerUser(c *gin.Context) {
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
-	username := c.Param("username")
-	if username == "" {
+	email := c.Param("email")
+	if email == "" {
 		return
 	}
 
@@ -386,7 +386,7 @@ func editServerUser(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	perms.Username = username
+	perms.Email = email
 
 	t, exist := c.Get("server")
 
@@ -401,7 +401,7 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
-	user, err := us.Get(username)
+	user, err := us.GetByEmail(email)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -430,8 +430,8 @@ func removeServerUser(c *gin.Context) {
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
-	username := c.Param("username")
-	if username == "" {
+	email := c.Param("email")
+	if email == "" {
 		return
 	}
 
@@ -448,7 +448,7 @@ func removeServerUser(c *gin.Context) {
 		return
 	}
 
-	user, err := us.Get(username)
+	user, err := us.GetByEmail(email)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
