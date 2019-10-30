@@ -1,7 +1,8 @@
 package models
 
 type PermissionView struct {
-	Username         string `json:"username,omitempty"`
+	//Username         string `json:"username,omitempty"`
+	Email            string `json:"email,omitempty"`
 	ServerIdentifier string `json:"serverIdentifier,omitempty"`
 
 	EditServerData    bool `json:"editServerData,omitempty,string"`
@@ -32,7 +33,8 @@ type PermissionView struct {
 
 func FromPermission(p *Permissions) *PermissionView {
 	model := &PermissionView{
-		Username: p.User.Username,
+		//Username: p.User.Username,
+		Email: p.User.Email,
 	}
 
 	//only show server specific perms
