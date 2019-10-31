@@ -46,6 +46,16 @@
       </div>
     </v-card-title>
     <v-card-text>
+      <v-dialog v-model="confirmDeleteOpen" max-width="600">
+        <v-card>
+          <v-card-title v-text="$t('files.ConfirmDelete')" />
+          <v-card-actions>
+	    <v-spacer />
+            <v-btn v-text="$t('common.Cancel')" @click="deleteCancelled()" color="error" />
+            <v-btn v-text="$t('common.Confirm')" @click="deleteConfirmed()" color="success" />
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-data-table
         :items-per-page="-1"
         :headers="headers"
@@ -85,7 +95,7 @@
               <v-btn
                 icon
                 v-on="on"
-                @click="deleteButton(item)"
+                @click.stop="deleteRequest(item)"
               >
                 <v-icon>mdi-trash-can</v-icon>
               </v-btn>
@@ -167,7 +177,9 @@ export default {
       uploadFiles: [],
       uploading: false,
       uploadCurrent: 0,
-      uploadSize: 0
+      uploadSize: 0,
+      toDelete: null,
+      confirmDeleteOpen: false
     }
   },
   mounted () {
@@ -231,22 +243,26 @@ export default {
         this.$socket.sendObj({ type: 'file', action: 'get', path: this.currentPath })
       }
     },
-    deleteButton (item) {
-      this.$bvModal.msgBoxConfirm(this.$t('files.ConfirmDelete'))
-        .then(value => {
-          if (!value) {
-            return
-          }
-          this.toEdit = false
-          let path = ''
-          if (this.currentPath === '/') {
-            path = '/' + item.name
-          } else {
-            path = this.currentPath + '/' + item.name
-          }
-          this.loading = true
-          this.$socket.sendObj({ type: 'file', action: 'delete', path: path })
-        })
+    deleteRequest (item) {
+      this.toDelete = item
+      this.confirmDeleteOpen = true
+    },
+    deleteConfirmed () {
+      this.toEdit = false
+      let path = ''
+      if (this.currentPath === '/') {
+        path = '/' + this.toDelete.name
+      } else {
+        path = this.currentPath + '/' + this.toDelete.name
+      }
+      this.loading = true
+      this.$socket.sendObj({ type: 'file', action: 'delete', path: path })
+      this.toDelete = null
+      this.confirmDeleteOpen = false
+    },
+    deleteCancelled () {
+      this.toDelete = null
+      this.confirmDeleteOpen = null
     },
 
     // utility

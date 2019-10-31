@@ -74,5 +74,6 @@
   "PrivateHost": "Private Host",
   "PrivatePort": "Private Port",
   "SftpPort": "SFTP Port",
-  "NodeDeploymentData": "View node deployment data"
+  "NodeDeploymentData": "View node deployment data",
+  "Confirm": "Confirm"
 }
