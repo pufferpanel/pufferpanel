@@ -99,12 +99,14 @@ export default {
   },
   mounted () {
     if (hasAuth()) this.$router.push({ name: 'Servers' })
-    if (getRegistered()) this.$notify(this.$t('common.RegisterSuccess'), 'success')
+    if (getRegistered()) this.$toast.success(this.$t('common.RegisterSuccess'))
     const reauthReason = getReauthReason()
-    if (reauthReason === 'session_timed_out') this.$notify(this.$t('errors.ErrSessionTimedOut'), 'error')
+    if (reauthReason === 'session_timed_out') this.$toast.error(this.$t('errors.ErrSessionTimedOut'))
   },
   methods: {
     submit () {
+      this.$toast.clearQueue()
+      if (this.$toast.getCmp()) this.$toast.getCmp().close()
       const data = this
       data.errors.form = ''
       data.errors.email = ''

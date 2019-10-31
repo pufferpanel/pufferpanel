@@ -140,6 +140,8 @@ export default {
   methods: {
     // real methods
     submit: function () {
+      this.$toast.clearQueue()
+      if (this.$toast.getCmp()) this.$toast.getCmp().close()
       this.errors.username = ''
       this.errors.email = ''
       this.errors.password = ''

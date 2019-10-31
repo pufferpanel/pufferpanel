@@ -29,6 +29,6 @@ const opts = {
 }
 
 Vue.use(Vuetify, opts)
-Vue.use(VuetifyToast, { x: 'center', y: 'top', timeout: 6000, queueable: true })
+Vue.use(VuetifyToast, { x: 'center', y: 'top', timeout: 2500, queueable: true })
 
 export default new Vuetify(opts)
