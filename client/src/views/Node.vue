@@ -1,8 +1,6 @@
 <template>
   <v-row>
     <v-col cols="12" md="6" offset-md="3">
-      <v-alert outlined v-if="updateSuccess === true" type="success" v-text="$t('common.NodeUpdateSuccess')" />
-      <v-alert outlined v-if="updateSuccess === false" type="error" v-text="$t('common.NodeUpdateError')" />
       <v-card>
         <v-card-title v-text="$t('common.EditNode')" />
         <v-card-text class="mt-6">
@@ -54,7 +52,6 @@ export default {
   data () {
     return {
       loading: true,
-      updateSuccess: null,
       node: {}
     }
   },
@@ -69,20 +66,42 @@ export default {
           ctx.node = response.data
           ctx.loading = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        ctx.$notify(ctx.$t(msg), 'error')
       })
     },
     updateNode () {
       const ctx = this
       ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, ctx.node).then(function (response) {
-        ctx.updateSuccess = true
+        ctx.$notify(ctx.$t('common.NodeUpdateSuccess'), 'success')
       }).catch(function () {
-        ctx.updateSuccess = false
+        ctx.$notify(ctx.$t('common.NodeUpdateError'), 'error')
       })
     },
     deleteNode () {
       const ctx = this
       ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(function (response) {
         if (response.status >= 200 && response.status < 300) ctx.$router.push({ name: 'Nodes' })
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        ctx.$notify(ctx.$t(msg), 'error')
       })
     }
   }

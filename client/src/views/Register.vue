@@ -12,15 +12,6 @@
         <p v-text="$t('common.Register')" />
       </v-card-title>
       <v-card-text>
-        <v-alert
-          v-if="errors.form"
-          dense
-          outlined
-          dismissible
-          type="error"
-        >
-          {{ errors.form }}
-        </v-alert>
         <v-row>
           <v-col cols="12">
             <v-form>
@@ -110,7 +101,6 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       errors: {
-        form: '',
         username: '',
         email: '',
         password: ''
@@ -150,7 +140,6 @@ export default {
   methods: {
     // real methods
     submit: function () {
-      this.errors.form = ''
       this.errors.username = ''
       this.errors.email = ''
       this.errors.password = ''
@@ -184,7 +173,7 @@ export default {
           localStorage.setItem('registered', 'true')
           vue.$router.push({ name: 'Login' })
         } else {
-          vue.errors.form = response.data.msg
+          vue.$notify(response.data.msg, 'error')
           vue.registerDisabled = false
         }
       }).catch(function (error) {
@@ -197,7 +186,7 @@ export default {
           }
         }
 
-        vue.errors.form = vue.$t(msg)
+        vue.$notify(vue.$t(msg), 'error')
         vue.registerDisabled = false
       })
     }

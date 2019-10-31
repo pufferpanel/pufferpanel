@@ -368,6 +368,17 @@ export default {
 
           vue.loadingTemplates = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$notify(vue.$t(msg), 'error')
       })
     },
     getNodes () {
@@ -389,6 +400,17 @@ export default {
 
           vue.loadingNodes = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$notify(vue.$t(msg), 'error')
       })
     },
     findUsers () {
@@ -413,6 +435,17 @@ export default {
         }
         vue.searchingUsers = false
         vue.users.sort()
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$notify(vue.$t(msg), 'error')
       })
     },
     submitCreate () {
@@ -429,8 +462,18 @@ export default {
         if (response.status >= 200 && response.status < 300) {
           vue.$router.push({ name: 'Server', params: { id: response.data.id } })
         }
-      }).catch(function (response) {
-        console.log(response)
+      }).catch(function (error) {
+        console.log(error)
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$notify(vue.$t(msg), 'error')
       })
     },
     selectUser (username) {

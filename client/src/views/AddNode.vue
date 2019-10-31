@@ -53,6 +53,17 @@ export default {
       const ctx = this
       ctx.$http.post('/api/nodes', ctx.node).then(function (response) {
         if (response.status >= 200 && response.status < 300) ctx.$router.push({ name: 'Nodes' })
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        ctx.$notify(ctx.$t(msg), 'error')
       })
     }
   }

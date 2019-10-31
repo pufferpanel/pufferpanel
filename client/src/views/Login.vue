@@ -12,36 +12,6 @@
         <p v-text="$t('common.Login')" />
       </v-card-title>
       <v-card-text>
-        <v-alert
-          v-if="registered"
-          dense
-          outlined
-          dismissible
-          type="success"
-        >
-          <span v-text="$t('common.RegisterSuccess')" />
-        </v-alert>
-        <v-alert
-          v-if="reauthReason"
-          dense
-          outlined
-          dismissible
-          type="error"
-        >
-          <span
-            v-if="reauthReason == 'session_timed_out'"
-            v-text="$t('errors.ErrSessionTimedOut')"
-          />
-        </v-alert>
-        <v-alert
-          v-if="errors.form"
-          dense
-          outlined
-          dismissible
-          type="error"
-        >
-          {{ errors.form }}
-        </v-alert>
         <v-row>
           <v-col cols="12">
             <v-form>
@@ -114,8 +84,7 @@ export default {
       password: '',
       errors: {
         email: '',
-        password: '',
-        form: ''
+        password: ''
       },
       loginDisabled: false,
       reauthReason: '',
@@ -130,8 +99,9 @@ export default {
   },
   mounted () {
     if (hasAuth()) this.$router.push({ name: 'Servers' })
-    this.reauthReason = getReauthReason()
-    this.registered = getRegistered()
+    if (getRegistered()) this.$notify(this.$t('common.RegisterSuccess'), 'success')
+    const reauthReason = getReauthReason()
+    if (reauthReason === 'session_timed_out') this.$notify(this.$t('errors.ErrSessionTimedOut'), 'error')
   },
   methods: {
     submit () {
@@ -162,7 +132,7 @@ export default {
           data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
-          data.errors.form = response.data.msg + ''
+          data.$notify(response.data.msg, 'error')
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -174,7 +144,7 @@ export default {
           }
         }
 
-        data.errors.form = data.$t(msg)
+        data.$notify(data.$t(msg), 'error')
       }).finally(function () {
         data.loginDisabled = false
       })

@@ -44,6 +44,17 @@ export default {
         const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/server/${vue.server.id}/socket`
         vue.$connect(url)
         vue.statRequest = setInterval(vue.callStats, 3000)
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$notify(vue.$t(msg), 'error')
       })
     },
     callStats () {

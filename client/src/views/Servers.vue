@@ -163,7 +163,7 @@ export default {
           }
         }
 
-        vue.error = vue.$t(msg)
+        vue.$notify(vue.$t(msg), 'error')
       }).then(function () {
         vue.loading = false
         vue.pollServerStatus()

@@ -6,6 +6,7 @@ import './components'
 import Vuetify from 'vuetify'
 // Plugins
 import './plugins'
+import Notify from './plugins/notify'
 // Application imports
 import App from './App'
 import i18n from '@/i18n'
@@ -14,6 +15,7 @@ import VueNativeSocket from 'vue-native-websocket'
 import vuetify from './plugins/vuetify'
 
 Vue.use(Vuetify)
+Vue.use(Notify)
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,
   reconnection: true,

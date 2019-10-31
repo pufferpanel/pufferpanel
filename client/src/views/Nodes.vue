@@ -73,6 +73,17 @@ export default {
           })
           ctx.loading = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        ctx.$notify(ctx.$t(msg), 'error')
       })
     },
     rowClicked (item) {
