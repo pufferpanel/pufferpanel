@@ -117,17 +117,10 @@
             />
           </div>
         </div>
-        <div v-else>
-          {{ cleanNotifications() }}
-          <v-snackbar v-if="notifications.length > 0" :value="true" top :timeout="0" :color="notifications[0].color">
-            {{ notifications[0].text }}
-            <v-btn icon @click="notifications[0].show = false"><v-icon>mdi-close</v-icon></v-btn>
-          </v-snackbar>
-          <router-view
-            @logged-in="loggedIn = true"
-            @notify="queueNotification"
-          />
-        </div>
+        <router-view
+          @logged-in="loggedIn = true"
+          v-else
+        />
       </v-container>
     </v-content>
   </v-app>
@@ -144,8 +137,7 @@ export default {
       appConfig: false,
       loggedIn: false,
       drawer: null,
-      minified: false,
-      notifications: []
+      minified: false
     }
   },
   created () {
@@ -160,16 +152,6 @@ export default {
     }
   },
   methods: {
-    cleanNotifications () {
-      for (const i in this.notifications) {
-        if (this.notifications[i].show === false) {
-          this.notifications.splice(i, 1)
-        }
-      }
-    },
-    queueNotification (item) {
-      this.notifications.push({ show: true, ...item })
-    },
     loadConfig () {
       const vue = this
       this.$http.get('/api/config').then(function (response) {

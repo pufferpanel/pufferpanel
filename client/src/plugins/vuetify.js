@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import VuetifyToast from 'vuetify-toast-snackbar'
 
 const opts = {
   theme: {
@@ -28,5 +29,6 @@ const opts = {
 }
 
 Vue.use(Vuetify, opts)
+Vue.use(VuetifyToast, { x: 'center', y: 'top', timeout: 6000, queueable: true })
 
 export default new Vuetify(opts)

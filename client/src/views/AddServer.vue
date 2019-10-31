@@ -378,7 +378,7 @@ export default {
           }
         }
 
-        vue.$notify(vue.$t(msg), 'error')
+        vue.$toast.error(vue.$t(msg))
       })
     },
     getNodes () {
@@ -410,7 +410,7 @@ export default {
           }
         }
 
-        vue.$notify(vue.$t(msg), 'error')
+        vue.$toast.error(vue.$t(msg))
       })
     },
     findUsers () {
@@ -445,7 +445,7 @@ export default {
           }
         }
 
-        vue.$notify(vue.$t(msg), 'error')
+        vue.$toast.error(vue.$t(msg))
       })
     },
     submitCreate () {
@@ -473,7 +473,7 @@ export default {
           }
         }
 
-        vue.$notify(vue.$t(msg), 'error')
+        vue.$toast.error(vue.$t(msg))
       })
     },
     selectUser (username) {

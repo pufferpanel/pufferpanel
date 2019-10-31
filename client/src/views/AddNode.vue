@@ -63,7 +63,7 @@ export default {
           }
         }
 
-        ctx.$notify(ctx.$t(msg), 'error')
+        ctx.$toast.error(ctx.$t(msg))
       })
     }
   }

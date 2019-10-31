@@ -173,7 +173,7 @@ export default {
           localStorage.setItem('registered', 'true')
           vue.$router.push({ name: 'Login' })
         } else {
-          vue.$notify(response.data.msg, 'error')
+          vue.$toast.error(response.data.msg)
           vue.registerDisabled = false
         }
       }).catch(function (error) {
@@ -186,7 +186,7 @@ export default {
           }
         }
 
-        vue.$notify(vue.$t(msg), 'error')
+        vue.$toast.error(vue.$t(msg))
         vue.registerDisabled = false
       })
     }

@@ -132,7 +132,7 @@ export default {
           data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
-          data.$notify(response.data.msg, 'error')
+          data.$toast.error(response.data.msg)
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -144,7 +144,7 @@ export default {
           }
         }
 
-        data.$notify(data.$t(msg), 'error')
+        data.$toast.error(data.$t(msg))
       }).finally(function () {
         data.loginDisabled = false
       })
