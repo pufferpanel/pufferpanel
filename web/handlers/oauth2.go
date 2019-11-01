@@ -25,19 +25,22 @@ func HasOAuth2Token(c *gin.Context) {
 
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 {
-		c.AbortWithStatus(http.StatusForbidden)
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	if parts[0] != "Bearer" || parts[1] == "" {
-		c.AbortWithStatus(http.StatusForbidden)
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	token, err := services.ParseToken(parts[1])
 
 	if err != nil || !token.Valid {
-		c.AbortWithStatus(http.StatusForbidden)
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
@@ -76,13 +79,13 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 		if requireServer {
 			server, err = ss.Get(i)
 			if err != nil {
-				c.AbortWithStatus(http.StatusUnauthorized)
+				c.AbortWithStatus(http.StatusForbidden)
 				return
 			}
 		}
 
 		if requireServer && (server == nil || server.Identifier == "") {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithStatus(http.StatusForbidden)
 			return
 		} else if requireServer {
 			serverId = server.Identifier

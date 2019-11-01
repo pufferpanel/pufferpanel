@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
@@ -12,6 +13,9 @@ import (
 var noLogin = []string{"/auth/", "/error/", "/daemon/", "/api/"}
 var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
 var overrideRequireLogin = []string{"/auth/reauth"}
+
+const WWWAuthenticateHeader = "WWW-Authenticate"
+const WWWAuthenticateHeaderContents = "Bearer realm=\"\""
 
 func AuthMiddleware(c *gin.Context) {
 	for _, v := range noLogin {
@@ -44,7 +48,8 @@ func AuthMiddleware(c *gin.Context) {
 			}
 		}
 
-		c.AbortWithStatus(http.StatusForbidden)
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
@@ -55,13 +60,20 @@ func AuthMiddleware(c *gin.Context) {
 
 	token, err := services.ParseToken(cookie)
 
-	if response.HandleError(c, err, http.StatusForbidden) || !token.Valid {
+	if response.HandleError(c, err, http.StatusUnauthorized) {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		return
+	}
+	if !token.Valid {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		response.HandleError(c, pufferpanel.ErrTokenInvalid, http.StatusUnauthorized)
 		return
 	}
 
 	us := services.User{DB: db}
 	user, err := us.Get(token.Claims.Subject)
-	if response.HandleError(c, err, http.StatusForbidden) {
+	if response.HandleError(c, err, http.StatusUnauthorized) {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
 	}
 
