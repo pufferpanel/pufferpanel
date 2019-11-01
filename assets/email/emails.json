@@ -2,5 +2,9 @@
   "accountCreation": {
     "subject": "Your account has been created",
     "body": "account-creation.html"
+  },
+  "passwordReset": {
+    "subject": "Your password has been reset",
+    "body": "password-reset.html"
   }
 }

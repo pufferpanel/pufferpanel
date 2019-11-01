@@ -26,6 +26,9 @@ func init() {
 	viper.SetDefault("email.templates", "email/emails.json")
 	viper.SetDefault("email.provider", "")
 
+	viper.SetDefault("settings.companyName", "PufferPanel")
+	viper.SetDefault("settings.masterUrl", "http://localhost:8080")
+
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 }
 

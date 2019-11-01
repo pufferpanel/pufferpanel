@@ -156,13 +156,17 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 				return
 			}
-			if perms.ID == 0 {
+			if perms.ID == 0 || !perms.SFTPServer {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
 			}
 
 			//validate their credentials
 			_, jwtToken, err := us.Login(user.Email, request.Password)
+			if err != nil || jwtToken == "" {
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+				return
+			}
 
 			c.Header("Cache-Control", "no-store")
 			c.Header("Pragma", "no-cache")
