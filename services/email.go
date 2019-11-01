@@ -16,7 +16,7 @@ import (
 )
 
 type EmailService interface {
-	SendEmail(to string, template string, data interface{}, async bool) error
+	SendEmail(to string, template string, data map[string]interface{}, async bool) error
 }
 
 type emailTemplate struct {
@@ -78,12 +78,19 @@ func GetEmailService() EmailService {
 	return globalEmailService
 }
 
-func (es *emailService) SendEmail(to, template string, data interface{}, async bool) (err error) {
+func (es *emailService) SendEmail(to, template string, data map[string]interface{}, async bool) (err error) {
 	tmpl := es.templates[template]
 
 	if tmpl == nil {
 		return pufferpanel.ErrNoTemplate(template)
 	}
+
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
+	data["COMPANY_NAME"] = viper.GetString("settings.companyName")
+	data["MASTER_URL"] = viper.GetString("settings.masterUrl")
 
 	subjectBuilder := &strings.Builder{}
 	err = tmpl.Subject.Execute(subjectBuilder, data)

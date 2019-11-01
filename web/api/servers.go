@@ -291,6 +291,18 @@ func createServer(c *gin.Context) {
 		return
 	}
 
+	es := services.GetEmailService()
+	for _, user := range users {
+		err = es.SendEmail(user.Email, "added-to-server", map[string]interface{}{
+			"Server":        server,
+			"RegisterToken": "",
+		}, true)
+		if err != nil {
+			//since we don't want to tell the user it failed, we'll log and move on
+			logging.Exception("Error sending email", err)
+		}
+	}
+
 	c.JSON(http.StatusOK, &CreateServerResponse{Id: serverId})
 }
 
@@ -400,6 +412,7 @@ func editServerUser(c *gin.Context) {
 		return
 	}
 
+	var registerToken string
 	user, err := us.GetByEmail(email)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -410,7 +423,8 @@ func editServerUser(c *gin.Context) {
 			Username: uuid.NewV4().String(),
 			Email:    email,
 		}
-		err = user.SetPassword(uuid.NewV4().String())
+		registerToken = uuid.NewV4().String()
+		err = user.SetPassword(registerToken)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -425,6 +439,11 @@ func editServerUser(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
+
+	var firstTimeAccess = false
+	if existing.ID == 0 {
+		firstTimeAccess = true
+	}
 	perms.CopyTo(existing, false)
 	err = ps.UpdatePermissions(existing)
 
@@ -437,11 +456,16 @@ func editServerUser(c *gin.Context) {
 	}
 
 	//now we can send emails to the people
-	es := services.GetEmailService()
-	err = es.SendEmail(user.Email, "NewSubuser", nil, true)
-	if err != nil {
-		//since we don't want to tell the user it failed, we'll log and move on
-		logging.Exception("Error sending email", err)
+	if firstTimeAccess {
+		es := services.GetEmailService()
+		err = es.SendEmail(user.Email, "added-to-server", map[string]interface{}{
+			"Server":        server,
+			"RegisterToken": registerToken,
+		}, true)
+		if err != nil {
+			//since we don't want to tell the user it failed, we'll log and move on
+			logging.Exception("Error sending email", err)
+		}
 	}
 
 	c.Status(http.StatusNoContent)
