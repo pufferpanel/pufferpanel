@@ -2,6 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/apufferi/v4/response"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -14,7 +15,7 @@ func RegisterPost(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	request := &registerRequest{}
+	request := &registerRequestData{}
 	err := c.BindJSON(request)
 
 	if response.HandleError(c, err, http.StatusBadRequest) {
@@ -22,13 +23,13 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	validate := validator.New()
-	err = validate.Struct(request.Data)
+	err = validate.Struct(request)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	user := &models.User{Username: request.Data.Username, Email: request.Data.Email}
-	err = user.SetPassword(request.Data.Password)
+	user := &models.User{Username: request.Username, Email: request.Email}
+	err = user.SetPassword(request.Password)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	}
 
@@ -36,10 +37,24 @@ func RegisterPost(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
+
+	//TODO: Have this be an optional flag
+	token := ""
+	if true {
+		_, token, err = us.Login(user.Email, request.Password)
+		if err != nil {
+			logging.Exception("Error trying to auto-login after register", err)
+			c.JSON(200, &registerResponse{Success: true})
+			return
+		}
+	}
+
+	c.JSON(200, &registerResponse{Success: true, Token: token})
 }
 
-type registerRequest struct {
-	Data registerRequestData `json:"data"`
+type registerResponse struct {
+	Success bool   `json:"success"`
+	Token   string `json:"token,omitempty"`
 }
 
 type registerRequestData struct {
