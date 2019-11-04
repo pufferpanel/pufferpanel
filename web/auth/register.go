@@ -38,6 +38,19 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 
+	ps := &services.Permission{DB: db}
+	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	perms.ViewServer = true
+
+	err = ps.UpdatePermissions(perms)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
 	//TODO: Have this be an optional flag
 	token := ""
 	if true {
