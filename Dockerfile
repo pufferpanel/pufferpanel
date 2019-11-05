@@ -22,7 +22,6 @@ WORKDIR /build/pufferpanel
 COPY . .
 RUN echo replace github.com/pufferpanel/apufferi/v4 =\> ../apufferi >> go.mod && \
     go get -u github.com/pufferpanel/pufferpanel/v2/cmd && \
-
     go build -v -tags $tags -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
     mv assets/email /pufferpanel/email
 
