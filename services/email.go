@@ -10,6 +10,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services/impl"
 	"github.com/spf13/viper"
 	"html/template"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -53,12 +54,17 @@ func LoadEmailService() {
 	}
 
 	for templateName, data := range mapping {
-		subjectTemplate, err := template.New(templateName).Parse(data.Subject)
+		subjectTemplate, err := template.New(templateName + "-subject").Parse(data.Subject)
 		if err != nil {
 			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
 		}
 
-		renderedTemplate, err := template.New(templateName).ParseFiles(filepath.Join(parentDir, data.Body))
+		body, err := ioutil.ReadFile(filepath.Join(parentDir, data.Body))
+		if err != nil {
+			panic(errors.New(fmt.Sprintf("Error processing email template subject %s: %s", templateName, err.Error())))
+		}
+
+		renderedTemplate, err := template.New(templateName + "-body").Parse(string(body))
 		if err != nil {
 			panic(errors.New(fmt.Sprintf("Error processing email template body %s: %s", templateName, err.Error())))
 		}
@@ -114,6 +120,8 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 	switch provider {
 	case "mailgun":
 		return impl.SendEmailViaMailgun(to, subjectBuilder.String(), bodyBuilder.String(), async)
+	case "debug":
+		return nil
 	default:
 		return pufferpanel.ErrServiceInvalidProvider("email", provider)
 	}
