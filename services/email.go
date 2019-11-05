@@ -79,6 +79,11 @@ func GetEmailService() EmailService {
 }
 
 func (es *emailService) SendEmail(to, template string, data map[string]interface{}, async bool) (err error) {
+	provider := viper.GetString("email.provider")
+	if provider == "" {
+		return pufferpanel.ErrEmailNotConfigured
+	}
+
 	tmpl := es.templates[template]
 
 	if tmpl == nil {
@@ -104,10 +109,7 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 		return err
 	}
 
-	provider := viper.GetString("email.provider")
-	if provider == "" {
-		return pufferpanel.ErrEmailNotConfigured
-	}
+	logging.Debug("Sending email to %s using %s", to, provider)
 
 	switch provider {
 	case "mailgun":
