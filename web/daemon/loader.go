@@ -22,7 +22,7 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 		g.Any("/:id/*path", proxyServerRequest)
 	}
 
-	g := rg.Group("/socket", handlers.HasOAuth2Token, handlers.NeedsDatabase)
+	g = rg.Group("/socket", handlers.HasOAuth2Token, handlers.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
