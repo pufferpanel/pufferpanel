@@ -41,7 +41,7 @@ export default {
       this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(function (response) {
         vue.server = response.data.server
         vue.server.permissions = response.data.permissions
-        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/server/${vue.server.id}/socket`
+        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/socket/${vue.server.id}`
         vue.$connect(url)
         vue.statRequest = setInterval(vue.callStats, 3000)
       }).catch(function (error) {
