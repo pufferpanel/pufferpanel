@@ -54,7 +54,7 @@ func RegisterPost(c *gin.Context) {
 	//TODO: Have this be an optional flag
 	token := ""
 	if true {
-		err = services.GetEmailService().SendEmail(user.Email, "account-creation", nil, true)
+		err = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
 		if err != nil {
 			logging.Exception("Error sending email", err)
 		}
@@ -65,7 +65,7 @@ func RegisterPost(c *gin.Context) {
 		}
 	} else {
 		//TODO: Send an email to tell them to validate email
-		_ = services.GetEmailService().SendEmail(user.Email, "account-creation", nil, true)
+		_ = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
 		if err != nil {
 			logging.Exception("Error sending email", err)
 		}
