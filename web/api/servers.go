@@ -293,7 +293,7 @@ func createServer(c *gin.Context) {
 
 	es := services.GetEmailService()
 	for _, user := range users {
-		err = es.SendEmail(user.Email, "added-to-server", map[string]interface{}{
+		err = es.SendEmail(user.Email, "addedToServer", map[string]interface{}{
 			"Server":        server,
 			"RegisterToken": "",
 		}, true)
@@ -458,7 +458,7 @@ func editServerUser(c *gin.Context) {
 	//now we can send emails to the people
 	if firstTimeAccess {
 		es := services.GetEmailService()
-		err = es.SendEmail(user.Email, "added-to-server", map[string]interface{}{
+		err = es.SendEmail(user.Email, "addedToServer", map[string]interface{}{
 			"Server":        server,
 			"RegisterToken": registerToken,
 		}, true)

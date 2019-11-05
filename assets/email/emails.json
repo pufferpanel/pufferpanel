@@ -6,5 +6,9 @@
   "passwordReset": {
     "subject": "Your password has been reset",
     "body": "password-reset.html"
+  },
+  "addedToServer": {
+    "subject": "You have been added to a server",
+    "body": "added-to-server.html"
   }
 }
