@@ -54,16 +54,21 @@ func RegisterPost(c *gin.Context) {
 	//TODO: Have this be an optional flag
 	token := ""
 	if true {
-		_ = services.GetEmailService().SendEmail(user.Email, "account-creation", nil, true)
+		err = services.GetEmailService().SendEmail(user.Email, "account-creation", nil, true)
+		if err != nil {
+			logging.Exception("Error sending email", err)
+		}
+
 		_, token, err = us.Login(user.Email, request.Password)
 		if err != nil {
 			logging.Exception("Error trying to auto-login after register", err)
-			c.JSON(200, &registerResponse{Success: true})
-			return
 		}
 	} else {
 		//TODO: Send an email to tell them to validate email
 		_ = services.GetEmailService().SendEmail(user.Email, "account-creation", nil, true)
+		if err != nil {
+			logging.Exception("Error sending email", err)
+		}
 	}
 
 	c.JSON(200, &registerResponse{Success: true, Token: token})
