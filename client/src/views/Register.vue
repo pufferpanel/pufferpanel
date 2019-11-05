@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import validate from '@/utils/validate'
 import { hasAuth } from '@/utils/auth'
 
@@ -165,15 +166,20 @@ export default {
       const vue = this
 
       this.axios.post(this.$route.path, {
-        data: {
-          email: this.email,
-          password: this.password,
-          username: this.username
-        }
+        email: this.email,
+        password: this.password,
+        username: this.username
       }).then(function (response) {
         if (response.status >= 200 && response.status < 300) {
-          localStorage.setItem('registered', 'true')
-          vue.$router.push({ name: 'Login' })
+          if (response.data.token && response.data.token !== '') {
+            Cookies.set('puffer_auth', response.data.token)
+            localStorage.setItem('admin', response.data.admin)
+            vue.$emit('logged-in')
+            vue.$router.push({ name: 'Servers' })
+          } else {
+            localStorage.setItem('registered', 'true')
+            vue.$router.push({ name: 'Login' })
+          }
         } else {
           vue.$toast.error(response.data.msg)
           vue.registerDisabled = false
