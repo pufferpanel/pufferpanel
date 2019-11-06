@@ -37,9 +37,23 @@ RUN npm install && \
 FROM alpine
 COPY --from=builder /pufferpanel /pufferpanel
 
-ENV PATH=$PATH:/pufferpanel
+EXPOSE 8080
+VOLUME /etc/pufferpanel
+
+ENV PUFFERPANEL_DATABASE_SESSION=60 \
+    PUFFERPANEL_DATABASE_DIALECT=sqlite3 \
+    PUFFERPANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
+    PUFFERPANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
+    PUFFERPANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
+    PUFFERPANEL_WEB_HOST=0.0.0.0:8080 \
+    PUFFERPANEL_WEB_SOCKET=/etc/pufferpanel/pufferpanel.sock \
+    PUFFERPANEL_WEB_FILES=/pufferpanel/web \
+    PUFFERPANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
+    PUFFERPANEL_EMAIL_PROVIDER=debug \
+    PUFFERPANEL_SETTINGS_COMPANYNAME=PufferPanel \
+    PUFFERPANEL_SETTINGS_MASTERURL=http://localhost:8080
 
 WORKDIR /pufferpanel
 
-EXPOSE 8080
-CMD ["/pufferpanel/pufferpanel", "run"]
+ENTRYPOINT ["/pufferpanel/pufferpanel"]
+CMD ["run"]
