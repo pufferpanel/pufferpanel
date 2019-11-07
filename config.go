@@ -20,7 +20,7 @@ func init() {
 	viper.SetDefault("token.public", "public.pem")
 
 	viper.SetDefault("web.host", "0.0.0.0:8080")
-	viper.SetDefault("web.socket", "/var/run/pufferpanel.sock")
+	//viper.SetDefault("web.socket", "/var/run/pufferpanel.sock")
 	viper.SetDefault("web.files", "www")
 
 	viper.SetDefault("email.templates", "email/emails.json")
@@ -28,6 +28,8 @@ func init() {
 
 	viper.SetDefault("settings.companyName", "PufferPanel")
 	viper.SetDefault("settings.masterUrl", "http://localhost:8080")
+
+	viper.SetDefault("logs", "logs")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 }

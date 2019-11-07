@@ -24,7 +24,8 @@ func SendEmailViaMailgun(to, subject, body string, async bool) error {
 	}
 
 	mg := mailgun.NewMailgun(domain, key)
-	message := mg.NewMessage(from, subject, body, to)
+	message := mg.NewMessage(from, subject, "", to)
+	message.SetHtml(body)
 
 	if async {
 		go func(mgI *mailgun.MailgunImpl, messageI *mailgun.Message) {

@@ -46,12 +46,12 @@ ENV PUFFERPANEL_DATABASE_SESSION=60 \
     PUFFERPANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
     PUFFERPANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
     PUFFERPANEL_WEB_HOST=0.0.0.0:8080 \
-    PUFFERPANEL_WEB_SOCKET=/etc/pufferpanel/pufferpanel.sock \
     PUFFERPANEL_WEB_FILES=/pufferpanel/web \
     PUFFERPANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
     PUFFERPANEL_EMAIL_PROVIDER=debug \
     PUFFERPANEL_SETTINGS_COMPANYNAME=PufferPanel \
-    PUFFERPANEL_SETTINGS_MASTERURL=http://localhost:8080
+    PUFFERPANEL_SETTINGS_MASTERURL=http://localhost:8080 \
+    PUFFERPANEL_LOGS=/etc/pufferpanel/logs
 
 WORKDIR /pufferpanel
 
