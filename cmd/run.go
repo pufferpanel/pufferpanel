@@ -14,9 +14,7 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
@@ -25,11 +23,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"runtime"
 	"syscall"
 )
 
@@ -52,7 +48,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	err = logging.WithLogDirectory("logs", logging.DEBUG, nil)
+	err = logging.WithLogDirectory(viper.GetString("logs"), logging.DEBUG, nil)
 	if err != nil {
 		return err
 	}
@@ -103,7 +99,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		}()
 	}
 
-	if runtime.GOOS == "linux" {
+	/*if runtime.GOOS == "linux" {
 		go func() {
 			file := viper.GetString("web.socket")
 
@@ -137,7 +133,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 				return
 			}
 		}()
-	}
+	}*/
 
 	go func() {
 		_, err := database.GetConnection()

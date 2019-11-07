@@ -30,7 +30,7 @@ var dbConn *gorm.DB
 var lock sync.Mutex
 
 func openConnection() (err error) {
-	//lock system so we can only connect once
+	//lock system so we can only connect one at a time
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -143,7 +143,7 @@ func addConnectionSetting(connString, setting string) string {
 	} else {
 		connString += "&"
 	}
-	connString += "charset=utf8"
+	connString += setting
 
 	return connString
 }
