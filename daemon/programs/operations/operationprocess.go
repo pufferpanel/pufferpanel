@@ -1,0 +1,162 @@
+/*
+ Copyright 2016 Padduck, LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ 	http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+package operations
+
+import (
+	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/command"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/download"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/forgedl"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/mkdir"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/mojangdl"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/move"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/spongeforgedl"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/writefile"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/ops"
+	"github.com/pufferpanel/pufferpanel/v2/shared"
+	"github.com/spf13/cast"
+)
+
+var commandMapping map[string]ops.OperationFactory
+
+func LoadOperations() {
+	commandMapping = make(map[string]ops.OperationFactory)
+
+	loadCoreModules()
+
+	loadOpModules()
+}
+
+func GenerateProcess(directions []interface{}, environment envs.Environment, dataMapping map[string]interface{}, env map[string]string) (OperationProcess, error) {
+	dataMap := make(map[string]interface{})
+	for k, v := range dataMapping {
+		dataMap[k] = v
+	}
+
+	dataMap["rootDir"] = environment.GetRootDirectory()
+	operationList := make([]ops.Operation, 0)
+	for _, mapping := range directions {
+
+		var typeMap shared.MetadataType
+		err := shared.UnmarshalTo(mapping, &typeMap)
+		if err != nil {
+			return OperationProcess{}, err
+		}
+
+		factory := commandMapping[typeMap.Type]
+		if factory == nil {
+			return OperationProcess{}, daemon.ErrMissingFactory
+		}
+
+		mapCopy := make(map[string]interface{}, 0)
+
+		//replace tokens
+		for k, v := range typeMap.Metadata {
+			switch r := v.(type) {
+			case string:
+				{
+					mapCopy[k] = shared.ReplaceTokens(r, dataMap)
+				}
+			case []string:
+				{
+					mapCopy[k] = shared.ReplaceTokensInArr(r, dataMap)
+				}
+			case map[string]string:
+				{
+					mapCopy[k] = shared.ReplaceTokensInMap(r, dataMap)
+				}
+			case []interface{}:
+				{
+					//if we can convert this to a string list, we can work with it
+					temp := cast.ToStringSlice(r)
+					if len(temp) == len(r) {
+						mapCopy[k] = shared.ReplaceTokensInArr(temp, dataMap)
+					} else {
+						mapCopy[k] = v
+					}
+				}
+			default:
+				mapCopy[k] = v
+			}
+		}
+
+		envMap := shared.ReplaceTokensInMap(env, dataMap)
+
+		opCreate := ops.CreateOperation{
+			OperationArgs:        mapCopy,
+			EnvironmentVariables: envMap,
+			DataMap:              dataMap,
+		}
+
+		op := factory.Create(opCreate)
+
+		operationList = append(operationList, op)
+	}
+	return OperationProcess{processInstructions: operationList}, nil
+}
+
+type OperationProcess struct {
+	processInstructions []ops.Operation
+}
+
+func (p *OperationProcess) Run(env envs.Environment) (err error) {
+	for p.HasNext() {
+		err = p.RunNext(env)
+		if err != nil {
+			break
+		}
+	}
+	return
+}
+
+func (p *OperationProcess) RunNext(env envs.Environment) error {
+	var op ops.Operation
+	op, p.processInstructions = p.processInstructions[0], p.processInstructions[1:]
+	err := op.Run(env)
+	return err
+}
+
+func (p *OperationProcess) HasNext() bool {
+	return len(p.processInstructions) != 0 && p.processInstructions[0] != nil
+}
+
+func loadCoreModules() {
+	commandFactory := command.Factory
+	commandMapping[commandFactory.Key()] = commandFactory
+
+	downloadFactory := download.Factory
+	commandMapping[downloadFactory.Key()] = downloadFactory
+
+	mkdirFactory := mkdir.Factory
+	commandMapping[mkdirFactory.Key()] = mkdirFactory
+
+	moveFactory := move.Factory
+	commandMapping[moveFactory.Key()] = moveFactory
+
+	writeFileFactory := writefile.Factory
+	commandMapping[writeFileFactory.Key()] = writeFileFactory
+
+	mojangFactory := mojangdl.Factory
+	commandMapping[mojangFactory.Key()] = mojangFactory
+
+	spongeforgeDlFactory := spongeforgedl.Factory
+	commandMapping[spongeforgeDlFactory.Key()] = spongeforgeDlFactory
+
+	forgeDlFactory := forgedl.Factory
+	commandMapping[forgeDlFactory.Key()] = forgeDlFactory
+}
