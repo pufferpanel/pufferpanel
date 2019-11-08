@@ -16,11 +16,17 @@ package main
 import (
 	"fmt"
 	"github.com/pufferpanel/apufferi/v4/logging"
+	"github.com/pufferpanel/pufferpanel/v2/utils"
 	"os"
 	"runtime/debug"
 )
 
 func main() {
+	if !utils.UserInGroup() {
+		fmt.Printf("You do not have permission to use this command")
+		return
+	}
+
 	defer logging.Close()
 
 	defer func() {
