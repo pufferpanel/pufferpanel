@@ -26,6 +26,7 @@ require (
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/pufferpanel/apufferi/v4 v4.0.3
+	github.com/pufferpanel/pufferd/v2 v2.0.0-00010101000000-000000000000
 	github.com/rogpeppe/go-internal v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.2.2 // indirect
@@ -33,7 +34,6 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
-	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.3
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
@@ -45,3 +45,5 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.29.1
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
+
+replace github.com/pufferpanel/pufferd/v2 => ../pufferd

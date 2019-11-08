@@ -44,7 +44,7 @@ func RegisterRoutes(e *gin.Engine) {
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
-	daemon.RegisterRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
+	daemon.RegisterRoutes(e, e.Group("/daemon", handlers.HasOAuth2Token))
 
 	e.Static("/css", ClientPath+"/css")
 	e.Static("/fonts", ClientPath+"/fonts")

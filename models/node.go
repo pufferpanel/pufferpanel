@@ -30,6 +30,8 @@ type Node struct {
 
 	Secret string `gorm:"size=36;NOT NULL" json:"-" validate:"required"`
 
+	Local bool `gorm:"local;NOT NULL"`
+
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
