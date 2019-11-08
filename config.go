@@ -1,6 +1,7 @@
 package pufferpanel
 
 import (
+	"github.com/pufferpanel/pufferd/v2"
 	"github.com/spf13/viper"
 	"strings"
 )
@@ -30,8 +31,11 @@ func init() {
 	viper.SetDefault("settings.masterUrl", "http://localhost:8080")
 
 	viper.SetDefault("logs", "logs")
+	viper.SetDefault("localNode", true)
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	pufferd.SetDefaults()
 }
 
 func LoadConfig() error {

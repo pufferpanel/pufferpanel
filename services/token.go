@@ -12,6 +12,7 @@ import (
 	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/apufferi/v4/logging"
 	"github.com/pufferpanel/apufferi/v4/scope"
+	"github.com/pufferpanel/pufferd/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/spf13/viper"
 	"io"
@@ -30,6 +31,7 @@ func Generate(claims jwt.Claims) (string, error) {
 	token := jwt.NewWithClaims(signingMethod, claims)
 	return token.SignedString(privateKey)
 }
+
 func GenerateSession(id uint) (string, error) {
 	claims := &apufferi.Claim{
 		StandardClaims: jwt.StandardClaims{
@@ -189,6 +191,10 @@ func load() {
 	if err != nil {
 		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()
 		return
+	}
+
+	if viper.GetBool("localNode") {
+		pufferd.SetPublicKey(pubKey)
 	}
 
 	return

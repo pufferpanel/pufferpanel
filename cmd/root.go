@@ -29,7 +29,8 @@ func init() {
 		runCmd,
 		versionCmd,
 		templatesCmd,
-		userCmd)
+		userCmd,
+		nodesCmd)
 }
 
 func Execute() {

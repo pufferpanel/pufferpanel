@@ -5,16 +5,21 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/apufferi/v4/response"
+	"github.com/pufferpanel/pufferd/v2/routing/server"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/web/handlers"
 	"github.com/spf13/cast"
+	"github.com/spf13/viper"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-func RegisterRoutes(rg *gin.RouterGroup) {
+var rootEngine *gin.Engine
+
+func RegisterRoutes(engine *gin.Engine, rg *gin.RouterGroup) {
+	rootEngine = engine
 	g := rg.Group("/server", handlers.HasOAuth2Token, handlers.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
@@ -34,6 +39,13 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 		r.Any("/:id", proxyNodeRequest)
 		r.Any("/:id/*path", proxyNodeRequest)
 	}
+
+	if viper.GetBool("localNode") {
+		l := rg.Group("/local")
+		{
+			server.RegisterRoutes(l)
+		}
+	}
 }
 
 func proxyServerRequest(c *gin.Context) {
@@ -50,10 +62,10 @@ func proxyServerRequest(c *gin.Context) {
 
 	path := "/server/" + serverId + c.Param("path")
 
-	server, err := ss.Get(serverId)
+	s, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
-	} else if server == nil || server.Identifier == "" {
+	} else if s == nil || s.Identifier == "" {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -62,7 +74,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &server.Identifier)
+		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &s.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
@@ -71,10 +83,15 @@ func proxyServerRequest(c *gin.Context) {
 		c.Request.Header.Set("Authorization", "Bearer "+newToken)
 	}
 
-	if c.GetHeader("Upgrade") == "websocket" {
-		proxySocketRequest(c, path, ns, &server.Node)
+	if viper.GetBool("localNode") && s.Node.Local {
+		c.Request.URL.Path = "/daemon/local/" + path
+		rootEngine.HandleContext(c)
 	} else {
-		proxyHttpRequest(c, path, ns, &server.Node)
+		if c.GetHeader("Upgrade") == "websocket" {
+			proxySocketRequest(c, path, ns, &s.Node)
+		} else {
+			proxyHttpRequest(c, path, ns, &s.Node)
+		}
 	}
 }
 

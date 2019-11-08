@@ -16,6 +16,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/apufferi/v4/logging"
+	"github.com/pufferpanel/pufferd/v2/entry"
+	"github.com/pufferpanel/pufferd/v2/sftp"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -54,6 +56,9 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	}
 
 	logging.SetLevel(os.Stdout, logging.DEBUG)
+
+	//load token, this also will store it to local node if there's one
+	services.ValidateTokenLoaded()
 
 	defer database.Close()
 
@@ -99,42 +104,6 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		}()
 	}
 
-	/*if runtime.GOOS == "linux" {
-		go func() {
-			file := viper.GetString("web.socket")
-
-			if file == "" {
-				return
-			}
-
-			err := os.Remove(file)
-			if err != nil && !os.IsNotExist(err) {
-				logging.Exception(fmt.Sprintf("Error deleting %s", file), err)
-				return
-			}
-
-			listener, err := net.Listen("unix", file)
-			defer apufferi.Close(listener)
-			if err != nil {
-				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
-				return
-			}
-
-			err = os.Chmod(file, 0777)
-			if err != nil {
-				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
-				return
-			}
-
-			logging.Info("Listening for socket requests")
-			err = http.Serve(listener, router)
-			if err != nil {
-				logging.Exception(fmt.Sprintf("Error listening on %s", file), err)
-				return
-			}
-		}()
-	}*/
-
 	go func() {
 		_, err := database.GetConnection()
 		if err != nil {
@@ -152,6 +121,12 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		log.Println("Shutting down web server ...")
 		c <- nil
 	}()
+
+	if viper.GetBool("localNode") {
+		//local node!
+		sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+		c <- <-entry.Start()
+	}
 
 	return <-c
 }
