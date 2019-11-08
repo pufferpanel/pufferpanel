@@ -1,7 +1,7 @@
 package pufferpanel
 
 import (
-	"github.com/pufferpanel/pufferd/v2"
+	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/spf13/viper"
 	"strings"
 )
@@ -35,7 +35,7 @@ func init() {
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	pufferd.SetDefaults()
+	daemon.SetDefaults()
 }
 
 func LoadConfig() error {
