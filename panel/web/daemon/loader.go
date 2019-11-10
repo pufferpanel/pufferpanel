@@ -3,12 +3,12 @@ package daemon
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/routing/server"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
+	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 	"net/http"
@@ -70,7 +70,7 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	token := c.MustGet("token").(*shared.Token)
+	token := c.MustGet("token").(*pufferpanel.Token)
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
@@ -117,7 +117,7 @@ func proxyNodeRequest(c *gin.Context) {
 		return
 	}
 
-	token := c.MustGet("token").(*shared.Token)
+	token := c.MustGet("token").(*pufferpanel.Token)
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {

@@ -19,7 +19,7 @@ package download
 import (
 	"github.com/cavaliercoder/grab"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 )
 
 type Download struct {
@@ -28,7 +28,7 @@ type Download struct {
 
 func (d Download) Run(env envs.Environment) error {
 	for _, file := range d.Files {
-		logging.Debug("Download file from %s to %s", file, env.GetRootDirectory())
+		logging.Info().Printf("Download file from %s to %s", file, env.GetRootDirectory())
 		env.DisplayToConsole(true, "Downloading file %s\n", file)
 		_, err := grab.Get(env.GetRootDirectory(), file)
 		if err != nil {

@@ -19,12 +19,11 @@ package spongeforgedl
 import (
 	"encoding/json"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/commons"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/forgedl"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/ops"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
 	"net/http"
 	"os"
 	"path"
@@ -35,6 +34,7 @@ const DownloadApiUrl = "https://dl-api.spongepowered.org/v1/org.spongepowered/sp
 const RecommendedApiUrl = "https://dl-api.spongepowered.org/v1/org.spongepowered/spongeforge/downloads/recommended"
 
 var client = &http.Client{}
+
 type SpongeForgeDl struct {
 	ReleaseType string
 }
@@ -58,7 +58,7 @@ func (op SpongeForgeDl) Run(env envs.Environment) error {
 
 	if op.ReleaseType == "latest" {
 		response, err := client.Get(DownloadApiUrl)
-		defer commons.CloseResponse(response)
+		defer pufferpanel.CloseResponse(response)
 		if err != nil {
 			return err
 		}
@@ -76,7 +76,7 @@ func (op SpongeForgeDl) Run(env envs.Environment) error {
 		versionData = all[0]
 	} else {
 		response, err := client.Get(RecommendedApiUrl)
-		defer commons.CloseResponse(response)
+		defer pufferpanel.CloseResponse(response)
 
 		if err != nil {
 			return err
@@ -123,7 +123,7 @@ func (op SpongeForgeDl) Run(env envs.Environment) error {
 	}
 
 	//going to stick the spongeforge rename in, to assist with those modpacks
-	err = shared.CopyFile(file, path.Join("mods", "_aspongeforge.jar"))
+	err = pufferpanel.CopyFile(file, path.Join("mods", "_aspongeforge.jar"))
 	if err != nil {
 		return err
 	}

@@ -18,9 +18,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
 	"github.com/spf13/viper"
 	"strings"
 	"sync"
@@ -65,12 +64,12 @@ func openConnection() (err error) {
 
 	if err != nil {
 		dbConn = nil
-		logging.Exception("Error connecting to database", err)
+		logging.Error().Printf("Error connecting to database: %s", err)
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
 
 	if viper.GetBool("database.log") {
-		logging.Info("Database logging enabled")
+		logging.Info().Printf("Database logging enabled")
 		dbConn.LogMode(true)
 	}
 
@@ -88,7 +87,7 @@ func GetConnection() (*gorm.DB, error) {
 }
 
 func Close() {
-	shared.Close(dbConn)
+	pufferpanel.Close(dbConn)
 }
 
 func migrateModels() (err error) {

@@ -6,7 +6,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
 	"github.com/spf13/cobra"
 	"io"
 	"io/ioutil"
@@ -26,7 +25,7 @@ var ImportCmd = &cobra.Command{
 }
 
 func runImport(cmd *cobra.Command, args []string) {
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Error loading config: %s\n", err.Error())
 		return
@@ -58,7 +57,7 @@ func runImport(cmd *cobra.Command, args []string) {
 	}
 
 	defer func(f *os.File) {
-		shared.Close(targetFile)
+		pufferpanel.Close(targetFile)
 		err := os.Remove(f.Name())
 		if err != nil {
 			fmt.Printf("Error deleting file %s: %s\n", f.Name(), err.Error())
@@ -71,7 +70,7 @@ func runImport(cmd *cobra.Command, args []string) {
 		fmt.Printf("Error downloading: %s\n", err.Error())
 		return
 	}
-	defer shared.Close(response.Body)
+	defer pufferpanel.Close(response.Body)
 
 	_, err = io.Copy(targetFile, response.Body)
 	if err != nil {
@@ -110,13 +109,13 @@ func runImport(cmd *cobra.Command, args []string) {
 
 func writeFile(source *zip.File, target string) error {
 	s, err := source.Open()
-	defer shared.Close(s)
+	defer pufferpanel.Close(s)
 	if err != nil {
 		return err
 	}
 
 	file, err := os.OpenFile(target, os.O_CREATE|os.O_WRONLY, 0644)
-	defer shared.Close(file)
+	defer pufferpanel.Close(file)
 	if err != nil {
 		return err
 	}
@@ -126,7 +125,7 @@ func writeFile(source *zip.File, target string) error {
 
 func unzip(sourceZip, targetDir string) error {
 	zipFile, err := zip.OpenReader(sourceZip)
-	defer shared.Close(zipFile)
+	defer pufferpanel.Close(zipFile)
 	if err != nil {
 		return err
 	}

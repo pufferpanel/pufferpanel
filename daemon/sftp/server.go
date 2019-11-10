@@ -22,11 +22,11 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"github.com/pkg/sftp"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/oauth2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
@@ -42,7 +42,7 @@ var auth daemon.SFTPAuthorization
 func Run() {
 	err := runServer()
 	if err != nil {
-		logging.Exception("Error starting SFTP server", err)
+		logging.Error().Printf("Error starting SFTP server: %s", err)
 	}
 }
 
@@ -70,7 +70,7 @@ func runServer() error {
 	_, e := os.Stat(serverKeyFile)
 
 	if e != nil && os.IsNotExist(e) {
-		logging.Debug("Generating new key")
+		logging.Info().Printf("Generating new key")
 		var key *rsa.PrivateKey
 		key, e = rsa.GenerateKey(rand.Reader, 2048)
 		if e != nil {
@@ -91,7 +91,7 @@ func runServer() error {
 		return e
 	}
 
-	logging.Debug("Loading existing key")
+	logging.Info().Printf("Loading existing key")
 	var data []byte
 	data, e = ioutil.ReadFile(serverKeyFile)
 	if e != nil {
@@ -112,7 +112,7 @@ func runServer() error {
 	if e != nil {
 		return e
 	}
-	logging.Info("Started SFTP Server on %s", bind)
+	logging.Info().Printf("Started SFTP Server on %s", bind)
 
 	go func() {
 		for {
@@ -127,18 +127,18 @@ func runServer() error {
 }
 
 func HandleConn(conn net.Conn, config *ssh.ServerConfig) {
-	defer shared.Close(conn)
-	logging.Debug("SFTP connection from %s", conn.RemoteAddr().String())
+	defer pufferpanel.Close(conn)
+	logging.Info().Printf("SFTP connection from %s", conn.RemoteAddr().String())
 	e := handleConn(conn, config)
 	if e != nil {
 		if e.Error() != "EOF" {
-			logging.Exception("sftpd connection error", e)
+			logging.Error().Printf("sftpd connection error: %s", e)
 		}
 	}
 }
 func handleConn(conn net.Conn, config *ssh.ServerConfig) error {
 	sc, chans, reqs, e := ssh.NewServerConn(conn, config)
-	defer shared.Close(sc)
+	defer pufferpanel.Close(sc)
 	if e != nil {
 		return e
 	}

@@ -19,8 +19,8 @@ package oauth2
 import (
 	"encoding/json"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/commons"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"net/url"
@@ -54,9 +54,9 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
 
 	response, err := client.Do(request)
-	defer commons.CloseResponse(response)
+	defer pufferpanel.CloseResponse(response)
 	if err != nil {
-		logging.Exception("error talking to auth server", err)
+		logging.Error().Printf("error talking to auth server: %s", err)
 		return nil, errors.New("invalid response from authorization server")
 	}
 
@@ -64,14 +64,14 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	if response.StatusCode != 200 {
 		if response.StatusCode == 401 {
 			if recurse && RefreshToken() {
-				commons.CloseResponse(response)
+				pufferpanel.CloseResponse(response)
 				return validateSSH(username, password, false)
 			}
 		}
 
 		msg, _ := ioutil.ReadAll(response.Body)
 
-		logging.Error("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)
+		logging.Error().Printf("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)
 		return nil, errors.New("invalid response from authorization server")
 	}
 

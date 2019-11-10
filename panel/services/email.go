@@ -5,9 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services/impl"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
 	"github.com/spf13/viper"
 	"html/template"
 	"io/ioutil"
@@ -39,13 +38,13 @@ type emailService struct {
 func LoadEmailService() {
 	globalEmailService = &emailService{templates: make(map[string]*emailTemplate)}
 
-	jsonPath := viper.GetString("email.templates")
+	jsonPath := viper.GetString("panel.email.templates")
 	parentDir := filepath.Dir(jsonPath)
-	emailDefinition, err := os.Open(viper.GetString("email.templates"))
+	emailDefinition, err := os.Open(jsonPath)
 	if err != nil {
 		panic(err.Error())
 	}
-	defer shared.Close(emailDefinition)
+	defer pufferpanel.Close(emailDefinition)
 
 	var mapping map[string]*emailDeclaration
 	err = json.NewDecoder(emailDefinition).Decode(&mapping)
@@ -75,8 +74,9 @@ func LoadEmailService() {
 		}
 	}
 
+	var logger = logging.Debug()
 	for k := range globalEmailService.templates {
-		logging.Debug("Email template registered: %s", k)
+		logger.Printf("Email template registered: %s", k)
 	}
 }
 
@@ -115,7 +115,7 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 		return err
 	}
 
-	logging.Debug("Sending email to %s using %s", to, provider)
+	logging.Debug().Printf("Sending email to %s using %s", to, provider)
 
 	switch provider {
 	case "mailgun":

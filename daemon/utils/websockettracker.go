@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"sync"
 )
 
@@ -54,7 +54,7 @@ func (ws *wsManager) Write(source []byte) (n int, e error) {
 		socket := ws.sockets[i]
 		err := socket.WriteMessage(websocket.TextMessage, data)
 		if err != nil {
-			logging.Debug("websocket encountered error, dropping (%s)", err.Error())
+			logging.Info().Printf("websocket encountered error, dropping (%s)", err.Error())
 			if i+1 == len(ws.sockets) {
 				ws.sockets = ws.sockets[:i]
 			} else {

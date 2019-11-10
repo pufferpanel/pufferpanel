@@ -27,10 +27,10 @@ import (
 	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"io"
 	"io/ioutil"
 	"os"
@@ -59,13 +59,13 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 		return err
 	}
 	if running {
-		return daemon.ErrContainerRunning
+		return pufferpanel.ErrContainerRunning
 	}
 
 	d.Wait.Wait()
 
 	if d.downloadingImage {
-		return daemon.ErrImageDownloading
+		return pufferpanel.ErrImageDownloading
 	}
 
 	dockerClient, err := d.getClient()
@@ -108,7 +108,7 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 		err = c.ContainerStop(context.Background(), d.ContainerId, nil)
 		d.Wait.Done()
 		if err != nil {
-			logging.Exception("Error stopping container "+d.ContainerId, err)
+			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
 		}
 		if callback != nil {
 			callback(err == nil)
@@ -131,7 +131,7 @@ func (d *docker) ExecuteInMainProcess(cmd string) (err error) {
 		return
 	}
 	if !running {
-		err = daemon.ErrServerOffline
+		err = pufferpanel.ErrServerOffline
 		return
 	}
 
@@ -201,7 +201,7 @@ func (d *docker) GetStats() (*daemon.ServerStats, error) {
 	}
 
 	if !running {
-		return nil, daemon.ErrServerOffline
+		return nil, pufferpanel.ErrServerOffline
 	}
 
 	dockerClient, err := d.getClient()
@@ -214,7 +214,7 @@ func (d *docker) GetStats() (*daemon.ServerStats, error) {
 	res, err := dockerClient.ContainerStats(ctx, d.ContainerId, false)
 	defer func() {
 		if res.Body != nil {
-			shared.Close(res.Body)
+			pufferpanel.Close(res.Body)
 		}
 	}()
 	if err != nil {
@@ -276,7 +276,7 @@ func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) 
 
 	existingContainers, err := client.ContainerList(ctx, opts)
 
-	logging.Debug("Does container (%s) exist?: %t", d.ContainerId, len(existingContainers) > 0)
+	logging.Debug().Printf("Does container (%s) exist?: %t", d.ContainerId, len(existingContainers) > 0)
 
 	if len(existingContainers) == 0 {
 		return false, err
@@ -303,7 +303,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		exists = true
 	}
 
-	logging.Debug("Does image %v exist? %v", d.ImageName, exists)
+	logging.Debug().Printf("Does image %v exist? %v", d.ImageName, exists)
 
 	if exists && !force {
 		return nil
@@ -311,26 +311,26 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 
 	op := types.ImagePullOptions{}
 
-	logging.Debug("Downloading image %v", d.ImageName)
+	logging.Debug().Printf("Downloading image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
 	d.downloadingImage = true
 
 	r, err := client.ImagePull(ctx, d.ImageName, op)
-	defer shared.Close(r)
+	defer pufferpanel.Close(r)
 	if err != nil {
 		return err
 	}
 	_, err = io.Copy(ioutil.Discard, r)
 
 	d.downloadingImage = false
-	logging.Debug("Downloaded image %v", d.ImageName)
+	logging.Debug().Printf("Downloaded image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloaded image for container\n")
 	return err
 }
 
 func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, root string) error {
-	logging.Debug("Creating container")
+	logging.Debug().Printf("Creating container")
 	containerRoot := "/var/lib/pufferd/server/"
 	err := d.pullImage(client, ctx, false)
 

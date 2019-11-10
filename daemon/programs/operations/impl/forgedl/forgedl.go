@@ -17,9 +17,9 @@
 package forgedl
 
 import (
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
 	"path"
 	"strings"
 )
@@ -27,10 +27,9 @@ import (
 const InstallerUrl = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
 
 type ForgeDl struct {
-	Version string
+	Version  string
 	Filename string
 }
-
 
 func (op ForgeDl) Run(env envs.Environment) error {
 	jarDownload := strings.Replace(InstallerUrl, "${version}", op.Version, -1)
@@ -41,6 +40,5 @@ func (op ForgeDl) Run(env envs.Environment) error {
 	}
 
 	//copy from the cache
-	return shared.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
+	return pufferpanel.CopyFile(localFile, path.Join(env.GetRootDirectory(), op.Filename))
 }
-

@@ -19,12 +19,10 @@ package routing
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
-	_ "github.com/pufferpanel/pufferpanel/v2/daemon/docs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/routing/server"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/routing/swagger"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/middleware"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
 	"strings"
 )
@@ -40,7 +38,7 @@ func ConfigureWeb() *gin.Engine {
 	r := gin.New()
 	{
 		r.Use(gin.Recovery())
-		r.Use(gin.LoggerWithWriter(logging.AsWriter(logging.INFO)))
+		r.Use(gin.LoggerWithWriter(logging.Info().Writer()))
 		r.Use(func(c *gin.Context) {
 			if c.GetHeader("Connection") == "Upgrade" {
 				return
@@ -52,7 +50,6 @@ func ConfigureWeb() *gin.Engine {
 		})
 		RegisterRoutes(r)
 		server.RegisterRoutes(r.Group("/"))
-		swagger.Load(r.Group("/swagger"))
 	}
 
 	return r

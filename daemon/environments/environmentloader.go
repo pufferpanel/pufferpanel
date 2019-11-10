@@ -19,12 +19,13 @@ package environments
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/cache"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/impl/docker"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/impl/standard"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/utils"
+	"path/filepath"
 	"sync"
 )
 
@@ -47,12 +48,12 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 	}
 
 	item := factory.Create(id)
-	err := shared.UnmarshalTo(environmentSection, item)
+	err := pufferpanel.UnmarshalTo(environmentSection, item)
 	if err != nil {
 		return nil, err
 	}
 
-	serverRoot := shared.JoinPath(folder, id)
+	serverRoot := filepath.Join(folder, id)
 	envCache := cache.CreateCache()
 	wsManager := utils.CreateWSManager()
 

@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
+	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
 )
 

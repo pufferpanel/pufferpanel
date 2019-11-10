@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/websocket"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/spf13/viper"
 	"io"
 	path2 "path"
@@ -19,14 +19,14 @@ import (
 func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []scope.Scope) {
 	defer func() {
 		if err := recover(); err != nil {
-			logging.Error("Error with websocket connection for server %s: %s", server.Id(), err)
+			logging.Error().Printf("Error with websocket connection for server %s: %s", server.Id(), err)
 		}
 	}()
 
 	for {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			logging.Exception("error on reading from websocket", err)
+			logging.Error().Printf("error on reading from websocket: %s", err)
 			return
 		}
 		if msgType != websocket.TextMessage {
@@ -36,7 +36,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 
 		err = json.Unmarshal(data, &mapping)
 		if err != nil {
-			logging.Exception("error on decoding websocket message", err)
+			logging.Error().Printf("error on decoding websocket message: %s", err)
 			continue
 		}
 
@@ -45,7 +45,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 			switch strings.ToLower(message) {
 			case "stat":
 				{
-					if shared.ContainsScope(scopes, scope.ServersStat) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersStat) {
 						results, err := server.GetEnvironment().GetStats()
 						msg := messages.StatMessage{}
 						if err != nil {
@@ -60,32 +60,32 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 				}
 			case "start":
 				{
-					if shared.ContainsScope(scopes, scope.ServersStart) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersStart) {
 						_ = server.Start()
 					}
 					break
 				}
 			case "stop":
 				{
-					if shared.ContainsScope(scopes, scope.ServersStop) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersStop) {
 						_ = server.Stop()
 					}
 				}
 			case "install":
 				{
-					if shared.ContainsScope(scopes, scope.ServersInstall) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersInstall) {
 						_ = server.Install()
 					}
 				}
 			case "kill":
 				{
-					if shared.ContainsScope(scopes, scope.ServersStop) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersStop) {
 						_ = server.Kill()
 					}
 				}
 			case "reload":
 				{
-					if shared.ContainsScope(scopes, scope.ServersEditAdmin) {
+					if pufferpanel.ContainsScope(scopes, scope.ServersEditAdmin) {
 						_ = programs.Reload(server.Id())
 					}
 				}
@@ -104,7 +104,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 				}
 			case "file":
 				{
-					if !shared.ContainsScope(scopes, scope.ServersFilesGet) {
+					if !pufferpanel.ContainsScope(scopes, scope.ServersFilesGet) {
 						break
 					}
 
@@ -126,7 +126,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 						break
 					case "delete":
 						{
-							if !shared.ContainsScope(scopes, scope.ServersFilesPut) {
+							if !pufferpanel.ContainsScope(scopes, scope.ServersFilesPut) {
 								break
 							}
 
@@ -141,7 +141,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 						break
 					case "create":
 						{
-							if !shared.ContainsScope(scopes, scope.ServersFilesPut) {
+							if !pufferpanel.ContainsScope(scopes, scope.ServersFilesPut) {
 								break
 							}
 
@@ -160,7 +160,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []sco
 				_ = conn.WriteJSON(map[string]string{"error": "unknown command"})
 			}
 		} else {
-			logging.Error("message type is not a string, but was %s", reflect.TypeOf(messageType))
+			logging.Error().Printf("message type is not a string, but was %s", reflect.TypeOf(messageType))
 		}
 	}
 }
@@ -172,7 +172,7 @@ func handleGetFile(conn *websocket.Conn, server *programs.Program, path string, 
 		return
 	}
 
-	defer shared.Close(data.Contents)
+	defer pufferpanel.Close(data.Contents)
 
 	if data.FileList != nil {
 		_ = messages.Write(conn, messages.FileListMessage{FileList: data.FileList, CurrentPath: path})

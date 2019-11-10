@@ -18,10 +18,9 @@ package mkdir
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"os"
-
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"path/filepath"
 )
 
 type Mkdir struct {
@@ -29,8 +28,8 @@ type Mkdir struct {
 }
 
 func (m *Mkdir) Run(env envs.Environment) error {
-	logging.Debug("Making directory: %s\n", m.TargetFile)
+	logging.Info().Printf("Making directory: %s\n", m.TargetFile)
 	env.DisplayToConsole(true, "Creating directory: %s\n", m.TargetFile)
-	target := shared.JoinPath(env.GetRootDirectory(), m.TargetFile)
+	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
 	return os.MkdirAll(target, 0755)
 }

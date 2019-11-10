@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strconv"
 	"strings"
@@ -60,7 +60,7 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 			response.HandleError(c, err, http.StatusInternalServerError)
 			return
 		}
-		jwtToken, ok := token.(*shared.Token)
+		jwtToken, ok := token.(*pufferpanel.Token)
 		if !ok {
 			response.HandleError(c, err, http.StatusInternalServerError)
 			return
@@ -108,12 +108,12 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 		//if this is an audience of oauth2, we can use token directly
 		if ti.Audience == "oauth2" {
 			scopes := ti.PanelClaims.Scopes[serverId]
-			if scopes != nil && shared.ContainsScope(scopes, requiredScope) {
+			if scopes != nil && pufferpanel.ContainsScope(scopes, requiredScope) {
 				allowed = true
 			} else {
 				//if there isn't a defined rule, is this user an admin?
 				scopes := ti.PanelClaims.Scopes[""]
-				if scopes != nil && shared.ContainsScope(scopes, scope.ServersAdmin) {
+				if scopes != nil && pufferpanel.ContainsScope(scopes, scope.ServersAdmin) {
 					allowed = true
 				}
 			}
@@ -131,14 +131,14 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 				return
 			}
 
-			if shared.ContainsScope(perms.ToScopes(), requiredScope) {
+			if pufferpanel.ContainsScope(perms.ToScopes(), requiredScope) {
 				allowed = true
 			} else {
 				perms, err = ps.GetForUserAndServer(user.ID, nil)
 				if response.HandleError(c, err, http.StatusInternalServerError) {
 					return
 				}
-				if shared.ContainsScope(perms.ToScopes(), scope.ServersAdmin) {
+				if pufferpanel.ContainsScope(perms.ToScopes(), scope.ServersAdmin) {
 					allowed = true
 				}
 			}

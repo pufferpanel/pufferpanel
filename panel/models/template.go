@@ -15,13 +15,13 @@ package models
 
 import (
 	"encoding/json"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"strings"
 )
 
 //this is basically the template, just wrapped enough to be used in the database
 type Template struct {
-	shared.Template `gorm:"-"`
+	pufferpanel.Template `gorm:"-"`
 
 	Name     string `gorm:"type:varchar(100);PRIMARY_KEY" json:"name"`
 	RawValue string `gorm:"type:text" json:"-"`

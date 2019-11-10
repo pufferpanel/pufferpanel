@@ -19,7 +19,7 @@ package command
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"strings"
 )
 
@@ -30,7 +30,7 @@ type Command struct {
 
 func (c Command) Run(env envs.Environment) error {
 	for _, cmd := range c.Commands {
-		logging.Debug("Executing command: %s", cmd)
+		logging.Info().Printf("Executing command: %s", cmd)
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
 		parts := strings.Split(cmd, " ")
 		cmd := parts[0]

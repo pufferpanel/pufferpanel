@@ -5,7 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/pem"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"io"
@@ -40,7 +40,7 @@ func LoadPublicKey() (*ecdsa.PublicKey, error) {
 	}
 
 	f, err := os.OpenFile(viper.GetString("auth.publicKey"), os.O_RDONLY, 660)
-	defer shared.Close(f)
+	defer pufferpanel.Close(f)
 
 	var buf bytes.Buffer
 
@@ -48,7 +48,7 @@ func LoadPublicKey() (*ecdsa.PublicKey, error) {
 
 	block, _ := pem.Decode(buf.Bytes())
 	if block == nil {
-		return nil, ErrKeyNotPEM
+		return nil, pufferpanel.ErrKeyNotPEM
 	}
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
@@ -57,7 +57,7 @@ func LoadPublicKey() (*ecdsa.PublicKey, error) {
 
 	publicKey, ok := pub.(*ecdsa.PublicKey)
 	if !ok {
-		return nil, ErrKeyNotECDSA
+		return nil, pufferpanel.ErrKeyNotECDSA
 	}
 
 	SetPublicKey(publicKey)

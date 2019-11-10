@@ -19,12 +19,10 @@ package programs
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
@@ -48,25 +46,25 @@ func Initialize() {
 func LoadFromFolder() {
 	err := os.Mkdir(ServerFolder, 0755)
 	if err != nil && !os.IsExist(err) {
-		logging.Critical("Error creating server data folder: %s", err)
+		logging.Error().Fatalf("Error creating server data folder: %s", err)
 	}
 	programFiles, err := ioutil.ReadDir(ServerFolder)
 	if err != nil {
-		logging.Critical("Error reading from server data folder: %s", err)
+		logging.Error().Fatalf("Error reading from server data folder: %s", err)
 	}
 	var program *Program
 	for _, element := range programFiles {
 		if element.IsDir() {
 			continue
 		}
-		logging.Info("Attempting to load " + element.Name())
+		logging.Info().Printf("Attempting to load " + element.Name())
 		id := strings.TrimSuffix(element.Name(), filepath.Ext(element.Name()))
 		program, err = Load(id)
 		if err != nil {
-			logging.Exception(fmt.Sprintf("Error loading server details from json (%s)", element.Name()), err)
+			logging.Error().Printf("Error loading server details from json (%s): %s", element.Name(), err)
 			continue
 		}
-		logging.Info("Loaded server %s", program.Id())
+		logging.Info().Printf("Loaded server %s", program.Id())
 		allPrograms = append(allPrograms, program)
 	}
 }
@@ -85,7 +83,7 @@ func GetAll() []*Program {
 
 func Load(id string) (program *Program, err error) {
 	var data []byte
-	data, err = ioutil.ReadFile(shared.JoinPath(ServerFolder, id+".json"))
+	data, err = ioutil.ReadFile(filepath.Join(ServerFolder, id+".json"))
 	if len(data) == 0 || err != nil {
 		return
 	}
@@ -102,8 +100,8 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 
 	data.Identifier = id
 
-	var typeMap shared.Type
-	err = shared.UnmarshalTo(data.Server.Environment, &typeMap)
+	var typeMap pufferpanel.Type
+	err = pufferpanel.UnmarshalTo(data.Server.Environment, &typeMap)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +116,7 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 
 func Create(program *Program) error {
 	if GetFromCache(program.Id()) != nil {
-		return daemon.ErrServerAlreadyExists
+		return pufferpanel.ErrServerAlreadyExists
 	}
 
 	var err error
@@ -126,17 +124,17 @@ func Create(program *Program) error {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
-			_ = os.Remove(shared.JoinPath(ServerFolder, program.Id()+".json"))
+			_ = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
 			if program.Environment != nil {
 				_ = program.Environment.Delete()
 			}
 		}
 	}()
 
-	f, err := os.Create(shared.JoinPath(ServerFolder, program.Id()+".json"))
-	defer shared.Close(f)
+	f, err := os.Create(filepath.Join(ServerFolder, program.Id()+".json"))
+	defer pufferpanel.Close(f)
 	if err != nil {
-		logging.Exception("error writing server", err)
+		logging.Error().Printf("Error writing server: %s", err)
 		return err
 	}
 
@@ -146,12 +144,12 @@ func Create(program *Program) error {
 	err = encoder.Encode(program)
 
 	if err != nil {
-		logging.Exception("error writing server", err)
+		logging.Error().Printf("Error writing server: %s", err)
 		return err
 	}
 
-	var typeMap shared.Type
-	err = shared.UnmarshalTo(program.Server.Environment, &typeMap)
+	var typeMap pufferpanel.Type
+	err = pufferpanel.UnmarshalTo(program.Server.Environment, &typeMap)
 	if err != nil {
 		return err
 	}
@@ -197,9 +195,9 @@ func Delete(id string) (err error) {
 	if err != nil {
 		return
 	}
-	err = os.Remove(shared.JoinPath(ServerFolder, program.Id()+".json"))
+	err = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
 	if err != nil {
-		logging.Exception("error removing server", err)
+		logging.Error().Printf("Error removing server: %s", err)
 	}
 	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
 	return
@@ -220,7 +218,7 @@ func Save(id string) (err error) {
 		err = errors.New("no server with given id")
 		return
 	}
-	err = program.Save(shared.JoinPath(ServerFolder, id+".json"))
+	err = program.Save(filepath.Join(ServerFolder, id+".json"))
 	return
 }
 
@@ -230,10 +228,10 @@ func Reload(id string) (err error) {
 		err = errors.New("server does not exist")
 		return
 	}
-	logging.Info("Reloading server %s", program.Id())
+	logging.Info().Printf("Reloading server %s", program.Id())
 	newVersion, err := Load(id)
 	if err != nil {
-		logging.Exception("error reloading server", err)
+		logging.Error().Printf("Error reloading server: %s", err)
 		return
 	}
 

@@ -20,8 +20,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/commons"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"net/http"
 	"net/url"
@@ -47,13 +47,13 @@ func RefreshToken() bool {
 
 	clientId := viper.GetString("auth.clientId")
 	if clientId == "" {
-		logging.Exception("error talking to auth server", errors.New("client id not specified"))
+		logging.Error().Printf("error talking to auth server: %s", errors.New("client id not specified"))
 		return false
 	}
 
 	clientSecret := viper.GetString("auth.clientSecret")
 	if clientSecret == "" {
-		logging.Exception("error talking to auth server", errors.New("client secret not specified"))
+		logging.Error().Printf("error talking to auth server: %s", errors.New("client secret not specified"))
 		return false
 	}
 
@@ -69,9 +69,9 @@ func RefreshToken() bool {
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
 	response, err := client.Do(request)
-	defer commons.CloseResponse(response)
+	defer pufferpanel.CloseResponse(response)
 	if err != nil {
-		logging.Exception("error talking to auth server", err)
+		logging.Error().Printf("error talking to auth server: %s", err)
 		return false
 	}
 
@@ -102,8 +102,6 @@ func RefreshIfStale() {
 
 func createRequest(encodedData string) (request *http.Request) {
 	authUrl := viper.GetString("auth.url")
-
-	logging.Debug("Using standard http connection")
 	request, _ = http.NewRequest("POST", authUrl+"/oauth2/token", bytes.NewBufferString(encodedData))
 	return
 }

@@ -18,7 +18,7 @@ package operations
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/ops"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
@@ -34,31 +34,31 @@ func loadOpModules() {
 	if err != nil && os.IsNotExist(err) {
 		return
 	} else if err != nil {
-		logging.Exception("error reading module directory", err)
+		logging.Error().Printf("Error reading module directory: %s", err)
 	}
 
 	for _, file := range files {
-		logging.Info("Loading operation module: %s", file.Name())
+		logging.Info().Printf("Loading operation module: %s", file.Name())
 		p, e := plugin.Open(path.Join(directory, file.Name()))
 		if e != nil {
-			logging.Exception("error opening module", err)
+			logging.Error().Printf("Error opening module: %s", err)
 			continue
 		}
 
 		factory, e := p.Lookup("Factory")
 		if e != nil {
-			logging.Exception("error locating factory", err)
+			logging.Error().Printf("Error locating factory: %s", err)
 			continue
 		}
 
 		fty, ok := factory.(ops.OperationFactory)
 		if !ok {
-			logging.Error("expected OperationFactory, but found %s", reflect.TypeOf(factory).Name())
+			logging.Error().Printf("Expected OperationFactory, but found %s", reflect.TypeOf(factory).Name())
 			continue
 		}
 
 		commandMapping[fty.Key()] = fty
 
-		logging.Info("Loaded operation module: %s", fty.Key())
+		logging.Info().Printf("Loaded operation module: %s", fty.Key())
 	}
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
+	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
 )
 

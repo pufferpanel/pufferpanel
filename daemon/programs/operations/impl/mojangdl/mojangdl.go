@@ -20,10 +20,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/commons"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"net/http"
 )
 
@@ -66,21 +66,21 @@ func (op MojangDl) Run(env envs.Environment) error {
 
 	for _, version := range data.Versions {
 		if version.Id == targetVersion {
-			logging.Debug("Version %s json located, downloading from %s", version.Id, version.Url)
+			logging.Info().Printf("Version %s json located, downloading from %s", version.Id, version.Url)
 			env.DisplayToConsole(true, fmt.Sprintf("Version %s json located, downloading from %s\n", version.Id, version.Url))
 			//now, get the version json for this one...
 			return downloadServerFromJson(version.Url, op.Target, env)
 		}
 	}
 
-	env.DisplayToConsole(true, "Could not locate version " + targetVersion + "\n")
+	env.DisplayToConsole(true, "Could not locate version "+targetVersion+"\n")
 
 	return errors.New("Version not located: " + op.Version)
 }
 
 func downloadServerFromJson(url, target string, env envs.Environment) error {
 	response, err := client.Get(url)
-	defer commons.CloseResponse(response)
+	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func downloadServerFromJson(url, target string, env envs.Environment) error {
 
 	serverBlock := data.Downloads["server"]
 
-	logging.Debug("Version jar located, downloading from %s", serverBlock.Url)
+	logging.Info().Printf("Version jar located, downloading from %s", serverBlock.Url)
 	env.DisplayToConsole(true, fmt.Sprintf("Version jar located, downloading from %s\n", serverBlock.Url))
 
 	return environments.DownloadFile(serverBlock.Url, target, env)

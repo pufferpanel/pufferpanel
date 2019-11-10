@@ -17,17 +17,17 @@
 package cache
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/shared"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/viper"
 )
 
-func CreateCache() *shared.MemoryCache {
+func CreateCache() *pufferpanel.MemoryCache {
 	capacity := viper.GetInt("console.buffer")
 	if capacity <= 0 {
 		capacity = 50
 	}
-	return &shared.MemoryCache{
-		Buffer:   make([]shared.Message, 0),
+	return &pufferpanel.MemoryCache{
+		Buffer:   make([]pufferpanel.Message, 0),
 		Capacity: capacity,
 	}
 }
