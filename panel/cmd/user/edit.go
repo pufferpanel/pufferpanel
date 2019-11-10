@@ -18,7 +18,7 @@ var EditUserCmd = &cobra.Command{
 }
 
 func editUser(cmd *cobra.Command, args []string) {
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Error loading config: %s", err.Error())
 		return

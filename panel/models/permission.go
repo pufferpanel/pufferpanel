@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"reflect"
 )
 

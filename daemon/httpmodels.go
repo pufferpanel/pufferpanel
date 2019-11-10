@@ -1,6 +1,6 @@
 package daemon
 
-import "github.com/pufferpanel/pufferpanel/v2/shared"
+import "github.com/pufferpanel/pufferpanel/v2"
 
 type ServerIdResponse struct {
 	Id string `json:"id"`
@@ -21,11 +21,11 @@ type ServerRunning struct {
 }
 
 type ServerData struct {
-	Variables map[string]shared.Variable `json:"data"`
+	Variables map[string]pufferpanel.Variable `json:"data"`
 }
 
 type ServerDataAdmin struct {
-	*shared.Server
+	*pufferpanel.Server
 }
 
 type PufferdRunning struct {

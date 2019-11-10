@@ -5,11 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strconv"
 	"strings"
@@ -128,7 +128,7 @@ func handleTokenRequest(c *gin.Context) {
 
 			//validate token can auth on behalf of users
 			scopes := token.Claims.PanelClaims.Scopes[""]
-			if scopes == nil || len(scopes) == 0 || !shared.ContainsScope(scopes, scope.OAuth2Auth) {
+			if scopes == nil || len(scopes) == 0 || !pufferpanel.ContainsScope(scopes, scope.OAuth2Auth) {
 				c.JSON(http.StatusOK, &oauth2TokenResponse{Error: "unauthorized_client"})
 				return
 			}

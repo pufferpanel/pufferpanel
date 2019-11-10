@@ -17,7 +17,7 @@
 package operations
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/command"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/download"
@@ -28,7 +28,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/spongeforgedl"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/impl/writefile"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations/ops"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
 	"github.com/spf13/cast"
 )
 
@@ -52,15 +51,15 @@ func GenerateProcess(directions []interface{}, environment envs.Environment, dat
 	operationList := make([]ops.Operation, 0)
 	for _, mapping := range directions {
 
-		var typeMap shared.MetadataType
-		err := shared.UnmarshalTo(mapping, &typeMap)
+		var typeMap pufferpanel.MetadataType
+		err := pufferpanel.UnmarshalTo(mapping, &typeMap)
 		if err != nil {
 			return OperationProcess{}, err
 		}
 
 		factory := commandMapping[typeMap.Type]
 		if factory == nil {
-			return OperationProcess{}, daemon.ErrMissingFactory
+			return OperationProcess{}, pufferpanel.ErrMissingFactory
 		}
 
 		mapCopy := make(map[string]interface{}, 0)
@@ -70,22 +69,22 @@ func GenerateProcess(directions []interface{}, environment envs.Environment, dat
 			switch r := v.(type) {
 			case string:
 				{
-					mapCopy[k] = shared.ReplaceTokens(r, dataMap)
+					mapCopy[k] = pufferpanel.ReplaceTokens(r, dataMap)
 				}
 			case []string:
 				{
-					mapCopy[k] = shared.ReplaceTokensInArr(r, dataMap)
+					mapCopy[k] = pufferpanel.ReplaceTokensInArr(r, dataMap)
 				}
 			case map[string]string:
 				{
-					mapCopy[k] = shared.ReplaceTokensInMap(r, dataMap)
+					mapCopy[k] = pufferpanel.ReplaceTokensInMap(r, dataMap)
 				}
 			case []interface{}:
 				{
 					//if we can convert this to a string list, we can work with it
 					temp := cast.ToStringSlice(r)
 					if len(temp) == len(r) {
-						mapCopy[k] = shared.ReplaceTokensInArr(temp, dataMap)
+						mapCopy[k] = pufferpanel.ReplaceTokensInArr(temp, dataMap)
 					} else {
 						mapCopy[k] = v
 					}
@@ -95,7 +94,7 @@ func GenerateProcess(directions []interface{}, environment envs.Environment, dat
 			}
 		}
 
-		envMap := shared.ReplaceTokensInMap(env, dataMap)
+		envMap := pufferpanel.ReplaceTokensInMap(env, dataMap)
 
 		opCreate := ops.CreateOperation{
 			OperationArgs:        mapCopy,

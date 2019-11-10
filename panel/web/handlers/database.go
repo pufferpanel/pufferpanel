@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
+	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
 )
 
@@ -14,7 +14,7 @@ func NeedsDatabase(c *gin.Context) {
 	db, err := database.GetConnection()
 
 	if err != nil {
-		logging.Exception("Database not available", err)
+		logging.Error().Printf("Database not available: %s", err)
 		err = pufferpanel.ErrDatabaseNotAvailable
 	}
 

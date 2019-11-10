@@ -17,27 +17,26 @@
 package shutdown
 
 import (
-	"fmt"
 	"github.com/braintree/manners"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"os"
 	"runtime/debug"
 	"sync"
 )
 
 func CompleteShutdown() {
-	logging.Warn("Interrupt received, stopping servers")
+	logging.Info().Printf("Interrupt received, stopping servers")
 	wg := Shutdown()
 	wg.Wait()
-	logging.Info("All servers stopped")
+	logging.Info().Printf("All servers stopped")
 	os.Exit(0)
 }
 
 func Shutdown() *sync.WaitGroup {
 	defer func() {
 		if err := recover(); err != nil {
-			logging.Error("%+v\n%s", err, debug.Stack())
+			logging.Error().Printf("%+v\n%s", err, debug.Stack())
 		}
 	}()
 	wg := sync.WaitGroup{}
@@ -50,13 +49,13 @@ func Shutdown() *sync.WaitGroup {
 			defer wg.Done()
 			defer func() {
 				if err := recover(); err != nil {
-					logging.Error("%+v\n%s", err, debug.Stack())
+					logging.Error().Printf("%+v\n%s", err, debug.Stack())
 				}
 			}()
-			logging.Warn("Stopping program %s", e.Id())
+			logging.Info().Printf("Stopping program %s", e.Id())
 			running, err := e.IsRunning()
 			if err != nil {
-				logging.Exception(fmt.Sprintf("Error stopping server %s", e.Id()), err)
+				logging.Error().Printf("Error stopping server %s: %s", e.Id(), err)
 				return
 			}
 			if !running {
@@ -64,15 +63,15 @@ func Shutdown() *sync.WaitGroup {
 			}
 			err = e.Stop()
 			if err != nil {
-				logging.Exception(fmt.Sprintf("Error stopping server %s", e.Id()), err)
+				logging.Error().Printf("Error stopping server %s: %s", e.Id(), err)
 				return
 			}
 			err = e.GetEnvironment().WaitForMainProcess()
 			if err != nil {
-				logging.Exception(fmt.Sprintf("Error stopping server %s", e.Id()), err)
+				logging.Error().Printf("Error stopping server %s: %s", e.Id(), err)
 				return
 			}
-			logging.Warn("Stopped program %s", e.Id())
+			logging.Info().Printf("Stopped program %s", e.Id())
 		}(element)
 	}
 	return &wg

@@ -17,20 +17,20 @@
 package standard
 
 import (
+	"fmt"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"io"
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"syscall"
 	"time"
-
-	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/shirou/gopsutil/process"
-	"strings"
 )
 
 type standard struct {
@@ -45,7 +45,7 @@ func (s *standard) standardExecuteAsync(cmd string, args []string, env map[strin
 		return
 	}
 	if running {
-		err = daemon.ErrProcessRunning
+		err = pufferpanel.ErrProcessRunning
 		return
 	}
 	s.Wait.Wait()
@@ -64,12 +64,12 @@ func (s *standard) standardExecuteAsync(cmd string, args []string, env map[strin
 		return
 	}
 	s.stdInWriter = pipe
-	logging.Debug("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
+	logging.Info().Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
 		return
 	} else {
-		logging.Debug("Process started (%d)", s.mainProcess.Process.Pid)
+		logging.Info().Printf("Process started (%d)", s.mainProcess.Process.Pid)
 	}
 
 	go s.handleClose(callback)
@@ -82,7 +82,7 @@ func (s *standard) ExecuteInMainProcess(cmd string) (err error) {
 		return err
 	}
 	if !running {
-		err = daemon.ErrServerOffline
+		err = pufferpanel.ErrServerOffline
 		return
 	}
 	stdIn := s.stdInWriter
@@ -120,7 +120,7 @@ func (s *standard) GetStats() (*daemon.ServerStats, error) {
 		return nil, err
 	}
 	if !running {
-		return nil, daemon.ErrServerOffline
+		return nil, pufferpanel.ErrServerOffline
 	}
 	pr, err := process.NewProcess(int32(s.mainProcess.Process.Pid))
 	if err != nil {
@@ -186,7 +186,7 @@ func (s *standard) handleClose(callback func(graceful bool)) {
 	}
 
 	if s.mainProcess != nil && s.mainProcess.Process != nil {
-		s.mainProcess.Process.Release()
+		_ = s.mainProcess.Process.Release()
 	}
 
 	s.mainProcess = nil

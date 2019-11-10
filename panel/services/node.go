@@ -17,8 +17,8 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
 	"io"
 	"log"
 	"net/http"
@@ -141,7 +141,7 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 		err := <-ch
 
 		if err != nil {
-			logging.Exception("error proxying socket", err)
+			logging.Error().Printf("Error proxying socket: %s", err)
 		}
 	}(c, conn)
 

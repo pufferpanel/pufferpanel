@@ -19,14 +19,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"net/http"
@@ -272,7 +271,7 @@ func createServer(c *gin.Context) {
 
 	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
 	if nodeResponse != nil {
-		defer shared.Close(nodeResponse.Body)
+		defer pufferpanel.Close(nodeResponse.Body)
 	}
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -282,7 +281,7 @@ func createServer(c *gin.Context) {
 	if nodeResponse.StatusCode != http.StatusOK {
 		buf := new(bytes.Buffer)
 		_, _ = buf.ReadFrom(nodeResponse.Body)
-		logging.Build(logging.ERROR).WithMessage("Unexpected response from daemon: %+v\n%s").WithArgs(nodeResponse.StatusCode, buf.String()).Log()
+		logging.Error().Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, buf.String())
 		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
@@ -299,7 +298,7 @@ func createServer(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Exception("Error sending email", err)
+			logging.Error().Printf("Error sending email: %s", err)
 		}
 	}
 
@@ -464,7 +463,7 @@ func editServerUser(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Exception("Error sending email", err)
+			logging.Error().Printf("Error sending email: %s", err)
 		}
 	}
 
@@ -520,14 +519,14 @@ func removeServerUser(c *gin.Context) {
 }
 
 type serverCreation struct {
-	shared.Server
+	pufferpanel.Server
 
 	NodeId uint     `json:"node,string"`
 	Users  []string `json:"users"`
 	Name   string   `json:"name"`
 }
 
-func getFromData(variables map[string]shared.Variable, key string) interface{} {
+func getFromData(variables map[string]pufferpanel.Variable, key string) interface{} {
 	for k, v := range variables {
 		if k == key {
 			return v.Value
@@ -536,11 +535,11 @@ func getFromData(variables map[string]shared.Variable, key string) interface{} {
 	return nil
 }
 
-func getFromDataOrDefault(variables map[string]shared.Variable, key string, val interface{}) (interface{}, error) {
+func getFromDataOrDefault(variables map[string]pufferpanel.Variable, key string, val interface{}) (interface{}, error) {
 	res := getFromData(variables, key)
 
 	if res != nil {
-		return shared.Convert(res, val)
+		return pufferpanel.Convert(res, val)
 	}
 
 	return val, nil

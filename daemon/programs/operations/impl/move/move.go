@@ -18,11 +18,9 @@ package move
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"os"
 	"path/filepath"
-
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
 )
 
 type Move struct {
@@ -31,15 +29,15 @@ type Move struct {
 }
 
 func (m Move) Run(env envs.Environment) error {
-	source := shared.JoinPath(env.GetRootDirectory(), m.SourceFile)
-	target := shared.JoinPath(env.GetRootDirectory(), m.TargetFile)
+	source := filepath.Join(env.GetRootDirectory(), m.SourceFile)
+	target := filepath.Join(env.GetRootDirectory(), m.TargetFile)
 	result, valid := validateMove(source, target)
 	if !valid {
 		return nil
 	}
 
 	for k, v := range result {
-		logging.Debug("Moving file from %s to %s", source, target)
+		logging.Info().Printf("Moving file from %s to %s", source, target)
 		env.DisplayToConsole(true, "Moving file from %s to %s\n", m.SourceFile, m.TargetFile)
 		err := os.Rename(k, v)
 		if err != nil {
@@ -56,16 +54,16 @@ func validateMove(source string, target string) (result map[string]string, valid
 
 	if err != nil {
 		if os.IsNotExist(err) && len(sourceFiles) > 1 {
-			logging.Error("Target folder does not exist")
+			logging.Error().Printf("Target folder does not exist")
 			valid = false
 			return
 		} else if !os.IsNotExist(err) {
 			valid = false
-			logging.Exception("error reading target file", err)
+			logging.Error().Printf("Error reading target file: %s", err)
 			return
 		}
 	} else if info.IsDir() && len(sourceFiles) > 1 {
-		logging.Error("Cannot move multiple files to single file target")
+		logging.Error().Printf("Cannot move multiple files to single file target")
 		valid = false
 		return
 	}

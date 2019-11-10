@@ -21,9 +21,10 @@ package tty
 import (
 	"fmt"
 	"github.com/creack/pty"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"io"
@@ -46,7 +47,7 @@ func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, 
 		return
 	}
 	if running {
-		err = daemon.ErrProcessRunning
+		err = pufferpanel.ErrProcessRunning
 		return
 	}
 	t.Wait.Wait()
@@ -62,7 +63,7 @@ func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, 
 	t.Wait.Add(1)
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
-	logging.Debug("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+	logging.Info().Printf("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 	tty, err := pty.Start(pr)
 	if err != nil {
 		return
@@ -84,7 +85,7 @@ func (t *tty) ExecuteInMainProcess(cmd string) (err error) {
 		return err
 	}
 	if !running {
-		err = daemon.ErrServerOffline
+		err = pufferpanel.ErrServerOffline
 		return
 	}
 	stdIn := t.stdInWriter
@@ -122,7 +123,7 @@ func (t *tty) GetStats() (*daemon.ServerStats, error) {
 		return nil, err
 	}
 	if !running {
-		return nil, daemon.ErrServerOffline
+		return nil, pufferpanel.ErrServerOffline
 	}
 	pr, err := process.NewProcess(int32(t.mainProcess.Process.Pid))
 	if err != nil {

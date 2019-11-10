@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 )
 
@@ -44,6 +44,6 @@ type LoginRequestData struct {
 }
 
 type LoginResponse struct {
-	Session string `json:"session"`
-	Scopes   []scope.Scope   `json:"scopes,omitempty"`
+	Session string        `json:"session"`
+	Scopes  []scope.Scope `json:"scopes,omitempty"`
 }

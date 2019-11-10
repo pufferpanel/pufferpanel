@@ -89,7 +89,7 @@ func runAdd(cmd *cobra.Command, args []string) {
 		_ = survey.Ask(questions, &answers)
 	}
 
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Failed to load config: %s", err.Error())
 		return

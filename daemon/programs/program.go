@@ -19,12 +19,11 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs/operations"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
@@ -35,7 +34,7 @@ import (
 )
 
 type Program struct {
-	shared.Server
+	pufferpanel.Server
 
 	CrashCounter int
 	Environment  envs.Environment
@@ -89,7 +88,7 @@ func processQueue() {
 		if run, _ := program.IsRunning(); !run {
 			err := program.Start()
 			if err != nil {
-				logging.Exception("Error starting server "+program.Id(), err)
+				logging.Error().Printf("Error starting server %s: %s", program.Id(), err)
 			}
 		}
 	}
@@ -114,8 +113,8 @@ func (p *Program) DataToMap() map[string]interface{} {
 
 func CreateProgram() *Program {
 	return &Program{
-		Server: shared.Server{
-			Execution: shared.Execution{
+		Server: pufferpanel.Server{
+			Execution: pufferpanel.Execution{
 				Disabled:                false,
 				AutoStart:               false,
 				AutoRestartFromCrash:    false,
@@ -125,7 +124,7 @@ func CreateProgram() *Program {
 				EnvironmentVariables:    make(map[string]string, 0),
 			},
 			Type:           "standard",
-			Variables:      make(map[string]shared.Variable, 0),
+			Variables:      make(map[string]pufferpanel.Variable, 0),
 			Display:        "Unknown server",
 			Installation:   make([]interface{}, 0),
 			Uninstallation: make([]interface{}, 0),
@@ -137,14 +136,14 @@ func CreateProgram() *Program {
 //This includes starting the environment if it is not running.
 func (p *Program) Start() (err error) {
 	if !p.IsEnabled() {
-		logging.Error("Server %s is not enabled, cannot start", p.Id())
-		return daemon.ErrServerDisabled
+		logging.Error().Printf("Server %s is not enabled, cannot start", p.Id())
+		return pufferpanel.ErrServerDisabled
 	}
 	if running, err := p.IsRunning(); running || err != nil {
 		return err
 	}
 
-	logging.Debug("Starting server %s", p.Id())
+	logging.Info().Printf("Starting server %s", p.Id())
 	p.Environment.DisplayToConsole(true, "Starting server\n")
 	data := make(map[string]interface{})
 	for k, v := range p.Variables {
@@ -153,7 +152,7 @@ func (p *Program) Start() (err error) {
 
 	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.Environment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Exception("Error generating pre-execution steps", err)
+		logging.Error().Printf("Error generating pre-execution steps: %s", err)
 		p.Environment.DisplayToConsole(true, "Error running pre execute\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -161,7 +160,7 @@ func (p *Program) Start() (err error) {
 
 	err = process.Run(p.Environment)
 	if err != nil {
-		logging.Exception("Error running pre-execution steps", err)
+		logging.Error().Printf("Error running pre-execution steps: %s", err)
 		p.Environment.DisplayToConsole(true, "Error running pre execute\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -170,9 +169,9 @@ func (p *Program) Start() (err error) {
 	//HACK: add rootDir stuff
 	data["rootDir"] = p.Environment.GetRootDirectory()
 
-	err = p.Environment.ExecuteAsync(p.Execution.ProgramName, shared.ReplaceTokensInArr(p.Execution.Arguments, data), shared.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data), p.afterExit)
+	err = p.Environment.ExecuteAsync(p.Execution.ProgramName, pufferpanel.ReplaceTokensInArr(p.Execution.Arguments, data), pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data), p.afterExit)
 	if err != nil {
-		logging.Exception("error starting server "+p.Id(), err)
+		logging.Error().Printf("error starting server %s: %s", p.Id(), err)
 		p.Environment.DisplayToConsole(true, " Failed to start server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 	}
@@ -187,14 +186,14 @@ func (p *Program) Stop() (err error) {
 		return err
 	}
 
-	logging.Debug("Stopping server %s", p.Id())
+	logging.Info().Printf("Stopping server %s", p.Id())
 	if p.Execution.StopCode != 0 {
 		err = p.Environment.SendCode(p.Execution.StopCode)
 	} else {
 		err = p.Environment.ExecuteInMainProcess(p.Execution.StopCommand)
 	}
 	if err != nil {
-		logging.Exception("Error stopping server", err)
+		logging.Error().Printf("Error stopping server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to stop server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 	} else {
@@ -206,10 +205,10 @@ func (p *Program) Stop() (err error) {
 //Kills the program.
 //This will also stop the environment it is ran in.
 func (p *Program) Kill() (err error) {
-	logging.Debug("Killing server %s", p.Id())
+	logging.Info().Printf("Killing server %s", p.Id())
 	err = p.Environment.Kill()
 	if err != nil {
-		logging.Exception("Error killing server", err)
+		logging.Error().Printf("Error killing server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to kill server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 	} else {
@@ -221,11 +220,11 @@ func (p *Program) Kill() (err error) {
 //Creates any files needed for the program.
 //This includes creating the environment.
 func (p *Program) Create() (err error) {
-	logging.Debug("Creating server %s", p.Id())
+	logging.Info().Printf("Creating server %s", p.Id())
 	p.Environment.DisplayToConsole(true, "Allocating server\n")
 	err = p.Environment.Create()
 	if err != nil {
-		logging.Exception("Error creating server", err)
+		logging.Error().Printf("Error creating server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to create server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 	} else {
@@ -239,10 +238,10 @@ func (p *Program) Create() (err error) {
 //Destroys the server.
 //This will delete the server, environment, and any files related to it.
 func (p *Program) Destroy() (err error) {
-	logging.Debug("Destroying server %s", p.Id())
+	logging.Info().Printf("Destroying server %s", p.Id())
 	process, err := operations.GenerateProcess(p.Uninstallation, p.Environment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Exception("Error uninstalling server", err)
+		logging.Error().Printf("Error uninstalling server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to uninstall server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -250,7 +249,7 @@ func (p *Program) Destroy() (err error) {
 
 	err = process.Run(p.Environment)
 	if err != nil {
-		logging.Exception("Error uninstalling server", err)
+		logging.Error().Printf("Error uninstalling server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to uninstall server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -258,7 +257,7 @@ func (p *Program) Destroy() (err error) {
 
 	err = p.Environment.Delete()
 	if err != nil {
-		logging.Exception("Error uninstalling server", err)
+		logging.Error().Printf("Error uninstalling server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to uninstall server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 	}
@@ -267,14 +266,14 @@ func (p *Program) Destroy() (err error) {
 
 func (p *Program) Install() (err error) {
 	if !p.IsEnabled() {
-		logging.Error("Server %s is not enabled, cannot install", p.Id())
-		return daemon.ErrServerDisabled
+		logging.Error().Printf("Server %s is not enabled, cannot install", p.Id())
+		return pufferpanel.ErrServerDisabled
 	}
 
-	logging.Debug("Installing server %s", p.Id())
+	logging.Info().Printf("Installing server %s", p.Id())
 	running, err := p.IsRunning()
 	if err != nil {
-		logging.Exception("error checking server status", err)
+		logging.Error().Printf("Error checking server status: %s", err)
 		p.Environment.DisplayToConsole(true, "Error on checking to see if server is running\n")
 		return
 	}
@@ -284,7 +283,7 @@ func (p *Program) Install() (err error) {
 	}
 
 	if err != nil {
-		logging.Exception("Error stopping server", err)
+		logging.Error().Printf("Error stopping server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to stop server\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -294,7 +293,7 @@ func (p *Program) Install() (err error) {
 
 	err = os.MkdirAll(p.Environment.GetRootDirectory(), 0755)
 	if err != nil && !os.IsExist(err) {
-		logging.Exception("Error creating server directory", err)
+		logging.Error().Printf("Error creating server directory: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to create server directory\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -303,7 +302,7 @@ func (p *Program) Install() (err error) {
 	if len(p.Installation) > 0 {
 		process, err := operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
-			logging.Exception("Error installing server", err)
+			logging.Error().Printf("Error installing server: %s", err)
 			p.Environment.DisplayToConsole(true, "Failed to install server\n")
 			p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 			return err
@@ -311,7 +310,7 @@ func (p *Program) Install() (err error) {
 
 		err = process.Run(p.Environment)
 		if err != nil {
-			logging.Exception("Error installing server", err)
+			logging.Error().Printf("Error installing server: %s", err)
 			p.Environment.DisplayToConsole(true, "Failed to install server\n")
 			p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 			return err
@@ -368,7 +367,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 }
 
 func (p *Program) Save(file string) (err error) {
-	logging.Debug("Saving server %s", p.Id())
+	logging.Info().Printf("Saving server %s", p.Id())
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
@@ -379,9 +378,9 @@ func (p *Program) Save(file string) (err error) {
 	return
 }
 
-func (p *Program) Edit(data map[string]shared.Variable, overrideUser bool) (err error) {
+func (p *Program) Edit(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
 	for k, v := range data {
-		var elem shared.Variable
+		var elem pufferpanel.Variable
 
 		if _, ok := p.Variables[k]; ok {
 			elem = p.Variables[k]
@@ -401,7 +400,7 @@ func (p *Program) Edit(data map[string]shared.Variable, overrideUser bool) (err 
 	return
 }
 
-func (p *Program) GetData() map[string]shared.Variable {
+func (p *Program) GetData() map[string]pufferpanel.Variable {
 	return p.Variables
 }
 
@@ -445,17 +444,17 @@ func (p *Program) afterExit(graceful bool) {
 
 	processes, err := operations.GenerateProcess(p.Execution.PostExecution, p.Environment, mapping, p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Exception("Error running post processing for server " + p.Id(), err)
+		logging.Error().Printf("Error running post processing for server %s: %s", p.Id(), err)
 		p.Environment.DisplayToConsole(true, "Failed to run post-execution steps\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
 	}
 	p.Environment.DisplayToConsole(true, "Running post-execution steps\n")
-	logging.Debug("Running post execution steps: %s", p.Id())
+	logging.Info().Printf("Running post execution steps: %s", p.Id())
 
 	err = processes.Run(p.Environment)
 	if err != nil {
-		logging.Exception("Error running post processing for server", err)
+		logging.Error().Printf("Error running post processing for server: %s", err)
 		p.Environment.DisplayToConsole(true, "Failed to run post-execution steps\n")
 		p.Environment.DisplayToConsole(true, "%s\n", err.Error())
 		return
@@ -474,9 +473,9 @@ func (p *Program) afterExit(graceful bool) {
 }
 
 func (p *Program) GetItem(name string) (*FileData, error) {
-	targetFile := shared.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
-	if !shared.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, daemon.ErrIllegalFileAccess
+	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
+		return nil, pufferpanel.ErrIllegalFileAccess
 	}
 
 	info, err := os.Stat(targetFile)
@@ -501,7 +500,7 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 		}
 
 		//validate any symlinks are valid
-		files = shared.RemoveInvalidSymlinks(files, targetFile, p.GetEnvironment().GetRootDirectory())
+		files = pufferpanel.RemoveInvalidSymlinks(files, targetFile, p.GetEnvironment().GetRootDirectory())
 
 		for i, file := range files {
 			newFile := messages.FileDesc{
@@ -529,19 +528,19 @@ func (p *Program) GetItem(name string) (*FileData, error) {
 }
 
 func (p *Program) CreateFolder(name string) error {
-	folder := shared.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+	folder := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
-	if !shared.EnsureAccess(folder, p.GetEnvironment().GetRootDirectory()) {
-		return daemon.ErrIllegalFileAccess
+	if !pufferpanel.EnsureAccess(folder, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
 	}
 	return os.Mkdir(folder, 0755)
 }
 
 func (p *Program) OpenFile(name string) (io.WriteCloser, error) {
-	targetFile := shared.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
-	if !shared.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return nil, daemon.ErrIllegalFileAccess
+	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
+		return nil, pufferpanel.ErrIllegalFileAccess
 	}
 
 	file, err := os.Create(targetFile)
@@ -549,10 +548,10 @@ func (p *Program) OpenFile(name string) (io.WriteCloser, error) {
 }
 
 func (p *Program) DeleteItem(name string) error {
-	targetFile := shared.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+	targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
 
-	if !shared.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
-		return daemon.ErrIllegalFileAccess
+	if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
 	}
 
 	return os.RemoveAll(targetFile)

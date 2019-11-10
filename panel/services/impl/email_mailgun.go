@@ -3,7 +3,7 @@ package impl
 import (
 	"github.com/mailgun/mailgun-go"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 )
 
@@ -31,7 +31,7 @@ func SendEmailViaMailgun(to, subject, body string, async bool) error {
 		go func(mgI *mailgun.MailgunImpl, messageI *mailgun.Message) {
 			_, _, err := mgI.Send(messageI)
 			if err != nil {
-				logging.Exception("Error sending email", err)
+				logging.Error().Printf("Error sending email: %s", err)
 			}
 		}(mg, message)
 		return nil

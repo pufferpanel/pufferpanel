@@ -9,11 +9,11 @@ import (
 	"encoding/pem"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/spf13/viper"
 	"io"
 	"os"
@@ -33,7 +33,7 @@ func Generate(claims jwt.Claims) (string, error) {
 }
 
 func GenerateSession(id uint) (string, error) {
-	claims := &shared.Claim{
+	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "session",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
@@ -46,13 +46,13 @@ func GenerateSession(id uint) (string, error) {
 }
 
 func GenerateOAuthForClient(client *models.Client) (string, error) {
-	claims := &shared.Claim{
+	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		PanelClaims: shared.PanelClaims{
+		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]scope.Scope{
 				client.ServerId: client.Scopes,
 			},
@@ -63,13 +63,13 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 }
 
 func GenerateOAuthForNode(nodeId uint) (string, error) {
-	claims := &shared.Claim{
+	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		PanelClaims: shared.PanelClaims{
+		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]scope.Scope{
 				"": {scope.OAuth2Auth},
 			},
@@ -105,13 +105,13 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 		return "", err
 	}
 
-	claims := &shared.Claim{
+	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		PanelClaims: shared.PanelClaims{
+		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]scope.Scope{},
 		},
 	}
@@ -140,9 +140,9 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 	return Generate(claims)
 }
 
-func ParseToken(token string) (*shared.Token, error) {
+func ParseToken(token string) (*pufferpanel.Token, error) {
 	ValidateTokenLoaded()
-	return shared.ParseToken(&privateKey.PublicKey, token)
+	return pufferpanel.ParseToken(&privateKey.PublicKey, token)
 }
 
 func ValidateTokenLoaded() {
@@ -156,7 +156,7 @@ func ValidateTokenLoaded() {
 func load() {
 	var privKey *ecdsa.PrivateKey
 	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
-	defer shared.Close(privKeyFile)
+	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
 	} else if err == nil {
@@ -168,7 +168,7 @@ func load() {
 	}
 
 	if err != nil {
-		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()
+		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 
@@ -177,19 +177,19 @@ func load() {
 	pubKey := &privateKey.PublicKey
 	pubKeyEncoded, err := x509.MarshalPKIXPublicKey(pubKey)
 	if err != nil {
-		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()
+		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 
 	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_CREATE|os.O_RDWR, 0644)
-	defer shared.Close(pubKeyFile)
+	defer pufferpanel.Close(pubKeyFile)
 	if err != nil {
-		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()
+		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 	err = pem.Encode(pubKeyFile, &pem.Block{Type: "PUBLIC KEY", Bytes: pubKeyEncoded})
 	if err != nil {
-		logging.Build(logging.ERROR).WithMessage("internal error on token service").WithError(err).Log()
+		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 
@@ -209,7 +209,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
 	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
-	defer shared.Close(privKeyFile)
+	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return
 	}

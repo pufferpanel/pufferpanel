@@ -23,14 +23,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/itsjamie/gin-cors"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/httphandlers"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
 	"io"
@@ -140,7 +140,7 @@ func StartServer(c *gin.Context) {
 		go func() {
 			err := server.Start()
 			if err != nil {
-				logging.Exception(fmt.Sprintf("Error starting server %s", server.Id()), err)
+				logging.Error().Printf("Error starting server %s: %s", server.Id(), err)
 			}
 		}()
 		c.Status(http.StatusAccepted)
@@ -225,7 +225,7 @@ func CreateServer(c *gin.Context) {
 	prg, _ := programs.Get(serverId)
 
 	if prg != nil {
-		response.HandleError(c, daemon.ErrServerAlreadyExists, http.StatusConflict)
+		response.HandleError(c, pufferpanel.ErrServerAlreadyExists, http.StatusConflict)
 		return
 	}
 
@@ -233,7 +233,7 @@ func CreateServer(c *gin.Context) {
 	err := json.NewDecoder(c.Request.Body).Decode(prg)
 
 	if err != nil {
-		logging.Exception("error decoding JSON body", err)
+		logging.Error().Printf("Error decoding JSON body: %s", err)
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -413,7 +413,7 @@ func GetServer(c *gin.Context) {
 // @Param id path string true "Server Identifier"
 // @Router /server/{id} [get]
 func GetServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*shared.Server)
+	item, _ := c.MustGet("server").(*pufferpanel.Server)
 
 	c.JSON(200, &daemon.ServerDataAdmin{Server: item})
 }
@@ -437,19 +437,18 @@ func GetFile(c *gin.Context) {
 	server := item.(*programs.Program)
 
 	targetPath := c.Param("filename")
-	logging.Debug("Getting following file: %s", targetPath)
 
 	data, err := server.GetItem(targetPath)
 	defer func() {
 		if data != nil {
-			shared.Close(data.Contents)
+			pufferpanel.Close(data.Contents)
 		}
 	}()
 
 	if err != nil {
 		if os.IsNotExist(err) {
 			c.AbortWithStatus(404)
-		} else if err == daemon.ErrIllegalFileAccess {
+		} else if err == pufferpanel.ErrIllegalFileAccess {
 			response.HandleError(c, err, http.StatusBadRequest)
 		} else {
 			response.HandleError(c, err, http.StatusInternalServerError)
@@ -521,7 +520,7 @@ func PutFile(c *gin.Context) {
 	}
 
 	file, err := server.OpenFile(targetPath)
-	defer shared.Close(file)
+	defer pufferpanel.Close(file)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		_, err = io.Copy(file, sourceFile)
@@ -638,7 +637,7 @@ func GetLogs(c *gin.Context) {
 
 	castedTime, ok := cast.ToInt64E(time)
 	if ok != nil {
-		response.HandleError(c, daemon.ErrInvalidUnixTime, http.StatusBadRequest)
+		response.HandleError(c, pufferpanel.ErrInvalidUnixTime, http.StatusBadRequest)
 		return
 	}
 

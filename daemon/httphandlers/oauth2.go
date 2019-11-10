@@ -18,11 +18,11 @@ package httphandlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/response"
-	"github.com/pufferpanel/pufferpanel/v2/shared/scope"
+	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strings"
 )
@@ -41,13 +41,13 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 		if authHeader == "" {
 			authToken = c.Query("accessToken")
 			if authToken == "" {
-				response.HandleError(c, daemon.ErrMissingAccessToken, http.StatusBadRequest)
+				response.HandleError(c, pufferpanel.ErrMissingAccessToken, http.StatusBadRequest)
 				return
 			}
 		} else {
 			authArr := strings.SplitN(authHeader, " ", 2)
 			if len(authArr) < 2 || authArr[0] != "Bearer" {
-				response.HandleError(c, daemon.ErrNotBearerToken, http.StatusBadRequest)
+				response.HandleError(c, pufferpanel.ErrNotBearerToken, http.StatusBadRequest)
 				return
 			}
 			authToken = authArr[1]
@@ -62,7 +62,7 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 			}
 		}
 
-		token, err := shared.ParseToken(key, authToken)
+		token, err := pufferpanel.ParseToken(key, authToken)
 		if response.HandleError(c, err, http.StatusForbidden) {
 			return
 		}
@@ -76,8 +76,8 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 			scopes = append(scopes, token.Claims.PanelClaims.Scopes[""]...)
 		}
 
-		if !shared.ContainsScope(scopes, requiredScope) {
-			response.HandleError(c, daemon.CreateErrMissingScope(requiredScope), http.StatusForbidden)
+		if !pufferpanel.ContainsScope(scopes, requiredScope) {
+			response.HandleError(c, pufferpanel.CreateErrMissingScope(requiredScope), http.StatusForbidden)
 			return
 		}
 

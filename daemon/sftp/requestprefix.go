@@ -19,14 +19,14 @@ package sftp
 import (
 	"errors"
 	"fmt"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/pkg/sftp"
-	utils "github.com/pufferpanel/pufferpanel/v2/shared"
-	"github.com/pufferpanel/pufferpanel/v2/shared/logging"
 )
 
 type requestPrefix struct {
@@ -40,47 +40,29 @@ func CreateRequestPrefix(prefix string) sftp.Handlers {
 }
 
 func (rp requestPrefix) Fileread(request *sftp.Request) (io.ReaderAt, error) {
-	logging.Devel("-----------------")
-	logging.Devel("read request: %s", request.Filepath)
-	logging.Devel("Flags: %v", request.Flags)
-	logging.Devel("Attributes: %v", request.Attrs)
-	logging.Devel("Target: %v", request.Target)
-	logging.Devel("-----------------")
 	file, err := rp.getFile(request.Filepath, os.O_RDONLY, 0644)
 	if err != nil {
-		logging.Devel("pp-sftp internal error: %s", err)
+		logging.Error().Printf("pp-sftp internal error: %s", err)
 	}
 	return file, err
 }
 
 func (rp requestPrefix) Filewrite(request *sftp.Request) (io.WriterAt, error) {
-	logging.Devel("-----------------")
-	logging.Devel("write request: %s", request.Filepath)
-	logging.Devel("Flags: %v", request.Flags)
-	logging.Devel("Attributes: %v", request.Attrs)
-	logging.Devel("Target: %v", request.Target)
-	logging.Devel("-----------------")
 	file, err := rp.getFile(request.Filepath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 	return file, err
 }
 
 func (rp requestPrefix) Filecmd(request *sftp.Request) error {
-	logging.Devel("-----------------")
-	logging.Devel("cmd request [%s]: %s", request.Method, request.Filepath)
-	logging.Devel("Flags: %v", request.Flags)
-	logging.Devel("Attributes: %v", request.Attrs)
-	logging.Devel("Target: %v", request.Target)
-	logging.Devel("-----------------")
 	sourceName, err := rp.validate(request.Filepath)
 	if err != nil {
-		logging.Devel("pp-sftp internal error: %s", err)
+		logging.Error().Printf("pp-sftp internal error: %s", err)
 		return rp.maskError(err)
 	}
 	var targetName string
 	if request.Target != "" {
 		targetName, err = rp.validate(request.Target)
 		if err != nil {
-			logging.Devel("pp-sftp internal error: %s", err)
+			logging.Error().Printf("pp-sftp internal error: %s", err)
 			return rp.maskError(err)
 		}
 	}
@@ -115,15 +97,9 @@ func (rp requestPrefix) Filecmd(request *sftp.Request) error {
 }
 
 func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
-	logging.Devel("-----------------")
-	logging.Devel("list request [%s]: %s", request.Method, request.Filepath)
-	logging.Devel("Flags: %v", request.Flags)
-	logging.Devel("Attributes: %v", request.Attrs)
-	logging.Devel("Target: %v", request.Target)
-	logging.Devel("-----------------")
 	sourceName, err := rp.validate(request.Filepath)
 	if err != nil {
-		logging.Devel("pp-sftp internal error: %s", err)
+		logging.Error().Printf("pp-sftp internal error: %s", err)
 		return nil, rp.maskError(err)
 	}
 	switch request.Method {
@@ -143,7 +119,7 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 			}
 
 			//validate any symlinks are valid
-			files = utils.RemoveInvalidSymlinks(files, sourceName, rp.prefix)
+			files = pufferpanel.RemoveInvalidSymlinks(files, sourceName, rp.prefix)
 
 			return listerat(files), nil
 		}
@@ -176,7 +152,7 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 				target = rp.prefix + string(os.PathSeparator) + target
 			}
 
-			if !utils.EnsureAccess(target, rp.prefix) {
+			if !pufferpanel.EnsureAccess(target, rp.prefix) {
 				return nil, rp.maskError(errors.New("access denied"))
 			}
 
@@ -200,10 +176,9 @@ func (rp requestPrefix) Filelist(request *sftp.Request) (sftp.ListerAt, error) {
 }
 
 func (rp requestPrefix) getFile(path string, flags int, mode os.FileMode) (*os.File, error) {
-	logging.Devel("Requesting path: %s", path)
 	filePath, err := rp.validate(path)
 	if err != nil {
-		logging.Devel("pp-sftp internal error: %s", err)
+		logging.Error().Printf("pp-sftp internal error: %s", err)
 		return nil, rp.maskError(err)
 	}
 
@@ -217,7 +192,7 @@ func (rp requestPrefix) getFile(path string, flags int, mode os.FileMode) (*os.F
 			err = nil
 			err = os.MkdirAll(folderPath, 0755)
 			if err != nil {
-				logging.Devel("pp-sftp internal error: %s", err)
+				logging.Error().Printf("pp-sftp internal error: %s", err)
 				return nil, rp.maskError(err)
 			}
 			file, err = os.Create(filePath)
@@ -228,13 +203,10 @@ func (rp requestPrefix) getFile(path string, flags int, mode os.FileMode) (*os.F
 		file, err = os.OpenFile(filePath, flags, mode)
 	}
 	if err != nil {
-		logging.Devel("pp-sftp internal error: %s", err)
+		logging.Error().Printf("pp-sftp internal error: %s", err)
 		return nil, rp.maskError(err)
 	}
 
-	if file == nil {
-		logging.Devel("no file loaded at this stage")
-	}
 	return file, err
 }
 
@@ -248,7 +220,7 @@ func (rp requestPrefix) validate(path string) (string, error) {
 
 func (rp requestPrefix) tryPrefix(path string) (bool, string) {
 	newPath := filepath.Clean(filepath.Join(rp.prefix, path))
-	if utils.EnsureAccess(newPath, rp.prefix) {
+	if pufferpanel.EnsureAccess(newPath, rp.prefix) {
 		return true, newPath
 	} else {
 		return false, ""

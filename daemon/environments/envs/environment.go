@@ -19,9 +19,9 @@ package envs
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/utils"
-	"github.com/pufferpanel/pufferpanel/v2/shared"
 	"github.com/spf13/viper"
 	"io"
 	"os"
@@ -76,7 +76,7 @@ type BaseEnvironment struct {
 	Environment
 	Type              string
 	RootDirectory     string                 `json:"root"`
-	ConsoleBuffer     shared.Cache         `json:"-"`
+	ConsoleBuffer     pufferpanel.Cache      `json:"-"`
 	WSManager         utils.WebSocketManager `json:"-"`
 	Wait              *sync.WaitGroup        `json:"-"`
 	ExecutionFunction ExecutionFunction      `json:"-"`
