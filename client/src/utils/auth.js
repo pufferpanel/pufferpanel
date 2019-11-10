@@ -22,6 +22,6 @@ export function isAdmin () {
 }
 
 export function hasScope (scope) {
-  const scopes = localStorage.getItem('scopes') ? localStorage.getItem('scopes') : '[]'
+  const scopes = localStorage.getItem('scopes') || '[]'
   return JSON.parse(scopes).indexOf(scope) !== -1
 }

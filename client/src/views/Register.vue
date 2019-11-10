@@ -173,7 +173,7 @@ export default {
         if (response.status >= 200 && response.status < 300) {
           if (response.data.token && response.data.token !== '') {
             Cookies.set('puffer_auth', response.data.token)
-            localStorage.setItem('scopes', JSON.stringify(response.data.scopes ? response.data.scopes : '[]'))
+            localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
             vue.$emit('logged-in')
             vue.$router.push({ name: 'Servers' })
           } else {
