@@ -18,5 +18,10 @@ export function hasAuth () {
 }
 
 export function isAdmin () {
-  return localStorage.getItem('admin') === 'true'
+  return hasScope('servers.admin')
+}
+
+export function hasScope (scope) {
+  const scopes = localStorage.getItem('scopes') ? localStorage.getItem('scopes') : '[]'
+  return JSON.parse(scopes).indexOf(scope) !== -1
 }

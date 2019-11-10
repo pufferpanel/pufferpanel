@@ -130,7 +130,7 @@ export default {
       }).then(function (response) {
         if (response.status >= 200 && response.status < 300) {
           Cookies.set('puffer_auth', response.data.session)
-          localStorage.setItem('admin', response.data.admin)
+          localStorage.setItem('scopes', JSON.stringify(response.data.scopes ? response.data.scopes : '[]'))
           data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
