@@ -60,7 +60,7 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	path := "/server/" + serverId + c.Param("path")
+	path := strings.TrimPrefix(c.Request.URL.Path, "/daemon")
 
 	s, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
