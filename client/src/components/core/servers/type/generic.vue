@@ -49,6 +49,11 @@
         <core-servers-users :server="server" />
       </v-col>
     </v-row>
+    <v-row v-if="server.permissions.deleteServer || isAdmin()">
+      <v-col>
+        <core-servers-admin :server="server" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
