@@ -155,7 +155,7 @@ func ValidateTokenLoaded() {
 
 func load() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("panel.token.private"), os.O_RDONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -181,7 +181,7 @@ func load() {
 		return
 	}
 
-	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_CREATE|os.O_RDWR, 0644)
+	pubKeyFile, err := os.OpenFile(viper.GetString("panel.token.public"), os.O_CREATE|os.O_RDWR, 0644)
 	defer pufferpanel.Close(pubKeyFile)
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
@@ -208,7 +208,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("panel.token.private"), os.O_CREATE|os.O_WRONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return

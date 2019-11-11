@@ -65,7 +65,7 @@ func runServer() error {
 		},
 	}
 
-	serverKeyFile := viper.GetString("listen.sftpKey")
+	serverKeyFile := viper.GetString("daemon.sftp.key")
 
 	_, e := os.Stat(serverKeyFile)
 
@@ -106,7 +106,7 @@ func runServer() error {
 
 	config.AddHostKey(hkey)
 
-	bind := viper.GetString("listen.sftp")
+	bind := viper.GetString("daemon.sftp.host")
 
 	sftpServer, e = net.Listen("tcp", bind)
 	if e != nil {

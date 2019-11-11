@@ -36,7 +36,7 @@ func RegisterRoutes(e *gin.Engine) {
 		middleware.Recover(c)
 	})
 
-	ClientPath = viper.GetString("web.files")
+	ClientPath = viper.GetString("panel.web.files")
 	IndexFile = ClientPath + "/index.html"
 
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))

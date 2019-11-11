@@ -82,7 +82,7 @@ func DownloadFileToCache(url, fileName string) error {
 }
 
 func DownloadViaMaven(downloadUrl string, env envs.Environment) (string, error) {
-	localPath := path.Join(viper.GetString("data.cache"), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
+	localPath := path.Join(viper.GetString("daemon.data.cache"), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
 		localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)

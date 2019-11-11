@@ -68,7 +68,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	c := make(chan error)
 
 	srv := &http.Server{
-		Addr:    viper.GetString("web.host"),
+		Addr:    viper.GetString("panel.web.host"),
 		Handler: router,
 	}
 
@@ -99,8 +99,10 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	if viper.GetBool("localNode") {
 		//local node!
-		sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
-		c <- <-entry.Start()
+		go func() {
+			sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+			c <- <-entry.Start()
+		}()
 	}
 
 	return <-c

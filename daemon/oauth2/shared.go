@@ -45,13 +45,13 @@ func RefreshToken() bool {
 		return false
 	}
 
-	clientId := viper.GetString("auth.clientId")
+	clientId := viper.GetString("daemon.auth.clientId")
 	if clientId == "" {
 		logging.Error().Printf("error talking to auth server: %s", errors.New("client id not specified"))
 		return false
 	}
 
-	clientSecret := viper.GetString("auth.clientSecret")
+	clientSecret := viper.GetString("daemon.auth.clientSecret")
 	if clientSecret == "" {
 		logging.Error().Printf("error talking to auth server: %s", errors.New("client secret not specified"))
 		return false
@@ -101,7 +101,7 @@ func RefreshIfStale() {
 }
 
 func createRequest(encodedData string) (request *http.Request) {
-	authUrl := viper.GetString("auth.url")
+	authUrl := viper.GetString("daemon.auth.url")
 	request, _ = http.NewRequest("POST", authUrl+"/oauth2/token", bytes.NewBufferString(encodedData))
 	return
 }

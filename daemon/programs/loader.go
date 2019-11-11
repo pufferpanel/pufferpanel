@@ -36,7 +36,7 @@ var (
 )
 
 func init() {
-	ServerFolder = viper.GetString("data.servers")
+	ServerFolder = viper.GetString("daemon.data.servers")
 }
 
 func Initialize() {
