@@ -54,12 +54,19 @@ func updateSelf(c *gin.Context) {
 		return
 	}
 
-	if us.IsValidCredentials(user, viewModel.Password) {
+	if !us.IsValidCredentials(user, viewModel.Password) {
 		response.HandleError(c, pufferpanel.ErrInvalidCredentials, http.StatusInternalServerError)
 		return
 	}
 
 	viewModel.CopyToModel(user)
+
+	if viewModel.NewPassword != "" {
+		err := user.SetPassword(viewModel.NewPassword)
+		if response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
+	}
 
 	if err := us.Update(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
