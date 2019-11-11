@@ -134,6 +134,10 @@ func unzip(sourceZip, targetDir string) error {
 		if f.FileInfo().IsDir() {
 			continue
 		}
+		if strings.HasPrefix(filepath.Base(f.Name), ".") {
+			continue
+		}
+
 		fmt.Printf("Extracting %s\n", f.Name)
 		exportPath := filepath.Join(targetDir, f.Name)
 		err := os.MkdirAll(filepath.Dir(exportPath), 0644)
