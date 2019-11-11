@@ -81,5 +81,5 @@ func (ps *Permission) UpdatePermissions(perms *models.Permissions) error {
 func (ps *Permission) Remove(perms *models.Permissions) error {
 	//update oauth2 with new information
 
-	return ps.DB.Where(perms).Delete(perms).Error
+	return ps.DB.Delete(perms).Error
 }
