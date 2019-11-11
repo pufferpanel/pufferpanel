@@ -308,12 +308,7 @@ func createServer(c *gin.Context) {
 func deleteServer(c *gin.Context) {
 	var err error
 
-	db, err := database.GetConnection()
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-	db.Begin()
-
+	db := handlers.GetDatabase(c)
 	ss := &services.Server{DB: db}
 
 	t, exist := c.Get("server")
