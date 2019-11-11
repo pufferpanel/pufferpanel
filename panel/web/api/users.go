@@ -46,7 +46,7 @@ func searchUsers(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	search := newUserSearch()
-	err = c.BindJSON(search)
+	err = c.ShouldBind(search)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
@@ -173,10 +173,10 @@ func deleteUser(c *gin.Context) {
 }
 
 type UserSearch struct {
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	PageLimit uint   `json:"limit"`
-	Page      uint   `json:"page"`
+	Username  string `form:"username"`
+	Email     string `form:"email"`
+	PageLimit uint   `form:"limit"`
+	Page      uint   `form:"page"`
 }
 
 type UserSearchResponse struct {
