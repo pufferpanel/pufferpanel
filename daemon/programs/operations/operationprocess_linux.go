@@ -28,7 +28,7 @@ import (
 )
 
 func loadOpModules() {
-	var directory = path.Join(viper.GetString("data.modules"), "operations")
+	var directory = path.Join(viper.GetString("daemon.data.modules"), "operations")
 
 	files, err := ioutil.ReadDir(directory)
 	if err != nil && os.IsNotExist(err) {

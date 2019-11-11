@@ -39,7 +39,7 @@ func LoadPublicKey() (*ecdsa.PublicKey, error) {
 		return publicKey, nil
 	}
 
-	f, err := os.OpenFile(viper.GetString("auth.publicKey"), os.O_RDONLY, 660)
+	f, err := os.OpenFile(viper.GetString("daemon.auth.publicKey"), os.O_RDONLY, 660)
 	defer pufferpanel.Close(f)
 
 	var buf bytes.Buffer

@@ -85,7 +85,7 @@ func GetEmailService() EmailService {
 }
 
 func (es *emailService) SendEmail(to, template string, data map[string]interface{}, async bool) (err error) {
-	provider := viper.GetString("email.provider")
+	provider := viper.GetString("panel.email.provider")
 	if provider == "" {
 		return pufferpanel.ErrEmailNotConfigured
 	}
@@ -100,8 +100,8 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 		data = make(map[string]interface{})
 	}
 
-	data["COMPANY_NAME"] = viper.GetString("settings.companyName")
-	data["MASTER_URL"] = viper.GetString("settings.masterUrl")
+	data["COMPANY_NAME"] = viper.GetString("panel.settings.companyName")
+	data["MASTER_URL"] = viper.GetString("panel.settings.masterUrl")
 
 	subjectBuilder := &strings.Builder{}
 	err = tmpl.Subject.Execute(subjectBuilder, data)

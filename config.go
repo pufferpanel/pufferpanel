@@ -16,6 +16,7 @@ func init() {
 
 	//global settings
 	viper.SetDefault("logs", "logs")
+	viper.SetDefault("localNode", true)
 
 	//panel specific settings
 	viper.SetDefault("panel.database.session", 60)
@@ -27,9 +28,12 @@ func init() {
 	viper.SetDefault("panel.web.files", "www")
 	viper.SetDefault("panel.email.templates", "email/emails.json")
 	viper.SetDefault("panel.email.provider", "")
+	viper.SetDefault("panel.email.from", "")
+	viper.SetDefault("panel.email.domain", "")
+	viper.SetDefault("panel.email.key", "")
 	viper.SetDefault("panel.settings.companyName", "PufferPanel")
 	viper.SetDefault("panel.settings.masterUrl", "http://localhost:8080")
-	viper.SetDefault("panel.localNode", true)
+	viper.SetDefault("panel.database.log", false)
 
 	//daemon specific settings
 	viper.SetDefault("daemon.console.buffer", 50)
@@ -45,6 +49,7 @@ func init() {
 	viper.SetDefault("daemon.data.servers", "servers")
 	viper.SetDefault("daemon.data.modules", "modules")
 	viper.SetDefault("daemon.data.crashLimit", 3)
+	viper.SetDefault("daemon.data.maxWSDownloadSize", int64(1024 * 1024 * 20))
 }
 
 func LoadConfig(path string) error {

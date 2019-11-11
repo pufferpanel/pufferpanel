@@ -8,19 +8,19 @@ import (
 )
 
 func SendEmailViaMailgun(to, subject, body string, async bool) error {
-	domain := viper.GetString("email.domain")
+	domain := viper.GetString("panel.email.domain")
 	if domain == "" {
 		return pufferpanel.ErrSettingNotConfigured("domain")
 	}
 
-	from := viper.GetString("email.from")
+	from := viper.GetString("panel.email.from")
 	if from == "" {
-		return pufferpanel.ErrSettingNotConfigured("email.from")
+		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
 	}
 
-	key := viper.GetString("email.key")
+	key := viper.GetString("panel.email.key")
 	if key == "" {
-		return pufferpanel.ErrSettingNotConfigured("email.key")
+		return pufferpanel.ErrSettingNotConfigured("panel.email.key")
 	}
 
 	mg := mailgun.NewMailgun(domain, key)

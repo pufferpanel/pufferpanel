@@ -73,7 +73,7 @@ func runServices() error {
 
 	sftp.Run()
 
-	web := viper.GetString("listen.web")
+	web := viper.GetString("daemon.web.host")
 
 	logging.Debug().Printf("Starting web access on %s", web)
 	err := manners.ListenAndServe(web, router)

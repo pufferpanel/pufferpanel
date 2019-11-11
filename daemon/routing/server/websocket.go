@@ -178,7 +178,7 @@ func handleGetFile(conn *websocket.Conn, server *programs.Program, path string, 
 		_ = messages.Write(conn, messages.FileListMessage{FileList: data.FileList, CurrentPath: path})
 	} else if data.Contents != nil {
 		//if the file is small enough, we'll send it over the websocket
-		if editMode && data.ContentLength < viper.GetInt64("data.maxWSDownloadSize") {
+		if editMode && data.ContentLength < viper.GetInt64("daemon.data.maxWSDownloadSize") {
 			var buf bytes.Buffer
 			_, _ = io.Copy(&buf, data.Contents)
 			_ = messages.Write(conn, messages.FileListMessage{Contents: buf.Bytes(), Filename: data.Name})

@@ -22,7 +22,7 @@ import (
 )
 
 func CreateCache() *pufferpanel.MemoryCache {
-	capacity := viper.GetInt("console.buffer")
+	capacity := viper.GetInt("daemon.console.buffer")
 	if capacity <= 0 {
 		capacity = 50
 	}

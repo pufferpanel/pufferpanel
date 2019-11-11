@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/panel/cmd/user"
+	"github.com/pufferpanel/pufferpanel/v2/cmd/user"
 	"github.com/spf13/cobra"
 )
 

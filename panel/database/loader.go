@@ -38,11 +38,11 @@ func openConnection() (err error) {
 		return
 	}
 
-	dialect := viper.GetString("database.dialect")
+	dialect := viper.GetString("panel.database.dialect")
 	if dialect == "" {
 		dialect = "sqlite3"
 	}
-	connString := viper.GetString("database.url")
+	connString := viper.GetString("panel.database.url")
 	if connString == "" {
 		switch dialect {
 		case "mysql":
@@ -68,7 +68,7 @@ func openConnection() (err error) {
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
 
-	if viper.GetBool("database.log") {
+	if viper.GetBool("panel.database.log") {
 		logging.Info().Printf("Database logging enabled")
 		dbConn.LogMode(true)
 	}
@@ -104,7 +104,7 @@ func migrateModels() (err error) {
 		dbConn.AutoMigrate(v)
 	}
 
-	dialect := viper.GetString("database.dialect")
+	dialect := viper.GetString("panel.database.dialect")
 	if dialect == "" || dialect == "sqlite3" {
 		return
 	}

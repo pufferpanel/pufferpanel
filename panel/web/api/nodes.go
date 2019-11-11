@@ -230,7 +230,7 @@ func deployNode(c *gin.Context) {
 	}
 
 	services.ValidateTokenLoaded()
-	file, err := ioutil.ReadFile(viper.GetString("token.public"))
+	file, err := ioutil.ReadFile(viper.GetString("panel.token.public"))
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

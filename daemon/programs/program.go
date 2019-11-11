@@ -466,7 +466,7 @@ func (p *Program) afterExit(graceful bool) {
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
-	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < viper.GetInt("data.crashLimit") {
+	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < viper.GetInt("daemon.data.crashLimit") {
 		p.CrashCounter++
 		StartViaService(p)
 	}
