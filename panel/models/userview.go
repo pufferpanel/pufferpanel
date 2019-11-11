@@ -23,7 +23,8 @@ type UserView struct {
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
-	Password string `json:"password,omitempty"`
+	Password    string `json:"password,omitempty"`
+	NewPassword string `json:"newPassword,omitempty"`
 }
 
 func FromUser(model *User) *UserView {
