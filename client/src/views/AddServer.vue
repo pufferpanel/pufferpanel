@@ -418,9 +418,7 @@ export default {
       this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
-      this.$http.post('/api/users', {
-        username: this.userInput + '*'
-      }, {
+      this.$http.get(`/api/users?username=${this.userInput}*`, {
         cancelToken: this.userCancelSearch.token
       }).then(function (response) {
         if (response.status >= 200 && response.status < 300) {
