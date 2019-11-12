@@ -23,15 +23,16 @@
         >
           <v-card class="mb-4">
             <v-card-title>
-              <span v-text="user.username || user.email" />
-              <v-btn
+              <v-text-field hide-details outlined v-model="user.email" type="email" :label="$t('common.Email')" prepend-inner-icon="mdi-email" @keyup.enter="updateUser(user)" v-if="user.new" />
+              <span v-text="user.username || user.email" v-if="!user.new" />
+              <v-btn v-if="!user.new"
                 icon
                 @click="toggleEdit(user.username)"
               >
                 <v-icon v-text="editUsers.indexOf(user.username) > -1 ? 'mdi-close' : 'mdi-pencil'" />
               </v-btn>
             </v-card-title>
-            <v-card-text v-if="editUsers.indexOf(user.username) > -1">
+            <v-card-text v-if="user.new || (editUsers.indexOf(user.username) > -1)">
               <v-row>
                 <v-col
                   v-for="option in options"
@@ -57,7 +58,7 @@
                     block
                     color="success"
                     @click="updateUser(user)"
-                    v-text="$t('common.Update')"
+                    v-text="user.new ? $t('common.Save') : $t('common.Update')"
                   />
                 </v-col>
                 <v-col
@@ -68,13 +69,18 @@
                     large
                     block
                     color="error"
-                    @click="deleteUser(user.email)"
-                    v-text="$t('common.Delete')"
+                    @click="deleteUser(user)"
+                    v-text="user.new ? $t('common.Cancel') : $t('common.Delete')"
                   />
                 </v-col>
               </v-row>
             </v-card-text>
           </v-card>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn large block color="success" @click="addUser()" v-text="$t('common.AddUser')" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -112,9 +118,26 @@ export default {
         ctx.users = response.data
       })
     },
+    addUser () {
+      const newUser = {}
+      newUser.new = true
+      newUser.email = ''
+      for (const option in this.options) {
+        newUser[this.options[option].value] = false
+      }
+      this.users.push(newUser)
+    },
     updateUser (user) {
+      if (user.new && (!user.email || user.email === '')) {
+        this.$toast.error(this.$t('common.NoEmailGiven'))
+        return
+      }
       const ctx = this
+      for (const key of Object.keys(user)) {
+        user[key] = (user[key] === true) ? 'true' : (user[key] === false) ? 'false' : user[key]
+      }
       this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(function (response) {
+        ctx.$toast.success(ctx.$t('common.SavedUsers'))
         ctx.loadUsers()
       })
     },
@@ -125,9 +148,13 @@ export default {
         this.editUsers.push(username)
       }
     },
-    deleteUser (email) {
+    deleteUser (user) {
+      if (user.new) {
+        this.$delete(this.users, this.users.indexOf(user))
+        return
+      }
       const ctx = this
-      this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + email).then(function (response) {
+      this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + user.email).then(function (response) {
         ctx.loadUsers()
       })
     }
