@@ -33,7 +33,7 @@
         color="error"
         @click="confirmDeleteOpen = true"
         v-text="$t('common.DeleteServer')"
-      >
+      />
     </v-card-text>
   </v-card>
 </template>
