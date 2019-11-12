@@ -27,6 +27,8 @@ import (
 	"strings"
 )
 
+var Engine *gin.Engine
+
 // @title Pufferd API
 // @version 2.0
 // @description PufferPanel daemon service
@@ -35,11 +37,11 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func ConfigureWeb() *gin.Engine {
-	r := gin.New()
+	Engine = gin.New()
 	{
-		r.Use(gin.Recovery())
-		r.Use(gin.LoggerWithWriter(logging.Info().Writer()))
-		r.Use(func(c *gin.Context) {
+		Engine.Use(gin.Recovery())
+		Engine.Use(gin.LoggerWithWriter(logging.Info().Writer()))
+		Engine.Use(func(c *gin.Context) {
 			if c.GetHeader("Connection") == "Upgrade" {
 				return
 			}
@@ -48,11 +50,11 @@ func ConfigureWeb() *gin.Engine {
 			}
 			middleware.ResponseAndRecover(c)
 		})
-		RegisterRoutes(r)
-		server.RegisterRoutes(r.Group("/"))
+		RegisterRoutes(Engine)
+		server.RegisterRoutes(Engine.Group("/"))
 	}
 
-	return r
+	return Engine
 }
 
 func RegisterRoutes(e *gin.Engine) {

@@ -15,8 +15,10 @@ package services
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/routing"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"io"
@@ -76,9 +78,16 @@ func (ns *Node) Create(node *models.Node) error {
 }
 
 func (ns *Node) CallNode(node *models.Node, method string, path string, body io.ReadCloser, headers http.Header) (*http.Response, error) {
-	fullUrl, err := createNodeURL(node, path)
-	if err != nil {
-		return nil, err
+	var fullUrl string
+	var err error
+
+	if node.Local {
+		fullUrl = "http://localhost" + path
+	} else {
+		fullUrl, err = createNodeURL(node, path)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	addr, err := url.Parse(fullUrl)
@@ -94,6 +103,20 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 
 	if method != "GET" && body != nil {
 		request.Body = body
+	}
+
+	if node.Local {
+		c := &gin.Context{
+			Request:  nil,
+			Writer:   nil,
+			Params:   nil,
+			Keys:     nil,
+			Errors:   nil,
+			Accepted: nil,
+		}
+		routing.Engine.HandleContext(c)
+
+		return c.Request.Response, err
 	}
 
 	response, err := nodeClient.Do(request)
@@ -149,6 +172,10 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 }
 
 func doesDaemonUseSSL(node *models.Node) (bool, error) {
+	if node.Local {
+		return false, nil
+	}
+
 	path := fmt.Sprintf("://%s:%d", node.PrivateHost, node.PrivatePort)
 
 	_, err := http.Get("https" + path)

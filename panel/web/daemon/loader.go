@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/routing/server"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/routing"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
@@ -16,10 +16,7 @@ import (
 	"strings"
 )
 
-var rootEngine *gin.Engine
-
-func RegisterRoutes(engine *gin.Engine, rg *gin.RouterGroup) {
-	rootEngine = engine
+func RegisterRoutes(rg *gin.RouterGroup) {
 	g := rg.Group("/server", handlers.HasOAuth2Token, handlers.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
@@ -38,13 +35,6 @@ func RegisterRoutes(engine *gin.Engine, rg *gin.RouterGroup) {
 		//g.Any("", proxyServerRequest)
 		r.Any("/:id", proxyNodeRequest)
 		r.Any("/:id/*path", proxyNodeRequest)
-	}
-
-	if viper.GetBool("localNode") {
-		l := rg.Group("/local")
-		{
-			server.RegisterRoutes(l)
-		}
 	}
 }
 
@@ -84,8 +74,8 @@ func proxyServerRequest(c *gin.Context) {
 	}
 
 	if viper.GetBool("localNode") && s.Node.Local {
-		c.Request.URL.Path = "/daemon/local/" + path
-		rootEngine.HandleContext(c)
+		c.Request.URL.Path = path
+		routing.Engine.HandleContext(c)
 	} else {
 		if c.GetHeader("Upgrade") == "websocket" {
 			proxySocketRequest(c, path, ns, &s.Node)
@@ -160,6 +150,11 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 }
 
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
-	err := ns.OpenSocket(node, path, c.Writer, c.Request)
-	response.HandleError(c, err, http.StatusInternalServerError)
+	if node.Local {
+		//have gin handle the request again, but send it to daemon instead
+		routing.Engine.HandleContext(c)
+	} else {
+		err := ns.OpenSocket(node, path, c.Writer, c.Request)
+		response.HandleError(c, err, http.StatusInternalServerError)
+	}
 }
