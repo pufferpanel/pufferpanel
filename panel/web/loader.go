@@ -40,6 +40,7 @@ func RegisterRoutes(e *gin.Engine) {
 	IndexFile = ClientPath + "/index.html"
 
 	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
+	e.GET("/api/config", config)
 	oauth2.RegisterRoutes(e.Group("/oauth2"))
 	auth.RegisterRoutes(e.Group("/auth"))
 	daemon.RegisterRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
@@ -75,4 +76,13 @@ func handle404(c *gin.Context) {
 	}
 
 	c.File(IndexFile)
+}
+
+//TODO: Have this pull from somewhere else
+func config(c *gin.Context) {
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"branding": map[string]interface{}{
+			"name": "PufferPanel",
+		},
+	})
 }
