@@ -134,13 +134,13 @@ import { toggleDark as doToggleDark, isDark } from './utils/dark'
 export default {
   data () {
     return {
-      appConfig: false,
+      appConfig: config.defaultAppConfig,
       loggedIn: false,
       drawer: null,
       minified: false
     }
   },
-  created () {
+  mounted () {
     this.loadConfig()
 
     this.$vuetify.theme.dark = isDark()
@@ -155,10 +155,7 @@ export default {
     loadConfig () {
       const vue = this
       this.$http.get('/api/config').then(function (response) {
-        vue.appConfig = response.data.data
-      }).catch(function (error) {
-        vue.appConfig = config.defaultAppConfig
-        return error
+        vue.appConfig = { ...vue.appConfig, ...response.data }
       })
     },
     toggleDark () {
