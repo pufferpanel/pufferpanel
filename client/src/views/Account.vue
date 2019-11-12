@@ -13,26 +13,6 @@
 
 <template>
   <v-container>
-    <v-row v-if="successMsg !== '' || errorMsg !== ''">
-      <v-col
-        offset-md="3"
-        md="6"
-      >
-        <v-alert
-          v-if="successMsg !== ''"
-          type="success"
-          outlined
-          v-text="successMsg"
-        />
-        <v-alert
-          v-if="errorMsg !== ''"
-          type="error"
-          outlined
-          v-text="errorMsg"
-        />
-      </v-col>
-    </v-row>
-
     <v-row>
       <v-col
         offset-md="3"
@@ -131,16 +111,12 @@ import validate from '@/utils/validate'
 export default {
   data () {
     return {
-      currentUsername: '',
       username: '',
       email: '',
       confirmPassword: '',
       oldPassword: '',
       newPassword: '',
-      confirmNewPassword: '',
-      errorMsg: '',
-      successMsg: '',
-      dismissCountDown: 5
+      confirmNewPassword: ''
     }
   },
   computed: {
@@ -161,24 +137,23 @@ export default {
     }
   },
   mounted () {
-    const vue = this
-    this.$http.get('/api/users').then(function (data) {
+    const ctx = this
+    this.$http.get('/api/self').then(function (data) {
       const user = data.data
-      vue.currentUsername = user.username
-      vue.username = user.username
-      vue.email = user.email
+      ctx.username = user.username
+      ctx.email = user.email
     })
   },
   methods: {
     submitInfoChange () {
-      const vue = this
-      this.$http.post(`/api/users/${this.currentUsername}`, {
+      const ctx = this
+      this.$http.put('/api/self', {
         username: this.username,
         email: this.email,
         password: this.confirmPassword
       }).then(function (result) {
         if (result.status >= 200 && result.status < 300) {
-          vue.successMsg = vue.$t('common.InfoChanged')
+          ctx.$toast.success(ctx.$t('common.InfoChanged'))
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
@@ -186,7 +161,7 @@ export default {
           } else {
             msg = result.data.error.msg
           }
-          vue.errorMsg = vue.$t(msg)
+          ctx.$toast.error(ctx.$t(msg))
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -198,17 +173,17 @@ export default {
           }
         }
 
-        vue.errorMsg = vue.$t(msg)
+        ctx.$toast.error(ctx.$t(msg))
       })
     },
     submitPassChange () {
-      const vue = this
-      this.$http.post(`/api/users/${this.currentUsername}`, {
+      const ctx = this
+      this.$http.put('/api/self', {
         password: this.oldPassword,
         newPassword: this.newPassword
       }).then(function (result) {
         if (result.status >= 200 && result.status < 300) {
-          vue.successMsg = vue.$t('common.PasswordChanged')
+          ctx.$toast.success(ctx.$t('common.PasswordChanged'))
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
@@ -216,7 +191,7 @@ export default {
           } else {
             msg = result.data.error.msg
           }
-          vue.errorMsg = vue.$t(msg)
+          ctx.$toast.error(ctx.$t(msg))
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -228,7 +203,7 @@ export default {
           }
         }
 
-        vue.errorMsg = vue.$t(msg)
+        ctx.$toast.error(ctx.$t(msg))
       })
     }
   }

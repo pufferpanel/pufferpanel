@@ -33,7 +33,7 @@
       clipped
     >
       <v-list>
-        <!-- <v-list-item
+        <v-list-item
           :to="{name: 'Account'}"
           link
         >
@@ -43,7 +43,7 @@
           <v-list-item-content>
             <v-list-item-title v-text="$t('common.Account')" />
           </v-list-item-content>
-        </v-list-item> -->
+        </v-list-item>
 
         <v-list-item
           :to="{name: 'Servers'}"
