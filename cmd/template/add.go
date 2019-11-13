@@ -3,11 +3,10 @@ package template
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pufferpanel/apufferi/v4"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/panel/database"
+	"github.com/pufferpanel/pufferpanel/v2/panel/models"
+	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
@@ -33,7 +32,7 @@ func init() {
 }
 
 func runAdd(cmd *cobra.Command, args []string) {
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Error loading config: %s\n", err.Error())
 		os.Exit(1)
@@ -79,7 +78,7 @@ func importTemplate(name, templatePath, readmePath string, service *services.Tem
 		if err != nil {
 			return err
 		}
-		defer apufferi.Close(db)
+		defer pufferpanel.Close(db)
 
 		service = &services.Template{DB: db}
 	}
@@ -88,9 +87,9 @@ func importTemplate(name, templatePath, readmePath string, service *services.Tem
 	return err
 }
 
-func openTemplate(path string) (t apufferi.Template, err error) {
+func openTemplate(path string) (t pufferpanel.Template, err error) {
 	file, err := os.Open(path)
-	defer apufferi.Close(file)
+	defer pufferpanel.Close(file)
 	if err != nil {
 		return
 	}
@@ -101,7 +100,7 @@ func openTemplate(path string) (t apufferi.Template, err error) {
 
 func openReadme(path string) (string, error) {
 	file, err := os.Open(path)
-	defer apufferi.Close(file)
+	defer pufferpanel.Close(file)
 	if err != nil {
 		return "", err
 	}
