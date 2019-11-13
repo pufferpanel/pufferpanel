@@ -5,30 +5,30 @@ type PermissionView struct {
 	Email            string `json:"email,omitempty"`
 	ServerIdentifier string `json:"serverIdentifier,omitempty"`
 
-	EditServerData    bool `json:"editServerData,omitempty,string"`
-	EditServerUsers   bool `json:"editServerUsers,omitempty,string"`
-	InstallServer     bool `json:"installServer,omitempty,string"`
+	EditServerData    bool `json:"editServerData,omitempty"`
+	EditServerUsers   bool `json:"editServerUsers,omitempty"`
+	InstallServer     bool `json:"installServer,omitempty"`
 	UpdateServer      bool `json:"-"` //this is unused currently
-	ViewServerConsole bool `json:"viewServerConsole,omitempty,string"`
-	SendServerConsole bool `json:"sendServerConsole,omitempty,string"`
-	StopServer        bool `json:"stopServer,omitempty,string"`
-	StartServer       bool `json:"startServer,omitempty,string"`
-	ViewServerStats   bool `json:"viewServerStats,omitempty,string"`
-	ViewServerFiles   bool `json:"viewServerFiles,omitempty,string"`
-	SFTPServer        bool `json:"sftpServer,omitempty,string"`
-	PutServerFiles    bool `json:"putServerFiles,omitempty,string"`
+	ViewServerConsole bool `json:"viewServerConsole,omitempty"`
+	SendServerConsole bool `json:"sendServerConsole,omitempty"`
+	StopServer        bool `json:"stopServer,omitempty"`
+	StartServer       bool `json:"startServer,omitempty"`
+	ViewServerStats   bool `json:"viewServerStats,omitempty"`
+	ViewServerFiles   bool `json:"viewServerFiles,omitempty"`
+	SFTPServer        bool `json:"sftpServer,omitempty"`
+	PutServerFiles    bool `json:"putServerFiles,omitempty"`
 
-	Admin           bool `json:"admin,omitempty,string"`
-	ViewServer      bool `json:"viewServers,omitempty,string"`
-	CreateServer    bool `json:"createServers,omitempty,string"`
-	ViewNodes       bool `json:"viewNodes,omitempty,string"`
-	EditNodes       bool `json:"editNodes,omitempty,string"`
-	DeployNodes     bool `json:"deployNodes,omitempty,string"`
-	ViewTemplates   bool `json:"viewTemplates,omitempty,string"`
-	EditUsers       bool `json:"editUsers,omitempty,string"`
-	ViewUsers       bool `json:"viewUsers,omitempty,string"`
-	EditServerAdmin bool `json:"editServerAdmin,omitempty,string"`
-	DeleteServer    bool `json:"deleteServers,omitempty,string"`
+	Admin           bool `json:"admin,omitempty"`
+	ViewServer      bool `json:"viewServers,omitempty"`
+	CreateServer    bool `json:"createServers,omitempty"`
+	ViewNodes       bool `json:"viewNodes,omitempty"`
+	EditNodes       bool `json:"editNodes,omitempty"`
+	DeployNodes     bool `json:"deployNodes,omitempty"`
+	ViewTemplates   bool `json:"viewTemplates,omitempty"`
+	EditUsers       bool `json:"editUsers,omitempty"`
+	ViewUsers       bool `json:"viewUsers,omitempty"`
+	EditServerAdmin bool `json:"editServerAdmin,omitempty"`
+	DeleteServer    bool `json:"deleteServers,omitempty"`
 }
 
 func FromPermission(p *Permissions) *PermissionView {

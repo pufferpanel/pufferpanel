@@ -21,12 +21,12 @@ import (
 type ServerView struct {
 	Identifier string           `json:"id,omitempty"`
 	Name       string           `json:"name,omitempty"`
-	NodeId     uint             `json:"nodeId,omitempty,string"`
+	NodeId     uint             `json:"nodeId,omitempty"`
 	Node       *NodeView        `json:"node,omitempty"`
 	Data       interface{}      `json:"data,omitempty"`
 	Users      []ServerUserView `json:"users,omitempty"`
 	IP         string           `json:"ip,omitempty"`
-	Port       uint16           `json:"port,omitempty,string"`
+	Port       uint16           `json:"port,omitempty"`
 	Type       string           `json:"type"`
 }
 
