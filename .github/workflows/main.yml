@@ -1,0 +1,70 @@
+name: Build
+on:
+  pull_request:
+
+jobs:
+  build-binaries:
+    name: Build Binaries
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        os: [ linux, windows ]
+        arch: [ amd64, arm ]
+        go: [ '1.13' ]
+        exclude:
+          - os: windows
+            arch: arm
+
+    env:
+      GOOS: ${{ matrix.os }}
+      GOARCH: ${{ matrix.arch }}
+
+    steps:
+
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+        with:
+          path: pufferpanel
+
+      - name: Build
+        if: startsWith(matrix.os, 'linux')
+        run: |
+          go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+      - name: Build
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+  produce-webartifacts:
+    name: Generate web artifacts
+    runs-on: ubuntu-18.04
+    needs: [build-binaries]
+
+    strategy:
+      matrix:
+        node-version: [ '12.x' ]
+
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: true
+        working-directory: client
