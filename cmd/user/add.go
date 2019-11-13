@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/panel/database"
+	"github.com/pufferpanel/pufferpanel/v2/panel/models"
+	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/spf13/cobra"
 )
 
@@ -89,7 +89,7 @@ func runAdd(cmd *cobra.Command, args []string) {
 		_ = survey.Ask(questions, &answers)
 	}
 
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Failed to load config: %s", err.Error())
 		return

@@ -15,13 +15,13 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/apufferi/v4/logging"
-	"github.com/pufferpanel/pufferd/v2/entry"
-	"github.com/pufferpanel/pufferd/v2/sftp"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/services"
-	"github.com/pufferpanel/pufferpanel/v2/web"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/entry"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/sftp"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/panel/database"
+	"github.com/pufferpanel/pufferpanel/v2/panel/services"
+	"github.com/pufferpanel/pufferpanel/v2/panel/web"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -40,22 +40,17 @@ var runCmd = &cobra.Command{
 func executeRun(cmd *cobra.Command, args []string) {
 	err := internalRun(cmd, args)
 	if err != nil {
-		logging.Exception("An error has occurred while executing", err)
+		logging.Error().Printf("An error occurred: %s", err.Error())
 	}
 }
 
 func internalRun(cmd *cobra.Command, args []string) error {
-	err := pufferpanel.LoadConfig()
+	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		return err
 	}
 
-	err = logging.WithLogDirectory(viper.GetString("logs"), logging.DEBUG, nil)
-	if err != nil {
-		return err
-	}
-
-	logging.SetLevel(os.Stdout, logging.DEBUG)
+	defer logging.Close()
 
 	//load token, this also will store it to local node if there's one
 	services.ValidateTokenLoaded()
@@ -66,48 +61,28 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	router := gin.New()
 	router.Use(gin.Recovery())
-	router.Use(gin.LoggerWithWriter(logging.AsWriter(logging.INFO)))
+	router.Use(gin.LoggerWithWriter(logging.Debug().Writer()))
 
 	web.RegisterRoutes(router)
 
 	c := make(chan error)
 
 	srv := &http.Server{
-		Addr:    viper.GetString("web.host"),
+		Addr:    viper.GetString("panel.web.host"),
 		Handler: router,
 	}
 
-	httpsKey := viper.GetString("https.private")
-	httpsCert := viper.GetString("https.public")
-
-	if httpsKey != "" && httpsCert != "" {
-		if _, err := os.Stat(httpsKey); err != nil {
-			return err
+	go func() {
+		logging.Info().Printf("Listening for HTTP requests on %s", srv.Addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			c <- err
 		}
-
-		if _, err := os.Stat(httpsCert); err != nil {
-			return err
-		}
-
-		go func() {
-			logging.Info("Listening for HTTPS requests on %s", srv.Addr)
-			if err := srv.ListenAndServeTLS(httpsCert, httpsKey); err != nil && err != http.ErrServerClosed {
-				c <- err
-			}
-		}()
-	} else {
-		go func() {
-			logging.Info("Listening for HTTP requests on %s", srv.Addr)
-			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				c <- err
-			}
-		}()
-	}
+	}()
 
 	go func() {
 		_, err := database.GetConnection()
 		if err != nil {
-			logging.Exception("Error connecting to database", err)
+			logging.Error().Printf("Error connecting to database: %s", err.Error())
 		}
 	}()
 
@@ -124,8 +99,10 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	if viper.GetBool("localNode") {
 		//local node!
-		sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
-		c <- <-entry.Start()
+		go func() {
+			sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+			c <- <-entry.Start()
+		}()
 	}
 
 	return <-c
