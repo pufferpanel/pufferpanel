@@ -78,5 +78,4 @@ require (
 	gopkg.in/macaroon.v2 v2.1.0 // indirect
 	gopkg.in/robfig/cron.v2 v2.0.0-20150107220207-be2e0b0deed5 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
-	gotest.tools v2.2.0+incompatible // indirect
 )
