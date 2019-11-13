@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ linux, windows ]
         arch: [ amd64, arm ]
-        go: [ '1.12' ]
+        go: [ '1.13' ]
         exclude:
           - os: windows
             arch: arm
@@ -30,21 +30,10 @@ jobs:
         go-version: ${{ matrix.go }}
       id: go
 
-    - name: Pull deps
-      uses: actions/checkout@v1
-      with:
-        repository: pufferpanel/apufferi
-        path: apufferi
-        ref: master
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
       with:
         path: pufferpanel
-
-    - name: Sync go.mod
-      run: |
-        echo replace github.com/pufferpanel/apufferi/v3 =\> ../apufferi >> go.mod
         
     - name: Build
       if: startsWith(matrix.os, 'linux')
