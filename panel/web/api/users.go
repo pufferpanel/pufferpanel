@@ -36,8 +36,8 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(scope.UsersView, false), response.NotImplemented)
-	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(scope.UsersEdit, false), response.NotImplemented)
+	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(scope.UsersView, false), getUserPerms)
+	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(scope.UsersEdit, false), setUserPerms)
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
@@ -183,6 +183,75 @@ func deleteUser(c *gin.Context) {
 	}
 
 	if err = us.Delete(user); response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func getUserPerms(c *gin.Context) {
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
+
+	var err error
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+
+	user, err := us.GetById(id)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.FromPermission(perms))
+}
+
+func setUserPerms(c *gin.Context) {
+	db := handlers.GetDatabase(c)
+	us := &services.User{DB: db}
+	ps := &services.Permission{DB: db}
+
+	var err error
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+
+	viewModel := &models.PermissionView{}
+	err = c.BindJSON(viewModel)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	user, err := us.GetById(id)
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	perms, err := ps.GetForUserAndServer(user.ID, nil)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	viewModel.CopyTo(perms, true)
+
+	err = ps.UpdatePermissions(perms)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
