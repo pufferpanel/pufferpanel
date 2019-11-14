@@ -81,17 +81,11 @@ func (us *User) GetByEmail(email string) (*models.User, error) {
 }
 
 func (us *User) Update(model *models.User) error {
-	res := us.DB.Save(model)
-	return res.Error
+	return us.DB.Save(model).Error
 }
 
-func (us *User) Delete(username string) error {
-	model := &models.User{
-		Username: username,
-	}
-
-	res := us.DB.Delete(model)
-	return res.Error
+func (us *User) Delete(model *models.User) error {
+	return us.DB.Delete(model).Error
 }
 
 func (us *User) Create(user *models.User) error {

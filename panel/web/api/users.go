@@ -61,7 +61,7 @@ func searchUsers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &UserSearchResponse{
+	c.JSON(http.StatusOK, &models.UserSearchResponse{
 		Users: models.FromUsers(results),
 		Metadata: &response.Metadata{Paging: &response.Paging{
 			Page:    search.Page,
@@ -165,27 +165,15 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
-	if err = us.Delete(user.Username); response.HandleError(c, err, http.StatusInternalServerError) {
+	if err = us.Delete(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
 	c.Status(http.StatusNoContent)
 }
 
-type UserSearch struct {
-	Username  string `form:"username"`
-	Email     string `form:"email"`
-	PageLimit uint   `form:"limit"`
-	Page      uint   `form:"page"`
-}
-
-type UserSearchResponse struct {
-	Users []*models.UserView `json:"users"`
-	*response.Metadata
-}
-
-func newUserSearch() *UserSearch {
-	return &UserSearch{
+func newUserSearch() *models.UserSearch {
+	return &models.UserSearch{
 		Username:  "*",
 		Email:     "*",
 		PageLimit: DefaultPageSize,

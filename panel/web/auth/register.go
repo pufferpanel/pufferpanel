@@ -80,7 +80,7 @@ type registerResponse struct {
 }
 
 type registerRequestData struct {
-	Username string `json:"username" validate:"min=3,printascii,required"`
+	Username string `json:"username" validate:"required,printascii,min=5,max=100"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }

@@ -24,8 +24,7 @@ import (
 const MaxRecursivePath = 256
 
 func JoinPath(paths ...string) string {
-	result, _ := filepath.Abs(filepath.Join(paths...))
-	return result
+	return filepath.Join(paths...)
 }
 
 func EnsureAccess(source string, prefix string) bool {
