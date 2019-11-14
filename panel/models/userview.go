@@ -20,6 +20,7 @@ import (
 )
 
 type UserView struct {
+	Id       uint   `json:"id,omitempty"`
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
@@ -29,6 +30,7 @@ type UserView struct {
 
 func FromUser(model *User) *UserView {
 	return &UserView{
+		Id:       model.ID,
 		Username: model.Username,
 		Email:    model.Email,
 	}
@@ -70,7 +72,7 @@ func (model *UserView) Valid(allowEmpty bool) error {
 	}
 
 	if validate.Var(model.Username, "omitempty,min=5,max=100") != nil {
-		return pufferpanel.ErrFieldLength("username", 5, 10)
+		return pufferpanel.ErrFieldLength("username", 5, 100)
 	}
 
 	testName := url.QueryEscape(model.Username)

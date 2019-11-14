@@ -22,22 +22,23 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/scope"
+	"github.com/spf13/cast"
 	"net/http"
 )
 
 func registerUsers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(scope.UsersView, false), searchUsers)
-	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
+	g.Handle("POST", "", handlers.OAuth2Handler(scope.UsersEdit, false), createUser)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("PUT", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), createUser)
-	g.Handle("GET", "/:username", handlers.OAuth2Handler(scope.UsersView, false), getUser)
-	g.Handle("POST", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), updateUser)
-	g.Handle("DELETE", "/:username", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
-	g.Handle("OPTIONS", "/:username", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("GET", "/:id", handlers.OAuth2Handler(scope.UsersView, false), getUser)
+	g.Handle("POST", "/:id", handlers.OAuth2Handler(scope.UsersEdit, false), updateUser)
+	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
+	g.Handle("OPTIONS", "/:id", response.CreateOptions("GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:username/perms", handlers.OAuth2Handler(scope.UsersView, false), response.NotImplemented)
-	g.Handle("PUT", "/:username/perms", handlers.OAuth2Handler(scope.UsersEdit, false), response.NotImplemented)
-	g.Handle("OPTIONS", "/:username/perms", response.CreateOptions("PUT", "GET"))
+	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(scope.UsersView, false), response.NotImplemented)
+	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(scope.UsersEdit, false), response.NotImplemented)
+	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
 func searchUsers(c *gin.Context) {
@@ -81,7 +82,6 @@ func createUser(c *gin.Context) {
 	if err = c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	viewModel.Username = c.Param("username")
 
 	if err = viewModel.Valid(false); response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -99,16 +99,23 @@ func createUser(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	resultModel := models.FromUser(user)
+
+	c.JSON(http.StatusOK, resultModel)
 }
 
 func getUser(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	username := c.Param("username")
+	var err error
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
 
-	user, err := us.Get(username)
+	user, err := us.GetById(id)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -123,7 +130,12 @@ func updateUser(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	username := c.Param("username")
+	var err error
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
 
 	var viewModel models.UserView
 	if err := c.BindJSON(&viewModel); response.HandleError(c, err, http.StatusBadRequest) {
@@ -134,7 +146,7 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := us.Get(username)
+	user, err := us.GetById(id)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -155,9 +167,14 @@ func deleteUser(c *gin.Context) {
 	db := handlers.GetDatabase(c)
 	us := &services.User{DB: db}
 
-	username := c.Param("username")
+	var err error
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
 
-	user, err := us.Get(username)
+	user, err := us.GetById(id)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
