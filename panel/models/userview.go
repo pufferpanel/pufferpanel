@@ -65,8 +65,12 @@ func (model *UserView) Valid(allowEmpty bool) error {
 		return pufferpanel.ErrFieldRequired("username")
 	}
 
-	if validate.Var(model.Username, "omitempty,printascii,min=5,max=100") != nil {
+	if validate.Var(model.Username, "omitempty,printascii") != nil {
 		return pufferpanel.ErrFieldMustBePrintable("username")
+	}
+
+	if validate.Var(model.Username, "omitempty,min=5,max=100") != nil {
+		return pufferpanel.ErrFieldLength("username", 5, 10)
 	}
 
 	testName := url.QueryEscape(model.Username)

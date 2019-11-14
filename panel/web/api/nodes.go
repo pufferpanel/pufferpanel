@@ -76,7 +76,7 @@ func getAllNodes(c *gin.Context) {
 // @Description Gets information about a single node
 // @Accept json
 // @Produce json
-// @Success 200 {object} models.NodeView "Nods"
+// @Success 200 {object} models.NodeView "Nodes"
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
@@ -235,7 +235,7 @@ func deployNode(c *gin.Context) {
 		return
 	}
 
-	data := &Deployment{
+	data := &models.Deployment{
 		ClientId:     fmt.Sprintf(".node_%d", node.ID),
 		ClientSecret: node.Secret,
 		PublicKey:    string(file),
@@ -255,10 +255,4 @@ func validateId(c *gin.Context) (uint, bool) {
 	}
 
 	return uint(id), true
-}
-
-type Deployment struct {
-	ClientId     string `json:"clientId"`
-	ClientSecret string `json:"clientSecret"`
-	PublicKey    string `json:"publicKey"`
 }

@@ -95,8 +95,8 @@ var ErrFieldNotEmail = func(fieldName string) *Error {
 	return CreateError("${field} is not a valid email", "ErrFieldNotEmail").Metadata(map[string]interface{}{"field": fieldName})
 }
 
-var ErrFieldLength = func(fieldName string, length int) *Error {
-	return CreateError("${field} must be at least ${length} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "length": length})
+var ErrFieldLength = func(fieldName string, min int, max int) *Error {
+	return CreateError("${field} must be between ${min} and ${max} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
 }
 
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")

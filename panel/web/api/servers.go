@@ -98,7 +98,7 @@ func searchServers(c *gin.Context) {
 	}
 
 	if !isAdmin && username != "" && user.Username != username {
-		c.JSON(http.StatusOK, &ServerSearchResponse{
+		c.JSON(http.StatusOK, &models.ServerSearchResponse{
 			Servers: []*models.ServerView{},
 			Metadata: &response.Metadata{Paging: &response.Paging{
 				Page:    1,
@@ -125,7 +125,7 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &ServerSearchResponse{
+	c.JSON(http.StatusOK, &models.ServerSearchResponse{
 		Servers: models.RemoveServerPrivateInfoFromAll(models.FromServers(results)),
 		Metadata: &response.Metadata{Paging: &response.Paging{
 			Page:    uint(page),
@@ -168,7 +168,7 @@ func getServer(c *gin.Context) {
 		perms = models.FromPermission(p)
 	}
 
-	data := &GetServerResponse{
+	data := &models.GetServerResponse{
 		Server: models.RemoveServerPrivateInfo(models.FromServer(server)),
 		Perms:  perms,
 	}
@@ -189,7 +189,7 @@ func createServer(c *gin.Context) {
 		serverId = uuid.NewV4().String()[:8]
 	}
 
-	postBody := &serverCreation{}
+	postBody := &models.ServerCreation{}
 	err = c.Bind(postBody)
 	postBody.Identifier = serverId
 	if response.HandleError(c, err, http.StatusBadRequest) {
@@ -302,7 +302,7 @@ func createServer(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, &CreateServerResponse{Id: serverId})
+	c.JSON(http.StatusOK, &models.CreateServerResponse{Id: serverId})
 }
 
 func deleteServer(c *gin.Context) {
@@ -513,14 +513,6 @@ func removeServerUser(c *gin.Context) {
 	}
 }
 
-type serverCreation struct {
-	pufferpanel.Server
-
-	NodeId uint     `json:"node"`
-	Users  []string `json:"users"`
-	Name   string   `json:"name"`
-}
-
 func getFromData(variables map[string]pufferpanel.Variable, key string) interface{} {
 	for k, v := range variables {
 		if k == key {
@@ -538,18 +530,4 @@ func getFromDataOrDefault(variables map[string]pufferpanel.Variable, key string,
 	}
 
 	return val, nil
-}
-
-type GetServerResponse struct {
-	Server *models.ServerView     `json:"server"`
-	Perms  *models.PermissionView `json:"permissions"`
-}
-
-type CreateServerResponse struct {
-	Id string `json:"id"`
-}
-
-type ServerSearchResponse struct {
-	Servers []*models.ServerView `json:"servers"`
-	*response.Metadata
 }
