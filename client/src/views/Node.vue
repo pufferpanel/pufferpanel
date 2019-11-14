@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { typeNode } from '@/utils/types'
+
 export default {
   data () {
     return {
@@ -62,10 +64,8 @@ export default {
     loadData () {
       const ctx = this
       ctx.$http.get(`/api/nodes/${ctx.$route.params.id}`).then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          ctx.node = response.data
-          ctx.loading = false
-        }
+        ctx.node = response.data
+        ctx.loading = false
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
         if (error && error.response && error.response.data.error) {
@@ -81,16 +81,16 @@ export default {
     },
     updateNode () {
       const ctx = this
-      ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, ctx.node).then(function (response) {
-        ctx.$notify(ctx.$t('common.NodeUpdateSuccess'), 'success')
+      ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, typeNode(ctx.node)).then(function (response) {
+        ctx.$toast.success(ctx.$t('common.NodeUpdateSuccess'))
       }).catch(function () {
-        ctx.$notify(ctx.$t('common.NodeUpdateError'), 'error')
+        ctx.$toast.error(ctx.$t('common.NodeUpdateError'))
       })
     },
     deleteNode () {
       const ctx = this
       ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(function (response) {
-        if (response.status >= 200 && response.status < 300) ctx.$router.push({ name: 'Nodes' })
+        ctx.$router.push({ name: 'Nodes' })
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
         if (error && error.response && error.response.data.error) {
@@ -101,7 +101,7 @@ export default {
           }
         }
 
-        ctx.$notify(ctx.$t(msg), 'error')
+        ctx.$toast.error(ctx.$t(msg))
       })
     }
   }

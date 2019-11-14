@@ -449,6 +449,16 @@ export default {
     submitCreate () {
       const vue = this
       const data = this.templateData[this.selectedTemplate]
+      for (const item in data.data) {
+        switch (data.data[item].type) {
+          case 'integer':
+            data.data[item].value = Number(data.data[item].value)
+            break
+          case 'boolean':
+            data.data[item].value = Boolean(data.data[item].value)
+            break
+        }
+      }
       data.node = this.selectedNode
       data.users = this.selectedUsers
       data.name = this.serverName !== '' ? this.serverName : undefined

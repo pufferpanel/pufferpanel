@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { typeNode } from '@/utils/types'
+
 export default {
   data () {
     return {
@@ -51,8 +53,8 @@ export default {
   methods: {
     submit () {
       const ctx = this
-      ctx.$http.post('/api/nodes', ctx.node).then(function (response) {
-        if (response.status >= 200 && response.status < 300) ctx.$router.push({ name: 'Nodes' })
+      ctx.$http.post('/api/nodes', typeNode(ctx.node)).then(function (response) {
+        ctx.$router.push({ name: 'Nodes' })
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
         if (error && error.response && error.response.data.error) {

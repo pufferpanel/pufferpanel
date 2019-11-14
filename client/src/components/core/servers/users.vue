@@ -134,7 +134,7 @@ export default {
       }
       const ctx = this
       for (const key of Object.keys(user)) {
-        user[key] = (user[key] === true) ? 'true' : (user[key] === false) ? 'false' : user[key]
+        user[key] = (user[key] === 'true') ? true : (user[key] === 'false') ? false : user[key]
       }
       this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(function (response) {
         ctx.$toast.success(ctx.$t('common.SavedUsers'))
