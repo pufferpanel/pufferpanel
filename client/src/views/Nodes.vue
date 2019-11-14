@@ -1,26 +1,33 @@
 <template>
   <v-container>
-    <v-data-table
-      style="cursor: pointer;"
-      :items="nodes"
-      :headers="headers"
-      :loading="loading"
-      hide-default-footer
-      @click:row="rowClicked"
-    />
-    <v-btn
-      v-show="isAdmin()"
-      color="primary"
-      bottom
-      right
-      fixed
-      fab
-      dark
-      large
-      :to="{name: 'AddNode'}"
-    >
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <h1 v-text="$t('common.Nodes')" />
+    <v-row>
+      <v-col>
+        <v-sheet elevation="1" class="py-2">
+          <v-data-table
+            style="cursor: pointer;"
+            :items="nodes"
+            :headers="headers"
+            :loading="loading"
+            hide-default-footer
+            @click:row="rowClicked"
+          />
+          <v-btn
+            v-show="isAdmin()"
+            color="primary"
+            bottom
+            right
+            fixed
+            fab
+            dark
+            large
+            :to="{name: 'AddNode'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

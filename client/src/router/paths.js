@@ -26,6 +26,16 @@ export default [
     name: 'Server'
   },
   {
+    path: '/user/:id',
+    view: 'User',
+    name: 'User'
+  },
+  {
+    path: '/user',
+    view: 'Users',
+    name: 'Users'
+  },
+  {
     path: '/node',
     view: 'Nodes',
     name: 'Nodes'

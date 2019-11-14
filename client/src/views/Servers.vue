@@ -1,51 +1,58 @@
 <template>
   <v-container>
-    <v-data-table
-      hide-default-footer
-      style="cursor: pointer;"
-      :headers="headers"
-      :items="servers"
-      :loading="loading"
-      :items-per-page="pagination.rowsPerPage"
-      :page.sync="pagination.page"
-      :server-items-length="totalServers"
-      @click:row="rowSelected"
-      @page-count="updatePage"
-    >
-      <template v-slot:item.online="{ item }">
-        <v-icon
-          v-if="item.online"
-          color="success"
-        >
-          mdi-check-circle
-        </v-icon>
-        <v-icon
-          v-if="!item.online"
-          color="error"
-        >
-          mdi-alert-circle
-        </v-icon>
-      </template>
-    </v-data-table>
-    <div class="text-center pt-2 mb-6">
-      <v-pagination
-        v-model="pagination.page"
-        :length="pagination.pageCount"
-      />
-    </div>
-    <v-btn
-      v-show="isAdmin()"
-      color="primary"
-      bottom
-      right
-      fixed
-      fab
-      dark
-      large
-      :to="{name: 'AddServer'}"
-    >
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <h1 v-text="$t('common.Servers')" />
+    <v-row>
+      <v-col>
+        <v-sheet elevation="1" class="pt-2">
+          <v-data-table
+            hide-default-footer
+            style="cursor: pointer;"
+            :headers="headers"
+            :items="servers"
+            :loading="loading"
+            :items-per-page="pagination.rowsPerPage"
+            :page.sync="pagination.page"
+            :server-items-length="totalServers"
+            @click:row="rowSelected"
+            @page-count="updatePage"
+          >
+            <template v-slot:item.online="{ item }">
+              <v-icon
+                v-if="item.online"
+                color="success"
+              >
+                mdi-check-circle
+              </v-icon>
+              <v-icon
+                v-else
+                color="error"
+              >
+                mdi-alert-circle
+              </v-icon>
+            </template>
+          </v-data-table>
+          <div class="text-center py-2">
+            <v-pagination
+              v-model="pagination.page"
+              :length="pagination.pageCount"
+            />
+          </div>
+          <v-btn
+            v-show="isAdmin()"
+            color="primary"
+            bottom
+            right
+            fixed
+            fab
+            dark
+            large
+            :to="{name: 'AddServer'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
