@@ -516,7 +516,7 @@ func removeServerUser(c *gin.Context) {
 type serverCreation struct {
 	pufferpanel.Server
 
-	NodeId uint     `json:"node,string"`
+	NodeId uint     `json:"node"`
 	Users  []string `json:"users"`
 	Name   string   `json:"name"`
 }
