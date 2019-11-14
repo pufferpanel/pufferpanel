@@ -1,5 +1,5 @@
 <template>
-  <core-servers-type-generic :server="server" />
+  <server-type-generic :server="server" />
 </template>
 
 <script>

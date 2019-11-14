@@ -18,40 +18,40 @@
       v-text="server.name"
     />
     <div style="float: right;">
-      <core-servers-controls :server="server" />
+      <server-controls :server="server" />
     </div>
     <div style="clear: both;" />
     <v-row v-if="server.permissions.viewServerConsole || isAdmin()">
       <v-col>
-        <core-servers-console :server="server" />
+        <server-console :server="server" />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.viewServerStats || isAdmin()">
       <v-col md="6">
-        <core-servers-cpu />
+        <server-cpu />
       </v-col>
       <v-col md="6">
-        <core-servers-memory />
+        <server-memory />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.viewServerFiles || isAdmin()">
       <v-col>
-        <core-servers-files :server="server" />
+        <server-files :server="server" />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.sftpServer || isAdmin()">
       <v-col>
-        <core-servers-sftp :server="server" />
+        <server-sftp :server="server" />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.editServerUsers || isAdmin()">
       <v-col>
-        <core-servers-users :server="server" />
+        <server-users :server="server" />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.deleteServer || isAdmin()">
       <v-col>
-        <core-servers-admin :server="server" />
+        <server-admin :server="server" />
       </v-col>
     </v-row>
   </v-container>

@@ -14,7 +14,7 @@ requireComponent.keys().forEach(fileName => {
     camelCase(fileName.replace(/^\.\//, '').replace(/\.\w+$/, ''))
   )
 
-  if (componentName.startsWith('CoreServersType')) {
+  if (componentName.startsWith('ServerType')) {
     const name = path.basename(fileName, '.vue')
     serverTypes.push(name)
   }
@@ -29,10 +29,10 @@ Vue.component('server-render', {
       return
     }
 
-    let element = 'core-servers-type-generic'
+    let element = 'server-type-generic'
     for (const v in serverTypes) {
       if (serverTypes[v] === server.type) {
-        element = 'core-servers-type-' + serverTypes[v]
+        element = 'server-type-' + serverTypes[v]
         break
       }
     }
