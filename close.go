@@ -16,14 +16,21 @@ package pufferpanel
 import (
 	"io"
 	"net/http"
-	"reflect"
 )
 
 func Close(closer io.Closer) {
-	//because somehow if it's nil... this fails
-	if closer != nil && reflect.ValueOf(closer).Kind() != reflect.Ptr && reflect.ValueOf(closer).IsNil() {
+	//at this point, i give up trying to get this to not fail, so we'll go with the brute force
+	defer func() {
+		recover()
+	}()
+
+	if closer != nil {
 		_ = closer.Close()
 	}
+
+	/*if closer != nil && !(reflect.ValueOf(closer).Kind() != reflect.Ptr && reflect.ValueOf(closer).IsNil()) {
+		_ = closer.Close()
+	}*/
 }
 
 func CloseResponse(response *http.Response) {
