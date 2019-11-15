@@ -28,17 +28,27 @@ func JoinPath(paths ...string) string {
 }
 
 func EnsureAccess(source string, prefix string) bool {
+	//first resolve the correct source path so we can compare with the wanted path
+	expected, err := findFullPath(prefix)
+	if err != nil && !os.IsNotExist(err) {
+		return false
+	}
+
+	expected, err = filepath.Abs(expected)
+	if err != nil && !os.IsNotExist(err) {
+		return false
+	}
+
 	replacement, err := findFullPath(source)
 	if err != nil && !os.IsNotExist(err) {
 		return false
-	} else if os.IsNotExist(err) {
-		replacement, err = filepath.Abs(source)
-		if err != nil {
-			return false
-		}
+	}
+	replacement, err = filepath.Abs(source)
+	if err != nil {
+		return false
 	}
 
-	return strings.HasPrefix(replacement, prefix)
+	return strings.HasPrefix(replacement, expected)
 }
 
 func RemoveInvalidSymlinks(files []os.FileInfo, sourceFolder, prefix string) []os.FileInfo {
