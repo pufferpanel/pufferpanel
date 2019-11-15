@@ -37,6 +37,14 @@ var runCmd = &cobra.Command{
 	Run:   executeRun,
 }
 
+var noWeb bool
+var noDaemon bool
+
+func init() {
+	runCmd.Flags().BoolVar(&noWeb, "noweb", false, "Do not run web interface")
+	runCmd.Flags().BoolVar(&noDaemon, "nodaemon", false, "Do not run daemon")
+}
+
 func executeRun(cmd *cobra.Command, args []string) {
 	err := internalRun(cmd, args)
 	if err != nil {
@@ -52,39 +60,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	defer logging.Close()
 
-	//load token, this also will store it to local node if there's one
-	services.ValidateTokenLoaded()
-
-	defer database.Close()
-
-	services.LoadEmailService()
-
-	router := gin.New()
-	router.Use(gin.Recovery())
-	router.Use(gin.LoggerWithWriter(logging.Debug().Writer()))
-
-	web.RegisterRoutes(router)
-
 	c := make(chan error)
-
-	srv := &http.Server{
-		Addr:    viper.GetString("panel.web.host"),
-		Handler: router,
-	}
-
-	go func() {
-		logging.Info().Printf("Listening for HTTP requests on %s", srv.Addr)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			c <- err
-		}
-	}()
-
-	go func() {
-		_, err := database.GetConnection()
-		if err != nil {
-			logging.Error().Printf("Error connecting to database: %s", err.Error())
-		}
-	}()
 
 	go func() {
 		quit := make(chan os.Signal)
@@ -97,10 +73,45 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		c <- nil
 	}()
 
-	if viper.GetBool("localNode") {
-		//local node!
+	if !noWeb {
+		//load token, this also will store it to local node if there's one
+		services.ValidateTokenLoaded()
+
+		defer database.Close()
+
+		services.LoadEmailService()
+
+		router := gin.New()
+		router.Use(gin.Recovery())
+		router.Use(gin.LoggerWithWriter(logging.Debug().Writer()))
+
+		web.RegisterRoutes(router)
+
+		srv := &http.Server{
+			Addr:    viper.GetString("panel.web.host"),
+			Handler: router,
+		}
+
 		go func() {
-			sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+			logging.Info().Printf("Listening for HTTP requests on %s", srv.Addr)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				c <- err
+			}
+		}()
+
+		go func() {
+			_, err := database.GetConnection()
+			if err != nil {
+				logging.Error().Printf("Error connecting to database: %s", err.Error())
+			}
+		}()
+
+		//if we have the web, then let's use our sftp auth instead
+		sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+	}
+
+	if !noDaemon {
+		go func() {
 			c <- <-entry.Start()
 		}()
 	}
