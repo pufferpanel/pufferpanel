@@ -4,25 +4,12 @@ services:
     image: pufferpanel/pufferpanel
     ports:
       - "8080:8080"
+      - "5657:5657"
     networks:
       - pufferpanel
     volumes:
       - "pufferpanel:/etc/pufferpanel"
-      - "pufferd:/var/lib/pufferd"
-    restart: on-failure
-
-  pufferd:
-    image: pufferpanel/pufferd
-    ports:
-      - "5656:5656"
-      - "5656:5657"
-    volumes:
-      - "pufferd:/var/lib/pufferd"
-      - "pufferpanel:/etc/pufferpanel"
-    environment:
-      PUFFERD_AUTH_URL: "http://pufferpanel:8080"
-    networks:
-      - pufferpanel
+      - "pufferpanel-servers:/var/lib/pufferd"
     restart: on-failure
 
 networks:
@@ -30,4 +17,4 @@ networks:
 
 volumes:
   pufferpanel:
-  pufferd:
+  pufferpanel-servers:
