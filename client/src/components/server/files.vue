@@ -50,7 +50,7 @@
         <v-card>
           <v-card-title v-text="$t('files.ConfirmDelete')" />
           <v-card-actions>
-	    <v-spacer />
+            <v-spacer />
             <v-btn v-text="$t('common.Cancel')" @click="deleteCancelled()" color="error" />
             <v-btn v-text="$t('common.Confirm')" @click="deleteConfirmed()" color="success" />
           </v-card-actions>
@@ -71,6 +71,21 @@
           {{ item.modifyTime ? toDate(item.modifyTime) : '' }}
         </template>
         <template v-slot:item.isFile="{ item }">
+          <v-tooltip
+            v-if="item.isFile && !(item.size > maxEditSize)"
+            bottom
+          >
+            <template v-slot:activator="{ on }">
+              <!-- letting the click propagate through to the table row, does the same anyways -->
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Edit')" />
+          </v-tooltip>
           <v-tooltip
             v-if="item.isFile"
             bottom
@@ -104,6 +119,35 @@
           </v-tooltip>
         </template>
       </v-data-table>
+
+      <v-overlay :value="editOpen">
+        <v-card
+          class="d-flex flex-column"
+          height="90vh"
+          width="90vw"
+        >
+          <v-card-title v-text="currentFile" />
+          <v-card-text
+            id="editor"
+            class="flex-grow-1"
+          >
+            <v-textarea
+              v-model="fileContents"
+              style="height: 100%"
+              background-color="secondary"
+              solo
+              hide-details
+              no-resize
+            />
+          </v-card-text>
+          <v-card-actions class="px-4 pb-4">
+            <div class="flex-grow-1" />
+            <v-btn v-text="$t('common.Cancel')" color="error" @click="cancelEdit()" />
+            <v-btn v-text="$t('common.Save')" color="success" @click="saveEdit()" />
+          </v-card-actions>
+        </v-card>
+      </v-overlay>
+
       <div v-if="server.permissions.putServerFiles || isAdmin()">
         <v-file-input
           v-model="uploadFiles"
@@ -170,7 +214,7 @@ export default {
       ],
       currentFile: '',
       fileContents: '',
-      toEdit: false,
+      editOpen: false,
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
       newFolderName: '',
@@ -241,14 +285,54 @@ export default {
         }
 
         this.$socket.sendObj({ type: 'file', action: 'get', path: this.currentPath })
+      } else {
+        if (item.size > this.maxEditSize) return
+        let path = this.currentPath
+        if (path === '/') {
+          path += item.name
+        } else {
+          path += '/' + item.name
+        }
+        const ctx = this
+        this.$http.get(`/daemon/server/${this.server.id}/file/${path}`).then(function (response) {
+          ctx.currentFile = item.name
+          ctx.fileContents = response.data
+          ctx.editOpen = true
+        }).catch(function () {
+          ctx.$toast.error(ctx.$t('common.FileLoadFailed'))
+        })
       }
+    },
+    cancelEdit () {
+      this.editOpen = false
+      this.currentFile = ''
+      this.fileContents = ''
+    },
+    saveEdit () {
+      let path = this.currentPath
+      if (path === '/') {
+        path += this.currentFile
+      } else {
+        path += '/' + this.currentFile
+      }
+      const file = new Blob([this.fileContents])
+      const formData = new FormData()
+      formData.append('file', file)
+      const ctx = this
+      this.$http.put(`/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(function (response) {
+        ctx.editOpen = false
+        ctx.currentFile = ''
+        ctx.fileContents = ''
+        ctx.$toast.success(ctx.$t('common.Saved'))
+      }).catch(function () {
+        ctx.$toast.error(ctx.$t('common.SaveFailed'))
+      })
     },
     deleteRequest (item) {
       this.toDelete = item
       this.confirmDeleteOpen = true
     },
     deleteConfirmed () {
-      this.toEdit = false
       let path = ''
       if (this.currentPath === '/') {
         path = '/' + this.toDelete.name
@@ -337,13 +421,8 @@ export default {
 }
 </script>
 
-<style scoped>
-  a {
-    color: inherit;
-  }
-
-  .input-small {
-    width: 200px;
-    display: inline-block;
+<style>
+  #editor .v-input__control, #editor .v-input__slot, #editor .v-text-field__slot, #editor textarea {
+    height: 100%;
   }
 </style>
