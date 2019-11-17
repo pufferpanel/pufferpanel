@@ -122,6 +122,8 @@
 
       <v-overlay :value="editOpen">
         <v-card
+          :dark="isDark()"
+          :light="!isDark()"
           class="d-flex flex-column"
           height="90vh"
           width="90vw"
@@ -131,13 +133,11 @@
             id="editor"
             class="flex-grow-1"
           >
-            <v-textarea
+            <ace
               v-model="fileContents"
-              style="height: 100%"
-              background-color="secondary"
-              solo
-              hide-details
-              no-resize
+              editor-id="fileEditor"
+              :theme="isDark() ? 'monokai' : 'github'"
+	      :file="currentFile"
             />
           </v-card-text>
           <v-card-actions class="px-4 pb-4">
@@ -180,6 +180,7 @@
 
 <script>
 import filesize from 'filesize'
+import { isDark } from '@/utils/dark'
 
 export default {
   props: {
@@ -416,7 +417,8 @@ export default {
           vue.uploadSize = event.total
         }
       })
-    }
+    },
+    isDark
   }
 }
 </script>

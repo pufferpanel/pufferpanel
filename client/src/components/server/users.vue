@@ -21,7 +21,7 @@
           cols="12"
           md="6"
         >
-          <v-card class="mb-4">
+          <v-card class="mb-4" outlined>
             <v-card-title>
               <v-text-field hide-details outlined v-model="user.email" type="email" :label="$t('common.Email')" prepend-inner-icon="mdi-email" @keyup.enter="updateUser(user)" v-if="user.new" />
               <span v-text="user.username || user.email" v-if="!user.new" />

@@ -9,6 +9,7 @@
         background-color="secondary"
         readonly
         solo
+        flat
         no-resize
       />
       <v-text-field
@@ -50,6 +51,7 @@
               style="height: 100%"
               background-color="secondary"
               solo
+              flat
               hide-details
               no-resize
               readonly
