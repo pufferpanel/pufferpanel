@@ -15,7 +15,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/routing"
@@ -24,6 +23,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"strings"
 )
@@ -106,12 +106,9 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 	}
 
 	if node.IsLocal() {
-		c := &gin.Context{
-			Request:  request,
-		}
-		routing.Engine.HandleContext(c)
-
-		return c.Request.Response, err
+		w := &httptest.ResponseRecorder{}
+		routing.Engine.ServeHTTP(w, request)
+		return w.Result(), err
 	}
 
 	response, err := nodeClient.Do(request)
