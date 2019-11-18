@@ -30,8 +30,6 @@ type Node struct {
 
 	Secret string `gorm:"size=36;NOT NULL" json:"-" validate:"required"`
 
-	Local bool `gorm:"local;NOT NULL"`
-
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
@@ -49,4 +47,8 @@ func (n *Node) IsValid() (err error) {
 func (n *Node) BeforeSave() (err error) {
 	err = n.IsValid()
 	return
+}
+
+func (n *Node) IsLocal() bool {
+	return n.PrivateHost == "localhost" || n.PrivateHost  == "127.0.0.1"
 }

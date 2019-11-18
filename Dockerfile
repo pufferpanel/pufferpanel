@@ -28,21 +28,33 @@ RUN npm install && \
 FROM alpine
 COPY --from=builder /pufferpanel /pufferpanel
 
-EXPOSE 8080
+EXPOSE 8080,5656,5657
 VOLUME /etc/pufferpanel
 
-ENV PUFFERPANEL_DATABASE_SESSION=60 \
-    PUFFERPANEL_DATABASE_DIALECT=sqlite3 \
-    PUFFERPANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
-    PUFFERPANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
-    PUFFERPANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
-    PUFFERPANEL_WEB_HOST=0.0.0.0:8080 \
-    PUFFERPANEL_WEB_FILES=/pufferpanel/web \
-    PUFFERPANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
-    PUFFERPANEL_EMAIL_PROVIDER=debug \
-    PUFFERPANEL_SETTINGS_COMPANYNAME=PufferPanel \
-    PUFFERPANEL_SETTINGS_MASTERURL=http://localhost:8080 \
-    PUFFERPANEL_LOGS=/etc/pufferpanel/logs
+ENV PUFFER_LOGS=/etc/pufferpanel/logs \
+    PUFFER_PANEL_DATABASE_SESSION=60 \
+    PUFFER_PANEL_DATABASE_DIALECT=sqlite3 \
+    PUFFER_PANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
+    PUFFER_PANEL_DATABASE_LOG=false \
+    PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
+    PUFFER_PANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
+    PUFFER_PANEL_WEB_HOST=0.0.0.0:8080 \
+    PUFFER_PANEL_WEB_FILES=/pufferpanel/web \
+    PUFFER_PANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
+    PUFFER_PANEL_EMAIL_PROVIDER=debug \
+    PUFFER_PANEL_SETTINGS_COMPANYNAME=PufferPanel \
+    PUFFER_PANEL_SETTINGS_MASTERURL=http://localhost:8080 \
+    PUFFER_DAEMON_CONSOLE_BUFFER=50 \
+    PUFFER_DAEMON_CONSOLE_FORWARD=false \
+    PUFFER_DAEMON_WEB_HOST=0.0.0.0:5656 \
+    PUFFER_DAEMON_SFTP_HOST=0.0.0.0:5657 \
+    PUFFER_DAEMON_SFTP_KEY=/etc/pufferpanel/sftp.key \
+    PUFFER_DAEMON_AUTH_URL=http://localhost:8080 \
+    PUFFER_DAEMON_AUTH_CLIENTID=none \
+    PUFFER_DAEMON_DATA_CACHE=/etc/pufferpanel/cache \
+    PUFFER_DAEMON_DATA_SERVERS=/etc/pufferpanel/servers \
+    PUFFER_DAEMON_DATA_MODULES=/etc/pufferpanel/modules \
+    PUFFER_DAEMON_DATA_CRASHLIMIT=3
 
 WORKDIR /pufferpanel
 
