@@ -133,6 +133,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 					}
 				}
 				if !exists {
+					logging.Info().Printf("Adding local node")
 					create := &models.Node{
 						Name:        "LocalNode",
 						PublicHost:  "127.0.0.1",
