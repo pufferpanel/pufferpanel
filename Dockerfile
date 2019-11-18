@@ -28,7 +28,7 @@ RUN npm install && \
 FROM alpine
 COPY --from=builder /pufferpanel /pufferpanel
 
-EXPOSE 8080,5656,5657
+EXPOSE 8080 5656 5657
 VOLUME /etc/pufferpanel
 
 ENV PUFFER_LOGS=/etc/pufferpanel/logs \
@@ -57,6 +57,8 @@ ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_DAEMON_DATA_CRASHLIMIT=3
 
 WORKDIR /pufferpanel
+
+RUN ./pufferpanel template import
 
 ENTRYPOINT ["/pufferpanel/pufferpanel"]
 CMD ["run"]
