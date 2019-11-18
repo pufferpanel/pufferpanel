@@ -10,7 +10,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/scope"
@@ -25,6 +24,13 @@ import (
 var signingMethod = jwt.SigningMethodES256
 var privateKey *ecdsa.PrivateKey
 var locker sync.Mutex
+
+func GetPublicKey() *ecdsa.PublicKey {
+	if privateKey != nil {
+		return &privateKey.PublicKey
+	}
+	return nil
+}
 
 func Generate(claims jwt.Claims) (string, error) {
 	ValidateTokenLoaded()
@@ -191,10 +197,6 @@ func load() {
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
 		return
-	}
-
-	if viper.GetBool("localNode") {
-		daemon.SetPublicKey(pubKey)
 	}
 
 	return
