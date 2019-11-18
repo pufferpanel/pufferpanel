@@ -16,6 +16,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/entry"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/sftp"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -78,8 +79,8 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	}()
 
 	if !noWeb {
-		//load token, this also will store it to local node if there's one
 		services.ValidateTokenLoaded()
+		daemon.SetPublicKey(services.GetPublicKey())
 
 		defer database.Close()
 
