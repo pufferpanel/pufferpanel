@@ -107,12 +107,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 
 	if node.IsLocal() {
 		c := &gin.Context{
-			Request:  nil,
-			Writer:   nil,
-			Params:   nil,
-			Keys:     nil,
-			Errors:   nil,
-			Accepted: nil,
+			Request:  request,
 		}
 		routing.Engine.HandleContext(c)
 
