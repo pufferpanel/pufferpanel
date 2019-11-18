@@ -81,7 +81,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 	var fullUrl string
 	var err error
 
-	if node.Local {
+	if node.IsLocal() {
 		fullUrl = "http://localhost" + path
 	} else {
 		fullUrl, err = createNodeURL(node, path)
@@ -105,7 +105,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 		request.Body = body
 	}
 
-	if node.Local {
+	if node.IsLocal() {
 		c := &gin.Context{
 			Request:  nil,
 			Writer:   nil,
@@ -172,7 +172,7 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 }
 
 func doesDaemonUseSSL(node *models.Node) (bool, error) {
-	if node.Local {
+	if node.IsLocal() {
 		return false, nil
 	}
 

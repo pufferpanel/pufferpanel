@@ -10,7 +10,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/spf13/cast"
-	"github.com/spf13/viper"
 	"net/http"
 	"strconv"
 	"strings"
@@ -73,7 +72,7 @@ func proxyServerRequest(c *gin.Context) {
 		c.Request.Header.Set("Authorization", "Bearer "+newToken)
 	}
 
-	if viper.GetBool("localNode") && s.Node.Local {
+	if s.Node.IsLocal() {
 		c.Request.URL.Path = path
 		routing.Engine.HandleContext(c)
 	} else {
@@ -150,7 +149,7 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 }
 
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
-	if node.Local {
+	if node.IsLocal() {
 		//have gin handle the request again, but send it to daemon instead
 		routing.Engine.HandleContext(c)
 	} else {

@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	viper.SetEnvPrefix("PUFFERPANEL")
+	viper.SetEnvPrefix("PUFFER")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
@@ -16,12 +16,12 @@ func init() {
 
 	//global settings
 	viper.SetDefault("logs", "logs")
-	viper.SetDefault("localNode", true)
 
 	//panel specific settings
 	viper.SetDefault("panel.database.session", 60)
 	viper.SetDefault("panel.database.dialect", "sqlite3")
 	viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
+	viper.SetDefault("panel.database.log", false)
 	viper.SetDefault("panel.token.private", "private.pem")
 	viper.SetDefault("panel.token.public", "public.pem")
 	viper.SetDefault("panel.web.host", "0.0.0.0:8080")
@@ -33,7 +33,6 @@ func init() {
 	viper.SetDefault("panel.email.key", "")
 	viper.SetDefault("panel.settings.companyName", "PufferPanel")
 	viper.SetDefault("panel.settings.masterUrl", "http://localhost:8080")
-	viper.SetDefault("panel.database.log", false)
 
 	//daemon specific settings
 	viper.SetDefault("daemon.console.buffer", 50)
