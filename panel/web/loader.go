@@ -75,6 +75,18 @@ func handle404(c *gin.Context) {
 		}
 	}
 
+	if strings.HasSuffix(c.Request.URL.Path, ".js") {
+		c.Writer.Header().Set("Content-Type", "application/js")
+		c.File(ClientPath + c.Request.URL.Path)
+		return
+	}
+
+	if strings.HasSuffix(c.Request.URL.Path, ".css") {
+		c.Writer.Header().Set("Content-Type", "application/css")
+		c.File(ClientPath + c.Request.URL.Path)
+		return
+	}
+
 	c.File(IndexFile)
 }
 
