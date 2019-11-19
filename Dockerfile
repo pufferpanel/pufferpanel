@@ -14,10 +14,9 @@ RUN go version && \
 WORKDIR /build/pufferpanel
 COPY . .
 RUN go build -v -tags $tags -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
-    mv assets/email /pufferpanel/email
-
-WORKDIR /build/pufferpanel/client
-RUN npm install && \
+    mv assets/email /pufferpanel/email && \
+    cd client && \
+    npm install && \
     npm run dev-build && \
     mv dist /pufferpanel/www/
 
