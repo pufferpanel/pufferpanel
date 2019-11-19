@@ -45,10 +45,22 @@ func RegisterRoutes(e *gin.Engine) {
 	auth.RegisterRoutes(e.Group("/auth"))
 	daemon.RegisterRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
 
-	e.Static("/css", ClientPath+"/css")
-	e.Static("/fonts", ClientPath+"/fonts")
-	e.Static("/img", ClientPath+"/img")
-	e.Static("/js", ClientPath+"/js")
+	css := e.Group("/css")
+	{
+		css.StaticFS("", http.Dir(ClientPath+"/css"))
+	}
+	fonts := e.Group("/fonts")
+	{
+		fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
+	}
+	img := e.Group("/img")
+	{
+		img.StaticFS("", http.Dir(ClientPath+"/img"))
+	}
+	js := e.Group("/js", setContentType("application/javascript"))
+	{
+		js.StaticFS("", http.Dir(ClientPath+"/js"))
+	}
 	e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
 	e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
 	//e.StaticFile("/", IndexFile)
@@ -63,18 +75,6 @@ func handle404(c *gin.Context) {
 		}
 	}
 
-	if strings.HasSuffix(c.Request.URL.Path, ".js") {
-		c.Writer.Header().Set("Content-Type", "application/js")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
-	if strings.HasSuffix(c.Request.URL.Path, ".css") {
-		c.Writer.Header().Set("Content-Type", "application/css")
-		c.File(ClientPath + c.Request.URL.Path)
-		return
-	}
-
 	c.File(IndexFile)
 }
 
@@ -85,4 +85,11 @@ func config(c *gin.Context) {
 			"name": "PufferPanel",
 		},
 	})
+}
+
+func setContentType(contentType string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Content-Type", contentType)
+		c.Next()
+	}
 }
