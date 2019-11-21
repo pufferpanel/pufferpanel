@@ -11,10 +11,10 @@ Vue.component('Ace', {
     if (!window.ace) {
       const ctx = this
       const ace = document.createElement('script')
-      ace.src = '/vendor/ace/ace.js'
+      ace.src = '/ace/ace.js'
       ace.onload = function () {
         const modelist = document.createElement('script')
-        modelist.src = '/vendor/ace/ext-modelist.js'
+        modelist.src = '/ace/ext-modelist.js'
         modelist.onload = function () {
           ctx.initialize()
         }
@@ -32,7 +32,9 @@ Vue.component('Ace', {
       const theme = this.theme || 'monokai'
 
       this.editor = window.ace.edit(this.editorId)
-      this.editor.getSession().setValue(this.value, 1)
+      if (this.value && this.value.length > 0) {
+        this.editor.getSession().setValue(this.value, 1)
+      }
       this.editor.getSession().setMode(mode)
       this.editor.setTheme(`ace/theme/${theme}`)
 
