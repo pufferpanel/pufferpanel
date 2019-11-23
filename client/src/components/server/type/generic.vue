@@ -15,8 +15,10 @@
   <v-container>
     <h1
       style="float: left;"
-      v-text="server.name"
-    />
+    >
+      <server-status :server="server" />
+      {{server.name}}
+    </h1>
     <div style="float: right;">
       <server-controls :server="server" />
     </div>
