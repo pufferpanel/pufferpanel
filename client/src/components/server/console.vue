@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title v-text="$t('common.Console')" />
+    <v-card-title v-text="$t('servers.Console')" />
     <v-card-text>
       <v-textarea
         id="console"
@@ -31,7 +31,7 @@
           width="90vw"
         >
           <v-card-title>
-            <span v-text="$t('common.Console')" />
+            <span v-text="$t('servers.Console')" />
             <div class="flex-grow-1" />
             <v-btn
               icon

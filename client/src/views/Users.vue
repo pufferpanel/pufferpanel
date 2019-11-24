@@ -1,19 +1,19 @@
 <template>
   <v-container>
-    <h1 v-text="$t('common.User')" />
+    <h1 v-text="$t('users.Users')" />
     <v-row>
       <v-col>
-            <v-list two-line elevation="1">
-              <div v-for="(user, index) in users">
-                <v-list-item :to="{name: 'User', params: {id: user.id}}">
-                  <v-list-item-content>
-                    <v-list-item-title v-text="user.username" />
-                    <v-list-item-subtitle v-text="user.email" />
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider v-if="index !== users.length - 1" />
-              </div>
-            </v-list>
+        <v-list two-line elevation="1">
+          <div v-for="(user, index) in users">
+            <v-list-item :to="{name: 'User', params: {id: user.id}}">
+              <v-list-item-content>
+                <v-list-item-title v-text="user.username" />
+                <v-list-item-subtitle v-text="user.email" />
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider v-if="index !== users.length - 1" />
+          </div>
+        </v-list>
       </v-col>
     </v-row>
   </v-container>

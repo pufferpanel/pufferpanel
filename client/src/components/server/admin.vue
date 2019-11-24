@@ -14,12 +14,12 @@
 <template>
   <v-card>
     <v-card-title>
-      <span v-text="$t('common.AdminControls')" />
+      <span v-text="$t('servers.AdminControls')" />
     </v-card-title>
     <v-card-text>
       <v-dialog v-model="confirmDeleteOpen" max-width="600">
         <v-card>
-          <v-card-title v-text="$t('common.ConfirmDeleteServer')" />
+          <v-card-title v-text="$t('servers.ConfirmDelete')" />
           <v-card-actions>
             <v-spacer />
             <v-btn v-text="$t('common.Cancel')" @click="confirmDeleteOpen = false" color="error" />
@@ -32,7 +32,7 @@
         large
         color="error"
         @click="confirmDeleteOpen = true"
-        v-text="$t('common.DeleteServer')"
+        v-text="$t('servers.Delete')"
       />
     </v-card-text>
   </v-card>
@@ -53,7 +53,7 @@ export default {
       this.loading = true
       const ctx = this
       this.$http.delete(`/api/servers/${this.server.id}`).then(function (response) {
-        ctx.$toast.success(ctx.$t('common.ServerDeleted'))
+        ctx.$toast.success(ctx.$t('servers.Deleted'))
         ctx.$router.push({ name: 'Servers' })
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'

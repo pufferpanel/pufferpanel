@@ -9,7 +9,7 @@
   >
     <v-card :loading="registerDisabled">
       <v-card-title class="d-flex justify-center">
-        <p v-text="$t('common.Register')" />
+        <p v-text="$t('users.Register')" />
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -19,7 +19,7 @@
                 id="username"
                 v-model.trim="username"
                 outlined
-                :label="$t('common.Username')"
+                :label="$t('users.Username')"
                 :error-messages="errors.username"
                 prepend-inner-icon="mdi-account"
                 name="username"
@@ -30,7 +30,7 @@
                 id="email"
                 v-model.trim="email"
                 outlined
-                :label="$t('common.Email')"
+                :label="$t('users.Email')"
                 :error-messages="errors.email"
                 prepend-inner-icon="mdi-email"
                 name="email"
@@ -41,7 +41,7 @@
                 id="password"
                 v-model="password"
                 outlined
-                :label="$t('common.Password')"
+                :label="$t('users.Password')"
                 :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements') : errors.password"
                 prepend-inner-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -54,7 +54,7 @@
                 id="confirmPassword"
                 v-model="confirmPassword"
                 outlined
-                :label="$t('common.ConfirmPassword')"
+                :label="$t('users.ConfirmPassword')"
                 :error-messages="(confirmPassword !== '' && !samePassword) ? $t('errors.ErrPasswordsNotIdentical') : ''"
                 prepend-inner-icon="mdi-lock"
                 :append-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -71,13 +71,13 @@
               block
               :disabled="!canComplete"
               @click="submit"
-              v-text="$t('common.Register')"
+              v-text="$t('users.Register')"
             />
             <v-btn
               text
               block
               :to="{name: 'Login'}"
-              v-text="$t('common.LoginLink')"
+              v-text="$t('users.LoginLink')"
             />
           </v-col>
         </v-row>
@@ -147,15 +147,15 @@ export default {
       this.errors.email = ''
       this.errors.password = ''
       if (!this.username) {
-        this.errors.username = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Username') })
+        this.errors.username = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Username') })
         return
       }
       if (!this.email) {
-        this.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Email') })
+        this.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
         return
       }
       if (!this.password) {
-        this.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Password') })
+        this.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
         return
       }
       if (!validate.validPassword(this.password)) {
@@ -177,7 +177,7 @@ export default {
             vue.$emit('logged-in')
             vue.$router.push({ name: 'Servers' })
           } else {
-            localStorage.setItem('registered', 'true')
+            this.$toast.success(this.$t('users.RegisterSuccess'))
             vue.$router.push({ name: 'Login' })
           }
         } else {

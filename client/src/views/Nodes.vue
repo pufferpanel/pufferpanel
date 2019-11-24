@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 v-text="$t('common.Nodes')" />
+    <h1 v-text="$t('nodes.Nodes')" />
     <v-row>
       <v-col>
         <v-sheet elevation="1" class="py-2">
@@ -43,23 +43,23 @@ export default {
           value: 'name'
         },
         {
-          text: this.$t('common.PublicHost'),
+          text: this.$t('nodes.PublicHost'),
           value: 'publicHost'
         },
         {
-          text: this.$t('common.PublicPort'),
+          text: this.$t('nodes.PublicPort'),
           value: 'publicPort'
         },
         {
-          text: this.$t('common.PrivateHost'),
+          text: this.$t('nodes.PrivateHost'),
           value: 'privateHost'
         },
         {
-          text: this.$t('common.PrivatePort'),
+          text: this.$t('nodes.PrivatePort'),
           value: 'privatePort'
         },
         {
-          text: this.$t('common.SftpPort'),
+          text: this.$t('nodes.SftpPort'),
           value: 'sftpPort'
         }
       ]

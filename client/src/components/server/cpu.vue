@@ -13,7 +13,7 @@
 
 <template>
   <v-card>
-    <v-card-title v-text="$t('common.CPU')" />
+    <v-card-title v-text="$t('servers.CPU')" />
     <v-card-text class="pt-4">
       <line-chart
         :chart-data="datacollection"

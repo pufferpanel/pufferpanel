@@ -13,7 +13,7 @@
 
 <template>
   <v-card>
-    <v-card-title v-text="$t('common.Users')" />
+    <v-card-title v-text="$t('users.Users')" />
     <v-card-text>
       <v-row>
         <v-col
@@ -23,7 +23,7 @@
         >
           <v-card class="mb-4" outlined>
             <v-card-title>
-              <v-text-field hide-details outlined v-model="user.email" type="email" :label="$t('common.Email')" prepend-inner-icon="mdi-email" @keyup.enter="updateUser(user)" v-if="user.new" />
+              <v-text-field hide-details outlined v-model="user.email" type="email" :label="$t('users.Email')" prepend-inner-icon="mdi-email" @keyup.enter="updateUser(user)" v-if="user.new" />
               <span v-text="user.username || user.email" v-if="!user.new" />
               <v-btn v-if="!user.new"
                 icon
@@ -80,7 +80,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn large block color="success" @click="addUser()" v-text="$t('common.AddUser')" />
+          <v-btn large block color="success" @click="addUser()" v-text="$t('users.Add')" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -129,7 +129,7 @@ export default {
     },
     updateUser (user) {
       if (user.new && (!user.email || user.email === '')) {
-        this.$toast.error(this.$t('common.NoEmailGiven'))
+        this.$toast.error(this.$t('users.NoEmailGiven'))
         return
       }
       const ctx = this
@@ -137,7 +137,7 @@ export default {
         user[key] = (user[key] === 'true') ? true : (user[key] === 'false') ? false : user[key]
       }
       this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(function (response) {
-        ctx.$toast.success(ctx.$t('common.SavedUsers'))
+        ctx.$toast.success(ctx.$t('common.Saved'))
         ctx.loadUsers()
       })
     },

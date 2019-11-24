@@ -18,27 +18,27 @@
       class="mr-4"
       color="success"
       @click="action('start')"
-      v-text="$t('common.Start')"
+      v-text="$t('servers.Start')"
     />
     <v-btn
       v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="warning"
       @click="action('stop')"
-      v-text="$t('common.Stop')"
+      v-text="$t('servers.Stop')"
     />
     <v-btn
       v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="error"
       @click="action('kill')"
-      v-text="$t('common.Kill')"
+      v-text="$t('servers.Kill')"
     />
     <v-btn
       v-if="server.permissions.installServer || isAdmin()"
       color="error"
       @click="action('install')"
-      v-text="$t('common.Install')"
+      v-text="$t('servers.Install')"
     />
   </v-container>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 v-text="$t('common.Servers')" />
+    <h1 v-text="$t('servers.Servers')" />
     <v-row>
       <v-col>
         <v-sheet elevation="1" class="pt-2">
@@ -67,7 +67,7 @@ export default {
           sortable: true
         },
         {
-          text: this.$t('common.Node'),
+          text: this.$t('nodes.Node'),
           value: 'node',
           sortable: true
         },

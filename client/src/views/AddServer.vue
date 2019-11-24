@@ -13,11 +13,11 @@
 
 <template>
   <v-container>
-    <h1 v-text="$t('common.AddServer')" />
+    <h1 v-text="$t('servers.Add')" />
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-card-title v-text="$t('common.Node')" />
+          <v-card-title v-text="$t('nodes.Node')" />
           <v-card-text>
             <v-select
               id="nodeSelect"
@@ -27,7 +27,7 @@
               :items="nodes"
               single-line
               :no-data-text="$t('errors.ErrNoNodes')"
-              :placeholder="$t('common.SelectNode')"
+              :placeholder="$t('servers.SelectNode')"
             />
           </v-card-text>
         </v-card>
@@ -47,7 +47,7 @@
               :items="templates"
               single-line
               :no-data-text="$t('errors.ErrNoTemplates')"
-              :placeholder="$t('common.SelectTemplate')"
+              :placeholder="$t('servers.SelectTemplate')"
             />
           </v-card-text>
         </v-card>
@@ -57,7 +57,7 @@
     <v-row v-if="selectedTemplate !== null">
       <v-col cols="12">
         <v-card>
-          <v-card-title v-text="$t('common.Environment')" />
+          <v-card-title v-text="$t('servers.Environment')" />
           <v-card-text>
             <v-select
               id="environmentSelect"
@@ -65,7 +65,7 @@
               :disabled="loadingTemplates"
               :items="environments"
               outlined
-              :placeholder="$t('common.SelectEnvironment')"
+              :placeholder="$t('servers.SelectEnvironment')"
             />
             <div v-if="selectedEnvironment && environments[selectedEnvironment]">
               <div v-for="(val, key) in environments[selectedEnvironment].metadata">
@@ -84,17 +84,17 @@
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-card-title v-text="$t('common.Users')" />
+          <v-card-title v-text="$t('users.Users')" />
           <v-card-text>
             <v-text-field
               v-model="userInput"
               outlined
-              :placeholder="$t('common.TypeUsername')"
+              :placeholder="$t('servers.TypeUsername')"
             />
             <v-list v-if="users.length > 0 || selectedUsers.length > 0">
               <v-subheader
                 v-if="users.length > 0"
-                v-text="$t('common.AddUser')"
+                v-text="$t('users.Add')"
               />
               <v-list-item-group v-if="users.length > 0">
                 <v-list-item
@@ -112,7 +112,7 @@
               </v-list-item-group>
               <v-subheader
                 v-if="selectedUsers.length > 0"
-                v-text="$t('common.Users')"
+                v-text="$t('users.Users')"
               />
               <v-list-item-group v-if="selectedUsers.length > 0">
                 <v-list-item
@@ -136,7 +136,7 @@
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-card-title v-text="$t('common.ServerName')" />
+          <v-card-title v-text="$t('servers.Name')" />
           <v-card-text>
             <v-text-field
               id="nameInput"

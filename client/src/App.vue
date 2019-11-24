@@ -41,7 +41,7 @@
             <v-icon>mdi-account</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('common.Account')" />
+            <v-list-item-title v-text="$t('users.Account')" />
           </v-list-item-content>
         </v-list-item>
 
@@ -53,7 +53,7 @@
             <v-icon>mdi-server</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('common.Servers')" />
+            <v-list-item-title v-text="$t('servers.Servers')" />
           </v-list-item-content>
         </v-list-item>
 
@@ -66,7 +66,7 @@
             <v-icon>mdi-server-network</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('common.Nodes')" />
+            <v-list-item-title v-text="$t('nodes.Nodes')" />
           </v-list-item-content>
         </v-list-item>
 
@@ -79,7 +79,7 @@
             <v-icon>mdi-account-multiple</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('common.Users')" />
+            <v-list-item-title v-text="$t('users.Users')" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -105,7 +105,7 @@
               <v-icon>mdi-logout</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="$t('common.Logout')" />
+              <v-list-item-title v-text="$t('users.Logout')" />
             </v-list-item-content>
           </v-list-item>
         </v-list>

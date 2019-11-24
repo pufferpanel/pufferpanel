@@ -59,7 +59,7 @@
       <v-data-table
         :items-per-page="-1"
         :headers="headers"
-        :no-data-text="$t('common.NoFiles')"
+        :no-data-text="$t('files.NoFiles')"
         hide-default-footer
         :items="files"
         @click:row="itemClicked"
@@ -100,7 +100,7 @@
                 <v-icon>mdi-download</v-icon>
               </v-btn>
             </template>
-            <span v-text="$t('common.Download')" />
+            <span v-text="$t('files.Download')" />
           </v-tooltip>
           <v-tooltip
             v-if="item.name !== '..'"
@@ -199,7 +199,7 @@ export default {
         },
         {
           value: 'size',
-          text: this.$t('common.Size'),
+          text: this.$t('files.Size'),
           sortable: true
         },
         {
@@ -300,7 +300,7 @@ export default {
           ctx.fileContents = response.data
           ctx.editOpen = true
         }).catch(function () {
-          ctx.$toast.error(ctx.$t('common.FileLoadFailed'))
+          ctx.$toast.error(ctx.$t('files.FileLoadFailed'))
         })
       }
     },

@@ -9,7 +9,7 @@
   >
     <v-card :loading="loginDisabled">
       <v-card-title class="d-flex justify-center">
-        <p v-text="$t('common.Login')" />
+        <p v-text="$t('users.Login')" />
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -19,7 +19,7 @@
                 id="email"
                 v-model.trim="email"
                 outlined
-                :label="$t('common.Email')"
+                :label="$t('users.Email')"
                 :error-messages="errors.email"
                 prepend-inner-icon="mdi-account"
                 name="email"
@@ -30,7 +30,7 @@
                 id="password"
                 v-model="password"
                 outlined
-                :label="$t('common.Password')"
+                :label="$t('users.Password')"
                 :error-messages="errors.password"
                 prepend-inner-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -46,13 +46,13 @@
               large
               block
               @click="submit"
-              v-text="$t('common.Login')"
+              v-text="$t('users.Login')"
             />
             <v-btn
               text
               block
               :to="{name: 'Register'}"
-              v-text="$t('common.RegisterLink')"
+              v-text="$t('users.RegisterLink')"
             />
           </v-col>
         </v-row>
@@ -69,12 +69,6 @@ function getReauthReason () {
   const reason = localStorage.getItem('reauth_reason') || ''
   localStorage.removeItem('reauth_reason')
   return reason
-}
-
-function getRegistered () {
-  const registered = !!((localStorage.getItem('registered') || ''))
-  localStorage.removeItem('registered')
-  return registered
 }
 
 export default {
@@ -99,7 +93,6 @@ export default {
   },
   mounted () {
     if (hasAuth()) this.$router.push({ name: 'Servers' })
-    if (getRegistered()) this.$toast.success(this.$t('common.RegisterSuccess'))
     const reauthReason = getReauthReason()
     if (reauthReason === 'session_timed_out') this.$toast.error(this.$t('errors.ErrSessionTimedOut'))
   },
@@ -113,12 +106,12 @@ export default {
       data.errors.password = ''
 
       if (!data.email) {
-        data.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Email') })
+        data.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
         return
       }
 
       if (!data.password) {
-        data.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('common.Password') })
+        data.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
         return
       }
 

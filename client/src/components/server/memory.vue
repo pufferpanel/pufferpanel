@@ -13,7 +13,7 @@
 
 <template>
   <v-card>
-    <v-card-title v-text="$t('common.Memory')" />
+    <v-card-title v-text="$t('servers.Memory')" />
     <v-card-text class="pt-4">
       <line-chart
         :chart-data="datacollection"

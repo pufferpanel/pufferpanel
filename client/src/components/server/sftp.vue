@@ -13,14 +13,14 @@
 
 <template>
   <v-card>
-    <v-card-title v-text="$t('common.SFTPInfo')" />
+    <v-card-title v-text="$t('servers.SFTPInfo')" />
     <v-card-text class="body-1 text--primary">
       <v-row>
         <v-col
           cols="12"
           sm="6"
           md="2"
-          v-text="$t('common.HostPort')"
+          v-text="$t('common.Host') + ':' + $t('common.Port')"
         />
         <v-col
           cols="12"
@@ -53,7 +53,7 @@
           cols="12"
           sm="6"
           md="2"
-          v-text="$t('common.Username')"
+          v-text="$t('users.Username')"
         />
         <v-col
           cols="12"
@@ -87,14 +87,14 @@
           cols="12"
           sm="6"
           md="2"
-          v-text="$t('common.Password')"
+          v-text="$t('users.Password')"
         />
         <!-- 00A0 is the unicode code point for a non breaking space and required here because js makes &nbsp; print as literal text and not using a non breaking space makes it behave extra dumb on small devices... -->
         <v-col
           cols="12"
           sm="6"
           md="10"
-          v-text="$t('common.AccountPassword').replace(' ', '\u00A0')"
+          v-text="$t('users.AccountPassword').replace(' ', '\u00A0')"
         />
       </v-row>
     </v-card-text>

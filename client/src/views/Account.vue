@@ -19,7 +19,7 @@
         md="6"
       >
         <v-card>
-          <v-card-title v-text="$t('common.ChangeInfo')" />
+          <v-card-title v-text="$t('users.ChangeInfo')" />
           <v-card-text>
             <v-row>
               <v-col cols="12">
@@ -27,20 +27,20 @@
                   v-model="username"
                   outlined
                   prepend-inner-icon="mdi-account"
-                  :label="$t('common.Username')"
+                  :label="$t('users.Username')"
                 />
                 <v-text-field
                   v-model="email"
                   outlined
                   prepend-inner-icon="mdi-email"
-                  :label="$t('common.Email')"
+                  :label="$t('users.Email')"
                 />
                 <v-text-field
                   v-model="confirmPassword"
                   outlined
                   prepend-inner-icon="mdi-lock"
                   type="password"
-                  :label="$t('common.ConfirmPassword')"
+                  :label="$t('users.ConfirmPassword')"
                 />
                 <v-btn
                   large
@@ -48,7 +48,7 @@
                   color="primary"
                   :disabled="!canSubmitInfoChange"
                   @click="submitInfoChange"
-                  v-text="$t('common.ChangeInfo')"
+                  v-text="$t('users.ChangeInfo')"
                 />
               </v-col>
             </v-row>
@@ -63,7 +63,7 @@
         md="6"
       >
         <v-card>
-          <v-card-title v-text="$t('common.ChangePassword')" />
+          <v-card-title v-text="$t('users.ChangePassword')" />
           <v-card-text>
             <v-row>
               <v-col cols="12">
@@ -72,21 +72,21 @@
                   outlined
                   prepend-inner-icon="mdi-lock"
                   type="password"
-                  :label="$t('common.OldPassword')"
+                  :label="$t('users.OldPassword')"
                 />
                 <v-text-field
                   v-model="newPassword"
                   outlined
                   prepend-inner-icon="mdi-lock"
                   type="password"
-                  :label="$t('common.NewPassword')"
+                  :label="$t('users.NewPassword')"
                 />
                 <v-text-field
                   v-model="confirmNewPassword"
                   outlined
                   prepend-inner-icon="mdi-lock"
                   type="password"
-                  :label="$t('common.ConfirmPassword')"
+                  :label="$t('users.ConfirmPassword')"
                 />
                 <v-btn
                   large
@@ -94,7 +94,7 @@
                   color="primary"
                   :disabled="!canSubmitPassChange"
                   @click="submitPassChange"
-                  v-text="$t('common.ChangePassword')"
+                  v-text="$t('users.ChangePassword')"
                 />
               </v-col>
             </v-row>
@@ -153,7 +153,7 @@ export default {
         password: this.confirmPassword
       }).then(function (result) {
         if (result.status >= 200 && result.status < 300) {
-          ctx.$toast.success(ctx.$t('common.InfoChanged'))
+          ctx.$toast.success(ctx.$t('users.InfoChanged'))
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
@@ -183,7 +183,7 @@ export default {
         newPassword: this.newPassword
       }).then(function (result) {
         if (result.status >= 200 && result.status < 300) {
-          ctx.$toast.success(ctx.$t('common.PasswordChanged'))
+          ctx.$toast.success(ctx.$t('users.PasswordChanged'))
         } else {
           let msg = 'errors.ErrUnknownError'
           if (result.data.error.code) {
