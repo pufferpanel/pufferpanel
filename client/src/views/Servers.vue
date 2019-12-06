@@ -177,16 +177,14 @@ export default {
       })
     },
     pollServerStatus () {
-      const vue = this
-
       for (const i in this.servers) {
-        const server = vue.servers[i]
-        vue.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
-          const data = response.data
-          if (data) {
-            const msg = data.data
-            if (msg && msg.running) {
+        const server = this.servers[i]
+        this.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
+          if (response.data) {
+            if (response.data.running) {
               server.online = true
+            } else {
+              server.online = false
             }
           }
         })
