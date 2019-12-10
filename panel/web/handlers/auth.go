@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -71,7 +72,12 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	us := services.User{DB: db}
-	user, err := us.Get(token.Claims.Subject)
+	id, err := strconv.Atoi(token.Claims.Subject)
+	if response.HandleError(c, err, http.StatusUnauthorized) {
+		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
+		return
+	}
+	user, err := us.GetById(uint(id))
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
