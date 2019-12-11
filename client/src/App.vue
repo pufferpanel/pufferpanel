@@ -131,7 +131,7 @@
           </div>
         </div>
         <router-view
-          @logged-in="loggedIn = true"
+          @logged-in="didLogIn()"
           v-else
         />
       </v-container>
@@ -150,7 +150,8 @@ export default {
       appConfig: config.defaultAppConfig,
       loggedIn: false,
       drawer: null,
-      minified: false
+      minified: false,
+      reauhTask: null
     }
   },
   mounted () {
@@ -159,7 +160,7 @@ export default {
     this.$vuetify.theme.dark = isDark()
 
     if ((Cookies.get('puffer_auth') || '')) {
-      this.loggedIn = true
+      this.didLogIn()
     } else {
       this.loggedIn = false
     }
@@ -175,9 +176,20 @@ export default {
       doToggleDark(this.$vuetify)
     },
     logout () {
+      this.reauthTask && clearInterval(this.reauthTask)
+      this.reauthTask = null
       Cookies.remove('puffer_auth')
       this.loggedIn = false
       this.$router.push({ name: 'Login' })
+    },
+    didLogIn () {
+      this.loggedIn = true
+      const ctx = this
+      this.reauthTask = setInterval(function () {
+        ctx.$http.post('/auth/reauth').then(function (response) {
+          response.data.session && Cookies.set('puffer_auth', response.data.session)
+        })
+      }, 1000 * 60 * 10)
     }
   }
 }
