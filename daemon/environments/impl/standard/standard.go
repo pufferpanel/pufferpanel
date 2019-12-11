@@ -180,7 +180,6 @@ func (s *standard) handleClose(callback func(graceful bool)) {
 	var graceful bool
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {
 		graceful = false
-		callback(false)
 	} else {
 		graceful = s.mainProcess.ProcessState.Success()
 	}
