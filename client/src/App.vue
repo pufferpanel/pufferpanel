@@ -58,7 +58,7 @@
         </v-list-item>
 
         <v-list-item
-          v-if="isAdmin()"
+          v-if="hasScope('nodes.view') || isAdmin()"
           :to="{name: 'Nodes'}"
           link
         >
@@ -71,7 +71,7 @@
         </v-list-item>
 
         <v-list-item
-          v-if="isAdmin()"
+          v-if="hasScope('users.view') || isAdmin()"
           :to="{name: 'Users'}"
           link
         >

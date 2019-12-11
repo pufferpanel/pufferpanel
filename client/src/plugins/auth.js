@@ -12,7 +12,7 @@
  */
 
 import Vue from 'vue'
-import { hasAuth, isAdmin } from '@/utils/auth'
+import { hasAuth, isAdmin, hasScope } from '@/utils/auth'
 
 Vue.prototype.hasAuth = function () {
   return hasAuth()
@@ -20,4 +20,8 @@ Vue.prototype.hasAuth = function () {
 
 Vue.prototype.isAdmin = function () {
   return isAdmin()
+}
+
+Vue.prototype.hasScope = function (scope) {
+  return hasScope(scope)
 }

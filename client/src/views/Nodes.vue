@@ -13,7 +13,7 @@
             @click:row="rowClicked"
           />
           <v-btn
-            v-show="isAdmin()"
+            v-show="hasScope('nodes.deploy') || isAdmin()"
             color="primary"
             bottom
             right
@@ -94,7 +94,7 @@ export default {
       })
     },
     rowClicked (item) {
-      this.$router.push({ name: 'Node', params: { id: item.id } })
+      if (this.hasScope('nodes.edit') || this.isAdmin()) this.$router.push({ name: 'Node', params: { id: item.id } })
     }
   }
 }

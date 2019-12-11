@@ -5,7 +5,7 @@
       <v-col>
         <v-list two-line elevation="1">
           <div v-for="(user, index) in users">
-            <v-list-item :to="{name: 'User', params: {id: user.id}}">
+            <v-list-item :to="(hasScope('users.edit') || isAdmin()) ? {name: 'User', params: {id: user.id}} : undefined">
               <v-list-item-content>
                 <v-list-item-title v-text="user.username" />
                 <v-list-item-subtitle v-text="user.email" />
