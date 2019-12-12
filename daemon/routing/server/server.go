@@ -91,7 +91,7 @@ func RegisterRoutes(e *gin.RouterGroup) {
 		l.GET("/:id/stats", httphandlers.OAuth2Handler(scope.ServersStat, true), GetStats)
 		l.OPTIONS("/:id/stats", response.CreateOptions("GET"))
 
-		l.GET("/:id/status", httphandlers.OAuth2Handler(scope.ServersStat, true), GetStatus)
+		l.GET("/:id/status", httphandlers.OAuth2Handler(scope.ServersView, true), GetStatus)
 		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
 	}
 
