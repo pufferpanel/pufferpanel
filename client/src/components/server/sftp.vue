@@ -31,6 +31,7 @@
             ref="host"
             :value="host"
             readonly
+	    class="copyContent"
           >
           <v-btn
             icon
@@ -64,7 +65,7 @@
             ref="username"
             :value="username"
             readonly
-	    style=""
+	    class="copyContent"
           >
           <v-btn
             icon
@@ -102,8 +103,11 @@
 </template>
 
 <style>
-input {
-  width: 0;
+.copyContent {
+    width: 1px;
+    height: 1px;
+    position: fixed;
+    left: -200px;
 }
 </style>
 
