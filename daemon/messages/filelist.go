@@ -13,11 +13,23 @@
 
 package messages
 
-type Message interface {
-	Key() string
+type FileList struct {
+	CurrentPath string     `json:"path"`
+	Error       string     `json:"error,omitempty"`
+	Url         string     `json:"url,omitempty"`
+	FileList    []FileDesc `json:"files,omitempty"`
+	Contents    []byte     `json:"contents,omitempty"`
+	Filename    string     `json:"name,omitempty"`
 }
 
-type Transmission struct {
-	Message Message `json:"data"`
-	Type    string  `json:"type"`
+type FileDesc struct {
+	Name      string `json:"name"`
+	Modified  int64  `json:"modifyTime,omitempty"`
+	Size      int64  `json:"size,omitempty"`
+	File      bool   `json:"isFile"`
+	Extension string `json:"extension,omitempty"`
+}
+
+func (m FileList) Key() string {
+	return "file"
 }

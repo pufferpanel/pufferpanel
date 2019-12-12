@@ -28,6 +28,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/httphandlers"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/socket"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/scope"
@@ -591,7 +592,7 @@ func GetConsole(c *gin.Context) {
 	}
 
 	console, _ := program.GetEnvironment().GetConsole()
-	_ = messages.Write(conn, messages.ConsoleMessage{Logs: console})
+	_ = socket.Write(conn, messages.Console{Logs: console})
 
 	program.GetEnvironment().AddListener(conn)
 }
@@ -686,7 +687,7 @@ func OpenSocket(c *gin.Context) {
 	}
 
 	console, _ := program.GetEnvironment().GetConsole()
-	_ = messages.Write(conn, messages.ConsoleMessage{Logs: console})
+	_ = socket.Write(conn, messages.Console{Logs: console})
 
 	internalMap, _ := c.Get("scopes")
 	scopes := internalMap.([]scope.Scope)

@@ -13,11 +13,11 @@
 
 package messages
 
-type Message interface {
-	Key() string
+type Stat struct {
+	Memory float64 `json:"memory"`
+	Cpu    float64 `json:"cpu"`
 }
 
-type Transmission struct {
-	Message Message `json:"data"`
-	Type    string  `json:"type"`
+func (m Stat) Key() string {
+	return "stat"
 }

@@ -24,7 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/impl/docker"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/impl/standard"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/utils"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/socket"
 	"path/filepath"
 	"sync"
 )
@@ -55,7 +55,7 @@ func Create(environmentType, folder, id string, environmentSection interface{}) 
 
 	serverRoot := filepath.Join(folder, id)
 	envCache := cache.CreateCache()
-	wsManager := utils.CreateWSManager()
+	wsManager := socket.CreateTracker()
 
 	e := item.GetBase()
 	if e.RootDirectory == "" {

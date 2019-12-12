@@ -24,6 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
@@ -64,6 +65,10 @@ func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, 
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
 	logging.Info().Printf("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+
+	msg := messages.Status{Running:true}
+	_ = t.WSManager.WriteMessage(msg)
+
 	tty, err := pty.Start(pr)
 	if err != nil {
 		return
@@ -191,6 +196,9 @@ func (t *tty) handleClose(callback func(graceful bool)) {
 	}
 	t.mainProcess = nil
 	t.Wait.Done()
+
+	msg := messages.Status{Running:false}
+	_ = t.WSManager.WriteMessage(msg)
 
 	if callback != nil {
 		callback(success)

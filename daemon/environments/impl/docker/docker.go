@@ -30,6 +30,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"io"
 	"io/ioutil"
@@ -110,6 +111,10 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 		if err != nil {
 			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
 		}
+
+		msg := messages.Status{Running:false}
+		_ = d.WSManager.WriteMessage(msg)
+
 		if callback != nil {
 			callback(err == nil)
 		}
@@ -117,6 +122,9 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 
 	startOpts := types.ContainerStartOptions{
 	}
+
+	msg := messages.Status{Running:true}
+	_ = d.WSManager.WriteMessage(msg)
 
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
 	if err != nil {
