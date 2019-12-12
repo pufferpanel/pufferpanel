@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/environments/envs"
+	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
@@ -65,6 +66,10 @@ func (s *standard) standardExecuteAsync(cmd string, args []string, env map[strin
 	}
 	s.stdInWriter = pipe
 	logging.Info().Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
+
+	msg := messages.Status{Running:true}
+	_ = s.WSManager.WriteMessage(msg)
+
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
 		return
@@ -176,6 +181,9 @@ func (s *standard) SendCode(code int) error {
 func (s *standard) handleClose(callback func(graceful bool)) {
 	err := s.mainProcess.Wait()
 	s.Wait.Done()
+
+	msg := messages.Status{Running:false}
+	_ = s.WSManager.WriteMessage(msg)
 
 	var graceful bool
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {

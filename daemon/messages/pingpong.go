@@ -13,11 +13,16 @@
 
 package messages
 
-type Message interface {
-	Key() string
+type Ping struct {
 }
 
-type Transmission struct {
-	Message Message `json:"data"`
-	Type    string  `json:"type"`
+type Pong struct {
+}
+
+func (m Ping) Key() string {
+	return "ping"
+}
+
+func (m Pong) Key() string {
+	return "pong"
 }

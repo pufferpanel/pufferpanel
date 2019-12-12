@@ -13,10 +13,10 @@
 
 package messages
 
-type FileDesc struct {
-	Name      string `json:"name"`
-	Modified  int64  `json:"modifyTime,omitempty"`
-	Size      int64  `json:"size,omitempty"`
-	File      bool   `json:"isFile"`
-	Extension string `json:"extension,omitempty"`
+type Console struct {
+	Logs []string `json:"logs"`
+}
+
+func (m Console) Key() string {
+	return "console"
 }
