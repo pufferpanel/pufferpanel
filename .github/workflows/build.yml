@@ -3,7 +3,7 @@ on:
   push:
     branches:
     - kraken
-    release:
+  release:
     
 jobs:
   build-binaries:
@@ -256,7 +256,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel
           asset_name: Linux amd64
 
@@ -265,7 +265,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel-arm
           asset_name: Linux arm
 
@@ -274,7 +274,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel_
           asset_name: Windows amd64
 
@@ -283,7 +283,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel.exe
           asset_name: Windows amd64
 
@@ -292,7 +292,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./xenial/*
           asset_name: Xenial-compatible package
 
@@ -301,7 +301,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./trusty/*
           asset_name: Trusty-compatible package
 
@@ -310,6 +310,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./*.rpm
           asset_name: RPM package
