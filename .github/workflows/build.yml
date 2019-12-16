@@ -24,6 +24,17 @@ jobs:
       GOARCH: ${{ matrix.arch }}
 
     steps:
+    - name: Get the version
+      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
+    
+    - name: Get the version
+      if: env.VERSION == ''
+      run: echo "::set-env name=VERSION::${GITHUB_REF/heads\//}"
+      
+    - name: Version
+      run: |
+        echo $VERSION
+        echo $GITHUB_REF      
 
     - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
