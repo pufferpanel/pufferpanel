@@ -53,7 +53,7 @@ jobs:
 
     - name: Publish Binary
       uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arch')
+      if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'amd')
       with:
         name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
         path: pufferpanel
