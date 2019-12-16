@@ -50,12 +50,12 @@ jobs:
     - name: Build
       if: startsWith(matrix.os, 'linux')
       run: |
-        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ github.ref }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: Build
       if: startsWith(matrix.os, 'windows')
       run: |
-        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ github.ref }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: Rename
       if: startsWith(matrix.arch, 'arm')
@@ -120,6 +120,13 @@ jobs:
     needs: [produce-webartifacts,build-binaries]
         
     steps:
+      - name: Get the version
+        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
+    
+      - name: Get the version
+        if: startsWith(env.VERSION, 'refs/')
+        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"      
+      
       - uses: actions/setup-ruby@v1
         
       - name: Install gems
@@ -152,7 +159,7 @@ jobs:
           echo { "web": { "files": "/var/www/pufferpanel/" } } > config.json
 
           fpm -s dir -t deb \
-          --name pufferpanel -v ${{ github.ref }} \
+          --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
           --deb-systemd ../systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
@@ -180,7 +187,7 @@ jobs:
           mv *.rpm build/rpm
           
           fpm -s dir -t deb \
-          --name pufferpanel -v ${{ github.ref }} \
+          --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
           --deb-init ../systemd/pufferpanel/trusty/servicefiles/initd/pufferpanel \
@@ -198,19 +205,19 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Packages - RPM
-          path: build/rpm/pufferpanel-${{github.ref}}-1.x86_64.rpm
+          path: build/rpm/*.rpm
 
       - name: Publish Packages
         uses: actions/upload-artifact@v1
         with:
           name: Packages - Trusty DEB
-          path: build/trusty/pufferpanel_${{github.ref}}_amd64.deb
+          path: build/trusty/*.deb
 
       - name: Publish Packages
         uses: actions/upload-artifact@v1
         with:
           name: Packages - Xenial DEB
-          path: build/xenial/pufferpanel_${{github.ref}}_amd64.deb
+          path: build/xenial/*.deb
 
   release:
     if: startsWith(github.ref, 'v2.')
