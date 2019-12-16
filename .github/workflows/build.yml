@@ -190,16 +190,16 @@ jobs:
           path: build/rpm/pufferpanel-${{github.ref}}-1.x86_64.rpm
 
       - name: Publish Packages
-          uses: actions/upload-artifact@v1
-          with:
-            name: Packages - Trusty DEB
-            path: build/trusty/pufferpanel_${{github.ref}}_amd64.deb
+        uses: actions/upload-artifact@v1
+        with:
+          name: Packages - Trusty DEB
+          path: build/trusty/pufferpanel_${{github.ref}}_amd64.deb
 
       - name: Publish Packages
-          uses: actions/upload-artifact@v1
-          with:
-            name: Packages - Xenial DEB
-            path: build/xenial/pufferpanel_${{github.ref}}_amd64.deb
+        uses: actions/upload-artifact@v1
+        with:
+          name: Packages - Xenial DEB
+          path: build/xenial/pufferpanel_${{github.ref}}_amd64.deb
 
   release:
     if: startsWith(github.ref, 'v2.')
@@ -214,14 +214,14 @@ jobs:
           name: linux amd64 - Binary
 
       - name: Pull files
-          uses: actions/download-artifact@v1
-          with:
-            name: windows amd64 - Binary
+        uses: actions/download-artifact@v1
+        with:
+          name: windows amd64 - Binary
 
       - name: Pull files
-          uses: actions/download-artifact@v1
-          with:
-            name: linux arm - Binary
+        uses: actions/download-artifact@v1
+        with:
+          name: linux arm - Binary
 
       - name: Pull files
         uses: actions/download-artifact@v1
@@ -241,15 +241,15 @@ jobs:
           path: xenial
 
       - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1.0.0
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: ${{ github.ref }}
-            draft: false
-            prerelease: false
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
