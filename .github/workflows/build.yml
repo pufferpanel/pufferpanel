@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - kraken
+    release:
     
 jobs:
   build-binaries:
@@ -38,24 +39,42 @@ jobs:
     - name: Build
       if: startsWith(matrix.os, 'linux')
       run: |
-        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ github.ref }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: Build
       if: startsWith(matrix.os, 'windows')
       run: |
-        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ github.ref }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+    - name: Rename
+      if: startsWith(matrix.arch, 'arm')
+      run: |
+        mv pufferpanel pufferpanel_arm
 
     - name: Publish Binary
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'linux')
-      with:
-        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-        path: pufferpanel
+        uses: actions/upload-artifact@v1
+        if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arch')
+        with:
+          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+          path: pufferpanel
+
+    - name: Publish Binary
+        uses: actions/upload-artifact@v1
+        if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arm')
+        with:
+          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+          path: pufferpanel_arm
+
+    - name: Publish Binary
+        uses: actions/upload-artifact@v1
+        if: startsWith(matrix.os, 'windows')
+        with:
+          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+          path: pufferpanel.exe
 
   produce-webartifacts:
     name: Generate web artifacts
     runs-on: ubuntu-18.04
-    needs: [build-binaries]
 
     strategy:
       matrix:
@@ -84,10 +103,10 @@ jobs:
           name: Web Artifacts
           path: client/dist
 
-  produce-release:
-    name: Generate release artifacts
+  produce-packages:
+    name: Generate packages artifacts
     runs-on: ubuntu-18.04
-    needs: [produce-webartifacts]
+    needs: [produce-webartifacts,build-binaries]
         
     steps:
       - uses: actions/setup-ruby@v1
@@ -122,7 +141,7 @@ jobs:
           echo { "web": { "files": "/var/www/pufferpanel/" } } > config.json
 
           fpm -s dir -t deb \
-          --name pufferpanel -v ${{ github.sha }} \
+          --name pufferpanel -v ${{ github.ref }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
           --deb-systemd ../systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
@@ -150,7 +169,7 @@ jobs:
           mv *.rpm build/rpm
           
           fpm -s dir -t deb \
-          --name pufferpanel -v ${{ github.sha }} \
+          --name pufferpanel -v ${{ github.ref }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
           --deb-init ../systemd/pufferpanel/trusty/servicefiles/initd/pufferpanel \
@@ -167,5 +186,130 @@ jobs:
       - name: Publish Packages
         uses: actions/upload-artifact@v1
         with:
-          name: Packages
-          path: build
+          name: Packages - RPM
+          path: build/rpm/pufferpanel-${{github.ref}}-1.x86_64.rpm
+
+      - name: Publish Packages
+          uses: actions/upload-artifact@v1
+          with:
+            name: Packages - Trusty DEB
+            path: build/trusty/pufferpanel_${{github.ref}}_amd64.deb
+
+      - name: Publish Packages
+          uses: actions/upload-artifact@v1
+          with:
+            name: Packages - Xenial DEB
+            path: build/xenial/pufferpanel_${{github.ref}}_amd64.deb
+
+  release:
+    if: startsWith(github.ref, 'v2.')
+    runs-on: ubuntu-18.04
+    name: Release project
+    needs: [produce-packages]
+
+    steps:
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: linux amd64 - Binary
+
+      - name: Pull files
+          uses: actions/download-artifact@v1
+          with:
+            name: windows amd64 - Binary
+
+      - name: Pull files
+          uses: actions/download-artifact@v1
+          with:
+            name: linux arm - Binary
+
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: Packages - RPM
+
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name:  Packages - Trusty DEB
+          path: trusty
+
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: Packages - Xenial DEB
+          path: xenial
+
+      - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1.0.0
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: ${{ github.ref }}
+            draft: false
+            prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./pufferpanel
+          asset_name: Linux amd64
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./pufferpanel-arm
+          asset_name: Linux arm
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./pufferpanel_
+          asset_name: Windows amd64
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./pufferpanel.exe
+          asset_name: Windows amd64
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./xenial/*
+          asset_name: Xenial-compatible package
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./trusty/*
+          asset_name: Trusty-compatible package
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }
+          asset_path: ./*.rpm
+          asset_name: RPM package
