@@ -28,8 +28,8 @@ jobs:
       run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
     
     - name: Get the version
-      if: env.VERSION == ''
-      run: echo "::set-env name=VERSION::${GITHUB_REF/heads\//}"
+      if: startsWith(env.VERSION, 'refs/')
+      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"
       
     - name: Version
       run: |
