@@ -52,25 +52,25 @@ jobs:
         mv pufferpanel pufferpanel_arm
 
     - name: Publish Binary
-        uses: actions/upload-artifact@v1
-        if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arch')
-        with:
-          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-          path: pufferpanel
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arch')
+      with:
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+        path: pufferpanel
 
     - name: Publish Binary
-        uses: actions/upload-artifact@v1
-        if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arm')
-        with:
-          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-          path: pufferpanel_arm
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'linux') && startsWith(matrix.arch, 'arm')
+      with:
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+        path: pufferpanel_arm
 
     - name: Publish Binary
-        uses: actions/upload-artifact@v1
-        if: startsWith(matrix.os, 'windows')
-        with:
-          name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-          path: pufferpanel.exe
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'windows')
+      with:
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+        path: pufferpanel.exe
 
   produce-webartifacts:
     name: Generate web artifacts
