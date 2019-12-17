@@ -205,19 +205,19 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Packages - RPM
-          path: build/rpm/*.rpm
+          path: build/rpm/pufferpanel-${{ env.VERSION}}-1.x86_64.rpm
 
       - name: Publish Packages
         uses: actions/upload-artifact@v1
         with:
           name: Packages - Trusty DEB
-          path: build/trusty/*.deb
+          path: build/trusty/pufferpanel_${{ env.VERSION}}_amd64.deb
 
       - name: Publish Packages
         uses: actions/upload-artifact@v1
         with:
           name: Packages - Xenial DEB
-          path: build/xenial/*.deb
+          path: build/xenial/pufferpanel_${{ env.VERSION}}_amd64.deb
 
   release:
     if: startsWith(github.ref, 'v2.')
