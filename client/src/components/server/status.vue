@@ -12,50 +12,33 @@
   -->
 
 <template>
-<v-tooltip bottom>
-  <template v-slot:activator="{ on }">
-    <v-icon v-on="on" dense :color="online ? 'success' : 'error'">mdi-brightness-1</v-icon>
-  </template>
-  <span v-text="online ? $t('common.Online') : $t('common.Offline')" />
-</v-tooltip>
+  <v-tooltip bottom>
+    <template v-slot:activator="{ on }">
+      <v-icon v-on="on" dense :color="online === true ? 'success' : online === false ? 'error' : 'grey'">mdi-brightness-1</v-icon>
+    </template>
+    <span v-text="online === true ? $t('common.Online') : online === false ? $t('common.Offline') : $t('common.Unknown')" />
+  </v-tooltip>
 </template>
 
 <script>
 export default {
-  props: {
-    server: { type: Object, default: function () { return {} } }
-  },
   data () {
     return {
-      online: false,
-      interval: null
+      online: null
     }
   },
   mounted () {
     const ctx = this
-    this.getStatus(ctx)
-    this.interval = setInterval(ctx.getStatus, 5000, ctx)
-  },
-  beforeDestroy () {
-    clearInterval(this.interval)
-  },
-  methods: {
-    getStatus (ctx) {
-      ctx.$http.get(`/daemon/server/${ctx.server.id}/status`).then(function (response) {
-        ctx.online = response.data.running
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
 
-        ctx.$toast.error(ctx.$t(msg))
-      })
-    }
+    this.$socket.addEventListener('message', function (event) {
+      const data = JSON.parse(event.data)
+      if (!data) return
+      if (data.type === 'status') ctx.online = data.data.running
+    })
+
+    setTimeout(function () {
+      ctx.$socket.sendObj({ type: 'status' })
+    }, 200)
   }
 }
 </script>
