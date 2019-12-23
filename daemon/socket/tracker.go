@@ -34,6 +34,8 @@ func CreateTracker() *Tracker {
 }
 
 func (ws *Tracker) Register(conn *websocket.Conn) {
+	ws.locker.Lock()
+	defer ws.locker.Unlock()
 	ws.sockets = append(ws.sockets, conn)
 }
 
@@ -44,11 +46,9 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 	}
 	//copy so we can async this
 	ws.locker.Lock()
-	existing := make([]*websocket.Conn, len(ws.sockets))
-	copy(existing, ws.sockets)
-	ws.locker.Unlock()
+	defer ws.locker.Unlock()
 
-	for i := 0; i < len(existing); i++ {
+	for i := 0; i < len(ws.sockets); i++ {
 		go func(socket *websocket.Conn, data []byte) {
 			err := socket.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
@@ -64,7 +64,7 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 					}
 				}
 			}
-		}(existing[i], d)
+		}(ws.sockets[i], d)
 	}
 
 	return nil
