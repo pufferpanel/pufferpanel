@@ -35,16 +35,13 @@ type connection struct {
 }
 
 func CreateTracker() *Tracker {
-	return &Tracker{sockets: make([]*connection, 0), locker: sync.Mutex{}}
+	return &Tracker{sockets: make([]*connection, 0)}
 }
 
 func (ws *Tracker) Register(conn *websocket.Conn) {
 	ws.locker.Lock()
 	defer ws.locker.Unlock()
-	ws.sockets = append(ws.sockets, &connection{
-		socket: conn,
-		lock:   sync.Mutex{},
-	})
+	ws.sockets = append(ws.sockets, &connection{socket: conn})
 }
 
 func (ws *Tracker) WriteMessage(msg messages.Message) error {
