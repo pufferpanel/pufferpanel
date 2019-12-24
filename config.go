@@ -20,7 +20,7 @@ func init() {
 	//panel specific settings
 	viper.SetDefault("panel.database.session", 60)
 	viper.SetDefault("panel.database.dialect", "sqlite3")
-	viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
+	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
 	viper.SetDefault("panel.database.log", false)
 	viper.SetDefault("panel.token.private", "private.pem")
 	viper.SetDefault("panel.token.public", "public.pem")

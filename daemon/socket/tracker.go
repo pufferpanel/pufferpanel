@@ -25,18 +25,26 @@ import (
 )
 
 type Tracker struct {
-	sockets []*websocket.Conn
+	sockets []*connection
 	locker  sync.Mutex
 }
 
+type connection struct {
+	socket *websocket.Conn
+	lock sync.Mutex
+}
+
 func CreateTracker() *Tracker {
-	return &Tracker{sockets: make([]*websocket.Conn, 0), locker: sync.Mutex{}}
+	return &Tracker{sockets: make([]*connection, 0), locker: sync.Mutex{}}
 }
 
 func (ws *Tracker) Register(conn *websocket.Conn) {
 	ws.locker.Lock()
 	defer ws.locker.Unlock()
-	ws.sockets = append(ws.sockets, conn)
+	ws.sockets = append(ws.sockets, &connection{
+		socket: conn,
+		lock:   sync.Mutex{},
+	})
 }
 
 func (ws *Tracker) WriteMessage(msg messages.Message) error {
@@ -44,19 +52,20 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 	if err != nil {
 		return err
 	}
-	//copy so we can async this
 	ws.locker.Lock()
 	defer ws.locker.Unlock()
 
 	for i := 0; i < len(ws.sockets); i++ {
-		go func(socket *websocket.Conn, data []byte) {
-			err := socket.WriteMessage(websocket.TextMessage, data)
+		go func(conn *connection, data []byte) {
+			conn.lock.Lock()
+			defer conn.lock.Unlock()
+			err := conn.socket.WriteMessage(websocket.TextMessage, data)
 			if err != nil {
 				logging.Info().Printf("websocket encountered error, dropping (%s)", err.Error())
 				ws.locker.Lock()
 				defer ws.locker.Unlock()
 				for i, k := range ws.sockets {
-					if k == socket {
+					if k == conn {
 						ws.sockets[i] = ws.sockets[len(ws.sockets)-1]
 						ws.sockets[len(ws.sockets)-1] = nil
 						ws.sockets = ws.sockets[:len(ws.sockets)-1]
