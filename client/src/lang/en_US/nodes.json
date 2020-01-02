@@ -1,0 +1,16 @@
+{
+  "Node": "Node",
+  "Nodes": "Nodes",
+  "Edit": "Edit Node",
+  "Add": "Add Node",
+  "Update": "Update Node",
+  "Delete": "Delete Node",
+  "PublicHost": "Public Host",
+  "PublicPort": "Public Port",
+  "PrivateHost": "Private Host",
+  "PrivatePort": "Private Port",
+  "SftpPort": "SFTP Port",
+  "DeploymentData": "View node deployment data",
+  "UpdateSuccess": "Successfully updated node",
+  "UpdateError": "Error updating node"
+}

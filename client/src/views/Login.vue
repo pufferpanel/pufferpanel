@@ -1,90 +1,89 @@
 <template>
-  <b-col
+  <v-col
+    lg="4"
     md="6"
     sm="8"
+    offset-lg="4"
     offset-md="3"
-    offset-sm="2">
-    <b-card
-      header-tag="header"
-      footer-tag="footer">
-      <h6
-        v-text="$t('common.Login')"
-        slot="header"
-        class="mb-0"
-        align="center"></h6>
-      <b-form>
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="email"
-              v-model.trim="email"
-              prepend-icon="mdi-account"
-              name="email"
-              :placeholder="$t('common.Email')"
-              type="text"/>
-          </b-col>
-        </b-row>
-        <b-row class="my-1">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-form-input
-              id="password"
-              v-model="password"
-              prepend-icon="mdi-lock"
-              name="password"
-              :placeholder="$t('common.Password')"
-              type="password"
-              @keyup.enter="submit"/>
-          </b-col>
-        </b-row>
-      </b-form>
-      <div slot="footer">
-        <b-row>
-          <b-col sm="1"/>
-          <b-col sm="2">
-            <b-link :to="{name: 'Register'}" v-text="$t('common.Register')"></b-link>
-          </b-col>
-          <b-col sm="6"/>
-          <b-col sm="2">
-            <b-btn
-              :disabled="!canSubmit"
-              v-text="$t('common.Login')"
-              variant="primary"
-              size="sm"
-              @click="submit">
-            </b-btn>
-          </b-col>
-          <b-col sm="1"/>
-        </b-row>
-        <b-row v-if="errorMsg">
-          <b-col sm="1"/>
-          <b-col sm="10">
-            <b-alert
-              :show="dismissCountDown"
-              fade
-              dismissible
-              variant="danger"
-            >{{ errorMsg }}
-            </b-alert>
-          </b-col>
-        </b-row>
-      </div>
-    </b-card>
-  </b-col>
+    offset-sm="2"
+  >
+    <v-card :loading="loginDisabled">
+      <v-card-title class="d-flex justify-center">
+        <p v-text="$t('users.Login')" />
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col cols="12">
+            <v-form>
+              <v-text-field
+                id="email"
+                v-model.trim="email"
+                outlined
+                :label="$t('users.Email')"
+                :error-messages="errors.email"
+                prepend-inner-icon="mdi-account"
+                name="email"
+                type="email"
+                @keyup.enter="submit"
+              />
+              <v-text-field
+                id="password"
+                v-model="password"
+                outlined
+                :label="$t('users.Password')"
+                :error-messages="errors.password"
+                prepend-inner-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                name="password"
+                :type="!showPassword ? 'password' : 'text'"
+                @click:append="showPassword = !showPassword"
+                @keyup.enter="submit"
+              />
+            </v-form>
+            <v-btn
+              color="primary"
+              class="body-1 mb-5"
+              large
+              block
+              @click="submit"
+              v-text="$t('users.Login')"
+            />
+            <v-btn
+              text
+              block
+              :to="{name: 'Register'}"
+              v-text="$t('users.RegisterLink')"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
 import Cookies from 'js-cookie'
+import { hasAuth } from '@/utils/auth'
+
+function getReauthReason () {
+  const reason = localStorage.getItem('reauth_reason') || ''
+  localStorage.removeItem('reauth_reason')
+  return reason
+}
 
 export default {
   data () {
     return {
       email: '',
       password: '',
+      errors: {
+        email: '',
+        password: ''
+      },
       loginDisabled: false,
-      errorMsg: '',
-      dismissCountDown: 5
+      reauthReason: '',
+      registered: false,
+      showPassword: false
     }
   },
   computed: {
@@ -92,36 +91,43 @@ export default {
       return !(this.loginDisabled || this.email === '' || this.password === '')
     }
   },
+  mounted () {
+    if (hasAuth()) this.$router.push({ name: 'Servers' })
+    const reauthReason = getReauthReason()
+    if (reauthReason === 'session_timed_out') this.$toast.error(this.$t('errors.ErrSessionTimedOut'))
+  },
   methods: {
     submit () {
-      let data = this
-      data.errorMsg = ''
+      this.$toast.clearQueue()
+      if (this.$toast.getCmp()) this.$toast.getCmp().close()
+      const data = this
+      data.errors.form = ''
+      data.errors.email = ''
+      data.errors.password = ''
 
       if (!data.email) {
-        data.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Email') })
+        data.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
         return
       }
 
       if (!data.password) {
-        data.errorMsg = this.$t('errors.ErrFieldRequired', { 'field': this.$t('common.Password') })
+        data.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
         return
       }
 
       this.loginDisabled = true
 
       this.axios.post(this.$route.path, {
-        data: {
-          email: this.email,
-          password: this.password
-        }
+        email: this.email,
+        password: this.password
       }).then(function (response) {
-        let responseData = response.data
-        if (responseData.success) {
-          Cookies.set('puffer_auth', responseData.data.session)
-          localStorage.setItem('scopes', JSON.stringify(responseData.data.scopes))
+        if (response.status >= 200 && response.status < 300) {
+          Cookies.set('puffer_auth', response.data.session)
+          localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
+          data.$emit('logged-in')
           data.$router.push({ name: 'Servers' })
         } else {
-          data.errorMsg = responseData.msg + ''
+          data.$toast.error(response.data.msg)
         }
       }).catch(function (error) {
         let msg = 'errors.ErrUnknownError'
@@ -133,7 +139,7 @@ export default {
           }
         }
 
-        data.errorMsg = data.$t(msg)
+        data.$toast.error(data.$t(msg))
       }).finally(function () {
         data.loginDisabled = false
       })

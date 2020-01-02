@@ -3,11 +3,9 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import path from 'path'
 
-const requireComponent = require.context(
-  '@/components', true, /\.vue$/
-)
+const requireComponent = require.context('@/components', true, /\.vue$/)
 
-let serverTypes = []
+const serverTypes = []
 
 requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName)
@@ -16,8 +14,8 @@ requireComponent.keys().forEach(fileName => {
     camelCase(fileName.replace(/^\.\//, '').replace(/\.\w+$/, ''))
   )
 
-  if (componentName.startsWith("CoreServersType")) {
-    let name = path.basename(fileName, '.vue')
+  if (componentName.startsWith('ServerType')) {
+    const name = path.basename(fileName, '.vue')
     serverTypes.push(name)
   }
 
@@ -26,19 +24,19 @@ requireComponent.keys().forEach(fileName => {
 
 Vue.component('server-render', {
   render: function (createElement, context) {
-    let server = this.$attrs.server
+    const server = this.$attrs.server
     if (server === null) {
       return
     }
 
-    let element = 'core-servers-type-generic'
-    for (let v in serverTypes) {
+    let element = 'server-type-generic'
+    for (const v in serverTypes) {
       if (serverTypes[v] === server.type) {
-        element = 'core-servers-type-' + serverTypes[v]
+        element = 'server-type-' + serverTypes[v]
         break
       }
     }
 
-    return createElement(element, {props: {"server": server}}, [])
+    return createElement(element, { props: { server: server } }, [])
   }
 })

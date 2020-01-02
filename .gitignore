@@ -10,6 +10,6 @@ logs/
 config.json
 */node_modules/*
 vendor/
-panel/client/dist/
+client/dist/
 *.pem
-panel/client/node_modules/
+client/node_modules/

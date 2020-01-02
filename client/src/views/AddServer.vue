@@ -3,7 +3,7 @@
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
   -  You may obtain a copy of the License at
-  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -          http://www.apache.org/licenses/LICENSE-2.0
   -  Unless required by applicable law or agreed to in writing, software
   -  distributed under the License is distributed on an "AS IS" BASIS,
   -  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,115 +12,210 @@
   -->
 
 <template>
-  <b-container>
-    <b-card header-tag="header" footer-tag="footer">
-      <h6 slot="header" class="mb-0"><span v-text="$t('common.AddServer')"></span></h6>
-      <b-btn slot="footer" variant="primary" :disabled="!canCreate" v-on:click="submitCreate"
-             v-text="$t('common.Create')"></b-btn>
-      <b-card-text>
-        <b-row>
-          <b-col sm="12" md="10">
-            <b-card header-tag="header">
-              <h6 slot="header" class="mb-0"><span v-text="$t('common.Node')"></span></h6>
-              <b-card-text>
-                <b-form-select :disabled="loadingNodes" id="nodeSelect" v-model="selectedNode"
-                               :options="nodes">
-                  <template slot="first">
-                    <option :value="null" disabled v-text="$t('common.SelectNode')"></option>
-                  </template>
-                </b-form-select>
-              </b-card-text>
-            </b-card>
-          </b-col>
-        </b-row>
+  <v-container>
+    <h1 v-text="$t('servers.Add')" />
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('nodes.Node')" />
+          <v-card-text>
+            <v-select
+              id="nodeSelect"
+              v-model="selectedNode"
+              outlined
+              :disabled="loadingNodes"
+              :items="nodes"
+              single-line
+              :no-data-text="$t('errors.ErrNoNodes')"
+              :placeholder="$t('servers.SelectNode')"
+            />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <b-row>
-          <b-col sm="12" md="10">
-            <b-card header-tag="header">
-              <h6 slot="header" class="mb-0"><span v-text="$t('common.Template')"></span></h6>
-              <b-card-text>
-                <b-form-select :disabled="loadingTemplates" id="templateSelect" v-model="selectedTemplate"
-                               :options="templates">
-                  <template slot="first">
-                    <option :value="null" disabled v-text="$t('common.SelectTemplate')"></option>
-                  </template>
-                </b-form-select>
-              </b-card-text>
-            </b-card>
-          </b-col>
-        </b-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('common.Template')" />
+          <v-card-text>
+            <v-select
+              id="templateSelect"
+              v-model="selectedTemplate"
+              outlined
+              :disabled="loadingTemplates"
+              :items="templates"
+              single-line
+              :no-data-text="$t('errors.ErrNoTemplates')"
+              :placeholder="$t('servers.SelectTemplate')"
+            />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <b-row>
-          <b-col sm="12" md="10">
-            <b-card header-tag="header">
-              <h6 slot="header" class="mb-0"><span v-text="$t('common.Users')"></span></h6>
-              <b-card-text>
-                <b-form-input v-model="userInput" autocomplete="off"></b-form-input>
-                <b-list-group>
-                  <b-list-group-item v-for="user in users" v-bind:key="user.value" button event="click"
-                                     v-on:click="selectUser(user.value)" v-text="user.text"></b-list-group-item>
-                </b-list-group>
-                <b-list-group v-for="user in selectedUsers">
-                  <b-list-group-item>
-                    <span v-on:click="removeUser(user)"><font-awesome-icon :icon="['far','times-circle']"/></span>
-                    {{ user }}
-                  </b-list-group-item>
-                </b-list-group>
-              </b-card-text>
-            </b-card>
-          </b-col>
-        </b-row>
+    <v-row v-if="selectedTemplate !== null">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('servers.Environment')" />
+          <v-card-text>
+            <v-select
+              id="environmentSelect"
+              v-model="selectedEnvironment"
+              :disabled="loadingTemplates"
+              :items="environments"
+              outlined
+              :placeholder="$t('servers.SelectEnvironment')"
+            />
+            <div v-if="selectedEnvironment && environments[selectedEnvironment]">
+              <div v-for="(val, key) in environments[selectedEnvironment].metadata">
+                <v-text-field
+                  v-model="environments[selectedEnvironment].metadata[key]"
+                  outlined
+                  :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
+                />
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <b-row>
-          <b-col sm="12" md="10">
-            <b-card header-tag="header">
-              <h6 slot="header" class="mb-0"><span v-text="$t('common.Environment')"></span></h6>
-              <b-card-text>
-                <b-form-select :disabled="loadingTemplates" id="environmentSelect" v-model="selectedEnvironment"
-                               :options="environments">
-                  <template slot="first">
-                    <option :value="null" disabled v-text="$t('common.SelectEnvironment')"></option>
-                  </template>
-                </b-form-select>
-                <b-card-text v-if="selectedEnvironment && environments[selectedEnvironment]">
-                  <b-card header-tag="header" v-for="(val, key) in environments[selectedEnvironment].metadata">
-                    <h6 slot="header" v-text="$t('env.' + environments[selectedEnvironment].type + '.' + key)"></h6>
-                    <b-card-text>
-                      <b-form-input
-                        v-model="environments[selectedEnvironment].metadata[key]"></b-form-input>
-                    </b-card-text>
-                  </b-card>
-                </b-card-text>
-              </b-card-text>
-            </b-card>
-          </b-col>
-        </b-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('users.Users')" />
+          <v-card-text>
+            <v-text-field
+              v-model="userInput"
+              outlined
+              :placeholder="$t('servers.TypeUsername')"
+            />
+            <v-list v-if="users.length > 0 || selectedUsers.length > 0">
+              <v-subheader
+                v-if="users.length > 0"
+                v-text="$t('users.Add')"
+              />
+              <v-list-item-group v-if="users.length > 0">
+                <v-list-item
+                  v-for="user in users"
+                  :key="user.value"
+                  @click="selectUser(user.value)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-plus</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="user.text" />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+              <v-subheader
+                v-if="selectedUsers.length > 0"
+                v-text="$t('users.Users')"
+              />
+              <v-list-item-group v-if="selectedUsers.length > 0">
+                <v-list-item
+                  v-for="user in selectedUsers"
+                  @click="removeUser(user)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-minus</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="user" />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <b-row>
-          <b-col sm="12" md="10">
-            <b-card header-tag="header">
-              <h6 slot="header" class="mb-0"><span v-text="$t('common.Options')"></span></h6>
-              <b-card-text>
-                <b-card header-tag="header" v-for="item in formData" v-if="!item.internal">
-                  <h6 slot="header" v-text="item.display"></h6>
-                  <b-card-text>
-                    <span v-html="item.desc"></span>
-                    <b-form-input v-if="item.type === 'integer'" type="number" v-model="item.value"
-                                  :required="item.required"></b-form-input>
-                    <b-form-checkbox v-else-if="item.type === 'boolean'" v-model="item.value"
-                                     :required="item.required"></b-form-checkbox>
-                    <b-form-select v-else-if="item.type === 'option'" :options="item.options" v-model="item.value">
-                    </b-form-select>
-                    <b-form-input v-else v-model="item.value" :required="item.required"></b-form-input>
-                  </b-card-text>
-                </b-card>
-              </b-card-text>
-            </b-card>
-          </b-col>
-        </b-row>
-      </b-card-text>
-    </b-card>
-  </b-container>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('servers.Name')" />
+          <v-card-text>
+            <v-text-field
+              id="nameInput"
+              v-model="serverName"
+              outlined
+            />
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="Object.keys(formData).length > 0">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title v-text="$t('common.Options')" />
+          <v-card-text>
+            <v-row>
+              <v-col
+                v-for="item in formData"
+                v-if="!item.internal"
+                cols="12"
+              >
+                <v-text-field
+                  v-if="item.type === 'integer'"
+                  v-model="item.value"
+                  type="number"
+                  :required="item.required"
+                  :hint="item.desc"
+                  persistent-hint
+                  :label="item.display"
+                  outlined
+                />
+                <v-switch
+                  v-else-if="item.type === 'boolean'"
+                  v-model="item.value"
+                  class="mt-0 mb-4"
+                  :required="item.required"
+                  :hint="item.desc"
+                  persistent-hint
+                  :label="item.display"
+                />
+                <v-select
+                  v-else-if="item.type === 'options'"
+                  v-model="item.value"
+                  :items="JSON.parse('[' + item.options.join(',') + ']')"
+                  :hint="item.desc"
+                  persistent-hint
+                  :label="item.display"
+                  outlined
+                />
+                <v-text-field
+                  v-else
+                  v-model="item.value"
+                  :required="item.required"
+                  :hint="item.desc"
+                  persistent-hint
+                  :label="item.display"
+                  outlined
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col cols="12">
+        <v-btn
+          large
+          block
+          color="primary"
+          :disabled="!canCreate"
+          @click="submitCreate"
+          v-text="$t('common.Create')"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -137,7 +232,6 @@ export default {
       templateData: {},
       selectedTemplate: null,
       formData: {},
-      readme: '',
 
       loadingNodes: true,
       loadingTemplates: true,
@@ -149,53 +243,10 @@ export default {
       userInput: null,
       userCancelSearch: CancelToken.source(),
 
+      serverName: '',
+
       selectedEnvironment: null,
       environments: []
-    }
-  },
-  watch: {
-    selectedTemplate: function (newVal, oldVal) {
-      if (!newVal || newVal === '') {
-        return
-      }
-      this.formData = this.templateData[newVal].data
-      this.environments = []
-      for (let k in this.templateData[newVal].supportedEnvironments) {
-        let env = this.templateData[newVal].supportedEnvironments[k]
-        this.environments.push({
-          value: k,
-          text: this.$t('env.' + env.type + '.name'),
-          metadata: env.metadata,
-          type: env.type
-        })
-      }
-
-      let env = this.templateData[newVal].environment
-      let def = null
-      if (env && env.type) {
-        def = env.type
-      }
-
-      if (def) {
-        for (let k in this.environments) {
-          if (this.environments[k].type === def) {
-            this.selectedEnvironment = k
-            break
-          }
-        }
-      } else {
-        this.selectedEnvironment = null
-      }
-    },
-    userInput: function (newVal, oldVal) {
-      if (!newVal || newVal === '') {
-        this.users = []
-      } else {
-        new Promise((resolve, reject) => {
-          this.findUsers(newVal)
-          resolve()
-        })
-      }
     }
   },
   computed: {
@@ -216,8 +267,8 @@ export default {
         return false
       }
 
-      for (let k in this.templateData[this.selectedTemplate].data) {
-        let data = this.templateData[this.selectedTemplate].data[k]
+      for (const k in this.templateData[this.selectedTemplate].data) {
+        const data = this.templateData[this.selectedTemplate].data[k]
         if (data.type === 'boolean') {
           continue
         }
@@ -229,9 +280,69 @@ export default {
       return true
     }
   },
+  watch: {
+    selectedTemplate: function (newVal) {
+      if (!newVal || newVal === '') {
+        return
+      }
+      this.formData = this.templateData[newVal].data
+      this.environments = []
+      for (const k in this.templateData[newVal].supportedEnvironments) {
+        const env = this.templateData[newVal].supportedEnvironments[k]
+        this.environments.push({
+          value: k,
+          text: this.$t('env.' + env.type + '.name'),
+          metadata: env.metadata,
+          type: env.type
+        })
+      }
+
+      const env = this.templateData[newVal].environment
+      let def = null
+      if (env && env.type) {
+        def = env.type
+      }
+
+      if (def) {
+        for (const k in this.environments) {
+          if (this.environments[k].type === def) {
+            this.selectedEnvironment = k
+            break
+          }
+        }
+      } else {
+        this.selectedEnvironment = null
+      }
+
+      for (const key in this.formData) {
+        if (this.formData[key].type === 'boolean') {
+          this.formData[key].value = this.formData[key].value === 'true'
+        }
+      }
+    },
+    userInput: function (newVal) {
+      if (!newVal || newVal === '') {
+        this.users = []
+      } else {
+        new Promise((resolve, reject) => {
+          this.findUsers(newVal)
+          resolve()
+        })
+      }
+    }
+  },
+  mounted () {
+    this.nodes = [{
+      value: null,
+      disabled: true,
+      text: this.$t('common.Loading')
+    }]
+    this.getTemplates()
+    this.getNodes()
+  },
   methods: {
     getTemplates () {
-      let vue = this
+      const vue = this
       this.loadingTemplates = true
       this.templates = [{
         value: null,
@@ -240,12 +351,11 @@ export default {
       }]
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/api/templates').then(function (res) {
-        let response = res.data
-        if (response.success) {
+      this.$http.get('/api/templates').then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
           vue.templateData = response.data
           vue.templates = []
-          for (let k in vue.templateData) {
+          for (const k in vue.templateData) {
             vue.templates.push({
               text: vue.templateData[k].display,
               value: k
@@ -258,16 +368,26 @@ export default {
 
           vue.loadingTemplates = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$toast.error(vue.$t(msg))
       })
     },
     getNodes () {
-      let vue = this
-      this.$http.get('/api/nodes').then(function (res) {
-        let callResult = res.data
-        if (callResult.success) {
+      const vue = this
+      this.$http.get('/api/nodes').then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
           vue.nodes = []
-          for (let i = 0; i < callResult.data.length; i++) {
-            let node = callResult.data[i]
+          for (let i = 0; i < response.data.length; i++) {
+            const node = response.data[i]
             vue.nodes.push({
               value: node.id,
               text: node.name
@@ -280,23 +400,31 @@ export default {
 
           vue.loadingNodes = false
         }
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$toast.error(vue.$t(msg))
       })
     },
     findUsers () {
-      let vue = this
+      const vue = this
       this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
-      this.$http.post('/api/users', {
-        username: this.userInput + '*'
-      }, {
+      this.$http.get(`/api/users?username=${this.userInput}*`, {
         cancelToken: this.userCancelSearch.token
       }).then(function (response) {
-        let msg = response.data
-        if (msg.success) {
+        if (response.status >= 200 && response.status < 300) {
           vue.users = []
-          for (let i = 0; i < Math.min(msg.data.length, 5); i++) {
-            let user = msg.data[i]
+          for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
+            const user = response.data.users[i]
             vue.users.push({
               value: user.username,
               text: user.username + ' <' + user.email + '>'
@@ -304,28 +432,59 @@ export default {
           }
         }
         vue.searchingUsers = false
-      }).catch(function (e) {
+        vue.users.sort()
+      }).catch(function (error) {
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$toast.error(vue.$t(msg))
       })
     },
     submitCreate () {
-      let vue = this
-      let data = this.templateData[this.selectedTemplate]
+      const vue = this
+      const data = this.templateData[this.selectedTemplate]
+      for (const item in data.data) {
+        switch (data.data[item].type) {
+          case 'integer':
+            data.data[item].value = Number(data.data[item].value)
+            break
+          case 'boolean':
+            data.data[item].value = Boolean(data.data[item].value)
+            break
+        }
+      }
       data.node = this.selectedNode
       data.users = this.selectedUsers
+      data.name = this.serverName !== '' ? this.serverName : undefined
       data.environment = {
         type: this.environments[this.selectedEnvironment].type,
         metadata: this.environments[this.selectedEnvironment].metadata
       }
       this.$http.post('/api/servers', data).then(function (response) {
-        let msg = response.data
-        if (msg.success) {
-          vue.$router.push({ name: 'Server', params: { id: msg.data.id } })
+        if (response.status >= 200 && response.status < 300) {
+          vue.$router.push({ name: 'Server', params: { id: response.data.id } })
         }
-      }).catch(function (response) {
-        console.log(response)
+      }).catch(function (error) {
+        console.log(error)
+        let msg = 'errors.ErrUnknownError'
+        if (error && error.response && error.response.data.error) {
+          if (error.response.data.error.code) {
+            msg = 'errors.' + error.response.data.error.code
+          } else {
+            msg = error.response.data.error.msg
+          }
+        }
+
+        vue.$toast.error(vue.$t(msg))
       })
     },
-    selectUser: function (username) {
+    selectUser (username) {
       if (!username || username === '') {
         return
       }
@@ -336,10 +495,11 @@ export default {
       }
       this.userInput = null
       this.selectedUsers.push(username)
+      this.selectedUsers.sort()
       this.selectedUser = null
       this.users = []
     },
-    removeUser: function (username) {
+    removeUser (username) {
       for (let i = 0; i < this.selectedUsers.length; i++) {
         if (this.selectedUsers[i] === username) {
           this.selectedUsers.splice(i, 1)
@@ -347,15 +507,6 @@ export default {
         }
       }
     }
-  },
-  mounted () {
-    this.nodes = [{
-      value: null,
-      disabled: true,
-      text: this.$t('common.Loading')
-    }]
-    this.getTemplates()
-    this.getNodes()
   }
 }
 </script>

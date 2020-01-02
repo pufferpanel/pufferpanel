@@ -26,8 +26,12 @@
   "ErrFieldLength": "{field} must be at least {length} characters",
   "ErrNoPermission": "You do not have permission to perform this action",
   "ErrDatabaseNotAvailable": "Database is not available",
+  "ErrNoNodes": "No nodes available",
+  "ErrNoTemplates": "No templates available",
 
   "ErrPasswordRequirements": "Password must be at least 8 characters",
   "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
-  "ErrPasswordsNotIdentical": "Passwords are not the same"
+  "ErrPasswordsNotIdentical": "Passwords are not the same",
+
+  "ErrSessionTimedOut": "Your session timed out, please log in again"
 }
