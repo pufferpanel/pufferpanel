@@ -5,21 +5,14 @@ on:
     - kraken
     tags:
     - v2.*
+    paths:
+    - '**'
+    - '!.github/**'
     
-jobs:
-  skip:
-    name: Skip build
-    runs-on: [ubuntu-latest]
-    if: "contains(github.event.head_commit.message, '[ci skip]')"
-    steps:
-      - name: Skip
-        run: |
-          echo "Skipping build"
-              
+jobs:              
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     
     strategy:
       matrix:
@@ -97,7 +90,6 @@ jobs:
   produce-webartifacts:
     name: Generate web artifacts
     runs-on: ubuntu-18.04
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
 
     strategy:
       matrix:
