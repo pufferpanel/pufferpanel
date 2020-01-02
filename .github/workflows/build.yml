@@ -3,6 +3,8 @@ on:
   push:
     branches:
     - kraken
+    tags:
+    - v2.*
     
 jobs:
   skip:
