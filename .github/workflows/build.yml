@@ -5,6 +5,15 @@ on:
     - kraken
     
 jobs:
+  skip:
+    name: Skip build
+    runs-on: [ubuntu-latest]
+    if: "contains(github.event.head_commit.message, '[ci skip]')"
+    steps:
+      - name: Skip
+        run: |
+          echo "Skipping build"
+              
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
