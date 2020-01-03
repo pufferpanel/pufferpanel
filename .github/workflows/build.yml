@@ -210,11 +210,11 @@ jobs:
           cp -r ../pufferpanel/assets/email archives/arm/
           
           cd archives/amd64
-          zip ../../pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+          zip ../../../pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
           rm -rf pufferpanel pufferpanel.exe www email
           
           cd ../arm
-          zip ../../pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
+          zip ../../../pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
           rm -rf pufferpanel www email
 
       - name: Create Release
