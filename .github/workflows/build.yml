@@ -210,10 +210,12 @@ jobs:
           cp -r ../pufferpanel/assets/email archives/arm/
           
           cd archives/amd64
-          zip pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+          zip ../../pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+          rm -rf pufferpanel pufferpanel.exe www email
           
           cd ../arm
-          zip pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
+          zip ../../pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
+          rm -rf pufferpanel www email
 
       - name: Create Release
         id: create_release
@@ -232,7 +234,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: archives/amd64/pufferpanel-${{ env.VERSION }}_amd64.zip
+          asset_path: ./pufferpanel-${{ env.VERSION }}_amd64.zip
           asset_name: pufferpanel-${{ env.VERSION }}_amd64.zip
           asset_content_type: application/zip 
           
@@ -242,7 +244,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: archives/amd64/pufferpanel-${{ env.VERSION }}_arm.zip
+          asset_path: ./pufferpanel-${{ env.VERSION }}_arm.zip
           asset_name: pufferpanel-${{ env.VERSION }}_arm.zip
           asset_content_type: application/zip 
 
@@ -252,7 +254,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/deb/pufferpanel_${{ env.VERSION }}_amd64.deb
+          asset_path: ./pufferpanel_${{ env.VERSION }}_amd64.deb
           asset_name: pufferpanel_${{ env.VERSION }}_amd64.deb
           asset_content_type: application/vnd.debian.binary-package
           
@@ -262,6 +264,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/rpm/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+          asset_path: ./pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
           asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
           asset_content_type: application/zip
