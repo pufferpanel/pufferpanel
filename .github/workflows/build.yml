@@ -178,8 +178,8 @@ jobs:
           --deb-after-purge ../systemd/pufferpanel/xenial/scripts/purge.sh \
           binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
           client/dist=/var/www/pufferpanel/ \
-          pufferpanel/assets/email=/etc/pufferpanel/email \
-          pufferpanel/config.linux.json=/etc/pufferpanel/config.json
+          ../pufferpanel/assets/email=/etc/pufferpanel/email \
+          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
           
           mkdir -p build/deb
           mv *.deb build/deb
