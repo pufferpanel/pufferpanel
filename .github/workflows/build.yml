@@ -281,6 +281,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel
           asset_name: Linux amd64
+          asset_content_type: application/octet-stream
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -290,15 +291,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel-arm
           asset_name: Linux arm
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pufferpanel_
-          asset_name: Windows amd64
+          asset_content_type: application/octet-stream  
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -308,6 +301,17 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pufferpanel.exe
           asset_name: Windows amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./pufferpanel.exe
+          asset_name: Windows amd64
+          asset_content_type: application/octet-stream 
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -317,6 +321,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./xenial/*
           asset_name: Xenial-compatible package
+          asset_content_type: application/vnd.debian.binary-package 
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -326,6 +331,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./trusty/*
           asset_name: Trusty-compatible package
+          asset_content_type: application/vnd.debian.binary-package 
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -335,3 +341,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./*.rpm
           asset_name: RPM package
+          asset_content_type: application/zip
