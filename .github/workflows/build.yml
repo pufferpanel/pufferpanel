@@ -234,28 +234,31 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: linux amd64 - Binary
+          path: binaries 
 
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
           name: windows amd64 - Binary
+          path: binaries 
 
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
           name: linux arm - Binary
+          path: binaries 
 
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
           name: Packages - RPM
+          path: rpm 
 
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
           name:  Packages - Trusty DEB
           path: trusty
-
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
@@ -279,7 +282,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pufferpanel
+          asset_path: ./binaries/pufferpanel
           asset_name: Linux amd64
           asset_content_type: application/octet-stream
 
@@ -289,7 +292,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pufferpanel-arm
+          asset_path: ./binaries/pufferpanel-arm
           asset_name: Linux arm
           asset_content_type: application/octet-stream  
 
@@ -299,19 +302,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pufferpanel.exe
+          asset_path: ./binaries/pufferpanel.exe
           asset_name: Windows amd64
           asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pufferpanel.exe
-          asset_name: Windows amd64
-          asset_content_type: application/octet-stream 
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -339,6 +332,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./*.rpm
+          asset_path: ./rpm/*.rpm
           asset_name: RPM package
           asset_content_type: application/zip
