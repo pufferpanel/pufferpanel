@@ -204,7 +204,7 @@ jobs:
           cp -r client/dist archives/amd64/www
           cp -r ../pufferpanel/assets/email archives/amd64/
           
-          mkdir -p archives/amd64
+          mkdir -p archives/arm
           cp binaries/arm/pufferpanel archives/arm/
           cp -r client/dist archives/arm/www
           cp -r ../pufferpanel/assets/email archives/arm/
