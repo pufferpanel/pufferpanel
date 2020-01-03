@@ -192,7 +192,7 @@ jobs:
           --before-install ../systemd/pufferpanel/rpm7/scripts/preinst.sh \
           --after-upgrade ../systemd/pufferpanel/rpm7/scripts/postupgrade.sh \
           --before-remove ../systemd/pufferpanel/rpm7/scripts/prerm.sh \
-          build/deb/pufferpanel_*_amd64.deb
+          build/pufferpanel_*_amd64.deb
 
           mv *.rpm build/
           
