@@ -232,8 +232,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: archive/pufferpanel-${{ env.VERSION}}_amd64.zip
+          asset_path: ./archives/pufferpanel-${{ env.VERSION}}_amd64.zip
           asset_name: pufferpanel-${{ env.VERSION}}_amd64.zip
+          asset_content_type: application/zip 
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./archives/pufferpanel-${{ env.VERSION}}_arm.zip
+          asset_name: pufferpanel-${{ env.VERSION}}_arm.zip
           asset_content_type: application/zip 
 
       - name: Upload Release Asset
