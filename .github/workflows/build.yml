@@ -196,6 +196,23 @@ jobs:
 
           mv *.rpm build/
           
+          fpm -s dir -t deb \
+          --name pufferpanel -v ${{ env.VERSION }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd ../systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
+          --before-install ../systemd/pufferpanel/xenial/scripts/preinst.sh \
+          --after-upgrade ../systemd/pufferpanel/xenial/scripts/postupgrade.sh \
+          --before-remove ../systemd/pufferpanel/xenial/scripts/prerm.sh \
+          --deb-after-purge ../systemd/pufferpanel/xenial/scripts/purge.sh \
+          -a armhf \
+          binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
+          client/dist=/var/www/pufferpanel/ \          
+          /build/pufferd-arm=/usr/sbin/pufferd \
+          /build/templates=/var/lib/pufferd/
+          
+          mv *.deb build/
+          
       - name: Create archives
         run: |
           mkdir -p archives/amd64
@@ -211,11 +228,9 @@ jobs:
           
           cd archives/amd64
           zip pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
-          rm -rf pufferpanel pufferpanel.exe www email
           
           cd ../arm
           zip pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
-          rm -rf pufferpanel www email
 
       - name: Create Release
         id: create_release
@@ -267,3 +282,22 @@ jobs:
           asset_path: ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
           asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
           asset_content_type: application/zip
+
+      - name: Push to repo
+        env:
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+        run: |
+          #centos
+          package_cloud push pufferpanel/pufferpanel/el/7 ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+
+          #ubuntu
+          package_cloud push pufferpanel/pufferpanel/ubuntu/xenial ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/ubuntu/bionic ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          
+          #debian
+          package_cloud push pufferpanel/pufferpanel/debian/jessie ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/debian/stretch ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/debian/buster ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+
+          #raspbian
+          package_cloud push pufferpanel/pufferd-test/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_arm.deb
