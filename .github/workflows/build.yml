@@ -34,17 +34,11 @@ jobs:
     - name: Get the version
       if: startsWith(env.VERSION, 'refs/')
       run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"
-      
-    - name: Version
-      run: |
-        echo $VERSION
-        echo $GITHUB_REF      
 
     - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go }}
-      id: go
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
@@ -126,8 +120,8 @@ jobs:
       - name: Install gems
         run: |
           gem install --no-doc rake
-          gem install --no-doc fpm && fpm -v
-          gem install --no-doc package_cloud && package_cloud version
+          gem install --no-doc fpm
+          gem install --no-doc package_cloud
           
       - name: Pull deps
         uses: actions/checkout@v1
@@ -184,7 +178,9 @@ jobs:
           ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
           
           mv *.deb build/
-
+          
+      - name: Build packages
+        run: |
           fpm -s deb -t rpm \
           --name pufferpanel \
           --maintainer dev@pufferpanel.com \
@@ -196,6 +192,9 @@ jobs:
 
           mv *.rpm build/
           
+      - name: Build packages
+        run: |
+          mkdir build
           fpm -s dir -t deb \
           --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
