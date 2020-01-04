@@ -123,13 +123,6 @@ jobs:
           gem install --no-doc fpm
           gem install --no-doc package_cloud
           
-      - name: Pull deps
-        uses: actions/checkout@v1
-        with:
-          repository: pufferpanel/systemd
-          path: systemd
-          ref: master
-
       - name: Pull main repo
         uses: actions/checkout@v1
         with:
@@ -167,11 +160,11 @@ jobs:
           --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd ../systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
-          --before-install ../systemd/pufferpanel/xenial/scripts/preinst.sh \
-          --after-upgrade ../systemd/pufferpanel/xenial/scripts/postupgrade.sh \
-          --before-remove ../systemd/pufferpanel/xenial/scripts/prerm.sh \
-          --deb-after-purge ../systemd/pufferpanel/xenial/scripts/purge.sh \
+          --deb-systemd ../pufferpanel/systemd/servicefiles/systemd/pufferpanel \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
+          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
           binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
           client/dist=/var/www/pufferpanel/ \
           ../pufferpanel/assets/email=/etc/pufferpanel/email \
@@ -185,9 +178,9 @@ jobs:
           --name pufferpanel \
           --maintainer dev@pufferpanel.com \
           --rpm-user pufferpanel --rpm-group pufferpanel \
-          --before-install ../systemd/pufferpanel/rpm7/scripts/preinst.sh \
-          --after-upgrade ../systemd/pufferpanel/rpm7/scripts/postupgrade.sh \
-          --before-remove ../systemd/pufferpanel/rpm7/scripts/prerm.sh \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
           build/pufferpanel_*_amd64.deb
 
           mv *.rpm build/
@@ -198,11 +191,11 @@ jobs:
           --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
           --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd ../systemd/pufferpanel/xenial/servicefiles/systemd/pufferpanel \
-          --before-install ../systemd/pufferpanel/xenial/scripts/preinst.sh \
-          --after-upgrade ../systemd/pufferpanel/xenial/scripts/postupgrade.sh \
-          --before-remove ../systemd/pufferpanel/xenial/scripts/prerm.sh \
-          --deb-after-purge ../systemd/pufferpanel/xenial/scripts/purge.sh \
+          --deb-systemd ../pufferpanel/systemd/servicefiles/systemd/pufferpanel \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
+          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
           -a armhf \
           binaries/arm/pufferpanel=/usr/sbin/pufferpanel \
           client/dist=/var/www/pufferpanel/ \
