@@ -194,7 +194,6 @@ jobs:
           
       - name: Build packages
         run: |
-          mkdir build
           fpm -s dir -t deb \
           --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
@@ -205,10 +204,10 @@ jobs:
           --before-remove ../systemd/pufferpanel/xenial/scripts/prerm.sh \
           --deb-after-purge ../systemd/pufferpanel/xenial/scripts/purge.sh \
           -a armhf \
-          binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          client/dist=/var/www/pufferpanel/ \          
-          /build/pufferd-arm=/usr/sbin/pufferd \
-          /build/templates=/var/lib/pufferd/
+          binaries/arm/pufferpanel=/usr/sbin/pufferpanel \
+          client/dist=/var/www/pufferpanel/ \
+          ../pufferpanel/assets/email=/etc/pufferpanel/email \
+          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
           
           mv *.deb build/
           
