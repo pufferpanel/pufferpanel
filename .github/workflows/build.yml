@@ -228,7 +228,7 @@ jobs:
           zip pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
           
           cd ../arm
-          zip pufferpanel_${{ env.VERSION }}_arm.zip pufferpanel www email
+          zip pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
 
       - name: Create Release
         id: create_release
@@ -257,8 +257,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./archives/arm/pufferpanel_${{ env.VERSION }}_arm.zip
-          asset_name: pufferpanel_${{ env.VERSION }}_arm.zip
+          asset_path: ./archives/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
+          asset_name: pufferpanel_${{ env.VERSION }}_armhf.zip
           asset_content_type: application/zip 
 
       - name: Upload Release Asset
@@ -298,4 +298,4 @@ jobs:
           package_cloud push pufferpanel/pufferpanel/debian/buster ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
 
           #raspbian
-          package_cloud push pufferpanel/pufferd-test/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_arm.deb
+          package_cloud push pufferpanel/pufferd-test/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_armhf.deb
