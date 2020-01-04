@@ -298,4 +298,4 @@ jobs:
           package_cloud push pufferpanel/pufferpanel/debian/buster ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
 
           #raspbian
-          package_cloud push pufferpanel/pufferd-test/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_armhf.deb
+          package_cloud push pufferpanel/pufferpanel/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_armhf.deb
