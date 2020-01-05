@@ -1,0 +1,17 @@
+@import url(//fonts.googleapis.com/css?family=Droid+Sans+Mono);
+
+pre {
+    display: block;
+    padding: 12px 12px;
+    margin: 0;
+    font-size: 12px;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border: 1px solid #c7254e;
+    border-radius: 0;
+    white-space: pre
+}
+
+.console {
+  background-color: var(--v-secondary-base)
+}

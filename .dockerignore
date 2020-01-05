@@ -1,0 +1,12 @@
+.idea/**
+.github/**
+.azure/*
+.git/**
+*.md
+*.syso
+**/node_modules/**
+
+.gitignore
+LICENSE
+azure-pipelines.yml
+crowdin.yml

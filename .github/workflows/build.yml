@@ -1,0 +1,291 @@
+name: Build
+on: 
+  push:
+    branches:
+    - kraken
+    tags:
+    - v2.*
+    paths:
+    - '**'
+    - '!.github/**'
+    
+jobs:              
+  build-binaries:
+    name: Build Binaries
+    runs-on: ubuntu-18.04
+    
+    strategy:
+      matrix:
+        os: [ linux, windows ]
+        arch: [ amd64, arm ]
+        go: [ '1.13' ]
+        exclude:
+          - os: windows
+            arch: arm
+
+    env:
+      GOOS: ${{ matrix.os }}
+      GOARCH: ${{ matrix.arch }}
+
+    steps:
+    - name: Get the version
+      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
+    
+    - name: Get the version
+      if: startsWith(env.VERSION, 'refs/')
+      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"
+
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      with:
+        path: pufferpanel
+        
+    - name: Build
+      if: startsWith(matrix.os, 'linux')
+      run: |
+        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+    - name: Build
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+    - name: Publish Binary
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'linux') && startsWith(github.ref, 'refs/tags/v2.')
+      with:
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+        path: pufferpanel
+
+    - name: Publish Binary
+      uses: actions/upload-artifact@v1
+      if: startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v2.')
+      with:
+        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
+        path: pufferpanel.exe
+
+  produce-webartifacts:
+    name: Generate web artifacts
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        node-version: [ '12.x' ]
+
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: true
+        working-directory: client
+
+      - name: Publish Supporting
+        uses: actions/upload-artifact@v1
+        if: startsWith(github.ref, 'refs/tags/v2.')
+        with:
+          name: Web Artifacts
+          path: client/dist
+
+  produce-release:
+    name: Generate packages artifacts
+    runs-on: ubuntu-18.04
+    needs: [produce-webartifacts,build-binaries]
+    if: startsWith(github.ref, 'refs/tags/v2.')
+        
+    steps:
+      - name: Get the version
+        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"  
+      
+      - uses: actions/setup-ruby@v1
+        
+      - name: Install gems
+        run: |
+          gem install --no-doc rake
+          gem install --no-doc fpm
+          gem install --no-doc package_cloud
+          
+      - name: Pull main repo
+        uses: actions/checkout@v1
+        with:
+          path: pufferpanel
+          
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: linux amd64 - Binary
+          path: binaries/amd64 
+
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: windows amd64 - Binary
+          path: binaries/amd64 
+          
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: linux arm - Binary
+          path: binaries/arm 
+        
+      - name: Pull files
+        uses: actions/download-artifact@v1
+        with:
+          name: Web Artifacts
+          path: www/pufferpanel
+          
+      - name: Fix perms on files
+        run: |
+          chmod +x binaries/amd64/pufferpanel
+          chmod +x binaries/arm/pufferpanel
+          
+      - name: Build packages
+        run: |
+          mkdir build
+          
+          fpm -s dir -t deb \
+          --name pufferpanel -v ${{ env.VERSION }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd ../pufferpanel/systemd/servicefiles/systemd/pufferpanel \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
+          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
+          binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
+          www/pufferpanel=/var/www \
+          ../pufferpanel/assets/email=/etc/pufferpanel \
+          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
+          
+          mv *.deb build/
+          
+          fpm -s deb -t rpm \
+          --name pufferpanel \
+          --maintainer dev@pufferpanel.com \
+          --rpm-user pufferpanel --rpm-group pufferpanel \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
+          build/pufferpanel_*_amd64.deb
+
+          mv *.rpm build/
+          
+          fpm -s dir -t deb \
+          --name pufferpanel -v ${{ env.VERSION }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd ../pufferpanel/systemd/servicefiles/systemd/pufferpanel \
+          --before-install ../pufferpanel/systemd/scripts/preinst.sh \
+          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
+          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
+          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
+          -a armhf \
+          binaries/arm/pufferpanel=/usr/sbin/pufferpanel \
+          www/pufferpanel=/var/www \
+          ../pufferpanel/assets/email=/etc/pufferpanel/email \
+          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
+          
+          mv *.deb build/
+          
+      - name: Create archives
+        run: |
+          mkdir -p archives/amd64
+          cp binaries/amd64/pufferpanel archives/amd64/
+          cp binaries/amd64/pufferpanel.exe archives/amd64/
+          cp -r www/pufferpanel archives/amd64/www
+          cp -r ../pufferpanel/assets/email archives/amd64/
+          
+          mkdir -p archives/arm
+          cp binaries/arm/pufferpanel archives/arm/
+          cp -r www/pufferpanel archives/arm/www
+          cp -r ../pufferpanel/assets/email archives/arm/
+          
+          cd archives/amd64
+          zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+          
+          cd ../arm
+          zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
+          prerelease: true
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./archives/amd64/pufferpanel_${{ env.VERSION }}_amd64.zip
+          asset_name: pufferpanel_${{ env.VERSION }}_amd64.zip
+          asset_content_type: application/zip 
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./archives/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
+          asset_name: pufferpanel_${{ env.VERSION }}_armhf.zip
+          asset_content_type: application/zip 
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          asset_name: pufferpanel_${{ env.VERSION }}_amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+          
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+          asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+          asset_content_type: application/zip
+
+      - name: Push to repo
+        env:
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+        run: |
+          #centos
+          package_cloud push pufferpanel/pufferpanel/el/7 ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+
+          #ubuntu
+          package_cloud push pufferpanel/pufferpanel/ubuntu/xenial ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/ubuntu/bionic ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          
+          #debian
+          package_cloud push pufferpanel/pufferpanel/debian/jessie ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/debian/stretch ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+          package_cloud push pufferpanel/pufferpanel/debian/buster ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+
+          #raspbian
+          package_cloud push pufferpanel/pufferpanel/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_armhf.deb
