@@ -128,6 +128,7 @@ func runServer() error {
 
 func HandleConn(conn net.Conn, config *ssh.ServerConfig) {
 	defer pufferpanel.Close(conn)
+	defer pufferpanel.Recover()
 	logging.Info().Printf("SFTP connection from %s", conn.RemoteAddr().String())
 	e := handleConn(conn, config)
 	if e != nil {

@@ -2,8 +2,10 @@ package pufferpanel
 
 import (
 	"errors"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"gopkg.in/go-playground/validator.v9"
+	"runtime/debug"
 	"strings"
 )
 
@@ -161,4 +163,14 @@ func FromError(err error) *Error {
 		return e
 	}
 	return CreateError(err.Error(), "ErrGeneric")
+}
+
+func Recover() {
+	if err := recover(); err != nil {
+		if _, ok := err.(error); !ok {
+			err = errors.New(ToString(err))
+		}
+
+		logging.Error().Printf("CRITICAL ERROR: \n%+v\n%s", err, debug.Stack())
+	}
 }
