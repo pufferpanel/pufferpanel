@@ -16,6 +16,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -310,6 +311,7 @@ func deleteServer(c *gin.Context) {
 
 	db := handlers.GetDatabase(c)
 	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
 
 	t, exist := c.Get("server")
 
@@ -324,8 +326,47 @@ func deleteServer(c *gin.Context) {
 		return
 	}
 
+	t, exist = c.Get("user")
+	if !exist {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	user, ok := t.(*models.User)
+	if !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	node, err := ns.Get(server.NodeID)
+	if err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
+		return
+	}
+
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	ps := services.Permission{DB:db}
+	newHeader, err := ps.GenerateOAuthForUser(user.ID, &server.Identifier)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	headers := http.Header{}
+	headers.Add("Authorization", "Bearer " + newHeader)
+
+	nodeRes, err := ns.CallNode(node, "DELETE", "/server/"+server.Identifier, nil, headers)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		//node didn't permit it, REVERT!
+		db.Rollback()
+		return
+	}
+
+	if nodeRes.StatusCode != http.StatusNoContent {
+		response.HandleError(c, errors.New("invalid status code response: " + nodeRes.Status), http.StatusInternalServerError)
 		return
 	}
 

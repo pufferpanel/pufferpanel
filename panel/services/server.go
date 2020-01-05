@@ -80,6 +80,9 @@ func (ss *Server) Delete(id string) error {
 		Identifier: id,
 	}
 
+	ss.DB.Delete(models.Permissions{}, "server_identifier = ?", id)
+	ss.DB.Delete(models.Client{}, "server_id = ?", id)
+
 	res := ss.DB.Delete(model)
 	return res.Error
 }
