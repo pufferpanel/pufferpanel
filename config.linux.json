@@ -2,8 +2,8 @@
   "logs": "/var/log/pufferpanel",
   "panel": {
     "database": {
-      "dialect": "sqlite",
-      "url": "file:/var/lib/pufferpanel.db?cache=shared"
+      "dialect": "sqlite3",
+      "url": "file:/var/lib/pufferpanel/database.db?cache=shared"
     },
     "token": {
       "private": "private.pem",
