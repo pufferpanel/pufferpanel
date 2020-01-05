@@ -4,12 +4,11 @@ Description=pufferpanel web service
 [Service]
 Type=simple
 WorkingDirectory=/etc/pufferpanel
-ExecStart=/usr/sbin/pufferpanel --run
-ExecStop=/usr/sbin/pufferpanel --shutdown $MAINPID
-ExecReload=/usr/sbin/pufferpanel --reload $MAINPID
+ExecStart=/usr/sbin/pufferpanel run
+ExecStop=kill -n 9 $MAINPID
 User=pufferpanel
 Group=pufferpanel
-TimeoutStopSec=2m
+TimeoutStopSec=5m
 SendSIGKILL=no
 
 [Install]
