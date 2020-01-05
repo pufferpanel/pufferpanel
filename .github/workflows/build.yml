@@ -2,7 +2,7 @@ name: Build
 on: 
   push:
     branches:
-    - kraken
+    - master
     tags:
     - v2.*
     paths:
