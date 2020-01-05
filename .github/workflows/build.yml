@@ -152,6 +152,11 @@ jobs:
           name: Web Artifacts
           path: client/dist
           
+      - name: Fix perms on files
+        run: |
+          chmod +x binaries/amd64/pufferpanel
+          chmod +x binaries/arm/pufferpanel
+          
       - name: Build packages
         run: |
           mkdir build
