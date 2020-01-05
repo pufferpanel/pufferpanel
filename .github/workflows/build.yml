@@ -109,11 +109,7 @@ jobs:
         
     steps:
       - name: Get the version
-        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
-    
-      - name: Get the version
-        if: startsWith(env.VERSION, 'refs/')
-        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"      
+        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"  
       
       - uses: actions/setup-ruby@v1
         
@@ -177,8 +173,6 @@ jobs:
           
           mv *.deb build/
           
-      - name: Build packages
-        run: |
           fpm -s deb -t rpm \
           --name pufferpanel \
           --maintainer dev@pufferpanel.com \
@@ -190,8 +184,6 @@ jobs:
 
           mv *.rpm build/
           
-      - name: Build packages
-        run: |
           fpm -s dir -t deb \
           --name pufferpanel -v ${{ env.VERSION }} \
           --maintainer dev@pufferpanel.com \
@@ -223,10 +215,10 @@ jobs:
           cp -r ../pufferpanel/assets/email archives/arm/
           
           cd archives/amd64
-          zip pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+          zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
           
           cd ../arm
-          zip pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
+          zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
 
       - name: Create Release
         id: create_release
