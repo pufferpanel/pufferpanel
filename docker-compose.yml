@@ -1,0 +1,20 @@
+version: "2"
+services:
+  pufferpanel:
+    image: pufferpanel/pufferpanel
+    ports:
+      - "8080:8080"
+      - "5657:5657"
+    networks:
+      - pufferpanel
+    volumes:
+      - "pufferpanel:/etc/pufferpanel"
+      - "pufferpanel-servers:/var/lib/pufferd"
+    restart: on-failure
+
+networks:
+  pufferpanel:
+
+volumes:
+  pufferpanel:
+  pufferpanel-servers:

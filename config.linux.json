@@ -1,0 +1,25 @@
+{
+  "logs": "/var/log/pufferpanel",
+  "panel": {
+    "database": {
+      "dialect": "sqlite3",
+      "url": "file:/var/lib/pufferpanel/database.db?cache=shared"
+    },
+    "token": {
+      "private": "private.pem",
+      "public": "public.pem"
+    },
+    "web": {
+      "files": "/var/www/pufferpanel"
+    }
+  },
+  "daemon": {
+    "auth": {
+      "publicKey": "public.pem"
+    },
+    "data": {
+      "cache": "/var/lib/pufferpanel/cache",
+      "servers": "/var/lib/pufferpanel/servers"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "accountCreation": {
+    "subject": "Your account has been created",
+    "body": "account-creation.html"
+  },
+  "passwordReset": {
+    "subject": "Your password has been reset",
+    "body": "password-reset.html"
+  },
+  "addedToServer": {
+    "subject": "You have been added to a server",
+    "body": "added-to-server.html"
+  }
+}
