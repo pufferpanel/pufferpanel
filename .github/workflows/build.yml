@@ -150,7 +150,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: Web Artifacts
-          path: client/dist
+          path: www/pufferpanel
           
       - name: Fix perms on files
         run: |
@@ -171,8 +171,8 @@ jobs:
           --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
           --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
           binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          client/dist=/var/www/pufferpanel/ \
-          ../pufferpanel/assets/email=/etc/pufferpanel/email \
+          www/pufferpanel=/var/www \
+          ../pufferpanel/assets/email=/etc/pufferpanel \
           ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
           
           mv *.deb build/
@@ -203,7 +203,7 @@ jobs:
           --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
           -a armhf \
           binaries/arm/pufferpanel=/usr/sbin/pufferpanel \
-          client/dist=/var/www/pufferpanel/ \
+          www/pufferpanel=/var/www \
           ../pufferpanel/assets/email=/etc/pufferpanel/email \
           ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
           
