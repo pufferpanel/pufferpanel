@@ -6,7 +6,12 @@ on:
     tags:
     - v2.*
     
-jobs:              
+jobs:
+  skip-build:
+    if: "contains(github.event.head_commit.message, '[skip]')"
+    name: "Build skipped"
+
+
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
