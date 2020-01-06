@@ -45,8 +45,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - uses: actions/setup-ruby@v1
+      if: startsWith(matrix.os, 'linux')
 
     - name: Install gems
+      if: startsWith(matrix.os, 'linux')
       run: |
         gem install --no-doc rake
         gem install --no-doc fpm
@@ -96,7 +98,7 @@ jobs:
           --before-remove systemd/scripts/prerm.sh \
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
-          pufferpanel=/usr/sbin/pufferpanel \
+          artifacts/pufferpanel=/usr/sbin/pufferpanel \
           www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
@@ -134,7 +136,7 @@ jobs:
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
-          pufferpanel=/usr/sbin/pufferpanel \
+          artifacts/pufferpanel=/usr/sbin/pufferpanel \
           www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
