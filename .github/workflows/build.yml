@@ -26,10 +26,6 @@ jobs:
         go: [ '1.13' ]
         node-version: [ '12.x' ]
 
-    env:
-      GOOS: ${{ matrix.os }}
-      GOARCH: ${{ matrix.arch }}
-
     steps:
     - name: Get the version
       run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"
