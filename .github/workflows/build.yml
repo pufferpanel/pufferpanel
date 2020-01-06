@@ -27,7 +27,7 @@ jobs:
     
     - name: Get the version
       if: startsWith(env.VERSION, 'refs/')
-      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/heads\//}"
+      run: echo "::set-env name=VERSION::${GITHUB_SHA}"
 
     - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
