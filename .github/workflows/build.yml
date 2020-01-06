@@ -10,6 +10,7 @@ jobs:
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
+    if: !contains(github.event.head_commit.message, '[skip]')
     
     strategy:
       matrix:
@@ -59,9 +60,16 @@ jobs:
         
     - name: Build
       run: |
+        export GOOS=linux
+        export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+
+        export GOOS=windows
+        export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
+        export GOOS=linux
+        export GOARCH=arm
         go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: npm install, build
