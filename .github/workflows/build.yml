@@ -4,8 +4,7 @@ on:
     branches:
     - master
   release:
-    types:
-      - created
+    types: [published, created, prereleased]
     
 jobs:
   skip-build:
