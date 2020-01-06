@@ -141,8 +141,8 @@ jobs:
       uses: actions/upload-artifact@v1
       if: "contains(github.event.head_commit.message, '[save]')"
       with:
-        name: Archive
-        path: archive
+        name: Artifacts
+        path: artifacts
 
     - name: Install gems
       if: startsWith(github.ref, 'refs/tags/v2.')
@@ -151,6 +151,7 @@ jobs:
 
     - name: Create archives
       if: startsWith(github.ref, 'refs/tags/v2.')
+      working-directory: artifacts
       run: |
         cp -r email amd64/
         cp -r www amd64/
@@ -182,7 +183,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./archive/amd64/pufferpanel_${{ env.VERSION }}_amd64.zip
+        asset_path: ./artifacts/amd64/pufferpanel_${{ env.VERSION }}_amd64.zip
         asset_name: pufferpanel_${{ env.VERSION }}_amd64.zip
         asset_content_type: application/zip
 
@@ -193,7 +194,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./archive/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
+        asset_path: ./artifacts/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
         asset_name: pufferpanel_${{ env.VERSION }}_armhf.zip
         asset_content_type: application/zip
 
@@ -204,7 +205,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./archive/pufferpanel_${{ env.VERSION }}_amd64.deb
+        asset_path: ./artifacts/pufferpanel_${{ env.VERSION }}_amd64.deb
         asset_name: pufferpanel_${{ env.VERSION }}_amd64.deb
         asset_content_type: application/vnd.debian.binary-package
 
@@ -215,7 +216,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./archive/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_path: ./artifacts/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         asset_content_type: application/zip
 
@@ -223,7 +224,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/v2.')
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-      working-directory: archive
+      working-directory: artifacts
       run: |
         #centos
         package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
