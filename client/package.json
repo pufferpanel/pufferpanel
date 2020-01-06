@@ -1,12 +1,8 @@
 {
-  "name": "pufferpanel",
-  "version": "2.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "npm run serve",
     "dev-build": "vue-cli-service build --mode development",
     "dev-watch": "vue-cli-service build --mode development --watch"
   },
