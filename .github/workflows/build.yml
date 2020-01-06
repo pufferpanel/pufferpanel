@@ -86,7 +86,7 @@ jobs:
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/prerm.sh \
+          --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
           artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
@@ -103,7 +103,7 @@ jobs:
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/prerm.sh \
+          --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
           pufferpanel_${{ env.VERSION }}_amd64.deb
 
@@ -115,7 +115,7 @@ jobs:
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/prerm.sh \
+          --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
@@ -131,9 +131,9 @@ jobs:
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
-      if: startsWith(github.ref, 'refs/tags/v2.') || contains(github.event.head_commit.message, '[save]')
+      #if: startsWith(github.ref, 'refs/tags/v2.') || contains(github.event.head_commit.message, '[save]')
       with:
-        name: ${{ matrix.os }} ${{ matrix.arch }}
+        name: Archive
         path: artifacts
 
   produce-release:
@@ -155,39 +155,11 @@ jobs:
       - name: Pull files
         uses: actions/download-artifact@v1
         with:
-          name: linux amd64 - Binary
-          path: binaries/amd64 
-
-      - name: Pull files
-        uses: actions/download-artifact@v1
-        with:
-          name: windows amd64 - Binary
-          path: binaries/amd64 
-          
-      - name: Pull files
-        uses: actions/download-artifact@v1
-        with:
-          name: linux arm - Binary
-          path: binaries/arm 
-        
-      - name: Pull files
-        uses: actions/download-artifact@v1
-        with:
-          name: Web Artifacts
-          path: www/pufferpanel
+          name: Archive
           
       - name: Create archives
         run: |
-          mkdir -p archives/amd64
-          cp binaries/amd64/pufferpanel archives/amd64/
-          cp binaries/amd64/pufferpanel.exe archives/amd64/
-          cp -r www/pufferpanel archives/amd64/www
-          cp -r ../pufferpanel/assets/email archives/amd64/
-          
-          mkdir -p archives/arm
-          cp binaries/arm/pufferpanel archives/arm/
-          cp -r www/pufferpanel archives/arm/www
-          cp -r ../pufferpanel/assets/email archives/arm/
+          cp -r artifacts/email archives/amd64/
           
           cd archives/amd64
           zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
