@@ -5,9 +5,6 @@ on:
     - master
     tags:
     - v2.*
-    paths:
-    - '**'
-    - '!.github/**'
     
 jobs:              
   build-binaries:
@@ -19,6 +16,7 @@ jobs:
         os: [ linux, windows ]
         arch: [ amd64, arm ]
         go: [ '1.13' ]
+        node-version: [ '12.x' ]
         exclude:
           - os: windows
             arch: arm
@@ -40,66 +38,117 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
 
+    - name: Set up Node.js ${{ matrix.node-version }}
+      if: startsWith(matrix.os, 'linux') && matrix.arch == 'amd64'
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - uses: actions/setup-ruby@v1
+
+    - name: Install gems
+      run: |
+        gem install --no-doc rake
+        gem install --no-doc fpm
+        gem install --no-doc package_cloud
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
       with:
         path: pufferpanel
+
+    - name: Prepare
+      run: mkdir artifacts
         
     - name: Build
       if: startsWith(matrix.os, 'linux')
       run: |
-        go build -o pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: Build
       if: startsWith(matrix.os, 'windows')
       run: |
-        go build -o pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o artifacts/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
-    - name: Publish Binary
+    - name: npm install, build
+      run: |
+        npm install
+        npm run build
+        mkdir ../artifacts/www/
+        mv dist ../artifacts/www/pufferpanel
+      env:
+        CI: true
+      working-directory: client
+
+    - name: Build Package
+      if: startsWith(matrix.os, 'linux') && matrix.arch != 'arm'
+      run: |
+        mkdir -p var/log/pufferpanel var/lib/pufferpanel
+
+        fpm -s dir -t deb \
+          --name pufferpanel -v ${{ env.VERSION }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd systemd/servicefiles/pufferpanel.service \
+          --before-install systemd/scripts/preinstall.sh \
+          --after-install systemd/scripts/postinstall.sh \
+          --after-upgrade systemd/scripts/postupgrade.sh \
+          --before-remove systemd/scripts/prerm.sh \
+          --after-remove systemd/scripts/postremove.sh \
+          --deb-after-purge systemd/scripts/purge.sh \
+          pufferpanel=/usr/sbin/pufferpanel \
+          www/pufferpanel=/var/www \
+          var/log/pufferpanel=/var/log \
+          var/lib/pufferpanel=/var/lib \
+          assets/email=/etc/pufferpanel \
+          config.linux.json=/etc/pufferpanel/config.json
+
+        fpm -s deb -t rpm \
+          --name pufferpanel \
+          --maintainer dev@pufferpanel.com \
+          --rpm-user pufferpanel --rpm-group pufferpanel \
+          --before-install systemd/scripts/preinstall.sh \
+          --after-install systemd/scripts/postinstall.sh \
+          --after-upgrade systemd/scripts/postupgrade.sh \
+          --before-remove systemd/scripts/prerm.sh \
+          --after-remove systemd/scripts/postremove.sh \
+          pufferpanel_${{ env.VERSION }}_amd64.deb
+
+        mv pufferpanel_${{ env.VERSION }}_*.deb artifacts/
+        mv pufferpanel-${{ env.VERSION }}-*.rpm artifacts/
+
+    - name: Build Package
+      if: startsWith(matrix.os, 'linux') && matrix.arch == 'arm'
+      run: |
+        mkdir -p var/log/pufferpanel var/lib/pufferpanel
+
+        fpm -s dir -t deb \
+          --name pufferpanel -v ${{ env.VERSION }} \
+          --maintainer dev@pufferpanel.com \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd systemd/servicefiles/pufferpanel.service \
+          --before-install systemd/scripts/preinstall.sh \
+          --after-install systemd/scripts/postinstall.sh \
+          --after-upgrade systemd/scripts/postupgrade.sh \
+          --before-remove systemd/scripts/prerm.sh \
+          --after-remove systemd/scripts/postremove.sh \
+          --deb-after-purge systemd/scripts/purge.sh \
+          -a armhf \
+          pufferpanel=/usr/sbin/pufferpanel \
+          www/pufferpanel=/var/www \
+          var/log/pufferpanel=/var/log \
+          var/lib/pufferpanel=/var/lib \
+          assets/email=/etc/pufferpanel \
+          config.linux.json=/etc/pufferpanel/config.json
+
+        mv pufferpanel_${{ env.VERSION }}_*.deb artifacts/
+
+    - name: Publish Artifacts
       uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'linux') && startsWith(github.ref, 'refs/tags/v2.')
+      #if: startsWith(github.ref, 'refs/tags/v2.')
       with:
-        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-        path: pufferpanel
-
-    - name: Publish Binary
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'windows') && startsWith(github.ref, 'refs/tags/v2.')
-      with:
-        name: ${{ matrix.os }} ${{ matrix.arch }} - Binary
-        path: pufferpanel.exe
-
-  produce-webartifacts:
-    name: Generate web artifacts
-    runs-on: ubuntu-18.04
-
-    strategy:
-      matrix:
-        node-version: [ '12.x' ]
-
-    steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
-
-      - name: npm install, build
-        run: |
-          npm install
-          npm run build
-        env:
-          CI: true
-        working-directory: client
-
-      - name: Publish Supporting
-        uses: actions/upload-artifact@v1
-        if: startsWith(github.ref, 'refs/tags/v2.')
-        with:
-          name: Web Artifacts
-          path: client/dist
+        name: ${{ matrix.os }} ${{ matrix.arch }}
+        path: artifacts
 
   produce-release:
     name: Generate packages artifacts
@@ -115,14 +164,7 @@ jobs:
         
       - name: Install gems
         run: |
-          gem install --no-doc rake
-          gem install --no-doc fpm
           gem install --no-doc package_cloud
-          
-      - name: Pull main repo
-        uses: actions/checkout@v1
-        with:
-          path: pufferpanel
           
       - name: Pull files
         uses: actions/download-artifact@v1
@@ -147,69 +189,6 @@ jobs:
         with:
           name: Web Artifacts
           path: www/pufferpanel
-          
-      - name: Fix perms on files
-        run: |
-          chmod +x binaries/amd64/pufferpanel
-          chmod +x binaries/arm/pufferpanel
-          
-      - name: Build packages
-        run: |
-          mkdir build
-          
-          fpm -s dir -t deb \
-          --name pufferpanel -v ${{ env.VERSION }} \
-          --maintainer dev@pufferpanel.com \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd ../pufferpanel/systemd/servicefiles/pufferpanel.service \
-          --before-install ../pufferpanel/systemd/scripts/preinstall.sh \
-          --after-install ../pufferpanel/systemd/scripts/postinstall.sh \
-          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
-          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
-          --after-remove ../pufferpanel/systemd/scripts/postremove.sh \
-          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
-          binaries/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          ../pufferpanel/assets/email=/etc/pufferpanel \
-          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
-          
-          mv *.deb build/
-          
-          fpm -s deb -t rpm \
-          --name pufferpanel \
-          --maintainer dev@pufferpanel.com \
-          --rpm-user pufferpanel --rpm-group pufferpanel \
-          --before-install ../pufferpanel/systemd/scripts/preinstall.sh \
-          --after-install ../pufferpanel/systemd/scripts/postinstall.sh \
-          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
-          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
-          --after-remove ../pufferpanel/systemd/scripts/postremove.sh \
-          build/pufferpanel_*_amd64.deb
-
-          mv *.rpm build/
-          
-          fpm -s dir -t deb \
-          --name pufferpanel -v ${{ env.VERSION }} \
-          --maintainer dev@pufferpanel.com \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd ../pufferpanel/systemd/servicefiles/pufferpanel.service \
-          --before-install ../pufferpanel/systemd/scripts/preinstall.sh \
-          --after-install ../pufferpanel/systemd/scripts/postinstall.sh \
-          --after-upgrade ../pufferpanel/systemd/scripts/postupgrade.sh \
-          --before-remove ../pufferpanel/systemd/scripts/prerm.sh \
-          --after-remove ../pufferpanel/systemd/scripts/postremove.sh \
-          --deb-after-purge ../pufferpanel/systemd/scripts/purge.sh \
-          -a armhf \
-          binaries/arm/pufferpanel=/usr/sbin/pufferpanel \
-          www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          ../pufferpanel/assets/email=/etc/pufferpanel/email \
-          ../pufferpanel/config.linux.json=/etc/pufferpanel/config.json
-          
-          mv *.deb build/
           
       - name: Create archives
         run: |
