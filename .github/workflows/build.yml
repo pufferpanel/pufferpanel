@@ -139,108 +139,103 @@ jobs:
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
-      if: "startsWith(github.ref, 'refs/tags/v2.') || contains(github.event.head_commit.message, '[save]')"
+      if: "contains(github.event.head_commit.message, '[save]')"
       with:
         name: Archive
-        path: artifacts
+        path: archive
 
-  produce-release:
-    name: Generate packages artifacts
-    runs-on: ubuntu-18.04
-    needs: [build-binaries]
-    if: startsWith(github.ref, 'refs/tags/v2.')
-        
-    steps:
-      - name: Get the version
-        run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}"  
-      
-      - uses: actions/setup-ruby@v1
-        
-      - name: Install gems
-        run: |
-          gem install --no-doc package_cloud
-          
-      - name: Pull files
-        uses: actions/download-artifact@v1
-        with:
-          name: Archive
-          
-      - name: Create archives
-        run: |
-          cp -r artifacts/email archives/amd64/
-          
-          cd archives/amd64
-          zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
-          
-          cd ../arm
-          zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
+    - name: Install gems
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      run: |
+        gem install --no-doc package_cloud
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: true
-          prerelease: true
-          
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./archives/amd64/pufferpanel_${{ env.VERSION }}_amd64.zip
-          asset_name: pufferpanel_${{ env.VERSION }}_amd64.zip
-          asset_content_type: application/zip 
-          
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./archives/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
-          asset_name: pufferpanel_${{ env.VERSION }}_armhf.zip
-          asset_content_type: application/zip 
+    - name: Create archives
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      run: |
+        cp -r email amd64/
+        cp -r www amd64/
+        cp -r email arm/
+        cp -r www arm/
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
-          asset_name: pufferpanel_${{ env.VERSION }}_amd64.deb
-          asset_content_type: application/vnd.debian.binary-package
-          
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-          asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-          asset_content_type: application/zip
+        cd amd64
+        zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
 
-      - name: Push to repo
-        env:
-          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-        run: |
-          #centos
-          package_cloud push pufferpanel/pufferpanel/el/7 ./build/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        cd ../arm
+        zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
 
-          #ubuntu
-          package_cloud push pufferpanel/pufferpanel/ubuntu/xenial ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
-          package_cloud push pufferpanel/pufferpanel/ubuntu/bionic ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
-          
-          #debian
-          package_cloud push pufferpanel/pufferpanel/debian/jessie ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
-          package_cloud push pufferpanel/pufferpanel/debian/stretch ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
-          package_cloud push pufferpanel/pufferpanel/debian/buster ./build/pufferpanel_${{ env.VERSION }}_amd64.deb
+    - name: Create Release
+      id: create_release
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+        prerelease: true
 
-          #raspbian
-          package_cloud push pufferpanel/pufferpanel/raspbian/buster ./build/pufferpanel_${{ env.VERSION }}_armhf.deb
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./archive/amd64/pufferpanel_${{ env.VERSION }}_amd64.zip
+        asset_name: pufferpanel_${{ env.VERSION }}_amd64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./archive/arm/pufferpanel_${{ env.VERSION }}_armhf.zip
+        asset_name: pufferpanel_${{ env.VERSION }}_armhf.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./archive/pufferpanel_${{ env.VERSION }}_amd64.deb
+        asset_name: pufferpanel_${{ env.VERSION }}_amd64.deb
+        asset_content_type: application/vnd.debian.binary-package
+
+    - name: Upload Release Asset
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./archive/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_content_type: application/zip
+
+    - name: Push to repo
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      env:
+        PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+      working-directory: archive
+      run: |
+        #centos
+        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+
+        #ubuntu
+        package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
+
+        #debian
+        package_cloud push pufferpanel/pufferpanel/debian/jessie pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/debian/stretch pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/debian/buster pufferpanel_${{ env.VERSION }}_amd64.deb
+
+        #raspbian
+        package_cloud push pufferpanel/pufferpanel/raspbian/buster pufferpanel_${{ env.VERSION }}_armhf.deb
