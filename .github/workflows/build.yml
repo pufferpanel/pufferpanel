@@ -153,7 +153,7 @@ jobs:
   produce-release:
     name: Generate packages artifacts
     runs-on: ubuntu-18.04
-    needs: [produce-webartifacts,build-binaries]
+    needs: [build-binaries]
     if: startsWith(github.ref, 'refs/tags/v2.')
         
     steps:
