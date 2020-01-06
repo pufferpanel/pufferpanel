@@ -89,7 +89,7 @@ jobs:
           --before-remove systemd/scripts/prerm.sh \
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
-          artifacts/pufferpanel=/usr/sbin/pufferpanel \
+          artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
           artifacts/www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
@@ -119,15 +119,15 @@ jobs:
           --after-remove systemd/scripts/postremove.sh \
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
-          artifacts/pufferpanel=/usr/sbin/pufferpanel \
+          artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
           artifacts/www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
 
-        mv pufferpanel_${{ env.VERSION }}_*.deb artifacts/
-        mv pufferpanel_${{ env.VERSION }}_*.deb artifacts/
+        mv pufferpanel*.deb artifacts/
+        mv pufferpanel*.rpm artifacts/
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
