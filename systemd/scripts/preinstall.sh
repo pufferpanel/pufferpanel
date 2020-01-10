@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-# NO-OP
+useradd --system --home /var/lib/pufferpanel --user-group pufferpanel
