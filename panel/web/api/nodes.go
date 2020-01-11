@@ -69,6 +69,14 @@ func getAllNodes(c *gin.Context) {
 
 	data := models.FromNodes(nodes)
 
+	//HACK: For our local node, we actually need to override the public IP
+	for _, d := range *data {
+		if d.PrivateHost == "127.0.0.1" && d.PublicHost == "127.0.0.1" {
+			d.PublicHost = c.Request.Host
+			break
+		}
+	}
+
 	c.JSON(http.StatusOK, data)
 }
 
