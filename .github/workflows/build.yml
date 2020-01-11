@@ -233,6 +233,7 @@ jobs:
       run: |
         #centos
         package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.VERSION }}.x86_64.rpm
 
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
