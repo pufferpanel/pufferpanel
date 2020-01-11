@@ -126,8 +126,16 @@ func searchServers(c *gin.Context) {
 		return
 	}
 
+	data := models.FromServers(results)
+
+	for _, d := range data {
+		if d.Node.PublicHost == "127.0.0.1" && d.Node.PrivateHost == "127.0.0.1" {
+			d.Node.PublicHost = c.Request.Host
+		}
+	}
+
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
-		Servers: models.RemoveServerPrivateInfoFromAll(models.FromServers(results)),
+		Servers: models.RemoveServerPrivateInfoFromAll(data),
 		Metadata: &response.Metadata{Paging: &response.Paging{
 			Page:    uint(page),
 			Size:    uint(pageSize),
@@ -172,6 +180,10 @@ func getServer(c *gin.Context) {
 	data := &models.GetServerResponse{
 		Server: models.RemoveServerPrivateInfo(models.FromServer(server)),
 		Perms:  perms,
+	}
+
+	if data.Server.Node.PrivateHost == "127.0.0.1" && data.Server.Node.PublicHost == "127.0.0.1" {
+		data.Server.Node.PublicHost = c.Request.Host
 	}
 
 	c.JSON(http.StatusOK, data)
