@@ -107,6 +107,10 @@ func getNode(c *gin.Context) {
 
 	data := models.FromNode(node)
 
+	if data.PrivateHost == "127.0.0.1" && data.PublicHost == "127.0.0.1" {
+		data.PublicHost = c.Request.Host
+	}
+
 	c.JSON(http.StatusOK, data)
 }
 
