@@ -91,6 +91,8 @@ jobs:
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel
         cd artifacts/amd64
+        ls -l
+        chmod +x pufferpanel
         ./pufferpanel templates import
         mv pufferpanel.db ../../var/lib/pufferpanel
       env:
