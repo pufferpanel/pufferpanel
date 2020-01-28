@@ -90,8 +90,9 @@ jobs:
     - name: Produce templates
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel
-        artifacts/amd64/pufferpanel templates import
-        mv pufferpanel.db var/lib/pufferpanel
+        cd artifacts/amd64
+        ./pufferpanel templates import
+        mv pufferpanel.db ../../var/lib/pufferpanel
       env:
         PUFFER_PANEL_DATABASE_URL: file:pufferpanel.db?cache=shared
 
