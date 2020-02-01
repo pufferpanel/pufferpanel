@@ -87,16 +87,10 @@ jobs:
         CI: true
       working-directory: client
   
-    - name: Produce templates
+    - name: Snapshot database
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel
-        cd artifacts/amd64
-        ls -l
-        chmod +x pufferpanel
-        ./pufferpanel templates import
-        mv pufferpanel.db ../../var/lib/pufferpanel
-      env:
-        PUFFER_PANEL_DATABASE_URL: file:pufferpanel.db?cache=shared
+        touch var/lib/pufferpanel/database.db
 
     - name: Build Package
       run: |
