@@ -20,7 +20,7 @@ require (
 	github.com/facebookgo/ensure v0.0.0-20160127193407-b4ab57deab51 // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/facebookgo/subset v0.0.0-20150612182917-8dac2c3c4870 // indirect
-	github.com/flosch/pongo2 v0.0.0-20190707114632-bbf5a6c351f4 // indirect
+	github.com/gin-contrib/gzip v0.0.1
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
@@ -28,21 +28,15 @@ require (
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.0 // indirect
+	github.com/google/go-cmp v0.2.1-0.20190312032427-6f77996f0c42 // indirect
 	github.com/gorilla/websocket v1.4.1
 	github.com/itsjamie/gin-cors v0.0.0-20160420130702-97b4a9da7933
 	github.com/jinzhu/gorm v1.9.11
 	github.com/json-iterator/go v1.1.7 // indirect
-	github.com/juju/clock v0.0.0-20190205081909-9c5c9712527c // indirect
-	github.com/juju/retry v0.0.0-20180821225755-9058e192b216 // indirect
-	github.com/juju/utils v0.0.0-20180820210520-bf9cc5bdd62d // indirect
-	github.com/juju/version v0.0.0-20180108022336-b64dbd566305 // indirect
-	github.com/juju/webbrowser v0.0.0-20180907093207-efb9432b2bcb // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pty v1.1.5 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/lib/pq v1.2.0 // indirect
-	github.com/lxc/lxd v0.0.0-20191108214106-60ea15630455
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mattn/go-isatty v0.0.10 // indirect
@@ -52,7 +46,6 @@ require (
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.10.1
-	github.com/rogpeppe/fastuuid v1.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.19.10+incompatible
@@ -71,11 +64,7 @@ require (
 	google.golang.org/genproto v0.0.0-20190905072037-92dd089d5514 // indirect
 	google.golang.org/grpc v1.23.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/errgo.v1 v1.0.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.29.1
-	gopkg.in/httprequest.v1 v1.2.0 // indirect
-	gopkg.in/macaroon-bakery.v2 v2.1.0 // indirect
-	gopkg.in/macaroon.v2 v2.1.0 // indirect
-	gopkg.in/robfig/cron.v2 v2.0.0-20150107220207-be2e0b0deed5 // indirect
 	gopkg.in/yaml.v2 v2.2.4 // indirect
+	gotest.tools v2.2.0+incompatible // indirect
 )
