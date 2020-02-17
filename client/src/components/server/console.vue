@@ -11,11 +11,11 @@
         solo
         flat
         no-resize
+        class="console"
       />
       <v-text-field
         v-model="consoleCommand"
         outlined
-        autofocus
         placeholder="Command..."
         append-icon="mdi-send"
         append-outer-icon="mdi-pause"
@@ -56,6 +56,7 @@
               hide-details
               no-resize
               readonly
+              class="console"
             />
           </v-card-text>
         </v-card>
@@ -157,6 +158,9 @@ export default {
 </script>
 
 <style>
+  .console textarea {
+    line-height: 1.25;
+  }
   #popup .v-input__slot {
     height: 100%;
   }

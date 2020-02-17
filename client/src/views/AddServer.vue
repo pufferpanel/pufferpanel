@@ -27,7 +27,7 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <h3 v-text="$t('servers.SelectTemplate')" />
-          <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" autofocus />
+          <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
           <v-expansion-panels>
             <v-expansion-panel v-for="template in templates.filter(function (t) {if (templateFilter.trim() == '') {return true} else {return t.text.toLowerCase().indexOf(templateFilter.trim().toLowerCase()) > -1}})" :input-value="selectedTemplate == template.value">
               <v-expansion-panel-header v-text="template.text" />
