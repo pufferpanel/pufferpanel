@@ -29,10 +29,10 @@
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.viewServerStats || isAdmin()">
-      <v-col md="6">
+      <v-col cols="12" md="6">
         <server-cpu />
       </v-col>
-      <v-col md="6">
+      <v-col cols="12" md="6">
         <server-memory />
       </v-col>
     </v-row>
