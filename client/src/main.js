@@ -3,17 +3,17 @@
 import Vue from 'vue'
 // Components
 import './components'
-import Vuetify from 'vuetify'
 // Plugins
 import './plugins'
+import vuetify from './plugins/vuetify'
 // Application imports
 import App from './App'
 import i18n from '@/i18n'
 import router from '@/router'
 import VueNativeSocket from 'vue-native-websocket'
-import vuetify from './plugins/vuetify'
+// iconfont
+import '@mdi/font/css/materialdesignicons.min.css'
 
-Vue.use(Vuetify)
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,
   reconnection: true,

@@ -11,15 +11,9 @@
  *  limitations under the License.
  */
 
-import { Line, mixins } from 'vue-chartjs'
+import marked from 'marked'
+import DOMPurify from 'dompurify'
 
-export default {
-  extends: Line,
-  mixins: [mixins.reactiveProp],
-  props: ['options'],
-  mounted () {
-    // this.chartData is created in the mixin.
-    // If you want to pass options please create a local options object
-    this.renderChart(this.chartData, this.options)
-  }
+export default function (md = '', options) {
+  return DOMPurify.sanitize(marked(md), options)
 }
