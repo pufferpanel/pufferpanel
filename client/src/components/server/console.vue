@@ -158,7 +158,7 @@ export default {
 </script>
 
 <style>
-  .console textarea {
+  .v-textarea.console textarea {
     line-height: 1.25;
   }
   #popup .v-input__slot {

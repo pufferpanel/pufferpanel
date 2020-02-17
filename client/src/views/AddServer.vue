@@ -42,63 +42,51 @@
         <v-stepper-content step="2">
           <v-row>
             <v-col cols="12">
-              <v-card>
-                <v-card-title v-text="$t('servers.Name')" />
-                <v-card-text>
-                  <v-text-field
-                    id="nameInput"
-                    v-model="serverName"
-                    outlined
-                  />
-                </v-card-text>
-              </v-card>
+              <h3 v-text="$t('servers.Name')" class="mb-4" />
+              <v-text-field
+                id="nameInput"
+                v-model="serverName"
+                outlined
+              />
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="12">
-              <v-card>
-                <v-card-title v-text="$t('nodes.Node')" />
-                <v-card-text>
-                  <v-select
-                    id="nodeSelect"
-                    v-model="selectedNode"
-                    outlined
-                    :disabled="loadingNodes"
-                    :items="nodes"
-                    single-line
-                    :no-data-text="$t('errors.ErrNoNodes')"
-                    :placeholder="$t('servers.SelectNode')"
-                  />
-                </v-card-text>
-              </v-card>
+              <h3 v-text="$t('nodes.Node')" class="mb-4" />
+              <v-select
+                id="nodeSelect"
+                v-model="selectedNode"
+                outlined
+                :disabled="loadingNodes"
+                :items="nodes"
+                single-line
+                :no-data-text="$t('errors.ErrNoNodes')"
+                :placeholder="$t('servers.SelectNode')"
+              />
             </v-col>
-          </v-row> 
+          </v-row>
 
           <v-row>
             <v-col cols="12">
-              <v-card>
-                <v-card-title v-text="$t('servers.Environment')" />
-                <v-card-text>
-                  <v-select
-                    id="environmentSelect"
-                    v-model="selectedEnvironment"
-                    :disabled="loadingTemplates"
-                    :items="environments"
+              <h3 v-text="$t('servers.Environment')" class="mb-4" />
+              <v-select
+                id="environmentSelect"
+                v-model="selectedEnvironment"
+                :disabled="loadingTemplates"
+                :items="environments"
+                outlined
+                :placeholder="$t('servers.SelectEnvironment')"
+              />
+              <div v-if="selectedEnvironment && environments[selectedEnvironment]">
+                <div v-for="(val, key) in environments[selectedEnvironment].metadata">
+                  <v-text-field
+                    v-model="environments[selectedEnvironment].metadata[key]"
                     outlined
-                    :placeholder="$t('servers.SelectEnvironment')"
+                    :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
                   />
-                  <div v-if="selectedEnvironment && environments[selectedEnvironment]">
-                    <div v-for="(val, key) in environments[selectedEnvironment].metadata">
-                      <v-text-field
-                        v-model="environments[selectedEnvironment].metadata[key]"
-                        outlined
-                        :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
-                      />
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
+                </div>
+              </div>
             </v-col>
           </v-row>
 
@@ -128,53 +116,49 @@
         <v-stepper-content step="3">
           <v-row>
             <v-col cols="12">
-              <v-card>
-                <v-card-title v-text="$t('users.Users')" />
-                <v-card-text>
-                  <v-text-field
-                    v-model="userInput"
-                    outlined
-                    :placeholder="$t('servers.TypeUsername')"
-                  />
-                  <v-list v-if="users.length > 0 || selectedUsers.length > 0">
-                    <v-subheader
-                      v-if="users.length > 0"
-                      v-text="$t('users.Add')"
-                    />
-                    <v-list-item-group v-if="users.length > 0">
-                      <v-list-item
-                        v-for="user in users"
-                        :key="user.value"
-                        @click="selectUser(user.value)"
-                      >
-                        <v-list-item-icon>
-                          <v-icon>mdi-plus</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title v-text="user.text" />
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                    <v-subheader
-                      v-if="selectedUsers.length > 0"
-                      v-text="$t('users.Users')"
-                    />
-                    <v-list-item-group v-if="selectedUsers.length > 0">
-                      <v-list-item
-                        v-for="user in selectedUsers"
-                        @click="removeUser(user)"
-                      >
-                        <v-list-item-icon>
-                          <v-icon>mdi-minus</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title v-text="user" />
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-card-text>
-              </v-card>
+              <h3 v-text="$t('users.Users')" class="mb-4" />
+              <v-text-field
+                v-model="userInput"
+                outlined
+                :placeholder="$t('servers.TypeUsername')"
+              />
+              <v-list v-if="users.length > 0 || selectedUsers.length > 0">
+                <v-subheader
+                  v-if="users.length > 0"
+                  v-text="$t('users.Add')"
+                />
+                <v-list-item-group v-if="users.length > 0">
+                  <v-list-item
+                    v-for="user in users"
+                    :key="user.value"
+                    @click="selectUser(user.value)"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-plus</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="user.text" />
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+                <v-subheader
+                  v-if="selectedUsers.length > 0"
+                  v-text="$t('users.Users')"
+                />
+                <v-list-item-group v-if="selectedUsers.length > 0">
+                  <v-list-item
+                    v-for="user in selectedUsers"
+                    @click="removeUser(user)"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-minus</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title v-text="user" />
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
             </v-col>
           </v-row>
 
@@ -204,64 +188,60 @@
         <v-stepper-content step="4">
           <v-row v-if="Object.keys(formData).length > 0">
             <v-col cols="12">
-              <v-card>
-                <v-card-title v-text="$t('common.Options')" />
-                <v-card-text>
-                  <v-row>
-                    <v-col
-                      v-for="item in formData"
-                      v-if="!item.internal"
-                      cols="12"
-                    >
-                      <v-text-field
-                        v-if="item.type === 'integer'"
-                        v-model="item.value"
-                        type="number"
-                        :required="item.required"
-                        :hint="item.desc"
-                        persistent-hint
-                        :label="item.display"
-                        outlined
-                      >
-                        <template slot="message"><div v-html="item.desc" /></template>
-                      </v-text-field>
-                      <v-switch
-                        v-else-if="item.type === 'boolean'"
-                        v-model="item.value"
-                        class="mt-0 mb-4"
-                        :required="item.required"
-                        :hint="item.desc"
-                        persistent-hint
-                        :label="item.display"
-                      >
-                        <template slot="message"><div v-html="item.desc" /></template>
-                      </v-switch>
-                      <v-select
-                        v-else-if="item.type === 'options'"
-                        v-model="item.value"
-                        :items="JSON.parse('[' + item.options.join(',') + ']')"
-                        :hint="item.desc"
-                        persistent-hint
-                        :label="item.display"
-                        outlined
-                      >
-                        <template slot="message"><div v-html="item.desc" /></template>
-                      </v-select>
-                      <v-text-field
-                        v-else
-                        v-model="item.value"
-                        :required="item.required"
-                        :hint="item.desc"
-                        persistent-hint
-                        :label="item.display"
-                        outlined
-                      >
-                        <template slot="message"><div v-html="item.desc" /></template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+              <v-card-title v-text="$t('common.Options')" />
+              <v-row>
+                <v-col
+                  v-for="item in formData"
+                  v-if="!item.internal"
+                  cols="12"
+                >
+                  <v-text-field
+                    v-if="item.type === 'integer'"
+                    v-model="item.value"
+                    type="number"
+                    :required="item.required"
+                    :hint="item.desc"
+                    persistent-hint
+                    :label="item.display"
+                    outlined
+                  >
+                    <template slot="message"><div v-html="item.desc" /></template>
+                  </v-text-field>
+                  <v-switch
+                    v-else-if="item.type === 'boolean'"
+                    v-model="item.value"
+                    class="mt-0 mb-4"
+                    :required="item.required"
+                    :hint="item.desc"
+                    persistent-hint
+                    :label="item.display"
+                  >
+                    <template slot="message"><div v-html="item.desc" /></template>
+                  </v-switch>
+                  <v-select
+                    v-else-if="item.type === 'options'"
+                    v-model="item.value"
+                    :items="JSON.parse('[' + item.options.join(',') + ']')"
+                    :hint="item.desc"
+                    persistent-hint
+                    :label="item.display"
+                    outlined
+                  >
+                    <template slot="message"><div v-html="item.desc" /></template>
+                  </v-select>
+                  <v-text-field
+                    v-else
+                    v-model="item.value"
+                    :required="item.required"
+                    :hint="item.desc"
+                    persistent-hint
+                    :label="item.display"
+                    outlined
+                  >
+                    <template slot="message"><div v-html="item.desc" /></template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
 
@@ -271,7 +251,7 @@
                 large
                 block
                 color="error"
-                @click="currentStep = 2"
+                @click="currentStep = 3"
                 v-text="$t('common.Back')"
               />
             </v-col>
