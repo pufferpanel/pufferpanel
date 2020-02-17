@@ -14,6 +14,7 @@
 package web
 
 import (
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/api"
@@ -47,10 +48,12 @@ func RegisterRoutes(e *gin.Engine) {
 
 	css := e.Group("/css")
 	{
+		css.Use(gzip.Gzip(gzip.DefaultCompression))
 		css.StaticFS("", http.Dir(ClientPath+"/css"))
 	}
 	fonts := e.Group("/fonts")
 	{
+		fonts.Use(gzip.Gzip(gzip.DefaultCompression))
 		fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
 	}
 	img := e.Group("/img")
@@ -59,6 +62,7 @@ func RegisterRoutes(e *gin.Engine) {
 	}
 	js := e.Group("/js", setContentType("application/javascript"))
 	{
+		js.Use(gzip.Gzip(gzip.DefaultCompression))
 		js.StaticFS("", http.Dir(ClientPath+"/js"))
 	}
 	e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
@@ -90,11 +94,10 @@ func handle404(c *gin.Context) {
 	c.File(IndexFile)
 }
 
-//TODO: Have this pull from somewhere else
 func config(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"branding": map[string]interface{}{
-			"name": "PufferPanel",
+			"name": viper.GetString("panel.settings.companyName"),
 		},
 	})
 }
