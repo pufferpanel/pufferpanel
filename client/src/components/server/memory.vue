@@ -14,62 +14,78 @@
 <template>
   <v-card>
     <v-card-title v-text="$t('servers.Memory')" />
-    <v-card-text class="pt-4">
-      <line-chart
-        :chart-data="datacollection"
-        :options="options"
-      />
+    <v-card-text>
+      <apexchart :series="series" :options="options" height="300" />
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import LineChart from './LineChart.js'
 import { isDark } from '@/utils/dark'
+import VueApexCharts from 'vue-apexcharts'
 
 export default {
   components: {
-    LineChart
+    apexchart: VueApexCharts
   },
   data () {
     return {
       maxPoints: 20,
-      memory: Array.apply(null, Array(this.maxPoints)).map(Number.prototype.valueOf, 0),
-      label: Array.apply(null, Array(this.maxPoints)).map(String.prototype.valueOf, ''),
-      datacollection: {
-        datasets: [
-          {
-            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
-            data: []
-          }
-        ]
-      },
       options: {
-        scales: {
-          xAxes: [{
-            ticks: {
-              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
-            },
-            gridLines: {
-              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+        chart: {
+          id: 'memory',
+          height: 300,
+          type: 'line',
+          animations: {
+            enabled: false
+          },
+          toolbar: {
+            show: false
+          },
+          foreColor: isDark() ? '#FFF' : '#000000DE'
+        },
+        colors: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
+        tooltip: { theme: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 0
+        },
+        xaxis: {
+          labels: {
+            show: true,
+            rotate: 0,
+            formatter: function (value) {
+              return new Date(value).toLocaleTimeString()
             }
-          }],
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
-            },
-            gridLines: {
-              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+          },
+          tooltip: {
+            enabled: false
+          },
+          type: 'datetime'
+        },
+        yaxis: {
+          labels: {
+            show: true,
+            formatter: function (value) {
+              if (value < 1000) return Math.round(value) + ' B'
+              if (value < 1000000) return Math.round(value / 1000) + ' KB'
+              if (value < 1000000000) return Math.round(value / 1000000) + ' MB'
+              if (value < 1000000000000) return Math.round(value / 1000000000) + ' GB'
+              if (value < 1000000000000000) return Math.round(value / 1000000000000) + ' TB'
             }
-          }]
+          },
+          min: 0
         },
         legend: {
-          display: false
-        },
-        responsive: true,
-        animation: false
-      }
+          show: true
+        }
+      },
+      series: []
     }
   },
   mounted () {
@@ -86,30 +102,12 @@ export default {
   },
   methods: {
     updateStats (data) {
-      if (this.memory.length === this.maxPoints) {
-        this.memory.shift()
-        this.label.shift()
-      }
-
-      this.label.push(new Date().toLocaleTimeString())
-      this.memory.push(data.memory)
-
-      const newMemory = []
-      const newLabel = []
-      for (let i = 0; i < this.memory.length; i++) {
-        newMemory[i] = this.memory[i]
-        newLabel[i] = this.label[i]
-      }
-
-      this.datacollection = {
-        labels: newLabel,
-        datasets: [
-          {
-            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
-            data: newMemory
-          }
-        ]
-      }
+      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: isDark() ? '#FFF' : '#000000DE' } }
+      const chartData = [...((this.series[0] || {}).data || []), [new Date().getTime(), data.memory]]
+      this.series = [{
+        name: this.$t('servers.Memory'),
+        data: chartData.length > this.maxPoints ? chartData.slice(chartData.length - this.maxPoints) : chartData
+      }]
     }
   }
 }

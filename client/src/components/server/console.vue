@@ -15,6 +15,7 @@
       <v-text-field
         v-model="consoleCommand"
         outlined
+        autofocus
         placeholder="Command..."
         append-icon="mdi-send"
         append-outer-icon="mdi-pause"

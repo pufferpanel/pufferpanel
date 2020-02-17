@@ -14,62 +14,74 @@
 <template>
   <v-card>
     <v-card-title v-text="$t('servers.CPU')" />
-    <v-card-text class="pt-4">
-      <line-chart
-        :chart-data="datacollection"
-        :options="options"
-      />
+    <v-card-text>
+      <apexchart :options="options" :series="series" height="300" />
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import LineChart from './LineChart.js'
 import { isDark } from '@/utils/dark'
+import VueApexCharts from 'vue-apexcharts'
 
 export default {
   components: {
-    LineChart
+    apexchart: VueApexCharts
   },
   data () {
     return {
       maxPoints: 20,
-      cpu: Array.apply(null, Array(this.maxPoints)).map(Number.prototype.valueOf, 0),
-      label: Array.apply(null, Array(this.maxPoints)).map(String.prototype.valueOf, ''),
-      datacollection: {
-        datasets: [
-          {
-            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
-            data: []
-          }
-        ]
-      },
       options: {
-        scales: {
-          xAxes: [{
-            ticks: {
-              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
-            },
-            gridLines: {
-              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+        chart: {
+          id: 'cpu',
+          height: 300,
+          type: 'line',
+          animations: {
+            enabled: false
+          },
+          toolbar: {
+            show: false
+          },
+          foreColor: isDark() ? '#FFF' : '#000000DE'
+        },
+        colors: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
+        tooltip: { theme: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 0
+        },
+        xaxis: {
+          labels: {
+            show: true,
+            rotate: 0,
+            formatter: function (value) {
+              return new Date(value).toLocaleTimeString()
             }
-          }],
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              fontColor: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
-            },
-            gridLines: {
-              color: isDark() ? this.$vuetify.theme.themes.dark.tertiary : this.$vuetify.theme.themes.light.tertiary
+          },
+          tooltip: {
+            enabled: false
+          },
+          type: 'datetime'
+        },
+        yaxis: {
+          labels: {
+            show: true,
+            formatter: function (value) {
+              return (Math.round(value * 100) / 100) + '%'
             }
-          }]
+          },
+          min: 0
         },
         legend: {
-          display: false
-        },
-        responsive: true,
-        animation: false
-      }
+          show: true
+        }
+      },
+      series: []
     }
   },
   mounted () {
@@ -86,30 +98,12 @@ export default {
   },
   methods: {
     updateStats (data) {
-      if (this.cpu.length === this.maxPoints) {
-        this.cpu.shift()
-        this.label.shift()
-      }
-
-      this.label.push(new Date().toLocaleTimeString())
-      this.cpu.push(data.cpu)
-
-      const newCpu = []
-      const newLabel = []
-      for (let i = 0; i < this.cpu.length; i++) {
-        newCpu[i] = this.cpu[i]
-        newLabel[i] = this.label[i]
-      }
-
-      this.datacollection = {
-        labels: newLabel,
-        datasets: [
-          {
-            backgroundColor: isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent,
-            data: newCpu
-          }
-        ]
-      }
+      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: isDark() ? '#FFF' : '#000000DE' } }
+      const chartData = [...((this.series[0] || {}).data || []), [new Date().getTime(), Math.round(data.cpu * 100) / 100]]
+      this.series = [{
+        name: this.$t('servers.CPU'),
+        data: chartData.length > this.maxPoints ? chartData.slice(chartData.length - this.maxPoints) : chartData
+      }]
     },
     isDark
   }

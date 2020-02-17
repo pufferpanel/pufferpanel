@@ -1,20 +1,22 @@
 {
+  "name": "pufferpanel",
   "private": true,
   "scripts": {
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
-    "dev-build": "vue-cli-service build --mode development",
-    "dev-watch": "vue-cli-service build --mode development --watch"
+    "dev-build": "vue-cli-service build --modern --mode development",
+    "dev-watch": "vue-cli-service build --modern --mode development --watch"
   },
   "dependencies": {
-    "@mdi/font": "^4.7.95",
-    "axios": "^0.19.0",
-    "chart.js": "^2.9.3",
+    "@mdi/font": "^4.9.95",
+    "apexcharts": "^3.15.6",
+    "axios": "^0.19.2",
+    "dompurify": "^2.0.8",
     "filesize": "^6.0.1",
     "js-cookie": "^2.2.1",
-    "material-design-icons-iconfont": "^5.0.1",
+    "marked": "^0.8.0",
     "vue": "^2.6.10",
-    "vue-chartjs": "^3.5.0",
+    "vue-apexcharts": "^1.5.2",
     "vue-i18n": "^8.15.1",
     "vue-native-websocket": "^2.0.13",
     "vue-router": "^3.1.3",
@@ -36,7 +38,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-vue": "^6.0.1",
-    "material-design-icons-iconfont": "^5.0.1",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "stylus": "^0.54.7",
