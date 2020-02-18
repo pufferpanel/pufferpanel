@@ -31,6 +31,18 @@ func (t *Template) GetAll() (*models.Templates, error) {
 	return templates, err
 }
 
+func (t *Template) Get(name string) (*models.Template, error) {
+	template := &models.Template{
+		Name:  name,
+	}
+	err := t.DB.Find(&template).Error
+	if err != nil {
+		return nil, err
+	}
+	return template, err
+}
+
+
 func (t *Template) Save(template *models.Template) error {
 	return t.DB.Save(template).Error
 }

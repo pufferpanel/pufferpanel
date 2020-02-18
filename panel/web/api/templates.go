@@ -15,6 +15,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
@@ -24,6 +25,7 @@ import (
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(scope.TemplatesView, false), getAllTemplates)
+	g.Handle("GET", "/{name}", handlers.OAuth2Handler(scope.TemplatesView, false), getTemplate)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 }
 
@@ -47,4 +49,29 @@ func getAllTemplates(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, templates)
+}
+
+// @Summary Get single template
+// @Description Gets a template if registered
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Template
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /templates [get]
+func getTemplate(c *gin.Context) {
+	db := handlers.GetDatabase(c)
+	ts := &services.Template{DB: db}
+
+	template, err := ts.Get(c.Param("name"))
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		c.AbortWithStatus(404)
+		return
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, template)
 }
