@@ -48,13 +48,3 @@ func (t *Template) BeforeSave() error {
 	t.RawValue = string(data)
 	return nil
 }
-
-func (ts *Templates) MarshalJSON() ([]byte, error) {
-	res := make(map[string]*Template)
-
-	for _, v := range *ts {
-		res[v.Name] = v
-	}
-
-	return json.Marshal(res)
-}
