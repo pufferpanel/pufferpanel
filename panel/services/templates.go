@@ -15,6 +15,7 @@ package services
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 )
 
@@ -28,7 +29,21 @@ func (t *Template) GetAll() (*models.Templates, error) {
 	if err != nil {
 		return nil, err
 	}
-	return templates, err
+	//because we don't want to return a ton of data, we'll only return a few select fields
+	replacement := make(models.Templates, len(*templates))
+
+	for k, v := range *templates {
+		replacement[k] = &models.Template{
+			Name: v.Name,
+			Template: pufferpanel.Template{
+				Server: pufferpanel.Server{
+					Display: v.Template.Server.Display,
+					Type:    v.Template.Server.Type,
+				},
+			},
+		}
+	}
+	return &replacement, err
 }
 
 func (t *Template) Get(name string) (*models.Template, error) {
