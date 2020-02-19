@@ -61,6 +61,11 @@
           </v-row>
           <v-row>
             <v-col class="py-0">
+              <v-switch v-model="user.editTemplates" hide-details :label="$t('scopes.EditTemplates')" :disabled="user.admin" class="mt-2" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
               <v-switch v-model="user.viewUsers" hide-details :label="$t('scopes.ViewUsers')" :disabled="user.admin" class="mt-2" />
             </v-col>
           </v-row>
