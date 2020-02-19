@@ -13,8 +13,6 @@
 
 package pufferpanel
 
-import "github.com/pufferpanel/pufferpanel/v2/scope"
-
 func ContainsString(arr []string, value string) bool {
 	for _, v := range arr {
 		if v == value {
@@ -24,9 +22,9 @@ func ContainsString(arr []string, value string) bool {
 	return false
 }
 
-func ContainsScope(arr []scope.Scope, value scope.Scope) bool {
+func ContainsScope(arr []Scope, value Scope) bool {
 	for _, v := range arr {
-		if v == value || v == scope.ServersAdmin {
+		if v == value || v == ScopeServersAdmin {
 			return true
 		}
 	}

@@ -7,7 +7,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strconv"
 	"strings"
@@ -48,7 +47,7 @@ func HasOAuth2Token(c *gin.Context) {
 	c.Next()
 }
 
-func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFunc {
+func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db, err := database.GetConnection()
 
@@ -113,7 +112,7 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 			} else {
 				//if there isn't a defined rule, is this user an admin?
 				scopes := ti.PanelClaims.Scopes[""]
-				if scopes != nil && pufferpanel.ContainsScope(scopes, scope.ServersAdmin) {
+				if scopes != nil && pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersAdmin) {
 					allowed = true
 				}
 			}
@@ -138,7 +137,7 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 				if response.HandleError(c, err, http.StatusInternalServerError) {
 					return
 				}
-				if pufferpanel.ContainsScope(perms.ToScopes(), scope.ServersAdmin) {
+				if pufferpanel.ContainsScope(perms.ToScopes(), pufferpanel.ScopeServersAdmin) {
 					allowed = true
 				}
 			}

@@ -7,13 +7,12 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 )
 
 func registerSelf(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(scope.Login, false), getSelf)
-	g.Handle("PUT", "", handlers.OAuth2Handler(scope.Login, false), updateSelf)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
+	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
 }
 
 func getSelf(c *gin.Context) {

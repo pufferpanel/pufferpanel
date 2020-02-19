@@ -9,7 +9,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strconv"
 	"strings"
@@ -78,7 +77,7 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(http.StatusOK, &oauth2TokenResponse{
 					AccessToken: ts,
 					TokenType:   "Bearer",
-					Scope:       string(scope.OAuth2Auth),
+					Scope:       string(pufferpanel.ScopeOAuth2Auth),
 				})
 
 				return
@@ -104,7 +103,7 @@ func handleTokenRequest(c *gin.Context) {
 				c.JSON(http.StatusOK, &oauth2TokenResponse{
 					AccessToken: token,
 					TokenType:   "Bearer",
-					Scope:       string(scope.OAuth2Auth),
+					Scope:       string(pufferpanel.ScopeOAuth2Auth),
 				})
 				return
 			}
@@ -128,7 +127,7 @@ func handleTokenRequest(c *gin.Context) {
 
 			//validate token can auth on behalf of users
 			scopes := token.Claims.PanelClaims.Scopes[""]
-			if scopes == nil || len(scopes) == 0 || !pufferpanel.ContainsScope(scopes, scope.OAuth2Auth) {
+			if scopes == nil || len(scopes) == 0 || !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeOAuth2Auth) {
 				c.JSON(http.StatusOK, &oauth2TokenResponse{Error: "unauthorized_client"})
 				return
 			}

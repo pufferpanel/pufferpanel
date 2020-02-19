@@ -3,7 +3,6 @@ package pufferpanel
 import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"gopkg.in/go-playground/validator.v9"
 	"runtime/debug"
 	"strings"
@@ -37,7 +36,7 @@ var ErrNotBearerToken = CreateError("access token must be a Bearer token", "ErrN
 var ErrKeyNotECDSA = CreateError("key is not ECDSA key", "ErrKeyNotECDSA")
 var ErrMissingScope = CreateError("missing scope", "ErrMissingScope")
 
-func CreateErrMissingScope(scope scope.Scope) *Error {
+func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})
 }
 
