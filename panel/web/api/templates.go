@@ -25,7 +25,7 @@ import (
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(scope.TemplatesView, false), getAllTemplates)
-	g.Handle("GET", "/{name}", handlers.OAuth2Handler(scope.TemplatesView, false), getTemplate)
+	g.Handle("GET", "/:name", handlers.OAuth2Handler(scope.TemplatesView, false), getTemplate)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 }
 

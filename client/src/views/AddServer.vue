@@ -29,11 +29,22 @@
           <h3 v-text="$t('servers.SelectTemplate')" />
           <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
           <v-expansion-panels>
-            <v-expansion-panel v-for="template in templates.filter(function (t) {if (templateFilter.trim() == '') {return true} else {return t.text.toLowerCase().indexOf(templateFilter.trim().toLowerCase()) > -1}})" :input-value="selectedTemplate == template.value">
-              <v-expansion-panel-header v-text="template.text" />
+            <v-expansion-panel v-for="template in filterTemplates(templates, templateFilter)" :key="template.name" @click="loadTemplateData(template.name)">
+              <v-expansion-panel-header v-text="template.display" />
               <v-expansion-panel-content>
-                <span v-html="markdown(template.readme || $t('servers.NoReadme'))" /><br />
-                <v-btn color="primary" @click="selectedTemplate = template.value; currentStep = 2" v-text="$t('servers.SelectThisTemplate')" large block />
+                <v-row v-if="templateData[template.name] === undefined">
+                  <v-col cols="5" />
+                  <v-col cols="2">
+                    <v-progress-circular
+                      indeterminate
+                      class="mr-2"
+                    />
+                    <strong v-text="$t('common.Loading')" />
+                  </v-col>
+                </v-row>
+                <span v-else v-html="markdown(templateData[template.name].readme || $t('servers.NoReadme'))" />
+                <br />
+                <v-btn color="primary" @click="selectTemplate(template.name)" v-text="$t('servers.SelectThisTemplate')" large block />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -411,20 +422,7 @@ export default {
       this.selectedTemplate = null
       this.$http.get('/api/templates').then(function (response) {
         if (response.status >= 200 && response.status < 300) {
-          vue.templateData = response.data
-          vue.templates = []
-          for (const k in vue.templateData) {
-            vue.templates.push({
-              text: vue.templateData[k].display,
-              readme: vue.templateData[k].readme,
-              value: k
-            })
-          }
-
-          if (vue.templates.length === 1) {
-            vue.selectedTemplate = vue.templates[0].value
-          }
-
+          vue.templates = response.data
           vue.loadingTemplates = false
         }
       }).catch(function (error) {
@@ -565,6 +563,45 @@ export default {
           return
         }
       }
+    },
+    loadTemplateData (template) {
+      if (!template) return
+      if (!this.templateData[template]) {
+        const ctx = this
+        this.$http.get(`/api/templates/${template}`).then(function (response) {
+          if (response.status >= 200 && response.status < 300) {
+            ctx.templateData[template] = response.data
+            // recreate object to make vues refernce equality check fail and rerender neccessary components
+            ctx.templateData = { ...ctx.templateData }
+          }
+        }).catch(function (error) {
+          console.log(error)
+          let msg = 'errors.ErrUnknownError'
+          if (error && error.response && error.response.data.error) {
+            if (error.response.data.error.code) {
+              msg = 'errors.' + error.response.data.error.code
+            } else {
+              msg = error.response.data.error.msg
+            }
+          }
+
+          ctx.$toast.error(ctx.$t(msg))
+        })
+      }
+    },
+    selectTemplate (template) {
+      this.loadTemplateData(template)
+      this.selectedTemplate = template
+      this.currentStep = 2
+    },
+    filterTemplates (templates, filter) {
+      return templates.filter(function (t) {
+        if (filter.trim() === '') {
+          return true
+        } else {
+          return t.display.toLowerCase().indexOf(filter.trim().toLowerCase()) > -1
+        }
+      })
     },
     markdown
   }
