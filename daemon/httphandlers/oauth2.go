@@ -22,12 +22,11 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"net/http"
 	"strings"
 )
 
-func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFunc {
+func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		failure := true
 		defer func() {
@@ -68,7 +67,7 @@ func OAuth2Handler(requiredScope scope.Scope, requireServer bool) gin.HandlerFun
 		}
 
 		serverId := c.Param("id")
-		scopes := make([]scope.Scope, 0)
+		scopes := make([]pufferpanel.Scope, 0)
 		if token.Claims.PanelClaims.Scopes[serverId] != nil {
 			scopes = append(scopes, token.Claims.PanelClaims.Scopes[serverId]...)
 		}

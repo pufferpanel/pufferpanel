@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/scope"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"reflect"
 )
 
@@ -27,6 +27,7 @@ type Permissions struct {
 	EditNodes       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	DeployNodes     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	ViewTemplates   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditTemplates   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
@@ -55,109 +56,113 @@ func (p *Permissions) BeforeSave() {
 	}
 }
 
-func (p *Permissions) ToScopes() []scope.Scope {
-	scopes := make([]scope.Scope, 0)
+func (p *Permissions) ToScopes() []pufferpanel.Scope {
+	scopes := make([]pufferpanel.Scope, 0)
 
 	if p.Admin {
-		scopes = append(scopes, scope.ServersAdmin)
+		scopes = append(scopes, pufferpanel.ScopeServersAdmin)
 
 		if p.ServerIdentifier == nil {
-			scopes = append(scopes, scope.ServersCreate, scope.NodesView, scope.NodesDeploy, scope.NodesEdit, scope.TemplatesView, scope.UsersView, scope.UsersEdit)
+			scopes = append(scopes, pufferpanel.ScopeServersCreate, pufferpanel.ScopeNodesView, pufferpanel.ScopeNodesDeploy, pufferpanel.ScopeNodesEdit, pufferpanel.ScopeTemplatesView, pufferpanel.ScopeUsersView, pufferpanel.ScopeUsersEdit)
 		} else {
-			scopes = append(scopes, scope.ServersDelete, scope.ServersEditAdmin)
+			scopes = append(scopes, pufferpanel.ScopeServersDelete, pufferpanel.ScopeServersEditAdmin)
 		}
 	} else {
 		if p.ServerIdentifier == nil {
 			if p.CreateServer {
-				scopes = append(scopes, scope.ServersCreate)
+				scopes = append(scopes, pufferpanel.ScopeServersCreate)
 			}
 
 			if p.ViewNodes {
-				scopes = append(scopes, scope.NodesView)
+				scopes = append(scopes, pufferpanel.ScopeNodesView)
 			}
 
 			if p.EditNodes {
-				scopes = append(scopes, scope.NodesEdit)
+				scopes = append(scopes, pufferpanel.ScopeNodesEdit)
 			}
 
 			if p.ViewTemplates {
-				scopes = append(scopes, scope.TemplatesView)
+				scopes = append(scopes, pufferpanel.ScopeTemplatesView)
+			}
+
+			if p.EditTemplates {
+				scopes = append(scopes, pufferpanel.ScopeTemplatesEdit)
 			}
 
 			if p.EditUsers {
-				scopes = append(scopes, scope.UsersEdit)
+				scopes = append(scopes, pufferpanel.ScopeUsersEdit)
 			}
 
 			if p.ViewUsers {
-				scopes = append(scopes, scope.UsersView)
+				scopes = append(scopes, pufferpanel.ScopeUsersView)
 			}
 
 			if p.DeployNodes {
-				scopes = append(scopes, scope.NodesDeploy)
+				scopes = append(scopes, pufferpanel.ScopeNodesDeploy)
 			}
 		} else {
 			if p.DeleteServer {
-				scopes = append(scopes, scope.ServersDelete)
+				scopes = append(scopes, pufferpanel.ScopeServersDelete)
 			}
 
 			if p.EditServerAdmin {
-				scopes = append(scopes, scope.ServersEditAdmin)
+				scopes = append(scopes, pufferpanel.ScopeServersEditAdmin)
 			}
 		}
 	}
 
 	if p.ViewServer {
-		scopes = append(scopes, scope.ServersView)
+		scopes = append(scopes, pufferpanel.ScopeServersView)
 	}
 
 	//these only apply if there is a server involved
 	if p.ServerIdentifier != nil {
 		if p.EditServerData {
-			scopes = append(scopes, scope.ServersEdit)
+			scopes = append(scopes, pufferpanel.ScopeServersEdit)
 		}
 
 		if p.EditServerUsers {
-			scopes = append(scopes, scope.ServersEditUsers)
+			scopes = append(scopes, pufferpanel.ScopeServersEditUsers)
 		}
 
 		if p.InstallServer {
-			scopes = append(scopes, scope.ServersInstall)
+			scopes = append(scopes, pufferpanel.ScopeServersInstall)
 		}
 
 		if p.UpdateServer {
-			scopes = append(scopes, scope.ServersUpdate)
+			scopes = append(scopes, pufferpanel.ScopeServersUpdate)
 		}
 
 		if p.ViewServerConsole {
-			scopes = append(scopes, scope.ServersConsole)
+			scopes = append(scopes, pufferpanel.ScopeServersConsole)
 		}
 
 		if p.SendServerConsole {
-			scopes = append(scopes, scope.ServersConsoleSend)
+			scopes = append(scopes, pufferpanel.ScopeServersConsoleSend)
 		}
 
 		if p.StopServer {
-			scopes = append(scopes, scope.ServersStop)
+			scopes = append(scopes, pufferpanel.ScopeServersStop)
 		}
 
 		if p.StartServer {
-			scopes = append(scopes, scope.ServersStart)
+			scopes = append(scopes, pufferpanel.ScopeServersStart)
 		}
 
 		if p.ViewServerStats {
-			scopes = append(scopes, scope.ServersStat)
+			scopes = append(scopes, pufferpanel.ScopeServersStat)
 		}
 
 		if p.ViewServerFiles {
-			scopes = append(scopes, scope.ServersFilesGet)
+			scopes = append(scopes, pufferpanel.ScopeServersFilesGet)
 		}
 
 		if p.PutServerFiles {
-			scopes = append(scopes, scope.ServersFilesPut)
+			scopes = append(scopes, pufferpanel.ScopeServersFilesPut)
 		}
 
 		if p.SFTPServer {
-			scopes = append(scopes, scope.ServersSFTP)
+			scopes = append(scopes, pufferpanel.ScopeServersSFTP)
 		}
 	}
 

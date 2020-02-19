@@ -3,7 +3,6 @@ package pufferpanel
 import (
 	"crypto/ecdsa"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 )
 
 type Claim struct {
@@ -12,7 +11,7 @@ type Claim struct {
 }
 
 type PanelClaims struct {
-	Scopes map[string][]scope.Scope `json:"scopes"`
+	Scopes map[string][]Scope `json:"scopes"`
 }
 
 type Token struct {

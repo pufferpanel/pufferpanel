@@ -31,7 +31,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/daemon/socket"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
 	"io"
@@ -53,51 +52,51 @@ var wsupgrader = websocket.Upgrader{
 func RegisterRoutes(e *gin.RouterGroup) {
 	l := e.Group("/server")
 	{
-		l.PUT("/:id", httphandlers.OAuth2Handler(scope.ServersCreate, false), CreateServer)
-		l.DELETE("/:id", httphandlers.OAuth2Handler(scope.ServersDelete, true), DeleteServer)
-		l.GET("/:id", httphandlers.OAuth2Handler(scope.ServersEditAdmin, true), GetServerAdmin)
-		l.POST("/:id", httphandlers.OAuth2Handler(scope.ServersEditAdmin, true), EditServerAdmin)
+		l.PUT("/:id", httphandlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
+		l.DELETE("/:id", httphandlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), DeleteServer)
+		l.GET("/:id", httphandlers.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
+		l.POST("/:id", httphandlers.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
 		l.OPTIONS("/:id", response.CreateOptions("PUT", "DELETE", "GET", "POST"))
 
-		l.GET("/:id/data", httphandlers.OAuth2Handler(scope.ServersEdit, true), GetServer)
-		l.POST("/:id/data", httphandlers.OAuth2Handler(scope.ServersEdit, true), EditServer)
+		l.GET("/:id/data", httphandlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServer)
+		l.POST("/:id/data", httphandlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServer)
 		l.OPTIONS("/:id/data", response.CreateOptions("GET", "POST"))
 
-		l.POST("/:id/reload", httphandlers.OAuth2Handler(scope.ServersEditAdmin, true), ReloadServer)
+		l.POST("/:id/reload", httphandlers.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
 		l.OPTIONS("/:id/reload", response.CreateOptions("POST"))
 
-		l.POST("/:id/start", httphandlers.OAuth2Handler(scope.ServersStart, true), StartServer)
+		l.POST("/:id/start", httphandlers.OAuth2Handler(pufferpanel.ScopeServersStart, true), StartServer)
 		l.OPTIONS("/:id/start", response.CreateOptions("POST"))
 
-		l.POST("/:id/stop", httphandlers.OAuth2Handler(scope.ServersStop, true), StopServer)
+		l.POST("/:id/stop", httphandlers.OAuth2Handler(pufferpanel.ScopeServersStop, true), StopServer)
 		l.OPTIONS("/:id/stop", response.CreateOptions("POST"))
 
-		l.POST("/:id/kill", httphandlers.OAuth2Handler(scope.ServersStop, true), KillServer)
+		l.POST("/:id/kill", httphandlers.OAuth2Handler(pufferpanel.ScopeServersStop, true), KillServer)
 		l.OPTIONS("/:id/kill", response.CreateOptions("POST"))
 
-		l.POST("/:id/install", httphandlers.OAuth2Handler(scope.ServersInstall, true), InstallServer)
+		l.POST("/:id/install", httphandlers.OAuth2Handler(pufferpanel.ScopeServersInstall, true), InstallServer)
 		l.OPTIONS("/:id/install", response.CreateOptions("POST"))
 
-		l.GET("/:id/file/*filename", httphandlers.OAuth2Handler(scope.ServersFilesGet, true), GetFile)
-		l.PUT("/:id/file/*filename", httphandlers.OAuth2Handler(scope.ServersFilesPut, true), PutFile)
-		l.DELETE("/:id/file/*filename", httphandlers.OAuth2Handler(scope.ServersFilesPut, true), DeleteFile)
-		l.POST("/:id/file/*filename", httphandlers.OAuth2Handler(scope.ServersFilesPut, true), response.NotImplemented)
+		l.GET("/:id/file/*filename", httphandlers.OAuth2Handler(pufferpanel.ScopeServersFilesGet, true), GetFile)
+		l.PUT("/:id/file/*filename", httphandlers.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), PutFile)
+		l.DELETE("/:id/file/*filename", httphandlers.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), DeleteFile)
+		l.POST("/:id/file/*filename", httphandlers.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), response.NotImplemented)
 		l.OPTIONS("/:id/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-		l.GET("/:id/console", httphandlers.OAuth2Handler(scope.ServersConsole, true), GetLogs)
-		l.POST("/:id/console", httphandlers.OAuth2Handler(scope.ServersConsoleSend, true), PostConsole)
+		l.GET("/:id/console", httphandlers.OAuth2Handler(pufferpanel.ScopeServersConsole, true), GetLogs)
+		l.POST("/:id/console", httphandlers.OAuth2Handler(pufferpanel.ScopeServersConsoleSend, true), PostConsole)
 		l.OPTIONS("/:id/console", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:id/stats", httphandlers.OAuth2Handler(scope.ServersStat, true), GetStats)
+		l.GET("/:id/stats", httphandlers.OAuth2Handler(pufferpanel.ScopeServersStat, true), GetStats)
 		l.OPTIONS("/:id/stats", response.CreateOptions("GET"))
 
-		l.GET("/:id/status", httphandlers.OAuth2Handler(scope.ServersView, true), GetStatus)
+		l.GET("/:id/status", httphandlers.OAuth2Handler(pufferpanel.ScopeServersView, true), GetStatus)
 		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
 	}
 
 	p := e.Group("/socket")
 	{
-		p.GET("/:id", httphandlers.OAuth2Handler(scope.ServersConsole, true), cors.Middleware(cors.Config{
+		p.GET("/:id", httphandlers.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.Middleware(cors.Config{
 			Origins:     "*",
 			Credentials: true,
 		}), OpenSocket)
@@ -108,7 +107,7 @@ func RegisterRoutes(e *gin.RouterGroup) {
 		p.OPTIONS("/:id", response.CreateOptions("GET"))
 	}
 
-	l.POST("", httphandlers.OAuth2Handler(scope.ServersCreate, false), CreateServer)
+	l.POST("", httphandlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
 	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
@@ -690,7 +689,7 @@ func OpenSocket(c *gin.Context) {
 	_ = socket.Write(conn, messages.Console{Logs: console})
 
 	internalMap, _ := c.Get("scopes")
-	scopes := internalMap.([]scope.Scope)
+	scopes := internalMap.([]pufferpanel.Scope)
 
 	go listenOnSocket(conn, program, scopes)
 

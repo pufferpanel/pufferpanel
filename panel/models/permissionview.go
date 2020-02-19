@@ -25,6 +25,7 @@ type PermissionView struct {
 	EditNodes       bool `json:"editNodes,omitempty"`
 	DeployNodes     bool `json:"deployNodes,omitempty"`
 	ViewTemplates   bool `json:"viewTemplates,omitempty"`
+	EditTemplates   bool `json:"editTemplates,omitempty"`
 	EditUsers       bool `json:"editUsers,omitempty"`
 	ViewUsers       bool `json:"viewUsers,omitempty"`
 	EditServerAdmin bool `json:"editServerAdmin,omitempty"`
@@ -60,6 +61,7 @@ func FromPermission(p *Permissions) *PermissionView {
 		model.EditNodes = p.EditNodes
 		model.DeployNodes = p.DeployNodes
 		model.ViewTemplates = p.ViewTemplates
+		model.EditTemplates = p.EditTemplates
 		model.EditUsers = p.EditUsers
 		model.ViewUsers = p.ViewUsers
 		model.EditServerAdmin = p.EditServerAdmin
@@ -93,6 +95,7 @@ func (p *PermissionView) CopyTo(model *Permissions, copyAdminFlags bool) {
 		model.EditNodes = p.EditNodes
 		model.DeployNodes = p.DeployNodes
 		model.ViewTemplates = p.ViewTemplates
+		model.EditTemplates = p.EditTemplates
 		model.EditUsers = p.EditUsers
 		model.ViewUsers = p.ViewUsers
 		model.EditServerAdmin = p.EditServerAdmin

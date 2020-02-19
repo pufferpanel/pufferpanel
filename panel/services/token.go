@@ -12,7 +12,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/spf13/viper"
 	"io"
 	"os"
@@ -59,7 +58,7 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 			IssuedAt:  time.Now().Unix(),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
-			Scopes: map[string][]scope.Scope{
+			Scopes: map[string][]pufferpanel.Scope{
 				client.ServerId: client.Scopes,
 			},
 		},
@@ -76,8 +75,8 @@ func GenerateOAuthForNode(nodeId uint) (string, error) {
 			IssuedAt:  time.Now().Unix(),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
-			Scopes: map[string][]scope.Scope{
-				"": {scope.OAuth2Auth},
+			Scopes: map[string][]pufferpanel.Scope{
+				"": {pufferpanel.ScopeOAuth2Auth},
 			},
 		},
 	}
@@ -118,12 +117,12 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 			IssuedAt:  time.Now().Unix(),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
-			Scopes: map[string][]scope.Scope{},
+			Scopes: map[string][]pufferpanel.Scope{},
 		},
 	}
 
 	for _, perm := range permissions {
-		var existing []scope.Scope
+		var existing []pufferpanel.Scope
 		if perm.ServerIdentifier == nil {
 			existing = claims.PanelClaims.Scopes[""]
 		} else {
@@ -131,7 +130,7 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 		}
 
 		if existing == nil {
-			existing = make([]scope.Scope, 0)
+			existing = make([]pufferpanel.Scope, 0)
 		}
 
 		existing = append(existing, perm.ToScopes()...)

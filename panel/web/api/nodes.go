@@ -21,7 +21,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -31,19 +30,19 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(scope.NodesView, false), getAllNodes)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getAllNodes)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
-	g.Handle("POST", "", handlers.OAuth2Handler(scope.NodesEdit, false), createNode)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), createNode)
 
-	g.Handle("GET", "/:id", handlers.OAuth2Handler(scope.NodesView, false), getNode)
-	g.Handle("PUT", "/:id", handlers.OAuth2Handler(scope.NodesEdit, false), updateNode)
-	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.NodesEdit, false), deleteNode)
+	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getNode)
+	g.Handle("PUT", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), updateNode)
+	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(scope.NodesDeploy, false), deployNode)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(pufferpanel.ScopeNodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 
-	//g.Handle("POST", "/:id/reset", handlers.OAuth2(scope.NodesDeploy, false), response.NotImplemented)
+	//g.Handle("POST", "/:id/reset", handlers.OAuth2(pufferpanel.ScopeNodesDeploy, false), response.NotImplemented)
 	//g.Handle("OPTIONS", "/:id/reset", response.CreateOptions("POST"))
 }
 

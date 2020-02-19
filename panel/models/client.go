@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
 	"strings"
@@ -19,7 +18,7 @@ type Client struct {
 	ServerId string `gorm:"NOT NULL"`
 	Server   *Server
 
-	Scopes    []scope.Scope `gorm:"-"`
+	Scopes    []pufferpanel.Scope `gorm:"-"`
 	RawScopes string        `gorm:"column:scopes;NOT NULL;size:4000"`
 }
 
@@ -64,10 +63,10 @@ func (c *Client) BeforeSave() (err error) {
 
 func (c *Client) AfterFind() (err error) {
 	split := strings.Split(c.RawScopes, " ")
-	c.Scopes = make([]scope.Scope, len(split))
+	c.Scopes = make([]pufferpanel.Scope, len(split))
 
 	for i, v := range split {
-		c.Scopes[i] = scope.Scope(v)
+		c.Scopes[i] = pufferpanel.Scope(v)
 	}
 
 	return

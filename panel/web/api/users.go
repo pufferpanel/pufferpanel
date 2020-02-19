@@ -21,23 +21,22 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/response"
-	"github.com/pufferpanel/pufferpanel/v2/scope"
 	"github.com/spf13/cast"
 	"net/http"
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(scope.UsersView, false), searchUsers)
-	g.Handle("POST", "", handlers.OAuth2Handler(scope.UsersEdit, false), createUser)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), searchUsers)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), createUser)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("GET", "/:id", handlers.OAuth2Handler(scope.UsersView, false), getUser)
-	g.Handle("POST", "/:id", handlers.OAuth2Handler(scope.UsersEdit, false), updateUser)
-	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(scope.UsersEdit, false), deleteUser)
+	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), getUser)
+	g.Handle("POST", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), updateUser)
+	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), deleteUser)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(scope.UsersView, false), getUserPerms)
-	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(scope.UsersEdit, false), setUserPerms)
+	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), getUserPerms)
+	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), setUserPerms)
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
