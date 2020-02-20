@@ -82,6 +82,19 @@
             <v-list-item-title v-text="$t('users.Users')" />
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item
+          v-if="hasScope('templates.view') || isAdmin()"
+          :to="{name: 'Templates'}"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-file-code</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="$t('templates.Templates')" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <template v-slot:append>
         <v-list>

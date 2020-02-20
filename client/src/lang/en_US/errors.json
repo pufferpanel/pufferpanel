@@ -33,5 +33,6 @@
   "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Passwords are not the same",
 
-  "ErrSessionTimedOut": "Your session timed out, please log in again"
+  "ErrSessionTimedOut": "Your session timed out, please log in again",
+  "ErrInvalidJson": "The json data is invalid"
 }
