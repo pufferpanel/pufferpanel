@@ -18,7 +18,7 @@ function route (path, view, name, meta) {
   return {
     name: name || view,
     path,
-    component: resolve => import(`@/views/${view}.vue`).then(resolve),
+    component: resolve => import('@/views/' + view + '.vue').then(resolve),
     meta: meta
   }
 }
