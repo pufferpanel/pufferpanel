@@ -4,8 +4,8 @@
   "scripts": {
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint",
-    "dev-build": "vue-cli-service build --modern --mode development",
-    "dev-watch": "vue-cli-service build --modern --mode development --watch"
+    "dev-build": "vue-cli-service build --mode development",
+    "dev-watch": "vue-cli-service build --mode development --watch"
   },
   "dependencies": {
     "@mdi/font": "^4.9.95",

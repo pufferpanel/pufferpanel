@@ -1,10 +1,11 @@
 import Vue from 'vue'
 
 Vue.component('Ace', {
-  props: ['editorId', 'value', 'lang', 'theme', 'file'],
+  props: ['editorId', 'value', 'lang', 'theme', 'file', 'height'],
   data () {
     return {
-      editor: Object
+      editor: Object,
+      ready: false
     }
   },
   mounted () {
@@ -41,9 +42,16 @@ Vue.component('Ace', {
       this.editor.on('change', () => {
         this.$emit('input', this.editor.getValue())
       })
+
+      this.ready = true
+      this.$emit('editorready', true)
+    },
+    setValue: function (newValue) {
+      this.editor.getSession().setValue(newValue, 1)
     }
   },
   render: function (createElement, context) {
-    return createElement('div', { attrs: { id: this.editorId }, style: 'width:100%;height:100%;' }, [])
+    const height = this.height ? this.height : '100%'
+    return createElement('div', { attrs: { id: this.editorId }, style: `width:100%;height:${height};` }, [])
   }
 })

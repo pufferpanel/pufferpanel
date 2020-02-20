@@ -80,7 +80,7 @@ func handle404(c *gin.Context) {
 	}
 
 	if strings.HasSuffix(c.Request.URL.Path, ".js") {
-		c.Writer.Header().Set("Content-Type", "application/js")
+		c.Writer.Header().Set("Content-Type", "application/javascript")
 		c.File(ClientPath + c.Request.URL.Path)
 		return
 	}

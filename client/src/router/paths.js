@@ -36,6 +36,21 @@ export default [
     name: 'Users'
   },
   {
+    path: '/template/:id',
+    view: 'Template',
+    name: 'Template'
+  },
+  {
+    path: '/addtemplate',
+    view: 'Template',
+    name: 'AddTemplate'
+  },
+  {
+    path: '/template',
+    view: 'Templates',
+    name: 'Templates'
+  },
+  {
     path: '/node',
     view: 'Nodes',
     name: 'Nodes'
