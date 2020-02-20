@@ -22,6 +22,8 @@
   "SelectEnvironment": "Please select environment",
   "TypeUsername": "Type a username",
   "AdminControls": "Admin Controls",
+  "Settings": "Settings",
+  "NoEditableVars": "This server does not have variables you can edit",
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
   "Delete": "Delete Server",
   "Deleted": "Deleted Server",
