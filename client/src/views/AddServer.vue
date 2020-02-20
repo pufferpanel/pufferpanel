@@ -230,9 +230,9 @@
                     <template slot="message"><div v-html="item.desc" /></template>
                   </v-switch>
                   <v-select
-                    v-else-if="item.type === 'options'"
+                    v-else-if="item.type === 'option'"
                     v-model="item.value"
-                    :items="JSON.parse('[' + item.options.join(',') + ']')"
+                    :items="item.options.map(function (option) { return { value: option.value, text: option.display }})"
                     :hint="item.desc"
                     persistent-hint
                     :label="item.display"
