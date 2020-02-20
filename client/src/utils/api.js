@@ -12,6 +12,7 @@
  */
 
 export const handleError = (ctx, overrides = {}) => error => {
+  // eslint-disable-next-line no-console
   console.log('ERROR', error)
   let msg = 'errors.ErrUnknownError'
   if (error && error.response && error.response.data.error) {
