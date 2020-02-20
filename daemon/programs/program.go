@@ -36,8 +36,8 @@ import (
 type Program struct {
 	pufferpanel.Server
 
-	CrashCounter int
-	Environment  envs.Environment
+	CrashCounter int              `json:"-"`
+	Environment  envs.Environment `json:"-"`
 }
 
 var queue *list.List
