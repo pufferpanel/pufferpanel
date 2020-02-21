@@ -13,10 +13,10 @@ Vue.component('Ace', {
       const ctx = this
       const ace = document.createElement('script')
       ace.src = '/ace/ace.js'
-      ace.onload = function () {
+      ace.onload = () => {
         const modelist = document.createElement('script')
         modelist.src = '/ace/ext-modelist.js'
-        modelist.onload = function () {
+        modelist.onload = () => {
           ctx.initialize()
         }
         document.head.appendChild(modelist)
@@ -27,7 +27,7 @@ Vue.component('Ace', {
     }
   },
   methods: {
-    initialize: function () {
+    initialize () {
       const modelist = window.ace.require('ace/ext/modelist')
       const mode = this.lang || (this.file ? modelist.getModeForPath(this.file).mode : 'text')
       const theme = this.theme || 'monokai'
@@ -46,11 +46,11 @@ Vue.component('Ace', {
       this.ready = true
       this.$emit('editorready', true)
     },
-    setValue: function (newValue) {
+    setValue (newValue) {
       this.editor.getSession().setValue(newValue, 1)
     }
   },
-  render: function (createElement, context) {
+  render (createElement, context) {
     const height = this.height ? this.height : '100%'
     return createElement('div', { attrs: { id: this.editorId }, style: `width:100%;height:${height};` }, [])
   }

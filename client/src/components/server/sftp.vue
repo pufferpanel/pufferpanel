@@ -31,7 +31,7 @@
             ref="host"
             :value="host"
             readonly
-	    class="copyContent"
+            class="copyContent"
           >
           <v-btn
             icon
@@ -45,7 +45,7 @@
             class="mx-2"
             v-text="$t('common.Copied')"
           />
-	  {{ host }}
+          {{ host }}
         </v-col>
       </v-row>
       <v-divider />
@@ -65,7 +65,7 @@
             ref="username"
             :value="username"
             readonly
-	    class="copyContent"
+            class="copyContent"
           >
           <v-btn
             icon
@@ -79,7 +79,7 @@
             class="mx-2"
             v-text="$t('common.Copied')"
           />
-	  {{ username }}
+          {{ username }}
         </v-col>
       </v-row>
       <v-divider />
@@ -112,9 +112,11 @@
 </style>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   prop: {
-    server: { type: Object, default: function () { return {} } }
+    server: { type: Object, default: () => {} }
   },
   data () {
     return {
@@ -126,31 +128,31 @@ export default {
   },
   mounted () {
     this.host = this.$attrs.server.node.publicHost + ':' + this.$attrs.server.node.sftpPort
-    const vue = this
-    this.$http.get('/api/self').then(function (data) {
+    const ctx = this
+    this.$http.get('/api/self').then(data => {
       const user = data.data
-      vue.username = user.email + '|' + vue.$attrs.server.id
-    })
+      ctx.username = user.email + '|' + ctx.$attrs.server.id
+    }).catch(handleError(ctx))
   },
   methods: {
     copyHost () {
-      const vue = this
-      vue.$refs.host.select()
+      const ctx = this
+      ctx.$refs.host.select()
       document.execCommand('copy')
-      vue.copiedUsername = false
-      vue.copiedHost = true
-      setTimeout(function () {
-        vue.copiedHost = false
+      ctx.copiedUsername = false
+      ctx.copiedHost = true
+      setTimeout(() => {
+        ctx.copiedHost = false
       }, 6000)
     },
     copyUsername () {
-      const vue = this
-      vue.$refs.username.select()
+      const ctx = this
+      ctx.$refs.username.select()
       document.execCommand('copy')
-      vue.copiedHost = false
-      vue.copiedUsername = true
-      setTimeout(function () {
-        vue.copiedUsername = false
+      ctx.copiedHost = false
+      ctx.copiedUsername = true
+      setTimeout(() => {
+        ctx.copiedUsername = false
       }, 6000)
     }
   }

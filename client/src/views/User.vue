@@ -89,6 +89,8 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   data () {
     return {
@@ -102,50 +104,32 @@ export default {
   methods: {
     loadData () {
       const ctx = this
-      ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(function (response) {
+      ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
         ctx.user = { ...response.data }
         ctx.loading = false
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     },
     updateUser () {
       const ctx = this
-      ctx.$http.post(`/api/users/${ctx.$route.params.id}`, ctx.user).then(function (response) {
-        ctx.$http.put(`/api/users/${ctx.$route.params.id}/perms`, ctx.user).then(function (response) {
+      ctx.$http.post(`/api/users/${ctx.$route.params.id}`, ctx.user).then(response => {
+        ctx.$http.put(`/api/users/${ctx.$route.params.id}/perms`, ctx.user).then(response => {
           ctx.$toast.success(ctx.$t('users.UpdateSuccess'))
-        }).catch(function () {
+        }).catch(error => {
+          // eslint-disable-next-line no-console
+          console.log(error)
           ctx.$toast.error(ctx.$t('users.PermsUpdateError'))
         })
-      }).catch(function () {
+      }).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error)
         ctx.$toast.error(ctx.$t('users.UpdateError'))
       })
     },
     deleteUser () {
       const ctx = this
-      ctx.$http.delete(`/api/users/${ctx.$route.params.id}`).then(function (response) {
+      ctx.$http.delete(`/api/users/${ctx.$route.params.id}`).then(response => {
         ctx.$router.push({ name: 'Users' })
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     }
   }
 }

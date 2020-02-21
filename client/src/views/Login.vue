@@ -63,6 +63,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import { handleError } from '@/utils/api'
 import { hasAuth } from '@/utils/auth'
 
 function getReauthReason () {
@@ -87,7 +88,7 @@ export default {
     }
   },
   computed: {
-    canSubmit: function () {
+    canSubmit () {
       return !(this.loginDisabled || this.email === '' || this.password === '')
     }
   },
@@ -100,18 +101,18 @@ export default {
     submit () {
       this.$toast.clearQueue()
       if (this.$toast.getCmp()) this.$toast.getCmp().close()
-      const data = this
-      data.errors.form = ''
-      data.errors.email = ''
-      data.errors.password = ''
+      const ctx = this
+      ctx.errors.form = ''
+      ctx.errors.email = ''
+      ctx.errors.password = ''
 
-      if (!data.email) {
-        data.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
+      if (!ctx.email) {
+        ctx.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
         return
       }
 
-      if (!data.password) {
-        data.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
+      if (!ctx.password) {
+        ctx.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
         return
       }
 
@@ -120,28 +121,13 @@ export default {
       this.axios.post(this.$route.path, {
         email: this.email,
         password: this.password
-      }).then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          Cookies.set('puffer_auth', response.data.session)
-          localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
-          data.$emit('logged-in')
-          data.$router.push({ name: 'Servers' })
-        } else {
-          data.$toast.error(response.data.msg)
-        }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        data.$toast.error(data.$t(msg))
-      }).finally(function () {
-        data.loginDisabled = false
+      }).then(response => {
+        Cookies.set('puffer_auth', response.data.session)
+        localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
+        ctx.$emit('logged-in')
+        ctx.$router.push({ name: 'Servers' })
+      }).catch(handleError(ctx)).finally(() => {
+        ctx.loginDisabled = false
       })
     }
   }

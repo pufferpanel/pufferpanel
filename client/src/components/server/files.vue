@@ -137,7 +137,7 @@
               v-model="fileContents"
               editor-id="fileEditor"
               :theme="isDark() ? 'monokai' : 'github'"
-	      :file="currentFile"
+              :file="currentFile"
             />
           </v-card-text>
           <v-card-actions class="px-4 pb-4">
@@ -180,11 +180,12 @@
 
 <script>
 import filesize from 'filesize'
+import { handleError } from '@/utils/api'
 import { isDark } from '@/utils/dark'
 
 export default {
   props: {
-    server: { type: Object, default: function () { return {} } }
+    server: { type: Object, default: () => {} }
   },
   data () {
     return {
@@ -228,12 +229,12 @@ export default {
     }
   },
   mounted () {
-    const vue = this
-    this.$socket.addEventListener('open', function (event) {
-      vue.fetchItems(vue.currentPath)
+    const ctx = this
+    this.$socket.addEventListener('open', event => {
+      ctx.fetchItems(ctx.currentPath)
     })
 
-    this.$socket.addEventListener('message', function (event) {
+    this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
       if (data === 'undefined') {
         return
@@ -241,20 +242,20 @@ export default {
       if (data.type === 'file') {
         if (data.data) {
           if (data.data.error) {
-            vue.isLoading = false
+            ctx.isLoading = false
             return
           }
 
-          vue.files = (data.data.files || []).sort(function (a, b) {
+          ctx.files = (data.data.files || []).sort((a, b) => {
             if (!a.size && !b.size) return 0
             if (a.size && b.size) return 0
             if (a.size && !b.size) return 1
             return -1
           })
           if (data.data.path !== '') {
-            vue.currentPath = data.data.path
+            ctx.currentPath = data.data.path
           }
-          vue.loading = false
+          ctx.loading = false
         }
       }
     })
@@ -295,13 +296,11 @@ export default {
           path += '/' + item.name
         }
         const ctx = this
-        this.$http.get(`/daemon/server/${this.server.id}/file/${path}`).then(function (response) {
+        this.$http.get(`/daemon/server/${this.server.id}/file/${path}`).then(response => {
           ctx.currentFile = item.name
           ctx.fileContents = response.data
           ctx.editOpen = true
-        }).catch(function () {
-          ctx.$toast.error(ctx.$t('files.FileLoadFailed'))
-        })
+        }).catch(handleError(ctx))
       }
     },
     cancelEdit () {
@@ -320,14 +319,12 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       const ctx = this
-      this.$http.put(`/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(function (response) {
+      this.$http.put(`/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
         ctx.editOpen = false
         ctx.currentFile = ''
         ctx.fileContents = ''
         ctx.$toast.success(ctx.$t('common.Saved'))
-      }).catch(function () {
-        ctx.$toast.error(ctx.$t('common.SaveFailed'))
-      })
+      }).catch(handleError(ctx))
     },
     deleteRequest (item) {
       this.toDelete = item
@@ -386,15 +383,15 @@ export default {
       this.uploading = true
       this.uploadNextItem(this)
     },
-    uploadNextItem (vue) {
-      this.uploadSingleFile(vue.uploadFiles[0]).then(function () {
-        vue.uploadFiles.shift()
-        if (vue.uploadFiles.length === 0) {
-          vue.uploading = false
-          vue.fetchItems(vue.currentPath)
+    uploadNextItem (ctx) {
+      this.uploadSingleFile(ctx.uploadFiles[0]).then(() => {
+        ctx.uploadFiles.shift()
+        if (ctx.uploadFiles.length === 0) {
+          ctx.uploading = false
+          ctx.fetchItems(ctx.currentPath)
           return
         }
-        vue.uploadNextItem(vue)
+        ctx.uploadNextItem(ctx)
       })
     },
     uploadSingleFile (item) {
@@ -407,14 +404,14 @@ export default {
       this.uploadCurrent = 0
       this.uploadSize = item.size
 
-      const vue = this
+      const ctx = this
       return this.$http({
         method: 'put',
         url: '/daemon/server/' + this.server.id + '/file' + path,
         data: item,
-        onUploadProgress: function (event) {
-          vue.uploadCurrent = event.loaded
-          vue.uploadSize = event.total
+        onUploadProgress: event => {
+          ctx.uploadCurrent = event.loaded
+          ctx.uploadSize = event.total
         }
       })
     },

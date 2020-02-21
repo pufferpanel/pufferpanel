@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   data () {
     return {
@@ -29,7 +31,7 @@ export default {
   mounted () {
     this.server = this.loadServer()
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     this.$disconnect()
     if (this.statRequest) {
       clearInterval(this.statRequest)
@@ -37,25 +39,14 @@ export default {
   },
   methods: {
     loadServer () {
-      const vue = this
-      this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(function (response) {
-        vue.server = response.data.server
-        vue.server.permissions = response.data.permissions
-        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/socket/${vue.server.id}`
-        vue.$connect(url)
-        vue.statRequest = setInterval(vue.callStats, 3000)
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-      })
+      const ctx = this
+      this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(response => {
+        ctx.server = response.data.server
+        ctx.server.permissions = response.data.permissions
+        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/socket/${ctx.server.id}`
+        ctx.$connect(url)
+        ctx.statRequest = setInterval(ctx.callStats, 3000)
+      }).catch(handleError(ctx))
     },
     callStats () {
       this.$socket.sendObj({ type: 'stat' })

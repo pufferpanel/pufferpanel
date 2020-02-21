@@ -77,7 +77,7 @@ export default {
     loadData () {
       this.loading = true
       const ctx = this
-      ctx.$http.get(`/api/templates/${ctx.$route.params.id}`).then(function (response) {
+      ctx.$http.get(`/api/templates/${ctx.$route.params.id}`).then(response => {
         const data = response.data
         data.readme = undefined
         ctx.template = JSON.stringify(data, undefined, 4)
@@ -87,7 +87,7 @@ export default {
     },
     save () {
       const ctx = this
-      ctx.$http.put(`/api/templates/${ctx.name}`, ctx.template).then(function (response) {
+      ctx.$http.put(`/api/templates/${ctx.name}`, ctx.template).then(response => {
         ctx.$toast.success(ctx.$t('templates.SaveSuccess'))
         if (ctx.create) ctx.$router.push({ name: 'Template', params: { id: ctx.name } })
       }).catch(handleError(ctx, { 400: 'errors.ErrInvalidJson' }))
