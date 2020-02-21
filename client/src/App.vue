@@ -7,7 +7,7 @@
       color="primary"
     >
       <v-app-bar-nav-icon
-        v-if="loggedIn && $vuetify.breakpoint.smAndDown"
+        v-if="loggedIn && $vuetify.breakpoint.mdAndDown"
         @click="drawer = !drawer"
       />
       <v-toolbar-title class="headline">
