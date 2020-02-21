@@ -67,7 +67,7 @@
 <script>
 export default {
   props: {
-    server: { type: Object, default: function () { return {} } }
+    server: { type: Object, default: () => {} }
   }
 }
 </script>

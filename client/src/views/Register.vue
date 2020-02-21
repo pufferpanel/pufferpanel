@@ -89,6 +89,7 @@
 <script>
 import Cookies from 'js-cookie'
 import validate from '@/utils/validate'
+import { handleError } from '@/utils/api'
 import { hasAuth } from '@/utils/auth'
 
 export default {
@@ -109,7 +110,7 @@ export default {
     }
   },
   computed: {
-    canComplete: function () {
+    canComplete () {
       if (this.registerDisabled) {
         return false
       }
@@ -122,16 +123,16 @@ export default {
 
       return !(!this.validPassword || !this.samePassword)
     },
-    validPassword: function () {
+    validPassword () {
       return validate.validPassword(this.password)
     },
-    samePassword: function () {
+    samePassword () {
       return validate.samePassword(this.password, this.confirmPassword)
     },
-    validUsername: function () {
+    validUsername () {
       return validate.validUsername(this.username)
     },
-    validEmail: function () {
+    validEmail () {
       return validate.validEmail(this.email)
     }
   },
@@ -140,7 +141,7 @@ export default {
   },
   methods: {
     // real methods
-    submit: function () {
+    submit () {
       this.$toast.clearQueue()
       if (this.$toast.getCmp()) this.$toast.getCmp().close()
       this.errors.username = ''
@@ -163,40 +164,25 @@ export default {
       }
       this.registerDisabled = true
 
-      const vue = this
+      const ctx = this
 
       this.axios.post(this.$route.path, {
         email: this.email,
         password: this.password,
         username: this.username
-      }).then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          if (response.data.token && response.data.token !== '') {
-            Cookies.set('puffer_auth', response.data.token)
-            localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
-            vue.$emit('logged-in')
-            vue.$router.push({ name: 'Servers' })
-          } else {
-            this.$toast.success(this.$t('users.RegisterSuccess'))
-            vue.$router.push({ name: 'Login' })
-          }
+      }).then(response => {
+        if (response.data.token && response.data.token !== '') {
+          Cookies.set('puffer_auth', response.data.token)
+          localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
+          ctx.$emit('logged-in')
+          ctx.$router.push({ name: 'Servers' })
         } else {
-          vue.$toast.error(response.data.msg)
-          vue.registerDisabled = false
+          this.$toast.success(this.$t('users.RegisterSuccess'))
+          ctx.$router.push({ name: 'Login' })
         }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-        vue.registerDisabled = false
       })
+        .catch(handleError(ctx))
+        .finally(() => { ctx.registerDisabled = false })
     }
   }
 }

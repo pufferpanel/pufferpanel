@@ -99,6 +99,7 @@
 
 <script>
 import validate from '@/utils/validate'
+import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -112,29 +113,29 @@ export default {
     }
   },
   computed: {
-    validPassword: function () {
+    validPassword () {
       return validate.validPassword(this.newPassword)
     },
-    validUsername: function () {
+    validUsername () {
       return validate.validUsername(this.username)
     },
-    validEmail: function () {
+    validEmail () {
       return validate.validEmail(this.email)
     },
-    canSubmitInfoChange: function () {
+    canSubmitInfoChange () {
       return this.validUsername && this.validEmail && this.confirmPassword
     },
-    canSubmitPassChange: function () {
+    canSubmitPassChange () {
       return this.oldPassword && this.validPassword && this.newPassword === this.confirmNewPassword
     }
   },
   mounted () {
     const ctx = this
-    this.$http.get('/api/self').then(function (data) {
+    this.$http.get('/api/self').then(data => {
       const user = data.data
       ctx.username = user.username
       ctx.email = user.email
-    })
+    }).catch(handleError(ctx))
   },
   methods: {
     submitInfoChange () {
@@ -143,60 +144,18 @@ export default {
         username: this.username,
         email: this.email,
         password: this.confirmPassword
-      }).then(function (result) {
-        if (result.status >= 200 && result.status < 300) {
-          ctx.$toast.success(ctx.$t('users.InfoChanged'))
-        } else {
-          let msg = 'errors.ErrUnknownError'
-          if (result.data.error.code) {
-            msg = 'errors.' + result.data.error.code
-          } else {
-            msg = result.data.error.msg
-          }
-          ctx.$toast.error(ctx.$t(msg))
-        }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).then(result => {
+        ctx.$toast.success(ctx.$t('users.InfoChanged'))
+      }).catch(handleError(ctx))
     },
     submitPassChange () {
       const ctx = this
       this.$http.put('/api/self', {
         password: this.oldPassword,
         newPassword: this.newPassword
-      }).then(function (result) {
-        if (result.status >= 200 && result.status < 300) {
-          ctx.$toast.success(ctx.$t('users.PasswordChanged'))
-        } else {
-          let msg = 'errors.ErrUnknownError'
-          if (result.data.error.code) {
-            msg = 'errors.' + result.data.error.code
-          } else {
-            msg = result.data.error.msg
-          }
-          ctx.$toast.error(ctx.$t(msg))
-        }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).then(result => {
+        ctx.$toast.success(ctx.$t('users.PasswordChanged'))
+      }).catch(handleError(ctx))
     }
   }
 }

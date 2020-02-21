@@ -14,14 +14,6 @@
 import Vue from 'vue'
 import { hasAuth, isAdmin, hasScope } from '@/utils/auth'
 
-Vue.prototype.hasAuth = function () {
-  return hasAuth()
-}
-
-Vue.prototype.isAdmin = function () {
-  return isAdmin()
-}
-
-Vue.prototype.hasScope = function (scope) {
-  return hasScope(scope)
-}
+Vue.prototype.hasAuth = () => hasAuth()
+Vue.prototype.isAdmin = () => isAdmin()
+Vue.prototype.hasScope = scope => hasScope(scope)

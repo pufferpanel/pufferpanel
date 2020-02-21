@@ -285,6 +285,7 @@
 
 <script>
 import axios from 'axios'
+import { handleError } from '@/utils/api'
 import markdown from '@/utils/markdown'
 
 const CancelToken = axios.CancelToken
@@ -319,7 +320,7 @@ export default {
     }
   },
   computed: {
-    canCreate: function () {
+    canCreate () {
       if (this.loadingTemplates || this.loadingNodes) {
         return false
       }
@@ -350,7 +351,7 @@ export default {
     }
   },
   watch: {
-    selectedTemplate: function (newVal) {
+    selectedTemplate (newVal) {
       if (!newVal || newVal === '') {
         return
       }
@@ -389,7 +390,7 @@ export default {
         }
       }
     },
-    userInput: function (newVal) {
+    userInput (newVal) {
       if (!newVal || newVal === '') {
         this.users = []
       } else {
@@ -411,7 +412,7 @@ export default {
   },
   methods: {
     getTemplates () {
-      const vue = this
+      const ctx = this
       this.loadingTemplates = true
       this.templates = [{
         value: null,
@@ -420,91 +421,52 @@ export default {
       }]
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/api/templates').then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          vue.templates = response.data
-          vue.loadingTemplates = false
-        }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-      })
+      this.$http.get('/api/templates').then(response => {
+        ctx.templates = response.data
+        ctx.loadingTemplates = false
+      }).catch(handleError(ctx))
     },
     getNodes () {
-      const vue = this
-      this.$http.get('/api/nodes').then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          vue.nodes = []
-          for (let i = 0; i < response.data.length; i++) {
-            const node = response.data[i]
-            vue.nodes.push({
-              value: node.id,
-              text: node.name
-            })
-          }
-
-          if (vue.nodes.length === 1) {
-            vue.selectedNode = vue.nodes[0].value
-          }
-
-          vue.loadingNodes = false
-        }
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
+      const ctx = this
+      this.$http.get('/api/nodes').then(response => {
+        ctx.nodes = []
+        for (let i = 0; i < response.data.length; i++) {
+          const node = response.data[i]
+          ctx.nodes.push({
+            value: node.id,
+            text: node.name
+          })
         }
 
-        vue.$toast.error(vue.$t(msg))
-      })
+        if (ctx.nodes.length === 1) {
+          ctx.selectedNode = ctx.nodes[0].value
+        }
+
+        ctx.loadingNodes = false
+      }).catch(handleError(ctx))
     },
     findUsers () {
-      const vue = this
+      const ctx = this
       this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
       this.$http.get(`/api/users?username=${this.userInput}*`, {
         cancelToken: this.userCancelSearch.token
-      }).then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          vue.users = []
-          for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
-            const user = response.data.users[i]
-            vue.users.push({
-              value: user.username,
-              text: user.username + ' <' + user.email + '>'
-            })
-          }
+      }).then(response => {
+        ctx.users = []
+        for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
+          const user = response.data.users[i]
+          ctx.users.push({
+            value: user.username,
+            text: user.username + ' <' + user.email + '>'
+          })
         }
-        vue.searchingUsers = false
-        vue.users.sort()
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-      })
+        ctx.searchingUsers = false
+        ctx.users.sort()
+      }).catch(handleError(ctx))
     },
     submitCreate () {
-      const vue = this
+      const ctx = this
       const data = this.templateData[this.selectedTemplate]
       for (const item in data.data) {
         switch (data.data[item].type) {
@@ -523,23 +485,9 @@ export default {
         type: this.environments[this.selectedEnvironment].type,
         metadata: this.environments[this.selectedEnvironment].metadata
       }
-      this.$http.post('/api/servers', data).then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          vue.$router.push({ name: 'Server', params: { id: response.data.id } })
-        }
-      }).catch(function (error) {
-        console.log(error)
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-      })
+      this.$http.post('/api/servers', data).then(response => {
+        ctx.$router.push({ name: 'Server', params: { id: response.data.id } })
+      }).catch(handleError(ctx))
     },
     selectUser (username) {
       if (!username || username === '') {
@@ -568,25 +516,13 @@ export default {
       if (!template) return
       if (!this.templateData[template]) {
         const ctx = this
-        this.$http.get(`/api/templates/${template}`).then(function (response) {
+        this.$http.get(`/api/templates/${template}`).then(response => {
           if (response.status >= 200 && response.status < 300) {
             ctx.templateData[template] = response.data
             // recreate object to make vues refernce equality check fail and rerender neccessary components
             ctx.templateData = { ...ctx.templateData }
           }
-        }).catch(function (error) {
-          console.log(error)
-          let msg = 'errors.ErrUnknownError'
-          if (error && error.response && error.response.data.error) {
-            if (error.response.data.error.code) {
-              msg = 'errors.' + error.response.data.error.code
-            } else {
-              msg = error.response.data.error.msg
-            }
-          }
-
-          ctx.$toast.error(ctx.$t(msg))
-        })
+        }).catch(handleError(ctx))
       }
     },
     selectTemplate (template) {
@@ -595,7 +531,7 @@ export default {
       this.currentStep = 2
     },
     filterTemplates (templates, filter) {
-      return templates.filter(function (t) {
+      return templates.filter(t => {
         if (filter.trim() === '') {
           return true
         } else {

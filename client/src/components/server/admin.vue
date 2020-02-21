@@ -39,9 +39,11 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   props: {
-    server: { type: Object, default: function () { return {} } }
+    server: { type: Object, default: () => {} }
   },
   data () {
     return {
@@ -52,33 +54,11 @@ export default {
     deleteConfirmed () {
       this.loading = true
       const ctx = this
-      this.$http.delete(`/api/servers/${this.server.id}`).then(function (response) {
+      this.$http.delete(`/api/servers/${this.server.id}`).then(response => {
         ctx.$toast.success(ctx.$t('servers.Deleted'))
         ctx.$router.push({ name: 'Servers' })
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     }
   }
 }
 </script>
-
-<style scoped>
-  a {
-    color: inherit;
-  }
-
-  .input-small {
-    width: 200px;
-    display: inline-block;
-  }
-</style>

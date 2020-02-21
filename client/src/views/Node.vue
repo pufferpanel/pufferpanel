@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
 import { typeNode } from '@/utils/types'
 
 export default {
@@ -63,46 +64,22 @@ export default {
   methods: {
     loadData () {
       const ctx = this
-      ctx.$http.get(`/api/nodes/${ctx.$route.params.id}`).then(function (response) {
+      ctx.$http.get(`/api/nodes/${ctx.$route.params.id}`).then(response => {
         ctx.node = response.data
         ctx.loading = false
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     },
     updateNode () {
       const ctx = this
-      ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, typeNode(ctx.node)).then(function (response) {
+      ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, typeNode(ctx.node)).then(response => {
         ctx.$toast.success(ctx.$t('nodes.UpdateSuccess'))
-      }).catch(function () {
-        ctx.$toast.error(ctx.$t('nodes.UpdateError'))
-      })
+      }).catch(handleError(ctx))
     },
     deleteNode () {
       const ctx = this
-      ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(function (response) {
+      ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(response => {
         ctx.$router.push({ name: 'Nodes' })
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     }
   }
 }

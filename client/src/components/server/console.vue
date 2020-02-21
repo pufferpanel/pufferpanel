@@ -81,14 +81,14 @@ export default {
     }
   },
   mounted () {
-    const root = this
-    this.$socket.addEventListener('message', function (event) {
+    const ctx = this
+    this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
       if (data === 'undefined') {
         return
       }
       if (data.type === 'console') {
-        root.parseConsole(data.data)
+        ctx.parseConsole(data.data)
       }
     })
     this.refreshInterval = setInterval(this.updateConsole, 1000)
@@ -100,11 +100,11 @@ export default {
   },
   methods: {
     parseConsole (data) {
-      const vue = this
+      const ctx = this
 
       if (data.logs instanceof Array) {
-        data.logs.forEach(function (element) {
-          vue.buffer.push(element)
+        data.logs.forEach(element => {
+          ctx.buffer.push(element)
         })
       } else {
         this.buffer.push(data.logs)
@@ -113,7 +113,7 @@ export default {
     popoutConsole () {
       this.consoleReadonly = this.console
       this.consolePopup = true
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         this.$refs.popup.$el.style.height = '100%'
         this.$refs.popup.$el.children[0].style.height = '100%'
         this.$refs.popup.$el.children[0].children[0].style.height = '100%'
@@ -139,7 +139,7 @@ export default {
       this.console = newConsole
 
       const textArea = this.$el.querySelector('#console')
-      this.$nextTick(function () {
+      this.$nextTick(() => {
         textArea.scrollTop = textArea.scrollHeight
       })
     },

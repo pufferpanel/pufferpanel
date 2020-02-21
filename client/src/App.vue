@@ -180,10 +180,10 @@ export default {
   },
   methods: {
     loadConfig () {
-      const vue = this
-      this.$http.get('/api/config').then(function (response) {
-        vue.appConfig = { ...vue.appConfig, ...response.data }
-      })
+      const ctx = this
+      this.$http.get('/api/config').then(response => {
+        ctx.appConfig = { ...ctx.appConfig, ...response.data }
+      }).catch(error => console.log('config failed', error)) // eslint-disable-line no-console
     },
     toggleDark () {
       doToggleDark(this.$vuetify)
@@ -198,10 +198,10 @@ export default {
     didLogIn () {
       this.loggedIn = true
       const ctx = this
-      this.reauthTask = setInterval(function () {
-        ctx.$http.post('/auth/reauth').then(function (response) {
+      this.reauthTask = setInterval(() => {
+        ctx.$http.post('/auth/reauth').then(response => {
           response.data.session && Cookies.set('puffer_auth', response.data.session)
-        })
+        }).catch(error => console.log('reauth failed', error)) // eslint-disable-line no-console
       }, 1000 * 60 * 10)
     }
   }

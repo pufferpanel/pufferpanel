@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   data () {
     return {
@@ -114,9 +116,9 @@ export default {
   methods: {
     loadUsers () {
       const ctx = this
-      this.$http.get('/api/servers/' + this.$route.params.id + '/user').then(function (response) {
+      this.$http.get('/api/servers/' + this.$route.params.id + '/user').then(response => {
         ctx.users = response.data
-      })
+      }).catch(handleError(ctx))
     },
     addUser () {
       const newUser = {}
@@ -136,10 +138,10 @@ export default {
       for (const key of Object.keys(user)) {
         user[key] = (user[key] === 'true') ? true : (user[key] === 'false') ? false : user[key]
       }
-      this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(function (response) {
+      this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(response => {
         ctx.$toast.success(ctx.$t('common.Saved'))
         ctx.loadUsers()
-      })
+      }).catch(handleError(ctx))
     },
     toggleEdit (username) {
       if (this.editUsers.indexOf(username) > -1) {
@@ -154,9 +156,9 @@ export default {
         return
       }
       const ctx = this
-      this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + user.email).then(function (response) {
+      this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + user.email).then(response => {
         ctx.loadUsers()
-      })
+      }).catch(handleError(ctx))
     }
   }
 }

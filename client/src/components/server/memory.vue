@@ -59,9 +59,7 @@ export default {
           labels: {
             show: true,
             rotate: 0,
-            formatter: function (value) {
-              return new Date(value).toLocaleTimeString()
-            }
+            formatter: value => new Date(value).toLocaleTimeString()
           },
           tooltip: {
             enabled: false
@@ -71,7 +69,7 @@ export default {
         yaxis: {
           labels: {
             show: true,
-            formatter: function (value) {
+            formatter: value => {
               if (value < 1000) return Math.round(value) + ' B'
               if (value < 1000000) return Math.round(value / 1000) + ' KB'
               if (value < 1000000000) return Math.round(value / 1000000) + ' MB'
@@ -89,14 +87,14 @@ export default {
     }
   },
   mounted () {
-    const root = this
-    this.$socket.addEventListener('message', function (event) {
+    const ctx = this
+    this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
       if (data === 'undefined') {
         return
       }
       if (data.type === 'stat') {
-        root.updateStats(data.data)
+        ctx.updateStats(data.data)
       }
     })
   },

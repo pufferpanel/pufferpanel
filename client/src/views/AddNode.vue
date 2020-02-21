@@ -43,6 +43,7 @@
 
 <script>
 import { typeNode } from '@/utils/types'
+import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -53,20 +54,9 @@ export default {
   methods: {
     submit () {
       const ctx = this
-      ctx.$http.post('/api/nodes', typeNode(ctx.node)).then(function (response) {
+      ctx.$http.post('/api/nodes', typeNode(ctx.node)).then(response => {
         ctx.$router.push({ name: 'Nodes' })
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     }
   }
 }

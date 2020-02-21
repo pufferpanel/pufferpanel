@@ -30,13 +30,13 @@ export default {
   mounted () {
     const ctx = this
 
-    this.$socket.addEventListener('message', function (event) {
+    this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
       if (!data) return
       if (data.type === 'status') ctx.online = data.data.running
     })
 
-    setTimeout(function () {
+    setTimeout(() => {
       ctx.$socket.sendObj({ type: 'status' })
     }, 200)
   }

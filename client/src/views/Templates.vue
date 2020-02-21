@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   data () {
     return {
@@ -46,22 +48,11 @@ export default {
     loadData () {
       const ctx = this
       ctx.loading = true
-      ctx.users = []
-      ctx.$http.get('/api/templates').then(function (response) {
+      ctx.templates = []
+      ctx.$http.get('/api/templates').then(response => {
         ctx.templates = response.data
         ctx.loading = false
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        ctx.$toast.error(ctx.$t(msg))
-      })
+      }).catch(handleError(ctx))
     }
   }
 }

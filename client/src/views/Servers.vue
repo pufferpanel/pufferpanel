@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import { handleError } from '@/utils/api'
+
 export default {
   data () {
     return {
@@ -107,29 +109,29 @@ export default {
     this.loadData()
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     if (this.task != null) {
       clearInterval(this.task)
     }
   },
   methods: {
     loadData () {
-      const vue = this
-      vue.loading = true
+      const ctx = this
+      ctx.loading = true
       const { page, rowsPerPage } = this.pagination
-      vue.servers = []
+      ctx.servers = []
       this.$http.get('/api/servers', {
         params: {
           page: page,
           limit: rowsPerPage
         }
-      }).then(function (response) {
+      }).then(response => {
         for (const i in response.data.servers) {
           const server = response.data.servers[i]
 
           let serverInList = false
 
-          vue.servers.forEach(function (elem) {
+          ctx.servers.forEach(elem => {
             if (server.id === elem.id) {
               serverInList = true
             }
@@ -147,7 +149,7 @@ export default {
               ip = server.node.publicHost
             }
 
-            vue.servers.push({
+            ctx.servers.push({
               id: server.id,
               name: server.name,
               node: server.node.name,
@@ -158,28 +160,19 @@ export default {
           }
         }
         const paging = response.data.paging
-        vue.totalServers = paging.total
-        vue.pagination.pageCount = Math.ceil(paging.total / vue.pagination.rowsPerPage)
-      }).catch(function (error) {
-        let msg = 'errors.ErrUnknownError'
-        if (error && error.response && error.response.data.error) {
-          if (error.response.data.error.code) {
-            msg = 'errors.' + error.response.data.error.code
-          } else {
-            msg = error.response.data.error.msg
-          }
-        }
-
-        vue.$toast.error(vue.$t(msg))
-      }).then(function () {
-        vue.loading = false
-        vue.pollServerStatus()
+        ctx.totalServers = paging.total
+        ctx.pagination.pageCount = Math.ceil(paging.total / ctx.pagination.rowsPerPage)
       })
+        .catch(handleError(ctx))
+        .finally(() => {
+          ctx.loading = false
+          ctx.pollServerStatus()
+        })
     },
     pollServerStatus () {
       for (const i in this.servers) {
         const server = this.servers[i]
-        this.$http.get('/daemon/server/' + server.id + '/status').then(function (response) {
+        this.$http.get('/daemon/server/' + server.id + '/status').then(response => {
           if (response.data) {
             if (response.data.running) {
               server.online = true

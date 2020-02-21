@@ -59,9 +59,7 @@ export default {
           labels: {
             show: true,
             rotate: 0,
-            formatter: function (value) {
-              return new Date(value).toLocaleTimeString()
-            }
+            formatter: value => new Date(value).toLocaleTimeString()
           },
           tooltip: {
             enabled: false
@@ -71,9 +69,7 @@ export default {
         yaxis: {
           labels: {
             show: true,
-            formatter: function (value) {
-              return (Math.round(value * 100) / 100) + '%'
-            }
+            formatter: value => (Math.round(value * 100) / 100) + '%'
           },
           min: 0
         },
@@ -85,14 +81,14 @@ export default {
     }
   },
   mounted () {
-    const root = this
-    this.$socket.addEventListener('message', function (event) {
+    const ctx = this
+    this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
       if (data === 'undefined') {
         return
       }
       if (data.type === 'stat') {
-        root.updateStats(data.data)
+        ctx.updateStats(data.data)
       }
     })
   },
