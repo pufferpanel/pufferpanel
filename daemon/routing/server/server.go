@@ -24,12 +24,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/itsjamie/gin-cors"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/httphandlers"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/socket"
+	"github.com/pufferpanel/pufferpanel/v2/httphandlers"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/messages"
+	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cast"
@@ -243,7 +241,7 @@ func CreateServer(c *gin.Context) {
 	if err := programs.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
 	} else {
-		c.JSON(200, &daemon.ServerIdResponse{Id: serverId})
+		c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
 	}
 }
 
@@ -317,7 +315,7 @@ func EditServer(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
-	data := &daemon.ServerData{}
+	data := &pufferpanel.ServerData{}
 	err := json.NewDecoder(c.Request.Body).Decode(&data)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -346,7 +344,7 @@ func EditServerAdmin(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
-	data := &daemon.ServerData{}
+	data := &pufferpanel.ServerData{}
 	err := json.NewDecoder(c.Request.Body).Decode(&data)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -398,7 +396,7 @@ func GetServer(c *gin.Context) {
 
 	data := server.GetData()
 
-	c.JSON(200, &daemon.ServerData{Variables: data})
+	c.JSON(200, &pufferpanel.ServerData{Variables: data})
 }
 
 // @Summary Gets server data as admin
@@ -415,7 +413,7 @@ func GetServer(c *gin.Context) {
 func GetServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*pufferpanel.Server)
 
-	c.JSON(200, &daemon.ServerDataAdmin{Server: item})
+	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: item})
 }
 
 // @Summary Get file/list
@@ -591,7 +589,7 @@ func GetConsole(c *gin.Context) {
 	}
 
 	console, _ := program.GetEnvironment().GetConsole()
-	_ = socket.Write(conn, messages.Console{Logs: console})
+	_ = pufferpanel.Write(conn, messages.Console{Logs: console})
 
 	program.GetEnvironment().AddListener(conn)
 }
@@ -647,7 +645,7 @@ func GetLogs(c *gin.Context) {
 		msg += k
 	}
 
-	c.JSON(200, &daemon.ServerLogs{
+	c.JSON(200, &pufferpanel.ServerLogs{
 		Epoch: epoch,
 		Logs:  msg,
 	})
@@ -672,7 +670,7 @@ func GetStatus(c *gin.Context) {
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
-		c.JSON(200, &daemon.ServerRunning{Running: running})
+		c.JSON(200, &pufferpanel.ServerRunning{Running: running})
 	}
 }
 
@@ -686,7 +684,7 @@ func OpenSocket(c *gin.Context) {
 	}
 
 	console, _ := program.GetEnvironment().GetConsole()
-	_ = socket.Write(conn, messages.Console{Logs: console})
+	_ = pufferpanel.Write(conn, messages.Console{Logs: console})
 
 	internalMap, _ := c.Get("scopes")
 	scopes := internalMap.([]pufferpanel.Scope)
