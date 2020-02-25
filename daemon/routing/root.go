@@ -18,7 +18,7 @@ package routing
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/routing/server"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
@@ -75,7 +75,7 @@ func RegisterRoutes(e *gin.RouterGroup) {
 // @Success 200 {object} daemon.PufferdRunning "Service running"
 // @Router / [get]
 func getStatusGET(c *gin.Context) {
-	c.JSON(http.StatusOK, &daemon.PufferdRunning{Message: "pufferd is running"})
+	c.JSON(http.StatusOK, &pufferpanel.PufferdRunning{Message: "pufferd is running"})
 }
 
 // Root godoc

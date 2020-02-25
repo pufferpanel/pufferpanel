@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/messages"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/socket"
+	"github.com/pufferpanel/pufferpanel/v2/messages"
+	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/viper"
 	"io"
@@ -55,7 +54,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 							msg.Cpu = results.Cpu
 							msg.Memory = results.Memory
 						}
-						_ = socket.Write(conn, msg)
+						_ = pufferpanel.Write(conn, msg)
 					}
 				}
 			case "status": {
@@ -64,7 +63,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 					running = false
 				}
 				msg := messages.Status{Running:running}
-				_ = socket.Write(conn, msg)
+				_ = pufferpanel.Write(conn, msg)
 			}
 			case "start":
 				{
@@ -99,7 +98,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 				}
 			case "ping":
 				{
-					_ = socket.Write(conn, messages.Pong{})
+					_ = pufferpanel.Write(conn, messages.Pong{})
 				}
 			case "console":
 				{
@@ -140,7 +139,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 
 							err := server.DeleteItem(path)
 							if err != nil {
-								_ = socket.Write(conn, messages.FileList{Error: err.Error()})
+								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
 							} else {
 								//now get the root
 								handleGetFile(conn, server, path2.Dir(path), false)
@@ -156,7 +155,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 							err := server.CreateFolder(path)
 
 							if err != nil {
-								_ = socket.Write(conn, messages.FileList{Error: err.Error()})
+								_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
 							} else {
 								handleGetFile(conn, server, path, false)
 							}
@@ -176,22 +175,22 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 func handleGetFile(conn *websocket.Conn, server *programs.Program, path string, editMode bool) {
 	data, err := server.GetItem(path)
 	if err != nil {
-		_ = socket.Write(conn, messages.FileList{Error: err.Error()})
+		_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})
 		return
 	}
 
 	defer pufferpanel.Close(data.Contents)
 
 	if data.FileList != nil {
-		_ = socket.Write(conn, messages.FileList{FileList: data.FileList, CurrentPath: path})
+		_ = pufferpanel.Write(conn, messages.FileList{FileList: data.FileList, CurrentPath: path})
 	} else if data.Contents != nil {
 		//if the file is small enough, we'll send it over the websocket
 		if editMode && data.ContentLength < viper.GetInt64("daemon.data.maxWSDownloadSize") {
 			var buf bytes.Buffer
 			_, _ = io.Copy(&buf, data.Contents)
-			_ = socket.Write(conn, messages.FileList{Contents: buf.Bytes(), Filename: data.Name})
+			_ = pufferpanel.Write(conn, messages.FileList{Contents: buf.Bytes(), Filename: data.Name})
 		} else {
-			_ = socket.Write(conn, messages.FileList{Url: path, Filename: data.Name})
+			_ = pufferpanel.Write(conn, messages.FileList{Url: path, Filename: data.Name})
 		}
 	}
 }

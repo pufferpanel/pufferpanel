@@ -18,8 +18,8 @@ package shutdown
 
 import (
 	"github.com/braintree/manners"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/programs"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"os"
 	"runtime/debug"
 	"sync"

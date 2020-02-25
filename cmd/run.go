@@ -16,14 +16,13 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/daemon/entry"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/sftp"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/panel/database"
 	"github.com/pufferpanel/pufferpanel/v2/panel/models"
 	"github.com/pufferpanel/pufferpanel/v2/panel/services"
 	"github.com/pufferpanel/pufferpanel/v2/panel/web"
+	"github.com/pufferpanel/pufferpanel/v2/sftp"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -80,7 +79,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	if !noWeb {
 		services.ValidateTokenLoaded()
-		daemon.SetPublicKey(services.GetPublicKey())
+		pufferpanel.SetPublicKey(services.GetPublicKey())
 
 		defer database.Close()
 
