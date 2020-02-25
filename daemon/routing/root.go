@@ -50,14 +50,18 @@ func ConfigureWeb() *gin.Engine {
 			}
 			middleware.ResponseAndRecover(c)
 		})
-		RegisterRoutes(Engine)
-		server.RegisterRoutes(Engine.Group("/"))
+
+		daemonPath := Engine.Group("/daemon")
+		{
+			RegisterRoutes(daemonPath)
+			server.RegisterRoutes(Engine.Group("/daemon"))
+		}
 	}
 
 	return Engine
 }
 
-func RegisterRoutes(e *gin.Engine) {
+func RegisterRoutes(e *gin.RouterGroup) {
 	e.GET("", getStatusGET)
 	e.HEAD("", getStatusHEAD)
 	e.Handle("OPTIONS", "", response.CreateOptions("GET", "HEAD"))
