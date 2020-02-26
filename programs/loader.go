@@ -22,7 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/programs/operations"
+	"github.com/pufferpanel/pufferpanel/v2/operations"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"

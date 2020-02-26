@@ -2,15 +2,15 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 )
 
 func Reauth(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	user, _ := c.MustGet("user").(*models.User)

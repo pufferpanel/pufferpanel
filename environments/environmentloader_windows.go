@@ -16,7 +16,7 @@
 
 package environments
 
-import "github.com/pufferpanel/pufferpanel/v2/environments/envs"
+import "github.com/pufferpanel/pufferpanel/v2"
 
-func loadAdditionalModules(mapping map[string]envs.EnvironmentFactory) {
+func loadAdditionalModules(mapping map[string]pufferpanel.EnvironmentFactory) {
 }
