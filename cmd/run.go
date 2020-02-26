@@ -41,14 +41,6 @@ var runCmd = &cobra.Command{
 	Run:   executeRun,
 }
 
-var noWeb bool
-var noDaemon bool
-
-func init() {
-	runCmd.Flags().BoolVar(&noWeb, "noweb", false, "Do not run web interface")
-	runCmd.Flags().BoolVar(&noDaemon, "nodaemon", false, "Do not run daemon")
-}
-
 func executeRun(cmd *cobra.Command, args []string) {
 	err := internalRun(cmd, args)
 	if err != nil {
@@ -77,7 +69,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		c <- nil
 	}()
 
-	if !noWeb {
+	if viper.GetBool("panel.enable") {
 		services.ValidateTokenLoaded()
 		pufferpanel.SetPublicKey(services.GetPublicKey())
 
@@ -114,7 +106,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
 
 		//validate local daemon is configured in this panel
-		if !noDaemon {
+		if viper.GetBool("daemon.enable") {
 			go func() {
 				db, err := database.GetConnection()
 				if err != nil {
@@ -173,7 +165,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if !noDaemon {
+	if viper.GetBool("daemon.enable") {
 		go func() {
 			c <- <-daemon.Start()
 		}()
