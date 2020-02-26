@@ -20,10 +20,9 @@ import (
 	"container/list"
 	"encoding/json"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/environments/envs"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
-	"github.com/pufferpanel/pufferpanel/v2/programs/operations"
+	"github.com/pufferpanel/pufferpanel/v2/operations"
 	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
@@ -37,7 +36,7 @@ type Program struct {
 	pufferpanel.Server
 
 	CrashCounter int              `json:"-"`
-	Environment  envs.Environment `json:"-"`
+	Environment  pufferpanel.Environment `json:"-"`
 }
 
 var queue *list.List
@@ -343,7 +342,7 @@ func (p *Program) IsEnabled() (isEnabled bool) {
 	return !p.Execution.Disabled
 }
 
-func (p *Program) SetEnvironment(environment envs.Environment) (err error) {
+func (p *Program) SetEnvironment(environment pufferpanel.Environment) (err error) {
 	p.Environment = environment
 	return
 }
@@ -352,7 +351,7 @@ func (p *Program) Id() string {
 	return p.Identifier
 }
 
-func (p *Program) GetEnvironment() envs.Environment {
+func (p *Program) GetEnvironment() pufferpanel.Environment {
 	return p.Environment
 }
 

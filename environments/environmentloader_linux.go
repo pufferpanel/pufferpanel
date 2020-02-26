@@ -17,11 +17,11 @@
 package environments
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/environments/envs"
-	"github.com/pufferpanel/pufferpanel/v2/environments/impl/tty"
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/environments/tty"
 )
 
-func loadAdditionalModules(mapping map[string]envs.EnvironmentFactory) {
+func loadAdditionalModules(mapping map[string]pufferpanel.EnvironmentFactory) {
 	mapping["tty"] = tty.EnvironmentFactory{}
 	//mapping["lxd"] = lxd.EnvironmentFactory{}
 }

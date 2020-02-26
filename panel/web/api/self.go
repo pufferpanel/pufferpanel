@@ -3,16 +3,16 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 )
 
 func registerSelf(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
-	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
+	g.Handle("GET", "", middleware.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
+	g.Handle("PUT", "", middleware.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
 }
 
 func getSelf(c *gin.Context) {
@@ -28,7 +28,7 @@ func getSelf(c *gin.Context) {
 }
 
 func updateSelf(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
