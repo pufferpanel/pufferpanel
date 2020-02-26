@@ -6,28 +6,28 @@
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-text-field :label="$t('common.Name')" v-model="node.name" outlined />
+              <v-text-field :label="$t('common.Name')" v-model="node.name" outlined hide-details />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PublicHost')" v-model="node.publicHost" type="text" outlined />
+              <v-text-field :label="$t('nodes.PublicHost')" v-model="node.publicHost" type="text" outlined hide-details />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PublicPort')" v-model="node.publicPort" type="number" outlined />
+              <v-text-field :label="$t('nodes.PublicPort')" v-model="node.publicPort" type="number" outlined hide-details />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PrivateHost')" v-model="node.privateHost" type="text" outlined />
+              <v-text-field :label="$t('nodes.PrivateHost')" v-model="node.privateHost" type="text" outlined hide-details />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PrivatePort')" v-model="node.privatePort" type="number" outlined />
+              <v-text-field :label="$t('nodes.PrivatePort')" v-model="node.privatePort" type="number" outlined hide-details />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field :label="$t('nodes.SftpPort')" v-model="node.sftpPort" type="number" outlined />
+              <v-text-field :label="$t('nodes.SftpPort')" v-model="node.sftpPort" type="number" outlined hide-details />
             </v-col>
           </v-row>
           <v-row>
@@ -37,8 +37,14 @@
             <v-col cols="12">
               <v-btn v-text="$t('nodes.Delete')" block color="error" @click="deleteNode" />
             </v-col>
+            <v-col cols="12" md="6">
+              <v-btn v-text="$t('nodes.SaveConfig')" :disabled="loadingDeploy" text block @click="downloadConfig()" />
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-btn v-text="$t('nodes.SavePublicKey')" :disabled="loadingDeploy" text block @click="download(deployment.publicKey, 'public.pem')" />
+            </v-col>
             <v-col cols="12">
-              <v-btn v-text="$t('nodes.DeploymentData')" text block :to="`/api/nodes/${node.id}/deployment`" target="_blank" />
+              <span v-html="markdown($t('nodes.DeploymentInstruction'))" />
             </v-col>
           </v-row>
         </v-card-text>
@@ -50,12 +56,35 @@
 <script>
 import { handleError } from '@/utils/api'
 import { typeNode } from '@/utils/types'
+import markdown from '@/utils/markdown'
 
 export default {
   data () {
     return {
       loading: true,
-      node: {}
+      loadingDeploy: true,
+      node: {},
+      deployment: {
+        clientId: '',
+        clientSecret: '',
+        publicKey: ''
+      },
+      configTemplate: {
+        logs: '/var/log/pufferpanel',
+        panel: {
+          enable: false
+        },
+        daemon: {
+          auth: {
+            publicKey: '/etc/pufferpanel/public.pem',
+            url: location.protocol + '//' + location.host
+          },
+          data: {
+            cache: '/var/lib/pufferpanel/cache',
+            servers: '/var/lib/pufferpanel/servers'
+          }
+        }
+      }
     }
   },
   mounted () {
@@ -67,6 +96,10 @@ export default {
       ctx.$http.get(`/api/nodes/${ctx.$route.params.id}`).then(response => {
         ctx.node = response.data
         ctx.loading = false
+      }).catch(handleError(ctx))
+      ctx.$http.get(`/api/nodes/${ctx.$route.params.id}/deployment`).then(response => {
+        ctx.deployment = response.data
+        ctx.loadingDeploy = false
       }).catch(handleError(ctx))
     },
     updateNode () {
@@ -80,7 +113,22 @@ export default {
       ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(response => {
         ctx.$router.push({ name: 'Nodes' })
       }).catch(handleError(ctx))
-    }
+    },
+    downloadConfig () {
+      const config = { ...this.configTemplate }
+      config.daemon.auth.clientId = this.deployment.clientId
+      config.daemon.auth.clientSecret = this.deployment.clientSecret
+      this.download(JSON.stringify(config, undefined, 2), 'config.json')
+    },
+    download (content, filename, contentType) {
+      if (!contentType) contentType = 'application/octet-stream'
+      var a = document.createElement('a')
+      var blob = new Blob([content], { type: contentType })
+      a.href = window.URL.createObjectURL(blob)
+      a.download = filename
+      a.click()
+    },
+    markdown
   }
 }
 </script>
