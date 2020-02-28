@@ -519,7 +519,7 @@ export default {
         this.$http.get(`/api/templates/${template}`).then(response => {
           if (response.status >= 200 && response.status < 300) {
             ctx.templateData[template] = response.data
-            // recreate object to make vues refernce equality check fail and rerender neccessary components
+            // recreate object to make vues reference equality check fail and rerender necessary components
             ctx.templateData = { ...ctx.templateData }
           }
         }).catch(handleError(ctx))
@@ -535,7 +535,11 @@ export default {
         if (filter.trim() === '') {
           return true
         } else {
-          return t.display.toLowerCase().indexOf(filter.trim().toLowerCase()) > -1
+          let name = t.display
+          if (!name) {
+            name = t.name
+          }
+          return name.toLowerCase().indexOf(filter.trim().toLowerCase()) > -1
         }
       })
     },
