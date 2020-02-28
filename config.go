@@ -18,6 +18,7 @@ func init() {
 	viper.SetDefault("logs", "logs")
 
 	//panel specific settings
+	viper.SetDefault("panel.enable", true)
 	viper.SetDefault("panel.database.session", 60)
 	viper.SetDefault("panel.database.dialect", "sqlite3")
 	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
@@ -35,6 +36,7 @@ func init() {
 	viper.SetDefault("panel.settings.masterUrl", "http://localhost:8080")
 
 	//daemon specific settings
+	viper.SetDefault("daemon.enable", true)
 	viper.SetDefault("daemon.console.buffer", 50)
 	viper.SetDefault("daemon.console.forward", false)
 	viper.SetDefault("daemon.web.host", "0.0.0.0:5656")

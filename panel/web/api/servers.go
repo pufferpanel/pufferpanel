@@ -20,12 +20,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/panel/database"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"net/http"
@@ -36,21 +37,21 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), handlers.HasTransaction, createServer)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("GET", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), handlers.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), handlers.HasTransaction, createServer)
-	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), handlers.HasTransaction, deleteServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
 	g.Handle("GET", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), handlers.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), handlers.HasTransaction, removeServerUser)
+	g.Handle("PUT", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 func searchServers(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -190,7 +191,7 @@ func getServer(c *gin.Context) {
 
 func createServer(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 	us := &services.User{DB: db}
@@ -320,7 +321,7 @@ func createServer(c *gin.Context) {
 func deleteServer(c *gin.Context) {
 	var err error
 
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 
@@ -390,7 +391,7 @@ func deleteServer(c *gin.Context) {
 
 func getServerUsers(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
@@ -430,7 +431,7 @@ func getServerUsers(c *gin.Context) {
 
 func editServerUser(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -519,7 +520,7 @@ func editServerUser(c *gin.Context) {
 
 func removeServerUser(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 

@@ -4,11 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/routing"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
 	"net/http"
 	"strconv"
@@ -16,20 +17,20 @@ import (
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
-	g := rg.Group("/server", handlers.HasOAuth2Token, handlers.NeedsDatabase)
+	g := rg.Group("/server", handlers.HasOAuth2Token, middleware.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
 		g.Any("/:id/*path", proxyServerRequest)
 	}
 
-	g = rg.Group("/socket", handlers.HasOAuth2Token, handlers.NeedsDatabase)
+	g = rg.Group("/socket", handlers.HasOAuth2Token, middleware.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		g.Any("/:id", proxyServerRequest)
 	}
 
-	r := rg.Group("/node", handlers.HasOAuth2Token, handlers.NeedsDatabase)
+	r := rg.Group("/node", handlers.HasOAuth2Token, middleware.NeedsDatabase)
 	{
 		//g.Any("", proxyServerRequest)
 		r.Any("/:id", proxyNodeRequest)
@@ -38,7 +39,7 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 }
 
 func proxyServerRequest(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 	ps := &services.Permission{DB: db}
@@ -49,7 +50,7 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	path := strings.TrimPrefix(c.Request.URL.Path, "/daemon")
+	path := c.Request.URL.Path
 
 	s, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
@@ -74,7 +75,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	if s.Node.IsLocal() {
 		c.Request.URL.Path = path
-		routing.Engine.HandleContext(c)
+		daemon.Engine.HandleContext(c)
 	} else {
 		if c.GetHeader("Upgrade") == "websocket" {
 			proxySocketRequest(c, path, ns, &s.Node)
@@ -86,7 +87,7 @@ func proxyServerRequest(c *gin.Context) {
 
 func proxyNodeRequest(c *gin.Context) {
 	path := c.Param("path")
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -151,7 +152,7 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	if node.IsLocal() {
 		//have gin handle the request again, but send it to daemon instead
-		routing.Engine.HandleContext(c)
+		daemon.Engine.HandleContext(c)
 	} else {
 		err := ns.OpenSocket(node, path, c.Writer, c.Request)
 		response.HandleError(c, err, http.StatusInternalServerError)

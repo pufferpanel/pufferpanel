@@ -5,8 +5,8 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/database"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
+	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cobra"
 )
 

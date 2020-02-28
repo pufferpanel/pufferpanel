@@ -3,14 +3,14 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 )
 
 func LoginPost(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 

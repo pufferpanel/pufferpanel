@@ -98,6 +98,7 @@
           v-text="$t('users.AccountPassword').replace(' ', '\u00A0')"
         />
       </v-row>
+      <v-btn color="primary" block v-text="$t('servers.SftpConnection')" :href="`sftp://${username}@${host}`" />
     </v-card-text>
   </v-card>
 </template>

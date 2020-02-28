@@ -17,10 +17,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
 	"net/http"
 )
@@ -42,7 +43,7 @@ func registerUsers(g *gin.RouterGroup) {
 
 func searchUsers(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	search := newUserSearch()
@@ -74,7 +75,7 @@ func searchUsers(c *gin.Context) {
 
 func createUser(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
@@ -104,7 +105,7 @@ func createUser(c *gin.Context) {
 }
 
 func getUser(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -126,7 +127,7 @@ func getUser(c *gin.Context) {
 }
 
 func updateUser(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -163,7 +164,7 @@ func updateUser(c *gin.Context) {
 }
 
 func deleteUser(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -189,7 +190,7 @@ func deleteUser(c *gin.Context) {
 }
 
 func getUserPerms(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -217,7 +218,7 @@ func getUserPerms(c *gin.Context) {
 }
 
 func setUserPerms(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 

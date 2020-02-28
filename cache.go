@@ -13,7 +13,10 @@
 
 package pufferpanel
 
-import "time"
+import (
+	"github.com/spf13/viper"
+	"time"
+)
 
 type Cache interface {
 	Read() (cache []string, epoch int64)
@@ -32,6 +35,17 @@ type MemoryCache struct {
 	Cache
 	Buffer   []Message
 	Capacity int
+}
+
+func CreateCache() *MemoryCache {
+	capacity := viper.GetInt("daemon.console.buffer")
+	if capacity <= 0 {
+		capacity = 50
+	}
+	return &MemoryCache{
+		Buffer:   make([]Message, 0),
+		Capacity: capacity,
+	}
 }
 
 func (c *MemoryCache) Read() (msg []string, lastTime int64) {

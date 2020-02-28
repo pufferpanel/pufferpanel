@@ -18,10 +18,11 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 )
 
@@ -47,7 +48,7 @@ func registerTemplates(g *gin.RouterGroup) {
 // @Failure 500 {object} response.Error
 // @Router /templates [get]
 func getAllTemplates(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templates, err := ts.GetAll()
@@ -69,7 +70,7 @@ func getAllTemplates(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Router /templates [get]
 func getTemplate(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	template, err := ts.Get(c.Param("name"))
@@ -93,7 +94,7 @@ func getTemplate(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Router /templates [get]
 func putTemplate(c *gin.Context) {
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templateName := c.Param("name")

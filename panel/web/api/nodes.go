@@ -17,10 +17,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/panel/models"
-	"github.com/pufferpanel/pufferpanel/v2/panel/services"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -58,7 +59,7 @@ func registerNodes(g *gin.RouterGroup) {
 // @Router /nodes [get]
 func getAllNodes(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var nodes *models.Nodes
@@ -91,7 +92,7 @@ func getAllNodes(c *gin.Context) {
 // @Router /nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -126,7 +127,7 @@ func getNode(c *gin.Context) {
 // @Router /nodes [post]
 func createNode(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	model := &models.NodeView{}
@@ -161,7 +162,7 @@ func createNode(c *gin.Context) {
 // @Router /nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	viewModel := &models.NodeView{}
@@ -204,7 +205,7 @@ func updateNode(c *gin.Context) {
 // @Router /nodes/{id} [delete]
 func deleteNode(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -227,7 +228,7 @@ func deleteNode(c *gin.Context) {
 
 func deployNode(c *gin.Context) {
 	var err error
-	db := handlers.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
