@@ -12,7 +12,7 @@
   -->
 
 <template>
-  <div class="mb-2">
+  <div>
     <v-expansion-panels multiple class="mb-2">
       <v-expansion-panel v-for="(env, i) in value" :key="i">
         <v-expansion-panel-header v-text="env.type" />
@@ -22,7 +22,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn v-if="!addingEnv" color="primary" v-text="$t('templates.AddEnvironment')" block @click="addingEnv = true" />
+    <v-btn text v-if="!addingEnv" v-text="$t('templates.AddEnvironment')" block @click="addingEnv = true" />
     <v-row v-else>
       <v-col cols="12" md="6">
         <v-select v-model="newEnv" :label="$t('templates.Environment')" :items="possibleEnvironments" dense outlined hide-details />

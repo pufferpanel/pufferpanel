@@ -80,7 +80,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn large block color="success" @click="addUser()" v-text="$t('users.Add')" />
+          <v-btn block @click="addUser()" v-text="$t('users.Add')" />
         </v-col>
       </v-row>
     </v-card-text>

@@ -29,7 +29,6 @@
       </v-dialog>
       <v-btn
         block
-        large
         color="error"
         @click="confirmDeleteOpen = true"
         v-text="$t('servers.Delete')"
