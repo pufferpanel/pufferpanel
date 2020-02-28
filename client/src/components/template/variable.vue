@@ -38,7 +38,7 @@
           <v-text-field v-model="option.display" :label="$t('templates.Display')" outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.options, i)" />
         </v-col>
       </v-row>
-      <v-btn block color="primary" v-text="$t('templates.AddOption')" @click="value.options.push({ value: '', display: '' })"/>
+      <v-btn block text v-text="$t('templates.AddOption')" @click="value.options.push({ value: '', display: '' })"/>
     </v-col>
   </v-row>
 </template>

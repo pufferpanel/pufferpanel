@@ -12,7 +12,7 @@
   -->
 
 <template>
-  <div class="mb-4">
+  <div>
     <v-expansion-panels multiple class="mb-2">
       <v-expansion-panel v-for="(entry, i) in value" :key="i">
         <v-expansion-panel-header v-text="entry.type" />
@@ -22,7 +22,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn color="primary" block v-text="$t(getAddKey())" @click="value.push({ ...template }); $forceUpdate()" />
+    <v-btn text block v-text="$t(getAddKey())" @click="value.push({ ...template }); $forceUpdate()" />
   </div>
 </template>
 

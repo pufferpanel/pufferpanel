@@ -12,7 +12,7 @@
   -->
 
 <template>
-  <div class="mb-4">
+  <div>
     <v-expansion-panels multiple class="mb-2">
       <v-expansion-panel v-for="(item, i) in value" :key="i">
         <v-expansion-panel-header v-text="i" />
@@ -22,7 +22,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn v-if="!addingVariable" color="primary" v-text="$t('templates.AddVariable')" block @click="addingVariable = true" />
+    <v-btn v-if="!addingVariable" text v-text="$t('templates.AddVariable')" block @click="addingVariable = true" />
     <v-row v-else>
       <v-col cols="12" md="6">
         <v-text-field v-model="newVarName" :label="$t('common.Name')" dense outlined hide-details />

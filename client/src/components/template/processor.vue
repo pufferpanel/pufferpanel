@@ -20,13 +20,13 @@
       <v-text-field v-for="(e, i) in value.files" :key="i" v-model="value.files[i]" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.files, i)" />
     </v-col>
     <v-col cols="12" v-if="value.type === 'download'">
-      <v-btn color="primary" block v-text="$t('templates.AddFile')" @click="value.files.push(''); $forceUpdate()" />
+      <v-btn text block v-text="$t('templates.AddFile')" @click="value.files.push(''); $forceUpdate()" />
     </v-col>
     <v-col cols="12" v-if="value.type === 'command'">
       <v-text-field v-for="(e, i) in value.commands" :key="i" v-model="value.commands[i]" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.commands, i)" />
     </v-col>
     <v-col cols="12" v-if="value.type === 'command'">
-      <v-btn color="primary" block v-text="$t('templates.AddCommand')" @click="value.commands.push(''); $forceUpdate()" />
+      <v-btn text block v-text="$t('templates.AddCommand')" @click="value.commands.push(''); $forceUpdate()" />
     </v-col>
     <v-col cols="12" v-if="value.type === 'writefile'">
       <v-text-field v-model="value.target" outlined hide-details :label="$t('templates.Filename')" />

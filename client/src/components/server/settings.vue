@@ -74,7 +74,7 @@
       </v-row>
       <v-row v-if="Object.keys(items).length > 0">
         <v-col>
-          <v-btn v-text="$t('common.Save')" large block color="primary" @click="save" />
+          <v-btn v-text="$t('common.Save')" block color="success" @click="save" />
         </v-col>
       </v-row>
     </v-card-text>
