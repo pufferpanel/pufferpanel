@@ -27,5 +27,6 @@
   "ConfirmDelete": "Do you really want to delete this server? (this cannot be undone)",
   "Delete": "Delete Server",
   "Deleted": "Deleted Server",
-  "NoReadme": "No readme available for this template"
+  "NoReadme": "No readme available for this template",
+  "SftpConnection": "Connect to SFTP"
 }

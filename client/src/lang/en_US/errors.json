@@ -34,5 +34,6 @@
   "ErrPasswordsNotIdentical": "Passwords are not the same",
 
   "ErrSessionTimedOut": "Your session timed out, please log in again",
+  "ErrMissingScope": "You are not authorized to perform this action",
   "ErrInvalidJson": "The json data is invalid"
 }
