@@ -31,6 +31,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func registerServers(g *gin.RouterGroup) {
@@ -129,8 +130,8 @@ func searchServers(c *gin.Context) {
 	data := models.FromServers(results)
 
 	for _, d := range data {
-		if d.Node.PublicHost == "127.0.0.1" && d.Node.PrivateHost == "127.0.0.1" {
-			d.Node.PublicHost = c.Request.Host
+		if d.Node.PrivateHost == "127.0.0.1" && d.Node.PublicHost == "127.0.0.1" {
+			d.Node.PublicHost = strings.SplitN(c.Request.Host, ":", 2)[0]
 		}
 	}
 
@@ -177,16 +178,16 @@ func getServer(c *gin.Context) {
 		perms = models.FromPermission(p)
 	}
 
-	data := &models.GetServerResponse{
+	d := &models.GetServerResponse{
 		Server: models.RemoveServerPrivateInfo(models.FromServer(server)),
 		Perms:  perms,
 	}
 
-	if data.Server.Node.PrivateHost == "127.0.0.1" && data.Server.Node.PublicHost == "127.0.0.1" {
-		data.Server.Node.PublicHost = c.Request.Host
+	if d.Server.Node.PrivateHost == "127.0.0.1" && d.Server.Node.PublicHost == "127.0.0.1" {
+		d.Server.Node.PublicHost = strings.SplitN(c.Request.Host, ":", 2)[0]
 	}
 
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, d)
 }
 
 func createServer(c *gin.Context) {
@@ -282,7 +283,7 @@ func createServer(c *gin.Context) {
 	headers := http.Header{}
 	headers.Set("Authorization", "Bearer "+token)
 
-	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
+	nodeResponse, err := ns.CallNode(node, "PUT", "/daemon/server/"+server.Identifier, reader, headers)
 	if nodeResponse != nil {
 		defer pufferpanel.Close(nodeResponse.Body)
 	}
@@ -370,7 +371,7 @@ func deleteServer(c *gin.Context) {
 	headers := http.Header{}
 	headers.Add("Authorization", "Bearer " + newHeader)
 
-	nodeRes, err := ns.CallNode(node, "DELETE", "/server/"+server.Identifier, nil, headers)
+	nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		//node didn't permit it, REVERT!
 		db.Rollback()

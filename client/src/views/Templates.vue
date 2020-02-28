@@ -51,6 +51,12 @@ export default {
       ctx.templates = []
       ctx.$http.get('/api/templates').then(response => {
         ctx.templates = response.data
+        for (let i = 0; i < ctx.templates.length; i++) {
+          const t = ctx.templates[i]
+          if (!t.display) {
+            t.display = t.name
+          }
+        }
         ctx.loading = false
       }).catch(handleError(ctx))
     }
