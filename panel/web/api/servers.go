@@ -282,7 +282,7 @@ func createServer(c *gin.Context) {
 	headers := http.Header{}
 	headers.Set("Authorization", "Bearer "+token)
 
-	nodeResponse, err := ns.CallNode(node, "PUT", "/server/"+server.Identifier, reader, headers)
+	nodeResponse, err := ns.CallNode(node, "PUT", "/daemon/server/"+server.Identifier, reader, headers)
 	if nodeResponse != nil {
 		defer pufferpanel.Close(nodeResponse.Body)
 	}
@@ -370,7 +370,7 @@ func deleteServer(c *gin.Context) {
 	headers := http.Header{}
 	headers.Add("Authorization", "Bearer " + newHeader)
 
-	nodeRes, err := ns.CallNode(node, "DELETE", "/server/"+server.Identifier, nil, headers)
+	nodeRes, err := ns.CallNode(node, "DELETE", "/daemon/server/"+server.Identifier, nil, headers)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		//node didn't permit it, REVERT!
 		db.Rollback()
