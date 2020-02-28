@@ -98,7 +98,7 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 	mapping := make(map[string]interface{})
 	var version = versionData.Dependencies.Forge
 	if !strings.HasPrefix(version, versionData.Dependencies.Minecraft) {
-		version += versionData.Dependencies.Minecraft + "-" + version
+		version = versionData.Dependencies.Minecraft + "-" + version
 	}
 
 	mapping["version"] = version
