@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -11,8 +12,8 @@ import (
 )
 
 func registerSelf(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
-	g.Handle("PUT", "", middleware.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
+	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
 }
 
 func getSelf(c *gin.Context) {

@@ -19,6 +19,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -26,12 +27,12 @@ import (
 )
 
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getAllTemplates)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getAllTemplates)
 
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("GET", "/:name", middleware.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
-	g.Handle("PUT", "/:name", middleware.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
+	g.Handle("GET", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
+	g.Handle("PUT", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
 	g.Handle("OPTIONS", "/:name", response.CreateOptions("GET", "POST"))
 
 }
