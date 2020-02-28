@@ -142,11 +142,12 @@ export default {
 
             if (server.ip && server.ip !== '' && server.ip !== '0.0.0.0') {
               ip = server.ip
-              if (server.port) {
-                ip += ':' + server.port
-              }
             } else {
               ip = server.node.publicHost
+            }
+
+            if (server.port) {
+              ip += ':' + server.port
             }
 
             ctx.servers.push({
