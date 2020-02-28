@@ -29,6 +29,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard"},
 	}
 	s.BaseEnvironment.ExecutionFunction = s.standardExecuteAsync
+	s.BaseEnvironment.WaitFunction = s.WaitForMainProcess
 	return s
 }
 

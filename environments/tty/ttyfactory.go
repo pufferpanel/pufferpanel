@@ -31,6 +31,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty"},
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
+	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
 	return t
 }
 

@@ -35,6 +35,7 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	}
 
 	d.ExecutionFunction = d.dockerExecuteAsync
+	d.BaseEnvironment.WaitFunction = d.WaitForMainProcess
 	return d
 }
 
