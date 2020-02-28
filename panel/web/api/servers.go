@@ -23,6 +23,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -33,18 +34,18 @@ import (
 )
 
 func registerServers(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.OAuth2Handler(pufferpanel.ScopeServersView, false), searchServers)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
-	g.Handle("GET", "/:serverId", middleware.OAuth2Handler(pufferpanel.ScopeServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
-	g.Handle("DELETE", "/:serverId", middleware.OAuth2Handler(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
-	g.Handle("GET", "/:serverId/user", middleware.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
-	g.Handle("GET", "/:serverId/user/:email", middleware.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:email", middleware.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:email", middleware.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
+	g.Handle("GET", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), getServer)
+	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
+	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
+	g.Handle("GET", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
+	g.Handle("PUT", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 

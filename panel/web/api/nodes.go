@@ -18,6 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -30,16 +31,16 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", middleware.OAuth2Handler(pufferpanel.ScopeNodesView, false), getAllNodes)
+	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getAllNodes)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
-	g.Handle("POST", "", middleware.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), createNode)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), createNode)
 
-	g.Handle("GET", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeNodesView, false), getNode)
-	g.Handle("PUT", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), updateNode)
-	g.Handle("DELETE", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), deleteNode)
+	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getNode)
+	g.Handle("PUT", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), updateNode)
+	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", middleware.OAuth2Handler(pufferpanel.ScopeNodesDeploy, false), deployNode)
+	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(pufferpanel.ScopeNodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 
 	//g.Handle("POST", "/:id/reset", handlers.OAuth2(pufferpanel.ScopeNodesDeploy, false), response.NotImplemented)
