@@ -18,22 +18,22 @@ var lock sync.Mutex
 
 var logFile *os.File
 
-func init() {
+func Initialize() {
 	_ = Info()
 	_ = Debug()
 	_ = Error()
 }
 
 func Error() *log.Logger {
-	return get("ERROR")
+	return Get("ERROR")
 }
 
 func Debug() *log.Logger {
-	return get("DEBUG")
+	return Get("DEBUG")
 }
 
 func Info() *log.Logger {
-	return get("INFO")
+	return Get("INFO")
 }
 
 func Close() {
@@ -83,7 +83,7 @@ func create(prefix string) *log.Logger {
 	return l
 }
 
-func get(name string) *log.Logger {
+func Get(name string) *log.Logger {
 	name = strings.ToUpper(name)
 	l := mapper[name]
 	if l == nil {

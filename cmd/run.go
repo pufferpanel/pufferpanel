@@ -54,6 +54,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	logging.Initialize()
 	defer logging.Close()
 
 	c := make(chan error)
