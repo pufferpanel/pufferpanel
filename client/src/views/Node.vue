@@ -82,7 +82,9 @@ export default {
           data: {
             cache: '/var/lib/pufferpanel/cache',
             servers: '/var/lib/pufferpanel/servers'
-          }
+          },
+          sftp: {},
+          web: {}
         }
       }
     }
@@ -118,6 +120,8 @@ export default {
       const config = { ...this.configTemplate }
       config.daemon.auth.clientId = this.deployment.clientId
       config.daemon.auth.clientSecret = this.deployment.clientSecret
+      config.daemon.sftp.host = `0.0.0.0:${this.node.sftpPort}`
+      config.daemon.web.host = `0.0.0.0:${this.node.privatePort}`
       this.download(JSON.stringify(config, undefined, 2), 'config.json')
     },
     download (content, filename, contentType) {
