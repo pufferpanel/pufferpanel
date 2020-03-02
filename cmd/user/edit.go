@@ -40,10 +40,10 @@ func editUser(cmd *cobra.Command, args []string) {
 
 	user, err := us.Get(username)
 	if err != nil && gorm.IsRecordNotFoundError(err) {
-		fmt.Printf("No user with username '%s'", username)
+		fmt.Printf("No user with username '%s'\n", username)
 		return
 	} else if err != nil {
-		fmt.Printf("Error getting user: %s", err.Error())
+		fmt.Printf("Error getting user: %s\n", err.Error())
 		return
 	}
 
@@ -64,7 +64,7 @@ func editUser(cmd *cobra.Command, args []string) {
 
 			err = us.Update(user)
 			if err != nil {
-				fmt.Printf("Error updating username: %s", err.Error())
+				fmt.Printf("Error updating username: %s\n", err.Error())
 			}
 		}
 	case "Email":
@@ -77,7 +77,7 @@ func editUser(cmd *cobra.Command, args []string) {
 
 			err = us.Update(user)
 			if err != nil {
-				fmt.Printf("Error updating email: %s", err.Error())
+				fmt.Printf("Error updating email: %s\n", err.Error())
 			}
 		}
 	case "Password":
@@ -89,12 +89,12 @@ func editUser(cmd *cobra.Command, args []string) {
 
 			err = user.SetPassword(prompt)
 			if err != nil {
-				fmt.Printf("Error updating password: %s", err.Error())
+				fmt.Printf("Error updating password: %s\n", err.Error())
 			}
 
 			err = us.Update(user)
 			if err != nil {
-				fmt.Printf("Error updating password: %s", err.Error())
+				fmt.Printf("Error updating password: %s\n", err.Error())
 			}
 		}
 	case "Change Admin Status":
@@ -107,7 +107,7 @@ func editUser(cmd *cobra.Command, args []string) {
 			ps := &services.Permission{DB: db}
 			perms, err := ps.GetForUserAndServer(user.ID, nil)
 			if err != nil {
-				fmt.Printf("Error updating permissions: %s", err.Error())
+				fmt.Printf("Error updating permissions: %s\n", err.Error())
 				return
 			}
 
@@ -115,7 +115,7 @@ func editUser(cmd *cobra.Command, args []string) {
 
 			err = ps.UpdatePermissions(perms)
 			if err != nil {
-				fmt.Printf("Error updating password: %s", err.Error())
+				fmt.Printf("Error updating password: %s\n", err.Error())
 			}
 		}
 	}
