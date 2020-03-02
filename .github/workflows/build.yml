@@ -88,10 +88,9 @@ jobs:
         CI: true
       working-directory: client
   
-    - name: Snapshot database
+    - name: Snapshot folders
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel
-        touch var/lib/pufferpanel/database.db
 
     - name: Build Package
       run: |
