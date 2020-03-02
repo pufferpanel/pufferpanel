@@ -25,8 +25,8 @@ import (
 var pid int
 
 var shutdownCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print the version number of PufferPanel",
+	Use:   "shutdown",
+	Short: "Shut down PufferPanel",
 	Run:   executeShutdown,
 }
 
