@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
 systemctl daemon-reload
-#useradd --system --home /var/lib/pufferpanel --user-group pufferpanel >/dev/null 2>&1
+if [ ! -f "/var/lib/pufferpanel/database.db" ]; then
+  touch /var/lib/pufferpanel/database.db
+fi
 chown pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel
