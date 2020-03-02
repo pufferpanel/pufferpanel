@@ -683,8 +683,10 @@ func OpenSocket(c *gin.Context) {
 		return
 	}
 
-	console, _ := program.GetEnvironment().GetConsole()
-	_ = pufferpanel.Write(conn, messages.Console{Logs: console})
+	if _, ok := c.GetQuery("skipReplay"); !ok {
+		console, _ := program.GetEnvironment().GetConsole()
+		_ = pufferpanel.Write(conn, messages.Console{Logs: console})
+	}
 
 	internalMap, _ := c.Get("scopes")
 	scopes := internalMap.([]pufferpanel.Scope)
