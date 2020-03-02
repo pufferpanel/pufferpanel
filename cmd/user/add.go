@@ -91,13 +91,13 @@ func runAdd(cmd *cobra.Command, args []string) {
 
 	err := pufferpanel.LoadConfig("")
 	if err != nil {
-		fmt.Printf("Failed to load config: %s", err.Error())
+		fmt.Printf("Failed to load config: %s\n", err.Error())
 		return
 	}
 
 	db, err := database.GetConnection()
 	if err != nil {
-		fmt.Printf("Failed to connect to database: %s", err.Error())
+		fmt.Printf("Failed to connect to database: %s\n", err.Error())
 		return
 	}
 	defer database.Close()
@@ -112,38 +112,38 @@ func runAdd(cmd *cobra.Command, args []string) {
 	}
 	err = user.SetPassword(answers.Password)
 	if err != nil {
-		fmt.Printf("Failed to set password: %s", err.Error())
+		fmt.Printf("Failed to set password: %s\n", err.Error())
 		return
 	}
 
 	us := &services.User{DB: db}
 	err = us.Create(user)
 	if err != nil {
-		fmt.Printf("Failed to create user: %s", err.Error())
+		fmt.Printf("Failed to create user: %s\n", err.Error())
 		return
 	}
 
 	ps := &services.Permission{DB: db}
 	perms, err := ps.GetForUserAndServer(user.ID, nil)
 	if err != nil {
-		fmt.Printf("Failed to get permissions: %s", err.Error())
+		fmt.Printf("Failed to get permissions: %s\n", err.Error())
 		return
 	}
 	perms.Admin = answers.Admin
 	perms.ViewServer = true
 	err = ps.UpdatePermissions(perms)
 	if err != nil {
-		fmt.Printf("Failed to apply permissions: %s", err.Error())
+		fmt.Printf("Failed to apply permissions: %s\n", err.Error())
 		return
 	}
 
 	err = db.Commit().Error
 	if err != nil {
-		fmt.Printf("Failed to save changes: %s", err.Error())
+		fmt.Printf("Failed to save changes: %s\n", err.Error())
 		return
 	}
 
-	fmt.Printf("User added")
+	fmt.Printf("User added\n")
 }
 
 func validatePassword(val interface{}) error {
