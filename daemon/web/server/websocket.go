@@ -12,13 +12,14 @@ import (
 	"io"
 	path2 "path"
 	"reflect"
+	"runtime/debug"
 	"strings"
 )
 
 func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []pufferpanel.Scope) {
 	defer func() {
 		if err := recover(); err != nil {
-			logging.Error().Printf("Error with websocket connection for server %s: %s", server.Id(), err)
+			logging.Error().Printf("Error with websocket connection for server %s: %s\n%s", server.Id(), err, debug.Stack())
 		}
 	}()
 
