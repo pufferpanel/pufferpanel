@@ -91,6 +91,9 @@ export default {
         ctx.parseConsole(data.data)
       }
     })
+    this.$socket.addEventListener('open', event => {
+      this.$socket.sendObj({ type: 'replay' })
+    })
     this.refreshInterval = setInterval(this.updateConsole, 1000)
   },
   beforeDestroy () {
