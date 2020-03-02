@@ -23,6 +23,8 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 		}
 	}()
 
+	defer conn.Close()
+
 	for {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
@@ -43,6 +45,10 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 		messageType := mapping["type"]
 		if message, ok := messageType.(string); ok {
 			switch strings.ToLower(message) {
+			case "replay": {
+				console, _ := server.GetEnvironment().GetConsole()
+				_ = pufferpanel.Write(conn, messages.Console{Logs: console})
+			}
 			case "stat":
 				{
 					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStat) {
