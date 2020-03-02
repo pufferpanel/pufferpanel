@@ -60,7 +60,6 @@ func LoadConfig(path string) error {
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-
 		} else {
 			return err
 		}
