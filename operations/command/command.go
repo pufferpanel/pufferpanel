@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"strings"
 )
 
 type Command struct {
@@ -32,10 +31,8 @@ func (c Command) Run(env pufferpanel.Environment) error {
 	for _, cmd := range c.Commands {
 		logging.Info().Printf("Executing command: %s", cmd)
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
-		parts := strings.Split(cmd, " ")
-		cmd := parts[0]
-		args := parts[1:]
-		_, err := env.Execute(cmd, args, c.Env, nil)
+		cmdToExec, args := pufferpanel.SplitArguments(cmd)
+		_, err := env.Execute(cmdToExec, args, c.Env, nil)
 		if err != nil {
 			return err
 		}

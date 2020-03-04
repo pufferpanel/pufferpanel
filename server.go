@@ -41,8 +41,7 @@ type VariableOption struct {
 }
 
 type Execution struct {
-	Arguments               []string          `json:"arguments,omitempty"`
-	ProgramName             string            `json:"program,omitempty"`
+	Command                 string            `json:"command,omitempty"`
 	StopCommand             string            `json:"stop,omitempty"`
 	Disabled                bool              `json:"disabled,omitempty"`
 	AutoStart               bool              `json:"autostart,omitempty"`
