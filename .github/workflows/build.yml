@@ -68,14 +68,17 @@ jobs:
         export GOOS=linux
         export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go test ./...
 
         export GOOS=windows
         export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go test ./...
 
         export GOOS=linux
         export GOARCH=arm
         go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go test ./...
 
     - name: npm install, build
       run: |
