@@ -21,7 +21,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -128,7 +127,7 @@ func (ns *Node) OpenSocket(node *models.Node, path string, writer http.ResponseW
 	addr := fmt.Sprintf("%s:%d", node.PrivateHost, node.PrivatePort)
 
 	u := url.URL{Scheme: scheme, Host: addr, Path: path}
-	log.Printf("connecting to %s", u.String())
+	logging.Debug().Printf("Proxying connection to %s", u.String())
 
 	header := http.Header{}
 	header.Set("Authorization", request.Header.Get("Authorization"))
