@@ -37,10 +37,20 @@ func (t *Template) AfterFind() error {
 		return err
 	}
 	t.RawValue = ""
+	if t.Execution.LegacyRun != "" {
+		t.Execution.Command = strings.TrimSpace(t.Execution.LegacyRun + " " + strings.Join(t.Execution.LegacyArguments, " "))
+		t.Execution.LegacyRun = ""
+		t.Execution.LegacyArguments = nil
+	}
 	return nil
 }
 
 func (t *Template) BeforeSave() error {
+	if t.Execution.LegacyRun != "" {
+		t.Execution.Command = strings.TrimSpace(t.Execution.LegacyRun + " " + strings.Join(t.Execution.LegacyArguments, " "))
+		t.Execution.LegacyRun = ""
+		t.Execution.LegacyArguments = nil
+	}
 	data, err := json.Marshal(&t.Template)
 	if err != nil {
 		return err
