@@ -15,16 +15,7 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <v-text-field v-model="value.program" :label="$t('templates.Program')" outlined hide-details />
-      </v-col>
-      <v-col cols="12" class="pb-2 pt-0">
-        <span v-text="$t('templates.Arguments')" class="body-1" />
-      </v-col>
-      <v-col cols="12" v-for="(argument, i) in value.arguments" :key="i" class="pb-0 pt-0">
-        <v-text-field v-model="value.arguments[i]" label="" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.arguments, i)" />
-      </v-col>
-      <v-col cols="12">
-        <v-btn v-text="$t('templates.AddArgument')" text block @click="addArgument()" />
+        <v-text-field v-model="value.command" :label="$t('templates.Command')" outlined hide-details />
       </v-col>
     </v-row>
   </div>
@@ -34,11 +25,6 @@
 export default {
   props: {
     value: { type: Object, default: () => {} }
-  },
-  methods: {
-    addArgument () {
-      this.value.arguments.push('')
-    }
   }
 }
 </script>

@@ -41,7 +41,7 @@
   "DeletePreStep": "Delete Pre Run Step",
   "DeletePostStep": "Delete Post Run Step",
   "Shutdown": "Shutdown",
-  "Program": "Program",
+  "Command": "Command",
   "Arguments": "Arguments",
   "AddArgument": "Add an argument",
   "stop": {

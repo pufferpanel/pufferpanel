@@ -163,7 +163,7 @@ export default {
       templateObj: {
         data: {},
         run: {
-          arguments: [],
+          command: '',
           environmentVars: {}
         },
         display: '',
@@ -177,7 +177,6 @@ export default {
     if (!this.create) this.loadData()
   },
   methods: {
-    log (x, y, z) { console.log(x, y, z) },
     loadData () {
       this.loading = true
       const ctx = this
@@ -198,16 +197,18 @@ export default {
         })
         if (!this.templateObj.run) this.templateObj.run = {}
         if (!this.templateObj.run.environmentVars) this.templateObj.run.environmentVars = {}
-        if (!this.templateObj.run.arguments) this.templateObj.run.arguments = []
         if (!this.templateObj.run.pre) this.templateObj.run.pre = []
         if (!this.templateObj.run.post) this.templateObj.run.post = []
         if (!this.templateObj.supportedEnvironments) this.templateObj.supportedEnvironments = []
         if (!this.templateObj.install) this.templateObj.install = []
-        this.templateObj.install.map(element => {
+        const fixType = element => {
           if (element.type === 'download' && typeof element.files === 'string') element.files = [element.files]
           if (element.type === 'command' && typeof element.commands === 'string') element.commands = [element.commands]
           return element
-        })
+        }
+        this.templateObj.install.map(fixType)
+        this.templateObj.run.pre.map(fixType)
+        this.templateObj.run.post.map(fixType)
         if (ctx.$refs.editor && ctx.$refs.editor.ready) ctx.$refs.editor.setValue(ctx.template)
         ctx.loading = false
       }).catch(handleError(ctx))
