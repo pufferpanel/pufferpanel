@@ -51,6 +51,8 @@ type Execution struct {
 	PostExecution           []interface{}     `json:"post,omitempty"`
 	StopCode                int               `json:"stopCode,omitempty"`
 	EnvironmentVariables    map[string]string `json:"environmentVars,omitempty"`
+	LegacyRun               string            `json:"run,omitempty"`
+	LegacyArguments         []string          `json:"arguments,omitempty"`
 }
 
 type Template struct {
