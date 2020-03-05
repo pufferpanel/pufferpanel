@@ -97,6 +97,16 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 
 	data.Identifier = id
 
+	if data.Execution.LegacyRun != "" {
+		data.Execution.Command = strings.TrimSpace(data.Execution.LegacyRun + strings.Join(data.Execution.LegacyArguments, " "))
+		data.Execution.LegacyRun = ""
+		data.Execution.LegacyArguments = nil
+		err = data.Save(filepath.Join(ServerFolder, id+".json"))
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var typeMap pufferpanel.Type
 	err = pufferpanel.UnmarshalTo(data.Server.Environment, &typeMap)
 	if err != nil {
