@@ -50,5 +50,5 @@ func (n *Node) BeforeSave() (err error) {
 }
 
 func (n *Node) IsLocal() bool {
-	return n.PrivateHost == "localhost" || n.PrivateHost  == "127.0.0.1"
+	return (n.PrivateHost == "localhost" || n.PrivateHost  == "127.0.0.1" ) && (n.PublicHost == "localhost" || n.PublicHost  == "127.0.0.1")
 }
