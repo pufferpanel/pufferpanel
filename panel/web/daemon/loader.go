@@ -90,7 +90,7 @@ func proxyServerRequest(c *gin.Context) {
 		c.Request.URL.Path = path
 		daemon.Engine.HandleContext(c)
 	} else {
-		if c.GetHeader("Upgrade") == "websocket" {
+		if strings.ToLower(c.GetHeader("Upgrade")) == "websocket" {
 			proxySocketRequest(c, path, ns, &s.Node)
 		} else {
 			proxyHttpRequest(c, path, ns, &s.Node)
@@ -133,7 +133,7 @@ func proxyNodeRequest(c *gin.Context) {
 		c.Header("Authorization", "Bearer "+newToken)
 	}
 
-	if c.GetHeader("Upgrade") == "websocket" {
+	if strings.ToLower(c.GetHeader("Upgrade")) == "websocket" {
 		proxySocketRequest(c, path, ns, node)
 	} else {
 		proxyHttpRequest(c, path, ns, node)
