@@ -100,7 +100,7 @@ jobs:
           --version "${{ env.VERSION }}" \
           --url "https://pufferpanel.com" \
           --description "Game Management Panel" \
-          --license "Apache 2.0"
+          --license "Apache 2.0" \
           --maintainer dev@pufferpanel.com \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
@@ -123,7 +123,7 @@ jobs:
           --version "${{ env.VERSION }}" \
           --url "https://pufferpanel.com" \
           --description "Game Management Panel" \
-          --license "Apache 2.0"
+          --license "Apache 2.0" \
           --maintainer dev@pufferpanel.com \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
@@ -139,7 +139,7 @@ jobs:
           --version "${{ env.VERSION }}" \
           --url "https://pufferpanel.com" \
           --description "Game Management Panel" \
-          --license "Apache 2.0"
+          --license "Apache 2.0" \
           --maintainer dev@pufferpanel.com \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
