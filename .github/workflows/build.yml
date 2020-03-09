@@ -96,15 +96,20 @@ jobs:
     - name: Build Package
       run: |
         fpm -s dir -t deb \
-          --name pufferpanel -v ${{ env.VERSION }} \
+          --name pufferpanel \
+          --version "${{ env.VERSION }}" \
+          --url "https://pufferpanel.com" \
+          --description "Game Management Panel" \
+          --license "Apache 2.0"
           --maintainer dev@pufferpanel.com \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
+          --before-upgrade systemd/scripts/preupgrade.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
           --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd systemd/servicefiles/pufferpanel.service \
           --deb-after-purge systemd/scripts/purge.sh \
           artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
           artifacts/www/pufferpanel=/var/www \
@@ -115,25 +120,35 @@ jobs:
 
         fpm -s deb -t rpm \
           --name pufferpanel \
+          --version "${{ env.VERSION }}" \
+          --url "https://pufferpanel.com" \
+          --description "Game Management Panel" \
+          --license "Apache 2.0"
           --maintainer dev@pufferpanel.com \
-          --rpm-user pufferpanel --rpm-group pufferpanel \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
+          --before-upgrade systemd/scripts/preupgrade.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
           --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
+          --rpm-user pufferpanel --rpm-group pufferpanel \
           pufferpanel_${{ env.VERSION }}_amd64.deb
 
         fpm -s dir -t deb \
-          --name pufferpanel -v ${{ env.VERSION }} \
+          --name pufferpanel \
+          --version "${{ env.VERSION }}" \
+          --url "https://pufferpanel.com" \
+          --description "Game Management Panel" \
+          --license "Apache 2.0"
           --maintainer dev@pufferpanel.com \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
           --before-install systemd/scripts/preinstall.sh \
           --after-install systemd/scripts/postinstall.sh \
+          --before-upgrade systemd/scripts/preupgrade.sh \
           --after-upgrade systemd/scripts/postupgrade.sh \
           --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd systemd/servicefiles/pufferpanel.service \
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
           artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
