@@ -25,7 +25,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/signal"
-	"runtime/debug"
 	"syscall"
 )
 
@@ -69,7 +68,14 @@ func entry(errChan chan error) {
 		}
 	}
 
-	createHook()
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+		<- c
+
+		runService = false
+		CompleteShutdown()
+	}()
 
 	for runService && err == nil {
 		err = runServices()
@@ -88,37 +94,12 @@ func runServices() error {
 
 	sftp.Run()
 
-	web := viper.GetString("daemon.web.host")
+	host := viper.GetString("daemon.web.host")
 
-	logging.Debug().Printf("Starting web access on %s", web)
-	err := manners.ListenAndServe(web, Engine)
+	logging.Debug().Printf("Starting web access on %s", host)
+	err := manners.ListenAndServe(host, Engine)
 
 	return err
-}
-
-func createHook() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGPIPE)
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				logging.Error().Printf("%+v\n%s", err, debug.Stack())
-			}
-		}()
-
-		var sig os.Signal
-
-		for sig != syscall.SIGTERM {
-			sig = <-c
-			switch sig {
-			case syscall.SIGPIPE:
-				//ignore SIGPIPEs for now, we're somehow getting them and it's causing issues
-			}
-		}
-
-		runService = false
-		CompleteShutdown()
-	}()
 }
 
 func recoverPanic() {
