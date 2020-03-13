@@ -437,7 +437,8 @@ func editServerUser(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	email := c.Param("email")
-	if email == "" {
+	username := c.Param("username")
+	if email == "" && username == ""{
 		return
 	}
 
@@ -461,10 +462,20 @@ func editServerUser(c *gin.Context) {
 	}
 
 	var registerToken string
-	user, err := us.GetByEmail(email)
+	var user *models.User
+	if email != "" {
+		user, err = us.GetByEmail(email)
+	} else {
+		user, err = us.Get(username)
+	}
+
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	} else if gorm.IsRecordNotFoundError(err) {
+		if email == "" {
+			response.HandleError(c, err, http.StatusBadRequest)
+			return
+		}
 		//we need to create the user here, since it's a new email we've not seen
 
 		user = &models.User{
@@ -526,7 +537,8 @@ func removeServerUser(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	email := c.Param("email")
-	if email == "" {
+	username := c.Param("username")
+	if email == "" && username == "" {
 		return
 	}
 
@@ -543,7 +555,13 @@ func removeServerUser(c *gin.Context) {
 		return
 	}
 
-	user, err := us.GetByEmail(email)
+	var user *models.User
+	if email != "" {
+		user, err = us.GetByEmail(email)
+	} else {
+		user, err = us.Get(username)
+	}
+
 	if err != nil && gorm.IsRecordNotFoundError(err) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
