@@ -29,24 +29,29 @@
           <h3 v-text="$t('servers.SelectTemplate')" />
           <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
           <v-expansion-panels>
-            <v-expansion-panel v-for="template in filterTemplates(templates, templateFilter)" :key="template.name" @click="loadTemplateData(template.name)">
-              <v-expansion-panel-header v-text="template.display" />
-              <v-expansion-panel-content>
-                <v-row v-if="templateData[template.name] === undefined">
-                  <v-col cols="5" />
-                  <v-col cols="2">
-                    <v-progress-circular
-                      indeterminate
-                      class="mr-2"
-                    />
-                    <strong v-text="$t('common.Loading')" />
-                  </v-col>
-                </v-row>
-                <span v-else v-html="markdown(templateData[template.name].readme || $t('servers.NoReadme'))" />
-                <br />
-                <v-btn color="primary" @click="selectTemplate(template.name)" v-text="$t('servers.SelectThisTemplate')" large block />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <fragment v-for="(elements, type) in templates" :key="type">
+              <v-expansion-panel disabled v-if="filterTemplates(elements, templateFilter).length > 0">
+                <v-expansion-panel-header v-text="type" />
+              </v-expansion-panel>
+              <v-expansion-panel v-for="template in filterTemplates(elements, templateFilter)" :key="template.name" @click="loadTemplateData(template.name)">
+                <v-expansion-panel-header v-text="template.display" />
+                <v-expansion-panel-content>
+                  <v-row v-if="templateData[template.name] === undefined">
+                    <v-col cols="5" />
+                    <v-col cols="2">
+                      <v-progress-circular
+                        indeterminate
+                        class="mr-2"
+                      />
+                      <strong v-text="$t('common.Loading')" />
+                    </v-col>
+                  </v-row>
+                  <span v-else v-html="markdown(templateData[template.name].readme || $t('servers.NoReadme'))" />
+                  <br />
+                  <v-btn color="primary" @click="selectTemplate(template.name)" v-text="$t('servers.SelectThisTemplate')" large block />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </fragment>
           </v-expansion-panels>
         </v-stepper-content>
 
@@ -285,18 +290,20 @@
 
 <script>
 import axios from 'axios'
+import { Fragment } from 'vue-fragment'
 import { handleError } from '@/utils/api'
 import markdown from '@/utils/markdown'
 
 const CancelToken = axios.CancelToken
 
 export default {
+  components: { Fragment },
   data () {
     return {
       nodes: [],
       selectedNode: null,
       templateFilter: '',
-      templates: [],
+      templates: {},
       templateData: {},
       selectedTemplate: '',
       formData: {},
@@ -414,15 +421,33 @@ export default {
     getTemplates () {
       const ctx = this
       this.loadingTemplates = true
-      this.templates = [{
+      /* this.templates = [{
         value: null,
         disabled: true,
         text: this.$t('common.Loading')
-      }]
+      }] */
       this.templateData = {}
       this.selectedTemplate = null
       this.$http.get('/api/templates').then(response => {
-        ctx.templates = response.data
+        response.data.map(template => {
+          if (!template.display) template.display = template.name
+          if (!template.type) template.type = 'none'
+          if (!ctx.templates[template.type]) ctx.templates[template.type] = []
+          ctx.templates[template.type].push(template)
+        })
+
+        const keys = Object.keys(ctx.templates)
+        const index = keys.indexOf('other')
+        if (index !== -1) this.$delete(keys, index)
+        keys.map(key => {
+          if (ctx.templates[key].length === 1) {
+            if (!ctx.templates.other) ctx.templates.other = []
+            ctx.templates.other.push(ctx.templates[key][0])
+            delete ctx.templates[key]
+          }
+        })
+
+        ctx.templates = { ...ctx.templates }
         ctx.loadingTemplates = false
       }).catch(handleError(ctx))
     },
