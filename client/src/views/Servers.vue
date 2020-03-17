@@ -9,12 +9,8 @@
             style="cursor: pointer;"
             :headers="headers"
             :items="servers"
-            :loading="loading"
-            :items-per-page="pagination.rowsPerPage"
-            :page.sync="pagination.page"
-            :server-items-length="totalServers"
+            :items-per-page="100"
             @click:row="rowSelected"
-            @page-count="updatePage"
           >
             <template v-slot:item.online="{ item }">
               <v-icon
@@ -31,12 +27,15 @@
               </v-icon>
             </template>
           </v-data-table>
-          <div class="text-center py-2">
-            <v-pagination
-              v-model="pagination.page"
-              :length="pagination.pageCount"
-            />
-          </div>
+          <v-row ref="lazy" v-if="pagination.page < pagination.pageCount" v-intersect="lazyLoad">
+            <v-col cols="2" offset="5">
+              <v-progress-circular
+                indeterminate
+                class="mr-2"
+              />
+              <span v-text="$t('common.Loading')" />
+            </v-col>
+          </v-row>
           <v-btn
             v-show="hasScope('servers.create') || isAdmin()"
             color="primary"
@@ -85,28 +84,17 @@ export default {
         }
       ],
       servers: [],
-      error: null,
-      loading: true,
-      totalServers: 0,
+      loading: false,
+      recheckLazy: false,
       pagination: {
-        page: 1,
+        page: 0,
         rowsPerPage: 10,
         pageCount: 1
       },
       task: null
     }
   },
-  watch: {
-    pagination: {
-      handler () {
-        this.loadData()
-      },
-      deep: true
-    }
-  },
   mounted () {
-    this.pagination.page = 1
-    this.loadData()
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
   beforeDestroy () {
@@ -114,15 +102,32 @@ export default {
       clearInterval(this.task)
     }
   },
+  watch: {
+    recheckLazy (newVal) {
+      const rect = /* document.getElementById('lazy') */ this.$refs.lazy.getBoundingClientRect()
+      const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
+      if (
+        !(rect.bottom < 0 || rect.top - viewHeight >= 0) &&
+        this.pagination.page < this.pagination.pageCount
+      ) {
+        this.loadNextPage()
+      }
+    }
+  },
   methods: {
-    loadData () {
+    lazyLoad (entries, observer, isIntersecting) {
+      if (isIntersecting) {
+        this.loadNextPage()
+      }
+    },
+    loadNextPage () {
+      if (this.loading) return
+      this.loading = true
       const ctx = this
-      ctx.loading = true
       const { page, rowsPerPage } = this.pagination
-      ctx.servers = []
       this.$http.get('/api/servers', {
         params: {
-          page: page,
+          page: page + 1,
           limit: rowsPerPage
         }
       }).then(response => {
@@ -160,13 +165,14 @@ export default {
             })
           }
         }
+        ctx.pagination.page = page + 1
         const paging = response.data.paging
-        ctx.totalServers = paging.total
         ctx.pagination.pageCount = Math.ceil(paging.total / ctx.pagination.rowsPerPage)
+        ctx.loading = false
+        ctx.recheckLazy = true
       })
         .catch(handleError(ctx))
         .finally(() => {
-          ctx.loading = false
           ctx.pollServerStatus()
         })
     },
