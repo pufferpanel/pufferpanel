@@ -23,6 +23,12 @@
       >
         <v-icon>mdi-lightbulb</v-icon>
       </v-btn>
+      <v-btn
+        icon
+        @click="showLanguageSelect = true"
+      >
+        <v-icon>mdi-earth</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -148,6 +154,7 @@
           v-else
         />
       </v-container>
+      <common-language v-model="showLanguageSelect" />
     </v-content>
   </v-app>
 </template>
@@ -164,7 +171,8 @@ export default {
       loggedIn: false,
       drawer: null,
       minified: false,
-      reauhTask: null
+      reauhTask: null,
+      showLanguageSelect: false
     }
   },
   mounted () {

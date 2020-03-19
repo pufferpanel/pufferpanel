@@ -7,6 +7,7 @@
   "Loading": "Loading...",
   "General": "General",
   "Language": "Language",
+  "SelectLanguage": "Select Language",
   "Settings": "Settings",
   "Update": "Update",
   "Edit": "Edit",
@@ -27,5 +28,6 @@
   "Unknown": "Unknown",
   "Search": "Search",
   "Back": "Back",
-  "Next": "Next"
+  "Next": "Next",
+  "LanguageName": "English"
 }
