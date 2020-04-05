@@ -29,14 +29,12 @@ import (
 	"strings"
 )
 
-func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []pufferpanel.Scope) {
+func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes []pufferpanel.Scope) {
 	defer func() {
 		if err := recover(); err != nil {
 			logging.Error().Printf("Error with websocket connection for server %s: %s\n%s", server.Id(), err, debug.Stack())
 		}
 	}()
-
-	defer conn.Close()
 
 	for {
 		msgType, data, err := conn.ReadMessage()
@@ -192,7 +190,7 @@ func listenOnSocket(conn *websocket.Conn, server *programs.Program, scopes []puf
 	}
 }
 
-func handleGetFile(conn *websocket.Conn, server *programs.Program, path string, editMode bool) {
+func handleGetFile(conn *pufferpanel.Socket, server *programs.Program, path string, editMode bool) {
 	data, err := server.GetItem(path)
 	if err != nil {
 		_ = pufferpanel.Write(conn, messages.FileList{Error: err.Error()})

@@ -17,10 +17,9 @@
 package pufferpanel
 
 import (
-	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 )
 
-func Write(c *websocket.Conn, msg messages.Message) error {
+func Write(c *Socket, msg messages.Message) error {
 	return c.WriteJSON(messages.Transmission{Type: msg.Key(), Message: msg})
 }
