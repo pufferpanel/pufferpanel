@@ -163,7 +163,6 @@ jobs:
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
-      if: "contains(github.event.head_commit.message, '[save]')"
       with:
         name: Artifacts
         path: artifacts
