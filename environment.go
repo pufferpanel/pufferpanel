@@ -18,7 +18,6 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/gorilla/websocket"
 	"github.com/spf13/viper"
 	"io"
 	"os"
@@ -58,7 +57,7 @@ type Environment interface {
 
 	GetConsoleFrom(time int64) (console []string, epoch int64)
 
-	AddListener(ws *websocket.Conn)
+	AddListener(ws *Socket)
 
 	GetStats() (*ServerStats, error)
 
@@ -114,7 +113,7 @@ func (e *BaseEnvironment) GetConsoleFrom(time int64) (console []string, epoch in
 	return
 }
 
-func (e *BaseEnvironment) AddListener(ws *websocket.Conn) {
+func (e *BaseEnvironment) AddListener(ws *Socket) {
 	e.WSManager.Register(ws)
 }
 

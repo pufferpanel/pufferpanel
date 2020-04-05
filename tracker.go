@@ -18,7 +18,6 @@ package pufferpanel
 
 import (
 	"encoding/json"
-	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"sync"
@@ -30,7 +29,7 @@ type Tracker struct {
 }
 
 type connection struct {
-	socket *websocket.Conn
+	socket *Socket
 	lock sync.Mutex
 }
 
@@ -38,7 +37,7 @@ func CreateTracker() *Tracker {
 	return &Tracker{sockets: make([]*connection, 0)}
 }
 
-func (ws *Tracker) Register(conn *websocket.Conn) {
+func (ws *Tracker) Register(conn *Socket) {
 	ws.locker.Lock()
 	defer ws.locker.Unlock()
 	ws.sockets = append(ws.sockets, &connection{socket: conn})
@@ -56,7 +55,7 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 		go func(conn *connection, data []byte) {
 			conn.lock.Lock()
 			defer conn.lock.Unlock()
-			err := conn.socket.WriteMessage(websocket.TextMessage, data)
+			err := conn.socket.WriteMessage(data)
 			if err != nil {
 				logging.Info().Printf("websocket encountered error, dropping (%s)", err.Error())
 				ws.locker.Lock()

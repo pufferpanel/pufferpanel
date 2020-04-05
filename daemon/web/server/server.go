@@ -25,7 +25,6 @@ import (
 	"github.com/itsjamie/gin-cors"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/response"
@@ -579,21 +578,6 @@ func PostConsole(c *gin.Context) {
 	}
 }
 
-func GetConsole(c *gin.Context) {
-	item, _ := c.Get("server")
-	program := item.(*programs.Program)
-
-	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	console, _ := program.GetEnvironment().GetConsole()
-	_ = pufferpanel.Write(conn, messages.Console{Logs: console})
-
-	program.GetEnvironment().AddListener(conn)
-}
-
 // @Summary Gets server stats
 // @Description Gets the given server stats
 // @Accept json
@@ -686,7 +670,9 @@ func OpenSocket(c *gin.Context) {
 	internalMap, _ := c.Get("scopes")
 	scopes := internalMap.([]pufferpanel.Scope)
 
-	go listenOnSocket(conn, program, scopes)
+	socket := pufferpanel.Create(conn)
 
-	program.GetEnvironment().AddListener(conn)
+	go listenOnSocket(socket, program, scopes)
+
+	program.GetEnvironment().AddListener(socket)
 }
