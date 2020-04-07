@@ -11,13 +11,12 @@
   limitations under the License.
 */
 
-package daemon
+package proxy
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -25,29 +24,22 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
 func RegisterRoutes(rg *gin.RouterGroup) {
-	g := rg.Group("/server", handlers.HasOAuth2Token, middleware.NeedsDatabase)
+	proxy := rg.Group("/daemon", handlers.HasOAuth2Token, middleware.NeedsDatabase)
 	{
-		//g.Any("", proxyServerRequest)
-		g.Any("/:id", proxyServerRequest)
-		g.Any("/:id/*path", proxyServerRequest)
-	}
+		g := proxy.Group("/server")
+		{
+			g.Any("/:id", proxyServerRequest)
+			g.Any("/:id/*path", proxyServerRequest)
+		}
 
-	g = rg.Group("/socket", handlers.HasOAuth2Token, middleware.NeedsDatabase)
-	{
-		//g.Any("", proxyServerRequest)
-		g.Any("/:id", proxyServerRequest)
-	}
-
-	r := rg.Group("/node", handlers.HasOAuth2Token, middleware.NeedsDatabase)
-	{
-		//g.Any("", proxyServerRequest)
-		r.Any("/:id", proxyNodeRequest)
-		r.Any("/:id/*path", proxyNodeRequest)
+		g = proxy.Group("/socket")
+		{
+			g.Any("/:id", proxyServerRequest)
+		}
 	}
 }
 
@@ -63,7 +55,7 @@ func proxyServerRequest(c *gin.Context) {
 		return
 	}
 
-	path := c.Request.URL.Path
+	path := strings.TrimPrefix(c.Request.URL.Path, "/proxy")
 
 	s, err := ss.Get(serverId)
 	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
@@ -88,62 +80,22 @@ func proxyServerRequest(c *gin.Context) {
 
 	if s.Node.IsLocal() {
 		c.Request.URL.Path = path
-		daemon.Engine.HandleContext(c)
+		pufferpanel.Engine.HandleContext(c)
 	} else {
-		if strings.ToLower(c.GetHeader("Upgrade")) == "websocket" {
+		if c.IsWebsocket() {
 			proxySocketRequest(c, path, ns, &s.Node)
 		} else {
 			proxyHttpRequest(c, path, ns, &s.Node)
 		}
 	}
-}
-
-func proxyNodeRequest(c *gin.Context) {
-	path := c.Param("path")
-	db := middleware.GetDatabase(c)
-	ns := &services.Node{DB: db}
-	ps := &services.Permission{DB: db}
-
-	nodeId := c.Param("id")
-	if nodeId == "" {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-
-	id, err := strconv.ParseUint(nodeId, 10, 32)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	node, err := ns.Get(uint(id))
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	token := c.MustGet("token").(*pufferpanel.Token)
-
-	//if a session-token, we need to convert it to an oauth2 token instead
-	if token.Claims.Audience == "session" {
-		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), nil)
-		if response.HandleError(c, err, http.StatusInternalServerError) {
-			return
-		}
-
-		//set new header
-		c.Header("Authorization", "Bearer "+newToken)
-	}
-
-	if strings.ToLower(c.GetHeader("Upgrade")) == "websocket" {
-		proxySocketRequest(c, path, ns, node)
-	} else {
-		proxyHttpRequest(c, path, ns, node)
-	}
+	c.Abort()
 }
 
 func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	callResponse, err := ns.CallNode(node, c.Request.Method, path, c.Request.Body, c.Request.Header)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
 	}
 
 	//Even though apache isn't going to be in place, we can't set certain headers
@@ -160,14 +112,16 @@ func proxyHttpRequest(c *gin.Context, path string, ns *services.Node, node *mode
 	}
 
 	c.DataFromReader(callResponse.StatusCode, callResponse.ContentLength, callResponse.Header.Get("Content-Type"), callResponse.Body, newHeaders)
+	c.Abort()
 }
 
 func proxySocketRequest(c *gin.Context, path string, ns *services.Node, node *models.Node) {
 	if node.IsLocal() {
 		//have gin handle the request again, but send it to daemon instead
-		daemon.Engine.HandleContext(c)
+		pufferpanel.Engine.HandleContext(c)
 	} else {
 		err := ns.OpenSocket(node, path, c.Writer, c.Request)
 		response.HandleError(c, err, http.StatusInternalServerError)
 	}
+	c.Abort()
 }

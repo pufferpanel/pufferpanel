@@ -43,7 +43,7 @@ export default {
       this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(response => {
         ctx.server = response.data.server
         ctx.server.permissions = response.data.permissions
-        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/daemon/socket/${ctx.server.id}`
+        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/proxy/daemon/socket/${ctx.server.id}`
         ctx.$connect(url)
         ctx.statRequest = setInterval(ctx.callStats, 3000)
       }).catch(handleError(ctx))

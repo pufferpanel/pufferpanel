@@ -14,55 +14,21 @@
  limitations under the License.
 */
 
-package web
+package daemon
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/daemon/web/server"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
-	"strings"
 )
 
-// @title Pufferd API
-// @version 2.0
-// @description PufferPanel daemon service
-// @contact.name PufferPanel
-// @contact.url https://pufferpanel.com
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-func ConfigureWeb() *gin.Engine {
-	engine := gin.New()
-	{
-		engine.Use(gin.Recovery())
-		engine.Use(gin.LoggerWithWriter(logging.Info().Writer()))
-		engine.Use(func(c *gin.Context) {
-			if c.GetHeader("Connection") == "Upgrade" {
-				return
-			}
-			if strings.HasPrefix(c.Request.URL.Path, "/swagger/") {
-				return
-			}
-			middleware.ResponseAndRecover(c)
-		})
-
-		daemonPath := engine.Group("/daemon")
-		{
-			RegisterRoutes(daemonPath)
-			server.RegisterRoutes(engine.Group("/daemon"))
-		}
-	}
-
-	return engine
-}
-
-func RegisterRoutes(e *gin.RouterGroup) {
+func RegisterDaemonRoutes(e *gin.RouterGroup) {
 	e.GET("", getStatusGET)
 	e.HEAD("", getStatusHEAD)
 	e.Handle("OPTIONS", "", response.CreateOptions("GET", "HEAD"))
+
+	RegisterServerRoutes(e)
 }
 
 // Root godoc

@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
-	"github.com/pufferpanel/pufferpanel/v2/daemon"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"io"
@@ -106,7 +106,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 
 	if node.IsLocal() {
 		w := &httptest.ResponseRecorder{}
-		daemon.Engine.ServeHTTP(w, request)
+		pufferpanel.Engine.ServeHTTP(w, request)
 		return w.Result(), err
 	}
 

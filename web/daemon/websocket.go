@@ -11,7 +11,7 @@
   limitations under the License.
 */
 
-package server
+package daemon
 
 import (
 	"bytes"

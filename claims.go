@@ -24,7 +24,7 @@ type Claim struct {
 }
 
 type PanelClaims struct {
-	Scopes map[string][]Scope `json:"scopes"`
+	Scopes map[string][]Scope `json:"scopes,omitempty"`
 }
 
 type Token struct {
@@ -33,7 +33,7 @@ type Token struct {
 }
 
 func ParseToken(publicKey *ecdsa.PublicKey, token string) (*Token, error) {
-	claim, err := jwt.ParseWithClaims(token, &Claim{}, func(token *jwt.Token) (interface{}, error) {
+	claim, err := jwt.ParseWithClaims(token, &Claim{PanelClaims: PanelClaims{Scopes: make(map[string][]Scope)}}, func(token *jwt.Token) (interface{}, error) {
 		return publicKey, nil
 	})
 

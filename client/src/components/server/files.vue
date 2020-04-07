@@ -296,7 +296,7 @@ export default {
           path += '/' + item.name
         }
         const ctx = this
-        this.$http.get(`/daemon/server/${this.server.id}/file/${path}`).then(response => {
+        this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`).then(response => {
           ctx.currentFile = item.name
           ctx.fileContents = response.data
           ctx.editOpen = true
@@ -319,7 +319,7 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       const ctx = this
-      this.$http.put(`/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+      this.$http.put(`/proxy/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
         ctx.editOpen = false
         ctx.currentFile = ''
         ctx.fileContents = ''
@@ -361,7 +361,7 @@ export default {
       } else {
         path += '/' + item.name
       }
-      return '/daemon/server/' + this.server.id + '/file' + path
+      return '/proxy/daemon/server/' + this.server.id + '/file' + path
     },
     cancelFolderCreate () {
       this.createFolder = false
@@ -407,7 +407,7 @@ export default {
       const ctx = this
       return this.$http({
         method: 'put',
-        url: '/daemon/server/' + this.server.id + '/file' + path,
+        url: '/proxy/daemon/server/' + this.server.id + '/file' + path,
         data: item,
         onUploadProgress: event => {
           ctx.uploadCurrent = event.loaded

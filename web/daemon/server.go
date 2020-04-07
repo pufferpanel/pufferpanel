@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package server
+package daemon
 
 import (
 	"encoding/json"
@@ -46,7 +46,7 @@ var wsupgrader = websocket.Upgrader{
 	},
 }
 
-func RegisterRoutes(e *gin.RouterGroup) {
+func RegisterServerRoutes(e *gin.RouterGroup) {
 	l := e.Group("/server")
 	{
 		l.PUT("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
@@ -97,7 +97,7 @@ func RegisterRoutes(e *gin.RouterGroup) {
 			Origins:     "*",
 			Credentials: true,
 		}), OpenSocket)
-		p.Handle("CONNECT", "/:id", func(c *gin.Context) {
+		p.Handle("CONNECT", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), func(c *gin.Context) {
 			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Credentials", "false")
 		})
