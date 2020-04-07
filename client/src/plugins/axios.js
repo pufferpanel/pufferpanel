@@ -7,7 +7,7 @@ Vue.prototype.$http = axios.create()
 Vue.prototype.axios = Vue.prototype.$http
 
 Vue.prototype.$http.interceptors.request.use(request => {
-  if (request.url.startsWith('/api') || request.url.startsWith('/daemon')) {
+  if (request.url.startsWith('/api') || request.url.startsWith('/daemon') || request.url.startsWith('/proxy')) {
     request.headers[request.method].Authorization = 'Bearer ' + Cookies.get('puffer_auth') || ''
   }
   return request

@@ -29,6 +29,7 @@ func init() {
 
 	//global settings
 	viper.SetDefault("logs", "logs")
+	viper.SetDefault("web.host", "0.0.0.0:8080")
 
 	//panel specific settings
 	viper.SetDefault("panel.enable", true)
@@ -38,7 +39,7 @@ func init() {
 	viper.SetDefault("panel.database.log", false)
 	viper.SetDefault("panel.token.private", "private.pem")
 	viper.SetDefault("panel.token.public", "public.pem")
-	viper.SetDefault("panel.web.host", "0.0.0.0:8080")
+
 	viper.SetDefault("panel.web.files", "www")
 	viper.SetDefault("panel.email.templates", "email/emails.json")
 	viper.SetDefault("panel.email.provider", "")
@@ -52,7 +53,6 @@ func init() {
 	viper.SetDefault("daemon.enable", true)
 	viper.SetDefault("daemon.console.buffer", 50)
 	viper.SetDefault("daemon.console.forward", false)
-	viper.SetDefault("daemon.web.host", "0.0.0.0:5656")
 	viper.SetDefault("daemon.sftp.host", "0.0.0.0:5657")
 	viper.SetDefault("daemon.sftp.key", "sftp.key")
 	viper.SetDefault("daemon.auth.publicKey", "panel.pem")

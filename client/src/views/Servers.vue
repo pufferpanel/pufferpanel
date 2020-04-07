@@ -179,7 +179,7 @@ export default {
     pollServerStatus () {
       for (const i in this.servers) {
         const server = this.servers[i]
-        this.$http.get('/daemon/server/' + server.id + '/status').then(response => {
+        this.$http.get('/proxy/daemon/server/' + server.id + '/status').then(response => {
           if (response.data) {
             if (response.data.running) {
               server.online = true

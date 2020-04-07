@@ -18,10 +18,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/api"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/auth"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/daemon"
-	"github.com/pufferpanel/pufferpanel/v2/panel/web/oauth2"
+	"github.com/pufferpanel/pufferpanel/v2/web/api"
+	"github.com/pufferpanel/pufferpanel/v2/web/auth"
+	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
+	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
+	"github.com/pufferpanel/pufferpanel/v2/web/proxy"
 	"github.com/spf13/viper"
 	"net/http"
 	"strings"
@@ -30,45 +31,52 @@ import (
 var ClientPath string
 var IndexFile string
 
-var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/"}
+var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
 
 func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)
 	})
 
-	ClientPath = viper.GetString("panel.web.files")
-	IndexFile = ClientPath + "/index.html"
+	if viper.GetBool("daemon.enable") {
+		daemon.RegisterDaemonRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
+	}
 
-	api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
-	e.GET("/api/config", config)
-	oauth2.RegisterRoutes(e.Group("/oauth2"))
-	auth.RegisterRoutes(e.Group("/auth"))
-	daemon.RegisterRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
+	if viper.GetBool("panel.enable") {
+		ClientPath = viper.GetString("panel.web.files")
+		IndexFile = ClientPath + "/index.html"
 
-	css := e.Group("/css")
-	{
-		css.Use(gzip.Gzip(gzip.DefaultCompression))
-		css.StaticFS("", http.Dir(ClientPath+"/css"))
+		api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
+		e.GET("/api/config", config)
+		oauth2.RegisterRoutes(e.Group("/oauth2"))
+		auth.RegisterRoutes(e.Group("/auth"))
+
+		proxy.RegisterRoutes(e.Group("/proxy"))
+
+		css := e.Group("/css")
+		{
+			css.Use(gzip.Gzip(gzip.DefaultCompression))
+			css.StaticFS("", http.Dir(ClientPath+"/css"))
+		}
+		fonts := e.Group("/fonts")
+		{
+			fonts.Use(gzip.Gzip(gzip.DefaultCompression))
+			fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
+		}
+		img := e.Group("/img")
+		{
+			img.StaticFS("", http.Dir(ClientPath+"/img"))
+		}
+		js := e.Group("/js", setContentType("application/javascript"))
+		{
+			js.Use(gzip.Gzip(gzip.DefaultCompression))
+			js.StaticFS("", http.Dir(ClientPath+"/js"))
+		}
+		e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
+		e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
+		//e.StaticFile("/", IndexFile)
+		e.NoRoute( /*handlers.AuthMiddleware,*/ handle404)
 	}
-	fonts := e.Group("/fonts")
-	{
-		fonts.Use(gzip.Gzip(gzip.DefaultCompression))
-		fonts.StaticFS("", http.Dir(ClientPath+"/fonts"))
-	}
-	img := e.Group("/img")
-	{
-		img.StaticFS("", http.Dir(ClientPath+"/img"))
-	}
-	js := e.Group("/js", setContentType("application/javascript"))
-	{
-		js.Use(gzip.Gzip(gzip.DefaultCompression))
-		js.StaticFS("", http.Dir(ClientPath+"/js"))
-	}
-	e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
-	e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
-	//e.StaticFile("/", IndexFile)
-	e.NoRoute( /*handlers.AuthMiddleware,*/ handle404)
 }
 
 func handle404(c *gin.Context) {

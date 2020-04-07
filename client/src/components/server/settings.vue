@@ -99,7 +99,7 @@ export default {
   methods: {
     loadData () {
       const ctx = this
-      this.$http.get(`/daemon/server/${this.server.id}/data`).then(response => {
+      this.$http.get(`/proxy/daemon/server/${this.server.id}/data`).then(response => {
         const data = response.data.data
         const items = {}
         Object.keys(data).forEach(k => {
@@ -110,7 +110,7 @@ export default {
     },
     save () {
       const ctx = this
-      this.$http.post(`/daemon/server/${this.server.id}/data`, { data: this.items }).then(response => {
+      this.$http.post(`/proxy/daemon/server/${this.server.id}/data`, { data: this.items }).then(response => {
         ctx.$toast.success(ctx.$t('common.Saved'))
       }).catch(handleError(ctx))
     }
