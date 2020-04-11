@@ -20,6 +20,7 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -27,6 +28,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/spf13/viper"
 	"io"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"sync"
@@ -35,13 +37,16 @@ import (
 
 var signingMethod = jwt.SigningMethodES256
 var privateKey *ecdsa.PrivateKey
+var publicKey *ecdsa.PublicKey
 var locker sync.Mutex
 
 func GetPublicKey() *ecdsa.PublicKey {
+	ValidateTokenLoaded()
 	if privateKey != nil {
 		return &privateKey.PublicKey
+	} else {
+		return publicKey
 	}
-	return nil
 }
 
 func Generate(claims jwt.Claims) (string, error) {
@@ -160,20 +165,25 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 
 func ParseToken(token string) (*pufferpanel.Token, error) {
 	ValidateTokenLoaded()
-	return pufferpanel.ParseToken(&privateKey.PublicKey, token)
+	return pufferpanel.ParseToken(publicKey, token)
 }
 
 func ValidateTokenLoaded() {
 	locker.Lock()
 	defer locker.Unlock()
-	if privateKey == nil {
-		load()
+	//only load public if panel is disabled
+	if !viper.GetBool("panel.enable") {
+		if publicKey == nil {
+			loadPublic()
+		}
+	} else if privateKey == nil {
+		loadPrivate()
 	}
 }
 
-func load() {
+func loadPrivate() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(viper.GetString("panel.token.private"), os.O_RDONLY, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -192,19 +202,20 @@ func load() {
 
 	privateKey = privKey
 
-	pubKey := &privateKey.PublicKey
-	pubKeyEncoded, err := x509.MarshalPKIXPublicKey(pubKey)
+	publicKey = &privateKey.PublicKey
+	pubKeyEncoded, err := x509.MarshalPKIXPublicKey(publicKey)
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 
-	pubKeyFile, err := os.OpenFile(viper.GetString("panel.token.public"), os.O_CREATE|os.O_RDWR, 0644)
+	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_CREATE|os.O_RDWR, 0644)
 	defer pufferpanel.Close(pubKeyFile)
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
+
 	err = pem.Encode(pubKeyFile, &pem.Block{Type: "PUBLIC KEY", Bytes: pubKeyEncoded})
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
@@ -237,4 +248,33 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	return
+}
+
+func loadPublic() {
+	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_RDONLY, 0644)
+	defer pufferpanel.Close(pubKeyFile)
+	if err != nil {
+		logging.Error().Printf("Internal error on token service: %s", err)
+		return
+	}
+
+	data, err := ioutil.ReadAll(pubKeyFile)
+	if err != nil {
+		logging.Error().Printf("Internal error on token service: %s", err)
+		return
+	}
+
+	block, _ := pem.Decode(data)
+	key, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		logging.Error().Printf("Internal error on token service: %s", err)
+		return
+	}
+
+	var ok bool
+	publicKey, ok = key.(*ecdsa.PublicKey)
+	if !ok {
+		logging.Error().Printf("Internal error on token service: %s", errors.New("public key is not ECDSA"))
+		return
+	}
 }

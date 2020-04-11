@@ -109,8 +109,6 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 func panel(ch chan error) {
 	services.ValidateTokenLoaded()
-	pufferpanel.SetPublicKey(services.GetPublicKey())
-
 	services.LoadEmailService()
 
 	go func() {
