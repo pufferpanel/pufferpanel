@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 	"strings"
 )
@@ -51,16 +52,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 			authToken = authArr[1]
 		}
 
-		var err error
-		key := pufferpanel.GetPublicKey()
-		if key == nil {
-			key, err = pufferpanel.LoadPublicKey()
-			if response.HandleError(c, err, http.StatusInternalServerError) {
-				return
-			}
-		}
-
-		token, err := pufferpanel.ParseToken(key, authToken)
+		token, err := services.ParseToken(authToken)
 		if response.HandleError(c, err, http.StatusForbidden) {
 			return
 		}

@@ -37,8 +37,8 @@ func init() {
 	viper.SetDefault("panel.database.dialect", "sqlite3")
 	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
 	viper.SetDefault("panel.database.log", false)
-	viper.SetDefault("panel.token.private", "private.pem")
-	viper.SetDefault("panel.token.public", "public.pem")
+	viper.SetDefault("token.private", "private.pem")
+	viper.SetDefault("token.public", "public.pem")
 
 	viper.SetDefault("panel.web.files", "www")
 	viper.SetDefault("panel.email.templates", "email/emails.json")
@@ -55,7 +55,6 @@ func init() {
 	viper.SetDefault("daemon.console.forward", false)
 	viper.SetDefault("daemon.sftp.host", "0.0.0.0:5657")
 	viper.SetDefault("daemon.sftp.key", "sftp.key")
-	viper.SetDefault("daemon.auth.publicKey", "panel.pem")
 	viper.SetDefault("daemon.auth.url", "http://localhost:8080")
 	viper.SetDefault("daemon.auth.clientId", "")
 	viper.SetDefault("daemon.auth.clientSecret", "")

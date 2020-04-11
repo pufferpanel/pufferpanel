@@ -167,7 +167,7 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		return false, nil
 	}
 
-	path := fmt.Sprintf("://%s:%d", node.PrivateHost, node.PrivatePort)
+	path := fmt.Sprintf("://%s:%d/daemon", node.PrivateHost, node.PrivatePort)
 
 	_, err := http.Get("https" + path)
 
