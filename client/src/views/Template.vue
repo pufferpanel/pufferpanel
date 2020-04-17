@@ -214,7 +214,7 @@ export default {
       }).catch(handleError(ctx))
     },
     save () {
-      this.updateJson()
+      if (currentMode === 'editor') this.updateJson()
       const ctx = this
       ctx.$http.put(`/api/templates/${ctx.name}`, ctx.template).then(response => {
         ctx.$toast.success(ctx.$t('templates.SaveSuccess'))
