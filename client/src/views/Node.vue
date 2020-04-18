@@ -71,12 +71,15 @@ export default {
       },
       configTemplate: {
         logs: '/var/log/pufferpanel',
+        web: {},
+        token:{
+            public: '/etc/pufferpanel/public.pem',
+        },
         panel: {
           enable: false
         },
         daemon: {
           auth: {
-            publicKey: '/etc/pufferpanel/public.pem',
             url: location.protocol + '//' + location.host
           },
           data: {
@@ -84,7 +87,6 @@ export default {
             servers: '/var/lib/pufferpanel/servers'
           },
           sftp: {},
-          web: {}
         }
       }
     }
@@ -121,7 +123,7 @@ export default {
       config.daemon.auth.clientId = this.deployment.clientId
       config.daemon.auth.clientSecret = this.deployment.clientSecret
       config.daemon.sftp.host = `0.0.0.0:${this.node.sftpPort}`
-      config.daemon.web.host = `0.0.0.0:${this.node.privatePort}`
+      config.web.host = `0.0.0.0:${this.node.privatePort}`
       this.download(JSON.stringify(config, undefined, 2), 'config.json')
     },
     download (content, filename, contentType) {
