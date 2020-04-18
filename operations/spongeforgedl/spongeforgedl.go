@@ -121,7 +121,7 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 	}
 
 	//going to stick the spongeforge rename in, to assist with those modpacks
-	err = pufferpanel.CopyFile(file, path.Join("mods", "_aspongeforge.jar"))
+	err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
 	if err != nil {
 		return err
 	}

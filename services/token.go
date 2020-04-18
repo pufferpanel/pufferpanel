@@ -233,7 +233,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile(viper.GetString("panel.token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return

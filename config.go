@@ -30,6 +30,8 @@ func init() {
 	//global settings
 	viper.SetDefault("logs", "logs")
 	viper.SetDefault("web.host", "0.0.0.0:8080")
+	viper.SetDefault("token.private", "private.pem")
+	viper.SetDefault("token.public", "public.pem")
 
 	//panel specific settings
 	viper.SetDefault("panel.enable", true)
@@ -37,8 +39,6 @@ func init() {
 	viper.SetDefault("panel.database.dialect", "sqlite3")
 	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
 	viper.SetDefault("panel.database.log", false)
-	viper.SetDefault("token.private", "private.pem")
-	viper.SetDefault("token.public", "public.pem")
 
 	viper.SetDefault("panel.web.files", "www")
 	viper.SetDefault("panel.email.templates", "email/emails.json")
