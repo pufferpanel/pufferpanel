@@ -168,8 +168,10 @@ func (p *Program) Start() (err error) {
 	//HACK: add rootDir stuff
 	data["rootDir"] = p.Environment.GetRootDirectory()
 
-	cmd, args := pufferpanel.SplitArguments(p.Execution.Command)
-	err = p.Environment.ExecuteAsync(pufferpanel.ReplaceTokens(cmd, data), pufferpanel.ReplaceTokensInArr(args, data), pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data), p.afterExit)
+	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
+
+	cmd, args := pufferpanel.SplitArguments(commandLine)
+	err = p.Environment.ExecuteAsync(cmd, args, pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data), p.afterExit)
 	if err != nil {
 		logging.Error().Printf("error starting server %s: %s", p.Id(), err)
 		p.Environment.DisplayToConsole(true, " Failed to start server\n")

@@ -5,13 +5,13 @@
       "dialect": "sqlite3",
       "url": "file:/var/lib/pufferpanel/database.db?cache=shared"
     },
-    "token": {
-      "private": "private.pem",
-      "public": "public.pem"
-    },
     "web": {
       "files": "/var/www/pufferpanel"
     }
+  },
+  "token": {
+    "private": "private.pem",
+    "public": "public.pem"
   },
   "daemon": {
     "auth": {
