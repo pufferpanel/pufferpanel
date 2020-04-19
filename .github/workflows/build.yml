@@ -63,8 +63,8 @@ jobs:
 
         cp -r assets/email artifacts/
         
-        apt-get update
-        apt-get -y install gcc-arm-linux-gnueabi
+        sudo apt-get update
+        sudo apt-get -y install gcc-arm-linux-gnueabi
         
     - name: Build
       run: |
