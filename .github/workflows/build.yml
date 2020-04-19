@@ -76,6 +76,8 @@ jobs:
 
         export GOOS=linux
         export GOARCH=arm
+        export GOARM=7
+        export CGO_ENABLED=1
         go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
     - name: npm install, build
