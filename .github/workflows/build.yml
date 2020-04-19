@@ -63,6 +63,9 @@ jobs:
 
         cp -r assets/email artifacts/
         
+        apt-get update
+        apt-get -y install gcc-arm-linux-gnueabi
+        
     - name: Build
       run: |
         export GOOS=linux
