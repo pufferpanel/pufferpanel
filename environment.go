@@ -26,30 +26,30 @@ import (
 
 type Environment interface {
 	//Executes a command within the environment.
-	Execute(cmd string, args []string, env map[string]string, callback func(graceful bool)) (stdOut []byte, err error)
+	Execute(steps ExecutionData) error
 
 	//Executes a command within the environment and immediately return
-	ExecuteAsync(cmd string, args []string, env map[string]string, callback func(graceful bool)) (err error)
+	ExecuteAsync(steps ExecutionData) error
 
 	//Sends a string to the StdIn of the main program process
-	ExecuteInMainProcess(cmd string) (err error)
+	ExecuteInMainProcess(cmd string) error
 
 	//Kills the main process, but leaves the environment running.
-	Kill() (err error)
+	Kill() error
 
 	//Creates the environment setting needed to run programs.
-	Create() (err error)
+	Create() error
 
 	//Deletes the environment.
-	Delete() (err error)
+	Delete() error
 
-	Update() (err error)
+	Update() error
 
 	IsRunning() (isRunning bool, err error)
 
-	WaitForMainProcess() (err error)
+	WaitForMainProcess() error
 
-	WaitForMainProcessFor(timeout int) (err error)
+	WaitForMainProcessFor(timeout int) error
 
 	GetRootDirectory() string
 
@@ -79,24 +79,34 @@ type BaseEnvironment struct {
 	WaitFunction      func() (err error) `json:"-"`
 }
 
-type ExecutionFunction func(cmd string, args []string, env map[string]string, callback func(graceful bool)) (err error)
+type ExecutionData struct {
+	Command string
+	Arguments []string
+	Environment map[string]string
+	WorkingDirectory string
+	Callback func(graceful bool)
+}
 
-func (e *BaseEnvironment) Execute(cmd string, args []string, env map[string]string, callback func(graceful bool)) (stdOut []byte, err error) {
-	stdOut = make([]byte, 0)
-	err = e.ExecuteAsync(cmd, args, env, callback)
+type ExecutionFunction func(steps ExecutionData) (err error)
+
+func (e *BaseEnvironment) Execute(steps ExecutionData) error {
+	err := e.ExecuteAsync(steps)
 	if err != nil {
-		return
+		return err
 	}
-	err = e.WaitForMainProcess()
-	return
+	return e.WaitForMainProcess()
 }
 
 func (e *BaseEnvironment) WaitForMainProcess() (err error) {
 	return e.WaitFunction()
 }
 
-func (e *BaseEnvironment) ExecuteAsync(cmd string, args []string, env map[string]string, callback func(graceful bool)) (err error) {
-	return e.ExecutionFunction(cmd, args, env, callback)
+func (e *BaseEnvironment) ExecuteAsync(steps ExecutionData) (err error) {
+	if steps.WorkingDirectory == "" {
+		steps.WorkingDirectory = e.GetRootDirectory()
+	}
+
+	return e.ExecutionFunction(steps)
 }
 
 func (e *BaseEnvironment) GetRootDirectory() string {

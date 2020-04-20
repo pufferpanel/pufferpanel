@@ -130,7 +130,7 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 	if !useCache {
 		logging.Info().Printf("Downloading new version and caching to %s", localPath)
 		if env != nil {
-			env.DisplayToConsole(true, "Downloading:"+downloadUrl)
+			env.DisplayToConsole(true, "Downloading: "+downloadUrl)
 		}
 		err = DownloadFileToCache(downloadUrl, localPath)
 	}

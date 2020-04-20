@@ -171,7 +171,13 @@ func (p *Program) Start() (err error) {
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
-	err = p.Environment.ExecuteAsync(cmd, args, pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data), p.afterExit)
+	err = p.Environment.ExecuteAsync(pufferpanel.ExecutionData{
+		Command:          cmd,
+		Arguments:        args,
+		Environment:      pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
+		Callback:         p.afterExit,
+	})
+
 	if err != nil {
 		logging.Error().Printf("error starting server %s: %s", p.Id(), err)
 		p.Environment.DisplayToConsole(true, " Failed to start server\n")

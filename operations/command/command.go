@@ -32,7 +32,11 @@ func (c Command) Run(env pufferpanel.Environment) error {
 		logging.Info().Printf("Executing command: %s", cmd)
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
 		cmdToExec, args := pufferpanel.SplitArguments(cmd)
-		_, err := env.Execute(cmdToExec, args, c.Env, nil)
+		err := env.Execute(pufferpanel.ExecutionData{
+			Command: cmdToExec,
+			Arguments: args,
+			Environment: c.Env,
+		})
 		if err != nil {
 			return err
 		}

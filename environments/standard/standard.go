@@ -38,7 +38,7 @@ type standard struct {
 	stdInWriter io.Writer
 }
 
-func (s *standard) standardExecuteAsync(cmd string, args []string, env map[string]string, callback func(graceful bool)) (err error) {
+func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	running, err := s.IsRunning()
 	if err != nil {
 		return
@@ -49,10 +49,10 @@ func (s *standard) standardExecuteAsync(cmd string, args []string, env map[strin
 	}
 	s.Wait.Wait()
 	s.Wait.Add(1)
-	s.mainProcess = exec.Command(cmd, args...)
-	s.mainProcess.Dir = s.RootDirectory
+	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
+	s.mainProcess.Dir = steps.WorkingDirectory
 	s.mainProcess.Env = append(os.Environ(), "HOME="+s.RootDirectory)
-	for k, v := range env {
+	for k, v := range steps.Environment {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 	wrapper := s.CreateWrapper()
@@ -75,7 +75,7 @@ func (s *standard) standardExecuteAsync(cmd string, args []string, env map[strin
 		logging.Info().Printf("Process started (%d)", s.mainProcess.Process.Pid)
 	}
 
-	go s.handleClose(callback)
+	go s.handleClose(steps.Callback)
 	return
 }
 
