@@ -19,6 +19,7 @@ package docker
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -52,7 +53,7 @@ type docker struct {
 	downloadingImage bool
 }
 
-func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]string, callback func(graceful bool)) error {
+func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	running, err := d.IsRunning()
 	if err != nil {
 		return err
@@ -77,12 +78,13 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 		return err
 	}
 
-	//container does not exist
-	if !exists {
-		err = d.createContainer(dockerClient, ctx, cmd, args, env, d.RootDirectory)
-		if err != nil {
-			return err
-		}
+	if exists {
+		return errors.New("docker container already exists")
+	}
+
+	err = d.createContainer(dockerClient, ctx, steps.Command, steps.Arguments, steps.Environment, steps.WorkingDirectory)
+	if err != nil {
+		return err
 	}
 
 	config := types.ContainerAttachOptions{
@@ -113,8 +115,8 @@ func (d *docker) dockerExecuteAsync(cmd string, args []string, env map[string]st
 		msg := messages.Status{Running:false}
 		_ = d.WSManager.WriteMessage(msg)
 
-		if callback != nil {
-			callback(err == nil)
+		if steps.Callback != nil {
+			steps.Callback(err == nil)
 		}
 	}()
 

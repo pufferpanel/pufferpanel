@@ -37,7 +37,7 @@ type tty struct {
 	stdInWriter io.Writer
 }
 
-func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, callback func(graceful bool)) (err error) {
+func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	running, err := t.IsRunning()
 	if err != nil {
 		return
@@ -48,10 +48,10 @@ func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, 
 	}
 	t.Wait.Wait()
 
-	pr := exec.Command(cmd, args...)
-	pr.Dir = t.RootDirectory
+	pr := exec.Command(steps.Command, steps.Arguments...)
+	pr.Dir = steps.WorkingDirectory
 	pr.Env = append(os.Environ(), "HOME="+t.RootDirectory)
-	for k, v := range env {
+	for k, v := range steps.Environment {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
@@ -75,7 +75,7 @@ func (t *tty) ttyExecuteAsync(cmd string, args []string, env map[string]string, 
 		_, _ = io.Copy(proxy, tty)
 	}(wrapper)
 
-	go t.handleClose(callback)
+	go t.handleClose(steps.Callback)
 	return
 }
 
