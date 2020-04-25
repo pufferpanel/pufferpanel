@@ -9,7 +9,7 @@ on:
 jobs:
   skip-build:
     runs-on: ubuntu-18.04
-    if: "!startsWith(github.ref, 'refs/tags/v2.') && contains(github.event.head_commit.message, '[skip]')"
+    if: "contains(github.event.head_commit.message, '[skip]')"
     name: "Build skipped"
 
     steps:
@@ -124,7 +124,7 @@ jobs:
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
 
-        fpm -s deb -t rpm \
+        fpm -s dir -t rpm \
           --name pufferpanel \
           --version "${{ env.VERSION }}" \
           --url "https://pufferpanel.com" \
@@ -138,7 +138,12 @@ jobs:
           --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
           --rpm-user pufferpanel --rpm-group pufferpanel \
-          pufferpanel_${{ env.VERSION }}_amd64.deb
+          artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
+          artifacts/www/pufferpanel=/var/www \
+          var/log/pufferpanel=/var/log \
+          var/lib/pufferpanel=/var/lib \
+          artifacts/email=/etc/pufferpanel \
+          config.linux.json=/etc/pufferpanel/config.json
 
         fpm -s dir -t deb \
           --name pufferpanel \
