@@ -33,6 +33,9 @@ jobs:
     - name: Get the version
       if: startsWith(env.VERSION, 'refs/')
       run: echo "::set-env name=VERSION::2.0.0+sha.${GITHUB_SHA}"
+  
+    - name: Get the version for RPM
+      run: echo "::set-env name=RPMVERSION::${VERSION/\-/\~}"
 
     - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
@@ -123,7 +126,7 @@ jobs:
 
         fpm -s dir -t rpm \
           --name pufferpanel \
-          --version "${{ env.VERSION }}" \
+          --version "${{ env.RPMVERSION }}" \
           --url "https://pufferpanel.com" \
           --description "Game Management Panel" \
           --license "Apache 2.0" \
@@ -245,7 +248,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_path: ./artifacts/pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
         asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         asset_content_type: application/zip
 
@@ -256,8 +259,8 @@ jobs:
       working-directory: artifacts
       run: |
         #centos
-        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
