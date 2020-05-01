@@ -90,7 +90,19 @@ func Load(id string) (program *Program, err error) {
 
 func LoadFromData(id string, source []byte) (*Program, error) {
 	data := CreateProgram()
-	err := json.Unmarshal(source, &data)
+
+	//HACK: Because golang thinks environment and Environment in the json are the same, we have to manually clean the
+	//invalid record up....
+	rawMap := make(map[string]interface{})
+	err := json.Unmarshal(source, &rawMap)
+	if err != nil {
+		return nil, err
+	}
+
+	delete(rawMap, "Environment")
+	source, err = json.Marshal(rawMap)
+
+	err = json.Unmarshal(source, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -108,13 +120,13 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	var typeMap pufferpanel.Type
-	err = pufferpanel.UnmarshalTo(data.Server.Environment, &typeMap)
+	err = pufferpanel.UnmarshalTo(data.Environment, &typeMap)
 	if err != nil {
 		return nil, err
 	}
 
 	environmentType := typeMap.Type
-	data.Environment, err = environments.Create(environmentType, ServerFolder, id, data.Server.Environment)
+	data.Environment, err = environments.Create(environmentType, ServerFolder, id, data.Environment)
 	if err != nil {
 		return nil, err
 	}
@@ -132,8 +144,8 @@ func Create(program *Program) error {
 		if err != nil {
 			//revert since we have an error
 			_ = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
-			if program.Environment != nil {
-				_ = program.Environment.Delete()
+			if program.RunningEnvironment != nil {
+				_ = program.RunningEnvironment.Delete()
 			}
 		}
 	}()
@@ -156,12 +168,12 @@ func Create(program *Program) error {
 	}
 
 	var typeMap pufferpanel.Type
-	err = pufferpanel.UnmarshalTo(program.Server.Environment, &typeMap)
+	err = pufferpanel.UnmarshalTo(program.Environment, &typeMap)
 	if err != nil {
 		return err
 	}
 
-	program.Environment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Server.Environment)
+	program.Environment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Environment)
 
 	err = program.Create()
 	if err != nil {
