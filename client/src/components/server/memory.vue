@@ -30,6 +30,7 @@ export default {
   },
   data () {
     return {
+      intl: new Intl.NumberFormat('en-US', {maximumFractionDigits: 2}),
       maxPoints: 20,
       options: {
         chart: {
@@ -70,11 +71,11 @@ export default {
           labels: {
             show: true,
             formatter: value => {
-              if (value < 1000) return Math.round(value) + ' B'
-              if (value < 1000000) return Math.round(value / 1000) + ' KB'
-              if (value < 1000000000) return Math.round(value / 1000000) + ' MB'
-              if (value < 1000000000000) return Math.round(value / 1000000000) + ' GB'
-              if (value < 1000000000000000) return Math.round(value / 1000000000000) + ' TB'
+              if (value < 1e3) return this.intl.format(value) + ' B'
+              if (value < 1e6) return this.intl.format(value / 1e3) + ' KB'
+              if (value < 1e9) return this.intl.format(value / 1e6) + ' MB'
+              if (value < 1e12) return this.intl.format(value / 1e9) + ' GB'
+              if (value < 1e15) return this.intl.format(value / 1e12) + ' TB'
             }
           },
           min: 0
