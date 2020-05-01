@@ -30,6 +30,7 @@ export default {
   },
   data () {
     return {
+      intl: new Intl.NumberFormat('en-US', {maximumFractionDigits: 2}),
       maxPoints: 20,
       options: {
         chart: {
@@ -69,7 +70,7 @@ export default {
         yaxis: {
           labels: {
             show: true,
-            formatter: value => (Math.round(value * 100) / 100) + '%'
+            formatter: value => this.intl.format(Math.round(value * 100) / 100) + '%'
           },
           min: 0
         },
