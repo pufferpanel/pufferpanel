@@ -45,7 +45,7 @@ type Permissions struct {
 	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	Login           bool `gorm:"NOT NULL;DEFAULT:1" json:"-" oneOf:""`
+	Login           bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 
 	//these only will exist if tied to a server, and for a user
 	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`

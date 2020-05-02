@@ -144,6 +144,7 @@ func runAdd(cmd *cobra.Command, args []string) {
 	}
 	perms.Admin = answers.Admin
 	perms.ViewServer = true
+	perms.Login = true
 	err = ps.UpdatePermissions(perms)
 	if err != nil {
 		fmt.Printf("Failed to apply permissions: %s\n", err.Error())

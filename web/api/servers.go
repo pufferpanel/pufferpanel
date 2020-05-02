@@ -114,8 +114,6 @@ func searchServers(c *gin.Context) {
 		username = user.Username
 	}
 
-	var results *models.Servers
-	var total uint
 	searchCriteria := services.ServerSearch{
 		Username: username,
 		NodeId:   uint(node),
@@ -123,7 +121,9 @@ func searchServers(c *gin.Context) {
 		PageSize: uint(pageSize),
 		Page:     uint(page),
 	}
-	if results, total, err = ss.Search(searchCriteria); response.HandleError(c, err, http.StatusInternalServerError) {
+
+	results, total, err := ss.Search(searchCriteria)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -504,6 +504,7 @@ func editServerUser(c *gin.Context) {
 		firstTimeAccess = true
 	}
 	perms.CopyTo(existing, false)
+	existing.ViewServer = true
 	err = ps.UpdatePermissions(existing)
 
 	if response.HandleError(c, err, http.StatusInternalServerError) {
