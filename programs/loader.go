@@ -126,7 +126,7 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	environmentType := typeMap.Type
-	data.Environment, err = environments.Create(environmentType, ServerFolder, id, data.Environment)
+	data.RunningEnvironment, err = environments.Create(environmentType, ServerFolder, id, data.Environment)
 	if err != nil {
 		return nil, err
 	}
