@@ -44,6 +44,10 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
+	if !perms.Login {
+		response.HandleError(c, pufferpanel.ErrLoginNotPermitted, http.StatusForbidden)
+	}
+
 	data := &LoginResponse{}
 	data.Session = session
 	data.Scopes = perms.ToScopes()
