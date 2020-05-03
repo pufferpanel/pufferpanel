@@ -58,7 +58,6 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	perms.ViewServer = true
-	perms.Login = true
 
 	err = ps.UpdatePermissions(perms)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
