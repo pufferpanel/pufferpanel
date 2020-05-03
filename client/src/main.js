@@ -11,6 +11,7 @@ import App from './App'
 import i18n from '@/i18n'
 import router from '@/router'
 import VueNativeSocket from 'vue-native-websocket'
+import '@/styles/pufferpanel.css'
 // iconfont
 import '@mdi/font/css/materialdesignicons.min.css'
 

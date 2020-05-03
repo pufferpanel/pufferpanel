@@ -11,6 +11,8 @@
  *  limitations under the License.
  */
 
+import { VBtn, VSpacer } from 'vuetify/lib'
+
 export const handleError = (ctx, overrides = {}) => error => {
   // eslint-disable-next-line no-console
   console.log('ERROR', error)
@@ -25,5 +27,23 @@ export const handleError = (ctx, overrides = {}) => error => {
 
   if (overrides[error.response.status] !== undefined) msg = overrides[error.response.status]
 
-  ctx.$toast.error(ctx.$t(msg))
+  const detailsAction = {
+    timeout: 6000,
+    slot: [
+      ctx.$createElement('div', { attrs: { class: 'flex-grow-1' } }, [
+        ctx.$createElement('span', [ctx.$t('errors.ErrUnknownError')]),
+        ctx.$createElement(VSpacer, []),
+        ctx.$createElement(VBtn, {
+          props: { text: true, right: true },
+          on: {
+            click: () => ctx.$emit('show-error-details', error)
+          }
+        }, [ctx.$t('common.Details')])
+      ])
+    ]
+  }
+
+  const errUnknown = msg === 'errors.ErrUnknownError'
+
+  ctx.$toast.error(errUnknown ? undefined : ctx.$t(msg), errUnknown ? detailsAction : undefined)
 }

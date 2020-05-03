@@ -11,11 +11,11 @@
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="overlayContent">
               <slot />
             </v-card-text>
           </v-card>
-          <v-sheet v-else>
+          <v-sheet v-else class="overlayContent">
             <slot />
           </v-sheet>
         </v-col>
@@ -30,6 +30,10 @@
   max-width: 100vw !important;
   max-height: 100vh !important;
   overflow-y: scroll !important;
+}
+
+.overlayContent {
+  overflow: scroll;
 }
 </style>
 
