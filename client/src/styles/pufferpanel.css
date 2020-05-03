@@ -15,3 +15,27 @@ pre {
 .console {
   background-color: var(--v-secondary-base)
 }
+
+.vts .v-snack__content {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.vts__message .flex-grow-1 span {
+  align-self: center !important;
+}
+
+.vts__message div {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+.vts__message {
+  margin: 0 !important;
+  -webkit-box-flex: 1 !important;
+  -ms-flex-positive: 1 !important;
+  flex-grow: 1 !important;
+}

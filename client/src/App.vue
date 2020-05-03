@@ -151,10 +151,14 @@
         </div>
         <router-view
           @logged-in="didLogIn()"
+          @show-error-details="showError"
           v-else
         />
       </v-container>
       <common-language v-model="showLanguageSelect" />
+      <common-overlay v-model="errorOverlayOpen" card closable :title="$t('common.ErrorDetails')">
+        <code v-text="errorText" />
+      </common-overlay>
     </v-content>
   </v-app>
 </template>
@@ -172,7 +176,9 @@ export default {
       drawer: null,
       minified: false,
       reauhTask: null,
-      showLanguageSelect: false
+      showLanguageSelect: false,
+      errorOverlayOpen: false,
+      errorText: ''
     }
   },
   mounted () {
@@ -211,6 +217,34 @@ export default {
           response.data.session && Cookies.set('puffer_auth', response.data.session)
         }).catch(error => console.log('reauth failed', error)) // eslint-disable-line no-console
       }, 1000 * 60 * 10)
+    },
+    showError (error) {
+      const getCircularReplacer = () => {
+        const seen = new WeakSet()
+        return (key, value) => {
+          if (key === 'password') return '<password>'
+          if (typeof value === 'string') {
+            try {
+              const json = JSON.parse(value)
+              if (typeof json === 'object' && json !== null) {
+                if (Object.keys(json).indexOf('password' !== -1)) {
+                  json.password = '<password>'
+                }
+                return JSON.stringify(json)
+              } else { return value }
+            } catch { return value }
+          }
+          if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+              return
+            }
+            seen.add(value)
+          }
+          return value
+        }
+      }
+      this.errorText = JSON.stringify(error, getCircularReplacer(), 4)
+      this.errorOverlayOpen = true
     }
   }
 }

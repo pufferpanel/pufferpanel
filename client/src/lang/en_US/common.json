@@ -29,5 +29,7 @@
   "Search": "Search",
   "Back": "Back",
   "Next": "Next",
-  "LanguageName": "English"
+  "LanguageName": "English",
+  "Details": "Details",
+  "ErrorDetails": "Error Details"
 }
