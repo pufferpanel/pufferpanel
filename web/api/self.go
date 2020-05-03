@@ -25,8 +25,8 @@ import (
 )
 
 func registerSelf(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), getSelf)
-	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeLogin, false), updateSelf)
+	g.Handle("GET", "", handlers.HasOAuth2Token, getSelf)
+	g.Handle("PUT", "", handlers.HasOAuth2Token, updateSelf)
 }
 
 func getSelf(c *gin.Context) {

@@ -17,8 +17,6 @@ type Scope string
 
 const (
 	//generic
-	ScopeLogin = Scope("login")
-
 	ScopeOAuth2Auth = Scope("oauth2.auth")
 
 	//server

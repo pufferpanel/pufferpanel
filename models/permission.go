@@ -45,7 +45,6 @@ type Permissions struct {
 	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	Login           bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 
 	//these only will exist if tied to a server, and for a user
 	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
@@ -178,10 +177,6 @@ func (p *Permissions) ToScopes() []pufferpanel.Scope {
 		if p.SFTPServer {
 			scopes = append(scopes, pufferpanel.ScopeServersSFTP)
 		}
-	}
-
-	if p.Login {
-		scopes = append(scopes, pufferpanel.ScopeLogin)
 	}
 
 	return scopes

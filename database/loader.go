@@ -73,7 +73,7 @@ func openConnection() (err error) {
 		dbConn.LogMode(true)
 	}
 
-	err = migrateModels()
+	migrateModels()
 	return
 }
 
@@ -90,7 +90,7 @@ func Close() {
 	pufferpanel.Close(dbConn)
 }
 
-func migrateModels() (err error) {
+func migrateModels() {
 	dbObjects := []interface{}{
 		&models.Node{},
 		&models.Server{},
@@ -109,27 +109,10 @@ func migrateModels() (err error) {
 		return
 	}
 
-	err = dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT").Error
-	if err != nil {
-		return
-	}
-
-	err = dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE").Error
-	if err != nil {
-		return
-	}
-
-	err = dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE").Error
-	if err != nil {
-		return
-	}
-
-	err = dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE").Error
-	if err != nil {
-		return
-	}
-
-	return
+	dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT")
+	dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE")
+	dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE")
 }
 
 func addConnectionSetting(connString, setting string) string {
