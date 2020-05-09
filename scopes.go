@@ -16,6 +16,9 @@ package pufferpanel
 type Scope string
 
 const (
+	//none scope to allow defining that something doesn't need any specific permission
+	ScopeNone = Scope("none")
+
 	//generic
 	ScopeOAuth2Auth = Scope("oauth2.auth")
 

@@ -119,15 +119,19 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 
 		//if this is an audience of oauth2, we can use token directly
 		if ti.Audience == "oauth2" {
-			scopes := ti.PanelClaims.Scopes[serverId]
-			if scopes != nil && pufferpanel.ContainsScope(scopes, requiredScope) {
-				allowed = true
-			} else {
-				//if there isn't a defined rule, is this user an admin?
-				scopes := ti.PanelClaims.Scopes[""]
-				if scopes != nil && pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersAdmin) {
+			if requiredScope != pufferpanel.ScopeNone {
+				scopes := ti.PanelClaims.Scopes[serverId]
+				if scopes != nil && pufferpanel.ContainsScope(scopes, requiredScope) {
 					allowed = true
+				} else {
+					//if there isn't a defined rule, is this user an admin?
+					scopes := ti.PanelClaims.Scopes[""]
+					if scopes != nil && pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersAdmin) {
+						allowed = true
+					}
 				}
+			} else {
+				allowed = true
 			}
 		} else if ti.Audience == "session" {
 			//otherwise, we have to look at what the user has since session based
@@ -143,16 +147,20 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 				return
 			}
 
-			if pufferpanel.ContainsScope(perms.ToScopes(), requiredScope) {
-				allowed = true
-			} else {
-				perms, err = ps.GetForUserAndServer(user.ID, nil)
-				if response.HandleError(c, err, http.StatusInternalServerError) {
-					return
-				}
-				if pufferpanel.ContainsScope(perms.ToScopes(), pufferpanel.ScopeServersAdmin) {
+			if requiredScope != pufferpanel.ScopeNone {
+				if pufferpanel.ContainsScope(perms.ToScopes(), requiredScope) {
 					allowed = true
+				} else {
+					perms, err = ps.GetForUserAndServer(user.ID, nil)
+					if response.HandleError(c, err, http.StatusInternalServerError) {
+						return
+					}
+					if pufferpanel.ContainsScope(perms.ToScopes(), pufferpanel.ScopeServersAdmin) {
+						allowed = true
+					}
 				}
+			} else {
+				allowed = true
 			}
 		} else {
 			c.AbortWithStatus(http.StatusForbidden)
