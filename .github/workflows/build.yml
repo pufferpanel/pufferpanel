@@ -264,6 +264,7 @@ jobs:
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/focal pufferpanel_${{ env.VERSION }}_amd64.deb
         #debian
         package_cloud push pufferpanel/pufferpanel/debian/jessie pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/debian/stretch pufferpanel_${{ env.VERSION }}_amd64.deb
