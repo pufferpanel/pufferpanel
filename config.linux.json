@@ -10,13 +10,9 @@
     }
   },
   "token": {
-    "private": "private.pem",
-    "public": "public.pem"
+    "private": "private.pem"
   },
   "daemon": {
-    "auth": {
-      "publicKey": "public.pem"
-    },
     "data": {
       "cache": "/var/lib/pufferpanel/cache",
       "servers": "/var/lib/pufferpanel/servers"

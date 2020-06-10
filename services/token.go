@@ -29,8 +29,10 @@ import (
 	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -39,6 +41,7 @@ var signingMethod = jwt.SigningMethodES256
 var privateKey *ecdsa.PrivateKey
 var publicKey *ecdsa.PublicKey
 var locker sync.Mutex
+var timer time.Time
 
 func GetPublicKey() *ecdsa.PublicKey {
 	ValidateTokenLoaded()
@@ -173,7 +176,7 @@ func ValidateTokenLoaded() {
 	defer locker.Unlock()
 	//only load public if panel is disabled
 	if !viper.GetBool("panel.enable") {
-		if publicKey == nil {
+		if publicKey == nil || timer.Before(time.Now()) {
 			loadPublic()
 		}
 	} else if privateKey == nil {
@@ -201,27 +204,7 @@ func loadPrivate() {
 	}
 
 	privateKey = privKey
-
 	publicKey = &privateKey.PublicKey
-	pubKeyEncoded, err := x509.MarshalPKIXPublicKey(publicKey)
-	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
-		return
-	}
-
-	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_CREATE|os.O_RDWR, 0644)
-	defer pufferpanel.Close(pubKeyFile)
-	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
-		return
-	}
-
-	err = pem.Encode(pubKeyFile, &pem.Block{Type: "PUBLIC KEY", Bytes: pubKeyEncoded})
-	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
-		return
-	}
-
 	return
 }
 
@@ -251,12 +234,28 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 }
 
 func loadPublic() {
-	pubKeyFile, err := os.OpenFile(viper.GetString("token.public"), os.O_RDONLY, 0644)
-	defer pufferpanel.Close(pubKeyFile)
-	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
-		return
+	pubKeyPath := viper.GetString("token.public")
+	var pubKeyFile io.ReadCloser
+	var err error
+
+	if strings.HasPrefix("https://", pubKeyPath) || strings.HasPrefix("http://", pubKeyPath) {
+		client := http.Client{}
+		response, err := client.Get(pubKeyPath)
+		if err != nil {
+			logging.Error().Printf("Internal error on token service: %s", err)
+			return
+		}
+		pubKeyFile = response.Body
+		timer = time.Now().Add(5 * time.Minute)
+	} else {
+		pubKeyFile, err = os.OpenFile(pubKeyPath, os.O_RDONLY, 0644)
+		if err != nil {
+			logging.Error().Printf("Internal error on token service: %s", err)
+			return
+		}
 	}
+
+	defer pufferpanel.Close(pubKeyFile)
 
 	data, err := ioutil.ReadAll(pubKeyFile)
 	if err != nil {
