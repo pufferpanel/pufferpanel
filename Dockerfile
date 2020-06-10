@@ -37,7 +37,6 @@ ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_PANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
     PUFFER_PANEL_DATABASE_LOG=false \
     PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
-    PUFFER_PANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
     PUFFER_PANEL_WEB_FILES=/pufferpanel/www \
     PUFFER_PANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
     PUFFER_PANEL_EMAIL_PROVIDER=debug \
@@ -55,8 +54,6 @@ ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_DAEMON_DATA_CRASHLIMIT=3
 
 WORKDIR /pufferpanel
-
-RUN ./pufferpanel template import
 
 ENTRYPOINT ["/pufferpanel/pufferpanel"]
 CMD ["run"]
