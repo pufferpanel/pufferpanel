@@ -9,7 +9,7 @@
 <p>Server Name: {{ .Server.Identifier }}</p>
 {{if .RegisterToken}}
 <p>We do not have an account on record. In order to access this server, please register an account.</p>
-<p><strong>Register:</strong> <a href="{{ .MASTER_URL }}/auth/register?token={{ .REGISTER_TOKEN }}">{{ .MASTER_URL }}/auth/register?token={{ .REGISTER_TOKEN }}</a><br/>
+<p><strong>Register:</strong> <a href="{{ .MASTER_URL }}/auth/register?token={{ .RegisterToken }}">{{ .MASTER_URL }}/auth/register?token={{ .RegisterToken }}</a><br/>
 {{else}}
 <p>You can log into your existing account to access this server.</p>
 <p><strong>Login:</strong> <a href="{{ .MASTER_URL }}">{{ .MASTER_URL }}</a><br/>
