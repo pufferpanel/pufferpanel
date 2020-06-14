@@ -2,7 +2,7 @@
 
 
 [Website](https://pufferpanel.com) |
-[Discord](https://discord.gg/YwUXaD6) |
+[Discord](https://discord.gg/v8dz49e) |
 [Documentation](http://www.pufferpanel.com/docs) |
 [Translations](https://crowdin.com/project/pufferpanel)
 
@@ -21,7 +21,7 @@ In addition to being a free and open source project, PufferPanel provides an eas
 PufferPanel uses what is called the pufferd daemon. As of 2.0, this daemon has been combined into the panel software to be an all-inclusive software download.
 
 ## Having issues or want to help?
-If you need help with PufferPanel or you'd like to help out you can contact us on [Discord](https://discord.gg/YwUXaD6). Check out our [Documentation](https://www.pufferpanel.com/docs) for guides on how to install, update, and manage PufferPanel.
+If you need help with PufferPanel or you'd like to help out you can contact us on [Discord](https://discord.gg/v8dz49e). Check out our [Documentation](https://www.pufferpanel.com/docs) for guides on how to install, update, and manage PufferPanel.
 
 ## Copyright Notices
 Some Javascript and CSS used within the panel is licensed under a MIT, Apache 2.0, or GPL license. Please check their header files for information.
@@ -33,6 +33,3 @@ Some images used within PufferPanel are Copyright (c) their respective owners.
 Development tools are provided by [Jetbrains](https://www.jetbrains.com/?from=PufferPanel)
 
 Repositories hosted by [packagecloud](https://packagecloud.io)
-
-[![packagecloud](https://packagecloud.io/images/packagecloud-badge.png)](https://packagecloud.io)
-
