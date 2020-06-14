@@ -15,6 +15,14 @@ import '@/styles/pufferpanel.css'
 // iconfont
 import '@mdi/font/css/materialdesignicons.min.css'
 
+if ('serviceWorker' in navigator) {
+  if (process.env.NODE_ENV === 'production') {
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+  } else {
+    navigator.serviceWorker.register('/service-worker-dev.js', { scope: '/' })
+  }
+}
+
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,
   reconnection: true,
