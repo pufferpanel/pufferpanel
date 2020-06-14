@@ -14,6 +14,7 @@
 package web
 
 import (
+	"fmt"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
@@ -48,6 +49,7 @@ func RegisterRoutes(e *gin.Engine) {
 
 		api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
 		e.GET("/api/config", config)
+		e.GET("/manifest.json", webManifest)
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))
 
@@ -107,6 +109,29 @@ func config(c *gin.Context) {
 		"branding": map[string]interface{}{
 			"name": viper.GetString("panel.settings.companyName"),
 		},
+	})
+}
+
+func webManifest(c *gin.Context) {
+	iconSizes := []int{72, 96, 128, 144, 152, 192, 384, 512}
+	icons := make([]map[string]interface{}, len(iconSizes))
+
+	for i, s := range iconSizes {
+		icons[i] = map[string]interface{}{
+			"src": fmt.Sprintf("img/appicons/%d.png", s),
+			"sizes": fmt.Sprintf("%dx%d", s, s),
+			"type": "image/png",
+		}
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"name": viper.GetString("panel.settings.companyName"),
+		"short_name": viper.GetString("panel.settings.companyName"),
+		"background_color": "#fff",
+		"display": "standalone",
+		"scope": "/",
+		"start_url": "/server",
+		"icons": icons,
 	})
 }
 
