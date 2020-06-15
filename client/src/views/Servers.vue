@@ -3,30 +3,32 @@
     <h1 v-text="$t('servers.Servers')" />
     <v-row>
       <v-col>
-        <v-sheet elevation="1" class="pt-2">
-          <v-data-table
-            hide-default-footer
-            style="cursor: pointer;"
-            :headers="headers"
-            :items="servers"
-            :items-per-page="100"
-            @click:row="rowSelected"
-          >
-            <template v-slot:item.online="{ item }">
-              <v-icon
-                v-if="item.online"
-                color="success"
-              >
-                mdi-check-circle
-              </v-icon>
-              <v-icon
-                v-else
-                color="error"
-              >
-                mdi-alert-circle
-              </v-icon>
-            </template>
-          </v-data-table>
+        <v-sheet elevation="1" class="mb-8">
+          <v-list two-line>
+            <div v-for="(server, index) in servers" :key="server.id">
+              <v-list-item :to="{ name: 'Server', params: { id: server.id } }">
+                <v-list-item-avatar>
+                  <v-icon
+                    v-if="server.online"
+                    color="success"
+                  >
+                    mdi-check-circle
+                  </v-icon>
+                  <v-icon
+                    v-else
+                    color="error"
+                  >
+                    mdi-alert-circle
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title v-text="server.name" />
+                  <v-list-item-subtitle v-text="server.address + ' @ ' + server.node" />
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider v-if="index !== servers.length - 1" />
+            </div>
+          </v-list>
           <v-row ref="lazy" v-if="pagination.page < pagination.pageCount" v-intersect="lazyLoad">
             <v-col cols="2" offset="5">
               <v-progress-circular
