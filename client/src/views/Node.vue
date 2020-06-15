@@ -37,11 +37,8 @@
             <v-col cols="12">
               <v-btn v-text="$t('nodes.Delete')" block color="error" @click="deleteNode" />
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12">
               <v-btn v-text="$t('nodes.SaveConfig')" :disabled="loadingDeploy" text block @click="downloadConfig()" />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-btn v-text="$t('nodes.SavePublicKey')" :disabled="loadingDeploy" text block @click="download(deployment.publicKey, 'public.pem')" />
             </v-col>
             <v-col cols="12">
               <span v-html="markdown($t('nodes.DeploymentInstruction'))" />
@@ -66,14 +63,13 @@ export default {
       node: {},
       deployment: {
         clientId: '',
-        clientSecret: '',
-        publicKey: ''
+        clientSecret: ''
       },
       configTemplate: {
         logs: '/var/log/pufferpanel',
         web: {},
-        token:{
-            public: '/etc/pufferpanel/public.pem',
+        token: {
+            public: location.protocol + '//' + location.host + '/auth/publickey',
         },
         panel: {
           enable: false

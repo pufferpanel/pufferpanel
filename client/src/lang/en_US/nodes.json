@@ -12,7 +12,7 @@
   "SftpPort": "SFTP Port",
   "SaveConfig": "Save Config",
   "SavePublicKey": "Save Public Key",
-  "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config and public key files in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards.",
+  "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config file in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards.",
   "UpdateSuccess": "Successfully updated node",
   "UpdateError": "Error updating node"
 }
