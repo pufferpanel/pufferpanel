@@ -30,7 +30,7 @@ func (us *User) Get(username string) (*models.User, error) {
 		Username: username,
 	}
 
-	err := us.DB.Where(model).FirstOrInit(model).Error
+	err := us.DB.Where(model).First(model).Error
 
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (us *User) GetById(id uint) (*models.User, error) {
 		ID: id,
 	}
 
-	err := us.DB.Where(model).FirstOrInit(model).Error
+	err := us.DB.Where(model).First(model).Error
 
 	if err != nil {
 		return nil, err
