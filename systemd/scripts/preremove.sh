@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-systemctl stop pufferpanel
+systemctl stop pufferpanel || true
