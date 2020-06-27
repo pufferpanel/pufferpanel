@@ -1,5 +1,6 @@
 {
   "Server": "Server",
+  "NoServers": "There are no servers you have access to",
   "Servers": "Servers",
   "Add": "Add Server",
   "Console": "Console",
