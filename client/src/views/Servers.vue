@@ -4,6 +4,7 @@
     <v-row>
       <v-col>
         <v-sheet elevation="1" class="mb-8">
+          <div class="pt-2 text-center text--disabled" v-if="servers.length === 0" v-text="$t('servers.NoServers')" />
           <v-list two-line>
             <div v-for="(server, index) in servers" :key="server.id">
               <v-list-item :to="{ name: 'Server', params: { id: server.id } }">

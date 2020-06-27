@@ -26,8 +26,11 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <h3 v-text="$t('servers.SelectTemplate')" />
-          <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
+          <div v-if="Object.keys(templates).length > 0">
+            <h3 v-text="$t('servers.SelectTemplate')" />
+            <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
+          </div>
+          <div class="text-center text--disabled" v-else v-text="$t('templates.NoTemplates')" />
           <v-expansion-panels>
             <fragment v-for="(elements, type) in templates" :key="type">
               <v-expansion-panel disabled v-if="filterTemplates(elements, templateFilter).length > 0">

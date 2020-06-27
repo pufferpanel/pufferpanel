@@ -15,6 +15,7 @@
             </div>
             <v-divider v-if="i !== Object.keys(templates).length - 1" />
           </div>
+          <div class="pt-2 text-center text--disabled" v-if="Object.keys(templates).length === 0" v-text="$t('templates.NoTemplates')" />
         </v-list>
         <v-btn
           v-show="hasScope('templates.edit') || isAdmin()"
