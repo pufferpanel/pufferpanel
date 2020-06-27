@@ -23,8 +23,8 @@ jobs:
     
     strategy:
       matrix:
-        go: [ '1.13' ]
-        node-version: [ '12.x' ]
+        go: [ '1.14' ]
+        node-version: [ '14.x' ]
 
     steps:
     - name: Get the version
@@ -69,6 +69,8 @@ jobs:
         
     - name: Build
       run: |
+        export CGO_ENABLED=1
+
         export GOOS=linux
         export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
@@ -81,7 +83,6 @@ jobs:
         export GOOS=linux
         export GOARCH=arm
         export GOARM=7
-        export CGO_ENABLED=1
         export CC=arm-linux-gnueabi-gcc
         go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
 
@@ -248,8 +249,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
-        asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_path: ./artifacts/pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
+        asset_name: pufferpanel-${{ env.VERSION }}.x86_64.rpm
         asset_content_type: application/zip
 
     - name: Push to repo
@@ -259,8 +260,8 @@ jobs:
       working-directory: artifacts
       run: |
         #centos
-        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
-        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.RPMVERSION }}-1.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
