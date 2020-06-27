@@ -65,26 +65,35 @@ jobs:
         mkdir artifacts/www
         cp -r assets/email artifacts/        
         sudo apt-get update
-        sudo apt-get -y install gcc-arm-linux-gnueabi
+        sudo apt-get -y install gcc-arm-linux-gnueabi gcc-multilib gcc-mingw-w64
         
-    - name: Build
+    - name: Build Linux
       run: |
-        export CGO_ENABLED=1
-
-        export GOOS=linux
-        export GOARCH=amd64
         go build -o artifacts/amd64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
         go test ./...
-
-        export GOOS=windows
-        export GOARCH=amd64
+      env:
+        GOOS: linux
+        GOARCH: amd64
+      
+    - name: Build Windows
+      run: |
         go build -o artifacts/amd64/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: windows
+        GOARCH: amd64
+        CC: x86_64-w64-mingw32-gcc
+        CXX: x86_64-w64-mingw32-g++
+        CGO_ENABLED: 1
 
-        export GOOS=linux
-        export GOARCH=arm
-        export GOARM=7
-        export CC=arm-linux-gnueabi-gcc
+    - name: Build ARM
+      run: |
         go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: linux
+        GOARCH: arm
+        GOARM: 7
+        CC: arm-linux-gnueabi-gcc
+        CGO_ENABLED: 1
 
     - name: npm install, build
       run: |
