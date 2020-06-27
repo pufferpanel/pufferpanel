@@ -173,7 +173,7 @@ func Create(program *Program) error {
 		return err
 	}
 
-	program.Environment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Environment)
+	program.RunningEnvironment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Environment)
 
 	err = program.Create()
 	if err != nil {
