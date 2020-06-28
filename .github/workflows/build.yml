@@ -65,7 +65,7 @@ jobs:
         mkdir artifacts/www
         cp -r assets/email artifacts/        
         sudo apt-get update
-        sudo apt-get -y install gcc-arm-linux-gnueabi gcc-multilib gcc-mingw-w64
+        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64
         
     - name: Build Linux
       run: |
@@ -134,7 +134,7 @@ jobs:
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
 
-        fpm -s dir -t rpm \
+        fpm -s dep -t rpm \
           --name pufferpanel \
           --version "${{ env.RPMVERSION }}" \
           --url "https://pufferpanel.com" \
@@ -148,12 +148,7 @@ jobs:
           --before-remove systemd/scripts/preremove.sh \
           --after-remove systemd/scripts/postremove.sh \
           --rpm-user pufferpanel --rpm-group pufferpanel \
-          artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          artifacts/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
+          pufferpanel_${{ env.VERSION }}_amd64.deb
 
         fpm -s dir -t deb \
           --name pufferpanel \
