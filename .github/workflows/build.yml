@@ -32,7 +32,7 @@ jobs:
     
     - name: Get the version
       if: startsWith(env.VERSION, 'refs/')
-      run: echo "::set-env name=VERSION::2.0.0+sha.${GITHUB_SHA}"
+      run: echo "::set-env name=VERSION::2.0.+${GITHUB_RUN_NUMBER}"
   
     - name: Get the version for RPM
       run: echo "::set-env name=RPMVERSION::${VERSION/\-/\~}"
@@ -134,7 +134,7 @@ jobs:
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
 
-        fpm -s dep -t rpm \
+        fpm -s deb -t rpm \
           --name pufferpanel \
           --version "${{ env.RPMVERSION }}" \
           --url "https://pufferpanel.com" \
