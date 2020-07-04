@@ -31,10 +31,11 @@ func registerTemplates(g *gin.RouterGroup) {
 
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
+	g.Handle("POST", "/_import", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), importTemplate)
+
 	g.Handle("GET", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
 	g.Handle("PUT", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
-	g.Handle("OPTIONS", "/:name", response.CreateOptions("GET", "POST"))
-
+	g.Handle("OPTIONS", "/:name", response.CreateOptions("PUT", "GET", "POST"))
 }
 
 // @Summary Get templates
@@ -120,4 +121,16 @@ func putTemplate(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func importTemplate(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	ts := &services.Template{DB: db}
+
+	err := ts.ImportFromRepo()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	} else {
+		c.Status(http.StatusNoContent)
+	}
 }
