@@ -89,15 +89,28 @@ func (ss *Server) Update(model *models.Server) error {
 }
 
 func (ss *Server) Delete(id string) error {
+	trans := ss.DB.Begin()
+	defer trans.RollbackUnlessCommitted()
+
 	model := &models.Server{
 		Identifier: id,
 	}
 
-	ss.DB.Delete(models.Permissions{}, "server_identifier = ?", id)
-	ss.DB.Delete(models.Client{}, "server_id = ?", id)
+	err := trans.Delete(models.Permissions{}, "server_identifier = ?", id).Error
+	if err != nil {
+		return err
+	}
 
-	res := ss.DB.Delete(model)
-	return res.Error
+	err = trans.Delete(models.Client{}, "server_id = ?", id).Error
+	if err != nil {
+		return err
+	}
+
+	err = ss.DB.Delete(model).Error
+	if err != nil {
+		return err
+	}
+	return trans.Commit().Error
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {

@@ -97,8 +97,19 @@ func (us *User) Update(model *models.User) error {
 	return us.DB.Save(model).Error
 }
 
-func (us *User) Delete(model *models.User) error {
-	return us.DB.Delete(model).Error
+func (us *User) Delete(model *models.User) (err error) {
+	var trans = us.DB.Begin()
+	defer trans.RollbackUnlessCommitted()
+
+	trans.Delete(models.Permissions{}, "user_id = ?", model.ID)
+	trans.Delete(models.Client{}, "user_id = ?", model.ID)
+
+	err = trans.Delete(model).Error
+	if err != nil {
+		return
+	}
+
+	return trans.Commit().Error
 }
 
 func (us *User) Create(user *models.User) error {
