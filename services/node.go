@@ -67,6 +67,12 @@ func (ns *Node) Delete(id uint) error {
 		ID: id,
 	}
 
+	var count int
+	ns.DB.Model(&models.Server{}).Where("node_id = ?", model.ID).Count(&count)
+	if count > 0 {
+		return pufferpanel.ErrNodeHasServers
+	}
+
 	res := ns.DB.Delete(model)
 	return res.Error
 }

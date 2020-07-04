@@ -48,6 +48,7 @@ var ErrMissingAccessToken = CreateError("access token not provided", "ErrMissing
 var ErrNotBearerToken = CreateError("access token must be a Bearer token", "ErrNotBearerToken")
 var ErrKeyNotECDSA = CreateError("key is not ECDSA key", "ErrKeyNotECDSA")
 var ErrMissingScope = CreateError("missing scope", "ErrMissingScope")
+var ErrNodeHasServers = CreateError("node has servers associated", "ErrNodeHasServers")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})

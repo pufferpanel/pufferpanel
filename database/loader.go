@@ -57,6 +57,7 @@ func openConnection() (err error) {
 		connString = addConnectionSetting(connString, "parseTime=true")
 	} else if dialect == "sqlite3" {
 		connString = addConnectionSetting(connString, "_loc=auto")
+		connString = addConnectionSetting(connString, "_foreign_keys=1")
 	}
 
 	//attempt to open database connection to validate
@@ -106,6 +107,13 @@ func migrateModels() {
 
 	dialect := viper.GetString("panel.database.dialect")
 	if dialect == "" || dialect == "sqlite3" {
+		//SQLite does not support creating FKs like this, so we can't just enable them...
+		/*var res = dbConn.Exec("PRAGMA foreign_keys = ON")
+		if res.RowsAffected == 0 {
+			logging.Error().Println("SQLite does not support FKs")
+		} else {
+			logging.Debug().Printf("%v\n", res.Value)
+		}*/
 		return
 	}
 
