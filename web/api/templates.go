@@ -14,6 +14,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
@@ -24,14 +25,21 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
+	"net/url"
 )
+
+const GithubUrl = "https://api.github.com/repos/pufferpanel/templates/git/trees/v2"
+
+var client = http.Client{}
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getAllTemplates)
 
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "/_import", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), importTemplate)
+	g.Handle("POST", "/import", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), getImportableTemplates)
+	g.Handle("POST", "/import/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), importTemplate)
+	//g.Handle("OPTIONS", "/import/:name", response.CreateOptions("POST"))
 
 	g.Handle("GET", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
 	g.Handle("PUT", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
@@ -127,10 +135,46 @@ func importTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	err := ts.ImportFromRepo()
+	err := ts.ImportFromRepo(c.Param("name"))
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	} else {
 		c.Status(http.StatusNoContent)
+	}
+}
+
+func getImportableTemplates(c *gin.Context) {
+	u, err := url.Parse(GithubUrl)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	request := &http.Request{
+		Method: "GET",
+		URL: u,
+	}
+	if request.Header == nil {
+		request.Header = http.Header{}
+	}
+
+	request.Header.Add("Accept", "application/vnd.github.v3+json")
+
+	res, err := client.Do(request)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	defer pufferpanel.Close(res.Body)
+
+	var d pufferpanel.GithubFileList
+	err = json.NewDecoder(res.Body).Decode(&d)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	results := make([]string, 0)
+	for _, v := range d.Tree {
+		if v.Type == "tree" {
+			results = append(results, v.Path)
+		}
 	}
 }

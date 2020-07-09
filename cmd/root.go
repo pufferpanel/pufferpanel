@@ -28,7 +28,6 @@ func init() {
 	rootCmd.AddCommand(
 		runCmd,
 		versionCmd,
-		templatesCmd,
 		userCmd,
 		shutdownCmd)
 }
