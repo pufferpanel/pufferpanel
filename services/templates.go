@@ -14,21 +14,20 @@
 package services
 
 import (
-	"archive/zip"
 	"encoding/json"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
-const ReleaseUrl = "https://github.com/PufferPanel/templates/archive/v2.zip"
+const TemplateJson = "https://raw.githubusercontent.com/PufferPanel/templates/master/{name}/{name}.json"
+const TemplateReadme = "https://raw.githubusercontent.com/PufferPanel/templates/master/{name}/README.md"
+
+var templateClient = http.Client{}
 
 type Template struct {
 	DB *gorm.DB
@@ -73,152 +72,45 @@ func (t *Template) Save(template *models.Template) error {
 	return t.DB.Save(template).Error
 }
 
-func (t *Template) ImportFromRepo() error {
-	dir, err := ioutil.TempDir("", "pufferpaneltemplates")
-	if err != nil {
-		return err
-	}
-	defer os.RemoveAll(dir)
+func (t *Template) ImportFromRepo(templateName string) error {
+	url := strings.Replace(TemplateJson, "{name}", templateName, -1)
 
-	targetFile, err := ioutil.TempFile("", "pufferpaneltemplates*.zip")
-	if err != nil {
-		return err
-	}
-
-	defer func(f *os.File) {
-		pufferpanel.Close(f)
-		os.Remove(f.Name())
-	}(targetFile)
-
-	logging.Info().Printf("Downloading %s\n", ReleaseUrl)
-	response, err := http.Get(ReleaseUrl)
+	response, err := templateClient.Get(url)
 	if err != nil {
 		return err
 	}
 	defer pufferpanel.Close(response.Body)
 
-	_, err = io.Copy(targetFile, response.Body)
-	if err != nil {
-		return err
-	}
-	_ = response.Body.Close()
-
-	err = unzip(targetFile.Name(), dir)
-	if err != nil {
-		return err
+	var readme io.Reader
+	readmeUrl := strings.Replace(TemplateReadme, "{name}", templateName, -1)
+	readmeResponse, err := templateClient.Get(readmeUrl)
+	if err == nil {
+		defer pufferpanel.Close(readmeResponse.Body)
+		readme = readmeResponse.Body
 	}
 
-	return filepath.Walk(dir, func(p string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-		if !strings.HasSuffix(info.Name(), ".json") {
-			return nil
-		}
-
-		readmePath := filepath.Join(filepath.Dir(p), "README.md")
-
-		logging.Info().Printf("Importing %s\n", p)
-		name := strings.TrimSuffix(filepath.Base(info.Name()), filepath.Ext(info.Name()))
-		err = t.ImportTemplate(name, p, readmePath)
-		return err
-	})
+	return t.ImportTemplate(templateName, response.Body, readme)
 }
 
-func (t *Template) ImportTemplate(name, templatePath, readmePath string) error {
-	template, err := openTemplate(templatePath)
-
+func (t *Template) ImportTemplate(name string, template, readme io.Reader) error {
+	var templateData pufferpanel.Template
+	err := json.NewDecoder(template).Decode(&templateData)
 	if err != nil {
 		return err
-	}
-
-	if name == "" {
-		name = strings.TrimSuffix(filepath.Base(templatePath), filepath.Ext(templatePath))
 	}
 
 	model := &models.Template{
-		Template: template,
+		Template: templateData,
 		Name:     name,
-		Readme:   "",
 	}
 
-	if readmePath != "" {
-		data, err := openReadme(readmePath)
-		if err == nil {
-			model.Readme = data
+	if readme != nil {
+		data, err := ioutil.ReadAll(readme)
+		if err != nil {
+			return err
 		}
+		model.Readme = string(data)
 	}
 
 	return t.Save(model)
-}
-
-func openTemplate(path string) (t pufferpanel.Template, err error) {
-	file, err := os.Open(path)
-	defer pufferpanel.Close(file)
-	if err != nil {
-		return
-	}
-
-	err = json.NewDecoder(file).Decode(&t)
-	return
-}
-
-func openReadme(path string) (string, error) {
-	file, err := os.Open(path)
-	defer pufferpanel.Close(file)
-	if err != nil {
-		return "", err
-	}
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return "", err
-	}
-
-	return string(data), err
-}
-
-func unzip(sourceZip, targetDir string) error {
-	zipFile, err := zip.OpenReader(sourceZip)
-	defer pufferpanel.Close(zipFile)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range zipFile.File {
-		if f.FileInfo().IsDir() {
-			continue
-		}
-		if strings.HasPrefix(filepath.Base(f.Name), ".") {
-			continue
-		}
-
-		logging.Info().Printf("Extracting %s\n", f.Name)
-		exportPath := filepath.Join(targetDir, f.Name)
-		err := os.MkdirAll(filepath.Dir(exportPath), 0644)
-		if err != nil {
-			return err
-		}
-		err = writeFile(f, exportPath)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func writeFile(source *zip.File, target string) error {
-	s, err := source.Open()
-	defer pufferpanel.Close(s)
-	if err != nil {
-		return err
-	}
-
-	file, err := os.OpenFile(target, os.O_CREATE|os.O_WRONLY, 0644)
-	defer pufferpanel.Close(file)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(file, s)
-	return err
 }
