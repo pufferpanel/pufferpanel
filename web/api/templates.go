@@ -177,4 +177,5 @@ func getImportableTemplates(c *gin.Context) {
 			results = append(results, v.Path)
 		}
 	}
+	c.JSON(200, results)
 }
