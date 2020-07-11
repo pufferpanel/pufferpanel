@@ -1,6 +1,14 @@
 <template>
   <v-container>
-    <h1 v-text="$t('templates.Templates')" />
+    <div class="d-flex">
+      <h1 class="flex-grow-1" v-text="$t('templates.Templates')" />
+      <v-tooltip left>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="loadTemplateImporter"><v-icon>mdi-import</v-icon></v-btn>
+        </template>
+        <span v-text="$t('templates.ImportDesc')" />
+      </v-tooltip>
+    </div>
     <v-row>
       <v-col>
         <v-list subheader elevation="1">
@@ -32,6 +40,33 @@
         </v-btn>
       </v-col>
     </v-row>
+    <common-overlay v-model="showTemplateImporter" card closable :title="$t('templates.Import')">
+      <v-alert border="bottom" text type="warning" prominent>
+        {{ $t('templates.OverrideWarning') }}
+      </v-alert>
+      <v-list flat>
+        <v-list-item-group multiple>
+          <v-list-item v-for="key in importableTemplates" :key="key">
+            <v-list-item-action>
+              <v-checkbox
+                v-model="templatesToImport[key]"
+              ></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="key">
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-row>
+        <v-col>
+          <v-btn block color="error" v-text="$t('common.Cancel')" @click="showTemplateImporter = false" />
+        </v-col>
+        <v-col>
+          <v-btn block color="success" v-text="$t('templates.Import')" @click="doImports()" />
+        </v-col>
+      </v-row>
+    </common-overlay>
   </v-container>
 </template>
 
@@ -48,6 +83,9 @@ export default {
         light: 'body-1 grey font-weight-bold lighten-4 black--text',
         dark: 'body-1 grey font-weight-bold darken-4 white--text'
       },
+      showTemplateImporter: false,
+      importableTemplates: [],
+      templatesToImport: {},
       unproxiedTheme: this.$vuetify.theme
     }
   },
@@ -91,6 +129,29 @@ export default {
 
         ctx.templates = { ...ctx.templates }
         ctx.loading = false
+      }).catch(handleError(ctx))
+    },
+    loadTemplateImporter () {
+      const ctx = this
+      ctx.importableTemplates = []
+      ctx.templatesToImport = {}
+      ctx.$http.post('/api/templates/import').then(response => {
+        ctx.importableTemplates = response.data
+        ctx.showTemplateImporter = true
+      }).catch(handleError(ctx))
+    },
+    doImports () {
+      this.showTemplateImporter = false
+      this.$toast.info(this.$t('templates.ImportStarted'))
+      Object.keys(this.templatesToImport)
+        .filter(elem => this.templatesToImport[elem])
+        .map(elem => this.importTemplate(elem))
+    },
+    importTemplate (template) {
+      const ctx = this
+      ctx.$http.post(`/api/templates/import/${template}`).then(response => {
+        ctx.$toast.success(ctx.$t('templates.ImportSuccessful', { template }))
+        ctx.loadData()
       }).catch(handleError(ctx))
     },
     isDark
