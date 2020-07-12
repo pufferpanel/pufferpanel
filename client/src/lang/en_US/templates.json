@@ -45,11 +45,14 @@
   "Command": "Command",
   "Arguments": "Arguments",
   "AddArgument": "Add an argument",
-  "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-  "Import": "Import templates",
-  "ImportDesc": "Import templates from the official repository",
-  "ImportStarted": "Importing templates, please wait a moment",
-  "ImportSuccessful": "Successfully imported template {template}",
+  "import": {
+    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
+    "Import": "Import templates",
+    "Tooltip": "Import templates from the official repository",
+    "Select": "Select templates to import",
+    "Started": "Importing templates, please wait a moment",
+    "Successful": "Successfully imported template {template}"
+  },
   "stop": {
     "Command": "Command",
     "Signal": "Signal"
