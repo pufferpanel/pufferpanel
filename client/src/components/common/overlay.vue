@@ -29,11 +29,6 @@
   width: 100vw !important;
   max-width: 100vw !important;
   max-height: 100vh !important;
-  overflow-y: scroll !important;
-}
-
-.overlayContent {
-  overflow: scroll;
 }
 </style>
 

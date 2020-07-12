@@ -6,7 +6,7 @@
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on" @click="loadTemplateImporter"><v-icon>mdi-import</v-icon></v-btn>
         </template>
-        <span v-text="$t('templates.ImportDesc')" />
+        <span v-text="$t('templates.import.Tooltip')" />
       </v-tooltip>
     </div>
     <v-row>
@@ -23,7 +23,10 @@
             </div>
             <v-divider v-if="i !== Object.keys(templates).length - 1" />
           </div>
-          <div class="pt-2 text-center text--disabled" v-if="Object.keys(templates).length === 0" v-text="$t('templates.NoTemplates')" />
+          <div class="pt-2 text-center text--disabled" v-if="Object.keys(templates).length === 0">
+            <span v-if="loading" v-text="$t('common.Loading')" />
+            <span v-else v-text="$t('templates.NoTemplates')" />
+          </div>
         </v-list>
         <v-btn
           v-show="hasScope('templates.edit') || isAdmin()"
@@ -40,30 +43,17 @@
         </v-btn>
       </v-col>
     </v-row>
-    <common-overlay v-model="showTemplateImporter" card closable :title="$t('templates.Import')">
-      <v-alert border="bottom" text type="warning" prominent>
-        {{ $t('templates.OverrideWarning') }}
+    <common-overlay v-model="showTemplateImporter" card closable :title="$t('templates.import.Import')">
+      <v-alert border="bottom" text type="warning" dense>
+        {{ $t('templates.import.OverrideWarning') }}
       </v-alert>
-      <v-list flat>
-        <v-list-item-group multiple>
-          <v-list-item v-for="key in importableTemplates" :key="key">
-            <v-list-item-action>
-              <v-checkbox
-                v-model="templatesToImport[key]"
-              ></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="key">
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
+      <v-autocomplete v-model="templatesToImport" :items="importableTemplates" chips :label="$t('templates.import.Select')" multiple clearable deletable-chips solo open-on-clear />
       <v-row>
         <v-col>
           <v-btn block color="error" v-text="$t('common.Cancel')" @click="showTemplateImporter = false" />
         </v-col>
         <v-col>
-          <v-btn block color="success" v-text="$t('templates.Import')" @click="doImports()" />
+          <v-btn block color="success" v-text="$t('templates.import.Import')" @click="doImports()" />
         </v-col>
       </v-row>
     </common-overlay>
@@ -85,7 +75,7 @@ export default {
       },
       showTemplateImporter: false,
       importableTemplates: [],
-      templatesToImport: {},
+      templatesToImport: [],
       unproxiedTheme: this.$vuetify.theme
     }
   },
@@ -134,24 +124,26 @@ export default {
     loadTemplateImporter () {
       const ctx = this
       ctx.importableTemplates = []
-      ctx.templatesToImport = {}
+      ctx.templatesToImport = []
       ctx.$http.post('/api/templates/import').then(response => {
         ctx.importableTemplates = response.data
+        ctx.templatesToImport = response.data
         ctx.showTemplateImporter = true
       }).catch(handleError(ctx))
     },
     doImports () {
-      this.showTemplateImporter = false
-      this.$toast.info(this.$t('templates.ImportStarted'))
-      Object.keys(this.templatesToImport)
-        .filter(elem => this.templatesToImport[elem])
-        .map(elem => this.importTemplate(elem))
-    },
-    importTemplate (template) {
       const ctx = this
-      ctx.$http.post(`/api/templates/import/${template}`).then(response => {
-        ctx.$toast.success(ctx.$t('templates.ImportSuccessful', { template }))
-        ctx.loadData()
+      ctx.loading = true
+      ctx.showTemplateImporter = false
+      ctx.$toast.info(this.$t('templates.import.Started'))
+      Promise.all(
+        ctx.templatesToImport
+          .map(elem => ctx.importTemplate(ctx, elem))
+      ).then(x => { ctx.loadData() })
+    },
+    importTemplate (ctx, template) {
+      return ctx.$http.post(`/api/templates/import/${template}`).then(response => {
+        ctx.$toast.success(ctx.$t('templates.import.Successful', { template }))
       }).catch(handleError(ctx))
     },
     isDark
