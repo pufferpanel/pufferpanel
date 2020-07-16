@@ -320,7 +320,7 @@ func EditServer(c *gin.Context) {
 		return
 	}
 
-	err = prg.Edit(data.Variables, false)
+	err = prg.Edit(data.Variables, isAdmin(c))
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -394,6 +394,16 @@ func GetServer(c *gin.Context) {
 	server := item.(*programs.Program)
 
 	data := server.GetData()
+
+	if !isAdmin(c) {
+		var replacement = make(map[string]pufferpanel.Variable)
+		for k, v := range data {
+			if v.UserEditable {
+				replacement[k] = v
+			}
+		}
+		data = replacement
+	}
 
 	c.JSON(200, &pufferpanel.ServerData{Variables: data})
 }
@@ -675,4 +685,16 @@ func OpenSocket(c *gin.Context) {
 	go listenOnSocket(socket, program, scopes)
 
 	program.GetEnvironment().AddListener(socket)
+}
+
+func isAdmin(c *gin.Context) bool {
+	o, _ := c.Get("scopes")
+	if scopes, ok := o.([]pufferpanel.Scope); ok {
+		for _, v := range scopes {
+			if v == pufferpanel.ScopeServersAdmin {
+				return true
+			}
+		}
+	}
+	return false
 }
