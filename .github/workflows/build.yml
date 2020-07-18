@@ -33,7 +33,7 @@ jobs:
     
     - name: Get the version
       if: startsWith(env.VERSION, 'refs/')
-      run: echo "::set-env name=VERSION::2.0.+${GITHUB_RUN_NUMBER}"
+      run: echo "::set-env name=VERSION::2.0.0+${GITHUB_RUN_NUMBER}"
   
     - name: Get the version for RPM
       run: echo "::set-env name=RPMVERSION::${VERSION/\-/\~}"
@@ -174,9 +174,6 @@ jobs:
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
-
-        mv pufferpanel*.deb artifacts/
-        mv pufferpanel*.rpm artifacts/
     
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -192,9 +189,10 @@ jobs:
         cp -r email arm/
         cp -r www arm/
         cd amd64
-        zip -r pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
+        zip -r ../pufferpanel_${{ env.VERSION }}_amd64.zip pufferpanel pufferpanel.exe www email
         cd ../arm
-        zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
+        zip -r ../pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
+        rm -rf email www amd64 arm
         
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -212,19 +210,19 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
-        path: artifacts/pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
+        path: pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
         
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: pufferpanel_${{ env.VERSION }}_amd64.deb
-        path: artifacts/pufferpanel_${{ env.VERSION }}_amd64.deb
+        path: pufferpanel_${{ env.VERSION }}_amd64.deb
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: pufferpanel_${{ env.VERSION }}_armhf.deb
-        path: artifacts/pufferpanel_${{ env.VERSION }}_armhf.deb
+        path: pufferpanel_${{ env.VERSION }}_armhf.deb
 
     - name: Install gems
       if: startsWith(github.ref, 'refs/tags/v2.')
