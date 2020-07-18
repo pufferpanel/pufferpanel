@@ -13,3 +13,5 @@ vendor/
 client/dist/
 *.pem
 client/node_modules/
+web/swagger/swagger.json
+web/swagger/swagger.yaml

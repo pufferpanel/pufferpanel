@@ -15,6 +15,7 @@ package web
 
 import (
 	"fmt"
+	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
@@ -24,7 +25,11 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/web/daemon"
 	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
 	"github.com/pufferpanel/pufferpanel/v2/web/proxy"
+	_ "github.com/pufferpanel/pufferpanel/v2/web/swagger"
 	"github.com/spf13/viper"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+	_ "github.com/swaggo/swag"
 	"net/http"
 	"strings"
 )
@@ -34,10 +39,19 @@ var IndexFile string
 
 var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
 
+// @title PufferPanel API
+// @version 2.0
+// @description PufferPanel web interface
+// @contact.name PufferPanel
+// @contact.url https://pufferpanel.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func RegisterRoutes(e *gin.Engine) {
 	e.Use(func(c *gin.Context) {
 		middleware.Recover(c)
 	})
+
+	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if viper.GetBool("daemon.enable") {
 		daemon.RegisterDaemonRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
@@ -76,8 +90,7 @@ func RegisterRoutes(e *gin.Engine) {
 		}
 		e.StaticFile("/favicon.png", ClientPath+"/favicon.png")
 		e.StaticFile("/favicon.ico", ClientPath+"/favicon.ico")
-		//e.StaticFile("/", IndexFile)
-		e.NoRoute( /*handlers.AuthMiddleware,*/ handle404)
+		e.NoRoute(handle404)
 	}
 }
 

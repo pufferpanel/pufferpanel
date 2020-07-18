@@ -135,7 +135,7 @@ type Error struct {
 	Message string                 `json:"msg,omitempty"`
 	Code    string                 `json:"code,omitempty"`
 	Meta    map[string]interface{} `json:"metadata,omitempty"`
-	error
+	//error
 }
 
 func (ge *Error) GetMessage() string {

@@ -56,7 +56,7 @@ func registerNodes(g *gin.RouterGroup) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /nodes [get]
+// @Router /api/nodes [get]
 func getAllNodes(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -89,7 +89,7 @@ func getAllNodes(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /nodes/{id} [get]
+// @Router /api/nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -124,7 +124,7 @@ func getNode(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Node Identifier"
-// @Router /nodes [post]
+// @Router /api/nodes [post]
 func createNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -159,7 +159,7 @@ func createNode(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Node Id"
-// @Router /nodes/{id} [put]
+// @Router /api/nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -202,7 +202,7 @@ func updateNode(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Node Id"
-// @Router /nodes/{id} [delete]
+// @Router /api/nodes/{id} [delete]
 func deleteNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
