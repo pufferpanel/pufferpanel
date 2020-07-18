@@ -72,6 +72,15 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+          
+    - name: Restore Go Binary cache
+      uses: actions/cache@v2
+      id: gobinary
+      with:
+        path: ~/go/bin
+        key: ${{ runner.os }}-go-bin-${{ hashFiles('~/go/bin/**') }}
+        restore-keys: |
+          ${{ runner.os }}-go-bin-
 
     - name: Restore NPM cache
       uses: actions/cache@v2
@@ -80,11 +89,17 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+                    
+    - name: Download Go Binaries
+      if: steps.gobinary.outputs.cache-hit != 'true'
+      run: |
+        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
+        mkdir ~/go/bin
+        tar -zxf swag*.tar.gz -C ~/go/bin
 
     - name: Generate Swagger Docs
       run: |
-        go get -u github.com/swaggo/swag/cmd/swag
-        swag init -o web/swagger -g web/loader.go
+        ~/gin/bin/swag init -o web/swagger -g web/loader.go
         
     - name: Build Linux
       run: |
