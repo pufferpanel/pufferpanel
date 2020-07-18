@@ -3,8 +3,14 @@
     <h1 v-text="$t('users.Users')" />
     <v-row>
       <v-col>
-        <v-list two-line elevation="1">
-          <div v-for="(user, index) in users">
+        <v-list
+          two-line
+          elevation="1"
+        >
+          <div
+            v-for="(user, index) in users"
+            :key="user.id"
+          >
             <v-list-item :to="(hasScope('users.edit') || isAdmin()) ? {name: 'User', params: {id: user.id}} : undefined">
               <v-list-item-content>
                 <v-list-item-title v-text="user.username" />

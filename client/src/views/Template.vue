@@ -5,9 +5,22 @@
         <v-card-title>
           <span v-text="$t(create ? 'templates.New' : 'templates.Edit')" />
           <div class="flex-grow-1" />
-          <v-btn-toggle v-model="currentMode" borderless dense mandatory>
-            <v-btn value="editor" v-text="$t('templates.Editor')" @click="updateEditor()" />
-            <v-btn value="json" v-text="$t('templates.Json')" @click="updateJson()" />
+          <v-btn-toggle
+            v-model="currentMode"
+            borderless
+            dense
+            mandatory
+          >
+            <v-btn
+              value="editor"
+              @click="updateEditor()"
+              v-text="$t('templates.Editor')"
+            />
+            <v-btn
+              value="json"
+              @click="updateJson()"
+              v-text="$t('templates.Json')"
+            />
           </v-btn-toggle>
         </v-card-title>
         <v-card-text>
@@ -23,7 +36,10 @@
             </v-col>
           </v-row>
           <v-row v-if="currentMode === 'editor'">
-            <v-col cols="12" md="6">
+            <v-col
+              cols="12"
+              md="6"
+            >
               <v-text-field
                 v-model="templateObj.display"
                 :label="$t('templates.Display')"
@@ -31,7 +47,10 @@
                 hide-details
               />
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col
+              cols="12"
+              md="6"
+            >
               <v-text-field
                 v-model="templateObj.type"
                 :label="$t('templates.Type')"
@@ -53,17 +72,20 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'json' && !loading">
+    <v-col
+      v-if="currentMode === 'json' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-text>
           <v-row>
             <v-col>
               <ace
+                ref="editor"
                 v-model="template"
                 :editor-id="name + 'json'"
                 :theme="isDark() ? 'monokai' : 'github'"
                 height="50vh"
-                ref="editor"
                 file="template.json"
                 @editorready="$refs.editor.setValue(template)"
               />
@@ -72,7 +94,10 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.Variables')" />
         <v-card-text class="pb-1">
@@ -80,15 +105,24 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.Install')" />
         <v-card-text class="pb-1">
-          <template-processors v-model="templateObj.install" name="install" />
+          <template-processors
+            v-model="templateObj.install"
+            name="install"
+          />
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.RunConfig')" />
         <v-card-text class="pb-1">
@@ -96,7 +130,10 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.Shutdown')" />
         <v-card-text class="pb-1">
@@ -104,23 +141,38 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.PreHook')" />
         <v-card-text class="pb-1">
-          <template-processors v-model="templateObj.run.pre" name="pre" />
+          <template-processors
+            v-model="templateObj.run.pre"
+            name="pre"
+          />
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.PostHook')" />
         <v-card-text class="pb-1">
-          <template-processors v-model="templateObj.run.post" name="post" />
+          <template-processors
+            v-model="templateObj.run.post"
+            name="post"
+          />
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.EnvVars')" />
         <v-card-text class="pb-1">
@@ -128,7 +180,10 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" v-if="currentMode === 'editor' && !loading">
+    <v-col
+      v-if="currentMode === 'editor' && !loading"
+      cols="12"
+    >
       <v-card>
         <v-card-title v-text="$t('templates.SupportedEnvironments')" />
         <v-card-text class="pb-1">

@@ -46,13 +46,24 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-dialog v-model="confirmDeleteOpen" max-width="600">
+      <v-dialog
+        v-model="confirmDeleteOpen"
+        max-width="600"
+      >
         <v-card>
           <v-card-title v-text="$t('files.ConfirmDelete')" />
           <v-card-actions>
             <v-spacer />
-            <v-btn v-text="$t('common.Cancel')" @click="deleteCancelled()" color="error" />
-            <v-btn v-text="$t('common.Confirm')" @click="deleteConfirmed()" color="success" />
+            <v-btn
+              color="error"
+              @click="deleteCancelled()"
+              v-text="$t('common.Cancel')"
+            />
+            <v-btn
+              color="success"
+              @click="deleteConfirmed()"
+              v-text="$t('common.Confirm')"
+            />
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -142,8 +153,16 @@
           </v-card-text>
           <v-card-actions class="px-4 pb-4">
             <div class="flex-grow-1" />
-            <v-btn v-text="$t('common.Cancel')" color="error" @click="cancelEdit()" />
-            <v-btn v-text="$t('common.Save')" color="success" @click="saveEdit()" />
+            <v-btn
+              color="error"
+              @click="cancelEdit()"
+              v-text="$t('common.Cancel')"
+            />
+            <v-btn
+              color="success"
+              @click="saveEdit()"
+              v-text="$t('common.Save')"
+            />
           </v-card-actions>
         </v-card>
       </v-overlay>

@@ -1,8 +1,23 @@
 <template>
-  <common-overlay v-model="show" card closable :title="$t('common.SelectLanguage')">
+  <common-overlay
+    v-model="show"
+    card
+    closable
+    :title="$t('common.SelectLanguage')"
+  >
     <v-row>
-      <v-col cols="12" sm="6" md="3" v-for="lang in Object.keys($i18n.messages)" :key="lang">
-        <v-btn text v-text="getText(lang)" @click="setLocale(lang)" />
+      <v-col
+        v-for="lang in Object.keys($i18n.messages)"
+        :key="lang"
+        cols="12"
+        sm="6"
+        md="3"
+      >
+        <v-btn
+          text
+          @click="setLocale(lang)"
+          v-text="getText(lang)"
+        />
       </v-col>
     </v-row>
   </common-overlay>
@@ -33,7 +48,7 @@ export default {
       return (!flag || flag === '') ? langName : `${flag} ${langName}`
     },
     getFlag (cc) {
-      return cc.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0)+127397))
+      return cc.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397))
     },
     setLocale (locale) {
       this.$i18n.locale = locale

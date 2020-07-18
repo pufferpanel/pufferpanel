@@ -1,13 +1,27 @@
 <template>
-  <v-overlay v-model="value" :dark="isDark()">
-    <v-container fluid class="overlayContainer">
+  <v-overlay
+    v-model="value"
+    :dark="isDark()"
+  >
+    <v-container
+      fluid
+      class="overlayContainer"
+    >
       <v-row>
-        <v-col cols="12" offset-md="1" md="10">
+        <v-col
+          cols="12"
+          offset-md="1"
+          md="10"
+        >
           <v-card v-if="card">
             <v-card-title>
               <span v-text="title" />
               <v-spacer />
-              <v-btn v-if="closable" @click="$emit('input', false)" icon>
+              <v-btn
+                v-if="closable"
+                icon
+                @click="$emit('input', false)"
+              >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
@@ -15,7 +29,10 @@
               <slot />
             </v-card-text>
           </v-card>
-          <v-sheet v-else class="overlayContent">
+          <v-sheet
+            v-else
+            class="overlayContent"
+          >
             <slot />
           </v-sheet>
         </v-col>

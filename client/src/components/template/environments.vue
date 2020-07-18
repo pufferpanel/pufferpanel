@@ -13,25 +13,75 @@
 
 <template>
   <div>
-    <v-expansion-panels multiple class="mb-2">
-      <v-expansion-panel v-for="(env, i) in value" :key="i">
+    <v-expansion-panels
+      multiple
+      class="mb-2"
+    >
+      <v-expansion-panel
+        v-for="(env, i) in value"
+        :key="i"
+      >
         <v-expansion-panel-header v-text="env.type" />
         <v-expansion-panel-content>
-          <v-text-field v-if="env.type === 'docker'" v-model="env.image" :label="$t('templates.DockerImage')" outlined hide-details class="mb-2" />
-          <v-btn color="error" v-text="$t('common.Delete')" block @click="$delete(value, i)" />
+          <v-text-field
+            v-if="env.type === 'docker'"
+            v-model="env.image"
+            :label="$t('templates.DockerImage')"
+            outlined
+            hide-details
+            class="mb-2"
+          />
+          <v-btn
+            color="error"
+            block
+            @click="$delete(value, i)"
+            v-text="$t('common.Delete')"
+          />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn text v-if="!addingEnv" v-text="$t('templates.AddEnvironment')" block @click="addingEnv = true" />
+    <v-btn
+      v-if="!addingEnv"
+      text
+      block
+      @click="addingEnv = true"
+      v-text="$t('templates.AddEnvironment')"
+    />
     <v-row v-else>
-      <v-col cols="12" md="6">
-        <v-select v-model="newEnv" :label="$t('templates.Environment')" :items="possibleEnvironments" dense outlined hide-details />
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-select
+          v-model="newEnv"
+          :label="$t('templates.Environment')"
+          :items="possibleEnvironments"
+          dense
+          outlined
+          hide-details
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="primary" v-text="$t('templates.AddEnvironment')" block @click="addEnv()" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="primary"
+          block
+          @click="addEnv()"
+          v-text="$t('templates.AddEnvironment')"
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="error" v-text="$t('common.Cancel')" block @click="newEnv = 'standard'; addingEnv = false" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="error"
+          block
+          @click="newEnv = 'standard'; addingEnv = false"
+          v-text="$t('common.Cancel')"
+        />
       </v-col>
     </v-row>
   </div>

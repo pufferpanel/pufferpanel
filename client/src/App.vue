@@ -150,13 +150,18 @@
           </div>
         </div>
         <router-view
+          v-else
           @logged-in="didLogIn()"
           @show-error-details="showError"
-          v-else
         />
       </v-container>
       <common-language v-model="showLanguageSelect" />
-      <common-overlay v-model="errorOverlayOpen" card closable :title="$t('common.ErrorDetails')">
+      <common-overlay
+        v-model="errorOverlayOpen"
+        card
+        closable
+        :title="$t('common.ErrorDetails')"
+      >
         <code v-text="errorText" />
       </common-overlay>
     </v-content>

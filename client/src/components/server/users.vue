@@ -18,14 +18,31 @@
       <v-row>
         <v-col
           v-for="user in users"
+          :key="user.email"
           cols="12"
           md="6"
         >
-          <v-card class="mb-4" outlined>
+          <v-card
+            class="mb-4"
+            outlined
+          >
             <v-card-title>
-              <v-text-field hide-details outlined v-model="user.email" type="email" :label="$t('users.Email')" prepend-inner-icon="mdi-email" @keyup.enter="updateUser(user)" v-if="user.new" />
-              <span v-text="user.username || user.email" v-if="!user.new" />
-              <v-btn v-if="!user.new"
+              <v-text-field
+                v-if="user.new"
+                v-model="user.email"
+                hide-details
+                outlined
+                type="email"
+                :label="$t('users.Email')"
+                prepend-inner-icon="mdi-email"
+                @keyup.enter="updateUser(user)"
+              />
+              <span
+                v-if="!user.new"
+                v-text="user.username || user.email"
+              />
+              <v-btn
+                v-if="!user.new"
                 icon
                 @click="toggleEdit(user.username)"
               >
@@ -36,6 +53,7 @@
               <v-row>
                 <v-col
                   v-for="option in options"
+                  :key="option.value"
                   class="pt-1 pb-0"
                   cols="12"
                   md="6"
@@ -80,7 +98,11 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn block @click="addUser()" v-text="$t('users.Add')" />
+          <v-btn
+            block
+            @click="addUser()"
+            v-text="$t('users.Add')"
+          />
         </v-col>
       </v-row>
     </v-card-text>

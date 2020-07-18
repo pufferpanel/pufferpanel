@@ -1,46 +1,115 @@
 <template>
   <v-row>
-    <v-col cols="12" md="6" offset-md="3">
+    <v-col
+      cols="12"
+      md="6"
+      offset-md="3"
+    >
       <v-card>
         <v-card-title v-text="$t('nodes.Edit')" />
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-text-field :label="$t('common.Name')" v-model="node.name" outlined hide-details />
+              <v-text-field
+                v-model="node.name"
+                :label="$t('common.Name')"
+                outlined
+                hide-details
+              />
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PublicHost')" v-model="node.publicHost" type="text" outlined hide-details />
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="node.publicHost"
+                :label="$t('nodes.PublicHost')"
+                type="text"
+                outlined
+                hide-details
+              />
             </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PublicPort')" v-model="node.publicPort" type="number" outlined hide-details />
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="node.publicPort"
+                :label="$t('nodes.PublicPort')"
+                type="number"
+                outlined
+                hide-details
+              />
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PrivateHost')" v-model="node.privateHost" type="text" outlined hide-details />
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="node.privateHost"
+                :label="$t('nodes.PrivateHost')"
+                type="text"
+                outlined
+                hide-details
+              />
             </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field :label="$t('nodes.PrivatePort')" v-model="node.privatePort" type="number" outlined hide-details />
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="node.privatePort"
+                :label="$t('nodes.PrivatePort')"
+                type="number"
+                outlined
+                hide-details
+              />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field :label="$t('nodes.SftpPort')" v-model="node.sftpPort" type="number" outlined hide-details />
+              <v-text-field
+                v-model="node.sftpPort"
+                :label="$t('nodes.SftpPort')"
+                type="number"
+                outlined
+                hide-details
+              />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-btn v-text="$t('nodes.Update')" large block color="primary" @click="updateNode" />
+              <v-btn
+                large
+                block
+                color="primary"
+                @click="updateNode"
+                v-text="$t('nodes.Update')"
+              />
             </v-col>
             <v-col cols="12">
-              <v-btn v-text="$t('nodes.Delete')" block color="error" @click="deleteNode" />
+              <v-btn
+                block
+                color="error"
+                @click="deleteNode"
+                v-text="$t('nodes.Delete')"
+              />
             </v-col>
             <v-col cols="12">
-              <v-btn v-text="$t('nodes.SaveConfig')" :disabled="loadingDeploy" text block @click="downloadConfig()" />
+              <v-btn
+                :disabled="loadingDeploy"
+                text
+                block
+                @click="downloadConfig()"
+                v-text="$t('nodes.SaveConfig')"
+              />
             </v-col>
             <v-col cols="12">
+              <!-- eslint-disable-next-line vue/no-v-html -->
               <span v-html="markdown($t('nodes.DeploymentInstruction'))" />
             </v-col>
           </v-row>
@@ -69,7 +138,7 @@ export default {
         logs: '/var/log/pufferpanel',
         web: {},
         token: {
-            public: location.protocol + '//' + location.host + '/auth/publickey',
+          public: location.protocol + '//' + location.host + '/auth/publickey'
         },
         panel: {
           enable: false
@@ -82,7 +151,7 @@ export default {
             cache: '/var/lib/pufferpanel/cache',
             servers: '/var/lib/pufferpanel/servers'
           },
-          sftp: {},
+          sftp: {}
         }
       }
     }

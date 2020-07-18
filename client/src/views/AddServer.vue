@@ -16,27 +16,56 @@
     <h1 v-text="$t('servers.Add')" />
     <v-stepper v-model="currentStep">
       <v-stepper-header>
-        <v-stepper-step step="1" :complete="currentStep > 1" />
+        <v-stepper-step
+          step="1"
+          :complete="currentStep > 1"
+        />
         <v-divider />
-        <v-stepper-step step="2" :complete="currentStep > 2" />
+        <v-stepper-step
+          step="2"
+          :complete="currentStep > 2"
+        />
         <v-divider />
-        <v-stepper-step step="3" :complete="currentStep > 3" />
+        <v-stepper-step
+          step="3"
+          :complete="currentStep > 3"
+        />
         <v-divider />
-        <v-stepper-step step="4" :complete="currentStep > 4" />
+        <v-stepper-step
+          step="4"
+          :complete="currentStep > 4"
+        />
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
           <div v-if="Object.keys(templates).length > 0">
             <h3 v-text="$t('servers.SelectTemplate')" />
-            <v-text-field v-model="templateFilter" :placeholder="$t('common.Search')" />
+            <v-text-field
+              v-model="templateFilter"
+              :placeholder="$t('common.Search')"
+            />
           </div>
-          <div class="text-center text--disabled" v-else v-text="$t('templates.NoTemplates')" />
+          <div
+            v-else
+            class="text-center text--disabled"
+            v-text="$t('templates.NoTemplates')"
+          />
           <v-expansion-panels>
-            <fragment v-for="(elements, type) in templates" :key="type">
-              <v-expansion-panel disabled v-if="filterTemplates(elements, templateFilter).length > 0">
+            <fragment
+              v-for="(elements, type) in templates"
+              :key="type"
+            >
+              <v-expansion-panel
+                v-if="filterTemplates(elements, templateFilter).length > 0"
+                disabled
+              >
                 <v-expansion-panel-header v-text="type" />
               </v-expansion-panel>
-              <v-expansion-panel v-for="template in filterTemplates(elements, templateFilter)" :key="template.name" @click="loadTemplateData(template.name)">
+              <v-expansion-panel
+                v-for="template in filterTemplates(elements, templateFilter)"
+                :key="template.name"
+                @click="loadTemplateData(template.name)"
+              >
                 <v-expansion-panel-header v-text="template.display" />
                 <v-expansion-panel-content>
                   <v-row v-if="templateData[template.name] === undefined">
@@ -49,9 +78,20 @@
                       <strong v-text="$t('common.Loading')" />
                     </v-col>
                   </v-row>
-                  <span v-else v-html="markdown(templateData[template.name].readme || $t('servers.NoReadme'))" />
-                  <br />
-                  <v-btn color="primary" @click="selectTemplate(template.name)" v-text="$t('servers.SelectThisTemplate')" large block />
+                  <!-- eslint-disable vue/no-v-html -->
+                  <span
+                    v-else
+                    v-html="markdown(templateData[template.name].readme || $t('servers.NoReadme'))"
+                  />
+                  <!-- eslint-enable -->
+                  <br>
+                  <v-btn
+                    color="primary"
+                    large
+                    block
+                    @click="selectTemplate(template.name)"
+                    v-text="$t('servers.SelectThisTemplate')"
+                  />
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </fragment>
@@ -61,7 +101,10 @@
         <v-stepper-content step="2">
           <v-row>
             <v-col cols="12">
-              <h3 v-text="$t('servers.Name')" class="mb-4" />
+              <h3
+                class="mb-4"
+                v-text="$t('servers.Name')"
+              />
               <v-text-field
                 id="nameInput"
                 v-model="serverName"
@@ -72,7 +115,10 @@
 
           <v-row>
             <v-col cols="12">
-              <h3 v-text="$t('nodes.Node')" class="mb-4" />
+              <h3
+                class="mb-4"
+                v-text="$t('nodes.Node')"
+              />
               <v-select
                 id="nodeSelect"
                 v-model="selectedNode"
@@ -88,7 +134,10 @@
 
           <v-row>
             <v-col cols="12">
-              <h3 v-text="$t('servers.Environment')" class="mb-4" />
+              <h3
+                class="mb-4"
+                v-text="$t('servers.Environment')"
+              />
               <v-select
                 id="environmentSelect"
                 v-model="selectedEnvironment"
@@ -98,7 +147,10 @@
                 :placeholder="$t('servers.SelectEnvironment')"
               />
               <div v-if="selectedEnvironment && environments[selectedEnvironment]">
-                <div v-for="(val, key) in environments[selectedEnvironment].metadata">
+                <div
+                  v-for="(val, key) in environments[selectedEnvironment].metadata"
+                  :key="key"
+                >
                   <v-text-field
                     v-model="environments[selectedEnvironment].metadata[key]"
                     outlined
@@ -135,7 +187,10 @@
         <v-stepper-content step="3">
           <v-row>
             <v-col cols="12">
-              <h3 v-text="$t('users.Users')" class="mb-4" />
+              <h3
+                class="mb-4"
+                v-text="$t('users.Users')"
+              />
               <v-text-field
                 v-model="userInput"
                 outlined
@@ -167,6 +222,7 @@
                 <v-list-item-group v-if="selectedUsers.length > 0">
                   <v-list-item
                     v-for="user in selectedUsers"
+                    :key="user"
                     @click="removeUser(user)"
                   >
                     <v-list-item-icon>
@@ -209,9 +265,10 @@
             <v-col cols="12">
               <v-card-title v-text="$t('common.Options')" />
               <v-row>
+                <!-- v-if="!item.internal" -->
                 <v-col
-                  v-for="item in formData"
-                  v-if="!item.internal"
+                  v-for="(item, index, name) in filteredFormData"
+                  :key="name"
                   cols="12"
                 >
                   <v-text-field
@@ -224,7 +281,10 @@
                     :label="item.display"
                     outlined
                   >
-                    <template slot="message"><div v-html="item.desc" /></template>
+                    <template slot="message">
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <div v-html="item.desc" />
+                    </template>
                   </v-text-field>
                   <v-switch
                     v-else-if="item.type === 'boolean'"
@@ -235,7 +295,10 @@
                     persistent-hint
                     :label="item.display"
                   >
-                    <template slot="message"><div v-html="item.desc" /></template>
+                    <template slot="message">
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <div v-html="item.desc" />
+                    </template>
                   </v-switch>
                   <v-select
                     v-else-if="item.type === 'option'"
@@ -246,7 +309,10 @@
                     :label="item.display"
                     outlined
                   >
-                    <template slot="message"><div v-html="item.desc" /></template>
+                    <template slot="message">
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <div v-html="item.desc" />
+                    </template>
                   </v-select>
                   <v-text-field
                     v-else
@@ -257,7 +323,10 @@
                     :label="item.display"
                     outlined
                   >
-                    <template slot="message"><div v-html="item.desc" /></template>
+                    <template slot="message">
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <div v-html="item.desc" />
+                    </template>
                   </v-text-field>
                 </v-col>
               </v-row>
@@ -358,6 +427,14 @@ export default {
       }
 
       return true
+    },
+    filteredFormData () {
+      const remove = Object.keys(this.formData).filter(elem => this.formData[elem].internal)
+      const filtered = { ...this.formData }
+      remove.map(elem => {
+        delete filtered[elem]
+      })
+      return filtered
     }
   },
   watch: {
@@ -404,6 +481,7 @@ export default {
       if (!newVal || newVal === '') {
         this.users = []
       } else {
+        // eslint-disable-next-line no-new
         new Promise((resolve, reject) => {
           this.findUsers(newVal)
           resolve()

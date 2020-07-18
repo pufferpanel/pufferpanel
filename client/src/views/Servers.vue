@@ -3,10 +3,20 @@
     <h1 v-text="$t('servers.Servers')" />
     <v-row>
       <v-col>
-        <v-sheet elevation="1" class="mb-8">
-          <div class="pt-2 text-center text--disabled" v-if="servers.length === 0" v-text="$t('servers.NoServers')" />
+        <v-sheet
+          elevation="1"
+          class="mb-8"
+        >
+          <div
+            v-if="servers.length === 0"
+            class="pt-2 text-center text--disabled"
+            v-text="$t('servers.NoServers')"
+          />
           <v-list two-line>
-            <div v-for="(server, index) in servers" :key="server.id">
+            <div
+              v-for="(server, index) in servers"
+              :key="server.id"
+            >
               <v-list-item :to="{ name: 'Server', params: { id: server.id } }">
                 <v-list-item-avatar>
                   <v-icon
@@ -30,8 +40,15 @@
               <v-divider v-if="index !== servers.length - 1" />
             </div>
           </v-list>
-          <v-row ref="lazy" v-if="pagination.page < pagination.pageCount" v-intersect="lazyLoad">
-            <v-col cols="2" offset="5">
+          <v-row
+            v-if="pagination.page < pagination.pageCount"
+            ref="lazy"
+            v-intersect="lazyLoad"
+          >
+            <v-col
+              cols="2"
+              offset="5"
+            >
               <v-progress-circular
                 indeterminate
                 class="mr-2"
@@ -97,14 +114,6 @@ export default {
       task: null
     }
   },
-  mounted () {
-    this.task = setInterval(this.pollServerStatus, 30 * 1000)
-  },
-  beforeDestroy () {
-    if (this.task != null) {
-      clearInterval(this.task)
-    }
-  },
   watch: {
     recheckLazy (newVal) {
       const rect = /* document.getElementById('lazy') */ this.$refs.lazy.getBoundingClientRect()
@@ -115,6 +124,14 @@ export default {
       ) {
         this.loadNextPage()
       }
+    }
+  },
+  mounted () {
+    this.task = setInterval(this.pollServerStatus, 30 * 1000)
+  },
+  beforeDestroy () {
+    if (this.task != null) {
+      clearInterval(this.task)
     }
   },
   methods: {

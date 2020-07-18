@@ -13,15 +13,42 @@
 
 <template>
   <v-row>
-    <v-col cols="12" class="pb-0">
-      <v-btn-toggle v-model="stopType" borderless dense mandatory>
-        <v-btn value="command" v-text="$t('templates.stop.Command')" />
-        <v-btn value="signal" v-text="$t('templates.stop.Signal')" />
+    <v-col
+      cols="12"
+      class="pb-0"
+    >
+      <v-btn-toggle
+        v-model="stopType"
+        borderless
+        dense
+        mandatory
+      >
+        <v-btn
+          value="command"
+          v-text="$t('templates.stop.Command')"
+        />
+        <v-btn
+          value="signal"
+          v-text="$t('templates.stop.Signal')"
+        />
       </v-btn-toggle>
     </v-col>
     <v-col cols="12">
-      <v-text-field v-if="stopType === 'command'" v-model="value.stop" :label="$t('templates.stop.Command')" outlined hide-details />
-      <v-text-field v-else v-model="value.stopCode" :label="$t('templates.stop.Signal')" type="number" outlined hide-details />
+      <v-text-field
+        v-if="stopType === 'command'"
+        v-model="value.stop"
+        :label="$t('templates.stop.Command')"
+        outlined
+        hide-details
+      />
+      <v-text-field
+        v-else
+        v-model="value.stopCode"
+        :label="$t('templates.stop.Signal')"
+        type="number"
+        outlined
+        hide-details
+      />
     </v-col>
   </v-row>
 </template>
