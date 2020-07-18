@@ -31,7 +31,9 @@ const opts = {
   }
 }
 
-Vue.use(Vuetify, opts)
-Vue.use(VuetifyToast, { x: 'center', y: 'top', timeout: 2500, queueable: true })
+const vuetify = new Vuetify(opts)
 
-export default new Vuetify(opts)
+Vue.use(Vuetify, opts)
+Vue.use(VuetifyToast, { $vuetify: vuetify.framework, x: 'center', y: 'top', timeout: 2500, queueable: true })
+
+export default vuetify
