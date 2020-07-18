@@ -5,6 +5,7 @@ on:
     - master
     tags:
     - v2.*
+  pull_request:
     
 jobs:
   skip-build:
@@ -176,20 +177,14 @@ jobs:
 
         mv pufferpanel*.deb artifacts/
         mv pufferpanel*.rpm artifacts/
-
+    
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: Artifacts
         path: artifacts
-
-    - name: Install gems
-      if: startsWith(github.ref, 'refs/tags/v2.')
-      run: |
-        gem install --no-doc package_cloud
-
+        
     - name: Create archives
-      if: startsWith(github.ref, 'refs/tags/v2.')
       working-directory: artifacts
       run: |
         cp -r email amd64/
@@ -201,13 +196,48 @@ jobs:
         cd ../arm
         zip -r pufferpanel_${{ env.VERSION }}_armhf.zip pufferpanel www email
         
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_armhf.zip
+        path: artifacts/pufferpanel_${{ env.VERSION }}_armhf.zip
+    
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_amd64.zip
+        path: artifacts/pufferpanel_${{ env.VERSION }}_amd64.zip
+        
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
+        path: artifacts/pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
+        
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_amd64.deb
+        path: artifacts/pufferpanel_${{ env.VERSION }}_amd64.deb
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_armhf.deb
+        path: artifacts/pufferpanel_${{ env.VERSION }}_armhf.deb
+
+    - name: Install gems
+      if: startsWith(github.ref, 'refs/tags/v2.')
+      run: |
+        gem install --no-doc package_cloud
+        
     - name: Create Release	
       id: create_release	
       if: startsWith(github.ref, 'refs/tags/v2.')	
       uses: actions/create-release@v1.0.0	
-      env:	
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
-      with:	
+      with:
         tag_name: ${{ github.ref }}	
         release_name: ${{ github.ref }}	
         draft: true	
@@ -268,8 +298,14 @@ jobs:
         package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.RPMVERSION }}.x86_64.rpm
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/yakkety pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/aardvark pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/cosmic pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/disco pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/eoam pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/focal pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push pufferpanel/pufferpanel/ubuntu/groovy pufferpanel_${{ env.VERSION }}_amd64.deb
         #debian
         package_cloud push pufferpanel/pufferpanel/debian/jessie pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/debian/stretch pufferpanel_${{ env.VERSION }}_amd64.deb
