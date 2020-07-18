@@ -100,7 +100,7 @@ jobs:
 
     - name: Generate Swagger Docs
       run: |
-        ~/gin/bin/swag init -o web/swagger -g web/loader.go
+        ~/go/bin/swag init -o web/swagger -g web/loader.go
         
     - name: Build Linux
       run: |
