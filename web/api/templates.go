@@ -55,7 +55,7 @@ func registerTemplates(g *gin.RouterGroup) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /templates [get]
+// @Router /api/templates [get]
 func getAllTemplates(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -77,7 +77,7 @@ func getAllTemplates(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /templates [get]
+// @Router /api/templates [get]
 func getTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -96,12 +96,12 @@ func getTemplate(c *gin.Context) {
 // @Summary Adds or updates a template
 // @Accept json
 // @Produce json
-// @Success 204 {object} models.Empty
+// @Success 204 {object} response.Empty
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /templates [get]
+// @Router /api/templates [get]
 func putTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}

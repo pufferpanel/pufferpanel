@@ -21,13 +21,6 @@ import (
 const MaxPageSize = 100
 const DefaultPageSize = 20
 
-// @title PufferPanel API
-// @version 2.0
-// @description PufferPanel web interface
-// @contact.name PufferPanel
-// @contact.url https://pufferpanel.com
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 func RegisterRoutes(rg *gin.RouterGroup) {
 
 	rg.Use(func(c *gin.Context) {
