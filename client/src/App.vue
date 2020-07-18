@@ -131,7 +131,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-content>
+    <v-main>
       <v-container fluid>
         <div
           v-if="!appConfig"
@@ -164,7 +164,7 @@
       >
         <code v-text="errorText" />
       </common-overlay>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
