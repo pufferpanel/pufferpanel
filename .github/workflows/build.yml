@@ -215,8 +215,8 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel-${{ env.VERSION }}.x86_64.rpm
-        path: pufferpanel-${{ env.VERSION }}.x86_64.rpm
+        name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        path: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -287,8 +287,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/pufferpanel-${{ env.VERSION }}.x86_64.rpm
-        asset_name: pufferpanel-${{ env.VERSION }}.x86_64.rpm
+        asset_path: ./artifacts/pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        asset_name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         asset_content_type: application/zip
 
     - name: Push to repo
@@ -298,8 +298,8 @@ jobs:
       working-directory: artifacts
       run: |
         #centos
-        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}.x86_64.rpm
-        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.VERSION }}.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         #ubuntu
         package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
         package_cloud push pufferpanel/pufferpanel/ubuntu/yakkety pufferpanel_${{ env.VERSION }}_amd64.deb
