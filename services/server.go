@@ -14,6 +14,7 @@
 package services
 
 import (
+	"database/sql"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	uuid2 "github.com/satori/go.uuid"
@@ -89,8 +90,16 @@ func (ss *Server) Update(model *models.Server) error {
 }
 
 func (ss *Server) Delete(id string) error {
-	trans := ss.DB.Begin()
-	defer trans.RollbackUnlessCommitted()
+	//if we are already in a transaction, use the existing transaction
+	inTrans := false
+	var trans *gorm.DB
+	if _, ok := ss.DB.CommonDB().(*sql.Tx); ok {
+		trans = ss.DB
+		inTrans = true
+	} else {
+		trans = ss.DB.Begin()
+		defer trans.RollbackUnlessCommitted()
+	}
 
 	model := &models.Server{
 		Identifier: id,
@@ -110,7 +119,12 @@ func (ss *Server) Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	return trans.Commit().Error
+
+	if inTrans {
+		return nil
+	} else {
+		return trans.Commit().Error
+	}
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {
