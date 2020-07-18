@@ -84,7 +84,7 @@ func (t *Template) ImportFromRepo(templateName string) error {
 	var readme io.Reader
 	readmeUrl := strings.Replace(TemplateReadme, "{name}", templateName, -1)
 	readmeResponse, err := templateClient.Get(readmeUrl)
-	if err == nil {
+	if err == nil && readmeResponse.StatusCode == 200 {
 		defer pufferpanel.Close(readmeResponse.Body)
 		readme = readmeResponse.Body
 	}
