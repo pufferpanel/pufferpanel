@@ -26,6 +26,7 @@ jobs:
       matrix:
         go: [ '1.14' ]
         node-version: [ '14.x' ]
+        swag-version: [ '1.6.7' ]
 
     steps:
     - name: Get the version
@@ -78,7 +79,7 @@ jobs:
       id: gobinary
       with:
         path: ~/go/bin
-        key: ${{ runner.os }}-go-bin-${{ hashFiles('~/go/bin/**') }}
+        key: ${{ runner.os }}-go-bin-${{ matrix.swag-version }}
         restore-keys: |
           ${{ runner.os }}-go-bin-
 
@@ -93,7 +94,7 @@ jobs:
     - name: Download Go Binaries
       if: steps.gobinary.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
+        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_${{ matrix.swag-version }}_Linux_x86_64.tar.gz
         mkdir ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
 
