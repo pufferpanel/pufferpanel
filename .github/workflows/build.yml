@@ -87,6 +87,14 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.npm
+        key: ${{ runner.os }}-nodemodules-${{ matrix.node-version }}-${{ hashFiles('client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nodemodules-${{ matrix.node-version }}
+          
+    - name: Restore NPM cache
+      uses: actions/cache@v2
+      with:
+        path: client/node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
