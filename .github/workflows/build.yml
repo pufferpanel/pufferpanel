@@ -80,6 +80,11 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+
+    - name: Generate Swagger Docs
+      run: |
+        go get -u github.com/swaggo/swag/cmd/swag
+        swag init -o web/swagger -g web/loader.go
         
     - name: Build Linux
       run: |
