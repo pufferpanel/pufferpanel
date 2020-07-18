@@ -13,7 +13,7 @@
       <v-col>
         <v-list subheader elevation="1">
           <div v-for="(elements, type, i) in templates" :key="type">
-            <v-subheader v-text="type" :class="isDark() ? headerClasses.dark : headerClasses.light" />
+            <v-subheader v-text="type" :class="isDark() ? headerClasses.dark : headerClasses.light" v-if="Object.keys(templates).length !== 1" />
             <div v-for="(template, index) in templates[type]" :key="template.name">
               <v-list-item :to="(hasScope('templates.edit') || isAdmin()) ? {name: 'Template', params: {id: template.name}} : undefined">
                 <v-list-item-content>
@@ -57,6 +57,21 @@
         </v-col>
       </v-row>
     </common-overlay>
+    <common-overlay v-model="offerImport" card closable :title="$t('templates.import.NoTemplatesTitle')">
+      <v-row>
+        <v-col>
+          <span v-html="$t('templates.import.NoTemplatesContent')" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn block color="error" v-text="$t('common.Cancel')" @click="importDeclined()" />
+        </v-col>
+        <v-col>
+          <v-btn block color="success" v-text="$t('templates.import.Import')" @click="offerImport = false; loadTemplateImporter()" />
+        </v-col>
+      </v-row>
+    </common-overlay>
   </v-container>
 </template>
 
@@ -73,6 +88,7 @@ export default {
         light: 'body-1 grey font-weight-bold lighten-4 black--text',
         dark: 'body-1 grey font-weight-bold darken-4 white--text'
       },
+      offerImport: false,
       showTemplateImporter: false,
       importableTemplates: [],
       templatesToImport: [],
@@ -119,6 +135,7 @@ export default {
 
         ctx.templates = { ...ctx.templates }
         ctx.loading = false
+        if (response.data.length === 0 && localStorage.getItem("offerTemplateImport") !== "false") ctx.offerImport = true
       }).catch(handleError(ctx))
     },
     loadTemplateImporter () {
@@ -127,7 +144,6 @@ export default {
       ctx.templatesToImport = []
       ctx.$http.post('/api/templates/import').then(response => {
         ctx.importableTemplates = response.data
-        ctx.templatesToImport = response.data
         ctx.showTemplateImporter = true
       }).catch(handleError(ctx))
     },
@@ -136,15 +152,20 @@ export default {
       ctx.loading = true
       ctx.showTemplateImporter = false
       ctx.$toast.info(this.$t('templates.import.Started'))
-      Promise.all(
-        ctx.templatesToImport
-          .map(elem => ctx.importTemplate(ctx, elem))
-      ).then(x => { ctx.loadData() })
+      ctx.templatesToImport.reduce((prev, next) => {
+        return prev.finally(() => {
+          return ctx.importTemplate(ctx, next)
+        })
+      }, Promise.resolve()).finally(() => { ctx.loadData() })
     },
     importTemplate (ctx, template) {
       return ctx.$http.post(`/api/templates/import/${template}`).then(response => {
         ctx.$toast.success(ctx.$t('templates.import.Successful', { template }))
       }).catch(handleError(ctx))
+    },
+    importDeclined () {
+      this.offerImport = false
+      localStorage.setItem("offerTemplateImport", "false")
     },
     isDark
   }
