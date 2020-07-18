@@ -1,20 +1,42 @@
 <template>
   <v-container>
     <div class="d-flex">
-      <h1 class="flex-grow-1" v-text="$t('templates.Templates')" />
+      <h1
+        class="flex-grow-1"
+        v-text="$t('templates.Templates')"
+      />
       <v-tooltip left>
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" @click="loadTemplateImporter"><v-icon>mdi-import</v-icon></v-btn>
+          <v-btn
+            icon
+            v-on="on"
+            @click="loadTemplateImporter"
+          >
+            <v-icon>mdi-import</v-icon>
+          </v-btn>
         </template>
         <span v-text="$t('templates.import.Tooltip')" />
       </v-tooltip>
     </div>
     <v-row>
       <v-col>
-        <v-list subheader elevation="1">
-          <div v-for="(elements, type, i) in templates" :key="type">
-            <v-subheader v-text="type" :class="isDark() ? headerClasses.dark : headerClasses.light" v-if="Object.keys(templates).length !== 1" />
-            <div v-for="(template, index) in templates[type]" :key="template.name">
+        <v-list
+          subheader
+          elevation="1"
+        >
+          <div
+            v-for="(elements, type, i) in templates"
+            :key="type"
+          >
+            <v-subheader
+              v-if="Object.keys(templates).length !== 1"
+              :class="isDark() ? headerClasses.dark : headerClasses.light"
+              v-text="type"
+            />
+            <div
+              v-for="template in templates[type]"
+              :key="template.name"
+            >
               <v-list-item :to="(hasScope('templates.edit') || isAdmin()) ? {name: 'Template', params: {id: template.name}} : undefined">
                 <v-list-item-content>
                   <v-list-item-title v-text="template.display" />
@@ -23,9 +45,18 @@
             </div>
             <v-divider v-if="i !== Object.keys(templates).length - 1" />
           </div>
-          <div class="pt-2 text-center text--disabled" v-if="Object.keys(templates).length === 0">
-            <span v-if="loading" v-text="$t('common.Loading')" />
-            <span v-else v-text="$t('templates.NoTemplates')" />
+          <div
+            v-if="Object.keys(templates).length === 0"
+            class="pt-2 text-center text--disabled"
+          >
+            <span
+              v-if="loading"
+              v-text="$t('common.Loading')"
+            />
+            <span
+              v-else
+              v-text="$t('templates.NoTemplates')"
+            />
           </div>
         </v-list>
         <v-btn
@@ -43,32 +74,78 @@
         </v-btn>
       </v-col>
     </v-row>
-    <common-overlay v-model="showTemplateImporter" card closable :title="$t('templates.import.Import')">
-      <v-alert border="bottom" text type="warning" dense>
+    <common-overlay
+      v-model="showTemplateImporter"
+      card
+      closable
+      :title="$t('templates.import.Import')"
+    >
+      <v-alert
+        border="bottom"
+        text
+        type="warning"
+        dense
+      >
         {{ $t('templates.import.OverrideWarning') }}
       </v-alert>
-      <v-autocomplete v-model="templatesToImport" :items="importableTemplates" chips :label="$t('templates.import.Select')" multiple clearable deletable-chips solo open-on-clear />
+      <v-autocomplete
+        v-model="templatesToImport"
+        :items="importableTemplates"
+        chips
+        :label="$t('templates.import.Select')"
+        multiple
+        clearable
+        deletable-chips
+        solo
+        open-on-clear
+      />
       <v-row>
         <v-col>
-          <v-btn block color="error" v-text="$t('common.Cancel')" @click="showTemplateImporter = false" />
+          <v-btn
+            block
+            color="error"
+            @click="showTemplateImporter = false"
+            v-text="$t('common.Cancel')"
+          />
         </v-col>
         <v-col>
-          <v-btn block color="success" v-text="$t('templates.import.Import')" @click="doImports()" />
+          <v-btn
+            block
+            color="success"
+            @click="doImports()"
+            v-text="$t('templates.import.Import')"
+          />
         </v-col>
       </v-row>
     </common-overlay>
-    <common-overlay v-model="offerImport" card closable :title="$t('templates.import.NoTemplatesTitle')">
+    <common-overlay
+      v-model="offerImport"
+      card
+      closable
+      :title="$t('templates.import.NoTemplatesTitle')"
+    >
       <v-row>
         <v-col>
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <span v-html="$t('templates.import.NoTemplatesContent')" />
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn block color="error" v-text="$t('common.Cancel')" @click="importDeclined()" />
+          <v-btn
+            block
+            color="error"
+            @click="importDeclined()"
+            v-text="$t('common.Cancel')"
+          />
         </v-col>
         <v-col>
-          <v-btn block color="success" v-text="$t('templates.import.Import')" @click="offerImport = false; loadTemplateImporter()" />
+          <v-btn
+            block
+            color="success"
+            @click="offerImport = false; loadTemplateImporter()"
+            v-text="$t('templates.import.Import')"
+          />
         </v-col>
       </v-row>
     </common-overlay>
@@ -135,7 +212,7 @@ export default {
 
         ctx.templates = { ...ctx.templates }
         ctx.loading = false
-        if (response.data.length === 0 && localStorage.getItem("offerTemplateImport") !== "false") ctx.offerImport = true
+        if (response.data.length === 0 && localStorage.getItem('offerTemplateImport') !== 'false') ctx.offerImport = true
       }).catch(handleError(ctx))
     },
     loadTemplateImporter () {
@@ -165,7 +242,7 @@ export default {
     },
     importDeclined () {
       this.offerImport = false
-      localStorage.setItem("offerTemplateImport", "false")
+      localStorage.setItem('offerTemplateImport', 'false')
     },
     isDark
   }

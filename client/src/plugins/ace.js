@@ -1,7 +1,14 @@
 import Vue from 'vue'
 
 Vue.component('Ace', {
-  props: ['editorId', 'value', 'lang', 'theme', 'file', 'height'],
+  props: {
+    editorId: { type: String, default: () => 'editor' },
+    value: { type: String, default: () => '' },
+    lang: { type: String, default: () => 'text' },
+    theme: { type: String, default: () => 'monokai' },
+    file: { type: String, default: () => '' },
+    height: { type: String, default: () => 'editor' }
+  },
   data () {
     return {
       editor: Object,

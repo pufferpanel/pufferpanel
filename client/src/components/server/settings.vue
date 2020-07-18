@@ -22,7 +22,8 @@
           <span v-text="$t('servers.NoEditableVars')" />
         </v-col>
         <v-col
-          v-for="item in items"
+          v-for="(item, index, name) in items"
+          :key="name"
           cols="12"
         >
           <v-text-field
@@ -35,7 +36,10 @@
             :label="item.display"
             outlined
           >
-            <template slot="message"><div v-html="item.desc" /></template>
+            <template slot="message">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-html="item.desc" />
+            </template>
           </v-text-field>
           <v-switch
             v-else-if="item.type === 'boolean'"
@@ -46,7 +50,10 @@
             persistent-hint
             :label="item.display"
           >
-            <template slot="message"><div v-html="item.desc" /></template>
+            <template slot="message">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-html="item.desc" />
+            </template>
           </v-switch>
           <v-select
             v-else-if="item.type === 'option'"
@@ -57,7 +64,10 @@
             :label="item.display"
             outlined
           >
-            <template slot="message"><div v-html="item.desc" /></template>
+            <template slot="message">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-html="item.desc" />
+            </template>
           </v-select>
           <v-text-field
             v-else
@@ -68,13 +78,21 @@
             :label="item.display"
             outlined
           >
-            <template slot="message"><div v-html="item.desc" /></template>
+            <template slot="message">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-html="item.desc" />
+            </template>
           </v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="Object.keys(items).length > 0">
         <v-col>
-          <v-btn v-text="$t('common.Save')" block color="success" @click="save" />
+          <v-btn
+            block
+            color="success"
+            @click="save"
+            v-text="$t('common.Save')"
+          />
         </v-col>
       </v-row>
     </v-card-text>

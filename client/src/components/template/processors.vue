@@ -13,16 +13,32 @@
 
 <template>
   <div>
-    <v-expansion-panels multiple class="mb-2">
-      <v-expansion-panel v-for="(entry, i) in value" :key="i">
+    <v-expansion-panels
+      multiple
+      class="mb-2"
+    >
+      <v-expansion-panel
+        v-for="(entry, i) in value"
+        :key="i"
+      >
         <v-expansion-panel-header v-text="entry.type" />
         <v-expansion-panel-content>
           <template-processor v-model="value[i]" />
-          <v-btn color="error" block v-text="$t(getDeleteKey())" @click="$delete(value, i)" />
+          <v-btn
+            color="error"
+            block
+            @click="$delete(value, i)"
+            v-text="$t(getDeleteKey())"
+          />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn text block v-text="$t(getAddKey())" @click="value.push({ ...template }); $forceUpdate()" />
+    <v-btn
+      text
+      block
+      @click="value.push({ ...template }); $forceUpdate()"
+      v-text="$t(getAddKey())"
+    />
   </div>
 </template>
 

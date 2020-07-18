@@ -14,49 +14,178 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-select v-model="value.type" :items="processorTypes" :label="$t('templates.Type')" outlined hide-details @change="changeType" />
+      <v-select
+        v-model="value.type"
+        :items="processorTypes"
+        :label="$t('templates.Type')"
+        outlined
+        hide-details
+        @change="changeType"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'download'">
-      <v-text-field v-for="(e, i) in value.files" :key="i" v-model="value.files[i]" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.files, i)" />
+    <v-col
+      v-if="value.type === 'download'"
+      cols="12"
+    >
+      <v-text-field
+        v-for="(e, i) in value.files"
+        :key="i"
+        v-model="value.files[i]"
+        dense
+        outlined
+        hide-details
+        append-outer-icon="mdi-close-circle"
+        @click:append-outer="$delete(value.files, i)"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'download'">
-      <v-btn text block v-text="$t('templates.AddFile')" @click="value.files.push(''); $forceUpdate()" />
+    <v-col
+      v-if="value.type === 'download'"
+      cols="12"
+    >
+      <v-btn
+        text
+        block
+        @click="value.files.push(''); $forceUpdate()"
+        v-text="$t('templates.AddFile')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'command'">
-      <v-text-field v-for="(e, i) in value.commands" :key="i" v-model="value.commands[i]" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.commands, i)" />
+    <v-col
+      v-if="value.type === 'command'"
+      cols="12"
+    >
+      <v-text-field
+        v-for="(e, i) in value.commands"
+        :key="i"
+        v-model="value.commands[i]"
+        dense
+        outlined
+        hide-details
+        append-outer-icon="mdi-close-circle"
+        @click:append-outer="$delete(value.commands, i)"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'command'">
-      <v-btn text block v-text="$t('templates.AddCommand')" @click="value.commands.push(''); $forceUpdate()" />
+    <v-col
+      v-if="value.type === 'command'"
+      cols="12"
+    >
+      <v-btn
+        text
+        block
+        @click="value.commands.push(''); $forceUpdate()"
+        v-text="$t('templates.AddCommand')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'writefile'">
-      <v-text-field v-model="value.target" outlined hide-details :label="$t('templates.Filename')" />
+    <v-col
+      v-if="value.type === 'writefile'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.target"
+        outlined
+        hide-details
+        :label="$t('templates.Filename')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'writefile'">
-      <v-textarea v-model="value.text" :label="$t('templates.Content')" outlined hide-details />
+    <v-col
+      v-if="value.type === 'writefile'"
+      cols="12"
+    >
+      <v-textarea
+        v-model="value.text"
+        :label="$t('templates.Content')"
+        outlined
+        hide-details
+      />
     </v-col>
-    <v-col cols="12" md="6" v-if="value.type === 'move'">
-      <v-text-field v-model="value.source" outlined hide-details :label="$t('templates.Source')" />
+    <v-col
+      v-if="value.type === 'move'"
+      cols="12"
+      md="6"
+    >
+      <v-text-field
+        v-model="value.source"
+        outlined
+        hide-details
+        :label="$t('templates.Source')"
+      />
     </v-col>
-    <v-col cols="12" md="6" v-if="value.type === 'move'">
-      <v-text-field v-model="value.target" outlined hide-details :label="$t('templates.Target')" />
+    <v-col
+      v-if="value.type === 'move'"
+      cols="12"
+      md="6"
+    >
+      <v-text-field
+        v-model="value.target"
+        outlined
+        hide-details
+        :label="$t('templates.Target')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'mkdir'">
-      <v-text-field v-model="value.target" outlined hide-details :label="$t('common.Name')" />
+    <v-col
+      v-if="value.type === 'mkdir'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.target"
+        outlined
+        hide-details
+        :label="$t('common.Name')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'mojangdl'">
-      <v-text-field v-model="value.version" outlined hide-details :label="$t('templates.Version')" />
+    <v-col
+      v-if="value.type === 'mojangdl'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.version"
+        outlined
+        hide-details
+        :label="$t('templates.Version')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'mojangdl'">
-      <v-text-field v-model="value.target" outlined hide-details :label="$t('templates.Filename')" />
+    <v-col
+      v-if="value.type === 'mojangdl'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.target"
+        outlined
+        hide-details
+        :label="$t('templates.Filename')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'forgedl'">
-      <v-text-field v-model="value.version" outlined hide-details :label="$t('templates.Version')" />
+    <v-col
+      v-if="value.type === 'forgedl'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.version"
+        outlined
+        hide-details
+        :label="$t('templates.Version')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'forgedl'">
-      <v-text-field v-model="value.filename" outlined hide-details :label="$t('templates.Filename')" />
+    <v-col
+      v-if="value.type === 'forgedl'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.filename"
+        outlined
+        hide-details
+        :label="$t('templates.Filename')"
+      />
     </v-col>
-    <v-col cols="12" v-if="value.type === 'spongeforgedl'">
-      <v-text-field v-model="value.releaseType" outlined hide-details :label="$t('templates.ReleaseType')" />
+    <v-col
+      v-if="value.type === 'spongeforgedl'"
+      cols="12"
+    >
+      <v-text-field
+        v-model="value.releaseType"
+        outlined
+        hide-details
+        :label="$t('templates.ReleaseType')"
+      />
     </v-col>
   </v-row>
 </template>

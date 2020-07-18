@@ -13,24 +13,71 @@
 
 <template>
   <div>
-    <v-row v-for="(env, i) in value" :key="i">
-      <v-col cols="4" class="my-0 py-0">
+    <v-row
+      v-for="(env, i) in value"
+      :key="i"
+    >
+      <v-col
+        cols="4"
+        class="my-0 py-0"
+      >
         <v-subheader v-text="i" />
       </v-col>
-      <v-col cols="8" class="my-0 py-0">
-        <v-text-field v-model="value[i]" dense outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="delete value[i]; $forceUpdate()" />
+      <v-col
+        cols="8"
+        class="my-0 py-0"
+      >
+        <v-text-field
+          v-model="value[i]"
+          dense
+          outlined
+          hide-details
+          append-outer-icon="mdi-close-circle"
+          @click:append-outer="delete value[i]; $forceUpdate()"
+        />
       </v-col>
     </v-row>
-    <v-btn v-if="!addingEnvVar" text block v-text="$t('templates.AddEnvVar')" @click="addingEnvVar = true" />
+    <v-btn
+      v-if="!addingEnvVar"
+      text
+      block
+      @click="addingEnvVar = true"
+      v-text="$t('templates.AddEnvVar')"
+    />
     <v-row v-else>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="newEnvVar" :label="$t('common.Name')" dense outlined hide-details />
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-text-field
+          v-model="newEnvVar"
+          :label="$t('common.Name')"
+          dense
+          outlined
+          hide-details
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="primary" v-text="$t('templates.AddEnvVar')" block @click="addEnvVar()" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="primary"
+          block
+          @click="addEnvVar()"
+          v-text="$t('templates.AddEnvVar')"
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="error" v-text="$t('common.Cancel')" block @click="newEnvVar = ''; addingEnvVar = false" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="error"
+          block
+          @click="newEnvVar = ''; addingEnvVar = false"
+          v-text="$t('common.Cancel')"
+        />
       </v-col>
     </v-row>
   </div>

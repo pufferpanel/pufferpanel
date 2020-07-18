@@ -14,7 +14,13 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on" dense :color="online === true ? 'success' : online === false ? 'error' : 'grey'">mdi-brightness-1</v-icon>
+      <v-icon
+        dense
+        :color="online === true ? 'success' : online === false ? 'error' : 'grey'"
+        v-on="on"
+      >
+        mdi-brightness-1
+      </v-icon>
     </template>
     <span v-text="online === true ? $t('common.Online') : online === false ? $t('common.Offline') : $t('common.Unknown')" />
   </v-tooltip>

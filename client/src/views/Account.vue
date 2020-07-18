@@ -14,7 +14,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-card>
           <v-card-title v-text="$t('users.ChangeInfo')" />
           <v-card-text>
@@ -53,7 +56,10 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="6">
+      <v-col
+        cols="12"
+        md="6"
+      >
         <v-card>
           <v-card-title v-text="$t('users.ChangePassword')" />
           <v-card-text>

@@ -14,31 +14,104 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-switch v-model="value.required" :label="$t('templates.Required')" hide-details class="mt-0" />
-      <v-switch v-model="value.userEdit" :label="$t('templates.UserEditable')" hide-details class="mt-0" />
+      <v-switch
+        v-model="value.required"
+        :label="$t('templates.Required')"
+        hide-details
+        class="mt-0"
+      />
+      <v-switch
+        v-model="value.userEdit"
+        :label="$t('templates.UserEditable')"
+        hide-details
+        class="mt-0"
+      />
     </v-col>
-    <v-col cols="12" md="6">
-      <v-text-field v-model="value.display" :label="$t('templates.Display')" outlined hide-details />
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <v-text-field
+        v-model="value.display"
+        :label="$t('templates.Display')"
+        outlined
+        hide-details
+      />
     </v-col>
-    <v-col cols="12" md="6">
-      <v-text-field v-model="value.desc" :label="$t('templates.Description')" outlined hide-details />
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <v-text-field
+        v-model="value.desc"
+        :label="$t('templates.Description')"
+        outlined
+        hide-details
+      />
     </v-col>
-    <v-col cols="12" :md="value.type === 'option' ? '12' : '6'">
-      <v-select v-model="value.type" :label="$t('templates.DataType')" :items="possibleTypes" outlined hide-details />
+    <v-col
+      cols="12"
+      :md="value.type === 'option' ? '12' : '6'"
+    >
+      <v-select
+        v-model="value.type"
+        :label="$t('templates.DataType')"
+        :items="possibleTypes"
+        outlined
+        hide-details
+      />
     </v-col>
-    <v-col cols="12" md="6" v-if="value.type !== 'option'">
-      <v-text-field v-model="value.value" :label="$t('templates.DefaultValue')" outlined hide-details />
+    <v-col
+      v-if="value.type !== 'option'"
+      cols="12"
+      md="6"
+    >
+      <v-text-field
+        v-model="value.value"
+        :label="$t('templates.DefaultValue')"
+        outlined
+        hide-details
+      />
     </v-col>
-    <v-col cols="12" v-else>
-      <v-row v-for="(option, i) in value.options" :key="i">
-        <v-col cols="12" md="6">
-          <v-text-field v-model="option.value" :label="$t('templates.Value')" outlined hide-details />
+    <v-col
+      v-else
+      cols="12"
+    >
+      <v-row
+        v-for="(option, i) in value.options"
+        :key="i"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="option.value"
+            :label="$t('templates.Value')"
+            outlined
+            hide-details
+          />
         </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field v-model="option.display" :label="$t('templates.Display')" outlined hide-details append-outer-icon="mdi-close-circle" @click:append-outer="$delete(value.options, i)" />
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="option.display"
+            :label="$t('templates.Display')"
+            outlined
+            hide-details
+            append-outer-icon="mdi-close-circle"
+            @click:append-outer="$delete(value.options, i)"
+          />
         </v-col>
       </v-row>
-      <v-btn block text v-text="$t('templates.AddOption')" @click="value.options.push({ value: '', display: '' })"/>
+      <v-btn
+        block
+        text
+        @click="value.options.push({ value: '', display: '' })"
+        v-text="$t('templates.AddOption')"
+      />
     </v-col>
   </v-row>
 </template>

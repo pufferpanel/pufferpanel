@@ -3,7 +3,10 @@
     <h1 v-text="$t('nodes.Nodes')" />
     <v-row>
       <v-col>
-        <v-sheet elevation="1" class="py-2">
+        <v-sheet
+          elevation="1"
+          class="py-2"
+        >
           <v-data-table
             style="cursor: pointer;"
             :items="nodes"

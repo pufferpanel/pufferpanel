@@ -17,13 +17,24 @@
       <span v-text="$t('servers.AdminControls')" />
     </v-card-title>
     <v-card-text>
-      <v-dialog v-model="confirmDeleteOpen" max-width="600">
+      <v-dialog
+        v-model="confirmDeleteOpen"
+        max-width="600"
+      >
         <v-card>
           <v-card-title v-text="$t('servers.ConfirmDelete')" />
           <v-card-actions>
             <v-spacer />
-            <v-btn v-text="$t('common.Cancel')" @click="confirmDeleteOpen = false" color="error" />
-            <v-btn v-text="$t('common.Confirm')" @click="deleteConfirmed()" color="success" />
+            <v-btn
+              color="error"
+              @click="confirmDeleteOpen = false"
+              v-text="$t('common.Cancel')"
+            />
+            <v-btn
+              color="success"
+              @click="deleteConfirmed()"
+              v-text="$t('common.Confirm')"
+            />
           </v-card-actions>
         </v-card>
       </v-dialog>

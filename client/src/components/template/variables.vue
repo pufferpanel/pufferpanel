@@ -13,25 +13,67 @@
 
 <template>
   <div>
-    <v-expansion-panels multiple class="mb-2">
-      <v-expansion-panel v-for="(item, i) in value" :key="i">
+    <v-expansion-panels
+      multiple
+      class="mb-2"
+    >
+      <v-expansion-panel
+        v-for="(item, i) in value"
+        :key="i"
+      >
         <v-expansion-panel-header v-text="i" />
         <v-expansion-panel-content>
           <template-variable v-model="value[i]" />
-          <v-btn color="error" block v-text="$t('common.Delete')" @click="delete value[i]; $forceUpdate()" />
+          <v-btn
+            color="error"
+            block
+            @click="delete value[i]; $forceUpdate()"
+            v-text="$t('common.Delete')"
+          />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-btn v-if="!addingVariable" text v-text="$t('templates.AddVariable')" block @click="addingVariable = true" />
+    <v-btn
+      v-if="!addingVariable"
+      text
+      block
+      @click="addingVariable = true"
+      v-text="$t('templates.AddVariable')"
+    />
     <v-row v-else>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="newVarName" :label="$t('common.Name')" dense outlined hide-details />
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <v-text-field
+          v-model="newVarName"
+          :label="$t('common.Name')"
+          dense
+          outlined
+          hide-details
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="primary" v-text="$t('templates.AddVariable')" block @click="addVariable()" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="primary"
+          block
+          @click="addVariable()"
+          v-text="$t('templates.AddVariable')"
+        />
       </v-col>
-      <v-col cols="6" md="3">
-        <v-btn color="error" v-text="$t('common.Cancel')" block @click="newVarName = ''; addingVariable = false" />
+      <v-col
+        cols="6"
+        md="3"
+      >
+        <v-btn
+          color="error"
+          block
+          @click="newVarName = ''; addingVariable = false"
+          v-text="$t('common.Cancel')"
+        />
       </v-col>
     </v-row>
   </div>

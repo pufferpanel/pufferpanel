@@ -15,7 +15,11 @@
   <v-card>
     <v-card-title v-text="$t('servers.CPU')" />
     <v-card-text>
-      <apexchart :options="options" :series="series" height="300" />
+      <apexchart
+        :options="options"
+        :series="series"
+        height="300"
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -30,7 +34,7 @@ export default {
   },
   data () {
     return {
-      intl: new Intl.NumberFormat('en-US', {maximumFractionDigits: 2}),
+      intl: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
       maxPoints: 20,
       options: {
         chart: {
