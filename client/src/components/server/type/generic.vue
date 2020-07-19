@@ -57,7 +57,7 @@
         <server-users :server="server" />
       </v-col>
     </v-row>
-    <v-row v-if="server.permissions.editServer || isAdmin()">
+    <v-row v-if="server.permissions.editServerData || isAdmin()">
       <v-col>
         <server-settings :server="server" />
       </v-col>

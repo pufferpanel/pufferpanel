@@ -118,12 +118,7 @@ export default {
     loadData () {
       const ctx = this
       this.$http.get(`/proxy/daemon/server/${this.server.id}/data`).then(response => {
-        const data = response.data.data
-        const items = {}
-        Object.keys(data).forEach(k => {
-          if (data[k].userEdit) items[k] = data[k]
-        })
-        ctx.items = items
+        ctx.items = response.data.data
       }).catch(handleError(ctx))
     },
     save () {
