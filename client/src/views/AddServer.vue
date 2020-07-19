@@ -148,11 +148,11 @@
               />
               <div v-if="selectedEnvironment && environments[selectedEnvironment]">
                 <div
-                  v-for="(val, key) in environments[selectedEnvironment].metadata"
+                  v-for="key in environmentKeys"
                   :key="key"
                 >
                   <v-text-field
-                    v-model="environments[selectedEnvironment].metadata[key]"
+                    v-model="environments[selectedEnvironment][key]"
                     outlined
                     :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
                   />
@@ -435,6 +435,9 @@ export default {
         delete filtered[elem]
       })
       return filtered
+    },
+    environmentKeys () {
+      return Object.keys(this.environments[this.selectedEnvironment]).filter(elem => ['type', 'value', 'text'].indexOf(elem) === -1)
     }
   },
   watch: {
@@ -442,6 +445,7 @@ export default {
       if (!newVal || newVal === '') {
         return
       }
+      console.log('DATA', this.templateData[newVal])
       this.formData = this.templateData[newVal].data
       this.environments = []
       for (const k in this.templateData[newVal].supportedEnvironments) {
@@ -449,8 +453,7 @@ export default {
         this.environments.push({
           value: k,
           text: this.$t('env.' + env.type + '.name'),
-          metadata: env.metadata,
-          type: env.type
+          ...env
         })
       }
 
@@ -502,11 +505,6 @@ export default {
     getTemplates () {
       const ctx = this
       this.loadingTemplates = true
-      /* this.templates = [{
-        value: null,
-        disabled: true,
-        text: this.$t('common.Loading')
-      }] */
       this.templateData = {}
       this.selectedTemplate = null
       this.$http.get('/api/templates').then(response => {
@@ -588,9 +586,10 @@ export default {
       data.users = this.selectedUsers
       data.name = this.serverName !== '' ? this.serverName : undefined
       data.environment = {
-        type: this.environments[this.selectedEnvironment].type,
-        metadata: this.environments[this.selectedEnvironment].metadata
+        ...this.environments[this.selectedEnvironment]
       }
+      delete data.environment.text
+      delete data.environment.value
       this.$http.post('/api/servers', data).then(response => {
         ctx.$router.push({ name: 'Server', params: { id: response.data.id } })
       }).catch(handleError(ctx))
