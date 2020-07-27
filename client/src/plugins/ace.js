@@ -7,7 +7,7 @@ Vue.component('Ace', {
     lang: { type: String, default: () => 'text' },
     theme: { type: String, default: () => 'monokai' },
     file: { type: String, default: () => '' },
-    height: { type: String, default: () => 'editor' }
+    height: { type: String, default: () => '100%' }
   },
   data () {
     return {

@@ -445,7 +445,6 @@ export default {
       if (!newVal || newVal === '') {
         return
       }
-      console.log('DATA', this.templateData[newVal])
       this.formData = this.templateData[newVal].data
       this.environments = []
       for (const k in this.templateData[newVal].supportedEnvironments) {

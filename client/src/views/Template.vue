@@ -86,7 +86,7 @@
                 :editor-id="name + 'json'"
                 :theme="isDark() ? 'monokai' : 'github'"
                 height="50vh"
-                file="template.json"
+                lang="json"
                 @editorready="$refs.editor.setValue(template)"
               />
             </v-col>
