@@ -17,8 +17,8 @@
     <v-card-text>
       <v-row>
         <v-col
-          v-for="user in users"
-          :key="user.email"
+          v-for="(user, i) in users"
+          :key="i"
           cols="12"
           md="6"
         >
