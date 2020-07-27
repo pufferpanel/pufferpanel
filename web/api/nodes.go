@@ -23,8 +23,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	uuid "github.com/satori/go.uuid"
-	"github.com/spf13/viper"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -241,16 +239,9 @@ func deployNode(c *gin.Context) {
 		return
 	}
 
-	services.ValidateTokenLoaded()
-	file, err := ioutil.ReadFile(viper.GetString("token.public"))
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
 	data := &models.Deployment{
 		ClientId:     fmt.Sprintf(".node_%d", node.ID),
 		ClientSecret: node.Secret,
-		PublicKey:    string(file),
 	}
 
 	c.JSON(http.StatusOK, data)

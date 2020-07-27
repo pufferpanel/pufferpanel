@@ -102,7 +102,7 @@ func RefreshIfStale() {
 
 func createRequest(encodedData string) (request *http.Request) {
 	authUrl := viper.GetString("daemon.auth.url")
-	request, _ = http.NewRequest("POST", authUrl+"/oauth2/token", bytes.NewBufferString(encodedData))
+	request, _ = http.NewRequest("POST", authUrl, bytes.NewBufferString(encodedData))
 	return
 }
 

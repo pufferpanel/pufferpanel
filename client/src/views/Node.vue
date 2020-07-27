@@ -145,7 +145,7 @@ export default {
         },
         daemon: {
           auth: {
-            url: location.protocol + '//' + location.host
+            url: location.protocol + '//' + location.host + '/oauth2/token'
           },
           data: {
             cache: '/var/lib/pufferpanel/cache',
