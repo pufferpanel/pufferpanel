@@ -103,7 +103,7 @@ jobs:
       if: steps.gobinary.outputs.cache-hit != 'true'
       run: |
         wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_${{ matrix.swag-version }}_Linux_x86_64.tar.gz
-        mkdir ~/go/bin
+        mkdir -p ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
 
     - name: Generate Swagger Docs
