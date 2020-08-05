@@ -70,6 +70,9 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
+		msg := messages.Status{Running:false}
+		_ = s.WSManager.WriteMessage(msg)
+		logging.Info().Printf("Process failed to start: %s", err)
 		return
 	} else {
 		logging.Info().Printf("Process started (%d)", s.mainProcess.Process.Pid)
