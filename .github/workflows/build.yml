@@ -6,6 +6,16 @@ on:
     tags:
     - v2.*
   pull_request:
+  workflow_dispatch:
+    inputs:
+      pushToRepo:
+        description: 'Push to repo?'
+        requred: false
+        default: 'false'
+      repo:
+        description: 'Repo'
+        required: false
+        default: 'pufferpanel/pufferpanel'
 
 jobs:
   skip-build:
@@ -321,27 +331,27 @@ jobs:
         asset_content_type: application/zip
 
     - name: Push to repo
-      if: startsWith(github.ref, 'refs/tags/v2.')
+      if: startsWith(github.ref, 'refs/tags/v2.') || github.event.inputs.pushToRepo == 'true'
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
       working-directory: artifacts
       run: |
         #centos
-        package_cloud push pufferpanel/pufferpanel/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-        package_cloud push pufferpanel/pufferpanel/el/8 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        package_cloud push ${{ github.event.inputs.repo }}/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        package_cloud push ${{ github.event.inputs.repo }}/el/8 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         #ubuntu
-        package_cloud push pufferpanel/pufferpanel/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/yakkety pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/aardvark pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/cosmic pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/disco pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/eoam pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/focal pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/ubuntu/groovy pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/xenial pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/yakkety pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/aardvark pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoam pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy pufferpanel_${{ env.VERSION }}_amd64.deb
         #debian
-        package_cloud push pufferpanel/pufferpanel/debian/jessie pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/debian/stretch pufferpanel_${{ env.VERSION }}_amd64.deb
-        package_cloud push pufferpanel/pufferpanel/debian/buster pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/debian/jessie pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/debian/stretch pufferpanel_${{ env.VERSION }}_amd64.deb
+        package_cloud push ${{ github.event.inputs.repo }}/debian/buster pufferpanel_${{ env.VERSION }}_amd64.deb
         #raspbian
-        package_cloud push pufferpanel/pufferpanel/raspbian/buster pufferpanel_${{ env.VERSION }}_armhf.deb
+        package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster pufferpanel_${{ env.VERSION }}_armhf.deb
