@@ -269,11 +269,6 @@ jobs:
         name: pufferpanel_${{ env.VERSION }}_armhf.deb
         path: pufferpanel_${{ env.VERSION }}_armhf.deb
 
-    - name: Install gems
-      if: startsWith(github.ref, 'refs/tags/v2.')
-      run: |
-        gem install --no-doc package_cloud
-
     - name: Create Release	
       id: create_release	
       if: startsWith(github.ref, 'refs/tags/v2.')	
@@ -336,6 +331,8 @@ jobs:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
       working-directory: artifacts
       run: |
+        gem install --no-doc package_cloud
+        
         #centos
         package_cloud push ${{ github.event.inputs.repo }}/el/7 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
         package_cloud push ${{ github.event.inputs.repo }}/el/8 pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
