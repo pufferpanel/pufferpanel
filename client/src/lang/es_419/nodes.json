@@ -1,0 +1,18 @@
+{
+  "Node": "Nodo",
+  "Nodes": "Nodos",
+  "Edit": "Editar Nodo",
+  "Add": "Añadir Nodo",
+  "Update": "Actualizar Nodo",
+  "Delete": "Eliminar Nodo",
+  "PublicHost": "Host publico",
+  "PublicPort": "Puerto publico",
+  "PrivateHost": "Host privado",
+  "PrivatePort": "Puerto privado",
+  "SftpPort": "Puerto SFTP",
+  "SaveConfig": "Guardar configuración",
+  "SavePublicKey": "Guardar clave pública",
+  "DeploymentInstruction": "Para desplegar el nodo, instale PufferPanel en el nuevo servidor y coloque el archivo de configuración en `etc/pufferpanel/`<br/>Después en el nuevo servidor reinicie PufferPanel.",
+  "UpdateSuccess": "Nodo actualizado correctamente",
+  "UpdateError": "Error al actualizar el nodo"
+}
