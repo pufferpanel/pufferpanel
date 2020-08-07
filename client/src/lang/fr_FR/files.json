@@ -1,11 +1,11 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
+  "FileManager": "Gestionnaire de fichiers",
+  "NewFolder": "Nouveau dossier",
+  "LastModified": "Dernière modification",
+  "ConfirmDelete": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
+  "Upload": "Envoyer",
+  "Download": "Télécharger",
   "Size": "Taille",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "NoFiles": "Il n'y a pas encore de fichiers ici, allez par exemple en créer en cliquant sur le bouton d'installation en haut de la page",
+  "FileLoadFailed": "Échec de chargement du fichier"
 }
