@@ -1,7 +1,7 @@
 {
   "Id": "Id",
   "Name": "Nombre",
-  "Address": "Direccion",
+  "Address": "Dirección",
   "Online": "Online",
   "Offline": "Offline",
   "Loading": "Cargando...",
