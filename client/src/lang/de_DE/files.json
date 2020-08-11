@@ -6,6 +6,6 @@
   "Upload": "Hochladen",
   "Download": "Herunterladen",
   "Size": "Größe",
-  "NoFiles": "Hier sind noch keine Dateien, erstelle welche, zum Beispiel indem du oben auf der Seite auf \"Installieren\" klickst",
+  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
   "FileLoadFailed": "Laden der Datei fehlgeschlagen"
 }
