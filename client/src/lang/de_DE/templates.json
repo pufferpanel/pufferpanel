@@ -34,7 +34,7 @@
   "SaveSuccess": "Vorlage gespeichert",
   "VarNameNoSpaces": "Ein Variablenname darf nicht leer sein oder Leerzeichen enthalten",
   "SupportedEnvironments": "Unterstützte Umgebungen",
-  "RunConfig": "Run Configuration",
+  "RunConfig": "Starte Konfiguration",
   "PreHook": "Pre Run Hook",
   "PostHook": "Post Run Hook",
   "AddPreStep": "Add Pre Run Step",
