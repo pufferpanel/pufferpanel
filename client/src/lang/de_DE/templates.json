@@ -46,7 +46,7 @@
   "Arguments": "Argumente",
   "AddArgument": "Argument hinzufügen",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
+    "OverrideWarning": "WARNUNG: Importierte Vorlagen WERDEN bestehende Vorlagen mit der gleichen ID ÜBERSCHREIBEN",
     "Import": "Vorlagen importieren",
     "Tooltip": "Templates aus dem offiziellen Repository importieren",
     "Select": "Zu importierende Vorlagen auswählen",
