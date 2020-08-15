@@ -14,7 +14,10 @@
 <template>
   <v-card>
     <v-card-title>
-      <span v-text="$t('files.FileManager')" class="flex-grow-1" />
+      <span
+        class="flex-grow-1"
+        v-text="$t('files.FileManager')"
+      />
       <v-btn
         v-if="server.permissions.putServerFiles || isAdmin()"
         icon
@@ -22,7 +25,11 @@
       >
         <v-icon>mdi-file-plus</v-icon>
       </v-btn>
-      <common-overlay v-model="createFile" :title="$t('files.NewFile')" card>
+      <common-overlay
+        v-model="createFile"
+        :title="$t('files.NewFile')"
+        card
+      >
         <v-row>
           <v-col>
             <v-text-field
@@ -38,10 +45,21 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn block color="error" v-text="$t('common.Cancel')" @click="cancelFileCreate()" />
+            <v-btn
+              block
+              color="error"
+              @click="cancelFileCreate()"
+              v-text="$t('common.Cancel')"
+            />
           </v-col>
           <v-col>
-            <v-btn block color="success" :disabled="newFileName === ''" v-text="$t('common.Create')" @click="confirmFileCreate()" />
+            <v-btn
+              block
+              color="success"
+              :disabled="newFileName === ''"
+              @click="confirmFileCreate()"
+              v-text="$t('common.Create')"
+            />
           </v-col>
         </v-row>
       </common-overlay>
@@ -52,7 +70,11 @@
       >
         <v-icon>mdi-folder-plus</v-icon>
       </v-btn>
-      <common-overlay v-model="createFolder" :title="$t('files.NewFolder')" card>
+      <common-overlay
+        v-model="createFolder"
+        :title="$t('files.NewFolder')"
+        card
+      >
         <v-row>
           <v-col>
             <v-text-field
@@ -68,10 +90,21 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn block color="error" v-text="$t('common.Cancel')" @click="cancelFolderCreate()" />
+            <v-btn
+              block
+              color="error"
+              @click="cancelFolderCreate()"
+              v-text="$t('common.Cancel')"
+            />
           </v-col>
           <v-col>
-            <v-btn block color="success" :disabled="newFolderName === ''" v-text="$t('common.Create')" @click="confirmFolderCreate()" />
+            <v-btn
+              block
+              color="success"
+              :disabled="newFolderName === ''"
+              @click="confirmFolderCreate()"
+              v-text="$t('common.Create')"
+            />
           </v-col>
         </v-row>
       </common-overlay>
@@ -107,64 +140,80 @@
       </v-dialog>
 
       <v-list>
-        <v-list-item v-for="file in files" :key="file.name" @click="itemClicked(file)">
+        <v-list-item
+          v-for="file in files"
+          :key="file.name"
+          @click="itemClicked(file)"
+        >
           <v-list-item-content>
             <v-list-item-title v-text="file.name" />
-            <v-list-item-subtitle v-if="file.isFile" v-text="toFileSize(file.size || 0)" />
-            <v-list-item-subtitle v-if="file.modifyTime" v-text="$t('files.LastModified') + ': ' + toDate(file.modifyTime)" />
+            <v-list-item-subtitle
+              v-if="file.isFile"
+              v-text="toFileSize(file.size || 0)"
+            />
+            <v-list-item-subtitle
+              v-if="file.modifyTime"
+              v-text="$t('files.LastModified') + ': ' + toDate(file.modifyTime)"
+            />
           </v-list-item-content>
           <v-list-item-action class="flex-row">
-          <v-tooltip
-            v-if="file.isFile && !(file.size > maxEditSize)"
-            bottom
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-                @click.stop="itemClicked(file)"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-            </template>
-            <span v-text="$t('common.Edit')" />
-          </v-tooltip>
-          <v-tooltip
-            v-if="file.isFile"
-            bottom
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                :href="createDownloadLink(file)"
-                target="_blank"
-                v-on="on"
-              >
-                <v-icon>mdi-download</v-icon>
-              </v-btn>
-            </template>
-            <span v-text="$t('files.Download')" />
-          </v-tooltip>
-          <v-tooltip
-            v-if="file.name !== '..'"
-            bottom
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-                @click.stop="deleteRequest(file)"
-              >
-                <v-icon>mdi-trash-can</v-icon>
-              </v-btn>
-            </template>
-            <span v-text="$t('common.Delete')" />
-          </v-tooltip>
+            <v-tooltip
+              v-if="file.isFile && !(file.size > maxEditSize)"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="itemClicked(file)"
+                >
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('common.Edit')" />
+            </v-tooltip>
+            <v-tooltip
+              v-if="file.isFile"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  :href="createDownloadLink(file)"
+                  target="_blank"
+                  v-on="on"
+                >
+                  <v-icon>mdi-download</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('files.Download')" />
+            </v-tooltip>
+            <v-tooltip
+              v-if="file.name !== '..'"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="deleteRequest(file)"
+                >
+                  <v-icon>mdi-trash-can</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('common.Delete')" />
+            </v-tooltip>
           </v-list-item-action>
         </v-list-item>
       </v-list>
 
-      <common-overlay v-model="editOpen" :title="currentFile" card closable :onClose="cancelEdit">
+      <common-overlay
+        v-model="editOpen"
+        :title="currentFile"
+        card
+        closable
+        :on-close="cancelEdit"
+      >
         <ace
           v-model="fileContents"
           editor-id="fileEditor"
