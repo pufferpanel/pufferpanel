@@ -1,6 +1,7 @@
 {
   "FileManager": "Datei-Manager",
   "NewFolder": "Neuer Ordner",
+  "NewFile": "New File",
   "LastModified": "Zuletzt geändert",
   "ConfirmDelete": "Soll diese Datei wirklich gelöscht werden?",
   "Upload": "Hochladen",
