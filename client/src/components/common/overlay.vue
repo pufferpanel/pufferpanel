@@ -20,7 +20,7 @@
               <v-btn
                 v-if="closable"
                 icon
-                @click="$emit('input', false)"
+                @click="$emit('input', false); onClose()"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -28,6 +28,9 @@
             <v-card-text class="overlayContent">
               <slot />
             </v-card-text>
+            <v-card-actions>
+              <slot name="actions" />
+            </v-card-actions>
           </v-card>
           <v-sheet
             v-else
@@ -56,6 +59,7 @@ export default {
   props: {
     card: { type: Boolean, default: () => false },
     closable: { type: Boolean, default: () => false },
+    onClose: { type: Function, default: () => () => {} },
     title: { type: String, default: () => '' },
     value: { type: Boolean, default: () => false }
   },

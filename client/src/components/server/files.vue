@@ -14,37 +14,75 @@
 <template>
   <v-card>
     <v-card-title>
-      <span v-text="$t('files.FileManager') + ' - ' + currentPath" />
+      <span v-text="$t('files.FileManager')" class="flex-grow-1" />
       <v-btn
-        v-if="(server.permissions.putServerFiles || isAdmin()) && !createFolder"
+        v-if="server.permissions.putServerFiles || isAdmin()"
+        icon
+        @click="createFile = true"
+      >
+        <v-icon>mdi-file-plus</v-icon>
+      </v-btn>
+      <common-overlay v-model="createFile" :title="$t('files.NewFile')" card>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="newFileName"
+              hide-details
+              outlined
+              autofocus
+              :label="$t('common.Name')"
+              @keyup.esc="cancelFileCreate()"
+              @keyup.enter="confirmFileCreate()"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn block color="error" v-text="$t('common.Cancel')" @click="cancelFileCreate()" />
+          </v-col>
+          <v-col>
+            <v-btn block color="success" :disabled="newFileName === ''" v-text="$t('common.Create')" @click="confirmFileCreate()" />
+          </v-col>
+        </v-row>
+      </common-overlay>
+      <v-btn
+        v-if="server.permissions.putServerFiles || isAdmin()"
         icon
         @click="createFolder = true"
       >
         <v-icon>mdi-folder-plus</v-icon>
       </v-btn>
-      <div v-if="createFolder">
-        <v-text-field
-          v-model="newFolderName"
-          hide-details
-          class="input-small ml-2 mt-0 pt-0"
-          :placeholder="$t('files.NewFolder')"
-        />
-        <v-btn
-          icon
-          color="success"
-          @click="submitNewFolder"
-        >
-          <v-icon>mdi-check</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          color="error"
-          @click="cancelFolderCreate"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </div>
+      <common-overlay v-model="createFolder" :title="$t('files.NewFolder')" card>
+        <v-row>
+          <v-col>
+            <v-text-field
+              v-model="newFolderName"
+              hide-details
+              outlined
+              autofocus
+              :label="$t('common.Name')"
+              @keyup.esc="cancelFolderCreate()"
+              @keyup.enter="confirmFolderCreate()"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn block color="error" v-text="$t('common.Cancel')" @click="cancelFolderCreate()" />
+          </v-col>
+          <v-col>
+            <v-btn block color="success" :disabled="newFolderName === ''" v-text="$t('common.Create')" @click="confirmFolderCreate()" />
+          </v-col>
+        </v-row>
+      </common-overlay>
+      <v-btn
+        icon
+        @click="fetchItems(currentPath)"
+      >
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
     </v-card-title>
+    <v-card-subtitle v-text="currentPath" />
     <v-card-text>
       <v-dialog
         v-model="confirmDeleteOpen"
@@ -67,30 +105,24 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-data-table
-        :items-per-page="-1"
-        :headers="headers"
-        :no-data-text="$t('files.NoFiles')"
-        hide-default-footer
-        :items="files"
-        @click:row="itemClicked"
-      >
-        <template v-slot:item.size="{ item }">
-          {{ item.size ? toFileSize(item.size) : '' }}
-        </template>
-        <template v-slot:item.modifyTime="{ item }">
-          {{ item.modifyTime ? toDate(item.modifyTime) : '' }}
-        </template>
-        <template v-slot:item.isFile="{ item }">
+
+      <v-list>
+        <v-list-item v-for="file in files" :key="file.name" @click="itemClicked(file)">
+          <v-list-item-content>
+            <v-list-item-title v-text="file.name" />
+            <v-list-item-subtitle v-if="file.isFile" v-text="toFileSize(file.size || 0)" />
+            <v-list-item-subtitle v-if="file.modifyTime" v-text="$t('files.LastModified') + ': ' + toDate(file.modifyTime)" />
+          </v-list-item-content>
+          <v-list-item-action class="flex-row">
           <v-tooltip
-            v-if="item.isFile && !(item.size > maxEditSize)"
+            v-if="file.isFile && !(file.size > maxEditSize)"
             bottom
           >
             <template v-slot:activator="{ on }">
-              <!-- letting the click propagate through to the table row, does the same anyways -->
               <v-btn
                 icon
                 v-on="on"
+                @click.stop="itemClicked(file)"
               >
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
@@ -98,13 +130,13 @@
             <span v-text="$t('common.Edit')" />
           </v-tooltip>
           <v-tooltip
-            v-if="item.isFile"
+            v-if="file.isFile"
             bottom
           >
             <template v-slot:activator="{ on }">
               <v-btn
                 icon
-                :href="createDownloadLink(item)"
+                :href="createDownloadLink(file)"
                 target="_blank"
                 v-on="on"
               >
@@ -114,58 +146,46 @@
             <span v-text="$t('files.Download')" />
           </v-tooltip>
           <v-tooltip
-            v-if="item.name !== '..'"
+            v-if="file.name !== '..'"
             bottom
           >
             <template v-slot:activator="{ on }">
               <v-btn
                 icon
                 v-on="on"
-                @click.stop="deleteRequest(item)"
+                @click.stop="deleteRequest(file)"
               >
                 <v-icon>mdi-trash-can</v-icon>
               </v-btn>
             </template>
             <span v-text="$t('common.Delete')" />
           </v-tooltip>
-        </template>
-      </v-data-table>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
 
-      <v-overlay :value="editOpen">
-        <v-card
-          :dark="isDark()"
-          :light="!isDark()"
-          class="d-flex flex-column"
-          height="90vh"
-          width="90vw"
-        >
-          <v-card-title v-text="currentFile" />
-          <v-card-text
-            id="editor"
-            class="flex-grow-1"
-          >
-            <ace
-              v-model="fileContents"
-              editor-id="fileEditor"
-              :theme="isDark() ? 'monokai' : 'github'"
-              :file="currentFile"
-            />
-          </v-card-text>
-          <v-card-actions class="px-4 pb-4">
-            <div class="flex-grow-1" />
-            <v-btn
-              color="error"
-              @click="cancelEdit()"
-              v-text="$t('common.Cancel')"
-            />
-            <v-btn
-              color="success"
-              @click="saveEdit()"
-              v-text="$t('common.Save')"
-            />
-          </v-card-actions>
-        </v-card>
-      </v-overlay>
+      <common-overlay v-model="editOpen" :title="currentFile" card closable :onClose="cancelEdit">
+        <ace
+          v-model="fileContents"
+          editor-id="fileEditor"
+          height="75vh"
+          :theme="isDark() ? 'monokai' : 'github'"
+          :file="currentFile"
+        />
+        <template v-slot:actions>
+          <div class="flex-grow-1" />
+          <v-btn
+            color="error"
+            @click="cancelEdit()"
+            v-text="$t('common.Cancel')"
+          />
+          <v-btn
+            color="success"
+            @click="saveEdit()"
+            v-text="$t('common.Save')"
+          />
+        </template>
+      </common-overlay>
 
       <div v-if="server.permissions.putServerFiles || isAdmin()">
         <v-file-input
@@ -239,6 +259,8 @@ export default {
       maxEditSize: 1024 * 1024 * 20,
       createFolder: false,
       newFolderName: '',
+      createFile: false,
+      newFileName: '',
       uploadFiles: [],
       uploading: false,
       uploadCurrent: 0,
@@ -316,8 +338,13 @@ export default {
         }
         const ctx = this
         this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`).then(response => {
+          const normalizeData = (data) => {
+            if (Array.isArray(data) && data.length === 0) return ''
+            return data
+          }
+
           ctx.currentFile = item.name
-          ctx.fileContents = response.data
+          ctx.fileContents = normalizeData(response.data)
           ctx.editOpen = true
         }).catch(handleError(ctx))
       }
@@ -382,11 +409,27 @@ export default {
       }
       return '/proxy/daemon/server/' + this.server.id + '/file' + path
     },
+    cancelFileCreate () {
+      this.createFile = false
+      this.newFileName = ''
+    },
+    confirmFileCreate () {
+      if (this.newFileName === '') return
+
+      const ctx = this
+      ctx.uploadSingleFile(new File([], this.newFileName)).then(() => {
+        ctx.fetchItems(ctx.currentPath)
+      })
+      ctx.createFile = false
+      ctx.newFileName = ''
+    },
     cancelFolderCreate () {
       this.createFolder = false
       this.newFolderName = ''
     },
-    submitNewFolder () {
+    confirmFolderCreate () {
+      if (this.newFolderName === '') return
+
       let path = this.currentPath
       if (path === '/') {
         path = path + this.newFolderName
