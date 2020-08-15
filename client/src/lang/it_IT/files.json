@@ -1,6 +1,7 @@
 {
   "FileManager": "Gestore File",
   "NewFolder": "Nuova Cartella",
+  "NewFile": "New File",
   "LastModified": "Ultima Modifica",
   "ConfirmDelete": "Sei sicuro di voler eliminare questo file?",
   "Upload": "Carica",
