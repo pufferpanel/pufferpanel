@@ -1,6 +1,7 @@
 {
   "FileManager": "Administrador de Archivos",
   "NewFolder": "Nueva carpeta",
+  "NewFile": "New File",
   "LastModified": "Última modificación",
   "ConfirmDelete": "¿Estas seguro que deseas eliminar este archivo?",
   "Upload": "Subir",
