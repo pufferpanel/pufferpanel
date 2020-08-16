@@ -6,6 +6,8 @@ on:
     tags:
     - v2.*
   pull_request:
+    branches-ignore: 
+      - l10n_master
   workflow_dispatch:
     inputs:
       pushToRepo:
