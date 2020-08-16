@@ -14,7 +14,7 @@ import paths from './paths'
 
 import { hasAuth } from '@/utils/auth'
 
-function route (path, view, name, meta) {
+function route ({ path, view, name, meta }) {
   return {
     name: name || view,
     path,
@@ -37,7 +37,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   routes: paths
-    .map(path => route(path.path, path.view, path.name, path.meta))
+    .map(path => route(path))
     .concat([
       { path: '/', redirect: 'server' },
       { path: '', redirect: 'server' },
