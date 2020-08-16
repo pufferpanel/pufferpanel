@@ -11,14 +11,17 @@
         solo
         flat
         no-resize
+        hide-details
         class="console"
       />
       <v-text-field
         v-model="consoleCommand"
         outlined
+        hide-details
         placeholder="Command..."
         append-icon="mdi-send"
         append-outer-icon="mdi-pause"
+        class="pt-2"
         @click:append="sendCommand"
         @click:append-outer="popoutConsole"
         @keyup.enter="sendCommand"

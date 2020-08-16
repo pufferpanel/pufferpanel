@@ -20,6 +20,17 @@
         />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col class="d-flex justify-center">
+        <a
+          target="_blank"
+          href="https://crowdin.com/project/pufferpanel"
+        >
+          {{ $t('common.HelpTranslate') }}
+          <v-icon class="caption">mdi-launch</v-icon>
+        </a>
+      </v-col>
+    </v-row>
   </common-overlay>
 </template>
 
@@ -41,7 +52,12 @@ export default {
       let flag = ''
       if (locale.indexOf('_') >= 0) {
         const parts = locale.split('_')
-        flag = this.getFlag(parts[parts.length - 1])
+        const last = parts[parts.length - 1]
+        if (last.length === 2 && last.toUpperCase() !== 'SP') {
+          flag = this.getFlag(parts[parts.length - 1])
+        } else {
+          flag = this.getFlag(parts[0])
+        }
       } else {
         flag = this.getFlag(locale)
       }

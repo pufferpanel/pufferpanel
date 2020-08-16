@@ -132,7 +132,8 @@ export default {
     }
   },
   mounted () {
-    this.host = this.$attrs.server.node.publicHost + ':' + this.$attrs.server.node.sftpPort
+    const fixedHost = this.$attrs.server.node.publicHost !== '127.0.0.1' ? this.$attrs.server.node.publicHost : window.location.hostname
+    this.host = fixedHost + ':' + this.$attrs.server.node.sftpPort
     const ctx = this
     this.$http.get('/api/self').then(data => {
       const user = data.data
