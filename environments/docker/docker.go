@@ -284,8 +284,6 @@ func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) 
 
 	existingContainers, err := client.ContainerList(ctx, opts)
 
-	logging.Debug().Printf("Does container (%s) exist?: %t", d.ContainerId, len(existingContainers) > 0)
-
 	if len(existingContainers) == 0 {
 		return false, err
 	} else {
