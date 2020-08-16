@@ -33,32 +33,32 @@ type Permissions struct {
 	Server           Server  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	//and here are all the perms we support
-	Admin           bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewServer      bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	CreateServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewNodes       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	EditNodes       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	DeployNodes     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewTemplates   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	EditTemplates   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	EditUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	Admin           bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewServer      bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	CreateServer    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewNodes       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	EditNodes       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	DeployNodes     bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewTemplates   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	EditTemplates   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	EditUsers       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
 
 	//these only will exist if tied to a server, and for a user
-	EditServerData    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	InstallServer     bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	UpdateServer      bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""` //this is unused currently
-	ViewServerConsole bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	SendServerConsole bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	StopServer        bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	StartServer       bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewServerStats   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	ViewServerFiles   bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	SFTPServer        bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
-	PutServerFiles    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
+	EditServerData    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	EditServerUsers   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	InstallServer     bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	UpdateServer      bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""` //this is unused currently
+	ViewServerConsole bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	SendServerConsole bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	StopServer        bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	StartServer       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewServerStats   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	ViewServerFiles   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	SFTPServer        bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	PutServerFiles    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
 }
 
 type MultiplePermissions []*Permissions
