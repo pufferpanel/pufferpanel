@@ -391,9 +391,9 @@ func GetServer(c *gin.Context) {
 // @Param id path string true "Server Identifier"
 // @Router /daemon/server/{id} [get]
 func GetServerAdmin(c *gin.Context) {
-	item, _ := c.MustGet("server").(*pufferpanel.Server)
+	item, _ := c.MustGet("server").(*programs.Program)
 
-	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: item})
+	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: &item.Server})
 }
 
 // @Summary Get file/list

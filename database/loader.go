@@ -49,7 +49,7 @@ func openConnection() (err error) {
 		case "mysql":
 			connString = "pufferpanel:pufferpanel@/pufferpanel"
 		case "sqlite3":
-			connString = "file:pufferpanel.db?cache=shared&mode=memory"
+			connString = "file:pufferpanel.db?cache=shared"
 		}
 	}
 
