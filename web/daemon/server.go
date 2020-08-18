@@ -52,7 +52,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.PUT("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
 		l.DELETE("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersDelete, true), DeleteServer)
 		l.GET("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
-		//l.POST("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
+		l.POST("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
 		l.OPTIONS("/:id", response.CreateOptions("PUT", "DELETE", "GET"))
 
 		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServer)
@@ -394,6 +394,34 @@ func GetServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*programs.Program)
 
 	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: &item.Server})
+}
+
+// @Summary Updates a server
+// @Description Updates a server
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Empty
+// @Failure 404 {object} response.Empty
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server Identifier"
+// @Router /daemon/server/{id} [post]
+func EditServerAdmin(c *gin.Context) {
+	item, _ := c.MustGet("server").(*programs.Program)
+
+	server := &item.Server
+	err := c.BindJSON(&server)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = programs.Save(item.Id())
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Get file/list
