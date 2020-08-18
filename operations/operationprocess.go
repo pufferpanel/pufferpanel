@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/operations/command"
 	"github.com/pufferpanel/pufferpanel/v2/operations/download"
+	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/forgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
@@ -154,4 +155,7 @@ func loadCoreModules() {
 
 	forgeDlFactory := forgedl.Factory
 	commandMapping[forgeDlFactory.Key()] = forgeDlFactory
+
+	fabricDlFactory := fabricdl.Factory
+	commandMapping[fabricDlFactory.Key()] = fabricDlFactory
 }

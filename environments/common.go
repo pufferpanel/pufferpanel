@@ -89,6 +89,10 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 
 	sha1Url := downloadUrl + ".sha1"
 
+	if env != nil {
+		env.DisplayToConsole(true, "Downloading: %s\n", downloadUrl)
+	}
+
 	useCache := true
 	f, err := os.Open(localPath)
 	defer pufferpanel.Close(f)
@@ -120,6 +124,12 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 				useCache = false
 			}
 		}
+
+		if useCache {
+			if env != nil {
+				logging.Info().Printf("Using cached copy of file: %s\n", downloadUrl)
+			}
+		}
 	} else if !os.IsNotExist(err) {
 		logging.Info().Printf("Cached file is not readable, will download (%s)", localPath)
 	} else {
@@ -129,9 +139,6 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 	//if we can't use cache, redownload it to the cache
 	if !useCache {
 		logging.Info().Printf("Downloading new version and caching to %s", localPath)
-		if env != nil {
-			env.DisplayToConsole(true, "Downloading: "+downloadUrl)
-		}
 		err = DownloadFileToCache(downloadUrl, localPath)
 	}
 	if err == nil {
