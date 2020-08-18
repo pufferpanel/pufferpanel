@@ -17,6 +17,38 @@
       <span v-text="$t('servers.AdminControls')" />
     </v-card-title>
     <v-card-text>
+      <v-switch
+        v-model="autostart"
+        :loading="loading"
+        :disabled="loading"
+        hide-details
+        :label="$t('servers.Autostart')"
+        @click="toggleSwitch('autostart')"
+      />
+      <v-switch
+        v-model="autorestart"
+        :loading="loading"
+        :disabled="loading"
+        hide-details
+        :label="$t('servers.Autorestart')"
+        @click="toggleSwitch('autorestart')"
+      />
+      <v-switch
+        v-model="autorecover"
+        :loading="loading"
+        :disabled="loading"
+        hide-details
+        :label="$t('servers.Autorecover')"
+        class="mb-4"
+        @click="toggleSwitch('autorecover')"
+      />
+      <v-btn
+        block
+        color="primary"
+        class="mb-4"
+        @click="reloadServer()"
+        v-text="$t('servers.Reload')"
+      />
       <v-dialog
         v-model="confirmDeleteOpen"
         max-width="600"
@@ -57,12 +89,43 @@ export default {
   },
   data () {
     return {
-      confirmDeleteOpen: false
+      confirmDeleteOpen: false,
+      loading: true,
+      autostart: false,
+      autorestart: false,
+      autorecover: false
     }
   },
+  mounted () {
+    this.loadData()
+  },
   methods: {
+    loadData () {
+      const ctx = this
+      ctx.loading = true
+      ctx.$http.get(`/proxy/daemon/server/${ctx.server.id}`).then(response => {
+        ctx.autostart = !!response.data.run.autostart
+        ctx.autorestart = !!response.data.run.autorestart
+        ctx.autorecover = !!response.data.run.autorecover
+        ctx.loading = false
+      }).catch(handleError(ctx))
+    },
+    toggleSwitch (field) {
+      const ctx = this
+      ctx.loading = true
+      const body = { run: {} }
+      body.run[field] = this[field]
+      ctx.$http.post(`/proxy/daemon/server/${ctx.server.id}`, body).then(response => {
+        ctx.loadData()
+      })
+    },
+    reloadServer () {
+      const ctx = this
+      this.$http.post(`/api/servers/${this.server.id}/reload`).then(response => {
+        ctx.$toast.success(ctx.$t('servers.Reloaded'))
+      }).catch(handleError(ctx))
+    },
     deleteConfirmed () {
-      this.loading = true
       const ctx = this
       this.$http.delete(`/api/servers/${this.server.id}`).then(response => {
         ctx.$toast.success(ctx.$t('servers.Deleted'))
