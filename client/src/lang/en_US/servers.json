@@ -31,6 +31,7 @@
   "NoReadme": "No readme available for this template",
   "SftpConnection": "Connect to SFTP",
   "Reload": "Reload server data from disk",
+  "Reloaded": "Reloaded server data",
   "Autostart": "Start the server when the node starts",
   "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Restart the server when it crashes"

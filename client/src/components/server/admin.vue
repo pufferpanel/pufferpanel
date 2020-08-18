@@ -121,7 +121,7 @@ export default {
     },
     reloadServer () {
       const ctx = this
-      this.$http.post(`/api/servers/${this.server.id}/reload`).then(response => {
+      ctx.$http.post(`/proxy/daemon/server/${ctx.server.id}/reload`).then(response => {
         ctx.$toast.success(ctx.$t('servers.Reloaded'))
       }).catch(handleError(ctx))
     },
