@@ -29,5 +29,10 @@
   "Delete": "Supprimer le serveur",
   "Deleted": "Serveur supprimé",
   "NoReadme": "Aucun readme disponible pour ce modèle",
-  "SftpConnection": "Se connecter au SFTP"
+  "SftpConnection": "Se connecter au SFTP",
+  "Reload": "Reload server data from disk",
+  "Reloaded": "Reloaded server data",
+  "Autostart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
+  "Autorecover": "Restart the server when it crashes"
 }
