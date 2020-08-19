@@ -29,5 +29,10 @@
   "Delete": "Server löschen",
   "Deleted": "Server gelöscht",
   "NoReadme": "Keine Readme für diese Vorlage verfügbar",
-  "SftpConnection": "Mit SFTP verbinden"
+  "SftpConnection": "Mit SFTP verbinden",
+  "Reload": "Reload server data from disk",
+  "Reloaded": "Reloaded server data",
+  "Autostart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
+  "Autorecover": "Restart the server when it crashes"
 }
