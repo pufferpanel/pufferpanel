@@ -59,6 +59,7 @@
         :items="possibleTypes"
         outlined
         hide-details
+        @change="typeChanged()"
       />
     </v-col>
     <v-col
@@ -141,6 +142,14 @@ export default {
           value: 'option'
         }
       ]
+    }
+  },
+  methods: {
+    typeChanged () {
+      if (this.value.type === 'option' && !this.value.options) {
+        this.value.options = []
+        this.$emit('input', { ...this.value })
+      }
     }
   }
 }
