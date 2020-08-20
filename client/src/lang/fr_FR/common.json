@@ -1,5 +1,5 @@
 {
-  "Id": "Identifiant",
+  "Id": "ID",
   "Name": "Nom",
   "Address": "Adresse",
   "Online": "En ligne",
@@ -32,5 +32,5 @@
   "LanguageName": "Français",
   "Details": "Détails",
   "ErrorDetails": "Détails de l'erreur",
-  "HelpTranslate": "Help us translate PufferPanel"
+  "HelpTranslate": "Aidez-nous à traduire PufferPanel"
 }
