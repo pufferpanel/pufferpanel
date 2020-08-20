@@ -389,7 +389,7 @@ export default {
         this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`).then(response => {
           const normalizeData = (data) => {
             if (Array.isArray(data) && data.length === 0) return ''
-            return data
+            return data.toString()
           }
 
           ctx.currentFile = item.name
