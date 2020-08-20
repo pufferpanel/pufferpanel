@@ -181,7 +181,7 @@ jobs:
           --deb-systemd systemd/servicefiles/pufferpanel.service \
           --deb-after-purge systemd/scripts/purge.sh \
           artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          artifacts/www/pufferpanel=/var/www \
+          artifacts/www=/var/www/pufferpanel \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
@@ -221,7 +221,7 @@ jobs:
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
           artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
-          artifacts/www/pufferpanel=/var/www \
+          artifacts/www=/var/www/pufferpanel \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
