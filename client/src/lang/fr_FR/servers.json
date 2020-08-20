@@ -30,9 +30,9 @@
   "Deleted": "Serveur supprimé",
   "NoReadme": "Aucun readme disponible pour ce modèle",
   "SftpConnection": "Se connecter au SFTP",
-  "Reload": "Reload server data from disk",
-  "Reloaded": "Reloaded server data",
-  "Autostart": "Start the server when the node starts",
-  "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Restart the server when it crashes"
+  "Reload": "Recharger les données du serveur depuis le disque",
+  "Reloaded": "Données du serveur rechargées",
+  "Autostart": "Démarrer le serveur au démarrage du nœud",
+  "Autorestart": "Redémarrer le serveur quand il s'arrête normalement",
+  "Autorecover": "Redémarrer le serveur quand il plante"
 }
