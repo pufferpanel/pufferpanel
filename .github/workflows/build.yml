@@ -153,14 +153,15 @@ jobs:
         npm install
         npm run build
         rm -rf dist/*.map
-        mv dist ../artifacts/www
+        mv dist/* ../artifacts/www
       env:
         CI: true
       working-directory: client
 
     - name: Snapshot folders
       run: |
-        mkdir -p var/log/pufferpanel var/lib/pufferpanel
+        mkdir -p var/log/pufferpanel var/lib/pufferpanel var/www/pufferpanel
+        cp ../artifacts/www/* var/www/pufferpanel
 
     - name: Build Package
       run: |
@@ -181,7 +182,7 @@ jobs:
           --deb-systemd systemd/servicefiles/pufferpanel.service \
           --deb-after-purge systemd/scripts/purge.sh \
           artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          artifacts/www=/var/www/pufferpanel \
+          var/www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
@@ -221,7 +222,7 @@ jobs:
           --deb-after-purge systemd/scripts/purge.sh \
           -a armhf \
           artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
-          artifacts/www=/var/www/pufferpanel \
+          var/www/pufferpanel=/var/www \
           var/log/pufferpanel=/var/log \
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
