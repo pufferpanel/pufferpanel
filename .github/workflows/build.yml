@@ -161,7 +161,7 @@ jobs:
     - name: Snapshot folders
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel var/www/pufferpanel
-        cp artifacts/www/* var/www/pufferpanel
+        cp -r artifacts/www/* var/www/pufferpanel
 
     - name: Build Package
       run: |
