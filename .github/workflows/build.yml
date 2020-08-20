@@ -239,13 +239,13 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_armhf.zip
+        name: pufferpanel_${{ env.VERSION }}_armhf
         path: artifacts/arm
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_amd64.zip
+        name: pufferpanel_${{ env.VERSION }}_amd64
         path: artifacts/amd64
 
     - name: Publish Artifacts
