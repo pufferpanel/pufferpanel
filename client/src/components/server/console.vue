@@ -6,7 +6,6 @@
         id="console"
         v-model="console"
         rows="20"
-        background-color="secondary"
         readonly
         solo
         flat
@@ -53,7 +52,6 @@
               ref="popup"
               v-model="consoleReadonly"
               style="height: 100%"
-              background-color="secondary"
               solo
               flat
               hide-details

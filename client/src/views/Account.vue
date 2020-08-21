@@ -45,7 +45,7 @@
                 <v-btn
                   large
                   block
-                  color="primary"
+                  color="success"
                   :disabled="!canSubmitInfoChange"
                   @click="submitInfoChange"
                   v-text="$t('users.ChangeInfo')"
@@ -89,7 +89,7 @@
                 <v-btn
                   large
                   block
-                  color="primary"
+                  color="success"
                   :disabled="!canSubmitPassChange"
                   @click="submitPassChange"
                   v-text="$t('users.ChangePassword')"

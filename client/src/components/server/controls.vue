@@ -18,28 +18,44 @@
       class="mr-4"
       color="success"
       @click="action('start')"
-      v-text="$t('servers.Start')"
-    />
+    >
+      <v-icon left>
+        mdi-play
+      </v-icon>
+      {{ $t('servers.Start') }}
+    </v-btn>
     <v-btn
       v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="warning"
       @click="action('stop')"
-      v-text="$t('servers.Stop')"
-    />
+    >
+      <v-icon left>
+        mdi-stop
+      </v-icon>
+      {{ $t('servers.Stop') }}
+    </v-btn>
     <v-btn
       v-if="server.permissions.stopServer || isAdmin()"
       class="mr-4"
       color="error"
       @click="action('kill')"
-      v-text="$t('servers.Kill')"
-    />
+    >
+      <v-icon left>
+        mdi-skull
+      </v-icon>
+      {{ $t('servers.Kill') }}
+    </v-btn>
     <v-btn
       v-if="server.permissions.installServer || isAdmin()"
       color="error"
       @click="action('install')"
-      v-text="$t('servers.Install')"
-    />
+    >
+      <v-icon left>
+        mdi-package-down
+      </v-icon>
+      {{ $t('servers.Install') }}
+    </v-btn>
   </v-container>
 </template>
 

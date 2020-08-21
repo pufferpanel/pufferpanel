@@ -10,8 +10,35 @@ pre {
     white-space: pre
 }
 
-.console {
-  background-color: var(--v-secondary-base)
+.console .v-input__slot {
+  background-color: transparent !important;
+}
+
+.console .v-input__control {
+  position: relative;
+}
+
+.console .v-input__control::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: currentColor !important;
+  content: '';
+  border-radius: 4px;
+}
+
+.theme--dark .console .v-input__control::before {
+  opacity: .24;
+}
+
+.theme--light .console .v-input__control::before {
+  opacity: .12;
+}
+
+.theme-options {
+  min-width: 200px;
 }
 
 .vts .v-snack__content {

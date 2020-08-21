@@ -165,7 +165,7 @@
               <v-btn
                 large
                 block
-                color="primary"
+                color="success"
                 @click="updateUser"
                 v-text="$t('users.Update')"
               />

@@ -86,7 +86,7 @@
                   <!-- eslint-enable -->
                   <br>
                   <v-btn
-                    color="primary"
+                    color="success"
                     large
                     block
                     @click="selectTemplate(template.name)"
@@ -175,7 +175,7 @@
               <v-btn
                 large
                 block
-                color="primary"
+                color="success"
                 :disabled="selectedNode == null || selectedEnvironment == null || serverName == ''"
                 @click="currentStep = 3"
                 v-text="$t('common.Next')"
@@ -251,7 +251,7 @@
               <v-btn
                 large
                 block
-                color="primary"
+                color="success"
                 :disabled="selectedUsers.length === 0"
                 @click="currentStep = 4"
                 v-text="$t('common.Next')"
@@ -347,7 +347,7 @@
               <v-btn
                 large
                 block
-                color="primary"
+                color="success"
                 :disabled="!canCreate"
                 @click="submitCreate"
                 v-text="$t('common.Create')"

@@ -23,6 +23,8 @@ if ('serviceWorker' in navigator) {
   }
 }
 
+window.pufferpanel = {}
+
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,
   reconnection: true,

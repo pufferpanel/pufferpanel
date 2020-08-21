@@ -47,6 +47,7 @@ func init() {
 	viper.SetDefault("panel.email.domain", "")
 	viper.SetDefault("panel.email.key", "")
 	viper.SetDefault("panel.settings.companyName", "PufferPanel")
+	viper.SetDefault("panel.settings.defaultTheme", "PufferPanel")
 	viper.SetDefault("panel.settings.masterUrl", "http://localhost:8080")
 
 	//daemon specific settings
