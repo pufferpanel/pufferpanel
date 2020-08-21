@@ -23,6 +23,7 @@
         <v-list
           subheader
           elevation="1"
+          class="pt-2"
         >
           <div
             v-for="(elements, type, i) in templates"

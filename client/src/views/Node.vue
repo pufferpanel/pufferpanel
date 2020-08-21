@@ -86,7 +86,7 @@
               <v-btn
                 large
                 block
-                color="primary"
+                color="success"
                 @click="updateNode"
                 v-text="$t('nodes.Update')"
               />

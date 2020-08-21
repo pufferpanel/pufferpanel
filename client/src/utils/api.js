@@ -36,7 +36,7 @@ export const handleError = (ctx, overrides = {}) => error => {
         ctx.$createElement(VBtn, {
           props: { text: true, right: true },
           on: {
-            click: () => ctx.$emit('show-error-details', error)
+            click: () => window.pufferpanel.showError(error)
           }
         }, [ctx.$t('common.Details')])
       ])

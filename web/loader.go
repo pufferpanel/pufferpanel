@@ -30,6 +30,7 @@ import (
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
+        "io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -108,8 +109,20 @@ func handle404(c *gin.Context) {
 		return
 	}
 
+	if strings.HasSuffix(c.Request.URL.Path, ".json") {
+		c.Writer.Header().Set("Content-Type", "application/json")
+		c.File(ClientPath + c.Request.URL.Path)
+		return
+	}
+
 	if strings.HasSuffix(c.Request.URL.Path, ".css") {
-		c.Writer.Header().Set("Content-Type", "application/css")
+		c.Writer.Header().Set("Content-Type", "text/css")
+		c.File(ClientPath + c.Request.URL.Path)
+		return
+	}
+
+	if strings.HasSuffix(c.Request.URL.Path, ".tar") {
+		c.Writer.Header().Set("Content-Type", "application/x-tar")
 		c.File(ClientPath + c.Request.URL.Path)
 		return
 	}
@@ -118,7 +131,23 @@ func handle404(c *gin.Context) {
 }
 
 func config(c *gin.Context) {
+	themes := []string{}
+	files, err := ioutil.ReadDir(viper.GetString("panel.web.files") + "/theme")
+	if err != nil {
+		themes = append(themes, "PufferPanel")
+	} else {
+		for _, f := range files {
+			if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar") {
+				themes = append(themes, f.Name()[:len(f.Name())-4])
+			}
+		}
+	}
+
 	c.JSON(http.StatusOK, map[string]interface{}{
+		"themes": map[string]interface{}{
+			"active": viper.GetString("panel.settings.defaultTheme"),
+			"available": themes,
+		},
 		"branding": map[string]interface{}{
 			"name": viper.GetString("panel.settings.companyName"),
 		},
