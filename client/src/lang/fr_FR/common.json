@@ -32,5 +32,7 @@
   "LanguageName": "Français",
   "Details": "Détails",
   "ErrorDetails": "Détails de l'erreur",
-  "HelpTranslate": "Aidez-nous à traduire PufferPanel"
+  "HelpTranslate": "Aidez-nous à traduire PufferPanel",
+  "DarkMode": "Dark Mode",
+  "ThemeOptions": "Theme Options"
 }
