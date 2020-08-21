@@ -32,5 +32,7 @@
   "LanguageName": "Español(LAT)",
   "Details": "Detalles",
   "ErrorDetails": "Detalles del error",
-  "HelpTranslate": "Help us translate PufferPanel"
+  "HelpTranslate": "Help us translate PufferPanel",
+  "DarkMode": "Dark Mode",
+  "ThemeOptions": "Theme Options"
 }
