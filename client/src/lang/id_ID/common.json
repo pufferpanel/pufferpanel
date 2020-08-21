@@ -32,5 +32,7 @@
   "LanguageName": "Bahasa Indonesia",
   "Details": "Details",
   "ErrorDetails": "Error Details",
-  "HelpTranslate": "Help us translate PufferPanel"
+  "HelpTranslate": "Help us translate PufferPanel",
+  "DarkMode": "Dark Mode",
+  "ThemeOptions": "Theme Options"
 }
