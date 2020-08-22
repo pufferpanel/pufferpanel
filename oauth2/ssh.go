@@ -50,7 +50,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	atLocker.RLock()
 	request.Header.Add("Authorization", "Bearer "+daemonToken)
 	atLocker.RUnlock()
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Add("Content-Type", "multipart/form-data")
 	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
 
 	response, err := client.Do(request)

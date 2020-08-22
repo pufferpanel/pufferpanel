@@ -36,10 +36,6 @@ func handleTokenRequest(c *gin.Context) {
 	c.Header("Cache-Control", "no-store")
 	c.Header("Pragma", "no-cache")
 
-	if c.GetHeader("Content-Type") != "application/x-www-form-urlencoded" {
-		return
-	}
-
 	var request oauth2TokenRequest
 	err := c.MustBindWith(&request, binding.FormMultipart)
 	if err != nil {
