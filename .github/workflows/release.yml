@@ -20,53 +20,48 @@ jobs:
     
     - name: Download AMD64 ZIP artifact
       id: amd64zipdownload
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'false'
         artifact-name: 'pufferpanel_*_amd64'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Download ARMHF ZIP artifact
       id: armhfzipdownload
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'false'
         artifact-name: 'pufferpanel_*_amd64'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Download AMD64 RPM artifact
       id: amd64rpmdownload
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'true'
         artifact-name: 'pufferpanel-*.rpm'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Download AMD64 DEB artifact
       id: amd64debdownload
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'true'
         artifact-name: 'pufferpanel*_amd64.deb'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Download ARM DEB artifact
       id: armhfdebdownload
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'true'
         artifact-name: 'pufferpanel*_armhf.deb'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
           
     - name: Create Release	
       id: create_release	
