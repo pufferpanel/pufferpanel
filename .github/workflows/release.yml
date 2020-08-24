@@ -1,0 +1,23 @@
+name: Release
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      createRelease:
+        description: 'Create a release?'
+        requred: false
+        default: 'false'
+      repo:
+        description: 'What repo to push to'
+        required: false
+        default: 'pufferpanel/pufferpanel'
+        
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    name: "Deployment"
+    
+    steps:
+    - name: 'Test'
+      run: |
+        echo 'This was a test'
