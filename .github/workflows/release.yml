@@ -1,6 +1,5 @@
 name: Release
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       createRelease:
