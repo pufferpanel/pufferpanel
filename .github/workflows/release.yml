@@ -18,6 +18,10 @@ jobs:
     
     steps:
     
+    - name: Install gems
+      run:
+        gem install --no-doc package_cloud
+    
     - name: Download AMD64 ZIP artifact
       id: amd64zipdownload
       uses: pufferpanel/download-artifacts@v1
@@ -133,8 +137,7 @@ jobs:
     - name: Push to repo
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-      working-directory: artifacts
-      run: |
+      run: |        
         gem install --no-doc package_cloud
         
         #centos
