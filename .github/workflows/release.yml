@@ -17,6 +17,7 @@ jobs:
     name: "Deployment"
     
     steps:
+    - uses: actions/setup-ruby@v1
     
     - name: Install gems
       run:
