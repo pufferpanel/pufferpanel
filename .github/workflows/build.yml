@@ -5,6 +5,8 @@ on:
     - master
     tags:
     - v2.*
+    paths-ignore:
+      - '.github/workflows/release.yml'
   pull_request:
   workflow_dispatch:
     inputs:
