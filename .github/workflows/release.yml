@@ -20,6 +20,8 @@ jobs:
     
     - name: Download AMD64 ZIP artifact
       id: amd64zipdownload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
@@ -28,6 +30,8 @@ jobs:
         
     - name: Download ARMHF ZIP artifact
       id: armhfzipdownload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
@@ -36,6 +40,8 @@ jobs:
     
     - name: Download AMD64 RPM artifact
       id: amd64rpmdownload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
@@ -44,6 +50,8 @@ jobs:
         
     - name: Download AMD64 DEB artifact
       id: amd64debdownload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
@@ -52,6 +60,8 @@ jobs:
         
     - name: Download ARM DEB artifact
       id: armhfdebdownload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
