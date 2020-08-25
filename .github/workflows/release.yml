@@ -139,8 +139,6 @@ jobs:
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
       run: |        
-        gem install --no-doc package_cloud
-        
         #centos
         package_cloud push ${{ github.event.inputs.repo }}/el/7 ${{ steps.amd64rpmdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/el/8 ${{ steps.amd64rpmdownload.outputs.file }}
