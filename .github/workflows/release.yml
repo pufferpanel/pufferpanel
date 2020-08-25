@@ -150,7 +150,7 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoam ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoan ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.amd64debdownload.outputs.file }}
         
