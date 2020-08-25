@@ -146,7 +146,7 @@ jobs:
         #ubuntu
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/xenial ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/yakkety ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/aardvark ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/artful ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
