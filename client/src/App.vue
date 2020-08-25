@@ -324,7 +324,7 @@ export default {
             try {
               const json = JSON.parse(value)
               if (typeof json === 'object' && json !== null) {
-                if (Object.keys(json).indexOf('password' !== -1)) {
+                if (Object.keys(json).indexOf('password') !== -1) {
                   json.password = '<password>'
                 }
                 return JSON.stringify(json)
