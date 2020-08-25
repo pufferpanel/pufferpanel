@@ -1,6 +1,7 @@
 {
   "FileManager": "File Manager",
   "NewFolder": "New Folder",
+  "NewFile": "New File",
   "LastModified": "Last Modified",
   "ConfirmDelete": "Are you sure you want to delete this file?",
   "Upload": "Upload",

@@ -1,0 +1,12 @@
+{
+  "FileManager": "Administrador de Archivos",
+  "NewFolder": "Nueva carpeta",
+  "NewFile": "New File",
+  "LastModified": "Última modificación",
+  "ConfirmDelete": "¿Estas seguro que deseas eliminar este archivo?",
+  "Upload": "Subir",
+  "Download": "Descargar",
+  "Size": "Tamaño",
+  "NoFiles": "Todavía no hay archivos, vaya y cree algunos, por ejemplo haciendo clic en el botón de instalar en la parte superior de la página",
+  "FileLoadFailed": "Error al cargar el archivo"
+}

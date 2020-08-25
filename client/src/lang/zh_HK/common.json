@@ -29,7 +29,10 @@
   "Search": "Search",
   "Back": "Back",
   "Next": "Next",
-  "LanguageName": "English",
+  "LanguageName": "中文（香港）",
   "Details": "Details",
-  "ErrorDetails": "Error Details"
+  "ErrorDetails": "Error Details",
+  "HelpTranslate": "Help us translate PufferPanel",
+  "DarkMode": "Dark Mode",
+  "ThemeOptions": "Theme Options"
 }
