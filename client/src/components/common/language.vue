@@ -24,6 +24,7 @@
       <v-col class="d-flex justify-center">
         <a
           target="_blank"
+          rel="noopener noreferrer"
           href="https://crowdin.com/project/pufferpanel"
         >
           {{ $t('common.HelpTranslate') }}
