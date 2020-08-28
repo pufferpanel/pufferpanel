@@ -26,18 +26,19 @@ func UserInGroup(groups ...string) bool {
 		return false
 	}
 
-	groups, err := u.GroupIds()
-	if err != nil {
-		return false
-	}
-
+	allowedIds := make([]string, 0)
 	for _, v := range groups {
 		if rootGroup, err := user.LookupGroup(v); err == nil {
 			allowedIds = append(allowedIds, rootGroup.Gid)
 		}
 	}
 
-	for _, v := range groups {
+	g, err := u.GroupIds()
+	if err != nil {
+		return false
+	}
+
+	for _, v := range g {
 		for _, t := range allowedIds {
 			if v == t {
 				return true
