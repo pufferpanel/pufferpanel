@@ -31,6 +31,11 @@ var EditUserCmd = &cobra.Command{
 }
 
 func editUser(cmd *cobra.Command, args []string) {
+	if !pufferpanel.UserInGroup() {
+		fmt.Printf("You do not have permission to use this command")
+		return
+	}
+
 	err := pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Error loading config: %s", err.Error())

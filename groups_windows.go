@@ -13,6 +13,6 @@
 
 package pufferpanel
 
-func UserInGroup() bool {
+func UserInGroup(groups ...string) bool {
 	return true
 }
