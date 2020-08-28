@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	if !pufferpanel.UserInGroup() {
+	if !pufferpanel.UserInGroup("pufferpanel") {
 		fmt.Printf("You do not have permission to use this command")
 		return
 	}

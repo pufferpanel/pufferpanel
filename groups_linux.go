@@ -17,7 +17,10 @@ import (
 	"os/user"
 )
 
-func UserInGroup() bool {
+func UserInGroup(groups ...string) bool {
+	//add root as an allowed group
+	groups = append(groups, "root")
+
 	u, err := user.Current()
 	if err != nil {
 		return false
@@ -28,14 +31,10 @@ func UserInGroup() bool {
 		return false
 	}
 
-	allowedIds := make([]string, 0)
-
-	if expectedGroup, err := user.LookupGroup("pufferpanel"); err == nil {
-		allowedIds = append(allowedIds, expectedGroup.Gid)
-	}
-
-	if rootGroup, err := user.LookupGroup("root"); err == nil {
-		allowedIds = append(allowedIds, rootGroup.Gid)
+	for _, v := range groups {
+		if rootGroup, err := user.LookupGroup(v); err == nil {
+			allowedIds = append(allowedIds, rootGroup.Gid)
+		}
 	}
 
 	for _, v := range groups {
