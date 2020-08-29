@@ -238,7 +238,7 @@ func loadPublic() {
 	var pubKeyFile io.ReadCloser
 	var err error
 
-	if strings.HasPrefix("https://", pubKeyPath) || strings.HasPrefix("http://", pubKeyPath) {
+	if strings.HasPrefix(pubKeyPath, "https://") || strings.HasPrefix(pubKeyPath, "http://") {
 		client := http.Client{}
 		response, err := client.Get(pubKeyPath)
 		if err != nil {
