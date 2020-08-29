@@ -37,7 +37,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 				failure = true
 			}
 			if failure && !c.IsAborted() {
-				c.Abort()
+				c.AbortWithStatus(500)
 			}
 		}()
 
