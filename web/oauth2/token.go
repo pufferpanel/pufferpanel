@@ -37,7 +37,7 @@ func handleTokenRequest(c *gin.Context) {
 	c.Header("Pragma", "no-cache")
 
 	var request oauth2TokenRequest
-	err := c.MustBindWith(&request, binding.FormMultipart)
+	err := c.MustBindWith(&request, binding.FormPost)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
 		return

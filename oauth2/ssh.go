@@ -19,6 +19,7 @@ package oauth2
 import (
 	"encoding/json"
 	"errors"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"golang.org/x/crypto/ssh"
@@ -50,7 +51,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	atLocker.RLock()
 	request.Header.Add("Authorization", "Bearer "+daemonToken)
 	atLocker.RUnlock()
-	request.Header.Add("Content-Type", "multipart/form-data")
+	request.Header.Add("Content-Type", binding.MIMEPOSTForm)
 	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
 
 	response, err := client.Do(request)
