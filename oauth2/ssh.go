@@ -86,13 +86,18 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	}
 	sshPerms := &ssh.Permissions{}
 	scopes := strings.Split(respArr["scope"].(string), " ")
-	if len(scopes) != 2 {
-		return nil, errors.New("invalid response from authorization server")
-	}
 	for _, v := range scopes {
-		if v != "sftp" {
+
+		t := strings.Split(v, ":")
+		if len(t) != 2 {
+			continue
+		}
+		serverId := t[0]
+		scope := t[1]
+
+		if scope == "sftp" {
 			sshPerms.Extensions = make(map[string]string)
-			sshPerms.Extensions["server_id"] = v
+			sshPerms.Extensions["server_id"] = serverId
 			return sshPerms, nil
 		}
 	}
