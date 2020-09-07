@@ -170,10 +170,16 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
-			_, jwtToken, err := us.Login(user.Email, request.Password)
+			user, jwtToken, err := us.Login(user.Email, request.Password)
 			if err != nil || jwtToken == "" {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
+			}
+
+			mappedScopes := make([]string, 0)
+
+			for _, p := range perms.ToScopes() {
+				mappedScopes = append(mappedScopes, server.Identifier + ":" + string(p))
 			}
 
 			c.Header("Cache-Control", "no-store")
@@ -181,8 +187,7 @@ func handleTokenRequest(c *gin.Context) {
 			c.JSON(http.StatusOK, &oauth2TokenResponse{
 				AccessToken: jwtToken,
 				TokenType:   "Bearer",
-				//TODO: Follow OAuth2 more and give better scope information
-				Scope: "jwt",
+				Scope: strings.Join(mappedScopes, " "),
 			})
 		}
 	default:
