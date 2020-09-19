@@ -31,8 +31,8 @@
   "Next": "Дальше",
   "LanguageName": "Русский",
   "Details": "Подробности",
-  "ErrorDetails": "Error Details",
-  "HelpTranslate": "Help us translate PufferPanel",
-  "DarkMode": "Dark Mode",
-  "ThemeOptions": "Theme Options"
+  "ErrorDetails": "Сведения об ошибке",
+  "HelpTranslate": "Помогите нам перевести PufferPanel",
+  "DarkMode": "Тёмная тема",
+  "ThemeOptions": "Настройки темы"
 }
