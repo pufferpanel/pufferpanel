@@ -386,14 +386,9 @@ export default {
           path += '/' + item.name
         }
         const ctx = this
-        this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`).then(response => {
-          const normalizeData = (data) => {
-            if (Array.isArray(data) && data.length === 0) return ''
-            return data.toString()
-          }
-
+        this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`, { responseType: 'arraybuffer' }).then(response => {
           ctx.currentFile = item.name
-          ctx.fileContents = normalizeData(response.data)
+          ctx.fileContents = new TextDecoder('utf-8').decode(new Uint8Array(response.data))
           ctx.editOpen = true
         }).catch(handleError(ctx))
       }
