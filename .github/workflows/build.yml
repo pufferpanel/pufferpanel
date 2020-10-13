@@ -8,16 +8,6 @@ on:
     paths-ignore:
       - '.github/workflows/release.yml'
   pull_request:
-  workflow_dispatch:
-    inputs:
-      pushToRepo:
-        description: 'Push to repo?'
-        requred: false
-        default: 'false'
-      repo:
-        description: 'Repo'
-        required: false
-        default: 'pufferpanel/pufferpanel'
 
 jobs:
   skip-build:
@@ -157,7 +147,7 @@ jobs:
       env:
         GOOS: linux
         GOARCH: arm64
-        CC: arm-linux-gnueabi-gcc-7
+        CC: gcc-aarch64-linux-gnu
         CGO_ENABLED: 1
 
     - name: npm install, build
