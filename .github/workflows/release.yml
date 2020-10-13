@@ -67,6 +67,15 @@ jobs:
         extract: 'true'
         artifact-name: 'pufferpanel*_armhf.deb'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Download ARM DEB artifact
+      id: arm64debdownload
+      uses: pufferpanel/download-artifacts@v1
+      with:
+        workflow-id: 'build.yml'
+        extract: 'true'
+        artifact-name: 'pufferpanel*_arm64.deb'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
           
     - name: Create Release	
       id: create_release	
@@ -123,6 +132,17 @@ jobs:
         asset_path: ${{ steps.amd64debdownload.outputs.file }}
         asset_name: ${{ steps.amd64debdownload.outputs.file }}
         asset_content_type: application/vnd.debian.binary-package
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      if: github.event.inputs.rcreateReleaseepo == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.arm64debdownload.outputs.file }}
+        asset_name: ${{ steps.arm64debdownload.outputs.file }}
+        asset_content_type: application/vnd.debian.binary-package
 
     - name: Upload Release Asset
       if: github.event.inputs.createRelease == 'true'
@@ -160,3 +180,4 @@ jobs:
         
         #raspbian
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.arm64debdownload.outputs.file }}
