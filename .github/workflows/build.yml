@@ -67,7 +67,7 @@ jobs:
         mkdir artifacts/arm64
         cp -r assets/email artifacts/        
         sudo apt-get update
-        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64
+        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
 
     - name: Restore Go cache
       uses: actions/cache@v2
