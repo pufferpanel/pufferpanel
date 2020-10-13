@@ -147,7 +147,7 @@ jobs:
       env:
         GOOS: linux
         GOARCH: arm64
-        CC: gcc-aarch64-linux-gnu
+        CC: aarch64-linux-gnu-gcc
         CGO_ENABLED: 1
 
     - name: npm install, build
