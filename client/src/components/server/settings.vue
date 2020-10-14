@@ -38,7 +38,7 @@
           >
             <template slot="message">
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="item.desc" />
+              <div v-html="markdown(item.desc)" />
             </template>
           </v-text-field>
           <v-switch
@@ -52,7 +52,7 @@
           >
             <template slot="message">
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="item.desc" />
+              <div v-html="markdown(item.desc)" />
             </template>
           </v-switch>
           <v-select
@@ -66,7 +66,7 @@
           >
             <template slot="message">
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="item.desc" />
+              <div v-html="markdown(item.desc)" />
             </template>
           </v-select>
           <v-text-field
@@ -80,7 +80,7 @@
           >
             <template slot="message">
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="item.desc" />
+              <div v-html="markdown(item.desc)" />
             </template>
           </v-text-field>
         </v-col>
@@ -101,6 +101,7 @@
 
 <script>
 import { handleError } from '@/utils/api'
+import markdown from '@/utils/markdown'
 
 export default {
   props: {
@@ -126,7 +127,8 @@ export default {
       this.$http.post(`/proxy/daemon/server/${this.server.id}/data`, { data: this.items }).then(response => {
         ctx.$toast.success(ctx.$t('common.Saved'))
       }).catch(handleError(ctx))
-    }
+    },
+    markdown
   }
 }
 </script>
