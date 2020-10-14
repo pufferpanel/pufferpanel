@@ -283,7 +283,7 @@
                   >
                     <template slot="message">
                       <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
+                      <div v-html="markdown(item.desc)" />
                     </template>
                   </v-text-field>
                   <v-switch
@@ -297,7 +297,7 @@
                   >
                     <template slot="message">
                       <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
+                      <div v-html="markdown(item.desc)" />
                     </template>
                   </v-switch>
                   <v-select
@@ -311,7 +311,7 @@
                   >
                     <template slot="message">
                       <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
+                      <div v-html="markdown(item.desc)" />
                     </template>
                   </v-select>
                   <v-text-field
@@ -325,7 +325,7 @@
                   >
                     <template slot="message">
                       <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
+                      <div v-html="markdown(item.desc)" />
                     </template>
                   </v-text-field>
                 </v-col>
