@@ -12,7 +12,7 @@
 PufferPanel is a web-based Game Server Management System. PufferPanel allows you to manage multiple different game servers all from one central location. You can give other users their own servers or allow them access to your servers.
 
 ## Installation
-#### Please follow the installation guide for PufferPanel located [here](https://docs.pufferpanel.com/en/1.x/installing.html).
+#### Please follow the installation guide for PufferPanel located [here](https://docs.pufferpanel.com/en/latest/installing.html).
 
 ### What's different about PufferPanel?
 In addition to being a free and open source project, PufferPanel provides an easy to use interface for everyone from individual users to large networks or companies. We strive to create a friendly community and we would love for you to join us.
