@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "Failihaldur",
+  "NewFolder": "Uus Kaust",
+  "NewFile": "Uus Fail",
+  "LastModified": "Viimati Muudetud",
+  "ConfirmDelete": "Olete kindel et soovite kustutada seda faili?",
+  "Upload": "Üleslaadimine",
+  "Download": "Allalaadimine",
+  "Size": "Suurus",
+  "NoFiles": "Siin pole faile veel, mine ja loo mõned failid, näiteks klikkides paigaldamise nupule lehe üleval",
+  "FileLoadFailed": "Faili laadimine ebaõnnestus"
 }
