@@ -10,6 +10,10 @@ on:
         description: 'What repo to push to'
         required: false
         default: 'pufferpanel/pufferpanel'
+      branch:
+       description: 'Tag or other branch to pull artifacts from'
+       required: false
+       default: 'master'
         
 jobs:
   deploy:
@@ -40,6 +44,7 @@ jobs:
         extract: 'false'
         artifact-name: 'pufferpanel_*_amd64'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
     
     - name: Download AMD64 RPM artifact
       id: amd64rpmdownload
@@ -49,6 +54,7 @@ jobs:
         extract: 'true'
         artifact-name: 'pufferpanel-*.rpm'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
         
     - name: Download AMD64 DEB artifact
       id: amd64debdownload
@@ -58,6 +64,7 @@ jobs:
         extract: 'true'
         artifact-name: 'pufferpanel*_amd64.deb'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
         
     - name: Download ARM DEB artifact
       id: armhfdebdownload
@@ -67,6 +74,7 @@ jobs:
         extract: 'true'
         artifact-name: 'pufferpanel*_armhf.deb'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
         
     - name: Download ARM DEB artifact
       id: arm64debdownload
@@ -76,7 +84,8 @@ jobs:
         extract: 'true'
         artifact-name: 'pufferpanel*_arm64.deb'
         authToken: ${{ secrets.GITHUB_TOKEN }}
-          
+        branch: ${{ github.event.inputs.branch }}
+        
     - name: Create Release	
       id: create_release	
       if: github.event.inputs.createRelease == 'true'
