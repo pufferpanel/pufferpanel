@@ -9,10 +9,10 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"golang.org/x/tools/go/ssa/interp/testdata/src/runtime"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"github.com/otiai10/copy"
 )
