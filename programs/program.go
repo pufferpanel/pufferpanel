@@ -122,7 +122,7 @@ func CreateProgram() *Program {
 				PostExecution:           make([]interface{}, 0),
 				EnvironmentVariables:    make(map[string]string, 0),
 			},
-			Type:           "standard",
+			Type:           pufferpanel.Type{Type: "standard"},
 			Variables:      make(map[string]pufferpanel.Variable, 0),
 			Display:        "Unknown server",
 			Installation:   make([]interface{}, 0),
@@ -374,8 +374,10 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 	return
 }
 
-func (p *Program) Save(file string) (err error) {
+func (p *Program) Save() (err error) {
 	logging.Info().Printf("Saving server %s", p.Id())
+
+	file := filepath.Join(ServerFolder, p.Id() + ".json")
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {

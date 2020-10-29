@@ -238,7 +238,7 @@ func createServer(c *gin.Context) {
 		NodeID:     node.ID,
 		IP:         ip.(string),
 		Port:       port.(uint16),
-		Type:       postBody.Type,
+		Type:       postBody.Type.Type,
 	}
 
 	users := make([]*models.User, len(postBody.Users))
