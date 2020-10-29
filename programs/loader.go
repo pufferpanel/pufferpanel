@@ -113,7 +113,7 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 		data.Execution.Command = strings.TrimSpace(data.Execution.LegacyRun + " " + strings.Join(data.Execution.LegacyArguments, " "))
 		data.Execution.LegacyRun = ""
 		data.Execution.LegacyArguments = nil
-		err = data.Save(filepath.Join(ServerFolder, id+".json"))
+		err = data.Save()
 		if err != nil {
 			return nil, err
 		}
@@ -237,7 +237,7 @@ func Save(id string) (err error) {
 		err = errors.New("no server with given id")
 		return
 	}
-	err = program.Save(filepath.Join(ServerFolder, id+".json"))
+	err = program.Save()
 	return
 }
 
