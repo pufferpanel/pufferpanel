@@ -7,6 +7,6 @@
   "Upload": "Upload",
   "Download": "Download",
   "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "NoFiles": "Még nincsenek file-ok létrehozva, készítsen párat a lap tetején található telepítés gombbra kattintva",
+  "FileLoadFailed": "File betöltése sikertelen"
 }
