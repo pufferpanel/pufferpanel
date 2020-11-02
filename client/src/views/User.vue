@@ -6,12 +6,13 @@
       offset-md="3"
     >
       <v-card>
-        <v-card-title v-text="$t('users.Edit')" />
-        <v-card-text class="mt-6">
+        <v-card-title v-text="$t(create ? 'users.Add' : 'users.Edit')" />
+        <v-card-text>
           <v-row>
             <v-col>
               <v-text-field
                 v-model="user.username"
+                prepend-inner-icon="mdi-account"
                 :label="$t('common.Name')"
                 outlined
                 hide-details
@@ -22,10 +23,27 @@
             <v-col>
               <v-text-field
                 v-model="user.email"
+                prepend-inner-icon="mdi-email"
                 :label="$t('users.Email')"
                 type="email"
                 outlined
                 hide-details
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="user.password"
+                prepend-inner-icon="mdi-lock"
+                :label="$t(create ? 'users.Password' : 'users.NewPassword')"
+                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="!showPassword ? 'password' : 'text'"
+                :error-messages="passwordErrors"
+                outlined
+                :hide-details="passwordErrors === ''"
+                @click:append="showPassword = !showPassword"
+                @blur="validatePassword"
               />
             </v-col>
           </v-row>
@@ -166,11 +184,14 @@
                 large
                 block
                 color="success"
-                @click="updateUser"
-                v-text="$t('users.Update')"
+                @click="save"
+                v-text="$t(create ? 'users.Add' : 'users.Update')"
               />
             </v-col>
-            <v-col cols="12">
+            <v-col
+              v-if="!create"
+              cols="12"
+            >
               <v-btn
                 block
                 color="error"
@@ -191,26 +212,48 @@ import { handleError } from '@/utils/api'
 export default {
   data () {
     return {
-      loading: true,
+      loading: false,
+      showPassword: false,
+      passwordErrors: '',
+      create: this.$route.params.id === undefined,
       user: {}
     }
   },
   mounted () {
-    this.loadData()
+    if (!this.create) this.loadData()
   },
   methods: {
     loadData () {
       const ctx = this
+      ctx.loading = true
       ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
         ctx.user = { ...response.data }
         ctx.loading = false
       }).catch(handleError(ctx))
     },
-    updateUser () {
+    validatePassword () {
+      if (this.create && (!this.user.password || this.user.password === '')) {
+        this.passwordErrors = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
+        return
+      }
+
+      if (this.user.password && this.user.password !== '' && this.user.password.length < 8) {
+        this.passwordErrors = this.$t('errors.ErrPasswordRequirements')
+        return
+      }
+
+      this.passwordErrors = ''
+    },
+    save () {
       const ctx = this
-      ctx.$http.post(`/api/users/${ctx.$route.params.id}`, ctx.user).then(response => {
-        ctx.$http.put(`/api/users/${ctx.$route.params.id}/perms`, ctx.user).then(response => {
-          ctx.$toast.success(ctx.$t('users.UpdateSuccess'))
+      const url = ctx.$route.params.id ? '/api/users/' + ctx.$route.params.id : '/api/users'
+      const user = ctx.user
+      if (!user.password || user.password === '') delete user.password
+      ctx.$http.post(url, user).then(response => {
+        const id = ctx.$route.params.id || response.data.id
+        ctx.$http.put(`/api/users/${id}/perms`, user).then(response => {
+          ctx.$toast.success(ctx.$t(this.create ? 'users.CreateSuccess' : 'users.UpdateSuccess'))
+          if (this.create) ctx.$router.push({ name: 'User', params: { id } })
         }).catch(error => {
           // eslint-disable-next-line no-console
           console.log(error)
@@ -219,7 +262,7 @@ export default {
       }).catch(error => {
         // eslint-disable-next-line no-console
         console.log(error)
-        ctx.$toast.error(ctx.$t('users.UpdateError'))
+        ctx.$toast.error(ctx.$t(this.create ? 'users.CreateError' : 'users.UpdateError'))
       })
     },
     deleteUser () {

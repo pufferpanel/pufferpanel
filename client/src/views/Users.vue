@@ -20,6 +20,19 @@
             <v-divider v-if="index !== users.length - 1" />
           </div>
         </v-list>
+        <v-btn
+          v-show="hasScope('users.edit') || isAdmin()"
+          color="primary"
+          bottom
+          right
+          fixed
+          fab
+          dark
+          large
+          :to="{name: 'AddUser'}"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
