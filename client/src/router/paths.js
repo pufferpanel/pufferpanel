@@ -31,6 +31,11 @@ export default [
     name: 'User'
   },
   {
+    path: '/adduser',
+    view: 'User',
+    name: 'AddUser'
+  },
+  {
     path: '/user',
     view: 'Users',
     name: 'Users'
