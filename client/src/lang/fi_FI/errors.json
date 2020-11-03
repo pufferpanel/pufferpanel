@@ -1,8 +1,8 @@
 {
-  "ErrGeneric": "Unknown error",
-  "ErrUnknownError": "Unknown error",
-  "ErrInvalidCredentials": "Invalid credentials",
-  "ErrServiceNotAvailable": "Service not available",
+  "ErrGeneric": "Tuntematon virhe",
+  "ErrUnknownError": "Tuntematon virhe",
+  "ErrInvalidCredentials": "Virheelliset kirjautumistiedot",
+  "ErrServiceNotAvailable": "Palvelu ei ole käytettävissä",
   "ErrEmailNotConfigured": "Email not configured",
   "ErrTokenInvalid": "Token is invalid",
   "ErrClientNotFound": "Client not found",
