@@ -24,6 +24,8 @@
   "Edit": "Benutzer bearbeiten",
   "Update": "Benutzer aktualisieren",
   "Delete": "Benutzer löschen",
+  "CreateSuccess": "Created User",
+  "CreateError": "Failed creating user",
   "UpdateSuccess": "Benutzer aktualisiert",
   "UpdateError": "Fehler beim Aktualisieren des Benutzers",
   "PermsUpdateError": "Fehler beim Aktualisieren der Benutzerberechtigungen"
