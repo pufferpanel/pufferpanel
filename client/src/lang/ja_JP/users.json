@@ -24,8 +24,8 @@
   "Edit": "ユーザーを編集",
   "Update": "ユーザーを更新",
   "Delete": "ユーザーを削除",
-  "CreateSuccess": "Created User",
-  "CreateError": "Failed creating user",
+  "CreateSuccess": "作成されたユーザー",
+  "CreateError": "ユーザー生成に失敗しました",
   "UpdateSuccess": "ユーザー情報が更新されました",
   "UpdateError": "ユーザー情報の更新に失敗しました",
   "PermsUpdateError": "ユーザー権限の更新に失敗しました"
