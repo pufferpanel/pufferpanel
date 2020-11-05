@@ -1,13 +1,13 @@
 {
   "Server": "Server",
-  "NoServers": "Es gibt keine Server auf die du Zugriff hast",
+  "NoServers": "Es gibt keine Server, auf die du Zugriff hast",
   "Servers": "Server",
   "Add": "Server hinzufügen",
   "Console": "Konsole",
   "Controls": "Steuerung",
   "SFTPInfo": "SFTP-Informationen",
-  "Start": "Start",
-  "Stop": "Stop",
+  "Start": "Starten",
+  "Stop": "Anhalten",
   "Kill": "Beenden",
   "Install": "Installieren",
   "Send": "Senden",
@@ -30,9 +30,9 @@
   "Deleted": "Server gelöscht",
   "NoReadme": "Keine Readme für diese Vorlage verfügbar",
   "SftpConnection": "Mit SFTP verbinden",
-  "Reload": "Reload server data from disk",
-  "Reloaded": "Reloaded server data",
-  "Autostart": "Start the server when the node starts",
-  "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Restart the server when it crashes"
+  "Reload": "Serverkonfiguration neu einlesen",
+  "Reloaded": "Serverkonfiguration eingelesen",
+  "Autostart": "Server starten, wenn der Knoten startet",
+  "Autorestart": "Server neu starten, wenn er normal beendet wird",
+  "Autorecover": "Server neu starten, wenn er abgestürzt ist"
 }
