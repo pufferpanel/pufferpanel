@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "Még nincsenek file-ok létrehozva, készítsen párat a lap tetején található telepítés gombbra kattintva",
-  "FileLoadFailed": "File betöltése sikertelen"
+  "FileManager": "Fájlkezelő",
+  "NewFolder": "Új mappa",
+  "NewFile": "Új fájl",
+  "LastModified": "Utoljára módosítva",
+  "ConfirmDelete": "Biztosan törli ezt a fájlt?",
+  "Upload": "Feltöltés",
+  "Download": "Letöltés",
+  "Size": "Méret",
+  "NoFiles": "Ez a hely még nem tartalmaz fájlokat. A lap tetején található telepítés gombbra kattintva létre tudja hozni a legfontosabbakat",
+  "FileLoadFailed": "Fájlok betöltése sikertelen"
 }
