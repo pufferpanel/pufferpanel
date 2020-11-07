@@ -29,7 +29,8 @@ func init() {
 		runCmd,
 		versionCmd,
 		userCmd,
-		shutdownCmd)
+		shutdownCmd,
+		migrateCmd)
 }
 
 func Execute() {
