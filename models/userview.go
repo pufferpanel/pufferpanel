@@ -61,6 +61,21 @@ func (model *UserView) CopyToModel(newModel *User) {
 }
 
 func (model *UserView) Valid(allowEmpty bool) error {
+
+	userNameErr := model.UserNameValid(allowEmpty)
+	if(userNameErr != nil){
+		return userNameErr
+	}
+
+	mailErr := model.EmailValid(allowEmpty)
+	if(mailErr != nil){
+		return mailErr
+	}
+
+	return nil
+}
+
+func (model *UserView) UserNameValid(allowEmpty bool) error {
 	validate := validator.New()
 
 	if !allowEmpty && validate.Var(model.Username, "required") != nil {
@@ -79,6 +94,13 @@ func (model *UserView) Valid(allowEmpty bool) error {
 	if testName != model.Username {
 		return pufferpanel.ErrFieldHasURICharacters("username")
 	}
+
+	return nil
+}
+
+
+func (model *UserView) EmailValid(allowEmpty bool) error {
+	validate := validator.New()
 
 	if !allowEmpty && validate.Var(model.Email, "required") != nil {
 		return pufferpanel.ErrFieldRequired("email")
