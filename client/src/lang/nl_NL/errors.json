@@ -16,7 +16,7 @@
   "ErrFieldMustBePrintable": "{field} must be printable ascii characters",
   "ErrFieldHasURICharacters": "{field} must not contain characters which cannot be used in URIs",
   "ErrFieldIsInvalidHost": "{field} must be a valid IP or FQDN",
-  "ErrFieldIsInvalidIP": "{field} must be a valid IP",
+  "ErrFieldIsInvalidIP": "{field} moet een geldig IP zijn",
   "ErrFieldTooLarge": "{field} cannot be larger than {max}",
   "ErrFieldTooSmall": "{field} cannot be smaller than {min}",
   "ErrFieldNotBetween": "{field} must be between {min} and {max}",
@@ -30,7 +30,7 @@
   "ErrNoTemplates": "No templates available",
   "ErrPasswordRequirements": "Password must be at least 8 characters",
   "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
-  "ErrPasswordsNotIdentical": "Passwords are not the same",
+  "ErrPasswordsNotIdentical": "Wachtwoorden komen niet overeen",
   "ErrSessionTimedOut": "Your session timed out, please log in again",
   "ErrMissingScope": "You are not authorized to perform this action",
   "ErrInvalidJson": "The json data is invalid"
