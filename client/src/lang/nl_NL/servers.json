@@ -8,7 +8,7 @@
   "SFTPInfo": "SFTP Informatie",
   "Start": "Start",
   "Stop": "Stop",
-  "Kill": "Kill",
+  "Kill": "Beëindigen",
   "Install": "Installeren",
   "Send": "Verzenden",
   "Pause": "Pauseren",
@@ -29,10 +29,10 @@
   "Delete": "Server Verwijderen",
   "Deleted": "Server Verwijderd",
   "NoReadme": "Geen readme beschikbaar voor dit sjabloon",
-  "SftpConnection": "Connect to SFTP",
-  "Reload": "Reload server data from disk",
-  "Reloaded": "Reloaded server data",
-  "Autostart": "Start the server when the node starts",
-  "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Restart the server when it crashes"
+  "SftpConnection": "Verbinden met SMTP",
+  "Reload": "Herlaad server gegevens vanaf schijf",
+  "Reloaded": "Server data herladen",
+  "Autostart": "Start de server wanneer de node start",
+  "Autorestart": "Herstart de server wanneer deze normaal stopt",
+  "Autorecover": "Herstart de server wanneer deze crasht"
 }
