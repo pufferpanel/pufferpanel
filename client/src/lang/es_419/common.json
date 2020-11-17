@@ -1,5 +1,5 @@
 {
-  "Id": "Id",
+  "Id": "ID",
   "Name": "Nombre",
   "Address": "Dirección",
   "Online": "Online",
@@ -32,7 +32,7 @@
   "LanguageName": "Español(LAT)",
   "Details": "Detalles",
   "ErrorDetails": "Detalles del error",
-  "HelpTranslate": "Help us translate PufferPanel",
-  "DarkMode": "Dark Mode",
-  "ThemeOptions": "Theme Options"
+  "HelpTranslate": "Ayúdanos a traducir PufferPanel",
+  "DarkMode": "Modo Oscuro",
+  "ThemeOptions": "Opciones del Tema"
 }
