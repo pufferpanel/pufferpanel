@@ -436,5 +436,5 @@ func calculateCPUPercent(v *types.StatsJSON) float64 {
 }
 
 func calculateMemoryPercent(v *types.StatsJSON) float64 {
-	return float64(v.MemoryStats.Usage) / (1024 * 1024) //convert from bytes to MB
+	return float64(v.MemoryStats.Usage)
 }
