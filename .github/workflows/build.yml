@@ -32,11 +32,11 @@ jobs:
 
     steps:
     - name: Get the version
-      run: echo "name=VERSION::2.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      run: echo "VERSION=2.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
     - name: Get the version
       if: startsWith(github.GITHUB_REF, 'refs/tags/v')
-      run: echo "name=VERSION::${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go ${{ matrix.go }}
       uses: actions/setup-go@v1
@@ -65,9 +65,24 @@ jobs:
         mkdir artifacts/arm
         mkdir artifacts/www
         mkdir artifacts/arm64
-        cp -r assets/email artifacts/        
+        cp -r assets/email artifacts/
+        
+    - name: Restore APT cache
+      id: aptcache
+      uses: actions/cache@v2
+      with:
+        path: /var/cache/apt/archives
+        key: ${{ runner.os }}-apt
+        
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
+      run: 
         sudo apt-get update
-        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
+        sudo apt-get --download-only -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
+        
+    - name: APT Install
+      run: |
+        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu      
 
     - name: Restore Go cache
       uses: actions/cache@v2
