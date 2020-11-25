@@ -59,11 +59,6 @@ func init() {
 }
 
 func addUser(cmd *cobra.Command, args []string) {
-	if !pufferpanel.UserInGroup() {
-		fmt.Printf("You do not have permission to use this command")
-		return
-	}
-
 	answers := userCreate{
 		Username: addUsername,
 		Email:    addEmail,
