@@ -3,10 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/jinzhu/gorm"
+	"github.com/otiai10/copy"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/legacy"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -22,12 +26,12 @@ var migrateCmd = &cobra.Command{
 	Run:   migrate,
 }
 
-var migrateConfig string
+var oldDaemonConfig string
+var oldPanelConfig string
 
 func init() {
-	//var defaultPath = "/etc/pufferd/config.json"
-	var defaultPath = "config.json"
-	migrateCmd.Flags().StringVarP(&migrateConfig, "config", "c", defaultPath, "Location of old pufferd config")
+	migrateCmd.Flags().StringVarP(&oldDaemonConfig, "daemon", "d", "/srv/puffferd/config.json", "Location of old pufferd config")
+	migrateCmd.Flags().StringVarP(&oldPanelConfig, "panel", "p", "/etc/pufferpanel/config.json", "Location of old panel config")
 }
 
 func migrate(cmd *cobra.Command, args []string) {
@@ -66,12 +70,147 @@ func migrate(cmd *cobra.Command, args []string) {
 }
 
 func migratePanel() {
+	oldConfig := &legacy.PanelConfig{}
+	data, err := ioutil.ReadFile(oldPanelConfig)
+	if err != nil {
+		fmt.Printf("Error loading legacy config: %s\n", err)
+		os.Exit(1)
+		return
+	}
+	err = json.Unmarshal(data, oldConfig)
+	if err != nil {
+		fmt.Printf("Error loading legacy config: %s\n", err)
+		os.Exit(1)
+		return
+	}
 
+	var newDb, oldDb, newDbConn *gorm.DB
+	newDbConn, err = database.GetConnection()
+	if err != nil {
+		fmt.Printf("Error connection to new database: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	newDb = newDbConn.Begin()
+	defer func() {
+		newDb.RollbackUnlessCommitted()
+		newDbConn.Close()
+	}()
+
+	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", oldConfig.Mysql.Username, oldConfig.Mysql.Password, oldConfig.Mysql.Host, oldConfig.Mysql.Port, oldConfig.Mysql.Database)
+	oldDb, err = gorm.Open("mysql", connString)
+	if err != nil {
+		fmt.Printf("Error connection to old database: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	defer oldDb.Close()
+
+	//migrate users
+	var users []legacy.User
+	err = oldDb.Find(&users).Error
+	if err != nil {
+		fmt.Printf("Error finding old users: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	for _, v := range users {
+		newUser := &models.User{
+			ID:             v.ID,
+			Username:       v.Username,
+			Email:          v.Email,
+			HashedPassword: v.Password,
+		}
+		err = newDb.Save(newUser).Error
+		if err != nil {
+			fmt.Printf("Error saving new user: %s\n", err)
+			os.Exit(1)
+			return
+		}
+	}
+
+	//migrate nodes
+	var nodes []legacy.Node
+	err = oldDb.Find(&nodes).Error
+	if err != nil {
+		fmt.Printf("Error finding old nodes: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	for _, v := range nodes {
+		newNode := &models.Node{
+			Name:        v.Name,
+			PublicHost:  v.FQDN,
+			PrivateHost: v.Ip,
+			PublicPort:  v.Port,
+			PrivatePort: v.Port,
+			SFTPPort:    v.Sftp,
+			Secret:      v.DaemonSecret,
+		}
+		err = newDb.Save(newNode).Error
+		if err != nil {
+			fmt.Printf("Error saving new node: %s\n", err)
+			os.Exit(1)
+			return
+		}
+	}
+
+	//migrate servers
+	var servers []legacy.Server
+	err = oldDb.Find(&servers).Error
+	if err != nil {
+		fmt.Printf("Error finding old nodes: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	for _, v := range servers {
+		newServer := &models.Server{
+			Name:       v.Name,
+			Identifier: v.Hash.String(),
+			NodeID:     v.Node,
+			Node:       models.Node{},
+			IP:         "?",
+			Port:       0,
+			Type:       "migrated",
+		}
+		err = newDb.Save(newServer).Error
+		if err != nil {
+			fmt.Printf("Error saving new server: %s\n", err)
+			os.Exit(1)
+			return
+		}
+
+		//servers in the old system used an owner column, new one does not, we use oauth
+		//so.... we need to grant them
+		perms := &models.Permissions{
+			ServerIdentifier: &newServer.Identifier,
+			UserId: &v.OwnerId,
+		}
+		perms.SetDefaults()
+
+		err = newDb.Save(perms).Error
+		if err != nil {
+			fmt.Printf("Error saving new permission: %s\n", err)
+			os.Exit(1)
+			return
+		}
+	}
+
+	//migrate permissions
+
+	//migrate clients
+
+	newDb.Commit()
 }
 
 func migrateDaemon() {
 	oldConfig := &legacy.Config{}
-	data, err := ioutil.ReadFile(migrateConfig)
+	data, err := ioutil.ReadFile(oldDaemonConfig)
 	if err != nil {
 		fmt.Printf("Error loading legacy config: %s\n", err)
 		os.Exit(1)
