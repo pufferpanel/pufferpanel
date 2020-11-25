@@ -76,13 +76,13 @@ jobs:
         
     - name: Download APT packages
       if: steps.aptcache.outputs.cache-hit != 'true'
-      run: 
+      run: |
         sudo apt-get update
-        sudo apt-get --download-only -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
+        sudo apt-get install --download-only -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
         
     - name: APT Install
       run: |
-        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu      
+        sudo apt-get install -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu      
 
     - name: Restore Go cache
       uses: actions/cache@v2
