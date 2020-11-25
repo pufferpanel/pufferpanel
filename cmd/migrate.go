@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/jinzhu/gorm"
 	"github.com/otiai10/copy"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -35,7 +36,7 @@ func init() {
 }
 
 func migrate(cmd *cobra.Command, args []string) {
-	/*var confirm bool
+	var confirm bool
 	err := survey.AskOne(&survey.Confirm{
 		Message: "Are you SURE you wish to migrate from v1 to v2? There is NO WARRANTY OR GUARANTEE this option will fully migrate your servers.",
 		Default: false,
@@ -49,7 +50,7 @@ func migrate(cmd *cobra.Command, args []string) {
 
 	if !confirm {
 		return
-	}*/
+	}
 
 	logging.DisableFileLogger()
 
