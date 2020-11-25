@@ -54,7 +54,7 @@ func migrate(cmd *cobra.Command, args []string) {
 
 	logging.DisableFileLogger()
 
-	err := pufferpanel.LoadConfig("")
+	err = pufferpanel.LoadConfig("")
 	if err != nil {
 		fmt.Printf("Error loading new config: %s\n", err)
 		os.Exit(1)
