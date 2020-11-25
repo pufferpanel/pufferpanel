@@ -35,7 +35,7 @@ jobs:
       run: echo "name=VERSION::2.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
     - name: Get the version
-      if: startsWith(GITHUB_REF, 'refs/tags/v')
+      if: startsWith(github.GITHUB_REF, 'refs/tags/v')
       run: echo "name=VERSION::${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go ${{ matrix.go }}
