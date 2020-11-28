@@ -1,6 +1,20 @@
 <template>
   <v-card>
-    <v-card-title v-text="$t('servers.Console')" />
+    <v-card-title>
+      <span v-text="$t('servers.Console')" />
+      <div class="flex-grow-1" />
+      <v-btn
+        icon
+        @click="popoutConsole"
+      >
+        <v-icon
+          :dark="isDark()"
+          :light="!isDark()"
+        >
+          mdi-pause
+        </v-icon>
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <v-textarea
         id="console"
@@ -14,15 +28,14 @@
         class="console"
       />
       <v-text-field
+        v-if="server.permissions.sendServerConsole"
         v-model="consoleCommand"
         outlined
         hide-details
         placeholder="Command..."
         append-icon="mdi-send"
-        append-outer-icon="mdi-pause"
         class="pt-2"
         @click:append="sendCommand"
-        @click:append-outer="popoutConsole"
         @keyup.enter="sendCommand"
       />
       <v-overlay :value="consolePopup">
@@ -70,6 +83,9 @@
 import { isDark } from '@/utils/dark'
 
 export default {
+  props: {
+    server: { type: Object, default: () => {} }
+  },
   data () {
     return {
       console: '',

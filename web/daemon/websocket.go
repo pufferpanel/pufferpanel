@@ -120,10 +120,12 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 				}
 			case "console":
 				{
-					cmd, ok := mapping["command"].(string)
-					if ok {
-						if run, _ := server.IsRunning(); run {
-							_ = server.GetEnvironment().ExecuteInMainProcess(cmd)
+					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersConsoleSend) {
+						cmd, ok := mapping["command"].(string)
+						if ok {
+							if run, _ := server.IsRunning(); run {
+								_ = server.GetEnvironment().ExecuteInMainProcess(cmd)
+							}
 						}
 					}
 				}
