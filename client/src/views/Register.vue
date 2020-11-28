@@ -20,7 +20,7 @@
                 v-model.trim="username"
                 outlined
                 :label="$t('users.Username')"
-                :error-messages="errors.username"
+                :error-messages="(username && !validUsername) ? $t('errors.ErrUsernameRequirements', { min: 5 }) : errors.username"
                 prepend-inner-icon="mdi-account"
                 name="username"
                 type="text"
@@ -42,7 +42,7 @@
                 v-model="password"
                 outlined
                 :label="$t('users.Password')"
-                :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements') : errors.password"
+                :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements', { min: 8 }) : errors.password"
                 prepend-inner-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 name="password"

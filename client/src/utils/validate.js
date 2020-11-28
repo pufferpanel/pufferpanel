@@ -14,6 +14,6 @@
 export default {
   validPassword: password => password.length >= 8,
   samePassword: (pass1, pass2) => pass1 && pass2 && pass1 === pass2,
-  validUsername: username => username && /^([0-9A-Za-z_-]){3,}$/.test(username),
+  validUsername: username => username && /^([0-9A-Za-z_-]){5,}$/.test(username),
   validEmail: email => email && /^\S+@\S+\.\S+$/.test(email)
 }
