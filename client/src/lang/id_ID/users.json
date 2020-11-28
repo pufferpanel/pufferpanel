@@ -24,6 +24,8 @@
   "Edit": "Edit pengguna",
   "Update": "Update User",
   "Delete": "Delete User",
+  "CreateSuccess": "Created User",
+  "CreateError": "Failed creating user",
   "UpdateSuccess": "Updated User",
   "UpdateError": "Failed updating user",
   "PermsUpdateError": "Failed updating user permissions"

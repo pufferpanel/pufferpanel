@@ -18,7 +18,7 @@
   "EditServerAdmin": "Редактирования настроек сервера",
   "ViewNodes": "Просмотра хостов",
   "EditNodes": "Редактирования хостов",
-  "DeployNodes": "Развёртывания новых хостов",
+  "DeployNodes": "Deploy new Nodes",
   "ViewTemplates": "Просмотра шаблонов",
   "EditTemplates": "Редактирования шаблонов",
   "ViewUsers": "Просмотра всех пользователей",

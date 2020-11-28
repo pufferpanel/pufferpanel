@@ -24,6 +24,8 @@
   "Edit": "Muuda kasutajat",
   "Update": "Uuenda kasutajat",
   "Delete": "Kustuta kasutaja",
+  "CreateSuccess": "Kasutaja loodud",
+  "CreateError": "Kasutaja loomine ebaõnnestus",
   "UpdateSuccess": "Uuendatud Kasutaja",
   "UpdateError": "Kasutaja uuendamine ebaõnnestus",
   "PermsUpdateError": "Kasutaja õiguste muutmine ebaõnnestus"
