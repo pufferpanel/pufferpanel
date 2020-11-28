@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "ファイル管理",
+  "NewFolder": "新しいフォルダー",
+  "NewFile": "新しいファイル",
+  "LastModified": "最終更新日時",
+  "ConfirmDelete": "このファイルを削除してもよろしいですか？",
+  "Upload": "アップロード",
+  "Download": "ダウンロード",
+  "Size": "サイズ",
+  "NoFiles": "ファイルがありません。ページ上部のインストールボタンをクリックするなどしてファイルを作成してください",
+  "FileLoadFailed": "ファイルの読み込みに失敗しました"
 }

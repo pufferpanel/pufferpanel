@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "Файловий менеджер",
+  "NewFolder": "Нова папка",
+  "NewFile": "Новий файл",
+  "LastModified": "Востаннє змінено",
+  "ConfirmDelete": "Ви дійсно бажаєте видалити цей файл?",
+  "Upload": "Вивантажити",
+  "Download": "Завантажити",
+  "Size": "Розмір",
+  "NoFiles": "Тут ще немає жодного файлу, будь ласка, створіть декілька для прикладу, натиснувши кнопку встановлення у верхній частині сторінки",
+  "FileLoadFailed": "Помилка завантаження файлу"
 }
