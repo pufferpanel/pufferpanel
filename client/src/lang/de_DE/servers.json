@@ -33,6 +33,6 @@
   "Reload": "Serverkonfiguration neu einlesen",
   "Reloaded": "Serverkonfiguration eingelesen",
   "Autostart": "Server starten, wenn der Knoten startet",
-  "Autorestart": "Server neu starten, wenn er normal beendet wird",
+  "Autorestart": "Start the server when the node starts",
   "Autorecover": "Server neu starten, wenn er abgestürzt ist"
 }
