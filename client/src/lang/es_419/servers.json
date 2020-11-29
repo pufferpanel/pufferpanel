@@ -33,6 +33,6 @@
   "Reload": "Recargar los datos del Servidor desde el disco",
   "Reloaded": "Datos del Servidor Recargados",
   "Autostart": "Prender el servidor cuando el Nodo inicie",
-  "Autorestart": "Reiniciar el servidor cuando este se detenga",
+  "Autorestart": "Start the server when the node starts",
   "Autorecover": "Reiniciar el servidor cuando este se bloquee"
 }
