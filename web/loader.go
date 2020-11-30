@@ -42,7 +42,7 @@ var noHandle404 = []string{"/api/", "/oauth2/", "/daemon/", "/proxy/"}
 
 // @title PufferPanel API
 // @version 2.0
-// @description PufferPanel web interface
+// @description PufferPanel API interface for both the panel and daemon. Endpoints starting with /daemon or /proxy are for nodes.
 // @contact.name PufferPanel
 // @contact.url https://pufferpanel.com
 // @license.name Apache 2.0

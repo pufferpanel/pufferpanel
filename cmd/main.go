@@ -50,7 +50,8 @@ func init() {
 		versionCmd,
 		userCmd,
 		shutdownCmd,
-		migrateCmd)
+		//migrateCmd,
+		)
 }
 
 func Execute() {

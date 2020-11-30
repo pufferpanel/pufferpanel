@@ -50,6 +50,21 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
+// @Summary Get servers
+// @Description Gets servers, and allowing for filtering of servers. * is a wildcard that can be used for text inputs
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.ServerSearchResponse
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param username query string false "Username to filter on, default is current user if NOT admin"
+// @Param node query uint false "Node ID to filter on"
+// @Param name query string false "Name of server to filter on"
+// @Param limit query uint false "Max number of results to return"
+// @Param page query uint false "What page to get back for many results"
+// @Router /api/servers [get]
 func searchServers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -146,6 +161,17 @@ func searchServers(c *gin.Context) {
 	})
 }
 
+// @Summary Get a server
+// @Description Gets a particular server
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.GetServerResponse
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id} [get]
 func getServer(c *gin.Context) {
 	t, exist := c.Get("server")
 
@@ -190,6 +216,19 @@ func getServer(c *gin.Context) {
 	c.JSON(http.StatusOK, d)
 }
 
+// @Summary Makes a server
+// @Description Creates a server
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.CreateServerResponse
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string false "Server ID"
+// @Param server body models.ServerCreation true "Creation information"
+// @Router /api/servers [post]
+// @Router /api/servers/{id} [put]
 func createServer(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -319,6 +358,17 @@ func createServer(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.CreateServerResponse{Id: serverId})
 }
 
+// @Summary Deletes a server
+// @Description Deletes a server from the panel
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id} [delete]
 func deleteServer(c *gin.Context) {
 	var err error
 
@@ -390,6 +440,16 @@ func deleteServer(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Gets all users for a server
+// @Accept json
+// @Produce json
+// @Success 200 {object} []models.PermissionView
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/user [get]
 func getServerUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -430,6 +490,18 @@ func getServerUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// @Summary Edits access to a server
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Param email path string true "Email of user"
+// @Param body body models.PermissionView true "New permissions to apply"
+// @Router /api/servers/{id}/users/{email} [put]
 func editServerUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -531,6 +603,17 @@ func editServerUser(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Removes access to a server
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Param email path string true "Email of user"
+// @Router /api/servers/{id}/users/{email} [delete]
 func removeServerUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)

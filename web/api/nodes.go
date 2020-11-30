@@ -40,9 +40,6 @@ func registerNodes(g *gin.RouterGroup) {
 
 	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(pufferpanel.ScopeNodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
-
-	//g.Handle("POST", "/:id/reset", handlers.OAuth2(pufferpanel.ScopeNodesDeploy, false), response.NotImplemented)
-	//g.Handle("OPTIONS", "/:id/reset", response.CreateOptions("POST"))
 }
 
 // @Summary Get nodes
@@ -87,6 +84,7 @@ func getAllNodes(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
+// @Param id path string true "Node Id"
 // @Router /api/nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
@@ -121,7 +119,6 @@ func getNode(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path string true "Node Identifier"
 // @Router /api/nodes [post]
 func createNode(c *gin.Context) {
 	var err error
@@ -157,6 +154,7 @@ func createNode(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Node Id"
+// @Param node body models.NodeView true "Node information"
 // @Router /api/nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
@@ -224,6 +222,17 @@ func deleteNode(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Gets the data to deploy a node
+// @Description Gets the secret information needed to deploy a node.
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Deployment
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Node Id"
+// @Router /api/nodes/{id}/deploy [get]
 func deployNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
