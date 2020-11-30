@@ -101,7 +101,9 @@ func getTemplate(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Router /api/templates [get]
+// @Param template body pufferpanel.Template true "Template"
+// @Param name path string true "Template name"
+// @Router /api/templates/{name} [put]
 func putTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -131,6 +133,17 @@ func putTemplate(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Import template from repo
+// @Description Imports the given template from our main repo
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param name path string true "Template"
+// @Router /api/templates/import/{name} [post]
 func importTemplate(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
@@ -143,6 +156,17 @@ func importTemplate(c *gin.Context) {
 	}
 }
 
+// @Summary Gets importable templates
+// @Description Gets all templates which can be imported from https://github.com/PufferPanel/templates
+// @Accept json
+// @Produce json
+// @Success 200 {object} []string
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param template body pufferpanel.Template true "Template"
+// @Router /api/templates/import [post]
 func getImportableTemplates(c *gin.Context) {
 	u, err := url.Parse(GithubUrl)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
