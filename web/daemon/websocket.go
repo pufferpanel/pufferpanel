@@ -131,10 +131,6 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 				}
 			case "file":
 				{
-					if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesGet) {
-						break
-					}
-
 					action, ok := mapping["action"].(string)
 					if !ok {
 						break
@@ -147,6 +143,10 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 					switch strings.ToLower(action) {
 					case "get":
 						{
+							if !pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersFilesGet) {
+								break
+							}
+
 							editMode, ok := mapping["edit"].(bool)
 							handleGetFile(conn, server, path, ok && editMode)
 						}
