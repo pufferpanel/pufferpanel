@@ -41,6 +41,17 @@ func registerUsers(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
+// @Summary Get users
+// @Description Gets users, and allowing for filtering of users. * is a wildcard that can be used for text inputs
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.UserSearchResponse
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param body body models.UserSearch true "Filters to search on"
+// @Router /api/users [get]
 func searchUsers(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -73,6 +84,16 @@ func searchUsers(c *gin.Context) {
 	})
 }
 
+// @Summary Create user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.UserView
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param body body models.UserView true "New user information"
+// @Router /api/users [post]
 func createUser(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)
@@ -104,6 +125,16 @@ func createUser(c *gin.Context) {
 	c.JSON(http.StatusOK, resultModel)
 }
 
+// @Summary Get a user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.UserView
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path int true "User ID"
+// @Router /api/users/{id} [get]
 func getUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -126,6 +157,17 @@ func getUser(c *gin.Context) {
 	c.JSON(http.StatusOK, models.FromUser(user))
 }
 
+// @Summary Update user
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path uint true "User ID"
+// @Param body body models.UserView true "New user information"
+// @Router /api/users/{id} [post]
 func updateUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -163,6 +205,16 @@ func updateUser(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Delete user
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path uint true "User ID"
+// @Router /api/users/{id} [delete]
 func deleteUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -189,6 +241,16 @@ func deleteUser(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Gets user permissions
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.PermissionView
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path uint true "User ID"
+// @Router /api/users/{id}/perms [get]
 func getUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
@@ -217,6 +279,17 @@ func getUserPerms(c *gin.Context) {
 	c.JSON(http.StatusOK, models.FromPermission(perms))
 }
 
+// @Summary Sets user permissions
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path uint true "User ID"
+// @Param body body models.PermissionView true "New permissions"
+// @Router /api/users/{id}/perms [put]
 func setUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
