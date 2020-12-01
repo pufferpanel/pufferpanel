@@ -33,6 +33,6 @@
   "Reload": "Перезагрузить данные сервера с диска",
   "Reloaded": "Данные сервера перезагружены",
   "Autostart": "Запускать сервер при запуске хоста",
-  "Autorestart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Перезагружать сервер при сбое"
 }
