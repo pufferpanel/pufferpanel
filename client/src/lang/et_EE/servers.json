@@ -33,6 +33,6 @@
   "Reload": "Laadi kettalt serveri andmed",
   "Reloaded": "Serveri andmed taaslaetud",
   "Autostart": "Käivita server kui sõlm käivitub",
-  "Autorestart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Taaskäivita server kui see jookseb kokku"
 }
