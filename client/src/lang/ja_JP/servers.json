@@ -33,6 +33,6 @@
   "Reload": "サーバーのデータをディスクから再読み込み",
   "Reloaded": "サーバーのデータを再読み込みしました",
   "Autostart": "ノード開始時にサーバーを起動する",
-  "Autorestart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "クラッシュした際にサーバーを再起動します"
 }
