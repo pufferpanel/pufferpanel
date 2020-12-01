@@ -33,6 +33,6 @@
   "Reload": "Lemezen lévő szerveradatok újratöltése",
   "Reloaded": "Szerveradatok újratöltve",
   "Autostart": "Szerver indítása, amikor a csomópont elindul",
-  "Autorestart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Szerver újraindítása, ha összeomlik"
 }
