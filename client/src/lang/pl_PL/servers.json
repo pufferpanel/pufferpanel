@@ -33,6 +33,6 @@
   "Reload": "Odśwież dane serwera z dysku",
   "Reloaded": "Przeładowano dane serwera",
   "Autostart": "Uruchom serwer po uruchomieniu węzła",
-  "Autorestart": "Start the server when the node starts",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Uruchom ponownie serwer po awarii"
 }
