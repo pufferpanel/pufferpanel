@@ -33,6 +33,6 @@
   "Reload": "Ricarica impostazioni server dal disco",
   "Reloaded": "Dati server ricaricati",
   "Autostart": "Starta il server quando il nodo starta",
-  "Autorestart": "Riavvia il server quando si ferma normalmente",
+  "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "Riavvia il server quando crasha"
 }
