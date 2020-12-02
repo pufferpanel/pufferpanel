@@ -16,17 +16,13 @@
       </v-btn>
     </v-card-title>
     <v-card-text>
-      <v-textarea
-        id="console"
-        v-model="console"
-        rows="20"
-        readonly
-        solo
-        flat
-        no-resize
-        hide-details
+      <!-- eslint-disable vue/no-v-html -->
+      <div
         class="console"
+        style="min-height: 25em; max-height: 40em;"
+        v-html="console"
       />
+      <!-- eslint-enable vue/no-v-html -->
       <v-text-field
         v-if="server.permissions.sendServerConsole"
         v-model="consoleCommand"
@@ -60,18 +56,13 @@
             id="popup"
             class="flex-grow-1"
           >
-            <v-textarea
-              id="popupText"
-              ref="popup"
-              v-model="consoleReadonly"
-              style="height: 100%"
-              solo
-              flat
-              hide-details
-              no-resize
-              readonly
+            <!-- eslint-disable vue/no-v-html -->
+            <div
               class="console"
+              style="height: 80vh;"
+              v-html="console"
             />
+            <!-- eslint-enable vue/no-v-html -->
           </v-card-text>
         </v-card>
       </v-overlay>
@@ -80,7 +71,10 @@
 </template>
 
 <script>
+import AnsiUp from 'ansi_up'
 import { isDark } from '@/utils/dark'
+
+const ansiup = new AnsiUp()
 
 export default {
   props: {
@@ -98,6 +92,9 @@ export default {
     }
   },
   mounted () {
+    // ansi up keeps state a little aggressively, so force a reset
+    ansiup.ansi_to_html('\u001b[m')
+
     const ctx = this
     this.$socket.addEventListener('message', event => {
       const data = JSON.parse(event.data)
@@ -124,22 +121,17 @@ export default {
 
       if (data.logs instanceof Array) {
         data.logs.forEach(element => {
-          ctx.buffer.push(element)
+          ctx.buffer.push(ansiup.ansi_to_html(element).replaceAll('\n', '<br>'))
         })
       } else {
-        this.buffer.push(data.logs)
+        this.buffer.push(ansiup.ansi_to_html(data.logs).replaceAll('\n', '<br>'))
       }
     },
     popoutConsole () {
       this.consoleReadonly = this.console
       this.consolePopup = true
       this.$nextTick(() => {
-        this.$refs.popup.$el.style.height = '100%'
-        this.$refs.popup.$el.children[0].style.height = '100%'
-        this.$refs.popup.$el.children[0].children[0].style.height = '100%'
-        this.$refs.popup.$el.children[0].children[0].children[0].style.height = '100%'
-        this.$el.querySelector('#popupText').style.height = '100%'
-        this.$el.querySelector('#popupText').scrollTop = this.$el.querySelector('#popupText').scrollHeight
+        this.$el.querySelector('#popup .console').scrollTop = this.$el.querySelector('#popup .console').scrollHeight
       })
     },
     updateConsole () {
@@ -158,18 +150,13 @@ export default {
       }
       this.console = newConsole
 
-      const textArea = this.$el.querySelector('#console')
+      const console = this.$el.querySelector('.console')
       this.$nextTick(() => {
-        textArea.scrollTop = textArea.scrollHeight
+        console.scrollTop = console.scrollHeight
       })
     },
     sendCommand () {
-      if (this.consoleCommand.length === 0) {
-        return
-      }
-
       this.$socket.sendObj({ type: 'console', command: this.consoleCommand })
-
       this.consoleCommand = ''
     },
     isDark
@@ -178,10 +165,14 @@ export default {
 </script>
 
 <style>
-  .v-textarea.console textarea {
-    line-height: 1.25;
-  }
-  #popup .v-input__slot {
-    height: 100%;
+  .console {
+      overflow-y: scroll;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.25;
+      font-family: 'Roboto Mono', monospace;
+      color: #ddd;
+      background-color: black;
+      padding: 4px;
   }
 </style>

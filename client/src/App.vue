@@ -282,6 +282,7 @@ export default {
       const ctx = this
       ctx.$http.get('/api/config').then(response => {
         ctx.appConfig = { ...ctx.appConfig, ...response.data }
+        document.title = ctx.appConfig.branding.name
         if (localStorage.getItem('theme')) {
           const stored = localStorage.getItem('theme')
           if (ctx.appConfig.themes.available.indexOf(stored) !== -1) {

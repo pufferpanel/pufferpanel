@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "^4.9.95",
+    "ansi_up": "^4.0.4",
     "apexcharts": "^3.19.3",
     "axios": "^0.19.2",
     "dompurify": "^2.0.12",
