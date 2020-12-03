@@ -24,7 +24,7 @@
       />
       <!-- eslint-enable vue/no-v-html -->
       <v-text-field
-        v-if="server.permissions.sendServerConsole"
+        v-if="server.permissions.sendServerConsole || isAdmin()"
         v-model="consoleCommand"
         outlined
         hide-details

@@ -226,9 +226,12 @@ export default {
     loadData () {
       const ctx = this
       ctx.loading = true
-      ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
+      ctx.$http.get(`/api/users/${ctx.$route.params.id}`).then(response => {
         ctx.user = { ...response.data }
-        ctx.loading = false
+        ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
+          ctx.user = { ...ctx.user, ...response.data }
+          ctx.loading = false
+        })
       }).catch(handleError(ctx))
     },
     validatePassword () {
@@ -253,7 +256,10 @@ export default {
         const id = ctx.$route.params.id || response.data.id
         ctx.$http.put(`/api/users/${id}/perms`, user).then(response => {
           ctx.$toast.success(ctx.$t(this.create ? 'users.CreateSuccess' : 'users.UpdateSuccess'))
-          if (this.create) ctx.$router.push({ name: 'User', params: { id } })
+          if (this.create) {
+            ctx.create = false
+            ctx.$router.push({ name: 'User', params: { id } })
+          }
         }).catch(error => {
           // eslint-disable-next-line no-console
           console.log(error)
