@@ -202,6 +202,10 @@ func (p *Permissions) SetDefaults() {
 }
 
 func (p *Permissions) ShouldDelete() bool {
+	if p.ServerIdentifier == nil {
+		return false
+	}
+
 	val := reflect.ValueOf(p)
 
 	// If it's an interface or a pointer, unwrap it.
