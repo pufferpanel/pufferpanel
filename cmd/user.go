@@ -80,7 +80,7 @@ func addUser(cmd *cobra.Command, args []string) {
 			Prompt: &survey.Input{
 				Message: "Username:",
 			},
-			Validate: survey.Required,
+			Validate: validateUsername,
 		})
 	}
 
@@ -90,7 +90,7 @@ func addUser(cmd *cobra.Command, args []string) {
 			Prompt: &survey.Input{
 				Message: "Email:",
 			},
-			Validate: survey.Required,
+			Validate: validateEmail,
 		})
 	}
 
@@ -173,6 +173,32 @@ func addUser(cmd *cobra.Command, args []string) {
 	}
 
 	fmt.Printf("User added\n")
+}
+
+func validateEmail(val interface{}) error {
+	email := val.(string)
+
+	var viewModel models.UserView
+	viewModel.Email = email
+	err := viewModel.EmailValid(false)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateUsername(val interface{}) error {
+	usr := val.(string)
+
+	var viewModel models.UserView
+	viewModel.Username = usr
+	err := viewModel.UserNameValid(false)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func validatePassword(val interface{}) error {
