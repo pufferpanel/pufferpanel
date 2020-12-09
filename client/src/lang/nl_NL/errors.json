@@ -13,7 +13,7 @@
   "ErrNoTemplate": "Geen sjabloon met de naam '{name}' is gevonden",
   "ErrServiceInvalidProvider": "{service} ondersteunt {provider} niet",
   "ErrFieldRequired": "{field} is vereist",
-  "ErrFieldMustBePrintable": "{field} must be printable ascii characters",
+  "ErrFieldMustBePrintable": "{field} moet afdrukbare ASCII tekens bevatten",
   "ErrFieldHasURICharacters": "{field} mag geen tekens bevatten die niet gebruikt kunnen worden in URI's",
   "ErrFieldIsInvalidHost": "{field} moet een geldig IP of FQDN zijn",
   "ErrFieldIsInvalidIP": "{field} moet een geldig IP zijn",
@@ -29,9 +29,9 @@
   "ErrNoNodes": "Geen nodes beschikbaar",
   "ErrNoTemplates": "Geen sjablonen beschikbaar",
   "ErrPasswordRequirements": "Wachtwoord moet ten minste 8 tekens bevatten",
-  "ErrUsernameRequirements": "Username must be at least 3 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Gebruikersnaam moet ten minste 3 tekens bevatten en mag alleen _, - of alfanumerieke tekens bevatten",
   "ErrPasswordsNotIdentical": "Wachtwoorden komen niet overeen",
-  "ErrSessionTimedOut": "Your session timed out, please log in again",
-  "ErrMissingScope": "You are not authorized to perform this action",
-  "ErrInvalidJson": "The json data is invalid"
+  "ErrSessionTimedOut": "Je sessie is verlopen, log opnieuw in",
+  "ErrMissingScope": "Je bent niet bevoegd om deze actie uit te voeren",
+  "ErrInvalidJson": "De json gegevens zijn ongeldig"
 }
