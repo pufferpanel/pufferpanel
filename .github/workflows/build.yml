@@ -12,7 +12,7 @@ on:
 jobs:
   skip-build:
     runs-on: ubuntu-18.04
-    if: "!startsWith(github.ref, 'refs/tags/v2.') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
+    if: "!startsWith(github.ref, 'refs/tags/v') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
     name: "Build skipped"
 
     steps:
@@ -22,7 +22,7 @@ jobs:
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
-    if: "startsWith(github.ref, 'refs/tags/v2.') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
+    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
 
     strategy:
       matrix:
@@ -32,10 +32,10 @@ jobs:
 
     steps:
     - name: Get the version
-      run: echo "VERSION=2.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
     - name: Get the version
-      if: startsWith(github.GITHUB_REF, 'refs/tags/v')
+      if: startsWith(github.ref, 'refs/tags/v')
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go ${{ matrix.go }}
