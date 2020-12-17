@@ -35,6 +35,7 @@ jobs:
         extract: 'false'
         artifact-name: 'pufferpanel_*_amd64'
         authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
         
     - name: Download ARMHF ZIP artifact
       id: armhfzipdownload
