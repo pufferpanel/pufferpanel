@@ -43,7 +43,17 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_amd64'
+        artifact-name: 'pufferpanel_*_armhf'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
+        
+    - name: Download ARM64 ZIP artifact
+      id: arm64zipdownload
+      uses: pufferpanel/download-artifacts@v1
+      with:
+        workflow-id: 'build.yml'
+        extract: 'false'
+        artifact-name: 'pufferpanel_*_arm64'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
     
@@ -119,6 +129,17 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.armhfzipdownload.outputs.file }}.zip
         asset_name: ${{ steps.armhfzipdownload.outputs.file }}.zip
+        asset_content_type: application/zip
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      if: github.event.inputs.createRelease == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.arm64zipdownload.outputs.file }}.zip
+        asset_name: ${{ steps.arm64zipdownload.outputs.file }}.zip
         asset_content_type: application/zip
 
     - name: Upload Release Asset
