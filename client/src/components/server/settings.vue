@@ -22,67 +22,11 @@
           <span v-text="$t('servers.NoEditableVars')" />
         </v-col>
         <v-col
-          v-for="(item, index, name) in items"
+          v-for="(item, name) in items"
           :key="name"
           cols="12"
         >
-          <v-text-field
-            v-if="item.type === 'integer'"
-            v-model="item.value"
-            type="number"
-            :required="item.required"
-            :hint="item.desc"
-            persistent-hint
-            :label="item.display"
-            outlined
-          >
-            <template slot="message">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="markdown(item.desc)" />
-            </template>
-          </v-text-field>
-          <v-switch
-            v-else-if="item.type === 'boolean'"
-            v-model="item.value"
-            class="mt-0 mb-4"
-            :required="item.required"
-            :hint="item.desc"
-            persistent-hint
-            :label="item.display"
-          >
-            <template slot="message">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="markdown(item.desc)" />
-            </template>
-          </v-switch>
-          <v-select
-            v-else-if="item.type === 'option'"
-            v-model="item.value"
-            :items="item.options.map(function (option) { return { value: option.value, text: option.display }})"
-            :hint="item.desc"
-            persistent-hint
-            :label="item.display"
-            outlined
-          >
-            <template slot="message">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="markdown(item.desc)" />
-            </template>
-          </v-select>
-          <v-text-field
-            v-else
-            v-model="item.value"
-            :required="item.required"
-            :hint="item.desc"
-            persistent-hint
-            :label="item.display"
-            outlined
-          >
-            <template slot="message">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-html="markdown(item.desc)" />
-            </template>
-          </v-text-field>
+          <ui-variable-input v-model="items[name]" />
         </v-col>
       </v-row>
       <v-row v-if="Object.keys(items).length > 0">
@@ -127,6 +71,9 @@ export default {
       this.$http.post(`/proxy/daemon/server/${this.server.id}/data`, { data: this.items }).then(response => {
         ctx.$toast.success(ctx.$t('common.Saved'))
       }).catch(handleError(ctx))
+    },
+    log (x, y, z) {
+      console.log('blah', x, y, z)
     },
     markdown
   }

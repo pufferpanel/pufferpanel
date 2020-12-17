@@ -14,12 +14,10 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-select
+      <ui-select
         v-model="value.type"
         :items="processorTypes"
         :label="$t('templates.Type')"
-        outlined
-        hide-details
         @change="changeType"
       />
     </v-col>
@@ -27,14 +25,13 @@
       v-if="value.type === 'download'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-for="(e, i) in value.files"
         :key="i"
         v-model="value.files[i]"
         dense
-        outlined
         hide-details
-        append-outer-icon="mdi-close-circle"
+        icon-behind="mdi-close-circle"
         @click:append-outer="$delete(value.files, i)"
       />
     </v-col>
@@ -53,14 +50,13 @@
       v-if="value.type === 'command'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-for="(e, i) in value.commands"
         :key="i"
         v-model="value.commands[i]"
         dense
-        outlined
         hide-details
-        append-outer-icon="mdi-close-circle"
+        icon-behind="mdi-close-circle"
         @click:append-outer="$delete(value.commands, i)"
       />
     </v-col>
@@ -79,9 +75,8 @@
       v-if="value.type === 'writefile'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.target"
-        outlined
         hide-details
         :label="$t('templates.Filename')"
       />
@@ -102,9 +97,8 @@
       cols="12"
       md="6"
     >
-      <v-text-field
+      <ui-input
         v-model="value.source"
-        outlined
         hide-details
         :label="$t('templates.Source')"
       />
@@ -114,9 +108,8 @@
       cols="12"
       md="6"
     >
-      <v-text-field
+      <ui-input
         v-model="value.target"
-        outlined
         hide-details
         :label="$t('templates.Target')"
       />
@@ -125,9 +118,8 @@
       v-if="value.type === 'mkdir'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.target"
-        outlined
         hide-details
         :label="$t('common.Name')"
       />
@@ -136,9 +128,8 @@
       v-if="value.type === 'mojangdl'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.version"
-        outlined
         hide-details
         :label="$t('templates.Version')"
       />
@@ -147,9 +138,8 @@
       v-if="value.type === 'mojangdl'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.target"
-        outlined
         hide-details
         :label="$t('templates.Filename')"
       />
@@ -158,9 +148,8 @@
       v-if="value.type === 'forgedl'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.version"
-        outlined
         hide-details
         :label="$t('templates.Version')"
       />
@@ -169,9 +158,8 @@
       v-if="value.type === 'forgedl'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.filename"
-        outlined
         hide-details
         :label="$t('templates.Filename')"
       />
@@ -180,9 +168,8 @@
       v-if="value.type === 'spongeforgedl'"
       cols="12"
     >
-      <v-text-field
+      <ui-input
         v-model="value.releaseType"
-        outlined
         hide-details
         :label="$t('templates.ReleaseType')"
       />

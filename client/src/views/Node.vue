@@ -10,10 +10,9 @@
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.name"
                 :label="$t('common.Name')"
-                outlined
                 hide-details
               />
             </v-col>
@@ -23,11 +22,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicHost"
                 :label="$t('nodes.PublicHost')"
-                type="text"
-                outlined
                 hide-details
               />
             </v-col>
@@ -35,11 +32,10 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicPort"
                 :label="$t('nodes.PublicPort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>
@@ -49,11 +45,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privateHost"
                 :label="$t('nodes.PrivateHost')"
-                type="text"
-                outlined
                 hide-details
               />
             </v-col>
@@ -61,22 +55,20 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privatePort"
                 :label="$t('nodes.PrivatePort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.sftpPort"
                 :label="$t('nodes.SftpPort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>

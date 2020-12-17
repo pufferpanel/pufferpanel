@@ -45,11 +45,10 @@
         cols="12"
         md="6"
       >
-        <v-text-field
+        <ui-input
           v-model="newVarName"
           :label="$t('common.Name')"
           dense
-          outlined
           hide-details
         />
       </v-col>

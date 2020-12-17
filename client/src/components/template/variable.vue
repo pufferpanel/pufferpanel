@@ -14,27 +14,22 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-switch
+      <ui-switch
         v-model="value.required"
         :label="$t('templates.Required')"
-        hide-details
-        class="mt-0"
       />
-      <v-switch
+      <ui-switch
         v-model="value.userEdit"
         :label="$t('templates.UserEditable')"
-        hide-details
-        class="mt-0"
       />
     </v-col>
     <v-col
       cols="12"
       md="6"
     >
-      <v-text-field
+      <ui-input
         v-model="value.display"
         :label="$t('templates.Display')"
-        outlined
         hide-details
       />
     </v-col>
@@ -42,10 +37,9 @@
       cols="12"
       md="6"
     >
-      <v-text-field
+      <ui-input
         v-model="value.desc"
         :label="$t('templates.Description')"
-        outlined
         hide-details
       />
     </v-col>
@@ -53,12 +47,10 @@
       cols="12"
       :md="value.type === 'option' ? '12' : '6'"
     >
-      <v-select
+      <ui-select
         v-model="value.type"
         :label="$t('templates.DataType')"
         :items="possibleTypes"
-        outlined
-        hide-details
         @change="typeChanged()"
       />
     </v-col>
@@ -67,10 +59,9 @@
       cols="12"
       md="6"
     >
-      <v-text-field
+      <ui-input
         v-model="value.value"
         :label="$t('templates.DefaultValue')"
-        outlined
         hide-details
       />
     </v-col>
@@ -86,10 +77,9 @@
           cols="12"
           md="6"
         >
-          <v-text-field
+          <ui-input
             v-model="option.value"
             :label="$t('templates.Value')"
-            outlined
             hide-details
           />
         </v-col>
@@ -97,12 +87,11 @@
           cols="12"
           md="6"
         >
-          <v-text-field
+          <ui-input
             v-model="option.display"
             :label="$t('templates.Display')"
-            outlined
             hide-details
-            append-outer-icon="mdi-close-circle"
+            icon-behind="mdi-close-circle"
             @click:append-outer="$delete(value.options, i)"
           />
         </v-col>

@@ -27,12 +27,11 @@
         cols="8"
         class="my-0 py-0"
       >
-        <v-text-field
+        <ui-input
           v-model="value[i]"
           dense
-          outlined
           hide-details
-          append-outer-icon="mdi-close-circle"
+          icon-behind="mdi-close-circle"
           @click:append-outer="delete value[i]; $forceUpdate()"
         />
       </v-col>
@@ -49,11 +48,10 @@
         cols="12"
         md="6"
       >
-        <v-text-field
+        <ui-input
           v-model="newEnvVar"
           :label="$t('common.Name')"
           dense
-          outlined
           hide-details
         />
       </v-col>

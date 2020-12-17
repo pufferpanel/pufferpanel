@@ -23,14 +23,12 @@
         v-html="console"
       />
       <!-- eslint-enable vue/no-v-html -->
-      <v-text-field
+      <ui-input
         v-if="server.permissions.sendServerConsole || isAdmin()"
         v-model="consoleCommand"
-        outlined
-        hide-details
-        placeholder="Command..."
-        append-icon="mdi-send"
         class="pt-2"
+        placeholder="Command..."
+        end-icon="mdi-send"
         @click:append="sendCommand"
         @keyup.enter="sendCommand"
       />

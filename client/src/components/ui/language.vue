@@ -1,11 +1,11 @@
 <template>
-  <common-overlay
+  <ui-overlay
     v-model="show"
     card
     closable
     :title="$t('common.SelectLanguage')"
   >
-    <v-row>
+    <v-row id="langs">
       <v-col
         v-for="lang in Object.keys($i18n.messages)"
         :key="lang"
@@ -32,7 +32,7 @@
         </a>
       </v-col>
     </v-row>
-  </common-overlay>
+  </ui-overlay>
 </template>
 
 <script>

@@ -23,11 +23,10 @@
       >
         <v-expansion-panel-header v-text="env.type" />
         <v-expansion-panel-content>
-          <v-text-field
+          <ui-input
             v-if="env.type === 'docker'"
             v-model="env.image"
             :label="$t('templates.DockerImage')"
-            outlined
             hide-details
             class="mb-2"
           />
@@ -52,13 +51,11 @@
         cols="12"
         md="6"
       >
-        <v-select
+        <ui-select
           v-model="newEnv"
           :label="$t('templates.Environment')"
           :items="possibleEnvironments"
           dense
-          outlined
-          hide-details
         />
       </v-col>
       <v-col

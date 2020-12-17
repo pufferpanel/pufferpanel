@@ -17,27 +17,24 @@
       <span v-text="$t('servers.AdminControls')" />
     </v-card-title>
     <v-card-text>
-      <v-switch
+      <ui-switch
         v-model="autostart"
         :loading="loading"
         :disabled="loading"
-        hide-details
         :label="$t('servers.Autostart')"
         @click="toggleSwitch('autostart')"
       />
-      <v-switch
+      <ui-switch
         v-model="autorestart"
         :loading="loading"
         :disabled="loading"
-        hide-details
         :label="$t('servers.Autorestart')"
         @click="toggleSwitch('autorestart')"
       />
-      <v-switch
+      <ui-switch
         v-model="autorecover"
         :loading="loading"
         :disabled="loading"
-        hide-details
         :label="$t('servers.Autorecover')"
         class="mb-4"
         @click="toggleSwitch('autorecover')"

@@ -26,11 +26,10 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="name"
                 :label="$t('common.Name')"
                 :disabled="!create"
-                outlined
                 hide-details
               />
             </v-col>
@@ -40,10 +39,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="templateObj.display"
                 :label="$t('templates.Display')"
-                outlined
                 hide-details
               />
             </v-col>
@@ -51,10 +49,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="templateObj.type"
                 :label="$t('templates.Type')"
-                outlined
                 hide-details
               />
             </v-col>

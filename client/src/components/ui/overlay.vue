@@ -50,6 +50,11 @@
   max-width: 100vw !important;
   max-height: 100vh !important;
 }
+
+.overlayContent {
+  max-height: calc(90vh - 68px);
+  overflow-y: scroll;
+}
 </style>
 
 <script>

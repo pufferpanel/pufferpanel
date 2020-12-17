@@ -10,171 +10,140 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="user.username"
-                prepend-inner-icon="mdi-account"
+                icon="mdi-account"
                 :label="$t('common.Name')"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="user.email"
-                prepend-inner-icon="mdi-email"
+                icon="mdi-email"
                 :label="$t('users.Email')"
                 type="email"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-password-input
                 v-model="user.password"
-                prepend-inner-icon="mdi-lock"
                 :label="$t(create ? 'users.Password' : 'users.NewPassword')"
-                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                :type="!showPassword ? 'password' : 'text'"
                 :error-messages="passwordErrors"
-                outlined
                 :hide-details="passwordErrors === ''"
-                @click:append="showPassword = !showPassword"
                 @blur="validatePassword"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.admin"
-                hide-details
                 :label="$t('scopes.Admin')"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewServers"
-                hide-details
                 :label="$t('scopes.ViewServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.createServers"
-                hide-details
                 :label="$t('scopes.CreateServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.deleteServers"
-                hide-details
                 :label="$t('scopes.DeleteServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editServerAdmin"
-                hide-details
                 :label="$t('scopes.EditServerAdmin')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewNodes"
-                hide-details
                 :label="$t('scopes.ViewNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editNodes"
-                hide-details
                 :label="$t('scopes.EditNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.deployNodes"
-                hide-details
                 :label="$t('scopes.DeployNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewTemplates"
-                hide-details
                 :label="$t('scopes.ViewTemplates')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editTemplates"
-                hide-details
                 :label="$t('scopes.EditTemplates')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewUsers"
-                hide-details
                 :label="$t('scopes.ViewUsers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="pt-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editUsers"
-                hide-details
                 :label="$t('scopes.EditUsers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>

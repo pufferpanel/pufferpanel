@@ -23,25 +23,27 @@
           <v-card-text>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <ui-input
                   v-model="username"
-                  outlined
-                  prepend-inner-icon="mdi-account"
+                  icon="mdi-account"
                   :label="$t('users.Username')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-input
                   v-model="email"
-                  outlined
-                  prepend-inner-icon="mdi-email"
+                  icon="mdi-email"
                   :label="$t('users.Email')"
+                  type="email"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="confirmPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.ConfirmPassword')"
                 />
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   large
                   block
@@ -65,27 +67,24 @@
           <v-card-text>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <ui-password-input
                   v-model="oldPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.OldPassword')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="newPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.NewPassword')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="confirmNewPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.ConfirmPassword')"
                 />
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   large
                   block
