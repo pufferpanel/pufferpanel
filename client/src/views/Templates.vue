@@ -75,7 +75,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <common-overlay
+    <ui-overlay
       v-model="showTemplateImporter"
       card
       closable
@@ -97,7 +97,8 @@
         multiple
         clearable
         deletable-chips
-        solo
+        hide-selected
+        outlined
         open-on-clear
       />
       <v-row>
@@ -118,8 +119,8 @@
           />
         </v-col>
       </v-row>
-    </common-overlay>
-    <common-overlay
+    </ui-overlay>
+    <ui-overlay
       v-model="offerImport"
       card
       closable
@@ -149,7 +150,7 @@
           />
         </v-col>
       </v-row>
-    </common-overlay>
+    </ui-overlay>
   </v-container>
 </template>
 

@@ -14,40 +14,34 @@
       <v-card-text>
         <v-row>
           <v-col cols="12">
-            <v-form>
-              <v-text-field
-                id="email"
-                v-model.trim="email"
-                outlined
-                :label="$t('users.Email')"
-                :error-messages="errors.email"
-                prepend-inner-icon="mdi-account"
-                name="email"
-                type="email"
-                @keyup.enter="submit"
-              />
-              <v-text-field
-                id="password"
-                v-model="password"
-                outlined
-                :label="$t('users.Password')"
-                :error-messages="errors.password"
-                prepend-inner-icon="mdi-lock"
-                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                name="password"
-                :type="!showPassword ? 'password' : 'text'"
-                @click:append="showPassword = !showPassword"
-                @keyup.enter="submit"
-              />
-            </v-form>
+            <ui-input
+              v-model.trim="email"
+              autofocus
+              :label="$t('users.Email')"
+              :error-messages="errors.email"
+              icon="mdi-account"
+              type="email"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
+            <ui-password-input
+              v-model="password"
+              :label="$t('users.Password')"
+              :error-messages="errors.password"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
             <v-btn
               color="primary"
-              class="body-1 mb-5"
               large
               block
               @click="submit"
               v-text="$t('users.Login')"
             />
+          </v-col>
+          <v-col cols="12">
             <v-btn
               text
               block
@@ -122,7 +116,7 @@ export default {
         email: this.email,
         password: this.password
       }).then(response => {
-        Cookies.set('puffer_auth', response.data.session)
+        Cookies.set('puffer_auth', response.data.session, { sameSite: 'strict' })
         localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
         ctx.$emit('logged-in')
         ctx.$router.push({ name: 'Servers' })

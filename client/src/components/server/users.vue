@@ -27,14 +27,13 @@
             outlined
           >
             <v-card-title>
-              <v-text-field
+              <ui-input
                 v-if="user.new"
                 v-model="user.email"
                 hide-details
-                outlined
                 type="email"
                 :label="$t('users.Email')"
-                prepend-inner-icon="mdi-email"
+                icon="mdi-email"
                 @keyup.enter="updateUser(user)"
               />
               <span
@@ -58,9 +57,8 @@
                   cols="12"
                   md="6"
                 >
-                  <v-switch
+                  <ui-switch
                     v-model="user[option.value]"
-                    hide-details
                     :label="option.text"
                     color="primary"
                   />

@@ -25,17 +25,16 @@
       >
         <v-icon>mdi-file-plus</v-icon>
       </v-btn>
-      <common-overlay
+      <ui-overlay
         v-model="createFile"
         :title="$t('files.NewFile')"
         card
       >
         <v-row>
           <v-col>
-            <v-text-field
+            <ui-input
               v-model="newFileName"
               hide-details
-              outlined
               autofocus
               :label="$t('common.Name')"
               @keyup.esc="cancelFileCreate()"
@@ -62,7 +61,7 @@
             />
           </v-col>
         </v-row>
-      </common-overlay>
+      </ui-overlay>
       <v-btn
         v-if="server.permissions.putServerFiles || isAdmin()"
         icon
@@ -70,17 +69,16 @@
       >
         <v-icon>mdi-folder-plus</v-icon>
       </v-btn>
-      <common-overlay
+      <ui-overlay
         v-model="createFolder"
         :title="$t('files.NewFolder')"
         card
       >
         <v-row>
           <v-col>
-            <v-text-field
+            <ui-input
               v-model="newFolderName"
               hide-details
-              outlined
               autofocus
               :label="$t('common.Name')"
               @keyup.esc="cancelFolderCreate()"
@@ -107,7 +105,7 @@
             />
           </v-col>
         </v-row>
-      </common-overlay>
+      </ui-overlay>
       <v-btn
         icon
         @click="fetchItems(currentPath)"
@@ -207,7 +205,7 @@
         </v-list-item>
       </v-list>
 
-      <common-overlay
+      <ui-overlay
         v-model="editOpen"
         :title="currentFile"
         card
@@ -234,7 +232,7 @@
             v-text="$t('common.Save')"
           />
         </template>
-      </common-overlay>
+      </ui-overlay>
 
       <div v-if="server.permissions.putServerFiles || isAdmin()">
         <v-file-input

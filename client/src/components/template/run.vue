@@ -15,10 +15,9 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <v-text-field
+        <ui-input
           v-model="value.command"
           :label="$t('templates.Command')"
-          outlined
           hide-details
         />
       </v-col>

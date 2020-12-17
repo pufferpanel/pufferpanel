@@ -34,19 +34,17 @@
       </v-btn-toggle>
     </v-col>
     <v-col cols="12">
-      <v-text-field
+      <ui-input
         v-if="stopType === 'command'"
         v-model="value.stop"
         :label="$t('templates.stop.Command')"
-        outlined
         hide-details
       />
-      <v-text-field
+      <ui-input
         v-else
         v-model="value.stopCode"
         :label="$t('templates.stop.Signal')"
         type="number"
-        outlined
         hide-details
       />
     </v-col>

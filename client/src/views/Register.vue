@@ -14,65 +14,52 @@
       <v-card-text>
         <v-row>
           <v-col cols="12">
-            <v-form>
-              <v-text-field
-                id="username"
-                v-model.trim="username"
-                outlined
-                :label="$t('users.Username')"
-                :error-messages="(username && !validUsername) ? $t('errors.ErrUsernameRequirements', { min: 5 }) : errors.username"
-                prepend-inner-icon="mdi-account"
-                name="username"
-                type="text"
-                @keyup.enter="submit"
-              />
-              <v-text-field
-                id="email"
-                v-model.trim="email"
-                outlined
-                :label="$t('users.Email')"
-                :error-messages="errors.email"
-                prepend-inner-icon="mdi-email"
-                name="email"
-                type="text"
-                @keyup.enter="submit"
-              />
-              <v-text-field
-                id="password"
-                v-model="password"
-                outlined
-                :label="$t('users.Password')"
-                :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements', { min: 8 }) : errors.password"
-                prepend-inner-icon="mdi-lock"
-                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                name="password"
-                :type="!showPassword ? 'password' : 'text'"
-                @click:append="showPassword = !showPassword"
-                @keyup.enter="submit"
-              />
-              <v-text-field
-                id="confirmPassword"
-                v-model="confirmPassword"
-                outlined
-                :label="$t('users.ConfirmPassword')"
-                :error-messages="(confirmPassword !== '' && !samePassword) ? $t('errors.ErrPasswordsNotIdentical') : ''"
-                prepend-inner-icon="mdi-lock"
-                :append-icon="showConfirmPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                name="password"
-                :type="!showConfirmPassword ? 'password' : 'text'"
-                @click:append="showConfirmPassword = !showConfirmPassword"
-                @keyup.enter="submit"
-              />
-            </v-form>
+            <ui-input
+              v-model.trim="username"
+              autofocus
+              :label="$t('users.Username')"
+              :error-messages="(username && !validUsername) ? $t('errors.ErrUsernameRequirements', { min: 5 }) : errors.username"
+              icon="mdi-account"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
+            <ui-input
+              v-model.trim="email"
+              :label="$t('users.Email')"
+              :error-messages="errors.email"
+              icon="mdi-email"
+              type="email"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
+            <ui-password-input
+              v-model="password"
+              :label="$t('users.Password')"
+              :error-messages="(password && !validPassword) ? $t('errors.ErrPasswordRequirements', { min: 8 }) : errors.password"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
+            <ui-password-input
+              v-model="confirmPassword"
+              :label="$t('users.ConfirmPassword')"
+              :error-messages="(confirmPassword !== '' && !samePassword) ? $t('errors.ErrPasswordsNotIdentical') : ''"
+              @keyup.enter="submit"
+            />
+          </v-col>
+          <v-col cols="12">
             <v-btn
               color="primary"
-              class="body-1 mb-5"
               large
               block
               :disabled="!canComplete"
               @click="submit"
               v-text="$t('users.Register')"
             />
+          </v-col>
+          <v-col cols="12">
             <v-btn
               text
               block
@@ -172,7 +159,7 @@ export default {
         username: this.username
       }).then(response => {
         if (response.data.token && response.data.token !== '') {
-          Cookies.set('puffer_auth', response.data.token)
+          Cookies.set('puffer_auth', response.data.token, { sameSite: 'strict' })
           localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
           ctx.$emit('logged-in')
           ctx.$router.push({ name: 'Servers' })

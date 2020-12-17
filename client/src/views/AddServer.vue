@@ -40,8 +40,10 @@
         <v-stepper-content step="1">
           <div v-if="Object.keys(templates).length > 0">
             <h3 v-text="$t('servers.SelectTemplate')" />
-            <v-text-field
+            <ui-input
               v-model="templateFilter"
+              look="material"
+              autofocus
               :placeholder="$t('common.Search')"
             />
           </div>
@@ -105,10 +107,9 @@
                 class="mb-4"
                 v-text="$t('servers.Name')"
               />
-              <v-text-field
-                id="nameInput"
+              <ui-input
                 v-model="serverName"
-                outlined
+                autofocus
               />
             </v-col>
           </v-row>
@@ -119,13 +120,10 @@
                 class="mb-4"
                 v-text="$t('nodes.Node')"
               />
-              <v-select
-                id="nodeSelect"
+              <ui-select
                 v-model="selectedNode"
-                outlined
                 :disabled="loadingNodes"
                 :items="nodes"
-                single-line
                 :no-data-text="$t('errors.ErrNoNodes')"
                 :placeholder="$t('servers.SelectNode')"
               />
@@ -138,12 +136,10 @@
                 class="mb-4"
                 v-text="$t('servers.Environment')"
               />
-              <v-select
-                id="environmentSelect"
+              <ui-select
                 v-model="selectedEnvironment"
                 :disabled="loadingTemplates"
                 :items="environments"
-                outlined
                 :placeholder="$t('servers.SelectEnvironment')"
               />
               <div v-if="selectedEnvironment && environments[selectedEnvironment]">
@@ -151,9 +147,8 @@
                   v-for="key in environmentKeys"
                   :key="key"
                 >
-                  <v-text-field
+                  <ui-input
                     v-model="environments[selectedEnvironment][key]"
-                    outlined
                     :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
                   />
                 </div>
@@ -191,9 +186,9 @@
                 class="mb-4"
                 v-text="$t('users.Users')"
               />
-              <v-text-field
+              <ui-input
                 v-model="userInput"
-                outlined
+                autofocus
                 :placeholder="$t('servers.TypeUsername')"
               />
               <v-list v-if="users.length > 0 || selectedUsers.length > 0">
@@ -265,69 +260,12 @@
             <v-col cols="12">
               <v-card-title v-text="$t('common.Options')" />
               <v-row>
-                <!-- v-if="!item.internal" -->
                 <v-col
-                  v-for="(item, index, name) in filteredFormData"
+                  v-for="(item, name) in filteredFormData"
                   :key="name"
                   cols="12"
                 >
-                  <v-text-field
-                    v-if="item.type === 'integer'"
-                    v-model="item.value"
-                    type="number"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="markdown(item.desc)" />
-                    </template>
-                  </v-text-field>
-                  <v-switch
-                    v-else-if="item.type === 'boolean'"
-                    v-model="item.value"
-                    class="mt-0 mb-4"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="markdown(item.desc)" />
-                    </template>
-                  </v-switch>
-                  <v-select
-                    v-else-if="item.type === 'option'"
-                    v-model="item.value"
-                    :items="item.options.map(function (option) { return { value: option.value, text: option.display }})"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="markdown(item.desc)" />
-                    </template>
-                  </v-select>
-                  <v-text-field
-                    v-else
-                    v-model="item.value"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="markdown(item.desc)" />
-                    </template>
-                  </v-text-field>
+                  <ui-variable-input v-model="formData[name]" />
                 </v-col>
               </v-row>
             </v-col>

@@ -35,9 +35,9 @@
           <v-list-item @click="toggleDark">
             <span v-text="$t('common.DarkMode')" />
             <span class="flex-grow-1" />
-            <v-switch
+            <ui-switch
               v-model="$vuetify.theme.dark"
-              class="ml-4"
+              class="ml-4 mb-4"
             />
           </v-list-item>
           <v-radio-group
@@ -194,15 +194,15 @@
           @logged-in="didLogIn()"
         />
       </v-container>
-      <common-language v-model="showLanguageSelect" />
-      <common-overlay
+      <ui-language v-model="showLanguageSelect" />
+      <ui-overlay
         v-model="errorOverlayOpen"
         card
         closable
         :title="$t('common.ErrorDetails')"
       >
         <code v-text="errorText" />
-      </common-overlay>
+      </ui-overlay>
     </v-main>
   </v-app>
 </template>
@@ -312,7 +312,7 @@ export default {
       const ctx = this
       this.reauthTask = setInterval(() => {
         ctx.$http.post('/auth/reauth').then(response => {
-          response.data.session && Cookies.set('puffer_auth', response.data.session)
+          response.data.session && Cookies.set('puffer_auth', response.data.session, { sameSite: 'strict' })
         }).catch(error => console.log('reauth failed', error)) // eslint-disable-line no-console
       }, 1000 * 60 * 10)
     },
