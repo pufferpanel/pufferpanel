@@ -337,7 +337,6 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 
 func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, root string) error {
 	logging.Debug().Printf("Creating container")
-	containerRoot := "/pufferpanel"
 	err := d.pullImage(client, ctx, false)
 
 	if err != nil {
@@ -353,7 +352,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 
 	//newEnv := os.Environ()
-	newEnv := []string{"HOME=" + containerRoot}
+	newEnv := []string{"HOME=" + root}
 
 	for k, v := range env {
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
@@ -368,7 +367,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		NetworkDisabled: false,
 		Cmd:             cmdSlice,
 		Image:           d.ImageName,
-		WorkingDir:      containerRoot,
+		WorkingDir:      root,
 		Env:             newEnv,
 	}
 
@@ -380,7 +379,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    container.Resources{},
-		Binds:        []string{root + ":" + containerRoot},
+		Binds:        []string{root + ":" + root},
 		PortBindings: nat.PortMap{},
 	}
 
