@@ -189,7 +189,7 @@ func StopServer(c *gin.Context) {
 // @Failure 404 {object} response.Empty
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/stop [post]
+// @Router /daemon/server/{id}/kill [post]
 func KillServer(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
@@ -437,7 +437,7 @@ func EditServerAdmin(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
 // @Param filename path string true "File name"
-// @Router /daemon/server/{id}/{filename} [get]
+// @Router /daemon/server/{id}/file/{filename} [get]
 func GetFile(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
@@ -492,7 +492,7 @@ func GetFile(c *gin.Context) {
 // @Param filename path string true "File name"
 // @Param folder path bool true "If this is a folder"
 // @Param file formData file false "File to place"
-// @Router /daemon/server/{id}/{filename} [put]
+// @Router /daemon/server/{id}/file/{filename} [put]
 func PutFile(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
@@ -548,7 +548,7 @@ func PutFile(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
 // @Param filename path string true "File name"
-// @Router /daemon/server/{id}/{filename} [delete]
+// @Router /daemon/server/{id}/file/{filename} [delete]
 func DeleteFile(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
@@ -619,7 +619,8 @@ func GetStats(c *gin.Context) {
 // @Failure 404 {object} response.Empty
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/logs [get]
+// @Param time query int false "Only get data from after this UNIX timestamp" default(0)
+// @Router /daemon/server/{id}/console [get]
 func GetLogs(c *gin.Context) {
 	item, _ := c.Get("server")
 	program := item.(*programs.Program)
