@@ -34,5 +34,7 @@
   "ErrorDetails": "エラー結果",
   "HelpTranslate": "PufferPanelの翻訳にご協力ください",
   "DarkMode": "ダークモード",
-  "ThemeOptions": "テーマ設定"
+  "ThemeOptions": "テーマ設定",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }
