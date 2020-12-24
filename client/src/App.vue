@@ -203,6 +203,7 @@
       >
         <code v-text="errorText" />
       </ui-overlay>
+      <portal-target name="app" />
     </v-main>
   </v-app>
 </template>

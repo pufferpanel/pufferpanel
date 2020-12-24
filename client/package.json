@@ -16,6 +16,7 @@
     "filesize": "^6.1.0",
     "js-cookie": "^2.2.1",
     "marked": "^0.8.0",
+    "portal-vue": "^2.1.7",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
     "vue-fragment": "^1.5.1",

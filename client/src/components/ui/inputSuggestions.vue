@@ -1,6 +1,5 @@
 <template>
-  <v-text-field
-    ref="underlying"
+  <v-combobox
     :id="id"
     :value="value"
     :outlined="lookValue === 'outlined'"
@@ -11,6 +10,7 @@
     :dense="dense"
     :disabled="disabled"
     :label="label"
+    :items="items"
     :hide-details="hideDetails && !showHint"
     :persistent-hint="showHint"
     :hint="hintValue"
@@ -22,6 +22,7 @@
     :required="required"
     :name="name"
     :type="type"
+    @update:search-input="$emit('input', $event)"
     @input="$emit('input', $event)"
     v-on="listeners"
   >
@@ -30,7 +31,7 @@
       :slot="slotName"
       :name="slotName"
     />
-  </v-text-field>
+  </v-combobox>
 </template>
 
 <script>
@@ -47,6 +48,7 @@ export default {
     icon: { type: String, default: () => undefined },
     iconBehind: { type: String, default: () => undefined },
     id: { type: String, default: () => undefined },
+    items: { type: Array, default: () => undefined },
     label: { type: String, default: () => undefined },
     name: { type: String, default: () => undefined },
     placeholder: { type: String, default: () => undefined },
@@ -57,7 +59,9 @@ export default {
   },
   computed: {
     listeners () {
-      const { input, ...listeners } = this.$listeners
+      const listeners = { ...this.$listeners }
+      delete listeners.input
+      delete listeners['update:search-input']
       return listeners
     },
     hideDetails () {
@@ -85,11 +89,6 @@ export default {
       // set hint to '_' if only the slot has content to force vuetify to
       // display the hint without needing to double define it everywhere
       return this.hint ? this.hint : this.$slots.message ? '_' : undefined
-    }
-  },
-  methods: {
-    focus () {
-      this.$refs.underlying.focus()
     }
   }
 }

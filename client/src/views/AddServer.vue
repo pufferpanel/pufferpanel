@@ -132,27 +132,21 @@
 
           <v-row>
             <v-col cols="12">
-              <h3
-                class="mb-4"
-                v-text="$t('servers.Environment')"
-              />
+              <h3 v-text="$t('servers.Environment')" />
+            </v-col>
+            <v-col cols="12">
               <ui-select
                 v-model="selectedEnvironment"
                 :disabled="loadingTemplates"
                 :items="environments"
                 :placeholder="$t('servers.SelectEnvironment')"
               />
-              <div v-if="selectedEnvironment && environments[selectedEnvironment]">
-                <div
-                  v-for="key in environmentKeys"
-                  :key="key"
-                >
-                  <ui-input
-                    v-model="environments[selectedEnvironment][key]"
-                    :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
-                  />
-                </div>
-              </div>
+            </v-col>
+            <v-col cols="12">
+              <ui-env-config
+                v-if="selectedEnvironment && environments[selectedEnvironment]"
+                v-model="environments[selectedEnvironment]"
+              />
             </v-col>
           </v-row>
 

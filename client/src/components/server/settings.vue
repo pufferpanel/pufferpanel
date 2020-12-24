@@ -72,9 +72,6 @@ export default {
         ctx.$toast.success(ctx.$t('common.Saved'))
       }).catch(handleError(ctx))
     },
-    log (x, y, z) {
-      console.log('blah', x, y, z)
-    },
     markdown
   }
 }
