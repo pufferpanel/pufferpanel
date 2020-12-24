@@ -34,5 +34,7 @@
   "ErrorDetails": "Szczegóły błędu",
   "HelpTranslate": "Pomóż nam przetłumaczyć PufferPanel",
   "DarkMode": "Ciemny motyw",
-  "ThemeOptions": "Opcje motywu"
+  "ThemeOptions": "Opcje motywu",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }
