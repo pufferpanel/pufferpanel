@@ -6,6 +6,7 @@ import './components'
 // Plugins
 import './plugins'
 import vuetify from './plugins/vuetify'
+import PortalVue from 'portal-vue'
 // Application imports
 import App from './App'
 import i18n from '@/i18n'
@@ -24,6 +25,8 @@ if ('serviceWorker' in navigator) {
 }
 
 window.pufferpanel = {}
+
+Vue.use(PortalVue)
 
 Vue.use(VueNativeSocket, 'ws://localhost:1234', {
   connectManually: true,

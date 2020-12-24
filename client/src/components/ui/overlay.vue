@@ -20,7 +20,7 @@
               <v-btn
                 v-if="closable"
                 icon
-                @click="$emit('input', false); onClose()"
+                @click="$emit('close'); $emit('input', false)"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -64,7 +64,6 @@ export default {
   props: {
     card: { type: Boolean, default: () => false },
     closable: { type: Boolean, default: () => false },
-    onClose: { type: Function, default: () => () => {} },
     title: { type: String, default: () => '' },
     value: { type: Boolean, default: () => false }
   },

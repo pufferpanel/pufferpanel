@@ -23,13 +23,7 @@
       >
         <v-expansion-panel-header v-text="env.type" />
         <v-expansion-panel-content>
-          <ui-input
-            v-if="env.type === 'docker'"
-            v-model="env.image"
-            :label="$t('templates.DockerImage')"
-            hide-details
-            class="mb-2"
-          />
+          <ui-env-config v-model="value[i]" />
           <v-btn
             color="error"
             block
