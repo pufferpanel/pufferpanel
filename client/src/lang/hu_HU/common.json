@@ -34,5 +34,7 @@
   "ErrorDetails": "Hiba részletei",
   "HelpTranslate": "Segítsen a PufferPanel fordításában",
   "DarkMode": "Sötét mód",
-  "ThemeOptions": "Téma beállítások"
+  "ThemeOptions": "Téma beállítások",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }
