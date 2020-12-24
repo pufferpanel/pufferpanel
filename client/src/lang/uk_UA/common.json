@@ -34,5 +34,7 @@
   "ErrorDetails": "Деталі помилки",
   "HelpTranslate": "Допоможіть нам перекласти PufferPanel",
   "DarkMode": "Темний режим",
-  "ThemeOptions": "Параметри тем"
+  "ThemeOptions": "Параметри тем",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }
