@@ -1,8 +1,8 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
+  "FileManager": "檔案管理器",
+  "NewFolder": "新增資料夾",
+  "NewFile": "新增檔案",
+  "LastModified": "最後修改時間",
   "ConfirmDelete": "Are you sure you want to delete this file?",
   "Upload": "Upload",
   "Download": "Download",
