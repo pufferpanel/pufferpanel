@@ -34,16 +34,15 @@ var client = http.Client{}
 
 func registerTemplates(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getAllTemplates)
-
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
 	g.Handle("POST", "/import", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), getImportableTemplates)
 	g.Handle("POST", "/import/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), importTemplate)
-	//g.Handle("OPTIONS", "/import/:name", response.CreateOptions("POST"))
 
 	g.Handle("GET", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
+	g.Handle("DELETE", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), deleteTemplate)
 	g.Handle("PUT", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
-	g.Handle("OPTIONS", "/:name", response.CreateOptions("PUT", "GET", "POST"))
+	g.Handle("OPTIONS", "/:name", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 }
 
 // @Summary Get templates
@@ -154,6 +153,32 @@ func importTemplate(c *gin.Context) {
 	} else {
 		c.Status(http.StatusNoContent)
 	}
+}
+
+// @Summary Deletes template
+// @Description Deletes template
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param name path string true "Template"
+// @Router /api/templates/{name} [delete]
+func deleteTemplate(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	ts := &services.Template{DB: db}
+
+	err := ts.Delete(c.Param("name"))
+	if err != nil && gorm.IsRecordNotFoundError(err) {
+		c.AbortWithStatus(404)
+		return
+	} else if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Gets importable templates
