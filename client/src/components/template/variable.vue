@@ -30,7 +30,6 @@
       <ui-input
         v-model="value.display"
         :label="$t('templates.Display')"
-        hide-details
       />
     </v-col>
     <v-col
@@ -40,7 +39,6 @@
       <ui-input
         v-model="value.desc"
         :label="$t('templates.Description')"
-        hide-details
       />
     </v-col>
     <v-col
@@ -62,11 +60,10 @@
       <ui-input
         v-model="value.value"
         :label="$t('templates.DefaultValue')"
-        hide-details
       />
     </v-col>
     <v-col
-      v-else
+      v-if="value.type === 'option' || value.type === 'string'"
       cols="12"
     >
       <v-row
@@ -80,7 +77,6 @@
           <ui-input
             v-model="option.value"
             :label="$t('templates.Value')"
-            hide-details
           />
         </v-col>
         <v-col
@@ -90,8 +86,7 @@
           <ui-input
             v-model="option.display"
             :label="$t('templates.Display')"
-            hide-details
-            icon-behind="mdi-close-circle"
+            icon-behind="mdi-close"
             @click:append-outer="$delete(value.options, i)"
           />
         </v-col>

@@ -2,6 +2,7 @@
   <v-overlay
     v-model="value"
     :dark="isDark()"
+    color="#434343"
   >
     <v-container
       fluid

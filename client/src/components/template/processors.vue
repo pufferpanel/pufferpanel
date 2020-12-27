@@ -13,57 +13,104 @@
 
 <template>
   <div>
-    <v-expansion-panels
-      multiple
-      class="mb-2"
-    >
-      <v-expansion-panel
+    <v-list>
+      <v-list-item
         v-for="(entry, i) in value"
         :key="i"
+        link
+        @click="startEdit(i)"
       >
-        <v-expansion-panel-header v-text="entry.type" />
-        <v-expansion-panel-content>
-          <template-processor v-model="value[i]" />
-          <v-btn
-            color="error"
-            block
-            @click="$delete(value, i)"
-            v-text="$t(getDeleteKey())"
-          />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        <v-list-item-content v-text="entry.type" />
+        <v-list-item-action class="flex-row">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Edit')" />
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+                @click.stop="remove(i)"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Delete')" />
+          </v-tooltip>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
     <v-btn
       text
       block
-      @click="value.push({ ...template }); $forceUpdate()"
-      v-text="$t(getAddKey())"
+      @click="startAdd()"
+      v-text="$t('common.Add')"
     />
+    <ui-overlay
+      v-model="edit"
+      card
+      closable
+      @close="reset()"
+    >
+      <template-processor v-model="value[editIndex]" />
+    </ui-overlay>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    value: { type: Array, default: () => [] },
-    name: { type: String, default: () => 'install' }
+    value: { type: Array, default: () => [] }
   },
   data () {
     return {
-      template: {
-        type: 'command',
-        commands: ['']
-      }
+      template: { type: 'command' },
+      edit: false,
+      editIndex: 0
     }
   },
   methods: {
-    getAddKey () {
-      const capitalized = this.name.charAt(0).toUpperCase() + this.name.slice(1)
-      return `templates.Add${capitalized}Step`
+    startAdd () {
+      const changed = [...this.value]
+      const newIndex = changed.length
+      changed.push(this.template)
+      this.$emit('input', changed)
+      this.startEdit(newIndex)
     },
-    getDeleteKey () {
-      const capitalized = this.name.charAt(0).toUpperCase() + this.name.slice(1)
-      return `templates.Delete${capitalized}Step`
+    startEdit (index) {
+      this.editIndex = index
+      this.editModel = this.value[index]
+      this.add = false
+      this.edit = true
+    },
+    remove (index) {
+      const changed = [...this.value]
+      changed.splice(index, 1)
+      this.$emit('input', changed)
+    },
+    reset () {
+      this.edit = false
+      this.add = false
+      this.editIndex = 0
+      this.editModel = {}
+    },
+    save () {
+      const changed = [...this.value]
+      if (this.add) {
+        changed.push(this.editModel)
+      } else {
+        changed[this.editIndex] = this.editModel
+      }
+      this.$emit('input', changed)
+      this.reset()
     }
   }
 }

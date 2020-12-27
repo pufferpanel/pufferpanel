@@ -1,7 +1,7 @@
 <template>
   <v-text-field
-    ref="underlying"
     :id="id"
+    ref="underlying"
     :value="value"
     :outlined="lookValue === 'outlined'"
     :solo="lookValue === 'solo'"

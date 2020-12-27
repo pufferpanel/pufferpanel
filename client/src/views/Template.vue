@@ -173,7 +173,10 @@
       <v-card>
         <v-card-title v-text="$t('templates.EnvVars')" />
         <v-card-text class="pb-1">
-          <template-envvars v-model="templateObj.run.environmentVars" />
+          <ui-map-input
+            v-model="templateObj.run.environmentVars"
+            @input="$forceUpdate()"
+          />
         </v-card-text>
       </v-card>
     </v-col>
@@ -182,9 +185,16 @@
       cols="12"
     >
       <v-card>
-        <v-card-title v-text="$t('templates.SupportedEnvironments')" />
-        <v-card-text class="pb-1">
+        <v-card-title v-text="$t('templates.Environments')" />
+        <v-card-text>
           <template-environments v-model="templateObj.supportedEnvironments" />
+          <ui-select
+            v-if="Object.keys(templateObj.supportedEnvironments).length > 0"
+            v-model="templateObj.environment"
+            :label="$t('templates.DefaultEnvironment')"
+            :items="configuredEnvironments"
+            class="pt-4"
+          />
         </v-card-text>
       </v-card>
     </v-col>
@@ -211,17 +221,22 @@ export default {
       loading: false,
       create: this.$route.params.id === undefined,
       name: this.$route.params.id === undefined ? '' : this.$route.params.id,
+      stopType: 'command',
       template: '',
-      templateObj: {
-        data: {},
-        run: {
-          command: '',
-          environmentVars: {}
-        },
-        display: '',
-        type: '',
-        install: [],
-        supportedEnvironments: []
+      templateObj: this.withDefaults({})
+    }
+  },
+  computed: {
+    configuredEnvironments () {
+      return this.templateObj.supportedEnvironments.map(elem => { return { text: elem.type, value: elem } })
+    }
+  },
+  watch: {
+    'templateObj.supportedEnvironments' (val) {
+      if (this.templateObj.environment) {
+        this.templateObj.environment = val.filter(elem => {
+          return elem.type === this.templateObj.environment.type
+        })[0]
       }
     }
   },
@@ -229,6 +244,28 @@ export default {
     if (!this.create) this.loadData()
   },
   methods: {
+    withDefaults (obj) {
+      const fixType = element => {
+        if (element.type === 'download' && typeof element.files === 'string') element.files = [element.files]
+        if (element.type === 'command' && typeof element.commands === 'string') element.commands = [element.commands]
+        return element
+      }
+
+      if (!obj.data) obj.data = {}
+      Object.keys(obj.data).forEach(key => {
+        if (!obj.data[key].type) obj.data[key].type = 'string'
+      })
+      if (!obj.run) obj.run = {}
+      if (!obj.run.environmentVars) obj.run.environmentVars = {}
+      if (!obj.run.pre) obj.run.pre = []
+      if (!obj.run.post) obj.run.post = []
+      if (!obj.supportedEnvironments) obj.supportedEnvironments = []
+      if (!obj.install) obj.install = []
+      obj.install.map(fixType)
+      obj.run.pre.map(fixType)
+      obj.run.post.map(fixType)
+      return obj
+    },
     loadData () {
       this.loading = true
       const ctx = this
@@ -236,31 +273,7 @@ export default {
         const data = response.data
         data.readme = undefined
         ctx.template = JSON.stringify(data, undefined, 4)
-        ctx.templateObj = data
-        if (data.run && data.run.stop) {
-          ctx.stopType = 'command'
-        }
-        if (data.run && data.run.stopCode) {
-          ctx.stopType = 'signal'
-        }
-        if (!this.templateObj.data) this.templateObj.data = {}
-        Object.keys(this.templateObj.data).forEach(key => {
-          if (!this.templateObj.data[key].type) this.templateObj.data[key].type = 'string'
-        })
-        if (!this.templateObj.run) this.templateObj.run = {}
-        if (!this.templateObj.run.environmentVars) this.templateObj.run.environmentVars = {}
-        if (!this.templateObj.run.pre) this.templateObj.run.pre = []
-        if (!this.templateObj.run.post) this.templateObj.run.post = []
-        if (!this.templateObj.supportedEnvironments) this.templateObj.supportedEnvironments = []
-        if (!this.templateObj.install) this.templateObj.install = []
-        const fixType = element => {
-          if (element.type === 'download' && typeof element.files === 'string') element.files = [element.files]
-          if (element.type === 'command' && typeof element.commands === 'string') element.commands = [element.commands]
-          return element
-        }
-        this.templateObj.install.map(fixType)
-        this.templateObj.run.pre.map(fixType)
-        this.templateObj.run.post.map(fixType)
+        ctx.templateObj = ctx.withDefaults(data)
         if (ctx.$refs.editor && ctx.$refs.editor.ready) ctx.$refs.editor.setValue(ctx.template)
         ctx.loading = false
       }).catch(handleError(ctx))
@@ -274,19 +287,11 @@ export default {
       }).catch(handleError(ctx, { 400: 'errors.ErrInvalidJson' }))
     },
     updateEditor () {
-      const data = JSON.parse(this.template)
-      if (data.run && data.run.stop) {
-        this.stopType = 'command'
-      }
-      if (data.run && data.run.stopCode) {
-        this.stopType = 'signal'
-      }
       this.templateObj = JSON.parse(this.template)
     },
     updateJson () {
       this.templateObj.name = this.name
       this.templateObj.run.stopCode = this.templateObj.run.stopCode * 1
-      this.templateObj.run[this.stopType === 'command' ? 'stopCode' : 'stop'] = undefined
       this.template = JSON.stringify(this.templateObj, undefined, 4)
       if (this.$refs.editor && this.$refs.editor.ready) this.$refs.editor.setValue(this.template)
     },
