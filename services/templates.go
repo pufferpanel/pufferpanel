@@ -114,3 +114,18 @@ func (t *Template) ImportTemplate(name string, template, readme io.Reader) error
 
 	return t.Save(model)
 }
+
+func (t *Template) Delete(name string) error {
+	model := &models.Template{
+		Name:     name,
+	}
+
+	res := t.DB.Delete(model)
+	if res.Error != nil {
+		return res.Error
+	} else if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}
