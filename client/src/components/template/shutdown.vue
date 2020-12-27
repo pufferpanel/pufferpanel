@@ -18,10 +18,11 @@
       class="pb-0"
     >
       <v-btn-toggle
-        v-model="stopType"
+        :value="stopType"
         borderless
         dense
         mandatory
+        @change="stopType = $event; $emit('change', $event)"
       >
         <v-btn
           value="command"
@@ -36,16 +37,16 @@
     <v-col cols="12">
       <ui-input
         v-if="stopType === 'command'"
-        v-model="value.stop"
+        :value="value.stop"
         :label="$t('templates.stop.Command')"
-        hide-details
+        @input="$emit('input', { ...value, stop: $event, stopCode: undefined })"
       />
       <ui-input
         v-else
-        v-model="value.stopCode"
+        :value="value.stopCode"
         :label="$t('templates.stop.Signal')"
         type="number"
-        hide-details
+        @input="$emit('input', { ...value, stopCode: $event, stop: undefined })"
       />
     </v-col>
   </v-row>
@@ -58,7 +59,7 @@ export default {
   },
   data () {
     return {
-      stopType: this.value.stop ? 'command' : 'signal'
+      stopType: this.value.stopCode ? 'signal' : 'command'
     }
   }
 }

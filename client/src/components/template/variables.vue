@@ -13,68 +13,80 @@
 
 <template>
   <div>
-    <v-expansion-panels
-      multiple
-      class="mb-2"
-    >
-      <v-expansion-panel
-        v-for="(item, i) in value"
-        :key="i"
+    <v-list>
+      <v-list-item
+        v-for="(item, name) in value"
+        :key="name"
+        link
+        @click="startEdit(name)"
       >
-        <v-expansion-panel-header v-text="i" />
-        <v-expansion-panel-content>
-          <template-variable v-model="value[i]" />
-          <v-btn
-            color="error"
-            block
-            @click="delete value[i]; $forceUpdate()"
-            v-text="$t('common.Delete')"
-          />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        <v-list-item-content v-text="name" />
+        <v-list-item-action class="flex-row">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Edit')" />
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+                @click.stop="remove(name)"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Delete')" />
+          </v-tooltip>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
     <v-btn
-      v-if="!addingVariable"
       text
       block
-      @click="addingVariable = true"
-      v-text="$t('templates.AddVariable')"
+      @click="add = true"
+      v-text="$t('common.Add')"
     />
-    <v-row v-else>
-      <v-col
-        cols="12"
-        md="6"
-      >
-        <ui-input
-          v-model="newVarName"
-          :label="$t('common.Name')"
-          dense
-          hide-details
-        />
-      </v-col>
-      <v-col
-        cols="6"
-        md="3"
-      >
-        <v-btn
-          color="primary"
-          block
-          @click="addVariable()"
-          v-text="$t('templates.AddVariable')"
-        />
-      </v-col>
-      <v-col
-        cols="6"
-        md="3"
-      >
-        <v-btn
-          color="error"
-          block
-          @click="newVarName = ''; addingVariable = false"
-          v-text="$t('common.Cancel')"
-        />
-      </v-col>
-    </v-row>
+    <ui-overlay
+      v-model="add"
+      :title="$t('common.Add')"
+      card
+      closable
+      @close="reset()"
+    >
+      <v-row>
+        <v-col cols="12">
+          <ui-input
+            v-model="newVarName"
+            :label="$t('common.Name')"
+          />
+        </v-col>
+        <v-col cols="12">
+          <v-btn
+            color="success"
+            block
+            @click="addVariable()"
+            v-text="$t('common.Add')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
+    <ui-overlay
+      v-model="edit"
+      :title="currentEdit"
+      card
+      closable
+      @close="reset()"
+    >
+      <template-variable v-model="value[currentEdit]" />
+    </ui-overlay>
   </div>
 </template>
 
@@ -85,27 +97,47 @@ export default {
   },
   data () {
     return {
-      addingVariable: false,
+      add: false,
+      edit: false,
       newVarName: '',
+      currentEdit: '',
       variableTemplate: {
         required: true,
         userEdit: true,
         display: '',
         desc: '',
-        type: null,
+        type: 'string',
         value: ''
       }
     }
   },
   methods: {
     addVariable () {
-      if (this.newVarName.trim().length > 0 && this.newVarName.trim().indexOf(' ') === -1) {
-        this.value[this.newVarName.trim()] = { ...this.variableTemplate }
-        this.newVarName = ''
-        this.addingVariable = false
+      const name = this.newVarName.trim()
+      if (name.length > 0 && name.indexOf(' ') === -1) {
+        const changed = { ...this.value }
+        changed[name] = { ...this.variableTemplate }
+        this.$emit('input', changed)
+        this.reset()
+        this.startEdit(name)
       } else {
         this.$toast.error(this.$t('templates.VarNameNoSpaces'))
       }
+    },
+    startEdit (name) {
+      this.currentEdit = name
+      this.edit = true
+    },
+    remove (name) {
+      const changed = { ...this.value }
+      delete changed[name]
+      this.$emit('input', changed)
+    },
+    reset () {
+      this.add = false
+      this.edit = false
+      this.newVarName = ''
+      this.currentEdit = ''
     }
   }
 }
