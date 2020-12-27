@@ -207,6 +207,15 @@
         v-text="$t('common.Save')"
       />
     </v-col>
+    <v-col cols="12">
+      <v-btn
+        v-if="!create"
+        color="error"
+        block
+        @click="remove()"
+        v-text="$t('common.Delete')"
+      />
+    </v-col>
   </v-row>
 </template>
 
@@ -276,6 +285,14 @@ export default {
         ctx.templateObj = ctx.withDefaults(data)
         if (ctx.$refs.editor && ctx.$refs.editor.ready) ctx.$refs.editor.setValue(ctx.template)
         ctx.loading = false
+      }).catch(handleError(ctx))
+    },
+    remove () {
+      if (this.create) return
+      const ctx = this
+      ctx.$http.delete(`/api/templates/${ctx.name}`).then(response => {
+        ctx.$toast.success(ctx.$t('templates.Deleted'))
+        ctx.$router.push({ name: 'Templates' })
       }).catch(handleError(ctx))
     },
     save () {
