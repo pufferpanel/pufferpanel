@@ -1,6 +1,7 @@
 {
   "Templates": "Mallid",
   "NoTemplates": "Siin pole veel malle",
+  "Deleted": "Template deleted",
   "New": "Loo uus mall",
   "Edit": "Muuda malli",
   "Editor": "Redigeerija",
@@ -27,7 +28,9 @@
   "ReleaseType": "Väljalaske Tüüp",
   "AddFile": "Lisa fail",
   "AddVariable": "Lisa muutuja",
+  "Environments": "Environments",
   "AddEnvironment": "Lisa keskkond",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "Lisa env muutuja",
   "EnvVars": "Keskkonna muutujad",
   "DockerImage": "Dockeri Image",
@@ -58,5 +61,40 @@
   "stop": {
     "Command": "Käsklus",
     "Signal": "Signaal"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Download",
+      "files": "Files"
+    },
+    "command": {
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Content"
+    },
+    "move": {
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Create Directory"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
   }
 }
