@@ -24,8 +24,8 @@
   "Edit": "Редактировать пользователя",
   "Update": "Обновить пользователя",
   "Delete": "Удалить пользователя",
-  "CreateSuccess": "Created User",
-  "CreateError": "Failed creating user",
+  "CreateSuccess": "Создание пользователя",
+  "CreateError": "Ошибка в создании пользователя",
   "UpdateSuccess": "Пользователь обновлен",
   "UpdateError": "Не удалось обновить пользователя",
   "PermsUpdateError": "Не удалось обновить права пользователя"
