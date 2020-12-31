@@ -24,14 +24,14 @@
   "ErrFieldNotEqual": "{field1} ist nicht gleich {field2}",
   "ErrFieldNotEmail": "{field} ist keine gültige E-Mail",
   "ErrFieldLength": "{field} muss mindestens {length} Zeichen lang sein",
-  "ErrNoPermission": "Sie haben keine Berechtigung, um diese Aktion auszuführen",
+  "ErrNoPermission": "Du hast keine Berechtigungen, um diese Aktion auszuführen",
   "ErrDatabaseNotAvailable": "Datenbank ist nicht verfügbar",
   "ErrNoNodes": "Keine Knoten verfügbar",
   "ErrNoTemplates": "Keine Vorlagen verfügbar",
-  "ErrPasswordRequirements": "Passwort muss mindestens {min} Zeichen lang sein",
-  "ErrUsernameRequirements": "Benutzername muss mindestens {min} Zeichen lang sein und darf nur alphanumerische Zeichen, _, oder - enthalten",
+  "ErrPasswordRequirements": "Das Passwort muss mindestens {min} Zeichen lang sein",
+  "ErrUsernameRequirements": "Der Benutzername muss mindestens {min} Zeichen lang sein und darf nur alphanumerische Zeichen, _, oder - enthalten",
   "ErrPasswordsNotIdentical": "Die Passwörter stimmen nicht überein",
   "ErrSessionTimedOut": "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an",
-  "ErrMissingScope": "Sie sind nicht berechtigt, diese Aktion auszuführen",
+  "ErrMissingScope": "Du bist nicht berechtigt, diese Aktion auszuführen",
   "ErrInvalidJson": "Die json-Daten sind ungültig"
 }
