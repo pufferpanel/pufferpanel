@@ -1,7 +1,7 @@
 {
   "Templates": "Modèles",
   "NoTemplates": "Il n'y a pas encore de modèle ici",
-  "Deleted": "Template deleted",
+  "Deleted": "Modèle supprimé",
   "New": "Créer un nouveau modèle",
   "Edit": "Éditer le modèle",
   "Editor": "Éditeur",
@@ -28,9 +28,9 @@
   "ReleaseType": "Type de version",
   "AddFile": "Ajouter un fichier",
   "AddVariable": "Ajouter une variable",
-  "Environments": "Environments",
+  "Environments": "Environnements",
   "AddEnvironment": "Ajouter un environnement",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Environnement par défaut",
   "AddEnvVar": "Ajouter une nouvelle variable d'environnement",
   "EnvVars": "Variables d'environnement",
   "DockerImage": "Image Docker",
@@ -64,37 +64,37 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Télécharger",
+      "files": "Fichiers"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Commande d’exécution",
+      "commands": "Commandes"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Écrire dans un fichier",
+      "text": "Contenus"
     },
     "move": {
-      "ProcessorName": "Move File",
+      "ProcessorName": "Déplacer un fichier",
       "source": "Source",
-      "target": "Target"
+      "target": "Cible"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Créer un répertoire"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Télécharger Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Télécharger Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Télécharger Minecraft SpongeForge",
+      "releaseType": "Type de version"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Télécharger Minecraft Fabric"
     }
   }
 }
