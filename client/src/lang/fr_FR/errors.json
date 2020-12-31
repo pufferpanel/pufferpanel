@@ -12,7 +12,7 @@
   "ErrSettingNotConfigured": "{setting} n'est pas configuré",
   "ErrNoTemplate": "Aucun modèle avec le nom '{name}' n'a été trouvé",
   "ErrServiceInvalidProvider": "{service} ne supporte pas {provider}",
-  "ErrFieldRequired": "{field} est obligatoire",
+  "ErrFieldRequired": "\"{field}\" est requis",
   "ErrFieldMustBePrintable": "{field} doit être des caractères ascii affichables",
   "ErrFieldHasURICharacters": "{field} ne doit pas contenir de caractères qui ne peuvent pas être utilisés dans les URIs",
   "ErrFieldIsInvalidHost": "{field} doit être une IP valide ou FQDN",
