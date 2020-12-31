@@ -1,7 +1,7 @@
 {
   "Templates": "Шаблоны",
   "NoTemplates": "Нет шаблонов",
-  "Deleted": "Template deleted",
+  "Deleted": "Шаблон удалён",
   "New": "Создать новый шаблон",
   "Edit": "Редактировать шаблон",
   "Editor": "Редактор",
@@ -28,9 +28,9 @@
   "ReleaseType": "Тип выпуска",
   "AddFile": "Добавить файл",
   "AddVariable": "Добавить переменную",
-  "Environments": "Environments",
+  "Environments": "Окружения",
   "AddEnvironment": "Добавить окружение",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Стандартное окружение",
   "AddEnvVar": "Добавить переменную окружения",
   "EnvVars": "Переменные окружения",
   "DockerImage": "Снимок Docker",
@@ -64,37 +64,37 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Скачать",
+      "files": "Файлы"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Выполнить команду",
+      "commands": "Команды"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Записать в файл",
+      "text": "Содержание"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Переместить файл",
+      "source": "Источник",
+      "target": "Цель"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Создать директорию"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Загрузить Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Скачать Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Скачать Minecraft SpongeForge",
+      "releaseType": "Тип релиза"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Скачать Minecraft Fabric"
     }
   }
 }
