@@ -1,56 +1,56 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "Şablonlar",
+  "NoTemplates": "Burada henüz şablon yok",
+  "Deleted": "Şablon silindi",
+  "New": "Yeni şablon oluştur",
+  "Edit": "Şablon düzenle",
+  "Editor": "Düzenleyici",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
+  "Display": "Görüntülenen İsim",
+  "Type": "Tip",
+  "Variables": "Değişkenler",
+  "Install": "Kurulum",
+  "AddInstallStep": "Kurulum aşaması ekle",
+  "DeleteInstallStep": "Kurulum aşaması sil",
+  "Description": "Açıklama",
+  "DataType": "Veri Tipi",
+  "DefaultValue": "Varsayılan Değer",
+  "Required": "Gerekli",
+  "UserEditable": "Kullanıcılar düzenleyebilir",
+  "Value": "Değer",
+  "AddOption": "Bir seçenek ekle",
+  "AddCommand": "Komut Ekle",
+  "Filename": "Dosya Adı",
+  "Content": "İçerik",
+  "Source": "Kaynak",
+  "Target": "Hedef",
+  "Version": "Versiyon",
+  "ReleaseType": "Yayın Türü",
+  "AddFile": "Dosya ekle",
+  "AddVariable": "Değişken ekle",
+  "Environments": "Ortamlar",
+  "AddEnvironment": "Ortam ekle",
+  "DefaultEnvironment": "Varsayılan Ortam",
   "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "EnvVars": "Ortam Değişkenleri",
+  "DockerImage": "Docker Görüntüsü",
+  "SaveSuccess": "Şablon Kaydedildi",
+  "VarNameNoSpaces": "Değişken adı boş olamaz veya boşluk içeremez",
+  "SupportedEnvironments": "Desteklenen Ortamlar",
+  "RunConfig": "Yapılandırmayı Çalıştır",
   "PreHook": "Pre Run Hook",
   "PostHook": "Post Run Hook",
   "AddPreStep": "Add Pre Run Step",
   "AddPostStep": "Add Post Run Step",
   "DeletePreStep": "Delete Pre Run Step",
   "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
+  "Shutdown": "Kapat",
+  "Command": "Komut",
+  "Arguments": "Argümanlar",
+  "AddArgument": "Argüman Ekle",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
+    "OverrideWarning": "UYARI: İçe aktarılan şablonlar, Mevcut şablonların üzerine YAZILACAK",
+    "Import": "Şablonları içe aktar",
     "Tooltip": "Import templates from the official repository",
     "Select": "Select templates to import",
     "Started": "Importing templates, please wait a moment",
@@ -59,42 +59,42 @@
     "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Komut",
+    "Signal": "Sinyal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "İndir",
+      "files": "Dosyalar"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Komut Çalıştır",
+      "commands": "Komutlar"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Dosyaya Yaz",
+      "text": "İçerik"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Dosya Taşı",
+      "source": "Kaynak",
+      "target": "Hedef"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Dizin Oluştur"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Minecraft İndir"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Minecraft Forge İndir"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
+      "ProcessorName": "Minecraft SpongeForge İndir",
       "releaseType": "Release Type"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Minecraft Fabric İndir"
     }
   }
 }
