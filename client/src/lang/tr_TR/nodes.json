@@ -1,18 +1,18 @@
 {
   "Node": "Node",
-  "Nodes": "Nodes",
-  "Edit": "Edit Node",
-  "Add": "Add Node",
-  "Update": "Update Node",
-  "Delete": "Delete Node",
+  "Nodes": "Nodeler",
+  "Edit": "Node Düzenle",
+  "Add": "Node ekle",
+  "Update": "Node güncelle",
+  "Delete": "Node sil",
   "PublicHost": "Public Host",
   "PublicPort": "Public Port",
   "PrivateHost": "Private Host",
   "PrivatePort": "Private Port",
-  "SftpPort": "SFTP Port",
-  "SaveConfig": "Save Config",
+  "SftpPort": "SFTP Portu",
+  "SaveConfig": "Ayarları Kaydet",
   "SavePublicKey": "Save Public Key",
   "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config file in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards.",
-  "UpdateSuccess": "Successfully updated node",
-  "UpdateError": "Error updating node"
+  "UpdateSuccess": "Node güncelleştirildi",
+  "UpdateError": "Node update ederken hata meydana geldi"
 }
