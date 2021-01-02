@@ -9,7 +9,7 @@
   "PublicPort": "Публичный порт",
   "PrivateHost": "Приватный хост",
   "PrivatePort": "Приватный порт",
-  "SftpPort": "SMTP-порт",
+  "SftpPort": "SFTP-порт",
   "SaveConfig": "Сохранить настройки",
   "SavePublicKey": "Сохранить публичный ключ",
   "DeploymentInstruction": "Чтобы развернуть хост, установите PufferPanel на новый сервер и поместите конфигурационный файл в `/etc/pufferpanel/`<br/>После, перезагрузите PufferPanel на сервере.",
