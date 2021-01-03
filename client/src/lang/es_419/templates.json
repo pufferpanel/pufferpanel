@@ -1,7 +1,7 @@
 {
   "Templates": "Plantillas",
   "NoTemplates": "Todavía no hay plantillas",
-  "Deleted": "Template deleted",
+  "Deleted": "Plantilla borrada",
   "New": "Crear nueva plantilla",
   "Edit": "Editar plantilla",
   "Editor": "Editor",
@@ -64,37 +64,37 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Descargar",
+      "files": "Archivos"
     },
     "command": {
       "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "commands": "Comandos"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Escribir al archivo",
+      "text": "Contenido"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Mover Archivo",
+      "source": "Fuente",
+      "target": "Objetivo"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Crear directorio"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Descargar Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Descargar Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Descargar Minecraft SpongeForge",
+      "releaseType": "Tipo de Lanzamiento"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Descargar Minecraft Fabric"
     }
   }
 }
