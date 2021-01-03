@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "Hasła nie są takie same",
   "ErrSessionTimedOut": "Twoja sesja wygasła, proszę zalogować się jeszcze raz",
   "ErrMissingScope": "Nie masz uprawnień do wykonywania tej czynności",
-  "ErrInvalidJson": "Dane json są nieprawidłowe"
+  "ErrInvalidJson": "Dane json są nieprawidłowe",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }
