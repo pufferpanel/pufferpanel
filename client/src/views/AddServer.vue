@@ -295,7 +295,6 @@
 <script>
 import axios from 'axios'
 import { Fragment } from 'vue-fragment'
-import { handleError } from '@/utils/api'
 import markdown from '@/utils/markdown'
 
 const CancelToken = axios.CancelToken
@@ -433,75 +432,55 @@ export default {
     this.getNodes()
   },
   methods: {
-    getTemplates () {
-      const ctx = this
+    async getTemplates () {
       this.loadingTemplates = true
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/api/templates').then(response => {
-        response.data.map(template => {
-          if (!template.display) template.display = template.name
-          if (!template.type) template.type = 'none'
-          if (!ctx.templates[template.type]) ctx.templates[template.type] = []
-          ctx.templates[template.type].push(template)
-        })
+      const templates = await this.$api.getTemplates()
+      templates.map(template => {
+        if (!template.display) template.display = template.name
+        if (!template.type) template.type = 'none'
+        if (!this.templates[template.type]) this.templates[template.type] = []
+        this.templates[template.type].push(template)
+      })
 
-        const keys = Object.keys(ctx.templates)
-        const index = keys.indexOf('other')
-        if (index !== -1) this.$delete(keys, index)
-        keys.map(key => {
-          if (ctx.templates[key].length === 1) {
-            if (!ctx.templates.other) ctx.templates.other = []
-            ctx.templates.other.push(ctx.templates[key][0])
-            delete ctx.templates[key]
-          }
-        })
-
-        ctx.templates = { ...ctx.templates }
-        ctx.loadingTemplates = false
-      }).catch(handleError(ctx))
-    },
-    getNodes () {
-      const ctx = this
-      this.$http.get('/api/nodes').then(response => {
-        ctx.nodes = []
-        for (let i = 0; i < response.data.length; i++) {
-          const node = response.data[i]
-          ctx.nodes.push({
-            value: node.id,
-            text: node.name
-          })
+      const keys = Object.keys(this.templates)
+      const index = keys.indexOf('other')
+      if (index !== -1) this.$delete(keys, index)
+      keys.map(key => {
+        if (this.templates[key].length === 1) {
+          if (!this.templates.other) this.templates.other = []
+          this.templates.other.push(this.templates[key][0])
+          delete this.templates[key]
         }
+      })
 
-        if (ctx.nodes.length === 1) {
-          ctx.selectedNode = ctx.nodes[0].value
-        }
-
-        ctx.loadingNodes = false
-      }).catch(handleError(ctx))
+      this.templates = { ...this.templates }
+      this.loadingTemplates = false
     },
-    findUsers () {
-      const ctx = this
+    async getNodes () {
+      const nodes = await this.$api.getNodes()
+      this.nodes = nodes.map(node => {
+        return { value: node.id, text: node.name }
+      })
+
+      if (this.nodes.length > 0) {
+        this.selectedNode = this.nodes[0].value
+      }
+
+      this.loadingNodes = false
+    },
+    async findUsers () {
       this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
-      this.$http.get(`/api/users?username=${this.userInput}*`, {
-        cancelToken: this.userCancelSearch.token
-      }).then(response => {
-        ctx.users = []
-        for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
-          const user = response.data.users[i]
-          ctx.users.push({
-            value: user.username,
-            text: user.username + ' <' + user.email + '>'
-          })
-        }
-        ctx.searchingUsers = false
-        ctx.users.sort()
-      }).catch(handleError(ctx))
+      const users = await this.$api.searchUsers(this.userInput, this.userCancelSearch.token)
+      this.users = users.map(user => {
+        return { value: user.username, text: `${user.username} <${user.email}>` }
+      }).sort()
+      this.searchingUsers = false
     },
-    submitCreate () {
-      const ctx = this
+    async submitCreate () {
       const data = this.templateData[this.selectedTemplate]
       for (const item in data.data) {
         switch (data.data[item].type) {
@@ -521,9 +500,8 @@ export default {
       }
       delete data.environment.text
       delete data.environment.value
-      this.$http.post('/api/servers', data).then(response => {
-        ctx.$router.push({ name: 'Server', params: { id: response.data.id } })
-      }).catch(handleError(ctx))
+      const id = await this.$api.createServer(data)
+      this.$router.push({ name: 'Server', params: { id: id } })
     },
     selectUser (username) {
       if (!username || username === '') {
@@ -548,17 +526,11 @@ export default {
         }
       }
     },
-    loadTemplateData (template) {
+    async loadTemplateData (template) {
       if (!template) return
       if (!this.templateData[template]) {
-        const ctx = this
-        this.$http.get(`/api/templates/${template}`).then(response => {
-          if (response.status >= 200 && response.status < 300) {
-            ctx.templateData[template] = response.data
-            // recreate object to make vues reference equality check fail and rerender necessary components
-            ctx.templateData = { ...ctx.templateData }
-          }
-        }).catch(handleError(ctx))
+        this.templateData[template] = await this.$api.getTemplate(template)
+        this.templateData = { ...this.templateData }
       }
     },
     selectTemplate (template) {

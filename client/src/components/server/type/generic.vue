@@ -22,7 +22,21 @@
     <div style="float: right;">
       <server-controls :server="server" />
     </div>
-    <div style="clear: both;" />
+    <div
+      style="clear: both;"
+      class="mb-2"
+    />
+    <v-row v-if="socketError">
+      <v-col>
+        <v-alert
+          border="left"
+          text
+          type="warning"
+        >
+          {{ $t('errors.ErrSocketFailed') }}
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row v-if="server.permissions.viewServerConsole || isAdmin()">
       <v-col>
         <server-console :server="server" />
@@ -33,13 +47,13 @@
         cols="12"
         md="6"
       >
-        <server-cpu />
+        <server-cpu :server="server" />
       </v-col>
       <v-col
         cols="12"
         md="6"
       >
-        <server-memory />
+        <server-memory :server="server" />
       </v-col>
     </v-row>
     <v-row v-if="server.permissions.viewServerFiles || isAdmin()">
@@ -74,6 +88,19 @@
 export default {
   props: {
     server: { type: Object, default: () => {} }
+  },
+  data () {
+    return { socketError: false }
+  },
+  mounted () {
+    this.$api.startServerTask(this.server.id, () => {
+      this.$api.requestServerStats(this.server.id)
+    }, 3000)
+
+    this.$api.addServerListener(this.server.id, 'error', () => {
+      this.$toast.warning(this.$t('errors.ErrSocketFailed'))
+      this.socketError = true
+    })
   }
 }
 </script>

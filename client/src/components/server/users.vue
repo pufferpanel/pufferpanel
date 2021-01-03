@@ -108,9 +108,10 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
+  props: {
+    server: { type: Object, default: () => {} }
+  },
   data () {
     return {
       users: [],
@@ -134,11 +135,8 @@ export default {
     this.loadUsers()
   },
   methods: {
-    loadUsers () {
-      const ctx = this
-      this.$http.get('/api/servers/' + this.$route.params.id + '/user').then(response => {
-        ctx.users = response.data
-      }).catch(handleError(ctx))
+    async loadUsers () {
+      this.users = await this.$api.getServerUsers(this.server.id)
     },
     addUser () {
       const newUser = {}
@@ -149,19 +147,19 @@ export default {
       }
       this.users.push(newUser)
     },
-    updateUser (user) {
+    async updateUser (user) {
       if (user.new && (!user.email || user.email === '')) {
         this.$toast.error(this.$t('users.NoEmailGiven'))
         return
       }
-      const ctx = this
+
       for (const key of Object.keys(user)) {
         user[key] = (user[key] === 'true') ? true : (user[key] === 'false') ? false : user[key]
       }
-      this.$http.put('/api/servers/' + this.$route.params.id + '/user/' + user.email, user).then(response => {
-        ctx.$toast.success(ctx.$t('common.Saved'))
-        ctx.loadUsers()
-      }).catch(handleError(ctx))
+
+      await this.$api.updateServerUser(this.server.id, user)
+      this.$toast.success(this.$t('common.Saved'))
+      this.loadUsers()
     },
     toggleEdit (username) {
       if (this.editUsers.indexOf(username) > -1) {
@@ -170,15 +168,14 @@ export default {
         this.editUsers.push(username)
       }
     },
-    deleteUser (user) {
+    async deleteUser (user) {
       if (user.new) {
         this.$delete(this.users, this.users.indexOf(user))
         return
       }
-      const ctx = this
-      this.$http.delete('/api/servers/' + this.$route.params.id + '/user/' + user.email).then(response => {
-        ctx.loadUsers()
-      }).catch(handleError(ctx))
+
+      await this.$api.deleteServerUser(this.server.id, user.email)
+      this.loadUsers()
     }
   }
 }

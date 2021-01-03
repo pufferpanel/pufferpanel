@@ -37,66 +37,64 @@
         />
       </v-col>
     </v-row>
-    <portal to="app">
-      <ui-overlay
-        v-model="edit"
-        card
-        closable
-        @close="reset()"
-      >
-        <v-row>
-          <v-col
-            cols="12"
-            lg="3"
-          >
-            <ui-input
-              v-model="host"
-              :label="$t('common.Host')"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            lg="3"
-          >
-            <ui-input
-              v-model="outsidePort"
-              type="number"
-              :label="$t('env.docker.OutsidePort')"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            lg="3"
-          >
-            <ui-input
-              v-model="insidePort"
-              type="number"
-              :label="$t('env.docker.InsidePort')"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            lg="3"
-          >
-            <ui-input-suggestions
-              v-model="protocol"
-              :label="$t('common.Protocol')"
-              :items="['tcp', 'udp']"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-btn
-              color="success"
-              block
-              @click="save()"
-              v-text="$t('common.Save')"
-            />
-          </v-col>
-        </v-row>
-      </ui-overlay>
-    </portal>
+    <ui-overlay
+      v-model="edit"
+      card
+      closable
+      @close="reset()"
+    >
+      <v-row>
+        <v-col
+          cols="12"
+          lg="3"
+        >
+          <ui-input
+            v-model="host"
+            :label="$t('common.Host')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+        >
+          <ui-input
+            v-model="outsidePort"
+            type="number"
+            :label="$t('env.docker.OutsidePort')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+        >
+          <ui-input
+            v-model="insidePort"
+            type="number"
+            :label="$t('env.docker.InsidePort')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          lg="3"
+        >
+          <ui-input-suggestions
+            v-model="protocol"
+            :label="$t('common.Protocol')"
+            :items="['tcp', 'udp']"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-btn
+            color="success"
+            block
+            @click="save()"
+            v-text="$t('common.Save')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
   </v-container>
 </template>
 

@@ -176,8 +176,6 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
@@ -192,16 +190,10 @@ export default {
     if (!this.create) this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.loading = true
-      ctx.$http.get(`/api/users/${ctx.$route.params.id}`).then(response => {
-        ctx.user = { ...response.data }
-        ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
-          ctx.user = { ...ctx.user, ...response.data }
-          ctx.loading = false
-        })
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.loading = true
+      this.user = await this.$api.getUser(this.$route.params.id)
+      this.loading = false
     },
     validatePassword () {
       if (this.create && (!this.user.password || this.user.password === '')) {
@@ -216,35 +208,22 @@ export default {
 
       this.passwordErrors = ''
     },
-    save () {
-      const ctx = this
-      const url = ctx.$route.params.id ? '/api/users/' + ctx.$route.params.id : '/api/users'
-      const user = ctx.user
+    async save () {
+      const user = this.user
       if (!user.password || user.password === '') delete user.password
-      ctx.$http.post(url, user).then(response => {
-        const id = ctx.$route.params.id || response.data.id
-        ctx.$http.put(`/api/users/${id}/perms`, user).then(response => {
-          ctx.$toast.success(ctx.$t(this.create ? 'users.CreateSuccess' : 'users.UpdateSuccess'))
-          if (this.create) {
-            ctx.create = false
-            ctx.$router.push({ name: 'User', params: { id } })
-          }
-        }).catch(error => {
-          // eslint-disable-next-line no-console
-          console.log(error)
-          ctx.$toast.error(ctx.$t('users.PermsUpdateError'))
-        })
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log(error)
-        ctx.$toast.error(ctx.$t(this.create ? 'users.CreateError' : 'users.UpdateError'))
-      })
+      if (this.create) {
+        const id = await this.$api.createUser(user)
+        this.$toast.success(this.$t('users.CreateSuccess'))
+        this.create = false
+        this.$router.push({ name: 'User', params: { id } })
+      } else {
+        await this.$api.updateUser(this.$route.params.id, user)
+        this.$toast.success(this.$t('users.UpdateSuccess'))
+      }
     },
-    deleteUser () {
-      const ctx = this
-      ctx.$http.delete(`/api/users/${ctx.$route.params.id}`).then(response => {
-        ctx.$router.push({ name: 'Users' })
-      }).catch(handleError(ctx))
+    async deleteUser () {
+      this.$api.deleteUser(this.$route.params.id)
+      this.$router.push({ name: 'Users' })
     }
   }
 }

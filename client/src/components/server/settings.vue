@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
 import markdown from '@/utils/markdown'
 
 export default {
@@ -60,17 +59,12 @@ export default {
     this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      this.$http.get(`/proxy/daemon/server/${this.server.id}/data`).then(response => {
-        ctx.items = response.data.data
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.items = await this.$api.getServerData(this.server.id)
     },
-    save () {
-      const ctx = this
-      this.$http.post(`/proxy/daemon/server/${this.server.id}/data`, { data: this.items }).then(response => {
-        ctx.$toast.success(ctx.$t('common.Saved'))
-      }).catch(handleError(ctx))
+    async save () {
+      await this.$api.updateServerData(this.server.id, this.items)
+      this.$toast.success(this.$t('common.Saved'))
     },
     markdown
   }

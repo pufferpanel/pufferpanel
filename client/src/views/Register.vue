@@ -74,10 +74,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import validate from '@/utils/validate'
-import { handleError } from '@/utils/api'
-import { hasAuth } from '@/utils/auth'
 
 export default {
   data () {
@@ -124,16 +121,14 @@ export default {
     }
   },
   mounted () {
-    if (hasAuth()) this.$router.push({ name: 'Servers' })
+    if (this.hasAuth()) this.$router.push({ name: 'Servers' })
   },
   methods: {
-    // real methods
-    submit () {
-      this.$toast.clearQueue()
-      if (this.$toast.getCmp()) this.$toast.getCmp().close()
+    async submit () {
       this.errors.username = ''
       this.errors.email = ''
       this.errors.password = ''
+
       if (!this.username) {
         this.errors.username = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Username') })
         return
@@ -149,27 +144,21 @@ export default {
       if (!validate.validPassword(this.password)) {
         return
       }
+
       this.registerDisabled = true
 
-      const ctx = this
-
-      this.axios.post(this.$route.path, {
-        email: this.email,
-        password: this.password,
-        username: this.username
-      }).then(response => {
-        if (response.data.token && response.data.token !== '') {
-          Cookies.set('puffer_auth', response.data.token, { sameSite: 'strict' })
-          localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
-          ctx.$emit('logged-in')
-          ctx.$router.push({ name: 'Servers' })
+      try {
+        const hasLogin = await this.$api.register(this.username, this.email, this.password)
+        if (hasLogin) {
+          this.$emit('logged-in')
+          this.$router.push({ name: 'Servers' })
         } else {
           this.$toast.success(this.$t('users.RegisterSuccess'))
-          ctx.$router.push({ name: 'Login' })
+          this.$router.push({ name: 'Login' })
         }
-      })
-        .catch(handleError(ctx))
-        .finally(() => { ctx.registerDisabled = false })
+      } finally {
+        this.registerDisabled = false
+      }
     }
   }
 }

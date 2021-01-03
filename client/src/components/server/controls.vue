@@ -18,6 +18,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-if="!running"
         class="mr-4"
         color="success"
         @click="action('start')"
@@ -26,6 +27,17 @@
           mdi-play
         </v-icon>
         {{ $t('servers.Start') }}
+      </v-btn>
+      <v-btn
+        v-else
+        class="mr-4"
+        color="success"
+        @click="action('restart')"
+      >
+        <v-icon left>
+          mdi-reload
+        </v-icon>
+        {{ $t('servers.Restart') }}
       </v-btn>
     </v-slide-item>
     <v-slide-item
@@ -80,9 +92,19 @@ export default {
   props: {
     server: { type: Object, default: function () { return {} } }
   },
+  data () {
+    return { running: false }
+  },
+  mounted () {
+    this.$api.addServerListener(this.server.id, 'status', event => {
+      this.running = event.running
+    })
+
+    this.$api.requestServerStatus(this.server.id)
+  },
   methods: {
-    action (act) {
-      this.$socket.sendObj({ type: act })
+    action (action) {
+      this.$api.sendServerAction(this.server.id, action)
     }
   }
 }

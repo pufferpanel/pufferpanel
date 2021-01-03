@@ -78,8 +78,6 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   props: {
     server: { type: Object, default: () => {} }
@@ -97,37 +95,29 @@ export default {
     this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.loading = true
-      ctx.$http.get(`/proxy/daemon/server/${ctx.server.id}`).then(response => {
-        ctx.autostart = !!response.data.run.autostart
-        ctx.autorestart = !!response.data.run.autorestart
-        ctx.autorecover = !!response.data.run.autorecover
-        ctx.loading = false
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.loading = true
+      const def = await this.$api.getServerDefinition(this.server.id)
+      this.autostart = !!def.run.autostart
+      this.autorestart = !!def.run.autorestart
+      this.autorecover = !!def.run.autorecover
+      this.loading = false
     },
-    toggleSwitch (field) {
-      const ctx = this
-      ctx.loading = true
+    async toggleSwitch (field) {
+      this.loading = true
       const body = { run: {} }
       body.run[field] = this[field]
-      ctx.$http.post(`/proxy/daemon/server/${ctx.server.id}`, body).then(response => {
-        ctx.loadData()
-      })
+      await this.$api.updateServerDefinition(this.server.id, body)
+      this.loadData()
     },
-    reloadServer () {
-      const ctx = this
-      ctx.$http.post(`/proxy/daemon/server/${ctx.server.id}/reload`).then(response => {
-        ctx.$toast.success(ctx.$t('servers.Reloaded'))
-      }).catch(handleError(ctx))
+    async reloadServer () {
+      await this.$api.reloadServer(this.server.id)
+      this.$toast.success(this.$t('servers.Reloaded'))
     },
-    deleteConfirmed () {
-      const ctx = this
-      this.$http.delete(`/api/servers/${this.server.id}`).then(response => {
-        ctx.$toast.success(ctx.$t('servers.Deleted'))
-        ctx.$router.push({ name: 'Servers' })
-      }).catch(handleError(ctx))
+    async deleteConfirmed () {
+      await this.$api.deleteServer(this.server.id)
+      this.$toast.success(this.$t('servers.Deleted'))
+      this.$router.push({ name: 'Servers' })
     }
   }
 }
