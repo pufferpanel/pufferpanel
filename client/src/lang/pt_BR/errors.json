@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "As senhas não são iguais",
   "ErrSessionTimedOut": "Sua sessão expirou. Faça login novamente",
   "ErrMissingScope": "Você não está autorizado a realizar esta ação",
-  "ErrInvalidJson": "Os dados do JSON são inválidos"
+  "ErrInvalidJson": "Os dados do JSON são inválidos",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }
