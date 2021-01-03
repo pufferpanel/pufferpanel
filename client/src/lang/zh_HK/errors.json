@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "密碼不相同",
   "ErrSessionTimedOut": "你的登入時效已過，請重新登入",
   "ErrMissingScope": "您沒權限執行此操作",
-  "ErrInvalidJson": "json資料無效"
+  "ErrInvalidJson": "json資料無效",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }
