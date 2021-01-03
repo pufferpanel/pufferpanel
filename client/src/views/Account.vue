@@ -104,7 +104,6 @@
 
 <script>
 import validate from '@/utils/validate'
-import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -134,33 +133,19 @@ export default {
       return this.oldPassword && this.validPassword && this.newPassword === this.confirmNewPassword
     }
   },
-  mounted () {
-    const ctx = this
-    this.$http.get('/api/self').then(data => {
-      const user = data.data
-      ctx.username = user.username
-      ctx.email = user.email
-    }).catch(handleError(ctx))
+  async mounted () {
+    const user = await this.$api.getSelf()
+    this.username = user.username
+    this.email = user.email
   },
   methods: {
-    submitInfoChange () {
-      const ctx = this
-      this.$http.put('/api/self', {
-        username: this.username,
-        email: this.email,
-        password: this.confirmPassword
-      }).then(result => {
-        ctx.$toast.success(ctx.$t('users.InfoChanged'))
-      }).catch(handleError(ctx))
+    async submitInfoChange () {
+      await this.$api.updateSelf(this.username, this.email, this.confirmPassword)
+      this.$toast.success(this.$t('users.InfoChanged'))
     },
-    submitPassChange () {
-      const ctx = this
-      this.$http.put('/api/self', {
-        password: this.oldPassword,
-        newPassword: this.newPassword
-      }).then(result => {
-        ctx.$toast.success(ctx.$t('users.PasswordChanged'))
-      }).catch(handleError(ctx))
+    async submitPassChange () {
+      await this.$api.updatePassword(this.oldPassword, this.newPassword)
+      this.$toast.success(this.$t('users.PasswordChanged'))
     }
   }
 }

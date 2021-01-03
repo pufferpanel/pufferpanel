@@ -82,67 +82,42 @@ export default {
     return {
       console: '',
       consoleReadonly: '',
-      maxConsoleLength: 10000,
-      buffer: [],
-      refreshInterval: null,
+      maxConsoleLength: 1000000,
       consoleCommand: '',
-      consolePopup: false
+      consolePopup: false,
+      lastConsoleTime: 0
     }
   },
   mounted () {
     // ansi up keeps state a little aggressively, so force a reset
     ansiup.ansi_to_html('\u001b[m')
 
-    const ctx = this
-    this.$socket.addEventListener('message', event => {
-      const data = JSON.parse(event.data)
-      if (data === 'undefined') {
-        return
+    this.$api.addServerListener(this.server.id, 'console', event => {
+      if ('epoch' in event) {
+        this.lastConsoleTime = event.epoch
+      } else {
+        this.lastConsoleTime = Math.floor(Date.now() / 1000)
       }
-      if (data.type === 'console') {
-        ctx.parseConsole(data.data)
+
+      this.parseConsole(event)
+    })
+
+    this.$api.startServerTask(this.server.id, () => {
+      if (this.$api.serverConnectionNeedsPolling(this.server.id)) {
+        this.$api.requestServerConsoleReplay(this.server.id, this.lastConsoleTime)
       }
-    })
-    this.$socket.addEventListener('open', event => {
-      this.$socket.sendObj({ type: 'replay' })
-    })
-    this.refreshInterval = setInterval(this.updateConsole, 1000)
-  },
-  beforeDestroy () {
-    if (this.refreshInterval !== null) {
-      clearInterval(this.refreshInterval)
-    }
+    }, 5000)
+
+    this.$api.requestServerConsoleReplay(this.server.id)
   },
   methods: {
     parseConsole (data) {
-      const ctx = this
-
-      if (data.logs instanceof Array) {
-        data.logs.forEach(element => {
-          ctx.buffer.push(ansiup.ansi_to_html(element).replaceAll('\n', '<br>'))
-        })
-      } else {
-        this.buffer.push(ansiup.ansi_to_html(data.logs).replaceAll('\n', '<br>'))
-      }
-    },
-    popoutConsole () {
-      this.consoleReadonly = this.console
-      this.consolePopup = true
-      this.$nextTick(() => {
-        this.$el.querySelector('#popup .console').scrollTop = this.$el.querySelector('#popup .console').scrollHeight
+      let newConsole = this.console
+      const logs = Array.isArray(data.logs) ? data.logs : [data.logs]
+      logs.forEach(element => {
+        newConsole += ansiup.ansi_to_html(element).replace(/\n/g, '<br>')
       })
-    },
-    updateConsole () {
-      if (this.buffer.length === 0) {
-        return
-      }
 
-      let msg = this.buffer.shift()
-      while (this.buffer.length > 0) {
-        msg += this.buffer.shift()
-      }
-
-      let newConsole = this.console + msg
       if (newConsole.length > this.maxConsoleLength) {
         newConsole = newConsole.substring(newConsole.length - this.maxConsoleLength, newConsole.length)
       }
@@ -153,8 +128,15 @@ export default {
         console.scrollTop = console.scrollHeight
       })
     },
+    popoutConsole () {
+      this.consoleReadonly = this.console
+      this.consolePopup = true
+      this.$nextTick(() => {
+        this.$el.querySelector('#popup .console').scrollTop = this.$el.querySelector('#popup .console').scrollHeight
+      })
+    },
     sendCommand () {
-      this.$socket.sendObj({ type: 'console', command: this.consoleCommand })
+      this.$api.sendServerCommand(this.server.id, this.consoleCommand)
       this.consoleCommand = ''
     },
     isDark

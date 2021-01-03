@@ -20,6 +20,22 @@
             <v-divider v-if="index !== users.length - 1" />
           </div>
         </v-list>
+        <v-row
+          v-if="page < pageCount"
+          ref="lazy"
+          v-intersect="lazyLoad"
+        >
+          <v-col
+            cols="2"
+            offset="5"
+          >
+            <v-progress-circular
+              indeterminate
+              class="mr-2"
+            />
+            <span v-text="$t('common.Loading')" />
+          </v-col>
+        </v-row>
         <v-btn
           v-show="hasScope('users.edit') || isAdmin()"
           color="primary"
@@ -39,29 +55,42 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
-      loading: true,
-      users: []
+      loading: false,
+      users: [],
+      page: 0,
+      pageCount: 1
     }
   },
-  mounted () {
-    this.loadData()
-  },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.loading = true
-      ctx.users = []
-      ctx.$http.get('/api/users').then(response => {
-        response.data.users.forEach(user => {
-          ctx.users.push(user)
-        })
-        ctx.loading = false
-      }).catch(handleError(ctx))
+    recheckLazy () {
+      const rect = this.$refs.lazy.getBoundingClientRect()
+      const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight)
+      if (
+        !(rect.bottom < 0 || rect.top - viewHeight >= 0) &&
+        this.page < this.pageCount
+      ) {
+        this.loadNextPage()
+      }
+    },
+    lazyLoad (entries, observer, isIntersecting) {
+      if (isIntersecting) {
+        this.loadNextPage()
+      }
+    },
+    async loadNextPage () {
+      if (this.loading) return
+      this.loading = true
+      const { users, pages } = await this.$api.getUsers(this.page + 1)
+      users.filter(user => {
+        return this.users.filter(elem => user.id === elem.id).length === 0
+      }).forEach(user => this.users.push(user))
+      this.page = this.page + 1
+      this.pageCount = pages
+      this.loading = false
+      this.recheckLazy()
     }
   }
 }

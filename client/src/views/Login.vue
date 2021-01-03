@@ -56,16 +56,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-import { handleError } from '@/utils/api'
-import { hasAuth } from '@/utils/auth'
-
-function getReauthReason () {
-  const reason = localStorage.getItem('reauth_reason') || ''
-  localStorage.removeItem('reauth_reason')
-  return reason
-}
-
 export default {
   data () {
     return {
@@ -87,42 +77,33 @@ export default {
     }
   },
   mounted () {
-    if (hasAuth()) this.$router.push({ name: 'Servers' })
-    const reauthReason = getReauthReason()
-    if (reauthReason === 'session_timed_out') this.$toast.error(this.$t('errors.ErrSessionTimedOut'))
+    if (this.hasAuth()) this.$router.push({ name: 'Servers' })
   },
   methods: {
-    submit () {
-      this.$toast.clearQueue()
-      if (this.$toast.getCmp()) this.$toast.getCmp().close()
-      const ctx = this
-      ctx.errors.form = ''
-      ctx.errors.email = ''
-      ctx.errors.password = ''
+    async submit () {
+      this.errors.form = ''
+      this.errors.email = ''
+      this.errors.password = ''
 
-      if (!ctx.email) {
-        ctx.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
+      if (!this.email) {
+        this.errors.email = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Email') })
         return
       }
 
-      if (!ctx.password) {
-        ctx.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
+      if (!this.password) {
+        this.errors.password = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
         return
       }
 
       this.loginDisabled = true
 
-      this.axios.post(this.$route.path, {
-        email: this.email,
-        password: this.password
-      }).then(response => {
-        Cookies.set('puffer_auth', response.data.session, { sameSite: 'strict' })
-        localStorage.setItem('scopes', JSON.stringify(response.data.scopes || []))
-        ctx.$emit('logged-in')
-        ctx.$router.push({ name: 'Servers' })
-      }).catch(handleError(ctx)).finally(() => {
-        ctx.loginDisabled = false
-      })
+      try {
+        await this.$api.login(this.email, this.password)
+        this.$emit('logged-in')
+        this.$router.push({ name: 'Servers' })
+      } finally {
+        this.loginDisabled = false
+      }
     }
   }
 }

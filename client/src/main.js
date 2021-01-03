@@ -4,14 +4,13 @@ import Vue from 'vue'
 // Components
 import './components'
 // Plugins
-import './plugins'
 import vuetify from './plugins/vuetify'
-import PortalVue from 'portal-vue'
+import api from './plugins/api'
+import ace from './plugins/ace'
 // Application imports
 import App from './App'
 import i18n from '@/i18n'
 import router from '@/router'
-import VueNativeSocket from 'vue-native-websocket'
 import '@/styles/pufferpanel.css'
 // iconfont
 import '@mdi/font/css/materialdesignicons.min.css'
@@ -26,14 +25,8 @@ if ('serviceWorker' in navigator) {
 
 window.pufferpanel = {}
 
-Vue.use(PortalVue)
-
-Vue.use(VueNativeSocket, 'ws://localhost:1234', {
-  connectManually: true,
-  reconnection: true,
-  reconnectionDelay: 5000,
-  format: 'json'
-})
+Vue.use(api)
+Vue.use(ace)
 
 Vue.config.productionTip = false
 

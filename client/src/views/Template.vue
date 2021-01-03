@@ -221,7 +221,6 @@
 
 <script>
 import { isDark } from '@/utils/dark'
-import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -275,33 +274,26 @@ export default {
       obj.run.post.map(fixType)
       return obj
     },
-    loadData () {
+    async loadData () {
       this.loading = true
-      const ctx = this
-      ctx.$http.get(`/api/templates/${ctx.$route.params.id}`).then(response => {
-        const data = response.data
-        data.readme = undefined
-        ctx.template = JSON.stringify(data, undefined, 4)
-        ctx.templateObj = ctx.withDefaults(data)
-        if (ctx.$refs.editor && ctx.$refs.editor.ready) ctx.$refs.editor.setValue(ctx.template)
-        ctx.loading = false
-      }).catch(handleError(ctx))
+      const template = await this.$api.getTemplate(this.$route.params.id)
+      delete template.readme
+      this.template = JSON.stringify(template, undefined, 4)
+      this.templateObj = this.withDefaults(template)
+      if (this.$refs.editor && this.$refs.editor.ready) this.$refs.editor.setValue(this.template)
+      this.loading = false
     },
-    remove () {
+    async remove () {
       if (this.create) return
-      const ctx = this
-      ctx.$http.delete(`/api/templates/${ctx.name}`).then(response => {
-        ctx.$toast.success(ctx.$t('templates.Deleted'))
-        ctx.$router.push({ name: 'Templates' })
-      }).catch(handleError(ctx))
+      await this.$api.deleteTemplate(this.name)
+      this.$toast.success(this.$t('templates.Deleted'))
+      this.$router.push({ name: 'Templates' })
     },
-    save () {
+    async save () {
       if (this.currentMode === 'editor') this.updateJson()
-      const ctx = this
-      ctx.$http.put(`/api/templates/${ctx.name}`, ctx.template).then(response => {
-        ctx.$toast.success(ctx.$t('templates.SaveSuccess'))
-        if (ctx.create) ctx.$router.push({ name: 'Template', params: { id: ctx.name } })
-      }).catch(handleError(ctx, { 400: 'errors.ErrInvalidJson' }))
+      await this.$api.createTemplate(this.name, this.template)
+      this.$toast.success(this.$t('templates.SaveSuccess'))
+      if (this.create) this.$router.push({ name: 'Template', params: { id: this.name } })
     },
     updateEditor () {
       this.templateObj = JSON.parse(this.template)

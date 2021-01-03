@@ -12,19 +12,17 @@ import Router from 'vue-router'
 // Routes
 import paths from './paths'
 
-import { hasAuth } from '@/utils/auth'
-
 function route ({ path, view, name, meta }) {
   return {
     name: name || view,
     path,
-    component: resolve => import('@/views/' + view + '.vue').then(resolve),
+    component: resolve => import('@/views/' + view + '.vue'),
     meta: meta
   }
 }
 
 function checkLoginState (next) {
-  if (!hasAuth()) {
+  if (!Vue.prototype.hasAuth()) {
     next('/auth/login')
   } else {
     next()

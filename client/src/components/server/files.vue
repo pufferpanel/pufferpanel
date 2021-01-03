@@ -12,7 +12,10 @@
   -->
 
 <template>
-  <v-card>
+  <v-card
+    :loading="loading"
+    :disabled="loading"
+  >
     <v-card-title>
       <span
         class="flex-grow-1"
@@ -266,7 +269,6 @@
 
 <script>
 import filesize from 'filesize'
-import { handleError } from '@/utils/api'
 import { isDark } from '@/utils/dark'
 
 export default {
@@ -278,28 +280,6 @@ export default {
       files: [],
       currentPath: '/',
       loading: true,
-      headers: [
-        {
-          value: 'name',
-          text: this.$t('common.Name'),
-          sortable: true
-        },
-        {
-          value: 'size',
-          text: this.$t('files.Size'),
-          sortable: true
-        },
-        {
-          value: 'modifyTime',
-          text: this.$t('files.LastModified'),
-          sortable: true
-        },
-        {
-          value: 'isFile',
-          text: this.$t('common.Actions'),
-          sortable: false
-        }
-      ],
       currentFile: '',
       fileContents: '',
       editOpen: false,
@@ -317,43 +297,32 @@ export default {
     }
   },
   mounted () {
-    const ctx = this
-    this.$socket.addEventListener('open', event => {
-      ctx.fetchItems(ctx.currentPath)
-    })
+    this.fetchItems(this.currentPath)
 
-    this.$socket.addEventListener('message', event => {
-      const data = JSON.parse(event.data)
-      if (data === 'undefined') {
+    this.$api.addServerListener(this.server.id, 'file', event => {
+      if (event.error) {
+        this.isLoading = false
         return
       }
-      if (data.type === 'file') {
-        if (data.data) {
-          if (data.data.error) {
-            ctx.isLoading = false
-            return
-          }
 
-          ctx.files = (data.data.files || []).sort((a, b) => {
-            if (!a.size && !b.size) return 0
-            if (a.size && b.size) return 0
-            if (a.size && !b.size) return 1
-            return -1
-          })
-          if (data.data.path !== '') {
-            ctx.currentPath = data.data.path
-          }
-          ctx.loading = false
-        }
+      this.files = (event.files || []).sort((a, b) => {
+        if (a.isFile && !b.isFile) return 1
+        return 0
+      })
+
+      if (event.path !== '') {
+        this.currentPath = event.path
       }
+
+      this.loading = false
     })
   },
   methods: {
-    fetchItems (path, edit = false) {
+    fetchItems (path) {
       this.loading = true
-      this.$socket.sendObj({ type: 'file', action: 'get', path: path, edit: edit })
+      this.$api.requestServerFile(this.server.id, path)
     },
-    itemClicked (item) {
+    async itemClicked (item) {
       if (!item.isFile) {
         this.loading = true
 
@@ -374,7 +343,7 @@ export default {
           this.currentPath = path
         }
 
-        this.$socket.sendObj({ type: 'file', action: 'get', path: this.currentPath })
+        this.fetchItems(this.currentPath)
       } else {
         if (item.size > this.maxEditSize) return
         let path = this.currentPath
@@ -383,12 +352,10 @@ export default {
         } else {
           path += '/' + item.name
         }
-        const ctx = this
-        this.$http.get(`/proxy/daemon/server/${this.server.id}/file/${path}`, { responseType: 'arraybuffer' }).then(response => {
-          ctx.currentFile = item.name
-          ctx.fileContents = new TextDecoder('utf-8').decode(new Uint8Array(response.data))
-          ctx.editOpen = true
-        }).catch(handleError(ctx))
+
+        this.fileContents = await this.$api.downloadServerFile(this.server.id, path, true)
+        this.currentFile = item.name
+        this.editOpen = true
       }
     },
     cancelEdit () {
@@ -396,23 +363,19 @@ export default {
       this.currentFile = ''
       this.fileContents = ''
     },
-    saveEdit () {
+    async saveEdit () {
       let path = this.currentPath
       if (path === '/') {
         path += this.currentFile
       } else {
         path += '/' + this.currentFile
       }
-      const file = new Blob([this.fileContents])
-      const formData = new FormData()
-      formData.append('file', file)
-      const ctx = this
-      this.$http.put(`/proxy/daemon/server/${this.server.id}/file/${path}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
-        ctx.editOpen = false
-        ctx.currentFile = ''
-        ctx.fileContents = ''
-        ctx.$toast.success(ctx.$t('common.Saved'))
-      }).catch(handleError(ctx))
+
+      await this.$api.uploadServerFile(this.server.id, path, this.fileContents)
+      this.editOpen = false
+      this.currentFile = ''
+      this.fileContents = ''
+      this.$toast.success(this.$t('common.Saved'))
     },
     deleteRequest (item) {
       this.toDelete = item
@@ -426,7 +389,7 @@ export default {
         path = this.currentPath + '/' + this.toDelete.name
       }
       this.loading = true
-      this.$socket.sendObj({ type: 'file', action: 'delete', path: path })
+      this.$api.requestServerFileDeletion(this.server.id, path)
       this.toDelete = null
       this.confirmDeleteOpen = false
     },
@@ -449,7 +412,8 @@ export default {
       } else {
         path += '/' + item.name
       }
-      return '/proxy/daemon/server/' + this.server.id + '/file' + path
+
+      return this.$api.getServerFileUrl(this.server.id, path)
     },
     cancelFileCreate () {
       this.createFile = false
@@ -479,7 +443,7 @@ export default {
         path = path + '/' + this.newFolderName
       }
 
-      this.$socket.sendObj({ type: 'file', action: 'create', path: path })
+      this.$api.requestServerFolderCreation(this.server.id, path)
       this.createFolder = false
       this.newFolderName = ''
     },
@@ -498,7 +462,7 @@ export default {
         ctx.uploadNextItem(ctx)
       })
     },
-    uploadSingleFile (item) {
+    async uploadSingleFile (item) {
       let path = this.currentPath
       if (path === '/') {
         path += item.name
@@ -508,15 +472,9 @@ export default {
       this.uploadCurrent = 0
       this.uploadSize = item.size
 
-      const ctx = this
-      return this.$http({
-        method: 'put',
-        url: '/proxy/daemon/server/' + this.server.id + '/file' + path,
-        data: item,
-        onUploadProgress: event => {
-          ctx.uploadCurrent = event.loaded
-          ctx.uploadSize = event.total
-        }
+      return this.$api.uploadServerFile(this.server.id, path, item, event => {
+        this.uploadCurrent = event.loaded
+        this.uploadSize = event.total
       })
     },
     isDark

@@ -85,9 +85,6 @@
 </template>
 
 <script>
-import { typeNode } from '@/utils/types'
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
@@ -95,11 +92,9 @@ export default {
     }
   },
   methods: {
-    submit () {
-      const ctx = this
-      ctx.$http.post('/api/nodes', typeNode(ctx.node)).then(response => {
-        ctx.$router.push({ name: 'Nodes' })
-      }).catch(handleError(ctx))
+    async submit () {
+      await this.$api.createNode(this.node)
+      this.$router.push({ name: 'Nodes' })
     }
   }
 }
