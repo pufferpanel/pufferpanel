@@ -34,5 +34,5 @@
   "ErrSessionTimedOut": "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an",
   "ErrMissingScope": "Du bist nicht berechtigt, diese Aktion auszuführen",
   "ErrInvalidJson": "Die json-Daten sind ungültig",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft"
 }
