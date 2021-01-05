@@ -11,7 +11,7 @@
     "@mdi/font": "^4.9.95",
     "ansi_up": "^4.0.4",
     "apexcharts": "^3.19.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dompurify": "^2.0.12",
     "filesize": "^6.1.0",
     "js-cookie": "^2.2.1",
