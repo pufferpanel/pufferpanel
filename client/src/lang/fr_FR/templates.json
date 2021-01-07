@@ -71,6 +71,12 @@
       "ProcessorName": "Commande d’exécution",
       "commands": "Commandes"
     },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
     "writefile": {
       "ProcessorName": "Écrire dans un fichier",
       "text": "Contenus"
