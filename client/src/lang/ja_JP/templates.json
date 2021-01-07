@@ -71,6 +71,12 @@
       "ProcessorName": "Run Command",
       "commands": "Commands"
     },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
     "writefile": {
       "ProcessorName": "Write to file",
       "text": "Content"
