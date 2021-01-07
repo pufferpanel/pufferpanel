@@ -49,6 +49,12 @@
         :value="value[field.name] || field.default"
         @input="onInput(field.name, $event)"
       />
+      <ui-switch
+        v-else-if="field.type === 'boolean'"
+        :label="getLabel(field)"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
+      />
       <ui-input-suggestions
         v-else-if="field.options !== undefined"
         :type="field.type"
@@ -90,6 +96,29 @@ const processors = {
       name: 'commands',
       type: 'list',
       default: []
+    }
+  ],
+  alterfile: [
+    {
+      name: 'file',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'regex',
+      type: 'boolean',
+      default: true
+    },
+    {
+      name: 'search',
+      type: 'text',
+      default: ''
+    },
+    {
+      name: 'replace',
+      type: 'text',
+      default: ''
     }
   ],
   writefile: [
