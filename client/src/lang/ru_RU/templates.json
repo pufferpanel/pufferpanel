@@ -71,6 +71,12 @@
       "ProcessorName": "Выполнить команду",
       "commands": "Команды"
     },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
     "writefile": {
       "ProcessorName": "Записать в файл",
       "text": "Содержание"
