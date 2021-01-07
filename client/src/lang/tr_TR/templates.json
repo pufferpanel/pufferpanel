@@ -71,6 +71,12 @@
       "ProcessorName": "Komut Çalıştır",
       "commands": "Komutlar"
     },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
     "writefile": {
       "ProcessorName": "Dosyaya Yaz",
       "text": "İçerik"
