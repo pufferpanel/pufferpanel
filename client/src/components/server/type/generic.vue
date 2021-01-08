@@ -13,19 +13,23 @@
 
 <template>
   <v-container>
-    <h1
-      style="float: left;"
-    >
-      <server-status :server="server" />
-      {{ server.name }}
-    </h1>
-    <div style="float: right;">
-      <server-controls :server="server" />
-    </div>
-    <div
-      style="clear: both;"
-      class="mb-2"
-    />
+    <v-row>
+      <v-col>
+        <h1
+          style="float: left;"
+        >
+          <server-status :server="server" />
+          {{ server.name }}
+        </h1>
+        <div style="float: right;">
+          <server-controls :server="server" />
+        </div>
+        <div
+          style="clear: both;"
+          class="mb-2"
+        />
+      </v-col>
+    </v-row>
     <v-row v-if="socketError">
       <v-col>
         <v-alert
