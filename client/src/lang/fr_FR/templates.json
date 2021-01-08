@@ -72,10 +72,10 @@
       "commands": "Commandes"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Changer le fichier",
+      "regex": "Traiter la recherche comme RegEx",
+      "search": "Texte à rechercher",
+      "replace": "Remplacer par"
     },
     "writefile": {
       "ProcessorName": "Écrire dans un fichier",
