@@ -34,5 +34,5 @@
   "ErrSessionTimedOut": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın",
   "ErrMissingScope": "Bu işlemi gerçekleştirmek için yetkiniz yok",
   "ErrInvalidJson": "Json verisi geçersiz",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "WebSocket bağlantısı bir hatayla karşılaştı, bazı özellikler yavaş veya bozuk olabilir"
 }
