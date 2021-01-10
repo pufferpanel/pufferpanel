@@ -1,106 +1,106 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
+  "Templates": "Šablony",
+  "NoTemplates": "Zatím zde nejsou žádné šablony",
+  "Deleted": "Šablona odstraněna",
+  "New": "Vytvořit novou šablonu",
+  "Edit": "Upravit šablonu",
   "Editor": "Editor",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "Display": "Zobrazované jméno",
+  "Type": "Typ",
+  "Variables": "Proměnné",
+  "Install": "Instalovat",
+  "AddInstallStep": "Přidat instalační krok",
+  "DeleteInstallStep": "Odstranit instalační krok",
+  "Description": "Popis",
+  "DataType": "Datový typ",
+  "DefaultValue": "Výchozí hodnota",
+  "Required": "Povinné",
+  "UserEditable": "Uživatelé mohou upravovat",
+  "Value": "Hodnota",
+  "AddOption": "Přidat volbu",
+  "AddCommand": "Přidat příkaz",
+  "Filename": "Název souboru",
+  "Content": "Obsah",
+  "Source": "Zdroj",
+  "Target": "Cíl",
+  "Version": "Verze",
+  "ReleaseType": "Typ vydání",
+  "AddFile": "Přidat soubor",
+  "AddVariable": "Přidat proměnnou",
+  "Environments": "Prostředí",
+  "AddEnvironment": "Přidat prostředí",
+  "DefaultEnvironment": "Výchozí prostředí",
+  "AddEnvVar": "Přidat proměnnou prostředí",
+  "EnvVars": "Proměnné prostředí",
+  "DockerImage": "Docker obrazy",
+  "SaveSuccess": "Uložené šablony",
+  "VarNameNoSpaces": "Název proměnné nemůže být prázdný nebo obsahovat mezery",
+  "SupportedEnvironments": "Podporované prostředí",
+  "RunConfig": "Spustit konfiguraci",
   "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
+  "PostHook": "Pre Run Hook",
+  "AddPreStep": "Přidat krok před spuštěním",
+  "AddPostStep": "Přidat krok po spuštění",
+  "DeletePreStep": "Odstranit krok před spuštěním",
+  "DeletePostStep": "Přidat krok po spuštění",
+  "Shutdown": "Vypnout",
+  "Command": "Příkaz",
+  "Arguments": "Parametry",
+  "AddArgument": "Přidat parametr",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "VAROVÁNÍ: Importované šablony přepisují existující šablony se stejným ID",
+    "Import": "Importovat šablonu",
+    "Tooltip": "Importovat šablony z oficiálního úložiště",
+    "Select": "Vyberte položky k importování",
+    "Started": "Importuji šablony, počkejte prosím chvíli",
+    "Successful": "Šablona {template} byla úspěšně importována",
+    "NoTemplatesTitle": "Chcete importovat šablony?",
+    "NoTemplatesContent": "Momentálně nemáte žádné šablony. Šablony jsou nutné pro vytvoření serverů.<br/>Chcete nyní importovat některé šablony z oficiálního úložiště šablon Pufferpanelu?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Příkaz",
+    "Signal": "Signál"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Stáhnout",
+      "files": "Soubory"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Spustit příkaz",
+      "commands": "Příkazy"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Změnit soubor",
+      "regex": "Hledat jako RegEx",
+      "search": "Text na vyhledávání",
+      "replace": "Nahradit za"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Zapsat do souboru",
+      "text": "Obsah"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Přesunout soubor",
+      "source": "Zdroj",
+      "target": "Cíl"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Vytvořit složku"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Stáhnout Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Stáhnout Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Stáhnout Minecraft SpongeForge",
+      "releaseType": "Typ vydání"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Stáhnout Minecraft Fabric"
     }
   }
 }
