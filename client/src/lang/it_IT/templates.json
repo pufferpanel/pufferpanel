@@ -1,7 +1,7 @@
 {
   "Templates": "Modelli",
   "NoTemplates": "Non ci sono ancora modelli qui",
-  "Deleted": "Template deleted",
+  "Deleted": "Template eliminato",
   "New": "Crea nuovo modello",
   "Edit": "Modifica modello",
   "Editor": "Editor",
@@ -64,30 +64,30 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Scarica",
+      "files": "File"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Esegui un comando",
+      "commands": "Comandi"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
+      "ProcessorName": "Cambia file",
       "regex": "Treat search as RegEx",
       "search": "Text to search",
       "replace": "Replace with"
     },
     "writefile": {
       "ProcessorName": "Write to file",
-      "text": "Content"
+      "text": "Contenuto"
     },
     "move": {
-      "ProcessorName": "Move File",
+      "ProcessorName": "Sposta il file",
       "source": "Source",
       "target": "Target"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Crea una cartella"
     },
     "mojangdl": {
       "ProcessorName": "Download Minecraft"
