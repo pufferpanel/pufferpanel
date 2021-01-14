@@ -1,7 +1,7 @@
 {
   "Templates": "Szablony",
   "NoTemplates": "Brak szablonów",
-  "Deleted": "Template deleted",
+  "Deleted": "Szablon został usunięty",
   "New": "Utwórz nowy szablon",
   "Edit": "Edytuj szablon",
   "Editor": "Edytor",
@@ -28,9 +28,9 @@
   "ReleaseType": "Typ wydania",
   "AddFile": "Dodaj plik",
   "AddVariable": "Dodaj zmienną",
-  "Environments": "Environments",
+  "Environments": "Środowisko",
   "AddEnvironment": "Dodaj środowisko",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Domyślne środowisko",
   "AddEnvVar": "Dodaj zmienną",
   "EnvVars": "Zmienne środowiskowe",
   "DockerImage": "Obrazy Dokera",
@@ -64,43 +64,43 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Pobierz",
+      "files": "Pliki"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Uruchom polecenie",
+      "commands": "Polecenia"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Zmień plik",
+      "regex": "Traktuj wyszukiwanie jako RegEx",
+      "search": "Tekst do wyszukania",
+      "replace": "Zamień na"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Zapisz do pliku",
+      "text": "Zawartość"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Przenieś plik",
+      "source": "Źródło",
+      "target": "Cel"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Utwórz katalog"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Pobierz Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Pobierz Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Pobierz Minecraft SpongeForge",
+      "releaseType": "Typ wydania"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Pobierz Minecraft Fabric"
     }
   }
 }
