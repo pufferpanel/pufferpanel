@@ -6,7 +6,7 @@
   "Console": "Konsola",
   "Controls": "Ustawienia",
   "SFTPInfo": "Informacje SFTP",
-  "Restart": "Restart",
+  "Restart": "Uruchom ponownie",
   "Start": "Uruchom",
   "Stop": "Zatrzymaj",
   "Kill": "Zabij",
@@ -34,6 +34,6 @@
   "Reload": "Odśwież dane serwera z dysku",
   "Reloaded": "Przeładowano dane serwera",
   "Autostart": "Uruchom serwer po uruchomieniu węzła",
-  "Autorestart": "Restart the server when it stops normally",
+  "Autorestart": "Uruchom ponownie serwer po normalnym zatrzymaniu",
   "Autorecover": "Uruchom ponownie serwer po awarii"
 }
