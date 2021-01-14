@@ -166,20 +166,7 @@ func (d *docker) Kill() (err error) {
 }
 
 func (d *docker) Create() error {
-	err := os.Mkdir(d.RootDirectory, 0755)
-	if err != nil {
-		return err
-	}
-
-	/*go func() {
-		cli, err := d.getClient()
-		if err != nil {
-			return
-		}
-		err = d.pullImage(cli, context.Background(), false)
-	}()*/
-
-	return err
+	return os.Mkdir(d.RootDirectory, 0755)
 }
 
 func (d *docker) IsRunning() (bool, error) {
