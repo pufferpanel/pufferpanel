@@ -18,10 +18,12 @@ package environments
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/environments/standard"
 	"github.com/pufferpanel/pufferpanel/v2/environments/tty"
 )
 
 func loadAdditionalModules(mapping map[string]pufferpanel.EnvironmentFactory) {
+	mapping["standard"] = tty.EnvironmentFactory{}
 	mapping["tty"] = tty.EnvironmentFactory{}
 	//mapping["lxd"] = lxd.EnvironmentFactory{}
 }
