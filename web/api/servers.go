@@ -43,11 +43,18 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
+	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
+	g.Handle("OPTIONS", "/:serverId/user", response.CreateOptions("GET"))
+
 	g.Handle("GET", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
 	g.Handle("PUT", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
 	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
-	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
+
+	g.Handle("GET", "/:serverId/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), getAvailableOauth2Perms)
+	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET"))
 }
 
 // @Summary Get servers
@@ -667,6 +674,32 @@ func removeServerUser(c *gin.Context) {
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
+}
+
+// @Summary Gets available OAuth2 scopes for the calling user
+// @Description This allows a caller to see what scopes they have for a server, which can be used to generate a new OAuth2 client or just to know what they can do without making more calls
+// @Accept json
+// @Produce json
+// @Success 200 {object} []pufferpanel.Scope
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/oauth2 [get]
+func getAvailableOauth2Perms(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+	server := c.MustGet("server").(*models.Server)
+
+	db := middleware.GetDatabase(c)
+	ps := &services.Permission{DB: db}
+
+	perms, err := ps.GetForUserAndServer(user.ID, &server.Identifier)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, perms.ToScopes())
 }
 
 func getFromData(variables map[string]pufferpanel.Variable, key string) interface{} {
