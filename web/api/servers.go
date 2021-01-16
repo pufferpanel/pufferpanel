@@ -680,7 +680,7 @@ func removeServerUser(c *gin.Context) {
 // @Description This allows a caller to see what scopes they have for a server, which can be used to generate a new OAuth2 client or just to know what they can do without making more calls
 // @Accept json
 // @Produce json
-// @Success 200 {object} []pufferpanel.Scope
+// @Success 200 {object} pufferpanel.Scopes
 // @Failure 400 {object} response.Error
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
