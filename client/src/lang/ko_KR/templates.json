@@ -1,106 +1,106 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "템플릿",
+  "NoTemplates": "템플릿이 아직 없네요",
+  "Deleted": "템플릿이 삭제되었습니다",
+  "New": "새 템플릿 만들기",
+  "Edit": "템플릿 수정",
+  "Editor": "편집기",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
+  "Display": "이름",
+  "Type": "유형",
+  "Variables": "변수",
+  "Install": "설치",
+  "AddInstallStep": "설치 과정 추가",
+  "DeleteInstallStep": "설치 과정 삭제",
+  "Description": "설명",
+  "DataType": "자료 유형",
+  "DefaultValue": "기본값",
+  "Required": "필수",
+  "UserEditable": "유저가 수정 가능",
+  "Value": "값",
+  "AddOption": "옵션 추가",
+  "AddCommand": "명령어 추가",
+  "Filename": "파일 이름",
+  "Content": "내용",
+  "Source": "원본",
+  "Target": "목표",
+  "Version": "버전",
+  "ReleaseType": "출시 유형",
+  "AddFile": "파일 추가",
+  "AddVariable": "변수 추가",
+  "Environments": "환경들",
+  "AddEnvironment": "환경 추가",
+  "DefaultEnvironment": "기본 환경",
+  "AddEnvVar": "환경 변수 추가",
+  "EnvVars": "환경 변수",
+  "DockerImage": "도커 이미지",
+  "SaveSuccess": "템플릿이 추가되었습니다",
+  "VarNameNoSpaces": "변수 이름은 비거나 띄어쓰기가 있을 수 없습니다",
+  "SupportedEnvironments": "지원되는 환경",
+  "RunConfig": "실행 설정",
+  "PreHook": "실행 전 연결",
+  "PostHook": "실행 후 연결",
+  "AddPreStep": "실행 전 단계 추가",
+  "AddPostStep": "실행 후 단계 추가",
+  "DeletePreStep": "실행 전 단계 제거",
+  "DeletePostStep": "실행 후 단계 제거",
+  "Shutdown": "정지",
+  "Command": "명령",
+  "Arguments": "인자",
+  "AddArgument": "인자 추가",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "경고: 불러와진 템플릿들은 이미 존재하는 같은 ID의 템플릿들을 덮어 쓸것입니다",
+    "Import": "템플릿 가져오기",
+    "Tooltip": "공식 리포지토리에서 템플릿 가져오기",
+    "Select": "가져올 템플릿 선택",
+    "Started": "템플릿을 가져오는중입니다. 잠시만 기다려주세요",
+    "Successful": "템플릿 {template} 을(를) 불러왔습니다",
+    "NoTemplatesTitle": "템플릿을 가져올까요?",
+    "NoTemplatesContent": "현재 템플릿이 없습니다. 템플릿은 서버를 만들기 위해 필요합니다.<br/>템플릿을 지금 공식 PufferPanel 레포지토리에서 가져올까요?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "명령",
+    "Signal": "신호"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "다운로드",
+      "files": "파일"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "명령어 실행",
+      "commands": "명령어"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "파일 수정",
+      "regex": "RegEx를 이용한 검색",
+      "search": "텍스트로 검색",
+      "replace": "로 바꾸기"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "파일로 쓰기",
+      "text": "내용"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "파일 이동",
+      "source": "원본",
+      "target": "목표"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "폴더 생성"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "마인크래프트 다운로드"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "마인크래프트 포지 다운로드"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "마인크래프트 스폰지 다운로드",
+      "releaseType": "출시 유형"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "마인크래프트 Fabric 다운로드"
     }
   }
 }
