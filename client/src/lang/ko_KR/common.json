@@ -31,10 +31,10 @@
   "Next": "다음",
   "LanguageName": "한국어",
   "Details": "자세히 보기",
-  "ErrorDetails": "Error Details",
-  "HelpTranslate": "Help us translate PufferPanel",
-  "DarkMode": "Dark Mode",
-  "ThemeOptions": "Theme Options",
-  "Protocol": "Protocol",
-  "Add": "Add"
+  "ErrorDetails": "오류 정보",
+  "HelpTranslate": "PufferPanel을 번역하는걸 도와주세요",
+  "DarkMode": "어두운 테마",
+  "ThemeOptions": "테마 옵션",
+  "Protocol": "프로토콘",
+  "Add": "추가"
 }
