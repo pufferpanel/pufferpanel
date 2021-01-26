@@ -18,11 +18,11 @@
       class="pb-0"
     >
       <v-btn-toggle
-        :value="stopType"
+        :value="value.type"
         borderless
         dense
         mandatory
-        @change="stopType = $event; $emit('change', $event)"
+        @change="$emit('input', { type: $event, stop: $event === 'command' ? '' : 0 })"
       >
         <v-btn
           value="command"
@@ -36,17 +36,10 @@
     </v-col>
     <v-col cols="12">
       <ui-input
-        v-if="stopType === 'command'"
         :value="value.stop"
         :label="$t('templates.stop.Command')"
-        @input="$emit('input', { ...value, stop: $event, stopCode: undefined })"
-      />
-      <ui-input
-        v-else
-        :value="value.stopCode"
-        :label="$t('templates.stop.Signal')"
-        type="number"
-        @input="$emit('input', { ...value, stopCode: $event, stop: undefined })"
+        :type="value.type === 'command' ? 'text' : 'number'"
+        @input="$emit('input', { ...value, stop: $event })"
       />
     </v-col>
   </v-row>
@@ -56,11 +49,6 @@
 export default {
   props: {
     value: { type: Object, default: () => {} }
-  },
-  data () {
-    return {
-      stopType: this.value.stopCode ? 'signal' : 'command'
-    }
   }
 }
 </script>

@@ -51,7 +51,7 @@
     <v-btn
       text
       block
-      @click="startAdd()"
+      @click="add()"
       v-text="$t('common.Add')"
     />
     <ui-overlay
@@ -60,7 +60,19 @@
       closable
       @close="reset()"
     >
-      <template-processor v-model="value[editIndex]" />
+      <v-row>
+        <v-col cols="12">
+          <template-processor v-model="currentEdit" />
+        </v-col>
+        <v-col cols="12">
+          <v-btn
+            color="success"
+            block
+            @click="save()"
+            v-text="$t('common.Save')"
+          />
+        </v-col>
+      </v-row>
     </ui-overlay>
   </div>
 </template>
@@ -73,22 +85,23 @@ export default {
   data () {
     return {
       template: { type: 'command' },
+      new: false,
       edit: false,
-      editIndex: 0
+      editIndex: 0,
+      currentEdit: {}
     }
   },
   methods: {
-    startAdd () {
+    add () {
       const changed = [...this.value]
-      const newIndex = changed.length
-      changed.push(this.template)
+      changed.push({ ...this.template })
+      this.new = true
       this.$emit('input', changed)
-      this.startEdit(newIndex)
+      this.startEdit(this.value.length, true)
     },
-    startEdit (index) {
+    startEdit (index, isNew = false) {
       this.editIndex = index
-      this.editModel = this.value[index]
-      this.add = false
+      this.currentEdit = isNew ? { ...this.template } : { ...this.value[index] }
       this.edit = true
     },
     remove (index) {
@@ -96,21 +109,23 @@ export default {
       changed.splice(index, 1)
       this.$emit('input', changed)
     },
-    reset () {
-      this.edit = false
-      this.add = false
-      this.editIndex = 0
-      this.editModel = {}
-    },
     save () {
       const changed = [...this.value]
-      if (this.add) {
-        changed.push(this.editModel)
-      } else {
-        changed[this.editIndex] = this.editModel
-      }
+      changed[this.editIndex] = this.currentEdit
       this.$emit('input', changed)
-      this.reset()
+      this.reset(false)
+    },
+    reset (resetNew = true) {
+      if (this.new && resetNew) {
+        const changed = [...this.value]
+        changed.splice(this.editIndex, 1)
+        this.$emit('input', changed)
+      }
+
+      this.new = false
+      this.edit = false
+      this.editIndex = 0
+      this.currentEdit = {}
     }
   }
 }
