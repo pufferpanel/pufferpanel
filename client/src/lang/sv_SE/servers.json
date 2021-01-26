@@ -31,6 +31,7 @@
   "Deleted": "Server borttagen",
   "NoReadme": "Ingen \"readme\" tillgänglig för denna mall",
   "SftpConnection": "Anslut till SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Ladda om serverdata från disk",
   "Reloaded": "Serverdata omladdad",
   "Autostart": "Starta servern när noden startar",
