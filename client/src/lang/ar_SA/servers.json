@@ -31,6 +31,7 @@
   "Deleted": "الخادم المحذوف",
   "NoReadme": "لا يوجد تعليمات متاحة لهذا القالب",
   "SftpConnection": "الاتصال بـ SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "إعادة تحميل بيانات الخادم من القرص",
   "Reloaded": "إعادة تحميل بيانات الخادم",
   "Autostart": "بدء تشغيل الخادم عندما يشتغل ال Node",
