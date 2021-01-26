@@ -31,6 +31,7 @@
   "Deleted": "서버가 삭제되었습니다.",
   "NoReadme": "이 템플릿에 설명이 없습니다",
   "SftpConnection": "SFTP 연결",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "디스크에서 서버 정보 다시 로드",
   "Reloaded": "서버 정보를 다시 불러왔습니다.",
   "Autostart": "노드가 시작되었을때 서버 시작",
