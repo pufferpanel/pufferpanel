@@ -31,6 +31,7 @@
   "Deleted": "Silinmiş Sunucu",
   "NoReadme": "Bu şablon için \"beni oku\" dosyası yok",
   "SftpConnection": "SFTP Bağlan",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Sunucu verisini yeniden yükle",
   "Reloaded": "Sunucu verisi yeniden yüklendi",
   "Autostart": "Node başladığında sunucuyu başlat",
