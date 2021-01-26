@@ -31,6 +31,7 @@
   "Deleted": "刪除伺服器",
   "NoReadme": "此範本沒有可用的自述文件",
   "SftpConnection": "連接至SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "從磁碟重新加載數據",
   "Reloaded": "重新加載伺服器數據",
   "Autostart": "節點啟動時啟動伺服器",
