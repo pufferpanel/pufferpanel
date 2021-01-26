@@ -28,6 +28,7 @@
   "ReleaseType": "Väljalaske Tüüp",
   "AddFile": "Lisa fail",
   "AddVariable": "Lisa muutuja",
+  "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "Lisa keskkond",
   "DefaultEnvironment": "Default environment",
