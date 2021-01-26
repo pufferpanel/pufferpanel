@@ -31,6 +31,7 @@
   "Deleted": "Сервер удален",
   "NoReadme": "У этого шаблона нет описания",
   "SftpConnection": "Подключится к SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Перезагрузить данные сервера с диска",
   "Reloaded": "Данные сервера перезагружены",
   "Autostart": "Запускать сервер при запуске хоста",
