@@ -28,6 +28,7 @@
   "ReleaseType": "Yayın Türü",
   "AddFile": "Dosya ekle",
   "AddVariable": "Değişken ekle",
+  "Environment": "Environment",
   "Environments": "Ortamlar",
   "AddEnvironment": "Ortam ekle",
   "DefaultEnvironment": "Varsayılan Ortam",
