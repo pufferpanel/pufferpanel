@@ -28,6 +28,7 @@
   "ReleaseType": "Release-Typ",
   "AddFile": "Datei hinzufügen",
   "AddVariable": "Variable hinzufügen",
+  "Environment": "Environment",
   "Environments": "Umgebungen",
   "AddEnvironment": "Umgebung hinzufügen",
   "DefaultEnvironment": "Standardumgebung",
