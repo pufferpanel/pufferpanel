@@ -28,6 +28,7 @@
   "ReleaseType": "リリースの種類",
   "AddFile": "ファイルを追加",
   "AddVariable": "変数を追加",
+  "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "使用環境の追加",
   "DefaultEnvironment": "Default environment",
