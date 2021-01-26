@@ -28,6 +28,7 @@
   "ReleaseType": "Tipo di Versione",
   "AddFile": "Aggiungi file",
   "AddVariable": "Aggiungi variabile",
+  "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "Aggiungi ambiente",
   "DefaultEnvironment": "Default environment",
