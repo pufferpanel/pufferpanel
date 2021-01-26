@@ -28,6 +28,7 @@
   "ReleaseType": "출시 유형",
   "AddFile": "파일 추가",
   "AddVariable": "변수 추가",
+  "Environment": "Environment",
   "Environments": "환경들",
   "AddEnvironment": "환경 추가",
   "DefaultEnvironment": "기본 환경",
