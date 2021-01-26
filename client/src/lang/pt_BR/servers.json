@@ -31,6 +31,7 @@
   "Deleted": "Servidor deletado",
   "NoReadme": "Não existe um readme disponível para esse modelo",
   "SftpConnection": "Conectar ao SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Recarregar dados do servidor do disco",
   "Reloaded": "Dados do servidor recarregados",
   "Autostart": "Iniciar o servidor junto com o node",
