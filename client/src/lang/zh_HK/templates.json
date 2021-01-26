@@ -28,6 +28,7 @@
   "ReleaseType": "發佈類型",
   "AddFile": "添加檔案",
   "AddVariable": "添加變數",
+  "Environment": "Environment",
   "Environments": "環境",
   "AddEnvironment": "添加環境",
   "DefaultEnvironment": "預設環境",
