@@ -28,6 +28,7 @@
   "ReleaseType": "A kiadás típusa",
   "AddFile": "Fájl hozzáadása",
   "AddVariable": "Mező hozzáadása",
+  "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "Környezet hozzáadása",
   "DefaultEnvironment": "Default environment",
