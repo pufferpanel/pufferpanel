@@ -43,9 +43,36 @@
         block
         color="primary"
         class="mb-4"
+        @click="editServerDefinition()"
+        v-text="$t('servers.EditDefinition')"
+      />
+      <v-btn
+        block
+        color="primary"
+        class="mb-4"
         @click="reloadServer()"
         v-text="$t('servers.Reload')"
       />
+      <v-btn
+        block
+        color="error"
+        @click="confirmDeleteOpen = true"
+        v-text="$t('servers.Delete')"
+      />
+      <ui-overlay
+        v-model="editDefinition"
+        :title="$t('servers.EditDefinition')"
+        card
+        closable
+      >
+        <template-editor v-model="definition" server />
+        <v-btn
+          block
+          color="success"
+          @click="saveServerDefinition()"
+          v-text="$t('common.Save')"
+        />
+      </ui-overlay>
       <v-dialog
         v-model="confirmDeleteOpen"
         max-width="600"
@@ -67,12 +94,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-btn
-        block
-        color="error"
-        @click="confirmDeleteOpen = true"
-        v-text="$t('servers.Delete')"
-      />
     </v-card-text>
   </v-card>
 </template>
@@ -88,7 +109,9 @@ export default {
       loading: true,
       autostart: false,
       autorestart: false,
-      autorecover: false
+      autorecover: false,
+      editDefinition: false,
+      definition: {}
     }
   },
   mounted () {
@@ -118,6 +141,14 @@ export default {
       await this.$api.deleteServer(this.server.id)
       this.$toast.success(this.$t('servers.Deleted'))
       this.$router.push({ name: 'Servers' })
+    },
+    async editServerDefinition () {
+      this.definition = this.$api.templateFromApiJson(await this.$api.getServerDefinition(this.server.id))
+      this.editDefinition = true
+    },
+    async saveServerDefinition () {
+      await this.$api.updateServerDefinition(this.server.id, this.$api.templateToApiJson(this.definition))
+      this.editDefinition = false
     }
   }
 }

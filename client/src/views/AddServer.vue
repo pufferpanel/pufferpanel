@@ -376,10 +376,10 @@ export default {
       if (!newVal || newVal === '') {
         return
       }
-      this.formData = this.templateData[newVal].data
+      this.formData = this.templateData[newVal].vars
       this.environments = []
-      for (const k in this.templateData[newVal].supportedEnvironments) {
-        const env = this.templateData[newVal].supportedEnvironments[k]
+      for (const k in this.templateData[newVal].supportedEnvs) {
+        const env = this.templateData[newVal].supportedEnvs[k]
         this.environments.push({
           value: k,
           text: this.$t('env.' + env.type + '.name'),
@@ -387,7 +387,7 @@ export default {
         })
       }
 
-      const env = this.templateData[newVal].environment
+      const env = this.templateData[newVal].defaultEnv
       let def = null
       if (env && env.type) {
         def = env.type

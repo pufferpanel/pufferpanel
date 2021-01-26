@@ -15,12 +15,12 @@
   <div>
     <v-list>
       <v-list-item
-        v-for="(item, name) in value"
-        :key="name"
+        v-for="(item, index) in value"
+        :key="item.name"
         link
-        @click="startEdit(name)"
+        @click="startEdit(index)"
       >
-        <v-list-item-content v-text="name" />
+        <v-list-item-content v-text="item.display" />
         <v-list-item-action class="flex-row">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -38,7 +38,7 @@
               <v-btn
                 icon
                 v-on="on"
-                @click.stop="remove(name)"
+                @click.stop="remove(index)"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -51,12 +51,11 @@
     <v-btn
       text
       block
-      @click="add = true"
+      @click="addVar()"
       v-text="$t('common.Add')"
     />
     <ui-overlay
-      v-model="add"
-      :title="$t('common.Add')"
+      v-model="edit"
       card
       closable
       @close="reset()"
@@ -64,80 +63,89 @@
       <v-row>
         <v-col cols="12">
           <ui-input
-            v-model="newVarName"
+            v-model="currentEdit.name"
             :label="$t('common.Name')"
           />
+        </v-col>
+        <v-col cols="12">
+          <template-variable v-model="currentEdit" />
         </v-col>
         <v-col cols="12">
           <v-btn
             color="success"
             block
-            @click="addVariable()"
-            v-text="$t('common.Add')"
+            @click="save()"
+            v-text="$t('common.Save')"
           />
         </v-col>
       </v-row>
-    </ui-overlay>
-    <ui-overlay
-      v-model="edit"
-      :title="currentEdit"
-      card
-      closable
-      @close="reset()"
-    >
-      <template-variable v-model="value[currentEdit]" />
     </ui-overlay>
   </div>
 </template>
 
 <script>
+const isValidName = name => name !== '' && name.indexOf(' ') === -1
+
 export default {
   props: {
-    value: { type: Object, default: () => {} }
+    value: { type: Array, default: () => [] }
   },
   data () {
     return {
       add: false,
       edit: false,
-      newVarName: '',
-      currentEdit: '',
+      editIndex: 0,
+      currentEdit: {},
       variableTemplate: {
         required: true,
         userEdit: true,
         display: '',
         desc: '',
         type: 'string',
-        value: ''
+        value: '',
+        name: ''
       }
     }
   },
   methods: {
-    addVariable () {
-      const name = this.newVarName.trim()
-      if (name.length > 0 && name.indexOf(' ') === -1) {
-        const changed = { ...this.value }
-        changed[name] = { ...this.variableTemplate }
-        this.$emit('input', changed)
-        this.reset()
-        this.startEdit(name)
-      } else {
-        this.$toast.error(this.$t('templates.VarNameNoSpaces'))
-      }
+    addVar () {
+      const changed = [...this.value]
+      changed.push({ ...this.variableTemplate })
+      this.$emit('input', changed)
+      this.add = true
+      this.startEdit(this.value.length)
     },
-    startEdit (name) {
-      this.currentEdit = name
+    startEdit (index) {
+      this.editIndex = index
+      this.currentEdit = { ...this.value[index] }
       this.edit = true
     },
-    remove (name) {
-      const changed = { ...this.value }
-      delete changed[name]
+    remove (index) {
+      const changed = [...this.value]
+      changed.splice(index, 1)
       this.$emit('input', changed)
     },
+    save () {
+      if (!isValidName(this.currentEdit.name || '')) {
+        this.$toast.error(this.$t('templates.VarNameNoSpaces'))
+        return
+      }
+
+      const changed = [...this.value]
+      changed[this.editIndex] = this.currentEdit
+      this.$emit('input', changed)
+      this.add = false
+      this.reset()
+    },
     reset () {
+      if (this.add) {
+        this.$emit('input', [...this.value].filter(item => item.name !== ''))
+      }
+
       this.add = false
       this.edit = false
-      this.newVarName = ''
-      this.currentEdit = ''
+      this.editIndex = 0
+      this.currentEdit = {}
     }
   }
 }
