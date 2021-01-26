@@ -28,6 +28,7 @@
   "ReleaseType": "Typ vydání",
   "AddFile": "Přidat soubor",
   "AddVariable": "Přidat proměnnou",
+  "Environment": "Environment",
   "Environments": "Prostředí",
   "AddEnvironment": "Přidat prostředí",
   "DefaultEnvironment": "Výchozí prostředí",
