@@ -31,6 +31,7 @@
   "Deleted": "Usunięty serwer",
   "NoReadme": "Brak dostępnego pliku README dla tego szablonu",
   "SftpConnection": "Połącz z SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Odśwież dane serwera z dysku",
   "Reloaded": "Przeładowano dane serwera",
   "Autostart": "Uruchom serwer po uruchomieniu węzła",
