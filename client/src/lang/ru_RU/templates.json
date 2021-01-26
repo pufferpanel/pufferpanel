@@ -28,6 +28,7 @@
   "ReleaseType": "Тип выпуска",
   "AddFile": "Добавить файл",
   "AddVariable": "Добавить переменную",
+  "Environment": "Environment",
   "Environments": "Окружения",
   "AddEnvironment": "Добавить окружение",
   "DefaultEnvironment": "Стандартное окружение",
