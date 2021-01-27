@@ -31,7 +31,7 @@
   "Deleted": "Serveur supprimé",
   "NoReadme": "Aucun \"Read Me\" disponible pour ce modèle",
   "SftpConnection": "Se connecter au SFTP",
-  "EditDefinition": "Edit Server Definition",
+  "EditDefinition": "Modifier la définition du serveur",
   "Reload": "Recharger les données du serveur depuis le disque",
   "Reloaded": "Données du serveur rechargées",
   "Autostart": "Démarrer le serveur au démarrage du nœud",
