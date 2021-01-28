@@ -12,7 +12,7 @@
   "ServersFilesPut": "ファイル管理でファイルを表示およびダウンロード",
   "ServersEditUsers": "このサーバーへのユーザーアクセス権を編集",
   "Admin": "管理者 (すべての権限が付与されます)",
-  "ViewServers": "すべてのサーバーを見る",
+  "ViewServers": "See Servers",
   "CreateServers": "新しいサーバーを作成",
   "DeleteServers": "サーバーを削除",
   "EditServerAdmin": "サーバー設定",
