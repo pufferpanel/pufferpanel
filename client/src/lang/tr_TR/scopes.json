@@ -12,7 +12,7 @@
   "ServersFilesPut": "Edit and upload files using the file manager",
   "ServersEditUsers": "Edit user's access to this server",
   "Admin": "Yönetici (bu yetki verilmesi mümkün olan tüm yetkileri verir)",
-  "ViewServers": "Tüm sunucuları görüntüle",
+  "ViewServers": "See Servers",
   "CreateServers": "Yeni sunucular oluştur",
   "DeleteServers": "Sunucuları sil",
   "EditServerAdmin": "Sunucu Ayarlarını Düzenle",
