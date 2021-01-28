@@ -12,7 +12,7 @@
   "ServersFilesPut": "تعديل و رفع الملفات باستخدام مدير الملفات",
   "ServersEditUsers": "تحرير صلاحيات وصول المستخدم للخادم",
   "Admin": "مشرف (هذا يعطي كل الأُذونات الممكنة)",
-  "ViewServers": "رؤية كافة الخوادم",
+  "ViewServers": "See Servers",
   "CreateServers": "إنشاء خادم جديد",
   "DeleteServers": "حذف الخوادم",
   "EditServerAdmin": "تعديل إعدادات الخادم",
