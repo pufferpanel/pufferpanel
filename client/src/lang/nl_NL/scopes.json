@@ -12,7 +12,7 @@
   "ServersFilesPut": "Wijzig en upload bestanden via bestandsbeheer ",
   "ServersEditUsers": "Edit user's access to this server",
   "Admin": "Admin (this grants every possible permission)",
-  "ViewServers": "See all Servers",
+  "ViewServers": "See Servers",
   "CreateServers": "Create new Servers",
   "DeleteServers": "Delete Servers",
   "EditServerAdmin": "Edit Server Settings",
