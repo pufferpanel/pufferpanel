@@ -12,7 +12,7 @@
   "ServersFilesPut": "透過檔案管理員編輯及上傳檔案",
   "ServersEditUsers": "編輯用戶在此伺服器的存取權限",
   "Admin": "管理員 (將賦予所有權限)",
-  "ViewServers": "檢視所有伺服器",
+  "ViewServers": "See Servers",
   "CreateServers": "創建新的伺服器",
   "DeleteServers": "刪除伺服器",
   "EditServerAdmin": "編輯伺服器設定",
