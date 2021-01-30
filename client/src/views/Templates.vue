@@ -1,23 +1,6 @@
 <template>
   <v-container>
-    <div class="d-flex">
-      <h1
-        class="flex-grow-1"
-        v-text="$t('templates.Templates')"
-      />
-      <v-tooltip left>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            icon
-            v-on="on"
-            @click="loadTemplateImporter"
-          >
-            <v-icon>mdi-import</v-icon>
-          </v-btn>
-        </template>
-        <span v-text="$t('templates.import.Tooltip')" />
-      </v-tooltip>
-    </div>
+    <h1 v-text="$t('templates.Templates')" />
     <v-row>
       <v-col>
         <v-list
@@ -60,19 +43,35 @@
             />
           </div>
         </v-list>
-        <v-btn
-          v-show="hasScope('templates.edit') || isAdmin()"
-          color="primary"
-          bottom
-          right
-          fixed
-          fab
-          dark
-          large
-          :to="{name: 'AddTemplate'}"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <div style="position: fixed; bottom: 16px; right: 16px; display: flex; flex-direction: column; align-items: center;">
+          <v-tooltip left>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                v-show="hasScope('templates.edit') || isAdmin()"
+                color="primary"
+                class="mb-4"
+                fab
+                dark
+                small
+                v-on="on"
+                @click="loadTemplateImporter"
+              >
+                <v-icon>mdi-import</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('templates.import.Tooltip')" />
+          </v-tooltip>
+          <v-btn
+            v-show="hasScope('templates.edit') || isAdmin()"
+            color="primary"
+            fab
+            dark
+            large
+            :to="{name: 'AddTemplate'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+	</div>
       </v-col>
     </v-row>
     <ui-overlay
