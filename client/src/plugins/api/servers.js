@@ -172,6 +172,8 @@ export const ServersApi = {
 
   getServerFileUrl (id, path) {
     if (path.indexOf('/') === 0) path = path.substring(1)
+    path = encodeURIComponent(path)
+    path = path.replace(/%2F/g, '/')
     return `/proxy/daemon/server/${id}/file/${path}`
   },
 
