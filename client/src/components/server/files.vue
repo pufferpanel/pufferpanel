@@ -308,6 +308,8 @@ export default {
       this.files = (event.files || []).sort((a, b) => {
         if (a.isFile && !b.isFile) return 1
         if (!a.isFile && b.isFile) return -1
+        if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
+        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
         return 0
       })
 
