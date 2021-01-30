@@ -183,6 +183,7 @@
                   :href="createDownloadLink(file)"
                   target="_blank"
                   v-on="on"
+                  @click.stop=""
                 >
                   <v-icon>mdi-download</v-icon>
                 </v-btn>
