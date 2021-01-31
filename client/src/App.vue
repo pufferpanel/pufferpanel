@@ -35,9 +35,9 @@
           <v-list-item @click="toggleDark">
             <span v-text="$t('common.DarkMode')" />
             <span class="flex-grow-1" />
-            <v-switch
+            <ui-switch
               v-model="$vuetify.theme.dark"
-              class="ml-4"
+              class="ml-4 mb-4"
             />
           </v-list-item>
           <v-radio-group
@@ -158,7 +158,7 @@
           </v-list-item>
           <v-list-item
             link
-            @click="logout"
+            @click="$api.logout()"
           >
             <v-list-item-icon>
               <v-icon>mdi-logout</v-icon>
@@ -189,30 +189,24 @@
             />
           </div>
         </div>
-        <router-view
-          v-else
-          @logged-in="didLogIn()"
-        />
+        <router-view v-else />
       </v-container>
-      <common-language v-model="showLanguageSelect" />
-      <common-overlay
+      <ui-language v-model="showLanguageSelect" />
+      <ui-overlay
         v-model="errorOverlayOpen"
         card
         closable
         :title="$t('common.ErrorDetails')"
       >
         <code v-text="errorText" />
-      </common-overlay>
+      </ui-overlay>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import config from './config'
 import { toggleDark as doToggleDark, isDark } from './utils/dark'
-import { handleError } from '@/utils/api'
-import parseTheme from '@/utils/theme'
 
 export default {
   data () {
@@ -221,7 +215,7 @@ export default {
       loggedIn: false,
       drawer: null,
       minified: false,
-      reauhTask: null,
+      reauthTask: null,
       showLanguageSelect: false,
       errorOverlayOpen: false,
       errorText: '',
@@ -230,6 +224,9 @@ export default {
     }
   },
   mounted () {
+    this.$api.on('login', this.didLogIn)
+    this.$api.on('logout', this.logout)
+
     this.css.type = 'text/css'
     document.head.appendChild(this.css)
 
@@ -237,7 +234,7 @@ export default {
 
     this.$vuetify.theme.dark = isDark()
 
-    if ((Cookies.get('puffer_auth') || '')) {
+    if (this.$api.isLoggedIn()) {
       this.didLogIn()
     } else {
       this.loggedIn = false
@@ -245,51 +242,47 @@ export default {
     window.pufferpanel.showError = error => this.showError(error)
   },
   methods: {
-    loadTheme () {
-      const ctx = this
-      ctx.$http.get(`/theme/${ctx.appConfig.themes.active}.tar`, { responseType: 'arraybuffer' }).then(response => {
-        ctx.themeObjects.map(url => URL.revokeObjectURL(url))
-        ctx.themeObjects = []
-        ctx.css.textContent = ''
-        const newThemeObjects = {}
-        const theme = parseTheme(response.data)
-        theme.forEach(file => {
-          switch (file.name) {
-            case 'theme.json':
-              ctx.$vuetify.theme.themes.light = {
-                ...ctx.$vuetify.theme.themes.light,
-                ...JSON.parse(file.content).colors.light
-              }
-              ctx.$vuetify.theme.themes.dark = {
-                ...ctx.$vuetify.theme.themes.dark,
-                ...JSON.parse(file.content).colors.dark
-              }
-              break
-            case 'theme.css':
-              ctx.css.textContent = file.content
-              break
-            default:
-              newThemeObjects[file.name] = URL.createObjectURL(file.blob)
-          }
-        })
-        Object.keys(newThemeObjects).map(key => {
-          ctx.css.textContent = ctx.css.textContent.split(key).join(newThemeObjects[key])
-          ctx.themeObjects.push(newThemeObjects[key])
-        })
-      }).catch(handleError(ctx))
-    },
-    loadConfig () {
-      const ctx = this
-      ctx.$http.get('/api/config').then(response => {
-        ctx.appConfig = { ...ctx.appConfig, ...response.data }
-        if (localStorage.getItem('theme')) {
-          const stored = localStorage.getItem('theme')
-          if (ctx.appConfig.themes.available.indexOf(stored) !== -1) {
-            ctx.appConfig.themes.active = stored
-          }
+    async loadTheme () {
+      const theme = await this.$api.getTheme(this.appConfig.themes.active)
+      this.themeObjects.map(url => URL.revokeObjectURL(url))
+      this.themeObjects = []
+      this.css.textContent = ''
+      const newThemeObjects = {}
+      theme.forEach(file => {
+        switch (file.name) {
+          case 'theme.json':
+            this.$vuetify.theme.themes.light = {
+              ...this.$vuetify.theme.themes.light,
+              ...JSON.parse(file.content).colors.light
+            }
+            this.$vuetify.theme.themes.dark = {
+              ...this.$vuetify.theme.themes.dark,
+              ...JSON.parse(file.content).colors.dark
+            }
+            break
+          case 'theme.css':
+            this.css.textContent = file.content
+            break
+          default:
+            newThemeObjects[file.name] = URL.createObjectURL(file.blob)
         }
-        ctx.loadTheme()
-      }).catch(error => console.log('config failed', error)) // eslint-disable-line no-console
+      })
+      Object.keys(newThemeObjects).map(key => {
+        this.css.textContent = this.css.textContent.split(key).join(newThemeObjects[key])
+        this.themeObjects.push(newThemeObjects[key])
+      })
+    },
+    async loadConfig () {
+      const config = await this.$api.getConfig()
+      this.appConfig = { ...this.appConfig, ...config }
+      document.title = this.appConfig.branding.name
+      if (localStorage.getItem('theme')) {
+        const stored = localStorage.getItem('theme')
+        if (this.appConfig.themes.available.indexOf(stored) !== -1) {
+          this.appConfig.themes.active = stored
+        }
+      }
+      this.loadTheme()
     },
     setTheme (newTheme) {
       localStorage.setItem('theme', newTheme)
@@ -299,20 +292,17 @@ export default {
     toggleDark () {
       doToggleDark(this.$vuetify)
     },
-    logout () {
+    logout (reason) {
       this.reauthTask && clearInterval(this.reauthTask)
       this.reauthTask = null
-      Cookies.remove('puffer_auth')
       this.loggedIn = false
       this.$router.push({ name: 'Login' })
+      if (reason === 'session_timed_out') this.$toast.error(this.$t('errors.ErrSessionTimedOut'))
     },
     didLogIn () {
       this.loggedIn = true
-      const ctx = this
-      this.reauthTask = setInterval(() => {
-        ctx.$http.post('/auth/reauth').then(response => {
-          response.data.session && Cookies.set('puffer_auth', response.data.session)
-        }).catch(error => console.log('reauth failed', error)) // eslint-disable-line no-console
+      this.reauthTask = setInterval(async () => {
+        await this.$api.reauth()
       }, 1000 * 60 * 10)
     },
     showError (error) {

@@ -6,157 +6,144 @@
       offset-md="3"
     >
       <v-card>
-        <v-card-title v-text="$t('users.Edit')" />
-        <v-card-text class="mt-6">
+        <v-card-title v-text="$t(create ? 'users.Add' : 'users.Edit')" />
+        <v-card-text>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="user.username"
+                icon="mdi-account"
                 :label="$t('common.Name')"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="user.email"
+                icon="mdi-email"
                 :label="$t('users.Email')"
                 type="email"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
+            <v-col>
+              <ui-password-input
+                v-model="user.password"
+                :label="$t(create ? 'users.Password' : 'users.NewPassword')"
+                :error-messages="passwordErrors"
+                :hide-details="passwordErrors === ''"
+                @blur="validatePassword"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.admin"
-                hide-details
                 :label="$t('scopes.Admin')"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewServers"
-                hide-details
                 :label="$t('scopes.ViewServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.createServers"
-                hide-details
                 :label="$t('scopes.CreateServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.deleteServers"
-                hide-details
                 :label="$t('scopes.DeleteServers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editServerAdmin"
-                hide-details
                 :label="$t('scopes.EditServerAdmin')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewNodes"
-                hide-details
                 :label="$t('scopes.ViewNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editNodes"
-                hide-details
                 :label="$t('scopes.EditNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.deployNodes"
-                hide-details
                 :label="$t('scopes.DeployNodes')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewTemplates"
-                hide-details
                 :label="$t('scopes.ViewTemplates')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editTemplates"
-                hide-details
                 :label="$t('scopes.EditTemplates')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="py-0">
-              <v-switch
+              <ui-switch
                 v-model="user.viewUsers"
-                hide-details
                 :label="$t('scopes.ViewUsers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col class="pt-0">
-              <v-switch
+              <ui-switch
                 v-model="user.editUsers"
-                hide-details
                 :label="$t('scopes.EditUsers')"
                 :disabled="user.admin"
-                class="mt-2"
               />
             </v-col>
           </v-row>
@@ -166,11 +153,14 @@
                 large
                 block
                 color="success"
-                @click="updateUser"
-                v-text="$t('users.Update')"
+                @click="save"
+                v-text="$t(create ? 'users.Add' : 'users.Update')"
               />
             </v-col>
-            <v-col cols="12">
+            <v-col
+              v-if="!create"
+              cols="12"
+            >
               <v-btn
                 block
                 color="error"
@@ -186,47 +176,54 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
-      loading: true,
+      loading: false,
+      showPassword: false,
+      passwordErrors: '',
+      create: this.$route.params.id === undefined,
       user: {}
     }
   },
   mounted () {
-    this.loadData()
+    if (!this.create) this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.$http.get(`/api/users/${ctx.$route.params.id}/perms`).then(response => {
-        ctx.user = { ...response.data }
-        ctx.loading = false
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.loading = true
+      this.user = await this.$api.getUser(this.$route.params.id)
+      this.loading = false
     },
-    updateUser () {
-      const ctx = this
-      ctx.$http.post(`/api/users/${ctx.$route.params.id}`, ctx.user).then(response => {
-        ctx.$http.put(`/api/users/${ctx.$route.params.id}/perms`, ctx.user).then(response => {
-          ctx.$toast.success(ctx.$t('users.UpdateSuccess'))
-        }).catch(error => {
-          // eslint-disable-next-line no-console
-          console.log(error)
-          ctx.$toast.error(ctx.$t('users.PermsUpdateError'))
-        })
-      }).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log(error)
-        ctx.$toast.error(ctx.$t('users.UpdateError'))
-      })
+    validatePassword () {
+      if (this.create && (!this.user.password || this.user.password === '')) {
+        this.passwordErrors = this.$t('errors.ErrFieldRequired', { field: this.$t('users.Password') })
+        return
+      }
+
+      if (this.user.password && this.user.password !== '' && this.user.password.length < 8) {
+        this.passwordErrors = this.$t('errors.ErrPasswordRequirements')
+        return
+      }
+
+      this.passwordErrors = ''
     },
-    deleteUser () {
-      const ctx = this
-      ctx.$http.delete(`/api/users/${ctx.$route.params.id}`).then(response => {
-        ctx.$router.push({ name: 'Users' })
-      }).catch(handleError(ctx))
+    async save () {
+      const user = this.user
+      if (!user.password || user.password === '') delete user.password
+      if (this.create) {
+        const id = await this.$api.createUser(user)
+        this.$toast.success(this.$t('users.CreateSuccess'))
+        this.create = false
+        this.$router.push({ name: 'User', params: { id } })
+      } else {
+        await this.$api.updateUser(this.$route.params.id, user)
+        this.$toast.success(this.$t('users.UpdateSuccess'))
+      }
+    },
+    async deleteUser () {
+      this.$api.deleteUser(this.$route.params.id)
+      this.$router.push({ name: 'Users' })
     }
   }
 }

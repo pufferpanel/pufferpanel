@@ -117,10 +117,8 @@
 </style>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
-  prop: {
+  props: {
     server: { type: Object, default: () => {} }
   },
   data () {
@@ -131,34 +129,29 @@ export default {
       copiedUsername: false
     }
   },
-  mounted () {
-    const fixedHost = this.$attrs.server.node.publicHost !== '127.0.0.1' ? this.$attrs.server.node.publicHost : window.location.hostname
-    this.host = fixedHost + ':' + this.$attrs.server.node.sftpPort
-    const ctx = this
-    this.$http.get('/api/self').then(data => {
-      const user = data.data
-      ctx.username = user.email + '|' + ctx.$attrs.server.id
-    }).catch(handleError(ctx))
+  async mounted () {
+    const fixedHost = this.server.node.publicHost !== '127.0.0.1' ? this.server.node.publicHost : window.location.hostname
+    this.host = fixedHost + ':' + this.server.node.sftpPort
+    const user = await this.$api.getSelf()
+    this.username = user.email + '|' + this.server.id
   },
   methods: {
     copyHost () {
-      const ctx = this
-      ctx.$refs.host.select()
+      this.$refs.host.select()
       document.execCommand('copy')
-      ctx.copiedUsername = false
-      ctx.copiedHost = true
+      this.copiedUsername = false
+      this.copiedHost = true
       setTimeout(() => {
-        ctx.copiedHost = false
+        this.copiedHost = false
       }, 6000)
     },
     copyUsername () {
-      const ctx = this
-      ctx.$refs.username.select()
+      this.$refs.username.select()
       document.execCommand('copy')
-      ctx.copiedHost = false
-      ctx.copiedUsername = true
+      this.copiedHost = false
+      this.copiedUsername = true
       setTimeout(() => {
-        ctx.copiedUsername = false
+        this.copiedUsername = false
       }, 6000)
     }
   }

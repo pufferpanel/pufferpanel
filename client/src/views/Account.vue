@@ -23,25 +23,27 @@
           <v-card-text>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <ui-input
                   v-model="username"
-                  outlined
-                  prepend-inner-icon="mdi-account"
+                  icon="mdi-account"
                   :label="$t('users.Username')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-input
                   v-model="email"
-                  outlined
-                  prepend-inner-icon="mdi-email"
+                  icon="mdi-email"
                   :label="$t('users.Email')"
+                  type="email"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="confirmPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.ConfirmPassword')"
                 />
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   large
                   block
@@ -65,27 +67,24 @@
           <v-card-text>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <ui-password-input
                   v-model="oldPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.OldPassword')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="newPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.NewPassword')"
                 />
-                <v-text-field
+              </v-col>
+              <v-col cols="12">
+                <ui-password-input
                   v-model="confirmNewPassword"
-                  outlined
-                  prepend-inner-icon="mdi-lock"
-                  type="password"
                   :label="$t('users.ConfirmPassword')"
                 />
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   large
                   block
@@ -105,7 +104,6 @@
 
 <script>
 import validate from '@/utils/validate'
-import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -135,33 +133,19 @@ export default {
       return this.oldPassword && this.validPassword && this.newPassword === this.confirmNewPassword
     }
   },
-  mounted () {
-    const ctx = this
-    this.$http.get('/api/self').then(data => {
-      const user = data.data
-      ctx.username = user.username
-      ctx.email = user.email
-    }).catch(handleError(ctx))
+  async mounted () {
+    const user = await this.$api.getSelf()
+    this.username = user.username
+    this.email = user.email
   },
   methods: {
-    submitInfoChange () {
-      const ctx = this
-      this.$http.put('/api/self', {
-        username: this.username,
-        email: this.email,
-        password: this.confirmPassword
-      }).then(result => {
-        ctx.$toast.success(ctx.$t('users.InfoChanged'))
-      }).catch(handleError(ctx))
+    async submitInfoChange () {
+      await this.$api.updateSelf(this.username, this.email, this.confirmPassword)
+      this.$toast.success(this.$t('users.InfoChanged'))
     },
-    submitPassChange () {
-      const ctx = this
-      this.$http.put('/api/self', {
-        password: this.oldPassword,
-        newPassword: this.newPassword
-      }).then(result => {
-        ctx.$toast.success(ctx.$t('users.PasswordChanged'))
-      }).catch(handleError(ctx))
+    async submitPassChange () {
+      await this.$api.updatePassword(this.oldPassword, this.newPassword)
+      this.$toast.success(this.$t('users.PasswordChanged'))
     }
   }
 }

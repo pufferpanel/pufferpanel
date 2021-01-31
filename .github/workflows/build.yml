@@ -8,21 +8,11 @@ on:
     paths-ignore:
       - '.github/workflows/release.yml'
   pull_request:
-  workflow_dispatch:
-    inputs:
-      pushToRepo:
-        description: 'Push to repo?'
-        requred: false
-        default: 'false'
-      repo:
-        description: 'Repo'
-        required: false
-        default: 'pufferpanel/pufferpanel'
 
 jobs:
   skip-build:
     runs-on: ubuntu-18.04
-    if: "!startsWith(github.ref, 'refs/tags/v2.') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
+    if: "!startsWith(github.ref, 'refs/tags/v') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
     name: "Build skipped"
 
     steps:
@@ -32,33 +22,35 @@ jobs:
   build-binaries:
     name: Build Binaries
     runs-on: ubuntu-18.04
-    if: "startsWith(github.ref, 'refs/tags/v2.') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
+    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
 
     strategy:
       matrix:
-        go: [ '1.14' ]
-        node-version: [ '14.x' ]
+        go: [ '^1.15.6' ]
+        node-version: [ '14' ]
         swag-version: [ '1.6.7' ]
 
     steps:
     - name: Get the version
-      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\/v/}"
+      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
 
     - name: Get the version
-      if: startsWith(env.VERSION, 'refs/')
-      run: echo "::set-env name=VERSION::2.0.${GITHUB_RUN_NUMBER}"
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go ${{ matrix.go }}
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go }}
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
     - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6'
 
     - name: Install gems
       run:
@@ -74,9 +66,25 @@ jobs:
         mkdir -p artifacts/amd64
         mkdir artifacts/arm
         mkdir artifacts/www
-        cp -r assets/email artifacts/        
+        mkdir artifacts/arm64
+        cp -r assets/email artifacts/
+        
+    - name: Restore APT cache
+      id: aptcache
+      uses: actions/cache@v2
+      with:
+        path: /var/cache/apt/archives
+        key: ${{ runner.os }}-apt
+        
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
+      run: |
         sudo apt-get update
-        sudo apt-get -y install gcc-7-arm-linux-gnueabi gcc-mingw-w64
+        sudo apt-get install --download-only -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
+        
+    - name: APT Install
+      run: |
+        sudo apt-get install -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu      
 
     - name: Restore Go cache
       uses: actions/cache@v2
@@ -148,6 +156,15 @@ jobs:
         GOARCH: arm
         GOARM: 7
         CC: arm-linux-gnueabi-gcc-7
+        CGO_ENABLED: 1
+        
+    - name: Build ARM64
+      run: |
+        go build -o artifacts/arm64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: linux
+        GOARCH: arm64
+        CC: aarch64-linux-gnu-gcc
         CGO_ENABLED: 1
 
     - name: npm install, build
@@ -229,6 +246,30 @@ jobs:
           var/lib/pufferpanel=/var/lib \
           artifacts/email=/etc/pufferpanel \
           config.linux.json=/etc/pufferpanel/config.json
+          
+        fpm -s dir -t deb \
+          --name pufferpanel \
+          --version "${{ env.VERSION }}" \
+          --url "https://pufferpanel.com" \
+          --description "Game Management Panel" \
+          --license "Apache 2.0" \
+          --maintainer "dev@pufferpanel.com" \
+          --before-install systemd/scripts/preinstall.sh \
+          --after-install systemd/scripts/postinstall.sh \
+          --before-upgrade systemd/scripts/preupgrade.sh \
+          --after-upgrade systemd/scripts/postupgrade.sh \
+          --before-remove systemd/scripts/preremove.sh \
+          --after-remove systemd/scripts/postremove.sh \
+          --deb-user pufferpanel --deb-group pufferpanel \
+          --deb-systemd systemd/servicefiles/pufferpanel.service \
+          --deb-after-purge systemd/scripts/purge.sh \
+          -a arm64 \
+          artifacts/arm64/pufferpanel=/usr/sbin/pufferpanel \
+          var/www/pufferpanel=/var/www \
+          var/log/pufferpanel=/var/log \
+          var/lib/pufferpanel=/var/lib \
+          artifacts/email=/etc/pufferpanel \
+          config.linux.json=/etc/pufferpanel/config.json
 
     - name: Create archives
       working-directory: artifacts
@@ -237,6 +278,8 @@ jobs:
         cp -r www amd64/
         cp -r email arm/
         cp -r www arm/
+        cp -r email arm64/
+        cp -r www arm64/
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -249,6 +292,12 @@ jobs:
       with:
         name: pufferpanel_${{ env.VERSION }}_amd64
         path: artifacts/amd64
+        
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_arm64
+        path: artifacts/arm64
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -267,3 +316,9 @@ jobs:
       with:
         name: pufferpanel_${{ env.VERSION }}_armhf.deb
         path: pufferpanel_${{ env.VERSION }}_armhf.deb
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_arm64.deb
+        path: pufferpanel_${{ env.VERSION }}_arm64.deb

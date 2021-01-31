@@ -24,6 +24,8 @@
   "Edit": "Modifica Utente",
   "Update": "Aggiorna Utente",
   "Delete": "Elimina Utente",
+  "CreateSuccess": "Crea Utente",
+  "CreateError": "Creazione utente fallita",
   "UpdateSuccess": "Utente Aggiornato",
   "UpdateError": "Impossibile aggiornare l'utente",
   "PermsUpdateError": "Impossibile aggiungere i permessi dell'utente"

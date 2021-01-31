@@ -26,15 +26,18 @@ import (
 )
 
 var mapper = make(map[string]*log.Logger)
-
 var lock sync.Mutex
-
 var logFile *os.File
+var useFile = true
 
 func Initialize() {
 	_ = Info()
 	_ = Debug()
 	_ = Error()
+}
+
+func DisableFileLogger() {
+	useFile = false
 }
 
 func Error() *log.Logger {
@@ -60,7 +63,7 @@ func AsWriter() io.Writer {
 }
 
 func create(prefix string) *log.Logger {
-	if logFile == nil {
+	if useFile && logFile == nil {
 		directory := viper.GetString("logs")
 		if directory == "" {
 			directory = "logs"

@@ -22,6 +22,7 @@ import (
 )
 
 func loadAdditionalModules(mapping map[string]pufferpanel.EnvironmentFactory) {
+	mapping["standard"] = tty.EnvironmentFactory{}
 	mapping["tty"] = tty.EnvironmentFactory{}
 	//mapping["lxd"] = lxd.EnvironmentFactory{}
 }

@@ -11,7 +11,7 @@ require (
 	github.com/braintree/manners v0.0.0-20160418043613-82a8879fc5fd
 	github.com/cavaliercoder/grab v2.0.0+incompatible
 	github.com/containerd/containerd v1.2.9 // indirect
-	github.com/creack/pty v1.1.9
+	github.com/creack/pty v1.1.11
 	github.com/denisenkom/go-mssqldb v0.0.0-20190906004059-62cf760a6c9e // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/distribution v0.0.0-20190905152932-14b96e55d84c // indirect
@@ -39,6 +39,7 @@ require (
 	github.com/morikuni/aec v0.0.0-20170113033406-39771216ff4c // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
+	github.com/otiai10/copy v1.2.0
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.10.1
@@ -54,8 +55,8 @@ require (
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.4.0
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
-	github.com/swaggo/gin-swagger v1.2.0
-	github.com/swaggo/swag v1.6.7
+	github.com/swaggo/gin-swagger v1.3.0
+	github.com/swaggo/swag v1.5.1
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
 	golang.org/x/net v0.0.0-20191021144547-ec77196f6094 // indirect
 	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect

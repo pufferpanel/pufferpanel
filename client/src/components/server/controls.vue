@@ -12,51 +12,79 @@
   -->
 
 <template>
-  <v-container>
-    <v-btn
+  <v-slide-group class="pl-12 max-width-100">
+    <v-slide-item
       v-if="server.permissions.startServer || isAdmin()"
-      class="mr-4"
-      color="success"
-      @click="action('start')"
+      v-slot="{}"
     >
-      <v-icon left>
-        mdi-play
-      </v-icon>
-      {{ $t('servers.Start') }}
-    </v-btn>
-    <v-btn
+      <v-btn
+        v-if="!running"
+        class="mr-4"
+        color="success"
+        @click="action('start')"
+      >
+        <v-icon left>
+          mdi-play
+        </v-icon>
+        {{ $t('servers.Start') }}
+      </v-btn>
+      <v-btn
+        v-else
+        class="mr-4"
+        color="success"
+        @click="action('restart')"
+      >
+        <v-icon left>
+          mdi-reload
+        </v-icon>
+        {{ $t('servers.Restart') }}
+      </v-btn>
+    </v-slide-item>
+    <v-slide-item
       v-if="server.permissions.stopServer || isAdmin()"
-      class="mr-4"
-      color="warning"
-      @click="action('stop')"
+      v-slot="{}"
     >
-      <v-icon left>
-        mdi-stop
-      </v-icon>
-      {{ $t('servers.Stop') }}
-    </v-btn>
-    <v-btn
+      <v-btn
+        class="mr-4"
+        color="warning"
+        @click="action('stop')"
+      >
+        <v-icon left>
+          mdi-stop
+        </v-icon>
+        {{ $t('servers.Stop') }}
+      </v-btn>
+    </v-slide-item>
+    <v-slide-item
       v-if="server.permissions.stopServer || isAdmin()"
-      class="mr-4"
-      color="error"
-      @click="action('kill')"
+      v-slot="{}"
     >
-      <v-icon left>
-        mdi-skull
-      </v-icon>
-      {{ $t('servers.Kill') }}
-    </v-btn>
-    <v-btn
+      <v-btn
+        class="mr-4"
+        color="error"
+        @click="action('kill')"
+      >
+        <v-icon left>
+          mdi-skull
+        </v-icon>
+        {{ $t('servers.Kill') }}
+      </v-btn>
+    </v-slide-item>
+    <v-slide-item
       v-if="server.permissions.installServer || isAdmin()"
-      color="error"
-      @click="action('install')"
+      v-slot="{}"
     >
-      <v-icon left>
-        mdi-package-down
-      </v-icon>
-      {{ $t('servers.Install') }}
-    </v-btn>
-  </v-container>
+      <v-btn
+        color="error"
+        @click="action('install')"
+      >
+        <v-icon left>
+          mdi-package-down
+        </v-icon>
+        {{ $t('servers.Install') }}
+      </v-btn>
+    </v-slide-item>
+  </v-slide-group>
 </template>
 
 <script>
@@ -64,9 +92,19 @@ export default {
   props: {
     server: { type: Object, default: function () { return {} } }
   },
+  data () {
+    return { running: false }
+  },
+  mounted () {
+    this.$api.addServerListener(this.server.id, 'status', event => {
+      this.running = event.running
+    })
+
+    this.$api.requestServerStatus(this.server.id)
+  },
   methods: {
-    action (act) {
-      this.$socket.sendObj({ type: act })
+    action (action) {
+      this.$api.sendServerAction(this.server.id, action)
     }
   }
 }

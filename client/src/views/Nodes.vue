@@ -35,8 +35,6 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
@@ -74,18 +72,11 @@ export default {
     this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.loading = true
-      ctx.nodes = []
-      ctx.$http.get('/api/nodes').then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          response.data.forEach(node => {
-            ctx.nodes.push(node)
-          })
-          ctx.loading = false
-        }
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.loading = true
+      this.nodes = []
+      this.nodes = await this.$api.getNodes()
+      this.loading = false
     },
     rowClicked (item) {
       if (this.hasScope('nodes.edit') || this.isAdmin()) this.$router.push({ name: 'Node', params: { id: item.id } })

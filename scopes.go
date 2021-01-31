@@ -14,6 +14,7 @@
 package pufferpanel
 
 type Scope string
+type Scopes []Scope
 
 const (
 	//none scope to allow defining that something doesn't need any specific permission

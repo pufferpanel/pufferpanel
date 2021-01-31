@@ -5,8 +5,10 @@
       :server="server"
     />
     <v-row v-else>
-      <v-col cols="5" />
-      <v-col cols="2">
+      <v-col
+        cols="12"
+        class="d-flex align-center justify-center"
+      >
         <v-progress-circular
           indeterminate
           class="mr-2"
@@ -18,38 +20,23 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
-      server: null,
-      recover: null,
-      statRequest: null
+      server: null
     }
   },
   mounted () {
-    this.server = this.loadServer()
+    this.loadServer()
   },
   beforeDestroy () {
-    this.$disconnect()
-    if (this.statRequest) {
-      clearInterval(this.statRequest)
-    }
+    this.$api.closeServerConnection(this.server.id)
   },
   methods: {
-    loadServer () {
-      const ctx = this
-      this.$http.get(`/api/servers/${this.$route.params.id}?perms`).then(response => {
-        ctx.server = response.data.server
-        ctx.server.permissions = response.data.permissions
-        const url = `${window.location.protocol === 'http:' ? 'ws' : 'wss'}://${window.location.host}/proxy/daemon/socket/${ctx.server.id}`
-        ctx.$connect(url)
-        ctx.statRequest = setInterval(ctx.callStats, 3000)
-      }).catch(handleError(ctx))
-    },
-    callStats () {
-      this.$socket.sendObj({ type: 'stat' })
+    async loadServer () {
+      const server = await this.$api.getServer(this.$route.params.id)
+      await this.$api.startServerConnection(server.id)
+      this.server = server
     }
   }
 }

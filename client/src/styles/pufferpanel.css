@@ -41,6 +41,10 @@ pre {
   min-width: 200px;
 }
 
+.max-width-100 {
+  max-width: 100vw;
+}
+
 .vts .v-snack__content {
   display: -webkit-box !important;
   display: -ms-flexbox !important;

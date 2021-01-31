@@ -51,7 +51,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
 	s.mainProcess.Dir = steps.WorkingDirectory
-	s.mainProcess.Env = append(os.Environ(), "HOME="+s.RootDirectory)
+	s.mainProcess.Env = append(os.Environ(), "HOME="+s.RootDirectory, "TERM=xterm-256color")
 	for k, v := range steps.Environment {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}

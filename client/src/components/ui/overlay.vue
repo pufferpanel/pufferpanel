@@ -2,6 +2,7 @@
   <v-overlay
     v-model="value"
     :dark="isDark()"
+    color="#434343"
   >
     <v-container
       fluid
@@ -20,7 +21,7 @@
               <v-btn
                 v-if="closable"
                 icon
-                @click="$emit('input', false); onClose()"
+                @click="$emit('close'); $emit('input', false)"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -50,6 +51,11 @@
   max-width: 100vw !important;
   max-height: 100vh !important;
 }
+
+.overlayContent {
+  max-height: calc(90vh - 68px);
+  overflow-y: scroll;
+}
 </style>
 
 <script>
@@ -59,7 +65,6 @@ export default {
   props: {
     card: { type: Boolean, default: () => false },
     closable: { type: Boolean, default: () => false },
-    onClose: { type: Function, default: () => () => {} },
     title: { type: String, default: () => '' },
     value: { type: Boolean, default: () => false }
   },

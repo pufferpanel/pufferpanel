@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
+  "FileManager": "Manajer File",
+  "NewFolder": "Folder baru",
+  "NewFile": "Berkas baru",
+  "LastModified": "Terakhir Diubah",
+  "ConfirmDelete": "Anda yakin Anda ingin menghapus file ini?",
+  "Upload": "Unggah",
+  "Download": "Unduh",
+  "Size": "Ukuran",
   "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileLoadFailed": "Gagal memuat file"
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2019 Padduck, LLC
+ Copyright 2020 Padduck, LLC
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -11,31 +11,13 @@
   limitations under the License.
 */
 
-package main
+package services
 
 import (
-	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/spf13/cobra"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "pufferpanel",
-	Short: "Game Server Management Panel",
-}
-
-func init() {
-	rootCmd.AddCommand(
-		runCmd,
-		versionCmd,
-		userCmd,
-		shutdownCmd)
-}
-
-func Execute() {
-	rootCmd.SetVersionTemplate(pufferpanel.Display)
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-	}
+func SendEmailViaDebug(to, subject, body string, async bool) error {
+	logging.Debug().Println("DEBUG EMAIL TO " + to + "\n" + subject + "\n" + body)
+	return nil
 }

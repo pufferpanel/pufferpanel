@@ -25,7 +25,7 @@ requireComponent.keys().forEach(fileName => {
 Vue.component('server-render', {
   render (createElement, context) {
     const server = this.$attrs.server
-    if (server === null) {
+    if (!server) {
       return
     }
 

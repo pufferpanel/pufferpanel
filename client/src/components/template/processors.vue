@@ -13,57 +13,119 @@
 
 <template>
   <div>
-    <v-expansion-panels
-      multiple
-      class="mb-2"
-    >
-      <v-expansion-panel
+    <v-list>
+      <v-list-item
         v-for="(entry, i) in value"
         :key="i"
+        link
+        @click="startEdit(i)"
       >
-        <v-expansion-panel-header v-text="entry.type" />
-        <v-expansion-panel-content>
-          <template-processor v-model="value[i]" />
-          <v-btn
-            color="error"
-            block
-            @click="$delete(value, i)"
-            v-text="$t(getDeleteKey())"
-          />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        <v-list-item-content v-text="entry.type" />
+        <v-list-item-action class="flex-row">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Edit')" />
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+                @click.stop="remove(i)"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('common.Delete')" />
+          </v-tooltip>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
     <v-btn
       text
       block
-      @click="value.push({ ...template }); $forceUpdate()"
-      v-text="$t(getAddKey())"
+      @click="add()"
+      v-text="$t('common.Add')"
     />
+    <ui-overlay
+      v-model="edit"
+      card
+      closable
+      @close="reset()"
+    >
+      <v-row>
+        <v-col cols="12">
+          <template-processor v-model="currentEdit" />
+        </v-col>
+        <v-col cols="12">
+          <v-btn
+            color="success"
+            block
+            @click="save()"
+            v-text="$t('common.Save')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    value: { type: Array, default: () => [] },
-    name: { type: String, default: () => 'install' }
+    value: { type: Array, default: () => [] }
   },
   data () {
     return {
-      template: {
-        type: 'command',
-        commands: ['']
-      }
+      template: { type: 'command' },
+      new: false,
+      edit: false,
+      editIndex: 0,
+      currentEdit: {}
     }
   },
   methods: {
-    getAddKey () {
-      const capitalized = this.name.charAt(0).toUpperCase() + this.name.slice(1)
-      return `templates.Add${capitalized}Step`
+    add () {
+      const changed = [...this.value]
+      changed.push({ ...this.template })
+      this.new = true
+      this.$emit('input', changed)
+      this.startEdit(this.value.length, true)
     },
-    getDeleteKey () {
-      const capitalized = this.name.charAt(0).toUpperCase() + this.name.slice(1)
-      return `templates.Delete${capitalized}Step`
+    startEdit (index, isNew = false) {
+      this.editIndex = index
+      this.currentEdit = isNew ? { ...this.template } : { ...this.value[index] }
+      this.edit = true
+    },
+    remove (index) {
+      const changed = [...this.value]
+      changed.splice(index, 1)
+      this.$emit('input', changed)
+    },
+    save () {
+      const changed = [...this.value]
+      changed[this.editIndex] = this.currentEdit
+      this.$emit('input', changed)
+      this.reset(false)
+    },
+    reset (resetNew = true) {
+      if (this.new && resetNew) {
+        const changed = [...this.value]
+        changed.splice(this.editIndex, 1)
+        this.$emit('input', changed)
+      }
+
+      this.new = false
+      this.edit = false
+      this.editIndex = 0
+      this.currentEdit = {}
     }
   }
 }
