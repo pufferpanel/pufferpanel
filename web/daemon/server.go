@@ -89,6 +89,10 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 		l.GET("/:id/status", middleware.OAuth2Handler(pufferpanel.ScopeServersView, true), GetStatus)
 		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
+
+		l.POST("/:id/archive/:filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
+		l.GET("/:id/extract/:filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
+
 	}
 
 	p := e.Group("/socket")
@@ -665,6 +669,60 @@ func GetStatus(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.JSON(200, &pufferpanel.ServerRunning{Running: running})
+	}
+}
+
+// @Summary Archive file(s)
+// @Description Archives file(s) with the
+// @Accept json
+// @Success 204 {object} response.Empty "If file(s) was archived"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Empty
+// @Failure 404 {object} response.Empty
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server Identifier"
+// @Param filename path string true "Destination"
+// @Router /daemon/server/{id}/archive/{filename} [post]
+func Archive(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+	var files []string
+	if err := c.BindJSON(&files); response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	destination := c.Param("filename")
+
+	err := server.ArchiveItems(files, destination)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+// @Summary Extract files
+// @Description Extracts files from an archive
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty "If file was extracted"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Empty
+// @Failure 404 {object} response.Empty
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server Identifier"
+// @Param filename path string true "File name"
+// @Param destination path string true "Destination directory"
+// @Router /daemon/server/{id}/extract/{filename}?destination={destination} [get]
+func Extract(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+
+	targetPath := c.Param("filename")
+	destination := c.Query("destination")
+
+	err := server.Extract(targetPath, destination)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
 	}
 }
 
