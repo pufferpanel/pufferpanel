@@ -710,8 +710,8 @@ func Archive(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
 // @Param filename path string true "File name"
-// @Param destination path string true "Destination directory"
-// @Router /daemon/server/{id}/extract/{filename}?destination={destination} [get]
+// @Param destination path string true "Destination directory (URI Parameter)"
+// @Router /daemon/server/{id}/extract/{filename} [get]
 func Extract(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
