@@ -14,24 +14,24 @@
 package pufferpanel
 
 type Server struct {
+	Type
 	Variables      map[string]Variable `json:"data,omitempty"`
 	Display        string              `json:"display,omitempty"`
 	Environment    interface{}         `json:"environment,omitempty"`
 	Installation   []interface{}       `json:"install,omitempty"`
 	Uninstallation []interface{}       `json:"uninstall,omitempty"`
-	Type           string              `json:"type,omitempty"`
 	Identifier     string              `json:"id,omitempty"`
 	Execution      Execution           `json:"run,omitempty"`
 }
 
 type Variable struct {
+	Type
 	Description  string           `json:"desc,omitempty"`
 	Display      string           `json:"display,omitempty"`
 	Internal     bool             `json:"internal,omitempty"`
 	Required     bool             `json:"required,omitempty"`
 	Value        interface{}      `json:"value,omitempty"`
 	UserEditable bool             `json:"userEdit,omitempty"`
-	Type         string           `json:"type,omitempty"`
 	Options      []VariableOption `json:"options,omitempty"`
 }
 
@@ -57,7 +57,7 @@ type Execution struct {
 
 type Template struct {
 	Server
-	SupportedEnvironments []interface{} `json:"supportedEnvironments,omitEmpty"`
+	SupportedEnvironments []interface{} `json:"supportedEnvironments,omitempty"`
 }
 
 type Type struct {

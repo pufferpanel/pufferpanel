@@ -40,8 +40,10 @@
         <v-stepper-content step="1">
           <div v-if="Object.keys(templates).length > 0">
             <h3 v-text="$t('servers.SelectTemplate')" />
-            <v-text-field
+            <ui-input
               v-model="templateFilter"
+              look="material"
+              autofocus
               :placeholder="$t('common.Search')"
             />
           </div>
@@ -105,10 +107,9 @@
                 class="mb-4"
                 v-text="$t('servers.Name')"
               />
-              <v-text-field
-                id="nameInput"
+              <ui-input
                 v-model="serverName"
-                outlined
+                autofocus
               />
             </v-col>
           </v-row>
@@ -119,13 +120,10 @@
                 class="mb-4"
                 v-text="$t('nodes.Node')"
               />
-              <v-select
-                id="nodeSelect"
+              <ui-select
                 v-model="selectedNode"
-                outlined
                 :disabled="loadingNodes"
                 :items="nodes"
-                single-line
                 :no-data-text="$t('errors.ErrNoNodes')"
                 :placeholder="$t('servers.SelectNode')"
               />
@@ -134,30 +132,21 @@
 
           <v-row>
             <v-col cols="12">
-              <h3
-                class="mb-4"
-                v-text="$t('servers.Environment')"
-              />
-              <v-select
-                id="environmentSelect"
+              <h3 v-text="$t('servers.Environment')" />
+            </v-col>
+            <v-col cols="12">
+              <ui-select
                 v-model="selectedEnvironment"
                 :disabled="loadingTemplates"
                 :items="environments"
-                outlined
                 :placeholder="$t('servers.SelectEnvironment')"
               />
-              <div v-if="selectedEnvironment && environments[selectedEnvironment]">
-                <div
-                  v-for="key in environmentKeys"
-                  :key="key"
-                >
-                  <v-text-field
-                    v-model="environments[selectedEnvironment][key]"
-                    outlined
-                    :label="$t('env.' + environments[selectedEnvironment].type + '.' + key)"
-                  />
-                </div>
-              </div>
+            </v-col>
+            <v-col cols="12">
+              <ui-env-config
+                v-if="selectedEnvironment && environments[selectedEnvironment]"
+                v-model="environments[selectedEnvironment]"
+              />
             </v-col>
           </v-row>
 
@@ -191,9 +180,9 @@
                 class="mb-4"
                 v-text="$t('users.Users')"
               />
-              <v-text-field
+              <ui-input
                 v-model="userInput"
-                outlined
+                autofocus
                 :placeholder="$t('servers.TypeUsername')"
               />
               <v-list v-if="users.length > 0 || selectedUsers.length > 0">
@@ -265,69 +254,12 @@
             <v-col cols="12">
               <v-card-title v-text="$t('common.Options')" />
               <v-row>
-                <!-- v-if="!item.internal" -->
                 <v-col
-                  v-for="(item, index, name) in filteredFormData"
+                  v-for="(item, name) in filteredFormData"
                   :key="name"
                   cols="12"
                 >
-                  <v-text-field
-                    v-if="item.type === 'integer'"
-                    v-model="item.value"
-                    type="number"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
-                    </template>
-                  </v-text-field>
-                  <v-switch
-                    v-else-if="item.type === 'boolean'"
-                    v-model="item.value"
-                    class="mt-0 mb-4"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
-                    </template>
-                  </v-switch>
-                  <v-select
-                    v-else-if="item.type === 'option'"
-                    v-model="item.value"
-                    :items="item.options.map(function (option) { return { value: option.value, text: option.display }})"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
-                    </template>
-                  </v-select>
-                  <v-text-field
-                    v-else
-                    v-model="item.value"
-                    :required="item.required"
-                    :hint="item.desc"
-                    persistent-hint
-                    :label="item.display"
-                    outlined
-                  >
-                    <template slot="message">
-                      <!-- eslint-disable-next-line vue/no-v-html -->
-                      <div v-html="item.desc" />
-                    </template>
-                  </v-text-field>
+                  <ui-variable-input v-model="formData[name]" />
                 </v-col>
               </v-row>
             </v-col>
@@ -363,7 +295,6 @@
 <script>
 import axios from 'axios'
 import { Fragment } from 'vue-fragment'
-import { handleError } from '@/utils/api'
 import markdown from '@/utils/markdown'
 
 const CancelToken = axios.CancelToken
@@ -445,10 +376,10 @@ export default {
       if (!newVal || newVal === '') {
         return
       }
-      this.formData = this.templateData[newVal].data
+      this.formData = this.templateData[newVal].vars
       this.environments = []
-      for (const k in this.templateData[newVal].supportedEnvironments) {
-        const env = this.templateData[newVal].supportedEnvironments[k]
+      for (const k in this.templateData[newVal].supportedEnvs) {
+        const env = this.templateData[newVal].supportedEnvs[k]
         this.environments.push({
           value: k,
           text: this.$t('env.' + env.type + '.name'),
@@ -456,7 +387,7 @@ export default {
         })
       }
 
-      const env = this.templateData[newVal].environment
+      const env = this.templateData[newVal].defaultEnv
       let def = null
       if (env && env.type) {
         def = env.type
@@ -501,75 +432,55 @@ export default {
     this.getNodes()
   },
   methods: {
-    getTemplates () {
-      const ctx = this
+    async getTemplates () {
       this.loadingTemplates = true
       this.templateData = {}
       this.selectedTemplate = null
-      this.$http.get('/api/templates').then(response => {
-        response.data.map(template => {
-          if (!template.display) template.display = template.name
-          if (!template.type) template.type = 'none'
-          if (!ctx.templates[template.type]) ctx.templates[template.type] = []
-          ctx.templates[template.type].push(template)
-        })
+      const templates = await this.$api.getTemplates()
+      templates.map(template => {
+        if (!template.display) template.display = template.name
+        if (!template.type) template.type = 'none'
+        if (!this.templates[template.type]) this.templates[template.type] = []
+        this.templates[template.type].push(template)
+      })
 
-        const keys = Object.keys(ctx.templates)
-        const index = keys.indexOf('other')
-        if (index !== -1) this.$delete(keys, index)
-        keys.map(key => {
-          if (ctx.templates[key].length === 1) {
-            if (!ctx.templates.other) ctx.templates.other = []
-            ctx.templates.other.push(ctx.templates[key][0])
-            delete ctx.templates[key]
-          }
-        })
-
-        ctx.templates = { ...ctx.templates }
-        ctx.loadingTemplates = false
-      }).catch(handleError(ctx))
-    },
-    getNodes () {
-      const ctx = this
-      this.$http.get('/api/nodes').then(response => {
-        ctx.nodes = []
-        for (let i = 0; i < response.data.length; i++) {
-          const node = response.data[i]
-          ctx.nodes.push({
-            value: node.id,
-            text: node.name
-          })
+      const keys = Object.keys(this.templates)
+      const index = keys.indexOf('other')
+      if (index !== -1) this.$delete(keys, index)
+      keys.map(key => {
+        if (this.templates[key].length === 1) {
+          if (!this.templates.other) this.templates.other = []
+          this.templates.other.push(this.templates[key][0])
+          delete this.templates[key]
         }
+      })
 
-        if (ctx.nodes.length === 1) {
-          ctx.selectedNode = ctx.nodes[0].value
-        }
-
-        ctx.loadingNodes = false
-      }).catch(handleError(ctx))
+      this.templates = { ...this.templates }
+      this.loadingTemplates = false
     },
-    findUsers () {
-      const ctx = this
+    async getNodes () {
+      const nodes = await this.$api.getNodes()
+      this.nodes = nodes.map(node => {
+        return { value: node.id, text: node.name }
+      })
+
+      if (this.nodes.length > 0) {
+        this.selectedNode = this.nodes[0].value
+      }
+
+      this.loadingNodes = false
+    },
+    async findUsers () {
       this.searchingUsers = true
       this.userCancelSearch.cancel()
       this.userCancelSearch = CancelToken.source()
-      this.$http.get(`/api/users?username=${this.userInput}*`, {
-        cancelToken: this.userCancelSearch.token
-      }).then(response => {
-        ctx.users = []
-        for (let i = 0; i < Math.min(response.data.users.length, 5); i++) {
-          const user = response.data.users[i]
-          ctx.users.push({
-            value: user.username,
-            text: user.username + ' <' + user.email + '>'
-          })
-        }
-        ctx.searchingUsers = false
-        ctx.users.sort()
-      }).catch(handleError(ctx))
+      const users = await this.$api.searchUsers(this.userInput, this.userCancelSearch.token)
+      this.users = users.map(user => {
+        return { value: user.username, text: `${user.username} <${user.email}>` }
+      }).sort()
+      this.searchingUsers = false
     },
-    submitCreate () {
-      const ctx = this
+    async submitCreate () {
       const data = this.templateData[this.selectedTemplate]
       for (const item in data.data) {
         switch (data.data[item].type) {
@@ -589,9 +500,8 @@ export default {
       }
       delete data.environment.text
       delete data.environment.value
-      this.$http.post('/api/servers', data).then(response => {
-        ctx.$router.push({ name: 'Server', params: { id: response.data.id } })
-      }).catch(handleError(ctx))
+      const id = await this.$api.createServer(data)
+      this.$router.push({ name: 'Server', params: { id: id } })
     },
     selectUser (username) {
       if (!username || username === '') {
@@ -616,17 +526,11 @@ export default {
         }
       }
     },
-    loadTemplateData (template) {
+    async loadTemplateData (template) {
       if (!template) return
       if (!this.templateData[template]) {
-        const ctx = this
-        this.$http.get(`/api/templates/${template}`).then(response => {
-          if (response.status >= 200 && response.status < 300) {
-            ctx.templateData[template] = response.data
-            // recreate object to make vues reference equality check fail and rerender necessary components
-            ctx.templateData = { ...ctx.templateData }
-          }
-        }).catch(handleError(ctx))
+        this.templateData[template] = await this.$api.getTemplate(template)
+        this.templateData = { ...this.templateData }
       }
     },
     selectTemplate (template) {

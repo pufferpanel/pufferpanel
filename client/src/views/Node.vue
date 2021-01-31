@@ -10,10 +10,9 @@
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.name"
                 :label="$t('common.Name')"
-                outlined
                 hide-details
               />
             </v-col>
@@ -23,11 +22,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicHost"
                 :label="$t('nodes.PublicHost')"
-                type="text"
-                outlined
                 hide-details
               />
             </v-col>
@@ -35,11 +32,10 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicPort"
                 :label="$t('nodes.PublicPort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>
@@ -49,11 +45,9 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privateHost"
                 :label="$t('nodes.PrivateHost')"
-                type="text"
-                outlined
                 hide-details
               />
             </v-col>
@@ -61,22 +55,20 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privatePort"
                 :label="$t('nodes.PrivatePort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.sftpPort"
                 :label="$t('nodes.SftpPort')"
                 type="number"
-                outlined
                 hide-details
               />
             </v-col>
@@ -120,8 +112,6 @@
 </template>
 
 <script>
-import { handleError } from '@/utils/api'
-import { typeNode } from '@/utils/types'
 import markdown from '@/utils/markdown'
 
 export default {
@@ -160,28 +150,19 @@ export default {
     this.loadData()
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.$http.get(`/api/nodes/${ctx.$route.params.id}`).then(response => {
-        ctx.node = response.data
-        ctx.loading = false
-      }).catch(handleError(ctx))
-      ctx.$http.get(`/api/nodes/${ctx.$route.params.id}/deployment`).then(response => {
-        ctx.deployment = response.data
-        ctx.loadingDeploy = false
-      }).catch(handleError(ctx))
+    async loadData () {
+      this.node = await this.$api.getNode(this.$route.params.id)
+      this.loading = false
+      this.deployment = await this.$api.getNodeDeployment(this.$route.params.id)
+      this.loadingDeploy = false
     },
-    updateNode () {
-      const ctx = this
-      ctx.$http.put(`/api/nodes/${ctx.$route.params.id}`, typeNode(ctx.node)).then(response => {
-        ctx.$toast.success(ctx.$t('nodes.UpdateSuccess'))
-      }).catch(handleError(ctx))
+    async updateNode () {
+      await this.$api.updateNode(this.$route.params.id, this.node)
+      this.$toast.success(this.$t('nodes.UpdateSuccess'))
     },
-    deleteNode () {
-      const ctx = this
-      ctx.$http.delete(`/api/nodes/${ctx.$route.params.id}`).then(response => {
-        ctx.$router.push({ name: 'Nodes' })
-      }).catch(handleError(ctx))
+    async deleteNode () {
+      await this.$api.deleteNode(this.$route.params.id)
+      this.$router.push({ name: 'Nodes' })
     },
     downloadConfig () {
       const config = { ...this.configTemplate }

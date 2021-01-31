@@ -30,7 +30,7 @@ var SwaggerInfo = swaggerInfo{
 	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "PufferPanel API",
-	Description: "PufferPanel web interface",
+	Description: "PufferPanel API interface for both the panel and daemon. Endpoints starting with /daemon or /proxy are for nodes.",
 }
 
 type s struct{}

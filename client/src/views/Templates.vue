@@ -1,23 +1,6 @@
 <template>
   <v-container>
-    <div class="d-flex">
-      <h1
-        class="flex-grow-1"
-        v-text="$t('templates.Templates')"
-      />
-      <v-tooltip left>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            icon
-            v-on="on"
-            @click="loadTemplateImporter"
-          >
-            <v-icon>mdi-import</v-icon>
-          </v-btn>
-        </template>
-        <span v-text="$t('templates.import.Tooltip')" />
-      </v-tooltip>
-    </div>
+    <h1 v-text="$t('templates.Templates')" />
     <v-row>
       <v-col>
         <v-list
@@ -60,22 +43,38 @@
             />
           </div>
         </v-list>
-        <v-btn
-          v-show="hasScope('templates.edit') || isAdmin()"
-          color="primary"
-          bottom
-          right
-          fixed
-          fab
-          dark
-          large
-          :to="{name: 'AddTemplate'}"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <div style="position: fixed; bottom: 16px; right: 16px; display: flex; flex-direction: column; align-items: center;">
+          <v-tooltip left>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                v-show="hasScope('templates.edit') || isAdmin()"
+                color="primary"
+                class="mb-4"
+                fab
+                dark
+                small
+                v-on="on"
+                @click="loadTemplateImporter"
+              >
+                <v-icon>mdi-import</v-icon>
+              </v-btn>
+            </template>
+            <span v-text="$t('templates.import.Tooltip')" />
+          </v-tooltip>
+          <v-btn
+            v-show="hasScope('templates.edit') || isAdmin()"
+            color="primary"
+            fab
+            dark
+            large
+            :to="{name: 'AddTemplate'}"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+	</div>
       </v-col>
     </v-row>
-    <common-overlay
+    <ui-overlay
       v-model="showTemplateImporter"
       card
       closable
@@ -97,7 +96,8 @@
         multiple
         clearable
         deletable-chips
-        solo
+        hide-selected
+        outlined
         open-on-clear
       />
       <v-row>
@@ -118,8 +118,8 @@
           />
         </v-col>
       </v-row>
-    </common-overlay>
-    <common-overlay
+    </ui-overlay>
+    <ui-overlay
       v-model="offerImport"
       card
       closable
@@ -149,13 +149,12 @@
           />
         </v-col>
       </v-row>
-    </common-overlay>
+    </ui-overlay>
   </v-container>
 </template>
 
 <script>
 import { isDark } from '@/utils/dark'
-import { handleError } from '@/utils/api'
 
 export default {
   data () {
@@ -188,42 +187,39 @@ export default {
     this.$vuetify.theme = this.unproxiedTheme
   },
   methods: {
-    loadData () {
-      const ctx = this
-      ctx.loading = true
-      ctx.templates = {}
-      ctx.$http.get('/api/templates').then(response => {
-        response.data.map(template => {
-          if (!template.display) template.display = template.name
-          if (!template.type) template.type = 'none'
-          if (!ctx.templates[template.type]) ctx.templates[template.type] = []
-          ctx.templates[template.type].push(template)
-        })
+    async loadData () {
+      this.loading = true
+      this.templates = {}
+      const templates = await this.$api.getTemplates()
+      templates.map(template => {
+        if (!template.display) template.display = template.name
+        if (!template.type) template.type = 'none'
+        if (!this.templates[template.type]) this.templates[template.type] = []
+        this.templates[template.type].push(template)
+      })
 
-        const keys = Object.keys(ctx.templates)
-        const index = keys.indexOf('other')
-        if (index !== -1) this.$delete(keys, index)
-        keys.map(key => {
-          if (ctx.templates[key].length === 1) {
-            if (!ctx.templates.other) ctx.templates.other = []
-            ctx.templates.other.push(ctx.templates[key][0])
-            delete ctx.templates[key]
-          }
-        })
+      const keys = Object.keys(this.templates)
+      const index = keys.indexOf('other')
+      if (index !== -1) this.$delete(keys, index)
+      keys.map(key => {
+        if (this.templates[key].length === 1) {
+          if (!this.templates.other) this.templates.other = []
+          this.templates.other.push(this.templates[key][0])
+          delete this.templates[key]
+        }
+      })
 
-        ctx.templates = { ...ctx.templates }
-        ctx.loading = false
-        if (response.data.length === 0 && localStorage.getItem('offerTemplateImport') !== 'false') ctx.offerImport = true
-      }).catch(handleError(ctx))
+      this.templates = { ...this.templates }
+      this.loading = false
+      if (templates.length === 0 && localStorage.getItem('offerTemplateImport') !== 'false') {
+        this.offerImport = true
+      }
     },
-    loadTemplateImporter () {
-      const ctx = this
-      ctx.importableTemplates = []
-      ctx.templatesToImport = []
-      ctx.$http.post('/api/templates/import').then(response => {
-        ctx.importableTemplates = response.data
-        ctx.showTemplateImporter = true
-      }).catch(handleError(ctx))
+    async loadTemplateImporter () {
+      this.importableTemplates = []
+      this.templatesToImport = []
+      this.importableTemplates = await this.$api.getImportableTemplates()
+      this.showTemplateImporter = true
     },
     doImports () {
       const ctx = this
@@ -236,10 +232,9 @@ export default {
         })
       }, Promise.resolve()).finally(() => { ctx.loadData() })
     },
-    importTemplate (ctx, template) {
-      return ctx.$http.post(`/api/templates/import/${template}`).then(response => {
-        ctx.$toast.success(ctx.$t('templates.import.Successful', { template }))
-      }).catch(handleError(ctx))
+    async importTemplate (ctx, template) {
+      await ctx.$api.importTemplate(template)
+      ctx.$toast.success(ctx.$t('templates.import.Successful', { template }))
     },
     importDeclined () {
       this.offerImport = false

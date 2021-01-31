@@ -133,7 +133,7 @@ func (us *User) ChangePassword(username string, newPass string) error {
 func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, uint, error) {
 	users := &models.Users{}
 
-	query := us.DB.Offset((page - 1) * pageSize).Limit(pageSize)
+	query := us.DB
 
 	usernameFilter = strings.Replace(usernameFilter, "*", "%", -1)
 	emailFilter = strings.Replace(emailFilter, "*", "%", -1)
@@ -146,14 +146,14 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 		query = query.Where("email LIKE ?", emailFilter)
 	}
 
-	res := query.Find(users)
-
 	var count uint
 	err := query.Model(users).Count(&count).Error
 
 	if err != nil {
 		return nil, 0, err
 	}
+
+	res := query.Offset((page - 1) * pageSize).Limit(pageSize).Find(users)
 
 	return users, count, res.Error
 }

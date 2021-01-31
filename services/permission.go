@@ -84,11 +84,14 @@ func (ps *Permission) GetForClientAndServer(id uint, serverId *string) (*models.
 
 func (ps *Permission) UpdatePermissions(perms *models.Permissions) error {
 	//update oauth2 with new information
-	if perms.ShouldDelete() {
+	//TODO: THIS NUKES STUFF IF YOU REMOVE GLOBAL PERMS........
+	/*if perms.ShouldDelete() {
 		return ps.Remove(perms)
 	} else {
 		return ps.DB.Save(perms).Error
-	}
+	}*/
+
+	return ps.DB.Save(perms).Error
 }
 
 func (ps *Permission) Remove(perms *models.Permissions) error {

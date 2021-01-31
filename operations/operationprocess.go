@@ -18,6 +18,7 @@ package operations
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/operations/alterfile"
 	"github.com/pufferpanel/pufferpanel/v2/operations/command"
 	"github.com/pufferpanel/pufferpanel/v2/operations/download"
 	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
@@ -143,6 +144,9 @@ func loadCoreModules() {
 
 	moveFactory := move.Factory
 	commandMapping[moveFactory.Key()] = moveFactory
+
+	alterFileFactory := alterfile.Factory
+	commandMapping[alterFileFactory.Key()] = alterFileFactory
 
 	writeFileFactory := writefile.Factory
 	commandMapping[writeFileFactory.Key()] = writeFileFactory

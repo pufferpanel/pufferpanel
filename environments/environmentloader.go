@@ -21,7 +21,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments/docker"
-	"github.com/pufferpanel/pufferpanel/v2/environments/standard"
 	"path/filepath"
 	"sync"
 )
@@ -31,7 +30,6 @@ var mapping map[string]pufferpanel.EnvironmentFactory
 func LoadModules() {
 	mapping = make(map[string]pufferpanel.EnvironmentFactory)
 
-	mapping["standard"] = standard.EnvironmentFactory{}
 	mapping["docker"] = docker.EnvironmentFactory{}
 
 	loadAdditionalModules(mapping)

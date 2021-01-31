@@ -33,6 +33,6 @@
   "Reload": "Recharger les données du serveur depuis le disque",
   "Reloaded": "Données du serveur rechargées",
   "Autostart": "Démarrer le serveur au démarrage du nœud",
-  "Autorestart": "Redémarrer le serveur quand il s'arrête normalement",
+  "Autorestart": "Redémarrer le serveur lorsqu'il s'arrête normalement",
   "Autorecover": "Redémarrer le serveur quand il plante"
 }

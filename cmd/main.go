@@ -16,12 +16,13 @@ package main
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cobra"
 	"os"
 	"runtime/debug"
 )
 
 func main() {
-	if !pufferpanel.UserInGroup() {
+	if !pufferpanel.UserInGroup("pufferpanel") {
 		fmt.Printf("You do not have permission to use this command")
 		return
 	}
@@ -36,4 +37,27 @@ func main() {
 	}()
 
 	Execute()
+}
+
+var rootCmd = &cobra.Command{
+	Use:   "pufferpanel",
+	Short: "Game Server Management Panel",
+}
+
+func init() {
+	rootCmd.AddCommand(
+		runCmd,
+		versionCmd,
+		userCmd,
+		shutdownCmd,
+		//migrateCmd,
+		)
+}
+
+func Execute() {
+	rootCmd.SetVersionTemplate(pufferpanel.Display)
+
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+	}
 }

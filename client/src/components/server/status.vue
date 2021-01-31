@@ -28,23 +28,20 @@
 
 <script>
 export default {
+  props: {
+    server: { type: Object, default: () => {} }
+  },
   data () {
     return {
       online: null
     }
   },
   mounted () {
-    const ctx = this
-
-    this.$socket.addEventListener('message', event => {
-      const data = JSON.parse(event.data)
-      if (!data) return
-      if (data.type === 'status') ctx.online = data.data.running
+    this.$api.addServerListener(this.server.id, 'status', event => {
+      this.online = event.running
     })
 
-    setTimeout(() => {
-      ctx.$socket.sendObj({ type: 'status' })
-    }, 200)
+    this.$api.requestServerStatus(this.server.id)
   }
 }
 </script>

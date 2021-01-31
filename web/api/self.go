@@ -29,6 +29,16 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), updateSelf)
 }
 
+// @Summary Get your user info
+// @Description Gets the user information of the current user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.UserView
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /api/self [get]
 func getSelf(c *gin.Context) {
 	t, exist := c.Get("user")
 	user, ok := t.(*models.User)
@@ -41,6 +51,17 @@ func getSelf(c *gin.Context) {
 	c.JSON(http.StatusOK, models.FromUser(user))
 }
 
+// @Summary Update your user
+// @Description Update user information for your current user
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param user body models.User true "User information"
+// @Router /api/self [PUT]
 func updateSelf(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}

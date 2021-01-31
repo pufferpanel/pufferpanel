@@ -32,6 +32,9 @@ export default {
   components: {
     apexchart: VueApexCharts
   },
+  props: {
+    server: { type: Object, default: () => {} }
+  },
   data () {
     return {
       intl: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
@@ -86,15 +89,8 @@ export default {
     }
   },
   mounted () {
-    const ctx = this
-    this.$socket.addEventListener('message', event => {
-      const data = JSON.parse(event.data)
-      if (data === 'undefined') {
-        return
-      }
-      if (data.type === 'stat') {
-        ctx.updateStats(data.data)
-      }
+    this.$api.addServerListener(this.server.id, 'stat', event => {
+      this.updateStats(event)
     })
   },
   methods: {

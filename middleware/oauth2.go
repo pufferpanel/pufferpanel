@@ -19,10 +19,12 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
+	"runtime/debug"
 	"strings"
 )
 
@@ -30,8 +32,12 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 	return func(c *gin.Context) {
 		failure := true
 		defer func() {
+			if err := recover(); err != nil {
+				logging.Error().Printf("Error handling auth check: %s\n%s", err, debug.Stack())
+				failure = true
+			}
 			if failure && !c.IsAborted() {
-				c.Abort()
+				c.AbortWithStatus(500)
 			}
 		}()
 

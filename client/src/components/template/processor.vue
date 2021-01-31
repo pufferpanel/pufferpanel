@@ -13,236 +13,228 @@
 
 <template>
   <v-row>
-    <v-col cols="12">
-      <v-select
+    <v-col>
+      <ui-select
         v-model="value.type"
         :items="processorTypes"
         :label="$t('templates.Type')"
-        outlined
-        hide-details
-        @change="changeType"
+        @change="changeType()"
       />
     </v-col>
     <v-col
-      v-if="value.type === 'download'"
+      v-for="field in fields"
+      :key="value.type + field.name"
       cols="12"
     >
-      <v-text-field
-        v-for="(e, i) in value.files"
-        :key="i"
-        v-model="value.files[i]"
-        dense
-        outlined
-        hide-details
-        append-outer-icon="mdi-close-circle"
-        @click:append-outer="$delete(value.files, i)"
+      <h4
+        v-if="field.type === 'map' || field.type === 'list' || field.headline"
+        v-text="getLabel(field)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'download'"
-      cols="12"
-    >
-      <v-btn
-        text
-        block
-        @click="value.files.push(''); $forceUpdate()"
-        v-text="$t('templates.AddFile')"
+
+      <component
+        :is="field.component"
+        v-if="field.type === 'custom'"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'command'"
-      cols="12"
-    >
-      <v-text-field
-        v-for="(e, i) in value.commands"
-        :key="i"
-        v-model="value.commands[i]"
-        dense
-        outlined
-        hide-details
-        append-outer-icon="mdi-close-circle"
-        @click:append-outer="$delete(value.commands, i)"
+      <ui-map-input
+        v-else-if="field.type === 'map'"
+        :value="value[field.name] || field.default"
+        :key-label="field.keyLabel ? $t(field.keyLabel) : undefined"
+        :value-label="field.valueLabel ? $t(field.valueLabel) : undefined"
+        @input="onInput(field.name, $event)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'command'"
-      cols="12"
-    >
-      <v-btn
-        text
-        block
-        @click="value.commands.push(''); $forceUpdate()"
-        v-text="$t('templates.AddCommand')"
+      <ui-list-input
+        v-else-if="field.type === 'list'"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'writefile'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.target"
-        outlined
-        hide-details
-        :label="$t('templates.Filename')"
+      <ui-switch
+        v-else-if="field.type === 'boolean'"
+        :label="getLabel(field)"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'writefile'"
-      cols="12"
-    >
+      <ui-input-suggestions
+        v-else-if="field.options !== undefined"
+        :type="field.type"
+        :label="getLabel(field)"
+        :items="field.options"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
+      />
       <v-textarea
-        v-model="value.text"
-        :label="$t('templates.Content')"
+        v-else-if="field.type === 'textarea'"
+        :value="value[field.name] || field.default"
+        :label="getLabel(field)"
         outlined
         hide-details
+        @input="onInput(field.name, $event)"
       />
-    </v-col>
-    <v-col
-      v-if="value.type === 'move'"
-      cols="12"
-      md="6"
-    >
-      <v-text-field
-        v-model="value.source"
-        outlined
-        hide-details
-        :label="$t('templates.Source')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'move'"
-      cols="12"
-      md="6"
-    >
-      <v-text-field
-        v-model="value.target"
-        outlined
-        hide-details
-        :label="$t('templates.Target')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'mkdir'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.target"
-        outlined
-        hide-details
-        :label="$t('common.Name')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'mojangdl'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.version"
-        outlined
-        hide-details
-        :label="$t('templates.Version')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'mojangdl'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.target"
-        outlined
-        hide-details
-        :label="$t('templates.Filename')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'forgedl'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.version"
-        outlined
-        hide-details
-        :label="$t('templates.Version')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'forgedl'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.filename"
-        outlined
-        hide-details
-        :label="$t('templates.Filename')"
-      />
-    </v-col>
-    <v-col
-      v-if="value.type === 'spongeforgedl'"
-      cols="12"
-    >
-      <v-text-field
-        v-model="value.releaseType"
-        outlined
-        hide-details
-        :label="$t('templates.ReleaseType')"
+      <ui-input
+        v-else
+        :type="field.type"
+        :label="getLabel(field)"
+        :value="value[field.name] || field.default"
+        @input="onInput(field.name, $event)"
       />
     </v-col>
   </v-row>
 </template>
 
 <script>
+const processors = {
+  download: [
+    {
+      name: 'files',
+      type: 'list',
+      default: []
+    }
+  ],
+  command: [
+    {
+      name: 'commands',
+      type: 'list',
+      default: []
+    }
+  ],
+  alterfile: [
+    {
+      name: 'file',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'regex',
+      type: 'boolean',
+      default: true
+    },
+    {
+      name: 'search',
+      type: 'text',
+      default: ''
+    },
+    {
+      name: 'replace',
+      type: 'text',
+      default: ''
+    }
+  ],
+  writefile: [
+    {
+      name: 'target',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    },
+    {
+      name: 'text',
+      type: 'textarea',
+      default: ''
+    }
+  ],
+  move: [
+    {
+      name: 'source',
+      type: 'text',
+      default: ''
+    },
+    {
+      name: 'target',
+      type: 'text',
+      default: ''
+    }
+  ],
+  mkdir: [
+    {
+      name: 'target',
+      type: 'text',
+      label: 'common.Name',
+      default: ''
+    }
+  ],
+  mojangdl: [
+    {
+      name: 'version',
+      type: 'text',
+      label: 'templates.Version',
+      default: ''
+    },
+    {
+      name: 'target',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    }
+  ],
+  forgedl: [
+    {
+      name: 'version',
+      type: 'text',
+      label: 'templates.Version',
+      default: ''
+    },
+    {
+      name: 'filename',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    }
+  ],
+  spongeforgedl: [
+    {
+      name: 'releaseType',
+      type: 'text',
+      default: ''
+    }
+  ],
+  fabricdl: [
+    {
+      name: 'targetFile',
+      type: 'text',
+      label: 'templates.Filename',
+      default: ''
+    }
+  ]
+}
+
 export default {
   props: {
     value: { type: Object, default: () => {} }
   },
-  data () {
-    return {
-      processorTypes: [
-        {
-          value: 'download',
-          text: 'Download'
-        },
-        {
-          value: 'command',
-          text: 'Run Command'
-        },
-        {
-          value: 'writefile',
-          text: 'Write to file'
-        },
-        {
-          value: 'move',
-          text: 'Move File'
-        },
-        {
-          value: 'mkdir',
-          text: 'Create Directory'
-        },
-        {
-          value: 'mojangdl',
-          text: 'Download Minecraft'
-        },
-        {
-          value: 'forgedl',
-          text: 'Download Minecraft Forge'
-        },
-        {
-          value: 'spongeforgedl',
-          text: 'Download Minecraft SpongeForge'
-        }
-      ]
+  computed: {
+    fields () {
+      return processors[this.value.type]
+    },
+    processorTypes () {
+      return Object.keys(processors).map(elem => {
+        return { value: elem, text: this.$t(`templates.processors.${elem}.ProcessorName`) }
+      })
     }
   },
+  mounted () {
+    const defaulted = {}
+    this.fields.map(elem => {
+      if (!this.value[elem.name]) {
+        defaulted[elem.name] = elem.default
+      }
+    })
+    this.$emit('input', { ...this.value, ...defaulted })
+  },
   methods: {
-    changeType (newType) {
-      this.value.files = newType === 'download' ? [] : undefined
-      this.value.commands = newType === 'command' ? [] : undefined
-      this.value.target = undefined
-      this.value.text = undefined
-      this.value.source = undefined
-      this.value.version = undefined
-      this.value.filename = undefined
-      this.value.releaseType = undefined
+    changeType () {
+      const changed = { ...this.value }
+      Object.keys(changed).map(elem => {
+        if (elem !== 'type') changed[elem] = undefined
+      })
+      this.$emit('input', changed)
+    },
+    onInput (field, event) {
+      this.$emit('input', { ...this.value, [field]: event })
+    },
+    getLabel (field) {
+      return field.label ? this.$t(field.label) : this.$t(`templates.processors.${this.value.type}.${field.name}`)
     }
   }
 }

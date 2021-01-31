@@ -1,14 +1,14 @@
 {
   "Server": "Server",
   "NoServers": "Non ci sono server a cui hai accesso",
-  "Servers": "Server",
+  "Servers": "Servers",
   "Add": "Aggiungi Server",
   "Console": "Console",
   "Controls": "Controlli",
   "SFTPInfo": "Informazione SFTP",
   "Start": "Avvia",
-  "Stop": "Interrompi",
-  "Kill": "Termina",
+  "Stop": "Stop",
+  "Kill": "Termina processo",
   "Install": "Installa",
   "Send": "Invia",
   "Pause": "Interrompi",
@@ -30,9 +30,9 @@
   "Deleted": "Server Eliminato",
   "NoReadme": "Nessun readme disponibile per questo modello",
   "SftpConnection": "Connetti a SFTP",
-  "Reload": "Reload server data from disk",
-  "Reloaded": "Reloaded server data",
-  "Autostart": "Start the server when the node starts",
+  "Reload": "Ricarica impostazioni server dal disco",
+  "Reloaded": "Dati server ricaricati",
+  "Autostart": "Starta il server quando il nodo starta",
   "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Restart the server when it crashes"
+  "Autorecover": "Riavvia il server quando crasha"
 }

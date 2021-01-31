@@ -10,10 +10,9 @@
         <v-card-text class="mt-6">
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.name"
                 :label="$t('common.Name')"
-                outlined
               />
             </v-col>
           </v-row>
@@ -22,22 +21,19 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicHost"
                 :label="$t('nodes.PublicHost')"
-                type="text"
-                outlined
               />
             </v-col>
             <v-col
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.publicPort"
                 :label="$t('nodes.PublicPort')"
                 type="number"
-                outlined
               />
             </v-col>
           </v-row>
@@ -46,32 +42,28 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privateHost"
                 :label="$t('nodes.PrivateHost')"
-                type="text"
-                outlined
               />
             </v-col>
             <v-col
               cols="12"
               md="6"
             >
-              <v-text-field
+              <ui-input
                 v-model="node.privatePort"
                 :label="$t('nodes.PrivatePort')"
                 type="number"
-                outlined
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
+              <ui-input
                 v-model="node.sftpPort"
                 :label="$t('nodes.SftpPort')"
                 type="number"
-                outlined
               />
             </v-col>
           </v-row>
@@ -93,9 +85,6 @@
 </template>
 
 <script>
-import { typeNode } from '@/utils/types'
-import { handleError } from '@/utils/api'
-
 export default {
   data () {
     return {
@@ -103,11 +92,9 @@ export default {
     }
   },
   methods: {
-    submit () {
-      const ctx = this
-      ctx.$http.post('/api/nodes', typeNode(ctx.node)).then(response => {
-        ctx.$router.push({ name: 'Nodes' })
-      }).catch(handleError(ctx))
+    async submit () {
+      await this.$api.createNode(this.node)
+      this.$router.push({ name: 'Nodes' })
     }
   }
 }

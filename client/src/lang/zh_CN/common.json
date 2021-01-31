@@ -1,7 +1,7 @@
 {
-  "Id": "ID",
-  "Name": "Name",
-  "Address": "Address",
+  "Id": "账户",
+  "Name": "名称",
+  "Address": "地址",
   "Online": "Online",
   "Offline": "Offline",
   "Loading": "Loading...",

@@ -7,6 +7,7 @@ const opts = {
   components: { VSnackbar },
   theme: {
     options: {
+      inputStyle: 'outlined',
       customProperties: true
     },
     themes: {
