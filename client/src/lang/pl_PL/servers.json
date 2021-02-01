@@ -28,7 +28,7 @@
   "NoEditableVars": "Ten serwer nie posiada zmiennych, które możesz edytować",
   "ConfirmDelete": "Czy chcesz usunąć ten serwer? (tego nie można cofnąć)",
   "Delete": "Usuń serwer",
-  "Deleted": "Usunięty serwer",
+  "Deleted": "Serwer usunięty",
   "NoReadme": "Brak dostępnego pliku README dla tego szablonu",
   "SftpConnection": "Połącz z SFTP",
   "EditDefinition": "Edit Server Definition",
