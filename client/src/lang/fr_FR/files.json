@@ -1,8 +1,8 @@
 {
-  "FileManager": "Gestionnaire de fichiers",
-  "NewFolder": "Nouveau dossier",
-  "NewFile": "Nouveau fichier",
-  "LastModified": "Dernière modification",
+  "FileManager": "Gestionnaire de Fichiers",
+  "NewFolder": "Nouveau Dossier",
+  "NewFile": "Nouveau Fichier",
+  "LastModified": "Dernière Modification",
   "ConfirmDelete": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
   "Upload": "Envoyer",
   "Download": "Télécharger",

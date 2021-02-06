@@ -1,6 +1,7 @@
 {
   "Templates": "Vorlagen",
   "NoTemplates": "Es gibt noch keine Vorlagen",
+  "Deleted": "Vorlage gelöscht",
   "New": "Neue Vorlage erstellen",
   "Edit": "Vorlage bearbeiten",
   "Editor": "Editor",
@@ -13,7 +14,7 @@
   "DeleteInstallStep": "Installationsschritt löschen",
   "Description": "Beschreibung",
   "DataType": "Datentyp",
-  "DefaultValue": "Voreingestellter Wert",
+  "DefaultValue": "Standardwert",
   "Required": "Erforderlich",
   "UserEditable": "Kann von Nutzern bearbeitet werden",
   "Value": "Wert",
@@ -27,14 +28,17 @@
   "ReleaseType": "Release-Typ",
   "AddFile": "Datei hinzufügen",
   "AddVariable": "Variable hinzufügen",
+  "Environment": "Environment",
+  "Environments": "Umgebungen",
   "AddEnvironment": "Umgebung hinzufügen",
+  "DefaultEnvironment": "Standardumgebung",
   "AddEnvVar": "Umgebungsvariable hinzufügen",
   "EnvVars": "Umgebungsvariablen",
   "DockerImage": "Docker Image",
   "SaveSuccess": "Vorlage gespeichert",
-  "VarNameNoSpaces": "Ein Variablenname darf nicht leer sein oder Leerzeichen enthalten",
+  "VarNameNoSpaces": "Ein Variablenname darf weder leer sein noch Leerzeichen enthalten",
   "SupportedEnvironments": "Unterstützte Umgebungen",
-  "RunConfig": "Starte Konfiguration",
+  "RunConfig": "Startkonfiguration",
   "PreHook": "Pre-Run-Hooks",
   "PostHook": "Post-Run-Hooks",
   "AddPreStep": "Pre-run-Schritt hinzufügen",
@@ -52,11 +56,52 @@
     "Select": "Zu importierende Vorlagen auswählen",
     "Started": "Importiere Vorlagen, bitte warte einen Moment",
     "Successful": "Vorlage {template} erfolgreich importiert",
-    "NoTemplatesTitle": "Möchten Sie Vorlagen importieren?",
+    "NoTemplatesTitle": "Möchtest du Vorlagen importieren?",
     "NoTemplatesContent": "Sie haben derzeit keine Vorlagen. Vorlagen sind notwendig, um Server zu erstellen.<br/>Möchten Sie jetzt einige Vorlagen aus dem offiziellen PufferPanel Repository importieren?"
   },
   "stop": {
     "Command": "Befehl",
     "Signal": "Signal"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Herunterladen",
+      "files": "Dateien"
+    },
+    "command": {
+      "ProcessorName": "Befehl ausführen",
+      "commands": "Befehle"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "In Datei schreiben",
+      "text": "Inhalt"
+    },
+    "move": {
+      "ProcessorName": "Datei verschieben",
+      "source": "Quelle",
+      "target": "Ziel"
+    },
+    "mkdir": {
+      "ProcessorName": "Ordner erstellen"
+    },
+    "mojangdl": {
+      "ProcessorName": "Minecraft herunterladen"
+    },
+    "forgedl": {
+      "ProcessorName": "Minecraft Forge herunterladen"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Minecraft SpongeForge herunterladen",
+      "releaseType": "Release-Typ"
+    },
+    "fabricdl": {
+      "ProcessorName": "Minecraft Fabric herunterladen"
+    }
   }
 }

@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "Bestandsbeheer",
+  "NewFolder": "Nieuwe Map",
+  "NewFile": "Nieuw Bestand",
+  "LastModified": "Laatst Gewijzigd",
+  "ConfirmDelete": "Weet je zeker dat je dit bestand wilt verwijderen?",
+  "Upload": "Uploaden",
+  "Download": "Downloaden",
+  "Size": "Grootte",
+  "NoFiles": "Er zijn hier nog geen bestanden, maak er een paar aan door bijvoorbeeld op de installeren knop te klikken bovenaan de pagina",
+  "FileLoadFailed": "Bestand laden mislukt"
 }

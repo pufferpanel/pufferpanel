@@ -1,6 +1,7 @@
 {
   "Templates": "テンプレート一覧",
   "NoTemplates": "テンプレートがありません．",
+  "Deleted": "Template deleted",
   "New": "新規テンプレート",
   "Edit": "テンプレートを編集",
   "Editor": "編集者",
@@ -27,7 +28,10 @@
   "ReleaseType": "リリースの種類",
   "AddFile": "ファイルを追加",
   "AddVariable": "変数を追加",
+  "Environment": "Environment",
+  "Environments": "Environments",
   "AddEnvironment": "使用環境の追加",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "新規変数を追加",
   "EnvVars": "環境変数",
   "DockerImage": "Docker イメージ",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "コマンド",
     "Signal": "シグナル"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Download",
+      "files": "Files"
+    },
+    "command": {
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Content"
+    },
+    "move": {
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Create Directory"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
   }
 }

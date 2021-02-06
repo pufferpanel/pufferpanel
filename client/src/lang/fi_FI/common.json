@@ -34,5 +34,7 @@
   "ErrorDetails": "Virheen Tiedot",
   "HelpTranslate": "Auta meitä kääntämään PufferPanel",
   "DarkMode": "Tumma Tila",
-  "ThemeOptions": "Teema-asetukset"
+  "ThemeOptions": "Teema-asetukset",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }
