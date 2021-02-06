@@ -1,6 +1,7 @@
 {
   "Templates": "Sablonok",
   "NoTemplates": "Még nincsenek itt sablonok",
+  "Deleted": "Template deleted",
   "New": "Új sablon",
   "Edit": "Sablon szerkesztése",
   "Editor": "Szerkesztő",
@@ -27,7 +28,10 @@
   "ReleaseType": "A kiadás típusa",
   "AddFile": "Fájl hozzáadása",
   "AddVariable": "Mező hozzáadása",
+  "Environment": "Environment",
+  "Environments": "Environments",
   "AddEnvironment": "Környezet hozzáadása",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "Új környezeti változó hozzáadása",
   "EnvVars": "Környezeti változók",
   "DockerImage": "Docker kép",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "Parancs",
     "Signal": "Jel"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Download",
+      "files": "Files"
+    },
+    "command": {
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Content"
+    },
+    "move": {
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Create Directory"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
   }
 }

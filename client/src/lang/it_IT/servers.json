@@ -6,6 +6,7 @@
   "Console": "Console",
   "Controls": "Controlli",
   "SFTPInfo": "Informazione SFTP",
+  "Restart": "Riavvia",
   "Start": "Avvia",
   "Stop": "Stop",
   "Kill": "Termina processo",
@@ -30,9 +31,10 @@
   "Deleted": "Server Eliminato",
   "NoReadme": "Nessun readme disponibile per questo modello",
   "SftpConnection": "Connetti a SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Ricarica impostazioni server dal disco",
   "Reloaded": "Dati server ricaricati",
   "Autostart": "Starta il server quando il nodo starta",
-  "Autorestart": "Restart the server when it stops normally",
+  "Autorestart": "Riavvia il server quando si spegne normalmente",
   "Autorecover": "Riavvia il server quando crasha"
 }

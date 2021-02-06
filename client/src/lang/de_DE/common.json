@@ -4,7 +4,7 @@
   "Address": "Adresse",
   "Online": "Online",
   "Offline": "Offline",
-  "Loading": "Lade...",
+  "Loading": "Lädt...",
   "General": "Allgemein",
   "Language": "Sprache",
   "SelectLanguage": "Sprache auswählen",
@@ -32,7 +32,9 @@
   "LanguageName": "Deutsch",
   "Details": "Details",
   "ErrorDetails": "Fehlerdetails",
-  "HelpTranslate": "Hilf uns PufferPanel zu übersetzen",
-  "DarkMode": "Dunkel Modus",
-  "ThemeOptions": "Theme-Einstellungen"
+  "HelpTranslate": "Hilf uns, PufferPanel zu übersetzen",
+  "DarkMode": "Dark Mode",
+  "ThemeOptions": "Theme-Einstellungen",
+  "Protocol": "Protokoll",
+  "Add": "Hinzufügen"
 }

@@ -12,8 +12,8 @@
   "ErrSettingNotConfigured": "{setting} n'est pas configuré",
   "ErrNoTemplate": "Aucun modèle avec le nom '{name}' n'a été trouvé",
   "ErrServiceInvalidProvider": "{service} ne supporte pas {provider}",
-  "ErrFieldRequired": "{field} est obligatoire",
-  "ErrFieldMustBePrintable": "{field} doit être des caractères ascii imprimables",
+  "ErrFieldRequired": "\"{field}\" est requis",
+  "ErrFieldMustBePrintable": "{field} doit être des caractères ascii affichables",
   "ErrFieldHasURICharacters": "{field} ne doit pas contenir de caractères qui ne peuvent pas être utilisés dans les URIs",
   "ErrFieldIsInvalidHost": "{field} doit être une IP valide ou FQDN",
   "ErrFieldIsInvalidIP": "{field} doit être une IP valide",
@@ -25,13 +25,14 @@
   "ErrFieldNotEmail": "{field} n'est pas une adresse mail valide",
   "ErrFieldLength": "{field} doit contenir au moins {length} caractères",
   "ErrNoPermission": "Vous n'avez pas la permission d'effectuer cette action",
-  "ErrDatabaseNotAvailable": "La base de données n'est pas disponible",
+  "ErrDatabaseNotAvailable": "La base de données est indisponible",
   "ErrNoNodes": "Aucun nœud disponible",
   "ErrNoTemplates": "Aucun modèle n'est disponible",
   "ErrPasswordRequirements": "Le mot de passe doit contenir au moins 8 caractères",
-  "ErrUsernameRequirements": "Le nom d'utilisateur doit contenir au moins {min} caractères, uniquement composé de caractères alphanumériques, _ ou -",
+  "ErrUsernameRequirements": "Le nom d'utilisateur doit comporter au moins 3 caractères et ne contenir que des caractères alphanumériques, _ ou -",
   "ErrPasswordsNotIdentical": "Les mot de passe ne sont pas identiques",
   "ErrSessionTimedOut": "Session expirée, merci de vous reconnecter",
   "ErrMissingScope": "Vous n'êtes pas autorisé à effectuer cette action",
-  "ErrInvalidJson": "Les données JSON sont invalides"
+  "ErrInvalidJson": "Les données JSON sont invalides",
+  "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être ralenties ou indisponibles"
 }

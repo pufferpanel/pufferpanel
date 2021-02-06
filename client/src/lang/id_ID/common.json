@@ -34,5 +34,7 @@
   "ErrorDetails": "Detail Masalah",
   "HelpTranslate": "Bantu kami terjemahkan Pufferpanel",
   "DarkMode": "Mode Gelap",
-  "ThemeOptions": "Pilihan Tema"
+  "ThemeOptions": "Pilihan Tema",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }

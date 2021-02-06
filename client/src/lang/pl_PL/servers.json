@@ -6,6 +6,7 @@
   "Console": "Konsola",
   "Controls": "Ustawienia",
   "SFTPInfo": "Informacje SFTP",
+  "Restart": "Uruchom ponownie",
   "Start": "Uruchom",
   "Stop": "Zatrzymaj",
   "Kill": "Zabij",
@@ -27,12 +28,13 @@
   "NoEditableVars": "Ten serwer nie posiada zmiennych, które możesz edytować",
   "ConfirmDelete": "Czy chcesz usunąć ten serwer? (tego nie można cofnąć)",
   "Delete": "Usuń serwer",
-  "Deleted": "Usunięty serwer",
+  "Deleted": "Serwer usunięty",
   "NoReadme": "Brak dostępnego pliku README dla tego szablonu",
   "SftpConnection": "Połącz z SFTP",
+  "EditDefinition": "Edytuj definicję serwera",
   "Reload": "Odśwież dane serwera z dysku",
   "Reloaded": "Przeładowano dane serwera",
   "Autostart": "Uruchom serwer po uruchomieniu węzła",
-  "Autorestart": "Restart the server when it stops normally",
+  "Autorestart": "Uruchom ponownie serwer po normalnym zatrzymaniu",
   "Autorecover": "Uruchom ponownie serwer po awarii"
 }
