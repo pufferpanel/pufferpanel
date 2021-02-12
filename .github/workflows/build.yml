@@ -181,95 +181,94 @@ jobs:
       run: |
         mkdir -p var/log/pufferpanel var/lib/pufferpanel var/www/pufferpanel
         cp -r artifacts/www/* var/www/pufferpanel
-
-    - name: Build Package
+        
+    - name: Set up build folder
       run: |
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
-
-        fpm -s deb -t rpm \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --rpm-user pufferpanel --rpm-group pufferpanel \
-          pufferpanel_${{ env.VERSION }}_amd64.deb
-
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          -a armhf \
-          artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
+        mkdir DEBBUILD
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib DEBBUILD/var/log DEBBUILD/etc/pufferpanel
+        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp artifacts/amd64/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+        cp var/www/pufferpanel DEBBUILD/var/www
+        cp var/log/pufferpanel DEBBUILD/var/log
+        cp var/lib/pufferpanel DEBBUILD/var/lib
+        cp artifacts/email DEBBUILD/etc/pufferpanel
+        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+        
+    - name: Build Package DEB AMD64
+      id: debamd64
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: amd64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
           
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          -a arm64 \
-          artifacts/arm64/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
+    - name: Prepare ARM64
+      run:
+        rm -f DEBBUILD/usr/sbin/pufferpanel
+        cp artifacts/arm64/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+      
+    - name: Build Package DEB ARM64
+      id: debarm64
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: arm64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          
+    - name: Prepare armhf
+      run:
+        rm -f DEBBUILD/usr/sbin/pufferpanel
+        cp artifacts/armhf/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+          
+    - name: Build Package DEB ARMHF
+      id: debarmhf
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: armhf
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
 
     - name: Create archives
       working-directory: artifacts
