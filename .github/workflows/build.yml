@@ -185,13 +185,13 @@ jobs:
     - name: Set up build folder
       run: |
         mkdir DEBBUILD
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib DEBBUILD/var/log DEBBUILD/etc/pufferpanel
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib DEBBUILD/var/log DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
         cp config.linux.json DEBBUILD/etc/pufferpanel
         cp artifacts/amd64/pufferpanel DEBBUILD/usr/sbin/pufferpanel
-        cp var/www/pufferpanel DEBBUILD/var/www
-        cp var/log/pufferpanel DEBBUILD/var/log
-        cp var/lib/pufferpanel DEBBUILD/var/lib
-        cp artifacts/email DEBBUILD/etc/pufferpanel
+        cp -r var/www/pufferpanel DEBBUILD/var/www
+        cp -r var/log/pufferpanel DEBBUILD/var/log
+        cp -r var/lib/pufferpanel DEBBUILD/var/lib
+        cp -r artifacts/email DEBBUILD/etc/pufferpanel
         cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
         
     - name: Build Package DEB AMD64
