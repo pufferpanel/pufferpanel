@@ -578,6 +578,10 @@ func (p *Program) ArchiveItems(files []string, destination string) error {
 		return pufferpanel.ErrIllegalFileAccess
 	}
 
+	// This may technically error out in other cases
+	if _, err := os.Stat(destination); os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
+	}
 	return archiver.Archive(targets, destination)
 }
 
@@ -587,6 +591,11 @@ func (p *Program) Extract(source, destination string) error {
 
 	if !pufferpanel.EnsureAccess(sourceFile, p.GetEnvironment().GetRootDirectory()) || !pufferpanel.EnsureAccess(destinationFile, p.GetEnvironment().GetRootDirectory()) {
 		return pufferpanel.ErrIllegalFileAccess
+	}
+
+	// destination shouldn't exist
+	if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
 	}
 
 	return archiver.Unarchive(sourceFile, destinationFile)
