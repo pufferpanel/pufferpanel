@@ -687,7 +687,12 @@ func Archive(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
 	var files []string
+
 	if err := c.BindJSON(&files); response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	if len(files) == 0 {
+		c.Status(http.StatusBadRequest)
 		return
 	}
 	destination := c.Param("filename")
