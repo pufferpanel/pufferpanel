@@ -246,7 +246,7 @@ jobs:
     - name: Prepare armhf
       run: |      
         rm -f DEBBUILD/usr/sbin/pufferpanel
-        cp artifacts/armhf/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+        cp artifacts/arm/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           
     - name: Build Package DEB ARMHF
       id: debarmhf
