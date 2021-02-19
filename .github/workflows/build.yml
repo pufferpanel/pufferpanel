@@ -217,7 +217,7 @@ jobs:
           group: pufferpanel
           
     - name: Prepare ARM64
-      run:
+      run: |
         rm -f DEBBUILD/usr/sbin/pufferpanel
         cp artifacts/arm64/pufferpanel DEBBUILD/usr/sbin/pufferpanel
       
@@ -244,7 +244,7 @@ jobs:
           group: pufferpanel
           
     - name: Prepare armhf
-      run:
+      run: |      
         rm -f DEBBUILD/usr/sbin/pufferpanel
         cp artifacts/armhf/pufferpanel DEBBUILD/usr/sbin/pufferpanel
           
