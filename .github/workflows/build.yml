@@ -11,7 +11,7 @@ on:
 
 jobs:
   skip-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     if: "!startsWith(github.ref, 'refs/tags/v') && contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master')"
     name: "Build skipped"
 
@@ -21,7 +21,7 @@ jobs:
 
   build-binaries:
     name: Build Binaries
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
 
     strategy:
