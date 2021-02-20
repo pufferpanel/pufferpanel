@@ -135,7 +135,6 @@ jobs:
     - name: Build Windows
       run: |
         go build -o build-artifact/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
-        go test ./...
       env:
         GOOS: windows
         GOARCH: amd64
@@ -180,7 +179,7 @@ jobs:
         
     - name: Set up build folder
       run: |
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
         cp config.linux.json DEBBUILD/etc/pufferpanel
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
@@ -278,7 +277,7 @@ jobs:
         
     - name: Set up build folder
       run: |
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
         cp config.linux.json DEBBUILD/etc/pufferpanel
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
@@ -370,7 +369,7 @@ jobs:
     - name: Set up build folder
       run: |
         mkdir DEBBUILD
-        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
         cp config.linux.json DEBBUILD/etc/pufferpanel
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
