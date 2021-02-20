@@ -61,7 +61,8 @@ jobs:
       run: |
         npm install
         npm run build
-        rm -rf dist/*.map        
+        rm -rf dist/*.map
+        rm -rf node_modules
       env:
         CI: true
       working-directory: client
@@ -74,7 +75,7 @@ jobs:
       run: |
         mkdir -p build-artifacts/www
         mv client/dist/* build-artifacts/www
-        mv assets/email build-artifacts
+        mv assets/email build-artifacts       
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v2
