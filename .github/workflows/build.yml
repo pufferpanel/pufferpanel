@@ -72,9 +72,9 @@ jobs:
 
     - name: Generate folders
       run: |
-        mkdir build-artifact
-        mv client/dist/* build-artifact/www
-        mv assets/email build-artifact
+        mkdir -p build-artifacts/www
+        mv client/dist/* build-artifacts/www
+        mv assets/email build-artifacts
 
     - name: Generate job artifact
       uses: actions/upload-artifact@v2
