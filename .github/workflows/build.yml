@@ -412,3 +412,14 @@ jobs:
       with:
         name: pufferpanel_${{ env.VERSION }}_arm64.deb
         path: pufferpanel_${{ env.VERSION }}_arm64.deb
+
+  delete-temp-artifact:
+    name: Delete Temp Artifacts
+    runs-on: ubuntu-18.04
+    needs: ['build-linux-armhf-binaries', 'build-linux-arm64-binaries', 'build-linux-amd64-binaries', 'build-windows-amd64-binaries']
+    
+    steps:
+    - name: Delete pufferpanel_artifact
+      uses: pufferpanel/delete-artifact@master
+      with:
+          artifact-name: pufferpanel_artifact
