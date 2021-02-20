@@ -1,7 +1,7 @@
 {
   "Templates": "Plantillas",
   "NoTemplates": "Todavía no hay plantillas",
-  "Deleted": "Plantilla borrada",
+  "Deleted": "Plantilla eliminada",
   "New": "Crear nueva plantilla",
   "Edit": "Editar plantilla",
   "Editor": "Editor",
@@ -28,10 +28,10 @@
   "ReleaseType": "Tipo de lanzamiento",
   "AddFile": "Añadir archivo",
   "AddVariable": "Añadir variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
+  "Environment": "Entorno",
+  "Environments": "Entornos",
   "AddEnvironment": "Añadir entorno",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Entorno por defecto",
   "AddEnvVar": "Añadir variable env",
   "EnvVars": "Variables de entorno",
   "DockerImage": "Imagen de Docker",
@@ -69,21 +69,21 @@
       "files": "Archivos"
     },
     "command": {
-      "ProcessorName": "Run Command",
+      "ProcessorName": "Ejecutar comando",
       "commands": "Comandos"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
+      "ProcessorName": "Cambiar archivo",
       "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "search": "Buscar texto",
+      "replace": "Reemplazar con"
     },
     "writefile": {
-      "ProcessorName": "Escribir al archivo",
+      "ProcessorName": "Escribir a archivo",
       "text": "Contenido"
     },
     "move": {
-      "ProcessorName": "Mover Archivo",
+      "ProcessorName": "Mover archivo",
       "source": "Fuente",
       "target": "Objetivo"
     },
@@ -98,7 +98,7 @@
     },
     "spongeforgedl": {
       "ProcessorName": "Descargar Minecraft SpongeForge",
-      "releaseType": "Tipo de Lanzamiento"
+      "releaseType": "Tipo de lanzamiento"
     },
     "fabricdl": {
       "ProcessorName": "Descargar Minecraft Fabric"
