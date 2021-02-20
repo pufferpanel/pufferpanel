@@ -56,6 +56,7 @@ jobs:
         wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
         mkdir -p ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
+        rm -rf swag*.tar.gz
 
     - name: npm install, build
       run: |
@@ -63,6 +64,8 @@ jobs:
         npm run build
         rm -rf dist/*.map
         rm -rf node_modules
+        rm -rf .git
+        rm -rf client
       env:
         CI: true
       working-directory: client
@@ -145,7 +148,7 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_windows_amd64
+        name: pufferpanel_${{ env.VERSION }}_windows_amd64.zip
         path: build-artifacts/
 
   build-linux-amd64-binaries:
@@ -211,7 +214,7 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_linux_amd64
+        name: pufferpanel_${{ env.VERSION }}_linux_amd64.zip
         path: build-artifacts/
 
     - name: Publish Artifacts
@@ -309,7 +312,7 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_linux_armhf
+        name: pufferpanel_${{ env.VERSION }}_linux_armhf.zip
         path: build-artifacts/
 
     - name: Publish Artifacts
@@ -401,7 +404,7 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_arm64
+        name: pufferpanel_${{ env.VERSION }}_linux_arm64.zip
         path: build-artifacts
 
     - name: Publish Artifacts
