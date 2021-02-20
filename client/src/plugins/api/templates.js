@@ -53,7 +53,6 @@ export const TemplatesApi = {
 }
 
 const templateFromApi = (template, server = false) => {
-  console.log(server)
   const { name, display, type, readme } = template
 
   const normalizeArrayOps = element => {
