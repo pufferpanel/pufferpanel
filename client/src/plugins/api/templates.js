@@ -39,11 +39,11 @@ export const TemplatesApi = {
     })
   },
 
-  templateFromApiJson (template) {
+  templateFromApiJson (template, server = false) {
     if (typeof template === 'string') {
-      return templateFromApi(JSON.parse(template))
+      return templateFromApi(JSON.parse(template), server)
     } else {
-      return templateFromApi(template)
+      return templateFromApi(template, server)
     }
   },
 
@@ -52,7 +52,8 @@ export const TemplatesApi = {
   }
 }
 
-const templateFromApi = (template) => {
+const templateFromApi = (template, server = false) => {
+  console.log(server)
   const { name, display, type, readme } = template
 
   const normalizeArrayOps = element => {
@@ -92,9 +93,11 @@ const templateFromApi = (template) => {
   }
 
   const defaultEnv = template.environment
-  const supportedEnvs = template.supportedEnvironments || []
+  const supportedEnvs = !server ? template.supportedEnvironments || [] : undefined
+  const id = server ? template.id : undefined
 
   return {
+    id,
     name,
     display,
     type,
@@ -115,7 +118,7 @@ const templateFromApi = (template) => {
 }
 
 const templateToApi = (template) => {
-  const { name, display, type, command, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover } = template
+  const { id, name, display, type, command, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover } = template
 
   const convertedStop = {}
   if (stop.type === 'signal') {
@@ -131,6 +134,7 @@ const templateToApi = (template) => {
   })
 
   return {
+    id,
     name,
     display,
     type,

@@ -61,14 +61,45 @@
       />
       <ui-overlay
         v-model="editDefinition"
-        :title="$t('servers.EditDefinition')"
         card
         closable
       >
-        <template-editor v-model="definition" server />
+        <template v-slot:title>
+          <span v-text="$t('servers.EditDefinition')" />
+          <div style="flex-grow:50;" />
+          <v-btn-toggle
+            v-model="editMode"
+            borderless
+            dense
+            mandatory
+          >
+            <v-btn
+              value="editor"
+              v-text="$t('templates.Editor')"
+            />
+            <v-btn
+              value="json"
+              v-text="$t('templates.Json')"
+            />
+          </v-btn-toggle>
+        </template>
+        <template-editor
+          v-if="editMode === 'editor'"
+          v-model="definition"
+          server
+        />
+        <ace
+          v-else
+          ref="editor"
+          v-model="defJson"
+          :editor-id="server.id"
+          height="75vh"
+          lang="json"
+        />
         <v-btn
           block
           color="success"
+          class="mt-4"
           @click="saveServerDefinition()"
           v-text="$t('common.Save')"
         />
@@ -111,7 +142,19 @@ export default {
       autorestart: false,
       autorecover: false,
       editDefinition: false,
-      definition: {}
+      editMode: 'editor',
+      definition: {},
+      defJson: ''
+    }
+  },
+  watch: {
+    editMode (newVal) {
+      if (newVal === 'editor') {
+        this.definition = this.$api.templateFromApiJson(this.defJson, true)
+      } else {
+        this.defJson = this.$api.templateToApiJson(this.definition)
+        if (this.$refs.editor && this.$refs.editor.ready) this.$refs.editor.setValue(this.defJson)
+      }
     }
   },
   mounted () {
@@ -143,7 +186,7 @@ export default {
       this.$router.push({ name: 'Servers' })
     },
     async editServerDefinition () {
-      this.definition = this.$api.templateFromApiJson(await this.$api.getServerDefinition(this.server.id))
+      this.definition = this.$api.templateFromApiJson(await this.$api.getServerDefinition(this.server.id), true)
       this.editDefinition = true
     },
     async saveServerDefinition () {
