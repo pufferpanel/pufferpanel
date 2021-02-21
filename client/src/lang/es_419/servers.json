@@ -6,6 +6,7 @@
   "Console": "Consola",
   "Controls": "Controles",
   "SFTPInfo": "Información SFTP",
+  "Restart": "Restart",
   "Start": "Iniciar",
   "Stop": "Parar",
   "Kill": "Matar",
@@ -30,9 +31,10 @@
   "Deleted": "Servidor eliminado",
   "NoReadme": "No hay ningún léame disponible para esta plantilla",
   "SftpConnection": "Conectar a SFTP",
+  "EditDefinition": "Edit Server Definition",
   "Reload": "Recargar los datos del Servidor desde el disco",
   "Reloaded": "Datos del Servidor Recargados",
   "Autostart": "Prender el servidor cuando el Nodo inicie",
-  "Autorestart": "Restart the server when it stops normally",
+  "Autorestart": "Reiniciar el servidor cuando se detiene normalmente",
   "Autorecover": "Reiniciar el servidor cuando este se bloquee"
 }

@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "パスワードが一致しません",
   "ErrSessionTimedOut": "セッションが時間切れです。再度ログインしてください。",
   "ErrMissingScope": "この操作を実行する権限をもっていません。",
-  "ErrInvalidJson": "Json データが無効です"
+  "ErrInvalidJson": "Json データが無効です",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }

@@ -1,6 +1,7 @@
 {
   "Templates": "Modelli",
   "NoTemplates": "Non ci sono ancora modelli qui",
+  "Deleted": "Template eliminato",
   "New": "Crea nuovo modello",
   "Edit": "Modifica modello",
   "Editor": "Editor",
@@ -27,7 +28,10 @@
   "ReleaseType": "Tipo di Versione",
   "AddFile": "Aggiungi file",
   "AddVariable": "Aggiungi variabile",
+  "Environment": "Environment",
+  "Environments": "Environments",
   "AddEnvironment": "Aggiungi ambiente",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "Aggiungi variabile env",
   "EnvVars": "Variabili ambientali",
   "DockerImage": "Immagine Docker",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "Comando",
     "Signal": "Segnale"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Scarica",
+      "files": "File"
+    },
+    "command": {
+      "ProcessorName": "Esegui un comando",
+      "commands": "Comandi"
+    },
+    "alterfile": {
+      "ProcessorName": "Cambia file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Contenuto"
+    },
+    "move": {
+      "ProcessorName": "Sposta il file",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Crea una cartella"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
   }
 }

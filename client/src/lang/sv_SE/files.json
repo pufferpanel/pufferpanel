@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "Filhanterare",
+  "NewFolder": "Ny mapp",
+  "NewFile": "Ny fil",
+  "LastModified": "Senast modifierad",
+  "ConfirmDelete": "Är du säker på att du vill ta bort den här filen?",
+  "Upload": "Ladda Upp",
+  "Download": "Ladda ned",
+  "Size": "Storlek",
+  "NoFiles": "Det finns inga filer här ännu, gå och skapa några till exempel genom att klicka på installationsknappen högst upp på sidan",
+  "FileLoadFailed": "Det gick inte att ladda filen"
 }

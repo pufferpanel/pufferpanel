@@ -70,15 +70,18 @@
     </v-row>
 
     <div v-if="!loading">
-      <template-editor v-if="mode === 'editor'" v-model="template" />
+      <template-editor
+        v-if="mode === 'editor'"
+        v-model="template"
+      />
       <v-row v-else>
         <v-col>
           <ace
+            ref="editor"
             v-model="templateJson"
             :editor-id="template.name"
             height="50vh"
             lang="json"
-            @editorready="$refs.editor.setValue(template)"
           />
         </v-col>
       </v-row>

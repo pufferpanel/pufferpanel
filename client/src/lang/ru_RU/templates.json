@@ -1,6 +1,7 @@
 {
   "Templates": "Шаблоны",
   "NoTemplates": "Нет шаблонов",
+  "Deleted": "Шаблон удалён",
   "New": "Создать новый шаблон",
   "Edit": "Редактировать шаблон",
   "Editor": "Редактор",
@@ -27,7 +28,10 @@
   "ReleaseType": "Тип выпуска",
   "AddFile": "Добавить файл",
   "AddVariable": "Добавить переменную",
+  "Environment": "Environment",
+  "Environments": "Окружения",
   "AddEnvironment": "Добавить окружение",
+  "DefaultEnvironment": "Стандартное окружение",
   "AddEnvVar": "Добавить переменную окружения",
   "EnvVars": "Переменные окружения",
   "DockerImage": "Снимок Docker",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "Команда",
     "Signal": "Сигнал"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Скачать",
+      "files": "Файлы"
+    },
+    "command": {
+      "ProcessorName": "Выполнить команду",
+      "commands": "Команды"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Записать в файл",
+      "text": "Содержание"
+    },
+    "move": {
+      "ProcessorName": "Переместить файл",
+      "source": "Источник",
+      "target": "Цель"
+    },
+    "mkdir": {
+      "ProcessorName": "Создать директорию"
+    },
+    "mojangdl": {
+      "ProcessorName": "Загрузить Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Скачать Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Скачать Minecraft SpongeForge",
+      "releaseType": "Тип релиза"
+    },
+    "fabricdl": {
+      "ProcessorName": "Скачать Minecraft Fabric"
+    }
   }
 }

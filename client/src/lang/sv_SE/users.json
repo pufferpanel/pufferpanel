@@ -23,10 +23,10 @@
   "Email": "Email",
   "Edit": "Edit User",
   "Update": "Update User",
-  "Delete": "Delete User",
-  "CreateSuccess": "Created User",
-  "CreateError": "Failed creating user",
-  "UpdateSuccess": "Updated User",
-  "UpdateError": "Failed updating user",
-  "PermsUpdateError": "Failed updating user permissions"
+  "Delete": "Ta bort användare",
+  "CreateSuccess": "Skapade användare",
+  "CreateError": "Kunde inte skapa användare",
+  "UpdateSuccess": "Uppdaterad användare",
+  "UpdateError": "Det gick inte att uppdatera användaren",
+  "PermsUpdateError": "Misslyckades att uppdatera användarbehörigheter"
 }

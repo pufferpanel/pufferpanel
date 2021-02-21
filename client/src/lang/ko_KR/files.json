@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "파일 관리자",
+  "NewFolder": "새 폴더",
+  "NewFile": "새 파일",
+  "LastModified": "최근 수정",
+  "ConfirmDelete": "이 파일을 삭제할까요?",
+  "Upload": "업로드",
+  "Download": "다운로드",
+  "Size": "크기",
+  "NoFiles": "파일이 없습니다, 위의 설치 버튼을 클릭해 예시 파일을 생성해주세요.",
+  "FileLoadFailed": "파일 로딩에 실패했습니다"
 }

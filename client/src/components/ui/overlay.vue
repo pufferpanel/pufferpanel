@@ -16,7 +16,14 @@
         >
           <v-card v-if="card">
             <v-card-title>
-              <span v-text="title" />
+              <span
+                v-if="title && title !== ''"
+                v-text="title"
+              />
+              <slot
+                v-else
+                name="title"
+              />
               <v-spacer />
               <v-btn
                 v-if="closable"

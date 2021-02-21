@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "Správce souborů",
+  "NewFolder": "Nová složka",
+  "NewFile": "Nový soubor",
+  "LastModified": "Poslední změna",
+  "ConfirmDelete": "Opravdu chcete tento soubor smazat?",
+  "Upload": "Nahrát",
+  "Download": "Stáhnout",
+  "Size": "Velikost",
+  "NoFiles": "Zatím zde nejsou žádné soubory, jděte a vytvořte je například kliknutím na tlačítko instalace v horní části stránky",
+  "FileLoadFailed": "Načtení souboru se nezdařilo"
 }

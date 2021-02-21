@@ -37,6 +37,7 @@ require (
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mholt/archiver v3.1.1+incompatible
+	github.com/mailjet/mailjet-apiv3-go/v3 v3.0.0
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
 	github.com/morikuni/aec v0.0.0-20170113033406-39771216ff4c // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
