@@ -423,4 +423,4 @@ jobs:
       uses: pufferpanel/delete-artifact@master
       with:
           artifact-name: pufferpanel_artifact
-          auth-token: ${{ secrets.GITHUB_TOKEN }}
+          auth-token: ${{ secrets.DELETION_SECRET }}
