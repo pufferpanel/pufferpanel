@@ -62,10 +62,6 @@ jobs:
       run: |
         npm install
         npm run build
-        rm -rf dist/*.map
-        rm -rf node_modules
-        rm -rf .git
-        rm -rf client
       env:
         CI: true
       working-directory: client
@@ -73,20 +69,7 @@ jobs:
     - name: Generate Swagger Docs
       run: |
         ~/go/bin/swag init -o web/swagger -g web/loader.go
-
-    - name: Generate folders
-      run: |
-        mkdir -p build-artifacts/www
-        mv client/dist/* build-artifacts/www
-        mv assets/email build-artifacts       
-
-    - name: Generate job artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: pufferpanel_build_artifact
-        path: .
-        if-no-files-found: error
-
+        
     - name: Upload Swagger docs
       uses: actions/upload-artifact@v2
       with:
@@ -95,6 +78,21 @@ jobs:
           web/swagger/swagger.json
           web/swagger/swagger.yaml
         if-no-files-found: error
+
+    - name: Generate folders and remove excess files
+      run: |
+        mkdir -p build-artifacts/www
+        mv client/dist/* build-artifacts/www
+        mv assets/email build-artifacts
+        rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts\www\js\ *.map
+
+    - name: Generate job artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pufferpanel_build_artifact
+        path: .
+        if-no-files-found: error
+        retention-days: 1    
 
   build-windows-amd64-binaries:
     name: Build Binaries - Windows AMD64
@@ -412,15 +410,3 @@ jobs:
       with:
         name: pufferpanel_${{ env.VERSION }}_arm64.deb
         path: pufferpanel_${{ env.VERSION }}_arm64.deb
-
-  delete-temp-artifact:
-    name: Delete Temp Artifacts
-    runs-on: ubuntu-18.04
-    needs: ['build-linux-armhf-binaries', 'build-linux-arm64-binaries', 'build-linux-amd64-binaries', 'build-windows-amd64-binaries']
-    
-    steps:
-    - name: Delete pufferpanel_artifact
-      uses: pufferpanel/delete-artifact@master
-      with:
-          artifact-name: pufferpanel_artifact
-          auth-token: ${{ secrets.DELETION_SECRET }}
