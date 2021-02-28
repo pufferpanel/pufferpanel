@@ -28,7 +28,7 @@
   "ReleaseType": "Release-Typ",
   "AddFile": "Datei hinzufügen",
   "AddVariable": "Variable hinzufügen",
-  "Environment": "Environment",
+  "Environment": "Umgebung",
   "Environments": "Umgebungen",
   "AddEnvironment": "Umgebung hinzufügen",
   "DefaultEnvironment": "Standardumgebung",
@@ -73,10 +73,10 @@
       "commands": "Befehle"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Datei ändern",
+      "regex": "Suche als RegEx behandeln",
+      "search": "Zu suchender Text",
+      "replace": "Ersetzen durch"
     },
     "writefile": {
       "ProcessorName": "In Datei schreiben",
