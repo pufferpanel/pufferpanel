@@ -34,5 +34,5 @@
   "ErrSessionTimedOut": "La tua sessione è scaduta, sei pregato di accedere di nuovo",
   "ErrMissingScope": "Non sei autorizzato a praticare quest'azione",
   "ErrInvalidJson": "I dati json non sono validi",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "La connessione WebSocket ha riscontrato un errore, alcune funzionalità potrebbero essere lente o danneggiate"
 }
