@@ -166,7 +166,17 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15.6
-
+    
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install --download-only -y rpm
+        
+    - name: APT Install
+      run: |
+        sudo apt-get install -y rpm
+        
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_build_artifact
@@ -186,6 +196,7 @@ jobs:
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
         cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+        mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel
         
     - name: Build Package DEB AMD64
       id: debamd64
@@ -208,6 +219,35 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
+          
+    - name: Build Package RPM AMD64
+      id: rpmamd64
+      uses: pufferpanel/build-rpm@master
+      with:
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: x86_64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          website: https://pufferpanel.com
+          summary: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          files: |
+            build-artifacts/pufferpanel:/usr/sbin/pufferpanel
+            build-artifacts/www:/var/www/pufferpanel
+            build-artifacts/email:/etc/pufferpanel/email
+            config.linux.json:/etc/pufferpanel/config.json
+            systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
+            RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
+            RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -221,11 +261,11 @@ jobs:
         name: pufferpanel_${{ env.VERSION }}_amd64.deb
         path: pufferpanel_${{ env.VERSION }}_amd64.deb
         
-    #- name: Publish Artifacts
-      #uses: actions/upload-artifact@v1
-      #with:
-        #name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-        #path: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        path: ${{ steps.rpmamd64.outputs.file }}
 
   build-linux-armhf-binaries:
     name: Build Binaries - Linux ARMHF
