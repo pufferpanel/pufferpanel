@@ -85,12 +85,12 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	us := services.User{DB: db}
-	id, err := strconv.Atoi(token.Claims.Subject)
+	subject_Id, err := strconv.ParseUint(token.Claims.Subject, 10, 64)
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
 	}
-	user, err := us.GetById(uint(id))
+	user, err := us.GetById(uint(subject_Id))
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return

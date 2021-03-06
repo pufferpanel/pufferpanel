@@ -11,18 +11,8 @@
   limitations under the License.
 */
 
-package models
+package database
 
-import "github.com/pufferpanel/pufferpanel/v2/response"
-
-type UserSearch struct {
-	Username  string `form:"username"`
-	Email     string `form:"email"`
-	PageLimit int    `form:"limit"`
-	Page      int    `form:"page"`
-}
-
-type UserSearchResponse struct {
-	Users []*UserView `json:"users"`
-	*response.Metadata
-}
+import (
+	_ "gorm.io/driver/sqlserver"
+)

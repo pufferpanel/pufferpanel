@@ -16,10 +16,10 @@ package services
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -67,7 +67,7 @@ func (ns *Node) Delete(id uint) error {
 		ID: id,
 	}
 
-	var count int
+	var count int64
 	ns.DB.Model(&models.Server{}).Where("node_id = ?", model.ID).Count(&count)
 	if count > 0 {
 		return pufferpanel.ErrNodeHasServers

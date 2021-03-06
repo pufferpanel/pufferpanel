@@ -15,15 +15,16 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"gorm.io/gorm"
 	"net/http"
 	"net/url"
 )
@@ -82,7 +83,7 @@ func getTemplate(c *gin.Context) {
 	ts := &services.Template{DB: db}
 
 	template, err := ts.Get(c.Param("name"))
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(404)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -115,9 +116,9 @@ func putTemplate(c *gin.Context) {
 	}
 
 	template, err := ts.Get(templateName)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		template = &models.Template{
-			Name:     templateName,
+			Name: templateName,
 		}
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -171,7 +172,7 @@ func deleteTemplate(c *gin.Context) {
 	ts := &services.Template{DB: db}
 
 	err := ts.Delete(c.Param("name"))
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(404)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -200,7 +201,7 @@ func getImportableTemplates(c *gin.Context) {
 
 	request := &http.Request{
 		Method: "GET",
-		URL: u,
+		URL:    u,
 	}
 	if request.Header == nil {
 		request.Header = http.Header{}

@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -28,6 +27,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/satori/go.uuid"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -144,8 +144,8 @@ func searchServers(c *gin.Context) {
 		Username: username,
 		NodeId:   uint(node),
 		Name:     nameFilter,
-		PageSize: uint(pageSize),
-		Page:     uint(page),
+		PageSize: pageSize,
+		Page:     page,
 	}
 
 	results, total, err := ss.Search(searchCriteria)
@@ -164,8 +164,8 @@ func searchServers(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
 		Servers: models.RemoveServerPrivateInfoFromAll(data),
 		Metadata: &response.Metadata{Paging: &response.Paging{
-			Page:    uint(page),
-			Size:    uint(pageSize),
+			Page:    page,
+			Size:    pageSize,
 			MaxSize: MaxPageSize,
 			Total:   total,
 		}},
@@ -263,7 +263,7 @@ func createServer(c *gin.Context) {
 
 	node, err := ns.Get(postBody.NodeId)
 
-	if gorm.IsRecordNotFoundError(err) {
+	if gorm.ErrRecordNotFound == err {
 		response.HandleError(c, pufferpanel.ErrNodeInvalid, http.StatusBadRequest)
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -581,9 +581,9 @@ func editServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && gorm.ErrRecordNotFound != err && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
-	} else if gorm.IsRecordNotFoundError(err) {
+	} else if gorm.ErrRecordNotFound == err {
 		if email == "" {
 			response.HandleError(c, err, http.StatusBadRequest)
 			return
@@ -687,7 +687,7 @@ func removeServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {

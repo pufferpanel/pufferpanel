@@ -131,13 +131,13 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 			serverId = server.Identifier
 		}
 
-		ui, err := strconv.Atoi(ti.Subject)
+		userId, err := strconv.ParseUint(ti.Subject, 10, 64)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		user, err := us.GetById(uint(ui))
+		user, err := us.GetById(uint(userId))
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

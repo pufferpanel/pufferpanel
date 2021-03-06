@@ -17,30 +17,23 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
+	"gorm.io/gorm"
 	"strings"
 )
 
 type Client struct {
-	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL" json:"client_id"`
-	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
+	ID                 int    `gorm:"primaryKey,autoIncrement" json:"-"`
+	ClientId           string `gorm:"NOT NULL"`
+	HashedClientSecret string `gorm:"column:client_secret;NOT NULL"`
 
-	UserId uint  `gorm:"NOT NULL" json:"-"`
-	User   *User `json:"-"`
+	UserId int `gorm:"NOT NULL"`
+	User   *User
 
-	ServerId string  `gorm:"NOT NULL" json:"-"`
-	Server   *Server `json:"-"`
+	ServerId string `gorm:"NOT NULL"`
+	Server   *Server
 
-	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
-	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
-
-	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
-	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
-}
-
-type CreatedClient struct {
-	ClientId     string `json:"id"`
-	ClientSecret string `json:"secret"`
+	Scopes    []pufferpanel.Scope `gorm:"-"`
+	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000"`
 }
 
 type Clients []*Client
@@ -69,7 +62,7 @@ func (c *Client) IsValid() (err error) {
 	return
 }
 
-func (c *Client) BeforeSave() (err error) {
+func (c *Client) BeforeSave(*gorm.DB) (err error) {
 	err = c.IsValid()
 
 	scopes := make([]string, 0)
@@ -82,12 +75,7 @@ func (c *Client) BeforeSave() (err error) {
 	return
 }
 
-func (c *Client) AfterFind() (err error) {
-	if c.RawScopes == "" {
-		c.Scopes = make([]pufferpanel.Scope, 0)
-		return
-	}
-
+func (c *Client) AfterFind(*gorm.DB) (err error) {
 	split := strings.Split(c.RawScopes, " ")
 	c.Scopes = make([]pufferpanel.Scope, len(split))
 

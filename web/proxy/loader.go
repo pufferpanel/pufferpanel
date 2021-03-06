@@ -15,7 +15,6 @@ package proxy
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
@@ -23,6 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
+	"gorm.io/gorm"
 	"net/http"
 	"strings"
 )
@@ -58,7 +58,7 @@ func proxyServerRequest(c *gin.Context) {
 	path := strings.TrimPrefix(c.Request.URL.Path, "/proxy")
 
 	s, err := ss.Get(serverId)
-	if err != nil && !gorm.IsRecordNotFoundError(err) && response.HandleError(c, err, http.StatusInternalServerError) {
+	if err != nil && gorm.ErrRecordNotFound != err && response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	} else if s == nil || s.Identifier == "" {
 		c.AbortWithStatus(http.StatusNotFound)

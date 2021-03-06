@@ -16,9 +16,9 @@ package config
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"reflect"
 	"strings"
 )
@@ -32,13 +32,20 @@ func init() {
 	viper.AddConfigPath("/etc/pufferpanel/")
 	viper.AddConfigPath(".")
 
+	//database settings
+	viper.SetDefault("panel.enable", true)
+	viper.SetDefault("panel.database.session", 60)
+	viper.SetDefault("panel.database.dialect", "sqlite3")
+	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
+	viper.SetDefault("panel.database.log", false)
+
 	for k, v := range defaultSettings {
 		viper.SetDefault(k, v)
 	}
 }
 
 type Setting struct {
-	Key   string `gorm:"type:varchar(100);PRIMARY_KEY"`
+	Key   string `gorm:"type:varchar(100);primaryKey"`
 	Value string `gorm:"type:varchar(100)"`
 }
 
@@ -65,11 +72,7 @@ var defaultSettings = map[string]interface{}{
 	"panel.settings.companyName":  "PufferPanel",
 	"panel.settings.defaultTheme": "PufferPanel",
 	"panel.settings.masterUrl":    "http://localhost:8080",
-	"panel.sessionKey": 			[]uint8{},
-	"panel.registrationEnabled": 	true,
-	"panel.database.session": 		60,
-	"panel.database.dialect": 		"sqlite3",
-	"panel.database.log": 			false,
+	"panel.sessionKey":            []uint8{},
 
 	//daemon specific settings
 	"daemon.enable":                 true,
@@ -113,7 +116,7 @@ func fromDatabase(key string) (value *string, err error) {
 	}
 
 	err = db.First(configEntry).Error
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound != err {
 		return nil, err
 	}
 
