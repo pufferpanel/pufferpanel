@@ -79,7 +79,7 @@
           <ace
             ref="editor"
             v-model="templateJson"
-            :editor-id="template.name"
+            :editor-id="'edit' + template.name"
             height="50vh"
             lang="json"
           />
@@ -109,6 +109,51 @@
         </v-col>
       </v-row>
     </div>
+
+    <ui-overlay
+      v-model="offerV1Convert"
+      card
+    >
+      <v-row class="mb-8">
+        <v-col cols="12">
+          <h2 v-text="$t('templates.OfferV1Convert')" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-btn
+            block
+            color="error"
+            @click="offerV1Convert = false"
+            v-text="$t('common.Cancel')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-btn
+            block
+            @click="offerV1Convert = false; skipNextV1Check = true"
+            v-text="$t('common.Ignore')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-btn
+            block
+            color="success"
+            @click="convertV1()"
+            v-text="$t('templates.Convert')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
   </div>
 </template>
 
@@ -133,12 +178,18 @@ export default {
         envVars: {},
         defaultEnv: {},
         supportedEnvs: []
-      }
+      },
+      offerV1Convert: false,
+      skipNextV1Check: false
     }
   },
   watch: {
-    mode (newVal) {
+    async mode (newVal) {
       if (newVal === 'editor') {
+        if (this.catchV1()) {
+          // this.mode = 'json'
+          return
+        }
         this.template = this.$api.templateFromApiJson(this.templateJson)
       } else {
         this.templateJson = this.$api.templateToApiJson(this.template)
@@ -163,10 +214,42 @@ export default {
     },
     async save () {
       if (!this.template.name || this.template.name.trim() === '') return
-      if (this.mode === 'json') this.template = this.$api.templateFromApiJson(this.templateJson)
+      if (this.mode === 'json') {
+        if (this.catchV1()) return
+        this.template = this.$api.templateFromApiJson(this.templateJson)
+      }
       await this.$api.saveTemplate(this.template.name, this.template)
       this.$toast.success(this.$t('templates.SaveSuccess'))
       if (this.create) this.$router.push({ name: 'Template', params: { id: this.name } })
+    },
+    catchV1 () {
+      const skipCheck = this.skipNextV1Check
+      this.skipNextV1Check = false
+      if (Object.prototype.toString.call((JSON.parse(this.templateJson) || {}).pufferd) === '[object Object]' && !skipCheck) {
+        this.offerV1Convert = true
+        return true
+      }
+      return false
+    },
+    convertV1 () {
+      const template = JSON.parse(this.templateJson).pufferd
+      template.install = template.install.commands
+      template.run.command = template.run.program + ' ' + template.run.arguments.join(' ')
+      delete template.run.program
+      delete template.run.arguments
+      template.supportedEnvironments = [template.environment]
+      template.name = template.display.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')
+      while (template.name.substring(0, 1) === '-') {
+        template.name = template.name.substring(1)
+      }
+      while (template.name.substring(template.name.length - 1) === '-') {
+        template.name = template.name.substring(0, template.name.length - 1)
+      }
+      // eslint-disable-next-line no-template-curly-in-string
+      this.templateJson = JSON.stringify(template, undefined, 2).replace(/\$\{rootdir}/g, '${rootDir}')
+      if (this.$refs.editor && this.$refs.editor.ready) this.$refs.editor.setValue(this.templateJson)
+      this.template = this.$api.templateFromApiJson(this.templateJson)
+      this.offerV1Convert = false
     }
   }
 }
