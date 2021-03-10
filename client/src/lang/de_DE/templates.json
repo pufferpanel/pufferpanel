@@ -49,6 +49,8 @@
   "Command": "Befehl",
   "Arguments": "Argumente",
   "AddArgument": "Argument hinzufügen",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "WARNUNG: Importierte Vorlagen WERDEN bestehende Vorlagen mit der gleichen ID ÜBERSCHREIBEN",
     "Import": "Vorlagen importieren",
