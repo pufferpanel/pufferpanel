@@ -49,6 +49,8 @@
   "Command": "指令",
   "Arguments": "參數",
   "AddArgument": "添加參數",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "警告：匯入的範本將覆蓋現有具相同ID的範本",
     "Import": "匯入範本",
