@@ -49,6 +49,8 @@
   "Command": "Příkaz",
   "Arguments": "Parametry",
   "AddArgument": "Přidat parametr",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "VAROVÁNÍ: Importované šablony přepisují existující šablony se stejným ID",
     "Import": "Importovat šablonu",
