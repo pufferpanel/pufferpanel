@@ -36,5 +36,6 @@
   "DarkMode": "Тёмная тема",
   "ThemeOptions": "Настройки темы",
   "Protocol": "Протокол",
-  "Add": "Добавить"
+  "Add": "Добавить",
+  "Ignore": "Ignore"
 }
