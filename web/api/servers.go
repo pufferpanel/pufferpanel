@@ -600,6 +600,7 @@ func editServerUser(c *gin.Context) {
 		err = es.SendEmail(user.Email, "addedToServer", map[string]interface{}{
 			"Server":        server,
 			"RegisterToken": registerToken,
+			"Email":         user.Email,
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
