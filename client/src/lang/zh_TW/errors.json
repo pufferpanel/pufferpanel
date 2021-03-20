@@ -35,6 +35,6 @@
   "ErrMissingScope": "您無權執行此操作",
   "ErrInvalidJson": "無效的 json 檔案",
   "ErrSocketFailed": "WebSocket 連線出現錯誤，有些功能可能會變慢或無法使用",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account"
+  "ErrInviteLinkInvalid": "您的邀請連結似乎無效",
+  "ErrSavingInviteduser": "建立帳戶時發生錯誤"
 }
