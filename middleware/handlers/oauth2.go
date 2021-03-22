@@ -26,6 +26,11 @@ import (
 )
 
 func HasOAuth2Token(c *gin.Context) {
+	if c.Request.Method == http.MethodOptions {
+		c.Next()
+		return
+	}
+
 	//if there's a cookie with the token, use that
 	cookie, _ := c.Cookie("puffer_auth")
 	if cookie != "" && c.Request.Header.Get("Authorization") == "" {
