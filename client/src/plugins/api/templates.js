@@ -47,8 +47,8 @@ export const TemplatesApi = {
     }
   },
 
-  templateToApiJson (template) {
-    return JSON.stringify(templateToApi(template), undefined, 2)
+  templateToApiJson (template, stringify = true) {
+    return stringify ? JSON.stringify(templateToApi(template), undefined, 2) : templateToApi(template)
   }
 }
 

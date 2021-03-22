@@ -481,7 +481,7 @@ export default {
       this.searchingUsers = false
     },
     async submitCreate () {
-      const data = this.templateData[this.selectedTemplate]
+      const data = this.$api.templateToApiJson(this.templateData[this.selectedTemplate], false)
       for (const item in data.data) {
         switch (data.data[item].type) {
           case 'integer':
