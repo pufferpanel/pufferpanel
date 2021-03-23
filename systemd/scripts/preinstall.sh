@@ -3,4 +3,4 @@
 useradd --system --home /var/lib/pufferpanel --user-group pufferpanel
 
 exitCode=$?
-[ $exitCode -ne 0 && $exitCode -ne 9 ] || exit $exitCode
+[ $exitCode -eq 0 ] || [ $exitCode -eq 9 ] || exit $exitCode

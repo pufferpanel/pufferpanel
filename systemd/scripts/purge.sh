@@ -4,8 +4,8 @@ rm -rf /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/puffe
 
 userdel -r  pufferpanel
 exitCode=$?
-[ $exitCode -ne 0 && $exitCode -ne 6 ] || exit $exitCode
+[ $exitCode -eq 0 ] || [ $exitCode -eq 6 ] || exit $exitCode
 
 groupdel pufferpanel
 exitCode=$?
-[ $exitCode -ne 0 && $exitCode -ne 6 ] || exit $exitCode
+[ $exitCode -eq 0 ] || [ $exitCode -eq 6 ] || exit $exitCode
