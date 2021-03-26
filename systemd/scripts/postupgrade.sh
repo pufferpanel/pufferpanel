@@ -11,3 +11,5 @@ if [ ! -f "/var/lib/pufferpanel/database.db" ]; then
 fi
 
 chown -R pufferpanel:pufferpanel /etc/pufferpanel /var/log/pufferpanel /var/lib/pufferpanel /var/www/pufferpanel
+
+systemctl is-active --quiet pufferpanel && systemctl restart pufferpanel
