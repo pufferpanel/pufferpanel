@@ -218,6 +218,9 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
           
     - name: Build Package RPM AMD64
       id: rpmamd64
@@ -247,6 +250,11 @@ jobs:
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+          suggested-packages: |
+            jre-1.8.0-headless
+            jre-11-headless
+            glibc.i686
+            libstdc++.i686
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -345,6 +353,9 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
@@ -437,7 +448,10 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
-        
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
+
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
