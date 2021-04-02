@@ -34,5 +34,7 @@
   "ErrorDetails": "Error Details",
   "HelpTranslate": "幫助我們翻譯 PufferPanel!`",
   "DarkMode": "黑暗模式",
-  "ThemeOptions": "樣式"
+  "ThemeOptions": "樣式",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }

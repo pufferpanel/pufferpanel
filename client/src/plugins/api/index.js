@@ -25,10 +25,10 @@ class ApiClient extends EventEmitter {
     Cookies.set('puffer_auth', token, { sameSite: 'strict' })
   }
 
-  saveLoginData (token, scopes = []) {
+  saveLoginData (token, scopes = [], silent = false) {
     this.updateCookie(token)
     localStorage.setItem('scopes', JSON.stringify(scopes))
-    this.emit('login')
+    if (!silent) this.emit('login')
   }
 
   logout (reason) {
@@ -45,12 +45,12 @@ class ApiClient extends EventEmitter {
     })
   }
 
-  login (email, password) {
+  login (email, password, options = {}) {
     return this.withErrorHandling(async ctx => {
       const res = (await ctx.$http.post('/auth/login', { email, password })).data
-      this.saveLoginData(res.session, res.scopes || [])
+      this.saveLoginData(res.session, res.scopes || [], options.silent)
       return true
-    })
+    }, { noToast: options.silent || options.noToast })
   }
 
   reauth () {
@@ -80,18 +80,18 @@ class ApiClient extends EventEmitter {
     })
   }
 
-  updateSelf (username, email, password) {
+  updateSelf (username, email, password, options = {}) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.put('/api/self', { username, email, password })
       return true
-    })
+    }, options)
   }
 
-  updatePassword (oldPassword, newPassword) {
+  updatePassword (oldPassword, newPassword, options = {}) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.put('/api/self', { password: oldPassword, newPassword })
       return true
-    })
+    }, options)
   }
 
   async withErrorHandling (f, errorOptions) {

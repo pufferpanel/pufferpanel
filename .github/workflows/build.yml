@@ -7,7 +7,6 @@ on:
     - v2.*
     paths-ignore:
       - '.github/workflows/release.yml'
-  pull_request:
 
 jobs:
   skip-build:
@@ -19,16 +18,85 @@ jobs:
       - name: Skipping
         run: echo "Skipping build"
 
-  build-binaries:
-    name: Build Binaries
+  build-shared:
+    name: Build Shared Objects
     runs-on: ubuntu-18.04
     if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
 
-    strategy:
-      matrix:
-        go: [ '^1.15.6' ]
-        node-version: [ '14' ]
-        swag-version: [ '1.6.7' ]
+    steps:
+    - name: Set up Node 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      with:
+        path: pufferpanel
+    
+    - name: Restore NPM cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-nodemodules-14-${{ hashFiles('client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nodemodules-14
+          
+    - name: Restore NPM cache
+      uses: actions/cache@v2
+      with:
+        path: client/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Download Go Binaries
+      run: |
+        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
+        mkdir -p ~/go/bin
+        tar -zxf swag*.tar.gz -C ~/go/bin
+        rm -rf swag*.tar.gz
+
+    - name: npm install, build
+      run: |
+        npm install
+        npm run build
+      env:
+        CI: true
+      working-directory: client
+
+    - name: Generate Swagger Docs
+      run: |
+        ~/go/bin/swag init -o web/swagger -g web/loader.go
+        
+    - name: Upload Swagger docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: pufferpanel_swagger
+        path: |
+          web/swagger/swagger.json
+          web/swagger/swagger.yaml
+        if-no-files-found: error
+
+    - name: Generate folders and remove excess files
+      run: |
+        mkdir -p build-artifacts/www
+        mv client/dist/* build-artifacts/www
+        mv assets/email build-artifacts
+        rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/www/js/*.map
+
+    - name: Generate job artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pufferpanel_build_artifact
+        path: .
+        if-no-files-found: error
+        retention-days: 1    
+
+  build-windows-amd64-binaries:
+    name: Build Binaries - Windows AMD64
+    runs-on: ubuntu-18.04
+    needs: ['build-shared']
 
     steps:
     - name: Get the version
@@ -38,109 +106,35 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/v')
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
-    - name: Set up Go ${{ matrix.go }}
+    - name: Set up Go 1.15.6
       uses: actions/setup-go@v2
       with:
-        go-version: ${{ matrix.go }}
+        go-version: 1.15.6
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - uses: actions/download-artifact@v2
       with:
-        node-version: ${{ matrix.node-version }}
-
-    - uses: actions/setup-ruby@v1
-      with:
-        ruby-version: '2.6'
-
-    - name: Install gems
-      run:
-        gem install --no-doc fpm
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-      with:
-        path: pufferpanel
-
-    - name: Prepare
-      run: |
-        mkdir -p artifacts/amd64
-        mkdir artifacts/arm
-        mkdir artifacts/www
-        mkdir artifacts/arm64
-        cp -r assets/email artifacts/
+        name: pufferpanel_build_artifact
         
     - name: Restore APT cache
       id: aptcache
       uses: actions/cache@v2
       with:
         path: /var/cache/apt/archives
-        key: ${{ runner.os }}-apt
+        key: ${{ runner.os }}-apt-windows
         
     - name: Download APT packages
       if: steps.aptcache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
-        sudo apt-get install --download-only -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu
+        sudo apt-get install --download-only -y gcc-mingw-w64
         
     - name: APT Install
       run: |
-        sudo apt-get install -y gcc-7-arm-linux-gnueabi gcc-mingw-w64 gcc-aarch64-linux-gnu      
-
-    - name: Restore Go cache
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-          
-    - name: Restore Go Binary cache
-      uses: actions/cache@v2
-      id: gobinary
-      with:
-        path: ~/go/bin
-        key: ${{ runner.os }}-go-bin-${{ matrix.swag-version }}
-        restore-keys: |
-          ${{ runner.os }}-go-bin-
-
-    - name: Restore NPM cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-nodemodules-${{ matrix.node-version }}-${{ hashFiles('client/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nodemodules-${{ matrix.node-version }}
-          
-    - name: Restore NPM cache
-      uses: actions/cache@v2
-      with:
-        path: client/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-                    
-    - name: Download Go Binaries
-      if: steps.gobinary.outputs.cache-hit != 'true'
-      run: |
-        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_${{ matrix.swag-version }}_Linux_x86_64.tar.gz
-        mkdir -p ~/go/bin
-        tar -zxf swag*.tar.gz -C ~/go/bin
-
-    - name: Generate Swagger Docs
-      run: |
-        ~/go/bin/swag init -o web/swagger -g web/loader.go
-        
-    - name: Build Linux
-      run: |
-        go build -o artifacts/amd64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
-        go test ./...
-      env:
-        GOOS: linux
-        GOARCH: amd64
+        sudo apt-get install -y gcc-mingw-w64
 
     - name: Build Windows
       run: |
-        go build -o artifacts/amd64/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifact/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: windows
         GOARCH: amd64
@@ -148,9 +142,180 @@ jobs:
         CXX: x86_64-w64-mingw32-g++
         CGO_ENABLED: 1
 
-    - name: Build ARM
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_windows_amd64.zip
+        path: build-artifacts/
+
+  build-linux-amd64-binaries:
+    name: Build Binaries - Linux AMD64
+    runs-on: ubuntu-18.04
+    needs: ['build-shared']
+
+    steps:
+    - name: Get the version
+      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
+    - name: Set up Go 1.15.6
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.6
+    
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
       run: |
-        go build -o artifacts/arm/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        sudo apt-get update
+        sudo apt-get install --download-only -y rpm
+        
+    - name: APT Install
+      run: |
+        sudo apt-get install -y rpm
+        
+    - uses: actions/download-artifact@v2
+      with:
+        name: pufferpanel_build_artifact
+        
+    - name: Build Linux
+      run: |
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: linux
+        GOARCH: amd64
+        
+    - name: Set up build folder
+      run: |
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
+        cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+        cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
+        cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
+        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+        mkdir -p RPMBUILD/var/lib/pufferpanel RPMBUILD/var/log/pufferpanel
+        
+    - name: Build Package DEB AMD64
+      id: debamd64
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: amd64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
+          
+    - name: Build Package RPM AMD64
+      id: rpmamd64
+      uses: pufferpanel/build-rpm@master
+      with:
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: x86_64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          website: https://pufferpanel.com
+          summary: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          files: |
+            build-artifacts/pufferpanel:/usr/sbin/pufferpanel
+            build-artifacts/www:/var/www/pufferpanel
+            build-artifacts/email:/etc/pufferpanel/email
+            config.linux.json:/etc/pufferpanel/config.json
+            systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
+            RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
+            RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+          suggested-packages: |
+            jre-1.8.0-headless
+            jre-11-headless
+            glibc.i686
+            libstdc++.i686
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_linux_amd64.zip
+        path: build-artifacts/
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_amd64.deb
+        path: pufferpanel_${{ env.VERSION }}_amd64.deb
+        
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
+        path: ${{ steps.rpmamd64.outputs.file }}
+
+  build-linux-armhf-binaries:
+    name: Build Binaries - Linux ARMHF
+    runs-on: ubuntu-18.04
+    needs: ['build-shared']
+
+    steps:
+    - name: Get the version
+      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
+    - name: Set up Go 1.15.6
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.6
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: pufferpanel_build_artifact
+        
+    - name: Restore APT cache
+      id: aptcache
+      uses: actions/cache@v2
+      with:
+        path: /var/cache/apt/archives
+        key: ${{ runner.os }}-apt-armhf
+        
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install --download-only -y gcc-7-arm-linux-gnueabi
+        
+    - name: APT Install
+      run: |
+        sudo apt-get install -y gcc-7-arm-linux-gnueabi
+
+    - name: Build ARMHF
+      run: |
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: arm
@@ -158,164 +323,140 @@ jobs:
         CC: arm-linux-gnueabi-gcc-7
         CGO_ENABLED: 1
         
-    - name: Build ARM64
+    - name: Set up build folder
       run: |
-        go build -o artifacts/arm64/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
-      env:
-        GOOS: linux
-        GOARCH: arm64
-        CC: aarch64-linux-gnu-gcc
-        CGO_ENABLED: 1
-
-    - name: npm install, build
-      run: |
-        npm install
-        npm run build
-        rm -rf dist/*.map
-        mv dist/* ../artifacts/www
-      env:
-        CI: true
-      working-directory: client
-
-    - name: Snapshot folders
-      run: |
-        mkdir -p var/log/pufferpanel var/lib/pufferpanel var/www/pufferpanel
-        cp -r artifacts/www/* var/www/pufferpanel
-
-    - name: Build Package
-      run: |
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          artifacts/amd64/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
-
-        fpm -s deb -t rpm \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --rpm-user pufferpanel --rpm-group pufferpanel \
-          pufferpanel_${{ env.VERSION }}_amd64.deb
-
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          -a armhf \
-          artifacts/arm/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+        cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
+        cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
+        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
           
-        fpm -s dir -t deb \
-          --name pufferpanel \
-          --version "${{ env.VERSION }}" \
-          --url "https://pufferpanel.com" \
-          --description "Game Management Panel" \
-          --license "Apache 2.0" \
-          --maintainer "dev@pufferpanel.com" \
-          --before-install systemd/scripts/preinstall.sh \
-          --after-install systemd/scripts/postinstall.sh \
-          --before-upgrade systemd/scripts/preupgrade.sh \
-          --after-upgrade systemd/scripts/postupgrade.sh \
-          --before-remove systemd/scripts/preremove.sh \
-          --after-remove systemd/scripts/postremove.sh \
-          --deb-user pufferpanel --deb-group pufferpanel \
-          --deb-systemd systemd/servicefiles/pufferpanel.service \
-          --deb-after-purge systemd/scripts/purge.sh \
-          -a arm64 \
-          artifacts/arm64/pufferpanel=/usr/sbin/pufferpanel \
-          var/www/pufferpanel=/var/www \
-          var/log/pufferpanel=/var/log \
-          var/lib/pufferpanel=/var/lib \
-          artifacts/email=/etc/pufferpanel \
-          config.linux.json=/etc/pufferpanel/config.json
-
-    - name: Create archives
-      working-directory: artifacts
-      run: |
-        cp -r email amd64/
-        cp -r www amd64/
-        cp -r email arm/
-        cp -r www arm/
-        cp -r email arm64/
-        cp -r www arm64/
+    - name: Build Package DEB ARMHF
+      id: debarmhf
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: armhf
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: pufferpanel_${{ env.VERSION }}_armhf
-        path: artifacts/arm
-
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_amd64
-        path: artifacts/amd64
-        
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_arm64
-        path: artifacts/arm64
-
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-        path: pufferpanel-${{ env.VERSION }}-1.x86_64.rpm
-
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: pufferpanel_${{ env.VERSION }}_amd64.deb
-        path: pufferpanel_${{ env.VERSION }}_amd64.deb
+        name: pufferpanel_${{ env.VERSION }}_linux_armhf.zip
+        path: build-artifacts/
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: pufferpanel_${{ env.VERSION }}_armhf.deb
         path: pufferpanel_${{ env.VERSION }}_armhf.deb
+
+  build-linux-arm64-binaries:
+    name: Build Binaries - Linux ARM64
+    runs-on: ubuntu-18.04
+    needs: ['build-shared']
+
+    steps:
+    - name: Get the version
+      run: echo "VERSION=0.0.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
+    - name: Set up Go 1.15.6
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.6
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: pufferpanel_build_artifact
+        
+    - name: Restore APT cache
+      id: aptcache
+      uses: actions/cache@v2
+      with:
+        path: /var/cache/apt/archives
+        key: ${{ runner.os }}-apt-arm64
+        
+    - name: Download APT packages
+      if: steps.aptcache.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install --download-only -y gcc-aarch64-linux-gnu
+        
+    - name: APT Install
+      run: |
+        sudo apt-get install -y gcc-aarch64-linux-gnu
+        
+    - name: Build ARM64
+      run: |
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: linux
+        GOARCH: arm64
+        CC: aarch64-linux-gnu-gcc
+        CGO_ENABLED: 1
+        
+    - name: Set up build folder
+      run: |
+        mkdir DEBBUILD
+        mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
+        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
+        cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
+        cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
+        cp systemd/servicefiles/pufferpanel.service DEBBUILD/lib/systemd/system/pufferpanel.service
+              
+    - name: Build Package DEB ARM64
+      id: debarm64
+      uses: pufferpanel/build-deb@master
+      with:
+          data-folder:  DEBBUILD
+          package: pufferpanel
+          version: ${{ env.VERSION }}
+          license: Apache 2.0
+          architecture: arm64
+          maintainer: PufferPanel <dev@pufferpanel.com>
+          homepage: https://pufferpanel.com
+          description: Game management server panel
+          before-install: systemd/scripts/preinstall.sh
+          after-install: systemd/scripts/postinstall.sh
+          before-upgrade: systemd/scripts/preupgrade.sh
+          after-upgrade: systemd/scripts/postupgrade.sh
+          before-remove: systemd/scripts/preremove.sh
+          after-remove: systemd/scripts/postremove.sh
+          after-purge: systemd/scripts/purge.sh
+          user: pufferpanel
+          group: pufferpanel
+          suggested-packages: |
+            java-runtime-headless
+            lib32gcc1
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: pufferpanel_${{ env.VERSION }}_linux_arm64.zip
+        path: build-artifacts
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1

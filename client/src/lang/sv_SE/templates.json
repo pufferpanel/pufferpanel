@@ -1,25 +1,26 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "Mallar",
+  "NoTemplates": "Det finns inga mallar här än",
+  "Deleted": "Mall borttagen",
+  "New": "Skapa ny mall",
+  "Edit": "Redigera mall",
+  "Editor": "Redigerare",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
+  "Display": "Visningsnamn",
+  "Type": "Typ",
+  "Variables": "Variabler",
+  "Install": "Installera",
+  "AddInstallStep": "Lägg till installationssteg",
+  "DeleteInstallStep": "Ta bort installationssteg",
+  "Description": "Beskrivning",
+  "DataType": "Typ av data",
+  "DefaultValue": "Förvalt värde",
+  "Required": "Krävs",
+  "UserEditable": "Användare kan redigera",
+  "Value": "Värde",
+  "AddOption": "Lägg till ett alternativ",
+  "AddCommand": "Lägg till kommando",
+  "Filename": "Filnamn",
   "Content": "Content",
   "Source": "Source",
   "Target": "Target",
@@ -27,7 +28,10 @@
   "ReleaseType": "Release Type",
   "AddFile": "Add file",
   "AddVariable": "Add variable",
+  "Environment": "Environment",
+  "Environments": "Environments",
   "AddEnvironment": "Add environment",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "Command",
     "Signal": "Signal"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Download",
+      "files": "Files"
+    },
+    "command": {
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Content"
+    },
+    "move": {
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Create Directory"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
   }
 }

@@ -30,8 +30,8 @@ import (
 
 func registerNodes(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getAllNodes)
-	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), createNode)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
 	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getNode)
 	g.Handle("PUT", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), updateNode)

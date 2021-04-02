@@ -132,6 +132,8 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 	switch provider {
 	case "mailgun":
 		return SendEmailViaMailgun(to, subjectBuilder.String(), bodyBuilder.String(), async)
+	case "mailjet":
+		return SendEmailViaMailjet(to, subjectBuilder.String(), bodyBuilder.String(), async)
 	case "smtp":
 		return SendEmailViaSMTP(to, subjectBuilder.String(), bodyBuilder.String(), async)
 	case "debug":

@@ -1,6 +1,7 @@
 {
   "Templates": "Szablony",
   "NoTemplates": "Brak szablonów",
+  "Deleted": "Szablon został usunięty",
   "New": "Utwórz nowy szablon",
   "Edit": "Edytuj szablon",
   "Editor": "Edytor",
@@ -27,7 +28,10 @@
   "ReleaseType": "Typ wydania",
   "AddFile": "Dodaj plik",
   "AddVariable": "Dodaj zmienną",
+  "Environment": "Środowisko",
+  "Environments": "Środowisko",
   "AddEnvironment": "Dodaj środowisko",
+  "DefaultEnvironment": "Domyślne środowisko",
   "AddEnvVar": "Dodaj zmienną",
   "EnvVars": "Zmienne środowiskowe",
   "DockerImage": "Obrazy Dokera",
@@ -58,5 +62,46 @@
   "stop": {
     "Command": "Komenda",
     "Signal": "Sygnał"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Pobierz",
+      "files": "Pliki"
+    },
+    "command": {
+      "ProcessorName": "Uruchom polecenie",
+      "commands": "Polecenia"
+    },
+    "alterfile": {
+      "ProcessorName": "Zmień plik",
+      "regex": "Traktuj wyszukiwanie jako RegEx",
+      "search": "Tekst do wyszukania",
+      "replace": "Zamień na"
+    },
+    "writefile": {
+      "ProcessorName": "Zapisz do pliku",
+      "text": "Zawartość"
+    },
+    "move": {
+      "ProcessorName": "Przenieś plik",
+      "source": "Źródło",
+      "target": "Cel"
+    },
+    "mkdir": {
+      "ProcessorName": "Utwórz katalog"
+    },
+    "mojangdl": {
+      "ProcessorName": "Pobierz Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Pobierz Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Pobierz Minecraft SpongeForge",
+      "releaseType": "Typ wydania"
+    },
+    "fabricdl": {
+      "ProcessorName": "Pobierz Minecraft Fabric"
+    }
   }
 }

@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "A jelszavak nem egyeznek",
   "ErrSessionTimedOut": "Lejárt az ülése, kérjük lépjen be újra",
   "ErrMissingScope": "Nincs jogosultsága a művelet végrehajtásához",
-  "ErrInvalidJson": "A json adat érvénytelen"
+  "ErrInvalidJson": "A json adat érvénytelen",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }

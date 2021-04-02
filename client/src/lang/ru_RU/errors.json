@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "Пароли не совпадают",
   "ErrSessionTimedOut": "Время сессии истекло, пожалуйста, повторите вход",
   "ErrMissingScope": "У вас нет прав для совершения данного действия",
-  "ErrInvalidJson": "Json данные недействительны"
+  "ErrInvalidJson": "Json данные недействительны",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }

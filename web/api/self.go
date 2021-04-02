@@ -27,6 +27,7 @@ import (
 func registerSelf(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), getSelf)
 	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), updateSelf)
+	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 
 // @Summary Get your user info

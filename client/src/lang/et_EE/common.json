@@ -34,5 +34,7 @@
   "ErrorDetails": "Tõrke Üksikasjad",
   "HelpTranslate": "Aita tõlkida PufferPanelit",
   "DarkMode": "Tume Režiim",
-  "ThemeOptions": "Teema Valikud"
+  "ThemeOptions": "Teema Valikud",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }

@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
-  "NewFolder": "New Folder",
-  "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Failed loading file"
+  "FileManager": "檔案管理器",
+  "NewFolder": "新增資料夾",
+  "NewFile": "新增檔案",
+  "LastModified": "最後修改時間",
+  "ConfirmDelete": "你確認要刪除此檔案？",
+  "Upload": "上載",
+  "Download": "下載",
+  "Size": "大小",
+  "NoFiles": "這裏尚未有任何檔案，點擊上方的按扭來添加一些實例吧",
+  "FileLoadFailed": "無法載入檔案"
 }
