@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "Kata sandi tidak sama",
   "ErrSessionTimedOut": "Sesi anda telah habis, silahkan masuk kembali",
   "ErrMissingScope": "Anda tidak di ijinkan melakukan aksi ini",
-  "ErrInvalidJson": "Data json tidak valid"
+  "ErrInvalidJson": "Data json tidak valid",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }

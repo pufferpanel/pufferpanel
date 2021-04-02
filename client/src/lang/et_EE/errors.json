@@ -33,5 +33,6 @@
   "ErrPasswordsNotIdentical": "Salasõnad ei ühti",
   "ErrSessionTimedOut": "Sinu sessioon on aegunud, palun logi uuesti sisse",
   "ErrMissingScope": "Teil puudub õigus selle tegevuse jaoks",
-  "ErrInvalidJson": "Json andmed on kehtetud"
+  "ErrInvalidJson": "Json andmed on kehtetud",
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
 }

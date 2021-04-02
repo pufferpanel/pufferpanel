@@ -41,12 +41,14 @@ import (
 
 type docker struct {
 	*pufferpanel.BaseEnvironment
-	ContainerId string            `json:"-"`
-	ImageName   string            `json:"image"`
-	Binds       map[string]string `json:"bindings,omitempty"`
-	NetworkMode string            `json:"networkMode,omitempty"`
-	Network     string            `json:"networkName,omitempty"`
-	Ports       []string          `json:"portBindings,omitempty"`
+	ContainerId  string              `json:"-"`
+	ImageName    string              `json:"image"`
+	Binds        map[string]string   `json:"bindings,omitempty"`
+	NetworkMode  string              `json:"networkMode,omitempty"`
+	Network      string              `json:"networkName,omitempty"`
+	Ports        []string            `json:"portBindings,omitempty"`
+	Resources    container.Resources `json:"resources,omitempty"`
+	ExposedPorts nat.PortSet         `json:"exposedPorts,omitempty"`
 
 	connection       types.HijackedResponse
 	cli              *client.Client
@@ -112,7 +114,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
 		}
 
-		msg := messages.Status{Running:false}
+		msg := messages.Status{Running: false}
 		_ = d.WSManager.WriteMessage(msg)
 
 		if steps.Callback != nil {
@@ -120,10 +122,9 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		}
 	}()
 
-	startOpts := types.ContainerStartOptions{
-	}
+	startOpts := types.ContainerStartOptions{}
 
-	msg := messages.Status{Running:true}
+	msg := messages.Status{Running: true}
 	_ = d.WSManager.WriteMessage(msg)
 
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
@@ -357,6 +358,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		Image:           d.ImageName,
 		WorkingDir:      containerRoot,
 		Env:             newEnv,
+		ExposedPorts:    d.ExposedPorts,
 	}
 
 	if runtime.GOOS == "linux" {
@@ -366,7 +368,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
-		Resources:    container.Resources{},
+		Resources:    d.Resources,
 		Binds:        []string{root + ":" + containerRoot},
 		PortBindings: nat.PortMap{},
 	}

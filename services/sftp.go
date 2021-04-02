@@ -50,7 +50,20 @@ func (s *DatabaseSFTPAuthorization) Validate(username, password string) (perms *
 		return nil, errors.New("incorrect username or password")
 	}
 
-	if !serverPerms.SFTPServer {
+	userPerms, err := ss.GetForUser(user.ID)
+	if err != nil {
+		return nil, errors.New("incorrect username or password")
+	}
+
+	isAdmin := false
+	for _, p := range userPerms {
+		if p.Admin {
+			isAdmin = true
+			break
+		}
+	}
+
+	if !serverPerms.SFTPServer && !isAdmin {
 		return nil, errors.New("incorrect username or password")
 	}
 

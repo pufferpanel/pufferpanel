@@ -12,7 +12,7 @@
   "ServersFilesPut": "Editar y subir archivos usando el administrador de archivos",
   "ServersEditUsers": "Editar el acceso del usuario a este servidor",
   "Admin": "Admin (esto concede todos los permisos posibles)",
-  "ViewServers": "Ver todos los servidores",
+  "ViewServers": "See Servers",
   "CreateServers": "Crear nuevos servidores",
   "DeleteServers": "Eliminar servidores",
   "EditServerAdmin": "Editar ajustes del servidor",

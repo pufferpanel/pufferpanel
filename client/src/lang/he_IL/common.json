@@ -34,5 +34,7 @@
   "ErrorDetails": "Error Details",
   "HelpTranslate": "Help us translate PufferPanel",
   "DarkMode": "Dark Mode",
-  "ThemeOptions": "Theme Options"
+  "ThemeOptions": "Theme Options",
+  "Protocol": "Protocol",
+  "Add": "Add"
 }

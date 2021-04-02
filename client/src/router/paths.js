@@ -102,5 +102,16 @@ export default [
       noFooter: true,
       noBase: true
     }
+  },
+  {
+    path: '/auth/invite',
+    name: 'Invite',
+    view: 'Invite',
+    meta: {
+      noAuth: true,
+      noSidebar: true,
+      noFooter: true,
+      noBase: true
+    }
   }
 ]

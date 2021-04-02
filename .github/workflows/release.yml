@@ -21,7 +21,9 @@ jobs:
     name: "Deployment"
     
     steps:
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6 # Not needed with a .ruby-version file
     
     - name: Install gems
       run:

@@ -1,62 +1,107 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "範本",
+  "NoTemplates": "這裡沒有可用範本",
+  "Deleted": "範本已刪除",
+  "New": "創建新範本",
+  "Edit": "編輯範本",
+  "Editor": "編輯器",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "AddEnvironment": "Add environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
+  "Display": "顯示名稱",
+  "Type": "類型",
+  "Variables": "變數",
+  "Install": "安裝",
+  "AddInstallStep": "添加安裝步驟",
+  "DeleteInstallStep": "刪除安裝步驟",
+  "Description": "描述",
+  "DataType": "數據類型",
+  "DefaultValue": "預設值",
+  "Required": "必填項目",
+  "UserEditable": "用戶可編輯",
+  "Value": "值",
+  "AddOption": "添加選項",
+  "AddCommand": "添加指令",
+  "Filename": "檔案名稱",
+  "Content": "內容",
+  "Source": "來源",
+  "Target": "目標",
+  "Version": "版本",
+  "ReleaseType": "發佈類型",
+  "AddFile": "添加檔案",
+  "AddVariable": "添加變數",
+  "Environment": "Environment",
+  "Environments": "環境",
+  "AddEnvironment": "添加環境",
+  "DefaultEnvironment": "預設環境",
+  "AddEnvVar": "添加環境變數",
+  "EnvVars": "環境變數",
+  "DockerImage": "Docker 映像",
+  "SaveSuccess": "已儲存範本",
+  "VarNameNoSpaces": "環境變數不能為空或包含空格",
+  "SupportedEnvironments": "支持的環境",
+  "RunConfig": "執行配置",
+  "PreHook": "運行前的Hook",
+  "PostHook": "運行後的Hook",
+  "AddPreStep": "添加運行前的步驟",
+  "AddPostStep": "添加運行後的步驟",
+  "DeletePreStep": "刪除運行前的步驟",
+  "DeletePostStep": "刪除運行後的步驟",
+  "Shutdown": "關機",
+  "Command": "指令",
+  "Arguments": "參數",
+  "AddArgument": "添加參數",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "警告：匯入的範本將覆蓋現有具相同ID的範本",
+    "Import": "匯入範本",
+    "Tooltip": "從官方代碼資料庫匯入範本",
+    "Select": "選擇要導入的範本",
+    "Started": "匯入範本中，請稍候",
+    "Successful": "已成功匯入範本{template}",
+    "NoTemplatesTitle": "你想匯入範本嗎?",
+    "NoTemplatesContent": "您目前沒有任何範本，而創建伺服器時，範本是必需的。<br/>是否要立即從官方PufferPanel的範本資料庫中匯入一些範本？"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "指令",
+    "Signal": "信號"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "下載",
+      "files": "檔案"
+    },
+    "command": {
+      "ProcessorName": "執行指令",
+      "commands": "指令"
+    },
+    "alterfile": {
+      "ProcessorName": "變更檔案",
+      "regex": "以正則表達式搜索",
+      "search": "搜尋文字",
+      "replace": "用於取替"
+    },
+    "writefile": {
+      "ProcessorName": "寫入檔案",
+      "text": "內容"
+    },
+    "move": {
+      "ProcessorName": "移動檔案",
+      "source": "來源",
+      "target": "目標"
+    },
+    "mkdir": {
+      "ProcessorName": "創建目錄"
+    },
+    "mojangdl": {
+      "ProcessorName": "下載Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "下載Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "下載Minecraft SpongeForge",
+      "releaseType": "發佈類型"
+    },
+    "fabricdl": {
+      "ProcessorName": "下載Minecraft Fabric"
+    }
   }
 }
