@@ -169,6 +169,7 @@ func (p *Program) Start() (err error) {
 	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
+	p.RunningEnvironment.ReplaceTokens(data)
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
@@ -377,7 +378,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 func (p *Program) Save() (err error) {
 	logging.Info().Printf("Saving server %s", p.Id())
 
-	file := filepath.Join(ServerFolder, p.Id() + ".json")
+	file := filepath.Join(ServerFolder, p.Id()+".json")
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {

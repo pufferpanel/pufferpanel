@@ -55,6 +55,10 @@ type docker struct {
 	downloadingImage bool
 }
 
+func (d *docker) ReplaceTokens(data map[string]interface{}) {
+	d.ImageName = pufferpanel.ReplaceTokens(d.ImageName, data)
+}
+
 func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	running, err := d.IsRunning()
 	if err != nil {

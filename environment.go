@@ -66,6 +66,9 @@ type Environment interface {
 	SendCode(code int) error
 
 	GetBase() *BaseEnvironment
+
+	//Replace tokens from data, implemented for variable docker container selection
+	ReplaceTokens(data map[string]interface{})
 }
 
 type BaseEnvironment struct {
@@ -80,11 +83,11 @@ type BaseEnvironment struct {
 }
 
 type ExecutionData struct {
-	Command string
-	Arguments []string
-	Environment map[string]string
+	Command          string
+	Arguments        []string
+	Environment      map[string]string
 	WorkingDirectory string
-	Callback func(graceful bool)
+	Callback         func(graceful bool)
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)
