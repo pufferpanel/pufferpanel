@@ -134,7 +134,7 @@ jobs:
 
     - name: Build Windows
       run: |
-        go build -o build-artifact/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: windows
         GOARCH: amd64
@@ -182,7 +182,7 @@ jobs:
         
     - name: Build Linux
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: amd64
@@ -315,7 +315,7 @@ jobs:
 
     - name: Build ARMHF
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: arm
@@ -410,7 +410,7 @@ jobs:
         
     - name: Build ARM64
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: arm64
