@@ -35,7 +35,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_amd64'
+        artifact-name: 'pufferpanel_*_amd64.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -45,7 +45,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_armhf'
+        artifact-name: 'pufferpanel_*_armhf.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -55,7 +55,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_arm64'
+        artifact-name: 'pufferpanel_*_arm64.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
     
@@ -65,7 +65,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'true'
-        artifact-name: 'pufferpanel-*.rpm'
+        artifact-name: 'pufferpanel-*.x86_64.rpm'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
