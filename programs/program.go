@@ -19,6 +19,7 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
+	"github.com/mholt/archiver"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
@@ -377,7 +378,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 func (p *Program) Save() (err error) {
 	logging.Info().Printf("Saving server %s", p.Id())
 
-	file := filepath.Join(ServerFolder, p.Id() + ".json")
+	file := filepath.Join(ServerFolder, p.Id()+".json")
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
@@ -560,4 +561,42 @@ func (p *Program) DeleteItem(name string) error {
 	}
 
 	return os.RemoveAll(targetFile)
+}
+
+func (p *Program) ArchiveItems(files []string, destination string) error {
+	var targets []string
+	for _, name := range files {
+		targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+		if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
+			return pufferpanel.ErrIllegalFileAccess
+		}
+		targets = append(targets, targetFile)
+	}
+
+	destination = pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
+	if !pufferpanel.EnsureAccess(destination, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
+	}
+
+	// This may technically error out in other cases
+	if _, err := os.Stat(destination); os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
+	}
+	return archiver.Archive(targets, destination)
+}
+
+func (p *Program) Extract(source, destination string) error {
+	sourceFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), source)
+	destinationFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
+
+	if !pufferpanel.EnsureAccess(sourceFile, p.GetEnvironment().GetRootDirectory()) || !pufferpanel.EnsureAccess(destinationFile, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
+	}
+
+	// destination shouldn't exist
+	if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
+	}
+
+	return archiver.Unarchive(sourceFile, destinationFile)
 }
