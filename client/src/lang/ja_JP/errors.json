@@ -34,5 +34,7 @@
   "ErrSessionTimedOut": "セッションが時間切れです。再度ログインしてください。",
   "ErrMissingScope": "この操作を実行する権限をもっていません。",
   "ErrInvalidJson": "Json データが無効です",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }

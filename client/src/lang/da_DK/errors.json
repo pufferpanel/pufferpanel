@@ -34,5 +34,7 @@
   "ErrSessionTimedOut": "Din session er udløbet. Log venligst ind igen",
   "ErrMissingScope": "Du har ikke tilladelse til at udføre denne handling",
   "ErrInvalidJson": "JSON-dataen er ugyldigt",
-  "ErrSocketFailed": "WebSocket forbindelsen stødte på en fejl, nogle funktioner kan være langsom eller afbrudt"
+  "ErrSocketFailed": "WebSocket forbindelsen stødte på en fejl, nogle funktioner kan være langsom eller afbrudt",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }

@@ -1,12 +1,12 @@
 {
-  "FileManager": "File Manager",
+  "FileManager": "Filbehandling",
   "NewFolder": "New Folder",
   "NewFile": "New File",
-  "LastModified": "Last Modified",
-  "ConfirmDelete": "Are you sure you want to delete this file?",
-  "Upload": "Upload",
-  "Download": "Download",
-  "Size": "Size",
-  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
+  "LastModified": "Sist endret",
+  "ConfirmDelete": "Er du sikker på at du vil slette denne filen?",
+  "Upload": "Last opp",
+  "Download": "Last ned",
+  "Size": "Størrelse",
+  "NoFiles": "Det finnes ingen filer her ennå, gå og opprette noen for eksempel ved å klikke på 'install'-knappen øverst på siden",
   "FileLoadFailed": "Failed loading file"
 }

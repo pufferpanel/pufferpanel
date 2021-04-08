@@ -34,5 +34,7 @@
   "ErrSessionTimedOut": "Sua sessão expirou. Faça login novamente",
   "ErrMissingScope": "Você não está autorizado a realizar esta ação",
   "ErrInvalidJson": "Os dados do JSON são inválidos",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }

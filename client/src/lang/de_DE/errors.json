@@ -13,7 +13,7 @@
   "ErrNoTemplate": "Es wurde keine Vorlage mit dem Namen '{name}' gefunden",
   "ErrServiceInvalidProvider": "{service} unterstützt {provider} nicht",
   "ErrFieldRequired": "{field} ist erforderlich",
-  "ErrFieldMustBePrintable": "{field} muss aus druckbare ascii Zeichen bestehen",
+  "ErrFieldMustBePrintable": "{field} muss aus darstellbaren Ascii Zeichen bestehen",
   "ErrFieldHasURICharacters": "{field} darf keine Zeichen enthalten, die nicht in URIs verwendet werden können",
   "ErrFieldIsInvalidHost": "{field} muss eine gültige IP oder FQDN sein",
   "ErrFieldIsInvalidIP": "{field} muss eine gültige IP sein",
@@ -24,7 +24,7 @@
   "ErrFieldNotEqual": "{field1} ist nicht gleich {field2}",
   "ErrFieldNotEmail": "{field} ist keine gültige E-Mail",
   "ErrFieldLength": "{field} muss mindestens {length} Zeichen lang sein",
-  "ErrNoPermission": "Du hast keine Berechtigungen, um diese Aktion auszuführen",
+  "ErrNoPermission": "Sie haben keine Berechtigung, um diese Aktion auszuführen",
   "ErrDatabaseNotAvailable": "Datenbank ist nicht verfügbar",
   "ErrNoNodes": "Keine Knoten verfügbar",
   "ErrNoTemplates": "Keine Vorlagen verfügbar",
@@ -32,7 +32,9 @@
   "ErrUsernameRequirements": "Der Benutzername muss mindestens {min} Zeichen lang sein und darf nur alphanumerische Zeichen, _, oder - enthalten",
   "ErrPasswordsNotIdentical": "Die Passwörter stimmen nicht überein",
   "ErrSessionTimedOut": "Ihre Sitzung ist abgelaufen, bitte melden Sie sich erneut an",
-  "ErrMissingScope": "Du bist nicht berechtigt, diese Aktion auszuführen",
+  "ErrMissingScope": "Sie sind nicht berechtigt, diese Aktion auszuführen",
   "ErrInvalidJson": "Die json-Daten sind ungültig",
-  "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft"
+  "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }
