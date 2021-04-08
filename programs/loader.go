@@ -204,7 +204,7 @@ func Delete(id string) (err error) {
 	}
 
 	if running {
-		err = program.Stop()
+		err = program.Kill()
 		if err != nil {
 			return
 		}
