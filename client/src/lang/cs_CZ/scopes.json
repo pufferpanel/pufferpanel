@@ -12,7 +12,7 @@
   "ServersFilesPut": "Upravit a nahrát soubory pomocí správce souborů",
   "ServersEditUsers": "Upravit přístup uživatele k tomuto serveru",
   "Admin": "Admin (toto uděluje všechna možná oprávnění)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Zobrazit servery",
   "CreateServers": "Vytvořit nové servery",
   "DeleteServers": "Odstranit servery",
   "EditServerAdmin": "Upravit nastavení serveru",

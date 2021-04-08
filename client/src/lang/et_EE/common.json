@@ -35,6 +35,7 @@
   "HelpTranslate": "Aita tõlkida PufferPanelit",
   "DarkMode": "Tume Režiim",
   "ThemeOptions": "Teema Valikud",
-  "Protocol": "Protocol",
-  "Add": "Add"
+  "Protocol": "Protokoll",
+  "Add": "Lisa",
+  "Ignore": "Ignoreeri"
 }

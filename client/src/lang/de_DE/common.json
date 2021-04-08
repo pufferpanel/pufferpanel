@@ -4,7 +4,7 @@
   "Address": "Adresse",
   "Online": "Online",
   "Offline": "Offline",
-  "Loading": "Lädt...",
+  "Loading": "Lade...",
   "General": "Allgemein",
   "Language": "Sprache",
   "SelectLanguage": "Sprache auswählen",
@@ -36,5 +36,6 @@
   "DarkMode": "Dark Mode",
   "ThemeOptions": "Theme-Einstellungen",
   "Protocol": "Protokoll",
-  "Add": "Hinzufügen"
+  "Add": "Hinzufügen",
+  "Ignore": "Ignorieren"
 }

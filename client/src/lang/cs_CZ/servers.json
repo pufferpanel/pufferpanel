@@ -31,7 +31,7 @@
   "Deleted": "Smazaný server",
   "NoReadme": "Pro tuto šablonu není k dispozici žádné čtení",
   "SftpConnection": "Připojit k SFTP",
-  "EditDefinition": "Edit Server Definition",
+  "EditDefinition": "Upravit definici serveru",
   "Reload": "Znovu načíst data serveru z disku",
   "Reloaded": "Znovu načtená data serveru",
   "Autostart": "Spustit server při spuštění uzlu",
