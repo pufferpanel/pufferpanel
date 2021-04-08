@@ -196,6 +196,8 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/el/7 ${{ steps.amd64rpmdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/el/8 ${{ steps.amd64rpmdownload.outputs.file }}
         
+        package_cloud push ${{ github.event.inputs.repo }}/fedora/33 ${{ steps.amd64rpmdownload.outputs.file }}
+        
         #ubuntu
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/xenial ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/yakkety ${{ steps.amd64debdownload.outputs.file }}
