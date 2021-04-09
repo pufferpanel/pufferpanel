@@ -79,7 +79,8 @@ export default {
             show: true,
             formatter: value => this.intl.format(Math.round(value * 100) / 100) + '%'
           },
-          min: 0
+          min: 0,
+          max: () => this.series[0] ? Math.ceil(this.series[0].data.reduce((acc, curr) => Math.max(acc, curr[1]), 100)) : 100
         },
         legend: {
           show: true
