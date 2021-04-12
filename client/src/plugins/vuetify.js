@@ -6,8 +6,11 @@ const opts = {
   components: { VSnackbar },
   theme: {
     options: {
+      customProperties: true,
       inputStyle: 'outlined',
-      customProperties: true
+      console: {
+        daemonChip: null
+      }
     },
     themes: {
       light: {
