@@ -198,7 +198,7 @@
         closable
         :title="$t('common.ErrorDetails')"
       >
-        <code v-text="errorText" />
+        <div v-html="errorText" />
       </ui-overlay>
     </v-main>
   </v-app>
@@ -309,13 +309,13 @@ export default {
       const getCircularReplacer = () => {
         const seen = new WeakSet()
         return (key, value) => {
-          if (key === 'password') return '<password>'
+          if (key === 'password') return '[password]'
           if (typeof value === 'string') {
             try {
               const json = JSON.parse(value)
               if (typeof json === 'object' && json !== null) {
                 if (Object.keys(json).indexOf('password') !== -1) {
-                  json.password = '<password>'
+                  json.password = '[password]'
                 }
                 return JSON.stringify(json)
               } else { return value }
@@ -330,7 +330,62 @@ export default {
           return value
         }
       }
-      this.errorText = JSON.stringify(error, getCircularReplacer(), 4)
+
+      if (error.config) {
+        const responseCode = error.message.substring(error.message.length - 3, error.message.length)
+        let codeMessage = error.message
+        switch (responseCode) {
+          case '401':
+            codeMessage = 'Not logged in (401)'
+            break
+          case '403':
+            codeMessage = 'Permission denied (403)'
+            break
+          case '404':
+            codeMessage = 'Endpoint not found, is something blocking access to the API? (404)'
+            break
+          case '500':
+            codeMessage = 'Server error (500)'
+            break
+          case '502':
+            codeMessage = 'Bad Gateway, is PufferPanel running? (502)'
+            break
+        }
+
+        let auth = error.config.headers.Authorization
+        if (auth) {
+          auth = auth.substring(0, 16)
+          if (auth.length === 16) auth = auth + '...'
+        } else auth = 'Not present'
+
+        let body = error.config.data
+        if (body) {
+          body = JSON.stringify(JSON.parse(body), getCircularReplacer(), 4)
+        }
+
+        const message = `${codeMessage}
+
+Endpoint: ${error.config.method} ${error.config.url}
+
+Authorization Header: ${auth}
+
+${body ? 'Request Body: ' + body : ''}
+
+Stacktrace: ${error.stack}`
+          .replace(/>/g, '$gt;')
+          .replace(/</g, '&lt;')
+          .replace(/ /g, '&nbsp;')
+          .replace(/\n/g, '<br>')
+
+        this.errorText = message
+      } else {
+        this.errorText = JSON.stringify(error, getCircularReplacer(), 4)
+          .replace(/>/g, '$gt;')
+          .replace(/</g, '&lt;')
+          .replace(/ /g, '&nbsp;')
+          .replace(/\n/g, '<br>')
+      }
+
       this.errorOverlayOpen = true
     }
   }
