@@ -198,6 +198,7 @@
         closable
         :title="$t('common.ErrorDetails')"
       >
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-html="errorText" />
       </ui-overlay>
     </v-main>

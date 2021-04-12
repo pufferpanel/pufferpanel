@@ -26,12 +26,24 @@
         class="console"
         style="min-height: 25em; max-height: 40em;"
       >
-        <span v-for="(line, index) in console" :key="index">
+        <span
+          v-for="(line, index) in console"
+          :key="index"
+        >
           <span v-if="isDaemonMessage(line)">
-            <v-chip :color="$vuetify.theme.options.console.daemonChip" x-small label>DAEMON</v-chip>
+            <v-chip
+              :color="$vuetify.theme.options.console.daemonChip"
+              x-small
+              label
+            >
+              DAEMON
+            </v-chip>
             <span v-html="removeDaemonTag(line)" />
           </span>
-          <span v-else v-html="line" />
+          <span
+            v-else
+            v-html="line"
+          />
         </span>
       </div>
       <!-- eslint-enable vue/no-v-html -->
