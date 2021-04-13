@@ -49,8 +49,8 @@
   "Command": "Commande",
   "Arguments": "Arguments",
   "AddArgument": "Ajouter un argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "Convertir",
+  "OfferV1Convert": "Ce modèle json ressemble à un modèle pour PufferPanel 1.x, voulez-vous le convertir automatiquement en un modèle pour PufferPanel 2.x ?",
   "import": {
     "OverrideWarning": "AVERTISSEMENT : Les modèles importés VONT remplacer les modèles existants avec le même identifiant",
     "Import": "Importer des modèles",
