@@ -60,6 +60,7 @@
 }
 
 .overlayContent {
+  padding-top: 4px !important;
   max-height: calc(90vh - 68px);
   overflow-y: scroll;
 }

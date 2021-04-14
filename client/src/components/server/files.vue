@@ -21,17 +21,218 @@
         class="flex-grow-1"
         v-text="$t('files.FileManager')"
       />
-      <v-btn
+
+      <!-- Archive all Server Files -->
+      <v-tooltip
         v-if="server.permissions.putServerFiles || isAdmin()"
-        icon
-        @click="createFile = true"
+        bottom
       >
-        <v-icon>mdi-file-plus</v-icon>
-      </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            @click="archive('current')"
+          >
+            <v-icon>mdi-archive-arrow-down</v-icon>
+          </v-btn>
+        </template>
+        <span v-text="$t('files.ArchiveCurrentFolder')" />
+      </v-tooltip>
+
+      <!-- Create File -->
+      <v-tooltip
+        v-if="server.permissions.putServerFiles || isAdmin()"
+        bottom
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            @click="createFile = true"
+          >
+            <v-icon>mdi-file-plus</v-icon>
+          </v-btn>
+        </template>
+        <span v-text="$t('files.CreateFile')" />
+      </v-tooltip>
+
+      <!-- Create Folder -->
+      <v-tooltip
+        v-if="server.permissions.putServerFiles || isAdmin()"
+        bottom
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            @click="createFolder = true"
+          >
+            <v-icon>mdi-folder-plus</v-icon>
+          </v-btn>
+        </template>
+        <span v-text="$t('files.CreateFolder')" />
+      </v-tooltip>
+
+      <!-- Refresh -->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            @click="fetchItems(currentPath)"
+          >
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+        </template>
+        <span v-text="$t('files.Refresh')" />
+      </v-tooltip>
+    </v-card-title>
+    <v-card-subtitle v-text="currentPath" />
+    <v-card-text>
+      <v-list>
+        <v-list-item
+          v-for="file in files"
+          :key="file.name"
+          @click="itemClicked(file)"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="file.name" />
+            <v-list-item-subtitle
+              v-if="file.isFile"
+              v-text="toFileSize(file.size || 0)"
+            />
+            <v-list-item-subtitle
+              v-if="file.modifyTime"
+              v-text="$t('files.LastModified') + ': ' + toDate(file.modifyTime)"
+            />
+          </v-list-item-content>
+          <v-list-item-action class="flex-row">
+            <!-- Edit File -->
+            <v-tooltip
+              v-if="file.isFile && !isArchive(file) && !(file.size > maxEditSize)"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="itemClicked(file)"
+                >
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('common.Edit')" />
+            </v-tooltip>
+
+            <!-- Extract Archive -->
+            <v-tooltip
+              v-if="file.isFile && isArchive(file)"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="extract(file)"
+                >
+                  <v-icon>mdi-archive-arrow-up</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('files.ExtractArchive')" />
+            </v-tooltip>
+
+            <!-- Download File -->
+            <v-tooltip
+              v-if="file.isFile"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  :href="createDownloadLink(file)"
+                  target="_blank"
+                  v-on="on"
+                  @click.stop=""
+                >
+                  <v-icon>mdi-download</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('files.Download')" />
+            </v-tooltip>
+
+            <!-- Archive Folder -->
+            <v-tooltip
+              v-if="file.name !== '..' && !file.isFile"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="archive(file)"
+                >
+                  <v-icon>mdi-archive-arrow-down</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('files.ArchiveFolder')" />
+            </v-tooltip>
+
+            <!-- Delete File -->
+            <v-tooltip
+              v-if="file.name !== '..'"
+              bottom
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="deleteRequest(file)"
+                >
+                  <v-icon>mdi-trash-can</v-icon>
+                </v-btn>
+              </template>
+              <span v-text="$t('common.Delete')" />
+            </v-tooltip>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
+      <!-- File Upload -->
+      <div v-if="server.permissions.putServerFiles || isAdmin()">
+        <v-file-input
+          v-model="uploadFiles"
+          multiple
+          chips
+          show-size
+          counter
+          :placeholder="$t('files.Upload')"
+          class="mb-4"
+        />
+        <div v-if="uploading">
+          <v-progress-linear
+            :value="(uploadCurrent / uploadSize) * 100"
+            buffer-value="0"
+            stream
+            class="mb-4"
+          />
+        </div>
+        <v-btn
+          block
+          color="primary"
+          :disabled="!(uploadFiles.length > 0) || uploading"
+          @click="transmitFiles"
+          v-text="$t('files.Upload')"
+        />
+      </div>
+
+      <!-- Overlays -->
+      <!-- Create File -->
       <ui-overlay
         v-model="createFile"
         :title="$t('files.NewFile')"
         card
+        closable
+        :on-close="cancelFileCreate"
       >
         <v-row>
           <v-col>
@@ -65,17 +266,14 @@
           </v-col>
         </v-row>
       </ui-overlay>
-      <v-btn
-        v-if="server.permissions.putServerFiles || isAdmin()"
-        icon
-        @click="createFolder = true"
-      >
-        <v-icon>mdi-folder-plus</v-icon>
-      </v-btn>
+
+      <!-- Create Folder -->
       <ui-overlay
         v-model="createFolder"
         :title="$t('files.NewFolder')"
         card
+        closable
+        :on-close="cancelFolderCreate"
       >
         <v-row>
           <v-col>
@@ -109,106 +307,8 @@
           </v-col>
         </v-row>
       </ui-overlay>
-      <v-btn
-        icon
-        @click="fetchItems(currentPath)"
-      >
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-subtitle v-text="currentPath" />
-    <v-card-text>
-      <v-dialog
-        v-model="confirmDeleteOpen"
-        max-width="600"
-      >
-        <v-card>
-          <v-card-title v-text="$t('files.ConfirmDelete')" />
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="error"
-              @click="deleteCancelled()"
-              v-text="$t('common.Cancel')"
-            />
-            <v-btn
-              color="success"
-              @click="deleteConfirmed()"
-              v-text="$t('common.Confirm')"
-            />
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
-      <v-list>
-        <v-list-item
-          v-for="file in files"
-          :key="file.name"
-          @click="itemClicked(file)"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="file.name" />
-            <v-list-item-subtitle
-              v-if="file.isFile"
-              v-text="toFileSize(file.size || 0)"
-            />
-            <v-list-item-subtitle
-              v-if="file.modifyTime"
-              v-text="$t('files.LastModified') + ': ' + toDate(file.modifyTime)"
-            />
-          </v-list-item-content>
-          <v-list-item-action class="flex-row">
-            <v-tooltip
-              v-if="file.isFile && !(file.size > maxEditSize)"
-              bottom
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="itemClicked(file)"
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <span v-text="$t('common.Edit')" />
-            </v-tooltip>
-            <v-tooltip
-              v-if="file.isFile"
-              bottom
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  :href="createDownloadLink(file)"
-                  target="_blank"
-                  v-on="on"
-                  @click.stop=""
-                >
-                  <v-icon>mdi-download</v-icon>
-                </v-btn>
-              </template>
-              <span v-text="$t('files.Download')" />
-            </v-tooltip>
-            <v-tooltip
-              v-if="file.name !== '..'"
-              bottom
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="deleteRequest(file)"
-                >
-                  <v-icon>mdi-trash-can</v-icon>
-                </v-btn>
-              </template>
-              <span v-text="$t('common.Delete')" />
-            </v-tooltip>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-
+      <!-- Edit File -->
       <ui-overlay
         v-model="editOpen"
         :title="currentFile"
@@ -238,32 +338,33 @@
         </template>
       </ui-overlay>
 
-      <div v-if="server.permissions.putServerFiles || isAdmin()">
-        <v-file-input
-          v-model="uploadFiles"
-          multiple
-          chips
-          show-size
-          counter
-          :placeholder="$t('files.Upload')"
-          class="mb-4"
-        />
-        <div v-if="uploading">
-          <v-progress-linear
-            :value="(uploadCurrent / uploadSize) * 100"
-            buffer-value="0"
-            stream
-            class="mb-4"
-          />
-        </div>
-        <v-btn
-          block
-          color="primary"
-          :disabled="!(uploadFiles.length > 0) || uploading"
-          @click="transmitFiles"
-          v-text="$t('files.Upload')"
-        />
-      </div>
+      <!-- Confirm Delete -->
+      <ui-overlay
+        v-model="confirmDeleteOpen"
+        :title="$t('files.ConfirmDelete')"
+        card
+        closable
+        :on-close="deleteCancelled"
+      >
+        <v-row>
+          <v-col cols="6">
+            <v-btn
+              color="error"
+              block
+              @click="deleteCancelled()"
+              v-text="$t('common.Cancel')"
+            />
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              color="success"
+              block
+              @click="deleteConfirmed()"
+              v-text="$t('common.Confirm')"
+            />
+          </v-col>
+        </v-row>
+      </ui-overlay>
     </v-card-text>
   </v-card>
 </template>
@@ -271,6 +372,21 @@
 <script>
 import filesize from 'filesize'
 import { isDark } from '@/utils/dark'
+
+const archiveExtensions = [
+  '.7z',
+  '.bz2',
+  '.gz',
+  '.jar',
+  '.lz',
+  '.lzma',
+  '.rar',
+  '.tar',
+  '.tgz',
+  '.xz',
+  '.zip',
+  '.zipx'
+]
 
 export default {
   props: {
@@ -298,8 +414,6 @@ export default {
     }
   },
   mounted () {
-    this.fetchItems(this.currentPath)
-
     this.$api.addServerListener(this.server.id, 'file', event => {
       if (event.error) {
         this.isLoading = false
@@ -320,11 +434,17 @@ export default {
 
       this.loading = false
     })
+
+    this.fetchItems(this.currentPath)
   },
   methods: {
     fetchItems (path) {
       this.loading = true
       this.$api.requestServerFile(this.server.id, path)
+    },
+    fetchRoot () {
+      this.fetchNoUpdateRoot = true
+      this.fetchItems('/')
     },
     async itemClicked (item) {
       if (!item.isFile) {
@@ -401,6 +521,43 @@ export default {
       this.toDelete = null
       this.confirmDeleteOpen = null
     },
+    async archive (file) {
+      const currentFolder = file === 'current'
+      if (currentFolder) {
+        const folderName = this.currentPath.split('/').pop()
+        file = { name: folderName === '' ? 'server' : folderName }
+      }
+
+      let currentPath = this.currentPath
+      if (!currentPath.endsWith('/')) currentPath += '/'
+      const filePath = currentFolder ? currentPath : currentPath + file.name
+      let destination = file.name + '.zip'
+      for (let i = 2; this.doesFileExist(destination); i++) {
+        destination = `${file.name} (${i}).zip`
+      }
+      destination = currentPath + destination
+
+      this.loading = true
+      try {
+        await this.$api.archiveServerFiles(this.server.id, destination, filePath)
+        this.fetchItems(this.currentPath)
+      } finally {
+        this.loading = false
+      }
+    },
+    async extract (file) {
+      let filePath = this.currentPath
+      if (!filePath.endsWith('/')) filePath += '/'
+      filePath += file.name
+
+      this.loading = true
+      try {
+        await this.$api.extractServerFile(this.server.id, filePath, this.currentPath)
+        this.fetchItems(this.currentPath)
+      } finally {
+        this.loading = false
+      }
+    },
 
     // utility
     toFileSize (size) {
@@ -418,6 +575,15 @@ export default {
       }
 
       return this.$api.getServerFileUrl(this.server.id, path)
+    },
+    isArchive (file) {
+      for (let i = 1; i < archiveExtensions.length; i++) {
+        if (file.name.endsWith(archiveExtensions[i])) return true
+      }
+      return false
+    },
+    doesFileExist (filename) {
+      return !!this.files.find(file => file.name === filename)
     },
     cancelFileCreate () {
       this.createFile = false
