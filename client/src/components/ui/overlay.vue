@@ -76,7 +76,40 @@ export default {
     title: { type: String, default: () => '' },
     value: { type: Boolean, default: () => false }
   },
+  data () {
+    return {
+      currentScrollPosition: null
+    }
+  },
+  watch: {
+    value (newVal) {
+      if (newVal) {
+        this.disableScroll()
+      } else {
+        this.enableScroll()
+      }
+    }
+  },
+  mounted () {
+    if (this.value) this.disableScroll()
+  },
+  beforeDestroy () {
+    if (this.currentScrollPosition) this.enableScroll()
+  },
   methods: {
+    disableScroll () {
+      if (this.currentScrollPosition) return
+      this.currentScrollPosition = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${this.currentScrollPosition}px`
+    },
+    enableScroll () {
+      if (!this.currentScrollPosition) return
+      document.body.style.position = ''
+      document.body.style.top = ''
+      window.scrollTo(0, this.currentScrollPosition)
+      this.currentScrollPosition = null
+    },
     isDark
   }
 }
