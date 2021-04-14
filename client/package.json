@@ -8,7 +8,7 @@
     "dev-watch": "vue-cli-service build --mode development --watch"
   },
   "dependencies": {
-    "@mdi/font": "^4.9.95",
+    "@mdi/font": "^5.9.55",
     "ansi_up": "^5.0.0",
     "apexcharts": "^3.23.1",
     "axios": "^0.21.1",

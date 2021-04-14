@@ -95,6 +95,9 @@
           :key="file.name"
           @click="itemClicked(file)"
         >
+          <v-list-item-avatar>
+            <v-icon>{{ getIconNameForFile(file) }}</v-icon>
+          </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title v-text="file.name" />
             <v-list-item-subtitle
@@ -388,6 +391,17 @@ const archiveExtensions = [
   '.zipx'
 ]
 
+const imageExtensions = [
+  '.jpeg',
+  '.png',
+  '.jpg',
+  '.gif',
+  '.webp',
+  '.bmp',
+  '.tiff',
+  '.svg'
+]
+
 export default {
   props: {
     server: { type: Object, default: () => {} }
@@ -577,8 +591,16 @@ export default {
       return this.$api.getServerFileUrl(this.server.id, path)
     },
     isArchive (file) {
-      for (let i = 1; i < archiveExtensions.length; i++) {
-        if (file.name.endsWith(archiveExtensions[i])) return true
+      const filename = file.name.toLowerCase()
+      for (let i = 0; i < archiveExtensions.length; i++) {
+        if (filename.endsWith(archiveExtensions[i])) return true
+      }
+      return false
+    },
+    isImage (file) {
+      const filename = file.name.toLowerCase()
+      for (let i = 0; i < imageExtensions.length; i++) {
+        if (filename.endsWith(imageExtensions[i])) return true
       }
       return false
     },
@@ -646,6 +668,52 @@ export default {
         this.uploadCurrent = event.loaded
         this.uploadSize = event.total
       })
+    },
+    getIconNameForFile (file) {
+      const filename = file.name.toLowerCase()
+      if (!file.isFile) {
+        return 'mdi-folder'
+      } else if (filename.endsWith('.json')) {
+        return 'mdi-code-json'
+      } else if (filename.endsWith('.txt')) {
+        return 'mdi-file-document'
+      } else if (filename.endsWith('.properties')) {
+        return 'mdi-file-cog'
+      } else if (filename.endsWith('.conf')) {
+        return 'mdi-file-cog'
+      } else if (filename.endsWith('.yml') || filename.endsWith('.yaml')) {
+        return 'mdi-file-cog'
+      } else if (filename.endsWith('.jar')) {
+        return 'mdi-language-java'
+      } else if (filename.endsWith('.js')) {
+        return 'mdi-language-javascript'
+      } else if (filename.endsWith('.lock')) {
+        return 'mdi-file-lock'
+      } else if (filename.endsWith('.log')) {
+        return 'mdi-math-log'
+      } else if (filename.endsWith('.sh')) {
+        return 'mdi-console'
+      } else if (filename.endsWith('.pdf')) {
+        return 'mdi-file-pdf'
+      } else if (filename.endsWith('.html')) {
+        return 'mdi-language-html5'
+      } else if (filename.endsWith('.xml')) {
+        return 'mdi-xml'
+      } else if (filename.endsWith('.lua')) {
+        return 'mdi-language-lua'
+      } else if (filename.endsWith('.md')) {
+        return 'mdi-language-markdown'
+      } else if (filename.endsWith('.css')) {
+        return 'mdi-language-css3'
+      } else if (this.isImage(file)) {
+        return 'mdi-file-image'
+      } else if (this.isArchive(file)) {
+        return 'mdi-zip-box'
+      } else if (filename.startsWith('.')) {
+        return 'mdi-file-hidden'
+      } else {
+        return 'mdi-file'
+      }
     },
     isDark
   }
