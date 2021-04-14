@@ -228,6 +228,27 @@ export const ServersApi = {
     })
   },
 
+  archiveServerFiles (id, destination, files) {
+    if (destination.startsWith('/')) destination = destination.substring(1)
+    if (!Array.isArray(files)) files = [files]
+    files.map(file => {
+      return file.startsWith('/') ? file.substring(1) : file
+    })
+
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.post(`/proxy/daemon/server/${id}/archive/${destination}`, files)
+      return true
+    })
+  },
+
+  extractServerFile (id, path, destination) {
+    if (path.startsWith('/')) path = path.substring(1)
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.get(`/proxy/daemon/server/${id}/extract/${path}`, { params: { destination } })
+      return true
+    })
+  },
+
   serverAction (id, action, wait = false) {
     return this.withErrorHandling(async ctx => {
       await this._ctx.$http.post(`/proxy/daemon/server/${id}/${action}?wait=${wait}`)

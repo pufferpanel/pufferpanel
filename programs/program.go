@@ -579,7 +579,7 @@ func (p *Program) ArchiveItems(files []string, destination string) error {
 	}
 
 	// This may technically error out in other cases
-	if _, err := os.Stat(destination); os.IsNotExist(err) {
+	if _, err := os.Stat(destination); !os.IsNotExist(err) {
 		return pufferpanel.ErrFileExists
 	}
 	return archiver.Archive(targets, destination)
