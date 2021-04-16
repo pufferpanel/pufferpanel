@@ -21,8 +21,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/spf13/viper"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -45,13 +45,13 @@ func RefreshToken() bool {
 		return false
 	}
 
-	clientId := viper.GetString("daemon.auth.clientId")
+	clientId := config.GetString("daemon.auth.clientId")
 	if clientId == "" {
 		logging.Error().Printf("error talking to auth server: %s", errors.New("client id not specified"))
 		return false
 	}
 
-	clientSecret := viper.GetString("daemon.auth.clientSecret")
+	clientSecret := config.GetString("daemon.auth.clientSecret")
 	if clientSecret == "" {
 		logging.Error().Printf("error talking to auth server: %s", errors.New("client secret not specified"))
 		return false
@@ -101,7 +101,7 @@ func RefreshIfStale() {
 }
 
 func createRequest(encodedData string) (request *http.Request) {
-	authUrl := viper.GetString("daemon.auth.url")
+	authUrl := config.GetString("daemon.auth.url")
 	request, _ = http.NewRequest("POST", authUrl, bytes.NewBufferString(encodedData))
 	return
 }

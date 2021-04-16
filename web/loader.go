@@ -18,6 +18,7 @@ import (
 	_ "github.com/alecthomas/template"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/web/api"
@@ -26,7 +27,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/web/oauth2"
 	"github.com/pufferpanel/pufferpanel/v2/web/proxy"
 	_ "github.com/pufferpanel/pufferpanel/v2/web/swagger"
-	"github.com/spf13/viper"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
@@ -54,16 +54,16 @@ func RegisterRoutes(e *gin.Engine) {
 
 	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		daemon.RegisterDaemonRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
 	}
 
-	if viper.GetBool("panel.enable") {
-		ClientPath = viper.GetString("panel.web.files")
+	if config.GetBool("panel.enable") {
+		ClientPath = config.GetString("panel.web.files")
 		IndexFile = ClientPath + "/index.html"
 
 		api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
-		e.GET("/api/config", config)
+		e.GET("/api/config", panelConfig)
 		e.GET("/manifest.json", webManifest)
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))
@@ -130,9 +130,9 @@ func handle404(c *gin.Context) {
 	c.File(IndexFile)
 }
 
-func config(c *gin.Context) {
+func panelConfig(c *gin.Context) {
 	themes := []string{}
-	files, err := ioutil.ReadDir(viper.GetString("panel.web.files") + "/theme")
+	files, err := ioutil.ReadDir(config.GetString("panel.web.files") + "/theme")
 	if err != nil {
 		themes = append(themes, "PufferPanel")
 	} else {
@@ -145,11 +145,11 @@ func config(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"themes": map[string]interface{}{
-			"active": viper.GetString("panel.settings.defaultTheme"),
+			"active": config.GetString("panel.settings.defaultTheme"),
 			"available": themes,
 		},
 		"branding": map[string]interface{}{
-			"name": viper.GetString("panel.settings.companyName"),
+			"name": config.GetString("panel.settings.companyName"),
 		},
 	})
 }
@@ -167,8 +167,8 @@ func webManifest(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"name": viper.GetString("panel.settings.companyName"),
-		"short_name": viper.GetString("panel.settings.companyName"),
+		"name": config.GetString("panel.settings.companyName"),
+		"short_name": config.GetString("panel.settings.companyName"),
 		"background_color": "#fff",
 		"display": "standalone",
 		"scope": "/",

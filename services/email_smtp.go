@@ -15,27 +15,27 @@ package services
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/spf13/viper"
 	"net/smtp"
 	"strings"
 )
 
 func SendEmailViaSMTP(to, subject, body string, async bool) error {
-	from := viper.GetString("panel.email.from")
+	from := config.GetString("panel.email.from")
 	if from == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
 	}
 
-	host := viper.GetString("panel.email.host")
+	host := config.GetString("panel.email.host")
 	if host == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.host")
 	}
 
 	var auth smtp.Auth = nil
 
-	if username := viper.GetString("panel.email.username"); username != "" {
-		auth = smtp.PlainAuth("", username, viper.GetString("panel.email.password"), strings.Split(host, ":")[0])
+	if username := config.GetString("panel.email.username"); username != "" {
+		auth = smtp.PlainAuth("", username, config.GetString("panel.email.password"), strings.Split(host, ":")[0])
 	}
 
 	data := []byte("Subject: " + subject + "\nMIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" + body)

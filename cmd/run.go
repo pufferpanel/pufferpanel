@@ -17,6 +17,7 @@ import (
 	"github.com/braintree/manners"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -27,7 +28,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/web"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 	"net"
 	"net/http"
@@ -52,7 +52,7 @@ func executeRun(cmd *cobra.Command, args []string) {
 }
 
 func internalRun(cmd *cobra.Command, args []string) error {
-	if err := pufferpanel.LoadConfig(""); err != nil {
+	if err := config.LoadConfigFile(""); err != nil {
 		return err
 	}
 
@@ -83,16 +83,16 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 	web.RegisterRoutes(router)
 
-	if viper.GetBool("panel.enable") {
+	if config.GetBool("panel.enable") {
 		panel(c)
 	}
 
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		daemon(c)
 	}
 
 	go func() {
-		l, err := net.Listen("tcp4", viper.GetString("web.host"))
+		l, err := net.Listen("tcp4", config.GetString("web.host"))
 		if err != nil {
 			c <- err
 			return
@@ -108,21 +108,26 @@ func internalRun(cmd *cobra.Command, args []string) error {
 }
 
 func panel(ch chan error) {
-	services.ValidateTokenLoaded()
-	services.LoadEmailService()
-
 	go func() {
 		_, err := database.GetConnection()
 		if err != nil {
 			logging.Error().Printf("Error connecting to database: %s", err.Error())
 		}
+
+		err = config.LoadConfigDatabase(database.GetConnector())
+		if err != nil {
+			logging.Error().Printf("Error loading config from database: %s", err.Error())
+		}
 	}()
+
+	services.ValidateTokenLoaded()
+	services.LoadEmailService()
 
 	//if we have the web, then let's use our sftp auth instead
 	sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
 
 	//validate local daemon is configured in this panel
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		db, err := database.GetConnection()
 		if err != nil {
 			return
@@ -150,8 +155,8 @@ func panel(ch chan error) {
 				SFTPPort:    5657,
 				Secret:      strings.Replace(uuid.NewV4().String(), "-", "", -1),
 			}
-			nodeHost := viper.GetString("web.host")
-			sftpHost := viper.GetString("daemon.sftp.host")
+			nodeHost := config.GetString("web.host")
+			sftpHost := config.GetString("daemon.sftp.host")
 			hostParts := strings.SplitN(nodeHost, ":", 2)
 			sftpParts := strings.SplitN(sftpHost, ":", 2)
 
@@ -169,8 +174,6 @@ func panel(ch chan error) {
 				}
 			}
 
-			//override ENV because we need our id here instead since it's new
-			viper.Set("PUFFER_DAEMON_AUTH_CLIENTID", create.Secret)
 			err = ns.Create(create)
 			if err != nil {
 				logging.Error().Printf("Failed to add local node: %s", err.Error())

@@ -3,22 +3,22 @@ package services
 import (
 	"github.com/mailjet/mailjet-apiv3-go/v3"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/spf13/viper"
 )
 
 func SendEmailViaMailjet(to, subject, body string, async bool) error {
-	domain := viper.GetString("panel.email.domain")
+	domain := config.GetString("panel.email.domain")
 	if domain == "" {
 		return pufferpanel.ErrSettingNotConfigured("domain")
 	}
 
-	from := viper.GetString("panel.email.from")
+	from := config.GetString("panel.email.from")
 	if from == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
 	}
 
-	key := viper.GetString("panel.email.key")
+	key := config.GetString("panel.email.key")
 	if key == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.key")
 	}
