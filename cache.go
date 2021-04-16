@@ -14,7 +14,7 @@
 package pufferpanel
 
 import (
-	"github.com/spf13/viper"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"time"
 )
 
@@ -38,7 +38,7 @@ type MemoryCache struct {
 }
 
 func CreateCache() *MemoryCache {
-	capacity := viper.GetInt("daemon.console.buffer")
+	capacity := config.GetInt("daemon.console.buffer")
 	if capacity <= 0 {
 		capacity = 50
 	}

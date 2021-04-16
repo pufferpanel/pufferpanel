@@ -94,6 +94,22 @@ class ApiClient extends EventEmitter {
     }, options)
   }
 
+  getSetting (key, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/api/settings/${key}`)).data.value
+    }, options)
+  }
+
+  setSetting (key, value, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/api/settings/${key}`, { value })
+      if (key === 'panel.settings.companyName') {
+        this.emit('panelTitleChanged', value)
+      }
+      return true
+    }, options)
+  }
+
   async withErrorHandling (f, errorOptions) {
     try {
       return await f(this._ctx)
@@ -150,6 +166,9 @@ export default function (Vue) {
 
   Vue.prototype.$api = new ApiClient()
   Vue.prototype.$http = axios.create()
+  if (process.env.NODE_ENV !== 'production') {
+    window.pufferpanel.api = Vue.prototype.$api
+  }
 
   // automagically add auth token to api requests
   Vue.prototype.$http.interceptors.request.use(request => {

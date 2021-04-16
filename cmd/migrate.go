@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/otiai10/copy"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/legacy"
@@ -14,7 +15,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -54,18 +54,18 @@ func migrate(cmd *cobra.Command, args []string) {
 
 	logging.DisableFileLogger()
 
-	err = pufferpanel.LoadConfig("")
+	err = config.LoadConfigFile("")
 	if err != nil {
 		fmt.Printf("Error loading new config: %s\n", err)
 		os.Exit(1)
 		return
 	}
 
-	if viper.GetBool("panel.enable") {
+	if config.GetBool("panel.enable") {
 		migratePanel()
 	}
 
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		migrateDaemon()
 	}
 }
@@ -224,7 +224,7 @@ func migrateDaemon() {
 		return
 	}
 
-	programs.ServerFolder = viper.GetString("daemon.data.servers")
+	programs.ServerFolder = config.GetString("daemon.data.servers")
 
 	environments.LoadModules()
 

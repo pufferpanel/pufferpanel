@@ -141,6 +141,19 @@
             <v-list-item-title v-text="$t('templates.Templates')" />
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item
+          v-if="isAdmin()"
+          :to="{name: 'Settings'}"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="$t('settings.Settings')" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <template v-slot:append>
         <v-list>
@@ -227,6 +240,7 @@ export default {
   mounted () {
     this.$api.on('login', this.didLogIn)
     this.$api.on('logout', this.logout)
+    this.$api.on('panelTitleChanged', this.updatePanelTitle)
 
     this.css.type = 'text/css'
     document.head.appendChild(this.css)
@@ -284,6 +298,10 @@ export default {
         }
       }
       this.loadTheme()
+    },
+    updatePanelTitle (newTitle) {
+      this.appConfig.branding.name = newTitle
+      document.title = this.appConfig.branding.name
     },
     setTheme (newTheme) {
       localStorage.setItem('theme', newTheme)

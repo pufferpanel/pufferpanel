@@ -18,8 +18,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/spf13/viper"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -50,7 +50,7 @@ type emailService struct {
 func LoadEmailService() {
 	globalEmailService = &emailService{templates: make(map[string]*emailTemplate)}
 
-	jsonPath := viper.GetString("panel.email.templates")
+	jsonPath := config.GetString("panel.email.templates")
 	parentDir := filepath.Dir(jsonPath)
 	emailDefinition, err := os.Open(jsonPath)
 	if err != nil {
@@ -97,7 +97,7 @@ func GetEmailService() EmailService {
 }
 
 func (es *emailService) SendEmail(to, template string, data map[string]interface{}, async bool) (err error) {
-	provider := viper.GetString("panel.email.provider")
+	provider := config.GetString("panel.email.provider")
 	if provider == "" {
 		return pufferpanel.ErrEmailNotConfigured
 	}
@@ -112,8 +112,8 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 		data = make(map[string]interface{})
 	}
 
-	data["COMPANY_NAME"] = viper.GetString("panel.settings.companyName")
-	data["MASTER_URL"] = viper.GetString("panel.settings.masterUrl")
+	data["COMPANY_NAME"] = config.GetString("panel.settings.companyName")
+	data["MASTER_URL"] = config.GetString("panel.settings.masterUrl")
 
 	subjectBuilder := &strings.Builder{}
 	err = tmpl.Subject.Execute(subjectBuilder, data)
