@@ -9,9 +9,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/legacy"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/spf13/cobra"
@@ -43,7 +41,7 @@ func migrate(cmd *cobra.Command, args []string) {
 	}, &confirm)
 
 	if err != nil {
-		fmt.Printf("Error loading qusetion: %s\n", err)
+		fmt.Printf("Error loading question: %s\n", err)
 		os.Exit(1)
 		return
 	}
@@ -52,7 +50,7 @@ func migrate(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	logging.DisableFileLogger()
+	//logging.DisableFileLogger()
 
 	err = config.LoadConfigFile("")
 	if err != nil {
@@ -96,7 +94,7 @@ func migratePanel() {
 	newDb = newDbConn.Begin()
 	defer func() {
 		newDb.RollbackUnlessCommitted()
-		newDbConn.Close()
+		_ = newDbConn.Close()
 	}()
 
 	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", oldConfig.Mysql.Username, oldConfig.Mysql.Password, oldConfig.Mysql.Host, oldConfig.Mysql.Port, oldConfig.Mysql.Database)
@@ -107,7 +105,9 @@ func migratePanel() {
 		return
 	}
 
-	defer oldDb.Close()
+	defer func() {
+		_ = oldDb.Close()
+	}()
 
 	//migrate users
 	var users []legacy.User
@@ -226,8 +226,6 @@ func migrateDaemon() {
 
 	programs.ServerFolder = config.GetString("daemon.data.servers")
 
-	environments.LoadModules()
-
 	//start migration of data.... begin the hell
 	serversFolder := oldConfig.ServerFolder
 	if serversFolder == "" {
@@ -280,7 +278,7 @@ func migrateDaemon() {
 					AutoRestartFromCrash:    legacyData.ProgramData.RunData.AutoRestartFromCrash,
 					AutoRestartFromGraceful: legacyData.ProgramData.RunData.AutoRestartFromGraceful,
 					PreExecution:            convertCommands(legacyData.ProgramData.RunData.Pre),
-					PostExecution:           nil,
+					PostExecution:           convertCommands(legacyData.ProgramData.RunData.Post),
 					StopCode:                legacyData.ProgramData.RunData.StopCode,
 					EnvironmentVariables:    legacyData.ProgramData.RunData.EnvironmentVariables,
 				},
