@@ -98,13 +98,13 @@ export default {
   },
   methods: {
     disableScroll () {
-      if (this.currentScrollPosition) return
+      if (this.currentScrollPosition != null || document.body.style.position === 'fixed') return
       this.currentScrollPosition = window.scrollY
       document.body.style.position = 'fixed'
       document.body.style.top = `-${this.currentScrollPosition}px`
     },
     enableScroll () {
-      if (!this.currentScrollPosition) return
+      if (this.currentScrollPosition == null) return
       document.body.style.position = ''
       document.body.style.top = ''
       window.scrollTo(0, this.currentScrollPosition)
