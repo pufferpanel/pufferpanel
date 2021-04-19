@@ -15,6 +15,10 @@
   <v-card
     :loading="loading"
     :disabled="loading"
+    @drop.prevent="handleDrop"
+    @dragenter.prevent="handleDragenter"
+    @dragover.prevent
+    @dragleave.prevent="handleDragleave"
   >
     <v-card-title>
       <span
@@ -369,6 +373,15 @@
         </v-row>
       </ui-overlay>
     </v-card-text>
+    <v-fade-transition>
+      <v-overlay
+        v-if="dragover"
+        absolute
+        color="primary"
+      >
+        <h2 v-text="$t('files.DropToUpload')" />
+      </v-overlay>
+    </v-fade-transition>
   </v-card>
 </template>
 
@@ -424,7 +437,8 @@ export default {
       uploadCurrent: 0,
       uploadSize: 0,
       toDelete: null,
-      confirmDeleteOpen: false
+      confirmDeleteOpen: false,
+      dragover: 0
     }
   },
   mounted () {
@@ -452,6 +466,73 @@ export default {
     this.fetchItems(this.currentPath)
   },
   methods: {
+    handleDragleave (event) {
+      this.dragover--
+    },
+    handleDragenter (event) {
+      this.dragover++
+    },
+    async handleDrop (event) {
+      setTimeout(() => {
+        this.dragover = 0
+      }, 100)
+      this.uploadFiles = []
+      let dirWarningPushed = false
+      if (event.dataTransfer.items) {
+        const dropped = event.dataTransfer.items
+        if (!dropped) return
+        await Promise.all(([...dropped]).map(async item => {
+          if (item.kind === 'file') {
+            if (await this.isFile(item.getAsFile())) {
+              const filesFound = this.uploadFiles.filter(file => file.name === item.getAsFile().name).length
+              if (filesFound === 0) this.uploadFiles.push(item.getAsFile())
+            } else {
+              if (!dirWarningPushed) {
+                this.$toast.error(this.$t('errors.ErrDirectoryUploadNotSupported'))
+                dirWarningPushed = true
+              }
+            }
+          }
+        }))
+      } else {
+        const dropped = event.dataTransfer.files
+        if (!dropped) return
+        await Promise.all(([...dropped]).map(async file => {
+          if (await this.isFile(file)) {
+            const filesFound = this.uploadFiles.filter(f => f.name === file.name).length
+            if (filesFound === 0) this.uploadFiles.push(file)
+          } else {
+            if (!dirWarningPushed) {
+              this.$toast.error(this.$t('errors.ErrDirectoryUploadNotSupported'))
+              dirWarningPushed = true
+            }
+          }
+        }))
+      }
+      if (this.uploadFiles.length > 0) this.transmitFiles()
+    },
+    async isFile (maybeFile) {
+      const result = new Promise(function (resolve, reject) {
+        if (maybeFile.type !== '') {
+          return resolve()
+        }
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          if (reader.error) {
+            return reject(reader.error)
+          }
+          resolve()
+        }
+        reader.readAsBinaryString(maybeFile)
+      })
+
+      try {
+        await result
+        return true
+      } catch {
+        return false
+      }
+    },
     fetchItems (path) {
       this.loading = true
       this.$api.requestServerFile(this.server.id, path)
@@ -639,7 +720,7 @@ export default {
       this.createFolder = false
       this.newFolderName = ''
     },
-    transmitFiles () {
+    transmitFiles (files) {
       this.uploading = true
       this.uploadNextItem(this)
     },
