@@ -53,6 +53,7 @@ type Execution struct {
 	EnvironmentVariables    map[string]string `json:"environmentVars,omitempty"`
 	LegacyRun               string            `json:"program,omitempty"`
 	LegacyArguments         []string          `json:"arguments,omitempty"`
+	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
 }
 
 type Template struct {

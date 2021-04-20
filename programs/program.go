@@ -28,6 +28,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"sync"
 	"time"
@@ -170,12 +171,23 @@ func (p *Program) Start() (err error) {
 	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
+	if p.Execution.WorkingDirectory == "${rootDir}" {
+		p.Execution.WorkingDirectory = ""
+	}
+	workDir := path.Join(p.RunningEnvironment.GetRootDirectory(), pufferpanel.ReplaceTokens(p.Execution.WorkingDirectory, data))
+
+	if !pufferpanel.EnsureAccess(workDir, p.RunningEnvironment.GetRootDirectory()) {
+		logging.Error().Printf("Working directory is invalid for server: %s", workDir)
+		p.RunningEnvironment.DisplayToConsole(true, "Working directory is invalid for server: %s", workDir)
+		return
+	}
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
 		Command:     cmd,
 		Arguments:   args,
 		Environment: pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
+		WorkingDirectory: workDir,
 		Callback:    p.afterExit,
 	})
 
