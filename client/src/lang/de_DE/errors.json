@@ -35,6 +35,6 @@
   "ErrMissingScope": "Sie sind nicht berechtigt, diese Aktion auszuführen",
   "ErrInvalidJson": "Die json-Daten sind ungültig",
   "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account"
+  "ErrInviteLinkInvalid": "Der Einladungslink ist ungültig",
+  "ErrSavingInviteduser": "Bei der Erstellung des Kontos ist ein Fehler aufgetreten"
 }
