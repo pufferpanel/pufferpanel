@@ -23,7 +23,7 @@ import (
 	"strings"
 )
 
-const InstallerUrl = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
+const InstallerUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/${version}/forge-${version}-installer.jar"
 
 type ForgeDl struct {
 	Version  string
