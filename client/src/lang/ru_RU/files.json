@@ -8,5 +8,12 @@
   "Download": "Скачать",
   "Size": "Размер",
   "NoFiles": "Здесь пока нет файлов, для появления файлов, к примеру, вы можете выполнить установку в верхней части страницы",
-  "FileLoadFailed": "Ошибка загрузки файла"
+  "FileLoadFailed": "Ошибка загрузки файла",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
