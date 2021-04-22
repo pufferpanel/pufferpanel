@@ -36,5 +36,6 @@
   "ErrInvalidJson": "Data json jsou neplatná",
   "ErrSocketFailed": "Při připojení k WebSocketu došlo k chybě, některé funkce mohou být pomalé nebo poškozené",
   "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account"
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }
