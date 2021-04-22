@@ -8,5 +8,12 @@
   "Download": "Herunterladen",
   "Size": "Größe",
   "NoFiles": "Hier sind noch keine Dateien, erstelle welche, zum Beispiel indem du oben auf der Seite auf \"Installieren\" klickst",
-  "FileLoadFailed": "Laden der Datei fehlgeschlagen"
+  "FileLoadFailed": "Laden der Datei fehlgeschlagen",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
