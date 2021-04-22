@@ -8,5 +8,12 @@
   "Download": "Allalaadimine",
   "Size": "Suurus",
   "NoFiles": "Siin pole faile veel, mine ja loo mõned failid, näiteks klikkides paigaldamise nupule lehe üleval",
-  "FileLoadFailed": "Faili laadimine ebaõnnestus"
+  "FileLoadFailed": "Faili laadimine ebaõnnestus",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
