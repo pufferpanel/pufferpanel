@@ -8,5 +8,12 @@
   "Download": "下載",
   "Size": "大小",
   "NoFiles": "這邊沒有檔案，透過上方安裝按鈕來新增檔案",
-  "FileLoadFailed": "檔案讀取失敗"
+  "FileLoadFailed": "檔案讀取失敗",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
