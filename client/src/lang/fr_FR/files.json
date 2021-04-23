@@ -9,11 +9,11 @@
   "Size": "Taille",
   "NoFiles": "Il n'y a pas encore de fichiers ici, allez par exemple en créer en cliquant sur le bouton d'installation en haut de la page",
   "FileLoadFailed": "Échec de chargement du fichier",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Rafraîchir",
+  "CreateFile": "Créer un fichier",
+  "CreateFolder": "Créer un dossier",
+  "ArchiveCurrentFolder": "Créer une archive à partir du dossier actuel",
+  "ArchiveFolder": "Créer une archive à partir du dossier",
+  "ExtractArchive": "Extraire l'archive",
+  "DropToUpload": "Déposez des fichiers ici pour les envoyer"
 }
