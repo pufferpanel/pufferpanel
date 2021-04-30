@@ -327,7 +327,7 @@
           v-model="fileContents"
           editor-id="fileEditor"
           height="75vh"
-          :theme="isDark() ? 'monokai' : 'github'"
+          :theme="$isDark() ? 'monokai' : 'github'"
           :file="currentFile"
         />
         <template v-slot:actions>
@@ -387,7 +387,6 @@
 
 <script>
 import filesize from 'filesize'
-import { isDark } from '@/utils/dark'
 
 const archiveExtensions = [
   '.7z',
@@ -795,8 +794,7 @@ export default {
       } else {
         return 'mdi-file'
       }
-    },
-    isDark
+    }
   }
 }
 </script>

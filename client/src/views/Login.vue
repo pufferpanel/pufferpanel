@@ -100,7 +100,11 @@ export default {
       try {
         await this.$api.login(this.email, this.password)
         this.$emit('logged-in')
-        this.$router.push({ name: 'Servers' })
+        if (this.hasScope('servers.view') || this.isAdmin()) {
+          this.$router.push({ name: 'Servers' })
+        } else {
+          this.$router.push({ name: 'Account' })
+        }
       } finally {
         this.loginDisabled = false
       }

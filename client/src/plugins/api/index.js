@@ -110,6 +110,23 @@ class ApiClient extends EventEmitter {
     }, options)
   }
 
+  getUserSettings (options = {}) {
+    return this.withErrorHandling(async ctx => {
+      const map = {};
+      (await ctx.$http.get('/api/userSettings')).data.map(elem => {
+        map[elem.key] = elem.value
+      })
+      return map
+    }, options)
+  }
+
+  setUserSetting (key, value, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/api/userSettings/${key}`, { value })
+      return true
+    }, options)
+  }
+
   async withErrorHandling (f, errorOptions) {
     try {
       return await f(this._ctx)
@@ -199,8 +216,8 @@ export default function (Vue) {
   Vue.prototype.isAdmin = () => Vue.prototype.hasScope('servers.admin')
 
   Vue.mixin({
-    created () {
-      if (!this.parent) this.$api._ctx = this
+    beforeCreate () {
+      if (Vue.prototype.$api._ctx == null) Vue.prototype.$api._ctx = this
     }
   })
 }
