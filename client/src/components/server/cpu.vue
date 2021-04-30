@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { isDark } from '@/utils/dark'
 import VueApexCharts from 'vue-apexcharts'
 
 export default {
@@ -50,10 +49,10 @@ export default {
           toolbar: {
             show: false
           },
-          foreColor: isDark() ? '#FFF' : '#000000DE'
+          foreColor: this.$isDark() ? '#FFF' : '#000000DE'
         },
-        colors: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
-        tooltip: { theme: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
+        colors: [this.$isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
+        tooltip: { theme: [this.$isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
         dataLabels: {
           enabled: false
         },
@@ -96,14 +95,13 @@ export default {
   },
   methods: {
     updateStats (data) {
-      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: isDark() ? '#FFF' : '#000000DE' } }
+      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: this.$isDark() ? '#FFF' : '#000000DE' } }
       const chartData = [...((this.series[0] || {}).data || []), [new Date().getTime(), Math.round(data.cpu * 100) / 100]]
       this.series = [{
         name: this.$t('servers.CPU'),
         data: chartData.length > this.maxPoints ? chartData.slice(chartData.length - this.maxPoints) : chartData
       }]
-    },
-    isDark
+    }
   }
 }
 </script>

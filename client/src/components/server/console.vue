@@ -62,7 +62,6 @@
 
 <script>
 import AnsiUp from 'ansi_up'
-import { isDark } from '@/utils/dark'
 
 const DAEMON_MESSAGE_REGEX = /^(&nbsp;|&gt;|\s)*\[DAEMON]/
 const CONSOLE_REFRESH_TIME = 500
@@ -184,8 +183,7 @@ export default {
     },
     removeDaemonTag (line) {
       return line.replace(DAEMON_MESSAGE_REGEX, '')
-    },
-    isDark
+    }
   }
 }
 </script>

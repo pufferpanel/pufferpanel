@@ -100,6 +100,7 @@ func migrateModels() {
 		&models.Template{},
 		&models.Permissions{},
 		&models.Client{},
+		&models.UserSetting{},
 		&config.Setting{},
 	}
 

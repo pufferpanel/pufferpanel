@@ -1,7 +1,7 @@
 <template>
   <v-overlay
     v-model="value"
-    :dark="isDark()"
+    :dark="$isDark()"
     color="#434343"
   >
     <v-container
@@ -67,8 +67,6 @@
 </style>
 
 <script>
-import { isDark } from '@/utils/dark'
-
 export default {
   props: {
     card: { type: Boolean, default: () => false },
@@ -109,8 +107,7 @@ export default {
       document.body.style.top = ''
       window.scrollTo(0, this.currentScrollPosition)
       this.currentScrollPosition = null
-    },
-    isDark
+    }
   }
 }
 </script>

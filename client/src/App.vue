@@ -32,12 +32,13 @@
           class="theme-options"
         >
           <v-subheader v-text="$t('common.ThemeOptions')" />
-          <v-list-item @click="toggleDark">
+          <v-list-item @click="$toggleDark">
             <span v-text="$t('common.DarkMode')" />
             <span class="flex-grow-1" />
             <ui-switch
-              v-model="$vuetify.theme.dark"
+              :value="$vuetify.theme.dark"
               class="ml-4 mb-4"
+              @input="$setDark($event)"
             />
           </v-list-item>
           <v-radio-group
@@ -59,7 +60,7 @@
       <v-btn
         v-else
         icon
-        @click="toggleDark"
+        @click="$toggleDark"
       >
         <v-icon>mdi-lightbulb</v-icon>
       </v-btn>
@@ -92,6 +93,7 @@
         </v-list-item>
 
         <v-list-item
+          v-if="hasScope('servers.view') || isAdmin()"
           :to="{name: 'Servers'}"
           link
         >
@@ -220,12 +222,12 @@
 
 <script>
 import config from './config'
-import { toggleDark as doToggleDark, isDark } from './utils/dark'
 
 export default {
   data () {
     return {
       appConfig: config.defaultAppConfig,
+      userSettings: [],
       loggedIn: false,
       drawer: null,
       minified: false,
@@ -246,8 +248,6 @@ export default {
     document.head.appendChild(this.css)
 
     this.loadConfig()
-
-    this.$vuetify.theme.dark = isDark()
 
     if (this.$api.isLoggedIn()) {
       this.didLogIn()
@@ -288,11 +288,13 @@ export default {
       })
     },
     async loadConfig () {
+      this.userSettings = await this.$api.getUserSettings()
+      if (this.userSettings.dark && this.userSettings.dark !== '') this.$vuetify.theme.dark = this.userSettings.dark === 'true'
       const config = await this.$api.getConfig()
       this.appConfig = { ...this.appConfig, ...config }
       document.title = this.appConfig.branding.name
-      if (localStorage.getItem('theme')) {
-        const stored = localStorage.getItem('theme')
+      if (this.userSettings.preferredTheme || localStorage.getItem('theme')) {
+        const stored = this.userSettings.preferredTheme || localStorage.getItem('theme')
         if (this.appConfig.themes.available.indexOf(stored) !== -1) {
           this.appConfig.themes.active = stored
         }
@@ -303,13 +305,11 @@ export default {
       this.appConfig.branding.name = newTitle
       document.title = this.appConfig.branding.name
     },
-    setTheme (newTheme) {
+    async setTheme (newTheme) {
+      if (this.loggedIn) this.$api.setUserSetting('preferredTheme', newTheme)
       localStorage.setItem('theme', newTheme)
       this.appConfig.themes.active = newTheme
       this.loadTheme()
-    },
-    toggleDark () {
-      doToggleDark(this.$vuetify)
     },
     logout (reason) {
       this.reauthTask && clearInterval(this.reauthTask)
@@ -323,6 +323,7 @@ export default {
       this.reauthTask = setInterval(async () => {
         await this.$api.reauth()
       }, 1000 * 60 * 10)
+      this.loadConfig()
     },
     showError (error) {
       const getCircularReplacer = () => {
