@@ -288,7 +288,7 @@ export default {
       })
     },
     async loadConfig () {
-      this.userSettings = await this.$api.getUserSettings()
+      this.userSettings = this.$api.isLoggedIn() ? await this.$api.getUserSettings() : {}
       if (this.userSettings.dark && this.userSettings.dark !== '') this.$vuetify.theme.dark = this.userSettings.dark === 'true'
       const config = await this.$api.getConfig()
       this.appConfig = { ...this.appConfig, ...config }
@@ -312,6 +312,7 @@ export default {
       this.loadTheme()
     },
     logout (reason) {
+      if (!this.loggedIn) return
       this.reauthTask && clearInterval(this.reauthTask)
       this.reauthTask = null
       this.loggedIn = false
