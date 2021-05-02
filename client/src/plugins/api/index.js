@@ -202,7 +202,6 @@ export default function (Vue) {
     return response
   }, error => {
     if (((error || {}).response || {}).status === 401) {
-      localStorage.setItem('reauth_reason', 'session_timed_out')
       Vue.prototype.$api.logout('session_timed_out')
     }
     return Promise.reject(error)
