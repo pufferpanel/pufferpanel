@@ -72,3 +72,7 @@ pre {
   -ms-flex-positive: 1 !important;
   flex-grow: 1 !important;
 }
+
+.dragHandle {
+  cursor: move !important;
+}

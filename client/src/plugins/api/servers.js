@@ -146,10 +146,10 @@ export const ServersApi = {
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
   },
 
-  getServerStatus (id) {
+  getServerStatus (id, options) {
     return this.withErrorHandling(async ctx => {
       return (await ctx.$http.get(`/proxy/daemon/server/${id}/status`)).data.running
-    })
+    }, options)
   },
 
   getServerStats (id) {
