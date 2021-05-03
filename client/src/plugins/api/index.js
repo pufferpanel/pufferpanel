@@ -152,7 +152,15 @@ class ApiClient extends EventEmitter {
       }
     }
 
-    if (options[error.response.status] !== undefined) msg = options[error.response.status]
+    if (options[error.response.status] !== undefined) {
+      let cont = true
+      if (typeof options[error.response.status] === 'function') {
+        cont = options[error.response.status]() !== true
+      } else {
+        msg = options[error.response.status]
+      }
+      if (!cont) return
+    }
 
     const detailsAction = {
       timeout: 6000,
