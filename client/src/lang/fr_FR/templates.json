@@ -47,6 +47,7 @@
   "DeletePostStep": "Supprimer l'étape d'après-exécution",
   "Shutdown": "Arrêter",
   "Command": "Commande",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Arguments",
   "AddArgument": "Ajouter un argument",
   "Convert": "Convertir",
