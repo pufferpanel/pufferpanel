@@ -47,6 +47,7 @@
   "DeletePostStep": "Přidat krok po spuštění",
   "Shutdown": "Vypnout",
   "Command": "Příkaz",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Parametry",
   "AddArgument": "Přidat parametr",
   "Convert": "Convert",
