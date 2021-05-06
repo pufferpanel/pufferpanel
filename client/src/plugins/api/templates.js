@@ -63,6 +63,7 @@ const templateFromApi = (template, server = false) => {
 
   if (!template.run) template.run = {}
   const command = template.run.command || ''
+  const workingDirectory = template.run.workingDirectory || ''
   const autostart = template.run.autostart
   const autorestart = template.run.autorestart
   const autorecover = template.run.autorecover
@@ -101,6 +102,7 @@ const templateFromApi = (template, server = false) => {
     display,
     type,
     command,
+    workingDirectory,
     stop,
     pre,
     post,
@@ -117,7 +119,7 @@ const templateFromApi = (template, server = false) => {
 }
 
 const templateToApi = (template) => {
-  const { id, name, display, type, command, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover } = template
+  const { id, name, display, type, command, workingDirectory, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover } = template
 
   const convertedStop = {}
   if (stop.type === 'signal') {
@@ -141,6 +143,7 @@ const templateToApi = (template) => {
     run: {
       ...convertedStop,
       command,
+      workingDirectory,
       pre,
       post,
       environmentVars: envVars,
