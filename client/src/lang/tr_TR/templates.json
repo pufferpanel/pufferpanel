@@ -47,6 +47,7 @@
   "DeletePostStep": "Delete Post Run Step",
   "Shutdown": "Kapat",
   "Command": "Komut",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argümanlar",
   "AddArgument": "Argüman Ekle",
   "Convert": "Convert",
