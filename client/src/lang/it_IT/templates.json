@@ -47,6 +47,7 @@
   "DeletePostStep": "Elimina Fase Post-Esecuzione",
   "Shutdown": "Spegnimento",
   "Command": "Comando",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argomenti",
   "AddArgument": "Aggiungi un argomento",
   "Convert": "Convert",
