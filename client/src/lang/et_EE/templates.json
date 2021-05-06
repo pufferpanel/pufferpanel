@@ -47,6 +47,7 @@
   "DeletePostStep": "Lisa Pärast Käivitamist Samm",
   "Shutdown": "Lülita välja",
   "Command": "Käsklus",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumendid",
   "AddArgument": "Lisa argument",
   "Convert": "Convert",
