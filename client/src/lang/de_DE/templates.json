@@ -47,6 +47,7 @@
   "DeletePostStep": "Post-run-Schritt hinzufügen",
   "Shutdown": "Herunterfahren",
   "Command": "Befehl",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumente",
   "AddArgument": "Argument hinzufügen",
   "Convert": "Umwandeln",
