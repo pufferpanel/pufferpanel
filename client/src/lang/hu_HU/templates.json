@@ -47,6 +47,7 @@
   "DeletePostStep": "Utólagos beavatkozási rutin törlése",
   "Shutdown": "Leállítás",
   "Command": "Parancs",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumentumok",
   "AddArgument": "Argumentum hozzáadása",
   "Convert": "Convert",
