@@ -134,7 +134,7 @@ jobs:
 
     - name: Build Windows
       run: |
-        go build -o build-artifact/pufferpanel.exe -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: windows
         GOARCH: amd64
@@ -182,7 +182,7 @@ jobs:
         
     - name: Build Linux
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: amd64
@@ -315,7 +315,7 @@ jobs:
 
     - name: Build ARMHF
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: arm
@@ -326,7 +326,7 @@ jobs:
     - name: Set up build folder
       run: |
         mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
@@ -410,7 +410,7 @@ jobs:
         
     - name: Build ARM64
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X github.com/pufferpanel/pufferpanel/version.Hash=${{ github.sha }} -X github.com/pufferpanel/pufferpanel/version.Version=${{ env.VERSION }}" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: linux
         GOARCH: arm64
@@ -421,7 +421,7 @@ jobs:
       run: |
         mkdir DEBBUILD
         mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel

@@ -146,10 +146,10 @@ export const ServersApi = {
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
   },
 
-  getServerStatus (id) {
+  getServerStatus (id, options) {
     return this.withErrorHandling(async ctx => {
       return (await ctx.$http.get(`/proxy/daemon/server/${id}/status`)).data.running
-    })
+    }, options)
   },
 
   getServerStats (id) {
@@ -224,6 +224,27 @@ export const ServersApi = {
   deleteServerFile (id, path) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.delete(this.getServerFileUrl(id, path))
+      return true
+    })
+  },
+
+  archiveServerFiles (id, destination, files) {
+    if (destination.startsWith('/')) destination = destination.substring(1)
+    if (!Array.isArray(files)) files = [files]
+    files.map(file => {
+      return file.startsWith('/') ? file.substring(1) : file
+    })
+
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.post(`/proxy/daemon/server/${id}/archive/${destination}`, files)
+      return true
+    })
+  },
+
+  extractServerFile (id, path, destination) {
+    if (path.startsWith('/')) path = path.substring(1)
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.get(`/proxy/daemon/server/${id}/extract/${path}`, { params: { destination } })
       return true
     })
   },

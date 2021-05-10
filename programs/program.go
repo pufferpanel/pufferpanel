@@ -19,14 +19,16 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
+	"github.com/mholt/archiver"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
-	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"sync"
 	"time"
@@ -169,12 +171,23 @@ func (p *Program) Start() (err error) {
 	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
+	if p.Execution.WorkingDirectory == "${rootDir}" {
+		p.Execution.WorkingDirectory = ""
+	}
+	workDir := path.Join(p.RunningEnvironment.GetRootDirectory(), pufferpanel.ReplaceTokens(p.Execution.WorkingDirectory, data))
+
+	if !pufferpanel.EnsureAccess(workDir, p.RunningEnvironment.GetRootDirectory()) {
+		logging.Error().Printf("Working directory is invalid for server: %s", workDir)
+		p.RunningEnvironment.DisplayToConsole(true, "Working directory is invalid for server: %s", workDir)
+		return
+	}
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
 		Command:     cmd,
 		Arguments:   args,
 		Environment: pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
+		WorkingDirectory: workDir,
 		Callback:    p.afterExit,
 	})
 
@@ -377,7 +390,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 func (p *Program) Save() (err error) {
 	logging.Info().Printf("Saving server %s", p.Id())
 
-	file := filepath.Join(ServerFolder, p.Id() + ".json")
+	file := filepath.Join(ServerFolder, p.Id()+".json")
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
@@ -471,7 +484,7 @@ func (p *Program) afterExit(graceful bool) {
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
-	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < viper.GetInt("daemon.data.crashLimit") {
+	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < config.GetInt("daemon.data.crashLimit") {
 		p.CrashCounter++
 		StartViaService(p)
 	}
@@ -560,4 +573,42 @@ func (p *Program) DeleteItem(name string) error {
 	}
 
 	return os.RemoveAll(targetFile)
+}
+
+func (p *Program) ArchiveItems(files []string, destination string) error {
+	var targets []string
+	for _, name := range files {
+		targetFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), name)
+		if !pufferpanel.EnsureAccess(targetFile, p.GetEnvironment().GetRootDirectory()) {
+			return pufferpanel.ErrIllegalFileAccess
+		}
+		targets = append(targets, targetFile)
+	}
+
+	destination = pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
+	if !pufferpanel.EnsureAccess(destination, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
+	}
+
+	// This may technically error out in other cases
+	if _, err := os.Stat(destination); !os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
+	}
+	return archiver.Archive(targets, destination)
+}
+
+func (p *Program) Extract(source, destination string) error {
+	sourceFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), source)
+	destinationFile := pufferpanel.JoinPath(p.GetEnvironment().GetRootDirectory(), destination)
+
+	if !pufferpanel.EnsureAccess(sourceFile, p.GetEnvironment().GetRootDirectory()) || !pufferpanel.EnsureAccess(destinationFile, p.GetEnvironment().GetRootDirectory()) {
+		return pufferpanel.ErrIllegalFileAccess
+	}
+
+	// destination shouldn't exist
+	if _, err := os.Stat(destinationFile); os.IsNotExist(err) {
+		return pufferpanel.ErrFileExists
+	}
+
+	return archiver.Unarchive(sourceFile, destinationFile)
 }

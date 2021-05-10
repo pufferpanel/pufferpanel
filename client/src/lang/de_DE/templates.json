@@ -28,7 +28,7 @@
   "ReleaseType": "Release-Typ",
   "AddFile": "Datei hinzufügen",
   "AddVariable": "Variable hinzufügen",
-  "Environment": "Environment",
+  "Environment": "Umgebung",
   "Environments": "Umgebungen",
   "AddEnvironment": "Umgebung hinzufügen",
   "DefaultEnvironment": "Standardumgebung",
@@ -49,6 +49,8 @@
   "Command": "Befehl",
   "Arguments": "Argumente",
   "AddArgument": "Argument hinzufügen",
+  "Convert": "Umwandeln",
+  "OfferV1Convert": "Diese Vorlage sieht aus als wäre sie für Pufferpanel 1.x angelegt, willst du sie automatisch in eine Vorlage für Pufferpanel 2.x umwandeln?",
   "import": {
     "OverrideWarning": "WARNUNG: Importierte Vorlagen WERDEN bestehende Vorlagen mit der gleichen ID ÜBERSCHREIBEN",
     "Import": "Vorlagen importieren",
@@ -73,10 +75,10 @@
       "commands": "Befehle"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Datei ändern",
+      "regex": "Suche als RegEx behandeln",
+      "search": "Zu suchender Text",
+      "replace": "Ersetzen durch"
     },
     "writefile": {
       "ProcessorName": "In Datei schreiben",

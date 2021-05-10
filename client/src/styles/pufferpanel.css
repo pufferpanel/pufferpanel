@@ -1,13 +1,17 @@
+body {
+  width: 100%;
+}
+
 pre {
-    display: block;
-    padding: 12px 12px;
-    margin: 0;
-    font-size: 12px;
-    color: #c7254e;
-    background-color: #f9f2f4;
-    border: 1px solid #c7254e;
-    border-radius: 0;
-    white-space: pre
+  display: block;
+  padding: 12px 12px;
+  margin: 0;
+  font-size: 12px;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border: 1px solid #c7254e;
+  border-radius: 0;
+  white-space: pre
 }
 
 .console .v-input__slot {
@@ -67,4 +71,8 @@ pre {
   -webkit-box-flex: 1 !important;
   -ms-flex-positive: 1 !important;
   flex-grow: 1 !important;
+}
+
+.dragHandle {
+  cursor: move !important;
 }

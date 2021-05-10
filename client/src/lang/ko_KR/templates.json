@@ -49,6 +49,8 @@
   "Command": "명령",
   "Arguments": "인자",
   "AddArgument": "인자 추가",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "경고: 불러와진 템플릿들은 이미 존재하는 같은 ID의 템플릿들을 덮어 쓸것입니다",
     "Import": "템플릿 가져오기",

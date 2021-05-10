@@ -6,6 +6,7 @@ import './components'
 // Plugins
 import vuetify from './plugins/vuetify'
 import api from './plugins/api'
+import dark from './plugins/dark'
 import ace from './plugins/ace'
 // Application imports
 import App from './App'
@@ -26,6 +27,7 @@ if ('serviceWorker' in navigator) {
 window.pufferpanel = {}
 
 Vue.use(api)
+Vue.use(dark)
 Vue.use(ace)
 
 Vue.config.productionTip = false

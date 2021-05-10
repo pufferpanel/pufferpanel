@@ -31,6 +31,7 @@ func LoadModules() {
 	mapping = make(map[string]pufferpanel.EnvironmentFactory)
 
 	mapping["docker"] = docker.EnvironmentFactory{}
+	mapping["container"] = docker.EnvironmentFactory{}
 
 	loadAdditionalModules(mapping)
 }

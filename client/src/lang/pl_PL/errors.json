@@ -34,5 +34,7 @@
   "ErrSessionTimedOut": "Twoja sesja wygasła, proszę zalogować się jeszcze raz",
   "ErrMissingScope": "Nie masz uprawnień do wykonywania tej czynności",
   "ErrInvalidJson": "Dane json są nieprawidłowe",
-  "ErrSocketFailed": "WebSocket napotkał błąd, niektóre funkcje mogą być powolne lub uszkodzone"
+  "ErrSocketFailed": "WebSocket napotkał błąd, niektóre funkcje mogą być powolne lub uszkodzone",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }

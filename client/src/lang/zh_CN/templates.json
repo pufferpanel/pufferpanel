@@ -1,107 +1,109 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "模板",
+  "NoTemplates": "此处暂无模板",
+  "Deleted": "已删除模板",
+  "New": "创建新模板",
+  "Edit": "编辑模板",
+  "Editor": "编辑器",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
+  "Display": "显示名称",
+  "Type": "类型",
+  "Variables": "变量",
+  "Install": "安装",
+  "AddInstallStep": "添加安装步骤",
+  "DeleteInstallStep": "删除安装步骤",
+  "Description": "描述",
+  "DataType": "数据类型",
+  "DefaultValue": "默认值",
+  "Required": "必填",
+  "UserEditable": "用户可编辑",
+  "Value": "值",
+  "AddOption": "添加选项",
+  "AddCommand": "添加命令",
+  "Filename": "文件名",
+  "Content": "内容",
+  "Source": "源",
+  "Target": "目标",
+  "Version": "版本",
+  "ReleaseType": "发布类型",
+  "AddFile": "添加文件",
+  "AddVariable": "添加变量",
+  "Environment": "环境",
+  "Environments": "环境",
+  "AddEnvironment": "添加环境",
+  "DefaultEnvironment": "默认环境",
+  "AddEnvVar": "添加环境变量",
+  "EnvVars": "环境变量",
+  "DockerImage": "Docker 镜像",
+  "SaveSuccess": "已保存的模板",
+  "VarNameNoSpaces": "变量名称不可为空或包含空格",
+  "SupportedEnvironments": "支持环境",
+  "RunConfig": "运行配置",
+  "PreHook": "运行前 Hook",
+  "PostHook": "运行后 Hook",
+  "AddPreStep": "添加运行前步骤",
+  "AddPostStep": "添加运行后步骤",
+  "DeletePreStep": "删除运行前步骤",
+  "DeletePostStep": "删除运行后步骤",
+  "Shutdown": "关闭",
+  "Command": "命令",
+  "Arguments": "参数",
+  "AddArgument": "添加参数",
+  "Convert": "转换",
+  "OfferV1Convert": "此模板似乎为 PufferPanel 1.x 格式的模板，您想要将其自动更新为 2.x 版本的模板吗？",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "警告：导入模板将覆盖相同 ID 的现有模板",
+    "Import": "导入模板",
+    "Tooltip": "从官方仓库导入模板",
+    "Select": "选择要导入的模板",
+    "Started": "正在导入模板，请稍候",
+    "Successful": "已成功导入模板 {template}",
+    "NoTemplatesTitle": "您想要导入模板吗？",
+    "NoTemplatesContent": "您当前没有模板，需要模板才能创建服务器。<br/>您想要从 PufferPanel 官方模板仓库导入一些模板吗？"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "命令",
+    "Signal": "信号"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "下载",
+      "files": "文件"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "运行命令",
+      "commands": "命令"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "更改文件",
+      "regex": "将搜索视为正则表达式",
+      "search": "要搜索的文本",
+      "replace": "替换为"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "写入至文件",
+      "text": "内容"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "移动文件",
+      "source": "源",
+      "target": "目标"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "创建目录"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "下载 Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "下载 Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "下载 Minecraft SpongeForge",
+      "releaseType": "发布类型"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "下载 Minecraft Fabric"
     }
   }
 }

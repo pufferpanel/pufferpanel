@@ -49,6 +49,8 @@
   "Command": "Käsklus",
   "Arguments": "Argumendid",
   "AddArgument": "Lisa argument",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "HOIATUS: Imporditud mallid kirjutatakse üle sama ID-ga olevasolevad mallid",
     "Import": "Impordi mall",
