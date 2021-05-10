@@ -18,7 +18,7 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"io"
 	"os"
 	"sync"
@@ -151,7 +151,7 @@ func (e *BaseEnvironment) Delete() (err error) {
 }
 
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
-	if viper.GetBool("daemon.console.forward") {
+	if config.GetBool("daemon.console.forward") {
 		return io.MultiWriter(os.Stdout, e.ConsoleBuffer, e.WSManager)
 	}
 	return io.MultiWriter(e.ConsoleBuffer, e.WSManager)

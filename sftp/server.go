@@ -23,10 +23,10 @@ import (
 	"encoding/pem"
 	"github.com/pkg/sftp"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"net"
@@ -58,13 +58,13 @@ func runServer() error {
 		auth = &oauth2.WebSSHAuthorization{}
 	}
 
-	config := &ssh.ServerConfig{
+	serverConfig := &ssh.ServerConfig{
 		PasswordCallback: func(c ssh.ConnMetadata, pass []byte) (*ssh.Permissions, error) {
 			return auth.Validate(c.User(), string(pass))
 		},
 	}
 
-	serverKeyFile := viper.GetString("daemon.sftp.key")
+	serverKeyFile := config.GetString("daemon.sftp.key")
 
 	_, e := os.Stat(serverKeyFile)
 
@@ -103,9 +103,9 @@ func runServer() error {
 		return e
 	}
 
-	config.AddHostKey(hkey)
+	serverConfig.AddHostKey(hkey)
 
-	bind := viper.GetString("daemon.sftp.host")
+	bind := config.GetString("daemon.sftp.host")
 
 	sftpServer, e = net.Listen("tcp", bind)
 	if e != nil {
@@ -117,7 +117,7 @@ func runServer() error {
 		for {
 			conn, _ := sftpServer.Accept()
 			if conn != nil {
-				go HandleConn(conn, config)
+				go HandleConn(conn, serverConfig)
 			}
 		}
 	}()
@@ -125,19 +125,19 @@ func runServer() error {
 	return nil
 }
 
-func HandleConn(conn net.Conn, config *ssh.ServerConfig) {
+func HandleConn(conn net.Conn, serverConfig *ssh.ServerConfig) {
 	defer pufferpanel.Close(conn)
 	defer pufferpanel.Recover()
 	logging.Info().Printf("SFTP connection from %s", conn.RemoteAddr().String())
-	e := handleConn(conn, config)
+	e := handleConn(conn, serverConfig)
 	if e != nil {
 		if e.Error() != "EOF" {
 			logging.Error().Printf("sftpd connection error: %s", e)
 		}
 	}
 }
-func handleConn(conn net.Conn, config *ssh.ServerConfig) error {
-	sc, chans, reqs, e := ssh.NewServerConn(conn, config)
+func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
+	sc, chans, reqs, e := ssh.NewServerConn(conn, serverConfig)
 	defer pufferpanel.Close(sc)
 	if e != nil {
 		return e

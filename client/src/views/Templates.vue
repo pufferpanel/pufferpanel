@@ -14,7 +14,7 @@
           >
             <v-subheader
               v-if="Object.keys(templates).length !== 1"
-              :class="isDark() ? headerClasses.dark : headerClasses.light"
+              :class="$isDark() ? headerClasses.dark : headerClasses.light"
               v-text="type"
             />
             <div
@@ -154,8 +154,6 @@
 </template>
 
 <script>
-import { isDark } from '@/utils/dark'
-
 export default {
   data () {
     return {
@@ -239,8 +237,7 @@ export default {
     importDeclined () {
       this.offerImport = false
       localStorage.setItem('offerTemplateImport', 'false')
-    },
-    isDark
+    }
   }
 }
 </script>

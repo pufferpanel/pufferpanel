@@ -20,6 +20,7 @@
           cols="12"
           sm="6"
           md="2"
+          class="d-flex align-center"
           v-text="$t('common.Host') + ':' + $t('common.Port')"
         />
         <v-col
@@ -54,6 +55,7 @@
           cols="12"
           sm="6"
           md="2"
+          class="d-flex align-center"
           v-text="$t('users.Username')"
         />
         <v-col
@@ -88,21 +90,31 @@
           cols="12"
           sm="6"
           md="2"
+          class="d-flex align-center"
           v-text="$t('users.Password')"
         />
-        <!-- 00A0 is the unicode code point for a non breaking space and required here because js makes &nbsp; print as literal text and not using a non breaking space makes it behave extra dumb on small devices... -->
         <v-col
           cols="12"
           sm="6"
           md="10"
-          v-text="$t('users.AccountPassword').replace(' ', '\u00A0')"
-        />
+        >
+          <v-btn
+            icon
+            disabled
+          />
+          <!-- 00A0 is the unicode code point for a non breaking space and required here because js makes &nbsp; print as literal text and not using a non breaking space makes it behave extra dumb on small devices... -->
+          {{ $t('users.AccountPassword').replace(' ', '\u00A0') }}
+        </v-col>
       </v-row>
-      <v-btn
-        block
-        :href="`sftp://${username}@${host}`"
-        v-text="$t('servers.SftpConnection')"
-      />
+      <v-row>
+        <v-col cols="12">
+          <v-btn
+            block
+            :href="`sftp://${username}@${host}`"
+            v-text="$t('servers.SftpConnection')"
+          />
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>

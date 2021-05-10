@@ -34,5 +34,7 @@
   "ErrSessionTimedOut": "Lejárt az ülése, kérjük lépjen be újra",
   "ErrMissingScope": "Nincs jogosultsága a művelet végrehajtásához",
   "ErrInvalidJson": "A json adat érvénytelen",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account"
 }

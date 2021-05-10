@@ -27,7 +27,7 @@
   "Copied": "클림보드에 복사되었습니다",
   "Unknown": "알 수 없음",
   "Search": "검색",
-  "Back": "뒤로가기",
+  "Back": "이전",
   "Next": "다음",
   "LanguageName": "한국어",
   "Details": "자세히 보기",
@@ -36,5 +36,6 @@
   "DarkMode": "어두운 테마",
   "ThemeOptions": "테마 옵션",
   "Protocol": "프로토콘",
-  "Add": "추가"
+  "Add": "추가",
+  "Ignore": "Ignore"
 }

@@ -24,9 +24,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -175,7 +175,7 @@ func ValidateTokenLoaded() {
 	locker.Lock()
 	defer locker.Unlock()
 	//only load public if panel is disabled
-	if !viper.GetBool("panel.enable") {
+	if !config.GetBool("panel.enable") {
 		if publicKey == nil || timer.Before(time.Now()) {
 			loadPublic()
 		}
@@ -186,7 +186,7 @@ func ValidateTokenLoaded() {
 
 func loadPrivate() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_RDONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -216,7 +216,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return
@@ -234,7 +234,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 }
 
 func loadPublic() {
-	pubKeyPath := viper.GetString("token.public")
+	pubKeyPath := config.GetString("token.public")
 	var pubKeyFile io.ReadCloser
 	var err error
 
