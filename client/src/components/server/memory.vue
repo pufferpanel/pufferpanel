@@ -13,12 +13,19 @@
 
 <template>
   <v-card>
-    <v-card-title v-text="$t('servers.Memory')" />
+    <v-card-title>
+      <span v-text="$t('servers.Memory')" />
+      <div class="flex-grow-1" />
+      <v-btn-toggle v-model="mibMode" borderless dense mandatory>
+        <v-btn :value="false" v-text="'MB'" />
+        <v-btn :value="true"  v-text="'MiB'" />
+      </v-btn-toggle>
+    </v-card-title>
     <v-card-text>
       <apexchart
         :series="series"
         :options="options"
-        height="300"
+        height="250"
       />
     </v-card-text>
   </v-card>
@@ -37,11 +44,11 @@ export default {
   data () {
     return {
       intl: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
-      maxPoints: 20,
+      maxPoints: 40,
+      mibMode: false,
       options: {
         chart: {
           id: 'memory',
-          height: 300,
           type: 'line',
           animations: {
             enabled: false
@@ -57,7 +64,7 @@ export default {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
+          curve: 'straight'
         },
         markers: {
           size: 0
@@ -77,14 +84,30 @@ export default {
           labels: {
             show: true,
             formatter: value => {
-              if (value < 1e3) return this.intl.format(value) + ' B'
-              if (value < 1e6) return this.intl.format(value / 1e3) + ' KB'
-              if (value < 1e9) return this.intl.format(value / 1e6) + ' MB'
-              if (value < 1e12) return this.intl.format(value / 1e9) + ' GB'
-              if (value < 1e15) return this.intl.format(value / 1e12) + ' TB'
+              if (!this.mibMode) {
+                if (value < 1e3) return this.intl.format(value) + ' B'
+                if (value < 1e6) return this.intl.format(value / 1e3) + ' KB'
+                if (value < 1e9) return this.intl.format(value / 1e6) + ' MB'
+                if (value < 1e12) return this.intl.format(value / 1e9) + ' GB'
+                return this.intl.format(value / 1e12) + ' TB'
+              } else {
+                if (value < Math.pow(2, 10)) return this.intl.format(value) + ' B'
+                if (value < Math.pow(2, 20)) return this.intl.format(value / Math.pow(2, 10)) + ' KiB'
+                if (value < Math.pow(2, 30)) return this.intl.format(value / Math.pow(2, 20)) + ' MiB'
+                if (value < Math.pow(2, 40)) return this.intl.format(value / Math.pow(2, 30)) + ' GiB'
+                return this.intl.format(value / Math.pow(2, 40)) + ' TiB'
+              }
             }
           },
-          min: 0
+          min: 0,
+          max: () => this.series[0]
+            ? Math.ceil(
+              this.series[0].data.reduce(
+                (acc, curr) => Math.max(acc, curr[1]),
+                this.mibMode ? 1025 : 1000
+              )
+            )
+            : this.mibMode ? 1025 : 1000
         },
         legend: {
           show: true
@@ -97,6 +120,15 @@ export default {
     this.$api.addServerListener(this.server.id, 'stat', event => {
       this.updateStats(event)
     })
+
+    const chartData = new Array(this.maxPoints)
+    const timestamp = new Date().getTime()
+
+    for (let i = 0; i < chartData.length; i++) {
+      chartData[i] = [timestamp - ((chartData.length - i) * 3000), 0]
+    }
+
+    this.series = [{ name: this.$t('servers.Memory'), data: chartData }]
   },
   methods: {
     updateStats (data) {

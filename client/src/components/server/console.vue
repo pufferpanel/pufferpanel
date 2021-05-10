@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
+    <v-card-title ref="title">
       <span v-text="$t('servers.Console')" />
       <div class="flex-grow-1" />
       <v-btn
@@ -24,7 +24,7 @@
       <div
         ref="consoleEl"
         class="console"
-        style="min-height: 25em; max-height: 40em;"
+        :style="'min-height: 25em; max-height: 36em;'"
       >
         <span
           v-for="(line, index) in console"
@@ -53,6 +53,7 @@
         class="pt-2"
         placeholder="Command..."
         end-icon="mdi-send"
+        ref="cmdInput"
         @click:append="sendCommand"
         @keyup.enter="sendCommand"
       />
@@ -84,7 +85,8 @@ export default {
       lastConsoleTime: 0,
       paused: false,
       hasNewLines: false,
-      interval: null
+      interval: null,
+      listener: null
     }
   },
   mounted () {
@@ -104,7 +106,7 @@ export default {
       })
     }, CONSOLE_REFRESH_TIME)
 
-    this.$api.addServerListener(this.server.id, 'console', event => {
+    this.listener = event => {
       if ('epoch' in event) {
         this.lastConsoleTime = event.epoch
       } else {
@@ -112,7 +114,9 @@ export default {
       }
 
       this.parseConsole(event)
-    })
+    }
+
+    this.$api.addServerListener(this.server.id, 'console', this.listener)
 
     this.$api.startServerTask(this.server.id, () => {
       if (this.$api.serverConnectionNeedsPolling(this.server.id)) {
@@ -123,6 +127,7 @@ export default {
     this.$api.requestServerConsoleReplay(this.server.id)
   },
   beforeDestroy () {
+    this.$api.removeServerListener(this.server.id, 'console', this.listener)
     this.interval && clearInterval(this.interval)
     this.interval = null
     lines = []
