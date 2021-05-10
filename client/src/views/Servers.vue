@@ -146,6 +146,10 @@ export default {
         try {
           const servers = [...this.servers]
           const status = await this.$api.getServerStatus(servers[i].id, {
+            403: () => {
+              toDelete.push(servers[i].id)
+              return true
+            },
             404: () => {
               toDelete.push(servers[i].id)
               return true
