@@ -18,7 +18,7 @@
       <apexchart
         :options="options"
         :series="series"
-        height="300"
+        height="250"
       />
     </v-card-text>
   </v-card>
@@ -37,11 +37,10 @@ export default {
   data () {
     return {
       intl: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
-      maxPoints: 20,
+      maxPoints: 40,
       options: {
         chart: {
           id: 'cpu',
-          height: 300,
           type: 'line',
           animations: {
             enabled: false
@@ -57,7 +56,7 @@ export default {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
+          curve: 'straight'
         },
         markers: {
           size: 0
@@ -92,6 +91,15 @@ export default {
     this.$api.addServerListener(this.server.id, 'stat', event => {
       this.updateStats(event)
     })
+
+    const chartData = new Array(this.maxPoints)
+    const timestamp = new Date().getTime()
+
+    for (let i = 0; i < chartData.length; i++) {
+      chartData[i] = [timestamp - ((chartData.length - i) * 3000), 0]
+    }
+
+    this.series = [{ name: this.$t('servers.CPU'), data: chartData }]
   },
   methods: {
     updateStats (data) {
