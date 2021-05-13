@@ -37,9 +37,6 @@ type tty struct {
 	stdInWriter io.Writer
 }
 
-func (d *tty) ReplaceTokens(data map[string]interface{}) {
-}
-
 func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	running, err := t.IsRunning()
 	if err != nil {

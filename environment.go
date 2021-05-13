@@ -66,9 +66,6 @@ type Environment interface {
 	SendCode(code int) error
 
 	GetBase() *BaseEnvironment
-
-	//Replace tokens from data, implemented for variable docker container selection
-	ReplaceTokens(data map[string]interface{})
 }
 
 type BaseEnvironment struct {

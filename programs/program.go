@@ -169,7 +169,6 @@ func (p *Program) Start() (err error) {
 	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
-	p.RunningEnvironment.ReplaceTokens(data)
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{

@@ -38,9 +38,6 @@ type standard struct {
 	stdInWriter io.Writer
 }
 
-func (d *standard) ReplaceTokens(data map[string]interface{}) {
-}
-
 func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	running, err := s.IsRunning()
 	if err != nil {
