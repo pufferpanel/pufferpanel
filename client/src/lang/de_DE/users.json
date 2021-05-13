@@ -1,6 +1,6 @@
 {
   "Users": "Benutzer",
-  "Add": "Neuer Benutzer",
+  "Add": "Benutzer erstellen",
   "AccountSettings": "Kontoeinstellungen",
   "OldPassword": "Altes Passwort",
   "NewPassword": "Neues Passwort",
@@ -9,7 +9,7 @@
   "ChangeInfo": "Kontodaten ändern",
   "InfoChanged": "Deine Kontoinformationen wurden geändert",
   "PasswordChanged": "Dein Passwort wurde geändert",
-  "AccountPassword": "Passwort",
+  "AccountPassword": "Konto-Passwort",
   "Account": "Benutzerkonto",
   "Login": "Anmelden",
   "LoginLink": "Oder melde dich hier an",
