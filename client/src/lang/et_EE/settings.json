@@ -1,24 +1,24 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "Settings": "Seaded",
+  "PanelSettings": "Paneeli Seaded",
+  "EmailSettings": "E-posti seaded",
+  "MasterUrl": "Peamine URL",
+  "MasterUrlHint": "Põhi URL sellel paneelil on kättesaadav formaadis http://localhost:8080",
+  "CompanyName": "Ettevõtte nimi",
+  "DefaultTheme": "Vaikmisi teema",
+  "EmailProvider": "E-posti pakkuja",
   "emailProviders": {
-    "none": "None",
+    "none": "Puudub",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API-Key",
+    "from": "Saatja aadress",
+    "domain": "Domeen",
+    "key": "API-Võti",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Kasutajanimi",
+    "password": "Salasõna"
   }
 }
