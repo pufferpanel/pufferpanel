@@ -27,6 +27,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/move"
+	"github.com/pufferpanel/pufferpanel/v2/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v2/operations/spongeforgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/writefile"
 	"github.com/spf13/cast"
@@ -164,14 +165,8 @@ func loadCoreModules() {
 	fabricDlFactory := fabricdl.Factory
 	commandMapping[fabricDlFactory.Key()] = fabricDlFactory
 
-	//programFactory := program.Factory
-	//commandMapping[programFactory.Key()] = programFactory
-	//
-	//sleepFactory := sleep.Factory
-	//commandMapping[sleepFactory.Key()] = sleepFactory
-	//
-	//waitFactory := wait.Factory
-	//commandMapping[waitFactory.Key()] = waitFactory
+	sleepFactory := sleep.Factory
+	commandMapping[sleepFactory.Key()] = sleepFactory
 
 	consoleFactory := console.Factory
 	commandMapping[consoleFactory.Key()] = consoleFactory
