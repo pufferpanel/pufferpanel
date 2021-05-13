@@ -88,6 +88,7 @@ type ExecutionData struct {
 	Environment      map[string]string
 	WorkingDirectory string
 	Callback         func(graceful bool)
+	Data             map[string]interface{}
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)
