@@ -47,7 +47,7 @@
   "DeletePostStep": "Installationsschritt löschen",
   "Shutdown": "Herunterfahren",
   "Command": "Befehl",
-  "WorkingDirectory": "Aktives Verzeichnis",
+  "WorkingDirectory": "Arbeitsverzeichnis",
   "Arguments": "Argumente",
   "AddArgument": "Argument hinzufügen",
   "Convert": "Umwandeln",
