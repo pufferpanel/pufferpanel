@@ -19,10 +19,9 @@ package operations
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/operations/alterfile"
-	"github.com/pufferpanel/pufferpanel/v2/operations/archive"
 	"github.com/pufferpanel/pufferpanel/v2/operations/command"
+	"github.com/pufferpanel/pufferpanel/v2/operations/console"
 	"github.com/pufferpanel/pufferpanel/v2/operations/download"
-	"github.com/pufferpanel/pufferpanel/v2/operations/extract"
 	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/forgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
@@ -165,9 +164,15 @@ func loadCoreModules() {
 	fabricDlFactory := fabricdl.Factory
 	commandMapping[fabricDlFactory.Key()] = fabricDlFactory
 
-	extractFactory := extract.Factory
-	commandMapping[extractFactory.Key()] = extractFactory
+	//programFactory := program.Factory
+	//commandMapping[programFactory.Key()] = programFactory
+	//
+	//sleepFactory := sleep.Factory
+	//commandMapping[sleepFactory.Key()] = sleepFactory
+	//
+	//waitFactory := wait.Factory
+	//commandMapping[waitFactory.Key()] = waitFactory
 
-	archiveFactory := archive.Factory
-	commandMapping[archiveFactory.Key()] = archiveFactory
+	consoleFactory := console.Factory
+	commandMapping[consoleFactory.Key()] = consoleFactory
 }
