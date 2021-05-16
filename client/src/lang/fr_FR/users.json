@@ -28,5 +28,14 @@
   "CreateError": "Échec de création de l'utilisateur",
   "UpdateSuccess": "Utilisateur mis à jour",
   "UpdateError": "Échec de mise à jour de l'utilisateur",
-  "PermsUpdateError": "Échec de la mise à jour des permissions de l'utilisateur"
+  "PermsUpdateError": "Échec de la mise à jour des permissions de l'utilisateur",
+  "Otp": "Two factor authentication",
+  "OtpEnable": "Enable 2FA",
+  "OtpDisable": "Disable 2FA",
+  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it",
+  "OtpSecret": "Secret Code",
+  "OtpConfirm": "Confirm using a 2FA code",
+  "OtpNeeded": "Second factor required"
 }
