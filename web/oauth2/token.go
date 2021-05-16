@@ -170,7 +170,7 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
-			user, jwtToken, err := us.Login(user.Email, request.Password)
+			user, jwtToken, _, err := us.Login(user.Email, request.Password)
 			if err != nil || jwtToken == "" {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return

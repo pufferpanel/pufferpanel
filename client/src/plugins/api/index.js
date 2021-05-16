@@ -48,9 +48,22 @@ class ApiClient extends EventEmitter {
   login (email, password, options = {}) {
     return this.withErrorHandling(async ctx => {
       const res = (await ctx.$http.post('/auth/login', { email, password })).data
-      this.saveLoginData(res.session, res.scopes || [], options.silent)
-      return true
+      if (res.otpNeeded) {
+        this.emit('requestOtp')
+        return 'otp'
+      } else {
+        this.saveLoginData(res.session, res.scopes || [], options.silent)
+        return true
+      }
     }, { noToast: options.silent || options.noToast })
+  }
+
+  loginOtp (token) {
+    return this.withErrorHandling(async ctx => {
+      const res = (await ctx.$http.post('/auth/otp', { token })).data
+      this.saveLoginData(res.session, res.scopes || [])
+      return true
+    })
   }
 
   reauth () {
@@ -92,6 +105,30 @@ class ApiClient extends EventEmitter {
       await ctx.$http.put('/api/self', { password: oldPassword, newPassword })
       return true
     }, options)
+  }
+
+  getOtp () {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get('/api/self/otp')).data.otpEnabled
+    })
+  }
+
+  startOtpEnroll () {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post('/api/self/otp')).data
+    })
+  }
+
+  validateOtpEnroll (token) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.put('/api/self/otp', { token })).data === ''
+    })
+  }
+
+  disableOtp (token) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/self/otp/${token}`)).data === ''
+    })
   }
 
   getSetting (key, options = {}) {
