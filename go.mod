@@ -24,12 +24,14 @@ require (
 	github.com/facebookgo/subset v0.0.0-20150612182917-8dac2c3c4870 // indirect
 	github.com/frankban/quicktest v1.11.3 // indirect
 	github.com/gin-contrib/gzip v0.0.1
+	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.0 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
+	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/itsjamie/gin-cors v0.0.0-20160420130702-97b4a9da7933
 	github.com/jinzhu/gorm v1.9.11
@@ -50,6 +52,7 @@ require (
 	github.com/pierrec/lz4 v2.6.0+incompatible // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.10.1
+	github.com/pquerna/otp v1.3.0
 	github.com/rogpeppe/go-internal v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.19.10+incompatible

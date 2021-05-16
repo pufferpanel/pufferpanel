@@ -72,7 +72,7 @@ func RegisterPost(c *gin.Context) {
 			logging.Error().Printf("Error sending email: %s", err.Error())
 		}
 
-		_, token, err = us.Login(user.Email, request.Password)
+		_, token, _, err = us.Login(user.Email, request.Password)
 		if err != nil {
 			logging.Error().Printf("Error trying to auto-login after register: %s", err.Error())
 		}

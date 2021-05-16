@@ -16,6 +16,9 @@ package main
 import (
 	"github.com/braintree/manners"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+        "github.com/gorilla/securecookie"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
@@ -81,15 +84,24 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	router.Use(gin.LoggerWithWriter(logging.Debug().Writer()))
 	pufferpanel.Engine = router
 
-	web.RegisterRoutes(router)
-
 	if config.GetBool("panel.enable") {
 		panel(c)
+
+		if config.GetString("panel.sessionKey") == "" {
+			if err := config.Set("panel.sessionKey", securecookie.GenerateRandomKey(32)); err != nil {
+				return err
+			}
+		}
+
+		sessionStore := cookie.NewStore([]byte(config.GetString("panel.sessionKey")))
+		router.Use(sessions.Sessions("session", sessionStore))
 	}
 
 	if config.GetBool("daemon.enable") {
 		daemon(c)
 	}
+
+	web.RegisterRoutes(router)
 
 	go func() {
 		l, err := net.Listen("tcp4", config.GetString("web.host"))
