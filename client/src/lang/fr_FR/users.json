@@ -29,13 +29,13 @@
   "UpdateSuccess": "Utilisateur mis à jour",
   "UpdateError": "Échec de mise à jour de l'utilisateur",
   "PermsUpdateError": "Échec de la mise à jour des permissions de l'utilisateur",
-  "Otp": "Two factor authentication",
-  "OtpEnable": "Enable 2FA",
-  "OtpDisable": "Disable 2FA",
-  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
-  "OtpSetup": "2FA Setup",
-  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it",
-  "OtpSecret": "Secret Code",
-  "OtpConfirm": "Confirm using a 2FA code",
-  "OtpNeeded": "Second factor required"
+  "Otp": "Authentification à deux facteurs",
+  "OtpEnable": "Activer l'A2F",
+  "OtpDisable": "Désactiver l'A2F",
+  "OtpHint": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte en exigeant plus qu'un mot de passe pour se connecter.",
+  "OtpSetup": "Paramétrage de l'A2F",
+  "OtpSetupHint": "Scannez le code QR en utilisant votre application d'authentification ou copiez-y le code secret ci-dessous",
+  "OtpSecret": "Code secret",
+  "OtpConfirm": "Confirmez en utilisant un code A2F",
+  "OtpNeeded": "Second facteur requis"
 }
