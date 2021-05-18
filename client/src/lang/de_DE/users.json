@@ -1,6 +1,6 @@
 {
   "Users": "Benutzer",
-  "Add": "Benutzer erstellen",
+  "Add": "Neuer Benutzer",
   "AccountSettings": "Kontoeinstellungen",
   "OldPassword": "Altes Passwort",
   "NewPassword": "Neues Passwort",
@@ -29,13 +29,13 @@
   "UpdateSuccess": "Benutzer aktualisiert",
   "UpdateError": "Fehler beim Aktualisieren des Benutzers",
   "PermsUpdateError": "Fehler beim Aktualisieren der Benutzerberechtigungen",
-  "Otp": "Two factor authentication",
-  "OtpEnable": "Enable 2FA",
-  "OtpDisable": "Disable 2FA",
-  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
-  "OtpSetup": "2FA Setup",
-  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it",
-  "OtpSecret": "Secret Code",
-  "OtpConfirm": "Confirm using a 2FA code",
-  "OtpNeeded": "Second factor required"
+  "Otp": "Zwei-Faktor-Authentifizierung",
+  "OtpEnable": "2FA aktivieren",
+  "OtpDisable": "2FA deaktivieren",
+  "OtpHint": "Zwei-Faktor-Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsstufe hinzu, da mehr als nur ein Passwort benötigt wird, um sich anzumelden.",
+  "OtpSetup": "2FA Einrichten",
+  "OtpSetupHint": "Scannen Sie den QR-Code mit Ihrer Authentifizierungs-App oder kopieren Sie den darunter stehenden Code und fügen Sie ihn in der App ein",
+  "OtpSecret": "Geheimcode",
+  "OtpConfirm": "Bestätigung für die Nutzung der 2FA",
+  "OtpNeeded": "Zwei-Faktor-Authentifizierung erforderlich"
 }
