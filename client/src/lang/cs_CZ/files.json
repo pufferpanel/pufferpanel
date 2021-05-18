@@ -9,11 +9,11 @@
   "Size": "Velikost",
   "NoFiles": "Zatím zde nejsou žádné soubory, jděte a vytvořte je například kliknutím na tlačítko instalace v horní části stránky",
   "FileLoadFailed": "Načtení souboru se nezdařilo",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Obnovit",
+  "CreateFile": "Vytvořit soubor",
+  "CreateFolder": "Vytvořit složku",
+  "ArchiveCurrentFolder": "Vytvořit archiv z aktuální složky",
+  "ArchiveFolder": "Vytvořit archiv ze složky",
+  "ExtractArchive": "Rozbalit archiv",
+  "DropToUpload": "Soubory nahrajete přetažením sem"
 }
