@@ -47,6 +47,7 @@
   "DeletePostStep": "실행 후 단계 제거",
   "Shutdown": "정지",
   "Command": "명령",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "인자",
   "AddArgument": "인자 추가",
   "Convert": "Convert",

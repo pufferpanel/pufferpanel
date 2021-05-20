@@ -47,6 +47,7 @@
   "DeletePostStep": "删除运行后步骤",
   "Shutdown": "关闭",
   "Command": "命令",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "参数",
   "AddArgument": "添加参数",
   "Convert": "转换",

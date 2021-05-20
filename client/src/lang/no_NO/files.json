@@ -8,5 +8,12 @@
   "Download": "Last ned",
   "Size": "Størrelse",
   "NoFiles": "Det finnes ingen filer her ennå, gå og opprette noen for eksempel ved å klikke på 'install'-knappen øverst på siden",
-  "FileLoadFailed": "Failed loading file"
+  "FileLoadFailed": "Failed loading file",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

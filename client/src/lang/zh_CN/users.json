@@ -28,5 +28,14 @@
   "CreateError": "创建用户时出错",
   "UpdateSuccess": "已更新用户",
   "UpdateError": "更新用户时出错",
-  "PermsUpdateError": "更新用户权限时出错"
+  "PermsUpdateError": "更新用户权限时出错",
+  "Otp": "Two factor authentication",
+  "OtpEnable": "Enable 2FA",
+  "OtpDisable": "Disable 2FA",
+  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it",
+  "OtpSecret": "Secret Code",
+  "OtpConfirm": "Confirm using a 2FA code",
+  "OtpNeeded": "Second factor required"
 }

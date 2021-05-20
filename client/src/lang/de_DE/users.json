@@ -9,7 +9,7 @@
   "ChangeInfo": "Kontodaten ändern",
   "InfoChanged": "Deine Kontoinformationen wurden geändert",
   "PasswordChanged": "Dein Passwort wurde geändert",
-  "AccountPassword": "Passwort",
+  "AccountPassword": "Konto-Passwort",
   "Account": "Benutzerkonto",
   "Login": "Anmelden",
   "LoginLink": "Oder melde dich hier an",
@@ -28,5 +28,14 @@
   "CreateError": "Fehler beim Erstellen des Benutzers",
   "UpdateSuccess": "Benutzer aktualisiert",
   "UpdateError": "Fehler beim Aktualisieren des Benutzers",
-  "PermsUpdateError": "Fehler beim Aktualisieren der Benutzerberechtigungen"
+  "PermsUpdateError": "Fehler beim Aktualisieren der Benutzerberechtigungen",
+  "Otp": "Zwei-Faktor-Authentifizierung",
+  "OtpEnable": "2FA aktivieren",
+  "OtpDisable": "2FA deaktivieren",
+  "OtpHint": "Zwei-Faktor-Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsstufe hinzu, da mehr als nur ein Passwort benötigt wird, um sich anzumelden.",
+  "OtpSetup": "2FA Einrichten",
+  "OtpSetupHint": "Scannen Sie den QR-Code mit Ihrer Authentifizierungs-App oder kopieren Sie den darunter stehenden Code und fügen Sie ihn in der App ein",
+  "OtpSecret": "Geheimcode",
+  "OtpConfirm": "Bestätigung für die Nutzung der 2FA",
+  "OtpNeeded": "Zwei-Faktor-Authentifizierung erforderlich"
 }

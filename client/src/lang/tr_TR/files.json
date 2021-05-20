@@ -8,5 +8,12 @@
   "Download": "İndir",
   "Size": "Boyut",
   "NoFiles": "Henüz bir dosya mevcut değil, Lütfen kurulumu yapmak için üstteki Kurulum düğmesine basın",
-  "FileLoadFailed": "Dosya yüklenemedi"
+  "FileLoadFailed": "Dosya yüklenemedi",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
