@@ -47,6 +47,7 @@
   "DeletePostStep": "Usuń krok instalacji",
   "Shutdown": "Zamknij",
   "Command": "Komenda",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumenty",
   "AddArgument": "Dodaj argument",
   "Convert": "Convert",

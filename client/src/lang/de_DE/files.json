@@ -1,6 +1,6 @@
 {
-  "FileManager": "Datei-Manager",
-  "NewFolder": "Neuer Ordner",
+  "FileManager": "Dateiverwaltung",
+  "NewFolder": "Ordner erstellen",
   "NewFile": "Neue Datei",
   "LastModified": "Zuletzt geändert",
   "ConfirmDelete": "Soll diese Datei wirklich gelöscht werden?",
@@ -8,5 +8,12 @@
   "Download": "Herunterladen",
   "Size": "Größe",
   "NoFiles": "Hier sind noch keine Dateien, erstelle welche, zum Beispiel indem du oben auf der Seite auf \"Installieren\" klickst",
-  "FileLoadFailed": "Laden der Datei fehlgeschlagen"
+  "FileLoadFailed": "Laden der Datei fehlgeschlagen",
+  "Refresh": "Aktualisieren",
+  "CreateFile": "Datei erstellen",
+  "CreateFolder": "Ordner erstellen",
+  "ArchiveCurrentFolder": "Aktuellen Ordner archivieren",
+  "ArchiveFolder": "Ordner archivieren",
+  "ExtractArchive": "Archiv extrahieren",
+  "DropToUpload": "Dateien hier ablegen um sie hochzuladen"
 }

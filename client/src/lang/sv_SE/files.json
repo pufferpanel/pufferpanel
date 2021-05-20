@@ -8,5 +8,12 @@
   "Download": "Ladda ned",
   "Size": "Storlek",
   "NoFiles": "Det finns inga filer här ännu, gå och skapa några till exempel genom att klicka på installationsknappen högst upp på sidan",
-  "FileLoadFailed": "Det gick inte att ladda filen"
+  "FileLoadFailed": "Det gick inte att ladda filen",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

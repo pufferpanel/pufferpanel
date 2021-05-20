@@ -47,6 +47,7 @@
   "DeletePostStep": "刪除運行步驟",
   "Shutdown": "結束",
   "Command": "指令",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "參數",
   "AddArgument": "新增參數",
   "Convert": "轉換",

@@ -47,6 +47,7 @@
   "DeletePostStep": "Удалить шаг после запуска",
   "Shutdown": "Выключить",
   "Command": "Команда",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Аргументы",
   "AddArgument": "Добавить аргумент",
   "Convert": "Convert",

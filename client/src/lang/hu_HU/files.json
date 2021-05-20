@@ -8,5 +8,12 @@
   "Download": "Letöltés",
   "Size": "Méret",
   "NoFiles": "Ez a hely még nem tartalmaz fájlokat. A lap tetején található telepítés gombbra kattintva létre tudja hozni a legfontosabbakat",
-  "FileLoadFailed": "Fájlok betöltése sikertelen"
+  "FileLoadFailed": "Fájlok betöltése sikertelen",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

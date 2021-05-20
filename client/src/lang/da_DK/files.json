@@ -8,5 +8,12 @@
   "Download": "Hent",
   "Size": "Størrelse",
   "NoFiles": "Der er ingen filer her endnu, opret nogle ved for eksempel at klikke på installations knappen øverst på siden",
-  "FileLoadFailed": "Kunne ikke indlæse filen"
+  "FileLoadFailed": "Kunne ikke indlæse filen",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
