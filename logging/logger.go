@@ -15,7 +15,7 @@ package logging
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"io"
 	"log"
 	"os"
@@ -64,7 +64,7 @@ func AsWriter() io.Writer {
 
 func create(prefix string) *log.Logger {
 	if useFile && logFile == nil {
-		directory := viper.GetString("logs")
+		directory := config.GetString("logs")
 		if directory == "" {
 			directory = "logs"
 		}

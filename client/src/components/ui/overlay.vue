@@ -1,7 +1,7 @@
 <template>
   <v-overlay
     v-model="value"
-    :dark="isDark()"
+    :dark="$isDark()"
     color="#434343"
   >
     <v-container
@@ -60,14 +60,13 @@
 }
 
 .overlayContent {
+  padding-top: 4px !important;
   max-height: calc(90vh - 68px);
   overflow-y: scroll;
 }
 </style>
 
 <script>
-import { isDark } from '@/utils/dark'
-
 export default {
   props: {
     card: { type: Boolean, default: () => false },
@@ -75,8 +74,40 @@ export default {
     title: { type: String, default: () => '' },
     value: { type: Boolean, default: () => false }
   },
+  data () {
+    return {
+      currentScrollPosition: null
+    }
+  },
+  watch: {
+    value (newVal) {
+      if (newVal) {
+        this.disableScroll()
+      } else {
+        this.enableScroll()
+      }
+    }
+  },
+  mounted () {
+    if (this.value) this.disableScroll()
+  },
+  beforeDestroy () {
+    if (this.currentScrollPosition) this.enableScroll()
+  },
   methods: {
-    isDark
+    disableScroll () {
+      if (this.currentScrollPosition != null || document.body.style.position === 'fixed') return
+      this.currentScrollPosition = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${this.currentScrollPosition}px`
+    },
+    enableScroll () {
+      if (this.currentScrollPosition == null) return
+      document.body.style.position = ''
+      document.body.style.top = ''
+      window.scrollTo(0, this.currentScrollPosition)
+      this.currentScrollPosition = null
+    }
   }
 }
 </script>

@@ -32,12 +32,13 @@
           class="theme-options"
         >
           <v-subheader v-text="$t('common.ThemeOptions')" />
-          <v-list-item @click="toggleDark">
+          <v-list-item @click="$toggleDark">
             <span v-text="$t('common.DarkMode')" />
             <span class="flex-grow-1" />
             <ui-switch
-              v-model="$vuetify.theme.dark"
+              :value="$vuetify.theme.dark"
               class="ml-4 mb-4"
+              @input="$setDark($event)"
             />
           </v-list-item>
           <v-radio-group
@@ -59,7 +60,7 @@
       <v-btn
         v-else
         icon
-        @click="toggleDark"
+        @click="$toggleDark"
       >
         <v-icon>mdi-lightbulb</v-icon>
       </v-btn>
@@ -92,6 +93,7 @@
         </v-list-item>
 
         <v-list-item
+          v-if="hasScope('servers.view') || isAdmin()"
           :to="{name: 'Servers'}"
           link
         >
@@ -139,6 +141,19 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title v-text="$t('templates.Templates')" />
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          v-if="isAdmin()"
+          :to="{name: 'Settings'}"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-text="$t('settings.Settings')" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -198,7 +213,24 @@
         closable
         :title="$t('common.ErrorDetails')"
       >
-        <code v-text="errorText" />
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div v-html="errorText" />
+      </ui-overlay>
+      <ui-overlay
+        v-model="otpRequested"
+        card
+        :title="$t('users.OtpNeeded')"
+      >
+        <v-row>
+          <v-col>
+            <ui-input v-model="otpToken" autofocus @keyup.enter="confirmOtp" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn v-text="$t('users.Login')" block color="success" @click="confirmOtp" />
+          </v-col>
+        </v-row>
       </ui-overlay>
     </v-main>
   </v-app>
@@ -206,12 +238,14 @@
 
 <script>
 import config from './config'
-import { toggleDark as doToggleDark, isDark } from './utils/dark'
 
 export default {
   data () {
     return {
       appConfig: config.defaultAppConfig,
+      userSettings: [],
+      otpRequested: false,
+      otpToken: '',
       loggedIn: false,
       drawer: null,
       minified: false,
@@ -224,15 +258,15 @@ export default {
     }
   },
   mounted () {
+    this.$api.on('requestOtp', () => { this.otpRequested = true })
     this.$api.on('login', this.didLogIn)
     this.$api.on('logout', this.logout)
+    this.$api.on('panelTitleChanged', this.updatePanelTitle)
 
     this.css.type = 'text/css'
     document.head.appendChild(this.css)
 
     this.loadConfig()
-
-    this.$vuetify.theme.dark = isDark()
 
     if (this.$api.isLoggedIn()) {
       this.didLogIn()
@@ -273,26 +307,42 @@ export default {
       })
     },
     async loadConfig () {
+      this.userSettings = this.$api.isLoggedIn() ? await this.$api.getUserSettings() : {}
+      if (this.userSettings.dark && this.userSettings.dark !== '') this.$vuetify.theme.dark = this.userSettings.dark === 'true'
       const config = await this.$api.getConfig()
       this.appConfig = { ...this.appConfig, ...config }
       document.title = this.appConfig.branding.name
-      if (localStorage.getItem('theme')) {
-        const stored = localStorage.getItem('theme')
+      if (this.userSettings.preferredTheme || localStorage.getItem('theme')) {
+        const stored = this.userSettings.preferredTheme || localStorage.getItem('theme')
         if (this.appConfig.themes.available.indexOf(stored) !== -1) {
           this.appConfig.themes.active = stored
         }
       }
       this.loadTheme()
     },
-    setTheme (newTheme) {
+    updatePanelTitle (newTitle) {
+      this.appConfig.branding.name = newTitle
+      document.title = this.appConfig.branding.name
+    },
+    async setTheme (newTheme) {
+      if (this.loggedIn) this.$api.setUserSetting('preferredTheme', newTheme)
       localStorage.setItem('theme', newTheme)
       this.appConfig.themes.active = newTheme
       this.loadTheme()
     },
-    toggleDark () {
-      doToggleDark(this.$vuetify)
+    async confirmOtp () {
+      if (await this.$api.loginOtp(this.otpToken)) {
+        this.otpRequested = false
+        if (this.hasScope('servers.view') || this.isAdmin()) {
+          this.$router.push({ name: 'Servers' })
+        } else {
+          this.$router.push({ name: 'Account' })
+        }
+      }
+      this.otpToken = ''
     },
     logout (reason) {
+      if (!this.loggedIn) return
       this.reauthTask && clearInterval(this.reauthTask)
       this.reauthTask = null
       this.loggedIn = false
@@ -304,18 +354,19 @@ export default {
       this.reauthTask = setInterval(async () => {
         await this.$api.reauth()
       }, 1000 * 60 * 10)
+      this.loadConfig()
     },
     showError (error) {
       const getCircularReplacer = () => {
         const seen = new WeakSet()
         return (key, value) => {
-          if (key === 'password') return '<password>'
+          if (key === 'password') return '[password]'
           if (typeof value === 'string') {
             try {
               const json = JSON.parse(value)
               if (typeof json === 'object' && json !== null) {
                 if (Object.keys(json).indexOf('password') !== -1) {
-                  json.password = '<password>'
+                  json.password = '[password]'
                 }
                 return JSON.stringify(json)
               } else { return value }
@@ -330,7 +381,62 @@ export default {
           return value
         }
       }
-      this.errorText = JSON.stringify(error, getCircularReplacer(), 4)
+
+      if (error.config) {
+        const responseCode = error.message.substring(error.message.length - 3, error.message.length)
+        let codeMessage = error.message
+        switch (responseCode) {
+          case '401':
+            codeMessage = 'Not logged in (401)'
+            break
+          case '403':
+            codeMessage = 'Permission denied (403)'
+            break
+          case '404':
+            codeMessage = 'Endpoint not found, is something blocking access to the API? (404)'
+            break
+          case '500':
+            codeMessage = 'Server error (500)'
+            break
+          case '502':
+            codeMessage = 'Bad Gateway, is PufferPanel running? (502)'
+            break
+        }
+
+        let auth = error.config.headers.Authorization
+        if (auth) {
+          auth = auth.substring(0, 16)
+          if (auth.length === 16) auth = auth + '...'
+        } else auth = 'Not present'
+
+        let body = error.config.data
+        if (body) {
+          body = JSON.stringify(JSON.parse(body), getCircularReplacer(), 4)
+        }
+
+        const message = `${codeMessage}
+
+Endpoint: ${error.config.method} ${error.config.url}
+
+Authorization Header: ${auth}
+
+${body ? 'Request Body: ' + body : ''}
+
+Stacktrace: ${error.stack}`
+          .replace(/>/g, '$gt;')
+          .replace(/</g, '&lt;')
+          .replace(/ /g, '&nbsp;')
+          .replace(/\n/g, '<br>')
+
+        this.errorText = message
+      } else {
+        this.errorText = JSON.stringify(error, getCircularReplacer(), 4)
+          .replace(/>/g, '$gt;')
+          .replace(/</g, '&lt;')
+          .replace(/ /g, '&nbsp;')
+          .replace(/\n/g, '<br>')
+      }
+
       this.errorOverlayOpen = true
     }
   }

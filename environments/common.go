@@ -20,8 +20,8 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/spf13/viper"
 	"io"
 	"log"
 	"net/http"
@@ -81,7 +81,7 @@ func DownloadFileToCache(url, fileName string) error {
 }
 
 func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, error) {
-	localPath := path.Join(viper.GetString("daemon.data.cache"), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
+	localPath := path.Join(config.GetString("daemon.data.cache"), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
 		localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)

@@ -48,9 +48,22 @@ class ApiClient extends EventEmitter {
   login (email, password, options = {}) {
     return this.withErrorHandling(async ctx => {
       const res = (await ctx.$http.post('/auth/login', { email, password })).data
-      this.saveLoginData(res.session, res.scopes || [], options.silent)
-      return true
+      if (res.otpNeeded) {
+        this.emit('requestOtp')
+        return 'otp'
+      } else {
+        this.saveLoginData(res.session, res.scopes || [], options.silent)
+        return true
+      }
     }, { noToast: options.silent || options.noToast })
+  }
+
+  loginOtp (token) {
+    return this.withErrorHandling(async ctx => {
+      const res = (await ctx.$http.post('/auth/otp', { token })).data
+      this.saveLoginData(res.session, res.scopes || [])
+      return true
+    })
   }
 
   reauth () {
@@ -94,6 +107,63 @@ class ApiClient extends EventEmitter {
     }, options)
   }
 
+  getOtp () {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get('/api/self/otp')).data.otpEnabled
+    })
+  }
+
+  startOtpEnroll () {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post('/api/self/otp')).data
+    })
+  }
+
+  validateOtpEnroll (token) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.put('/api/self/otp', { token })).data === ''
+    })
+  }
+
+  disableOtp (token) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/self/otp/${token}`)).data === ''
+    })
+  }
+
+  getSetting (key, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/api/settings/${key}`)).data.value
+    }, options)
+  }
+
+  setSetting (key, value, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/api/settings/${key}`, { value })
+      if (key === 'panel.settings.companyName') {
+        this.emit('panelTitleChanged', value)
+      }
+      return true
+    }, options)
+  }
+
+  getUserSettings (options = {}) {
+    return this.withErrorHandling(async ctx => {
+      const map = {};
+      (await ctx.$http.get('/api/userSettings')).data.map(elem => {
+        map[elem.key] = elem.value
+      })
+      return map
+    }, options)
+  }
+
+  setUserSetting (key, value, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/api/userSettings/${key}`, { value })
+      return true
+    }, options)
+  }
+
   async withErrorHandling (f, errorOptions) {
     try {
       return await f(this._ctx)
@@ -119,7 +189,15 @@ class ApiClient extends EventEmitter {
       }
     }
 
-    if (options[error.response.status] !== undefined) msg = options[error.response.status]
+    if (options[error.response.status] !== undefined) {
+      let cont = true
+      if (typeof options[error.response.status] === 'function') {
+        cont = options[error.response.status]() !== true
+      } else {
+        msg = options[error.response.status]
+      }
+      if (!cont) return
+    }
 
     const detailsAction = {
       timeout: 6000,
@@ -150,6 +228,9 @@ export default function (Vue) {
 
   Vue.prototype.$api = new ApiClient()
   Vue.prototype.$http = axios.create()
+  if (process.env.NODE_ENV !== 'production') {
+    window.pufferpanel.api = Vue.prototype.$api
+  }
 
   // automagically add auth token to api requests
   Vue.prototype.$http.interceptors.request.use(request => {
@@ -166,7 +247,6 @@ export default function (Vue) {
     return response
   }, error => {
     if (((error || {}).response || {}).status === 401) {
-      localStorage.setItem('reauth_reason', 'session_timed_out')
       Vue.prototype.$api.logout('session_timed_out')
     }
     return Promise.reject(error)
@@ -180,8 +260,8 @@ export default function (Vue) {
   Vue.prototype.isAdmin = () => Vue.prototype.hasScope('servers.admin')
 
   Vue.mixin({
-    created () {
-      if (!this.parent) this.$api._ctx = this
+    beforeCreate () {
+      if (Vue.prototype.$api._ctx == null) Vue.prototype.$api._ctx = this
     }
   })
 }

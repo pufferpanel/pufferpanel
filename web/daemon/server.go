@@ -90,8 +90,8 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.GET("/:id/status", middleware.OAuth2Handler(pufferpanel.ScopeServersView, true), GetStatus)
 		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
 
-		l.POST("/:id/archive/:filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
-		l.GET("/:id/extract/:filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
+		l.POST("/:id/archive/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
+		l.GET("/:id/extract/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
 
 	}
 

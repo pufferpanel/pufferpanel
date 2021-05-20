@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/cobra"
 )
@@ -34,7 +34,7 @@ func init() {
 func prepare(cmd *cobra.Command, args []string) error {
 	logging.DisableFileLogger()
 
-	if err := pufferpanel.LoadConfig(""); err != nil {
+	if err := config.LoadConfigFile(""); err != nil {
 		return err
 	}
 

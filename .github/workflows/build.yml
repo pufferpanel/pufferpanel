@@ -326,7 +326,7 @@ jobs:
     - name: Set up build folder
       run: |
         mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel
@@ -421,7 +421,7 @@ jobs:
       run: |
         mkdir DEBBUILD
         mkdir -p DEBBUILD/usr/sbin DEBBUILD/var/www/pufferpanel DEBBUILD/var/lib/pufferpanel DEBBUILD/var/log/pufferpanel DEBBUILD/etc/pufferpanel DEBBUILD/lib/systemd/system/
-        cp config.linux.json DEBBUILD/etc/pufferpanel
+        cp config.linux.json DEBBUILD/etc/pufferpanel/config.json
         cp build-artifacts/pufferpanel DEBBUILD/usr/sbin/pufferpanel
         cp -r build-artifacts/www/* DEBBUILD/var/www/pufferpanel
         cp -r build-artifacts/email DEBBUILD/etc/pufferpanel

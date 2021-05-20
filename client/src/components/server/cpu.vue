@@ -18,14 +18,13 @@
       <apexchart
         :options="options"
         :series="series"
-        height="300"
+        height="250"
       />
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-import { isDark } from '@/utils/dark'
 import VueApexCharts from 'vue-apexcharts'
 
 export default {
@@ -38,11 +37,10 @@ export default {
   data () {
     return {
       intl: new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }),
-      maxPoints: 20,
+      maxPoints: 40,
       options: {
         chart: {
           id: 'cpu',
-          height: 300,
           type: 'line',
           animations: {
             enabled: false
@@ -50,15 +48,15 @@ export default {
           toolbar: {
             show: false
           },
-          foreColor: isDark() ? '#FFF' : '#000000DE'
+          foreColor: this.$isDark() ? '#FFF' : '#000000DE'
         },
-        colors: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
-        tooltip: { theme: [isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
+        colors: [this.$isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent],
+        tooltip: { theme: [this.$isDark() ? this.$vuetify.theme.themes.dark.accent : this.$vuetify.theme.themes.light.accent] },
         dataLabels: {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
+          curve: 'straight'
         },
         markers: {
           size: 0
@@ -93,17 +91,25 @@ export default {
     this.$api.addServerListener(this.server.id, 'stat', event => {
       this.updateStats(event)
     })
+
+    const chartData = new Array(this.maxPoints)
+    const timestamp = new Date().getTime()
+
+    for (let i = 0; i < chartData.length; i++) {
+      chartData[i] = [timestamp - ((chartData.length - i) * 3000), 0]
+    }
+
+    this.series = [{ name: this.$t('servers.CPU'), data: chartData }]
   },
   methods: {
     updateStats (data) {
-      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: isDark() ? '#FFF' : '#000000DE' } }
+      this.options = { ...this.options, chart: { ...this.options.chart, foreColor: this.$isDark() ? '#FFF' : '#000000DE' } }
       const chartData = [...((this.series[0] || {}).data || []), [new Date().getTime(), Math.round(data.cpu * 100) / 100]]
       this.series = [{
         name: this.$t('servers.CPU'),
         data: chartData.length > this.maxPoints ? chartData.slice(chartData.length - this.maxPoints) : chartData
       }]
-    },
-    isDark
+    }
   }
 }
 </script>
