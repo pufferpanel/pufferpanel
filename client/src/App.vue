@@ -223,12 +223,21 @@
       >
         <v-row>
           <v-col>
-            <ui-input v-model="otpToken" autofocus @keyup.enter="confirmOtp" />
+            <ui-input
+              v-model="otpToken"
+              autofocus
+              @keyup.enter="confirmOtp"
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn v-text="$t('users.Login')" block color="success" @click="confirmOtp" />
+            <v-btn
+              block
+              color="success"
+              @click="confirmOtp"
+              v-text="$t('users.Login')"
+            />
           </v-col>
         </v-row>
       </ui-overlay>

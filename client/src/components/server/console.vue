@@ -49,11 +49,11 @@
       <!-- eslint-enable vue/no-v-html -->
       <ui-input
         v-if="server.permissions.sendServerConsole || isAdmin()"
+        ref="cmdInput"
         v-model="consoleCommand"
         class="pt-2"
         placeholder="Command..."
         end-icon="mdi-send"
-        ref="cmdInput"
         @click:append="sendCommand"
         @keyup.enter="sendCommand"
       />
