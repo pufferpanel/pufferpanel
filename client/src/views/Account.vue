@@ -117,7 +117,12 @@
         </v-card>
       </v-col>
     </v-row>
-    <ui-overlay v-model="otpEnroll.started" card closable :title="$t('users.OtpSetup')">
+    <ui-overlay
+      v-model="otpEnroll.started"
+      card
+      closable
+      :title="$t('users.OtpSetup')"
+    >
       <v-row>
         <v-col>
           <v-row>
@@ -142,29 +147,59 @@
           </v-row>
           <v-row>
             <v-col>
-              <ui-input v-model="otpConfirmToken" autofocus @keyup.enter="confirmOtpEnroll" />
+              <ui-input
+                v-model="otpConfirmToken"
+                autofocus
+                @keyup.enter="confirmOtpEnroll"
+              />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-btn color="success" block v-text="$t('users.OtpEnable')" @click="confirmOtpEnroll" />
+              <v-btn
+                color="success"
+                block
+                @click="confirmOtpEnroll"
+                v-text="$t('users.OtpEnable')"
+              />
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" sm="4" md="3">
-          <img style="width:100%;max-width:300px;" :src="otpEnroll.qrCode">
+        <v-col
+          cols="12"
+          sm="4"
+          md="3"
+        >
+          <img
+            style="width:100%;max-width:300px;"
+            :src="otpEnroll.qrCode"
+          >
         </v-col>
       </v-row>
     </ui-overlay>
-    <ui-overlay v-model="otpDisabling" card closable :title="$t('users.OtpDisable')">
+    <ui-overlay
+      v-model="otpDisabling"
+      card
+      closable
+      :title="$t('users.OtpDisable')"
+    >
       <v-row>
         <v-col>
-          <ui-input v-model="otpConfirmToken" autofocus @keyup.enter="confirmOtpDisable" />
+          <ui-input
+            v-model="otpConfirmToken"
+            autofocus
+            @keyup.enter="confirmOtpDisable"
+          />
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn color="error" block v-text="$t('users.OtpDisable')" @click="confirmOtpDisable" />
+          <v-btn
+            color="error"
+            block
+            @click="confirmOtpDisable"
+            v-text="$t('users.OtpDisable')"
+          />
         </v-col>
       </v-row>
     </ui-overlay>

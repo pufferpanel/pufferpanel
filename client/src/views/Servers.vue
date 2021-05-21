@@ -8,7 +8,10 @@
           class="pt-2 text-center text--disabled"
           v-text="$t('servers.NoServers')"
         />
-        <v-list two-line elevation="1">
+        <v-list
+          two-line
+          elevation="1"
+        >
           <draggable
             :value="servers"
             :animation="100"
