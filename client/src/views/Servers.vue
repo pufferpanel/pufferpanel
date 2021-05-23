@@ -91,7 +91,7 @@ export default {
   data () {
     return {
       servers: [],
-      loading: false,
+      loading: true,
       page: 0,
       pageCount: 1,
       task: null
@@ -102,6 +102,9 @@ export default {
     if (serverList && serverList !== '') {
       this.servers = JSON.parse(serverList)
     }
+
+    this.loading = false
+    this.recheckLazy()
 
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
