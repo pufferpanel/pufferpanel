@@ -48,6 +48,7 @@ export const TemplatesApi = {
   },
 
   templateToApiJson (template, stringify = true) {
+    // console.log(templateToApi(template).data)
     return stringify ? JSON.stringify(templateToApi(template), undefined, 2) : templateToApi(template)
   }
 }
@@ -130,7 +131,7 @@ const templateToApi = (template) => {
 
   const convertedVars = {}
   vars.forEach(variable => {
-    convertedVars[variable.name] = variable
+    convertedVars[variable.name] = { ...variable }
     delete convertedVars[variable.name].name
   })
 
