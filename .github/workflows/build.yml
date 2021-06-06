@@ -470,6 +470,9 @@ jobs:
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: latest
+    strategy:
+      matrix:
+        platform: ["linux/amd64", "linux/arm64", "linux/arm/v7"]
 
     steps:
     - name: Get the version
@@ -516,7 +519,7 @@ jobs:
         build-args: |
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        platforms: ${{ matrix.platform }}
 
   build-docker-image-children:
     runs-on: ubuntu-20.04
@@ -529,6 +532,7 @@ jobs:
     strategy:
       matrix:
         variant: ["java", "java8", "java16", "massive", "nodejs", "srcds"]
+        platform: ["linux/amd64", "linux/arm64", "linux/arm/v7"]
 
     steps:
     - name: Get the version
@@ -576,4 +580,4 @@ jobs:
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
           DOCKER_TAG: ${{ env.VERSION }}
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        platforms: ${{ matrix.platform }}
