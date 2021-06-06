@@ -276,7 +276,7 @@ jobs:
 
   build-linux-armhf-binaries:
     name: Build Binaries - Linux ARMHF
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     needs: ['build-shared']
 
     steps:
@@ -472,7 +472,7 @@ jobs:
       VERSION: latest
     strategy:
       matrix:
-        platform: ["linux/amd64", "linux/arm64", "linux/arm/v7"]
+        platform: ["linux/amd64"]
 
     steps:
     - name: Get the version
