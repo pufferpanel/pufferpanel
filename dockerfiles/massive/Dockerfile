@@ -50,9 +50,9 @@ RUN apk add --no-cache nodejs npm && \
 RUN apk add --no-cache bash
 COPY --from=srcdsbuilder /lib/i386-linux-gnu /lib/
 COPY --from=srcdsbuilder /root/installer/linux32/libstdc++.so.6 /lib/
-COPY --from=builder /root/installer/steamcmd.sh /usr/lib/games/steam/
-COPY --from=builder /root/installer/linux32/steamcmd /usr/lib/games/steam/
-COPY --from=builder /usr/games/steamcmd /usr/bin/steamcmd
+COPY --from=srcdsbuilder /root/installer/steamcmd.sh /usr/lib/games/steam/
+COPY --from=srcdsbuilder /root/installer/linux32/steamcmd /usr/lib/games/steam/
+COPY --from=srcdsbuilder /usr/games/steamcmd /usr/bin/steamcmd
 
 # Cleanup
 RUN rm -rf /var/cache/apk/*
