@@ -13,6 +13,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposi
 RUN apk add --no-cache openjdk16 && \
     export JAVA16_BIN=/usr/lib/jvm/java-16-openjdk/bin/java && \
     export JAVAC16_BIN=/usr/lib/jvm/java-16-openjdk/bin/javac && \
+    export PATH=$PATH:/usr/lib/jvm/java-16-openjdk/bin/ && \
     echo "Testing Javac 16 ENV variable" && \
     $JAVAC16_BIN -version && \
     echo "Testing Java 16 ENV variable" && \
