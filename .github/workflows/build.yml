@@ -476,12 +476,20 @@ jobs:
       if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       run:
         echo "TAG=$REPO:devel" >> $GITHUB_ENV
+        
+    - name: Get the version
+      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      run:
         echo "VERSION=devel" >> $GITHUB_ENV
 
     - name: Get the version
       if: startsWith(github.ref, 'refs/tags/v')
       run:
         echo "TAG=$REPO:${GITHUB_REF/refs\/tags\/v/},$REPO:latest" >> $GITHUB_ENV
+        
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run:
         echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up QEMU
@@ -536,12 +544,20 @@ jobs:
       if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       run:
         echo "TAG=$REPO:${{ matrix.variant }}-devel" >> $GITHUB_ENV
+        
+    - name: Get the version
+      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      run:
         echo "VERSION=devel" >> $GITHUB_ENV
 
     - name: Get the version
       if: startsWith(github.ref, 'refs/tags/v')
       run:
         echo "TAG=$REPO:${{ matrix.variant }}-${GITHUB_REF/refs\/tags\/v/},$REPO:${{ matrix.variant }}-latest" >> $GITHUB_ENV
+        
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run:
         echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up QEMU
