@@ -276,7 +276,7 @@ jobs:
 
   build-linux-armhf-binaries:
     name: Build Binaries - Linux ARMHF
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-16.04
     needs: ['build-shared']
 
     steps:
