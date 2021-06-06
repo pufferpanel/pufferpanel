@@ -50,7 +50,12 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
 	pr.Dir = steps.WorkingDirectory
-	pr.Env = append(os.Environ(), "HOME="+t.RootDirectory, "TERM=xterm-256color")
+	for _, v := range os.Environ() {
+		if !strings.HasPrefix(v, "PUFFER_") {
+			pr.Env = append(pr.Env, v)
+		}
+	}
+	pr.Env = append(pr.Env, "HOME="+t.RootDirectory, "TERM=xterm-256color")
 	for k, v := range steps.Environment {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
