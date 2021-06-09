@@ -1,4 +1,4 @@
-ARG DOCKER_TAG=devel
+ARG DOCKER_TAG=base-devel
 
 FROM pufferpanel/pufferpanel:${DOCKER_TAG}
 
@@ -7,14 +7,16 @@ FROM pufferpanel/pufferpanel:${DOCKER_TAG}
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update
 
+ENV JAVA_HOME=/usr/lib/jvm/java-16-openjdk
+
 # java
 RUN apk add --no-cache openjdk8 openjdk16 && \
     export JAVA8_BIN=/usr/lib/jvm/java-1.8-openjdk/bin/java && \
     export JAVAC8_BIN=/usr/lib/jvm/java-1.8-openjdk/bin/javac && \
     export JAVA16_BIN=/usr/lib/jvm/java-16-openjdk/bin/java && \
     export JAVAC16_BIN=/usr/lib/jvm/java-16-openjdk/bin/javac && \
-    ln -sfn $JAVA8_BIN /usr/bin/java && \
-    ln -sfn $JAVAC8_BIN /usr/bin/javac && \
+    ln -sfn $JAVA16_BIN /usr/bin/java && \
+    ln -sfn $JAVAC16_BIN /usr/bin/javac && \
     echo "Testing Javac 8 ENV variable" && \
     $JAVAC8_BIN -version && \
     echo "Testing Java 8 ENV variable" && \
