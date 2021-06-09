@@ -26,6 +26,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
 	"strings"
 	"syscall"
@@ -50,7 +51,8 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.Wait.Wait()
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
-	s.mainProcess.Dir = steps.WorkingDirectory
+	s.mainProcess.Dir = path.Join(s.GetRootDirectory(), steps.WorkingDirectory)
+
 	for _, v := range os.Environ() {
 		if !strings.HasPrefix(v, "PUFFER_") {
 			s.mainProcess.Env = append(s.mainProcess.Env, v)

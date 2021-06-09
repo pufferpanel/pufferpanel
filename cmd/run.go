@@ -15,10 +15,10 @@ package main
 
 import (
 	"github.com/braintree/manners"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
-        "github.com/gorilla/securecookie"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
@@ -120,23 +120,16 @@ func internalRun(cmd *cobra.Command, args []string) error {
 }
 
 func panel(ch chan error) {
-	go func() {
-		_, err := database.GetConnection()
-		if err != nil {
-			logging.Error().Printf("Error connecting to database: %s", err.Error())
-		}
-
-		err = config.LoadConfigDatabase(database.GetConnector())
-		if err != nil {
-			logging.Error().Printf("Error loading config from database: %s", err.Error())
-		}
-	}()
-
 	services.ValidateTokenLoaded()
 	services.LoadEmailService()
 
 	//if we have the web, then let's use our sftp auth instead
 	sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
+
+	err := config.LoadConfigDatabase(database.GetConnector())
+	if err != nil {
+		logging.Error().Printf("Error loading config from database: %s", err.Error())
+	}
 
 	//validate local daemon is configured in this panel
 	if config.GetBool("daemon.enable") {
@@ -197,14 +190,15 @@ func panel(ch chan error) {
 func daemon(ch chan error) {
 	sftp.Run()
 
+	pufferpanel.InitEnvironment()
 	environments.LoadModules()
 	programs.Initialize()
 
 	var err error
 
-	if _, err = os.Stat(programs.ServerFolder); os.IsNotExist(err) {
+	if _, err = os.Stat(pufferpanel.ServerFolder); os.IsNotExist(err) {
 		logging.Error().Printf("No server directory found, creating")
-		err = os.MkdirAll(programs.ServerFolder, 0755)
+		err = os.MkdirAll(pufferpanel.ServerFolder, 0755)
 		if err != nil && !os.IsExist(err) {
 			ch <- err
 			return
