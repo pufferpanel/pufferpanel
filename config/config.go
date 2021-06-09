@@ -18,6 +18,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"reflect"
 	"strings"
 )
 
@@ -42,9 +43,9 @@ func init() {
 	}
 }
 
-type Setting struct{
+type Setting struct {
 	Key   string `gorm:"type:varchar(100);PRIMARY_KEY"`
-        Value string `gorm:"type:varchar(100)"`
+	Value string `gorm:"type:varchar(100)"`
 }
 
 type db interface {
@@ -54,36 +55,36 @@ type db interface {
 var database db
 var defaultSettings map[string]interface{} = map[string]interface{}{
 	//global settings
-	"logs": "logs",
-	"web.host": "0.0.0.0:8080",
+	"logs":          "logs",
+	"web.host":      "0.0.0.0:8080",
 	"token.private": "private.pem",
-	"token.public": "public.pem",
+	"token.public":  "public.pem",
 
 	//panel specific settings
-	"panel.enable": true,
-	"panel.web.files": "www",
-	"panel.email.templates": "email/emails.json",
-	"panel.email.provider": "",
-	"panel.email.from": "",
-	"panel.email.domain": "",
-	"panel.email.key": "",
-	"panel.settings.companyName": "PufferPanel",
+	"panel.enable":                true,
+	"panel.web.files":             "www",
+	"panel.email.templates":       "email/emails.json",
+	"panel.email.provider":        "",
+	"panel.email.from":            "",
+	"panel.email.domain":          "",
+	"panel.email.key":             "",
+	"panel.settings.companyName":  "PufferPanel",
 	"panel.settings.defaultTheme": "PufferPanel",
-	"panel.settings.masterUrl": "http://localhost:8080",
+	"panel.settings.masterUrl":    "http://localhost:8080",
 
 	//daemon specific settings
-	"daemon.enable": true,
-	"daemon.console.buffer": 50,
-	"daemon.console.forward": false,
-	"daemon.sftp.host": "0.0.0.0:5657",
-	"daemon.sftp.key": "sftp.key",
-	"daemon.auth.url": "http://localhost:8080",
-	"daemon.auth.clientId": "",
-	"daemon.auth.clientSecret": "",
-	"daemon.data.cache": "cache",
-	"daemon.data.servers": "servers",
-	"daemon.data.modules": "modules",
-	"daemon.data.crashLimit": 3,
+	"daemon.enable":                 true,
+	"daemon.console.buffer":         50,
+	"daemon.console.forward":        false,
+	"daemon.sftp.host":              "0.0.0.0:5657",
+	"daemon.sftp.key":               "sftp.key",
+	"daemon.auth.url":               "http://localhost:8080",
+	"daemon.auth.clientId":          "",
+	"daemon.auth.clientSecret":      "",
+	"daemon.data.cache":             "cache",
+	"daemon.data.servers":           "servers",
+	"daemon.data.modules":           "modules",
+	"daemon.data.crashLimit":        3,
 	"daemon.data.maxWSDownloadSize": int64(1024 * 1024 * 20),
 }
 
@@ -108,11 +109,11 @@ func fromDatabase(key string) (value *string, err error) {
 		return
 	}
 
-	configEntry := &Setting {
+	configEntry := &Setting{
 		Key: key,
 	}
 
-	err = db.Where(configEntry).First(configEntry).Error
+	err = db.First(configEntry).Error
 	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		return nil, err
 	}
@@ -199,8 +200,10 @@ func Set(key string, value interface{}) (err error) {
 			err = toDatabase(key, cast.ToString(v))
 		} else if v, ok := value.(int64); ok {
 			err = toDatabase(key, cast.ToString(v))
+		} else if v, ok := value.([]uint8); ok {
+			err = toDatabase(key, cast.ToString(v))
 		} else {
-			err = errors.New("Unsupported type")
+			err = errors.New("Unsupported type for " + key + ": " + reflect.TypeOf(value).String())
 		}
 
 		if err != nil {
