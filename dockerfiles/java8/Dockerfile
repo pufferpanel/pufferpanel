@@ -1,14 +1,16 @@
-ARG DOCKER_TAG=devel
+ARG DOCKER_TAG=base-devel
 
 ## Now our image
 
 FROM pufferpanel/pufferpanel:${DOCKER_TAG}
 
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+
 # java
 RUN apk add --no-cache openjdk8 && \
     export JAVA8_BIN=/usr/lib/jvm/java-1.8-openjdk/bin/java && \
     export JAVAC8_BIN=/usr/lib/jvm/java-1.8-openjdk/bin/javac && \
-    export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/bin/ && \
+    ln -sfn $JAVAC8_BIN /usr/bin/javac && \
     echo "Testing Javac 8 ENV variable" && \
     $JAVAC8_BIN -version && \
     echo "Testing Java 8 ENV variable" && \

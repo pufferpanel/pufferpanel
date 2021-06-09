@@ -1,4 +1,4 @@
-ARG DOCKER_TAG=devel
+ARG DOCKER_TAG=base-devel
 
 ## SRCDS is dumb, so we have to do crazy stuff
 # copied from https://github.com/steamcmd/docker/blob/master/dockerfiles/alpine-3/Dockerfile

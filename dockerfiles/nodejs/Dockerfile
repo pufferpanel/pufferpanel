@@ -1,4 +1,4 @@
-ARG DOCKER_TAG=devel
+ARG DOCKER_TAG=base-devel
 
 FROM pufferpanel/pufferpanel:${DOCKER_TAG}
 
