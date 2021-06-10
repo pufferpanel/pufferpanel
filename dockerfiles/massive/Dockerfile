@@ -1,60 +1,78 @@
 ARG DOCKER_TAG=base-devel
 
-## SRCDS is dumb, so we have to do crazy stuff
-# copied from https://github.com/steamcmd/docker/blob/master/dockerfiles/alpine-3/Dockerfile
-FROM steamcmd/steamcmd:ubuntu-18 as srcdsbuilder
-ENV USER root
-ENV HOME /root/installer
-WORKDIR $HOME
-RUN apt-get update \
- && apt-get install -y --no-install-recommends curl tar
-RUN curl http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
-    --output steamcmd.tar.gz --silent
-RUN tar -xvzf steamcmd.tar.gz && rm steamcmd.tar.gz
+FROM pufferpanel/pufferpanel:${DOCKER_TAG} AS builder
 
-## Now our image
+FROM ubuntu:20.04
 
-FROM pufferpanel/pufferpanel:${DOCKER_TAG}
+COPY --from=builder /pufferpanel /pufferpanel
+EXPOSE 8080 5657
+VOLUME /etc/pufferpanel
+VOLUME /var/lib/pufferpanel
 
-# enable testing repo
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk update
+# Because we use Alpine, we need musl to use the binary we generated
+RUN apt-get update && \
+    apt-get install musl
 
 # java
-ENV JAVA_HOME=/usr/lib/jvm/java-16-openjdk
-
-RUN apk add --no-cache openjdk8 openjdk16 && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk/bin/java /usr/bin/java && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk/bin/javac /usr/bin/javac && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk/bin/java /usr/bin/java16 && \
-    ln -sfn /usr/lib/jvm/java-16-openjdk/bin/javac /usr/bin/javac16 && \
-    ln -sfn /usr/lib/jvm/java-1.8-openjdk/bin/java /usr/bin/java8 && \
-    ln -sfn /usr/lib/jvm/java-1.8-openjdk/bin/javac /usr/bin/javac8 && \
-    echo "Testing Javac 8 path" && \
-    javac8 -version && \
-    echo "Testing Java 8 path" && \
+RUN apt-get update && \
+    apt-get install -y openjdk-8-jdk-headless openjdk-16-jdk-headless && \
+    ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/bin/java8 && \
+    ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/javac /usr/bin/javac8 && \
+    ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/java /usr/bin/java16 && \
+    ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/javac /usr/bin/javac16 && \
     java8 -version && \
-    echo "Testing Javac 16 path" && \
-    javac16 -version && \
-    echo "Testing Java 16 path" && \
+    javac8 -version && \
     java16 -version && \
-    echo "Testing java path" && \
-    java -version && \
-    echo "Testing javac path" && \
-    javac -version
+    javac16 -version
 
 # nodejs
-RUN apk add --no-cache nodejs npm && \
-    npm --version
+RUN apt-get update && apt-get install -y nodejs
 
 # srcds
-RUN apk add --no-cache bash
-COPY --from=srcdsbuilder /lib/i386-linux-gnu /lib/
-COPY --from=srcdsbuilder /root/installer/linux32/libstdc++.so.6 /lib/
-COPY --from=srcdsbuilder /root/installer/steamcmd.sh /usr/lib/games/steam/
-COPY --from=srcdsbuilder /root/installer/linux32/steamcmd /usr/lib/games/steam/
-COPY --from=srcdsbuilder /usr/games/steamcmd /usr/bin/steamcmd
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo steam steam/question select "I AGREE" | debconf-set-selections && \
+    echo steam steam/license note '' | debconf-set-selections
+
+ENV LANG 'en_US.UTF-8'
+ENV LANGUAGE 'en_US:en'
+
+RUN dpkg --add-architecture i386 && \
+     apt-get update -y && \
+     apt-get install -y --no-install-recommends ca-certificates locales steamcmd && \
+     locale-gen en_US.UTF-8 && \
+     ln -s /usr/games/steamcmd /usr/bin/steamcmd
 
 # Cleanup
-RUN rm -rf /var/cache/apk/*
+RUN apt-get clean all && rm -rf /var/lib/apt/lists/*
+
+ENV PUFFER_LOGS=/etc/pufferpanel/logs \
+    PUFFER_WEB_HOST=0.0.0.0:8080 \
+    PUFFER_PANEL_DATABASE_SESSION=60 \
+    PUFFER_PANEL_DATABASE_DIALECT=sqlite3 \
+    PUFFER_PANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
+    PUFFER_PANEL_DATABASE_LOG=false \
+    PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
+    PUFFER_PANEL_WEB_FILES=/pufferpanel/www \
+    PUFFER_PANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
+    PUFFER_PANEL_EMAIL_PROVIDER=debug \
+    PUFFER_PANEL_SETTINGS_COMPANYNAME=PufferPanel \
+    PUFFER_PANEL_SETTINGS_MASTERURL=http://localhost:8080 \
+    PUFFER_DAEMON_CONSOLE_BUFFER=50 \
+    PUFFER_DAEMON_CONSOLE_FORWARD=false \
+    PUFFER_DAEMON_SFTP_HOST=0.0.0.0:5657 \
+    PUFFER_DAEMON_SFTP_KEY=/etc/pufferpanel/sftp.key \
+    PUFFER_DAEMON_AUTH_URL=http://localhost:8080 \
+    PUFFER_DAEMON_AUTH_CLIENTID=none \
+    PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache \
+    PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers \
+    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules \
+    PUFFER_DAEMON_DATA_CRASHLIMIT=3
+
+WORKDIR /pufferpanel
+
+RUN ls -l
+
+ENTRYPOINT ["/pufferpanel/pufferpanel"]
+CMD ["run"]
