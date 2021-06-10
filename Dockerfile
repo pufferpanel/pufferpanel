@@ -30,8 +30,8 @@ FROM alpine
 COPY --from=builder /pufferpanel /pufferpanel
 
 EXPOSE 8080 5657
-VOLUME /etc/pufferpanel
-VOLUME /var/lib/pufferpanel
+RUN mkdir -p /etc/pufferpanel && \
+    mkdir -p /var/lib/pufferpanel
 
 ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_WEB_HOST=0.0.0.0:8080 \
