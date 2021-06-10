@@ -1,3 +1,5 @@
+// +build windows
+
 /*
  Copyright 2016 Padduck, LLC
 
@@ -58,7 +60,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 			s.mainProcess.Env = append(s.mainProcess.Env, v)
 		}
 	}
-	s.mainProcess.Env = append(s.mainProcess.Env, "HOME="+s.RootDirectory, "TERM=xterm-256color")
+	s.mainProcess.Env = append(s.mainProcess.Env, "HOME="+s.GetRootDirectory(), "TERM=xterm-256color")
 	for k, v := range steps.Environment {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}
@@ -71,6 +73,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	}
 	s.stdInWriter = pipe
 	logging.Info().Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
+	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running:true}
 	_ = s.WSManager.WriteMessage(msg)

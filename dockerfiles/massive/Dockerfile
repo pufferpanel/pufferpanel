@@ -6,8 +6,8 @@ FROM ubuntu:20.04
 
 COPY --from=builder /pufferpanel /pufferpanel
 EXPOSE 8080 5657
-VOLUME /etc/pufferpanel
-VOLUME /var/lib/pufferpanel
+RUN mkdir -p /etc/pufferpanel && \
+    mkdir -p /var/lib/pufferpanel
 
 ARG DEBIAN_FRONTEND=noninteractive
 

@@ -128,6 +128,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	msg := messages.Status{Running: true}
 	_ = d.WSManager.WriteMessage(msg)
 
+	d.DisplayToConsole(true, "Starting container")
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
 	if err != nil {
 		return err
