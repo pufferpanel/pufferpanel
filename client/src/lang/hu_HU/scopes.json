@@ -12,7 +12,7 @@
   "ServersFilesPut": "Szerkeszthet és feltölthet fájlokat a fájlkezelön keresztül",
   "ServersEditUsers": "Szerkesztheti a felhasználók szerverhez való engededélyeit",
   "Admin": "Admin (megkap minden jogosultságot)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Szerverek megtekintése",
   "CreateServers": "Létrehozhat új szervereket",
   "DeleteServers": "Törölhet szervereket",
   "EditServerAdmin": "Módosíthat szerverbeállításokat",
