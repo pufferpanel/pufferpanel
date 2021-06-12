@@ -114,6 +114,15 @@
           <v-row>
             <v-col class="py-0">
               <ui-switch
+                  v-model="user.panelSettings"
+                  :label="$t('scopes.PanelSettings')"
+                  :disabled="user.admin"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0">
+              <ui-switch
                 v-model="user.viewTemplates"
                 :label="$t('scopes.ViewTemplates')"
                 :disabled="user.admin"

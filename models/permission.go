@@ -45,6 +45,7 @@ type Permissions struct {
 	ViewUsers       bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
 	EditServerAdmin bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
 	DeleteServer    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
+	PanelSettings   bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
 
 	//these only will exist if tied to a server, and for a user
 	EditServerData    bool `gorm:"NOT NULL;DEFAULT:'0'" json:"-" oneOf:""`
@@ -76,7 +77,7 @@ func (p *Permissions) ToScopes() []pufferpanel.Scope {
 		scopes = append(scopes, pufferpanel.ScopeServersAdmin)
 
 		if p.ServerIdentifier == nil {
-			scopes = append(scopes, pufferpanel.ScopeServersCreate, pufferpanel.ScopeNodesView, pufferpanel.ScopeNodesDeploy, pufferpanel.ScopeNodesEdit, pufferpanel.ScopeTemplatesView, pufferpanel.ScopeUsersView, pufferpanel.ScopeUsersEdit)
+			scopes = append(scopes, pufferpanel.ScopeServersCreate, pufferpanel.ScopeNodesView, pufferpanel.ScopeNodesDeploy, pufferpanel.ScopeNodesEdit, pufferpanel.ScopeTemplatesView, pufferpanel.ScopeUsersView, pufferpanel.ScopeUsersEdit, pufferpanel.ScopeSettings)
 		} else {
 			scopes = append(scopes, pufferpanel.ScopeServersDelete, pufferpanel.ScopeServersEditAdmin)
 		}

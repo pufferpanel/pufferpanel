@@ -54,4 +54,6 @@ const (
 	//user
 	ScopeUsersView = Scope("users.view")
 	ScopeUsersEdit = Scope("users.edit")
+
+	ScopeSettings = Scope("panel.settings")
 )
