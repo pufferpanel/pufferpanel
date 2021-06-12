@@ -22,5 +22,6 @@
   "ViewTemplates": "Просмотр шаблонов",
   "EditTemplates": "Редактирование шаблонов",
   "ViewUsers": "Просмотр всех пользователей",
-  "EditUsers": "Редактирование других пользователей"
+  "EditUsers": "Редактирование других пользователей",
+  "PanelSettings": "Change panel settings"
 }
