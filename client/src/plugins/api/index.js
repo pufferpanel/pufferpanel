@@ -147,6 +147,16 @@ class ApiClient extends EventEmitter {
     }, options)
   }
 
+  setSettings (data, options = {}) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.post('/api/settings', data)
+      if (Object.keys(data).indexOf('panel.settings.companyName') !== -1) {
+        this.emit('panelTitleChanged', data['panel.settings.companyName'])
+      }
+      return true
+    }, options)
+  }
+
   getUserSettings (options = {}) {
     return this.withErrorHandling(async ctx => {
       const map = {};
