@@ -252,7 +252,7 @@ jobs:
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
           config: |
             /etc/pufferpanel/email
-            /etc/pufferpanel/config.json:nochange
+            /etc/pufferpanel/config.json:noreplace
           suggested-packages: |
             jre-1.8.0-headless
             jre-11-headless
