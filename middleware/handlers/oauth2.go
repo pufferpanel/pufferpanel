@@ -17,16 +17,30 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
+	"runtime/debug"
 	"strconv"
 	"strings"
 )
 
 func HasOAuth2Token(c *gin.Context) {
+	failure := true
+	defer func() {
+		if err := recover(); err != nil {
+			logging.Error().Printf("Error handling auth check: %s\n%s", err, debug.Stack())
+			failure = true
+		}
+		if failure && !c.IsAborted() {
+			c.AbortWithStatus(500)
+		}
+	}()
+
 	if c.Request.Method == http.MethodOptions {
+		failure = false
 		c.Next()
 		return
 	}
@@ -62,6 +76,7 @@ func HasOAuth2Token(c *gin.Context) {
 	}
 
 	c.Set("token", token)
+	failure = false
 	c.Next()
 }
 
