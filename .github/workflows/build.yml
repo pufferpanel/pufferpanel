@@ -250,6 +250,9 @@ jobs:
             systemd/servicefiles/pufferpanel.service:/lib/systemd/system/pufferpanel.service
             RPMBUILD/var/lib/pufferpanel:/var/lib/pufferpanel
             RPMBUILD/var/log/pufferpanel:/var/log/pufferpanel
+          config: |
+            /etc/pufferpanel/email
+            /etc/pufferpanel/config.json:nochange
           suggested-packages: |
             jre-1.8.0-headless
             jre-11-headless
