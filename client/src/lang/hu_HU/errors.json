@@ -15,7 +15,7 @@
   "ErrFieldRequired": "A(z) {field} mező kötelező",
   "ErrFieldMustBePrintable": "A(z) {field} mezőnek nyomtatható ascii karakterekből kell lennie",
   "ErrFieldHasURICharacters": "A(z) {field} mező nem tartalmazhat olyan karaktereket, amiket URLekben használnak",
-  "ErrFieldIsInvalidHost": "A(z) {field} mezőnek egy valós IP-címnek vagy FQDNnek kell lennie",
+  "ErrFieldIsInvalidHost": "A(z) {field} mezőnek egy valós IP-címnek vagy Teljesen minősített domain névnek kell lennie",
   "ErrFieldIsInvalidIP": "A(z) {field} mezőnek egy valós IP-címnek kell lennie",
   "ErrFieldTooLarge": "A(z) {field} mező nem lehet nagyobb mint {max}",
   "ErrFieldTooSmall": "A(z) {field} mező nem lehet kisseb mint {min}",
