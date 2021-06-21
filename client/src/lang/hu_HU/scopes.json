@@ -11,7 +11,7 @@
   "ServersFilesGet": "Megtekinthet és letölthet fájlokat a fájlkezelőn keresztül",
   "ServersFilesPut": "Szerkeszthet és feltölthet fájlokat a fájlkezelön keresztül",
   "ServersEditUsers": "Szerkesztheti a felhasználók szerverhez való engededélyeit",
-  "Admin": "Admin (megkap minden jogosultságot)",
+  "Admin": "Admin (megkap minden jogot)",
   "ViewServers": "Szerverek megtekintése",
   "CreateServers": "Létrehozhat új szervereket",
   "DeleteServers": "Törölhet szervereket",
