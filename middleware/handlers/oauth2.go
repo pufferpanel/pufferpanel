@@ -14,10 +14,11 @@
 package handlers
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -82,19 +83,25 @@ func HasOAuth2Token(c *gin.Context) {
 
 func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		db, err := database.GetConnection()
+		db := middleware.GetDatabase(c)
 
-		if response.HandleError(c, err, http.StatusInternalServerError) {
+		if db == nil {
+			middleware.NeedsDatabase(c)
+			db = middleware.GetDatabase(c)
+			if db == nil {
+				response.HandleError(c, pufferpanel.ErrDatabaseNotAvailable, http.StatusInternalServerError)
+				return
+			}
 		}
 
 		token, ok := c.Get("token")
 		if !ok {
-			response.HandleError(c, err, http.StatusInternalServerError)
+			response.HandleError(c, errors.New("token invalid"), http.StatusInternalServerError)
 			return
 		}
 		jwtToken, ok := token.(*pufferpanel.Token)
 		if !ok {
-			response.HandleError(c, err, http.StatusInternalServerError)
+			response.HandleError(c, errors.New("token invalid"), http.StatusInternalServerError)
 			return
 		}
 
@@ -106,6 +113,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 		var serverId string
 
 		var server *models.Server
+		var err error
 
 		i := c.Param("serverId")
 		if requireServer {
