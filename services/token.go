@@ -240,7 +240,7 @@ func loadPublic() {
 		return
 	}
 
-	logging.Debug().Printf("Panel key pulled: %s", data)
+	logging.Debug().Printf("Panel key pulled from %s: %s", config.GetString("token.public"), data)
 
 	block, _ := pem.Decode(data)
 	if block == nil {
@@ -265,6 +265,7 @@ func loadPublic() {
 		logging.Error().Printf("Internal error on token service: %s", errors.New("public key is not ECDSA"))
 		return
 	}
+	timer = time.Now().Add(5 * time.Minute)
 }
 
 func readPublicKey(path string) ([]byte, error){
