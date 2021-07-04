@@ -14,6 +14,7 @@
 package config
 
 import (
+	"encoding/hex"
 	"errors"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/cast"
@@ -71,6 +72,7 @@ var defaultSettings map[string]interface{} = map[string]interface{}{
 	"panel.settings.companyName":  "PufferPanel",
 	"panel.settings.defaultTheme": "PufferPanel",
 	"panel.settings.masterUrl":    "http://localhost:8080",
+	"panel.sessionKey": []uint8{},
 
 	//daemon specific settings
 	"daemon.enable":                 true,
@@ -146,6 +148,8 @@ func LoadConfigDatabase(db db) error {
 			viper.Set(k, cast.ToInt64(fromDB))
 		case int:
 			viper.Set(k, cast.ToInt(fromDB))
+		default:
+			viper.Set(k, fromDB)
 		}
 	}
 	return nil
@@ -191,6 +195,8 @@ func toDatabase(key string, value string) error {
 }
 
 func Set(key string, value interface{}) (err error) {
+	viper.Set(key, value)
+
 	if database != nil {
 		if v, ok := value.(string); ok {
 			err = toDatabase(key, v)
@@ -201,7 +207,9 @@ func Set(key string, value interface{}) (err error) {
 		} else if v, ok := value.(int64); ok {
 			err = toDatabase(key, cast.ToString(v))
 		} else if v, ok := value.([]uint8); ok {
-			err = toDatabase(key, cast.ToString(v))
+			err = toDatabase(key, hex.EncodeToString(v))
+			//we have to override it here
+			viper.Set(key, hex.EncodeToString(v))
 		} else {
 			err = errors.New("Unsupported type for " + key + ": " + reflect.TypeOf(value).String())
 		}
@@ -211,6 +219,5 @@ func Set(key string, value interface{}) (err error) {
 		}
 	}
 
-	viper.Set(key, value)
 	return
 }

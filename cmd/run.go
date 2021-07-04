@@ -14,6 +14,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"github.com/braintree/manners"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -93,7 +94,11 @@ func internalRun(cmd *cobra.Command, args []string) error {
 			}
 		}
 
-		sessionStore := cookie.NewStore([]byte(config.GetString("panel.sessionKey")))
+		result, err := hex.DecodeString(config.GetString("panel.sessionKey"))
+		if err != nil {
+			return err
+		}
+		sessionStore := cookie.NewStore(result)
 		router.Use(sessions.Sessions("session", sessionStore))
 	}
 
