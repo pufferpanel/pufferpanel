@@ -12,7 +12,7 @@
   "ServersFilesPut": "Редактирования и загрузки файлов через менеджер файлов",
   "ServersEditUsers": "Редактирования доступа пользователей к этому серверу",
   "Admin": "Администратор (это право дает все доступные права)",
-  "ViewServers": "See Servers",
+  "ViewServers": "См. Серверы",
   "CreateServers": "Создание новых серверов",
   "DeleteServers": "Удаление серверов",
   "EditServerAdmin": "Редактирование настроек сервера",
@@ -23,5 +23,5 @@
   "EditTemplates": "Редактирование шаблонов",
   "ViewUsers": "Просмотр всех пользователей",
   "EditUsers": "Редактирование других пользователей",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "Изменить настройки панели"
 }
