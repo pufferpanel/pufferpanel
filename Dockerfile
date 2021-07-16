@@ -10,7 +10,7 @@ ARG sha=devel
 ENV CGOENABLED=1
 
 RUN go version && \
-    apk add --update --no-cache gcc musl-dev git curl nodejs nodejs-npm make gcc g++ python2 && \
+    apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ python2 && \
     mkdir /pufferpanel
 
 WORKDIR /build/pufferpanel
