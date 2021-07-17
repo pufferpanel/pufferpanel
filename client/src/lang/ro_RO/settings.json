@@ -1,10 +1,10 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
+  "Settings": "Setari",
+  "PanelSettings": "Setări panou",
+  "EmailSettings": "Setări Email",
+  "MasterUrl": "URL principal",
+  "MasterUrlHint": "Pagina URL de bază poate fi găsită în formatul http://localhost:8080",
+  "CompanyName": "Nume Companie",
   "DefaultTheme": "Default Theme",
   "EmailProvider": "Email Provider",
   "emailProviders": {
