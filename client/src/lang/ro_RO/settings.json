@@ -5,20 +5,20 @@
   "MasterUrl": "URL principal",
   "MasterUrlHint": "Pagina URL de bază poate fi găsită în formatul http://localhost:8080",
   "CompanyName": "Nume Companie",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "DefaultTheme": "Temă default",
+  "EmailProvider": "Furnizor De E-Mail",
   "emailProviders": {
-    "none": "None",
+    "none": "Nimeni",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API-Key",
+    "from": "Adresa expeditorului",
+    "domain": "Domeniu",
+    "key": "Cheie API",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Nume de utilizator",
+    "password": "Parolă"
   }
 }
