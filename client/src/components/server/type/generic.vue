@@ -32,7 +32,10 @@
             />
           </v-col>
         </v-row>
-        <v-row v-if="socketError" ref="alertRow">
+        <v-row
+          v-if="socketError"
+          ref="alertRow"
+        >
           <v-col>
             <v-alert
               border="left"
@@ -58,12 +61,18 @@
             <server-memory :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'files'" v-if="server.permissions.viewServerFiles || isAdmin()">
+        <v-row
+          v-show="currentTab === 'files'"
+          v-if="server.permissions.viewServerFiles || isAdmin()"
+        >
           <v-col>
             <server-files :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'files'" v-if="server.permissions.sftpServer || isAdmin()">
+        <v-row
+          v-show="currentTab === 'files'"
+          v-if="server.permissions.sftpServer || isAdmin()"
+        >
           <v-col>
             <server-sftp :server="server" />
           </v-col>
@@ -86,7 +95,10 @@
       </v-container>
     </div>
 
-    <v-row class="mt-8" ref="bottomRow">
+    <v-row
+      ref="bottomRow"
+      class="mt-8"
+    >
       <v-col>
         <v-bottom-navigation
           v-model="currentTab"
@@ -96,37 +108,55 @@
           style="z-index:3;"
         >
           <v-slide-group>
-            <v-slide-item v-slot="{}" v-if="server.permissions.viewServerConsole || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.viewServerConsole || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="console">
                 <span>{{ $t('servers.Console') }}</span>
                 <v-icon>mdi-console-line</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item v-slot="{}" v-if="server.permissions.viewServerStats || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.viewServerStats || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="stats">
                 <span>{{ $t('servers.Statistics') }}</span>
                 <v-icon>mdi-chart-line</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item v-slot="{}" v-if="server.permissions.viewServerFiles || server.permissions.sftpServer || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.viewServerFiles || server.permissions.sftpServer || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="files">
                 <span>{{ $t('servers.Files') }}</span>
                 <v-icon>mdi-file</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item v-slot="{}" v-if="server.permissions.editServerData || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.editServerData || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="settings">
                 <span>{{ $t('servers.Settings') }}</span>
                 <v-icon>mdi-cog</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item v-slot="{}" v-if="server.permissions.editServerUsers || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.editServerUsers || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="users">
                 <span>{{ $t('users.Users') }}</span>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item v-slot="{}" v-if="server.permissions.deleteServer || isAdmin()">
+            <v-slide-item
+              v-if="server.permissions.deleteServer || isAdmin()"
+              v-slot="{}"
+            >
               <v-btn value="admin">
                 <span>{{ $t('servers.Admin') }}</span>
                 <v-icon>mdi-account-star</v-icon>
@@ -159,9 +189,6 @@ export default {
       this.$toast.warning(this.$t('errors.ErrSocketFailed'))
       this.socketError = true
     })
-  },
-  methods: {
-    log: console.log
   }
 }
 </script>

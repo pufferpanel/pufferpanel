@@ -21,7 +21,6 @@ import (
 	"errors"
 	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
@@ -34,20 +33,18 @@ import (
 
 var (
 	allPrograms  = make([]*Program, 0)
-	ServerFolder string
 )
 
 func Initialize() {
-	ServerFolder = config.GetString("daemon.data.servers")
 	operations.LoadOperations()
 }
 
 func LoadFromFolder() {
-	err := os.Mkdir(ServerFolder, 0755)
+	err := os.Mkdir(pufferpanel.ServerFolder, 0755)
 	if err != nil && !os.IsExist(err) {
 		logging.Error().Fatalf("Error creating server data folder: %s", err)
 	}
-	programFiles, err := ioutil.ReadDir(ServerFolder)
+	programFiles, err := ioutil.ReadDir(pufferpanel.ServerFolder)
 	if err != nil {
 		logging.Error().Fatalf("Error reading from server data folder: %s", err)
 	}
@@ -82,7 +79,7 @@ func GetAll() []*Program {
 
 func Load(id string) (program *Program, err error) {
 	var data []byte
-	data, err = ioutil.ReadFile(filepath.Join(ServerFolder, id+".json"))
+	data, err = ioutil.ReadFile(filepath.Join(pufferpanel.ServerFolder, id+".json"))
 	if len(data) == 0 || err != nil {
 		return
 	}
@@ -128,7 +125,7 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	environmentType := typeMap.Type
-	data.RunningEnvironment, err = environments.Create(environmentType, ServerFolder, id, data.Environment)
+	data.RunningEnvironment, err = environments.Create(environmentType, pufferpanel.ServerFolder, id, data.Environment)
 
 	s := gocron.NewScheduler(time.UTC)
 	for i := range data.Tasks {
@@ -175,14 +172,14 @@ func Create(program *Program) error {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
-			_ = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
+			_ = os.Remove(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
 			}
 		}
 	}()
 
-	f, err := os.Create(filepath.Join(ServerFolder, program.Id()+".json"))
+	f, err := os.Create(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	defer pufferpanel.Close(f)
 	if err != nil {
 		logging.Error().Printf("Error writing server: %s", err)
@@ -205,7 +202,7 @@ func Create(program *Program) error {
 		return err
 	}
 
-	program.RunningEnvironment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Environment)
+	program.RunningEnvironment, err = environments.Create(typeMap.Type, pufferpanel.ServerFolder, program.Id(), program.Environment)
 
 	err = program.Create()
 	if err != nil {
@@ -246,7 +243,7 @@ func Delete(id string) (err error) {
 	if err != nil {
 		return
 	}
-	err = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
+	err = os.Remove(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	if err != nil {
 		logging.Error().Printf("Error removing server: %s", err)
 	}

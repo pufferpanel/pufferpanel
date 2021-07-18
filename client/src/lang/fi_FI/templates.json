@@ -47,6 +47,7 @@
   "DeletePostStep": "Delete Post Run Step",
   "Shutdown": "Shutdown",
   "Command": "Command",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Arguments",
   "AddArgument": "Add an argument",
   "Convert": "Convert",

@@ -11,8 +11,9 @@ import (
 )
 
 func registerSettings(g *gin.RouterGroup) {
-	g.Handle("GET", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeServersAdmin, false), getSetting)
-	g.Handle("PUT", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeServersAdmin, false), setSetting)
+	g.Handle("GET", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), getSetting)
+	g.Handle("PUT", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), setSetting)
+	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), setSettings)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 
@@ -25,11 +26,11 @@ func registerSettings(g *gin.RouterGroup) {
 func getSetting(c *gin.Context) {
 	key := c.Param("key")
 
-	response := &models.SettingResponse{
+	r := &models.SettingResponse{
 		Value: config.GetString(key),
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, r)
 }
 
 // @Summary Update a panel setting
@@ -52,6 +53,21 @@ func setSetting(c *gin.Context) {
 
 	if err := config.Set(key, model.Value); response.HandleError(c, err, http.StatusBadRequest) {
 		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func setSettings(c *gin.Context) {
+	var settings map[string]interface{}
+	if err := c.BindJSON(&settings); response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	for k, v := range settings {
+		if err := config.Set(k, v); response.HandleError(c, err, http.StatusInternalServerError) {
+			return
+		}
 	}
 
 	c.Status(http.StatusNoContent)

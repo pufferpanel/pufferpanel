@@ -8,5 +8,12 @@
   "Download": "ダウンロード",
   "Size": "サイズ",
   "NoFiles": "ファイルがありません。ページ上部のインストールボタンをクリックするなどしてファイルを作成してください",
-  "FileLoadFailed": "ファイルの読み込みに失敗しました"
+  "FileLoadFailed": "ファイルの読み込みに失敗しました",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

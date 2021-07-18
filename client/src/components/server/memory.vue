@@ -16,9 +16,20 @@
     <v-card-title>
       <span v-text="$t('servers.Memory')" />
       <div class="flex-grow-1" />
-      <v-btn-toggle v-model="mibMode" borderless dense mandatory>
-        <v-btn :value="false" v-text="'MB'" />
-        <v-btn :value="true"  v-text="'MiB'" />
+      <v-btn-toggle
+        v-model="mibMode"
+        borderless
+        dense
+        mandatory
+      >
+        <v-btn
+          :value="false"
+          v-text="'MB'"
+        />
+        <v-btn
+          :value="true"
+          v-text="'MiB'"
+        />
       </v-btn-toggle>
     </v-card-title>
     <v-card-text>

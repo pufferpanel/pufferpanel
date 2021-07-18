@@ -47,6 +47,7 @@
   "DeletePostStep": "ポストランステップを削除",
   "Shutdown": "シャットダウン",
   "Command": "コマンド",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "引数",
   "AddArgument": "引数を追加",
   "Convert": "Convert",

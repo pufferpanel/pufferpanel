@@ -28,5 +28,14 @@
   "CreateError": "Échec de création de l'utilisateur",
   "UpdateSuccess": "Utilisateur mis à jour",
   "UpdateError": "Échec de mise à jour de l'utilisateur",
-  "PermsUpdateError": "Échec de la mise à jour des permissions de l'utilisateur"
+  "PermsUpdateError": "Échec de la mise à jour des permissions de l'utilisateur",
+  "Otp": "Authentification à deux facteurs",
+  "OtpEnable": "Activer l'A2F",
+  "OtpDisable": "Désactiver l'A2F",
+  "OtpHint": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte en exigeant plus qu'un mot de passe pour se connecter.",
+  "OtpSetup": "Paramétrage de l'A2F",
+  "OtpSetupHint": "Scannez le code QR en utilisant votre application d'authentification ou copiez-y le code secret ci-dessous",
+  "OtpSecret": "Code secret",
+  "OtpConfirm": "Confirmez en utilisant un code A2F",
+  "OtpNeeded": "Second facteur requis"
 }

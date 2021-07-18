@@ -173,9 +173,11 @@ export default {
     async savePanelConfig () {
       this.panelSettingsLoading = true
       try {
-        this.$api.setSetting('panel.settings.masterUrl', this.masterUrl)
-        this.$api.setSetting('panel.settings.companyName', this.panelTitle)
-        this.$api.setSetting('panel.settings.defaultTheme', this.defaultTheme)
+        await this.$api.setSettings({
+          'panel.settings.masterUrl': this.masterUrl,
+          'panel.settings.companyName': this.panelTitle,
+          'panel.settings.defaultTheme': this.defaultTheme
+        })
         this.$toast.success(this.$t('common.Saved'))
       } finally {
         this.panelSettingsLoading = false
@@ -186,10 +188,11 @@ export default {
     async saveEmailConfig () {
       this.emailSettingsLoading = true
       try {
-        this.$api.setSetting('panel.email.provider', this.emailProvider)
-        Object.keys(this.email).map(async key => {
-          this.email[key] = await this.$api.getSetting('panel.email.' + key, this.email[key])
+        const data = { 'panel.email.provider': this.emailProvider }
+        Object.keys(this.email).map(key => {
+          data['panel.email.' + key] = this.email[key]
         })
+        await this.$api.setSettings(data)
         this.$toast.success(this.$t('common.Saved'))
       } finally {
         this.emailSettingsLoading = false
