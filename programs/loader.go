@@ -251,6 +251,8 @@ func Delete(id string) (err error) {
 		logging.Error().Printf("Error removing server: %s", err)
 	}
 	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
+
+	program.Scheduler.Stop()
 	return
 }
 

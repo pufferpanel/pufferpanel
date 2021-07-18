@@ -222,6 +222,8 @@ func (p *Program) Stop() (err error) {
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server was told to stop\n")
 	}
+
+	p.Scheduler.Stop()
 	return
 }
 
