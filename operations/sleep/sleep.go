@@ -22,14 +22,10 @@ import (
 )
 
 type Sleep struct {
-	Duration string
+	Duration time.Duration
 }
 
 func (d Sleep) Run(env pufferpanel.Environment) error {
-	duration, err := time.ParseDuration(d.Duration)
-	if err != nil {
-		return err
-	}
-	time.Sleep(duration)
+	time.Sleep(d.Duration)
 	return nil
 }

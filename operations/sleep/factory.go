@@ -19,15 +19,19 @@ package sleep
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/cast"
+	"time"
 )
 
 type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
-	duration := cast.ToString(op.OperationArgs["duration"])
-	return &Sleep{Duration: duration}
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
+	duration, err := time.ParseDuration(cast.ToString(op.OperationArgs["duration"]))
+	if err != nil {
+		return nil, err
+	}
+	return &Sleep{Duration: duration}, nil
 }
 
 func (of OperationFactory) Key() string {
