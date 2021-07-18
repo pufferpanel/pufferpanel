@@ -25,9 +25,9 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	message := cast.ToString(op.OperationArgs["message"])
-	return &Console{Text: message}
+	return &Console{Text: message}, nil
 }
 
 func (of OperationFactory) Key() string {

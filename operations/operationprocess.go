@@ -102,7 +102,10 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 			DataMap:              dataMap,
 		}
 
-		op := factory.Create(opCreate)
+		op, err := factory.Create(opCreate)
+		if err != nil {
+			return OperationProcess{}, pufferpanel.ErrFactoryError(typeMap.Type, err)
+		}
 
 		operationList = append(operationList, op)
 	}
