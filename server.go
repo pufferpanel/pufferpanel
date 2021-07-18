@@ -26,8 +26,8 @@ type Server struct {
 }
 
 type Task struct {
-	Cron       string        `json:"cron,omitempty"`
-	Operations []interface{} `json:"operations,omitempty"`
+	CronSchedule string        `json:"cronSchedule,omitempty"`
+	Operations   []interface{} `json:"operations,omitempty"`
 }
 
 type Variable struct {

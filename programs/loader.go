@@ -133,7 +133,7 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	s := gocron.NewScheduler(time.UTC)
 	for i := range data.Tasks {
 		t := data.Tasks[i]
-		_, err := s.Cron(t.Cron).Do(func(ops []interface{}, p *Program) {
+		_, err := s.Cron(t.CronSchedule).Do(func(ops []interface{}, p *Program) {
 			if len(ops) > 0 {
 				process, err := operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 				if err != nil {
