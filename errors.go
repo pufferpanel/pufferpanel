@@ -118,6 +118,10 @@ var ErrFieldLength = func(fieldName string, min int, max int) *Error {
 	return CreateError("${field} must be between ${min} and ${max} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
 }
 
+var ErrFactoryError = func(operatorName string, err error) *Error {
+	return CreateError("factory `${operatorName}` encountered an error: `${err}`", "ErrFactoryError")
+}
+
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")
 
 func GenerateValidationMessage(err error) error {

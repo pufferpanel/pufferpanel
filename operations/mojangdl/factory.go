@@ -24,11 +24,11 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	version := op.OperationArgs["version"].(string)
 	target := op.OperationArgs["target"].(string)
 
-	return MojangDl{Version: version, Target: target}
+	return MojangDl{Version: version, Target: target}, nil
 }
 
 func (of OperationFactory) Key() string {

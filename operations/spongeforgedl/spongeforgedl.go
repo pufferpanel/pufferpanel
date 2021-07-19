@@ -103,9 +103,12 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 
 	mapping["version"] = version
 	mapping["target"] = "forge-installer.jar"
-	forgeDlOp := forgedl.Factory.Create(pufferpanel.CreateOperation{OperationArgs: mapping})
+	forgeDlOp, err := forgedl.Factory.Create(pufferpanel.CreateOperation{OperationArgs: mapping})
+	if err != nil {
+		return err
+	}
 
-	err := forgeDlOp.Run(env)
+	err = forgeDlOp.Run(env)
 	if err != nil {
 		return err
 	}

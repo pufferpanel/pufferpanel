@@ -21,10 +21,10 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	text := op.OperationArgs["text"].(string)
 	target := op.OperationArgs["target"].(string)
-	return WriteFile{TargetFile: target, Text: text}
+	return WriteFile{TargetFile: target, Text: text}, nil
 }
 
 func (of OperationFactory) Key() string {

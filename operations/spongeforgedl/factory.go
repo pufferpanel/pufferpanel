@@ -27,13 +27,13 @@ type OperationFactory struct {
 func (of OperationFactory) Key() string {
 	return "spongeforgedl"
 }
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	releaseType, ok := op.OperationArgs["releaseType"].(string)
 	if !ok {
 		releaseType = "recommended"
 	}
 
-	return SpongeForgeDl{ReleaseType: releaseType}
+	return SpongeForgeDl{ReleaseType: releaseType}, nil
 }
 
 var Factory OperationFactory
