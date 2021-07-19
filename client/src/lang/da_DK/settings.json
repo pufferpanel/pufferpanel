@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Afsenderadresse",
+    "from": "Sender Adress",
     "domain": "Domæne",
-    "key": "API-nøgle",
+    "key": "API Key",
     "host": "Vært",
     "username": "Brugernavn",
     "password": "Adgangskode"
