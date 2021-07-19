@@ -17,7 +17,7 @@ on:
         
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: "Deployment"
     
     steps:
@@ -199,9 +199,6 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/fedora/33 ${{ steps.amd64rpmdownload.outputs.file }}
         
         #ubuntu
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/xenial ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/yakkety ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/artful ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
