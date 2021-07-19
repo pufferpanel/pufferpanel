@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Адрес отправителя",
+    "from": "Sender Adress",
     "domain": "домен",
-    "key": "API-ключ",
+    "key": "API Key",
     "host": "Хозяин",
     "username": "Имя пользователя",
     "password": "Пароль"
