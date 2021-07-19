@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Adresa expeditorului",
+    "from": "Sender Adress",
     "domain": "Domeniu",
-    "key": "Cheie API",
+    "key": "API Key",
     "host": "Host",
     "username": "Nume de utilizator",
     "password": "Parolă"
