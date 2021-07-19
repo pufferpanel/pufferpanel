@@ -1,110 +1,110 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
+  "Templates": "Template-uri",
+  "NoTemplates": "Nu există încă template-uri aici",
+  "Deleted": "Template-ul a fost șters",
+  "New": "Creaza un template nou",
+  "Edit": "Editare template",
   "Editor": "Editor",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
+  "Display": "Nume afişat",
+  "Type": "Tip",
+  "Variables": "Variabile",
+  "Install": "Instalare",
+  "AddInstallStep": "Adaugă Pas de Instalare",
+  "DeleteInstallStep": "Ştergeţi pasul de instalare",
+  "Description": "Descriere",
+  "DataType": "Tip date",
+  "DefaultValue": "Valoare implicită",
+  "Required": "Obligatoriu",
+  "UserEditable": "Utilizatorii pot edita",
+  "Value": "Valoare",
+  "AddOption": "Adaugă o opțiune",
+  "AddCommand": "Adăugare comandă",
+  "Filename": "Nume fișier",
+  "Content": "Conţinut",
+  "Source": "Sursa",
+  "Target": "Destinație",
+  "Version": "Versiune",
+  "ReleaseType": "Tip lansare",
+  "AddFile": "Adauga fisier",
+  "AddVariable": "Adaugă variabilă",
   "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "Environments": "Environment",
+  "AddEnvironment": "Adaugă environment",
+  "DefaultEnvironment": "Mediu implicit",
+  "AddEnvVar": "Adaugă variabilă",
+  "EnvVars": "Variabile de mediu",
+  "DockerImage": "Imagine Docker",
+  "SaveSuccess": "Vezi template-uri",
+  "VarNameNoSpaces": "Un nume de variabilă nu poate fi gol sau conține spații",
+  "SupportedEnvironments": "Medii suportate",
+  "RunConfig": "Rulează configurația",
   "PreHook": "Pre Run Hook",
   "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "AddPreStep": "Adaugă Pre Rulează Pasul",
+  "AddPostStep": "Adaugă Post Run Pas",
+  "DeletePreStep": "Șterge Pre Rulează Pasul",
+  "DeletePostStep": "Ştergeţi pasul de instalare",
+  "Shutdown": "Oprește",
+  "Command": "Comandă",
+  "WorkingDirectory": "Directorul de lucru",
+  "Arguments": "Argumente",
+  "AddArgument": "Adaugă un argument",
+  "Convert": "Transformă",
+  "OfferV1Convert": "Acest template json arată ca un template pentru PufferPanel 1.x, doriţi să convertiţi automat acest template într-un template pentru PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "AVERTISMENT: Template-urile importate vor suprascrie template-urile existente cu același ID",
+    "Import": "Importă template-uri",
+    "Tooltip": "Importați template-uri din repository",
+    "Select": "Selectați template-uri de importat",
+    "Started": "Se importa template-urile, va rugam asteptati un moment",
+    "Successful": "Template importat cu succes {template}",
+    "NoTemplatesTitle": "Doriți să importați template-uri?",
+    "NoTemplatesContent": "În prezent nu aveți nici un template. Template-urile sunt necesare pentru a crea servere.<br/>Doriţi să importaţi câteva template-uri din PufferPanel acum?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Comandă",
+    "Signal": "Semnal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Descarcă",
+      "files": "Fişiere"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Rulează comanda",
+      "commands": "Comenzi"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Schimbă fişierul",
+      "regex": "Tratează căutarea ca RegEx",
+      "search": "Text căutare",
+      "replace": "Înlocuiește cu"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Scrie în fișier",
+      "text": "Conţinut"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Muta fisier",
+      "source": "Sursă",
+      "target": "Destinație"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Crează director"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Descarcă Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Descarcă Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Descarcă Minecraft SpongeForge",
+      "releaseType": "Tip versiune"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Descarcă Tesatura Minecraft"
     }
   }
 }
