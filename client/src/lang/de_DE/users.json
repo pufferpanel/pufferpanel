@@ -24,7 +24,7 @@
   "Edit": "Benutzer bearbeiten",
   "Update": "Benutzer aktualisieren",
   "Delete": "Benutzer löschen",
-  "CreateSuccess": "Benutzer erstellt",
+  "CreateSuccess": "User successfully created",
   "CreateError": "Fehler beim Erstellen des Benutzers",
   "UpdateSuccess": "Benutzer aktualisiert",
   "UpdateError": "Fehler beim Aktualisieren des Benutzers",
@@ -34,8 +34,8 @@
   "OtpDisable": "2FA deaktivieren",
   "OtpHint": "Zwei-Faktor-Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsstufe hinzu, da mehr als nur ein Passwort benötigt wird, um sich anzumelden.",
   "OtpSetup": "2FA Einrichten",
-  "OtpSetupHint": "Scannen Sie den QR-Code mit Ihrer Authentifizierungs-App oder kopieren Sie den darunter stehenden Code und fügen Sie ihn in der App ein",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "Geheimcode",
   "OtpConfirm": "Bestätigung für die Nutzung der 2FA",
-  "OtpNeeded": "Zwei-Faktor-Authentifizierung erforderlich"
+  "OtpNeeded": "2FA required"
 }
