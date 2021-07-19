@@ -25,11 +25,11 @@ type OperationFactory struct {
 func (of OperationFactory) Key() string {
 	return "forgedl"
 }
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	version := op.OperationArgs["version"].(string)
 	filename := op.OperationArgs["target"].(string)
 
-	return ForgeDl{Version: version, Filename: filename}
+	return ForgeDl{Version: version, Filename: filename}, nil
 }
 
 var Factory OperationFactory

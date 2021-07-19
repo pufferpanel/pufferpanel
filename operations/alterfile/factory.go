@@ -21,12 +21,12 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	file := op.OperationArgs["file"].(string)
 	search := op.OperationArgs["search"].(string)
 	replace := op.OperationArgs["replace"].(string)
 	regex := op.OperationArgs["regex"].(bool)
-	return AlterFile{TargetFile: file, Search: search, Replace: replace, Regex: regex}
+	return AlterFile{TargetFile: file, Search: search, Replace: replace, Regex: regex}, nil
 }
 
 func (of OperationFactory) Key() string {

@@ -14,20 +14,18 @@
  limitations under the License.
 */
 
-package pufferpanel
+package sleep
 
-type Operation interface {
-	Run(env Environment) error
+import (
+	"github.com/pufferpanel/pufferpanel/v2"
+	"time"
+)
+
+type Sleep struct {
+	Duration time.Duration
 }
 
-type OperationFactory interface {
-	Create(CreateOperation) (Operation, error)
-
-	Key() string
-}
-
-type CreateOperation struct {
-	OperationArgs        map[string]interface{}
-	EnvironmentVariables map[string]string
-	DataMap              map[string]interface{}
+func (d Sleep) Run(env pufferpanel.Environment) error {
+	time.Sleep(d.Duration)
+	return nil
 }

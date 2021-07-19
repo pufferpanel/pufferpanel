@@ -1,5 +1,5 @@
 /*
- Copyright 2016 Padduck, LLC
+ Copyright 2019 Padduck, LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,20 +14,28 @@
  limitations under the License.
 */
 
-package pufferpanel
+package sleep
 
-type Operation interface {
-	Run(env Environment) error
+import (
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
+	"time"
+)
+
+type OperationFactory struct {
+	pufferpanel.OperationFactory
 }
 
-type OperationFactory interface {
-	Create(CreateOperation) (Operation, error)
-
-	Key() string
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
+	duration, err := time.ParseDuration(cast.ToString(op.OperationArgs["duration"]))
+	if err != nil {
+		return nil, err
+	}
+	return &Sleep{Duration: duration}, nil
 }
 
-type CreateOperation struct {
-	OperationArgs        map[string]interface{}
-	EnvironmentVariables map[string]string
-	DataMap              map[string]interface{}
+func (of OperationFactory) Key() string {
+	return "sleep"
 }
+
+var Factory OperationFactory

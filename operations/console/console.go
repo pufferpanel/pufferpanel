@@ -14,20 +14,17 @@
  limitations under the License.
 */
 
-package pufferpanel
+package console
 
-type Operation interface {
-	Run(env Environment) error
+import (
+	"github.com/pufferpanel/pufferpanel/v2"
+)
+
+type Console struct {
+	Text string
 }
 
-type OperationFactory interface {
-	Create(CreateOperation) (Operation, error)
-
-	Key() string
-}
-
-type CreateOperation struct {
-	OperationArgs        map[string]interface{}
-	EnvironmentVariables map[string]string
-	DataMap              map[string]interface{}
+func (d Console) Run(env pufferpanel.Environment) error {
+	env.DisplayToConsole(true, "Message: %s \n", d.Text)
+	return nil
 }
