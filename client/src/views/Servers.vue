@@ -8,7 +8,10 @@
           class="pt-2 text-center text--disabled"
           v-text="$t('servers.NoServers')"
         />
-        <v-list two-line elevation="1">
+        <v-list
+          two-line
+          elevation="1"
+        >
           <draggable
             :value="servers"
             :animation="100"
@@ -88,7 +91,7 @@ export default {
   data () {
     return {
       servers: [],
-      loading: false,
+      loading: true,
       page: 0,
       pageCount: 1,
       task: null
@@ -99,6 +102,9 @@ export default {
     if (serverList && serverList !== '') {
       this.servers = JSON.parse(serverList)
     }
+
+    this.loading = false
+    this.recheckLazy()
 
     this.task = setInterval(this.pollServerStatus, 30 * 1000)
   },
@@ -146,6 +152,10 @@ export default {
         try {
           const servers = [...this.servers]
           const status = await this.$api.getServerStatus(servers[i].id, {
+            403: () => {
+              toDelete.push(servers[i].id)
+              return true
+            },
             404: () => {
               toDelete.push(servers[i].id)
               return true

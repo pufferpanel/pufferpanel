@@ -21,7 +21,7 @@ type Operation interface {
 }
 
 type OperationFactory interface {
-	Create(CreateOperation) Operation
+	Create(CreateOperation) (Operation, error)
 
 	Key() string
 }

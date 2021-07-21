@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/alterfile"
 	"github.com/pufferpanel/pufferpanel/v2/operations/archive"
 	"github.com/pufferpanel/pufferpanel/v2/operations/command"
+	"github.com/pufferpanel/pufferpanel/v2/operations/console"
 	"github.com/pufferpanel/pufferpanel/v2/operations/download"
 	"github.com/pufferpanel/pufferpanel/v2/operations/extract"
 	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
@@ -28,6 +29,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/move"
+	"github.com/pufferpanel/pufferpanel/v2/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v2/operations/spongeforgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/writefile"
 	"github.com/spf13/cast"
@@ -102,7 +104,10 @@ func GenerateProcess(directions []interface{}, environment pufferpanel.Environme
 			DataMap:              dataMap,
 		}
 
-		op := factory.Create(opCreate)
+		op, err := factory.Create(opCreate)
+		if err != nil {
+			return OperationProcess{}, pufferpanel.ErrFactoryError(typeMap.Type, err)
+		}
 
 		operationList = append(operationList, op)
 	}
@@ -165,9 +170,15 @@ func loadCoreModules() {
 	fabricDlFactory := fabricdl.Factory
 	commandMapping[fabricDlFactory.Key()] = fabricDlFactory
 
-	extractFactory := extract.Factory
-	commandMapping[extractFactory.Key()] = extractFactory
+	sleepFactory := sleep.Factory
+	commandMapping[sleepFactory.Key()] = sleepFactory
+
+	consoleFactory := console.Factory
+	commandMapping[consoleFactory.Key()] = consoleFactory
 
 	archiveFactory := archive.Factory
-	commandMapping[archiveFactory.Key()] = archiveFactory
+	commandMapping[consoleFactory.Key()] = archiveFactory
+
+	extractFactory := extract.Factory
+	commandMapping[consoleFactory.Key()] = extractFactory
 }

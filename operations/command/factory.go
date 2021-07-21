@@ -25,9 +25,9 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	cmds := cast.ToStringSlice(op.OperationArgs["commands"])
-	return Command{Commands: cmds, Env: op.EnvironmentVariables}
+	return Command{Commands: cmds, Env: op.EnvironmentVariables}, nil
 }
 
 func (of OperationFactory) Key() string {

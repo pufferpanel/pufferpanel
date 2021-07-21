@@ -36,5 +36,6 @@
   "ErrInvalidJson": "بيانات ال json غير صحيحة",
   "ErrSocketFailed": "واجهه اتصال WebSocket حدث لها خطأ، بعض الميزات قد تكون بطيئة او لا تعمل",
   "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account"
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

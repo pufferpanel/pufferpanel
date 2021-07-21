@@ -47,6 +47,7 @@
   "DeletePostStep": "Delete Post Run Step",
   "Shutdown": "Matikan",
   "Command": "Perintah",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Arguments",
   "AddArgument": "Tambahkan Arguments",
   "Convert": "Convert",

@@ -47,6 +47,7 @@
   "DeletePostStep": "Eliminar paso Post Ejecución",
   "Shutdown": "Apagado",
   "Command": "Comando",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumentos",
   "AddArgument": "Añadir un argumento",
   "Convert": "Convert",

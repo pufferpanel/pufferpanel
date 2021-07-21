@@ -47,6 +47,7 @@
   "DeletePostStep": "Excluir etapa de pré-execução",
   "Shutdown": "Desligar",
   "Command": "Comando",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumentos",
   "AddArgument": "Adicionar argumento",
   "Convert": "Convert",

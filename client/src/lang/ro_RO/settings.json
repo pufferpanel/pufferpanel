@@ -1,0 +1,24 @@
+{
+  "Settings": "Setari",
+  "PanelSettings": "Setări panou",
+  "EmailSettings": "Setări Email",
+  "MasterUrl": "URL principal",
+  "MasterUrlHint": "Pagina URL de bază poate fi găsită în formatul http://localhost:8080",
+  "CompanyName": "Nume Companie",
+  "DefaultTheme": "Temă default",
+  "EmailProvider": "Furnizor De E-Mail",
+  "emailProviders": {
+    "none": "Nimeni",
+    "smtp": "SMTP",
+    "mailgun": "Mailgun",
+    "mailjet": "Mailjet"
+  },
+  "emailFields": {
+    "from": "Adresa expeditorului",
+    "domain": "Domeniu",
+    "key": "Cheie API",
+    "host": "Host",
+    "username": "Nume de utilizator",
+    "password": "Parolă"
+  }
+}

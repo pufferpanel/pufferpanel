@@ -216,6 +216,31 @@
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-html="errorText" />
       </ui-overlay>
+      <ui-overlay
+        v-model="otpRequested"
+        card
+        :title="$t('users.OtpNeeded')"
+      >
+        <v-row>
+          <v-col>
+            <ui-input
+              v-model="otpToken"
+              autofocus
+              @keyup.enter="confirmOtp"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn
+              block
+              color="success"
+              @click="confirmOtp"
+              v-text="$t('users.Login')"
+            />
+          </v-col>
+        </v-row>
+      </ui-overlay>
     </v-main>
   </v-app>
 </template>
@@ -228,6 +253,8 @@ export default {
     return {
       appConfig: config.defaultAppConfig,
       userSettings: [],
+      otpRequested: false,
+      otpToken: '',
       loggedIn: false,
       drawer: null,
       minified: false,
@@ -240,6 +267,7 @@ export default {
     }
   },
   mounted () {
+    this.$api.on('requestOtp', () => { this.otpRequested = true })
     this.$api.on('login', this.didLogIn)
     this.$api.on('logout', this.logout)
     this.$api.on('panelTitleChanged', this.updatePanelTitle)
@@ -310,6 +338,17 @@ export default {
       localStorage.setItem('theme', newTheme)
       this.appConfig.themes.active = newTheme
       this.loadTheme()
+    },
+    async confirmOtp () {
+      if (await this.$api.loginOtp(this.otpToken)) {
+        this.otpRequested = false
+        if (this.hasScope('servers.view') || this.isAdmin()) {
+          this.$router.push({ name: 'Servers' })
+        } else {
+          this.$router.push({ name: 'Account' })
+        }
+      }
+      this.otpToken = ''
     },
     logout (reason) {
       if (!this.loggedIn) return

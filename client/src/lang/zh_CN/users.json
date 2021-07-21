@@ -28,5 +28,14 @@
   "CreateError": "创建用户时出错",
   "UpdateSuccess": "已更新用户",
   "UpdateError": "更新用户时出错",
-  "PermsUpdateError": "更新用户权限时出错"
+  "PermsUpdateError": "更新用户权限时出错",
+  "Otp": "两步认证",
+  "OtpEnable": "启用两步认证",
+  "OtpDisable": "禁用两步认证",
+  "OtpHint": "两步认证在密码的基础上添加了额外的安全防护。",
+  "OtpSetup": "两步认证设置",
+  "OtpSetupHint": "使用您的验证器应用扫描二维码或复制下方的的秘密代码",
+  "OtpSecret": "秘密代码",
+  "OtpConfirm": "使用两步认证码确认",
+  "OtpNeeded": "需要两步认证"
 }

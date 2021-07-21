@@ -51,6 +51,8 @@ var ErrNotBearerToken = CreateError("access token must be a Bearer token", "ErrN
 var ErrKeyNotECDSA = CreateError("key is not ECDSA key", "ErrKeyNotECDSA")
 var ErrMissingScope = CreateError("missing scope", "ErrMissingScope")
 var ErrNodeHasServers = CreateError("node has servers associated", "ErrNodeHasServers")
+var ErrInvalidSession = CreateError("invalid session", "ErrInvalidSession")
+var ErrSessionExpired = CreateError("session expired", "ErrSessionExpired")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})
@@ -114,6 +116,10 @@ var ErrFieldNotEmail = func(fieldName string) *Error {
 
 var ErrFieldLength = func(fieldName string, min int, max int) *Error {
 	return CreateError("${field} must be between ${min} and ${max} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
+}
+
+var ErrFactoryError = func(operatorName string, err error) *Error {
+	return CreateError("factory `${operatorName}` encountered an error: `${err}`", "ErrFactoryError")
 }
 
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")
