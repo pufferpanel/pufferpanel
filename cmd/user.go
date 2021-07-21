@@ -19,6 +19,7 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -117,7 +118,13 @@ func addUser(cmd *cobra.Command, args []string) {
 		_ = survey.Ask(questions, &answers)
 	}
 
-	err := pufferpanel.LoadConfig("")
+	err := config.LoadConfigFile("")
+	if err != nil {
+		fmt.Printf("Failed to load config: %s\n", err.Error())
+		return
+	}
+
+	err = config.LoadConfigDatabase(database.GetConnector())
 	if err != nil {
 		fmt.Printf("Failed to load config: %s\n", err.Error())
 		return
@@ -232,7 +239,13 @@ func editUser(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	err := pufferpanel.LoadConfig("")
+	err := config.LoadConfigFile("")
+	if err != nil {
+		fmt.Printf("Error loading config: %s", err.Error())
+		return
+	}
+
+	err = config.LoadConfigDatabase(database.GetConnector())
 	if err != nil {
 		fmt.Printf("Error loading config: %s", err.Error())
 		return

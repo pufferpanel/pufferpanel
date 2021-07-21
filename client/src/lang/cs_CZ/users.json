@@ -17,7 +17,7 @@
   "Register": "Registrace",
   "RegisterLink": "Nebo se zaregistrujte zde",
   "RegisterSuccess": "Úspěšně jste se zaregistrovali",
-  "NoEmailGiven": "Musíte zadat e-mail uživatele, který chcete přidat",
+  "NoEmailGiven": "Musíte zadat e-mail uživatele, kterého chcete přidat",
   "Username": "Uživatelské jméno",
   "Password": "Heslo",
   "Email": "E-mail",
@@ -28,5 +28,14 @@
   "CreateError": "Vytvoření uživatele se nezdařilo",
   "UpdateSuccess": "Aktualizovaný uživatel",
   "UpdateError": "Chyba při aktualizaci uživatele",
-  "PermsUpdateError": "Aktualizace uživatelských oprávnění se nezdařila"
+  "PermsUpdateError": "Aktualizace uživatelských oprávnění se nezdařila",
+  "Otp": "Dvoufázová autentifikace",
+  "OtpEnable": "Aktivovat 2FA",
+  "OtpDisable": "Zakázat 2FP",
+  "OtpHint": "Dvoufázová autentifikace přidává k vašemu účtu další vrstvu zabezpečení tím, že vyžaduje více než jen heslo k přihlášení.",
+  "OtpSetup": "Nastavení 2FA",
+  "OtpSetupHint": "Naskenujte QR kód pomocí vaší ověřovací aplikace nebo do ní zkopírujte tajný kód uvedený níže",
+  "OtpSecret": "Tajný kód",
+  "OtpConfirm": "Potvrdit pomocí kódu 2FA",
+  "OtpNeeded": "Vyžadována druhá fáze ověření"
 }

@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Tu sesión ha caducado. Por favor, ingresa nuevamente",
   "ErrMissingScope": "No tienes permiso para realizar esta acción",
   "ErrInvalidJson": "Los datos del json son inválidos",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "La conexión WebSocket ha encontrado un error, algunas características pueden ser lentas o rotas",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

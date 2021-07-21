@@ -25,9 +25,9 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	files := cast.ToStringSlice(op.OperationArgs["files"])
-	return &Download{Files: files}
+	return &Download{Files: files}, nil
 }
 
 func (of OperationFactory) Key() string {

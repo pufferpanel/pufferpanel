@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Ваш сеанс минув, будь ласка, увійдіть знову",
   "ErrMissingScope": "Ви не маєте прав на виконання цієї дії",
   "ErrInvalidJson": "Неприпустимі дані json",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

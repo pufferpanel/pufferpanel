@@ -25,10 +25,22 @@
         <v-card>
           <v-card-title v-text="$t('templates.RunConfig')" />
           <v-card-text>
-            <ui-input
-              v-model="value.command"
-              :label="$t('templates.Command')"
-            />
+            <v-row>
+              <v-col>
+                <ui-input
+                  v-model="value.command"
+                  :label="$t('templates.Command')"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <ui-input
+                  v-model="value.workingDirectory"
+                  :label="$t('templates.WorkingDirectory')"
+                />
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>

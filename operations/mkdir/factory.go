@@ -24,9 +24,9 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	target := op.OperationArgs["target"].(string)
-	return &Mkdir{TargetFile: target}
+	return &Mkdir{TargetFile: target}, nil
 }
 
 func (of OperationFactory) Key() string {

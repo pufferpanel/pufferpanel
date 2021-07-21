@@ -8,5 +8,12 @@
   "Download": "Download",
   "Size": "Tamanho",
   "NoFiles": "Ainda não há arquivos aqui, vá e crie alguns por exemplo, clicando no botão de instalação no topo da página",
-  "FileLoadFailed": "Falha ao carregar o arquivo"
+  "FileLoadFailed": "Falha ao carregar o arquivo",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

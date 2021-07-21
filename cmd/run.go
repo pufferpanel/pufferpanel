@@ -14,9 +14,14 @@
 package main
 
 import (
+	"encoding/hex"
 	"github.com/braintree/manners"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -27,7 +32,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/web"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 	"net"
 	"net/http"
@@ -52,7 +56,7 @@ func executeRun(cmd *cobra.Command, args []string) {
 }
 
 func internalRun(cmd *cobra.Command, args []string) error {
-	if err := pufferpanel.LoadConfig(""); err != nil {
+	if err := config.LoadConfigFile(""); err != nil {
 		return err
 	}
 
@@ -81,18 +85,31 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	router.Use(gin.LoggerWithWriter(logging.Debug().Writer()))
 	pufferpanel.Engine = router
 
-	web.RegisterRoutes(router)
-
-	if viper.GetBool("panel.enable") {
+	if config.GetBool("panel.enable") {
 		panel(c)
+
+		if config.GetString("panel.sessionKey") == "" {
+			if err := config.Set("panel.sessionKey", securecookie.GenerateRandomKey(32)); err != nil {
+				return err
+			}
+		}
+
+		result, err := hex.DecodeString(config.GetString("panel.sessionKey"))
+		if err != nil {
+			return err
+		}
+		sessionStore := cookie.NewStore(result)
+		router.Use(sessions.Sessions("session", sessionStore))
 	}
 
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		daemon(c)
 	}
 
+	web.RegisterRoutes(router)
+
 	go func() {
-		l, err := net.Listen("tcp4", viper.GetString("web.host"))
+		l, err := net.Listen("tcp4", config.GetString("web.host"))
 		if err != nil {
 			c <- err
 			return
@@ -111,18 +128,16 @@ func panel(ch chan error) {
 	services.ValidateTokenLoaded()
 	services.LoadEmailService()
 
-	go func() {
-		_, err := database.GetConnection()
-		if err != nil {
-			logging.Error().Printf("Error connecting to database: %s", err.Error())
-		}
-	}()
-
 	//if we have the web, then let's use our sftp auth instead
 	sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
 
+	err := config.LoadConfigDatabase(database.GetConnector())
+	if err != nil {
+		logging.Error().Printf("Error loading config from database: %s", err.Error())
+	}
+
 	//validate local daemon is configured in this panel
-	if viper.GetBool("daemon.enable") {
+	if config.GetBool("daemon.enable") {
 		db, err := database.GetConnection()
 		if err != nil {
 			return
@@ -150,8 +165,8 @@ func panel(ch chan error) {
 				SFTPPort:    5657,
 				Secret:      strings.Replace(uuid.NewV4().String(), "-", "", -1),
 			}
-			nodeHost := viper.GetString("web.host")
-			sftpHost := viper.GetString("daemon.sftp.host")
+			nodeHost := config.GetString("web.host")
+			sftpHost := config.GetString("daemon.sftp.host")
 			hostParts := strings.SplitN(nodeHost, ":", 2)
 			sftpParts := strings.SplitN(sftpHost, ":", 2)
 
@@ -169,8 +184,6 @@ func panel(ch chan error) {
 				}
 			}
 
-			//override ENV because we need our id here instead since it's new
-			viper.Set("PUFFER_DAEMON_AUTH_CLIENTID", create.Secret)
 			err = ns.Create(create)
 			if err != nil {
 				logging.Error().Printf("Failed to add local node: %s", err.Error())
@@ -182,14 +195,15 @@ func panel(ch chan error) {
 func daemon(ch chan error) {
 	sftp.Run()
 
+	pufferpanel.InitEnvironment()
 	environments.LoadModules()
 	programs.Initialize()
 
 	var err error
 
-	if _, err = os.Stat(programs.ServerFolder); os.IsNotExist(err) {
+	if _, err = os.Stat(pufferpanel.ServerFolder); os.IsNotExist(err) {
 		logging.Error().Printf("No server directory found, creating")
-		err = os.MkdirAll(programs.ServerFolder, 0755)
+		err = os.MkdirAll(pufferpanel.ServerFolder, 0755)
 		if err != nil && !os.IsExist(err) {
 			ch <- err
 			return

@@ -24,10 +24,10 @@ type OperationFactory struct {
 	pufferpanel.OperationFactory
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) pufferpanel.Operation {
+func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	source := op.OperationArgs["source"].(string)
 	target := op.OperationArgs["target"].(string)
-	return Move{SourceFile: source, TargetFile: target}
+	return Move{SourceFile: source, TargetFile: target}, nil
 }
 
 func (of OperationFactory) Key() string {

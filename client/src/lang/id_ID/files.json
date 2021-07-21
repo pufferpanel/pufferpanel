@@ -8,5 +8,12 @@
   "Download": "Unduh",
   "Size": "Ukuran",
   "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
-  "FileLoadFailed": "Gagal memuat file"
+  "FileLoadFailed": "Gagal memuat file",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }
