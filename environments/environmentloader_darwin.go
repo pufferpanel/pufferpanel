@@ -17,7 +17,6 @@
 package environments
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments/tty"
 )
 

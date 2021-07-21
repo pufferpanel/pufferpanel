@@ -8,5 +8,12 @@
   "Download": "Letöltés",
   "Size": "Méret",
   "NoFiles": "Ez a hely még nem tartalmaz fájlokat. A lap tetején található telepítés gombbra kattintva létre tudja hozni a legfontosabbakat",
-  "FileLoadFailed": "Fájlok betöltése sikertelen"
+  "FileLoadFailed": "Fájlok betöltése sikertelen",
+  "Refresh": "Újratöltés",
+  "CreateFile": "Fájl létrehozása",
+  "CreateFolder": "Mappa létrehozása",
+  "ArchiveCurrentFolder": "Archívum létrehozása a jelenlegi mappából",
+  "ArchiveFolder": "Archívum létrehozása mappából",
+  "ExtractArchive": "Archívum kicsomagolása",
+  "DropToUpload": "Húzd ide a fileokat a feltöltéshez"
 }

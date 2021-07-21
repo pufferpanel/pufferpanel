@@ -26,7 +26,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
-	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"net"
@@ -179,7 +178,7 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 			}
 		}(requests)
 
-		fs := CreateRequestPrefix(filepath.Join(programs.ServerFolder, sc.Permissions.Extensions["server_id"]))
+		fs := CreateRequestPrefix(filepath.Join(pufferpanel.ServerFolder, sc.Permissions.Extensions["server_id"]))
 
 		server := sftp.NewRequestServer(channel, fs)
 

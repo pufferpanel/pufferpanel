@@ -19,6 +19,7 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
+	"github.com/go-co-op/gocron"
 	"github.com/mholt/archiver"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
@@ -39,6 +40,7 @@ type Program struct {
 
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
+	Scheduler          *gocron.Scheduler       `json:"-"`
 }
 
 var queue *list.List
@@ -174,9 +176,9 @@ func (p *Program) Start() (err error) {
 	if p.Execution.WorkingDirectory == "${rootDir}" {
 		p.Execution.WorkingDirectory = ""
 	}
-	workDir := path.Join(p.RunningEnvironment.GetRootDirectory(), pufferpanel.ReplaceTokens(p.Execution.WorkingDirectory, data))
+	workDir := pufferpanel.ReplaceTokens(p.Execution.WorkingDirectory, data)
 
-	if !pufferpanel.EnsureAccess(workDir, p.RunningEnvironment.GetRootDirectory()) {
+	if !pufferpanel.EnsureAccess(path.Join(p.RunningEnvironment.GetRootDirectory(), workDir), p.RunningEnvironment.GetRootDirectory()) {
 		logging.Error().Printf("Working directory is invalid for server: %s", workDir)
 		p.RunningEnvironment.DisplayToConsole(true, "Working directory is invalid for server: %s", workDir)
 		return
@@ -184,11 +186,11 @@ func (p *Program) Start() (err error) {
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
 	err = p.RunningEnvironment.ExecuteAsync(pufferpanel.ExecutionData{
-		Command:     cmd,
-		Arguments:   args,
-		Environment: pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
+		Command:          cmd,
+		Arguments:        args,
+		Environment:      pufferpanel.ReplaceTokensInMap(p.Execution.EnvironmentVariables, data),
 		WorkingDirectory: workDir,
-		Callback:    p.afterExit,
+		Callback:         p.afterExit,
 	})
 
 	if err != nil {
@@ -220,6 +222,8 @@ func (p *Program) Stop() (err error) {
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server was told to stop\n")
 	}
+
+	p.Scheduler.Stop()
 	return
 }
 
@@ -342,14 +346,11 @@ func (p *Program) Install() (err error) {
 	return
 }
 
-//Determines if the server is running.
 func (p *Program) IsRunning() (isRunning bool, err error) {
 	isRunning, err = p.RunningEnvironment.IsRunning()
 	return
 }
 
-//Sends a command to the process
-//If the program supports input, this will send the arguments to that.
 func (p *Program) Execute(command string) (err error) {
 	err = p.RunningEnvironment.ExecuteInMainProcess(command)
 	return
@@ -390,7 +391,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 func (p *Program) Save() (err error) {
 	logging.Info().Printf("Saving server %s", p.Id())
 
-	file := filepath.Join(ServerFolder, p.Id()+".json")
+	file := filepath.Join(pufferpanel.ServerFolder, p.Id()+".json")
 
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {

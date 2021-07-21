@@ -224,7 +224,7 @@ func migrateDaemon() {
 		return
 	}
 
-	programs.ServerFolder = config.GetString("daemon.data.servers")
+	pufferpanel.ServerFolder = config.GetString("daemon.data.servers")
 
 	//start migration of data.... begin the hell
 	serversFolder := oldConfig.ServerFolder
@@ -302,7 +302,7 @@ func migrateDaemon() {
 
 		serverFolder := filepath.Join(serversFolder, serverId)
 
-		err = copy.Copy(serverFolder, filepath.Join(programs.ServerFolder, serverId))
+		err = copy.Copy(serverFolder, filepath.Join(pufferpanel.ServerFolder, serverId))
 		if err != nil {
 			fmt.Printf("Error migrating server %s files: %s\n", serverId, err)
 			os.Exit(1)

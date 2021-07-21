@@ -8,5 +8,12 @@
   "Download": "다운로드",
   "Size": "크기",
   "NoFiles": "파일이 없습니다, 위의 설치 버튼을 클릭해 예시 파일을 생성해주세요.",
-  "FileLoadFailed": "파일 로딩에 실패했습니다"
+  "FileLoadFailed": "파일 로딩에 실패했습니다",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

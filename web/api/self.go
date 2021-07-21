@@ -28,6 +28,14 @@ func registerSelf(g *gin.RouterGroup) {
 	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), getSelf)
 	g.Handle("PUT", "", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), updateSelf)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
+
+	g.Handle("GET", "/otp", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), getOtpStatus)
+	g.Handle("POST", "/otp", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), startOtpEnroll)
+	g.Handle("PUT", "/otp", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), validateOtpEnroll)
+	g.Handle("OPTIONS", "/otp", response.CreateOptions("GET", "POST", "PUT"))
+
+	g.Handle("DELETE", "/otp/:token", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), disableOtp)
+	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("DELETE"))
 }
 
 // @Summary Get your user info
@@ -108,4 +116,108 @@ func updateSelf(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func getOtpStatus(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
+
+	if !exist || !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	otpEnabled, err := us.GetOtpStatus(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"otpEnabled": otpEnabled,
+	})
+}
+
+func startOtpEnroll(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
+
+	if !exist || !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	secret, img, err := us.StartOtpEnroll(user.ID)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"secret": secret,
+		"img": img,
+	})
+}
+
+func validateOtpEnroll(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
+
+	if !exist || !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	request := &ValidateOtpRequest{}
+
+	err := c.BindJSON(request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = us.ValidateOtpEnroll(user.ID, request.Token)
+	if err == pufferpanel.ErrInvalidCredentials {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func disableOtp(c *gin.Context) {
+	db := middleware.GetDatabase(c)
+	us := &services.User{DB: db}
+
+	t, exist := c.Get("user")
+	user, ok := t.(*models.User)
+
+	if !exist || !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	err := us.DisableOtp(user.ID, c.Param("token"))
+	if err == pufferpanel.ErrInvalidCredentials {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+type ValidateOtpRequest struct {
+	Token string `json:"token"`
 }

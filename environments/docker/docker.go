@@ -34,6 +34,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"runtime"
 	"syscall"
 	"time"
@@ -127,6 +128,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	msg := messages.Status{Running: true}
 	_ = d.WSManager.WriteMessage(msg)
 
+	d.DisplayToConsole(true, "Starting container")
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
 	if err != nil {
 		return err
@@ -323,7 +325,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 	return err
 }
 
-func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, root string) error {
+func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, workDir string) error {
 	logging.Debug().Printf("Creating container")
 	containerRoot := "/pufferpanel"
 	err := d.pullImage(client, ctx, false)
@@ -347,7 +349,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	config := &container.Config{
+	if workDir == "" {
+		workDir = containerRoot
+	}
+
+	containerConfig := &container.Config{
 		AttachStderr:    true,
 		AttachStdin:     true,
 		AttachStdout:    true,
@@ -356,20 +362,31 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		NetworkDisabled: false,
 		Cmd:             cmdSlice,
 		Image:           d.ImageName,
-		WorkingDir:      containerRoot,
+		WorkingDir:      workDir,
 		Env:             newEnv,
 		ExposedPorts:    d.ExposedPorts,
 	}
 
 	if runtime.GOOS == "linux" {
-		config.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
+		containerConfig.User = fmt.Sprintf("%d:%d", os.Getuid(), os.Getgid())
+	}
+
+	dir := d.RootDirectory
+
+	//convert root dir to a full path, so we can bind it
+	if !path.IsAbs(dir) {
+		pwd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+		dir = path.Join(pwd, dir)
 	}
 
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
-		Binds:        []string{root + ":" + containerRoot},
+		Binds:        []string{dir + ":" + containerRoot},
 		PortBindings: nat.PortMap{},
 	}
 
@@ -385,7 +402,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 	hostConfig.PortBindings = bindings
 
-	_, err = client.ContainerCreate(ctx, config, hostConfig, networkConfig, d.ContainerId)
+	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, d.ContainerId)
 	return err
 }
 

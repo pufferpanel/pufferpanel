@@ -36,5 +36,6 @@
   "ErrInvalidJson": "Json verisi geçersiz",
   "ErrSocketFailed": "WebSocket bağlantısı bir hatayla karşılaştı, bazı özellikler yavaş veya bozuk olabilir",
   "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account"
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

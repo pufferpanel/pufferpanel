@@ -14,10 +14,17 @@
 package services
 
 import (
+	"bytes"
+	"encoding/base64"
 	"github.com/jinzhu/gorm"
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"golang.org/x/crypto/bcrypt"
+	"image"
+	"image/png"
 	"strings"
 )
 
@@ -51,7 +58,7 @@ func (us *User) GetById(id uint) (*models.User, error) {
 	return model, nil
 }
 
-func (us *User) Login(email string, password string) (user *models.User, sessionToken string, err error) {
+func (us *User) Login(email string, password string) (user *models.User, sessionToken string, otpNeeded bool, err error) {
 	user = &models.User{
 		Email: email,
 	}
@@ -68,6 +75,36 @@ func (us *User) Login(email string, password string) (user *models.User, session
 	}
 
 	if !us.IsValidCredentials(user, password) {
+		err = pufferpanel.ErrInvalidCredentials
+		return
+	}
+
+	if user.OtpActive {
+		otpNeeded = true
+		return
+	}
+
+	sessionToken, err = GenerateSession(user.ID)
+	return
+}
+
+func (us *User) LoginOtp(email string, token string) (user *models.User, sessionToken string, err error) {
+	user = &models.User{
+		Email: email,
+	}
+
+	err = us.DB.Where(user).First(user).Error
+
+	if err != nil && !gorm.IsRecordNotFoundError(err) {
+		return
+	}
+
+	if user.ID == 0 || gorm.IsRecordNotFoundError(err) {
+		err = pufferpanel.ErrInvalidCredentials
+		return
+	}
+
+	if !totp.Validate(token, user.OtpSecret) {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
@@ -127,6 +164,80 @@ func (us *User) ChangePassword(username string, newPass string) error {
 	if err != nil {
 		return err
 	}
+	return us.Update(user)
+}
+
+func (us *User) GetOtpStatus(userId uint) (enabled bool, err error) {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return
+	}
+
+	enabled = user.OtpActive
+	return
+}
+
+func (us *User) StartOtpEnroll(userId uint) (secret string, img string, err error) {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return
+	}
+
+	var key *otp.Key
+	key, err = totp.Generate(totp.GenerateOpts{
+		Issuer: config.GetString("panel.settings.companyName"),
+		AccountName: user.Email,
+	})
+	if err != nil {
+		return
+	}
+
+	user.OtpSecret = key.Secret()
+	user.OtpActive = false
+	err = us.Update(user)
+	if err != nil {
+		return
+	}
+
+	var buf bytes.Buffer
+	var image image.Image
+	image, err = key.Image(256, 256)
+	if err != nil {
+		return
+	}
+	png.Encode(&buf, image)
+	img = "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	secret = key.Secret()
+	return
+}
+
+func (us *User) ValidateOtpEnroll(userId uint, token string) error {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return err
+	}
+
+	if !totp.Validate(token, user.OtpSecret) {
+		return pufferpanel.ErrInvalidCredentials
+	}
+
+	user.OtpActive = true
+	return us.Update(user)
+}
+
+func (us *User) DisableOtp(userId uint, token string) error {
+	user, err := us.GetById(userId)
+	if err != nil {
+		return err
+	}
+
+	if !totp.Validate(token, user.OtpSecret) {
+		return pufferpanel.ErrInvalidCredentials
+	}
+
+	user.OtpSecret = ""
+	user.OtpActive = false
 	return us.Update(user)
 }
 

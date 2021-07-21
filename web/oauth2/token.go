@@ -19,7 +19,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
@@ -28,7 +28,7 @@ import (
 )
 
 func registerTokens(g *gin.RouterGroup) {
-	g.POST("/token", handleTokenRequest)
+	g.POST("/token", middleware.NeedsDatabase, handleTokenRequest)
 	g.OPTIONS("/token", response.CreateOptions("POST"))
 }
 
@@ -43,9 +43,9 @@ func handleTokenRequest(c *gin.Context) {
 		return
 	}
 
-	db, err := database.GetConnection()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+	db := middleware.GetDatabase(c)
+	if db == nil {
+		c.JSON(http.StatusInternalServerError, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "database not available"})
 		return
 	}
 
@@ -170,7 +170,7 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
-			user, jwtToken, err := us.Login(user.Email, request.Password)
+			user, jwtToken, _, err := us.Login(user.Email, request.Password)
 			if err != nil || jwtToken == "" {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
