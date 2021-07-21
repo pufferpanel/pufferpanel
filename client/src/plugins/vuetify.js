@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import Vuetify, { VSnackbar } from 'vuetify/lib'
-import 'vuetify/dist/vuetify.min.css'
 import VuetifyToast from 'vuetify-toast-snackbar'
 
 const opts = {
   components: { VSnackbar },
   theme: {
     options: {
+      customProperties: true,
       inputStyle: 'outlined',
-      customProperties: true
+      console: {
+        daemonChip: null
+      }
     },
     themes: {
       light: {

@@ -12,80 +12,161 @@
   -->
 
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <h1
-          style="float: left;"
+  <div>
+    <div style="position:absolute;top:0px;bottom:56px;left:0px;right:0px;overflow-y:auto;">
+      <v-container>
+        <v-row ref="headerRow">
+          <v-col>
+            <h1
+              style="float: left;"
+            >
+              <server-status :server="server" />
+              {{ server.name }}
+            </h1>
+            <div style="float: right;">
+              <server-controls :server="server" />
+            </div>
+            <div
+              style="clear: both;"
+              class="mb-2"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="socketError"
+          ref="alertRow"
         >
-          <server-status :server="server" />
-          {{ server.name }}
-        </h1>
-        <div style="float: right;">
-          <server-controls :server="server" />
-        </div>
-        <div
-          style="clear: both;"
-          class="mb-2"
-        />
-      </v-col>
-    </v-row>
-    <v-row v-if="socketError">
-      <v-col>
-        <v-alert
-          border="left"
-          text
-          type="warning"
+          <v-col>
+            <v-alert
+              border="left"
+              text
+              type="warning"
+            >
+              {{ $t('errors.ErrSocketFailed') }}
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'console'">
+          <v-col>
+            <server-console :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'stats'">
+          <v-col>
+            <server-cpu :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'stats'">
+          <v-col>
+            <server-memory :server="server" />
+          </v-col>
+        </v-row>
+        <v-row
+          v-show="currentTab === 'files'"
+          v-if="server.permissions.viewServerFiles || isAdmin()"
         >
-          {{ $t('errors.ErrSocketFailed') }}
-        </v-alert>
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.viewServerConsole || isAdmin()">
+          <v-col>
+            <server-files :server="server" />
+          </v-col>
+        </v-row>
+        <v-row
+          v-show="currentTab === 'files'"
+          v-if="server.permissions.sftpServer || isAdmin()"
+        >
+          <v-col>
+            <server-sftp :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'users'">
+          <v-col>
+            <server-users :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'settings'">
+          <v-col>
+            <server-settings :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'admin'">
+          <v-col>
+            <server-admin :server="server" />
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
+
+    <v-row
+      ref="bottomRow"
+      class="mt-8"
+    >
       <v-col>
-        <server-console :server="server" />
+        <v-bottom-navigation
+          v-model="currentTab"
+          absolute
+          mandatory
+          color="primary"
+          style="z-index:3;"
+        >
+          <v-slide-group>
+            <v-slide-item
+              v-if="server.permissions.viewServerConsole || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="console">
+                <span>{{ $t('servers.Console') }}</span>
+                <v-icon>mdi-console-line</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.viewServerStats || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="stats">
+                <span>{{ $t('servers.Statistics') }}</span>
+                <v-icon>mdi-chart-line</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.viewServerFiles || server.permissions.sftpServer || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="files">
+                <span>{{ $t('servers.Files') }}</span>
+                <v-icon>mdi-file</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.editServerData || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="settings">
+                <span>{{ $t('servers.Settings') }}</span>
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.editServerUsers || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="users">
+                <span>{{ $t('users.Users') }}</span>
+                <v-icon>mdi-account-multiple</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.deleteServer || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="admin">
+                <span>{{ $t('servers.Admin') }}</span>
+                <v-icon>mdi-account-star</v-icon>
+              </v-btn>
+            </v-slide-item>
+          </v-slide-group>
+        </v-bottom-navigation>
       </v-col>
     </v-row>
-    <v-row v-if="server.permissions.viewServerStats || isAdmin()">
-      <v-col
-        cols="12"
-        md="6"
-      >
-        <server-cpu :server="server" />
-      </v-col>
-      <v-col
-        cols="12"
-        md="6"
-      >
-        <server-memory :server="server" />
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.viewServerFiles || isAdmin()">
-      <v-col>
-        <server-files :server="server" />
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.sftpServer || isAdmin()">
-      <v-col>
-        <server-sftp :server="server" />
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.editServerUsers || isAdmin()">
-      <v-col>
-        <server-users :server="server" />
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.editServerData || isAdmin()">
-      <v-col>
-        <server-settings :server="server" />
-      </v-col>
-    </v-row>
-    <v-row v-if="server.permissions.deleteServer || isAdmin()">
-      <v-col>
-        <server-admin :server="server" />
-      </v-col>
-    </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -94,7 +175,10 @@ export default {
     server: { type: Object, default: () => {} }
   },
   data () {
-    return { socketError: false }
+    return {
+      socketError: false,
+      currentTab: 'console'
+    }
   },
   mounted () {
     this.$api.startServerTask(this.server.id, () => {

@@ -8,5 +8,12 @@
   "Download": "Pobierz",
   "Size": "Rozmiar",
   "NoFiles": "Nie ma jeszcze tutaj żadnych plików, utwórz je na przykład klikając przycisk instaluj na górze strony",
-  "FileLoadFailed": "Nie udało się wczytać pliku"
+  "FileLoadFailed": "Nie udało się wczytać pliku",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

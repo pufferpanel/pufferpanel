@@ -8,5 +8,12 @@
   "Download": "Scarica",
   "Size": "Dimensioni",
   "NoFiles": "Non ci sono ancora dei file qui, vai a crearne alcuni per esempio cliccando il pulsante installa nella parte superiore della pagina",
-  "FileLoadFailed": "Caricamento del file fallito"
+  "FileLoadFailed": "Caricamento del file fallito",
+  "Refresh": "Aggiorna",
+  "CreateFile": "Crea file",
+  "CreateFolder": "Crea cartella",
+  "ArchiveCurrentFolder": "Crea un archivio dalla cartella corrente",
+  "ArchiveFolder": "Crea un archivio dalla cartella",
+  "ExtractArchive": "Estrai archivio",
+  "DropToUpload": "Trascina qui i file per caricarli"
 }

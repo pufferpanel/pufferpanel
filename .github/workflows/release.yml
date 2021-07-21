@@ -17,7 +17,7 @@ on:
         
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: "Deployment"
     
     steps:
@@ -35,7 +35,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_amd64'
+        artifact-name: 'pufferpanel_*_amd64.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -45,7 +45,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_armhf'
+        artifact-name: 'pufferpanel_*_armhf.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -55,7 +55,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_arm64'
+        artifact-name: 'pufferpanel_*_arm64.zip'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
     
@@ -65,7 +65,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'true'
-        artifact-name: 'pufferpanel-*.rpm'
+        artifact-name: 'pufferpanel-*.x86_64.rpm'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -196,15 +196,18 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/el/7 ${{ steps.amd64rpmdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/el/8 ${{ steps.amd64rpmdownload.outputs.file }}
         
+        package_cloud push ${{ github.event.inputs.repo }}/fedora/33 ${{ steps.amd64rpmdownload.outputs.file }}
+        
         #ubuntu
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/xenial ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/yakkety ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/artful ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoan ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.amd64debdownload.outputs.file }}
+        
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.arm64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.arm64debdownload.outputs.file }}
         
         #debian
         package_cloud push ${{ github.event.inputs.repo }}/debian/jessie ${{ steps.amd64debdownload.outputs.file }}

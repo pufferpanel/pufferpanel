@@ -15,6 +15,7 @@ package pufferpanel
 
 import (
 	"crypto/ecdsa"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -33,6 +34,9 @@ type Token struct {
 }
 
 func ParseToken(publicKey *ecdsa.PublicKey, token string) (*Token, error) {
+	if publicKey == nil {
+		return nil, errors.New("PUBLIC KEY NOT LOADED")
+	}
 	claim, err := jwt.ParseWithClaims(token, &Claim{PanelClaims: PanelClaims{Scopes: make(map[string][]Scope)}}, func(token *jwt.Token) (interface{}, error) {
 		return publicKey, nil
 	})

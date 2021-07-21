@@ -1,0 +1,24 @@
+{
+  "Settings": "Paramètres",
+  "PanelSettings": "Paramètres panel",
+  "EmailSettings": "Paramètres e-mail",
+  "MasterUrl": "URL principale",
+  "MasterUrlHint": "L'URL de base du panel est accessible sous le format http://localhost:8080",
+  "CompanyName": "Nom de la compagnie",
+  "DefaultTheme": "Thème par défaut",
+  "EmailProvider": "Fournisseur d'e-mail",
+  "emailProviders": {
+    "none": "Aucun",
+    "smtp": "SMTP",
+    "mailgun": "Mailgun",
+    "mailjet": "Mailjet"
+  },
+  "emailFields": {
+    "from": "Adresse de l'expéditeur",
+    "domain": "Domaine",
+    "key": "Clé API",
+    "host": "Hôte",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe"
+  }
+}

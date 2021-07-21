@@ -24,6 +24,7 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 		middleware.ResponseAndRecover(c)
 	})
 	rg.POST("login", middleware.NeedsDatabase, LoginPost)
+	rg.POST("otp", middleware.NeedsDatabase, OtpPost)
 	rg.POST("register", middleware.NeedsDatabase, RegisterPost)
 	rg.POST("reauth", handlers.AuthMiddleware, middleware.NeedsDatabase, Reauth)
 	rg.GET("publickey", GetToken)

@@ -29,12 +29,13 @@
   "Search": "検索",
   "Back": "戻る",
   "Next": "次",
-  "LanguageName": "英語",
+  "LanguageName": "日本語",
   "Details": "結果",
   "ErrorDetails": "エラー結果",
   "HelpTranslate": "PufferPanelの翻訳にご協力ください",
   "DarkMode": "ダークモード",
   "ThemeOptions": "テーマ設定",
   "Protocol": "Protocol",
-  "Add": "Add"
+  "Add": "Add",
+  "Ignore": "Ignore"
 }

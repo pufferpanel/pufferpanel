@@ -29,12 +29,13 @@
   "Search": "Search",
   "Back": "Back",
   "Next": "Next",
-  "LanguageName": "Tiếng Việt",
+  "LanguageName": "Vietnamština",
   "Details": "Details",
   "ErrorDetails": "Error Details",
   "HelpTranslate": "Help us translate PufferPanel",
   "DarkMode": "Dark Mode",
   "ThemeOptions": "Theme Options",
   "Protocol": "Protocol",
-  "Add": "Add"
+  "Add": "Add",
+  "Ignore": "Ignore"
 }

@@ -1,7 +1,7 @@
 {
   "Templates": "Mallid",
   "NoTemplates": "Siin pole veel malle",
-  "Deleted": "Template deleted",
+  "Deleted": "Mall kustutatud",
   "New": "Loo uus mall",
   "Edit": "Muuda malli",
   "Editor": "Redigeerija",
@@ -28,10 +28,10 @@
   "ReleaseType": "Väljalaske Tüüp",
   "AddFile": "Lisa fail",
   "AddVariable": "Lisa muutuja",
-  "Environment": "Environment",
-  "Environments": "Environments",
+  "Environment": "Keskkond",
+  "Environments": "Keskkonnad",
   "AddEnvironment": "Lisa keskkond",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Vaikimisi keskkond",
   "AddEnvVar": "Lisa env muutuja",
   "EnvVars": "Keskkonna muutujad",
   "DockerImage": "Dockeri Image",
@@ -47,8 +47,11 @@
   "DeletePostStep": "Lisa Pärast Käivitamist Samm",
   "Shutdown": "Lülita välja",
   "Command": "Käsklus",
+  "WorkingDirectory": "Töökataloog",
   "Arguments": "Argumendid",
   "AddArgument": "Lisa argument",
+  "Convert": "Teisenda",
+  "OfferV1Convert": "Selle malli json näeb välja, nagu see oleks PufferPanel 1.x pärit, kas soovite selle automaatselt teisendada PufferPanel 2.x malliks?",
   "import": {
     "OverrideWarning": "HOIATUS: Imporditud mallid kirjutatakse üle sama ID-ga olevasolevad mallid",
     "Import": "Impordi mall",
@@ -65,43 +68,43 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Allalaadimine",
+      "files": "Failid"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Käivita käsklus",
+      "commands": "Käsklused"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Muuda faili",
+      "regex": "Käsitlege otsingut kui RegEx",
+      "search": "Tekstiotsing",
+      "replace": "Asenda"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Kirjuta faili",
+      "text": "Sisu"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Liiguta faili",
+      "source": "Allikas",
+      "target": "Sihtmärk"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Loo kataloog"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Laadi minecraft alla"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Laadi Minecraft Forge alla"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Laadi Minecraft SpongeForge alla",
+      "releaseType": "Väljalaske Tüüp"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Laadi Minecraft Fabric alla"
     }
   }
 }

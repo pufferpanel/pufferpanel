@@ -9,10 +9,10 @@
   "PublicPort": "Public Port",
   "PrivateHost": "Private Host",
   "PrivatePort": "Private Port",
-  "SftpPort": "SFTP Port",
-  "SaveConfig": "Save Config",
-  "SavePublicKey": "Save Public Key",
+  "SftpPort": "SFTP port",
+  "SaveConfig": "Lagre konfig",
+  "SavePublicKey": "Lagre offentlig nøkkel",
   "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config file in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards.",
-  "UpdateSuccess": "Successfully updated node",
-  "UpdateError": "Error updating node"
+  "UpdateSuccess": "Noden er oppdatert",
+  "UpdateError": "Feil ved oppdatering av node"
 }

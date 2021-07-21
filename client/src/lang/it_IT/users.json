@@ -28,5 +28,14 @@
   "CreateError": "Creazione utente fallita",
   "UpdateSuccess": "Utente Aggiornato",
   "UpdateError": "Impossibile aggiornare l'utente",
-  "PermsUpdateError": "Impossibile aggiungere i permessi dell'utente"
+  "PermsUpdateError": "Impossibile aggiungere i permessi dell'utente",
+  "Otp": "Autenticazione a due fattori",
+  "OtpEnable": "Abilita 2FA",
+  "OtpDisable": "Disabilita 2FA",
+  "OtpHint": "L'autenticazione a due fattori aggiunge un ulteriore livello di sicurezza al tuo account richiedendo più di una semplice password per accedere.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scansiona il codice QR utilizzando l'applicazione di autenticazione o copia il codice segreto qui sotto",
+  "OtpSecret": "Codice Segreto",
+  "OtpConfirm": "Conferma utilizzando un codice 2FA",
+  "OtpNeeded": "Secondo fattore richiesto"
 }

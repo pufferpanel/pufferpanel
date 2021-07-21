@@ -8,10 +8,11 @@
     "dev-watch": "vue-cli-service build --mode development --watch"
   },
   "dependencies": {
-    "@mdi/font": "^4.9.95",
-    "ansi_up": "^4.0.4",
+    "@mdi/font": "^5.9.55",
+    "ansi_up": "^5.0.0",
     "apexcharts": "^3.23.1",
     "axios": "^0.21.1",
+    "core-js": "^3.14.0",
     "dompurify": "^2.2.6",
     "filesize": "^6.1.0",
     "js-cookie": "^2.2.1",
@@ -21,6 +22,7 @@
     "vue-fragment": "^1.5.1",
     "vue-i18n": "^8.22.3",
     "vue-router": "^3.4.9",
+    "vuedraggable": "^2.24.3",
     "vuetify": "^2.4.2",
     "vuetify-toast-snackbar": "^0.6.1"
   },

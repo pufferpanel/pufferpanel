@@ -12,7 +12,7 @@
   "ServersFilesPut": "Éditer et envoyer des fichiers via le gestionnaire",
   "ServersEditUsers": "Éditer les accès de l'utilisateur à ce serveur",
   "Admin": "Administrateur (ceci accorde toutes les permissions possibles)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Voir les serveurs",
   "CreateServers": "Créer des serveurs",
   "DeleteServers": "Supprimer des serveurs",
   "EditServerAdmin": "Éditer les paramètres du serveur",
@@ -22,5 +22,6 @@
   "ViewTemplates": "Consulter les modèles",
   "EditTemplates": "Modifier les modèles",
   "ViewUsers": "Consulter tous les utilisateurs",
-  "EditUsers": "Éditer les autres utilisateurs"
+  "EditUsers": "Éditer les autres utilisateurs",
+  "PanelSettings": "Modifier les paramètres du panel"
 }
