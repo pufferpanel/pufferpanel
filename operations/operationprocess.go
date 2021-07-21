@@ -29,6 +29,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/move"
+	"github.com/pufferpanel/pufferpanel/v2/operations/program"
 	"github.com/pufferpanel/pufferpanel/v2/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v2/operations/spongeforgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/writefile"
@@ -181,4 +182,7 @@ func loadCoreModules() {
 
 	extractFactory := extract.Factory
 	commandMapping[consoleFactory.Key()] = extractFactory
+
+	programFactory := program.Factory
+	commandMapping[consoleFactory.Key()] = programFactory
 }
