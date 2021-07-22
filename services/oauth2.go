@@ -14,8 +14,8 @@
 package services
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 )
 
 type OAuth2 struct {
@@ -30,7 +30,7 @@ func (o *OAuth2) Get(clientId string) (*models.Client, error) {
 	return client, err
 }
 
-func (o *OAuth2) GetForUser(userId uint) ([]*models.Client, error) {
+func (o *OAuth2) GetForUser(userId int) ([]*models.Client, error) {
 	clients := &models.Clients{}
 
 	client := &models.Client{

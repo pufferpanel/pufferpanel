@@ -16,10 +16,10 @@ package services
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -49,7 +49,7 @@ func (ns *Node) GetAll() (*models.Nodes, error) {
 	return nodes, res.Error
 }
 
-func (ns *Node) Get(id uint) (*models.Node, error) {
+func (ns *Node) Get(id int) (*models.Node, error) {
 	model := &models.Node{}
 
 	res := ns.DB.First(model, id)
@@ -62,12 +62,12 @@ func (ns *Node) Update(model *models.Node) error {
 	return res.Error
 }
 
-func (ns *Node) Delete(id uint) error {
+func (ns *Node) Delete(id int) error {
 	model := &models.Node{
 		ID: id,
 	}
 
-	var count int
+	var count int64
 	ns.DB.Model(&models.Server{}).Where("node_id = ?", model.ID).Count(&count)
 	if count > 0 {
 		return pufferpanel.ErrNodeHasServers

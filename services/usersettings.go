@@ -14,15 +14,15 @@
 package services
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 )
 
 type UserSettings struct {
 	DB *gorm.DB
 }
 
-func (uss *UserSettings) GetAllForUser(userId uint) (models.UserSettingsView, error) {
+func (uss *UserSettings) GetAllForUser(userId int) (models.UserSettingsView, error) {
 	records := &models.UserSettings{}
 
 	query := uss.DB
@@ -44,13 +44,13 @@ func (uss *UserSettings) GetAllForUser(userId uint) (models.UserSettingsView, er
 
 func (uss *UserSettings) Update(model *models.UserSetting) error {
 	search := &models.UserSetting{
-		Key: model.Key,
+		Key:    model.Key,
 		UserID: model.UserID,
 	}
 
 	err := uss.DB.Where(search).First(search).Error
 
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound != err {
 		return err
 	}
 

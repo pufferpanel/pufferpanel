@@ -14,10 +14,9 @@
 package services
 
 import (
-	"database/sql"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	uuid2 "github.com/satori/go.uuid"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -27,14 +26,14 @@ type Server struct {
 
 type ServerSearch struct {
 	Username string
-	NodeId   uint
+	NodeId   int
 	NodeName string
 	Name     string
-	PageSize uint
-	Page     uint
+	PageSize int
+	Page     int
 }
 
-func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total uint, err error) {
+func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total int64, err error) {
 	records = &models.Servers{}
 
 	query := ss.DB
@@ -90,41 +89,28 @@ func (ss *Server) Update(model *models.Server) error {
 }
 
 func (ss *Server) Delete(id string) error {
-	//if we are already in a transaction, use the existing transaction
-	inTrans := false
-	var trans *gorm.DB
-	if _, ok := ss.DB.CommonDB().(*sql.Tx); ok {
-		trans = ss.DB
-		inTrans = true
-	} else {
-		trans = ss.DB.Begin()
-		defer trans.RollbackUnlessCommitted()
-	}
+	trans := ss.DB
+	return ss.DB.Transaction(func(tx *gorm.DB) error {
+		model := &models.Server{
+			Identifier: id,
+		}
 
-	model := &models.Server{
-		Identifier: id,
-	}
+		err := trans.Delete(models.Permissions{}, "server_identifier = ?", id).Error
+		if err != nil {
+			return err
+		}
 
-	err := trans.Delete(models.Permissions{}, "server_identifier = ?", id).Error
-	if err != nil {
-		return err
-	}
+		err = trans.Delete(models.Client{}, "server_id = ?", id).Error
+		if err != nil {
+			return err
+		}
 
-	err = trans.Delete(models.Client{}, "server_id = ?", id).Error
-	if err != nil {
-		return err
-	}
-
-	err = ss.DB.Delete(model).Error
-	if err != nil {
-		return err
-	}
-
-	if inTrans {
+		err = ss.DB.Delete(model).Error
+		if err != nil {
+			return err
+		}
 		return nil
-	} else {
-		return trans.Commit().Error
-	}
+	})
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {
