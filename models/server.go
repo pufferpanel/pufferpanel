@@ -16,14 +16,15 @@ package models
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"gopkg.in/go-playground/validator.v9"
+	"gorm.io/gorm"
 	"time"
 )
 
 type Server struct {
 	Name       string `gorm:"size:40;NOT NULL" json:"-" validate:"required,printascii"`
-	Identifier string `gorm:"UNIQUE_INDEX;NOT NULL;PRIMARY_KEY;size:8" json:"-" validate:"required,printascii"`
+	Identifier string `gorm:"UNIQUE;NOT NULL;primaryKey;size:8" json:"-" validate:"required,printascii"`
 
-	NodeID uint `gorm:"NOT NULL" json:"-" validate:"required,min=1"`
+	NodeID int  `gorm:"NOT NULL" json:"-" validate:"required,min=1"`
 	Node   Node `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	IP   string `gorm:"" json:"-" validate:"omitempty,ip|fqdn"`
@@ -45,7 +46,7 @@ func (s *Server) IsValid() (err error) {
 	return
 }
 
-func (s *Server) BeforeSave() (err error) {
+func (s *Server) BeforeSave(*gorm.DB) (err error) {
 	err = s.IsValid()
 	return
 }

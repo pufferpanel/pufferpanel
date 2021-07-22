@@ -40,10 +40,10 @@ type Node struct {
 }
 
 type Server struct {
-	ID uint
-	Hash uuid.UUID
+	Id           int
+	Hash         uuid.UUID
 	DaemonSecret string
-	Node uint
-	Name string
-	OwnerId uint `gorm:"column:owner_id"`
+	Node         uint
+	Name         string
+	OwnerId      int `gorm:"column:owner_id"`
 }

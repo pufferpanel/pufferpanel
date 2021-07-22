@@ -16,9 +16,9 @@ package config
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/jinzhu/gorm"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"reflect"
 	"strings"
 )
@@ -45,7 +45,7 @@ func init() {
 }
 
 type Setting struct {
-	Key   string `gorm:"type:varchar(100);PRIMARY_KEY"`
+	Key   string `gorm:"type:varchar(100);primaryKey"`
 	Value string `gorm:"type:varchar(100)"`
 }
 
@@ -54,7 +54,7 @@ type db interface {
 }
 
 var database db
-var defaultSettings map[string]interface{} = map[string]interface{}{
+var defaultSettings = map[string]interface{}{
 	//global settings
 	"logs":          "logs",
 	"web.host":      "0.0.0.0:8080",
@@ -72,7 +72,7 @@ var defaultSettings map[string]interface{} = map[string]interface{}{
 	"panel.settings.companyName":  "PufferPanel",
 	"panel.settings.defaultTheme": "PufferPanel",
 	"panel.settings.masterUrl":    "http://localhost:8080",
-	"panel.sessionKey": []uint8{},
+	"panel.sessionKey":            []uint8{},
 
 	//daemon specific settings
 	"daemon.enable":                 true,
@@ -116,7 +116,7 @@ func fromDatabase(key string) (value *string, err error) {
 	}
 
 	err = db.First(configEntry).Error
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound != err {
 		return nil, err
 	}
 

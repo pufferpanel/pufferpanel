@@ -21,7 +21,7 @@ import (
 type ServerView struct {
 	Identifier string           `json:"id,omitempty"`
 	Name       string           `json:"name,omitempty"`
-	NodeId     uint             `json:"nodeId,omitempty"`
+	NodeId     int              `json:"nodeId,omitempty"`
 	Node       *NodeView        `json:"node,omitempty"`
 	Data       interface{}      `json:"data,omitempty"`
 	Users      []ServerUserView `json:"users,omitempty"`

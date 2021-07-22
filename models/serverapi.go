@@ -21,7 +21,7 @@ import (
 type ServerCreation struct {
 	pufferpanel.Server
 
-	NodeId uint     `json:"node"`
+	NodeId int      `json:"node"`
 	Users  []string `json:"users"`
 	Name   string   `json:"name"`
 }

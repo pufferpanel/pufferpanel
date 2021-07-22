@@ -137,7 +137,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 			return
 		}
 
-		user, err := us.GetById(uint(ui))
+		user, err := us.GetById(ui)
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

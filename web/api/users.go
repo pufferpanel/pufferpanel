@@ -15,7 +15,6 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
@@ -23,6 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -68,7 +68,7 @@ func searchUsers(c *gin.Context) {
 	}
 
 	var results *models.Users
-	var total uint
+	var total int64
 	if results, total, err = us.Search(search.Username, search.Email, search.PageLimit, search.Page); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -76,10 +76,10 @@ func searchUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.UserSearchResponse{
 		Users: models.FromUsers(results),
 		Metadata: &response.Metadata{Paging: &response.Paging{
-			Page:    search.Page,
-			Size:    search.PageLimit,
+			Page:    uint(search.Page),
+			Size:    uint(search.PageLimit),
 			MaxSize: MaxPageSize,
-			Total:   total,
+			Total:   uint(total),
 		}},
 	})
 }
@@ -140,14 +140,14 @@ func getUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id uint
-	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+	var id int
+	if id, err = cast.ToIntE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound == err {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -173,8 +173,8 @@ func updateUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id uint
-	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+	var id int
+	if id, err = cast.ToIntE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -189,7 +189,7 @@ func updateUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound == err {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -220,14 +220,14 @@ func deleteUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id uint
-	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+	var id int
+	if id, err = cast.ToIntE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound == err {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -257,14 +257,14 @@ func getUserPerms(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	var err error
-	var id uint
-	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+	var id int
+	if id, err = cast.ToIntE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound == err {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -296,8 +296,8 @@ func setUserPerms(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	var err error
-	var id uint
-	if id, err = cast.ToUintE(c.Param("id")); err != nil {
+	var id int
+	if id, err = cast.ToIntE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -309,7 +309,7 @@ func setUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound == err {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {

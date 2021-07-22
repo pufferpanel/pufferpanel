@@ -17,6 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -36,7 +37,8 @@ func HasTransaction(c *gin.Context) {
 
 	c.Set("db", db)
 
-	c.Next()
-
-	GetDatabase(c).RollbackUnlessCommitted()
+	_ = db.Transaction(func(tx *gorm.DB) error {
+		c.Next()
+		return c.Errors.Last()
+	})
 }

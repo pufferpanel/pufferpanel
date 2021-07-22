@@ -90,7 +90,7 @@ func AuthMiddleware(c *gin.Context) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
 	}
-	user, err := us.GetById(uint(id))
+	user, err := us.GetById(id)
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return

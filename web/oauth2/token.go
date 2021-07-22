@@ -17,11 +17,11 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"strings"
@@ -63,7 +63,7 @@ func handleTokenRequest(c *gin.Context) {
 					return
 				}
 				ns := &services.Node{DB: db}
-				node, err := ns.Get(uint(id))
+				node, err := ns.Get(id)
 				if err == gorm.ErrRecordNotFound {
 					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
 					return
@@ -179,7 +179,7 @@ func handleTokenRequest(c *gin.Context) {
 			mappedScopes := make([]string, 0)
 
 			for _, p := range perms.ToScopes() {
-				mappedScopes = append(mappedScopes, server.Identifier + ":" + string(p))
+				mappedScopes = append(mappedScopes, server.Identifier+":"+string(p))
 			}
 
 			c.Header("Cache-Control", "no-store")
@@ -187,7 +187,7 @@ func handleTokenRequest(c *gin.Context) {
 			c.JSON(http.StatusOK, &oauth2TokenResponse{
 				AccessToken: jwtToken,
 				TokenType:   "Bearer",
-				Scope: strings.Join(mappedScopes, " "),
+				Scope:       strings.Join(mappedScopes, " "),
 			})
 		}
 	default:

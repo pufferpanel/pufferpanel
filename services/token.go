@@ -22,11 +22,11 @@ import (
 	"encoding/pem"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -58,7 +58,7 @@ func Generate(claims jwt.Claims) (string, error) {
 	return token.SignedString(privateKey)
 }
 
-func GenerateSession(id uint) (string, error) {
+func GenerateSession(id int) (string, error) {
 	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "session",
@@ -88,7 +88,7 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 	return Generate(claims)
 }
 
-func GenerateOAuthForNode(nodeId uint) (string, error) {
+func GenerateOAuthForNode(nodeId int) (string, error) {
 	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",
@@ -104,7 +104,7 @@ func GenerateOAuthForNode(nodeId uint) (string, error) {
 	return Generate(claims)
 }
 
-func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
+func (ps *Permission) GenerateOAuthForUser(userId int, serverId *string) (string, error) {
 	var err error
 	var permissions []*models.Permissions
 
@@ -119,10 +119,10 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 		permissions = []*models.Permissions{perm}
 
 		perm, err = ps.GetForUserAndServer(userId, nil)
-		if err != nil && !gorm.IsRecordNotFoundError(err) {
+		if err != nil && gorm.ErrRecordNotFound != err {
 			return "", err
 		}
-		if perm.ID != 0 && !gorm.IsRecordNotFoundError(err) {
+		if perm.ID != 0 && gorm.ErrRecordNotFound != err {
 			permissions = append(permissions, perm)
 		}
 	}
@@ -252,7 +252,6 @@ func loadPublic() {
 		return
 	}
 
-
 	key, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
@@ -268,7 +267,7 @@ func loadPublic() {
 	timer = time.Now().Add(5 * time.Minute)
 }
 
-func readPublicKey(path string) ([]byte, error){
+func readPublicKey(path string) ([]byte, error) {
 	if strings.HasPrefix(path, "https://") || strings.HasPrefix(path, "http://") {
 		client := http.Client{}
 		response, err := client.Get(path)

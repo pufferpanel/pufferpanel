@@ -18,8 +18,8 @@ import "github.com/pufferpanel/pufferpanel/v2/response"
 type UserSearch struct {
 	Username  string `form:"username"`
 	Email     string `form:"email"`
-	PageLimit uint   `form:"limit"`
-	Page      uint   `form:"page"`
+	PageLimit int    `form:"limit"`
+	Page      int    `form:"page"`
 }
 
 type UserSearchResponse struct {
