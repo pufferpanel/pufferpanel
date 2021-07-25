@@ -24,7 +24,7 @@
   "Edit": "Редактировать пользователя",
   "Update": "Обновить пользователя",
   "Delete": "Удалить пользователя",
-  "CreateSuccess": "User successfully created",
+  "CreateSuccess": "Пользователь успешно создан",
   "CreateError": "Ошибка в создании пользователя",
   "UpdateSuccess": "Пользователь обновлен",
   "UpdateError": "Не удалось обновить пользователя",
