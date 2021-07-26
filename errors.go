@@ -53,6 +53,7 @@ var ErrMissingScope = CreateError("missing scope", "ErrMissingScope")
 var ErrNodeHasServers = CreateError("node has servers associated", "ErrNodeHasServers")
 var ErrInvalidSession = CreateError("invalid session", "ErrInvalidSession")
 var ErrSessionExpired = CreateError("session expired", "ErrSessionExpired")
+var ErrTaskNotFound = CreateError("task not found", "ErrTaskNotFound")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})

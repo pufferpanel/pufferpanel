@@ -26,6 +26,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
+	"github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"os"
@@ -128,6 +129,7 @@ func CreateProgram() *Program {
 			},
 			Type:           pufferpanel.Type{Type: "standard"},
 			Variables:      make(map[string]pufferpanel.Variable, 0),
+			Tasks:          make(map[string]pufferpanel.Task, 0),
 			Display:        "Unknown server",
 			Installation:   make([]interface{}, 0),
 			Uninstallation: make([]interface{}, 0),
@@ -402,7 +404,7 @@ func (p *Program) Save() (err error) {
 	return
 }
 
-func (p *Program) Edit(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
+func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bool) (err error) {
 	for k, v := range data {
 		var elem pufferpanel.Variable
 
@@ -420,7 +422,57 @@ func (p *Program) Edit(data map[string]pufferpanel.Variable, overrideUser bool) 
 
 		p.Variables[k] = elem
 	}
+
 	err = Save(p.Id())
+	return
+}
+
+func (p *Program) NewTask(task pufferpanel.Task) (id string, err error) {
+	id = uuid.NewV4().String()[:8]
+	p.Tasks[id] = task
+
+	err = Save(p.Id())
+	if err != nil {
+		return
+	}
+
+	err = RestartScheduler(p.Id())
+	return
+}
+
+func (p *Program) RunTask(taskId string) (err error) {
+	if _, ok := p.Tasks[taskId]; !ok {
+		return pufferpanel.ErrTaskNotFound
+	}
+
+	return ExecuteTask(p.Id(), taskId)
+}
+
+func (p *Program) EditTask(id string, task pufferpanel.Task) (err error) {
+	if _, ok := p.Tasks[id]; !ok {
+		return pufferpanel.ErrTaskNotFound
+	}
+
+	p.Tasks[id] = task
+
+	err = Save(p.Id())
+	if err != nil {
+		return
+	}
+
+	err = RestartScheduler(p.Id())
+	return
+}
+
+func (p *Program) RemoveTask(id string) (err error) {
+	delete(p.Tasks, id)
+
+	err = Save(p.Id())
+	if err != nil {
+		return
+	}
+
+	err = RestartScheduler(p.Id())
 	return
 }
 

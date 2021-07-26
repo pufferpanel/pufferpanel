@@ -77,14 +77,19 @@
             <server-sftp :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'users'">
+        <v-row v-show="currentTab === 'tasks'">
           <v-col>
-            <server-users :server="server" />
+            <server-tasks :server="server" />
           </v-col>
         </v-row>
         <v-row v-show="currentTab === 'settings'">
           <v-col>
             <server-settings :server="server" />
+          </v-col>
+        </v-row>
+        <v-row v-show="currentTab === 'users'">
+          <v-col>
+            <server-users :server="server" />
           </v-col>
         </v-row>
         <v-row v-show="currentTab === 'admin'">
@@ -133,6 +138,15 @@
               <v-btn value="files">
                 <span>{{ $t('servers.Files') }}</span>
                 <v-icon>mdi-file</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="server.permissions.editServerData || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="tasks">
+                <span>{{ $t('servers.Tasks') }}</span>
+                <v-icon>mdi-timer</v-icon>
               </v-btn>
             </v-slide-item>
             <v-slide-item
