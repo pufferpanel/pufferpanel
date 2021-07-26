@@ -22,12 +22,13 @@ type Server struct {
 	Uninstallation []interface{}       `json:"uninstall,omitempty"`
 	Identifier     string              `json:"id,omitempty"`
 	Execution      Execution           `json:"run,omitempty"`
-	Tasks          []Task              `json:"tasks,omitempty"`
+	Tasks          map[string]Task     `json:"tasks,omitempty"`
 }
 
 type Task struct {
+	Name         string        `json:"name,omitempty" binding:"required"`
 	CronSchedule string        `json:"cronSchedule,omitempty"`
-	Operations   []interface{} `json:"operations,omitempty"`
+	Operations   []interface{} `json:"operations,omitempty" binding:"required"`
 }
 
 type Variable struct {

@@ -55,9 +55,18 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
 		l.OPTIONS("/:id", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServer)
-		l.POST("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServer)
+		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerData)
+		l.POST("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerData)
 		l.OPTIONS("/:id/data", response.CreateOptions("GET", "POST"))
+
+		l.GET("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerTasks)
+		l.POST("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), CreateServerTask)
+		l.PUT("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerTask)
+		l.DELETE("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
+		l.OPTIONS("/:id/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
+
+		l.POST("/:id/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		l.OPTIONS("/:id/tasks/:taskId/run", response.CreateOptions("POST"))
 
 		l.POST("/:id/reload", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
 		l.OPTIONS("/:id/reload", response.CreateOptions("POST"))
@@ -314,7 +323,7 @@ func InstallServer(c *gin.Context) {
 // @Param id path string true "Server Identifier"
 // @Param data body pufferpanel.ServerData true "Server data"
 // @Router /daemon/server/{id}/data [post]
-func EditServer(c *gin.Context) {
+func EditServerData(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
@@ -324,7 +333,69 @@ func EditServer(c *gin.Context) {
 		return
 	}
 
-	err = prg.Edit(data.Variables, isAdmin(c))
+	err = prg.EditData(data.Variables, isAdmin(c))
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func CreateServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	var task pufferpanel.Task
+	err := c.ShouldBindJSON(&task)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	id, err := prg.NewTask(task)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.JSON(http.StatusOK, gin.H{"id": id})
+	}
+}
+
+func RunServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	err := prg.RunTask(taskId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func EditServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	var task pufferpanel.Task
+	err := c.ShouldBindJSON(&task)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = prg.EditTask(taskId, task)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func DeleteServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	err := prg.RemoveTask(taskId)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -364,7 +435,7 @@ func ReloadServer(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
 // @Router /daemon/server/{id}/data [get]
-func GetServer(c *gin.Context) {
+func GetServerData(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
 
@@ -381,6 +452,13 @@ func GetServer(c *gin.Context) {
 	}
 
 	c.JSON(200, &pufferpanel.ServerData{Variables: data})
+}
+
+func GetServerTasks(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+
+	c.JSON(200, &pufferpanel.ServerTasks{Tasks: server.Tasks})
 }
 
 // @Summary Gets server data as admin
@@ -421,6 +499,11 @@ func EditServerAdmin(c *gin.Context) {
 	}
 
 	err = programs.Save(item.Id())
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = programs.RestartScheduler(item.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}

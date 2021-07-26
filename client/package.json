@@ -13,6 +13,8 @@
     "apexcharts": "^3.23.1",
     "axios": "^0.21.1",
     "core-js": "^3.14.0",
+    "cron-validator": "^1.2.1",
+    "cronstrue": "^1.114.0",
     "dompurify": "^2.2.6",
     "filesize": "^6.1.0",
     "js-cookie": "^2.2.1",

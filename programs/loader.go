@@ -127,39 +127,65 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	environmentType := typeMap.Type
 	data.RunningEnvironment, err = environments.Create(environmentType, pufferpanel.ServerFolder, id, data.Environment)
 
-	s := gocron.NewScheduler(time.UTC)
-	for i := range data.Tasks {
-		t := data.Tasks[i]
-		_, err := s.Cron(t.CronSchedule).Do(func(ops []interface{}, p *Program) {
-			if len(ops) > 0 {
-				process, err := operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
-				if err != nil {
-					logging.Error().Printf("Error setting up tasks: %s", err)
-					p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-					p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-					return
-				}
+	if err = startScheduler(data); err != nil {
+		return nil, err
+	}
+	return data, nil
+}
 
-				err = process.Run(p.RunningEnvironment)
-				if err != nil {
-					logging.Error().Printf("Error setting up tasks: %s", err)
-					p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-					p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-					return
-				}
+func startScheduler(program *Program) error {
+	s := gocron.NewScheduler(time.UTC)
+	for k, t := range program.Tasks {
+		if t.CronSchedule != "" {
+			_, err := s.Cron(t.CronSchedule).Do(executeTask, program, k)
+			if err != nil {
+				return err
 			}
-		}, t.Operations, data)
-		if err != nil {
-			return nil, err
 		}
 	}
 	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
 	s.StartAsync()
-	data.Scheduler = s
-	if err != nil {
-		return nil, err
+	program.Scheduler = s
+	return nil
+}
+
+func executeTask(p *Program, taskId string) (err error) {
+	task, ok := p.Tasks[taskId]
+	if !ok {
+		logging.Error().Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
+		return
 	}
-	return data, nil
+
+	ops := task.Operations
+	if len(ops) > 0 {
+		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
+		var process operations.OperationProcess
+		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+
+		err = process.Run(p.RunningEnvironment)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
+	}
+	return
+}
+
+func ExecuteTask(programId string, taskId string) error {
+	program := GetFromCache(programId)
+	if program == nil {
+		return errors.New("no server with given id")
+	}
+	return executeTask(program, taskId)
 }
 
 func Create(program *Program) error {
@@ -269,6 +295,28 @@ func Save(id string) (err error) {
 		return
 	}
 	err = program.Save()
+	return
+}
+
+func RestartScheduler(id string) (err error) {
+	program := GetFromCache(id)
+	if program == nil {
+		err = errors.New("server does not exist")
+		return
+	}
+	program.Scheduler.Stop()
+	err = startScheduler(program)
+	return
+}
+
+func RunTask(id string) (err error) {
+	program := GetFromCache(id)
+	if program == nil {
+		err = errors.New("server does not exist")
+		return
+	}
+	program.Scheduler.Stop()
+	err = startScheduler(program)
 	return
 }
 
