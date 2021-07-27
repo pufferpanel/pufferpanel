@@ -39,5 +39,15 @@
   "Reloaded": "Serverkonfiguration neu geladen",
   "Autostart": "Server starten, wenn der Knoten startet",
   "Autorestart": "Server neu starten, wenn er gewöhnlich gestoppt ist",
-  "Autorecover": "Server neu starten, wenn er abgestürzt ist"
+  "Autorecover": "Server neu starten, wenn er abgestürzt ist",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }
