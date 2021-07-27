@@ -39,5 +39,15 @@
   "Reloaded": "서버 정보를 다시 불러왔습니다.",
   "Autostart": "노드가 시작되었을때 서버 시작",
   "Autorestart": "서버가 중지되었을 때 재시작",
-  "Autorecover": "오류로 서버가 중지되었을 때 재시작"
+  "Autorecover": "오류로 서버가 중지되었을 때 재시작",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }
