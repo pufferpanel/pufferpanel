@@ -39,5 +39,15 @@
   "Reloaded": "إعادة تحميل بيانات الخادم",
   "Autostart": "بدء تشغيل الخادم عندما يشتغل ال Node",
   "Autorestart": "إعادة تشغيل الخادم عندما يتوقف بشكل طبيعي",
-  "Autorecover": "إعادة تشغيل الخادم عند توقفة"
+  "Autorecover": "إعادة تشغيل الخادم عند توقفة",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }
