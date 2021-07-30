@@ -500,11 +500,6 @@ func (p *Program) GetNetwork() string {
 	return ip + ":" + port
 }
 
-func (p *Program) CopyFrom(s *Program) {
-	p.RunningEnvironment = s.RunningEnvironment
-	p.Server = s.Server
-}
-
 func (p *Program) afterExit(graceful bool) {
 	if graceful {
 		p.CrashCounter = 0

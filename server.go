@@ -71,3 +71,14 @@ type Template struct {
 type Type struct {
 	Type string `json:"type"`
 }
+
+func (s *Server) CopyFrom(replacement *Server) {
+	s.Variables = replacement.Variables
+	s.Tasks = replacement.Tasks
+	s.Type = replacement.Type
+	s.Execution = replacement.Execution
+	s.Display = replacement.Display
+	s.Installation = replacement.Installation
+	s.Uninstallation = replacement.Uninstallation
+	s.Environment = replacement.Environment
+}

@@ -334,6 +334,7 @@ func Reload(id string) (err error) {
 		return
 	}
 
-	program.CopyFrom(newVersion)
+	program.RunningEnvironment = newVersion.RunningEnvironment
+	program.Server = newVersion.Server
 	return
 }

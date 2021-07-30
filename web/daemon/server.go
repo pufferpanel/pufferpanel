@@ -491,15 +491,25 @@ func GetServerAdmin(c *gin.Context) {
 // @Router /daemon/server/{id} [post]
 func EditServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*programs.Program)
-
 	server := &item.Server
-	err := c.BindJSON(&server)
+
+	replacement := &pufferpanel.Server{}
+	err := c.BindJSON(replacement)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
+	//backup, just in case we break
+	backup := &pufferpanel.Server{}
+	backup.CopyFrom(server)
+
+	//copy from request
+	server.CopyFrom(replacement)
+
 	err = programs.Save(item.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
+		//REVERT!!!!!!!
+		server.CopyFrom(backup)
 		return
 	}
 
