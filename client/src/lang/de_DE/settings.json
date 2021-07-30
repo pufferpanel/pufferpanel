@@ -3,7 +3,7 @@
   "PanelSettings": "Panel Einstellungen",
   "EmailSettings": "Email Einstellungen",
   "MasterUrl": "Haupt URL",
-  "MasterUrlHint": "Die Haupt URL des Panels kann under http://localhost:8080 erreicht werden",
+  "MasterUrlHint": "Die Haupt URL des Panels kann unter http://localhost:8080 erreicht werden",
   "CompanyName": "Firmenname",
   "DefaultTheme": "Standarddesign",
   "EmailProvider": "E-Mail-Anbieter",
