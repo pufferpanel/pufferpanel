@@ -27,6 +27,7 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 	e.GET("", getStatusGET)
 	e.HEAD("", getStatusHEAD)
 	e.Handle("OPTIONS", "", response.CreateOptions("GET", "HEAD"))
+	e.GET("features", getFeatures)
 
 	RegisterServerRoutes(e)
 }
@@ -42,7 +43,6 @@ func getStatusGET(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.PufferdRunning{Message: "pufferd is running"})
 }
 
-// Root godoc
 // @Summary Is daemon up
 // @Description Easy way to tell if the daemon is running is by using this endpoint
 // @Accept json
@@ -51,4 +51,20 @@ func getStatusGET(c *gin.Context) {
 // @Router /daemon [head]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)
+}
+
+// @Summary Get supported features
+// @Description Gets a list of features supported by the node
+// @Accept json
+// @Produce json
+// @Success 200 {object} daemon.Features "Features"
+// @Router /daemon [head]
+func getFeatures(c *gin.Context) {
+	c.JSON(http.StatusOK, Features{Features: []string{
+		"docker",
+	}})
+}
+
+type Features struct {
+	Features []string `json:"features"`
 }
