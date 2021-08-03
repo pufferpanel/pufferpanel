@@ -24,7 +24,7 @@
   "Edit": "Modifier l'utilisateur",
   "Update": "Mettre à jour l'utilisateur",
   "Delete": "Supprimer l'utilisateur",
-  "CreateSuccess": "User successfully created",
+  "CreateSuccess": "Utilisateur créé avec succès",
   "CreateError": "Échec de création de l'utilisateur",
   "UpdateSuccess": "Utilisateur mis à jour",
   "UpdateError": "Échec de mise à jour de l'utilisateur",
@@ -34,8 +34,8 @@
   "OtpDisable": "Désactiver l'A2F",
   "OtpHint": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte en exigeant plus qu'un mot de passe pour se connecter.",
   "OtpSetup": "Paramétrage de l'A2F",
-  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
+  "OtpSetupHint": "Scannez le QR code en utilisant votre application d'authentification ou copiez-y le code secret ci-dessous.",
   "OtpSecret": "Code secret",
   "OtpConfirm": "Confirmez en utilisant un code A2F",
-  "OtpNeeded": "2FA required"
+  "OtpNeeded": "A2F requise"
 }
