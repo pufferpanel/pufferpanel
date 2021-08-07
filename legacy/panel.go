@@ -1,6 +1,8 @@
 package legacy
 
-import uuid "github.com/satori/go.uuid"
+import (
+	uuid "github.com/satori/go.uuid"
+)
 
 type PanelConfig struct {
 	Mysql MysqlConfig `json:"mysql"`
@@ -23,19 +25,19 @@ type SslConfig struct {
 }
 
 type User struct {
-	ID       uint
+	ID       int
 	Username string
 	Email    string
 	Password string
 }
 
 type Node struct {
-	ID           uint
+	ID           int
 	Name         string
 	FQDN         string
 	Ip           string
-	Port         uint   `gorm:"column:daemon_listen"`
-	Sftp         uint   `gorm:"column:daemon_sftp"`
+	Port         uint16 `gorm:"column:daemon_listen"`
+	Sftp         uint16 `gorm:"column:daemon_sftp"`
 	DaemonSecret string `gorm:"column:daemon_secret"`
 }
 
@@ -43,7 +45,7 @@ type Server struct {
 	Id           int
 	Hash         uuid.UUID
 	DaemonSecret string
-	Node         uint
+	Node         int
 	Name         string
 	OwnerId      int `gorm:"column:owner_id"`
 }
