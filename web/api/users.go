@@ -76,10 +76,10 @@ func searchUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.UserSearchResponse{
 		Users: models.FromUsers(results),
 		Metadata: &response.Metadata{Paging: &response.Paging{
-			Page:    uint(search.Page),
-			Size:    uint(search.PageLimit),
+			Page:    search.Page,
+			Size:    search.PageLimit,
 			MaxSize: MaxPageSize,
-			Total:   uint(total),
+			Total:   total,
 		}},
 	})
 }
@@ -165,7 +165,7 @@ func getUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path uint true "User ID"
+// @Param id path int true "User ID"
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
 func updateUser(c *gin.Context) {
@@ -213,7 +213,7 @@ func updateUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path uint true "User ID"
+// @Param id path int true "User ID"
 // @Router /api/users/{id} [delete]
 func deleteUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -249,7 +249,7 @@ func deleteUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path uint true "User ID"
+// @Param id path int true "User ID"
 // @Router /api/users/{id}/perms [get]
 func getUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -287,7 +287,7 @@ func getUserPerms(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path uint true "User ID"
+// @Param id path int true "User ID"
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
 func setUserPerms(c *gin.Context) {

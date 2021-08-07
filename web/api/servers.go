@@ -160,10 +160,10 @@ func searchServers(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
 		Servers: models.RemoveServerPrivateInfoFromAll(data),
 		Metadata: &response.Metadata{Paging: &response.Paging{
-			Page:    uint(page),
-			Size:    uint(pageSize),
+			Page:    page,
+			Size:    pageSize,
 			MaxSize: MaxPageSize,
-			Total:   uint(total),
+			Total:   total,
 		}},
 	})
 }
