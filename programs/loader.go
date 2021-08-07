@@ -32,7 +32,7 @@ import (
 )
 
 var (
-	allPrograms  = make([]*Program, 0)
+	allPrograms = make([]*Program, 0)
 )
 
 func Initialize() {
@@ -275,7 +275,9 @@ func Delete(id string) (err error) {
 	}
 	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
 
-	program.Scheduler.Stop()
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
 	return
 }
 
@@ -326,7 +328,9 @@ func Reload(id string) (err error) {
 		err = errors.New("server does not exist")
 		return
 	}
-	program.Scheduler.Stop()
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
 	logging.Info().Printf("Reloading server %s", program.Id())
 	newVersion, err := Load(id)
 	if err != nil {
