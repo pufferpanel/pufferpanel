@@ -26,6 +26,7 @@ import (
 	_ "gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	_ "gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
@@ -78,6 +79,8 @@ func openConnection() (err error) {
 		dialector = mysql.Open(connString)
 	case "postgresql":
 		dialector = postgres.Open(connString)
+	case "sqlserver":
+		dialector = sqlserver.Open(connString)
 	default:
 		return errors.New(fmt.Sprintf("unknown dialect %s", dialect))
 	}
