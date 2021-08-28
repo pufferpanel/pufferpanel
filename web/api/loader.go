@@ -37,4 +37,6 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 	registerSelf(rg.Group("/self"))
 	registerSettings(rg.Group("/settings"))
 	registerUserSettings(rg.Group("/userSettings"))
+
+	rg.GET("/config", panelConfig)
 }
