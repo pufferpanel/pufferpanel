@@ -29,6 +29,6 @@ func panelConfig(c *gin.Context) {
 		"branding": map[string]interface{}{
 			"name": config.GetString("panel.settings.companyName"),
 		},
-		"registrationEnabled": true,
+		"registrationEnabled": config.GetBool("panel.registrationEnabled"),
 	})
 }
