@@ -265,6 +265,10 @@ func Delete(id string) (err error) {
 		}
 	}
 
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
+
 	err = program.Destroy()
 	if err != nil {
 		return
@@ -274,10 +278,6 @@ func Delete(id string) (err error) {
 		logging.Error().Printf("Error removing server: %s", err)
 	}
 	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
-
-	if program.Scheduler != nil {
-		program.Scheduler.Stop()
-	}
 	return
 }
 
