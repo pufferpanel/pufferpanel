@@ -77,11 +77,12 @@
             <server-sftp :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'tasks'">
+        <!--<v-row v-show="currentTab === 'tasks'">
           <v-col>
             <server-tasks :server="server" />
           </v-col>
         </v-row>
+        -->
         <v-row v-show="currentTab === 'settings'">
           <v-col>
             <server-settings :server="server" />
@@ -140,7 +141,7 @@
                 <v-icon>mdi-file</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item
+            <!--<v-slide-item
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
             >
@@ -149,6 +150,7 @@
                 <v-icon>mdi-timer</v-icon>
               </v-btn>
             </v-slide-item>
+            -->
             <v-slide-item
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
