@@ -17,10 +17,13 @@
 package daemon
 
 import (
+	"context"
+	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"net/http"
+	"time"
 )
 
 func RegisterDaemonRoutes(e *gin.RouterGroup) {
@@ -60,9 +63,29 @@ func getStatusHEAD(c *gin.Context) {
 // @Success 200 {object} daemon.Features "Features"
 // @Router /daemon [head]
 func getFeatures(c *gin.Context) {
-	c.JSON(http.StatusOK, Features{Features: []string{
-		"docker",
-	}})
+	features := []string{}
+
+	if testDocker() {
+		features = append(features, "docker")
+	}
+
+	c.JSON(http.StatusOK, Features{Features: features})
+}
+
+func testDocker() bool {
+	d, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return false
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	_, err = d.Ping(ctx)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 type Features struct {
