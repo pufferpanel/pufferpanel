@@ -23,12 +23,7 @@ import (
 )
 
 func NotImplemented(c *gin.Context) {
-	c.AbortWithStatusJSON(http.StatusNotImplemented, &Error{
-		Error: &pufferpanel.Error{
-			Message: "not implemented",
-			Code:    "ErrNotImplemented",
-		},
-	})
+	c.AbortWithStatusJSON(http.StatusNotImplemented, pufferpanel.ErrNotImplemented)
 }
 
 func CreateOptions(options ...string) gin.HandlerFunc {
