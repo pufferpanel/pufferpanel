@@ -306,20 +306,15 @@ func RestartScheduler(id string) (err error) {
 		err = errors.New("server does not exist")
 		return
 	}
-	program.Scheduler.Stop()
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
 	err = startScheduler(program)
 	return
 }
 
 func RunTask(id string) (err error) {
-	program := GetFromCache(id)
-	if program == nil {
-		err = errors.New("server does not exist")
-		return
-	}
-	program.Scheduler.Stop()
-	err = startScheduler(program)
-	return
+	return pufferpanel.ErrNotImplemented
 }
 
 func Reload(id string) (err error) {
@@ -340,5 +335,6 @@ func Reload(id string) (err error) {
 
 	program.RunningEnvironment = newVersion.RunningEnvironment
 	program.Server = newVersion.Server
+	err = startScheduler(program)
 	return
 }
