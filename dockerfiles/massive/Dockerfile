@@ -14,6 +14,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Because we use Alpine, we need musl to use the binary we generated
 RUN apt-get update && \
     apt-get install musl
+    
+RUN apt-get install -y git wget curl zip unzip
 
 # java
 RUN apt-get update && \
