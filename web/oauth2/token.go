@@ -63,7 +63,7 @@ func handleTokenRequest(c *gin.Context) {
 					return
 				}
 				ns := &services.Node{DB: db}
-				node, err := ns.Get(id)
+				node, err := ns.Get(uint(id))
 				if err == gorm.ErrRecordNotFound {
 					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "invalid node"})
 					return
