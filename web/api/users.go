@@ -14,6 +14,7 @@
 package api
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
@@ -147,7 +148,7 @@ func getUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -189,7 +190,7 @@ func updateUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -227,7 +228,7 @@ func deleteUser(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -264,7 +265,7 @@ func getUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -309,7 +310,7 @@ func setUserPerms(c *gin.Context) {
 	}
 
 	user, err := us.GetById(id)
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {

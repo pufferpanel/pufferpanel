@@ -655,7 +655,7 @@ func removeServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && gorm.ErrRecordNotFound == err {
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
