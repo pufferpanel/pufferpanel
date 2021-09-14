@@ -141,6 +141,12 @@ export const ServersApi = {
     })
   },
 
+  getServerTasks (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/proxy/daemon/server/${id}/tasks`)).data.tasks
+    })
+  },
+
   getServerSocketUrl (id) {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
@@ -271,6 +277,32 @@ export const ServersApi = {
   updateServerData (id, data) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.post(`/proxy/daemon/server/${id}/data`, { data })
+      return true
+    })
+  },
+
+  createServerTask (id, task) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks`, task)).id
+    })
+  },
+
+  runServerTask (id, taskId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks/${taskId}/run`)).id
+    })
+  },
+
+  editServerTask (serverId, taskId, task) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/proxy/daemon/server/${serverId}/tasks/${taskId}`, task)
+      return true
+    })
+  },
+
+  deleteServerTask (serverId, taskId) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.delete(`/proxy/daemon/server/${serverId}/tasks/${taskId}`)
       return true
     })
   },

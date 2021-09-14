@@ -148,13 +148,8 @@ func panel(ch chan error) {
 			logging.Error().Printf("Failed to get nodes: %s", err.Error())
 			return
 		}
-		exists := false
-		for _, n := range *nodes {
-			if n.IsLocal() {
-				exists = true
-			}
-		}
-		if !exists {
+
+		if len(*nodes) == 0 {
 			logging.Info().Printf("Adding local node")
 			create := &models.Node{
 				Name:        "LocalNode",

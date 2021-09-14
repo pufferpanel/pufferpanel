@@ -32,13 +32,6 @@ func init() {
 	viper.AddConfigPath("/etc/pufferpanel/")
 	viper.AddConfigPath(".")
 
-	//database settings
-	viper.SetDefault("panel.enable", true)
-	viper.SetDefault("panel.database.session", 60)
-	viper.SetDefault("panel.database.dialect", "sqlite3")
-	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
-	viper.SetDefault("panel.database.log", false)
-
 	for k, v := range defaultSettings {
 		viper.SetDefault(k, v)
 	}
@@ -73,6 +66,10 @@ var defaultSettings = map[string]interface{}{
 	"panel.settings.defaultTheme": "PufferPanel",
 	"panel.settings.masterUrl":    "http://localhost:8080",
 	"panel.sessionKey":            []uint8{},
+	"panel.registrationEnabled": 	true,
+	"panel.database.session": 		60,
+	"panel.database.dialect": 		"sqlite3",
+	"panel.database.log": 			false,
 
 	//daemon specific settings
 	"daemon.enable":                 true,

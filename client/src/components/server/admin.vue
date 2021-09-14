@@ -171,10 +171,10 @@ export default {
     },
     async toggleSwitch (field) {
       this.loading = true
-      const body = { run: {} }
-      body.run[field] = this[field]
-      await this.$api.updateServerDefinition(this.server.id, body)
-      this.loadData()
+      const def = await this.$api.getServerDefinition(this.server.id)
+      def.run[field] = this[field]
+      await this.$api.updateServerDefinition(this.server.id, def)
+      await this.loadData()
     },
     async reloadServer () {
       await this.$api.reloadServer(this.server.id)
@@ -183,7 +183,7 @@ export default {
     async deleteConfirmed () {
       await this.$api.deleteServer(this.server.id)
       this.$toast.success(this.$t('servers.Deleted'))
-      this.$router.push({ name: 'Servers' })
+      await this.$router.push({ name: 'Servers' })
     },
     async editServerDefinition () {
       this.definition = this.$api.templateFromApiJson(await this.$api.getServerDefinition(this.server.id), true)

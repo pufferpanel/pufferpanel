@@ -22,12 +22,13 @@ type Server struct {
 	Uninstallation []interface{}       `json:"uninstall,omitempty"`
 	Identifier     string              `json:"id,omitempty"`
 	Execution      Execution           `json:"run,omitempty"`
-	Tasks          []Task              `json:"tasks,omitempty"`
+	Tasks          map[string]Task     `json:"tasks,omitempty"`
 }
 
 type Task struct {
+	Name         string        `json:"name,omitempty" binding:"required"`
 	CronSchedule string        `json:"cronSchedule,omitempty"`
-	Operations   []interface{} `json:"operations,omitempty"`
+	Operations   []interface{} `json:"operations,omitempty" binding:"required"`
 }
 
 type Variable struct {
@@ -69,4 +70,15 @@ type Template struct {
 
 type Type struct {
 	Type string `json:"type"`
+}
+
+func (s *Server) CopyFrom(replacement *Server) {
+	s.Variables = replacement.Variables
+	s.Tasks = replacement.Tasks
+	s.Type = replacement.Type
+	s.Execution = replacement.Execution
+	s.Display = replacement.Display
+	s.Installation = replacement.Installation
+	s.Uninstallation = replacement.Uninstallation
+	s.Environment = replacement.Environment
 }
