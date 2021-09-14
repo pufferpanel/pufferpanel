@@ -58,7 +58,7 @@ func Convert(val interface{}, target interface{}) (interface{}, error) {
 		if val == nil {
 			return uint(0), nil
 		}
-		return cast.ToIntE(val)
+		return cast.ToUintE(val)
 	case uint8:
 		if val == nil {
 			return uint8(0), nil
