@@ -30,7 +30,7 @@
           v-for="(line, index) in console"
           :key="index"
         >
-          <span v-if="isDaemonMessage(line)">
+          <span v-if="line.isDaemonMessage">
             <v-chip
               :color="$vuetify.theme.options.console.daemonChip"
               x-small
@@ -38,12 +38,8 @@
             >
               DAEMON
             </v-chip>
-            <span v-html="removeDaemonTag(line)" />
           </span>
-          <span
-            v-else
-            v-html="line"
-          />
+          <span v-html="line.data" />
         </span>
       </div>
       <!-- eslint-enable vue/no-v-html -->
@@ -65,8 +61,8 @@
 import AnsiUp from 'ansi_up'
 
 const DAEMON_MESSAGE_REGEX = /^(&nbsp;|&gt;|\s)*\[DAEMON]/
-const CONSOLE_REFRESH_TIME = 500
-const CONSOLE_MEMORY_ALLOWED = 1024 * 1024 * 2 // 2MB
+const CONSOLE_REFRESH_TIME = 1000
+const CONSOLE_MEMORY_ALLOWED = 1024 * 1024 * 4 // 4MB
 // due to pausing we have 2 copies of the console,
 // so each should only get half the allowed memory
 const CONSOLE_MEMORY_ALLOWED_PER_BUFFER = CONSOLE_MEMORY_ALLOWED / 2
@@ -134,11 +130,7 @@ export default {
   },
   methods: {
     parseConsole (data) {
-      let newLines = (Array.isArray(data.logs) ? data.logs : [data.logs])
-        .map(element => {
-          return element.replace(/\r\n/g, '\n')
-        })
-        .join('')
+      let newLines = (Array.isArray(data.logs) ? data.logs : [data.logs]).join('').replace(/\r\n/g, '\n')
       const endOnNewline = newLines.endsWith('\n')
       newLines = newLines.split('\n').map(line => {
         return ansiup.ansi_to_html(line) + '<br>'
@@ -151,30 +143,45 @@ export default {
         newLines.pop()
       }
 
-      if (lines.length !== 0 && !lines[lines.length - 1].endsWith('<br>')) {
-        lines[lines.length - 1] += newLines.shift()
+      if (lines.length !== 0 && !lines[lines.length - 1].data.endsWith('<br>')) {
+        lines[lines.length - 1].data += newLines.shift()
+        lines[lines.length - 1].crHandled = false
       }
+
+      newLines = newLines.map((line) => {
+        const isDaemonMessage = DAEMON_MESSAGE_REGEX.test(line)
+        const data = isDaemonMessage ? line.replace(DAEMON_MESSAGE_REGEX, '') : line
+        return {
+          data,
+          isDaemonMessage,
+          crHandled: false,
+          size: data.length * 2
+        }
+      })
 
       lines = lines.concat(newLines)
 
-      while (this.consoleSize() > CONSOLE_MEMORY_ALLOWED_PER_BUFFER) {
-        lines = lines.slice(1)
+      const currentSize = lines.reduce((acc, curr) => acc + curr.size, 0)
+      let freed = 0
+      let toRemove = 0
+      while (currentSize - freed > CONSOLE_MEMORY_ALLOWED_PER_BUFFER) {
+        freed += lines[toRemove].size
+        toRemove += 1
       }
+      lines = lines.slice(toRemove)
 
       lines = lines.map(line => {
-        const endOnNewline = line.endsWith('<br>')
-        const parts = (endOnNewline ? line.substring(0, line.length - 4) : line).split('\r')
+        if (line.crHandled) return line
+        const endOnNewline = line.data.endsWith('<br>')
+        const parts = (endOnNewline ? line.data.substring(0, line.data.length - 4) : line.data).split('\r')
         let result = parts.shift()
         parts.map(part => {
           result = part + result.substring(part.length)
         })
-        return endOnNewline ? (result + '<br>') : result
+        return { ...line, crHandled: true, data: endOnNewline ? (result + '<br>') : result }
       })
 
       this.hasNewLines = true
-    },
-    consoleSize () {
-      return lines.reduce((acc, curr) => acc + curr.length, 0)
     },
     togglePaused () {
       this.paused = !this.paused
@@ -182,12 +189,6 @@ export default {
     sendCommand () {
       this.$api.sendServerCommand(this.server.id, this.consoleCommand)
       this.consoleCommand = ''
-    },
-    isDaemonMessage (line) {
-      return DAEMON_MESSAGE_REGEX.test(line)
-    },
-    removeDaemonTag (line) {
-      return line.replace(DAEMON_MESSAGE_REGEX, '')
     }
   }
 }

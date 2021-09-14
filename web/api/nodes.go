@@ -232,7 +232,7 @@ func deleteNode(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Param id path string true "Node Id"
-// @Router /api/nodes/{id}/deploy [get]
+// @Router /api/nodes/{id}/deployment [get]
 func deployNode(c *gin.Context) {
 	var err error
 	db := middleware.GetDatabase(c)

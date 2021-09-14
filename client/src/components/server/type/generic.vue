@@ -46,17 +46,26 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'console'">
+        <v-row
+          v-show="currentTab === 'console'"
+          v-if="server.permissions.viewServerConsole || isAdmin()"
+        >
           <v-col>
             <server-console :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'stats'">
+        <v-row
+          v-show="currentTab === 'stats'"
+          v-if="server.permissions.viewServerStats || isAdmin()"
+        >
           <v-col>
             <server-cpu :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'stats'">
+        <v-row
+          v-show="currentTab === 'stats'"
+          v-if="server.permissions.viewServerStats || isAdmin()"
+        >
           <v-col>
             <server-memory :server="server" />
           </v-col>
@@ -77,17 +86,32 @@
             <server-sftp :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'users'">
+        <!--<v-row v-show="currentTab === 'tasks'">
           <v-col>
-            <server-users :server="server" />
+            <server-tasks :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'settings'">
+        -->
+        <v-row
+          v-show="currentTab === 'settings'"
+          v-if="server.permissions.editServerData || isAdmin()"
+        >
           <v-col>
             <server-settings :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'admin'">
+        <v-row
+          v-show="currentTab === 'users'"
+          v-if="server.permissions.editServerUsers || isAdmin()"
+        >
+          <v-col>
+            <server-users :server="server" />
+          </v-col>
+        </v-row>
+        <v-row
+          v-show="currentTab === 'admin'"
+          v-if="server.permissions.deleteServer || isAdmin()"
+        >
           <v-col>
             <server-admin :server="server" />
           </v-col>
@@ -135,6 +159,16 @@
                 <v-icon>mdi-file</v-icon>
               </v-btn>
             </v-slide-item>
+            <!--<v-slide-item
+              v-if="server.permissions.editServerData || isAdmin()"
+              v-slot="{}"
+            >
+              <v-btn value="tasks">
+                <span>{{ $t('servers.Tasks') }}</span>
+                <v-icon>mdi-timer</v-icon>
+              </v-btn>
+            </v-slide-item>
+            -->
             <v-slide-item
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
