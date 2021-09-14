@@ -88,7 +88,7 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 	return Generate(claims)
 }
 
-func GenerateOAuthForNode(nodeId int) (string, error) {
+func GenerateOAuthForNode(nodeId uint) (string, error) {
 	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "oauth2",

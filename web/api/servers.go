@@ -138,7 +138,7 @@ func searchServers(c *gin.Context) {
 
 	searchCriteria := services.ServerSearch{
 		Username: username,
-		NodeId:   node,
+		NodeId:   uint(node),
 		Name:     nameFilter,
 		PageSize: pageSize,
 		Page:     page,
