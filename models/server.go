@@ -24,7 +24,7 @@ type Server struct {
 	Name       string `gorm:"size:40;NOT NULL" json:"-" validate:"required,printascii"`
 	Identifier string `gorm:"UNIQUE;NOT NULL;primaryKey;size:8" json:"-" validate:"required,printascii"`
 
-	NodeID int  `gorm:"NOT NULL" json:"-" validate:"required,min=1"`
+	NodeID uint `gorm:"NOT NULL" json:"-" validate:"required,min=1"`
 	Node   Node `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	IP   string `gorm:"" json:"-" validate:"omitempty,ip|fqdn"`

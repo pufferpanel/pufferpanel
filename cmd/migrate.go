@@ -165,7 +165,7 @@ func migratePanel() {
 			newServer := &models.Server{
 				Name:       v.Name,
 				Identifier: v.Hash.String(),
-				NodeID:     int(v.Node),
+				NodeID:     uint(v.Node),
 				Node:       models.Node{},
 				IP:         "?",
 				Port:       0,

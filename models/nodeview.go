@@ -20,7 +20,7 @@ import (
 )
 
 type NodeView struct {
-	Id          int    `json:"id,omitempty"`
+	Id          uint   `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"`
 	PublicHost  string `json:"publicHost,omitempty"`
 	PrivateHost string `json:"privateHost,omitempty"`

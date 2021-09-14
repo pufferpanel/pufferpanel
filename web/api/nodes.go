@@ -256,7 +256,7 @@ func deployNode(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
-func validateId(c *gin.Context) (int, bool) {
+func validateId(c *gin.Context) (uint, bool) {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)
@@ -266,5 +266,5 @@ func validateId(c *gin.Context) (int, bool) {
 		return 0, false
 	}
 
-	return id, true
+	return uint(id), true
 }

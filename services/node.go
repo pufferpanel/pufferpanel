@@ -49,7 +49,7 @@ func (ns *Node) GetAll() (*models.Nodes, error) {
 	return nodes, res.Error
 }
 
-func (ns *Node) Get(id int) (*models.Node, error) {
+func (ns *Node) Get(id uint) (*models.Node, error) {
 	model := &models.Node{}
 
 	res := ns.DB.First(model, id)
@@ -62,7 +62,7 @@ func (ns *Node) Update(model *models.Node) error {
 	return res.Error
 }
 
-func (ns *Node) Delete(id int) error {
+func (ns *Node) Delete(id uint) error {
 	model := &models.Node{
 		ID: id,
 	}
