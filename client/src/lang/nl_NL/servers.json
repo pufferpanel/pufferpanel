@@ -39,5 +39,15 @@
   "Reloaded": "Server data herladen",
   "Autostart": "Start de server wanneer de node start",
   "Autorestart": "Restart the server when it stops normally",
-  "Autorecover": "Herstart de server wanneer deze crasht"
+  "Autorecover": "Herstart de server wanneer deze crasht",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

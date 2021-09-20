@@ -39,5 +39,15 @@
   "Reloaded": "Données du serveur rechargées",
   "Autostart": "Démarrer le serveur au démarrage du nœud",
   "Autorestart": "Redémarrer le serveur lorsqu'il s'arrête normalement",
-  "Autorecover": "Redémarrer le serveur quand il plante"
+  "Autorecover": "Redémarrer le serveur quand il plante",
+  "Tasks": "Tâches",
+  "NoTasks": "Aucune tâche",
+  "RunTask": "Exécuter la tâche",
+  "NewTask": "Nouvelle tâche",
+  "EditTask": "Modifier la tâche",
+  "TaskDeleted": "Tâche supprimée",
+  "TaskTriggered": "Tâche déclenchée",
+  "Schedule": "Planifier",
+  "TaskScheduleInvalid": "Planification de tâche invalide",
+  "TaskScheduleManual": "Exécution manuelle seulement"
 }

@@ -24,7 +24,7 @@
   "Edit": "Upravit uživatele",
   "Update": "Upravit uživatele",
   "Delete": "Smazat uživatele",
-  "CreateSuccess": "Vytvořit uživatele",
+  "CreateSuccess": "User successfully created",
   "CreateError": "Vytvoření uživatele se nezdařilo",
   "UpdateSuccess": "Aktualizovaný uživatel",
   "UpdateError": "Chyba při aktualizaci uživatele",
@@ -34,8 +34,8 @@
   "OtpDisable": "Zakázat 2FP",
   "OtpHint": "Dvoufázová autentifikace přidává k vašemu účtu další vrstvu zabezpečení tím, že vyžaduje více než jen heslo k přihlášení.",
   "OtpSetup": "Nastavení 2FA",
-  "OtpSetupHint": "Naskenujte QR kód pomocí vaší ověřovací aplikace nebo do ní zkopírujte tajný kód uvedený níže",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "Tajný kód",
   "OtpConfirm": "Potvrdit pomocí kódu 2FA",
-  "OtpNeeded": "Vyžadována druhá fáze ověření"
+  "OtpNeeded": "2FA required"
 }
