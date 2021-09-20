@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Indirizzo Mittente",
+    "from": "Sender Adress",
     "domain": "Dominio",
-    "key": "Chiave API",
+    "key": "API Key",
     "host": "Host",
     "username": "Nome utente",
     "password": "Password"

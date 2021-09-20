@@ -39,5 +39,15 @@
   "Reloaded": "Date server reîncărcate",
   "Autostart": "Pornește serverul când porneste modulul",
   "Autorestart": "Repornește serverul când se oprește normal",
-  "Autorecover": "Repornește serverul atunci când se blochează"
+  "Autorecover": "Repornește serverul atunci când se blochează",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

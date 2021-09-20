@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "寄送者信箱",
+    "from": "Sender Adress",
     "domain": "網域",
-    "key": "API 金鑰",
+    "key": "API Key",
     "host": "主機",
     "username": "使用者名稱",
     "password": "密碼"

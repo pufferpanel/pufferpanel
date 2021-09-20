@@ -39,5 +39,15 @@
   "Reloaded": "Genindlæste serverdata",
   "Autostart": "Start serveren når noden starter",
   "Autorestart": "Genstart serveren, når den stopper normalt",
-  "Autorecover": "Genstart serveren, når den går ned"
+  "Autorecover": "Genstart serveren, når den går ned",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }
