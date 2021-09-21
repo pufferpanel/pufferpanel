@@ -218,5 +218,3 @@ jobs:
         #raspbian
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.arm64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.armhfdebdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.arm64debdownload.outputs.file }}
