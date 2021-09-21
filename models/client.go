@@ -22,17 +22,19 @@ import (
 
 type Client struct {
 	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL"`
-	HashedClientSecret string `gorm:"column:client_secret;NOT NULL"`
+	ClientId           string `gorm:"NOT NULL" json:"client_id"`
+	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
 
-	UserId uint `gorm:"NOT NULL"`
-	User   *User
+	UserId uint  `gorm:"NOT NULL" json:"-"`
+	User   *User `json:"-"`
 
-	ServerId string `gorm:"NOT NULL"`
-	Server   *Server
+	ServerId string  `gorm:"NOT NULL" json:"-"`
+	Server   *Server `json:"-"`
 
-	Scopes    []pufferpanel.Scope `gorm:"-"`
-	RawScopes string        `gorm:"column:scopes;NOT NULL;size:4000"`
+	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
+	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
+
+	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
 }
 
 type Clients []*Client
