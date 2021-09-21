@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	uuid "github.com/satori/go.uuid"
 	"net/http"
 )
 
@@ -36,6 +37,13 @@ func registerSelf(g *gin.RouterGroup) {
 
 	g.Handle("DELETE", "/otp/:token", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), disableOtp)
 	g.Handle("OPTIONS", "/otp/:token", response.CreateOptions("DELETE"))
+
+	g.Handle("GET", "/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), getPersonalOAuth2Clients)
+	g.Handle("POST", "/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), createPersonalOAuth2Client)
+	g.Handle("OPTIONS", "/oauth2", response.CreateOptions("GET", "POST"))
+
+	g.Handle("DELETE", "/oauth2/:clientId", handlers.OAuth2Handler(pufferpanel.ScopeNone, false), deletePersonalOAuth2Client)
+	g.Handle("OPTIONS", "/oauth2/:clientId", response.CreateOptions("DELETE"))
 }
 
 // @Summary Get your user info
@@ -211,6 +219,89 @@ func disableOtp(c *gin.Context) {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func getPersonalOAuth2Clients(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	clients, err := os.GetForUserAndServer(user.ID, "")
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	data := make([]*models.Client, 0)
+	for _, v := range clients {
+		if v.ServerId == "" {
+			data = append(data, v)
+		}
+	}
+
+	c.JSON(http.StatusOK, data)
+}
+
+func createPersonalOAuth2Client(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	client := &models.Client{
+		ClientId: uuid.NewV4().String(),
+		UserId:   user.ID,
+	}
+
+	secret, err := pufferpanel.GenerateRandomString(36)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = client.SetClientSecret(secret)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = os.Update(client)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	type createdClient struct {
+		ClientId     string `json:"id"`
+		ClientSecret string `json:"secret"`
+	}
+	c.JSON(http.StatusOK, createdClient{
+		ClientId:     client.ClientId,
+		ClientSecret: secret,
+	})
+}
+
+func deletePersonalOAuth2Client(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+	clientId := c.Param("clientId")
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	client, err := os.Get(clientId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	//ensure the client id is specific for this server, and this user
+	if client.UserId != user.ID || client.ServerId != "" {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	err = os.Delete(client)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
