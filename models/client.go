@@ -77,6 +77,11 @@ func (c *Client) BeforeSave() (err error) {
 }
 
 func (c *Client) AfterFind() (err error) {
+	if c.RawScopes == "" {
+		c.Scopes = make([]pufferpanel.Scope, 0)
+		return
+	}
+
 	split := strings.Split(c.RawScopes, " ")
 	c.Scopes = make([]pufferpanel.Scope, len(split))
 
