@@ -86,12 +86,14 @@
             <server-sftp :server="server" />
           </v-col>
         </v-row>
-        <!--<v-row v-show="currentTab === 'tasks'">
+        <v-row
+          v-show="currentTab === 'tasks'"
+          v-if="server.permissions.editServerData || isAdmin()"
+        >
           <v-col>
             <server-tasks :server="server" />
           </v-col>
         </v-row>
-        -->
         <v-row
           v-show="currentTab === 'settings'"
           v-if="server.permissions.editServerData || isAdmin()"
@@ -159,8 +161,8 @@
                 <v-icon>mdi-file</v-icon>
               </v-btn>
             </v-slide-item>
-            <!--<v-slide-item
-              v-if="server.permissions.editServerData || isAdmin()"
+            <v-slide-item
+              v-if="showTasks && (server.permissions.editServerData || isAdmin())"
               v-slot="{}"
             >
               <v-btn value="tasks">
@@ -168,7 +170,6 @@
                 <v-icon>mdi-timer</v-icon>
               </v-btn>
             </v-slide-item>
-            -->
             <v-slide-item
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
@@ -211,7 +212,8 @@ export default {
   data () {
     return {
       socketError: false,
-      currentTab: 'console'
+      currentTab: 'console',
+      showTasks: false
     }
   },
   mounted () {
@@ -223,6 +225,10 @@ export default {
       this.$toast.warning(this.$t('errors.ErrSocketFailed'))
       this.socketError = true
     })
+
+    if (process.env.NODE_ENV !== 'production') {
+      window.pufferpanel.allowServerTasks = () => { this.showTasks = true }
+    }
   }
 }
 </script>
