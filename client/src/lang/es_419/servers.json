@@ -47,7 +47,17 @@
   "EditTask": "Editar tarea",
   "TaskDeleted": "Tarea eliminada",
   "TaskTriggered": "Tarea activada",
-  "Schedule": "Horario",
+  "EnableSchedule": "Run Task automatically",
   "TaskScheduleInvalid": "Horario de tarea invalido",
-  "TaskScheduleManual": "Solo ejecución manual"
+  "TaskScheduleManual": "Solo ejecución manual",
+  "CronExpression": "Cron Expression",
+  "Hourly": "Hourly",
+  "Daily": "Daily",
+  "Weekly": "Weekly",
+  "Monthly": "Monthly",
+  "Advanced": "Advanced",
+  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
+  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
+  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
+  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
 }
