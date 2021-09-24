@@ -1,5 +1,5 @@
 {
-  "Id": "Я БЫ",
+  "Id": "ID",
   "Name": "Имя",
   "Address": "Адрес",
   "Online": "Онлайн",
@@ -37,5 +37,12 @@
   "ThemeOptions": "Настройки темы",
   "Protocol": "Протокол",
   "Add": "Добавить",
-  "Ignore": "Игнорировать"
+  "Ignore": "Игнорировать",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday"
 }
