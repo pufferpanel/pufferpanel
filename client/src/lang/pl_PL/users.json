@@ -29,13 +29,13 @@
   "UpdateSuccess": "Zaktualizowano użytkowników",
   "UpdateError": "Nie udało się zaktualizować użytkownika",
   "PermsUpdateError": "Nie udało się zaktualizować uprawnień użytkownika",
-  "Otp": "Two factor authentication",
-  "OtpEnable": "Enable 2FA",
-  "OtpDisable": "Disable 2FA",
-  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
-  "OtpSetup": "2FA Setup",
-  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
-  "OtpSecret": "Secret Code",
-  "OtpConfirm": "Confirm using a 2FA code",
-  "OtpNeeded": "2FA required"
+  "Otp": "Dwuetapowa weryfikacja",
+  "OtpEnable": "Aktywuj 2FA",
+  "OtpDisable": "Wyłącz 2FA",
+  "OtpHint": "Dwuetapowa weryfikacja jest dodatkowym zabezpieczeniem Twojego konta. Wymaga jednorazowego kodu podczas logowania",
+  "OtpSetup": "Ustawienia 2FA",
+  "OtpSetupHint": "Zeskanuj kod QR aplikacją generującą kody 2FA (np. Google Authenticator).",
+  "OtpSecret": "Sekretny kod (Secret Code)",
+  "OtpConfirm": "Potwierdź kod 2FA",
+  "OtpNeeded": "2FA Wymagane"
 }
