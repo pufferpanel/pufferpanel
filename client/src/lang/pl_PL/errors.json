@@ -35,7 +35,7 @@
   "ErrMissingScope": "Nie masz uprawnień do wykonywania tej czynności",
   "ErrInvalidJson": "Dane json są nieprawidłowe",
   "ErrSocketFailed": "WebSocket napotkał błąd, niektóre funkcje mogą być powolne lub uszkodzone",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account",
-  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
+  "ErrInviteLinkInvalid": "Twój link zaproszenia jest błędny",
+  "ErrSavingInviteduser": "Wystąpił błąd podczas tworzenia konta",
+  "ErrDirectoryUploadNotSupported": "Nie można przesyłać folderów"
 }
