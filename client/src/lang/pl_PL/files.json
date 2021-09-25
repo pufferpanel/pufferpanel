@@ -13,7 +13,7 @@
   "CreateFile": "Utwórz Plik",
   "CreateFolder": "Stwórz Folder",
   "ArchiveCurrentFolder": "Utwórz archiwum z bieżącego folderu",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "ArchiveFolder": "Utwórz archiwum z wybranego folderu",
+  "ExtractArchive": "Wypakuj archiwum",
+  "DropToUpload": "Przenieś pliki aby je przesłać"
 }
