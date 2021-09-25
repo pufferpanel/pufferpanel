@@ -3,22 +3,22 @@
   "PanelSettings": "Configuracion del panel",
   "EmailSettings": "Ajustes del correo",
   "MasterUrl": "URL Principal",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "MasterUrlHint": "Enlace desde el cual accederás al panel de control siguiento el siguiente formato: http://localhost:8080",
+  "CompanyName": "Nombre de la empresa",
+  "DefaultTheme": "Tema por defecto",
+  "EmailProvider": "Proveedor de e-mail",
   "emailProviders": {
-    "none": "None",
+    "none": "Ninguno",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Dirección de remitente",
+    "domain": "Dominio",
+    "key": "Clave API",
+    "host": "Servidor",
+    "username": "Usuario",
+    "password": "Contraseña"
   }
 }
