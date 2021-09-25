@@ -37,12 +37,12 @@
   "ThemeOptions": "Opciones del tema",
   "Protocol": "Protocolo",
   "Add": "Agregar",
-  "Ignore": "Ignore",
-  "Monday": "Monday",
-  "Tuesday": "Tuesday",
-  "Wednesday": "Wednesday",
-  "Thursday": "Thursday",
-  "Friday": "Friday",
-  "Saturday": "Saturday",
-  "Sunday": "Sunday"
+  "Ignore": "Ignorar",
+  "Monday": "Lunes",
+  "Tuesday": "Martes",
+  "Wednesday": "Miércoles",
+  "Thursday": "Jueves",
+  "Friday": "Viernes",
+  "Saturday": "Sábado",
+  "Sunday": "Domingo"
 }
