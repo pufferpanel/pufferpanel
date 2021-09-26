@@ -1,0 +1,19 @@
+{
+  "FileManager": "File Manager",
+  "NewFolder": "New Folder",
+  "NewFile": "New File",
+  "LastModified": "Last Modified",
+  "ConfirmDelete": "Are you sure you want to delete this file?",
+  "Upload": "Upload",
+  "Download": "Download",
+  "Size": "Size",
+  "NoFiles": "There are no files here yet, go and create some for example by clicking the install button at the top of the page",
+  "FileLoadFailed": "Failed loading file",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
+}
