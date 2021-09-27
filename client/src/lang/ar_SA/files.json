@@ -9,11 +9,11 @@
   "Size": "الحجم",
   "NoFiles": "لا توجد ملفات هنا حتى الآن، اذهب وأنشئ بعض على سبيل المثال بالنقر على زر التثبيت في الجزء العلوي من الصفحة",
   "FileLoadFailed": "فشل تحميل الملف",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "تحديث",
+  "CreateFile": "إنشاء ملف",
+  "CreateFolder": "إنشاء مجلد",
+  "ArchiveCurrentFolder": "إنشاء أرشيف من المجلد الحالي",
+  "ArchiveFolder": "إنشاء أرشيف من المجلد",
+  "ExtractArchive": "استخراج الأرشيف",
+  "DropToUpload": "قم بإسقاط الملفات هنا لتحميلها"
 }
