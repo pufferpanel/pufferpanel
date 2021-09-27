@@ -23,11 +23,11 @@
   "Filename": "اسم الملفّ",
   "Content": "المحتوى",
   "Source": "المصدر",
-  "Target": "Target",
-  "Version": "Version",
+  "Target": "الهدف",
+  "Version": "الإصدار",
   "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
+  "AddFile": "إضافة ملف",
+  "AddVariable": "إضافة متغير",
   "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "Add environment",
@@ -36,7 +36,7 @@
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
   "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
+  "VarNameNoSpaces": "اسم المتغير لا يمكن أن يكون فارغاً أو يحتوي على مسافات",
   "SupportedEnvironments": "Supported Environments",
   "RunConfig": "Run Configuration",
   "PreHook": "Pre Run Hook",
@@ -68,33 +68,33 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "تحميل",
+      "files": "الملفات"
     },
     "command": {
       "ProcessorName": "Run Command",
       "commands": "Commands"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
+      "ProcessorName": "تغيير الملف",
       "regex": "Treat search as RegEx",
       "search": "Text to search",
-      "replace": "Replace with"
+      "replace": "استبدل بـ"
     },
     "writefile": {
       "ProcessorName": "Write to file",
-      "text": "Content"
+      "text": "محتوى"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "نقل الملف",
+      "source": "المصدر",
+      "target": "الهدف"
     },
     "mkdir": {
       "ProcessorName": "Create Directory"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "تحميل Minecraft"
     },
     "forgedl": {
       "ProcessorName": "Download Minecraft Forge"
