@@ -1,24 +1,24 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
+  "Settings": "إعدادات",
+  "PanelSettings": "إعدادات اللوحة",
+  "EmailSettings": "إعدادات البريد الإلكتروني",
   "MasterUrl": "Master URL",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
+  "CompanyName": "اسم الشركة",
+  "DefaultTheme": "السمة الافتراضية",
   "EmailProvider": "Email Provider",
   "emailProviders": {
-    "none": "None",
+    "none": "لا يوجد",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
+    "from": "عنوان المرسل",
     "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "key": "مفتاح API",
+    "host": "المضيف",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور"
   }
 }
