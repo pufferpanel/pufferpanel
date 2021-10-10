@@ -138,7 +138,10 @@
               v-if="server.permissions.viewServerConsole || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="console">
+              <v-btn
+                v-hotkey="'t c'"
+                value="console"
+              >
                 <span>{{ $t('servers.Console') }}</span>
                 <v-icon>mdi-console-line</v-icon>
               </v-btn>
@@ -147,7 +150,10 @@
               v-if="server.permissions.viewServerStats || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="stats">
+              <v-btn
+                v-hotkey="'t i'"
+                value="stats"
+              >
                 <span>{{ $t('servers.Statistics') }}</span>
                 <v-icon>mdi-chart-line</v-icon>
               </v-btn>
@@ -156,7 +162,10 @@
               v-if="server.permissions.viewServerFiles || server.permissions.sftpServer || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="files">
+              <v-btn
+                v-hotkey="'t f'"
+                value="files"
+              >
                 <span>{{ $t('servers.Files') }}</span>
                 <v-icon>mdi-file</v-icon>
               </v-btn>
@@ -165,7 +174,10 @@
               v-if="showTasks && (server.permissions.editServerData || isAdmin())"
               v-slot="{}"
             >
-              <v-btn value="tasks">
+              <v-btn
+                v-hotkey="'t t'"
+                value="tasks"
+              >
                 <span>{{ $t('servers.Tasks') }}</span>
                 <v-icon>mdi-timer</v-icon>
               </v-btn>
@@ -174,7 +186,10 @@
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="settings">
+              <v-btn
+                v-hotkey="'t s'"
+                value="settings"
+              >
                 <span>{{ $t('servers.Settings') }}</span>
                 <v-icon>mdi-cog</v-icon>
               </v-btn>
@@ -183,7 +198,10 @@
               v-if="server.permissions.editServerUsers || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="users">
+              <v-btn
+                v-hotkey="'t u'"
+                value="users"
+              >
                 <span>{{ $t('users.Users') }}</span>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-btn>
@@ -192,7 +210,10 @@
               v-if="server.permissions.deleteServer || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="admin">
+              <v-btn
+                v-hotkey="'t a'"
+                value="admin"
+              >
                 <span>{{ $t('servers.Admin') }}</span>
                 <v-icon>mdi-account-star</v-icon>
               </v-btn>

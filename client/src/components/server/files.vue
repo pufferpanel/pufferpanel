@@ -50,6 +50,7 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn
+            v-hotkey="'n f'"
             icon
             v-on="on"
             @click="createFile = true"
@@ -67,6 +68,7 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn
+            v-hotkey="'n d'"
             icon
             v-on="on"
             @click="createFolder = true"
@@ -81,6 +83,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
+            v-hotkey="'r'"
             icon
             v-on="on"
             @click="fetchItems(currentPath)"
@@ -207,13 +210,17 @@
       <!-- File Upload -->
       <div v-if="server.permissions.putServerFiles || isAdmin()">
         <v-file-input
+          ref="fileInput"
           v-model="uploadFiles"
+          v-hotkey="'u'"
           multiple
           chips
           show-size
           counter
           :placeholder="$t('files.Upload')"
           class="mb-4"
+          @hotkey="$refs.fileInput.$refs.input.click()"
+          @change="$refs.fileInput.blur()"
         />
         <div v-if="uploading">
           <v-progress-linear
@@ -224,6 +231,7 @@
           />
         </div>
         <v-btn
+          v-hotkey="'Enter'"
           block
           color="primary"
           :disabled="!(uploadFiles.length > 0) || uploading"
