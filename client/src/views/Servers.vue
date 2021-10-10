@@ -19,8 +19,9 @@
             @input="updateList($event)"
           >
             <v-list-item
-              v-for="server in servers"
+              v-for="(server, i) in servers"
               :key="server.id"
+              v-hotkey="'s ' + (i + 1)"
               :to="{ name: 'Server', params: { id: server.id } }"
             >
               <v-list-item-avatar>

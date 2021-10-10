@@ -4,6 +4,7 @@
       <span v-text="$t('servers.Console')" />
       <div class="flex-grow-1" />
       <v-btn
+        v-hotkey="'c p'"
         icon
         @click="togglePaused()"
       >
@@ -47,6 +48,7 @@
         v-if="server.permissions.sendServerConsole || isAdmin()"
         ref="cmdInput"
         v-model="consoleCommand"
+        v-hotkey="'c i'"
         class="pt-2"
         placeholder="Command..."
         end-icon="mdi-send"
