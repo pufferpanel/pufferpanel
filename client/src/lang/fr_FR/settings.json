@@ -6,6 +6,9 @@
   "MasterUrlHint": "L'URL de base du panel est accessible sous le format http://localhost:8080",
   "CompanyName": "Nom de la compagnie",
   "DefaultTheme": "Thème par défaut",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Fournisseur d'e-mail",
   "emailProviders": {
     "none": "Aucun",
