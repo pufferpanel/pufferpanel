@@ -41,7 +41,10 @@
               v-text="$t('users.Login')"
             />
           </v-col>
-          <v-col cols="12">
+          <v-col
+            v-if="config.registrationEnabled"
+            cols="12"
+          >
             <v-btn
               text
               block
@@ -57,6 +60,9 @@
 
 <script>
 export default {
+  props: {
+    config: { type: Object, default: () => {} }
+  },
   data () {
     return {
       email: '',
