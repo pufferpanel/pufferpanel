@@ -45,6 +45,16 @@
                 />
               </v-col>
               <v-col cols="12">
+                <!-- error-count controls number of messages shown for _any message type_, not just errors -->
+                <v-checkbox
+                  v-model="registrationEnabled"
+                  class="mt-0"
+                  :label="$t('settings.RegistrationEnabled')"
+                  :error-count="2"
+                  :messages="[$t('settings.RegistrationEnabledHint1'), $t('settings.RegistrationEnabledHint2')]"
+                />
+              </v-col>
+              <v-col cols="12">
                 <v-btn
                   large
                   block
@@ -114,6 +124,7 @@ export default {
       masterUrl: '',
       panelTitle: '',
       defaultTheme: '',
+      registrationEnabled: true,
       themes: ['PufferPanel'],
       emailSettingsLoading: true,
       emailProvider: 'none',
@@ -160,6 +171,8 @@ export default {
       this.panelTitle = await this.$api.getSetting('panel.settings.companyName')
       this.defaultTheme = await this.$api.getSetting('panel.settings.defaultTheme')
       this.themes = (await this.$api.getConfig()).themes.available
+      const registrationEnabled = await this.$api.getSetting('panel.registrationEnabled')
+      this.registrationEnabled = registrationEnabled.toString() === 'true'
       this.panelSettingsLoading = false
       this.emailProvider = await this.$api.getSetting('panel.email.provider')
       Object.keys(this.email).map(async key => {
@@ -176,7 +189,8 @@ export default {
         await this.$api.setSettings({
           'panel.settings.masterUrl': this.masterUrl,
           'panel.settings.companyName': this.panelTitle,
-          'panel.settings.defaultTheme': this.defaultTheme
+          'panel.settings.defaultTheme': this.defaultTheme,
+          'panel.registrationEnabled': this.registrationEnabled
         })
         this.$toast.success(this.$t('common.Saved'))
       } finally {

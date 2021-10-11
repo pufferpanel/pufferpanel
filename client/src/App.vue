@@ -210,7 +210,10 @@
             />
           </div>
         </div>
-        <router-view v-else />
+        <router-view
+          v-else
+          :config="appConfig"
+        />
       </v-container>
       <ui-language v-model="showLanguageSelect" />
       <ui-overlay
