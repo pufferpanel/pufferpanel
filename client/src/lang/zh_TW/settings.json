@@ -6,6 +6,9 @@
   "MasterUrlHint": "可以用來存取本面板的 URL 基底，格式為 http://localhost:8080",
   "CompanyName": "公司名稱",
   "DefaultTheme": "預設主題",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "電子信箱提供者",
   "emailProviders": {
     "none": "無",
