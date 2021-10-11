@@ -6,6 +6,9 @@
   "MasterUrlHint": "Pagina URL de bază poate fi găsită în formatul http://localhost:8080",
   "CompanyName": "Nume Companie",
   "DefaultTheme": "Temă default",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Furnizor De E-Mail",
   "emailProviders": {
     "none": "Nimeni",
