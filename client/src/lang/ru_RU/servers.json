@@ -55,9 +55,9 @@
   "Daily": "Ежедневно",
   "Weekly": "Еженедельно",
   "Monthly": "Ежемесячно",
-  "Advanced": "Advanced",
-  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
-  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
-  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
+  "Advanced": "Дополнительно",
+  "HourlyTab": "Каждые {hourInterval} часов в минуту {minute}",
+  "DailyTab": "Каждые {dayInterval} дней в {hour}:{minute}",
+  "WeeklyTab": "Каждый {weekdays} в {hour}:{minute}",
   "MonthlyTab": "Каждые {monthInterval} месяцев в {day} день в {hour}:{minute}"
 }
