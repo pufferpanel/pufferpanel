@@ -110,9 +110,16 @@ func updateSelf(c *gin.Context) {
 		return
 	}
 
+	var oldEmail string
+	if user.Email != viewModel.Email {
+		oldEmail = user.Email
+	}
+
 	viewModel.CopyToModel(user)
 
+	passwordChanged := false
 	if viewModel.NewPassword != "" {
+		passwordChanged = true
 		err := user.SetPassword(viewModel.NewPassword)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
@@ -121,6 +128,16 @@ func updateSelf(c *gin.Context) {
 
 	if err := us.Update(user); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
+	}
+
+	if oldEmail != "" {
+		_ = services.GetEmailService().SendEmail(oldEmail, "emailChanged", map[string]interface{} {
+			"NEW_EMAIL": user.Email,
+		}, true)
+	}
+
+	if passwordChanged {
+		_ = services.GetEmailService().SendEmail(user.Email, "passwordChanged", nil, true)
 	}
 
 	c.Status(http.StatusNoContent)
@@ -199,6 +216,7 @@ func validateOtpEnroll(c *gin.Context) {
 		return
 	}
 
+	_ = services.GetEmailService().SendEmail(user.Email, "otpEnabled", nil, true)
 	c.Status(http.StatusNoContent)
 }
 
@@ -223,6 +241,7 @@ func disableOtp(c *gin.Context) {
 		return
 	}
 
+	_ = services.GetEmailService().SendEmail(user.Email, "otpDisabled", nil, true)
 	c.Status(http.StatusNoContent)
 }
 
@@ -273,6 +292,8 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
+	_ = services.GetEmailService().SendEmail(user.Email, "oauthCreated", nil, true)
+
 	type createdClient struct {
 		ClientId     string `json:"id"`
 		ClientSecret string `json:"secret"`
@@ -306,6 +327,7 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
+	_ = services.GetEmailService().SendEmail(user.Email, "oauthDeleted", nil, true)
 	c.Status(http.StatusNoContent)
 }
 
