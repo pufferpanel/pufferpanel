@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -131,13 +132,19 @@ func updateSelf(c *gin.Context) {
 	}
 
 	if oldEmail != "" {
-		_ = services.GetEmailService().SendEmail(oldEmail, "emailChanged", map[string]interface{} {
+		err := services.GetEmailService().SendEmail(oldEmail, "emailChanged", map[string]interface{} {
 			"NEW_EMAIL": user.Email,
 		}, true)
+		if err != nil {
+			logging.Error().Printf("Error sending email: %s\n", err)
+		}
 	}
 
 	if passwordChanged {
-		_ = services.GetEmailService().SendEmail(user.Email, "passwordChanged", nil, true)
+		err := services.GetEmailService().SendEmail(user.Email, "passwordChanged", nil, true)
+		if err != nil {
+			logging.Error().Printf("Error sending email: %s\n", err)
+		}
 	}
 
 	c.Status(http.StatusNoContent)
@@ -216,7 +223,10 @@ func validateOtpEnroll(c *gin.Context) {
 		return
 	}
 
-	_ = services.GetEmailService().SendEmail(user.Email, "otpEnabled", nil, true)
+	err = services.GetEmailService().SendEmail(user.Email, "otpEnabled", nil, true)
+	if err != nil {
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
 	c.Status(http.StatusNoContent)
 }
 
@@ -241,7 +251,10 @@ func disableOtp(c *gin.Context) {
 		return
 	}
 
-	_ = services.GetEmailService().SendEmail(user.Email, "otpDisabled", nil, true)
+	err = services.GetEmailService().SendEmail(user.Email, "otpDisabled", nil, true)
+	if err != nil {
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
 	c.Status(http.StatusNoContent)
 }
 
@@ -292,7 +305,10 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
-	_ = services.GetEmailService().SendEmail(user.Email, "oauthCreated", nil, true)
+	err = services.GetEmailService().SendEmail(user.Email, "oauthCreated", nil, true)
+	if err != nil {
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
 
 	type createdClient struct {
 		ClientId     string `json:"id"`
@@ -327,7 +343,10 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 		return
 	}
 
-	_ = services.GetEmailService().SendEmail(user.Email, "oauthDeleted", nil, true)
+	err = services.GetEmailService().SendEmail(user.Email, "oauthDeleted", nil, true)
+	if err != nil {
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
 	c.Status(http.StatusNoContent)
 }
 

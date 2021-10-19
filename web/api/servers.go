@@ -419,12 +419,29 @@ func deleteServer(c *gin.Context) {
 		return
 	}
 
+	//we need to know what users are impacted by a server being deleted
+	ps := services.Permission{DB: db}
+	users := make([]models.User, 0)
+	perms, err := ps.GetForServer(server.Identifier)
+	for _, p := range perms {
+		exists := false
+		for _, u := range users {
+			if u.ID == p.User.ID {
+				exists = true
+				break
+			}
+		}
+		if exists {
+			continue
+		}
+		users = append(users, p.User)
+	}
+
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	ps := services.Permission{DB: db}
 	newHeader, err := ps.GenerateOAuthForUser(user.ID, &server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -447,6 +464,17 @@ func deleteServer(c *gin.Context) {
 
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
+	}
+
+	es := services.GetEmailService()
+	for _, u := range users {
+		err = es.SendEmail(u.Email, "deletedServer", map[string]interface{}{
+			"Server":        server,
+		}, true)
+		if err != nil {
+			//since we don't want to tell the user it failed, we'll log and move on
+			logging.Error().Printf("Error sending email: %s\n", err)
+		}
 	}
 
 	c.Status(http.StatusNoContent)
@@ -609,7 +637,7 @@ func editServerUser(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Error().Printf("Error sending email: %s", err)
+			logging.Error().Printf("Error sending email: %s\n", err)
 		}
 	}
 
@@ -680,6 +708,17 @@ func removeServerUser(c *gin.Context) {
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
+
+	es := services.GetEmailService()
+	err = es.SendEmail(user.Email, "removedFromServer", map[string]interface{}{
+		"Server":        server,
+	}, true)
+	if err != nil {
+		//since we don't want to tell the user it failed, we'll log and move on
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 /*// @Summary Gets available OAuth2 scopes for the calling user
