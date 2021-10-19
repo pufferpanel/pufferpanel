@@ -132,7 +132,7 @@ func updateSelf(c *gin.Context) {
 	}
 
 	if oldEmail != "" {
-		err := services.GetEmailService().SendEmail(oldEmail, "emailChanged", map[string]interface{} {
+		err := services.GetEmailService().SendEmail(oldEmail, "emailChanged", map[string]interface{}{
 			"NEW_EMAIL": user.Email,
 		}, true)
 		if err != nil {
@@ -191,7 +191,7 @@ func startOtpEnroll(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"secret": secret,
-		"img": img,
+		"img":    img,
 	})
 }
 
@@ -258,6 +258,15 @@ func disableOtp(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// @Summary Gets registered oauth2 clients under this user
+// @Accept json
+// @Produce json
+// @Success 200 {object} []models.Client
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Router /api/self/oauth2 [GET]
 func getPersonalOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
@@ -279,15 +288,33 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+// @Summary Create an account-level OAuth2 client
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.CreatedClient
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param client body models.Client false "Information for the client to create"
+// @Router /api/self/oauth2 [POST]
 func createPersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
+	var request models.Client
+	err := c.BindJSON(&request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
 	client := &models.Client{
-		ClientId: uuid.NewV4().String(),
-		UserId:   user.ID,
+		ClientId:    uuid.NewV4().String(),
+		UserId:      user.ID,
+		Name:        request.Name,
+		Description: request.Description,
 	}
 
 	secret, err := pufferpanel.GenerateRandomString(36)
@@ -310,16 +337,22 @@ func createPersonalOAuth2Client(c *gin.Context) {
 		logging.Error().Printf("Error sending email: %s\n", err)
 	}
 
-	type createdClient struct {
-		ClientId     string `json:"id"`
-		ClientSecret string `json:"secret"`
-	}
-	c.JSON(http.StatusOK, createdClient{
+	c.JSON(http.StatusOK, models.CreatedClient{
 		ClientId:     client.ClientId,
 		ClientSecret: secret,
 	})
 }
 
+// @Summary Deletes an account-level OAuth2 client
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Information for the client to create"
+// @Router /api/self/oauth2/{id} [DELETE]
 func deletePersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	clientId := c.Param("clientId")

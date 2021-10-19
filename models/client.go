@@ -34,7 +34,13 @@ type Client struct {
 	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
 	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
 
+	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
 	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
+}
+
+type CreatedClient struct {
+	ClientId     string `json:"id"`
+	ClientSecret string `json:"secret"`
 }
 
 type Clients []*Client
