@@ -333,5 +333,23 @@ export const ServersApi = {
       await ctx.$http.delete(`/api/servers/${id}/user/${email}`)
       return true
     })
+  },
+
+  getServerOAuthClients (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/api/servers/${id}/oauth2`)).data
+    })
+  },
+
+  createServerOAuthClient (id, name, description) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/api/servers/${id}/oauth2`, { name, description })).data
+    })
+  },
+
+  deleteServerOAuthClient (id, clientId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/servers/${id}/oauth2/${clientId}`)).data
+    })
   }
 }

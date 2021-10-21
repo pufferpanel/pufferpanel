@@ -110,6 +110,11 @@
             <server-users :server="server" />
           </v-col>
         </v-row>
+        <v-row v-show="currentTab === 'admin'">
+          <v-col>
+            <ui-oauth :server="server" />
+          </v-col>
+        </v-row>
         <v-row
           v-show="currentTab === 'admin'"
           v-if="server.permissions.deleteServer || isAdmin()"
@@ -206,10 +211,7 @@
                 <v-icon>mdi-account-multiple</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item
-              v-if="server.permissions.deleteServer || isAdmin()"
-              v-slot="{}"
-            >
+            <v-slide-item v-slot="{}">
               <v-btn
                 v-hotkey="'t a'"
                 value="admin"
