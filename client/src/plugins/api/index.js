@@ -131,6 +131,24 @@ class ApiClient extends EventEmitter {
     })
   }
 
+  getUserOAuthClients () {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get('/api/self/oauth2')).data
+    })
+  }
+
+  createUserOAuthClient (name, description) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post('/api/self/oauth2', { name, description })).data
+    })
+  }
+
+  deleteUserOAuthClient (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/self/oauth2/${id}`)).status === 204
+    })
+  }
+
   getSetting (key, options = {}) {
     return this.withErrorHandling(async ctx => {
       return (await ctx.$http.get(`/api/settings/${key}`)).data.value

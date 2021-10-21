@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     parseConsole (data) {
-      let newLines = (Array.isArray(data.logs) ? data.logs : [data.logs]).join('').replace(/\r\n/g, '\n')
+      let newLines = (Array.isArray(data.logs) ? data.logs.join('') : data.logs).replaceAll('\r\n', '\n')
       const endOnNewline = newLines.endsWith('\n')
       newLines = newLines.split('\n').map(line => {
         return ansiup.ansi_to_html(line) + '<br>'
