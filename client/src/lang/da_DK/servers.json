@@ -18,6 +18,7 @@
   "Memory": "Hukommelse",
   "Files": "Filer",
   "Name": "Servernavn",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Vælg node",
   "SelectTemplate": "Vælg venligst en skabelon",
   "SelectThisTemplate": "Brug denne skabelon",
