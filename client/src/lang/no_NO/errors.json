@@ -1,7 +1,7 @@
 {
   "ErrGeneric": "Ukjent feil",
   "ErrUnknownError": "Ukjent feil",
-  "ErrInvalidCredentials": "Invalid credentials",
+  "ErrInvalidCredentials": "Ugyldig brukeropplysninger",
   "ErrServiceNotAvailable": "Tjeneste ikke tilgjengelig",
   "ErrEmailNotConfigured": "Epost ikke konfigurert",
   "ErrTokenInvalid": "Token er ugyldig",
@@ -37,5 +37,7 @@
   "ErrSocketFailed": "WebSocket forbindelsen opplevde en feil, noen funksjoner kan være trege eller ødelagt",
   "ErrInviteLinkInvalid": "Invitasjonslenken din ser ut til å være ugyldig",
   "ErrSavingInviteduser": "Det oppstod en feil under oppretting av kontoen",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Kan ikke laste opp mapper"
 }
