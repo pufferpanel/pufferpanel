@@ -18,6 +18,7 @@
   "Memory": "Geheugen",
   "Files": "Files",
   "Name": "Server Naam",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Selecteer een node",
   "SelectTemplate": "Selecteer een sjabloon",
   "SelectThisTemplate": "Dit sjabloon gebruiken",
