@@ -126,6 +126,7 @@ export default {
       newClientData: false,
       deleteOpen: false,
       deleteConfirm: false,
+      deleteName: '',
       toDelete: false
     }
   },
