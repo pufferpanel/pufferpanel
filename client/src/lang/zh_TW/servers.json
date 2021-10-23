@@ -18,6 +18,7 @@
   "Memory": "記憶體",
   "Files": "檔案",
   "Name": "伺服器名稱",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "請選擇節點",
   "SelectTemplate": "請選擇範本",
   "SelectThisTemplate": "使用這個範本",
