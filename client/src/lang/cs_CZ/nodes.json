@@ -10,6 +10,8 @@
   "PrivateHost": "Soukromý hostitel",
   "PrivatePort": "Soukromý port",
   "SftpPort": "SFTP port",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Uložit konfiguraci",
   "SavePublicKey": "Uložit veřejný klíč",
   "DeploymentInstruction": "Pro nasazení uzlu nainstalujte PufferPanel na nový server a umístěte konfigurační soubor do `/etc/pufferpanel/`<br/>Poté restartujte PufferPanel na novém serveru.",
