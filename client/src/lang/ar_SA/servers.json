@@ -18,6 +18,7 @@
   "Memory": "ذاكرة الوصول العشوائي",
   "Files": "الملفات",
   "Name": "اسم الخادم",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "الرجاء تحديد Node",
   "SelectTemplate": "يرجى تحديد قالب",
   "SelectThisTemplate": "استخدام هذا القالب",
