@@ -10,6 +10,8 @@
   "PrivateHost": "私有主机",
   "PrivatePort": "私有端口",
   "SftpPort": "SFTP 端口",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "保存配置",
   "SavePublicKey": "保存公钥",
   "DeploymentInstruction": "要部署节点，请在新服务器上安装 PufferPanel 并将配置文件放置于 `/etc/pufferpanel/`<br/>之后请重启新服务器上的 PufferPanel。",
