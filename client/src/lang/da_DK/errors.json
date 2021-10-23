@@ -37,5 +37,7 @@
   "ErrSocketFailed": "WebSocket forbindelsen stødte på en fejl, nogle funktioner kan være langsom eller afbrudt",
   "ErrInviteLinkInvalid": "Dit invitationslink er ugyldigt",
   "ErrSavingInviteduser": "Der opstod en fejl under oprettelsen af din konto",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Kan ikke uploade mapper"
 }
