@@ -18,6 +18,7 @@
   "Memory": "Arbeitsspeicher",
   "Files": "Dateien",
   "Name": "Servername",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Bitte Knoten auswählen",
   "SelectTemplate": "Bitte Vorlage auswählen",
   "SelectThisTemplate": "Diese Vorlage verwenden",
