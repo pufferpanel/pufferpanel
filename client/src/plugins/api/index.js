@@ -215,6 +215,12 @@ class ApiClient extends EventEmitter {
       } else {
         msg = error.response.data.error.msg
       }
+      if (
+        error.response.data.error.code === 'ErrGeneric' &&
+        error.response.data.error.msg === 'UNIQUE constraint failed: servers.name'
+      ) {
+        msg = 'errors.ErrDuplicateServerName'
+      }
     }
 
     if (options[error.response.status] !== undefined) {
