@@ -37,13 +37,13 @@
   "ThemeOptions": "Thema Opties",
   "Protocol": "Protocol",
   "Add": "Voeg toe",
-  "Ignore": "Ignore",
-  "Monday": "Monday",
-  "Tuesday": "Tuesday",
-  "Wednesday": "Wednesday",
-  "Thursday": "Thursday",
-  "Friday": "Friday",
-  "Saturday": "Saturday",
-  "Sunday": "Sunday",
-  "Description": "Description"
+  "Ignore": "Negeren",
+  "Monday": "Maandag",
+  "Tuesday": "Dinsdag",
+  "Wednesday": "Woensdag",
+  "Thursday": "Donderdag",
+  "Friday": "Vrijdag",
+  "Saturday": "Zaterdag",
+  "Sunday": "Zondag",
+  "Description": "Beschrijving"
 }
