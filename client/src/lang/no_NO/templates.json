@@ -1,33 +1,33 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
+  "Templates": "Maler",
+  "NoTemplates": "Det er ingen maler her ennå",
+  "Deleted": "Malen er slettet",
+  "New": "Opprett ny mal",
+  "Edit": "Rediger mal",
   "Editor": "Redigering",
   "Json": "JSON",
-  "Display": "Display Name",
+  "Display": "Visningsnavn",
   "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
+  "Variables": "Variabler",
+  "Install": "Installer",
+  "AddInstallStep": "Legg til installasjonstrinn",
+  "DeleteInstallStep": "Slett installasjonstrinn",
+  "Description": "Beskrivelse",
   "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
+  "DefaultValue": "Standardverdi",
+  "Required": "Påkrevd",
+  "UserEditable": "Brukere kan redigere",
+  "Value": "Verdi",
+  "AddOption": "Legge til et alternativ",
+  "AddCommand": "Legg til kommando",
+  "Filename": "Filnavn",
+  "Content": "Innhold",
+  "Source": "Kilde",
+  "Target": "Mål",
+  "Version": "Versjon",
   "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
+  "AddFile": "Legg til fil",
+  "AddVariable": "Legg til variabel",
   "Environment": "Environment",
   "Environments": "Environments",
   "AddEnvironment": "Add environment",
@@ -35,76 +35,76 @@
   "AddEnvVar": "Add env variable",
   "EnvVars": "Environment variables",
   "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "SaveSuccess": "Lagret mal",
+  "VarNameNoSpaces": "Et variabelnavn kan ikke være tomt eller inneholde mellomrom",
+  "SupportedEnvironments": "Støttede miljøer",
+  "RunConfig": "Kjøre konfigurasjon",
   "PreHook": "Pre Run Hook",
   "PostHook": "Post Run Hook",
   "AddPreStep": "Add Pre Run Step",
   "AddPostStep": "Add Post Run Step",
   "DeletePreStep": "Delete Pre Run Step",
   "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
+  "Shutdown": "Avslutt",
+  "Command": "Kommando",
   "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Arguments": "Argumenter",
+  "AddArgument": "Legg til argument",
+  "Convert": "Konverter",
+  "OfferV1Convert": "Denne malen av json ser ut som en mal for PufferPanel 1.x, vil du automatisk konvertere denne til en mal for PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "Advarsel: Importerte maler VIL overskrive eksisterende maler med samme ID",
+    "Import": "Importere maler",
+    "Tooltip": "Importer maler fra det offisielle arkivet",
+    "Select": "Velg maler som skal importeres",
+    "Started": "Importerer maler, vennligst vent et øyeblikk",
+    "Successful": "Velykket importert mal {template}",
+    "NoTemplatesTitle": "Vil du importere maler?",
+    "NoTemplatesContent": "Du har for øyeblikket ikke noen maler. Maler er nødvendige for å opprette servere.<br/>Vil du importere noen maler fra de offisielle PufferPanel arkivet nå?"
   },
   "stop": {
-    "Command": "Command",
+    "Command": "Kommando",
     "Signal": "Signal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Last ned",
+      "files": "Filer"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Kjør kommando",
+      "commands": "Kommandoer"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
+      "ProcessorName": "Endre fil",
       "regex": "Treat search as RegEx",
       "search": "Text to search",
-      "replace": "Replace with"
+      "replace": "Erstatt med"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Skriv til fil",
+      "text": "Innhold"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
+      "ProcessorName": "Flytt fil",
+      "source": "Kilde",
       "target": "Target"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Opprett mappe"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Last ned Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Last ned Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Last ned Minecraft SpongeForge",
+      "releaseType": "Utgivelsestype"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Last ned Minecraft Fabric"
     }
   }
 }
