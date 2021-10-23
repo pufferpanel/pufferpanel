@@ -10,6 +10,8 @@
   "PrivateHost": "プライベートホスト",
   "PrivatePort": "プライベートポート",
   "SftpPort": "SFTP ポート",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "設定を保存",
   "SavePublicKey": "公開鍵を保存",
   "DeploymentInstruction": "ノードをデプロイするには、新しいサーバに PufferPanel をインストールし、`/etc/pufferpanel/` にconfig ファイルを配置します。<br/>その後、新しいサーバで PufferPanel を再起動します。",
