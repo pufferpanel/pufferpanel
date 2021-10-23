@@ -35,7 +35,9 @@
   "ErrMissingScope": "No estas autorizado a realizar esta acción",
   "ErrInvalidJson": "Los datos json no son válidos",
   "ErrSocketFailed": "La conexión WebSocket ha encontrado un error, algunas características pueden ser lentas o rotas",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account",
-  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
+  "ErrInviteLinkInvalid": "La invitación ingresada es incorrecta",
+  "ErrSavingInviteduser": "Ocurrió un error al intentar crear tu cuenta",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDirectoryUploadNotSupported": "No puedes subir carpetas"
 }
