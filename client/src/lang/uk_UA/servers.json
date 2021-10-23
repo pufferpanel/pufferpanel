@@ -18,6 +18,7 @@
   "Memory": "Пам'ять",
   "Files": "Files",
   "Name": "Ім'я сервера",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Будь ласка, виберіть вузол",
   "SelectTemplate": "Будь ласка, оберіть шаблон",
   "SelectThisTemplate": "Використовувати цей шаблон",
