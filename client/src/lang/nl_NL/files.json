@@ -9,11 +9,11 @@
   "Size": "Grootte",
   "NoFiles": "Er zijn hier nog geen bestanden, maak er een paar aan door bijvoorbeeld op de installeren knop te klikken bovenaan de pagina",
   "FileLoadFailed": "Bestand laden mislukt",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Ververs",
+  "CreateFile": "Maak bestand",
+  "CreateFolder": "Maak folder",
+  "ArchiveCurrentFolder": "Maak archief van huidige folder",
+  "ArchiveFolder": "Maak archief van folder",
+  "ExtractArchive": "Archief uitpakken",
+  "DropToUpload": "Sleep bestanden hier om ze te uploaden"
 }
