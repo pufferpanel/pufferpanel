@@ -1,13 +1,13 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients"
+  "Credentials": "OAuth2 klientens opplysninger",
+  "ClientId": "Klient ID",
+  "ClientSecret": "Klient hemmelighet",
+  "NewClientWarning": "Noter klienthemmeligheten, etter at du har lukket denne dialogboksen vil den aldri bli vist igjen. Å miste eller glemme den vil gjøre denne klienten helt ubrukelig.",
+  "Create": "Lag ny OAuth2-klient",
+  "UnnamedClient": "OAuth2-klienten uten navn",
+  "Docs": "Finn API-dokumentasjon her",
+  "DeleteWarning": "Sletting av en OAuth2-klient kan ikke angres og det kan heller ikke opprettes en ny klient med samme legitimasjon. Alle integrasjoner som fortsatt bruker denne klienten, vil bryte etter at den er slettet.",
+  "ConfirmDelete": "Jeg er klar over effektene ved å slette denne OAuth2-klienten vil ha, og jeg ønsker å fortsette.",
+  "Delete": "Slett {clientName}?",
+  "Clients": "OAuth2 klienter"
 }
