@@ -10,6 +10,8 @@
   "PrivateHost": "Host Privat",
   "PrivatePort": "Port privat",
   "SftpPort": "Port SFTP",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Salvează configurația",
   "SavePublicKey": "Salvează cheia publică",
   "DeploymentInstruction": "Pentru a implementa acest modul, instalati PufferPanel pe noul server si plasati fisierul de configurare in `/etc/pufferpanel/`<br/>Reporniţi PufferPanel pe noul server dupa.",
