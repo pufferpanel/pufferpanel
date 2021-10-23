@@ -209,17 +209,31 @@ class ApiClient extends EventEmitter {
     if (options.noToast || error.response.status === 401) return false
 
     let msg = 'errors.ErrUnknownError'
+    let msgMeta = {}
     if (error && error.response && error.response.data.error) {
       if (error.response.data.error.code) {
         msg = 'errors.' + error.response.data.error.code
       } else {
         msg = error.response.data.error.msg
+        if (error.response.data.error.metadata) {
+          for (const key in error.response.data.error.metadata) {
+            console.log(key, error.response.data.error.metadata[key])
+            msg = msg.replaceAll('${' + key + '}', error.response.data.error.metadata[key])
+          }
+        }
       }
+      if (error.response.data.error.metadata) msgMeta = error.response.data.error.metadata
       if (
         error.response.data.error.code === 'ErrGeneric' &&
         error.response.data.error.msg === 'UNIQUE constraint failed: servers.name'
       ) {
         msg = 'errors.ErrDuplicateServerName'
+      }
+      if (
+        error.response.data.error.code === 'ErrGeneric' &&
+        error.response.data.error.msg === 'UNIQUE constraint failed: nodes.name'
+      ) {
+        msg = 'errors.ErrDuplicateNodeName'
       }
     }
 
@@ -251,7 +265,7 @@ class ApiClient extends EventEmitter {
 
     const errUnknown = msg === 'errors.ErrUnknownError'
 
-    this._ctx.$toast.error(errUnknown ? undefined : this._ctx.$t(msg), errUnknown ? detailsAction : undefined)
+    this._ctx.$toast.error(errUnknown ? undefined : this._ctx.$t(msg, msgMeta), errUnknown ? detailsAction : undefined)
     return false
   }
 }
