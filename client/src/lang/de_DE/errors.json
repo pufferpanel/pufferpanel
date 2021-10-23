@@ -37,5 +37,7 @@
   "ErrSocketFailed": "Bei der WebSocket-Verbindung ist ein Fehler aufgetreten. Einige Funktionen sind möglicherweise langsam oder fehlerhaft",
   "ErrInviteLinkInvalid": "Der Einladungslink ist ungültig",
   "ErrSavingInviteduser": "Bei der Erstellung des Kontos ist ein Fehler aufgetreten",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden"
 }
