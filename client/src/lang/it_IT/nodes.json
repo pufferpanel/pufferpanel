@@ -10,6 +10,8 @@
   "PrivateHost": "Host Privato",
   "PrivatePort": "Porta Privata",
   "SftpPort": "Porta SFTP",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Salva Configurazione",
   "SavePublicKey": "Salva Chiave Pubblica",
   "DeploymentInstruction": "Per distribuire il nodo, installa PufferPanel sul nuovo server e metti il file di configurazione in '/etc/pufferpanel/'<br/>Riavvia PufferPanel sul serve successivamente.",
