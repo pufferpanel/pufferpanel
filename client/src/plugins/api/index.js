@@ -215,12 +215,6 @@ class ApiClient extends EventEmitter {
         msg = 'errors.' + error.response.data.error.code
       } else {
         msg = error.response.data.error.msg
-        if (error.response.data.error.metadata) {
-          for (const key in error.response.data.error.metadata) {
-            console.log(key, error.response.data.error.metadata[key])
-            msg = msg.replaceAll('${' + key + '}', error.response.data.error.metadata[key])
-          }
-        }
       }
       if (error.response.data.error.metadata) msgMeta = error.response.data.error.metadata
       if (
