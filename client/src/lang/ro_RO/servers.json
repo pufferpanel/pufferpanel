@@ -18,6 +18,7 @@
   "Memory": "Memorie",
   "Files": "Fişiere",
   "Name": "Nume server",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Vă rugăm să selectaţi node-ul",
   "SelectTemplate": "Selectează un template",
   "SelectThisTemplate": "Utilizați acest model",
