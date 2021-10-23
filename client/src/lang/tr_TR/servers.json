@@ -18,6 +18,7 @@
   "Memory": "Ram",
   "Files": "Files",
   "Name": "Sunucu Adı",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Lütfen node seçiniz",
   "SelectTemplate": "Lütfen şablon seçiniz",
   "SelectThisTemplate": "Bu şablonu kullan",
