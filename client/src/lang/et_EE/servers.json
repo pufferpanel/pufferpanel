@@ -18,6 +18,7 @@
   "Memory": "Mälu",
   "Files": "Failid",
   "Name": "Serveri Nimi",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Palun vali sõlm",
   "SelectTemplate": "Palun vali mall",
   "SelectThisTemplate": "Kasuta seda malli",
