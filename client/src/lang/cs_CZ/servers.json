@@ -18,6 +18,7 @@
   "Memory": "Paměť",
   "Files": "Soubory",
   "Name": "Název serveru",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Prosím vyberte uzel",
   "SelectTemplate": "Vyberte šablonu",
   "SelectThisTemplate": "Použít tuto šablonu",
