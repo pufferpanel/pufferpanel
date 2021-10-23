@@ -18,6 +18,7 @@
   "Memory": "Memory",
   "Files": "Files",
   "Name": "Nama Server",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Mohon pilih node",
   "SelectTemplate": "Mohon pilih template",
   "SelectThisTemplate": "Gunakan Template ini",
