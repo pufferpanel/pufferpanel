@@ -18,6 +18,7 @@
   "Memory": "Minne",
   "Files": "Files",
   "Name": "Servernamn",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Välj nod",
   "SelectTemplate": "Välj mall",
   "SelectThisTemplate": "Använd denna mall",
