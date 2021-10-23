@@ -37,5 +37,7 @@
   "ErrSocketFailed": "웹소켓 연결에서 오류가 발생했습니다, 일부 기능들이 느리거나 작동하지 않을 수 있습니다.",
   "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
   "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }
