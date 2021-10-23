@@ -18,6 +18,7 @@
   "Memory": "メモリ",
   "Files": "Files",
   "Name": "サーバー名",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "ノードを選択してください",
   "SelectTemplate": "テンプレートを選択してください",
   "SelectThisTemplate": "このテンプレートを使う",
