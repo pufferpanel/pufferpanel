@@ -18,6 +18,7 @@
   "Memory": "Pamięć RAM",
   "Files": "Files",
   "Name": "Nazwa Serwera",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Proszę wybrać węzeł",
   "SelectTemplate": "Proszę wybrać szablon",
   "SelectThisTemplate": "Użyj tego szablonu",
