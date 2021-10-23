@@ -18,6 +18,7 @@
   "Memory": "Memoria",
   "Files": "File",
   "Name": "Nome del Server",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Sei pregato di selezionare il nodo",
   "SelectTemplate": "Sei pregato di selezionare il modello",
   "SelectThisTemplate": "Usa questo modello",
