@@ -18,6 +18,7 @@
   "Memory": "内存",
   "Files": "文件",
   "Name": "服务器名称",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "请选择节点",
   "SelectTemplate": "请选择模板",
   "SelectThisTemplate": "使用此模板",
