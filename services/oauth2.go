@@ -45,7 +45,7 @@ func (o *OAuth2) GetForUserAndServer(userId uint, serverId string) ([]*models.Cl
 	clients := &models.Clients{}
 
 	client := &models.Client{
-		UserId:   userId,
+		UserId: userId,
 		ServerId: serverId,
 	}
 

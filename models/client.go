@@ -31,6 +31,7 @@ type Client struct {
 
 	ServerId string  `gorm:"NOT NULL" json:"-"`
 	Server   *Server `json:"-"`
+
 	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
 	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
 
