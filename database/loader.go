@@ -14,6 +14,8 @@
 package database
 
 import (
+	"errors"
+	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -29,8 +31,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"errors"
-	"fmt"
 )
 
 var dbConn *gorm.DB
@@ -107,8 +107,10 @@ func openConnection() (err error) {
 		logging.Error().Printf("Error connecting to database: %s", err)
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
-
-	return migrateModels()
+	if err := migrateModels(); err != nil {
+		return err
+	}
+	return migrate(dbConn)
 }
 
 func GetConnection() (*gorm.DB, error) {
@@ -180,6 +182,7 @@ func addConnectionSetting(connString, setting string) string {
 }
 
 type databaseConnector struct{}
+
 func (*databaseConnector) GetConnection() (*gorm.DB, error) {
 	return GetConnection()
 }
