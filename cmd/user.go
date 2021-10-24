@@ -17,7 +17,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -171,11 +170,6 @@ func addUser(cmd *cobra.Command, args []string) {
 			return err
 		}
 
-		err = db.Commit().Error
-		if err != nil {
-			fmt.Printf("Failed to save changes: %s\n", err.Error())
-			return err
-		}
 		return nil
 	}); err != nil {
 		return
