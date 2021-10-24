@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
 )
@@ -12,7 +13,11 @@ func migrate(dbConn *gorm.DB) error {
 		{
 			ID: "1626910428",
 			Migrate: func(db *gorm.DB) error {
-				return db.Migrator().DropIndex(&models.Server{}, "uix_servers_name")
+				err := db.Migrator().DropIndex(&models.Server{}, "uix_servers_name")
+				if err != nil {
+					logging.Debug().Printf("removing unique key for server.name with err `%s`", err)
+				}
+				return nil
 			},
 			Rollback: nil,
 		},
