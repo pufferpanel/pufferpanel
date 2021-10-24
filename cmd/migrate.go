@@ -111,8 +111,9 @@ func migratePanel() {
 		}
 
 		for _, v := range users {
+
 			newUser := &models.User{
-				ID:             int(v.ID),
+				ID:             v.ID,
 				Username:       v.Username,
 				Email:          v.Email,
 				HashedPassword: v.Password,

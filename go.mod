@@ -67,9 +67,7 @@ require (
 	github.com/swaggo/swag v1.5.1
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	google.golang.org/appengine v1.6.2 // indirect
-	google.golang.org/grpc v1.23.0 // indirect
+	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/ini.v1 v1.56.0 // indirect

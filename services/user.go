@@ -45,7 +45,7 @@ func (us *User) Get(username string) (*models.User, error) {
 	return model, nil
 }
 
-func (us *User) GetById(id int) (*models.User, error) {
+func (us *User) GetById(id uint) (*models.User, error) {
 	model := &models.User{
 		ID: id,
 	}
@@ -160,7 +160,7 @@ func (us *User) ChangePassword(username string, newPass string) error {
 	return us.Update(user)
 }
 
-func (us *User) GetOtpStatus(userId int) (enabled bool, err error) {
+func (us *User) GetOtpStatus(userId uint) (enabled bool, err error) {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return
@@ -170,7 +170,7 @@ func (us *User) GetOtpStatus(userId int) (enabled bool, err error) {
 	return
 }
 
-func (us *User) StartOtpEnroll(userId int) (secret string, img string, err error) {
+func (us *User) StartOtpEnroll(userId uint) (secret string, img string, err error) {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return
@@ -205,7 +205,7 @@ func (us *User) StartOtpEnroll(userId int) (secret string, img string, err error
 	return
 }
 
-func (us *User) ValidateOtpEnroll(userId int, token string) error {
+func (us *User) ValidateOtpEnroll(userId uint, token string) error {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return err
@@ -219,7 +219,7 @@ func (us *User) ValidateOtpEnroll(userId int, token string) error {
 	return us.Update(user)
 }
 
-func (us *User) DisableOtp(userId int, token string) error {
+func (us *User) DisableOtp(userId uint, token string) error {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return err

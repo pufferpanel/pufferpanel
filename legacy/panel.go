@@ -25,14 +25,14 @@ type SslConfig struct {
 }
 
 type User struct {
-	ID       int
+	ID       uint
 	Username string
 	Email    string
 	Password string
 }
 
 type Node struct {
-	ID           int
+	ID           uint
 	Name         string
 	FQDN         string
 	Ip           string
@@ -42,10 +42,10 @@ type Node struct {
 }
 
 type Server struct {
-	Id           int
+	Id           uint
 	Hash         uuid.UUID
 	DaemonSecret string
-	Node         int
+	Node         uint
 	Name         string
-	OwnerId      int `gorm:"column:owner_id"`
+	OwnerId      uint `gorm:"column:owner_id"`
 }

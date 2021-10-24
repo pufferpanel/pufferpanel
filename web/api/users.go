@@ -141,8 +141,8 @@ func getUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id int
-	if id, err = cast.ToIntE(c.Param("id")); err != nil {
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -174,8 +174,8 @@ func updateUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id int
-	if id, err = cast.ToIntE(c.Param("id")); err != nil {
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -221,8 +221,8 @@ func deleteUser(c *gin.Context) {
 	us := &services.User{DB: db}
 
 	var err error
-	var id int
-	if id, err = cast.ToIntE(c.Param("id")); err != nil {
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -258,8 +258,8 @@ func getUserPerms(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	var err error
-	var id int
-	if id, err = cast.ToIntE(c.Param("id")); err != nil {
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
@@ -297,8 +297,8 @@ func setUserPerms(c *gin.Context) {
 	ps := &services.Permission{DB: db}
 
 	var err error
-	var id int
-	if id, err = cast.ToIntE(c.Param("id")); err != nil {
+	var id uint
+	if id, err = cast.ToUintE(c.Param("id")); err != nil {
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}

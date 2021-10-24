@@ -58,7 +58,7 @@ func Generate(claims jwt.Claims) (string, error) {
 	return token.SignedString(privateKey)
 }
 
-func GenerateSession(id int) (string, error) {
+func GenerateSession(id uint) (string, error) {
 	claims := &pufferpanel.Claim{
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "session",
@@ -104,7 +104,7 @@ func GenerateOAuthForNode(nodeId uint) (string, error) {
 	return Generate(claims)
 }
 
-func (ps *Permission) GenerateOAuthForUser(userId int, serverId *string) (string, error) {
+func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (string, error) {
 	var err error
 	var permissions []*models.Permissions
 

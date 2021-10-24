@@ -20,13 +20,13 @@ import (
 )
 
 type Permissions struct {
-	ID int `gorm:"primaryKey,autoIncrement" json:"-"`
+	ID uint `gorm:"primaryKey,autoIncrement" json:"-"`
 
 	//owners of this permission set
-	UserId *int `json:"-"`
-	User   User `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
+	UserId *uint `json:"-"`
+	User   User  `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
-	ClientId *int   `json:"-"`
+	ClientId *uint  `json:"-"`
 	Client   Client `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
 
 	//if this set is for a server, what server

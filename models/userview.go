@@ -20,7 +20,7 @@ import (
 )
 
 type UserView struct {
-	Id       int    `json:"id,omitempty"`
+	Id       uint   `json:"id,omitempty"`
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING

@@ -23,7 +23,7 @@ type Permission struct {
 	DB *gorm.DB
 }
 
-func (ps *Permission) GetForUser(id int) ([]*models.Permissions, error) {
+func (ps *Permission) GetForUser(id uint) ([]*models.Permissions, error) {
 	allPerms := &models.MultiplePermissions{}
 	permissions := &models.Permissions{
 		UserId: &id,
@@ -45,7 +45,7 @@ func (ps *Permission) GetForServer(serverId string) ([]*models.Permissions, erro
 	return *allPerms, err
 }
 
-func (ps *Permission) GetForUserAndServer(userId int, serverId *string) (*models.Permissions, error) {
+func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*models.Permissions, error) {
 	permissions := &models.Permissions{
 		UserId:           &userId,
 		ServerIdentifier: serverId,
@@ -60,7 +60,7 @@ func (ps *Permission) GetForUserAndServer(userId int, serverId *string) (*models
 	return permissions, err
 }
 
-func (ps *Permission) GetForClient(id int) ([]*models.Permissions, error) {
+func (ps *Permission) GetForClient(id uint) ([]*models.Permissions, error) {
 	allPerms := &models.MultiplePermissions{}
 
 	permissions := &models.Permissions{
@@ -72,7 +72,7 @@ func (ps *Permission) GetForClient(id int) ([]*models.Permissions, error) {
 	return *allPerms, err
 }
 
-func (ps *Permission) GetForClientAndServer(id int, serverId *string) (*models.Permissions, error) {
+func (ps *Permission) GetForClientAndServer(id uint, serverId *string) (*models.Permissions, error) {
 	permissions := &models.Permissions{
 		ClientId:         &id,
 		ServerIdentifier: serverId,

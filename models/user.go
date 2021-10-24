@@ -22,7 +22,7 @@ import (
 )
 
 type User struct {
-	ID             int    `json:"-"`
+	ID             uint   `json:"-"`
 	Username       string `gorm:"UNIQUE;NOT NULL;size:100" json:"-" validate:"required,printascii,max=100,min=5"`
 	Email          string `gorm:"UNIQUE;NOT NULL;size:255" json:"-" validate:"required,email,max=255"`
 	HashedPassword string `gorm:"column:password;NOT NULL;size:200" json:"-" validate:"required,max=200"`

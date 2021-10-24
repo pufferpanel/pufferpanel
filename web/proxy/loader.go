@@ -69,7 +69,7 @@ func proxyServerRequest(c *gin.Context) {
 
 	//if a session-token, we need to convert it to an oauth2 token instead
 	if token.Claims.Audience == "session" {
-		newToken, err := ps.GenerateOAuthForUser(cast.ToInt(token.Claims.Subject), &s.Identifier)
+		newToken, err := ps.GenerateOAuthForUser(cast.ToUint(token.Claims.Subject), &s.Identifier)
 		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
