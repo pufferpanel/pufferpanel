@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
