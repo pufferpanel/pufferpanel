@@ -16,7 +16,7 @@
   "emailFields": {
     "from": "Адрес отправителя",
     "domain": "домен",
-    "key": "API-ключ",
+    "key": "API ключ",
     "host": "Хозяин",
     "username": "Имя пользователя",
     "password": "Пароль"

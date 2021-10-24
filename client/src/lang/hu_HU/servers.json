@@ -39,5 +39,15 @@
   "Reloaded": "Szerveradatok újratöltve",
   "Autostart": "Szerver indítása, amikor a csomópont elindul",
   "Autorestart": "Szerver újraindítása automatikusan leállás esetén",
-  "Autorecover": "Szerver újraindítása, ha összeomlik"
+  "Autorecover": "Szerver újraindítása, ha összeomlik",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

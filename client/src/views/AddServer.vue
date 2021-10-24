@@ -109,7 +109,9 @@
               />
               <ui-input
                 v-model="serverName"
+                :error-messages="serverNameError"
                 autofocus
+                @blur="serverNameError = isServerNameValid() ? undefined : $t('servers.NameInvalid')"
                 @keyup.enter="step2Continue()"
               />
             </v-col>
@@ -324,6 +326,7 @@ export default {
       userCancelSearch: CancelToken.source(),
 
       serverName: '',
+      serverNameError: undefined,
 
       selectedEnvironment: null,
       environments: [],
@@ -505,7 +508,7 @@ export default {
       delete data.environment.text
       delete data.environment.value
       const id = await this.$api.createServer(data)
-      this.$router.push({ name: 'Server', params: { id: id } })
+      if (id) this.$router.push({ name: 'Server', params: { id: id } })
     },
     selectUser (username) {
       if (!username || username === '') {
@@ -555,8 +558,11 @@ export default {
         }
       })
     },
+    isServerNameValid () {
+      return this.serverName.match(/^[\x20-\x7e]+$/)
+    },
     step2CanContinue () {
-      return this.selectedNode && this.selectedEnvironment && this.serverName && this.servername !== ''
+      return this.selectedNode && this.selectedEnvironment && this.isServerNameValid && this.servername !== ''
     },
     step2Continue () {
       if (!this.step2CanContinue()) return

@@ -24,7 +24,7 @@
   "Edit": "Editare utilizator",
   "Update": "Actualizeaza utilizator",
   "Delete": "Șterge utilizator",
-  "CreateSuccess": "Utilizator creat",
+  "CreateSuccess": "User successfully created",
   "CreateError": "Creare utilizator eșuată",
   "UpdateSuccess": "Utilizator actualizat",
   "UpdateError": "Actualizarea utilizatorului a eșuat",
@@ -34,8 +34,8 @@
   "OtpDisable": "Dezactivează 2FA",
   "OtpHint": "Autentificarea în doi pași adaugă un strat suplimentar de securitate contului tău solicitând mai mult decât o parolă pentru autentificare.",
   "OtpSetup": "Configurare 2FA",
-  "OtpSetupHint": "Scanați codul QR folosind aplicația de autentificare sau copiați codul secret de mai jos în ea",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "Cod secret",
   "OtpConfirm": "Confirmați folosind un cod 2FA",
-  "OtpNeeded": "Al doilea factor necesar"
+  "OtpNeeded": "2FA required"
 }

@@ -39,5 +39,15 @@
   "Reloaded": "Serverdata omladdad",
   "Autostart": "Starta servern när noden startar",
   "Autorestart": "Starta om servern när den stoppas vanligt",
-  "Autorecover": "Starta om servern när den kraschar"
+  "Autorecover": "Starta om servern när den kraschar",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

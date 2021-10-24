@@ -14,8 +14,6 @@
 package database
 
 import (
-	"errors"
-	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -31,6 +29,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"errors"
+	"fmt"
 )
 
 var dbConn *gorm.DB
@@ -180,7 +180,6 @@ func addConnectionSetting(connString, setting string) string {
 }
 
 type databaseConnector struct{}
-
 func (*databaseConnector) GetConnection() (*gorm.DB, error) {
 	return GetConnection()
 }

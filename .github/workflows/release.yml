@@ -213,6 +213,7 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/debian/jessie ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/debian/stretch ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.amd64debdownload.outputs.file }}
         
         #raspbian
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}

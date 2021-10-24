@@ -39,5 +39,15 @@
   "Reloaded": "已重载服务器数据",
   "Autostart": "在节点开启时启动此服务器",
   "Autorestart": "在服务器正常关闭后重启",
-  "Autorecover": "在服务器崩溃后重启"
+  "Autorecover": "在服务器崩溃后重启",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

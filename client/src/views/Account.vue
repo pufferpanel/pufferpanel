@@ -117,6 +117,11 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <ui-oauth />
+      </v-col>
+    </v-row>
     <ui-overlay
       v-model="otpEnroll.started"
       card

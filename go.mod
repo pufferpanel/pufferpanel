@@ -21,7 +21,7 @@ require (
 	github.com/facebookgo/ensure v0.0.0-20160127193407-b4ab57deab51 // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/facebookgo/subset v0.0.0-20150612182917-8dac2c3c4870 // indirect
-	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/frankban/quicktest v1.13.1 // indirect
 	github.com/gin-contrib/gzip v0.0.1
 	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.6.3
@@ -31,7 +31,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.0 // indirect
-	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/itsjamie/gin-cors v0.0.0-20160420130702-97b4a9da7933
@@ -43,14 +43,15 @@ require (
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
 	github.com/morikuni/aec v0.0.0-20170113033406-39771216ff4c // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
+	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/otiai10/copy v1.6.0
 	github.com/pelletier/go-toml v1.8.0 // indirect
+	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.10.1
 	github.com/pquerna/otp v1.3.0
-	github.com/rogpeppe/go-internal v1.3.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.19.10+incompatible
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
@@ -66,7 +67,9 @@ require (
 	github.com/swaggo/swag v1.5.1
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	google.golang.org/appengine v1.6.2 // indirect
+	google.golang.org/grpc v1.23.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/ini.v1 v1.56.0 // indirect

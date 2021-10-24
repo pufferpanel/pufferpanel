@@ -61,7 +61,7 @@ func RegisterRoutes(e *gin.Engine) {
 		ClientPath = config.GetString("panel.web.files")
 		IndexFile = ClientPath + "/index.html"
 
-		api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
+		api.RegisterRoutes(e.Group("/api"))
 		e.GET("/manifest.json", webManifest)
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))

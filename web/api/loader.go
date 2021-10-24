@@ -16,6 +16,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
+	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 )
 
 const MaxPageSize = 100
@@ -30,13 +31,13 @@ func RegisterRoutes(rg *gin.RouterGroup) {
 
 	rg.Use(middleware.ResponseAndRecover)
 	rg.Use(middleware.NeedsDatabase)
-	registerNodes(rg.Group("/nodes"))
-	registerServers(rg.Group("/servers"))
-	registerUsers(rg.Group("/users"))
-	registerTemplates(rg.Group("/templates"))
-	registerSelf(rg.Group("/self"))
-	registerSettings(rg.Group("/settings"))
-	registerUserSettings(rg.Group("/userSettings"))
+	registerNodes(rg.Group("/nodes", handlers.HasOAuth2Token))
+	registerServers(rg.Group("/servers", handlers.HasOAuth2Token))
+	registerUsers(rg.Group("/users", handlers.HasOAuth2Token))
+	registerTemplates(rg.Group("/templates", handlers.HasOAuth2Token))
+	registerSelf(rg.Group("/self", handlers.HasOAuth2Token))
+	registerSettings(rg.Group("/settings", handlers.HasOAuth2Token))
+	registerUserSettings(rg.Group("/userSettings", handlers.HasOAuth2Token))
 
 	rg.GET("/config", panelConfig)
 }

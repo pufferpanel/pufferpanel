@@ -24,7 +24,7 @@
   "Edit": "編輯使用者",
   "Update": "更新使用者",
   "Delete": "刪除使用者",
-  "CreateSuccess": "已建立使用者",
+  "CreateSuccess": "User successfully created",
   "CreateError": "建立使用者失敗",
   "UpdateSuccess": "已更新使用者",
   "UpdateError": "更新使用者失敗",
@@ -34,8 +34,8 @@
   "OtpDisable": "停用 2FA",
   "OtpHint": "「雙因素驗證」藉由使用除密碼以外的方式驗證，讓您的帳戶更加安全。",
   "OtpSetup": "2FA 設定",
-  "OtpSetupHint": "使用您的驗證器應用程式掃描 QR 碼，或是複製下方密碼到驗證器中",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
   "OtpSecret": "密碼",
   "OtpConfirm": "使用 2FA 驗證碼確定",
-  "OtpNeeded": "需第二輪驗證"
+  "OtpNeeded": "2FA required"
 }

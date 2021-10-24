@@ -1,8 +1,8 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
+  "Settings": "Configuraciones",
+  "PanelSettings": "Configuracion del panel",
+  "EmailSettings": "Ajustes del correo",
+  "MasterUrl": "URL Principal",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Company Name",
   "DefaultTheme": "Default Theme",
@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
+    "from": "Sender Adress",
     "domain": "Domain",
-    "key": "API-Key",
+    "key": "API Key",
     "host": "Host",
     "username": "Username",
     "password": "Password"

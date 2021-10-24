@@ -53,8 +53,12 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("DELETE", "/:serverId/user/:email", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
 
-	g.Handle("GET", "/:serverId/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), getAvailableOauth2Perms)
-	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET"))
+	g.Handle("GET", "/:serverId/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), getOAuth2Clients)
+	g.Handle("POST", "/:serverId/oauth2", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), createOAuth2Client)
+	g.Handle("OPTIONS", "/:serverId/oauth2", response.CreateOptions("GET", "POST"))
+
+	g.Handle("DELETE", "/:serverId/oauth2/:clientId", handlers.OAuth2Handler(pufferpanel.ScopeServersView, true), deleteOAuth2Client)
+	g.Handle("OPTIONS", "/:serverId/oauth2/:clientId", response.CreateOptions("DELETE"))
 }
 
 // @Summary Get servers
@@ -415,12 +419,29 @@ func deleteServer(c *gin.Context) {
 		return
 	}
 
+	//we need to know what users are impacted by a server being deleted
+	ps := services.Permission{DB: db}
+	users := make([]models.User, 0)
+	perms, err := ps.GetForServer(server.Identifier)
+	for _, p := range perms {
+		exists := false
+		for _, u := range users {
+			if u.ID == p.User.ID {
+				exists = true
+				break
+			}
+		}
+		if exists {
+			continue
+		}
+		users = append(users, p.User)
+	}
+
 	err = ss.Delete(server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
-	ps := services.Permission{DB: db}
 	newHeader, err := ps.GenerateOAuthForUser(user.ID, &server.Identifier)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -443,6 +464,17 @@ func deleteServer(c *gin.Context) {
 
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
+	}
+
+	es := services.GetEmailService()
+	for _, u := range users {
+		err = es.SendEmail(u.Email, "deletedServer", map[string]interface{}{
+			"Server":        server,
+		}, true)
+		if err != nil {
+			//since we don't want to tell the user it failed, we'll log and move on
+			logging.Error().Printf("Error sending email: %s\n", err)
+		}
 	}
 
 	c.Status(http.StatusNoContent)
@@ -605,7 +637,7 @@ func editServerUser(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Error().Printf("Error sending email: %s", err)
+			logging.Error().Printf("Error sending email: %s\n", err)
 		}
 	}
 
@@ -676,9 +708,20 @@ func removeServerUser(c *gin.Context) {
 	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
 		return
 	}
+
+	es := services.GetEmailService()
+	err = es.SendEmail(user.Email, "removedFromServer", map[string]interface{}{
+		"Server":        server,
+	}, true)
+	if err != nil {
+		//since we don't want to tell the user it failed, we'll log and move on
+		logging.Error().Printf("Error sending email: %s\n", err)
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
-// @Summary Gets available OAuth2 scopes for the calling user
+/*// @Summary Gets available OAuth2 scopes for the calling user
 // @Description This allows a caller to see what scopes they have for a server, which can be used to generate a new OAuth2 client or just to know what they can do without making more calls
 // @Accept json
 // @Produce json
@@ -702,6 +745,86 @@ func getAvailableOauth2Perms(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, perms.ToScopes())
+}*/
+
+func getOAuth2Clients(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+	server := c.MustGet("server").(*models.Server)
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	clients, err := os.GetForUserAndServer(user.ID, server.Identifier)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, clients)
+}
+
+func createOAuth2Client(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+	server := c.MustGet("server").(*models.Server)
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	client := &models.Client{
+		ClientId: uuid.NewV4().String(),
+		UserId:   user.ID,
+		ServerId: server.Identifier,
+	}
+
+	secret, err := pufferpanel.GenerateRandomString(36)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = client.SetClientSecret(secret)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	err = os.Update(client)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	type createdClient struct {
+		ClientId     string `json:"id"`
+		ClientSecret string `json:"secret"`
+	}
+	c.JSON(http.StatusOK, createdClient{
+		ClientId:     client.ClientId,
+		ClientSecret: secret,
+	})
+}
+
+func deleteOAuth2Client(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+	server := c.MustGet("server").(*models.Server)
+	clientId := c.Param("clientId")
+
+	db := middleware.GetDatabase(c)
+	os := &services.OAuth2{DB: db}
+
+	client, err := os.Get(clientId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	//ensure the client id is specific for this server, and this user
+	if client.UserId != user.ID || client.ServerId != server.Identifier {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	err = os.Delete(client)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 func getFromData(variables map[string]pufferpanel.Variable, key string) interface{} {

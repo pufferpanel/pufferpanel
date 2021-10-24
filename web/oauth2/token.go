@@ -103,6 +103,21 @@ func handleTokenRequest(c *gin.Context) {
 					return
 				}
 
+				//if the client we have has 0 scopes, then we will have to pull the rights the user has
+				if len(client.Scopes) == 0 {
+					ps := &services.Permission{DB: db}
+					var serverId *string
+					if client.ServerId != "" {
+						serverId = &client.ServerId
+					}
+					perms, err := ps.GetForUserAndServer(client.UserId, serverId)
+					if err != nil {
+						c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})
+						return
+					}
+					client.Scopes = perms.ToScopes()
+				}
+
 				token, err := services.GenerateOAuthForClient(client)
 				if err != nil {
 					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: err.Error()})

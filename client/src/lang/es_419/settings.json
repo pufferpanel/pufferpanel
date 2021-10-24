@@ -1,24 +1,24 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "Settings": "Configuración",
+  "PanelSettings": "Configuración del Panel",
+  "EmailSettings": "Configuración del Correo Electronico",
+  "MasterUrl": "URL Principal",
+  "MasterUrlHint": "La URL base en la cual se puede acceder al panel en formato http://localhost:8080",
+  "CompanyName": "Nombre de la Empresa",
+  "DefaultTheme": "Tema por defecto",
+  "EmailProvider": "Proveedor de Correo Electronico",
   "emailProviders": {
-    "none": "None",
+    "none": "Ninguno",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
-    "domain": "Domain",
-    "key": "API-Key",
+    "from": "Dirección del Emisor",
+    "domain": "Dominio",
+    "key": "Clave de la API",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Nombre de Usuario",
+    "password": "Contraseña"
   }
 }

@@ -102,12 +102,21 @@
         </v-row>
         <v-row>
           <v-col>
-            <ui-input
-              v-model="newTask.cronSchedule"
-              :label="$t('servers.Schedule')"
-              :hint="describe(newTask.cronSchedule)"
-              :error-messages="!isValidSchedule(newTask.cronSchedule) ? $t('servers.TaskScheduleInvalid') : undefined"
+            <ui-switch
+              v-model="newTask.scheduled"
+              class="px-1"
+              :label="$t('servers.EnableSchedule')"
             />
+          </v-col>
+        </v-row>
+        <v-row v-if="newTask.scheduled">
+          <v-col>
+            <v-sheet
+              elevation="1"
+              class="pb-2"
+            >
+              <ui-cron-editor v-model="newTask.cronSchedule" />
+            </v-sheet>
           </v-col>
         </v-row>
         <v-row>
@@ -145,12 +154,21 @@
         </v-row>
         <v-row>
           <v-col>
-            <ui-input
-              v-model="editTask.cronSchedule"
-              :label="$t('servers.Schedule')"
-              :hint="describe(editTask.cronSchedule)"
-              :error-messages="!isValidSchedule(editTask.cronSchedule) ? $t('servers.TaskScheduleInvalid') : undefined"
+            <ui-switch
+              v-model="editTask.scheduled"
+              class="px-1"
+              :label="$t('servers.EnableSchedule')"
             />
+          </v-col>
+        </v-row>
+        <v-row v-if="editTask.scheduled">
+          <v-col>
+            <v-sheet
+              elevation="1"
+              class="pb-2"
+            >
+              <ui-cron-editor v-model="editTask.cronSchedule" />
+            </v-sheet>
           </v-col>
         </v-row>
         <v-row>
@@ -187,32 +205,20 @@ export default {
       add: false,
       editId: false,
       tasks: {},
-      newTask: {
-        name: '',
-        cronSchedule: '',
-        operations: []
-      },
-      editTask: {
-        name: '',
-        cronSchedule: '',
-        operations: []
-      }
+      newTask: {},
+      editTask: {}
     }
   },
   mounted () {
     this.loadData()
+    this.reset()
   },
   methods: {
     async loadData () {
       this.tasks = await this.$api.getServerTasks(this.server.id) || {}
     },
-    async save () {
-      await this.$api.updateServerTasks(this.server.id, this.tasks)
-      this.$toast.success(this.$t('common.Saved'))
-      this.reset()
-      this.loadData()
-    },
     async saveNew () {
+      if (!this.newTask.scheduled) this.newTask.cronSchedule = null
       const id = await this.$api.createServerTask(this.server.id, this.newTask)
       this.$toast.success(this.$t('common.Saved'))
       this.tasks[id] = this.newTask
@@ -220,10 +226,15 @@ export default {
       this.loadData()
     },
     edit (id) {
-      this.editTask = { ...this.tasks[id] }
+      this.editTask = {
+        ...this.tasks[id],
+        scheduled: this.tasks[id].cronSchedule && this.tasks[id].cronSchedule.trim() !== ''
+      }
+      if (!this.editTask.scheduled) this.editTask.cronSchedule = '0 0 */1 * *'
       this.editId = id
     },
     async saveEdit () {
+      if (!this.editTask.scheduled) this.editTask.cronSchedule = null
       await this.$api.editServerTask(this.server.id, this.editId, this.editTask)
       this.$toast.success(this.$t('common.Saved'))
       this.tasks[this.editId] = this.editTask
@@ -241,9 +252,9 @@ export default {
       this.$toast.success(this.$t('servers.TaskTriggered'))
     },
     reset () {
-      this.newTask = { name: '', cronSchedule: '', operations: [] }
+      this.newTask = { name: '', scheduled: true, cronSchedule: '0 0 */1 * *', operations: [] }
       this.add = false
-      this.editTask = { name: '', cronSchedule: '', operations: [] }
+      this.editTask = { name: '', scheduled: false, cronSchedule: '0 0 */1 * *', operations: [] }
       this.editId = false
     },
     describe (schedule) {

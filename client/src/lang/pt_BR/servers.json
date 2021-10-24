@@ -39,5 +39,15 @@
   "Reloaded": "Dados do servidor recarregados",
   "Autostart": "Iniciar o servidor junto com o node",
   "Autorestart": "Reiniciar o servidor ao desligar",
-  "Autorecover": "Reiniciar o servidor ao crashar"
+  "Autorecover": "Reiniciar o servidor ao crashar",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }
