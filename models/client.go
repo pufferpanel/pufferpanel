@@ -22,17 +22,25 @@ import (
 
 type Client struct {
 	ID                 uint   `gorm:"PRIMARY_KEY,AUTO_INCREMEMT" json:"-"`
-	ClientId           string `gorm:"NOT NULL"`
-	HashedClientSecret string `gorm:"column:client_secret;NOT NULL"`
+	ClientId           string `gorm:"NOT NULL" json:"client_id"`
+	HashedClientSecret string `gorm:"column:client_secret;NOT NULL" json:"-"`
 
-	UserId uint `gorm:"NOT NULL"`
-	User   *User
+	UserId uint  `gorm:"NOT NULL" json:"-"`
+	User   *User `json:"-"`
 
-	ServerId string `gorm:"NOT NULL"`
-	Server   *Server
+	ServerId string  `gorm:"NOT NULL" json:"-"`
+	Server   *Server `json:"-"`
 
-	Scopes    []pufferpanel.Scope `gorm:"-"`
-	RawScopes string        `gorm:"column:scopes;NOT NULL;size:4000"`
+	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
+	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
+
+	Name        string `gorm:"column:name;NOT NULL;size:100;default\"\"" json:"name"`
+	Description string `gorm:"column:description;NOT NULL;size:4000;default:\"\"" json:"description"`
+}
+
+type CreatedClient struct {
+	ClientId     string `json:"id"`
+	ClientSecret string `json:"secret"`
 }
 
 type Clients []*Client
@@ -75,6 +83,11 @@ func (c *Client) BeforeSave() (err error) {
 }
 
 func (c *Client) AfterFind() (err error) {
+	if c.RawScopes == "" {
+		c.Scopes = make([]pufferpanel.Scope, 0)
+		return
+	}
+
 	split := strings.Split(c.RawScopes, " ")
 	c.Scopes = make([]pufferpanel.Scope, len(split))
 

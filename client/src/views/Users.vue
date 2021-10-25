@@ -11,7 +11,10 @@
             v-for="(user, index) in users"
             :key="user.id"
           >
-            <v-list-item :to="(hasScope('users.edit') || isAdmin()) ? {name: 'User', params: {id: user.id}} : undefined">
+            <v-list-item
+              v-hotkey="'u ' + (index + 1)"
+              :to="(hasScope('users.edit') || isAdmin()) ? {name: 'User', params: {id: user.id}} : undefined"
+            >
               <v-list-item-content>
                 <v-list-item-title v-text="user.username" />
                 <v-list-item-subtitle v-text="user.email" />

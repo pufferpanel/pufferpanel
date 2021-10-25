@@ -39,5 +39,15 @@
   "Reloaded": "Data server telah dimuat ulang",
   "Autostart": "Mulai server saat node dimulai",
   "Autorestart": "Mulai ulang server ketika berhenti secara normal",
-  "Autorecover": "Mulai ulang server saat crash"
+  "Autorecover": "Mulai ulang server saat crash",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

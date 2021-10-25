@@ -8,6 +8,7 @@ import vuetify from './plugins/vuetify'
 import api from './plugins/api'
 import dark from './plugins/dark'
 import ace from './plugins/ace'
+import hotkeys from './plugins/hotkeys'
 // Application imports
 import App from './App'
 import i18n from '@/i18n'
@@ -29,6 +30,7 @@ window.pufferpanel = {}
 Vue.use(api)
 Vue.use(dark)
 Vue.use(ace)
+Vue.use(hotkeys)
 
 Vue.config.productionTip = false
 

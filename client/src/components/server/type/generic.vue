@@ -46,17 +46,26 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'console'">
+        <v-row
+          v-show="currentTab === 'console'"
+          v-if="server.permissions.viewServerConsole || isAdmin()"
+        >
           <v-col>
             <server-console :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'stats'">
+        <v-row
+          v-show="currentTab === 'stats'"
+          v-if="server.permissions.viewServerStats || isAdmin()"
+        >
           <v-col>
             <server-cpu :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'stats'">
+        <v-row
+          v-show="currentTab === 'stats'"
+          v-if="server.permissions.viewServerStats || isAdmin()"
+        >
           <v-col>
             <server-memory :server="server" />
           </v-col>
@@ -77,17 +86,39 @@
             <server-sftp :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'users'">
+        <v-row
+          v-show="currentTab === 'tasks'"
+          v-if="server.permissions.editServerData || isAdmin()"
+        >
           <v-col>
-            <server-users :server="server" />
+            <server-tasks :server="server" />
           </v-col>
         </v-row>
-        <v-row v-show="currentTab === 'settings'">
+        <v-row
+          v-show="currentTab === 'settings'"
+          v-if="server.permissions.editServerData || isAdmin()"
+        >
           <v-col>
             <server-settings :server="server" />
           </v-col>
         </v-row>
+        <v-row
+          v-show="currentTab === 'users'"
+          v-if="server.permissions.editServerUsers || isAdmin()"
+        >
+          <v-col>
+            <server-users :server="server" />
+          </v-col>
+        </v-row>
         <v-row v-show="currentTab === 'admin'">
+          <v-col>
+            <ui-oauth :server="server" />
+          </v-col>
+        </v-row>
+        <v-row
+          v-show="currentTab === 'admin'"
+          v-if="server.permissions.deleteServer || isAdmin()"
+        >
           <v-col>
             <server-admin :server="server" />
           </v-col>
@@ -112,7 +143,10 @@
               v-if="server.permissions.viewServerConsole || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="console">
+              <v-btn
+                v-hotkey="'t c'"
+                value="console"
+              >
                 <span>{{ $t('servers.Console') }}</span>
                 <v-icon>mdi-console-line</v-icon>
               </v-btn>
@@ -121,7 +155,10 @@
               v-if="server.permissions.viewServerStats || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="stats">
+              <v-btn
+                v-hotkey="'t i'"
+                value="stats"
+              >
                 <span>{{ $t('servers.Statistics') }}</span>
                 <v-icon>mdi-chart-line</v-icon>
               </v-btn>
@@ -130,16 +167,34 @@
               v-if="server.permissions.viewServerFiles || server.permissions.sftpServer || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="files">
+              <v-btn
+                v-hotkey="'t f'"
+                value="files"
+              >
                 <span>{{ $t('servers.Files') }}</span>
                 <v-icon>mdi-file</v-icon>
+              </v-btn>
+            </v-slide-item>
+            <v-slide-item
+              v-if="showTasks && (server.permissions.editServerData || isAdmin())"
+              v-slot="{}"
+            >
+              <v-btn
+                v-hotkey="'t t'"
+                value="tasks"
+              >
+                <span>{{ $t('servers.Tasks') }}</span>
+                <v-icon>mdi-timer</v-icon>
               </v-btn>
             </v-slide-item>
             <v-slide-item
               v-if="server.permissions.editServerData || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="settings">
+              <v-btn
+                v-hotkey="'t s'"
+                value="settings"
+              >
                 <span>{{ $t('servers.Settings') }}</span>
                 <v-icon>mdi-cog</v-icon>
               </v-btn>
@@ -148,16 +203,19 @@
               v-if="server.permissions.editServerUsers || isAdmin()"
               v-slot="{}"
             >
-              <v-btn value="users">
+              <v-btn
+                v-hotkey="'t u'"
+                value="users"
+              >
                 <span>{{ $t('users.Users') }}</span>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-btn>
             </v-slide-item>
-            <v-slide-item
-              v-if="server.permissions.deleteServer || isAdmin()"
-              v-slot="{}"
-            >
-              <v-btn value="admin">
+            <v-slide-item v-slot="{}">
+              <v-btn
+                v-hotkey="'t a'"
+                value="admin"
+              >
                 <span>{{ $t('servers.Admin') }}</span>
                 <v-icon>mdi-account-star</v-icon>
               </v-btn>
@@ -177,7 +235,8 @@ export default {
   data () {
     return {
       socketError: false,
-      currentTab: 'console'
+      currentTab: 'console',
+      showTasks: false
     }
   },
   mounted () {
@@ -189,6 +248,10 @@ export default {
       this.$toast.warning(this.$t('errors.ErrSocketFailed'))
       this.socketError = true
     })
+
+    if (process.env.NODE_ENV !== 'production') {
+      window.pufferpanel.allowServerTasks = () => { this.showTasks = true }
+    }
   }
 }
 </script>

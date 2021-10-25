@@ -39,5 +39,15 @@
   "Reloaded": "已重新讀取伺服器資料",
   "Autostart": "當節點啟動時自動啟動伺服器",
   "Autorestart": "停止伺服器時自動重新啟動伺服器",
-  "Autorecover": "當崩潰時自動重新啟動伺服器"
+  "Autorecover": "當崩潰時自動重新啟動伺服器",
+  "Tasks": "Tasks",
+  "NoTasks": "No Tasks",
+  "RunTask": "Run Task",
+  "NewTask": "New Task",
+  "EditTask": "Edit Task",
+  "TaskDeleted": "Task Deleted",
+  "TaskTriggered": "Task Triggered",
+  "Schedule": "Schedule",
+  "TaskScheduleInvalid": "Task Schedule Invalid",
+  "TaskScheduleManual": "Manual run only"
 }

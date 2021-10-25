@@ -47,11 +47,11 @@
   "DeletePostStep": "Eliminar paso Post Ejecución",
   "Shutdown": "Apagado",
   "Command": "Comando",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Directorio de Trabajo",
   "Arguments": "Argumentos",
   "AddArgument": "Añadir un argumento",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "Convertir",
+  "OfferV1Convert": "Esta plantilla json se ve como una plantilla para PufferPanel 1.x, ¿deseas convertir automaticamente esta plantilla a una plantilla para PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "ADVERTENCIA: Las plantillas importadas sobrescribirán las plantillas existentes con el mismo ID",
     "Import": "Importar plantillas",
@@ -77,7 +77,7 @@
     },
     "alterfile": {
       "ProcessorName": "Cambiar archivo",
-      "regex": "Treat search as RegEx",
+      "regex": "Tratar búsqueda como RegEx",
       "search": "Buscar texto",
       "replace": "Reemplazar con"
     },

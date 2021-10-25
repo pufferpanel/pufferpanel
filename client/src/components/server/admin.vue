@@ -18,6 +18,7 @@
     </v-card-title>
     <v-card-text>
       <ui-switch
+        v-if="isAdmin()"
         v-model="autostart"
         :loading="loading"
         :disabled="loading"
@@ -25,6 +26,7 @@
         @click="toggleSwitch('autostart')"
       />
       <ui-switch
+        v-if="isAdmin()"
         v-model="autorestart"
         :loading="loading"
         :disabled="loading"
@@ -32,6 +34,7 @@
         @click="toggleSwitch('autorestart')"
       />
       <ui-switch
+        v-if="isAdmin()"
         v-model="autorecover"
         :loading="loading"
         :disabled="loading"
@@ -40,6 +43,7 @@
         @click="toggleSwitch('autorecover')"
       />
       <v-btn
+        v-if="isAdmin()"
         block
         color="primary"
         class="mb-4"
@@ -47,6 +51,7 @@
         v-text="$t('servers.EditDefinition')"
       />
       <v-btn
+        v-if="isAdmin()"
         block
         color="primary"
         class="mb-4"
@@ -54,6 +59,7 @@
         v-text="$t('servers.Reload')"
       />
       <v-btn
+        v-if="server.permissions.deleteServer || isAdmin()"
         block
         color="error"
         @click="confirmDeleteOpen = true"
@@ -162,6 +168,9 @@ export default {
   },
   methods: {
     async loadData () {
+      // if user is not admin only delete button is shown, so no data needs to be loaded
+      if (!this.isAdmin()) return
+
       this.loading = true
       const def = await this.$api.getServerDefinition(this.server.id)
       this.autostart = !!def.run.autostart
@@ -171,10 +180,10 @@ export default {
     },
     async toggleSwitch (field) {
       this.loading = true
-      const body = { run: {} }
-      body.run[field] = this[field]
-      await this.$api.updateServerDefinition(this.server.id, body)
-      this.loadData()
+      const def = await this.$api.getServerDefinition(this.server.id)
+      def.run[field] = this[field]
+      await this.$api.updateServerDefinition(this.server.id, def)
+      await this.loadData()
     },
     async reloadServer () {
       await this.$api.reloadServer(this.server.id)
@@ -183,7 +192,7 @@ export default {
     async deleteConfirmed () {
       await this.$api.deleteServer(this.server.id)
       this.$toast.success(this.$t('servers.Deleted'))
-      this.$router.push({ name: 'Servers' })
+      await this.$router.push({ name: 'Servers' })
     },
     async editServerDefinition () {
       this.definition = this.$api.templateFromApiJson(await this.$api.getServerDefinition(this.server.id), true)

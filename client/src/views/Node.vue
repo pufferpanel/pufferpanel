@@ -1,10 +1,6 @@
 <template>
   <v-row>
-    <v-col
-      cols="12"
-      md="6"
-      offset-md="3"
-    >
+    <v-col cols="12">
       <v-card>
         <v-card-title v-text="$t('nodes.Edit')" />
         <v-card-text class="mt-6">
@@ -41,6 +37,16 @@
             </v-col>
           </v-row>
           <v-row>
+            <v-col cols="12">
+              <ui-switch
+                v-model="withPrivateAddress"
+                class="mt-0"
+                :label="$t('nodes.WithPrivateAddress')"
+                :hint="$t('nodes.WithPrivateAddressHint')"
+              />
+            </v-col>
+          </v-row>
+          <v-row v-if="withPrivateAddress">
             <v-col
               cols="12"
               md="6"
@@ -95,6 +101,7 @@
               <v-btn
                 :disabled="loadingDeploy"
                 text
+                outlined
                 block
                 @click="downloadConfig()"
                 v-text="$t('nodes.SaveConfig')"
@@ -119,6 +126,7 @@ export default {
     return {
       loading: true,
       loadingDeploy: true,
+      withPrivateAddress: false,
       node: {},
       deployment: {
         clientId: '',
@@ -152,6 +160,7 @@ export default {
   methods: {
     async loadData () {
       this.node = await this.$api.getNode(this.$route.params.id)
+      this.withPrivateAddress = this.node.publicHost !== this.node.privateHost || this.node.publicPort !== this.node.privatePort
       this.loading = false
       this.deployment = await this.$api.getNodeDeployment(this.$route.params.id)
       this.loadingDeploy = false

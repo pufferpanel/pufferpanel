@@ -15,6 +15,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -25,6 +26,11 @@ import (
 )
 
 func RegisterPost(c *gin.Context) {
+	if !config.GetBool("panel.registrationEnabled") {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 

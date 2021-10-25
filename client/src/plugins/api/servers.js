@@ -141,6 +141,12 @@ export const ServersApi = {
     })
   },
 
+  getServerTasks (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/proxy/daemon/server/${id}/tasks`)).data.tasks
+    })
+  },
+
   getServerSocketUrl (id) {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
@@ -275,6 +281,32 @@ export const ServersApi = {
     })
   },
 
+  createServerTask (id, task) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks`, task)).id
+    })
+  },
+
+  runServerTask (id, taskId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks/${taskId}/run`)).id
+    })
+  },
+
+  editServerTask (serverId, taskId, task) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/proxy/daemon/server/${serverId}/tasks/${taskId}`, task)
+      return true
+    })
+  },
+
+  deleteServerTask (serverId, taskId) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.delete(`/proxy/daemon/server/${serverId}/tasks/${taskId}`)
+      return true
+    })
+  },
+
   updateServerUser (id, user) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.put(`/api/servers/${id}/user/${user.email}`, user)
@@ -300,6 +332,24 @@ export const ServersApi = {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.delete(`/api/servers/${id}/user/${email}`)
       return true
+    })
+  },
+
+  getServerOAuthClients (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/api/servers/${id}/oauth2`)).data
+    })
+  },
+
+  createServerOAuthClient (id, name, description) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/api/servers/${id}/oauth2`, { name, description })).data
+    })
+  },
+
+  deleteServerOAuthClient (id, clientId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/servers/${id}/oauth2/${clientId}`)).data
     })
   }
 }

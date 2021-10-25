@@ -108,8 +108,9 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		defer d.connection.Close()
 		wrapper := d.CreateWrapper()
 		_, _ = io.Copy(wrapper, d.connection.Reader)
-		c, _ := d.getClient()
-		err = c.ContainerStop(context.Background(), d.ContainerId, nil)
+		//because we use the auto-delete, we don't manually stop the container
+		//c, _ := d.getClient()
+		//err = c.ContainerStop(context.Background(), d.ContainerId, nil)
 		d.Wait.Done()
 		if err != nil {
 			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
@@ -128,7 +129,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 	msg := messages.Status{Running: true}
 	_ = d.WSManager.WriteMessage(msg)
 
-	d.DisplayToConsole(true, "Starting container")
+	d.DisplayToConsole(true, "Starting container\n")
 	err = dockerClient.ContainerStart(ctx, d.ContainerId, startOpts)
 	if err != nil {
 		return err
@@ -352,6 +353,8 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	if workDir == "" {
 		workDir = containerRoot
 	}
+
+	logging.Debug().Printf("Container command: %s\n", cmdSlice)
 
 	containerConfig := &container.Config{
 		AttachStderr:    true,

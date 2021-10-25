@@ -81,6 +81,7 @@
     >
       <v-list>
         <v-list-item
+          v-hotkey="'g a'"
           :to="{name: 'Account'}"
           link
         >
@@ -94,6 +95,7 @@
 
         <v-list-item
           v-if="hasScope('servers.view') || isAdmin()"
+          v-hotkey="'g s'"
           :to="{name: 'Servers'}"
           link
         >
@@ -107,6 +109,7 @@
 
         <v-list-item
           v-if="hasScope('nodes.view') || isAdmin()"
+          v-hotkey="'g n'"
           :to="{name: 'Nodes'}"
           link
         >
@@ -120,6 +123,7 @@
 
         <v-list-item
           v-if="hasScope('users.view') || isAdmin()"
+          v-hotkey="'g u'"
           :to="{name: 'Users'}"
           link
         >
@@ -133,6 +137,7 @@
 
         <v-list-item
           v-if="hasScope('templates.view') || isAdmin()"
+          v-hotkey="'g t'"
           :to="{name: 'Templates'}"
           link
         >
@@ -146,6 +151,7 @@
 
         <v-list-item
           v-if="isAdmin()"
+          v-hotkey="'g c'"
           :to="{name: 'Settings'}"
           link
         >
@@ -204,7 +210,10 @@
             />
           </div>
         </div>
-        <router-view v-else />
+        <router-view
+          v-else
+          :config="appConfig"
+        />
       </v-container>
       <ui-language v-model="showLanguageSelect" />
       <ui-overlay

@@ -19,6 +19,7 @@
     >
       <v-btn
         v-if="!running"
+        v-hotkey="'r r'"
         class="mr-4"
         color="success"
         :loading="restarting"
@@ -47,6 +48,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r s'"
         class="mr-4"
         color="warning"
         @click="action('stop')"
@@ -62,6 +64,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r k'"
         class="mr-4"
         color="error"
         @click="action('kill')"
@@ -77,6 +80,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r i'"
         color="error"
         @click="action('install')"
       >

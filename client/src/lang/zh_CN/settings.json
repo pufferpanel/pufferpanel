@@ -14,9 +14,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "发送地址",
+    "from": "Sender Adress",
     "domain": "域名",
-    "key": "API 密钥",
+    "key": "API Key",
     "host": "主机",
     "username": "用户名",
     "password": "密码"

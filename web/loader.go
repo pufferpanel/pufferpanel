@@ -30,7 +30,6 @@ import (
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	_ "github.com/swaggo/swag"
-        "io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -62,8 +61,7 @@ func RegisterRoutes(e *gin.Engine) {
 		ClientPath = config.GetString("panel.web.files")
 		IndexFile = ClientPath + "/index.html"
 
-		api.RegisterRoutes(e.Group("/api", handlers.HasOAuth2Token))
-		e.GET("/api/config", panelConfig)
+		api.RegisterRoutes(e.Group("/api"))
 		e.GET("/manifest.json", webManifest)
 		oauth2.RegisterRoutes(e.Group("/oauth2"))
 		auth.RegisterRoutes(e.Group("/auth"))
@@ -128,30 +126,6 @@ func handle404(c *gin.Context) {
 	}
 
 	c.File(IndexFile)
-}
-
-func panelConfig(c *gin.Context) {
-	themes := []string{}
-	files, err := ioutil.ReadDir(config.GetString("panel.web.files") + "/theme")
-	if err != nil {
-		themes = append(themes, "PufferPanel")
-	} else {
-		for _, f := range files {
-			if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar") {
-				themes = append(themes, f.Name()[:len(f.Name())-4])
-			}
-		}
-	}
-
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"themes": map[string]interface{}{
-			"active": config.GetString("panel.settings.defaultTheme"),
-			"available": themes,
-		},
-		"branding": map[string]interface{}{
-			"name": config.GetString("panel.settings.companyName"),
-		},
-	})
 }
 
 func webManifest(c *gin.Context) {

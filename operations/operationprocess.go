@@ -178,11 +178,11 @@ func loadCoreModules() {
 	commandMapping[consoleFactory.Key()] = consoleFactory
 
 	archiveFactory := archive.Factory
-	commandMapping[consoleFactory.Key()] = archiveFactory
+	commandMapping[archiveFactory.Key()] = archiveFactory
 
 	extractFactory := extract.Factory
-	commandMapping[consoleFactory.Key()] = extractFactory
+	commandMapping[extractFactory.Key()] = extractFactory
 
 	programFactory := program.Factory
-	commandMapping[consoleFactory.Key()] = programFactory
+	commandMapping[programFactory.Key()] = programFactory
 }
