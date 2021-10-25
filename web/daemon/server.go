@@ -55,9 +55,18 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.POST("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
 		l.OPTIONS("/:id", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServer)
-		l.POST("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServer)
+		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerData)
+		l.POST("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerData)
 		l.OPTIONS("/:id/data", response.CreateOptions("GET", "POST"))
+
+		l.GET("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerTasks)
+		l.POST("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), CreateServerTask)
+		l.PUT("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerTask)
+		l.DELETE("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
+		l.OPTIONS("/:id/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
+
+		l.POST("/:id/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		l.OPTIONS("/:id/tasks/:taskId/run", response.CreateOptions("POST"))
 
 		l.POST("/:id/reload", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
 		l.OPTIONS("/:id/reload", response.CreateOptions("POST"))
@@ -89,6 +98,10 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 		l.GET("/:id/status", middleware.OAuth2Handler(pufferpanel.ScopeServersView, true), GetStatus)
 		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
+
+		l.POST("/:id/archive/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
+		l.GET("/:id/extract/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
+
 	}
 
 	p := e.Group("/socket")
@@ -310,7 +323,7 @@ func InstallServer(c *gin.Context) {
 // @Param id path string true "Server Identifier"
 // @Param data body pufferpanel.ServerData true "Server data"
 // @Router /daemon/server/{id}/data [post]
-func EditServer(c *gin.Context) {
+func EditServerData(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
@@ -320,7 +333,69 @@ func EditServer(c *gin.Context) {
 		return
 	}
 
-	err = prg.Edit(data.Variables, isAdmin(c))
+	err = prg.EditData(data.Variables, isAdmin(c))
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func CreateServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	var task pufferpanel.Task
+	err := c.ShouldBindJSON(&task)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	id, err := prg.NewTask(task)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.JSON(http.StatusOK, gin.H{"id": id})
+	}
+}
+
+func RunServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	err := prg.RunTask(taskId)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func EditServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	var task pufferpanel.Task
+	err := c.ShouldBindJSON(&task)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	err = prg.EditTask(taskId, task)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+func DeleteServerTask(c *gin.Context) {
+	item, _ := c.Get("server")
+	prg := item.(*programs.Program)
+
+	taskId := c.Param("taskId")
+
+	err := prg.RemoveTask(taskId)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -360,7 +435,7 @@ func ReloadServer(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Param id path string true "Server Identifier"
 // @Router /daemon/server/{id}/data [get]
-func GetServer(c *gin.Context) {
+func GetServerData(c *gin.Context) {
 	item, _ := c.Get("server")
 	server := item.(*programs.Program)
 
@@ -377,6 +452,13 @@ func GetServer(c *gin.Context) {
 	}
 
 	c.JSON(200, &pufferpanel.ServerData{Variables: data})
+}
+
+func GetServerTasks(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+
+	c.JSON(200, &pufferpanel.ServerTasks{Tasks: server.Tasks})
 }
 
 // @Summary Gets server data as admin
@@ -409,14 +491,29 @@ func GetServerAdmin(c *gin.Context) {
 // @Router /daemon/server/{id} [post]
 func EditServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*programs.Program)
-
 	server := &item.Server
-	err := c.BindJSON(&server)
+
+	replacement := &pufferpanel.Server{}
+	err := c.BindJSON(replacement)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
+	//backup, just in case we break
+	backup := &pufferpanel.Server{}
+	backup.CopyFrom(server)
+
+	//copy from request
+	server.CopyFrom(replacement)
+
 	err = programs.Save(item.Id())
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		//REVERT!!!!!!!
+		server.CopyFrom(backup)
+		return
+	}
+
+	err = programs.RestartScheduler(item.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -665,6 +762,65 @@ func GetStatus(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.JSON(200, &pufferpanel.ServerRunning{Running: running})
+	}
+}
+
+// @Summary Archive file(s)
+// @Description Archives file(s) with the
+// @Accept json
+// @Success 204 {object} response.Empty "If file(s) was archived"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Empty
+// @Failure 404 {object} response.Empty
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server Identifier"
+// @Param filename path string true "Destination"
+// @Router /daemon/server/{id}/archive/{filename} [post]
+func Archive(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+	var files []string
+
+	if err := c.BindJSON(&files); response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	if len(files) == 0 {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+	destination := c.Param("filename")
+
+	err := server.ArchiveItems(files, destination)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
+	}
+}
+
+// @Summary Extract files
+// @Description Extracts files from an archive
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty "If file was extracted"
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Empty
+// @Failure 404 {object} response.Empty
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server Identifier"
+// @Param filename path string true "File name"
+// @Param destination path string true "Destination directory (URI Parameter)"
+// @Router /daemon/server/{id}/extract/{filename} [get]
+func Extract(c *gin.Context) {
+	item, _ := c.Get("server")
+	server := item.(*programs.Program)
+
+	targetPath := c.Param("filename")
+	destination := c.Query("destination")
+
+	err := server.Extract(targetPath, destination)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+	} else {
+		c.Status(http.StatusNoContent)
 	}
 }
 

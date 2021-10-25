@@ -15,7 +15,7 @@
   "ErrFieldRequired": "\"{field}\" est requis",
   "ErrFieldMustBePrintable": "{field} doit être des caractères ascii affichables",
   "ErrFieldHasURICharacters": "{field} ne doit pas contenir de caractères qui ne peuvent pas être utilisés dans les URIs",
-  "ErrFieldIsInvalidHost": "{field} doit être une IP valide ou FQDN",
+  "ErrFieldIsInvalidHost": "{field} doit être une IP valide ou un nom de domaine",
   "ErrFieldIsInvalidIP": "{field} doit être une IP valide",
   "ErrFieldTooLarge": "{field} ne peut pas être plus grand que {max}",
   "ErrFieldTooSmall": "{field} ne peut pas être plus petit que {min}",
@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Session expirée, merci de vous reconnecter",
   "ErrMissingScope": "Vous n'êtes pas autorisé à effectuer cette action",
   "ErrInvalidJson": "Les données JSON sont invalides",
-  "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être ralenties ou indisponibles"
+  "ErrSocketFailed": "La connexion WebSocket a rencontré une erreur, certaines fonctionnalités peuvent être ralenties ou indisponibles",
+  "ErrInviteLinkInvalid": "Votre lien d'invitation semble être invalide",
+  "ErrSavingInviteduser": "Une erreur s'est produite lors de la création du compte",
+  "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers"
 }

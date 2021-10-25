@@ -19,33 +19,32 @@ package programs
 import (
 	"encoding/json"
 	"errors"
+	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var (
-	allPrograms  = make([]*Program, 0)
-	ServerFolder string
+	allPrograms = make([]*Program, 0)
 )
 
 func Initialize() {
-	ServerFolder = viper.GetString("daemon.data.servers")
 	operations.LoadOperations()
 }
 
 func LoadFromFolder() {
-	err := os.Mkdir(ServerFolder, 0755)
+	err := os.Mkdir(pufferpanel.ServerFolder, 0755)
 	if err != nil && !os.IsExist(err) {
 		logging.Error().Fatalf("Error creating server data folder: %s", err)
 	}
-	programFiles, err := ioutil.ReadDir(ServerFolder)
+	programFiles, err := ioutil.ReadDir(pufferpanel.ServerFolder)
 	if err != nil {
 		logging.Error().Fatalf("Error reading from server data folder: %s", err)
 	}
@@ -80,7 +79,7 @@ func GetAll() []*Program {
 
 func Load(id string) (program *Program, err error) {
 	var data []byte
-	data, err = ioutil.ReadFile(filepath.Join(ServerFolder, id+".json"))
+	data, err = ioutil.ReadFile(filepath.Join(pufferpanel.ServerFolder, id+".json"))
 	if len(data) == 0 || err != nil {
 		return
 	}
@@ -126,11 +125,67 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	environmentType := typeMap.Type
-	data.RunningEnvironment, err = environments.Create(environmentType, ServerFolder, id, data.Environment)
-	if err != nil {
+	data.RunningEnvironment, err = environments.Create(environmentType, pufferpanel.ServerFolder, id, data.Environment)
+
+	if err = startScheduler(data); err != nil {
 		return nil, err
 	}
 	return data, nil
+}
+
+func startScheduler(program *Program) error {
+	s := gocron.NewScheduler(time.UTC)
+	for k, t := range program.Tasks {
+		if t.CronSchedule != "" {
+			_, err := s.Cron(t.CronSchedule).Do(executeTask, program, k)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
+	s.StartAsync()
+	program.Scheduler = s
+	return nil
+}
+
+func executeTask(p *Program, taskId string) (err error) {
+	task, ok := p.Tasks[taskId]
+	if !ok {
+		logging.Error().Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
+		return
+	}
+
+	ops := task.Operations
+	if len(ops) > 0 {
+		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
+		var process operations.OperationProcess
+		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+
+		err = process.Run(p.RunningEnvironment)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
+	}
+	return
+}
+
+func ExecuteTask(programId string, taskId string) error {
+	program := GetFromCache(programId)
+	if program == nil {
+		return errors.New("no server with given id")
+	}
+	return executeTask(program, taskId)
 }
 
 func Create(program *Program) error {
@@ -143,14 +198,14 @@ func Create(program *Program) error {
 	defer func() {
 		if err != nil {
 			//revert since we have an error
-			_ = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
+			_ = os.Remove(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 			if program.RunningEnvironment != nil {
 				_ = program.RunningEnvironment.Delete()
 			}
 		}
 	}()
 
-	f, err := os.Create(filepath.Join(ServerFolder, program.Id()+".json"))
+	f, err := os.Create(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	defer pufferpanel.Close(f)
 	if err != nil {
 		logging.Error().Printf("Error writing server: %s", err)
@@ -173,7 +228,7 @@ func Create(program *Program) error {
 		return err
 	}
 
-	program.RunningEnvironment, err = environments.Create(typeMap.Type, ServerFolder, program.Id(), program.Environment)
+	program.RunningEnvironment, err = environments.Create(typeMap.Type, pufferpanel.ServerFolder, program.Id(), program.Environment)
 
 	err = program.Create()
 	if err != nil {
@@ -210,11 +265,15 @@ func Delete(id string) (err error) {
 		}
 	}
 
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
+
 	err = program.Destroy()
 	if err != nil {
 		return
 	}
-	err = os.Remove(filepath.Join(ServerFolder, program.Id()+".json"))
+	err = os.Remove(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	if err != nil {
 		logging.Error().Printf("Error removing server: %s", err)
 	}
@@ -241,11 +300,31 @@ func Save(id string) (err error) {
 	return
 }
 
+func RestartScheduler(id string) (err error) {
+	program := GetFromCache(id)
+	if program == nil {
+		err = errors.New("server does not exist")
+		return
+	}
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
+	}
+	err = startScheduler(program)
+	return
+}
+
+func RunTask(id string) (err error) {
+	return pufferpanel.ErrNotImplemented
+}
+
 func Reload(id string) (err error) {
 	program := GetFromCache(id)
 	if program == nil {
 		err = errors.New("server does not exist")
 		return
+	}
+	if program.Scheduler != nil {
+		program.Scheduler.Stop()
 	}
 	logging.Info().Printf("Reloading server %s", program.Id())
 	newVersion, err := Load(id)
@@ -254,6 +333,8 @@ func Reload(id string) (err error) {
 		return
 	}
 
-	program.CopyFrom(newVersion)
+	program.RunningEnvironment = newVersion.RunningEnvironment
+	program.Server = newVersion.Server
+	err = startScheduler(program)
 	return
 }

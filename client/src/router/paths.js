@@ -71,6 +71,11 @@ export default [
     name: 'AddNode'
   },
   {
+    path: '/settings',
+    view: 'Settings',
+    name: 'Settings'
+  },
+  {
     path: '/errors/404',
     name: 'Errors/404',
     view: 'errors/404',

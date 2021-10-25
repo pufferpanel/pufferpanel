@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Sesi anda telah habis, silahkan masuk kembali",
   "ErrMissingScope": "Anda tidak di ijinkan melakukan aksi ini",
   "ErrInvalidJson": "Data json tidak valid",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

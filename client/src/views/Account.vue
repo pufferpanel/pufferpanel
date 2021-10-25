@@ -99,6 +99,115 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>
+            <span v-text="$t('users.Otp')" />
+            <span class="flex-grow-1" />
+            <v-btn
+              :loading="otpLoading"
+              :disabled="otpLoading"
+              :color="getOtpBtnColor()"
+              @click="toggleOtp"
+              v-text="otpActive ? $t('users.OtpDisable') : $t('users.OtpEnable')"
+            />
+          </v-card-title>
+          <v-card-text v-text="$t('users.OtpHint')" />
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <ui-oauth />
+      </v-col>
+    </v-row>
+    <ui-overlay
+      v-model="otpEnroll.started"
+      card
+      closable
+      :title="$t('users.OtpSetup')"
+    >
+      <v-row>
+        <v-col>
+          <v-row>
+            <v-col>
+              <h3 v-text="$t('users.OtpSetupHint')" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <h4 v-text="$t('users.OtpSecret')" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span v-text="otpEnroll.secret" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <h3 v-text="$t('users.OtpConfirm')" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <ui-input
+                v-model="otpConfirmToken"
+                autofocus
+                @keyup.enter="confirmOtpEnroll"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                color="success"
+                block
+                @click="confirmOtpEnroll"
+                v-text="$t('users.OtpEnable')"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="4"
+          md="3"
+        >
+          <img
+            style="width:100%;max-width:300px;"
+            :src="otpEnroll.qrCode"
+          >
+        </v-col>
+      </v-row>
+    </ui-overlay>
+    <ui-overlay
+      v-model="otpDisabling"
+      card
+      closable
+      :title="$t('users.OtpDisable')"
+    >
+      <v-row>
+        <v-col>
+          <ui-input
+            v-model="otpConfirmToken"
+            autofocus
+            @keyup.enter="confirmOtpDisable"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            color="error"
+            block
+            @click="confirmOtpDisable"
+            v-text="$t('users.OtpDisable')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
   </v-container>
 </template>
 
@@ -113,7 +222,16 @@ export default {
       confirmPassword: '',
       oldPassword: '',
       newPassword: '',
-      confirmNewPassword: ''
+      confirmNewPassword: '',
+      otpLoading: true,
+      otpActive: false,
+      otpConfirmToken: '',
+      otpDisabling: false,
+      otpEnroll: {
+        started: false,
+        secret: '',
+        qrCode: ''
+      }
     }
   },
   computed: {
@@ -137,6 +255,8 @@ export default {
     const user = await this.$api.getSelf()
     this.username = user.username
     this.email = user.email
+    this.otpActive = await this.$api.getOtp()
+    this.otpLoading = false
   },
   methods: {
     async submitInfoChange () {
@@ -146,6 +266,35 @@ export default {
     async submitPassChange () {
       await this.$api.updatePassword(this.oldPassword, this.newPassword)
       this.$toast.success(this.$t('users.PasswordChanged'))
+    },
+    getOtpBtnColor () {
+      if (this.otpLoading) return undefined
+      if (this.otpActive) return 'error'
+      return 'success'
+    },
+    async toggleOtp () {
+      if (this.otpActive) {
+        this.otpDisabling = true
+      } else {
+        const otpData = await this.$api.startOtpEnroll()
+        this.otpEnroll = { started: true, secret: otpData.secret, qrCode: otpData.img }
+      }
+    },
+    async confirmOtpEnroll () {
+      const ok = await this.$api.validateOtpEnroll(this.otpConfirmToken)
+      if (ok) {
+        this.otpEnroll.started = false
+        this.otpActive = true
+      }
+      this.otpConfirmToken = ''
+    },
+    async confirmOtpDisable () {
+      const ok = await this.$api.disableOtp(this.otpConfirmToken)
+      if (ok) {
+        this.otpDisabling = false
+        this.otpActive = false
+      }
+      this.otpConfirmToken = ''
     }
   }
 }

@@ -43,12 +43,13 @@ type PermissionView struct {
 	ViewUsers       bool `json:"viewUsers,omitempty"`
 	EditServerAdmin bool `json:"editServerAdmin,omitempty"`
 	DeleteServer    bool `json:"deleteServers,omitempty"`
+	PanelSettings   bool `json:"panelSettings,omitempty"`
 }
 
 func FromPermission(p *Permissions) *PermissionView {
 	model := &PermissionView{
 		Username: p.User.Username,
-		Email: p.User.Email,
+		Email:    p.User.Email,
 	}
 
 	//only show server specific perms
@@ -79,6 +80,7 @@ func FromPermission(p *Permissions) *PermissionView {
 		model.ViewUsers = p.ViewUsers
 		model.EditServerAdmin = p.EditServerAdmin
 		model.DeleteServer = p.DeleteServer
+		model.PanelSettings = p.PanelSettings
 	}
 
 	return model
@@ -113,5 +115,6 @@ func (p *PermissionView) CopyTo(model *Permissions, copyAdminFlags bool) {
 		model.ViewUsers = p.ViewUsers
 		model.EditServerAdmin = p.EditServerAdmin
 		model.DeleteServer = p.DeleteServer
+		model.PanelSettings = p.PanelSettings
 	}
 }

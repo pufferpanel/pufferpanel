@@ -19,8 +19,10 @@
     >
       <v-btn
         v-if="!running"
+        v-hotkey="'r r'"
         class="mr-4"
         color="success"
+        :loading="restarting"
         @click="action('start')"
       >
         <v-icon left>
@@ -32,7 +34,8 @@
         v-else
         class="mr-4"
         color="success"
-        @click="action('restart')"
+        :loading="restarting"
+        @click="restart()"
       >
         <v-icon left>
           mdi-reload
@@ -45,6 +48,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r s'"
         class="mr-4"
         color="warning"
         @click="action('stop')"
@@ -60,6 +64,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r k'"
         class="mr-4"
         color="error"
         @click="action('kill')"
@@ -75,6 +80,7 @@
       v-slot="{}"
     >
       <v-btn
+        v-hotkey="'r i'"
         color="error"
         @click="action('install')"
       >
@@ -93,16 +99,30 @@ export default {
     server: { type: Object, default: function () { return {} } }
   },
   data () {
-    return { running: false }
+    return {
+      running: false,
+      restarting: false
+    }
   },
   mounted () {
     this.$api.addServerListener(this.server.id, 'status', event => {
       this.running = event.running
+
+      if (this.restarting && !event.running) {
+        setTimeout(() => { this.action('start') }, 1000)
+        return
+      }
+
+      if (this.restarting && event.running) this.restarting = false
     })
 
     this.$api.requestServerStatus(this.server.id)
   },
   methods: {
+    restart () {
+      this.restarting = true
+      this.action('stop')
+    },
     action (action) {
       this.$api.sendServerAction(this.server.id, action)
     }

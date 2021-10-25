@@ -7,8 +7,44 @@
     "subject": "Your password has been reset",
     "body": "password-reset.html"
   },
+  "login": {
+    "subject": "Someone has logged into your account",
+    "body": "login.html"
+  },
+  "passwordChanged": {
+    "subject": "Your password has been changed",
+    "body": "password-changed.html"
+  },
+  "emailChanged": {
+    "subject": "Your email has been changed",
+    "body": "email-changed.html"
+  },
+  "otpEnabled": {
+    "subject": "OTP has been enabled for your account",
+    "body": "otp-enabled.html"
+  },
+  "otpDisabled": {
+    "subject": "OTP has been disabled for your account",
+    "body": "otp-disabled.html"
+  },
+  "oauthCreated": {
+    "subject": "OAuth client created",
+    "body": "oauth-created.html"
+  },
+  "oauthDeleted": {
+    "subject": "OAuth client deleted",
+    "body": "oauth-deleted.html"
+  },
   "addedToServer": {
     "subject": "You have been added to a server",
     "body": "added-to-server.html"
+  },
+  "deletedServer": {
+    "subject": "A server you have access to has been deleted",
+    "body": "deleted-server.html"
+  },
+  "removedFromServer": {
+    "subject": "You have been removed from a server",
+    "body": "removed-from-server.html"
   }
 }

@@ -41,7 +41,10 @@
               v-text="$t('users.Login')"
             />
           </v-col>
-          <v-col cols="12">
+          <v-col
+            v-if="config.registrationEnabled"
+            cols="12"
+          >
             <v-btn
               text
               block
@@ -57,6 +60,9 @@
 
 <script>
 export default {
+  props: {
+    config: { type: Object, default: () => {} }
+  },
   data () {
     return {
       email: '',
@@ -96,14 +102,14 @@ export default {
       }
 
       this.loginDisabled = true
-
-      try {
-        await this.$api.login(this.email, this.password)
-        this.$emit('logged-in')
-        this.$router.push({ name: 'Servers' })
-      } finally {
-        this.loginDisabled = false
+      if (await this.$api.login(this.email, this.password) === true) {
+        if (this.hasScope('servers.view') || this.isAdmin()) {
+          this.$router.push({ name: 'Servers' })
+        } else {
+          this.$router.push({ name: 'Account' })
+        }
       }
+      this.loginDisabled = false
     }
   }
 }

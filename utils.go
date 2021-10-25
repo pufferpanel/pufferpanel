@@ -13,6 +13,11 @@
 
 package pufferpanel
 
+import (
+	"crypto/rand"
+	"encoding/base64"
+)
+
 func ContainsString(arr []string, value string) bool {
 	for _, v := range arr {
 		if v == value {
@@ -30,4 +35,14 @@ func ContainsScope(arr []Scope, value Scope) bool {
 	}
 
 	return false
+}
+
+func GenerateRandomString(n int) (string, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.URLEncoding.EncodeToString(b), nil
 }

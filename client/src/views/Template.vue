@@ -13,10 +13,12 @@
               mandatory
             >
               <v-btn
+                :disabled="loading"
                 value="editor"
                 v-text="$t('templates.Editor')"
               />
               <v-btn
+                :disabled="loading"
                 value="json"
                 v-text="$t('templates.Json')"
               />
@@ -186,10 +188,7 @@ export default {
   watch: {
     async mode (newVal) {
       if (newVal === 'editor') {
-        if (this.catchV1()) {
-          // this.mode = 'json'
-          return
-        }
+        if (this.catchV1()) return
         this.template = this.$api.templateFromApiJson(this.templateJson)
       } else {
         this.templateJson = this.$api.templateToApiJson(this.template)
@@ -213,14 +212,18 @@ export default {
       this.$router.push({ name: 'Templates' })
     },
     async save () {
+      // console.log('1', this.$api.templateToApiJson(this.template))
       if (!this.template.name || this.template.name.trim() === '') return
       if (this.mode === 'json') {
         if (this.catchV1()) return
         this.template = this.$api.templateFromApiJson(this.templateJson)
       }
+      // console.log('2', this.$api.templateToApiJson(this.template))
       await this.$api.saveTemplate(this.template.name, this.template)
+      // console.log('3', this.$api.templateToApiJson(this.template))
       this.$toast.success(this.$t('templates.SaveSuccess'))
       if (this.create) this.$router.push({ name: 'Template', params: { id: this.name } })
+      // console.log('4', this.$api.templateToApiJson(this.template))
     },
     catchV1 () {
       const skipCheck = this.skipNextV1Check

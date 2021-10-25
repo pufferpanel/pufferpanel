@@ -1,0 +1,24 @@
+{
+  "Settings": "Seaded",
+  "PanelSettings": "Paneeli Seaded",
+  "EmailSettings": "E-posti seaded",
+  "MasterUrl": "Peamine URL",
+  "MasterUrlHint": "Põhi URL sellel paneelil on kättesaadav formaadis http://localhost:8080",
+  "CompanyName": "Ettevõtte nimi",
+  "DefaultTheme": "Vaikmisi teema",
+  "EmailProvider": "E-posti pakkuja",
+  "emailProviders": {
+    "none": "Puudub",
+    "smtp": "SMTP",
+    "mailgun": "Mailgun",
+    "mailjet": "Mailjet"
+  },
+  "emailFields": {
+    "from": "Sender Adress",
+    "domain": "Domeen",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Kasutajanimi",
+    "password": "Salasõna"
+  }
+}

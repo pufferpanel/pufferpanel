@@ -1,78 +1,69 @@
 <template>
   <v-card>
-    <v-card-title>
+    <v-card-title ref="title">
       <span v-text="$t('servers.Console')" />
       <div class="flex-grow-1" />
       <v-btn
+        v-hotkey="'c p'"
         icon
-        @click="popoutConsole"
+        @click="togglePaused()"
       >
-        <v-icon
-          :dark="isDark()"
-          :light="!isDark()"
+        <v-badge
+          color="error"
+          :value="paused && hasNewLines"
+          overlap
+          dot
         >
-          mdi-pause
-        </v-icon>
+          <v-icon>
+            {{ paused ? 'mdi-play' : 'mdi-pause' }}
+          </v-icon>
+        </v-badge>
       </v-btn>
     </v-card-title>
     <v-card-text>
-      <!-- eslint-disable vue/no-v-html -->
+      <span style="display: none;">
+        <v-chip
+          ref="daemonChip"
+          :color="$vuetify.theme.options.console.daemonChip"
+          x-small
+          label
+        >
+          DAEMON
+        </v-chip>
+      </span>
       <div
+        ref="consoleEl"
         class="console"
-        style="min-height: 25em; max-height: 40em;"
-        v-html="console"
-      />
-      <!-- eslint-enable vue/no-v-html -->
+        :style="'min-height: 25em; max-height: 36em;'"
+      >
+      </div>
       <ui-input
         v-if="server.permissions.sendServerConsole || isAdmin()"
+        ref="cmdInput"
         v-model="consoleCommand"
+        v-hotkey="'c i'"
         class="pt-2"
         placeholder="Command..."
         end-icon="mdi-send"
         @click:append="sendCommand"
         @keyup.enter="sendCommand"
       />
-      <v-overlay :value="consolePopup">
-        <v-card
-          :dark="isDark()"
-          :light="!isDark()"
-          class="d-flex flex-column"
-          height="90vh"
-          width="90vw"
-        >
-          <v-card-title>
-            <span v-text="$t('servers.Console')" />
-            <div class="flex-grow-1" />
-            <v-btn
-              icon
-              @click="consolePopup = false"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <v-card-text
-            id="popup"
-            class="flex-grow-1"
-          >
-            <!-- eslint-disable vue/no-v-html -->
-            <div
-              class="console"
-              style="height: 80vh;"
-              v-html="console"
-            />
-            <!-- eslint-enable vue/no-v-html -->
-          </v-card-text>
-        </v-card>
-      </v-overlay>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import AnsiUp from 'ansi_up'
-import { isDark } from '@/utils/dark'
+
+const DAEMON_MESSAGE_REGEX = /^(&nbsp;|&gt;|\s)*\[DAEMON]/
+const CONSOLE_REFRESH_TIME = 500
+const CONSOLE_MEMORY_ALLOWED = 1024 * 1024 * 4 // 4MB
+// due to pausing we have 2 copies of the console,
+// so each should only get half the allowed memory
+const CONSOLE_MEMORY_ALLOWED_PER_BUFFER = CONSOLE_MEMORY_ALLOWED / 2
 
 const ansiup = new AnsiUp()
+let lines = []
 
 export default {
   props: {
@@ -80,19 +71,33 @@ export default {
   },
   data () {
     return {
-      console: '',
-      consoleReadonly: '',
-      maxConsoleLength: 1000000,
+      console: [],
       consoleCommand: '',
-      consolePopup: false,
-      lastConsoleTime: 0
+      lastConsoleTime: 0,
+      paused: false,
+      hasNewLines: false,
+      interval: null,
+      listener: null
     }
   },
   mounted () {
     // ansi up keeps state a little aggressively, so force a reset
     ansiup.ansi_to_html('\u001b[m')
 
-    this.$api.addServerListener(this.server.id, 'console', event => {
+    this.interval = setInterval(() => {
+      if (this.paused) return
+      if (this.hasNewLines) this.$refs.consoleEl.replaceChildren(...lines.map(line => line.el))
+
+      const consoleEl = this.$refs.consoleEl
+      this.$nextTick(() => {
+        if (this.paused) return
+        if (!this.hasNewLines) return
+        consoleEl.scrollTop = consoleEl.scrollHeight
+        this.hasNewLines = false
+      })
+    }, CONSOLE_REFRESH_TIME)
+
+    this.listener = event => {
       if ('epoch' in event) {
         this.lastConsoleTime = event.epoch
       } else {
@@ -100,7 +105,9 @@ export default {
       }
 
       this.parseConsole(event)
-    })
+    }
+
+    this.$api.addServerListener(this.server.id, 'console', this.listener)
 
     this.$api.startServerTask(this.server.id, () => {
       if (this.$api.serverConnectionNeedsPolling(this.server.id)) {
@@ -110,49 +117,98 @@ export default {
 
     this.$api.requestServerConsoleReplay(this.server.id)
   },
+  beforeDestroy () {
+    this.$api.removeServerListener(this.server.id, 'console', this.listener)
+    this.interval && clearInterval(this.interval)
+    this.interval = null
+    lines = []
+  },
   methods: {
     parseConsole (data) {
-      let newConsole = this.console
-      const logs = Array.isArray(data.logs) ? data.logs : [data.logs]
-      logs.forEach(element => {
-        newConsole += ansiup.ansi_to_html(element).replace(/\n/g, '<br>')
+      let newLines = (Array.isArray(data.logs) ? data.logs.join('') : data.logs).replaceAll('\r\n', '\n')
+      const endOnNewline = newLines.endsWith('\n')
+      newLines = newLines.split('\n').map(line => {
+        return ansiup.ansi_to_html(line) + '\n'
       })
 
-      if (newConsole.length > this.maxConsoleLength) {
-        newConsole = newConsole.substring(newConsole.length - this.maxConsoleLength, newConsole.length)
+      if (!endOnNewline && newLines.length > 0) {
+        const line = newLines[newLines.length - 1]
+        newLines[newLines.length - 1] = line.substring(0, line.length - 1)
+      } else if (newLines.length > 0) {
+        newLines.pop()
       }
-      this.console = newConsole
 
-      const console = this.$el.querySelector('.console')
-      this.$nextTick(() => {
-        console.scrollTop = console.scrollHeight
+      if (lines.length !== 0 && !lines[lines.length - 1].textEl.innerHTML.endsWith('\n')) {
+        lines[lines.length - 1].textEl.innerHTML += newLines.shift()
+        lines[lines.length - 1].crHandled = false
+      }
+
+      newLines = newLines.map((line) => {
+        const isDaemonMessage = DAEMON_MESSAGE_REGEX.test(line)
+        const el = document.createElement('span')
+        if (isDaemonMessage) el.append(this.$refs.daemonChip.$el.cloneNode(true))
+        const textEl = document.createElement('span')
+        textEl.className = 'consoleLine'
+        textEl.innerHTML = isDaemonMessage ? line.replace(DAEMON_MESSAGE_REGEX, '') : line
+        el.append(textEl)
+        return {
+          el,
+          textEl,
+          crHandled: false,
+          size: data.length * 2
+        }
       })
+
+      lines = lines.concat(newLines)
+
+      const currentSize = lines.reduce((acc, curr) => acc + curr.size, 0)
+      let freed = 0
+      let toRemove = 0
+      while (currentSize - freed > CONSOLE_MEMORY_ALLOWED_PER_BUFFER) {
+        freed += lines[toRemove].size
+        toRemove += 1
+      }
+      lines = lines.slice(toRemove)
+
+      lines = lines.map(line => {
+        if (line.crHandled) return line
+        const endOnNewline = line.textEl.innerHTML.endsWith('\n')
+        const parts = (endOnNewline ? line.textEl.innerHTML.substring(0, line.textEl.innerHTML.length - 1) : line.textEl.innerHTML).split('\r')
+        let result = parts.shift()
+        parts.map(part => {
+          result = part + result.substring(part.length)
+        })
+        line.textEl.innerHTML = endOnNewline ? (result + '\n') : result
+        return { ...line, crHandled: true }
+      })
+
+      this.hasNewLines = true
     },
-    popoutConsole () {
-      this.consoleReadonly = this.console
-      this.consolePopup = true
-      this.$nextTick(() => {
-        this.$el.querySelector('#popup .console').scrollTop = this.$el.querySelector('#popup .console').scrollHeight
-      })
+    togglePaused () {
+      this.paused = !this.paused
     },
     sendCommand () {
       this.$api.sendServerCommand(this.server.id, this.consoleCommand)
       this.consoleCommand = ''
-    },
-    isDark
+    }
   }
 }
 </script>
 
 <style>
   .console {
-      overflow-y: scroll;
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.25;
-      font-family: 'Roboto Mono', monospace;
-      color: #ddd;
-      background-color: black;
-      padding: 4px;
+    overflow-y: scroll;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.25;
+    font-family: 'Roboto Mono', monospace;
+    color: #ddd;
+    background-color: black;
+    padding: 4px;
+    word-break: break-all;
+  }
+
+  .consoleLine {
+    white-space: pre;
   }
 </style>

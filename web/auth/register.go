@@ -15,6 +15,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/models"
@@ -25,6 +26,11 @@ import (
 )
 
 func RegisterPost(c *gin.Context) {
+	if !config.GetBool("panel.registrationEnabled") {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
 	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
@@ -72,7 +78,7 @@ func RegisterPost(c *gin.Context) {
 			logging.Error().Printf("Error sending email: %s", err.Error())
 		}
 
-		_, token, err = us.Login(user.Email, request.Password)
+		_, token, _, err = us.Login(user.Email, request.Password)
 		if err != nil {
 			logging.Error().Printf("Error trying to auto-login after register: %s", err.Error())
 		}

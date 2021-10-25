@@ -8,5 +8,12 @@
   "Download": "下載",
   "Size": "大小",
   "NoFiles": "這裏尚未有任何檔案，點擊上方的按扭來添加一些實例吧",
-  "FileLoadFailed": "無法載入檔案"
+  "FileLoadFailed": "無法載入檔案",
+  "Refresh": "Refresh",
+  "CreateFile": "Create file",
+  "CreateFolder": "Create folder",
+  "ArchiveCurrentFolder": "Create archive from current folder",
+  "ArchiveFolder": "Create archive from folder",
+  "ExtractArchive": "Extract archive",
+  "DropToUpload": "Drop files here to upload them"
 }

@@ -12,7 +12,7 @@
   "ServersFilesPut": "Muuda ja laadi üles faile kasutades failihaldurit",
   "ServersEditUsers": "Muuda kasutaja ligipääsu sellele serverile",
   "Admin": "Admin (see annab iga võimaliku õiguse)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Vaata Servereid",
   "CreateServers": "Loo uusi Servereid",
   "DeleteServers": "Kustuta Servereid",
   "EditServerAdmin": "Muuda Serveri sätteid",
@@ -22,5 +22,6 @@
   "ViewTemplates": "Vaata Malle",
   "EditTemplates": "Muuda Malle",
   "ViewUsers": "Vaata kõiki Kasutajaid",
-  "EditUsers": "Muuda teisi Kasutajaid"
+  "EditUsers": "Muuda teisi Kasutajaid",
+  "PanelSettings": "Change panel settings"
 }

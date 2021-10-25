@@ -15,13 +15,14 @@ package database
 
 import (
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/spf13/viper"
 	"strings"
 	"sync"
 )
@@ -39,11 +40,11 @@ func openConnection() (err error) {
 		return
 	}
 
-	dialect := viper.GetString("panel.database.dialect")
+	dialect := config.GetString("panel.database.dialect")
 	if dialect == "" {
 		dialect = "sqlite3"
 	}
-	connString := viper.GetString("panel.database.url")
+	connString := config.GetString("panel.database.url")
 	if connString == "" {
 		switch dialect {
 		case "mysql":
@@ -70,7 +71,7 @@ func openConnection() (err error) {
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
 
-	if viper.GetBool("panel.database.log") {
+	if config.GetBool("panel.database.log") {
 		logging.Info().Printf("Database logging enabled")
 		dbConn.LogMode(true)
 	}
@@ -100,13 +101,15 @@ func migrateModels() {
 		&models.Template{},
 		&models.Permissions{},
 		&models.Client{},
+		&models.UserSetting{},
+		&config.Setting{},
 	}
 
 	for _, v := range dbObjects {
 		dbConn.AutoMigrate(v)
 	}
 
-	dialect := viper.GetString("panel.database.dialect")
+	dialect := config.GetString("panel.database.dialect")
 	if dialect == "" || dialect == "sqlite3" {
 		//SQLite does not support creating FKs like this, so we can't just enable them...
 		/*var res = dbConn.Exec("PRAGMA foreign_keys = ON")
@@ -137,4 +140,13 @@ func addConnectionSetting(connString, setting string) string {
 	connString += setting
 
 	return connString
+}
+
+type databaseConnector struct{}
+func (*databaseConnector) GetConnection() (*gorm.DB, error) {
+	return GetConnection()
+}
+
+func GetConnector() *databaseConnector {
+	return &databaseConnector{}
 }

@@ -24,9 +24,18 @@
   "Edit": "Edytuj użytkownika",
   "Update": "Zaktualizuj użytkownika",
   "Delete": "Usuń użytkownika",
-  "CreateSuccess": "Utwórz użytkownika",
+  "CreateSuccess": "User successfully created",
   "CreateError": "Nie udało się zaktualizować użytkownika",
   "UpdateSuccess": "Zaktualizowano użytkowników",
   "UpdateError": "Nie udało się zaktualizować użytkownika",
-  "PermsUpdateError": "Nie udało się zaktualizować uprawnień użytkownika"
+  "PermsUpdateError": "Nie udało się zaktualizować uprawnień użytkownika",
+  "Otp": "Two factor authentication",
+  "OtpEnable": "Enable 2FA",
+  "OtpDisable": "Disable 2FA",
+  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
+  "OtpSecret": "Secret Code",
+  "OtpConfirm": "Confirm using a 2FA code",
+  "OtpNeeded": "2FA required"
 }

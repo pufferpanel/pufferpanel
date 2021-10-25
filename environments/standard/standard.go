@@ -1,3 +1,5 @@
+// +build windows
+
 /*
  Copyright 2016 Padduck, LLC
 
@@ -26,6 +28,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
 	"strings"
 	"syscall"
@@ -50,8 +53,14 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.Wait.Wait()
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
-	s.mainProcess.Dir = steps.WorkingDirectory
-	s.mainProcess.Env = append(os.Environ(), "HOME="+s.RootDirectory, "TERM=xterm-256color")
+	s.mainProcess.Dir = path.Join(s.GetRootDirectory(), steps.WorkingDirectory)
+
+	for _, v := range os.Environ() {
+		if !strings.HasPrefix(v, "PUFFER_") {
+			s.mainProcess.Env = append(s.mainProcess.Env, v)
+		}
+	}
+	s.mainProcess.Env = append(s.mainProcess.Env, "HOME="+s.GetRootDirectory(), "TERM=xterm-256color")
 	for k, v := range steps.Environment {
 		s.mainProcess.Env = append(s.mainProcess.Env, fmt.Sprintf("%s=%s", k, v))
 	}
@@ -64,6 +73,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	}
 	s.stdInWriter = pipe
 	logging.Info().Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
+	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running: true}
 	_ = s.WSManager.WriteMessage(msg)

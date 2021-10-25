@@ -35,6 +35,8 @@ var ErrServerNotFound = CreateError("server not found", "ErrServerNotFound")
 var ErrDatabaseNotAvailable = CreateError("database not available", "ErrDatabaseNotAvailable")
 var ErrServerOffline = CreateError("server offline", "ErrServerOffline")
 var ErrIllegalFileAccess = CreateError("invalid file access", "ErrIllegalFileAccess")
+var ErrFileNotFound = CreateError("file not found", "ErrFileNotFound")
+var ErrFileExists = CreateError("file exists where there should be none", "ErrFileExists")
 var ErrServerDisabled = CreateError("server is disabled", "ErrServerDisabled")
 var ErrContainerRunning = CreateError("container already running", "ErrContainerRunning")
 var ErrImageDownloading = CreateError("image downloading", "ErrImageDownloading")
@@ -49,6 +51,10 @@ var ErrNotBearerToken = CreateError("access token must be a Bearer token", "ErrN
 var ErrKeyNotECDSA = CreateError("key is not ECDSA key", "ErrKeyNotECDSA")
 var ErrMissingScope = CreateError("missing scope", "ErrMissingScope")
 var ErrNodeHasServers = CreateError("node has servers associated", "ErrNodeHasServers")
+var ErrInvalidSession = CreateError("invalid session", "ErrInvalidSession")
+var ErrSessionExpired = CreateError("session expired", "ErrSessionExpired")
+var ErrTaskNotFound = CreateError("task not found", "ErrTaskNotFound")
+var ErrNotImplemented = CreateError("not implemented", "ErrNotImplemented")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})
@@ -112,6 +118,10 @@ var ErrFieldNotEmail = func(fieldName string) *Error {
 
 var ErrFieldLength = func(fieldName string, min int, max int) *Error {
 	return CreateError("${field} must be between ${min} and ${max} characters", "ErrFieldLength").Metadata(map[string]interface{}{"field": fieldName, "min": min, "max": max})
+}
+
+var ErrFactoryError = func(operatorName string, err error) *Error {
+	return CreateError("factory `${operatorName}` encountered an error: `${err}`", "ErrFactoryError")
 }
 
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")

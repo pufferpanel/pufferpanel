@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Je sessie is verlopen, log opnieuw in",
   "ErrMissingScope": "Je bent niet bevoegd om deze actie uit te voeren",
   "ErrInvalidJson": "De json gegevens zijn ongeldig",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken"
+  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

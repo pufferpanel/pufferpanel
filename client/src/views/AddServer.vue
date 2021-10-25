@@ -109,7 +109,10 @@
               />
               <ui-input
                 v-model="serverName"
+                :error-messages="serverNameError"
                 autofocus
+                @blur="serverNameError = isServerNameValid() ? undefined : $t('servers.NameInvalid')"
+                @keyup.enter="step2Continue()"
               />
             </v-col>
           </v-row>
@@ -165,8 +168,8 @@
                 large
                 block
                 color="success"
-                :disabled="selectedNode == null || selectedEnvironment == null || serverName == ''"
-                @click="currentStep = 3"
+                :disabled="!step2CanContinue()"
+                @click="step2Continue()"
                 v-text="$t('common.Next')"
               />
             </v-col>
@@ -184,6 +187,7 @@
                 v-model="userInput"
                 autofocus
                 :placeholder="$t('servers.TypeUsername')"
+                @keyup.enter="step3Continue()"
               />
               <v-list v-if="users.length > 0 || selectedUsers.length > 0">
                 <v-subheader
@@ -241,8 +245,8 @@
                 large
                 block
                 color="success"
-                :disabled="selectedUsers.length === 0"
-                @click="currentStep = 4"
+                :disabled="!step3CanContinue()"
+                @click="step3Continue()"
                 v-text="$t('common.Next')"
               />
             </v-col>
@@ -322,6 +326,7 @@ export default {
       userCancelSearch: CancelToken.source(),
 
       serverName: '',
+      serverNameError: undefined,
 
       selectedEnvironment: null,
       environments: [],
@@ -422,7 +427,7 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
     this.nodes = [{
       value: null,
       disabled: true,
@@ -430,6 +435,8 @@ export default {
     }]
     this.getTemplates()
     this.getNodes()
+    const self = await this.$api.getSelf()
+    this.selectedUsers.push(self.username)
   },
   methods: {
     async getTemplates () {
@@ -501,7 +508,7 @@ export default {
       delete data.environment.text
       delete data.environment.value
       const id = await this.$api.createServer(data)
-      this.$router.push({ name: 'Server', params: { id: id } })
+      if (id) this.$router.push({ name: 'Server', params: { id: id } })
     },
     selectUser (username) {
       if (!username || username === '') {
@@ -550,6 +557,23 @@ export default {
           return name.toLowerCase().indexOf(filter.trim().toLowerCase()) > -1
         }
       })
+    },
+    isServerNameValid () {
+      return this.serverName.match(/^[\x20-\x7e]+$/)
+    },
+    step2CanContinue () {
+      return this.selectedNode && this.selectedEnvironment && this.isServerNameValid && this.servername !== ''
+    },
+    step2Continue () {
+      if (!this.step2CanContinue()) return
+      this.currentStep = 3
+    },
+    step3CanContinue () {
+      return this.selectedUsers.length > 0
+    },
+    step3Continue () {
+      if (!this.step3CanContinue()) return
+      this.currentStep = 4
     },
     markdown
   }

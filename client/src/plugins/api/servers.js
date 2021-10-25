@@ -141,15 +141,21 @@ export const ServersApi = {
     })
   },
 
+  getServerTasks (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/proxy/daemon/server/${id}/tasks`)).data.tasks
+    })
+  },
+
   getServerSocketUrl (id) {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
   },
 
-  getServerStatus (id) {
+  getServerStatus (id, options) {
     return this.withErrorHandling(async ctx => {
       return (await ctx.$http.get(`/proxy/daemon/server/${id}/status`)).data.running
-    })
+    }, options)
   },
 
   getServerStats (id) {
@@ -228,6 +234,27 @@ export const ServersApi = {
     })
   },
 
+  archiveServerFiles (id, destination, files) {
+    if (destination.startsWith('/')) destination = destination.substring(1)
+    if (!Array.isArray(files)) files = [files]
+    files.map(file => {
+      return file.startsWith('/') ? file.substring(1) : file
+    })
+
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.post(`/proxy/daemon/server/${id}/archive/${destination}`, files)
+      return true
+    })
+  },
+
+  extractServerFile (id, path, destination) {
+    if (path.startsWith('/')) path = path.substring(1)
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.get(`/proxy/daemon/server/${id}/extract/${path}`, { params: { destination } })
+      return true
+    })
+  },
+
   serverAction (id, action, wait = false) {
     return this.withErrorHandling(async ctx => {
       await this._ctx.$http.post(`/proxy/daemon/server/${id}/${action}?wait=${wait}`)
@@ -250,6 +277,32 @@ export const ServersApi = {
   updateServerData (id, data) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.post(`/proxy/daemon/server/${id}/data`, { data })
+      return true
+    })
+  },
+
+  createServerTask (id, task) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks`, task)).id
+    })
+  },
+
+  runServerTask (id, taskId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/proxy/daemon/server/${id}/tasks/${taskId}/run`)).id
+    })
+  },
+
+  editServerTask (serverId, taskId, task) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/proxy/daemon/server/${serverId}/tasks/${taskId}`, task)
+      return true
+    })
+  },
+
+  deleteServerTask (serverId, taskId) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.delete(`/proxy/daemon/server/${serverId}/tasks/${taskId}`)
       return true
     })
   },
@@ -279,6 +332,24 @@ export const ServersApi = {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.delete(`/api/servers/${id}/user/${email}`)
       return true
+    })
+  },
+
+  getServerOAuthClients (id) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.get(`/api/servers/${id}/oauth2`)).data
+    })
+  },
+
+  createServerOAuthClient (id, name, description) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.post(`/api/servers/${id}/oauth2`, { name, description })).data
+    })
+  },
+
+  deleteServerOAuthClient (id, clientId) {
+    return this.withErrorHandling(async ctx => {
+      return (await ctx.$http.delete(`/api/servers/${id}/oauth2/${clientId}`)).data
     })
   }
 }

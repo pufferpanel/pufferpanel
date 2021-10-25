@@ -11,8 +11,8 @@
   limitations under the License.
 */
 
-package database
+package pufferpanel
 
-import (
-	_ "github.com/jinzhu/gorm/dialects/mssql"
-)
+func UserInGroup(groups ...string) bool {
+	return true
+}

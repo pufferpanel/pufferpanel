@@ -12,7 +12,7 @@
   "ServersFilesPut": "Dateien mit dem Dateimanager bearbeiten und hochladen",
   "ServersEditUsers": "Benutzerzugriff zu diesem Server bearbeiten",
   "Admin": "Admin (dies gewährt alle Berechtigungen)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Server anzeigen",
   "CreateServers": "Neue Server erstellen",
   "DeleteServers": "Server löschen",
   "EditServerAdmin": "Servereinstellungen bearbeiten",
@@ -22,5 +22,6 @@
   "ViewTemplates": "Vorlagen anzeigen",
   "EditTemplates": "Vorlagen bearbeiten",
   "ViewUsers": "Alle Benutzer anzeigen",
-  "EditUsers": "Andere Benutzer bearbeiten"
+  "EditUsers": "Andere Benutzer bearbeiten",
+  "PanelSettings": "Bedienfeldeinstellungen ändern"
 }

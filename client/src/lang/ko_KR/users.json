@@ -24,9 +24,18 @@
   "Edit": "계정 편집",
   "Update": "계정 업데이트",
   "Delete": "계정 삭제",
-  "CreateSuccess": "계정이 생성되었습니다",
+  "CreateSuccess": "User successfully created",
   "CreateError": "계정 생성에 실패했습니다",
   "UpdateSuccess": "계정이 업데이트 되었습니다",
   "UpdateError": "게정 업데이트에 실패했습니다",
-  "PermsUpdateError": "계정 권한 수정에 실패했습니다"
+  "PermsUpdateError": "계정 권한 수정에 실패했습니다",
+  "Otp": "Two factor authentication",
+  "OtpEnable": "Enable 2FA",
+  "OtpDisable": "Disable 2FA",
+  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
+  "OtpSecret": "Secret Code",
+  "OtpConfirm": "Confirm using a 2FA code",
+  "OtpNeeded": "2FA required"
 }

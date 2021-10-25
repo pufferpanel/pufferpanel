@@ -1,0 +1,24 @@
+{
+  "Settings": "Beállítások",
+  "PanelSettings": "Panel Beállítások",
+  "EmailSettings": "Email Beállítások",
+  "MasterUrl": "Fő URL",
+  "MasterUrlHint": "Az alap URL, amin a http://localhost:8080 formában lehet elérni a panelt",
+  "CompanyName": "Vállakozás Neve",
+  "DefaultTheme": "Alapértelmezett Téma",
+  "EmailProvider": "Email Szolgáltató",
+  "emailProviders": {
+    "none": "Ezek közül egyik sem",
+    "smtp": "SMTP",
+    "mailgun": "Mailgun",
+    "mailjet": "Mailjet"
+  },
+  "emailFields": {
+    "from": "Sender Adress",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Kiszolgáló",
+    "username": "Felhasználónév",
+    "password": "Jelszó"
+  }
+}

@@ -26,6 +26,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 	"syscall"
 	"time"
@@ -49,8 +50,13 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.Wait.Wait()
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
-	pr.Dir = steps.WorkingDirectory
-	pr.Env = append(os.Environ(), "HOME="+t.RootDirectory, "TERM=xterm-256color")
+	pr.Dir = path.Join(t.GetRootDirectory(), steps.WorkingDirectory)
+	for _, v := range os.Environ() {
+		if !strings.HasPrefix(v, "PUFFER_") {
+			pr.Env = append(pr.Env, v)
+		}
+	}
+	pr.Env = append(pr.Env, "HOME="+t.GetRootDirectory(), "TERM=xterm-256color")
 	for k, v := range steps.Environment {
 		pr.Env = append(pr.Env, fmt.Sprintf("%s=%s", k, v))
 	}
@@ -59,6 +65,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.Wait.Add(1)
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
+	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 	logging.Info().Printf("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running: true}

@@ -24,9 +24,18 @@
   "Edit": "Wijzig gebruiker",
   "Update": "Gebruiker Bijwerken",
   "Delete": "Gebruiker Verwijderen",
-  "CreateSuccess": "Gebruiker Aangemaakt",
+  "CreateSuccess": "User successfully created",
   "CreateError": "Gebruiker aanmaken mislukt",
   "UpdateSuccess": "Gebruiker Bijgewerkt",
   "UpdateError": "Gebruiker bijwerken mislukt",
-  "PermsUpdateError": "Gebruikersrechten updaten mislukt"
+  "PermsUpdateError": "Gebruikersrechten updaten mislukt",
+  "Otp": "Authenticatie in twee stappen",
+  "OtpEnable": "Enable 2FA",
+  "OtpDisable": "Disable 2FA",
+  "OtpHint": "Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.",
+  "OtpSetup": "2FA Setup",
+  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
+  "OtpSecret": "Secret Code",
+  "OtpConfirm": "Confirm using a 2FA code",
+  "OtpNeeded": "2FA required"
 }

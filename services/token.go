@@ -24,9 +24,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
-	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -175,7 +175,7 @@ func ValidateTokenLoaded() {
 	locker.Lock()
 	defer locker.Unlock()
 	//only load public if panel is disabled
-	if !viper.GetBool("panel.enable") {
+	if !config.GetBool("panel.enable") {
 		if publicKey == nil || timer.Before(time.Now()) {
 			loadPublic()
 		}
@@ -186,7 +186,7 @@ func ValidateTokenLoaded() {
 
 func loadPrivate() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_RDONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_RDONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -216,7 +216,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile(viper.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return
@@ -234,36 +234,25 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 }
 
 func loadPublic() {
-	pubKeyPath := viper.GetString("token.public")
-	var pubKeyFile io.ReadCloser
-	var err error
-
-	if strings.HasPrefix(pubKeyPath, "https://") || strings.HasPrefix(pubKeyPath, "http://") {
-		client := http.Client{}
-		response, err := client.Get(pubKeyPath)
-		if err != nil {
-			logging.Error().Printf("Internal error on token service: %s", err)
-			return
-		}
-		pubKeyFile = response.Body
-		timer = time.Now().Add(5 * time.Minute)
-	} else {
-		pubKeyFile, err = os.OpenFile(pubKeyPath, os.O_RDONLY, 0644)
-		if err != nil {
-			logging.Error().Printf("Internal error on token service: %s", err)
-			return
-		}
-	}
-
-	defer pufferpanel.Close(pubKeyFile)
-
-	data, err := ioutil.ReadAll(pubKeyFile)
+	data, err := readPublicKey(config.GetString("token.public"))
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
 		return
 	}
 
+	logging.Debug().Printf("Panel key pulled from %s: %s", config.GetString("token.public"), data)
+
 	block, _ := pem.Decode(data)
+	if block == nil {
+		logging.Error().Printf("Public key does not seem valid, as pem did not decode it")
+		return
+	}
+	if block.Type != "PUBLIC KEY" {
+		logging.Error().Printf("Public key is not valid, is a private key instead")
+		return
+	}
+
+
 	key, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		logging.Error().Printf("Internal error on token service: %s", err)
@@ -275,5 +264,27 @@ func loadPublic() {
 	if !ok {
 		logging.Error().Printf("Internal error on token service: %s", errors.New("public key is not ECDSA"))
 		return
+	}
+	timer = time.Now().Add(5 * time.Minute)
+}
+
+func readPublicKey(path string) ([]byte, error){
+	if strings.HasPrefix(path, "https://") || strings.HasPrefix(path, "http://") {
+		client := http.Client{}
+		response, err := client.Get(path)
+		if err != nil {
+			return nil, err
+		}
+
+		defer pufferpanel.Close(response.Body)
+		return ioutil.ReadAll(response.Body)
+	} else {
+		pubKeyFile, err := os.OpenFile(path, os.O_RDONLY, 0644)
+		if err != nil {
+			return nil, err
+		}
+
+		defer pufferpanel.Close(pubKeyFile)
+		return ioutil.ReadAll(pubKeyFile)
 	}
 }

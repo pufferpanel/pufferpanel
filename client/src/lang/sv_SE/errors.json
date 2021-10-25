@@ -34,5 +34,8 @@
   "ErrSessionTimedOut": "Your session timed out, please log in again",
   "ErrMissingScope": "Du har inte behörighet att utföra denna åtgärd",
   "ErrInvalidJson": "Json-datan är ogiltiga",
-  "ErrSocketFailed": "WebSocket-anslutningen stötte på ett fel, vissa funktioner kan vara långsam eller trasig"
+  "ErrSocketFailed": "WebSocket-anslutningen stötte på ett fel, vissa funktioner kan vara långsam eller trasig",
+  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

@@ -35,6 +35,10 @@ type ServerData struct {
 	Variables map[string]Variable `json:"data"`
 }
 
+type ServerTasks struct {
+	Tasks map[string]Task `json:"tasks"`
+}
+
 type ServerDataAdmin struct {
 	*Server
 }

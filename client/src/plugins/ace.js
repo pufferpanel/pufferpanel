@@ -1,12 +1,10 @@
-import { isDark } from '@/utils/dark'
-
 function install (Vue) {
   Vue.component('Ace', {
     props: {
       editorId: { type: String, default: () => 'editor' },
       value: { type: String, default: () => '' },
       lang: { type: String, default: () => 'text' },
-      theme: { type: String, default: () => isDark() ? 'monokai' : 'github' },
+      theme: { type: String, default: () => Vue.prototype.$isDark() ? 'monokai' : 'github' },
       file: { type: String, default: () => '' },
       height: { type: String, default: () => '100%' }
     },

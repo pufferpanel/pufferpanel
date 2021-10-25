@@ -1,0 +1,24 @@
+{
+  "Settings": "Impostazioni",
+  "PanelSettings": "Impostazioni Pannello",
+  "EmailSettings": "Impostazioni Email",
+  "MasterUrl": "URL Principale",
+  "MasterUrlHint": "L'URL di base che il pannello può essere raggiunto nel formato http://localhost:8080",
+  "CompanyName": "Nome Azienda",
+  "DefaultTheme": "Tema Predefinito",
+  "EmailProvider": "Provider Email",
+  "emailProviders": {
+    "none": "Nessuno",
+    "smtp": "SMTP",
+    "mailgun": "Mailgun",
+    "mailjet": "Mailjet"
+  },
+  "emailFields": {
+    "from": "Sender Adress",
+    "domain": "Dominio",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Nome utente",
+    "password": "Password"
+  }
+}
