@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
+	"time"
 )
 
 type Program struct {
@@ -35,8 +36,21 @@ func (d Program) Run(env pufferpanel.Environment) error {
 	case "start":
 		return p.Start()
 	case "stop":
+		if err := p.Stop(); err != nil {
+			return err
+		}
+		return WaitForStop(d)
+	case "stopAsync":
 		return p.Stop()
 	case "restart":
+		if err := p.Stop(); err != nil {
+			return err
+		}
+		if err := WaitForStop(d); err != nil {
+			return err
+		}
+		return p.Start()
+	case "restartAsync":
 		if err := p.Stop(); err != nil {
 			return err
 		}
@@ -45,5 +59,18 @@ func (d Program) Run(env pufferpanel.Environment) error {
 		return env.Kill()
 	default:
 		return fmt.Errorf("action %s was not valid action, expected one of: `install`, `start`,`stop`, `restart`, `kill`", d.Action)
+	}
+}
+
+func WaitForStop(program Program) error {
+	for {
+		running, err := program.Program.IsRunning()
+		if err != nil {
+			return err
+		}
+		if !running {
+			return nil
+		}
+		time.Sleep(time.Millisecond * 500)
 	}
 }
