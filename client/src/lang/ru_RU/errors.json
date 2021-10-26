@@ -37,7 +37,7 @@
   "ErrSocketFailed": "Соединение WebSocket обнаружило ошибку, некоторые функции могут работать медленно или не работать",
   "ErrInviteLinkInvalid": "Ваша пригласительная ссылка недействительна",
   "ErrSavingInviteduser": "Во время создания аккаунта произошла ошибка",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDuplicateServerName": "Сервер с таким именем уже существует",
+  "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки"
 }
