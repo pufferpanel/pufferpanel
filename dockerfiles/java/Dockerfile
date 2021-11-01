@@ -4,7 +4,7 @@ FROM pufferpanel/pufferpanel:${DOCKER_TAG}
 
 # enable testing repo
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     apk update
 
 ENV JAVA_HOME=/usr/lib/jvm/java-16-openjdk
