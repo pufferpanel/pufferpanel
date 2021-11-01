@@ -84,6 +84,11 @@ func (c *Client) BeforeSave(*gorm.DB) (err error) {
 }
 
 func (c *Client) AfterFind(*gorm.DB) (err error) {
+	if c.RawScopes == "" {
+		c.Scopes = make([]pufferpanel.Scope, 0)
+		return
+	}
+
 	split := strings.Split(c.RawScopes, " ")
 	c.Scopes = make([]pufferpanel.Scope, len(split))
 
