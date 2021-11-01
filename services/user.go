@@ -235,7 +235,7 @@ func (us *User) DisableOtp(userId uint, token string) error {
 	return us.Update(user)
 }
 
-func (us *User) Search(usernameFilter, emailFilter string, pageSize, page int) (*models.Users, int64, error) {
+func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, int64, error) {
 	users := &models.Users{}
 
 	query := us.DB
@@ -258,7 +258,7 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page int) (
 		return nil, 0, err
 	}
 
-	res := query.Offset((page - 1) * pageSize).Limit(pageSize).Find(users)
+	res := query.Offset(int((page - 1) * pageSize)).Limit(int(pageSize)).Find(users)
 
 	return users, count, res.Error
 }

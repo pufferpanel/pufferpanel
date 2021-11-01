@@ -144,8 +144,8 @@ func searchServers(c *gin.Context) {
 		Username: username,
 		NodeId:   uint(node),
 		Name:     nameFilter,
-		PageSize: pageSize,
-		Page:     page,
+		PageSize: uint(pageSize),
+		Page:     uint(page),
 	}
 
 	results, total, err := ss.Search(searchCriteria)
@@ -164,8 +164,8 @@ func searchServers(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.ServerSearchResponse{
 		Servers: models.RemoveServerPrivateInfoFromAll(data),
 		Metadata: &response.Metadata{Paging: &response.Paging{
-			Page:    page,
-			Size:    pageSize,
+			Page:    uint(page),
+			Size:    uint(pageSize),
 			MaxSize: MaxPageSize,
 			Total:   total,
 		}},

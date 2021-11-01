@@ -29,8 +29,8 @@ type ServerSearch struct {
 	NodeId   uint
 	NodeName string
 	Name     string
-	PageSize int
-	Page     int
+	PageSize uint
+	Page     uint
 }
 
 func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total int64, err error) {
@@ -62,7 +62,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, 
 		return nil, 0, err
 	}
 
-	err = query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Order("servers.name").Find(records).Error
+	err = query.Preload("Node").Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(records).Error
 
 	return
 }
