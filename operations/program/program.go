@@ -20,11 +20,11 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
-	"time"
 )
 
 type Program struct {
 	Action  string
+	Async   bool
 	Program *programs.Program
 }
 
@@ -39,38 +39,36 @@ func (d Program) Run(env pufferpanel.Environment) error {
 		if err := p.Stop(); err != nil {
 			return err
 		}
-		return WaitForStop(d)
-	case "stopAsync":
-		return p.Stop()
+		if d.Async {
+			return nil
+		}
+		return p.RunningEnvironment.WaitForMainProcess()
 	case "restart":
-		if err := p.Stop(); err != nil {
-			return err
+		if d.Async {
+			go restart(p)
+			return nil
+		} else {
+			return restart(p)
 		}
-		if err := WaitForStop(d); err != nil {
-			return err
-		}
-		return p.Start()
-	case "restartAsync":
-		if err := p.Stop(); err != nil {
-			return err
-		}
-		return p.Start()
 	case "kill":
-		return env.Kill()
+		if err := p.Kill(); err != nil {
+			return err
+		}
+		if d.Async {
+			return nil
+		}
+		return p.RunningEnvironment.WaitForMainProcess()
 	default:
 		return fmt.Errorf("action %s was not valid action, expected one of: `install`, `start`,`stop`, `restart`, `kill`", d.Action)
 	}
 }
 
-func WaitForStop(program Program) error {
-	for {
-		running, err := program.Program.IsRunning()
-		if err != nil {
-			return err
-		}
-		if !running {
-			return nil
-		}
-		time.Sleep(time.Millisecond * 500)
+func restart(p *programs.Program) error {
+	if err := p.Stop(); err != nil {
+		return err
 	}
+	if err := p.RunningEnvironment.WaitForMainProcess(); err != nil {
+		return err
+	}
+	return p.Start()
 }

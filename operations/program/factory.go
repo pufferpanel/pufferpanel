@@ -27,7 +27,8 @@ type OperationFactory struct {
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	action := cast.ToString(op.OperationArgs["action"])
-	return &Program{Action: action}, nil
+	async := cast.ToBool(op.OperationArgs["async"])
+	return &Program{Action: action, Async: async}, nil
 }
 
 func (of OperationFactory) Key() string {
