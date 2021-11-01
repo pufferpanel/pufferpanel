@@ -88,29 +88,28 @@ func (ss *Server) Update(model *models.Server) error {
 	return res.Error
 }
 
+// Delete a server by ID, This is _not_ ran in a transaction automatically to allow for more flexibility
+// (Because Gorm V2 has removed `RollbackUnlessCommitted1)
 func (ss *Server) Delete(id string) error {
-	trans := ss.DB
-	return ss.DB.Transaction(func(tx *gorm.DB) error {
-		model := &models.Server{
-			Identifier: id,
-		}
+	model := &models.Server{
+		Identifier: id,
+	}
 
-		err := trans.Delete(models.Permissions{}, "server_identifier = ?", id).Error
-		if err != nil {
-			return err
-		}
+	err := ss.DB.Delete(models.Permissions{}, "server_identifier = ?", id).Error
+	if err != nil {
+		return err
+	}
 
-		err = trans.Delete(models.Client{}, "server_id = ?", id).Error
-		if err != nil {
-			return err
-		}
+	err = ss.DB.Delete(models.Client{}, "server_id = ?", id).Error
+	if err != nil {
+		return err
+	}
 
-		err = ss.DB.Delete(model).Error
-		if err != nil {
-			return err
-		}
-		return nil
-	})
+	err = ss.DB.Delete(model).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {
