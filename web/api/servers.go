@@ -469,7 +469,7 @@ func deleteServer(c *gin.Context) {
 	es := services.GetEmailService()
 	for _, u := range users {
 		err = es.SendEmail(u.Email, "deletedServer", map[string]interface{}{
-			"Server":        server,
+			"Server": server,
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
@@ -687,7 +687,7 @@ func removeServerUser(c *gin.Context) {
 		user, err = us.Get(username)
 	}
 
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && err == gorm.ErrRecordNotFound {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -711,7 +711,7 @@ func removeServerUser(c *gin.Context) {
 
 	es := services.GetEmailService()
 	err = es.SendEmail(user.Email, "removedFromServer", map[string]interface{}{
-		"Server":        server,
+		"Server": server,
 	}, true)
 	if err != nil {
 		//since we don't want to tell the user it failed, we'll log and move on

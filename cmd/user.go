@@ -263,7 +263,7 @@ func editUser(cmd *cobra.Command, args []string) {
 	us := &services.User{DB: db}
 
 	user, err := us.Get(username)
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && err == gorm.ErrRecordNotFound {
 		fmt.Printf("No user with username '%s'\n", username)
 		return
 	} else if err != nil {
