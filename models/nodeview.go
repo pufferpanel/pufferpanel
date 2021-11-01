@@ -24,9 +24,9 @@ type NodeView struct {
 	Name        string `json:"name,omitempty"`
 	PublicHost  string `json:"publicHost,omitempty"`
 	PrivateHost string `json:"privateHost,omitempty"`
-	PublicPort  int    `json:"publicPort,omitempty"`
-	PrivatePort int    `json:"privatePort,omitempty"`
-	SFTPPort    int    `json:"sftpPort,omitempty"`
+	PublicPort  uint16 `json:"publicPort,omitempty"`
+	PrivatePort uint16 `json:"privatePort,omitempty"`
+	SFTPPort    uint16 `json:"sftpPort,omitempty"`
 }
 
 type NodesView []*NodeView

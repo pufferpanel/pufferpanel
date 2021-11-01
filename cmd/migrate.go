@@ -140,9 +140,9 @@ func migratePanel() {
 				Name:        v.Name,
 				PublicHost:  v.FQDN,
 				PrivateHost: v.Ip,
-				PublicPort:  int(v.Port),
-				PrivatePort: int(v.Port),
-				SFTPPort:    int(v.Sftp),
+				PublicPort:  v.Port,
+				PrivatePort: v.Port,
+				SFTPPort:    v.Sftp,
 				Secret:      v.DaemonSecret,
 			}
 			err = newDb.Save(newNode).Error
