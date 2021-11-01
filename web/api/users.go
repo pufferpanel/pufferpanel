@@ -133,7 +133,7 @@ func createUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path int true "User ID"
+// @Param id path uint true "User ID"
 // @Router /api/users/{id} [get]
 func getUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -165,7 +165,7 @@ func getUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path int true "User ID"
+// @Param id path uint true "User ID"
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
 func updateUser(c *gin.Context) {
@@ -213,7 +213,7 @@ func updateUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path int true "User ID"
+// @Param id path uint true "User ID"
 // @Router /api/users/{id} [delete]
 func deleteUser(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -249,7 +249,7 @@ func deleteUser(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path int true "User ID"
+// @Param id path uint true "User ID"
 // @Router /api/users/{id}/perms [get]
 func getUserPerms(c *gin.Context) {
 	db := middleware.GetDatabase(c)
@@ -287,7 +287,7 @@ func getUserPerms(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param id path int true "User ID"
+// @Param id path uint true "User ID"
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
 func setUserPerms(c *gin.Context) {
