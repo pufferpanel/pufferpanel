@@ -259,7 +259,12 @@ func Delete(id string) (err error) {
 	}
 
 	if running {
-		err = program.Stop()
+		err = program.Kill()
+		if err != nil {
+			return
+		}
+
+		err = program.RunningEnvironment.WaitForMainProcess()
 		if err != nil {
 			return
 		}
