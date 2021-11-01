@@ -33,7 +33,6 @@ func init() {
 	viper.AddConfigPath(".")
 
 	//database settings
-	viper.SetDefault("panel.enable", true)
 	viper.SetDefault("panel.database.session", 60)
 	viper.SetDefault("panel.database.dialect", "sqlite3")
 	//viper.SetDefault("panel.database.url", "file:pufferpanel.db?cache=shared")
