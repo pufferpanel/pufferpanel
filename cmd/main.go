@@ -50,7 +50,7 @@ func init() {
 		versionCmd,
 		userCmd,
 		shutdownCmd,
-		//migrateCmd,
+		//v1migrateCmd,
 		)
 }
 

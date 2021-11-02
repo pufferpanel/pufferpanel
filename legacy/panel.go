@@ -25,14 +25,15 @@ type SslConfig struct {
 }
 
 type User struct {
-	ID       uint
-	Username string
-	Email    string
-	Password string
+	Id        uint
+	Username  string
+	Email     string
+	Password  string
+	RootAdmin bool `gorm:"column:root_admin"`
 }
 
 type Node struct {
-	ID           uint
+	Id           uint
 	Name         string
 	FQDN         string
 	Ip           string
@@ -48,4 +49,16 @@ type Server struct {
 	Node         uint
 	Name         string
 	OwnerId      uint `gorm:"column:owner_id"`
+}
+
+type Permission struct {
+	Id         uint
+	UserId     uint `gorm:"column:user"`
+	ServerId   uint `gorm:"column:server"`
+	Permission string
+}
+
+type Setting struct {
+	Name  string `gorm:"column:setting_ref"`
+	Value string `gorm:"column:setting_val"`
 }

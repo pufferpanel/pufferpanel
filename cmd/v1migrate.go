@@ -20,8 +20,8 @@ import (
 	"strings"
 )
 
-var migrateCmd = &cobra.Command{
-	Use:   "migrate",
+var v1migrateCmd = &cobra.Command{
+	Use:   "v1-migrate",
 	Short: "Migrates from v1 to v2",
 	Run:   migrate,
 }
@@ -30,8 +30,8 @@ var oldDaemonConfig string
 var oldPanelConfig string
 
 func init() {
-	migrateCmd.Flags().StringVarP(&oldDaemonConfig, "daemon", "d", "/srv/puffferd/config.json", "Location of old pufferd config")
-	migrateCmd.Flags().StringVarP(&oldPanelConfig, "panel", "p", "/etc/pufferpanel/config.json", "Location of old panel config")
+	v1migrateCmd.Flags().StringVarP(&oldDaemonConfig, "daemon", "d", "/srv/puffferd/config.json", "Location of old pufferd config")
+	v1migrateCmd.Flags().StringVarP(&oldPanelConfig, "panel", "p", "/etc/pufferpanel/config.json", "Location of old panel config")
 }
 
 func migrate(cmd *cobra.Command, args []string) {
@@ -60,11 +60,16 @@ func migrate(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	if config.GetBool("panel.enable") {
+	//to decide which we are handling, we will look for the 2 config files.
+	//Depending on what we find, will decide how migration works
+	//This is better than using our config, because of extra random stuff going on
+
+	//check for panel's config
+	if fi, err := os.Stat(oldPanelConfig); err == nil && !fi.IsDir() {
 		migratePanel()
 	}
 
-	if config.GetBool("daemon.enable") {
+	if fi, err := os.Stat(oldDaemonConfig); err == nil && !fi.IsDir() {
 		migrateDaemon()
 	}
 }
@@ -93,7 +98,6 @@ func migratePanel() {
 	}
 
 	err = newDbConn.Transaction(func(tx *gorm.DB) error {
-
 		connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", oldConfig.Mysql.Username, oldConfig.Mysql.Password, oldConfig.Mysql.Host, oldConfig.Mysql.Port, oldConfig.Mysql.Database)
 		oldDb, err = gorm.Open(mysql.Open(connString))
 		if err != nil {
@@ -101,6 +105,7 @@ func migratePanel() {
 			os.Exit(1)
 			return err
 		}
+
 		//migrate users
 		var users []legacy.User
 		err = oldDb.Find(&users).Error
@@ -111,9 +116,8 @@ func migratePanel() {
 		}
 
 		for _, v := range users {
-
 			newUser := &models.User{
-				ID:             v.ID,
+				ID:             v.Id,
 				Username:       v.Username,
 				Email:          v.Email,
 				HashedPassword: v.Password,
@@ -166,11 +170,10 @@ func migratePanel() {
 			newServer := &models.Server{
 				Name:       v.Name,
 				Identifier: v.Hash.String(),
-				NodeID:     uint(v.Node),
-				Node:       models.Node{},
-				IP:         "?",
+				NodeID:     v.Node,
+				IP:         "0.0.0.0",
 				Port:       0,
-				Type:       "migrated",
+				Type:       "generic",
 			}
 			err = newDb.Save(newServer).Error
 			if err != nil {
@@ -203,6 +206,7 @@ func migratePanel() {
 	//migrate permissions
 
 	//migrate clients
+	//we will not be migrating oauth clients, because they should be updated with the new API instead
 
 	newDb.Commit()
 }
