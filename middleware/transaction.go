@@ -38,10 +38,10 @@ func HasTransaction(c *gin.Context) {
 
 	c.Next()
 
-	if c.Errors != nil {
+	isBadStatus := c.Writer.Status() >= 400
+	if c.Errors != nil || isBadStatus {
 		db.Rollback()
 	} else {
 		db.Commit()
 	}
-
 }

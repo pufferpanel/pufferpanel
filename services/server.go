@@ -89,6 +89,7 @@ func (ss *Server) Update(model *models.Server) error {
 }
 
 // Delete a server by ID, This is _not_ ran in a transaction automatically to allow for more flexibility
+// Callers should set the DB to be a transaction if needed
 // (Because Gorm V2 has removed `RollbackUnlessCommitted1)
 func (ss *Server) Delete(id string) error {
 	model := &models.Server{
@@ -109,6 +110,7 @@ func (ss *Server) Delete(id string) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
