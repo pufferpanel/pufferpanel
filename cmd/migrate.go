@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/jinzhu/gorm"
 	"github.com/otiai10/copy"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
@@ -13,6 +12,8 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/spf13/cobra"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -91,115 +92,112 @@ func migratePanel() {
 		return
 	}
 
-	newDb = newDbConn.Begin()
-	defer func() {
-		newDb.RollbackUnlessCommitted()
-		_ = newDbConn.Close()
-	}()
+	err = newDbConn.Transaction(func(tx *gorm.DB) error {
 
-	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", oldConfig.Mysql.Username, oldConfig.Mysql.Password, oldConfig.Mysql.Host, oldConfig.Mysql.Port, oldConfig.Mysql.Database)
-	oldDb, err = gorm.Open("mysql", connString)
-	if err != nil {
-		fmt.Printf("Error connection to old database: %s\n", err)
-		os.Exit(1)
-		return
-	}
-
-	defer func() {
-		_ = oldDb.Close()
-	}()
-
-	//migrate users
-	var users []legacy.User
-	err = oldDb.Find(&users).Error
-	if err != nil {
-		fmt.Printf("Error finding old users: %s\n", err)
-		os.Exit(1)
-		return
-	}
-
-	for _, v := range users {
-		newUser := &models.User{
-			ID:             v.ID,
-			Username:       v.Username,
-			Email:          v.Email,
-			HashedPassword: v.Password,
-		}
-		err = newDb.Save(newUser).Error
+		connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", oldConfig.Mysql.Username, oldConfig.Mysql.Password, oldConfig.Mysql.Host, oldConfig.Mysql.Port, oldConfig.Mysql.Database)
+		oldDb, err = gorm.Open(mysql.Open(connString))
 		if err != nil {
-			fmt.Printf("Error saving new user: %s\n", err)
+			fmt.Printf("Error connection to old database: %s\n", err)
 			os.Exit(1)
-			return
+			return err
 		}
-	}
+		//migrate users
+		var users []legacy.User
+		err = oldDb.Find(&users).Error
+		if err != nil {
+			fmt.Printf("Error finding old users: %s\n", err)
+			os.Exit(1)
+			return err
+		}
 
-	//migrate nodes
-	var nodes []legacy.Node
-	err = oldDb.Find(&nodes).Error
+		for _, v := range users {
+
+			newUser := &models.User{
+				ID:             v.ID,
+				Username:       v.Username,
+				Email:          v.Email,
+				HashedPassword: v.Password,
+			}
+			err = newDb.Save(newUser).Error
+			if err != nil {
+				fmt.Printf("Error saving new user: %s\n", err)
+				os.Exit(1)
+				return err
+			}
+		}
+
+		//migrate nodes
+		var nodes []legacy.Node
+		err = oldDb.Find(&nodes).Error
+		if err != nil {
+			fmt.Printf("Error finding old nodes: %s\n", err)
+			os.Exit(1)
+			return err
+		}
+
+		for _, v := range nodes {
+			newNode := &models.Node{
+				Name:        v.Name,
+				PublicHost:  v.FQDN,
+				PrivateHost: v.Ip,
+				PublicPort:  v.Port,
+				PrivatePort: v.Port,
+				SFTPPort:    v.Sftp,
+				Secret:      v.DaemonSecret,
+			}
+			err = newDb.Save(newNode).Error
+			if err != nil {
+				fmt.Printf("Error saving new node: %s\n", err)
+				os.Exit(1)
+				return err
+			}
+		}
+
+		//migrate servers
+		var servers []legacy.Server
+		err = oldDb.Find(&servers).Error
+		if err != nil {
+			fmt.Printf("Error finding old nodes: %s\n", err)
+			os.Exit(1)
+			return err
+		}
+
+		for _, v := range servers {
+			newServer := &models.Server{
+				Name:       v.Name,
+				Identifier: v.Hash.String(),
+				NodeID:     uint(v.Node),
+				Node:       models.Node{},
+				IP:         "?",
+				Port:       0,
+				Type:       "migrated",
+			}
+			err = newDb.Save(newServer).Error
+			if err != nil {
+				fmt.Printf("Error saving new server: %s\n", err)
+				os.Exit(1)
+				return err
+			}
+
+			//servers in the old system used an owner column, new one does not, we use oauth
+			//so.... we need to grant them
+			perms := &models.Permissions{
+				ServerIdentifier: &newServer.Identifier,
+				UserId:           &v.OwnerId,
+			}
+			perms.SetDefaults()
+
+			err = newDb.Save(perms).Error
+			if err != nil {
+				fmt.Printf("Error saving new permission: %s\n", err)
+				os.Exit(1)
+				return err
+			}
+		}
+		return nil
+	})
 	if err != nil {
-		fmt.Printf("Error finding old nodes: %s\n", err)
-		os.Exit(1)
 		return
-	}
-
-	for _, v := range nodes {
-		newNode := &models.Node{
-			Name:        v.Name,
-			PublicHost:  v.FQDN,
-			PrivateHost: v.Ip,
-			PublicPort:  v.Port,
-			PrivatePort: v.Port,
-			SFTPPort:    v.Sftp,
-			Secret:      v.DaemonSecret,
-		}
-		err = newDb.Save(newNode).Error
-		if err != nil {
-			fmt.Printf("Error saving new node: %s\n", err)
-			os.Exit(1)
-			return
-		}
-	}
-
-	//migrate servers
-	var servers []legacy.Server
-	err = oldDb.Find(&servers).Error
-	if err != nil {
-		fmt.Printf("Error finding old nodes: %s\n", err)
-		os.Exit(1)
-		return
-	}
-
-	for _, v := range servers {
-		newServer := &models.Server{
-			Name:       v.Name,
-			Identifier: v.Hash.String(),
-			NodeID:     v.Node,
-			Node:       models.Node{},
-			IP:         "?",
-			Port:       0,
-			Type:       "migrated",
-		}
-		err = newDb.Save(newServer).Error
-		if err != nil {
-			fmt.Printf("Error saving new server: %s\n", err)
-			os.Exit(1)
-			return
-		}
-
-		//servers in the old system used an owner column, new one does not, we use oauth
-		//so.... we need to grant them
-		perms := &models.Permissions{
-			ServerIdentifier: &newServer.Identifier,
-			UserId: &v.OwnerId,
-		}
-		perms.SetDefaults()
-
-		err = newDb.Save(perms).Error
-		if err != nil {
-			fmt.Printf("Error saving new permission: %s\n", err)
-			os.Exit(1)
-			return
-		}
 	}
 
 	//migrate permissions

@@ -17,6 +17,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -69,7 +70,7 @@ func (c *Client) IsValid() (err error) {
 	return
 }
 
-func (c *Client) BeforeSave() (err error) {
+func (c *Client) BeforeSave(*gorm.DB) (err error) {
 	err = c.IsValid()
 
 	scopes := make([]string, 0)
@@ -82,7 +83,7 @@ func (c *Client) BeforeSave() (err error) {
 	return
 }
 
-func (c *Client) AfterFind() (err error) {
+func (c *Client) AfterFind(*gorm.DB) (err error) {
 	if c.RawScopes == "" {
 		c.Scopes = make([]pufferpanel.Scope, 0)
 		return

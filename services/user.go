@@ -16,13 +16,13 @@ package services
 import (
 	"bytes"
 	"encoding/base64"
-	"github.com/jinzhu/gorm"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"image"
 	"image/png"
 	"strings"
@@ -65,11 +65,11 @@ func (us *User) Login(email string, password string) (user *models.User, session
 
 	err = us.DB.Where(user).First(user).Error
 
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound != err {
 		return
 	}
 
-	if user.ID == 0 || gorm.IsRecordNotFoundError(err) {
+	if user.ID == 0 || gorm.ErrRecordNotFound == err {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
@@ -95,11 +95,11 @@ func (us *User) LoginOtp(email string, token string) (user *models.User, session
 
 	err = us.DB.Where(user).First(user).Error
 
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
+	if err != nil && gorm.ErrRecordNotFound != err {
 		return
 	}
 
-	if user.ID == 0 || gorm.IsRecordNotFoundError(err) {
+	if user.ID == 0 || gorm.ErrRecordNotFound == err {
 		err = pufferpanel.ErrInvalidCredentials
 		return
 	}
@@ -135,18 +135,12 @@ func (us *User) Update(model *models.User) error {
 }
 
 func (us *User) Delete(model *models.User) (err error) {
-	var trans = us.DB.Begin()
-	defer trans.RollbackUnlessCommitted()
-
-	trans.Delete(models.Permissions{}, "user_id = ?", model.ID)
-	trans.Delete(models.Client{}, "user_id = ?", model.ID)
-
-	err = trans.Delete(model).Error
-	if err != nil {
-		return
-	}
-
-	return trans.Commit().Error
+	return us.DB.Transaction(func(tx *gorm.DB) error {
+		us.DB.Delete(models.Permissions{}, "user_id = ?", model.ID)
+		us.DB.Delete(models.Client{}, "user_id = ?", model.ID)
+		us.DB.Delete(models.User{}, "id = ?", model.ID)
+		return nil
+	})
 }
 
 func (us *User) Create(user *models.User) error {
@@ -185,7 +179,7 @@ func (us *User) StartOtpEnroll(userId uint) (secret string, img string, err erro
 
 	var key *otp.Key
 	key, err = totp.Generate(totp.GenerateOpts{
-		Issuer: config.GetString("panel.settings.companyName"),
+		Issuer:      config.GetString("panel.settings.companyName"),
 		AccountName: user.Email,
 	})
 	if err != nil {
@@ -241,7 +235,7 @@ func (us *User) DisableOtp(userId uint, token string) error {
 	return us.Update(user)
 }
 
-func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, uint, error) {
+func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, int64, error) {
 	users := &models.Users{}
 
 	query := us.DB
@@ -257,14 +251,14 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 		query = query.Where("email LIKE ?", emailFilter)
 	}
 
-	var count uint
+	var count int64
 	err := query.Model(users).Count(&count).Error
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	res := query.Offset((page - 1) * pageSize).Limit(pageSize).Find(users)
+	res := query.Offset(int((page - 1) * pageSize)).Limit(int(pageSize)).Find(users)
 
 	return users, count, res.Error
 }

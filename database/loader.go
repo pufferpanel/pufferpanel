@@ -14,17 +14,23 @@
 package database
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mssql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"errors"
+	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
+	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 var dbConn *gorm.DB
@@ -62,22 +68,49 @@ func openConnection() (err error) {
 		connString = addConnectionSetting(connString, "_foreign_keys=1")
 	}
 
-	//attempt to open database connection to validate
-	dbConn, err = gorm.Open(dialect, connString)
+	var dialector gorm.Dialector
+	switch dialect {
+	case "sqlite3":
+		dialector = sqlite.Open(connString)
+	case "mysql":
+		dialector = mysql.Open(connString)
+	case "postgresql":
+		dialector = postgres.Open(connString)
+	case "sqlserver":
+		dialector = sqlserver.Open(connString)
+	default:
+		return errors.New(fmt.Sprintf("unknown dialect %s", dialect))
+	}
+
+	gormConfig := gorm.Config{}
+	if config.GetBool("panel.database.log") {
+		logging.Info().Printf("Database logging enabled")
+		newLogger := logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+			logger.Config{
+				SlowThreshold:             time.Second, // Slow SQL threshold
+				LogLevel:                  logger.Info, // Log level
+				IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+				Colorful:                  false,       // Disable color
+			},
+		)
+		gormConfig.Logger = newLogger
+	}
+
+	// Sqlite doesn't implement constraints see  https://github.com/go-gorm/gorm/wiki/GORM-V2-Release-Note-Draft#all-new-migratolease-Note-Draft#all-new-migrator
+	gormConfig.DisableForeignKeyConstraintWhenMigrating = dialect == "sqlite3"
+
+	dbConn, err = gorm.Open(dialector, &gormConfig)
 
 	if err != nil {
 		dbConn = nil
 		logging.Error().Printf("Error connecting to database: %s", err)
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
-
-	if config.GetBool("panel.database.log") {
-		logging.Info().Printf("Database logging enabled")
-		dbConn.LogMode(true)
+	if err := migrateModels(); err != nil {
+		return err
 	}
-
-	migrateModels()
-	return
+	return migrate(dbConn)
 }
 
 func GetConnection() (*gorm.DB, error) {
@@ -90,10 +123,11 @@ func GetConnection() (*gorm.DB, error) {
 }
 
 func Close() {
-	pufferpanel.Close(dbConn)
+	sqlDB, _ := dbConn.DB()
+	pufferpanel.Close(sqlDB)
 }
 
-func migrateModels() {
+func migrateModels() error {
 	dbObjects := []interface{}{
 		&models.Node{},
 		&models.Server{},
@@ -106,7 +140,9 @@ func migrateModels() {
 	}
 
 	for _, v := range dbObjects {
-		dbConn.AutoMigrate(v)
+		if err := dbConn.AutoMigrate(v); err != nil {
+			return err
+		}
 	}
 
 	dialect := config.GetString("panel.database.dialect")
@@ -118,13 +154,16 @@ func migrateModels() {
 		} else {
 			logging.Debug().Printf("%v\n", res.Value)
 		}*/
-		return
+		return nil
 	}
 
-	dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT")
-	dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-	dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE")
-	dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE")
+	// Foreign keys are automatic now
+	//dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT")
+	//dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	//dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE")
+	//dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE")
+
+	return migrate(dbConn)
 }
 
 func addConnectionSetting(connString, setting string) string {
@@ -143,6 +182,7 @@ func addConnectionSetting(connString, setting string) string {
 }
 
 type databaseConnector struct{}
+
 func (*databaseConnector) GetConnection() (*gorm.DB, error) {
 	return GetConnection()
 }

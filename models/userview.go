@@ -63,12 +63,12 @@ func (model *UserView) CopyToModel(newModel *User) {
 func (model *UserView) Valid(allowEmpty bool) error {
 
 	userNameErr := model.UserNameValid(allowEmpty)
-	if(userNameErr != nil){
+	if userNameErr != nil {
 		return userNameErr
 	}
 
 	mailErr := model.EmailValid(allowEmpty)
-	if(mailErr != nil){
+	if mailErr != nil {
 		return mailErr
 	}
 
@@ -97,7 +97,6 @@ func (model *UserView) UserNameValid(allowEmpty bool) error {
 
 	return nil
 }
-
 
 func (model *UserView) EmailValid(allowEmpty bool) error {
 	validate := validator.New()

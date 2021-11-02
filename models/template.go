@@ -16,6 +16,7 @@ package models
 import (
 	"encoding/json"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -23,7 +24,7 @@ import (
 type Template struct {
 	pufferpanel.Template `gorm:"-"`
 
-	Name     string `gorm:"type:varchar(100);PRIMARY_KEY" json:"name"`
+	Name     string `gorm:"type:varchar(100);primaryKey" json:"name"`
 	RawValue string `gorm:"type:text" json:"-"`
 
 	Readme string `gorm:"type:text" json:"readme,omitempty"`
@@ -31,7 +32,7 @@ type Template struct {
 
 type Templates []*Template
 
-func (t *Template) AfterFind() error {
+func (t *Template) AfterFind(*gorm.DB) error {
 	err := json.NewDecoder(strings.NewReader(t.RawValue)).Decode(&t.Template)
 	if err != nil {
 		return err
@@ -45,7 +46,7 @@ func (t *Template) AfterFind() error {
 	return nil
 }
 
-func (t *Template) BeforeSave() error {
+func (t *Template) BeforeSave(*gorm.DB) error {
 	if t.Execution.LegacyRun != "" {
 		t.Execution.Command = strings.TrimSpace(t.Execution.LegacyRun + " " + strings.Join(t.Execution.LegacyArguments, " "))
 		t.Execution.LegacyRun = ""

@@ -14,10 +14,9 @@
 package services
 
 import (
-	"database/sql"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	uuid2 "github.com/satori/go.uuid"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -34,7 +33,7 @@ type ServerSearch struct {
 	Page     uint
 }
 
-func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total uint, err error) {
+func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total int64, err error) {
 	records = &models.Servers{}
 
 	query := ss.DB
@@ -63,7 +62,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, 
 		return nil, 0, err
 	}
 
-	err = query.Preload("Node").Offset((searchCriteria.Page - 1) * searchCriteria.PageSize).Limit(searchCriteria.PageSize).Order("servers.name").Find(records).Error
+	err = query.Preload("Node").Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(records).Error
 
 	return
 }
@@ -89,28 +88,19 @@ func (ss *Server) Update(model *models.Server) error {
 	return res.Error
 }
 
+// Delete a server by ID, This is _not_ ran in a transaction automatically to allow for more flexibility
+// (Because Gorm V2 has removed `RollbackUnlessCommitted1)
 func (ss *Server) Delete(id string) error {
-	//if we are already in a transaction, use the existing transaction
-	inTrans := false
-	var trans *gorm.DB
-	if _, ok := ss.DB.CommonDB().(*sql.Tx); ok {
-		trans = ss.DB
-		inTrans = true
-	} else {
-		trans = ss.DB.Begin()
-		defer trans.RollbackUnlessCommitted()
-	}
-
 	model := &models.Server{
 		Identifier: id,
 	}
 
-	err := trans.Delete(models.Permissions{}, "server_identifier = ?", id).Error
+	err := ss.DB.Delete(models.Permissions{}, "server_identifier = ?", id).Error
 	if err != nil {
 		return err
 	}
 
-	err = trans.Delete(models.Client{}, "server_id = ?", id).Error
+	err = ss.DB.Delete(models.Client{}, "server_id = ?", id).Error
 	if err != nil {
 		return err
 	}
@@ -119,12 +109,7 @@ func (ss *Server) Delete(id string) error {
 	if err != nil {
 		return err
 	}
-
-	if inTrans {
-		return nil
-	} else {
-		return trans.Commit().Error
-	}
+	return nil
 }
 
 func (ss *Server) Create(model *models.Server) (err error) {

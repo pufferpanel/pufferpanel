@@ -168,14 +168,14 @@ func panel(ch chan error) {
 			if len(hostParts) == 2 {
 				port, err := strconv.Atoi(hostParts[1])
 				if err == nil {
-					create.PublicPort = uint(port)
-					create.PrivatePort = uint(port)
+					create.PublicPort = uint16(port)
+					create.PrivatePort = uint16(port)
 				}
 			}
 			if len(sftpParts) == 2 {
 				port, err := strconv.Atoi(sftpParts[1])
 				if err == nil {
-					create.SFTPPort = uint(port)
+					create.SFTPPort = uint16(port)
 				}
 			}
 

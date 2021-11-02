@@ -38,5 +38,10 @@ func HasTransaction(c *gin.Context) {
 
 	c.Next()
 
-	GetDatabase(c).RollbackUnlessCommitted()
+	if c.Errors != nil {
+		db.Rollback()
+	} else {
+		db.Commit()
+	}
+
 }

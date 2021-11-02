@@ -14,8 +14,8 @@
 package services
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 )
 
 type Permission struct {
@@ -52,7 +52,7 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*model
 
 	err := ps.DB.Preload("User").Preload("Server").Where(permissions).First(permissions).Error
 
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && err == gorm.ErrRecordNotFound {
 		return permissions, nil
 	}
 

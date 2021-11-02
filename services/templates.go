@@ -15,9 +15,9 @@ package services
 
 import (
 	"encoding/json"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -58,7 +58,7 @@ func (t *Template) GetAll() (*models.Templates, error) {
 
 func (t *Template) Get(name string) (*models.Template, error) {
 	template := &models.Template{
-		Name:  name,
+		Name: name,
 	}
 	err := t.DB.Find(&template).Error
 	if err != nil {
@@ -66,7 +66,6 @@ func (t *Template) Get(name string) (*models.Template, error) {
 	}
 	return template, err
 }
-
 
 func (t *Template) Save(template *models.Template) error {
 	return t.DB.Save(template).Error
@@ -117,7 +116,7 @@ func (t *Template) ImportTemplate(name string, template, readme io.Reader) error
 
 func (t *Template) Delete(name string) error {
 	model := &models.Template{
-		Name:     name,
+		Name: name,
 	}
 
 	res := t.DB.Delete(model)

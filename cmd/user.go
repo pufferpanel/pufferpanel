@@ -17,13 +17,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/jinzhu/gorm"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 )
 
 var AddUserCmd = &cobra.Command{
@@ -137,45 +137,42 @@ func addUser(cmd *cobra.Command, args []string) {
 	}
 	defer database.Close()
 
-	db = db.Begin()
-	defer db.RollbackUnlessCommitted()
+	if err := db.Transaction(func(tx *gorm.DB) error {
+		user := &models.User{
+			Username:       answers.Username,
+			Email:          answers.Email,
+			HashedPassword: "",
+		}
+		err = user.SetPassword(answers.Password)
+		if err != nil {
+			fmt.Printf("Failed to set password: %s\n", err.Error())
+			return err
+		}
 
-	user := &models.User{
-		Username:       answers.Username,
-		Email:          answers.Email,
-		HashedPassword: "",
-	}
-	err = user.SetPassword(answers.Password)
-	if err != nil {
-		fmt.Printf("Failed to set password: %s\n", err.Error())
-		return
-	}
+		us := &services.User{DB: db}
+		err = us.Create(user)
+		if err != nil {
+			fmt.Printf("Failed to create user: %s\n", err.Error())
+			return err
+		}
 
-	us := &services.User{DB: db}
-	err = us.Create(user)
-	if err != nil {
-		fmt.Printf("Failed to create user: %s\n", err.Error())
-		return
-	}
+		ps := &services.Permission{DB: db}
+		perms, err := ps.GetForUserAndServer(user.ID, nil)
+		if err != nil {
+			fmt.Printf("Failed to get permissions: %s\n", err.Error())
+			return err
+		}
+		perms.Admin = answers.Admin
+		perms.ViewServer = true
 
-	ps := &services.Permission{DB: db}
-	perms, err := ps.GetForUserAndServer(user.ID, nil)
-	if err != nil {
-		fmt.Printf("Failed to get permissions: %s\n", err.Error())
-		return
-	}
-	perms.Admin = answers.Admin
-	perms.ViewServer = true
+		err = ps.UpdatePermissions(perms)
+		if err != nil {
+			fmt.Printf("Failed to apply permissions: %s\n", err.Error())
+			return err
+		}
 
-	err = ps.UpdatePermissions(perms)
-	if err != nil {
-		fmt.Printf("Failed to apply permissions: %s\n", err.Error())
-		return
-	}
-
-	err = db.Commit().Error
-	if err != nil {
-		fmt.Printf("Failed to save changes: %s\n", err.Error())
+		return nil
+	}); err != nil {
 		return
 	}
 
@@ -266,7 +263,7 @@ func editUser(cmd *cobra.Command, args []string) {
 	us := &services.User{DB: db}
 
 	user, err := us.Get(username)
-	if err != nil && gorm.IsRecordNotFoundError(err) {
+	if err != nil && err == gorm.ErrRecordNotFound {
 		fmt.Printf("No user with username '%s'\n", username)
 		return
 	} else if err != nil {
