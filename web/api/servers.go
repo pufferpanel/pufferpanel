@@ -769,10 +769,18 @@ func createOAuth2Client(c *gin.Context) {
 	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
+	var request models.Client
+	err := c.BindJSON(&request)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
 	client := &models.Client{
-		ClientId: uuid.NewV4().String(),
-		UserId:   user.ID,
-		ServerId: server.Identifier,
+		ClientId:    uuid.NewV4().String(),
+		UserId:      user.ID,
+		ServerId:    server.Identifier,
+		Name:        request.Name,
+		Description: request.Description,
 	}
 
 	secret, err := pufferpanel.GenerateRandomString(36)
@@ -790,11 +798,7 @@ func createOAuth2Client(c *gin.Context) {
 		return
 	}
 
-	type createdClient struct {
-		ClientId     string `json:"id"`
-		ClientSecret string `json:"secret"`
-	}
-	c.JSON(http.StatusOK, createdClient{
+	c.JSON(http.StatusOK, models.CreatedClient{
 		ClientId:     client.ClientId,
 		ClientSecret: secret,
 	})
