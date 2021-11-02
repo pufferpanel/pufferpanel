@@ -77,7 +77,7 @@
     },
     "alterfile": {
       "ProcessorName": "Cambiar archivo",
-      "regex": "Treat search as RegEx",
+      "regex": "Tratar búsqueda como RegEx",
       "search": "Búsqueda de texto",
       "replace": "Reemplazar con"
     },
