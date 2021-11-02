@@ -111,6 +111,9 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		//because we use the auto-delete, we don't manually stop the container
 		//c, _ := d.getClient()
 		//err = c.ContainerStop(context.Background(), d.ContainerId, nil)
+
+		// The container hasn't actually been removed yet, we're sending an explicit remove to wait for it finish
+		_ = dockerClient.ContainerRemove(ctx, d.ContainerId, types.ContainerRemoveOptions{})
 		d.Wait.Done()
 		if err != nil {
 			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
