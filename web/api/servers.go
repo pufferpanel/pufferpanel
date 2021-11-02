@@ -747,6 +747,16 @@ func getAvailableOauth2Perms(c *gin.Context) {
 	c.JSON(http.StatusOK, perms.ToScopes())
 }*/
 
+// @Summary Gets server-level OAuth2 credentials for the logged in user
+// @Accept json
+// @Produce json
+// @Success 200 {object} []models.Client
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Router /api/servers/{id}/oauth2 [get]
 func getOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
@@ -762,6 +772,17 @@ func getOAuth2Clients(c *gin.Context) {
 	c.JSON(http.StatusOK, clients)
 }
 
+// @Summary Creates server-level OAuth2 credentials for the logged in user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.CreatedClient
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Param body body models.Client false "Client to create"
+// @Router /api/servers/{id}/oauth2 [post]
 func createOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
@@ -804,6 +825,17 @@ func createOAuth2Client(c *gin.Context) {
 	})
 }
 
+// @Summary Deletes server-level OAuth2 credential
+// @Accept json
+// @Produce json
+// @Success 204 {object} response.Empty
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Server ID"
+// @Param clientId path string true "Client ID"
+// @Router /api/servers/{id}/oauth2/{clientId} [delete]
 func deleteOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
