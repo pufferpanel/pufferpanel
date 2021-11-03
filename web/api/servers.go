@@ -736,25 +736,40 @@ func removeServerUser(c *gin.Context) {
 // @Router /api/servers/{id}/name [post]
 func renameServer(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
-	ss := &services.Server{DB: db}
-	serverId := c.Param("serverId")
-	if serverId == "" {
+
+	t, exist := c.Get("server")
+	if !exist {
+		logging.Error().Printf("getting server for rename with err `%s`", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
+
+	server, ok := t.(*models.Server)
+	if !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
 	name := c.Param("name")
 	if name == "" {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	server, err := ss.Get(serverId)
-	if err != nil {
+	t, exist = c.Get("db")
+	if !exist {
 		logging.Error().Printf("getting server for rename with err `%s`", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
+
+	db, ok := t.(*gorm.DB)
+	if !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+	ss := &services.Server{DB: db}
+
 	server.Name = name
 	err = ss.Update(server)
 	if err != nil {
