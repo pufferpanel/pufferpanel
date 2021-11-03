@@ -778,7 +778,7 @@ func renameServer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /*// @Summary Gets available OAuth2 scopes for the calling user
