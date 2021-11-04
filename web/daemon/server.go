@@ -65,7 +65,7 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 		l.DELETE("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
 		l.OPTIONS("/:id/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
 
-		l.POST("/:id/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		//l.POST("/:id/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
 		l.OPTIONS("/:id/tasks/:taskId/run", response.CreateOptions("POST"))
 
 		l.POST("/:id/reload", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
@@ -252,6 +252,10 @@ func CreateServer(c *gin.Context) {
 
 	if err := programs.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
+	} else if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
+	} else if err := prg.Scheduler.Start(); err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
 	} else {
 		c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
 	}
@@ -349,21 +353,7 @@ func CreateServerTask(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-
-	id, err := prg.NewTask(task)
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-	} else {
-		c.JSON(http.StatusOK, gin.H{"id": id})
-	}
-}
-
-func RunServerTask(c *gin.Context) {
-	item, _ := c.Get("server")
-	prg := item.(*programs.Program)
-
-	taskId := c.Param("taskId")
-
-	err := prg.RunTask(taskId)
+	err = prg.Scheduler.Add(task)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -374,15 +364,16 @@ func EditServerTask(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
-	taskId := c.Param("taskId")
-
 	var task pufferpanel.Task
 	err := c.ShouldBindJSON(&task)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-
-	err = prg.EditTask(taskId, task)
+	err = prg.Scheduler.Remove(task.Name)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	err = prg.Scheduler.Add(task)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -393,9 +384,9 @@ func DeleteServerTask(c *gin.Context) {
 	item, _ := c.Get("server")
 	prg := item.(*programs.Program)
 
-	taskId := c.Param("taskId")
+	taskName := c.Param("taskName")
 
-	err := prg.RemoveTask(taskId)
+	err := prg.Scheduler.Remove(taskName)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 	} else {
 		c.Status(http.StatusNoContent)
@@ -513,7 +504,6 @@ func EditServerAdmin(c *gin.Context) {
 		return
 	}
 
-	err = programs.RestartScheduler(item.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
