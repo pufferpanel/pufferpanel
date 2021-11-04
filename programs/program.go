@@ -19,14 +19,12 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
-	"github.com/go-co-op/gocron"
 	"github.com/mholt/archiver"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
-	"github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"os"
@@ -41,7 +39,7 @@ type Program struct {
 
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
-	Scheduler          *gocron.Scheduler       `json:"-"`
+	Scheduler          Scheduler               `json:"-"`
 }
 
 var queue *list.List
@@ -116,7 +114,7 @@ func (p *Program) DataToMap() map[string]interface{} {
 }
 
 func CreateProgram() *Program {
-	return &Program{
+	p := &Program{
 		Server: pufferpanel.Server{
 			Execution: pufferpanel.Execution{
 				Disabled:                false,
@@ -135,6 +133,8 @@ func CreateProgram() *Program {
 			Uninstallation: make([]interface{}, 0),
 		},
 	}
+	p.Scheduler = NewScheduler(p)
+	return p
 }
 
 //Starts the program.
@@ -276,6 +276,11 @@ func (p *Program) Destroy() (err error) {
 		logging.Error().Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 	}
+	err = p.Scheduler.Rebuild()
+	if err != nil {
+		logging.Error().Printf("Error uninstalling server: %s", err)
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+	}
 	return
 }
 
@@ -289,7 +294,7 @@ func (p *Program) Install() (err error) {
 	running, err := p.IsRunning()
 	if err != nil {
 		logging.Error().Printf("Error checking server status: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n" + err.Error() + "\n")
+		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n"+err.Error()+"\n")
 		return
 	}
 
@@ -408,55 +413,6 @@ func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bo
 	}
 
 	err = Save(p.Id())
-	return
-}
-
-func (p *Program) NewTask(task pufferpanel.Task) (id string, err error) {
-	id = uuid.NewV4().String()[:8]
-	p.Tasks[id] = task
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
-	return
-}
-
-func (p *Program) RunTask(taskId string) (err error) {
-	if _, ok := p.Tasks[taskId]; !ok {
-		return pufferpanel.ErrTaskNotFound
-	}
-
-	return ExecuteTask(p.Id(), taskId)
-}
-
-func (p *Program) EditTask(id string, task pufferpanel.Task) (err error) {
-	if _, ok := p.Tasks[id]; !ok {
-		return pufferpanel.ErrTaskNotFound
-	}
-
-	p.Tasks[id] = task
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
-	return
-}
-
-func (p *Program) RemoveTask(id string) (err error) {
-	delete(p.Tasks, id)
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
 	return
 }
 
@@ -641,4 +597,29 @@ func (p *Program) Extract(source, destination string) error {
 	}
 
 	return archiver.Unarchive(sourceFile, destinationFile)
+}
+
+func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
+	ops := task.Operations
+	if len(ops) > 0 {
+		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
+		var process operations.OperationProcess
+		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+
+		err = process.Run(p.RunningEnvironment)
+		if err != nil {
+			logging.Error().Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
+	}
+	return
 }
