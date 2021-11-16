@@ -123,8 +123,10 @@ func GetConnection() (*gorm.DB, error) {
 }
 
 func Close() {
-	sqlDB, _ := dbConn.DB()
-	pufferpanel.Close(sqlDB)
+	if dbConn != nil {
+		sqlDB, _ := dbConn.DB()
+		pufferpanel.Close(sqlDB)
+	}
 }
 
 func migrateModels() error {

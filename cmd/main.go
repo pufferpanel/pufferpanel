@@ -44,14 +44,29 @@ var rootCmd = &cobra.Command{
 	Short: "Game Server Management Panel",
 }
 
+var workDir string
+
 func init() {
+	rootCmd.PersistentFlags().StringVar(&workDir, "workDir", "", "Set working directory")
+
+	cobra.OnInitialize(setWorkDir)
+
 	rootCmd.AddCommand(
 		runCmd,
 		versionCmd,
 		userCmd,
 		shutdownCmd,
 		//v1migrateCmd,
-		)
+	)
+}
+
+func setWorkDir() {
+	if workDir != "" {
+		err := os.Chdir(workDir)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func Execute() {

@@ -15,3 +15,4 @@ client/dist/
 client/node_modules/
 web/swagger/swagger.json
 web/swagger/swagger.yaml
+.vs/
