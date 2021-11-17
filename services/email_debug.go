@@ -18,6 +18,6 @@ import (
 )
 
 func SendEmailViaDebug(to, subject, body string, async bool) error {
-	logging.Debug().Println("DEBUG EMAIL TO " + to + "\n" + subject + "\n" + body)
+	logging.Debug.Println("DEBUG EMAIL TO " + to + "\n" + subject + "\n" + body)
 	return nil
 }

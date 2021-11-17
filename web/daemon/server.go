@@ -150,7 +150,7 @@ func StartServer(c *gin.Context) {
 		go func() {
 			err := server.Start()
 			if err != nil {
-				logging.Error().Printf("Error starting server %s: %s", server.Id(), err)
+				logging.Error.Printf("Error starting server %s: %s", server.Id(), err)
 			}
 		}()
 		c.Status(http.StatusAccepted)
@@ -243,7 +243,7 @@ func CreateServer(c *gin.Context) {
 	err := json.NewDecoder(c.Request.Body).Decode(prg)
 
 	if err != nil {
-		logging.Error().Printf("Error decoding JSON body: %s", err)
+		logging.Error.Printf("Error decoding JSON body: %s", err)
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}

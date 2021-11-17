@@ -37,7 +37,7 @@ func (m Move) Run(env pufferpanel.Environment) error {
 	}
 
 	for k, v := range result {
-		logging.Info().Printf("Moving file from %s to %s", source, target)
+		logging.Info.Printf("Moving file from %s to %s", source, target)
 		env.DisplayToConsole(true, "Moving file from %s to %s\n", m.SourceFile, m.TargetFile)
 		err := os.Rename(k, v)
 		if err != nil {
@@ -54,16 +54,16 @@ func validateMove(source string, target string) (result map[string]string, valid
 
 	if err != nil {
 		if os.IsNotExist(err) && len(sourceFiles) > 1 {
-			logging.Error().Printf("Target folder does not exist")
+			logging.Error.Printf("Target folder does not exist")
 			valid = false
 			return
 		} else if !os.IsNotExist(err) {
 			valid = false
-			logging.Error().Printf("Error reading target file: %s", err)
+			logging.Error.Printf("Error reading target file: %s", err)
 			return
 		}
 	} else if info.IsDir() && len(sourceFiles) > 1 {
-		logging.Error().Printf("Cannot move multiple files to single file target")
+		logging.Error.Printf("Cannot move multiple files to single file target")
 		valid = false
 		return
 	}

@@ -32,14 +32,14 @@ import (
 func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes []pufferpanel.Scope) {
 	defer func() {
 		if err := recover(); err != nil {
-			logging.Error().Printf("Error with websocket connection for server %s: %s\n%s", server.Id(), err, debug.Stack())
+			logging.Error.Printf("Error with websocket connection for server %s: %s\n%s", server.Id(), err, debug.Stack())
 		}
 	}()
 
 	for {
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
-			logging.Error().Printf("error on reading from websocket: %s", err)
+			logging.Error.Printf("error on reading from websocket: %s", err)
 			return
 		}
 		if msgType != websocket.TextMessage {
@@ -49,7 +49,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 
 		err = json.Unmarshal(data, &mapping)
 		if err != nil {
-			logging.Error().Printf("error on decoding websocket message: %s", err)
+			logging.Error.Printf("error on decoding websocket message: %s", err)
 			continue
 		}
 
@@ -187,7 +187,7 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 				_ = conn.WriteJSON(map[string]string{"error": "unknown command"})
 			}
 		} else {
-			logging.Error().Printf("message type is not a string, but was %s", reflect.TypeOf(messageType))
+			logging.Error.Printf("message type is not a string, but was %s", reflect.TypeOf(messageType))
 		}
 	}
 }

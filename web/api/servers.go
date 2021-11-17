@@ -346,7 +346,7 @@ func createServer(c *gin.Context) {
 	if nodeResponse.StatusCode != http.StatusOK {
 		buf := new(bytes.Buffer)
 		_, _ = buf.ReadFrom(nodeResponse.Body)
-		logging.Error().Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, buf.String())
+		logging.Error.Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, buf.String())
 		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
 		return
 	}
@@ -363,7 +363,7 @@ func createServer(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Error().Printf("Error sending email: %s", err)
+			logging.Error.Printf("Error sending email: %s", err)
 		}
 	}
 
@@ -473,7 +473,7 @@ func deleteServer(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Error().Printf("Error sending email: %s\n", err)
+			logging.Error.Printf("Error sending email: %s\n", err)
 		}
 	}
 
@@ -637,7 +637,7 @@ func editServerUser(c *gin.Context) {
 		}, true)
 		if err != nil {
 			//since we don't want to tell the user it failed, we'll log and move on
-			logging.Error().Printf("Error sending email: %s\n", err)
+			logging.Error.Printf("Error sending email: %s\n", err)
 		}
 	}
 
@@ -715,7 +715,7 @@ func removeServerUser(c *gin.Context) {
 	}, true)
 	if err != nil {
 		//since we don't want to tell the user it failed, we'll log and move on
-		logging.Error().Printf("Error sending email: %s\n", err)
+		logging.Error.Printf("Error sending email: %s\n", err)
 	}
 
 	c.Status(http.StatusNoContent)

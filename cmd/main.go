@@ -16,6 +16,7 @@ package main
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/cobra"
 	"os"
 	"runtime/debug"
@@ -27,11 +28,13 @@ func main() {
 		return
 	}
 
+	defer logging.Close()
+
 	defer func() {
 		if err := recover(); err != nil {
 			stacktrace := debug.Stack()
-			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s\n", err))
-			_, _ = os.Stderr.WriteString(fmt.Sprintf("%s\n", stacktrace))
+			logging.Error.Printf("%s\n%s\n", err, stacktrace)
+
 			os.Exit(2)
 		}
 	}()
@@ -56,7 +59,6 @@ func init() {
 		versionCmd,
 		userCmd,
 		shutdownCmd,
-		//v1migrateCmd,
 	)
 }
 

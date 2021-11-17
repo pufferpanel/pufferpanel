@@ -27,7 +27,7 @@ func NeedsDatabase(c *gin.Context) {
 	db, err := database.GetConnection()
 
 	if err != nil {
-		logging.Error().Printf("Database not available: %s", err)
+		logging.Error.Printf("Database not available: %s", err)
 		err = pufferpanel.ErrDatabaseNotAvailable
 	}
 

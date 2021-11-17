@@ -44,7 +44,7 @@ func SendEmailViaSMTP(to, subject, body string, async bool) error {
 		go func(host string, auth smtp.Auth, from, to string, data []byte) {
 			err := smtp.SendMail(host, auth, from, []string{to}, data)
 			if err != nil {
-				logging.Error().Printf("Error sending email: %s", err)
+				logging.Error.Printf("Error sending email: %s", err)
 			}
 		}(host, auth, from, to, data)
 		return nil

@@ -29,7 +29,7 @@ type Command struct {
 
 func (c Command) Run(env pufferpanel.Environment) error {
 	for _, cmd := range c.Commands {
-		logging.Info().Printf("Executing command: %s", cmd)
+		logging.Info.Printf("Executing command: %s", cmd)
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
 		cmdToExec, args := pufferpanel.SplitArguments(cmd)
 		err := env.Execute(pufferpanel.ExecutionData{

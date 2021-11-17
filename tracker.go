@@ -57,7 +57,7 @@ func (ws *Tracker) WriteMessage(msg messages.Message) error {
 			defer conn.lock.Unlock()
 			err := conn.socket.WriteMessage(data)
 			if err != nil {
-				logging.Info().Printf("websocket encountered error, dropping (%s)", err.Error())
+				logging.Info.Printf("websocket encountered error, dropping (%s)", err.Error())
 				ws.locker.Lock()
 				defer ws.locker.Unlock()
 				for i, k := range ws.sockets {

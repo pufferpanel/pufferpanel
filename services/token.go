@@ -199,7 +199,7 @@ func loadPrivate() {
 	}
 
 	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
+		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
@@ -236,32 +236,32 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 func loadPublic() {
 	data, err := readPublicKey(config.GetString("token.public"))
 	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
+		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
-	logging.Debug().Printf("Panel key pulled from %s: %s", config.GetString("token.public"), data)
+	logging.Debug.Printf("Panel key pulled from %s: %s", config.GetString("token.public"), data)
 
 	block, _ := pem.Decode(data)
 	if block == nil {
-		logging.Error().Printf("Public key does not seem valid, as pem did not decode it")
+		logging.Error.Printf("Public key does not seem valid, as pem did not decode it")
 		return
 	}
 	if block.Type != "PUBLIC KEY" {
-		logging.Error().Printf("Public key is not valid, is a private key instead")
+		logging.Error.Printf("Public key is not valid, is a private key instead")
 		return
 	}
 
 	key, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
+		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
 	var ok bool
 	publicKey, ok = key.(*ecdsa.PublicKey)
 	if !ok {
-		logging.Error().Printf("Internal error on token service: %s", errors.New("public key is not ECDSA"))
+		logging.Error.Printf("Internal error on token service: %s", errors.New("public key is not ECDSA"))
 		return
 	}
 	timer = time.Now().Add(5 * time.Minute)

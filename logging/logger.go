@@ -14,56 +14,23 @@
 package logging
 
 import (
-	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"io"
 	"log"
 	"os"
 	"path"
-	"strings"
-	"sync"
+	"runtime"
 	"time"
 )
 
-var mapper = make(map[string]*log.Logger)
-var lock sync.Mutex
-var logFile *os.File
-var useFile = true
+var logFile io.WriteCloser
 
-func Initialize() {
-	_ = Info()
-	_ = Debug()
-	_ = Error()
-}
+var Error *log.Logger = log.New(os.Stderr, "[ERROR] ", log.Default().Flags())
+var Debug *log.Logger = log.New(os.Stdout, "[DEBUG] ", log.Default().Flags())
+var Info *log.Logger = log.New(os.Stdout, "[INFO] ", log.Default().Flags())
 
-func DisableFileLogger() {
-	useFile = false
-}
-
-func Error() *log.Logger {
-	return Get("ERROR")
-}
-
-func Debug() *log.Logger {
-	return Get("DEBUG")
-}
-
-func Info() *log.Logger {
-	return Get("INFO")
-}
-
-func Close() {
-	if logFile != nil {
-		_ = logFile.Close()
-	}
-}
-
-func AsWriter() io.Writer {
-	return nil
-}
-
-func create(prefix string) *log.Logger {
-	if useFile && logFile == nil {
+func Initialize(useFiles bool) {
+	if useFiles {
 		directory := config.GetString("logs")
 		if directory == "" {
 			directory = "logs"
@@ -71,43 +38,59 @@ func create(prefix string) *log.Logger {
 
 		err := os.MkdirAll(directory, 0755)
 		if err != nil && !os.IsExist(err) {
-
+			panic(err)
 		}
 
-		logFile, err = os.OpenFile(path.Join(directory, time.Now().Format("2006-01-02T15-04-05.log")), os.O_WRONLY|os.O_CREATE, 0644)
+		logFile, err = os.OpenFile(path.Join(directory, time.Now().Format("2006-01-02T15-04-05")+".log"), os.O_WRONLY|os.O_CREATE, 0644)
 		if err != nil {
+			panic(err)
 		}
 	}
 
-	var writer io.Writer
-	if prefix == "ERROR" || prefix == "STDERR" {
-		writer = os.Stderr
-	} else {
-		writer = os.Stdout
+	//just create them ourselves.....
+
+	//first, create STDERR
+	var serviceLogger io.Writer
+	if runtime.GOOS == "windows" {
+		serviceLogger = CreateServiceLogger("error")
 	}
 
-	if logFile != nil {
-		writer = io.MultiWriter(writer, logFile)
-	}
+	flags := log.LstdFlags
 
-	if prefix == "INFO" {
-		log.SetOutput(writer)
-	}
+	stderr := MultiWriter(logFile, os.Stderr, serviceLogger)
+	Error = log.New(stderr, "[ERROR] ", flags)
 
-	l := log.New(writer, fmt.Sprintf("[%s] ", prefix), 0)
-	mapper[prefix] = l
-	return l
+	//now, STDOUT
+	if runtime.GOOS == "windows" {
+		serviceLogger = CreateServiceLogger("info")
+	}
+	stdout := MultiWriter(logFile, os.Stdout, serviceLogger)
+	Info = log.New(stdout, "[INFO] ", flags)
+
+	//and now, a DEBUG
+	stddebug := MultiWriter(logFile, os.Stdout, serviceLogger)
+	Debug = log.New(stddebug, "[DEBUG] ", flags)
+
+	log.SetOutput(Info.Writer())
+
+	//i hate go's idea of how stdout should work
+	outR, outW, _ := os.Pipe()
+	errR, errW, _ := os.Pipe()
+
+	go func() {
+		_, _ = io.Copy(Info.Writer(), outR)
+	}()
+
+	go func() {
+		_, _ = io.Copy(Error.Writer(), errR)
+	}()
+
+	os.Stdout = outW
+	os.Stderr = errW
 }
 
-func Get(name string) *log.Logger {
-	name = strings.ToUpper(name)
-	l := mapper[name]
-	if l == nil {
-		lock.Lock()
-		defer lock.Unlock()
-
-		l = create(name)
+func Close() {
+	if logFile != nil {
+		_ = logFile.Close()
 	}
-
-	return l
 }

@@ -33,7 +33,7 @@ func ResponseAndRecover(c *gin.Context) {
 			}
 			response.HandleError(c, err.(error), http.StatusInternalServerError)
 
-			logging.Error().Printf("Error handling route\n%+v\n%s", err, debug.Stack())
+			logging.Error.Printf("Error handling route\n%+v\n%s", err, debug.Stack())
 			c.Abort()
 		}
 	}()
@@ -44,7 +44,7 @@ func ResponseAndRecover(c *gin.Context) {
 func Recover(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
-			logging.Error().Printf("Error handling route\n%+v\n%s", err, debug.Stack())
+			logging.Error.Printf("Error handling route\n%+v\n%s", err, debug.Stack())
 			c.Abort()
 		}
 	}()

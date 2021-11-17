@@ -45,7 +45,7 @@ func SendEmailViaMailjet(to, subject, body string, async bool) error {
 		go func(mgI *mailjet.Client, messageI *mailjet.MessagesV31) {
 			_, err := m.SendMailV31(messageI)
 			if err != nil {
-				logging.Error().Printf("Error sending email: %s", err)
+				logging.Error.Printf("Error sending email: %s", err)
 			}
 		}(m, &message)
 		return nil

@@ -65,7 +65,7 @@ func (op MojangDl) Run(env pufferpanel.Environment) error {
 
 	for _, version := range data.Versions {
 		if version.Id == targetVersion {
-			logging.Info().Printf("Version %s json located, downloading from %s", version.Id, version.Url)
+			logging.Info.Printf("Version %s json located, downloading from %s", version.Id, version.Url)
 			env.DisplayToConsole(true, fmt.Sprintf("Version %s json located, downloading from %s\n", version.Id, version.Url))
 			//now, get the version json for this one...
 			return downloadServerFromJson(version.Url, op.Target, env)
@@ -96,7 +96,7 @@ func downloadServerFromJson(url, target string, env pufferpanel.Environment) err
 
 	serverBlock := data.Downloads["server"]
 
-	logging.Info().Printf("Version jar located, downloading from %s", serverBlock.Url)
+	logging.Info.Printf("Version jar located, downloading from %s", serverBlock.Url)
 	env.DisplayToConsole(true, fmt.Sprintf("Version jar located, downloading from %s\n", serverBlock.Url))
 
 	return environments.DownloadFile(serverBlock.Url, target, env)

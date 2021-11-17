@@ -92,7 +92,7 @@ func processQueue() {
 		if run, _ := program.IsRunning(); !run {
 			err := program.Start()
 			if err != nil {
-				logging.Error().Printf("Error starting server %s: %s", program.Id(), err)
+				logging.Error.Printf("Error starting server %s: %s", program.Id(), err)
 			}
 		}
 	}
@@ -141,14 +141,14 @@ func CreateProgram() *Program {
 //This includes starting the environment if it is not running.
 func (p *Program) Start() (err error) {
 	if !p.IsEnabled() {
-		logging.Error().Printf("Server %s is not enabled, cannot start", p.Id())
+		logging.Error.Printf("Server %s is not enabled, cannot start", p.Id())
 		return pufferpanel.ErrServerDisabled
 	}
 	if running, err := p.IsRunning(); running || err != nil {
 		return err
 	}
 
-	logging.Info().Printf("Starting server %s", p.Id())
+	logging.Info.Printf("Starting server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Starting server\n")
 	data := make(map[string]interface{})
 	for k, v := range p.Variables {
@@ -157,14 +157,14 @@ func (p *Program) Start() (err error) {
 
 	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Error().Printf("Error generating pre-execution steps: %s", err)
+		logging.Error.Printf("Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n%s\n", err.Error())
 		return
 	}
 
 	err = process.Run(p.RunningEnvironment)
 	if err != nil {
-		logging.Error().Printf("Error running pre-execution steps: %s", err)
+		logging.Error.Printf("Error running pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n%s\n", err.Error())
 		return
 	}
@@ -179,7 +179,7 @@ func (p *Program) Start() (err error) {
 	workDir := pufferpanel.ReplaceTokens(p.Execution.WorkingDirectory, data)
 
 	if !pufferpanel.EnsureAccess(path.Join(p.RunningEnvironment.GetRootDirectory(), workDir), p.RunningEnvironment.GetRootDirectory()) {
-		logging.Error().Printf("Working directory is invalid for server: %s", workDir)
+		logging.Error.Printf("Working directory is invalid for server: %s", workDir)
 		p.RunningEnvironment.DisplayToConsole(true, "Working directory is invalid for server: %s", workDir)
 		return
 	}
@@ -194,7 +194,7 @@ func (p *Program) Start() (err error) {
 	})
 
 	if err != nil {
-		logging.Error().Printf("error starting server %s: %s", p.Id(), err)
+		logging.Error.Printf("error starting server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n%s\n", err.Error())
 	}
 
@@ -208,14 +208,14 @@ func (p *Program) Stop() (err error) {
 		return err
 	}
 
-	logging.Info().Printf("Stopping server %s", p.Id())
+	logging.Info.Printf("Stopping server %s", p.Id())
 	if p.Execution.StopCode != 0 {
 		err = p.RunningEnvironment.SendCode(p.Execution.StopCode)
 	} else {
 		err = p.RunningEnvironment.ExecuteInMainProcess(p.Execution.StopCommand)
 	}
 	if err != nil {
-		logging.Error().Printf("Error stopping server: %s", err)
+		logging.Error.Printf("Error stopping server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n%s\n", err.Error())
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server was told to stop\n")
@@ -226,10 +226,10 @@ func (p *Program) Stop() (err error) {
 //Kills the program.
 //This will also stop the environment it is ran in.
 func (p *Program) Kill() (err error) {
-	logging.Info().Printf("Killing server %s", p.Id())
+	logging.Info.Printf("Killing server %s", p.Id())
 	err = p.RunningEnvironment.Kill()
 	if err != nil {
-		logging.Error().Printf("Error killing server: %s", err)
+		logging.Error.Printf("Error killing server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to kill server\n%s\n", err.Error())
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server killed\n")
@@ -240,11 +240,11 @@ func (p *Program) Kill() (err error) {
 //Creates any files needed for the program.
 //This includes creating the environment.
 func (p *Program) Create() (err error) {
-	logging.Info().Printf("Creating server %s", p.Id())
+	logging.Info.Printf("Creating server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Allocating server\n")
 	err = p.RunningEnvironment.Create()
 	if err != nil {
-		logging.Error().Printf("Error creating server: %s", err)
+		logging.Error.Printf("Error creating server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server\n%s\n", err.Error())
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server allocated\nReady to be installed\n")
@@ -256,24 +256,24 @@ func (p *Program) Create() (err error) {
 //Destroys the server.
 //This will delete the server, environment, and any files related to it.
 func (p *Program) Destroy() (err error) {
-	logging.Info().Printf("Destroying server %s", p.Id())
+	logging.Info.Printf("Destroying server %s", p.Id())
 	process, err := operations.GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Error().Printf("Error uninstalling server: %s", err)
+		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 		return
 	}
 
 	err = process.Run(p.RunningEnvironment)
 	if err != nil {
-		logging.Error().Printf("Error uninstalling server: %s", err)
+		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 		return
 	}
 
 	err = p.RunningEnvironment.Delete()
 	if err != nil {
-		logging.Error().Printf("Error uninstalling server: %s", err)
+		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 	}
 	return
@@ -281,14 +281,14 @@ func (p *Program) Destroy() (err error) {
 
 func (p *Program) Install() (err error) {
 	if !p.IsEnabled() {
-		logging.Error().Printf("Server %s is not enabled, cannot install", p.Id())
+		logging.Error.Printf("Server %s is not enabled, cannot install", p.Id())
 		return pufferpanel.ErrServerDisabled
 	}
 
-	logging.Info().Printf("Installing server %s", p.Id())
+	logging.Info.Printf("Installing server %s", p.Id())
 	running, err := p.IsRunning()
 	if err != nil {
-		logging.Error().Printf("Error checking server status: %s", err)
+		logging.Error.Printf("Error checking server status: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n" + err.Error() + "\n")
 		return
 	}
@@ -298,7 +298,7 @@ func (p *Program) Install() (err error) {
 	}
 
 	if err != nil {
-		logging.Error().Printf("Error stopping server: %s", err)
+		logging.Error.Printf("Error stopping server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n%s\n\", err.Error()")
 		return
 	}
@@ -307,7 +307,7 @@ func (p *Program) Install() (err error) {
 
 	err = os.MkdirAll(p.RunningEnvironment.GetRootDirectory(), 0755)
 	if err != nil && !os.IsExist(err) {
-		logging.Error().Printf("Error creating server directory: %s", err)
+		logging.Error.Printf("Error creating server directory: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n%s\n", err.Error())
 		return
 	}
@@ -315,14 +315,14 @@ func (p *Program) Install() (err error) {
 	if len(p.Installation) > 0 {
 		process, err := operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
-			logging.Error().Printf("Error installing server: %s", err)
+			logging.Error.Printf("Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n%s\n", err.Error())
 			return err
 		}
 
 		err = process.Run(p.RunningEnvironment)
 		if err != nil {
-			logging.Error().Printf("Error installing server: %s", err)
+			logging.Error.Printf("Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n%s\n", err.Error())
 			return err
 		}
@@ -375,7 +375,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 }
 
 func (p *Program) Save() (err error) {
-	logging.Info().Printf("Saving server %s", p.Id())
+	logging.Info.Printf("Saving server %s", p.Id())
 
 	file := filepath.Join(pufferpanel.ServerFolder, p.Id()+".json")
 
@@ -494,16 +494,16 @@ func (p *Program) afterExit(graceful bool) {
 
 	processes, err := operations.GenerateProcess(p.Execution.PostExecution, p.RunningEnvironment, mapping, p.Execution.EnvironmentVariables)
 	if err != nil {
-		logging.Error().Printf("Error running post processing for server %s: %s", p.Id(), err)
+		logging.Error.Printf("Error running post processing for server %s: %s", p.Id(), err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n%s\n", err.Error())
 		return
 	}
 	p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
-	logging.Info().Printf("Running post execution steps: %s", p.Id())
+	logging.Info.Printf("Running post execution steps: %s", p.Id())
 
 	err = processes.Run(p.RunningEnvironment)
 	if err != nil {
-		logging.Error().Printf("Error running post processing for server: %s", err)
+		logging.Error.Printf("Error running post processing for server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n%s\n", err.Error())
 		return
 	}

@@ -40,7 +40,7 @@ func DownloadFile(url, fileName string, env pufferpanel.Environment) error {
 
 	client := &http.Client{}
 
-	logging.Info().Printf("Downloading: %s", url)
+	logging.Info.Printf("Downloading: %s", url)
 	env.DisplayToConsole(true, "Downloading: "+url+"\n")
 
 	response, err := client.Get(url)
@@ -68,7 +68,7 @@ func DownloadFileToCache(url, fileName string) error {
 
 	client := &http.Client{}
 
-	logging.Info().Printf("Downloading: " + url)
+	logging.Info.Printf("Downloading: " + url)
 
 	response, err := client.Get(url)
 	defer pufferpanel.CloseResponse(response)
@@ -107,7 +107,7 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 		actualHash := fmt.Sprintf("%x", h.Sum(nil))
 
 		client := &http.Client{}
-		logging.Info().Printf("Downloading hash from %s", sha1Url)
+		logging.Info.Printf("Downloading hash from %s", sha1Url)
 		response, err := client.Get(sha1Url)
 		defer pufferpanel.CloseResponse(response)
 		if err != nil {
@@ -120,25 +120,25 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 			if err != nil {
 				useCache = false
 			} else if expectedHash != actualHash {
-				logging.Info().Printf("Cache expected %s but was actually %s", expectedHash, actualHash)
+				logging.Info.Printf("Cache expected %s but was actually %s", expectedHash, actualHash)
 				useCache = false
 			}
 		}
 
 		if useCache {
 			if env != nil {
-				logging.Info().Printf("Using cached copy of file: %s\n", downloadUrl)
+				logging.Info.Printf("Using cached copy of file: %s\n", downloadUrl)
 			}
 		}
 	} else if !os.IsNotExist(err) {
-		logging.Info().Printf("Cached file is not readable, will download (%s)", localPath)
+		logging.Info.Printf("Cached file is not readable, will download (%s)", localPath)
 	} else {
 		useCache = false
 	}
 
 	//if we can't use cache, redownload it to the cache
 	if !useCache {
-		logging.Info().Printf("Downloading new version and caching to %s", localPath)
+		logging.Info.Printf("Downloading new version and caching to %s", localPath)
 		err = DownloadFileToCache(downloadUrl, localPath)
 	}
 	if err == nil {

@@ -54,7 +54,7 @@ func LoadEmailService() {
 	parentDir := filepath.Dir(jsonPath)
 	emailDefinition, err := os.Open(jsonPath)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	defer pufferpanel.Close(emailDefinition)
 
@@ -86,7 +86,7 @@ func LoadEmailService() {
 		}
 	}
 
-	var logger = logging.Debug()
+	var logger = logging.Debug
 	for k := range globalEmailService.templates {
 		logger.Printf("Email template registered: %s", k)
 	}
@@ -127,7 +127,7 @@ func (es *emailService) SendEmail(to, template string, data map[string]interface
 		return err
 	}
 
-	logging.Debug().Printf("Sending email to %s using %s", to, provider)
+	logging.Debug.Printf("Sending email to %s using %s", to, provider)
 
 	switch provider {
 	case "mailgun":

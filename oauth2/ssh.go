@@ -57,7 +57,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	response, err := client.Do(request)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
-		logging.Error().Printf("error talking to auth server: %s", err)
+		logging.Error.Printf("error talking to auth server: %s", err)
 		return nil, errors.New("invalid response from authorization server")
 	}
 
@@ -72,7 +72,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 
 		msg, _ := ioutil.ReadAll(response.Body)
 
-		logging.Error().Printf("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)
+		logging.Error.Printf("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)
 		return nil, errors.New("invalid response from authorization server")
 	}
 

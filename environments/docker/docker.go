@@ -116,7 +116,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		_ = dockerClient.ContainerRemove(ctx, d.ContainerId, types.ContainerRemoveOptions{})
 		d.Wait.Done()
 		if err != nil {
-			logging.Error().Printf("Error stopping container "+d.ContainerId, err)
+			logging.Error.Printf("Error stopping container "+d.ContainerId, err)
 		}
 
 		msg := messages.Status{Running: false}
@@ -303,7 +303,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		exists = true
 	}
 
-	logging.Debug().Printf("Does image %v exist? %v", d.ImageName, exists)
+	logging.Debug.Printf("Does image %v exist? %v", d.ImageName, exists)
 
 	if exists && !force {
 		return nil
@@ -311,7 +311,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 
 	op := types.ImagePullOptions{}
 
-	logging.Debug().Printf("Downloading image %v", d.ImageName)
+	logging.Debug.Printf("Downloading image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
 	d.downloadingImage = true
@@ -324,13 +324,13 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 	_, err = io.Copy(ioutil.Discard, r)
 
 	d.downloadingImage = false
-	logging.Debug().Printf("Downloaded image %v", d.ImageName)
+	logging.Debug.Printf("Downloaded image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloaded image for container\n")
 	return err
 }
 
 func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, workDir string) error {
-	logging.Debug().Printf("Creating container")
+	logging.Debug.Printf("Creating container")
 	containerRoot := "/pufferpanel"
 	err := d.pullImage(client, ctx, false)
 
@@ -357,7 +357,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		workDir = containerRoot
 	}
 
-	logging.Debug().Printf("Container command: %s\n", cmdSlice)
+	logging.Debug.Printf("Container command: %s\n", cmdSlice)
 
 	containerConfig := &container.Config{
 		AttachStderr:    true,

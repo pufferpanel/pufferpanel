@@ -84,7 +84,7 @@ func openConnection() (err error) {
 
 	gormConfig := gorm.Config{}
 	if config.GetBool("panel.database.log") {
-		logging.Info().Printf("Database logging enabled")
+		logging.Info.Printf("Database logging enabled")
 		newLogger := logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 			logger.Config{
@@ -104,7 +104,7 @@ func openConnection() (err error) {
 
 	if err != nil {
 		dbConn = nil
-		logging.Error().Printf("Error connecting to database: %s", err)
+		logging.Error.Printf("Error connecting to database: %s", err)
 		return pufferpanel.ErrDatabaseNotAvailable
 	}
 	if err := migrateModels(); err != nil {
@@ -152,9 +152,9 @@ func migrateModels() error {
 		//SQLite does not support creating FKs like this, so we can't just enable them...
 		/*var res = dbConn.Exec("PRAGMA foreign_keys = ON")
 		if res.RowsAffected == 0 {
-			logging.Error().Println("SQLite does not support FKs")
+			logging.Error.Println("SQLite does not support FKs")
 		} else {
-			logging.Debug().Printf("%v\n", res.Value)
+			logging.Debug.Printf("%v\n", res.Value)
 		}*/
 		return nil
 	}

@@ -33,7 +33,7 @@ type AlterFile struct {
 }
 
 func (c AlterFile) Run(env pufferpanel.Environment) error {
-	logging.Info().Printf("Changing data in file: %s", c.TargetFile)
+	logging.Info.Printf("Changing data in file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Changing some data in file: %s\n ", c.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), c.TargetFile)
 	data, err := ioutil.ReadFile(target)

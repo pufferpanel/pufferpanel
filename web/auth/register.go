@@ -75,18 +75,18 @@ func RegisterPost(c *gin.Context) {
 	if true {
 		err = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
 		if err != nil {
-			logging.Error().Printf("Error sending email: %s", err.Error())
+			logging.Error.Printf("Error sending email: %s", err.Error())
 		}
 
 		_, token, _, err = us.Login(user.Email, request.Password)
 		if err != nil {
-			logging.Error().Printf("Error trying to auto-login after register: %s", err.Error())
+			logging.Error.Printf("Error trying to auto-login after register: %s", err.Error())
 		}
 	} else {
 		//TODO: Send an email to tell them to validate email
 		_ = services.GetEmailService().SendEmail(user.Email, "accountCreation", nil, true)
 		if err != nil {
-			logging.Error().Printf("Error sending email: %s", err.Error())
+			logging.Error.Printf("Error sending email: %s", err.Error())
 		}
 	}
 

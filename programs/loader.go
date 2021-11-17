@@ -42,25 +42,25 @@ func Initialize() {
 func LoadFromFolder() {
 	err := os.Mkdir(pufferpanel.ServerFolder, 0755)
 	if err != nil && !os.IsExist(err) {
-		logging.Error().Fatalf("Error creating server data folder: %s", err)
+		logging.Error.Fatalf("Error creating server data folder: %s", err)
 	}
 	programFiles, err := ioutil.ReadDir(pufferpanel.ServerFolder)
 	if err != nil {
-		logging.Error().Fatalf("Error reading from server data folder: %s", err)
+		logging.Error.Fatalf("Error reading from server data folder: %s", err)
 	}
 	var program *Program
 	for _, element := range programFiles {
 		if element.IsDir() {
 			continue
 		}
-		logging.Info().Printf("Attempting to load " + element.Name())
+		logging.Info.Printf("Attempting to load " + element.Name())
 		id := strings.TrimSuffix(element.Name(), filepath.Ext(element.Name()))
 		program, err = Load(id)
 		if err != nil {
-			logging.Error().Printf("Error loading server details from json (%s): %s", element.Name(), err)
+			logging.Error.Printf("Error loading server details from json (%s): %s", element.Name(), err)
 			continue
 		}
-		logging.Info().Printf("Loaded server %s", program.Id())
+		logging.Info.Printf("Loaded server %s", program.Id())
 		allPrograms = append(allPrograms, program)
 	}
 }
@@ -152,7 +152,7 @@ func startScheduler(program *Program) error {
 func executeTask(p *Program, taskId string) (err error) {
 	task, ok := p.Tasks[taskId]
 	if !ok {
-		logging.Error().Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
+		logging.Error.Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
 		return
 	}
 
@@ -162,7 +162,7 @@ func executeTask(p *Program, taskId string) (err error) {
 		var process operations.OperationProcess
 		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
-			logging.Error().Printf("Error setting up tasks: %s", err)
+			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
 			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
 			return
@@ -170,7 +170,7 @@ func executeTask(p *Program, taskId string) (err error) {
 
 		err = process.Run(p.RunningEnvironment)
 		if err != nil {
-			logging.Error().Printf("Error setting up tasks: %s", err)
+			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
 			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
 			return
@@ -208,7 +208,7 @@ func Create(program *Program) error {
 	f, err := os.Create(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	defer pufferpanel.Close(f)
 	if err != nil {
-		logging.Error().Printf("Error writing server: %s", err)
+		logging.Error.Printf("Error writing server: %s", err)
 		return err
 	}
 
@@ -218,7 +218,7 @@ func Create(program *Program) error {
 	err = encoder.Encode(program)
 
 	if err != nil {
-		logging.Error().Printf("Error writing server: %s", err)
+		logging.Error.Printf("Error writing server: %s", err)
 		return err
 	}
 
@@ -280,7 +280,7 @@ func Delete(id string) (err error) {
 	}
 	err = os.Remove(filepath.Join(pufferpanel.ServerFolder, program.Id()+".json"))
 	if err != nil {
-		logging.Error().Printf("Error removing server: %s", err)
+		logging.Error.Printf("Error removing server: %s", err)
 	}
 	allPrograms = append(allPrograms[:index], allPrograms[index+1:]...)
 	return
@@ -331,10 +331,10 @@ func Reload(id string) (err error) {
 	if program.Scheduler != nil {
 		program.Scheduler.Stop()
 	}
-	logging.Info().Printf("Reloading server %s", program.Id())
+	logging.Info.Printf("Reloading server %s", program.Id())
 	newVersion, err := Load(id)
 	if err != nil {
-		logging.Error().Printf("Error reloading server: %s", err)
+		logging.Error.Printf("Error reloading server: %s", err)
 		return
 	}
 

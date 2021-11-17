@@ -194,6 +194,6 @@ func Recover() {
 			err = errors.New(ToString(err))
 		}
 
-		logging.Error().Printf("CRITICAL ERROR: \n%+v\n%s", err, debug.Stack())
+		logging.Error.Printf("CRITICAL ERROR: \n%+v\n%s", err, debug.Stack())
 	}
 }

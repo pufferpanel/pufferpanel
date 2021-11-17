@@ -40,7 +40,7 @@ var auth pufferpanel.SFTPAuthorization
 func Run() {
 	err := runServer()
 	if err != nil {
-		logging.Error().Printf("Error starting SFTP server: %s", err)
+		logging.Error.Printf("Error starting SFTP server: %s", err)
 	}
 }
 
@@ -68,7 +68,7 @@ func runServer() error {
 	_, e := os.Stat(serverKeyFile)
 
 	if e != nil && os.IsNotExist(e) {
-		logging.Info().Printf("Generating new key")
+		logging.Info.Printf("Generating new key")
 		var key *rsa.PrivateKey
 		key, e = rsa.GenerateKey(rand.Reader, 2048)
 		if e != nil {
@@ -89,7 +89,7 @@ func runServer() error {
 		return e
 	}
 
-	logging.Info().Printf("Loading existing key")
+	logging.Info.Printf("Loading existing key")
 	var data []byte
 	data, e = ioutil.ReadFile(serverKeyFile)
 	if e != nil {
@@ -110,7 +110,7 @@ func runServer() error {
 	if e != nil {
 		return e
 	}
-	logging.Info().Printf("Started SFTP Server on %s", bind)
+	logging.Info.Printf("Started SFTP Server on %s", bind)
 
 	go func() {
 		for {
@@ -127,11 +127,11 @@ func runServer() error {
 func HandleConn(conn net.Conn, serverConfig *ssh.ServerConfig) {
 	defer pufferpanel.Close(conn)
 	defer pufferpanel.Recover()
-	logging.Info().Printf("SFTP connection from %s", conn.RemoteAddr().String())
+	logging.Info.Printf("SFTP connection from %s", conn.RemoteAddr().String())
 	e := handleConn(conn, serverConfig)
 	if e != nil {
 		if e.Error() != "EOF" {
-			logging.Error().Printf("sftpd connection error: %s", e)
+			logging.Error.Printf("sftpd connection error: %s", e)
 		}
 	}
 }

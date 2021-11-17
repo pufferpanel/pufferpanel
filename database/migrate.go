@@ -15,7 +15,7 @@ func migrate(dbConn *gorm.DB) error {
 			Migrate: func(db *gorm.DB) error {
 				err := db.Migrator().DropIndex(&models.Server{}, "uix_servers_name")
 				if err != nil {
-					logging.Debug().Printf("removing unique key for server.name with err `%s`", err)
+					logging.Debug.Printf("removing unique key for server.name with err `%s`", err)
 				}
 				return nil
 			},

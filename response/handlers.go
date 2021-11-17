@@ -46,7 +46,7 @@ func CreateOptions(options ...string) gin.HandlerFunc {
 
 func HandleError(c *gin.Context, err error, statusCode int) bool {
 	if err != nil {
-		logging.Error().Printf("%s", err.Error())
+		logging.Error.Printf("%s", err.Error())
 
 		if gorm.ErrRecordNotFound == err {
 			c.AbortWithStatus(404)

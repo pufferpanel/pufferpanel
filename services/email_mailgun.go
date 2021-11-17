@@ -44,7 +44,7 @@ func SendEmailViaMailgun(to, subject, body string, async bool) error {
 		go func(mgI *mailgun.MailgunImpl, messageI *mailgun.Message) {
 			_, _, err := mgI.Send(messageI)
 			if err != nil {
-				logging.Error().Printf("Error sending email: %s", err)
+				logging.Error.Printf("Error sending email: %s", err)
 			}
 		}(mg, message)
 		return nil

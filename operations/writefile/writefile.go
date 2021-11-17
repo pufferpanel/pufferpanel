@@ -29,7 +29,7 @@ type WriteFile struct {
 }
 
 func (c WriteFile) Run(env pufferpanel.Environment) error {
-	logging.Info().Printf("Writing data to file: %s", c.TargetFile)
+	logging.Info.Printf("Writing data to file: %s", c.TargetFile)
 	env.DisplayToConsole(true, "Writing some data to file: %s\n ", c.TargetFile)
 	target := filepath.Join(env.GetRootDirectory(), c.TargetFile)
 	return ioutil.WriteFile(target, []byte(c.Text), 0644)

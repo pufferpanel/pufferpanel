@@ -47,13 +47,13 @@ func RefreshToken() bool {
 
 	clientId := config.GetString("daemon.auth.clientId")
 	if clientId == "" {
-		logging.Error().Printf("error talking to auth server: %s", errors.New("client id not specified"))
+		logging.Error.Printf("error talking to auth server: %s", errors.New("client id not specified"))
 		return false
 	}
 
 	clientSecret := config.GetString("daemon.auth.clientSecret")
 	if clientSecret == "" {
-		logging.Error().Printf("error talking to auth server: %s", errors.New("client secret not specified"))
+		logging.Error.Printf("error talking to auth server: %s", errors.New("client secret not specified"))
 		return false
 	}
 
@@ -71,7 +71,7 @@ func RefreshToken() bool {
 	response, err := client.Do(request)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
-		logging.Error().Printf("error talking to auth server: %s", err)
+		logging.Error.Printf("error talking to auth server: %s", err)
 		return false
 	}
 

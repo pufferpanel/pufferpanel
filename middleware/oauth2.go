@@ -33,7 +33,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 		failure := true
 		defer func() {
 			if err := recover(); err != nil {
-				logging.Error().Printf("Error handling auth check: %s\n%s", err, debug.Stack())
+				logging.Error.Printf("Error handling auth check: %s\n%s", err, debug.Stack())
 				failure = true
 			}
 			if failure && !c.IsAborted() {

@@ -16,7 +16,7 @@ func GetToken(c *gin.Context) {
 
 	pubKeyEncoded, err := x509.MarshalPKIXPublicKey(key)
 	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
+		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
@@ -24,7 +24,7 @@ func GetToken(c *gin.Context) {
 
 	err = pem.Encode(&buffer, &pem.Block{Type: "PUBLIC KEY", Bytes: pubKeyEncoded})
 	if err != nil {
-		logging.Error().Printf("Internal error on token service: %s", err)
+		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
