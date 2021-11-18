@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-    <Product Id="7fb29007-fee2-4ba1-8913-7b73b8cb563b" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Version="2.4.0" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
+    <Product Id="7fb29007-fee2-4ba1-8913-7b73b8cb563b" Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
 
