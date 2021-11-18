@@ -19,15 +19,15 @@ import (
 	"log"
 	"os"
 	"path"
-	"runtime"
 	"time"
 )
 
 var logFile io.WriteCloser
+var flags = log.LstdFlags
 
-var Error *log.Logger = log.New(os.Stderr, "[ERROR] ", log.Default().Flags())
-var Debug *log.Logger = log.New(os.Stdout, "[DEBUG] ", log.Default().Flags())
-var Info *log.Logger = log.New(os.Stdout, "[INFO] ", log.Default().Flags())
+var Error *log.Logger = log.New(os.Stderr, "[ERROR] ", flags)
+var Debug *log.Logger = log.New(os.Stdout, "[DEBUG] ", flags)
+var Info *log.Logger = log.New(os.Stdout, "[INFO] ", flags)
 
 func Initialize(useFiles bool) {
 	if useFiles {
@@ -50,25 +50,16 @@ func Initialize(useFiles bool) {
 	//just create them ourselves.....
 
 	//first, create STDERR
-	var serviceLogger io.Writer
-	if runtime.GOOS == "windows" {
-		serviceLogger = CreateServiceLogger("error")
-	}
 
-	flags := log.LstdFlags
-
-	stderr := MultiWriter(logFile, os.Stderr, serviceLogger)
+	stderr := MultiWriter(logFile, os.Stderr, CreateServiceLogger("error"))
 	Error = log.New(stderr, "[ERROR] ", flags)
 
 	//now, STDOUT
-	if runtime.GOOS == "windows" {
-		serviceLogger = CreateServiceLogger("info")
-	}
-	stdout := MultiWriter(logFile, os.Stdout, serviceLogger)
+	stdout := MultiWriter(logFile, os.Stdout, CreateServiceLogger("info"))
 	Info = log.New(stdout, "[INFO] ", flags)
 
 	//and now, a DEBUG
-	stddebug := MultiWriter(logFile, os.Stdout, serviceLogger)
+	stddebug := MultiWriter(logFile, os.Stdout)
 	Debug = log.New(stddebug, "[DEBUG] ", flags)
 
 	log.SetOutput(Info.Writer())

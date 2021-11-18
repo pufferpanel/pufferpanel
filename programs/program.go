@@ -68,6 +68,10 @@ func StartViaService(p *Program) {
 }
 
 func ShutdownService() {
+	if !running {
+		return
+	}
+
 	lock.Lock()
 	defer func() {
 		lock.Unlock()

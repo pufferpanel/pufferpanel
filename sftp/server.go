@@ -49,7 +49,9 @@ func SetAuthorization(service pufferpanel.SFTPAuthorization) {
 }
 
 func Stop() {
-	_ = sftpServer.Close()
+	if sftpServer != nil {
+		_ = sftpServer.Close()
+	}
 }
 
 func runServer() error {

@@ -36,7 +36,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -49,22 +48,25 @@ var runCmd = &cobra.Command{
 }
 
 func executeRun(cmd *cobra.Command, args []string) {
-	err := internalRun(cmd, args)
+	c := make(chan error)
+	term := make(chan bool)
+
+	internalRun(c, term)
+	err := <-c
 	if err != nil {
 		logging.Error.Printf("An error occurred: %s", err.Error())
 	}
 }
 
-func internalRun(cmd *cobra.Command, args []string) error {
+func internalRun(c chan error, terminate chan bool) {
 	if err := config.LoadConfigFile(""); err != nil {
-		return err
+		c <- err
+		return
 	}
 
 	logging.Initialize(true)
 
 	defer database.Close()
-
-	c := make(chan error)
 
 	signal.Ignore(syscall.SIGPIPE, syscall.SIGHUP)
 
@@ -76,7 +78,7 @@ func internalRun(cmd *cobra.Command, args []string) error {
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 		<-quit
 		logging.Info.Println("Shutting down...")
-		c <- nil
+		terminate <- true
 	}()
 
 	router := gin.New()
@@ -91,13 +93,15 @@ func internalRun(cmd *cobra.Command, args []string) error {
 
 		if config.GetString("panel.sessionKey") == "" {
 			if err := config.Set("panel.sessionKey", securecookie.GenerateRandomKey(32)); err != nil {
-				return err
+				c <- err
+				return
 			}
 		}
 
 		result, err := hex.DecodeString(config.GetString("panel.sessionKey"))
 		if err != nil {
-			return err
+			c <- err
+			return
 		}
 		sessionStore := cookie.NewStore(result)
 		router.Use(sessions.Sessions("session", sessionStore))
@@ -110,24 +114,38 @@ func internalRun(cmd *cobra.Command, args []string) error {
 	web.RegisterRoutes(router)
 
 	go func() {
-		l, err := net.Listen("tcp4", config.GetString("web.host"))
+		l, err := net.Listen("tcp", config.GetString("web.host"))
 		if err != nil {
 			c <- err
 			return
 		}
 
 		logging.Info.Printf("Listening for HTTP requests on %s", l.Addr().String())
-		for err = manners.Serve(l, router); err != nil && err != http.ErrServerClosed; err = manners.Serve(l, router) {
+		err = manners.Serve(l, router)
+		if err != nil && err != http.ErrServerClosed {
 			c <- err
+			terminate <- true
 		}
 	}()
 
-	//tell windows we are now running
-	if runtime.GOOS == "windows" {
-		serviceCheck(c)
-	}
+	go func() {
+		//wait for the termination signal, so we can shut down
+		<-terminate
 
-	return <-c
+		//shut down everything
+		//all of these can be closed regardless of what type of install this is, as they all check if they are even being
+		//used
+
+		manners.Close()
+		sftp.Stop()
+		programs.ShutdownService()
+		database.Close()
+
+		//return out, the upper layers know how to handle this
+		c <- nil
+	}()
+
+	return
 }
 
 func panel(ch chan error) {

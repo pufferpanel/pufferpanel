@@ -4,15 +4,22 @@ package main
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/spf13/cobra"
 	"golang.org/x/sys/windows/svc"
 )
 
-func serviceCheck(c chan error) {
-	inService, _ := svc.IsWindowsService()
-	if inService {
-		logging.Debug.Printf("Detecting this is running as a service\n")
-		c <- svc.Run("PufferPanel", &service{})
-	}
+var runServiceCmd = &cobra.Command{
+	Use:   "runService",
+	Short: "Runs the panel as a service",
+	Run:   executeRunService,
+}
+
+func init() {
+	rootCmd.AddCommand(runServiceCmd)
+}
+
+func executeRunService(cmd *cobra.Command, args []string) {
+	_ = svc.Run("PufferPanel", &service{})
 }
 
 type service struct{}
@@ -21,6 +28,11 @@ func (m *service) Execute(args []string, r <-chan svc.ChangeRequest, changes cha
 	const cmdsAccepted = svc.AcceptStop | svc.AcceptShutdown
 	changes <- svc.Status{State: svc.StartPending}
 	changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
+
+	ch := make(chan error)
+	term := make(chan bool)
+	internalRun(ch, term)
+
 loop:
 	for {
 		select {
@@ -33,5 +45,7 @@ loop:
 		}
 	}
 	changes <- svc.Status{State: svc.StopPending}
+	term <- true
+	<-ch
 	return
 }
