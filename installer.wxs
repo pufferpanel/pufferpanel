@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:firewall="http://schemas.microsoft.com/wix/FirewallExtension">
     <Product Id="7fb29007-fee2-4ba1-8913-7b73b8cb563b" Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
@@ -15,7 +15,10 @@
         <!-- Step 2: Add files to your installer package -->
         <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
             <Component Id="pufferpanel" Guid="6a923f7e-b685-417e-8baf-612b0cade288">
-                <File Id="pufferpanel.exe" Source="pufferpanel.exe" KeyPath="yes" Checksum="yes"/>
+                <File Id="pufferpanel.exe" Source="pufferpanel.exe" KeyPath="yes" Checksum="yes">
+                    <firewall:FirewallException Id="PanelRule" Name="PufferPanel Web Interface" Scope="any"/>
+                    <firewall:FirewallException Id="SFTPRule" Name="PufferPanel SFTP Interface" Scope="any"/>
+                </File>
                 <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Start="auto" Name="PufferPanel" Description="Game management server panel. This service can be either the daemon or the panel, or both." Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Arguments="runService --workDir=&quot;[APPLICATIONROOTDIRECTORY]\&quot;" Vital="yes">
                 </ServiceInstall>
                 <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="PufferPanel" Wait="yes" />
