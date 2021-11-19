@@ -99,6 +99,16 @@ jobs:
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
+    - name: Download Windows MSI artifact
+      id: msidownload
+      uses: pufferpanel/download-artifacts@v1
+      with:
+        workflow-id: 'build.yml'
+        extract: 'true'
+        artifact-name: 'pufferpanel*_installer.msi'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
+        
     - name: Create Release	
       id: create_release	
       if: github.event.inputs.createRelease == 'true'
@@ -187,6 +197,17 @@ jobs:
         asset_path: ${{ steps.amd64rpmdownload.outputs.file }}
         asset_name: ${{ steps.amd64rpmdownload.outputs.file }}
         asset_content_type: application/zip
+        
+    - name: Upload Release Asset
+      if: github.event.inputs.createRelease == 'true'
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.msidownload.outputs.file }}
+        asset_name: ${{ steps.msidownload.outputs.file }}
+        asset_content_type: application/octet-stream
 
     - name: Push to repo
       env:
