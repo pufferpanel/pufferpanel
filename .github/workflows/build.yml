@@ -156,7 +156,7 @@ jobs:
     steps:
     - name: Get the version
       run: |
-        $VERSION="0.0.${{ env.GITHUB_RUN_NUMBER }}"
+        $VERSION="0.0.${{ github.run_number }}"
         if ("${{ github.ref }}".startsWith("refs/tags/v")) {
           $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
         }
