@@ -176,12 +176,11 @@ jobs:
     
     - name: Generate MSI     
       run: |
+        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"      
         heat dir www -out www.wxs -gg -g1 -ke -nologo -cg WwwComponent -dr APPLICATIONROOTDIRECTORY
         heat dir email -out email.wxs -gg -g1 -ke -nologo -cg EmailComponent -dr APPLICATIONROOTDIRECTORY
         candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}"
-        del www.wxs email.wxs
-        light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -cultures:en-us
-        del *.wixobj *wixpdb
+        light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -cultures:en-us        
         
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1
