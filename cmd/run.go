@@ -65,9 +65,6 @@ func internalRun(c chan error, terminate chan bool) {
 	}
 
 	logging.Initialize(true)
-
-	defer database.Close()
-
 	signal.Ignore(syscall.SIGPIPE, syscall.SIGHUP)
 
 	go func() {
