@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:firewall="http://schemas.microsoft.com/wix/FirewallExtension">
-    <Product Id="7fb29007-fee2-4ba1-8913-7b73b8cb563b" Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
-        <Package InstallerVersion="300" Compressed="yes"/>
+    <Product Id="*" Version="$(var.ProductVersion)" UpgradeCode="b0ef7063-2eaa-48b0-948d-00167774557a" Language="1033" Name="PufferPanel" Manufacturer="PufferPanel">
+        <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
         <Media Id="1" Cabinet="pufferpanel.cab" EmbedCab="yes" />
+        <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
         <!-- Step 1: Define the directory structure -->
         <Directory Id="TARGETDIR" Name="SourceDir">
