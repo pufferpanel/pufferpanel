@@ -161,19 +161,21 @@ jobs:
           $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
         }
         echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+        
+    - name: Get extra files
+      run: |
+        git init
+        git remote add origin https://github.com/${{ github.repository }}.git
+        git fetch
+        git checkout -m origin/${{ github.ref_name }} installer.wxs
+        git checkout -m origin/${{ github.ref_name }} LICENSE.rtf
             
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_${{ env.VERSION }}_windows_amd64.zip
-        
-    - name: Check out code 
-      uses: actions/checkout@v1
-      with:
-        path: repo
     
-    - name: Generate MSI
-      run: |      
-        mv repo\build.bat .
+    - name: Generate MSI     
+      run: |
         mv repo\installer.wxs .
         mv repo\LICENSE.rtf .
         heat dir www -out www.wxs -gg -g1 -ke -nologo -cg WwwComponent -dr APPLICATIONROOTDIRECTORY
