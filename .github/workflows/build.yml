@@ -160,7 +160,7 @@ jobs:
         if ("${{ github.ref }}".startsWith("refs/tags/v")) {
           $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
         }
-        echo VERSION=$VERSION | Out-File -FilePath $env:GITHUB_PATH -Append
+        echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
             
     - uses: actions/download-artifact@v2
       with:
