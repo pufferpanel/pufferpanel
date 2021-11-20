@@ -18,6 +18,7 @@
   "Memory": "Memoria",
   "Files": "Archivos",
   "Name": "Nombre del Servidor",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Por favor, seleccione un nodo",
   "SelectTemplate": "Por favor, seleccione una plantilla",
   "SelectThisTemplate": "Usar esta plantilla",
@@ -47,7 +48,17 @@
   "EditTask": "Editar tarea",
   "TaskDeleted": "Tarea eliminada",
   "TaskTriggered": "Tarea activada",
-  "Schedule": "Horario",
+  "EnableSchedule": "Inicializar tarea automáticamente",
   "TaskScheduleInvalid": "Horario de tarea invalido",
-  "TaskScheduleManual": "Solo ejecución manual"
+  "TaskScheduleManual": "Solo ejecución manual",
+  "CronExpression": "Expresión Cron",
+  "Hourly": "Cada hora",
+  "Daily": "Cada día",
+  "Weekly": "Cada semana",
+  "Monthly": "Cada mes",
+  "Advanced": "Avanzado",
+  "HourlyTab": "Cada {hourInterval} horas, al minuto {minute}",
+  "DailyTab": "Cada {dayInterval} día(s) a las {hour}:{minute}",
+  "WeeklyTab": "Cada {weekdays} a las {hour}:{minute}",
+  "MonthlyTab": "Cada {monthInterval} meses, en el día {day} a las {hour}:{minute}"
 }

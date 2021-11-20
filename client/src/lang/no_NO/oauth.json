@@ -1,0 +1,13 @@
+{
+  "Credentials": "OAuth2 klientens opplysninger",
+  "ClientId": "Klient ID",
+  "ClientSecret": "Klient hemmelighet",
+  "NewClientWarning": "Noter klienthemmeligheten, etter at du har lukket denne dialogboksen vil den aldri bli vist igjen. Å miste eller glemme den vil gjøre denne klienten helt ubrukelig.",
+  "Create": "Lag ny OAuth2-klient",
+  "UnnamedClient": "OAuth2-klienten uten navn",
+  "Docs": "Finn API-dokumentasjon her",
+  "DeleteWarning": "Sletting av en OAuth2-klient kan ikke angres og det kan heller ikke opprettes en ny klient med samme legitimasjon. Alle integrasjoner som fortsatt bruker denne klienten, vil bryte etter at den er slettet.",
+  "ConfirmDelete": "Jeg er klar over effektene ved å slette denne OAuth2-klienten vil ha, og jeg ønsker å fortsette.",
+  "Delete": "Slett {clientName}?",
+  "Clients": "OAuth2 klienter"
+}

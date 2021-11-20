@@ -18,6 +18,7 @@
   "Memory": "Mémoire",
   "Files": "Fichiers",
   "Name": "Nom du Serveur",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Veuillez sélectionner un nœud",
   "SelectTemplate": "Veuillez sélectionner un modèle",
   "SelectThisTemplate": "Utiliser ce modèle",
@@ -47,7 +48,17 @@
   "EditTask": "Modifier la tâche",
   "TaskDeleted": "Tâche supprimée",
   "TaskTriggered": "Tâche déclenchée",
-  "Schedule": "Planifier",
+  "EnableSchedule": "Run Task automatically",
   "TaskScheduleInvalid": "Planification de tâche invalide",
-  "TaskScheduleManual": "Exécution manuelle seulement"
+  "TaskScheduleManual": "Exécution manuelle seulement",
+  "CronExpression": "Cron Expression",
+  "Hourly": "Hourly",
+  "Daily": "Daily",
+  "Weekly": "Weekly",
+  "Monthly": "Monthly",
+  "Advanced": "Advanced",
+  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
+  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
+  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
+  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
 }

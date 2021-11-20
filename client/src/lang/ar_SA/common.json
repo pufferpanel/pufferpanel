@@ -37,5 +37,13 @@
   "ThemeOptions": "خيارات المظهر",
   "Protocol": "بروتوكول",
   "Add": "إضافة",
-  "Ignore": "Ignore"
+  "Ignore": "تجاهل",
+  "Monday": "الإثنين",
+  "Tuesday": "الثلاثاء",
+  "Wednesday": "الأربعاء",
+  "Thursday": "الخميس",
+  "Friday": "الجمعة",
+  "Saturday": "السبت",
+  "Sunday": "الأحد",
+  "Description": "Description"
 }

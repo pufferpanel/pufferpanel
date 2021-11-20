@@ -37,5 +37,7 @@
   "ErrSocketFailed": "A WebSocket kapcsolat hibát észlelt, néhány funkció lassulhat / nem működik",
   "ErrInviteLinkInvalid": "A megadott meghívó érvénytelen",
   "ErrSavingInviteduser": "Hiba történt a fiók létrehozása közben",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés"
 }

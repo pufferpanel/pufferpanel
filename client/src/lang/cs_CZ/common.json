@@ -37,5 +37,13 @@
   "ThemeOptions": "Možnosti vzhledu",
   "Protocol": "Protokol",
   "Add": "Přidat",
-  "Ignore": "Ignorovat"
+  "Ignore": "Ignorovat",
+  "Monday": "Pondělí",
+  "Tuesday": "Úterý",
+  "Wednesday": "Středa",
+  "Thursday": "Čtvrtek",
+  "Friday": "Pátek",
+  "Saturday": "Sobota",
+  "Sunday": "Neděle",
+  "Description": "Popis"
 }

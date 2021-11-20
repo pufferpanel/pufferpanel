@@ -6,6 +6,9 @@
   "MasterUrlHint": "面板的基准地址，如 http://localhost:8080",
   "CompanyName": "企业名称",
   "DefaultTheme": "默认主题",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "邮件供应商",
   "emailProviders": {
     "none": "无",

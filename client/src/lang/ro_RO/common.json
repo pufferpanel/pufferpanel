@@ -1,9 +1,9 @@
 {
   "Id": "ID",
   "Name": "Nume",
-  "Address": "Adresa",
-  "Online": "Online",
-  "Offline": "Offline",
+  "Address": "Adresă",
+  "Online": "Pornit",
+  "Offline": "Oprit",
   "Loading": "Se încarcă...",
   "General": "General",
   "Language": "Limbă",
@@ -37,5 +37,13 @@
   "ThemeOptions": "Opţiuni temă",
   "Protocol": "Protocol",
   "Add": "Adaugă",
-  "Ignore": "Ignoră"
+  "Ignore": "Ignoră",
+  "Monday": "Luni",
+  "Tuesday": "Marți",
+  "Wednesday": "Miercuri",
+  "Thursday": "Joi",
+  "Friday": "Vineri",
+  "Saturday": "Sâmbătă",
+  "Sunday": "Duminică",
+  "Description": "Description"
 }

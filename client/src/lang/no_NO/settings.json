@@ -1,24 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "Settings": "Innstillinger",
+  "PanelSettings": "Panel innstillinger",
+  "EmailSettings": "E-post innstillinger",
+  "MasterUrl": "Hoved Url",
+  "MasterUrlHint": "Hoved-URL-en som panelet kan nås under i formatet http://localhost:8080",
+  "CompanyName": "Firmanavn",
+  "DefaultTheme": "Standardtema",
+  "RegistrationEnabled": "Tillatt brukere å registrere seg selv",
+  "RegistrationEnabledHint1": "Selvregistrerte brukere kan ikke gjøre noe før de har fått rettigheter",
+  "RegistrationEnabledHint2": "Deaktivering av dette forhindrer bare direkte registrering og invitasjon til en server. Brukersiden påvirkes ikke",
+  "EmailProvider": "E-post leverandør",
   "emailProviders": {
-    "none": "None",
+    "none": "Ingen",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Avsenderadresse",
+    "domain": "Domene",
+    "key": "API-nøkkel",
+    "host": "Vert",
+    "username": "Brukernavn",
+    "password": "Passord"
   }
 }

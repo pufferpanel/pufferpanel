@@ -1,0 +1,110 @@
+{
+  "Templates": "Templates",
+  "NoTemplates": "There are no templates here yet",
+  "Deleted": "Template deleted",
+  "New": "Create new template",
+  "Edit": "Edit template",
+  "Editor": "Editor",
+  "Json": "JSON",
+  "Display": "Display Name",
+  "Type": "Type",
+  "Variables": "Variables",
+  "Install": "Install",
+  "AddInstallStep": "Add Install Step",
+  "DeleteInstallStep": "Delete Install Step",
+  "Description": "Description",
+  "DataType": "Data Type",
+  "DefaultValue": "Default Value",
+  "Required": "Required",
+  "UserEditable": "Users can edit",
+  "Value": "Value",
+  "AddOption": "Add an option",
+  "AddCommand": "Add command",
+  "Filename": "Filename",
+  "Content": "Content",
+  "Source": "Source",
+  "Target": "Target",
+  "Version": "Version",
+  "ReleaseType": "Release Type",
+  "AddFile": "Add file",
+  "AddVariable": "Add variable",
+  "Environment": "Environment",
+  "Environments": "Environments",
+  "AddEnvironment": "Add environment",
+  "DefaultEnvironment": "Default environment",
+  "AddEnvVar": "Add env variable",
+  "EnvVars": "Environment variables",
+  "DockerImage": "Docker Image",
+  "SaveSuccess": "Saved Template",
+  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
+  "SupportedEnvironments": "Supported Environments",
+  "RunConfig": "Run Configuration",
+  "PreHook": "Pre Run Hook",
+  "PostHook": "Post Run Hook",
+  "AddPreStep": "Add Pre Run Step",
+  "AddPostStep": "Add Post Run Step",
+  "DeletePreStep": "Delete Pre Run Step",
+  "DeletePostStep": "Delete Post Run Step",
+  "Shutdown": "Shutdown",
+  "Command": "Command",
+  "WorkingDirectory": "Working Directory",
+  "Arguments": "Arguments",
+  "AddArgument": "Add an argument",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "import": {
+    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
+    "Import": "Import templates",
+    "Tooltip": "Import templates from the official repository",
+    "Select": "Select templates to import",
+    "Started": "Importing templates, please wait a moment",
+    "Successful": "Successfully imported template {template}",
+    "NoTemplatesTitle": "Do you want to import templates?",
+    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+  },
+  "stop": {
+    "Command": "Command",
+    "Signal": "Signal"
+  },
+  "processors": {
+    "download": {
+      "ProcessorName": "Download",
+      "files": "Files"
+    },
+    "command": {
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
+    },
+    "alterfile": {
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
+    },
+    "writefile": {
+      "ProcessorName": "Write to file",
+      "text": "Content"
+    },
+    "move": {
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
+    },
+    "mkdir": {
+      "ProcessorName": "Create Directory"
+    },
+    "mojangdl": {
+      "ProcessorName": "Download Minecraft"
+    },
+    "forgedl": {
+      "ProcessorName": "Download Minecraft Forge"
+    },
+    "spongeforgedl": {
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
+    },
+    "fabricdl": {
+      "ProcessorName": "Download Minecraft Fabric"
+    }
+  }
+}

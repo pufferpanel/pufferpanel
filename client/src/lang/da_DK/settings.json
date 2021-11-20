@@ -6,6 +6,9 @@
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Virksomheds navn",
   "DefaultTheme": "Standardtema",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Email Udbyder",
   "emailProviders": {
     "none": "Intet",

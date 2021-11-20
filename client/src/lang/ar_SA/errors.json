@@ -35,7 +35,9 @@
   "ErrMissingScope": "ليس لديك صلاحية لتقوم بهذا الإجراء",
   "ErrInvalidJson": "بيانات ال json غير صحيحة",
   "ErrSocketFailed": "واجهه اتصال WebSocket حدث لها خطأ، بعض الميزات قد تكون بطيئة او لا تعمل",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
+  "ErrInviteLinkInvalid": "يبدو أن رابط دعوتك غير صالح",
   "ErrSavingInviteduser": "There was an error creating your account",
-  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDirectoryUploadNotSupported": "لا يمكن تحميل المجلدات"
 }

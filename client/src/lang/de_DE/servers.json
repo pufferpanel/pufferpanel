@@ -18,6 +18,7 @@
   "Memory": "Arbeitsspeicher",
   "Files": "Dateien",
   "Name": "Servername",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Bitte Knoten auswählen",
   "SelectTemplate": "Bitte Vorlage auswählen",
   "SelectThisTemplate": "Diese Vorlage verwenden",
@@ -47,7 +48,17 @@
   "EditTask": "Aufgabe bearbeiten",
   "TaskDeleted": "Aufgabe wurde entfernt",
   "TaskTriggered": "Aufgabe wurde ausgelöst",
-  "Schedule": "Zeitplan",
+  "EnableSchedule": "Aufgabe automatisch ausführen",
   "TaskScheduleInvalid": "Aufgabenplan ungültig",
-  "TaskScheduleManual": "Nur manuelle Ausführung"
+  "TaskScheduleManual": "Nur manuelle Ausführung",
+  "CronExpression": "Cron-Ausdruck",
+  "Hourly": "Stündlich",
+  "Daily": "Täglich",
+  "Weekly": "Wöchentlich",
+  "Monthly": "Monatlich",
+  "Advanced": "Erweitert",
+  "HourlyTab": "Alle {hourInterval} Stunden in Minute {minute}",
+  "DailyTab": "Alle {dayInterval} Tage um {hour}:{minute}",
+  "WeeklyTab": "Alle {weekdays} um {hour}:{minute}",
+  "MonthlyTab": "Alle {monthInterval} Monate am {day} Tag um {hour}:{minute}"
 }

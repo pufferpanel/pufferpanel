@@ -18,6 +18,7 @@
   "Memory": "Пам'ять",
   "Files": "Files",
   "Name": "Ім'я сервера",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "Будь ласка, виберіть вузол",
   "SelectTemplate": "Будь ласка, оберіть шаблон",
   "SelectThisTemplate": "Використовувати цей шаблон",
@@ -47,7 +48,17 @@
   "EditTask": "Edit Task",
   "TaskDeleted": "Task Deleted",
   "TaskTriggered": "Task Triggered",
-  "Schedule": "Schedule",
+  "EnableSchedule": "Run Task automatically",
   "TaskScheduleInvalid": "Task Schedule Invalid",
-  "TaskScheduleManual": "Manual run only"
+  "TaskScheduleManual": "Manual run only",
+  "CronExpression": "Cron Expression",
+  "Hourly": "Hourly",
+  "Daily": "Daily",
+  "Weekly": "Weekly",
+  "Monthly": "Monthly",
+  "Advanced": "Advanced",
+  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
+  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
+  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
+  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
 }

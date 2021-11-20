@@ -10,6 +10,8 @@
   "PrivateHost": "Privát kiszolgáló",
   "PrivatePort": "Privát port",
   "SftpPort": "SFTP port",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Konfiguráció mentése",
   "SavePublicKey": "Nyílvános kulcs mentése",
   "DeploymentInstruction": "A csomópont berendezéséhez telepítse a PufferPanelt az új szerveren és helyezze a konfigurációs fájlt a következő helyre: `/etc/pufferpanel/`<br/>Majd indítsa újra a PufferPanelt az új szerveren.",

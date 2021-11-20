@@ -37,5 +37,7 @@
   "ErrSocketFailed": "WebSocketi ühenduses ilmnes viga, mõned funktsioonid võivad olla aeglased või katki",
   "ErrInviteLinkInvalid": "Teie kutselink näib olevat vale",
   "ErrSavingInviteduser": "Teie konto loomisel ilmnes viga",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida"
 }

@@ -37,5 +37,7 @@
   "ErrSocketFailed": "Při připojení k WebSocketu došlo k chybě, některé funkce mohou být pomalé nebo poškozené",
   "ErrInviteLinkInvalid": "Vaše pozvánka se zdá být neplatná",
   "ErrSavingInviteduser": "Při vytváření účtu došlo k chybě",
+  "ErrDuplicateServerName": "Server s tímto názvem již existuje",
+  "ErrDuplicateNodeName": "Uzel s tímto názvem již existuje",
   "ErrDirectoryUploadNotSupported": "Nelze nahrát složky"
 }

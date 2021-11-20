@@ -10,6 +10,8 @@
   "PrivateHost": "Privat Host",
   "PrivatePort": "Privat Port",
   "SftpPort": "SFTP Port",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Gem konfiguration",
   "SavePublicKey": "Gem Offentlig Nøgle",
   "DeploymentInstruction": "For at installere noden, installér PufferPanel på den nye server og placér konfigurationsfilen i `/etc/pufferpanel/`<br/>Genstart PufferPanel på den nye server bagefter.",

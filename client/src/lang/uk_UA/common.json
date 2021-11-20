@@ -37,5 +37,13 @@
   "ThemeOptions": "Параметри тем",
   "Protocol": "Protocol",
   "Add": "Add",
-  "Ignore": "Ignore"
+  "Ignore": "Ignore",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "Description": "Description"
 }

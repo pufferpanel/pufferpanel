@@ -37,5 +37,13 @@
   "ThemeOptions": "Teema Valikud",
   "Protocol": "Protokoll",
   "Add": "Lisa",
-  "Ignore": "Ignoreeri"
+  "Ignore": "Ignoreeri",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "Description": "Description"
 }

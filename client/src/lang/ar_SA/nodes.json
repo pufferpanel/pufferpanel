@@ -10,6 +10,8 @@
   "PrivateHost": "مضيف خاص",
   "PrivatePort": "منفذ خاص",
   "SftpPort": "منفذ SFTP",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "حفظ الاعدادات",
   "SavePublicKey": "حفظ المفتاح العام",
   "DeploymentInstruction": "لنشر ال Node ، قم بتثبيت لوحة تحكم بافر بانل على الخادم الجديد و ضع ملف الإعدادات في\n`/etc/pufferpanel/` <br/> قم بإعادة تشغيل لوحة تحكم بافر بنل على الخادم الجديد بعد ذلك.",

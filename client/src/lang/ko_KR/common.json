@@ -37,5 +37,13 @@
   "ThemeOptions": "테마 옵션",
   "Protocol": "프로토콘",
   "Add": "추가",
-  "Ignore": "Ignore"
+  "Ignore": "Ignore",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "Description": "Description"
 }

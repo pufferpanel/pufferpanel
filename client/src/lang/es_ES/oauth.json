@@ -1,0 +1,13 @@
+{
+  "Credentials": "Credenciales de cliente de OAuth2",
+  "ClientId": "ID de cliente",
+  "ClientSecret": "Clave secreta",
+  "NewClientWarning": "Tenga en cuenta que la clave secreta del cliente, después de cerrar este diálogo nunca se mostrará de nuevo. Perderlo, y olvidarlo hará que este cliente esté completamente inutilizable.",
+  "Create": "Crear nuevo cliente OAuth2",
+  "UnnamedClient": "Cliente OAuth2 sin nombre",
+  "Docs": "Encontrar documentación API aquí",
+  "DeleteWarning": "La eliminación de un cliente OAuth2 no se puede deshacer, ni se puede crear un nuevo cliente con las mismas credenciales. Todas las integraciones que todavía utilizan este cliente se romperán después de su eliminación.",
+  "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y desea continuar.",
+  "Delete": "¿Eliminar {clientName}?",
+  "Clients": "Clientes de OAuth2"
+}

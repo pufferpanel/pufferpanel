@@ -37,5 +37,7 @@
   "ErrSocketFailed": "WebSocket連接出現錯誤，某些功能可能會變得緩慢或無法使用",
   "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
   "ErrSavingInviteduser": "There was an error creating your account",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Cannot upload folders"
 }

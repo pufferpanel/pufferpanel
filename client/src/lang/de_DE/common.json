@@ -4,7 +4,7 @@
   "Address": "Adresse",
   "Online": "Online",
   "Offline": "Offline",
-  "Loading": "Lade...",
+  "Loading": "Lädt...",
   "General": "Allgemein",
   "Language": "Sprache",
   "SelectLanguage": "Sprache auswählen",
@@ -37,5 +37,13 @@
   "ThemeOptions": "Theme-Einstellungen",
   "Protocol": "Protokoll",
   "Add": "Hinzufügen",
-  "Ignore": "Ignorieren"
+  "Ignore": "Ignorieren",
+  "Monday": "Montag",
+  "Tuesday": "Dienstag",
+  "Wednesday": "Mittwoch",
+  "Thursday": "Donnerstag",
+  "Friday": "Freitag",
+  "Saturday": "Samstag",
+  "Sunday": "Sonntag",
+  "Description": "Beschreibung"
 }

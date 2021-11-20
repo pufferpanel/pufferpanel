@@ -37,5 +37,13 @@
   "ThemeOptions": "Indstillinger for tema",
   "Protocol": "Protokol",
   "Add": "Tilføj",
-  "Ignore": "Ignorér"
+  "Ignore": "Ignorér",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "Description": "Description"
 }

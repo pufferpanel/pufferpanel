@@ -18,6 +18,7 @@
   "Memory": "메모리",
   "Files": "Files",
   "Name": "서버 이름",
+  "NameInvalid": "The server name cannot be empty or contain special characters",
   "SelectNode": "노드를 선택해주세요",
   "SelectTemplate": "템플릿을 선택해주세요",
   "SelectThisTemplate": "이 템플릿 사용하기",
@@ -47,7 +48,17 @@
   "EditTask": "Edit Task",
   "TaskDeleted": "Task Deleted",
   "TaskTriggered": "Task Triggered",
-  "Schedule": "Schedule",
+  "EnableSchedule": "Run Task automatically",
   "TaskScheduleInvalid": "Task Schedule Invalid",
-  "TaskScheduleManual": "Manual run only"
+  "TaskScheduleManual": "Manual run only",
+  "CronExpression": "Cron Expression",
+  "Hourly": "Hourly",
+  "Daily": "Daily",
+  "Weekly": "Weekly",
+  "Monthly": "Monthly",
+  "Advanced": "Advanced",
+  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
+  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
+  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
+  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
 }

@@ -28,10 +28,10 @@
   "ReleaseType": "Tipo de Lanzamiento",
   "AddFile": "Añadir Archivo",
   "AddVariable": "Añadir variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
+  "Environment": "Entorno",
+  "Environments": "Entornos",
   "AddEnvironment": "Añadir entorno",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "Entorno predeterminado",
   "AddEnvVar": "Añadir variable de entorno",
   "EnvVars": "Variables de entorno",
   "DockerImage": "Imagen de Docker",
@@ -47,11 +47,11 @@
   "DeletePostStep": "Eliminar paso después de ejecución",
   "Shutdown": "Apagar",
   "Command": "Comando",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Directorio actual",
   "Arguments": "Argumentos",
   "AddArgument": "Añadir argumento",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "Convertir",
+  "OfferV1Convert": "Parece que ésta plantilla es de PufferPanel 1.x. ¿Te gustaría que convirtamos ésta plantilla al formato actual de PufferPanel 2.x?",
   "import": {
     "OverrideWarning": "ADVERTENCIA: Las plantillas importadas sobrescribirán las plantillas existentes con el mismo ID",
     "Import": "Importar plantillas",
@@ -72,14 +72,14 @@
       "files": "Archivos"
     },
     "command": {
-      "ProcessorName": "Run Command",
+      "ProcessorName": "Ejecutar comando",
       "commands": "Comandos"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Cambiar archivo",
+      "regex": "Tratar búsqueda como RegEx",
+      "search": "Búsqueda de texto",
+      "replace": "Reemplazar con"
     },
     "writefile": {
       "ProcessorName": "Escribir al archivo",

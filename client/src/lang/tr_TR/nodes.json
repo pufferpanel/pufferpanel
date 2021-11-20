@@ -10,6 +10,8 @@
   "PrivateHost": "Özel Sunucu",
   "PrivatePort": "Özel Port",
   "SftpPort": "SFTP Portu",
+  "WithPrivateAddress": "Use a different host/port for server to server communication",
+  "WithPrivateAddressHint": "This separate address is used when the main node needs to talk to the new node. Useful for example when the nodes are in the same network behind NAT.",
   "SaveConfig": "Ayarları Kaydet",
   "SavePublicKey": "Genel Anahtarı Kaydet",
   "DeploymentInstruction": "To deploy the node, install PufferPanel on the new server and place the config file in `/etc/pufferpanel/`<br/>Restart PufferPanel on the new server afterwards.",

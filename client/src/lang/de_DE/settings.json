@@ -6,6 +6,9 @@
   "MasterUrlHint": "Die Haupt URL des Panels kann unter http://localhost:8080 erreicht werden",
   "CompanyName": "Firmenname",
   "DefaultTheme": "Standarddesign",
+  "RegistrationEnabled": "Benutzern erlauben, sich zu registrieren",
+  "RegistrationEnabledHint1": "Selbst registrierte Benutzer können nichts tun bis die Berechtigungen gegeben wurden",
+  "RegistrationEnabledHint2": "Das Deaktivieren verhindert nur die direkte Registrierung, die Einladung zu einem Server und die Benutzerseite ist nicht betroffen",
   "EmailProvider": "E-Mail-Anbieter",
   "emailProviders": {
     "none": "Kein(e)",

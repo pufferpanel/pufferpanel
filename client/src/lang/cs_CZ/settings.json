@@ -6,6 +6,9 @@
   "MasterUrlHint": "Základní URL adresa, na které může být dostupný panel ve formátu http://localhost:8080",
   "CompanyName": "Název společnosti",
   "DefaultTheme": "Výchozí vzhled",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Poskytovatel e-mailu",
   "emailProviders": {
     "none": "Není",

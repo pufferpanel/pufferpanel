@@ -3,22 +3,25 @@
   "PanelSettings": "Configuracion del panel",
   "EmailSettings": "Ajustes del correo",
   "MasterUrl": "URL Principal",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "EmailProvider": "Email Provider",
+  "MasterUrlHint": "Enlace desde el cual accederás al panel de control siguiento el siguiente formato: http://localhost:8080",
+  "CompanyName": "Nombre de la empresa",
+  "DefaultTheme": "Tema por defecto",
+  "RegistrationEnabled": "Permitir que los usuarios se registre en las sesiones",
+  "RegistrationEnabledHint1": "Los usuarios auto-registrados no pueden hacer nada hasta que se den los permisos",
+  "RegistrationEnabledHint2": "Desactivar esto sólo previene el registro directo, la invitación a un servidor y la página de usuarios no se ven afectados",
+  "EmailProvider": "Proveedor de e-mail",
   "emailProviders": {
-    "none": "None",
+    "none": "Ninguno",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Dirección de remitente",
+    "domain": "Dominio",
+    "key": "Clave API",
+    "host": "Servidor",
+    "username": "Usuario",
+    "password": "Contraseña"
   }
 }

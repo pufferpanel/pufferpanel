@@ -37,5 +37,7 @@
   "ErrSocketFailed": "Conexiunea WebSocket a întâmpinat o eroare, unele caracteristici pot fi lente sau defecte",
   "ErrInviteLinkInvalid": "Link-ul tău de invitație pare a fi invalid",
   "ErrSavingInviteduser": "A apărut o eroare la crearea contului tău",
+  "ErrDuplicateServerName": "A server with this name already exists",
+  "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "Nu se pot încărca fişierele"
 }
