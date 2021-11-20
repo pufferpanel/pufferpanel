@@ -43,6 +43,7 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("PUT", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("POST", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
 	g.Handle("DELETE", "/:serverId", handlers.OAuth2Handler(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
+	g.Handle("PUT", "/:serverId/name/:name", handlers.OAuth2Handler(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
 	g.Handle("GET", "/:serverId/user", handlers.OAuth2Handler(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
@@ -719,6 +720,65 @@ func removeServerUser(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+// @Summary Rename server
+// @Description Renames a server
+// @Accept json
+// @Produce json
+// @Success 200
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string false "Server ID"
+// @Param name path string false "Server Name"
+// @Router /api/servers/{id}/name [post]
+func renameServer(c *gin.Context) {
+	var err error
+
+	t, exist := c.Get("server")
+	if !exist {
+		logging.Error().Printf("getting server for rename with err `%s`", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	server, ok := t.(*models.Server)
+	if !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+
+	name := c.Param("name")
+	if name == "" {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	t, exist = c.Get("db")
+	if !exist {
+		logging.Error().Printf("getting server for rename with err `%s`", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	db, ok := t.(*gorm.DB)
+	if !ok {
+		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		return
+	}
+	ss := &services.Server{DB: db}
+
+	server.Name = name
+	err = ss.Update(server)
+	if err != nil {
+		logging.Error().Printf("renaming server with err `%s`", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /*// @Summary Gets available OAuth2 scopes for the calling user
