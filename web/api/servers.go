@@ -739,7 +739,7 @@ func renameServer(c *gin.Context) {
 
 	t, exist := c.Get("server")
 	if !exist {
-		logging.Error().Printf("getting server for rename with err `%s`", err)
+		logging.Error.Printf("getting server for rename with err `%s`", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -758,7 +758,7 @@ func renameServer(c *gin.Context) {
 
 	t, exist = c.Get("db")
 	if !exist {
-		logging.Error().Printf("getting server for rename with err `%s`", err)
+		logging.Error.Printf("getting server for rename with err `%s`", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -773,7 +773,7 @@ func renameServer(c *gin.Context) {
 	server.Name = name
 	err = ss.Update(server)
 	if err != nil {
-		logging.Error().Printf("renaming server with err `%s`", err)
+		logging.Error.Printf("renaming server with err `%s`", err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
