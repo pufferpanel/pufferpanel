@@ -44,11 +44,13 @@ jobs:
         
     - name: Prepare supporting stuff
       run: |
+        sudo apt-get update
         sudo apt-get install -y gcc-mingw-w64
         
     - name: Build Linux
       run: |
         go build -o pufferpanel -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go test -v ./...
       env:
         GOOS: linux
         GOARCH: amd64
@@ -56,6 +58,7 @@ jobs:
     - name: Build Windows
       run: |
         go build -o pufferpanel.exe -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go test -v ./...
       env:
         GOOS: windows
         GOARCH: amd64
@@ -74,11 +77,3 @@ jobs:
     - name: Generate Swagger Docs
       run: |
         ~/go/bin/swag init -o web/swagger -g web/loader.go
-    - name: Upload Swagger docs
-      uses: actions/upload-artifact@v2
-      with:
-        name: pufferpanel_swagger
-        path: |
-          web/swagger/swagger.json
-          web/swagger/swagger.yaml
-        if-no-files-found: error
