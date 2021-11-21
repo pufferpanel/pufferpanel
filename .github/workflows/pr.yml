@@ -4,7 +4,7 @@ on:
   
 jobs:
   build:
-    name: Build Shared Objects
+    name: Validate Builds
     runs-on: ubuntu-20.04
     if: startsWith(github.head_ref, 'l10n_master') == false
   
