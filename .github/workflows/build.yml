@@ -7,6 +7,7 @@ on:
     - v2.*
     paths-ignore:
       - '.github/workflows/release.yml'
+      - '.github/workflows/pr.yml'
 
 jobs:
   skip-build:
