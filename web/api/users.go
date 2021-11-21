@@ -21,7 +21,9 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/auth"
 	"github.com/spf13/cast"
+	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
 	"net/http"
 )
@@ -110,6 +112,13 @@ func createUser(c *gin.Context) {
 
 	if viewModel.Password == "" {
 		response.HandleError(c, pufferpanel.ErrFieldRequired("password"), http.StatusBadRequest)
+		return
+	}
+
+	validate := validator.New()
+	_ = validate.RegisterValidation("entropy", auth.PasswordEntropy)
+	if err := validate.Struct(viewModel); err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
 

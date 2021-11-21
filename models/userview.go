@@ -15,6 +15,7 @@ package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/web/auth"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
 )
@@ -25,7 +26,7 @@ type UserView struct {
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
 	Password    string `json:"password,omitempty"`
-	NewPassword string `json:"newPassword,omitempty"`
+	NewPassword string `json:"newPassword,omitempty" validate:"entropy"`
 }
 
 func FromUser(model *User) *UserView {
@@ -70,6 +71,12 @@ func (model *UserView) Valid(allowEmpty bool) error {
 	mailErr := model.EmailValid(allowEmpty)
 	if mailErr != nil {
 		return mailErr
+	}
+
+	validate := validator.New()
+	_ = validate.RegisterValidation("entropy", auth.PasswordEntropy)
+	if err := validate.Struct(model); err != nil {
+		return err
 	}
 
 	return nil

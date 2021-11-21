@@ -8,7 +8,7 @@ import (
 
 func TestEntropy(t *testing.T) {
 	validate := validator.New()
-	assert.NoError(t, validate.RegisterValidation("entropy", passwordEntropy))
+	assert.NoError(t, validate.RegisterValidation("entropy", PasswordEntropy))
 	assert.NoError(t, validate.Struct(registerRequestData{
 		Username: "adsdfsdfsdf",
 		Email:    "a@b.co",
@@ -23,7 +23,7 @@ func TestEntropy(t *testing.T) {
 
 func TestEntropyFailure(t *testing.T) {
 	validate := validator.New()
-	assert.NoError(t, validate.RegisterValidation("entropy", passwordEntropy))
+	assert.NoError(t, validate.RegisterValidation("entropy", PasswordEntropy))
 	assert.Error(t, validate.Struct(registerRequestData{
 		Username: "adsdfsdfsdf",
 		Email:    "a@b.co",

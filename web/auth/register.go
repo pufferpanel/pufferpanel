@@ -42,6 +42,7 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	validate := validator.New()
+	_ = validate.RegisterValidation("entropy", PasswordEntropy)
 	err = validate.Struct(request)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -101,5 +102,5 @@ type registerResponse struct {
 type registerRequestData struct {
 	Username string `json:"username" validate:"required,printascii,min=5,max=100"`
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password" validate:"required,entropy"`
 }

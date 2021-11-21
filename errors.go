@@ -126,6 +126,10 @@ var ErrFactoryError = func(operatorName string, err error) *Error {
 
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")
 
+var ErrLowEntropy = func(actual, threshold float64) *Error {
+	return CreateError("password entropy score `${actual}` was lower than expected threshold `${threshold}``", "ErrFactoryError")
+}
+
 func GenerateValidationMessage(err error) error {
 	if errs, ok := err.(validator.ValidationErrors); ok {
 		msg := make([]string, 0)

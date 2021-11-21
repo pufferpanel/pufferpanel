@@ -22,6 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/web/auth"
 	"github.com/spf13/cobra"
 	"gorm.io/gorm"
 )
@@ -218,6 +219,10 @@ func validatePassword(val interface{}) error {
 
 	if secondAttempt != pw {
 		return errors.New("Passwords do not match")
+	}
+
+	if err := auth.EntropyWithErr(pw); err != nil {
+		return err
 	}
 
 	return nil
