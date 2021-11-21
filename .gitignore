@@ -18,3 +18,5 @@ web/swagger/swagger.yaml
 .vs/
 email/
 www/
+operations/spongedl/cache/
+operations/spongedl/mods/
