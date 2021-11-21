@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v2/validation"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
 )
@@ -42,7 +43,7 @@ func RegisterPost(c *gin.Context) {
 	}
 
 	validate := validator.New()
-	_ = validate.RegisterValidation("entropy", PasswordEntropy)
+	_ = validate.RegisterValidation("entropy", validation.PasswordEntropy)
 	err = validate.Struct(request)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return

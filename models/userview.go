@@ -15,7 +15,7 @@ package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/web/auth"
+	"github.com/pufferpanel/pufferpanel/v2/validation"
 	"gopkg.in/go-playground/validator.v9"
 	"net/url"
 )
@@ -74,7 +74,7 @@ func (model *UserView) Valid(allowEmpty bool) error {
 	}
 
 	validate := validator.New()
-	_ = validate.RegisterValidation("entropy", auth.PasswordEntropy)
+	_ = validate.RegisterValidation("entropy", validation.PasswordEntropy)
 	if err := validate.Struct(model); err != nil {
 		return err
 	}
