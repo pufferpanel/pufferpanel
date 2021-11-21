@@ -1,0 +1,84 @@
+name: Build
+on:
+  pull_request:
+  
+jobs:
+  build:
+    name: Build Shared Objects
+    runs-on: ubuntu-20.04
+    if: startsWith(github.head_ref, 'l10n_master') == false
+  
+    steps:
+    - name: Set up Node 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+      with:
+        path: pufferpanel
+
+    - name: Restore NPM cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-nodemodules-14-pr-${{ hashFiles('client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nodemodules-14-pr
+          
+    - name: Restore NPM cache
+      uses: actions/cache@v2
+      with:
+        path: client/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+          
+    - name: Download Go Binaries
+      run: |
+        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
+        mkdir -p ~/go/bin
+        tar -zxf swag*.tar.gz -C ~/go/bin
+        rm -rf swag*.tar.gz
+        
+    - name: Prepare supporting stuff
+      run: |
+        sudo apt-get install -y gcc-mingw-w64
+        
+    - name: Build Linux
+      run: |
+        go build -o pufferpanel -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: linux
+        GOARCH: amd64
+        
+    - name: Build Windows
+      run: |
+        go build -o pufferpanel.exe -v github.com/pufferpanel/pufferpanel/v2/cmd
+      env:
+        GOOS: windows
+        GOARCH: amd64
+        CC: x86_64-w64-mingw32-gcc
+        CXX: x86_64-w64-mingw32-g++
+        CGO_ENABLED: 1
+        
+    - name: npm install, build
+      run: |
+        npm install
+        npm run build
+      env:
+        CI: true
+      working-directory: client
+
+    - name: Generate Swagger Docs
+      run: |
+        ~/go/bin/swag init -o web/swagger -g web/loader.go
+    - name: Upload Swagger docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: pufferpanel_swagger
+        path: |
+          web/swagger/swagger.json
+          web/swagger/swagger.yaml
+        if-no-files-found: error
