@@ -1,3 +1,4 @@
+// +build windows
 /*
  Copyright 2019 Padduck, LLC
 
