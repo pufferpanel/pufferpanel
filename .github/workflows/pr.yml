@@ -63,7 +63,6 @@ jobs:
     - name: Build Windows
       run: |
         go build -o pufferpanel.exe -v github.com/pufferpanel/pufferpanel/v2/cmd
-        go test -v ./...
       env:
         GOOS: windows
         GOARCH: amd64
