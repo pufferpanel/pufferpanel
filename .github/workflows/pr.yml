@@ -6,7 +6,7 @@ jobs:
   build:
     name: Validate Builds
     runs-on: ubuntu-20.04
-    if: startsWith(github.head_ref, 'l10n_master') == false && github.event.issue.pull_request && github.event.issue.comment == "[rerun]"
+    if: ${{ github.event.issue.pull_request }} && startsWith(github.head_ref, 'l10n_master') == false &&  && github.event.issue.comment == "[rerun]"
   
     steps:
     - name: Set up Node 14
