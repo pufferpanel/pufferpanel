@@ -26,7 +26,7 @@ type UserView struct {
 	Email    string `json:"email,omitempty"`
 	//ONLY SHOW WHEN COPYING
 	Password    string `json:"password,omitempty"`
-	NewPassword string `json:"newPassword,omitempty" validate:"entropy"`
+	NewPassword string `json:"newPassword,omitempty" validate:"omitempty,entropy"`
 }
 
 func FromUser(model *User) *UserView {
