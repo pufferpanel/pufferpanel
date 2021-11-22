@@ -83,18 +83,16 @@ func openConnection() (err error) {
 	}
 
 	gormConfig := gorm.Config{}
+	gormConfig.Logger = logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+		SlowThreshold:             time.Second, // Slow SQL threshold
+		LogLevel:                  logger.Warn,
+		IgnoreRecordNotFoundError: true,
+		Colorful:                  false,
+	})
+
 	if config.GetBool("panel.database.log") {
 		logging.Info.Printf("Database logging enabled")
-		newLogger := logger.New(
-			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-			logger.Config{
-				SlowThreshold:             time.Second, // Slow SQL threshold
-				LogLevel:                  logger.Info, // Log level
-				IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-				Colorful:                  false,       // Disable color
-			},
-		)
-		gormConfig.Logger = newLogger
+		gormConfig.Logger.LogMode(logger.Info)
 	}
 
 	// Sqlite doesn't implement constraints see  https://github.com/go-gorm/gorm/wiki/GORM-V2-Release-Note-Draft#all-new-migratolease-Note-Draft#all-new-migrator
