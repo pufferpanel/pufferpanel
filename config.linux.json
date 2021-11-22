@@ -9,9 +9,6 @@
       "files": "/var/www/pufferpanel"
     }
   },
-  "token": {
-    "private": "private.pem"
-  },
   "daemon": {
     "data": {
       "cache": "/var/lib/pufferpanel/cache",

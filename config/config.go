@@ -69,6 +69,7 @@ var defaultSettings = map[string]interface{}{
 	"panel.settings.defaultTheme": "PufferPanel",
 	"panel.settings.masterUrl":    "http://localhost:8080",
 	"panel.sessionKey":            []uint8{},
+	"panel.registrationEnabled":   true,
 
 	//daemon specific settings
 	"daemon.enable":                 true,
