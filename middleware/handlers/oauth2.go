@@ -146,7 +146,15 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 		allowed := false
 
 		//if this is an audience of oauth2, we can use token directly
-		if ti.Audience == "oauth2" {
+		//we only use one audience, so we will only pull that one
+		if len(ti.Audience) != 1 {
+			c.AbortWithStatus(http.StatusForbidden)
+			return
+		}
+
+		audience := ti.Audience[0]
+
+		if audience == "oauth2" {
 			if requiredScope != pufferpanel.ScopeNone {
 				scopes := ti.PanelClaims.Scopes[serverId]
 				if scopes != nil && pufferpanel.ContainsScope(scopes, requiredScope) {
@@ -161,7 +169,7 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 			} else {
 				allowed = true
 			}
-		} else if ti.Audience == "session" {
+		} else if audience == "session" {
 			//otherwise, we have to look at what the user has since session based
 			ps := &services.Permission{DB: db}
 			var perms *models.Permissions

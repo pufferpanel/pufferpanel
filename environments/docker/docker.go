@@ -28,11 +28,11 @@ import (
 	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"runtime"
@@ -173,6 +173,13 @@ func (d *docker) Kill() (err error) {
 }
 
 func (d *docker) Create() error {
+	go func() {
+		client, err := d.getClient()
+		if err != nil {
+			return
+		}
+		_ = d.pullImage(client, context.Background(), false)
+	}()
 	return os.Mkdir(d.RootDirectory, 0755)
 }
 
@@ -286,6 +293,10 @@ func (d *docker) doesContainerExist(client *client.Client, ctx context.Context) 
 }
 
 func (d *docker) pullImage(client *client.Client, ctx context.Context, force bool) error {
+	if d.downloadingImage {
+		return pufferpanel.ErrImageDownloading
+	}
+
 	exists := false
 
 	opts := types.ImageListOptions{
@@ -321,7 +332,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(ioutil.Discard, r)
+	_, err = io.Copy(d.WSManager, r)
 
 	d.downloadingImage = false
 	logging.Debug.Printf("Downloaded image %v", d.ImageName)
@@ -408,7 +419,8 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 	hostConfig.PortBindings = bindings
 
-	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, d.ContainerId)
+	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
+	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
 	return err
 }
 

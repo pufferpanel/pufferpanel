@@ -21,7 +21,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -60,10 +60,10 @@ func Generate(claims jwt.Claims) (string, error) {
 
 func GenerateSession(id uint) (string, error) {
 	claims := &pufferpanel.Claim{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  "session",
-			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Audience:  jwt.ClaimStrings{"session"},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Subject:   strconv.Itoa(int(id)),
 		},
 	}
@@ -73,10 +73,10 @@ func GenerateSession(id uint) (string, error) {
 
 func GenerateOAuthForClient(client *models.Client) (string, error) {
 	claims := &pufferpanel.Claim{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  "oauth2",
-			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Audience:  jwt.ClaimStrings{"oauth2"},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]pufferpanel.Scope{
@@ -90,10 +90,10 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 
 func GenerateOAuthForNode(nodeId uint) (string, error) {
 	claims := &pufferpanel.Claim{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  "oauth2",
-			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Audience:  jwt.ClaimStrings{"oauth2"},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]pufferpanel.Scope{
@@ -132,10 +132,10 @@ func (ps *Permission) GenerateOAuthForUser(userId uint, serverId *string) (strin
 	}
 
 	claims := &pufferpanel.Claim{
-		StandardClaims: jwt.StandardClaims{
-			Audience:  "oauth2",
-			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			Audience:  jwt.ClaimStrings{"oauth2"},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		PanelClaims: pufferpanel.PanelClaims{
 			Scopes: map[string][]pufferpanel.Scope{},

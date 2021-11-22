@@ -13,24 +13,23 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Because we use Alpine, we need musl to use the binary we generated
 RUN apt-get update && \
-    apt-get install musl
-    
-RUN apt-get install -y git wget curl zip unzip
+    apt-get install -y git wget curl zip unzip musl
 
 # java
-RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk-headless openjdk-16-jdk-headless && \
+RUN apt-get install -y openjdk-8-jdk-headless openjdk-16-jdk-headless openjdk-17-jdk-headless && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/java /usr/bin/java8 && \
     ln -sfn /usr/lib/jvm/java-8-openjdk-amd64/bin/javac /usr/bin/javac8 && \
     ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/java /usr/bin/java16 && \
     ln -sfn /usr/lib/jvm/java-16-openjdk-amd64/bin/javac /usr/bin/javac16 && \
-    java8 -version && \
-    javac8 -version && \
-    java16 -version && \
-    javac16 -version
+    ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/java /usr/bin/java17 && \
+    ln -sfn /usr/lib/jvm/java-17-openjdk-amd64/bin/javac /usr/bin/javac17 && \
+    java -version && javac -version && \
+    java8 -version && javac8 -version && \
+    java16 -version && javac16 -version && \
+    java17 -version && javac17 -version
 
 # nodejs
-RUN apt-get update && apt-get install -y nodejs
+RUN apt-get install -y nodejs
 
 # srcds
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -50,31 +49,16 @@ RUN dpkg --add-architecture i386 && \
 RUN apt-get clean all && rm -rf /var/lib/apt/lists/*
 
 ENV PUFFER_LOGS=/etc/pufferpanel/logs \
-    PUFFER_WEB_HOST=0.0.0.0:8080 \
-    PUFFER_PANEL_DATABASE_SESSION=60 \
+    PUFFER_PANEL_TOKEN_PUBLIC=/etc/pufferpanel/public.pem \
+    PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
     PUFFER_PANEL_DATABASE_DIALECT=sqlite3 \
     PUFFER_PANEL_DATABASE_URL="file:/etc/pufferpanel/pufferpanel.db?cache=shared" \
-    PUFFER_PANEL_DATABASE_LOG=false \
-    PUFFER_PANEL_TOKEN_PRIVATE=/etc/pufferpanel/private.pem \
-    PUFFER_PANEL_WEB_FILES=/pufferpanel/www \
-    PUFFER_PANEL_EMAIL_TEMPLATES=/pufferpanel/email/emails.json \
-    PUFFER_PANEL_EMAIL_PROVIDER=debug \
-    PUFFER_PANEL_SETTINGS_COMPANYNAME=PufferPanel \
-    PUFFER_PANEL_SETTINGS_MASTERURL=http://localhost:8080 \
-    PUFFER_DAEMON_CONSOLE_BUFFER=50 \
-    PUFFER_DAEMON_CONSOLE_FORWARD=false \
-    PUFFER_DAEMON_SFTP_HOST=0.0.0.0:5657 \
     PUFFER_DAEMON_SFTP_KEY=/etc/pufferpanel/sftp.key \
-    PUFFER_DAEMON_AUTH_URL=http://localhost:8080 \
-    PUFFER_DAEMON_AUTH_CLIENTID=none \
     PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache \
     PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers \
-    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules \
-    PUFFER_DAEMON_DATA_CRASHLIMIT=3
+    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules
 
 WORKDIR /pufferpanel
-
-RUN ls -l
 
 ENTRYPOINT ["/pufferpanel/pufferpanel"]
 CMD ["run"]

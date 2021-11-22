@@ -19,7 +19,7 @@ RUN go build -v -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.
     mv assets/email /pufferpanel/email && \
     cd client && \
     npm install && \
-    npm run dev-build && \
+    npm run build && \
     mv dist /pufferpanel/www/
 
 ###

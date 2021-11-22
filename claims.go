@@ -16,11 +16,11 @@ package pufferpanel
 import (
 	"crypto/ecdsa"
 	"errors"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type Claim struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	PanelClaims PanelClaims `json:"pufferpanel,omitempty"`
 }
 
