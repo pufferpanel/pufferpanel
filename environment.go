@@ -21,6 +21,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"io"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -132,6 +133,9 @@ func (e *BaseEnvironment) AddListener(ws *Socket) {
 func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...interface{}) {
 	format := msg
 	if daemon {
+		if !strings.HasSuffix(format, "\n") {
+			format += "\n"
+		}
 		format = "[DAEMON] " + msg
 	}
 	if len(data) == 0 {

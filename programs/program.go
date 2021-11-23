@@ -162,14 +162,14 @@ func (p *Program) Start() (err error) {
 	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		logging.Error.Printf("Error generating pre-execution steps: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
 		return
 	}
 
 	err = process.Run(p.RunningEnvironment)
 	if err != nil {
 		logging.Error.Printf("Error running pre-execution steps: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
 		return
 	}
 
@@ -199,7 +199,7 @@ func (p *Program) Start() (err error) {
 
 	if err != nil {
 		logging.Error.Printf("error starting server %s: %s", p.Id(), err)
-		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
 	}
 
 	return
@@ -220,7 +220,7 @@ func (p *Program) Stop() (err error) {
 	}
 	if err != nil {
 		logging.Error.Printf("Error stopping server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n")
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server was told to stop\n")
 	}
@@ -234,7 +234,7 @@ func (p *Program) Kill() (err error) {
 	err = p.RunningEnvironment.Kill()
 	if err != nil {
 		logging.Error.Printf("Error killing server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to kill server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to kill server\n")
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server killed\n")
 	}
@@ -249,9 +249,9 @@ func (p *Program) Create() (err error) {
 	err = p.RunningEnvironment.Create()
 	if err != nil {
 		logging.Error.Printf("Error creating server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server\n")
 	} else {
-		p.RunningEnvironment.DisplayToConsole(true, "Server allocated\nReady to be installed\n")
+		p.RunningEnvironment.DisplayToConsole(true, "Server allocated\n")
 	}
 
 	return
@@ -264,21 +264,21 @@ func (p *Program) Destroy() (err error) {
 	process, err := operations.GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
 	if err != nil {
 		logging.Error.Printf("Error uninstalling server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
 		return
 	}
 
 	err = process.Run(p.RunningEnvironment)
 	if err != nil {
 		logging.Error.Printf("Error uninstalling server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
 		return
 	}
 
 	err = p.RunningEnvironment.Delete()
 	if err != nil {
 		logging.Error.Printf("Error uninstalling server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
 	}
 	return
 }
@@ -293,7 +293,7 @@ func (p *Program) Install() (err error) {
 	running, err := p.IsRunning()
 	if err != nil {
 		logging.Error.Printf("Error checking server status: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n" + err.Error() + "\n")
+		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n")
 		return
 	}
 
@@ -303,7 +303,7 @@ func (p *Program) Install() (err error) {
 
 	if err != nil {
 		logging.Error.Printf("Error stopping server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n%s\n\", err.Error()")
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n")
 		return
 	}
 
@@ -312,7 +312,7 @@ func (p *Program) Install() (err error) {
 	err = os.MkdirAll(p.RunningEnvironment.GetRootDirectory(), 0755)
 	if err != nil && !os.IsExist(err) {
 		logging.Error.Printf("Error creating server directory: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n")
 		return
 	}
 
@@ -320,14 +320,14 @@ func (p *Program) Install() (err error) {
 		process, err := operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
 			logging.Error.Printf("Error installing server: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n%s\n", err.Error())
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
 			return err
 		}
 
 		err = process.Run(p.RunningEnvironment)
 		if err != nil {
 			logging.Error.Printf("Error installing server: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n%s\n", err.Error())
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
 			return err
 		}
 	}
@@ -499,7 +499,7 @@ func (p *Program) afterExit(graceful bool) {
 	processes, err := operations.GenerateProcess(p.Execution.PostExecution, p.RunningEnvironment, mapping, p.Execution.EnvironmentVariables)
 	if err != nil {
 		logging.Error.Printf("Error running post processing for server %s: %s", p.Id(), err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
 		return
 	}
 	p.RunningEnvironment.DisplayToConsole(true, "Running post-execution steps\n")
@@ -508,7 +508,7 @@ func (p *Program) afterExit(graceful bool) {
 	err = processes.Run(p.RunningEnvironment)
 	if err != nil {
 		logging.Error.Printf("Error running post processing for server: %s", err)
-		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n%s\n", err.Error())
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to run post-execution steps\n")
 		return
 	}
 
