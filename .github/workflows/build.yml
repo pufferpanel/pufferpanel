@@ -635,7 +635,7 @@ jobs:
 
     strategy:
       matrix:
-        variant: ["java", "java8", "java16", "nodejs", "srcds"]
+        variant: ["java", "java8", "java16", "java17", "nodejs", "srcds"]
         platform: ["linux/amd64"]
 
     steps:
