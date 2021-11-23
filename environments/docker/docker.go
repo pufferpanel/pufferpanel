@@ -174,11 +174,18 @@ func (d *docker) Kill() (err error) {
 
 func (d *docker) Create() error {
 	go func() {
-		client, err := d.getClient()
+		c, err := d.getClient()
 		if err != nil {
+			logging.Error.Printf("Error getting docker client: %s\n", err.Error())
+			d.DisplayToConsole(true, "Error downloading image")
 			return
 		}
-		_ = d.pullImage(client, context.Background(), false)
+		err = d.pullImage(c, context.Background(), false)
+		if err != nil {
+			logging.Error.Printf("Error downloading image: %s\n", err.Error())
+			d.DisplayToConsole(true, "Error downloading image")
+			return
+		}
 	}()
 	return os.Mkdir(d.RootDirectory, 0755)
 }
@@ -326,15 +333,23 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
 	d.downloadingImage = true
+	defer func() {
+		d.downloadingImage = false
+	}()
 
 	r, err := client.ImagePull(ctx, d.ImageName, op)
 	defer pufferpanel.Close(r)
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(d.WSManager, r)
 
-	d.downloadingImage = false
+	w := &ImageWriter{Parent: d.WSManager}
+	_, err = io.Copy(w, r)
+
+	if err != nil {
+		return err
+	}
+
 	logging.Debug.Printf("Downloaded image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloaded image for container\n")
 	return err
