@@ -42,14 +42,13 @@ import (
 
 type docker struct {
 	*pufferpanel.BaseEnvironment
-	ContainerId  string              `json:"-"`
-	ImageName    string              `json:"image"`
-	Binds        map[string]string   `json:"bindings,omitempty"`
-	NetworkMode  string              `json:"networkMode,omitempty"`
-	Network      string              `json:"networkName,omitempty"`
-	Ports        []string            `json:"portBindings,omitempty"`
-	Resources    container.Resources `json:"resources,omitempty"`
-	ExposedPorts nat.PortSet         `json:"exposedPorts,omitempty"`
+	ContainerId string              `json:"-"`
+	ImageName   string              `json:"image"`
+	Binds       map[string]string   `json:"bindings,omitempty"`
+	NetworkMode string              `json:"networkMode,omitempty"`
+	Network     string              `json:"networkName,omitempty"`
+	Ports       []string            `json:"portBindings,omitempty"`
+	Resources   container.Resources `json:"resources,omitempty"`
 
 	connection       types.HijackedResponse
 	cli              *client.Client
@@ -396,7 +395,6 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		Image:           d.ImageName,
 		WorkingDir:      workDir,
 		Env:             newEnv,
-		ExposedPorts:    d.ExposedPorts,
 	}
 
 	if runtime.GOOS == "linux" {
@@ -433,6 +431,12 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		return err
 	}
 	hostConfig.PortBindings = bindings
+
+	exposedPorts := make(nat.PortSet)
+	for k, _ := range bindings {
+		exposedPorts[k] = struct{}{}
+	}
+	containerConfig.ExposedPorts = exposedPorts
 
 	//for now, default to linux across the board. This resolves problems that Windows has when you use it and docker
 	_, err = client.ContainerCreate(ctx, containerConfig, hostConfig, networkConfig, &v1.Platform{OS: "linux"}, d.ContainerId)
