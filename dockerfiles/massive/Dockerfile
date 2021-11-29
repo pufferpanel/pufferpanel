@@ -10,8 +10,15 @@ RUN mkdir -p /etc/pufferpanel && \
     mkdir -p /var/lib/pufferpanel
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG APTPROXY
 
 # Because we use Alpine, we need musl to use the binary we generated
+RUN if [ -n "$APTPROXY" ] ; then \
+      echo "deb $APTPROXY/ubuntu-focal/ focal main restricted universe multiverse" > /etc/apt/sources.list ; \
+      echo "deb $APTPROXY/ubuntu-focal-updates/ focal-updates main restricted universe multiverse" >> /etc/apt/sources.list ; \
+      echo "deb $APTPROXY//ubuntu-focal-backports/ focal-backports main restricted universe multiverse" >> /etc/apt/sources.list ;\
+    fi
+
 RUN apt-get update && \
     apt-get install -y git wget curl zip unzip musl
 

@@ -6,8 +6,13 @@ FROM golang:alpine AS builder
 ARG tags=none
 ARG version=devel
 ARG sha=devel
+ARG goproxy
+ARG npmproxy
 
 ENV CGOENABLED=1
+
+ENV npm_config_registry=$npmproxy
+ENV GOPROXY=$goproxy
 
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ python2 && \
