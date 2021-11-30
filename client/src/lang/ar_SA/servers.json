@@ -41,6 +41,7 @@
   "Autostart": "بدء تشغيل الخادم عندما يشتغل ال Node",
   "Autorestart": "إعادة تشغيل الخادم عندما يتوقف بشكل طبيعي",
   "Autorecover": "إعادة تشغيل الخادم عند توقفة",
+  "Rename": "Rename Server",
   "Tasks": "المهام",
   "NoTasks": "لا توجد مهام",
   "RunTask": "Run Task",
