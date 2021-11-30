@@ -41,6 +41,7 @@
   "Autostart": "ノード開始時にサーバーを起動する",
   "Autorestart": "Restart the server when it stops normally",
   "Autorecover": "クラッシュした際にサーバーを再起動します",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
