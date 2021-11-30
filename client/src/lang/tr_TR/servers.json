@@ -41,6 +41,7 @@
   "Autostart": "Node başladığında sunucuyu başlat",
   "Autorestart": "Sunucu normal bir şekilde kapatıldığında yeniden başlat",
   "Autorecover": "Sunucu çöktüğünde otomatik yeniden başlat",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
