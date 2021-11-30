@@ -41,6 +41,7 @@
   "Autostart": "노드가 시작되었을때 서버 시작",
   "Autorestart": "서버가 중지되었을 때 재시작",
   "Autorecover": "오류로 서버가 중지되었을 때 재시작",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
