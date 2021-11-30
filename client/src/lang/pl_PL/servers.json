@@ -41,6 +41,7 @@
   "Autostart": "Uruchom serwer po uruchomieniu węzła",
   "Autorestart": "Uruchom ponownie serwer po normalnym zatrzymaniu",
   "Autorecover": "Uruchom ponownie serwer po awarii",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
