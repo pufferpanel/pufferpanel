@@ -41,6 +41,7 @@
   "Autostart": "Iniciar o servidor junto com o node",
   "Autorestart": "Reiniciar o servidor ao desligar",
   "Autorecover": "Reiniciar o servidor ao crashar",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
