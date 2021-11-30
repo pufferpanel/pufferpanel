@@ -41,6 +41,7 @@
   "Autostart": "Server starten, wenn der Knoten startet",
   "Autorestart": "Server neu starten, wenn er gewöhnlich gestoppt ist",
   "Autorecover": "Server neu starten, wenn er abgestürzt ist",
+  "Rename": "Rename Server",
   "Tasks": "Aufgaben",
   "NoTasks": "Keine Aufgaben",
   "RunTask": "Aufgabe ausführen",
