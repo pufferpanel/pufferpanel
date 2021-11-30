@@ -41,6 +41,7 @@
   "Autostart": "Starta il server quando il nodo starta",
   "Autorestart": "Riavvia il server quando si spegne normalmente",
   "Autorecover": "Riavvia il server quando crasha",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
