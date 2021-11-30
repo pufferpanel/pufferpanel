@@ -267,6 +267,13 @@ export const ServersApi = {
     })
   },
 
+  updateServerName (id, newName) {
+    return this.withErrorHandling(async ctx => {
+      await ctx.$http.put(`/api/servers/${id}/name/${encodeURIComponent(newName)}`)
+      return true
+    })
+  },
+
   updateServerDefinition (id, data) {
     return this.withErrorHandling(async ctx => {
       await ctx.$http.post(`/proxy/daemon/server/${id}`, data)

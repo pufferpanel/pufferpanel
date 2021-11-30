@@ -22,6 +22,13 @@
             >
               <server-status :server="server" />
               {{ server.name }}
+              <v-btn
+                v-if="server.permissions.editServerData"
+                icon
+                @click="startRename()"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
             </h1>
             <div style="float: right;">
               <server-controls :server="server" />
@@ -224,6 +231,48 @@
         </v-bottom-navigation>
       </v-col>
     </v-row>
+
+    <ui-overlay
+      v-model="renameOpen"
+      :title="$t('servers.Rename')"
+      card
+      closable
+      @close="resetRename()"
+    >
+      <v-row>
+        <v-col cols="12">
+          <ui-input
+            v-model="newName"
+            :label="$t('common.Name')"
+            autofocus
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-btn
+            block
+            color="error"
+            @click="resetRename()"
+            v-text="$t('common.Cancel')"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-btn
+            block
+            color="success"
+            @click="confirmRename()"
+            v-text="$t('common.Save')"
+          />
+        </v-col>
+      </v-row>
+    </ui-overlay>
   </div>
 </template>
 
@@ -236,7 +285,9 @@ export default {
     return {
       socketError: false,
       currentTab: 'console',
-      showTasks: false
+      showTasks: false,
+      renameOpen: false,
+      newName: ''
     }
   },
   mounted () {
@@ -251,6 +302,21 @@ export default {
 
     if (process.env.NODE_ENV !== 'production') {
       window.pufferpanel.allowServerTasks = () => { this.showTasks = true }
+    }
+  },
+  methods: {
+    startRename () {
+      this.newName = this.server.name
+      this.renameOpen = true
+    },
+    resetRename () {
+      this.renameOpen = false
+      this.newName = ''
+    },
+    confirmRename () {
+      this.$api.updateServerName(this.server.id, this.newName)
+      this.server.name = this.newName
+      this.resetRename()
     }
   }
 }
