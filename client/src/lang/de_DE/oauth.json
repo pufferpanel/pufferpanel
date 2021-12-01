@@ -9,5 +9,7 @@
   "DeleteWarning": "Das Löschen eines OAuth2-Clients kann weder rückgängig gemacht noch ein neuer Client mit den gleichen Zugangsdaten erstellt werden. Alle Integrationen, die diesen Client noch verwenden, werden nach dem Löschen unterbrochen.",
   "ConfirmDelete": "Ich bin mir der Auswirkungen bewusst, die das Löschen dieses OAuth2-Clients haben wird und möchte fortfahren.",
   "Delete": "{clientName} löschen?",
-  "Clients": "OAuth2 Clients"
+  "Clients": "OAuth2 Clients",
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
+  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }
