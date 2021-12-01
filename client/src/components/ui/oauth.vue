@@ -2,6 +2,7 @@
   <v-card>
     <v-card-title v-text="$t('oauth.Clients')" />
     <v-card-subtitle>
+      <div>{{ $t('oauth.' + (isServer ? 'ServerDescription' : 'AccountDescription'))}}</div>
       <a target="_blank" :href="apiDocsUrl">
         {{ $t('oauth.Docs') }}
         <v-icon class="caption">mdi-launch</v-icon>
