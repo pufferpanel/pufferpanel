@@ -9,5 +9,7 @@
   "DeleteWarning": "La eliminación de un cliente OAuth2 no se puede deshacer, ni se puede crear un nuevo cliente con las mismas credenciales. Todas las integraciones que todavía utilizan este cliente se romperán después de su eliminación.",
   "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y desea continuar.",
   "Delete": "¿Eliminar {clientName}?",
-  "Clients": "Clientes de OAuth2"
+  "Clients": "Clientes de OAuth2",
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
+  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }
