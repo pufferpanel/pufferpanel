@@ -9,11 +9,11 @@
   "Size": "Розмір",
   "NoFiles": "Тут ще немає жодного файлу, будь ласка, створіть декілька для прикладу, натиснувши кнопку встановлення у верхній частині сторінки",
   "FileLoadFailed": "Помилка завантаження файлу",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Оновити",
+  "CreateFile": "Створити файл",
+  "CreateFolder": "Створити папку",
+  "ArchiveCurrentFolder": "Створити архів із поточної папки",
+  "ArchiveFolder": "Створити архів із папки",
+  "ExtractArchive": "Розпакувати архів",
+  "DropToUpload": "Киньте файли сюди, щоб завантажити їх"
 }
