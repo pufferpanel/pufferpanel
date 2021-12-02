@@ -34,10 +34,10 @@
   "ErrSessionTimedOut": "Ваш сеанс минув, будь ласка, увійдіть знову",
   "ErrMissingScope": "Ви не маєте прав на виконання цієї дії",
   "ErrInvalidJson": "Неприпустимі дані json",
-  "ErrSocketFailed": "The WebSocket connection encountered an error, some features might be slow or broken",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
+  "ErrSocketFailed": "З'єднання WebSocket зіткнулося з помилкою, деякі функції можуть працювати повільно",
+  "ErrInviteLinkInvalid": "Схоже, що ваше посилання на запрошення недійсне",
+  "ErrSavingInviteduser": "Виникла помилка під час створення вашого облікового запису",
+  "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
+  "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
+  "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки"
 }
