@@ -41,6 +41,7 @@
   "Autostart": "Pornește serverul când porneste modulul",
   "Autorestart": "Repornește serverul când se oprește normal",
   "Autorecover": "Repornește serverul atunci când se blochează",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

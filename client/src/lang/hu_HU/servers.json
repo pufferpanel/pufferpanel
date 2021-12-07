@@ -41,6 +41,7 @@
   "Autostart": "Szerver indítása, amikor a csomópont elindul",
   "Autorestart": "Szerver újraindítása automatikusan leállás esetén",
   "Autorecover": "Szerver újraindítása, ha összeomlik",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

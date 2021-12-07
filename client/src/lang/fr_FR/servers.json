@@ -41,6 +41,7 @@
   "Autostart": "Démarrer le serveur au démarrage du nœud",
   "Autorestart": "Redémarrer le serveur lorsqu'il s'arrête normalement",
   "Autorecover": "Redémarrer le serveur quand il plante",
+  "Rename": "Rename Server",
   "Tasks": "Tâches",
   "NoTasks": "Aucune tâche",
   "RunTask": "Exécuter la tâche",

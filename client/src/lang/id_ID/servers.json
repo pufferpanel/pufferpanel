@@ -41,6 +41,7 @@
   "Autostart": "Mulai server saat node dimulai",
   "Autorestart": "Mulai ulang server ketika berhenti secara normal",
   "Autorecover": "Mulai ulang server saat crash",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

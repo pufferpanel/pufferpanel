@@ -41,6 +41,7 @@
   "Autostart": "節點啟動時啟動伺服器",
   "Autorestart": "正常停止時重新啟動伺服器",
   "Autorecover": "崩潰時重新啟動伺服器",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

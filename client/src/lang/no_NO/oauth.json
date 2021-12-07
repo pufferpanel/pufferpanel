@@ -9,5 +9,7 @@
   "DeleteWarning": "Sletting av en OAuth2-klient kan ikke angres og det kan heller ikke opprettes en ny klient med samme legitimasjon. Alle integrasjoner som fortsatt bruker denne klienten, vil bryte etter at den er slettet.",
   "ConfirmDelete": "Jeg er klar over effektene ved å slette denne OAuth2-klienten vil ha, og jeg ønsker å fortsette.",
   "Delete": "Slett {clientName}?",
-  "Clients": "OAuth2 klienter"
+  "Clients": "OAuth2 klienter",
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
+  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }

@@ -41,6 +41,7 @@
   "Autostart": "Starta servern när noden startar",
   "Autorestart": "Starta om servern när den stoppas vanligt",
   "Autorecover": "Starta om servern när den kraschar",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

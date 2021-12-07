@@ -1,110 +1,110 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "Шаблони",
+  "NoTemplates": "Тут ще немає шаблонів",
+  "Deleted": "Шаблон видалено",
+  "New": "Створити новий шаблон",
+  "Edit": "Редагувати шаблон",
+  "Editor": "Редактор",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Display": "Відображення імені",
+  "Type": "Тип",
+  "Variables": "Змінні",
+  "Install": "Установити",
+  "AddInstallStep": "Додати крок встановлення",
+  "DeleteInstallStep": "Видалити крок встановлення",
+  "Description": "Опис",
+  "DataType": "Тип даних",
+  "DefaultValue": "Стандартне значення",
+  "Required": "Необхідний",
+  "UserEditable": "Користувачі можуть редагувати",
+  "Value": "Значення",
+  "AddOption": "Додати параметр",
+  "AddCommand": "Додати команду",
+  "Filename": "Назва файлу",
+  "Content": "Контент",
+  "Source": "Джерело",
+  "Target": "Ціль",
+  "Version": "Версія",
+  "ReleaseType": "Тип релізу",
+  "AddFile": "Додати файл",
+  "AddVariable": "Додати змінну",
+  "Environment": "Середовище",
+  "Environments": "Середовища",
+  "AddEnvironment": "Додати середовище",
+  "DefaultEnvironment": "Середовище за замовчуванням",
+  "AddEnvVar": "Додати змінну середовища",
+  "EnvVars": "Змінні середовища",
+  "DockerImage": "Образ Docker",
+  "SaveSuccess": "Збережені шаблони",
+  "VarNameNoSpaces": "Ім'я змінної не може бути пустим або містити пробіли",
+  "SupportedEnvironments": "Підтримувані середовища",
+  "RunConfig": "Конфігурація запуску",
+  "PreHook": "До запуску перемінна",
+  "PostHook": "Післа запуска перемінна",
+  "AddPreStep": "Додати крок для запуску",
+  "AddPostStep": "Додати крок для запуску",
+  "DeletePreStep": "Видалити крок попереднього запуску",
+  "DeletePostStep": "Видалити крок попереднього запуску",
+  "Shutdown": "Вимкнути",
+  "Command": "Команда",
+  "WorkingDirectory": "Робочий каталог",
+  "Arguments": "Аргументи",
+  "AddArgument": "Додати аргумент",
+  "Convert": "Конвертувати",
+  "OfferV1Convert": "Цей шаблон json виглядає як шаблон для PufferPanel 1.x, ви хочете автоматично перетворити це в шаблон для PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "ПОПЕРЕДЖЕННЯ: імпортовані шаблони WILL перезаписувати існуючі шаблони з тим же ID",
+    "Import": "імпортувати шаблони",
+    "Tooltip": "Імпортувати шаблони з офіційного репозиторію",
+    "Select": "Виберіть шаблони для імпорту",
+    "Started": "Імпортування шаблонів, будь ласка, зачекайте трохи",
+    "Successful": "Шаблон {template} успішно імпортовано",
+    "NoTemplatesTitle": "Ви хочете імпортувати шаблони?",
+    "NoTemplatesContent": "В даний час у вас немає жодного шаблону. Шаблони необхідні для створення серверів.<br/>Імпортувати деякі шаблони з офіційного сховища PufferPanel шаблонів зараз?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Команда",
+    "Signal": "Сигнал"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Завантажити",
+      "files": "Файли"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Команди запуску",
+      "commands": "Команди"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Змінити файл",
+      "regex": "Розглядати пошук як RegEx",
+      "search": "Текст, за яким шукати",
+      "replace": "Заміняти на"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Запис у файл",
+      "text": "Контент"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Перемістити файл",
+      "source": "Джерело",
+      "target": "Ціль"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Створити каталог"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Завантажити Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Завантажити Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Завантажити Minecraft SpongeForge",
+      "releaseType": "Тип релізу"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Завантажити Minecraft Fabric"
     }
   }
 }

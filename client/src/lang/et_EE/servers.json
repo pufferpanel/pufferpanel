@@ -41,6 +41,7 @@
   "Autostart": "Käivita server kui sõlm käivitub",
   "Autorestart": "Taaskäivita server, kui see peatub normaalselt",
   "Autorecover": "Taaskäivita server kui see jookseb kokku",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",

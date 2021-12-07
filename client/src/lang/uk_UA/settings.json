@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Налаштування",
+  "PanelSettings": "Налаштування панелі",
+  "EmailSettings": "Налаштування електронної пошти",
+  "MasterUrl": "Головний URL",
+  "MasterUrlHint": "Базова URL-адреса може бути досягнута панель у форматі http://localhost:8080",
+  "CompanyName": "Назва компанії",
+  "DefaultTheme": "Типова тема",
+  "RegistrationEnabled": "Дозволити користувачам реєструватись самі по собі",
+  "RegistrationEnabledHint1": "Власні зареєстровані користувачі не можуть нічого робити до вказаних дозволів",
+  "RegistrationEnabledHint2": "Відключення цього лише запобігає прямій реєстрації, запрошення на сервер і на сторінці користувачів не впливають",
+  "EmailProvider": "Поштова служба",
   "emailProviders": {
-    "none": "None",
+    "none": "Нічого",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
     "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "domain": "Домен",
+    "key": "Ключі API",
+    "host": "Вузол",
+    "username": "Ім'я користувача",
+    "password": "Пароль"
   }
 }

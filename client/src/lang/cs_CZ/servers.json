@@ -41,6 +41,7 @@
   "Autostart": "Spustit server při spuštění uzlu",
   "Autorestart": "Restartovat server, když se normálně zastaví",
   "Autorecover": "Restartovat server při pádu",
+  "Rename": "Rename Server",
   "Tasks": "Tasks",
   "NoTasks": "No Tasks",
   "RunTask": "Run Task",
