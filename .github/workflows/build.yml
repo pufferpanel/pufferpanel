@@ -136,7 +136,7 @@ jobs:
     - name: Build Windows
       run: |
         go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
-        mv License.rtf installer.wxs build-artifacts/
+        mv LICENSE.rtf installer.wxs build-artifacts/
       env:
         GOOS: windows
         GOARCH: amd64
