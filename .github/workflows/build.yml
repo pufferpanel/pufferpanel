@@ -136,6 +136,7 @@ jobs:
     - name: Build Windows
       run: |
         go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        mv License.rtf installer.wxs build-artifacts/
       env:
         GOOS: windows
         GOARCH: amd64
@@ -162,14 +163,6 @@ jobs:
           $VERSION="${{ github.ref }}".substring('refs/tags/v'.length)
         }
         echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-        
-    - name: Get extra files
-      run: |
-        git init
-        git remote add origin https://github.com/${{ github.repository }}.git
-        git fetch
-        git checkout -m origin/${{ github.ref_name }} installer.wxs
-        git checkout -m origin/${{ github.ref_name }} LICENSE.rtf
             
     - uses: actions/download-artifact@v2
       with:
