@@ -1,10 +1,10 @@
 {
   "Id": "ID",
-  "Name": "Name",
-  "Address": "Address",
-  "Online": "Online",
-  "Offline": "Offline",
-  "Loading": "Loading...",
+  "Name": "Όνομα",
+  "Address": "Διεύθυνση",
+  "Online": "Σε σύνδεση",
+  "Offline": "Εκτός σύνδεσης",
+  "Loading": "Φόρτωση...",
   "General": "General",
   "Language": "Language",
   "SelectLanguage": "Select Language",
@@ -43,7 +43,7 @@
   "Wednesday": "Wednesday",
   "Thursday": "Thursday",
   "Friday": "Friday",
-  "Saturday": "Saturday",
-  "Sunday": "Sunday",
-  "Description": "Description"
+  "Saturday": "Σάββατο",
+  "Sunday": "Κυριακή",
+  "Description": "Περιγραφή"
 }
