@@ -1,6 +1,6 @@
 {
-  "FileManager": "Dateiverwaltung",
-  "NewFolder": "Ordner erstellen",
+  "FileManager": "Datei-Manager",
+  "NewFolder": "Neuer Ordner",
   "NewFile": "Neue Datei",
   "LastModified": "Zuletzt geändert",
   "ConfirmDelete": "Soll diese Datei wirklich gelöscht werden?",
@@ -8,7 +8,7 @@
   "Download": "Herunterladen",
   "Size": "Größe",
   "NoFiles": "Hier sind noch keine Dateien, erstelle welche, zum Beispiel indem du oben auf der Seite auf \"Installieren\" klickst",
-  "FileLoadFailed": "Laden der Datei fehlgeschlagen",
+  "FileLoadFailed": "Die Datei konnte nicht geladen werden",
   "Refresh": "Aktualisieren",
   "CreateFile": "Datei erstellen",
   "CreateFolder": "Ordner erstellen",
