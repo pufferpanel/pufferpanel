@@ -31,13 +31,13 @@
   "ErrPasswordRequirements": "Lösenord måste vara minst 8 tecken",
   "ErrUsernameRequirements": "Användarnamn måste vara minst 3 tecken och innehålla alfanumeriska tecken, _, eller -",
   "ErrPasswordsNotIdentical": "Lösenorden är inte likadana",
-  "ErrSessionTimedOut": "Your session timed out, please log in again",
+  "ErrSessionTimedOut": "Din session har gått ut, vänligen logga in igen",
   "ErrMissingScope": "Du har inte behörighet att utföra denna åtgärd",
   "ErrInvalidJson": "Json-datan är ogiltiga",
   "ErrSocketFailed": "WebSocket-anslutningen stötte på ett fel, vissa funktioner kan vara långsam eller trasig",
-  "ErrInviteLinkInvalid": "Your invite link appears to be invalid",
-  "ErrSavingInviteduser": "There was an error creating your account",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Cannot upload folders"
+  "ErrInviteLinkInvalid": "Din inbjudningslänk verkar vara ogiltig",
+  "ErrSavingInviteduser": "Ett fel uppstod vid skapandet av ditt konto",
+  "ErrDuplicateServerName": "En server med detta namn finns redan",
+  "ErrDuplicateNodeName": "En nod med detta namn finns redan",
+  "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar"
 }
