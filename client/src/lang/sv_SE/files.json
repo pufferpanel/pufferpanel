@@ -9,11 +9,11 @@
   "Size": "Storlek",
   "NoFiles": "Det finns inga filer här ännu, gå och skapa några till exempel genom att klicka på installationsknappen högst upp på sidan",
   "FileLoadFailed": "Det gick inte att ladda filen",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "Uppdatera",
+  "CreateFile": "Skapa fil",
+  "CreateFolder": "Skapa mapp",
+  "ArchiveCurrentFolder": "Skapa arkiv från aktuell mapp",
+  "ArchiveFolder": "Skapa arkiv från mapp",
+  "ExtractArchive": "Extrahera arkiv",
+  "DropToUpload": "Släpp filer här för att ladda upp dem"
 }
