@@ -57,7 +57,7 @@
     "Import": "Import templates",
     "Tooltip": "Import templates from the official repository",
     "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
+    "Started": "Importerar mallar, vänligen vänta en stund",
     "Successful": "Successfully imported template {template}",
     "NoTemplatesTitle": "Do you want to import templates?",
     "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
