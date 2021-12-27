@@ -21,90 +21,90 @@
   "AddOption": "Lägg till ett alternativ",
   "AddCommand": "Lägg till kommando",
   "Filename": "Filnamn",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
+  "Content": "Innehåll",
+  "Source": "Källa",
+  "Target": "Mål",
   "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "ReleaseType": "Utgivningstyp",
+  "AddFile": "Lägg till fil",
+  "AddVariable": "Lägg till variabel",
+  "Environment": "Miljö",
+  "Environments": "Miljöer",
+  "AddEnvironment": "Lägg till miljö",
+  "DefaultEnvironment": "Förvald miljö",
+  "AddEnvVar": "Lägg till miljövariabel",
+  "EnvVars": "Miljövariabler",
+  "DockerImage": "Docker bild",
+  "SaveSuccess": "Sparade mallar",
+  "VarNameNoSpaces": "Ett variabelnamn kan inte vara tomt eller innehålla mellanslag",
+  "SupportedEnvironments": "Stödda miljöer",
+  "RunConfig": "Kör konfiguration",
+  "PreHook": "Innan körning hook",
+  "PostHook": "Efter körning hook",
+  "AddPreStep": "Lägg till steg innan körning",
+  "AddPostStep": "Lägg till steg efter körning",
+  "DeletePreStep": "Ta bort steg innan körning",
+  "DeletePostStep": "Ta bort steg efter körning",
+  "Shutdown": "Stäng av",
+  "Command": "Kommando",
+  "WorkingDirectory": "Arbetskatalog",
+  "Arguments": "Argument",
+  "AddArgument": "Lägg till ett argument",
+  "Convert": "Konvertera",
+  "OfferV1Convert": "Denna mall json ser ut som en mall för PufferPanel 1.x, vill du automatiskt konvertera detta till en mall för PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
+    "OverrideWarning": "VARNING: Importerade mallar skriver över befintliga mallar med samma ID",
+    "Import": "Importera mallar",
+    "Tooltip": "Importera mallar från det officiella arkivet",
+    "Select": "Välj mallar att importera",
     "Started": "Importerar mallar, vänligen vänta en stund",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "Successful": "Mallen {template} har importerats",
+    "NoTemplatesTitle": "Vill du importera mallar?",
+    "NoTemplatesContent": "Du har för närvarande inga mallar. Mallar är nödvändiga för att skapa servrar.<br/>Vill du importera några mallar från den officiella PufferPanelens utvecklingskatalog nu?"
   },
   "stop": {
-    "Command": "Command",
+    "Command": "Kommando",
     "Signal": "Signal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Ladda ned",
+      "files": "Filer"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Kör kommando",
+      "commands": "Kommandon"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Ändra fil",
+      "regex": "Behandla sökning som RegEx",
+      "search": "Text att söka efter",
+      "replace": "Ersätt med"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Skriv till fil",
+      "text": "Innehåll"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Flytta fil",
+      "source": "Källa",
+      "target": "Mål"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Skapa katalog"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Ladda ner Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Ladda ner Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Ladda ner Minecraft Forge",
+      "releaseType": "Utgivningstyp"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Ladda ner Minecraft Fabric"
     }
   }
 }
