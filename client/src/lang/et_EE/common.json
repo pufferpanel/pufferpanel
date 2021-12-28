@@ -38,12 +38,12 @@
   "Protocol": "Protokoll",
   "Add": "Lisa",
   "Ignore": "Ignoreeri",
-  "Monday": "Monday",
-  "Tuesday": "Tuesday",
-  "Wednesday": "Wednesday",
-  "Thursday": "Thursday",
-  "Friday": "Friday",
-  "Saturday": "Saturday",
-  "Sunday": "Sunday",
-  "Description": "Description"
+  "Monday": "Esmaspäev",
+  "Tuesday": "Teisipäev",
+  "Wednesday": "Kolmapäev",
+  "Thursday": "Neljapäev",
+  "Friday": "Reede",
+  "Saturday": "Laupäev",
+  "Sunday": "Pühapäev",
+  "Description": "Kirjeldus"
 }
