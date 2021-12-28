@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "OAuthi 2 kliendi tunnistus",
+  "ClientId": "Kliendi ID",
+  "ClientSecret": "Kliendi Saladus",
+  "NewClientWarning": "Märkige üles kliendi saladus, pärast selle dialoogi sulgemist seda enam kunagi ei kuvata. Selle kaotamine või unustamine muudab selle kliendi täiesti kasutuskõlbmatuks.",
+  "Create": "Tee uus OAuth2 Klient",
+  "UnnamedClient": "Nimeta OAuth2 Klient",
+  "Docs": "Leia API dokumentatsioon siin",
+  "DeleteWarning": "OAuth2 kliendi kustutamist ei saa tagasi võtta ega luua uut klienti samade mandaatidega. Kõik seda klienti veel kasutavad integratsioonid katkevad pärast selle kustutamist.",
+  "ConfirmDelete": "Olen teadlik selle OAuth2 kliendi kustutamise tagajärgedest ja soovin jätkata.",
+  "Delete": "Kustuta {clientName}?",
+  "Clients": "OAuth2 Kliendid",
+  "AccountDescription": "Siin loetletud OAuth2 kliendid pärivad kõik teie konto load",
+  "ServerDescription": "Siin loetletud OAuth2 kliendid pärivad ainult teie kontode õigused selles serveris"
 }
