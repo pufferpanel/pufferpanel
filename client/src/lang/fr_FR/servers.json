@@ -60,6 +60,6 @@
   "Advanced": "Advanced",
   "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
   "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
-  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
-  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
+  "WeeklyTab": "onglet hebdo\n",
+  "MonthlyTab": "onglet mensuel"
 }
