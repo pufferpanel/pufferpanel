@@ -16,12 +16,12 @@
   "CreateServers": "Maak nieuwe server",
   "DeleteServers": "Verwijder server",
   "EditServerAdmin": "Bewerk server instellingen",
-  "ViewNodes": "See Nodes",
-  "EditNodes": "Edit Nodes",
-  "DeployNodes": "Deploy new Nodes",
-  "ViewTemplates": "See Templates",
-  "EditTemplates": "Edit Templates",
-  "ViewUsers": "See all Users",
-  "EditUsers": "Edit other Users",
-  "PanelSettings": "Change panel settings"
+  "ViewNodes": "Zie nodes",
+  "EditNodes": "Nodes bewerken",
+  "DeployNodes": "Nieuwe nodes implementeren",
+  "ViewTemplates": "Meer templates bekijken",
+  "EditTemplates": "Bewerk template",
+  "ViewUsers": "Alle gebruikers bekijken",
+  "EditUsers": "Andere gebruikers bewerken",
+  "PanelSettings": "Verander panel instellingen"
 }
