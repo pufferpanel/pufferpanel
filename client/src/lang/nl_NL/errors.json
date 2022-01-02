@@ -37,7 +37,7 @@
   "ErrSocketFailed": "De WebSocket verbinding heeft een error aangetroffen! Sommige functies zijn misschien sloom of werken niet",
   "ErrInviteLinkInvalid": "Uw uitnodigings-link is ongeldig",
   "ErrSavingInviteduser": "Er is een fout opgetreden tijdens het maken van uw account",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDuplicateServerName": "Een server met deze naam bestaat al",
+  "ErrDuplicateNodeName": "Er is al een bestand met deze naam",
   "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden"
 }
