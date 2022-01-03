@@ -18,10 +18,10 @@
   },
   "emailFields": {
     "from": "Sender Adress",
-    "domain": "Domain",
+    "domain": "Domein",
     "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "host": "Hostnaam",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord"
   }
 }
