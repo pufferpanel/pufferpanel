@@ -92,11 +92,6 @@ func (s Scheduler) Remove(name string) error {
 	return nil
 }
 
-// Replace a task with a new one
-func (s Scheduler) Replace(oldTask, newTask pufferpanel.Task) error {
-	return nil
-}
-
 // Rebuild will stop the scheduler, destroy it and create a new instance
 func (s Scheduler) Rebuild() error {
 	if err := s.Stop(); err != nil {

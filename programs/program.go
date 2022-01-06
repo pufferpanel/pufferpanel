@@ -282,7 +282,7 @@ func (p *Program) Destroy() (err error) {
 	}
 	err = p.Scheduler.Rebuild()
 	if err != nil {
-		logging.Error().Printf("Error uninstalling server: %s", err)
+		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 	}
 	return
@@ -610,7 +610,7 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 		var process operations.OperationProcess
 		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
-			logging.Error().Printf("Error setting up tasks: %s", err)
+			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
 			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
 			return
@@ -618,7 +618,7 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 
 		err = process.Run(p.RunningEnvironment)
 		if err != nil {
-			logging.Error().Printf("Error setting up tasks: %s", err)
+			logging.Error.Printf("Error setting up tasks: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
 			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
 			return

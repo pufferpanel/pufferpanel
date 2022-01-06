@@ -19,6 +19,7 @@ package programs
 import (
 	"encoding/json"
 	"errors"
+	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -27,6 +28,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var (
@@ -61,12 +63,12 @@ func LoadFromFolder() {
 		program.Scheduler = NewScheduler(program)
 		err = program.Scheduler.LoadMap(program.Tasks)
 		if err != nil {
-			logging.Error().Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
+			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
 			continue
 		}
 		err = program.Scheduler.Start()
 		if err != nil {
-			logging.Error().Printf("Error starting server scheduler (%s): %s", element.Name(), err)
+			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
 			continue
 		}
 		logging.Info.Printf("Loaded server %s", program.Id())
@@ -150,7 +152,7 @@ func startScheduler(program *Program) error {
 	}
 	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
 	s.StartAsync()
-	program.Scheduler = s
+	program.Scheduler.scheduler = s
 	return nil
 }
 
@@ -326,20 +328,20 @@ func Reload(id string) (err error) {
 	program.Server = newVersion.Server
 
 	_ = program.Scheduler.Stop()
-	logging.Debug().Println("Rebuilding scheduler")
+	logging.Debug.Println("Rebuilding scheduler")
 	err = newVersion.Scheduler.Rebuild()
 	if err != nil {
-		logging.Error().Printf("Error reloading server scheduler: %s", err)
+		logging.Error.Printf("Error reloading server scheduler: %s", err)
 		return err
 	}
 
-	logging.Debug().Println("Loading scheduled tasks")
+	logging.Debug.Println("Loading scheduled tasks")
 	err = newVersion.Scheduler.LoadMap(program.Tasks)
 	if err != nil {
 		return err
 	}
 
-	logging.Debug().Println("Starting scheduler")
+	logging.Debug.Println("Starting scheduler")
 	err = newVersion.Scheduler.Start()
 	if err != nil {
 		return err
