@@ -285,6 +285,11 @@ func (p *Program) Destroy() (err error) {
 		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
 	}
+	err = p.Scheduler.Rebuild()
+	if err != nil {
+		logging.Error.Printf("Error uninstalling server: %s", err)
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+	}
 	return
 }
 

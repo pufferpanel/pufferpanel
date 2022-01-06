@@ -71,6 +71,17 @@ func LoadFromFolder() {
 			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
 			continue
 		}
+		program.Scheduler = NewScheduler(program)
+		err = program.Scheduler.LoadMap(program.Tasks)
+		if err != nil {
+			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
+			continue
+		}
+		err = program.Scheduler.Start()
+		if err != nil {
+			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
+			continue
+		}
 		logging.Info.Printf("Loaded server %s", program.Id())
 		allPrograms = append(allPrograms, program)
 	}
