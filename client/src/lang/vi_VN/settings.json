@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
+  "Settings": "Cài Đặt",
+  "PanelSettings": "Cài đặt Panel",
+  "EmailSettings": "Cài đặt email",
+  "MasterUrl": "Chủ URL",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "CompanyName": "Tên công ty",
+  "DefaultTheme": "Giao diện Mặc định",
+  "RegistrationEnabled": "Cho Phép Người Dùng Tự Đăng Kí",
+  "RegistrationEnabledHint1": "Người Dùng Tự Đăng Kí Không Thể Làm Gì Cho Đến Khi Có Quyền",
   "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "EmailProvider": "Email nhà cung cấp",
   "emailProviders": {
-    "none": "None",
+    "none": "Không có",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
     "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "domain": "Tên miền",
+    "key": "Khóa API",
+    "host": "Máy chủ",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu"
   }
 }

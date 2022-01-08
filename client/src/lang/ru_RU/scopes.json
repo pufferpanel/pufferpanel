@@ -4,7 +4,7 @@
   "ServersInstall": "Установка сервера",
   "ServersConsole": "Просмотр консоли",
   "ServersConsoleSend": "Отправить команду в консоль",
-  "ServersStop": "Остановка и отключения сервера",
+  "ServersStop": "Остановить и убить сервер",
   "ServersStart": "Запуска сервера",
   "ServersStat": "Просмотра статистики CPU и памяти",
   "ServersFiles": "Разрешения доступа к файлам через SFTP",
