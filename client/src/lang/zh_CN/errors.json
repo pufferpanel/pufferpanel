@@ -37,7 +37,7 @@
   "ErrSocketFailed": "WebSocket 连接出错，部分功能可能较为缓慢或无法使用",
   "ErrInviteLinkInvalid": "您的邀请链接似乎无效",
   "ErrSavingInviteduser": "创建账户时出错",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDuplicateServerName": "服务器名称已存在",
+  "ErrDuplicateNodeName": "该文件夹名称已经存在",
   "ErrDirectoryUploadNotSupported": "无法上传文件夹"
 }
