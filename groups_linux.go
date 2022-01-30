@@ -14,6 +14,8 @@
 package pufferpanel
 
 import (
+	"errors"
+	"os"
 	"os/user"
 )
 
@@ -47,4 +49,27 @@ func UserInGroup(groups ...string) bool {
 	}
 
 	return false
+}
+
+func ShouldDeny() bool {
+	u, err := user.Current()
+	if err != nil {
+		return false
+	}
+
+	// Prevent release builds running as root
+	if Release && u.Username == "root" && !IsContainer() {
+		return true
+	}
+
+	return false
+}
+
+// IsContainer will return true if it thinks that the process is being run in a Docker container
+// Queries for /.dockerenv
+func IsContainer() bool {
+	if _, err := os.Stat("/.dockerenv"); errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return true
 }

@@ -16,3 +16,7 @@ package pufferpanel
 func UserInGroup(groups ...string) bool {
 	return true
 }
+
+func ShouldDeny() bool {
+	return false
+}

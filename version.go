@@ -19,6 +19,7 @@ var (
 	Hash    = "unknown"
 	Version = "nightly"
 	Display string
+	Release bool
 )
 
 func init() {

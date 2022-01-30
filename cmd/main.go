@@ -28,6 +28,10 @@ func main() {
 		return
 	}
 
+	if pufferpanel.ShouldDeny() {
+		logging.Error.Println("Don't run PufferPanel as root.")
+	}
+
 	defer logging.Close()
 
 	defer func() {
