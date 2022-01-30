@@ -252,13 +252,20 @@ func CreateServer(c *gin.Context) {
 
 	if err := programs.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
-	} else if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
-		response.HandleError(c, err, http.StatusInternalServerError)
-	} else if err := prg.Scheduler.Start(); err != nil {
-		response.HandleError(c, err, http.StatusInternalServerError)
-	} else {
-		c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
+		return
 	}
+
+	if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
+		return
+	}
+
+	if err := prg.Scheduler.Start(); err != nil {
+		response.HandleError(c, err, http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
 // @Summary Deletes server
