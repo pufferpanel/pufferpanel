@@ -51,7 +51,7 @@ func UserInGroup(groups ...string) bool {
 	return false
 }
 
-func ShouldDeny() bool {
+func IsDeniedUser() bool {
 	u, err := user.Current()
 	if err != nil {
 		return false

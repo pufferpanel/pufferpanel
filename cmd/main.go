@@ -28,7 +28,8 @@ func main() {
 		return
 	}
 
-	if pufferpanel.ShouldDeny() {
+	// Prevent Puffer from being run as roon
+	if pufferpanel.IsDeniedUser() {
 		logging.Error.Println("Don't run PufferPanel as root.")
 	}
 

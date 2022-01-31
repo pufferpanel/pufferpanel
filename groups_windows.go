@@ -17,6 +17,6 @@ func UserInGroup(groups ...string) bool {
 	return true
 }
 
-func ShouldDeny() bool {
+func IsDeniedUser() bool {
 	return false
 }
