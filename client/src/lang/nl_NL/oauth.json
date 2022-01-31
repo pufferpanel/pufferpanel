@@ -2,14 +2,14 @@
   "Credentials": "OAuth2 Client gegevens",
   "ClientId": "Client ID",
   "ClientSecret": "Client geheim",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
+  "NewClientWarning": "Noteer de client secret, na het sluiten van dit dialoogvenster wordt het nooit meer getoond. Als u deze verliest of vergeet, wordt deze client volledig onbruikbaar.",
   "Create": "Creeer nieuwe OAuth2 Client",
   "UnnamedClient": "Naamloze OAuth2 Client",
   "Docs": "API Documentaties",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
+  "DeleteWarning": "Het verwijderen van een OAuth2 client kan niet ongedaan worden gemaakt en een nieuwe client kan ook niet worden gemaakt met dezelfde referenties. Alle integraties die deze client nog gebruikt, breken na de verwijdering.",
+  "ConfirmDelete": "Ik ben me bewust van de effecten die het verwijderen van deze OAuth2 cliënt zal hebben en verder wil gaan.",
+  "Delete": "{clientName} verwijderen?",
   "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "AccountDescription": "De vermelde OAuth2 Clients erven al uw account-machtigingen",
+  "ServerDescription": "De OAuth2 klanten die hier worden vermeld, erven alleen uw account-machtigingen op deze server"
 }

@@ -6,9 +6,9 @@
   "MasterUrlHint": "Põhi URL sellel paneelil on kättesaadav formaadis http://localhost:8080",
   "CompanyName": "Ettevõtte nimi",
   "DefaultTheme": "Vaikmisi teema",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Luba kasutajatel end ise registeerida",
+  "RegistrationEnabledHint1": "Ise registeerinud inimesed ei saa kasutada midagi, enne kui on antud õigused",
+  "RegistrationEnabledHint2": "Iga {monthInterval} kuud päeval {day} kell {hour}:{minute}",
   "EmailProvider": "E-posti pakkuja",
   "emailProviders": {
     "none": "Puudub",
@@ -17,9 +17,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
+    "from": "Saatja aadress",
     "domain": "Domeen",
-    "key": "API Key",
+    "key": "API võti",
     "host": "Host",
     "username": "Kasutajanimi",
     "password": "Salasõna"

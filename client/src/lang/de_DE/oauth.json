@@ -10,6 +10,6 @@
   "ConfirmDelete": "Ich bin mir der Auswirkungen bewusst, die das Löschen dieses OAuth2-Clients haben wird und möchte fortfahren.",
   "Delete": "{clientName} löschen?",
   "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "AccountDescription": "Die hier aufgelisteten OAuth2-Clients erben alle Ihre Account-Berechtigungen",
+  "ServerDescription": "Die hier aufgelisteten OAuth2-Clients erben nur Ihre Berechtigungen auf diesem Server"
 }

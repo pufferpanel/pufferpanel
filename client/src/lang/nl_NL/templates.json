@@ -25,73 +25,73 @@
   "Source": "Bron",
   "Target": "Doel",
   "Version": "Versie",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
+  "ReleaseType": "Versietype",
+  "AddFile": "Bestand toevoegen",
+  "AddVariable": "Variabele toevoegen",
+  "Environment": "Omgeving",
+  "Environments": "Omgeving",
+  "AddEnvironment": "Omgeving toevoegen",
+  "DefaultEnvironment": "Standaard omgeving",
+  "AddEnvVar": "Voeg nieuwe variabele",
+  "EnvVars": "Omgevingsvariabelen",
+  "DockerImage": "Docker afbeelding",
+  "SaveSuccess": "Opgeslagen Templates",
+  "VarNameNoSpaces": "Een variabelenaam mag niet leeg zijn of spaties bevatten",
+  "SupportedEnvironments": "Ondersteunde Omgevingen",
+  "RunConfig": "Configuratie starten",
   "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "PostHook": "Laad Run Hook",
+  "AddPreStep": "Voeg Pre Run Stap toe",
+  "AddPostStep": "Voeg post-run-stap toe",
+  "DeletePreStep": "Verwijder Pre Run Stap",
+  "DeletePostStep": "Verwijder post-run-stap",
+  "Shutdown": "Afsluiten",
+  "Command": "Commando",
+  "WorkingDirectory": "Werkmap",
+  "Arguments": "Parameters",
+  "AddArgument": "Argument toevoegen",
+  "Convert": "Converteer",
+  "OfferV1Convert": "Deze template json ziet eruit als een template voor PufferPanel 1.x, wilt u dit automatisch omzetten naar een template voor PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "WAARSCHUWING: Geimporteerde templates overschrijven bestaande sjablonen met dezelfde ID",
+    "Import": "Sjabloon importeren",
+    "Tooltip": "Sjablonen importeren uit de officiële repository",
+    "Select": "Selecteer sjablonen om te importeren",
+    "Started": "Sjablonen importeren, even geduld a.u.b",
+    "Successful": "Sjabloon {template} succesvol geïmporteerd",
+    "NoTemplatesTitle": "Wilt u templates importeren?",
+    "NoTemplatesContent": "U heeft momenteel geen sjablonen. Sjablonen zijn noodzakelijk om servers aan te maken.<br/>Wilt u nu enkele sjablonen importeren uit de officiële PufferPanel templates?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Commando",
+    "Signal": "Signaal"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Downloaden",
+      "files": "Bestanden"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Opdrachten uitvoeren",
+      "commands": "Commando‘s"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Bestand wijzigen",
+      "regex": "Behandel zoeken als RegEx",
+      "search": "Tekst zoeken",
+      "replace": "Vervangen door"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Schrijf naar bestand",
+      "text": "Inhoud"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Bestanden verplaatsen",
+      "source": "Bron",
+      "target": "Doel"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Map aanmaken"
     },
     "mojangdl": {
       "ProcessorName": "Download Minecraft"
@@ -101,7 +101,7 @@
     },
     "spongeforgedl": {
       "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "releaseType": "Versietype"
     },
     "fabricdl": {
       "ProcessorName": "Download Minecraft Fabric"

@@ -12,7 +12,7 @@
   "ServersFilesPut": "Redigera och ladda upp filer med filhanteraren",
   "ServersEditUsers": "Redigera användarens åtkomst till denna server",
   "Admin": "Admin (detta ger varje möjlig behörighet)",
-  "ViewServers": "See Servers",
+  "ViewServers": "Se alla servrar",
   "CreateServers": "Skapa nya servrar",
   "DeleteServers": "Ta bort servrar",
   "EditServerAdmin": "Redigera serverinställningar",
@@ -23,5 +23,5 @@
   "EditTemplates": "Redigera mallar",
   "ViewUsers": "Se alla användare",
   "EditUsers": "Redigera andra användare",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "Ändra panelinställningar"
 }

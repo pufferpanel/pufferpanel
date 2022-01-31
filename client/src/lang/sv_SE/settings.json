@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Inställningar",
+  "PanelSettings": "Panelinställningar",
+  "EmailSettings": "E-post inställningar",
+  "MasterUrl": "Huvud-URL",
+  "MasterUrlHint": "Bas-URL panelen kan nås under formatet http://localhost:8080",
+  "CompanyName": "Företagsnamn",
+  "DefaultTheme": "Standardtema",
+  "RegistrationEnabled": "Tillåt användare att redigera sig själva",
+  "RegistrationEnabledHint1": "Självregistrerade användare kan inte göra någonting förrän de har fått behörigheter",
+  "RegistrationEnabledHint2": "Inaktivera detta förhindrar endast direkt registrering, inbjudan till en server och användarsidan påverkas inte",
+  "EmailProvider": "E-postleverantör",
   "emailProviders": {
-    "none": "None",
+    "none": "Inget",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Avsändaradress",
+    "domain": "Domän",
+    "key": "API-nyckel",
+    "host": "Värd",
+    "username": "Användarnamn",
+    "password": "Lösenord"
   }
 }

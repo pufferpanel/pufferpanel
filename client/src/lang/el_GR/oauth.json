@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "OAuth2 Πιστοποιητικά Πελάτη",
+  "ClientId": "Ταυτότητα Πελάτη",
+  "ClientSecret": "Μυστικό Πελάτη",
+  "NewClientWarning": "Σημειώστε το μυστικό του πελάτη, διότι μετά το κλείσιμο αυτού του διαλόγου δεν θα εμφανιστεί ποτέ ξανά. Η απώλεια αυτού θα καταστήσει αυτόν τον πελάτη εντελώς άχρηστο.",
+  "Create": "Δημιουργία νέου πελάτη OAuth2",
+  "UnnamedClient": "Πελάτης OAuth2 Χωρίς Όνομα",
+  "Docs": "Βρείτε το API documentation εδώ",
+  "DeleteWarning": "Η διαγραφή ενός πελάτη OAuth2 δεν μπορεί να αναιρεθεί, ούτε μπορεί να δημιουργηθεί ένας νέος πελάτης με τα ίδια στοιχεία. Όλες οι ενσωματώσεις που εξακολουθούν να χρησιμοποιούν αυτόν τον πελάτη θα σπάσουν μετά τη διαγραφή του.",
+  "ConfirmDelete": "Γνωρίζω τις επιπτώσεις που θα έχει και επιθυμώ την διαγραφή αυτού του πελάτη OAuth2.",
+  "Delete": "Διαγραφή {clientName}?",
+  "Clients": "OAuth2 Πελάτες",
+  "AccountDescription": "Οι πελάτες OAuth2 που αναφέρονται εδώ, κληρονομούν όλα τα δικαιώματα των λογαριασμών σας",
+  "ServerDescription": "Οι πελάτες OAuth2 που αναφέρονται εδώ κληρονομούν μόνο τα δικαιώματα των λογαριασμών σας σε αυτόν τον διακομιστή"
 }
