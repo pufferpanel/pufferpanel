@@ -60,6 +60,28 @@ func LoadFromFolder() {
 			logging.Error.Printf("Error loading server details from json (%s): %s", element.Name(), err)
 			continue
 		}
+		program.Scheduler = NewScheduler(program)
+		err = program.Scheduler.LoadMap(program.Tasks)
+		if err != nil {
+			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
+			continue
+		}
+		err = program.Scheduler.Start()
+		if err != nil {
+			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
+			continue
+		}
+		program.Scheduler = NewScheduler(program)
+		err = program.Scheduler.LoadMap(program.Tasks)
+		if err != nil {
+			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
+			continue
+		}
+		err = program.Scheduler.Start()
+		if err != nil {
+			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
+			continue
+		}
 		logging.Info.Printf("Loaded server %s", program.Id())
 		allPrograms = append(allPrograms, program)
 	}
@@ -126,10 +148,6 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 
 	environmentType := typeMap.Type
 	data.RunningEnvironment, err = environments.Create(environmentType, pufferpanel.ServerFolder, id, data.Environment)
-
-	if err = startScheduler(data); err != nil {
-		return nil, err
-	}
 	return data, nil
 }
 
@@ -145,7 +163,7 @@ func startScheduler(program *Program) error {
 	}
 	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
 	s.StartAsync()
-	program.Scheduler = s
+	program.Scheduler.scheduler = s
 	return nil
 }
 
@@ -270,9 +288,7 @@ func Delete(id string) (err error) {
 		}
 	}
 
-	if program.Scheduler != nil {
-		program.Scheduler.Stop()
-	}
+	_ = program.Scheduler.Stop()
 
 	err = program.Destroy()
 	if err != nil {
@@ -305,32 +321,13 @@ func Save(id string) (err error) {
 	return
 }
 
-func RestartScheduler(id string) (err error) {
-	program := GetFromCache(id)
-	if program == nil {
-		err = errors.New("server does not exist")
-		return
-	}
-	if program.Scheduler != nil {
-		program.Scheduler.Stop()
-	}
-	err = startScheduler(program)
-	return
-}
-
-func RunTask(id string) (err error) {
-	return pufferpanel.ErrNotImplemented
-}
-
 func Reload(id string) (err error) {
 	program := GetFromCache(id)
 	if program == nil {
 		err = errors.New("server does not exist")
 		return
 	}
-	if program.Scheduler != nil {
-		program.Scheduler.Stop()
-	}
+
 	logging.Info.Printf("Reloading server %s", program.Id())
 	newVersion, err := Load(id)
 	if err != nil {
@@ -340,6 +337,26 @@ func Reload(id string) (err error) {
 
 	program.RunningEnvironment = newVersion.RunningEnvironment
 	program.Server = newVersion.Server
-	err = startScheduler(program)
+
+	_ = program.Scheduler.Stop()
+	logging.Debug.Println("Rebuilding scheduler")
+	err = newVersion.Scheduler.Rebuild()
+	if err != nil {
+		logging.Error.Printf("Error reloading server scheduler: %s", err)
+		return err
+	}
+
+	logging.Debug.Println("Loading scheduled tasks")
+	err = newVersion.Scheduler.LoadMap(program.Tasks)
+	if err != nil {
+		return err
+	}
+
+	logging.Debug.Println("Starting scheduler")
+	err = newVersion.Scheduler.Start()
+	if err != nil {
+		return err
+	}
+
 	return
 }
