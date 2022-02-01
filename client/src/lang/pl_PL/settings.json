@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Ustawienia",
+  "PanelSettings": "Ustawienia Panelu",
+  "EmailSettings": "Ustawienia Email",
+  "MasterUrl": "Główny URL",
+  "MasterUrlHint": "Podstawowy adres URL panelu można uzyskać w formacie http://localhost:8080",
+  "CompanyName": "Nazwa firmy",
+  "DefaultTheme": "Domyślny Motyw",
+  "RegistrationEnabled": "Pozwól użytkownikom rejestrować się",
+  "RegistrationEnabledHint1": "Samodzielnie zarejestrowani użytkownicy nie mogą nic robić dopóki nie zostaną przyznane uprawnienia",
+  "RegistrationEnabledHint2": "Wyłączenie tego tylko zapobiega bezpośredniej rejestracji, zapraszanie do serwera i strona Użytkowników nie są dotknięte",
+  "EmailProvider": "Dostawca Poczty Email",
   "emailProviders": {
-    "none": "None",
+    "none": "Brak",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
+    "from": "Adres Wysyłającego",
+    "domain": "Domena",
+    "key": "Klucz API",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Użytkownik",
+    "password": "Hasło"
   }
 }
