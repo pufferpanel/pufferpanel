@@ -110,6 +110,8 @@ type FileData struct {
 func (p *Program) DataToMap() map[string]interface{} {
 	var result = make(map[string]interface{}, len(p.Variables))
 
+	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
+	result["serverId"] = p.Id()
 	for k, v := range p.Variables {
 		result[k] = v.Value
 	}
@@ -154,12 +156,10 @@ func (p *Program) Start() (err error) {
 
 	logging.Info.Printf("Starting server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Starting server\n")
-	data := make(map[string]interface{})
-	for k, v := range p.Variables {
-		data[k] = v.Value
-	}
 
-	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
+	data := p.DataToMap()
+
+	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
 	if err != nil {
 		logging.Error.Printf("Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -172,9 +172,6 @@ func (p *Program) Start() (err error) {
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
 		return
 	}
-
-	//HACK: add rootDir stuff
-	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {
