@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
+  "Settings": "Asetukset",
+  "PanelSettings": "Paneelin Asetukset",
+  "EmailSettings": "Sähköpostin Asetukset",
+  "MasterUrl": "Pääkäyttäjän URL",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "CompanyName": "Yrityksen Nimi",
+  "DefaultTheme": "Oletusteema",
+  "RegistrationEnabled": "Salli käyttäjien rekisteröityä itse",
+  "RegistrationEnabledHint1": "Itserekisteröidyt käyttäjät eivät voi tehdä mitään ennen kuin heille annetaan käyttöoikeudet",
+  "RegistrationEnabledHint2": "Tämän poistaminen käytöstä estää vain suoran rekisteröinnin, palvelimelle kutsut ja käyttäjäsivun muutokset eivät vaikuta",
+  "EmailProvider": "Sähköpostin tarjoaja",
   "emailProviders": {
-    "none": "None",
+    "none": "Ei mitään",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Lähettäjän osoite",
+    "domain": "Verkkotunnus",
+    "key": "API-avain",
+    "host": "Isäntä",
+    "username": "Käyttäjänimi",
+    "password": "Salasana"
   }
 }
