@@ -1,6 +1,6 @@
 {
   "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
+  "ClientId": "Käyttäjän ID",
   "ClientSecret": "Client Secret",
   "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
   "Create": "Create new OAuth2 Client",
