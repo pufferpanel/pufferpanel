@@ -507,9 +507,6 @@ jobs:
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: latest
-    strategy:
-      matrix:
-        platform: ["linux/amd64"]
 
     steps:
     - name: Get the version
@@ -556,7 +553,7 @@ jobs:
         build-args: |
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
+        platforms: linux/amd64,linux/arm64
 
   build-docker-image-master:
     runs-on: ubuntu-20.04
@@ -565,11 +562,7 @@ jobs:
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: base
-
-    strategy:
-      matrix:
-        platform: [ "linux/amd64" ]
-
+      
     steps:
     - name: Get the version
       if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
@@ -616,7 +609,7 @@ jobs:
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
           DOCKER_TAG: base-${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
+        platforms: linux/amd64,linux/arm64
 
   build-docker-image-children:
     runs-on: ubuntu-20.04
@@ -677,4 +670,4 @@ jobs:
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
           DOCKER_TAG: base-${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
+        platforms: linux/amd64
