@@ -1,110 +1,110 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "There are no templates here yet",
-  "Deleted": "Template deleted",
-  "New": "Create new template",
-  "Edit": "Edit template",
-  "Editor": "Editor",
+  "Templates": "Các mẫu",
+  "NoTemplates": "Chưa có mẫu nào ở đây",
+  "Deleted": "Mẫu đã xoá",
+  "New": "Tạo mẫu mới",
+  "Edit": "Chỉnh sửa mẫu",
+  "Editor": "Trình chỉnh sửa",
   "Json": "JSON",
-  "Display": "Display Name",
-  "Type": "Type",
-  "Variables": "Variables",
-  "Install": "Install",
-  "AddInstallStep": "Add Install Step",
-  "DeleteInstallStep": "Delete Install Step",
-  "Description": "Description",
-  "DataType": "Data Type",
-  "DefaultValue": "Default Value",
-  "Required": "Required",
-  "UserEditable": "Users can edit",
-  "Value": "Value",
-  "AddOption": "Add an option",
-  "AddCommand": "Add command",
-  "Filename": "Filename",
-  "Content": "Content",
-  "Source": "Source",
-  "Target": "Target",
-  "Version": "Version",
-  "ReleaseType": "Release Type",
-  "AddFile": "Add file",
-  "AddVariable": "Add variable",
-  "Environment": "Environment",
-  "Environments": "Environments",
-  "AddEnvironment": "Add environment",
-  "DefaultEnvironment": "Default environment",
-  "AddEnvVar": "Add env variable",
-  "EnvVars": "Environment variables",
-  "DockerImage": "Docker Image",
-  "SaveSuccess": "Saved Template",
-  "VarNameNoSpaces": "A variable name cannot be empty or contain spaces",
-  "SupportedEnvironments": "Supported Environments",
-  "RunConfig": "Run Configuration",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
-  "Shutdown": "Shutdown",
-  "Command": "Command",
-  "WorkingDirectory": "Working Directory",
-  "Arguments": "Arguments",
-  "AddArgument": "Add an argument",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Display": "Tên hiển thị",
+  "Type": "Loại",
+  "Variables": "Các tham số",
+  "Install": "Cài đặt",
+  "AddInstallStep": "Thêm bước cài đặt",
+  "DeleteInstallStep": "Xoá bước cài đặt",
+  "Description": "Mô tả",
+  "DataType": "Kiểu dữ liệu",
+  "DefaultValue": "Giá trị mặc định",
+  "Required": "Bắt buộc",
+  "UserEditable": "Người dùng có thể chỉnh sửa",
+  "Value": "Giá trị",
+  "AddOption": "Thêm tùy chọn",
+  "AddCommand": "Thêm lệnh",
+  "Filename": "Tên tập tin",
+  "Content": "Nội dung",
+  "Source": "Nguồn",
+  "Target": "Đích",
+  "Version": "Phiên bản",
+  "ReleaseType": "Loại phiên bản",
+  "AddFile": "Thêm tập tin",
+  "AddVariable": "Thêm Tham số",
+  "Environment": "Môi trường",
+  "Environments": "Các môi trường",
+  "AddEnvironment": "Thêm môi trường",
+  "DefaultEnvironment": "Môi trường mặc định",
+  "AddEnvVar": "Thêm một biến môi trường mới",
+  "EnvVars": "Các biến môi trường",
+  "DockerImage": "Ảnh Docker",
+  "SaveSuccess": "Mẫu đã lưu",
+  "VarNameNoSpaces": "Tên biến không thể để trống hoặc chứa khoảng trắng",
+  "SupportedEnvironments": "Các môi trường được hỗ trợ",
+  "RunConfig": "Chạy cấu hình",
+  "PreHook": "Hook trước khởi chạy",
+  "PostHook": "Hook sau khởi chạy",
+  "AddPreStep": "Thêm bước trước khởi chạy",
+  "AddPostStep": "Thêm bước sau khởi chạy",
+  "DeletePreStep": "Xoá bước trước khởi chạy",
+  "DeletePostStep": "Xoá bước sau khởi chạy",
+  "Shutdown": "Tắt",
+  "Command": "Lệnh",
+  "WorkingDirectory": "Thư mục làm việc",
+  "Arguments": "Tham số",
+  "AddArgument": "Thêm tham số",
+  "Convert": "Chuyển đổi",
+  "OfferV1Convert": "Mẫu json này giống như mẫu dành cho PufferPanel 1.x, bạn có muốn tự động chuyển đổi thành mẫu dành cho PufferPanel 2.x?",
   "import": {
-    "OverrideWarning": "WARNING: Imported templates WILL overwrite existing templates with the same ID",
-    "Import": "Import templates",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "OverrideWarning": "CẢNH BÁO: Các mẫu được nhập SẼ ghi đè mẫu có sẵn mà trùng với ID ban đầu",
+    "Import": "Nhập mẫu",
+    "Tooltip": "Nhập mẫu từ kho lưu trữ chính thức",
+    "Select": "Chọn mẫu để nhập vào",
+    "Started": "Đang nhập mẫu, xin hãy chờ đợi",
+    "Successful": "Đã nhập mẫu {template} thành công",
+    "NoTemplatesTitle": "Bạn có muốn nhập các mẫu này không?",
+    "NoTemplatesContent": "Hiện giờ bạn chưa có mẫu nào. Cần có các mẫu để tạo máy chủ.<br/>Bạn có muốn nhập mẫu từ kho lưu trữ PufferPanel chính thức không?"
   },
   "stop": {
-    "Command": "Command",
-    "Signal": "Signal"
+    "Command": "Lệnh",
+    "Signal": "Tín hiệu"
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "Tải xuống",
+      "files": "Tập tin"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "Chạy lệnh",
+      "commands": "Các lệnh"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Thay đổi tập tin",
+      "regex": "Coi văn bản tìm kiếm là Biểu thức Chính quy (RegEx)",
+      "search": "Tìm kiếm văn bản",
+      "replace": "Thay thế bởi"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "Ghi dữ liệu vào tệp tin",
+      "text": "Nội dung"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "Di chuyển tập tin",
+      "source": "Nguồn",
+      "target": "Đích"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "Tạo thư mục mới"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Tải Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Tải Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Tải Minecraft SpongeForge",
+      "releaseType": "Loại phiên bản"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Tải Minecraft Fabric"
     }
   }
 }
