@@ -24,7 +24,7 @@
   "Edit": "Felhasználó szerkesztése",
   "Update": "Felhasználó módosítása",
   "Delete": "Felhasználó törlése",
-  "CreateSuccess": "User successfully created",
+  "CreateSuccess": "Felhasználó sikeresen létrehozva",
   "CreateError": "Felhasználó létrehozása sikertelen",
   "UpdateSuccess": "Felhasználó módosítva",
   "UpdateError": "Felhasználó módosítása sikertelen",
@@ -34,7 +34,7 @@
   "OtpDisable": "2FA Kikapcsolása",
   "OtpHint": "A kétlépcsős azonosítás egy extra réteggel biztosítja a fiókodat, hiszen többet igényel egy jelszónál.",
   "OtpSetup": "2FA Beállítása",
-  "OtpSetupHint": "Scan the QR code using your authenticator application or copy the secret code below into it.",
+  "OtpSetupHint": "Szkellend be a QR kódot a hitelesítő alkalmazásoddal vagy másol át a lenti titkos kódot.",
   "OtpSecret": "Titkos Kód",
   "OtpConfirm": "Kétlépcsős azonosító kód megerősítése",
   "OtpNeeded": "2FA required"
