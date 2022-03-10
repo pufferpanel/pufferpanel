@@ -241,27 +241,34 @@ func CreateServer(c *gin.Context) {
 
 	prg = &programs.Program{}
 	err := json.NewDecoder(c.Request.Body).Decode(prg)
-
 	if err != nil {
 		logging.Error.Printf("Error decoding JSON body: %s", err)
 		response.HandleError(c, err, http.StatusBadRequest)
 		return
 	}
-
 	prg.Identifier = serverId
+
+	err = prg.Requirements.Test(prg.Server)
+	if err != nil {
+		response.HandleError(c, err, http.StatusBadRequest)
+		return
+	}
 
 	if err := programs.Create(prg); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
+		_ = programs.Delete(prg.Id())
 		return
 	}
 
 	if err := prg.Scheduler.LoadMap(prg.Tasks); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
+		_ = programs.Delete(prg.Id())
 		return
 	}
 
 	if err := prg.Scheduler.Start(); err != nil {
 		response.HandleError(c, err, http.StatusInternalServerError)
+		_ = programs.Delete(prg.Id())
 		return
 	}
 

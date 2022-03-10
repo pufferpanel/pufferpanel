@@ -108,13 +108,8 @@ type FileData struct {
 }
 
 func (p *Program) DataToMap() map[string]interface{} {
-	var result = make(map[string]interface{}, len(p.Variables))
-
+	var result = p.Server.DataToMap()
 	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
-	result["serverId"] = p.Id()
-	for k, v := range p.Variables {
-		result[k] = v.Value
-	}
 
 	return result
 }
