@@ -20,9 +20,8 @@ import (
 	"strings"
 )
 
-//this is basically the template, just wrapped enough to be used in the database
 type Template struct {
-	pufferpanel.Template `gorm:"-"`
+	pufferpanel.Server `gorm:"-"`
 
 	Name     string `gorm:"type:varchar(100);primaryKey" json:"name"`
 	RawValue string `gorm:"type:text" json:"-"`
@@ -33,7 +32,7 @@ type Template struct {
 type Templates []*Template
 
 func (t *Template) AfterFind(*gorm.DB) error {
-	err := json.NewDecoder(strings.NewReader(t.RawValue)).Decode(&t.Template)
+	err := json.NewDecoder(strings.NewReader(t.RawValue)).Decode(&t.Server)
 	if err != nil {
 		return err
 	}
@@ -52,7 +51,7 @@ func (t *Template) BeforeSave(*gorm.DB) error {
 		t.Execution.LegacyRun = ""
 		t.Execution.LegacyArguments = nil
 	}
-	data, err := json.Marshal(&t.Template)
+	data, err := json.Marshal(&t.Server)
 	if err != nil {
 		return err
 	}

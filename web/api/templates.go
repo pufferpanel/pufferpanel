@@ -108,7 +108,7 @@ func putTemplate(c *gin.Context) {
 	ts := &services.Template{DB: db}
 
 	templateName := c.Param("name")
-	templateRequest := pufferpanel.Template{}
+	templateRequest := pufferpanel.Server{}
 	err := c.MustBindWith(&templateRequest, binding.JSON)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -123,7 +123,7 @@ func putTemplate(c *gin.Context) {
 		return
 	}
 
-	template.Template = templateRequest
+	template.Server = templateRequest
 	err = ts.Save(template)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return

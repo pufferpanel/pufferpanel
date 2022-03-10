@@ -45,11 +45,9 @@ func (t *Template) GetAll() (*models.Templates, error) {
 	for k, v := range *templates {
 		replacement[k] = &models.Template{
 			Name: v.Name,
-			Template: pufferpanel.Template{
-				Server: pufferpanel.Server{
-					Display: v.Template.Server.Display,
-					Type:    v.Template.Server.Type,
-				},
+			Server: pufferpanel.Server{
+				Display: v.Server.Display,
+				Type:    v.Server.Type,
 			},
 		}
 	}
@@ -92,15 +90,15 @@ func (t *Template) ImportFromRepo(templateName string) error {
 }
 
 func (t *Template) ImportTemplate(name string, template, readme io.Reader) error {
-	var templateData pufferpanel.Template
+	var templateData pufferpanel.Server
 	err := json.NewDecoder(template).Decode(&templateData)
 	if err != nil {
 		return err
 	}
 
 	model := &models.Template{
-		Template: templateData,
-		Name:     name,
+		Server: templateData,
+		Name:   name,
 	}
 
 	if readme != nil {

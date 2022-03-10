@@ -15,14 +15,15 @@ package pufferpanel
 
 type Server struct {
 	Type
-	Variables      map[string]Variable `json:"data,omitempty"`
-	Display        string              `json:"display,omitempty"`
-	Environment    interface{}         `json:"environment,omitempty"`
-	Installation   []interface{}       `json:"install,omitempty"`
-	Uninstallation []interface{}       `json:"uninstall,omitempty"`
-	Identifier     string              `json:"id,omitempty"`
-	Execution      Execution           `json:"run,omitempty"`
-	Tasks          map[string]Task     `json:"tasks,omitempty"`
+	Variables             map[string]Variable `json:"data,omitempty"`
+	Display               string              `json:"display,omitempty"`
+	Environment           interface{}         `json:"environment,omitempty"`
+	SupportedEnvironments []interface{}       `json:"supportedEnvironments,omitempty"`
+	Installation          []interface{}       `json:"install,omitempty"`
+	Uninstallation        []interface{}       `json:"uninstall,omitempty"`
+	Identifier            string              `json:"id,omitempty"`
+	Execution             Execution           `json:"run,omitempty"`
+	Tasks                 map[string]Task     `json:"tasks,omitempty"`
 }
 
 type Task struct {
@@ -61,11 +62,6 @@ type Execution struct {
 	LegacyRun               string            `json:"program,omitempty"`
 	LegacyArguments         []string          `json:"arguments,omitempty"`
 	WorkingDirectory        string            `json:"workingDirectory,omitempty"`
-}
-
-type Template struct {
-	Server
-	SupportedEnvironments []interface{} `json:"supportedEnvironments,omitempty"`
 }
 
 type Type struct {
