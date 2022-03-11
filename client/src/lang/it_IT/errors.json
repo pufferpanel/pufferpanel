@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Si è verificato un errore nella creazione dell'account",
   "ErrDuplicateServerName": "A server with this name already exists",
   "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Impossibile caricare i file"
+  "ErrDirectoryUploadNotSupported": "Impossibile caricare i file",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
