@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Ett fel uppstod vid skapandet av ditt konto",
   "ErrDuplicateServerName": "En server med detta namn finns redan",
   "ErrDuplicateNodeName": "En nod med detta namn finns redan",
-  "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar"
+  "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
