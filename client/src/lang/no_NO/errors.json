@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Det oppstod en feil under oppretting av kontoen",
   "ErrDuplicateServerName": "A server with this name already exists",
   "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Kan ikke laste opp mapper"
+  "ErrDirectoryUploadNotSupported": "Kan ikke laste opp mapper",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
