@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "创建账户时出错",
   "ErrDuplicateServerName": "服务器名称已存在",
   "ErrDuplicateNodeName": "该文件夹名称已经存在",
-  "ErrDirectoryUploadNotSupported": "无法上传文件夹"
+  "ErrDirectoryUploadNotSupported": "无法上传文件夹",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
