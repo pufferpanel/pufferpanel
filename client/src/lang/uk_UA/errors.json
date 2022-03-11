@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Виникла помилка під час створення вашого облікового запису",
   "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
   "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
-  "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки"
+  "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
