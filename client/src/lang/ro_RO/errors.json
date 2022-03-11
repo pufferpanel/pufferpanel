@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "A apărut o eroare la crearea contului tău",
   "ErrDuplicateServerName": "A server with this name already exists",
   "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Nu se pot încărca fişierele"
+  "ErrDirectoryUploadNotSupported": "Nu se pot încărca fişierele",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
