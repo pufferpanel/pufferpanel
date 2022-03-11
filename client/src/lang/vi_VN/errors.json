@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Đã có lỗi khi tạo tài khoản của bạn",
   "ErrDuplicateServerName": "Máy chủ với tên này đã tồn tại",
   "ErrDuplicateNodeName": "Node với tên này đã tồn tại",
-  "ErrDirectoryUploadNotSupported": "Không thể tải thư mục lên"
+  "ErrDirectoryUploadNotSupported": "Không thể tải thư mục lên",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
