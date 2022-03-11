@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Při vytváření účtu došlo k chybě",
   "ErrDuplicateServerName": "Server s tímto názvem již existuje",
   "ErrDuplicateNodeName": "Uzel s tímto názvem již existuje",
-  "ErrDirectoryUploadNotSupported": "Nelze nahrát složky"
+  "ErrDirectoryUploadNotSupported": "Nelze nahrát složky",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
