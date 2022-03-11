@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Παρουσιάστηκε σφάλμα κατά τη δημιουργία του λογαριασμού σας",
   "ErrDuplicateServerName": "Υπάρχει ήδη ένας διακομιστής με αυτό το όνομα",
   "ErrDuplicateNodeName": "Υπάρχει ήδη ένας κόμβος με αυτό το όνομα",
-  "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων"
+  "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
