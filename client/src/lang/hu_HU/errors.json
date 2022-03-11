@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Hiba történt a fiók létrehozása közben",
   "ErrDuplicateServerName": "Egy szerver már létezik ezzel a névvel",
   "ErrDuplicateNodeName": "Egy csomópont már létezik ezzel a névvel",
-  "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés"
+  "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
