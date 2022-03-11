@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "Er is een fout opgetreden tijdens het maken van uw account",
   "ErrDuplicateServerName": "Een server met deze naam bestaat al",
   "ErrDuplicateNodeName": "Er is al een bestand met deze naam",
-  "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden"
+  "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
