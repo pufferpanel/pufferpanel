@@ -39,5 +39,6 @@
   "ErrSavingInviteduser": "계정 생성중 오류 발생",
   "ErrDuplicateServerName": "이미 같은 이름을 가진 서버가 있습니다",
   "ErrDuplicateNodeName": "이미 같은 이름의 노드가 있습니다",
-  "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음"
+  "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음",
+  "ErrDockerNotSupported": "Docker is not supported on this node"
 }
