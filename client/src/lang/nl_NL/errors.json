@@ -40,5 +40,5 @@
   "ErrDuplicateServerName": "Een server met deze naam bestaat al",
   "ErrDuplicateNodeName": "Er is al een bestand met deze naam",
   "ErrDirectoryUploadNotSupported": "Kan geen folders uploaden",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker wordt niet ondersteund op deze node"
 }
