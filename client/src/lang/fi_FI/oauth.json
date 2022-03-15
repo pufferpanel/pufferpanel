@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
+  "Credentials": "OAuth 2 -asiakasohjelman käyttäjätiedot",
   "ClientId": "Käyttäjän ID",
-  "ClientSecret": "Client Secret",
+  "ClientSecret": "Asiakasohjelman salainen tunnus",
   "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
+  "Create": "Luo uusi OAuth2-asiakasohjelma",
+  "UnnamedClient": "Nimetön OAuth2-asiakasohjelma",
+  "Docs": "Löydä API-dokumentaatio täältä",
   "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
   "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
+  "Delete": "Poista {clientName}?",
+  "Clients": "OAuth2 Asiakasohjelmat",
   "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
   "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }
