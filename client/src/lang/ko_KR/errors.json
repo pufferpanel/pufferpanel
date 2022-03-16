@@ -1,5 +1,5 @@
 {
-  "ErrGeneric": "알수 없는 오류",
+  "ErrGeneric": "알 수 없는 오류",
   "ErrUnknownError": "알 수 없는 오류",
   "ErrInvalidCredentials": "로그인 정보가 틀립니다",
   "ErrServiceNotAvailable": "서비스를 이용할 수 없습니다",
@@ -40,5 +40,5 @@
   "ErrDuplicateServerName": "이미 같은 이름을 가진 서버가 있습니다",
   "ErrDuplicateNodeName": "이미 같은 이름의 노드가 있습니다",
   "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "이 노드에서는 Docker를 지원하지 않습니다"
 }
