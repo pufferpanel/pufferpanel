@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM golang:alpine AS builder
+FROM golang:1.17-alpine AS builder
 
 ARG tags=none
 ARG version=devel
