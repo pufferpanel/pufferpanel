@@ -40,5 +40,5 @@
   "ErrDuplicateServerName": "Un serveur avec ce nom existe déjà",
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud"
 }
