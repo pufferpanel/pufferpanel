@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM golang:1.17-alpine AS builder
+FROM golang:1.18-alpine AS builder
 
 ARG tags=none
 ARG version=devel
@@ -23,9 +23,13 @@ RUN go version && \
     rm -rf swag*.tar.gz
 
 WORKDIR /build/pufferpanel
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
 COPY . .
 RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
-    go build -v -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v2.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
+    go build -v -buildvcs=false -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v2.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
     mv assets/email /pufferpanel/email && \
     cd client && \
     npm install && \
