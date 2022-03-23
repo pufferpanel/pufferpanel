@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func registerTokens(g *gin.RouterGroup) {
@@ -87,6 +88,7 @@ func handleTokenRequest(c *gin.Context) {
 					AccessToken: ts,
 					TokenType:   "Bearer",
 					Scope:       string(pufferpanel.ScopeOAuth2Auth),
+					ExpiresIn:   int64(time.Hour),
 				})
 
 				return
@@ -128,6 +130,7 @@ func handleTokenRequest(c *gin.Context) {
 					AccessToken: token,
 					TokenType:   "Bearer",
 					Scope:       string(pufferpanel.ScopeOAuth2Auth),
+					ExpiresIn:   int64(time.Hour),
 				})
 				return
 			}
@@ -203,6 +206,7 @@ func handleTokenRequest(c *gin.Context) {
 				AccessToken: jwtToken,
 				TokenType:   "Bearer",
 				Scope:       strings.Join(mappedScopes, " "),
+				ExpiresIn:   int64(time.Hour),
 			})
 		}
 	default:
@@ -219,9 +223,9 @@ type oauth2TokenRequest struct {
 }
 
 type oauth2TokenResponse struct {
-	AccessToken string `json:"access_token,omitempty"`
-	TokenType   string `json:"token_type,omitempty"`
-	//ExpiresIn        int    `json:"expires_in,omitempty"`
+	AccessToken      string `json:"access_token,omitempty"`
+	TokenType        string `json:"token_type,omitempty"`
+	ExpiresIn        int64  `json:"expires_in,omitempty"`
 	Scope            string `json:"scope"`
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`
