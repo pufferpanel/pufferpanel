@@ -14,10 +14,10 @@ jobs:
       with:
         node-version: 14
         
-    - name: Set up Go 1.17
+    - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.17'
+        go-version: '^1.18'
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
@@ -54,7 +54,7 @@ jobs:
         
     - name: Build Linux
       run: |
-        go build -o pufferpanel -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v2/cmd
         go test -v ./...
       env:
         GOOS: linux
@@ -62,7 +62,7 @@ jobs:
         
     - name: Build Windows
       run: |
-        go build -o pufferpanel.exe -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel.exe -buildvcs=false -v github.com/pufferpanel/pufferpanel/v2/cmd
       env:
         GOOS: windows
         GOARCH: amd64
