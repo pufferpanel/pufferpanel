@@ -18,6 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -188,10 +189,22 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
-			user, jwtToken, _, err := us.Login(user.Email, request.Password)
-			if err != nil || jwtToken == "" {
+			user, jwtToken, optNeeded, err := us.Login(user.Email, request.Password)
+			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
+			} else if optNeeded == false && jwtToken == "" {
+				//if they do not have opt enabled, but we don't have a token... it's still a bad login
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+				return
+			} else if optNeeded == true {
+				//at this point, their login credentials were valid, and we need to shortcut because otp
+				jwtToken, err = services.GenerateSession(user.ID)
+				if err != nil {
+					logging.Error.Printf("Error generating token: %s", err.Error())
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+					return
+				}
 			}
 
 			mappedScopes := make([]string, 0)
