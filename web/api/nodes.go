@@ -67,7 +67,7 @@ func getAllNodes(c *gin.Context) {
 	//HACK: For our local node, we actually need to override the public IP
 	for _, d := range *data {
 		if d.PrivateHost == "127.0.0.1" && d.PublicHost == "127.0.0.1" {
-			d.PublicHost = strings.SplitN(c.Request.Host, ":", 2)[0]
+			d.PublicHost = pufferpanel.GetHostname(c.Request.Host)
 			break
 		}
 	}
