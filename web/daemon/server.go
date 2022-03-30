@@ -239,7 +239,7 @@ func CreateServer(c *gin.Context) {
 		return
 	}
 
-	prg = &programs.Program{}
+	prg = programs.CreateProgram()
 	err := json.NewDecoder(c.Request.Body).Decode(prg)
 	if err != nil {
 		logging.Error.Printf("Error decoding JSON body: %s", err)
