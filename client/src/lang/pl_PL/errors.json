@@ -40,5 +40,5 @@
   "ErrDuplicateServerName": "Serwer o tej nazwie już istnieje",
   "ErrDuplicateNodeName": "Maszyna o tej nazwie już istnieje",
   "ErrDirectoryUploadNotSupported": "Nie można przesłać folderów",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker nie jest obsługiwany przez ten węzeł"
 }
