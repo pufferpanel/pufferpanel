@@ -86,6 +86,14 @@
         type="warning"
         dense
       >
+        {{ $t('templates.import.CommunityWarning') }}
+      </v-alert>
+      <v-alert
+        border="bottom"
+        text
+        type="warning"
+        dense
+      >
         {{ $t('templates.import.OverrideWarning') }}
       </v-alert>
       <v-autocomplete
