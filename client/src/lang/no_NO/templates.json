@@ -53,6 +53,7 @@
   "Convert": "Konverter",
   "OfferV1Convert": "Denne malen av json ser ut som en mal for PufferPanel 1.x, vil du automatisk konvertere denne til en mal for PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "Advarsel: Importerte maler VIL overskrive eksisterende maler med samme ID",
     "Import": "Importere maler",
     "Tooltip": "Importer maler fra det offisielle arkivet",
