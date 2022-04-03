@@ -53,6 +53,7 @@
   "Convert": "Convertir",
   "OfferV1Convert": "Ce modèle json ressemble à un modèle pour PufferPanel 1.x, voulez-vous le convertir automatiquement en un modèle pour PufferPanel 2.x ?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "AVERTISSEMENT : Les modèles importés VONT remplacer les modèles existants avec le même identifiant",
     "Import": "Importer des modèles",
     "Tooltip": "Importer des modèles depuis le dépôt officiel",
