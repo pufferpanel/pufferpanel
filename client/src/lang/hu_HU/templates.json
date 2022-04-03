@@ -53,6 +53,7 @@
   "Convert": "Konvertálás",
   "OfferV1Convert": "Ez a json sablon úgy néz ki, hogy a PufferPanel 1.x-es verziójához készült. Szeretnéd, hogy átkonvertáljuk ezt PufferPanel 2.x-es verzióra?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "FIGYELEM: Az importált sablonok ÁTÍRNAK minden létező sablont, aminek egyező IDje van",
     "Import": "Sablonok importálása",
     "Tooltip": "Sablonok importálása a hivatalos adattárból",
