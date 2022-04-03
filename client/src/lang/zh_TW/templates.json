@@ -53,6 +53,7 @@
   "Convert": "轉換",
   "OfferV1Convert": "這個範本看起來 PufferPanel 1.x 格式，請問您是否要自動轉成 PufferPanel 2.x 格式？",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "警告：匯入範本將會覆蓋已存在的相同 ID",
     "Import": "匯入範本",
     "Tooltip": "從官方儲存庫匯入範本",
