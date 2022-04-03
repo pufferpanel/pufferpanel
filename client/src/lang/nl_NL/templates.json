@@ -53,6 +53,7 @@
   "Convert": "Converteer",
   "OfferV1Convert": "Deze template json ziet eruit als een template voor PufferPanel 1.x, wilt u dit automatisch omzetten naar een template voor PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "WAARSCHUWING: Geimporteerde templates overschrijven bestaande sjablonen met dezelfde ID",
     "Import": "Sjabloon importeren",
     "Tooltip": "Sjablonen importeren uit de officiële repository",
