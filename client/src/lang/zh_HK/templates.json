@@ -53,6 +53,7 @@
   "Convert": "Convert",
   "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "警告：匯入的範本將覆蓋現有具相同ID的範本",
     "Import": "匯入範本",
     "Tooltip": "從官方代碼資料庫匯入範本",
