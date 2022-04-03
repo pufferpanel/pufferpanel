@@ -53,6 +53,7 @@
   "Convert": "Transformă",
   "OfferV1Convert": "Acest template json arată ca un template pentru PufferPanel 1.x, doriţi să convertiţi automat acest template într-un template pentru PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "AVERTISMENT: Template-urile importate vor suprascrie template-urile existente cu același ID",
     "Import": "Importă template-uri",
     "Tooltip": "Importați template-uri din repository",
