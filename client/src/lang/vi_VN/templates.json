@@ -53,6 +53,7 @@
   "Convert": "Chuyển đổi",
   "OfferV1Convert": "Mẫu json này giống như mẫu dành cho PufferPanel 1.x, bạn có muốn tự động chuyển đổi thành mẫu dành cho PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "CẢNH BÁO: Các mẫu được nhập SẼ ghi đè mẫu có sẵn mà trùng với ID ban đầu",
     "Import": "Nhập mẫu",
     "Tooltip": "Nhập mẫu từ kho lưu trữ chính thức",
