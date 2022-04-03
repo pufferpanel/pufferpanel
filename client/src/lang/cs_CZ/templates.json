@@ -53,6 +53,7 @@
   "Convert": "Převést",
   "OfferV1Convert": "Tato šablona json vypadá jako šablona pro PufferPanel 1.x, chcete automaticky převést tuto šablonu na šablonu pro PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "VAROVÁNÍ: Importované šablony přepisují existující šablony se stejným ID",
     "Import": "Importovat šablonu",
     "Tooltip": "Importovat šablony z oficiálního úložiště",
