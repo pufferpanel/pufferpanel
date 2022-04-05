@@ -26,6 +26,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
@@ -83,6 +84,10 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 				client.ServerId: client.Scopes,
 			},
 		},
+	}
+
+	if client.UserId != 0 {
+		claims.Subject = cast.ToString(client.UserId)
 	}
 
 	return Generate(claims)
