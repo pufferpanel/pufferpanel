@@ -6,9 +6,9 @@
   "MasterUrlHint": "Základní URL adresa, na které může být dostupný panel ve formátu http://localhost:8080",
   "CompanyName": "Název společnosti",
   "DefaultTheme": "Výchozí vzhled",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Povolit uživatelům registraci",
+  "RegistrationEnabledHint1": "Registrovaní uživatelé nemohou nic dokud nemají povolení",
+  "RegistrationEnabledHint2": "Vypnutí zabraňuje pouze přímé registraci, pozvání na server a uživetelská stránka není ovlivněna",
   "EmailProvider": "Poskytovatel e-mailu",
   "emailProviders": {
     "none": "Není",
@@ -17,9 +17,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
+    "from": "Adresa odesílatele",
     "domain": "Doména",
-    "key": "API Key",
+    "key": "API klíč",
     "host": "Hostitel",
     "username": "Uživatelské jméno",
     "password": "Heslo"
