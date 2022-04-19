@@ -15,11 +15,12 @@ package pufferpanel
 
 import (
 	"context"
-	"github.com/docker/docker/client"
 	"os/exec"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/client"
 )
 
 type Server struct {
@@ -185,6 +186,9 @@ func (s Server) DataToMap() map[string]interface{} {
 }
 
 func parseRequirementRow(str string) []string {
+	if str == "" {
+		return []string{}
+	}
 	d := strings.Split(str, "||")
 	for k, v := range d {
 		d[k] = strings.TrimSpace(v)
