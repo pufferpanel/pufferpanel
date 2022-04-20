@@ -53,7 +53,7 @@
   "Convert": "변환",
   "OfferV1Convert": "이 템플릿은 PufferPanel 1.x용 템플릿입니다. 이 템플릿을 PufferPanel 2.x용 템플릿으로 자동변환하시겠습니까?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "이 템플릿은 커뮤니티에서 제작되며, 보증없이 제공됩니다.",
     "OverrideWarning": "경고: 불러와진 템플릿들은 이미 존재하는 같은 ID의 템플릿들을 덮어 쓸것입니다",
     "Import": "템플릿 가져오기",
     "Tooltip": "공식 리포지토리에서 템플릿 가져오기",
