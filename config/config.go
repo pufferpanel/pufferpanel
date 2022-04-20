@@ -16,11 +16,13 @@ package config
 import (
 	"encoding/hex"
 	"errors"
+	"reflect"
+	"strings"
+	"sync"
+
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"reflect"
-	"strings"
 )
 
 func init() {
@@ -29,8 +31,6 @@ func init() {
 	viper.AutomaticEnv()
 
 	viper.SetConfigName("config")
-	viper.AddConfigPath("/etc/pufferpanel/")
-	viper.AddConfigPath(".")
 
 	for k, v := range defaultSettings {
 		viper.SetDefault(k, v)
@@ -87,7 +87,18 @@ var defaultSettings = map[string]interface{}{
 	"daemon.data.maxWSDownloadSize": int64(1024 * 1024 * 20),
 }
 
+var addConfigPathOnce sync.Once
+
 func LoadConfigFile(path string) error {
+	addConfigPathOnce.Do(func() {
+		// Lazy init since AddConfigPath normalizes to absolute paths,
+		// so it evaluates the working directory immediately, and we
+		// want this to happen after the --workDir command-line
+		// argument is handled.
+		viper.AddConfigPath("/etc/pufferpanel/")
+		viper.AddConfigPath(".")
+	})
+
 	if path != "" {
 		viper.SetConfigFile(path)
 	}
