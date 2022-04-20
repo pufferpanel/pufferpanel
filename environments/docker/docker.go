@@ -252,14 +252,14 @@ func (d *docker) WaitForMainProcess() error {
 	return d.WaitForMainProcessFor(0)
 }
 
-func (d *docker) WaitForMainProcessFor(timeout int) (err error) {
+func (d *docker) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	running, err := d.IsRunning()
 	if err != nil {
 		return
 	}
 	if running {
 		if timeout > 0 {
-			var timer = time.AfterFunc(time.Duration(timeout)*time.Millisecond, func() {
+			var timer = time.AfterFunc(timeout, func() {
 				err = d.Kill()
 			})
 			d.Wait.Wait()
