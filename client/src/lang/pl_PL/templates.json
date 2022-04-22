@@ -53,7 +53,7 @@
   "Convert": "Konwertuj",
   "OfferV1Convert": "Ten szablon json wygląda jak szablon wersji PufferPanel 1.x, czy chcesz go automatycznie przekonwertować na szablon wersji PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "Te szablony są tworzone przez społeczność i dostarczane bez żadnych gwarancji",
     "OverrideWarning": "OSTRZEŻENIE: Zaimportowane szablony zostaną nadpiszą istniejące szablony o tym samym ID",
     "Import": "Importuj szablony",
     "Tooltip": "Importuj szablony z oficjalnego repozytorium",
