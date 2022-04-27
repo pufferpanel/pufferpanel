@@ -26,7 +26,7 @@
   "Delete": "Ta bort användare",
   "CreateSuccess": "Användaren har skapats",
   "CreateError": "Kunde inte skapa användare",
-  "UpdateSuccess": "Uppdaterad användare",
+  "UpdateSuccess": "Uppdaterat användare",
   "UpdateError": "Det gick inte att uppdatera användaren",
   "PermsUpdateError": "Misslyckades att uppdatera användarbehörigheter",
   "Otp": "Tvåfaktorsautentisering",
