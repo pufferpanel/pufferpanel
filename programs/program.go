@@ -385,6 +385,13 @@ func (p *Program) Save() (err error) {
 
 	file := filepath.Join(pufferpanel.ServerFolder, p.Id()+".json")
 
+	if !p.valid() {
+		logging.Error.Printf("Server %s contained invalid data, this server is.... broken", p.Identifier)
+		//we can't even reload from disk....
+		//so, puke back, and for now we'll handle it later
+		return pufferpanel.ErrUnknownError
+	}
+
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
 		return
@@ -623,4 +630,29 @@ func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
 		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
 	}
 	return
+}
+
+func (p *Program) valid() bool {
+	//we need a type at least, this is a safe check
+	if p.Type.Type == "" {
+		return false
+	}
+
+	//check the env object, if it's even checkable
+	env, casted := p.Environment.(map[string]interface{})
+	if !casted || len(env) == 0 {
+		return false
+	}
+
+	v, exists := env["type"]
+	if !exists {
+		return false
+	}
+
+	str, ok := v.(string)
+	if !ok || str == "" {
+		return false
+	}
+
+	return true
 }
