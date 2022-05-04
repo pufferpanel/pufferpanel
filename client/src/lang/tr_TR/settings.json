@@ -1,27 +1,27 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "Settings": "Ayarlar",
+  "PanelSettings": "Panel ayarları",
+  "EmailSettings": "E-posta ayarları",
+  "MasterUrl": "Ana URL",
+  "MasterUrlHint": "Panelin altında ulaşılabilen temel URL, http://localhost:8080 biçimindedir",
+  "CompanyName": "Şirket adı",
+  "DefaultTheme": "Varsayılan tema",
+  "RegistrationEnabled": "Kullanıcıların kayıt olmasına izin ver",
+  "RegistrationEnabledHint1": "Kendi kayıt olan kullanıcılar izin verilene kadar hiçbir şey yapamazlar",
+  "RegistrationEnabledHint2": "Bunu devre dışı bırakmak yalnızca doğrudan kaydı engeller, bir sunucuya davet edilir ve kullanıcılar sayfası etkilenmez",
+  "EmailProvider": "E-Posta sağlayıcısı",
   "emailProviders": {
-    "none": "None",
+    "none": "Hiçbiri",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
-    "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "from": "Gönderen adresi",
+    "domain": "Alan adı",
+    "key": "API Anahtarı",
+    "host": "Sunucu",
+    "username": "Kullanıcı adı",
+    "password": "Parola"
   }
 }
