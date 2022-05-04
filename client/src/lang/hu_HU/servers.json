@@ -58,8 +58,8 @@
   "Weekly": "Heti",
   "Monthly": "Havi",
   "Advanced": "Haladó beállítások",
-  "HourlyTab": "Every {hourInterval} Hours at Minute {minute}",
-  "DailyTab": "Every {dayInterval} days at {hour}:{minute}",
-  "WeeklyTab": "Every {weekdays} at {hour}:{minute}",
-  "MonthlyTab": "Every {monthInterval} months on the {day} day at {hour}:{minute}"
+  "HourlyTab": "Minden{hourInterval} óra percenként {minute}",
+  "DailyTab": "Minden {dayInterval} napon ekkor: {hour}:{minute}",
+  "WeeklyTab": "Minden {weekdays} ekkor: {hour}:{minute}",
+  "MonthlyTab": "Minden {monthInterval} hónapban ezen a napon {day} ekkor: {hour}:{minute}"
 }
