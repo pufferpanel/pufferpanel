@@ -40,5 +40,5 @@
   "ErrDuplicateServerName": "Egy szerver már létezik ezzel a névvel",
   "ErrDuplicateNodeName": "Egy csomópont már létezik ezzel a névvel",
   "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton"
 }
