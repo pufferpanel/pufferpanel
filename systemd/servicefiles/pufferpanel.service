@@ -11,5 +11,7 @@ Group=pufferpanel
 TimeoutStopSec=5m
 SendSIGKILL=no
 
+Environment="GIN_MODE=release"
+
 [Install]
 WantedBy=multi-user.target
