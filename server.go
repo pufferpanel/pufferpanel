@@ -155,14 +155,13 @@ func (r Requirements) Test(server Server) error {
 		for _, v := range r.Binaries {
 			binaries := parseRequirementRow(v)
 
-			found := false
+			found := true
 			for k, binary := range binaries {
 				parsed := ReplaceTokens(binary, server.DataToMap())
 				binaries[k] = parsed
 				_, err := exec.LookPath(parsed)
-				if err == nil {
-					found = true
-					break
+				if err != nil {
+					found = false
 				}
 			}
 			if !found {
