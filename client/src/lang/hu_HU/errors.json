@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Egy szerver már létezik ezzel a névvel",
   "ErrDuplicateNodeName": "Egy csomópont már létezik ezzel a névvel",
   "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
-  "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton"
+  "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
