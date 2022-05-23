@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Bu isimde bir sunucu zaten var",
   "ErrDuplicateNodeName": "Bu ada sahip bir düğüm zaten var",
   "ErrDirectoryUploadNotSupported": "Klasör yüklenemez",
-  "ErrDockerNotSupported": "Bu düğümde Docker desteklenmiyor"
+  "ErrDockerNotSupported": "Bu düğümde Docker desteklenmiyor",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
