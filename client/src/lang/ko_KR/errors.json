@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "이미 같은 이름을 가진 서버가 있습니다",
   "ErrDuplicateNodeName": "이미 같은 이름의 노드가 있습니다",
   "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음",
-  "ErrDockerNotSupported": "이 노드에서는 Docker를 지원하지 않습니다"
+  "ErrDockerNotSupported": "이 노드에서는 Docker를 지원하지 않습니다",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
