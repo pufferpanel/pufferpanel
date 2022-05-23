@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Сервер з таким ім'ям вже існує",
   "ErrDuplicateNodeName": "Вузол з таким ім'ям вже існує",
   "ErrDirectoryUploadNotSupported": "Неможливо завантажити папки",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
