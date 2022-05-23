@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Esiste già un server con questo nome",
   "ErrDuplicateNodeName": "Esiste già un nodo con questo nome",
   "ErrDirectoryUploadNotSupported": "Impossibile caricare i file",
-  "ErrDockerNotSupported": "Docker non è supportato in questo nodo"
+  "ErrDockerNotSupported": "Docker non è supportato in questo nodo",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
