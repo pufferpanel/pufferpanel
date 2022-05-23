@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Ein Server mit diesem Namen existiert bereits",
   "ErrDuplicateNodeName": "Ein Knoten mit diesem Namen existiert bereits",
   "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
