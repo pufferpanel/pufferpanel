@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Υπάρχει ήδη ένας διακομιστής με αυτό το όνομα",
   "ErrDuplicateNodeName": "Υπάρχει ήδη ένας κόμβος με αυτό το όνομα",
   "ErrDirectoryUploadNotSupported": "Αδυναμία μεταφόρτωσης φακέλων",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
