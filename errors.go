@@ -136,7 +136,7 @@ var ErrUnsupportedArch = func(actual, expected string) *Error {
 }
 
 var ErrMissingBinary = func(expected string) *Error {
-	return CreateError("Missing binary: ${expected}", "ErrMissingBinary").Metadata(map[string]interface{}{"expected": expected})
+	return CreateError("missing binary: ${expected}", "ErrMissingBinary").Metadata(map[string]interface{}{"expected": expected})
 }
 
 func GenerateValidationMessage(err error) error {
