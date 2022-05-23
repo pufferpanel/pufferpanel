@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Selle nimega server eksisteerib juba",
   "ErrDuplicateNodeName": "Selle nimega sõlm juba eksisteerib",
   "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
