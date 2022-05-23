@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "服务器名称已存在",
   "ErrDuplicateNodeName": "该文件夹名称已经存在",
   "ErrDirectoryUploadNotSupported": "无法上传文件夹",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
