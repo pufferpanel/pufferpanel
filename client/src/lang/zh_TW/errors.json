@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "A server with this name already exists",
   "ErrDuplicateNodeName": "A node with this name already exists",
   "ErrDirectoryUploadNotSupported": "無法上傳資料夾",
-  "ErrDockerNotSupported": "Docker is not supported on this node"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
