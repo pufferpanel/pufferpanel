@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Palvelin samalla nimellä on jo olemassa",
   "ErrDuplicateNodeName": "Noodi samalla nimellä on jo olemassa",
   "ErrDirectoryUploadNotSupported": "Kansioden siirtäminen palvelimelle epäonnistui",
-  "ErrDockerNotSupported": "Docker ei ole tuettu tällä noodilla"
+  "ErrDockerNotSupported": "Docker ei ole tuettu tällä noodilla",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
