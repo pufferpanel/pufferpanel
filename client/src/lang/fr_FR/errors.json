@@ -40,5 +40,6 @@
   "ErrDuplicateServerName": "Un serveur avec ce nom existe déjà",
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
-  "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud"
+  "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud",
+  "ErrMissingBinary": "Missing binary: ${expected}"
 }
