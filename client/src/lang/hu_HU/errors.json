@@ -41,5 +41,7 @@
   "ErrDuplicateNodeName": "Egy csomópont már létezik ezzel a névvel",
   "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
   "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton",
-  "ErrMissingBinary": "Missing binary: ${expected}"
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }
