@@ -41,5 +41,7 @@
   "ErrDuplicateNodeName": "Node với tên này đã tồn tại",
   "ErrDirectoryUploadNotSupported": "Không thể tải thư mục lên",
   "ErrDockerNotSupported": "Node này không hỗ trợ Docker",
-  "ErrMissingBinary": "Missing binary: ${expected}"
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }
