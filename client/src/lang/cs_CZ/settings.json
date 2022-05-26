@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Adresa odesílatele",
+    "from": "Sender Address",
     "domain": "Doména",
     "key": "API klíč",
     "host": "Hostitel",
