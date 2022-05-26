@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Saatja aadress",
+    "from": "Sender Address",
     "domain": "Domeen",
     "key": "API võti",
     "host": "Host",
