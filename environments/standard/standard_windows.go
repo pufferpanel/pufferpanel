@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 /*
@@ -75,12 +76,12 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	logging.Info.Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
-	msg := messages.Status{Running:true}
+	msg := messages.Status{Running: true}
 	_ = s.WSManager.WriteMessage(msg)
 
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
-		msg := messages.Status{Running:false}
+		msg := messages.Status{Running: false}
 		_ = s.WSManager.WriteMessage(msg)
 		logging.Info.Printf("Process failed to start: %s", err)
 		return
@@ -160,14 +161,14 @@ func (s *standard) WaitForMainProcess() error {
 	return s.WaitForMainProcessFor(0)
 }
 
-func (s *standard) WaitForMainProcessFor(timeout int) (err error) {
+func (s *standard) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	running, err := s.IsRunning()
 	if err != nil {
 		return
 	}
 	if running {
 		if timeout > 0 {
-			var timer = time.AfterFunc(time.Duration(timeout)*time.Millisecond, func() {
+			var timer = time.AfterFunc(timeout, func() {
 				err = s.Kill()
 			})
 			s.Wait.Wait()
@@ -193,7 +194,7 @@ func (s *standard) handleClose(callback func(graceful bool)) {
 	err := s.mainProcess.Wait()
 	s.Wait.Done()
 
-	msg := messages.Status{Running:false}
+	msg := messages.Status{Running: false}
 	_ = s.WSManager.WriteMessage(msg)
 
 	var graceful bool

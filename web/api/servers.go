@@ -345,10 +345,16 @@ func createServer(c *gin.Context) {
 	}
 
 	if nodeResponse.StatusCode != http.StatusOK {
-		buf := new(bytes.Buffer)
-		_, _ = buf.ReadFrom(nodeResponse.Body)
-		logging.Error.Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, buf.String())
-		response.HandleError(c, pufferpanel.ErrUnknownError, http.StatusInternalServerError)
+		resData, err := ioutil.ReadAll(nodeResponse.Body)
+		if err != nil {
+			logging.Error.Printf("Failed to parse response from daemon\n%s", err.Error())
+		}
+		logging.Error.Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, string(resData))
+		//assume daemon gives us a valid response, directly forward to client
+		c.Header("Content-Type", "application/json")
+		c.Status(nodeResponse.StatusCode)
+		_, _ = c.Writer.Write(resData)
+		c.Abort()
 		return
 	}
 

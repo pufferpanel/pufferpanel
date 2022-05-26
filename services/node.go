@@ -14,6 +14,7 @@
 package services
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -112,6 +113,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 
 	if node.IsLocal() {
 		w := &httptest.ResponseRecorder{}
+		w.Body = &bytes.Buffer{}
 		pufferpanel.Engine.ServeHTTP(w, request)
 		return w.Result(), err
 	}

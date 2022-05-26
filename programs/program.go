@@ -19,14 +19,12 @@ package programs
 import (
 	"container/list"
 	"encoding/json"
-	"github.com/go-co-op/gocron"
 	"github.com/mholt/archiver"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/operations"
-	"github.com/satori/go.uuid"
 	"io"
 	"io/ioutil"
 	"os"
@@ -41,7 +39,7 @@ type Program struct {
 
 	CrashCounter       int                     `json:"-"`
 	RunningEnvironment pufferpanel.Environment `json:"-"`
-	Scheduler          *gocron.Scheduler       `json:"-"`
+	Scheduler          Scheduler               `json:"-"`
 }
 
 var queue *list.List
@@ -110,17 +108,14 @@ type FileData struct {
 }
 
 func (p *Program) DataToMap() map[string]interface{} {
-	var result = make(map[string]interface{}, len(p.Variables))
-
-	for k, v := range p.Variables {
-		result[k] = v.Value
-	}
+	var result = p.Server.DataToMap()
+	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	return result
 }
 
 func CreateProgram() *Program {
-	return &Program{
+	p := &Program{
 		Server: pufferpanel.Server{
 			Execution: pufferpanel.Execution{
 				Disabled:                false,
@@ -139,6 +134,8 @@ func CreateProgram() *Program {
 			Uninstallation: make([]interface{}, 0),
 		},
 	}
+	p.Scheduler = NewScheduler(p)
+	return p
 }
 
 //Starts the program.
@@ -154,12 +151,10 @@ func (p *Program) Start() (err error) {
 
 	logging.Info.Printf("Starting server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Starting server\n")
-	data := make(map[string]interface{})
-	for k, v := range p.Variables {
-		data[k] = v.Value
-	}
 
-	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
+	data := p.DataToMap()
+
+	process, err := operations.GenerateProcess(p.Execution.PreExecution, p.RunningEnvironment, data, p.Execution.EnvironmentVariables)
 	if err != nil {
 		logging.Error.Printf("Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
@@ -172,9 +167,6 @@ func (p *Program) Start() (err error) {
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
 		return
 	}
-
-	//HACK: add rootDir stuff
-	data["rootDir"] = p.RunningEnvironment.GetRootDirectory()
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
 	if p.Execution.WorkingDirectory == "${rootDir}" {
@@ -280,6 +272,16 @@ func (p *Program) Destroy() (err error) {
 		logging.Error.Printf("Error uninstalling server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n")
 	}
+	err = p.Scheduler.Rebuild()
+	if err != nil {
+		logging.Error.Printf("Error uninstalling server: %s", err)
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+	}
+	err = p.Scheduler.Rebuild()
+	if err != nil {
+		logging.Error.Printf("Error uninstalling server: %s", err)
+		p.RunningEnvironment.DisplayToConsole(true, "Failed to uninstall server\n%s\n", err.Error())
+	}
 	return
 }
 
@@ -383,6 +385,13 @@ func (p *Program) Save() (err error) {
 
 	file := filepath.Join(pufferpanel.ServerFolder, p.Id()+".json")
 
+	if !p.valid() {
+		logging.Error.Printf("Server %s contained invalid data, this server is.... broken", p.Identifier)
+		//we can't even reload from disk....
+		//so, puke back, and for now we'll handle it later
+		return pufferpanel.ErrUnknownError
+	}
+
 	data, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
 		return
@@ -412,55 +421,6 @@ func (p *Program) EditData(data map[string]pufferpanel.Variable, overrideUser bo
 	}
 
 	err = Save(p.Id())
-	return
-}
-
-func (p *Program) NewTask(task pufferpanel.Task) (id string, err error) {
-	id = uuid.NewV4().String()[:8]
-	p.Tasks[id] = task
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
-	return
-}
-
-func (p *Program) RunTask(taskId string) (err error) {
-	if _, ok := p.Tasks[taskId]; !ok {
-		return pufferpanel.ErrTaskNotFound
-	}
-
-	return ExecuteTask(p.Id(), taskId)
-}
-
-func (p *Program) EditTask(id string, task pufferpanel.Task) (err error) {
-	if _, ok := p.Tasks[id]; !ok {
-		return pufferpanel.ErrTaskNotFound
-	}
-
-	p.Tasks[id] = task
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
-	return
-}
-
-func (p *Program) RemoveTask(id string) (err error) {
-	delete(p.Tasks, id)
-
-	err = Save(p.Id())
-	if err != nil {
-		return
-	}
-
-	err = RestartScheduler(p.Id())
 	return
 }
 
@@ -645,4 +605,54 @@ func (p *Program) Extract(source, destination string) error {
 	}
 
 	return archiver.Unarchive(sourceFile, destinationFile)
+}
+
+func (p *Program) ExecuteTask(task pufferpanel.Task) (err error) {
+	ops := task.Operations
+	if len(ops) > 0 {
+		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
+		var process operations.OperationProcess
+		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		if err != nil {
+			logging.Error.Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+
+		err = process.Run(p.RunningEnvironment)
+		if err != nil {
+			logging.Error.Printf("Error setting up tasks: %s", err)
+			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
+			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
+			return
+		}
+		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
+	}
+	return
+}
+
+func (p *Program) valid() bool {
+	//we need a type at least, this is a safe check
+	if p.Type.Type == "" {
+		return false
+	}
+
+	//check the env object, if it's even checkable
+	env, casted := p.Environment.(map[string]interface{})
+	if !casted || len(env) == 0 {
+		return false
+	}
+
+	v, exists := env["type"]
+	if !exists {
+		return false
+	}
+
+	str, ok := v.(string)
+	if !ok || str == "" {
+		return false
+	}
+
+	return true
 }

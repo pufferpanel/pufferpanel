@@ -55,6 +55,7 @@ var ErrInvalidSession = CreateError("invalid session", "ErrInvalidSession")
 var ErrSessionExpired = CreateError("session expired", "ErrSessionExpired")
 var ErrTaskNotFound = CreateError("task not found", "ErrTaskNotFound")
 var ErrNotImplemented = CreateError("not implemented", "ErrNotImplemented")
+var ErrDockerNotSupported = CreateError("docker not supported", "ErrDockerNotSupported")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})
@@ -121,10 +122,22 @@ var ErrFieldLength = func(fieldName string, min int, max int) *Error {
 }
 
 var ErrFactoryError = func(operatorName string, err error) *Error {
-	return CreateError("factory `${operatorName}` encountered an error: `${err}`", "ErrFactoryError")
+	return CreateError("factory `${operatorName}` encountered an error: `${err}`", "ErrFactoryError").Metadata(map[string]interface{}{"operatorName": operatorName, "err": err.Error()})
 }
 
 var ErrNodeInvalid = CreateError("node is invalid", "ErrNodeInvalid")
+
+var ErrUnsupportedOS = func(actual, expected string) *Error {
+	return CreateError("OS (${actual}) not supported. Supported OS: ${expected}", "ErrUnsupportedOS").Metadata(map[string]interface{}{"actual": actual, "expected": expected})
+}
+
+var ErrUnsupportedArch = func(actual, expected string) *Error {
+	return CreateError("Architecture ${actual} not supported. Supported Architectures: ${expected}", "ErrUnsupportedArch").Metadata(map[string]interface{}{"actual": actual, "expected": expected})
+}
+
+var ErrMissingBinary = func(expected string) *Error {
+	return CreateError("missing binary: ${expected}", "ErrMissingBinary").Metadata(map[string]interface{}{"expected": expected})
+}
 
 func GenerateValidationMessage(err error) error {
 	if errs, ok := err.(validator.ValidationErrors); ok {

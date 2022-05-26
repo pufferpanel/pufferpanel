@@ -26,10 +26,10 @@ type Metadata struct {
 }
 
 type Paging struct {
-	Page    uint  `json:"page,omitempty"`
-	Size    uint  `json:"pageSize,omitempty"`
-	MaxSize uint  `json:"maxSize,omitempty"`
-	Total   int64 `json:"total,omitempty"`
+	Page    uint  `json:"page"`
+	Size    uint  `json:"pageSize"`
+	MaxSize uint  `json:"maxSize"`
+	Total   int64 `json:"total"`
 }
 
 type Empty struct {

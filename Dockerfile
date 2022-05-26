@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM golang:alpine AS builder
+FROM golang:1.18-alpine AS builder
 
 ARG tags=none
 ARG version=devel
@@ -16,11 +16,20 @@ ENV GOPROXY=$goproxy
 
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ python2 && \
-    mkdir /pufferpanel
+    mkdir /pufferpanel && \
+    wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz && \
+    mkdir -p ~/go/bin && \
+    tar -zxf swag*.tar.gz -C ~/go/bin && \
+    rm -rf swag*.tar.gz
 
 WORKDIR /build/pufferpanel
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
 COPY . .
-RUN go build -v -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v2.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
+RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
+    go build -v -buildvcs=false -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v2.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v2/cmd && \
     mv assets/email /pufferpanel/email && \
     cd client && \
     npm install && \

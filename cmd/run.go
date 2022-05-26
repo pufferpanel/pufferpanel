@@ -39,6 +39,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var runCmd = &cobra.Command{
@@ -137,6 +138,11 @@ func internalRun(c chan error, terminate chan bool) {
 		sftp.Stop()
 		programs.ShutdownService()
 		database.Close()
+
+		for _, p := range programs.GetAll() {
+			_ = p.Stop()
+			p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
+		}
 
 		//return out, the upper layers know how to handle this
 		c <- nil

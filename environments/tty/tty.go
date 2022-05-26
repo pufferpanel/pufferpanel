@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 /*
@@ -68,7 +69,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 	logging.Info.Printf("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
-	msg := messages.Status{Running:true}
+	msg := messages.Status{Running: true}
 	_ = t.WSManager.WriteMessage(msg)
 
 	tty, err := pty.Start(pr)
@@ -154,14 +155,14 @@ func (t *tty) WaitForMainProcess() error {
 	return t.WaitForMainProcessFor(0)
 }
 
-func (t *tty) WaitForMainProcessFor(timeout int) (err error) {
+func (t *tty) WaitForMainProcessFor(timeout time.Duration) (err error) {
 	running, err := t.IsRunning()
 	if err != nil {
 		return
 	}
 	if running {
 		if timeout > 0 {
-			var timer = time.AfterFunc(time.Duration(timeout)*time.Millisecond, func() {
+			var timer = time.AfterFunc(timeout, func() {
 				err = t.Kill()
 			})
 			t.Wait.Wait()
@@ -199,7 +200,7 @@ func (t *tty) handleClose(callback func(graceful bool)) {
 	t.mainProcess = nil
 	t.Wait.Done()
 
-	msg := messages.Status{Running:false}
+	msg := messages.Status{Running: false}
 	_ = t.WSManager.WriteMessage(msg)
 
 	if callback != nil {

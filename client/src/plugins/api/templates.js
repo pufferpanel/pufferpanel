@@ -96,6 +96,7 @@ const templateFromApi = (template, server = false) => {
   const defaultEnv = template.environment
   const supportedEnvs = !server ? template.supportedEnvironments || [] : undefined
   const id = server ? template.id : undefined
+  const requirements = template.requirements
 
   return {
     id,
@@ -115,12 +116,13 @@ const templateFromApi = (template, server = false) => {
     readme,
     autostart,
     autorestart,
-    autorecover
+    autorecover,
+    requirements
   }
 }
 
 const templateToApi = (template) => {
-  const { id, name, display, type, command, workingDirectory, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover } = template
+  const { id, name, display, type, command, workingDirectory, stop, pre, post, envVars, vars, install, defaultEnv, supportedEnvs, autostart, autorestart, autorecover, requirements } = template
 
   const convertedStop = {}
   if (stop.type === 'signal') {
@@ -154,6 +156,7 @@ const templateToApi = (template) => {
     },
     data: convertedVars,
     environment: defaultEnv,
-    supportedEnvironments: supportedEnvs
+    supportedEnvironments: supportedEnvs,
+    requirements
   }
 }

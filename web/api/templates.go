@@ -100,7 +100,7 @@ func getTemplate(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param template body pufferpanel.Template true "Template"
+// @Param template body pufferpanel.Server true "Template"
 // @Param name path string true "Template name"
 // @Router /api/templates/{name} [put]
 func putTemplate(c *gin.Context) {
@@ -108,7 +108,7 @@ func putTemplate(c *gin.Context) {
 	ts := &services.Template{DB: db}
 
 	templateName := c.Param("name")
-	templateRequest := pufferpanel.Template{}
+	templateRequest := pufferpanel.Server{}
 	err := c.MustBindWith(&templateRequest, binding.JSON)
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
@@ -123,7 +123,7 @@ func putTemplate(c *gin.Context) {
 		return
 	}
 
-	template.Template = templateRequest
+	template.Server = templateRequest
 	err = ts.Save(template)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -190,7 +190,7 @@ func deleteTemplate(c *gin.Context) {
 // @Failure 403 {object} response.Error
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
-// @Param template body pufferpanel.Template true "Template"
+// @Param template body pufferpanel.Server true "Template"
 // @Router /api/templates/import [post]
 func getImportableTemplates(c *gin.Context) {
 	u, err := url.Parse(GithubUrl)

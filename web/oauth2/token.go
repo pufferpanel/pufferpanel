@@ -18,6 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
@@ -25,6 +26,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func registerTokens(g *gin.RouterGroup) {
@@ -87,6 +89,7 @@ func handleTokenRequest(c *gin.Context) {
 					AccessToken: ts,
 					TokenType:   "Bearer",
 					Scope:       string(pufferpanel.ScopeOAuth2Auth),
+					ExpiresIn:   int64(time.Hour),
 				})
 
 				return
@@ -128,6 +131,7 @@ func handleTokenRequest(c *gin.Context) {
 					AccessToken: token,
 					TokenType:   "Bearer",
 					Scope:       string(pufferpanel.ScopeOAuth2Auth),
+					ExpiresIn:   int64(time.Hour),
 				})
 				return
 			}
@@ -185,10 +189,22 @@ func handleTokenRequest(c *gin.Context) {
 			}
 
 			//validate their credentials
-			user, jwtToken, _, err := us.Login(user.Email, request.Password)
-			if err != nil || jwtToken == "" {
+			user, jwtToken, optNeeded, err := us.Login(user.Email, request.Password)
+			if err != nil {
 				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
 				return
+			} else if optNeeded == false && jwtToken == "" {
+				//if they do not have opt enabled, but we don't have a token... it's still a bad login
+				c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+				return
+			} else if optNeeded == true {
+				//at this point, their login credentials were valid, and we need to shortcut because otp
+				jwtToken, err = services.GenerateSession(user.ID)
+				if err != nil {
+					logging.Error.Printf("Error generating token: %s", err.Error())
+					c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "invalid_request", ErrorDescription: "no access"})
+					return
+				}
 			}
 
 			mappedScopes := make([]string, 0)
@@ -203,6 +219,7 @@ func handleTokenRequest(c *gin.Context) {
 				AccessToken: jwtToken,
 				TokenType:   "Bearer",
 				Scope:       strings.Join(mappedScopes, " "),
+				ExpiresIn:   int64(time.Hour),
 			})
 		}
 	default:
@@ -219,9 +236,9 @@ type oauth2TokenRequest struct {
 }
 
 type oauth2TokenResponse struct {
-	AccessToken string `json:"access_token,omitempty"`
-	TokenType   string `json:"token_type,omitempty"`
-	//ExpiresIn        int    `json:"expires_in,omitempty"`
+	AccessToken      string `json:"access_token,omitempty"`
+	TokenType        string `json:"token_type,omitempty"`
+	ExpiresIn        int64  `json:"expires_in,omitempty"`
 	Scope            string `json:"scope"`
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`

@@ -33,7 +33,7 @@ import (
 var atLocker = &sync.RWMutex{}
 var daemonToken string
 var lastRefresh time.Time
-var expiresIn time.Duration
+var expiresIn int64
 var client = &http.Client{}
 
 func RefreshToken() bool {
@@ -93,7 +93,7 @@ func RefreshIfStale() {
 	//we know the token only lasts about an hour,
 	//so we'll check to see if we know the cache is old
 	atLocker.RLock()
-	oldCache := lastRefresh.Add(expiresIn).Before(time.Now())
+	oldCache := lastRefresh.Add(time.Second * time.Duration(expiresIn)).Before(time.Now())
 	atLocker.RUnlock()
 	if oldCache {
 		RefreshToken()
@@ -107,7 +107,7 @@ func createRequest(encodedData string) (request *http.Request) {
 }
 
 type requestResponse struct {
-	AccessToken string        `json:"access_token"`
-	ExpiresIn   time.Duration `json:"expires_in"`
-	Error       string        `json:"error"`
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int64  `json:"expires_in"`
+	Error       string `json:"error"`
 }

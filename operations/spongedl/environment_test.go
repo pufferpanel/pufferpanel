@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"os"
+	"time"
 )
 
 type TestEnvironment struct {
@@ -46,7 +47,7 @@ func (te *TestEnvironment) WaitForMainProcess() error {
 	return nil
 }
 
-func (te *TestEnvironment) WaitForMainProcessFor(timeout int) error {
+func (te *TestEnvironment) WaitForMainProcessFor(timeout time.Duration) error {
 	return nil
 }
 

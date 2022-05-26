@@ -23,6 +23,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Environment interface {
@@ -50,7 +51,7 @@ type Environment interface {
 
 	WaitForMainProcess() error
 
-	WaitForMainProcessFor(timeout int) error
+	WaitForMainProcessFor(timeout time.Duration) error
 
 	GetRootDirectory() string
 
@@ -81,11 +82,11 @@ type BaseEnvironment struct {
 }
 
 type ExecutionData struct {
-	Command string
-	Arguments []string
-	Environment map[string]string
+	Command          string
+	Arguments        []string
+	Environment      map[string]string
 	WorkingDirectory string
-	Callback func(graceful bool)
+	Callback         func(graceful bool)
 }
 
 type ExecutionFunction func(steps ExecutionData) (err error)
