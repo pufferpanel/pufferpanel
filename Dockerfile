@@ -15,7 +15,7 @@ ENV npm_config_registry=$npmproxy
 ENV GOPROXY=$goproxy
 
 RUN go version && \
-    apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ python2 && \
+    apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ && \
     mkdir /pufferpanel && \
     wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz && \
     mkdir -p ~/go/bin && \
@@ -55,7 +55,8 @@ ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_DAEMON_SFTP_KEY=/etc/pufferpanel/sftp.key \
     PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache \
     PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers \
-    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules
+    PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules \
+    GIN_MODE=release
 
 WORKDIR /pufferpanel
 
