@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "A feladó címe",
+    "from": "Sender Address",
     "domain": "Domain",
     "key": "API kulcs",
     "host": "Kiszolgáló",
