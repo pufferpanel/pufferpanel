@@ -39,5 +39,9 @@
   "ErrSavingInviteduser": "Teie konto loomisel ilmnes viga",
   "ErrDuplicateServerName": "Selle nimega server eksisteerib juba",
   "ErrDuplicateNodeName": "Selle nimega sõlm juba eksisteerib",
-  "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida"
+  "ErrDirectoryUploadNotSupported": "Kaustu ei saa üles laadida",
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

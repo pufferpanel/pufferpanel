@@ -53,6 +53,7 @@
   "Convert": "Convertir",
   "OfferV1Convert": "Esta plantilla json se ve como una plantilla para PufferPanel 1.x, ¿deseas convertir automaticamente esta plantilla a una plantilla para PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "ADVERTENCIA: Las plantillas importadas sobrescribirán las plantillas existentes con el mismo ID",
     "Import": "Importar plantillas",
     "Tooltip": "Importar plantillas del repositorio oficial",

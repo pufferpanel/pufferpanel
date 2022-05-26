@@ -39,5 +39,9 @@
   "ErrSavingInviteduser": "Při vytváření účtu došlo k chybě",
   "ErrDuplicateServerName": "Server s tímto názvem již existuje",
   "ErrDuplicateNodeName": "Uzel s tímto názvem již existuje",
-  "ErrDirectoryUploadNotSupported": "Nelze nahrát složky"
+  "ErrDirectoryUploadNotSupported": "Nelze nahrát složky",
+  "ErrDockerNotSupported": "Docker není v tomto uzlu podporován",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

@@ -39,5 +39,9 @@
   "ErrSavingInviteduser": "Ett fel uppstod vid skapandet av ditt konto",
   "ErrDuplicateServerName": "En server med detta namn finns redan",
   "ErrDuplicateNodeName": "En nod med detta namn finns redan",
-  "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar"
+  "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar",
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

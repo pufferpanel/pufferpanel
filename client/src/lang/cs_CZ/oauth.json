@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "Přihlašovací údaje klienta OAuth2",
+  "ClientId": "ID klienta",
+  "ClientSecret": "Tajný klíč klienta",
+  "NewClientWarning": "Zaznamenejte si tajemství klienta, po zavření tohoto dialogu se již nikdy nezobrazí. Ztrátou nebo zapomenutím bude tento klient zcela nepoužitelný.",
+  "Create": "Vytvořit nového OAuth2 klienta",
+  "UnnamedClient": "Nepojmenovaný OAuth2 klient",
+  "Docs": "Zde naleznete API dokumentaci",
+  "DeleteWarning": "Smazání OAuth2 klienta nelze vrátit zpět ani vytvořit nového klienta se stejnými pověřeními. Všechny integrace, které stále používají tohoto klienta, se po jeho smazání přeruší.",
+  "ConfirmDelete": "Jsem si vědom důsledků, které odstranění tohoto klienta OAuth2 bude mít a bude chtít pokračovat.",
+  "Delete": "Smazat {clientName}?",
+  "Clients": "OAuth2 klienty",
+  "AccountDescription": "OAuth2 klienti zde zdědí všechna oprávnění vašich účtů",
+  "ServerDescription": "OAuth2 klienti zde uvedení pouze dědí vaše účty na tomto serveru"
 }

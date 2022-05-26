@@ -5,10 +5,10 @@
   "NewClientWarning": "Tenga en cuenta que la clave secreta del cliente, después de cerrar este diálogo nunca se mostrará de nuevo. Perderlo, y olvidarlo hará que este cliente esté completamente inutilizable.",
   "Create": "Crear nuevo cliente OAuth2",
   "UnnamedClient": "Cliente OAuth2 sin nombre",
-  "Docs": "Encontrar documentación API aquí",
+  "Docs": "Encuentra la documentación de la API aquí",
   "DeleteWarning": "La eliminación de un cliente OAuth2 no se puede deshacer, ni se puede crear un nuevo cliente con las mismas credenciales. Todas las integraciones que todavía utilizan este cliente se romperán después de su eliminación.",
-  "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y desea continuar.",
-  "Delete": "¿Eliminar {clientName}?",
+  "ConfirmDelete": "Soy consciente de los efectos que la eliminación de este cliente OAuth2 tendrá y deseo continuar.",
+  "Delete": "¿Quieres eliminar {clientName}?",
   "Clients": "Clientes de OAuth2",
   "AccountDescription": "Los clientes de OAuth2 listados aquí heredan todos los permisos de sus cuentas",
   "ServerDescription": "Los clientes de OAuth2 listados aquí solo heredan los permisos de sus cuentas en este servidor"

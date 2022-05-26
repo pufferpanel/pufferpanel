@@ -38,12 +38,12 @@
   "Protocol": "Protokol",
   "Add": "Hozzáadás",
   "Ignore": "Mellőzés",
-  "Monday": "Monday",
-  "Tuesday": "Tuesday",
-  "Wednesday": "Wednesday",
-  "Thursday": "Thursday",
-  "Friday": "Friday",
-  "Saturday": "Saturday",
-  "Sunday": "Sunday",
-  "Description": "Description"
+  "Monday": "Hétfő",
+  "Tuesday": "Kedd",
+  "Wednesday": "Szerda",
+  "Thursday": "Csütörtök",
+  "Friday": "Péntek",
+  "Saturday": "Szombat",
+  "Sunday": "Vasárnap",
+  "Description": "Leírás"
 }

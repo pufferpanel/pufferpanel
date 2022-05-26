@@ -37,7 +37,11 @@
   "ErrSocketFailed": "A WebSocket kapcsolat hibát észlelt, néhány funkció lassulhat / nem működik",
   "ErrInviteLinkInvalid": "A megadott meghívó érvénytelen",
   "ErrSavingInviteduser": "Hiba történt a fiók létrehozása közben",
-  "ErrDuplicateServerName": "A server with this name already exists",
-  "ErrDuplicateNodeName": "A node with this name already exists",
-  "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés"
+  "ErrDuplicateServerName": "Egy szerver már létezik ezzel a névvel",
+  "ErrDuplicateNodeName": "Egy csomópont már létezik ezzel a névvel",
+  "ErrDirectoryUploadNotSupported": "Sikertelen fájlfeltöltés",
+  "ErrDockerNotSupported": "A Docker nem támogatott ezen a csomóponton",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

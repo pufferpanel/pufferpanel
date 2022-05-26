@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "OAuth2 Ügyfél Adatok",
+  "ClientId": "Ügyfél ID",
+  "ClientSecret": "Titkos ügyfélkód",
+  "NewClientWarning": "Jegyezze fel a klienstitkot, a párbeszédpanel bezárása után soha többé nem jelenik meg. Ha elveszíti vagy elfelejti, a kliens teljesen használhatatlanná válik.",
+  "Create": "Új OAuth2 Ügyfél létrehozása",
+  "UnnamedClient": "Névtelen OAuth2 Ügyfél",
+  "Docs": "Itt találod az API dokumentációját",
+  "DeleteWarning": "Egy OAuth2-kliens törlése nem vonható vissza, és új kliens sem hozható létre ugyanazokkal a hitelesítő adatokkal. A törlés után a klienset még mindig használó összes integráció megszakad.",
+  "ConfirmDelete": "Tisztában vagyok az OAuth2-kliens törlésének hatásaival, és folytatni kívánom.",
+  "Delete": "Valóban törlöd a(z) {clientName} adatait?",
+  "Clients": "OAuth2 Ügyfelek",
+  "AccountDescription": "Az itt szereplő OAuth2 Ügyfelek öröklik az összes jogod",
+  "ServerDescription": "Az itt szereplő OAuth2 Ügyfelek csak a fiókod jogaid öröklik"
 }

@@ -53,6 +53,7 @@
   "Convert": "Teisenda",
   "OfferV1Convert": "Selle malli json näeb välja, nagu see oleks PufferPanel 1.x pärit, kas soovite selle automaatselt teisendada PufferPanel 2.x malliks?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "HOIATUS: Imporditud mallid kirjutatakse üle sama ID-ga olevasolevad mallid",
     "Import": "Impordi mall",
     "Tooltip": "Impordi mall ametlikust repositooriumist",

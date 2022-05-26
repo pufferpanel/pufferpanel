@@ -39,5 +39,9 @@
   "ErrSavingInviteduser": "Во время создания аккаунта произошла ошибка",
   "ErrDuplicateServerName": "Сервер с таким именем уже существует",
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
-  "ErrDirectoryUploadNotSupported": "Не удается загрузить папки"
+  "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
+  "ErrDockerNotSupported": "Docker не поддерживается на этом хосте",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
+  "Credentials": "OAuth2 클라이언트 자격증명",
   "ClientId": "Client ID",
   "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
+  "NewClientWarning": "이 창을 닫은 뒤에는 클라이언트 암호가 다시 표시되지 않습니다. 분실하거나 잊어버리면 이 클라이언트를 완전히 사용할 수 없게 됩니다.",
+  "Create": "새로운 OAuth2 Client 생성",
   "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Docs": "API문서 보기",
+  "DeleteWarning": "OAuth2 클라이언트 삭제는 취소할 수 없으며 동일한 자격 증명으로 새 클라이언트를 생성할수 없습니다. 이 클라이언트를 계속 사용하는 모든 통합은 삭제 후에 중단됩니다.",
+  "ConfirmDelete": "이 OAuth2 클라이언트를 지우는걸 원하며 계속 진행하기를 원합니다.",
+  "Delete": "{clientName} 를 삭제하시겠습니까?",
+  "Clients": "OAuth2 클라이언트",
+  "AccountDescription": "여기에 나열된 OAuth2 클라이언트는 모든 계정 권한을 상속합니다.",
+  "ServerDescription": "여기에 나열된 OAuth2 클라이언트는 이 서버에 대한 계정 권한만 상속합니다."
 }

@@ -31,13 +31,17 @@
   "ErrPasswordRequirements": "La contraseña debe tener al menos {min} caracteres",
   "ErrUsernameRequirements": "El nombre de usuario debe tener al menos {min} caracteres y solo contener caracteres alfanuméricos, _, o -",
   "ErrPasswordsNotIdentical": "Las contraseñas no coinciden",
-  "ErrSessionTimedOut": "Tu sesión ha caducado. Por favor, ingresa nuevamente",
+  "ErrSessionTimedOut": "Tu sesión ha expirado. Por favor, ingresa nuevamente",
   "ErrMissingScope": "No tienes permiso para realizar esta acción",
   "ErrInvalidJson": "Los datos del json son inválidos",
-  "ErrSocketFailed": "La conexión WebSocket ha encontrado un error, algunas características pueden ser lentas o rotas",
-  "ErrInviteLinkInvalid": "La invitación ingresada es incorrecta",
+  "ErrSocketFailed": "La conexión WebSocket ha encontrado un error, algunas características pueden ser lentas o estar rotas",
+  "ErrInviteLinkInvalid": "Tu enlace de invitación parece ser inválido",
   "ErrSavingInviteduser": "Ocurrió un error al intentar crear tu cuenta",
   "ErrDuplicateServerName": "Ya existe un servidor con este nombre",
   "ErrDuplicateNodeName": "Ya existe un nodo con este nombre",
-  "ErrDirectoryUploadNotSupported": "No puedes subir carpetas"
+  "ErrDirectoryUploadNotSupported": "No es posible subir carpetas",
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

@@ -6,9 +6,9 @@
   "MasterUrlHint": "Az alap URL, amin a http://localhost:8080 formában lehet elérni a panelt",
   "CompanyName": "Vállakozás Neve",
   "DefaultTheme": "Alapértelmezett Téma",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "A felhasználók maguk regisztrálhatnak",
+  "RegistrationEnabledHint1": "A magukat regisztrált felhasználók nem csinálhatnak semmit, ameddig arra jogot nem kapnak",
+  "RegistrationEnabledHint2": "Ennek a kikapcsolása csak a közvetlen regisztrálást akadályozza meg, a szerverre való meghívásra és a Felhasználók lapra nincs hatással",
   "EmailProvider": "Email Szolgáltató",
   "emailProviders": {
     "none": "Ezek közül egyik sem",
@@ -17,9 +17,9 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
+    "from": "A feladó címe",
     "domain": "Domain",
-    "key": "API Key",
+    "key": "API kulcs",
     "host": "Kiszolgáló",
     "username": "Felhasználónév",
     "password": "Jelszó"

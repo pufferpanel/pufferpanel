@@ -1,7 +1,7 @@
 {
   "Templates": "Modelli",
   "NoTemplates": "Non ci sono ancora modelli qui",
-  "Deleted": "Template eliminato",
+  "Deleted": "Modello eliminato",
   "New": "Crea nuovo modello",
   "Edit": "Modifica modello",
   "Editor": "Editor",
@@ -32,7 +32,7 @@
   "Environments": "Ambienti",
   "AddEnvironment": "Aggiungi ambiente",
   "DefaultEnvironment": "Ambiente predefinito",
-  "AddEnvVar": "Aggiungi variabile env",
+  "AddEnvVar": "Aggiungi variabile d'ambiente",
   "EnvVars": "Variabili ambientali",
   "DockerImage": "Immagine Docker",
   "SaveSuccess": "Modello Salvato",
@@ -53,6 +53,7 @@
   "Convert": "Converti",
   "OfferV1Convert": "Questo modello json sembra un modello per PufferPanel 1.x, vuoi convertirlo automaticamente in un modello per PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "Questi modelli sono stati realizzati dalla community e sono disponibili senza alcuna garanzia",
     "OverrideWarning": "AVVISO: I modelli importati SOVRASCRIVERANNO i modelli esistenti con lo stesso ID",
     "Import": "Importa modelli",
     "Tooltip": "Importa modelli dalla repository ufficiale",

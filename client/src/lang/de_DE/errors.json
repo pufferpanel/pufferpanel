@@ -39,5 +39,9 @@
   "ErrSavingInviteduser": "Bei der Erstellung des Kontos ist ein Fehler aufgetreten",
   "ErrDuplicateServerName": "Ein Server mit diesem Namen existiert bereits",
   "ErrDuplicateNodeName": "Ein Knoten mit diesem Namen existiert bereits",
-  "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden"
+  "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden",
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

@@ -1,6 +1,6 @@
 {
   "Templates": "템플릿",
-  "NoTemplates": "템플릿이 아직 없네요",
+  "NoTemplates": "템플릿이 아직 없습니다",
   "Deleted": "템플릿이 삭제되었습니다",
   "New": "새 템플릿 만들기",
   "Edit": "템플릿 수정",
@@ -13,7 +13,7 @@
   "AddInstallStep": "설치 과정 추가",
   "DeleteInstallStep": "설치 과정 삭제",
   "Description": "설명",
-  "DataType": "자료 유형",
+  "DataType": "데이터 유형",
   "DefaultValue": "기본값",
   "Required": "필수",
   "UserEditable": "유저가 수정 가능",
@@ -28,13 +28,13 @@
   "ReleaseType": "출시 유형",
   "AddFile": "파일 추가",
   "AddVariable": "변수 추가",
-  "Environment": "Environment",
-  "Environments": "환경들",
-  "AddEnvironment": "환경 추가",
-  "DefaultEnvironment": "기본 환경",
+  "Environment": "환경",
+  "Environments": "환경",
+  "AddEnvironment": "구동환경 추가",
+  "DefaultEnvironment": "기본 구동환경",
   "AddEnvVar": "환경 변수 추가",
   "EnvVars": "환경 변수",
-  "DockerImage": "도커 이미지",
+  "DockerImage": "Docker 이미지",
   "SaveSuccess": "템플릿이 추가되었습니다",
   "VarNameNoSpaces": "변수 이름은 비거나 띄어쓰기가 있을 수 없습니다",
   "SupportedEnvironments": "지원되는 환경",
@@ -47,12 +47,13 @@
   "DeletePostStep": "실행 후 단계 제거",
   "Shutdown": "정지",
   "Command": "명령",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "작업 폴더",
   "Arguments": "인자",
   "AddArgument": "인자 추가",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "변환",
+  "OfferV1Convert": "이 템플릿은 PufferPanel 1.x용 템플릿입니다. 이 템플릿을 PufferPanel 2.x용 템플릿으로 자동변환하시겠습니까?",
   "import": {
+    "CommunityWarning": "이 템플릿은 커뮤니티에서 제작되며, 보증없이 제공됩니다.",
     "OverrideWarning": "경고: 불러와진 템플릿들은 이미 존재하는 같은 ID의 템플릿들을 덮어 쓸것입니다",
     "Import": "템플릿 가져오기",
     "Tooltip": "공식 리포지토리에서 템플릿 가져오기",
@@ -97,10 +98,10 @@
       "ProcessorName": "마인크래프트 다운로드"
     },
     "forgedl": {
-      "ProcessorName": "마인크래프트 포지 다운로드"
+      "ProcessorName": "마인크래프트 forge 다운로드"
     },
     "spongeforgedl": {
-      "ProcessorName": "마인크래프트 스폰지 다운로드",
+      "ProcessorName": "마인크래프트 spongeforge 다운로드",
       "releaseType": "출시 유형"
     },
     "fabricdl": {

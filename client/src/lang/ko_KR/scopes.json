@@ -12,7 +12,7 @@
   "ServersFilesPut": "파일 관리자를 통해 파일을 수정하고 업로드",
   "ServersEditUsers": "이 유저의 서버 접근 권한 수정",
   "Admin": "관리자(모든 권한을 가집니다)",
-  "ViewServers": "See Servers",
+  "ViewServers": "모든 서버 보기",
   "CreateServers": "서버 추가하기",
   "DeleteServers": "서버들 삭제하기",
   "EditServerAdmin": "서버 정보 저장",
@@ -23,5 +23,5 @@
   "EditTemplates": "템플릿 수정",
   "ViewUsers": "모든 유저 보기",
   "EditUsers": "다른 유저 수정",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "패널 설정 변경"
 }

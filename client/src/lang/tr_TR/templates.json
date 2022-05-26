@@ -39,28 +39,29 @@
   "VarNameNoSpaces": "Değişken adı boş olamaz veya boşluk içeremez",
   "SupportedEnvironments": "Desteklenen Ortamlar",
   "RunConfig": "Yapılandırmayı Çalıştır",
-  "PreHook": "Pre Run Hook",
-  "PostHook": "Post Run Hook",
-  "AddPreStep": "Add Pre Run Step",
-  "AddPostStep": "Add Post Run Step",
-  "DeletePreStep": "Delete Pre Run Step",
-  "DeletePostStep": "Delete Post Run Step",
+  "PreHook": "Ön çalıştırma kancası",
+  "PostHook": "Çalıştırma sonrası kancası",
+  "AddPreStep": "Ön çalıştırma adımı ekle",
+  "AddPostStep": "Çalıştırma sonrası adımı ekle",
+  "DeletePreStep": "Ön çalıştırma adımı sil",
+  "DeletePostStep": "Çalıştırma sonrası adımı sil",
   "Shutdown": "Kapat",
   "Command": "Komut",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "Çalışma dizini",
   "Arguments": "Argümanlar",
   "AddArgument": "Argüman Ekle",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "Dönüştür",
+  "OfferV1Convert": "Bu JSON şablonu PufferPanel 1.x şablonuna benziyor, bunu PufferPanel 2.x sürümüne çevirmek ister misin?",
   "import": {
+    "CommunityWarning": "Bu şablonlar topluluk tarafından yapılır ve herhangi bir garanti olmaksızın sağlanır",
     "OverrideWarning": "UYARI: İçe aktarılan şablonlar, Mevcut şablonların üzerine YAZILACAK",
     "Import": "Şablonları içe aktar",
-    "Tooltip": "Import templates from the official repository",
-    "Select": "Select templates to import",
-    "Started": "Importing templates, please wait a moment",
-    "Successful": "Successfully imported template {template}",
-    "NoTemplatesTitle": "Do you want to import templates?",
-    "NoTemplatesContent": "You currently don't have any templates. Templates are necessary to create servers.<br/>Do you want to import some templates from the official PufferPanel templates repository now?"
+    "Tooltip": "Resmi depodan şablonları içe aktarın",
+    "Select": "İçe aktarılacak şablonları seçin",
+    "Started": "Şablonlar içe aktarılıyor, lütfen biraz bekleyin",
+    "Successful": "Şablon başarıyla içe aktarıldı {template}",
+    "NoTemplatesTitle": "Şablonları içe aktarmak istiyor musunuz?",
+    "NoTemplatesContent": "Şu anda herhangi bir şablonunuz yok. Sunucu oluşturmak için şablonlar gereklidir.<br/>Resmi PufferPanel şablonlar deposundan bazı şablonları şimdi içe aktarmak istiyor musunuz?"
   },
   "stop": {
     "Command": "Komut",
@@ -76,10 +77,10 @@
       "commands": "Komutlar"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "Dosyayı değiştir",
+      "regex": "Aramayı RegEx olarak al",
+      "search": "Aranacak metin",
+      "replace": "Şununla değiştir"
     },
     "writefile": {
       "ProcessorName": "Dosyaya Yaz",
@@ -101,7 +102,7 @@
     },
     "spongeforgedl": {
       "ProcessorName": "Minecraft SpongeForge İndir",
-      "releaseType": "Release Type"
+      "releaseType": "Yayın türü"
     },
     "fabricdl": {
       "ProcessorName": "Minecraft Fabric İndir"

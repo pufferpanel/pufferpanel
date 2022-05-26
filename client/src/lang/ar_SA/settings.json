@@ -2,7 +2,7 @@
   "Settings": "إعدادات",
   "PanelSettings": "إعدادات اللوحة",
   "EmailSettings": "إعدادات البريد الإلكتروني",
-  "MasterUrl": "Master URL",
+  "MasterUrl": "الرابط الرئيسي",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "اسم الشركة",
   "DefaultTheme": "السمة الافتراضية",

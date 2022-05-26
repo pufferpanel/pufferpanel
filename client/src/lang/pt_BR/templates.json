@@ -53,6 +53,7 @@
   "Convert": "Convert",
   "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "AVISO: Modelos importados substituirão modelos existentes com o mesmo ID",
     "Import": "Importar modelos",
     "Tooltip": "Importar modelos do repositório oficial",
@@ -104,7 +105,7 @@
       "releaseType": "Release Type"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Baixar Minecraft Fabric"
     }
   }
 }

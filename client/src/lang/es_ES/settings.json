@@ -1,13 +1,13 @@
 {
-  "Settings": "Configuraciones",
-  "PanelSettings": "Configuracion del panel",
+  "Settings": "Ajustes",
+  "PanelSettings": "Configuración del panel",
   "EmailSettings": "Ajustes del correo",
   "MasterUrl": "URL Principal",
-  "MasterUrlHint": "Enlace desde el cual accederás al panel de control siguiento el siguiente formato: http://localhost:8080",
+  "MasterUrlHint": "El enlace desde el cual accederás al panel de control siguiendo el siguiente formato: http://localhost:8080",
   "CompanyName": "Nombre de la empresa",
   "DefaultTheme": "Tema por defecto",
-  "RegistrationEnabled": "Permitir que los usuarios se registre en las sesiones",
-  "RegistrationEnabledHint1": "Los usuarios auto-registrados no pueden hacer nada hasta que se den los permisos",
+  "RegistrationEnabled": "Permitir que los usuarios se puedan registrar",
+  "RegistrationEnabledHint1": "Los usuarios autorregistrados no pueden hacer nada hasta que se den los permisos",
   "RegistrationEnabledHint2": "Desactivar esto sólo previene el registro directo, la invitación a un servidor y la página de usuarios no se ven afectados",
   "EmailProvider": "Proveedor de e-mail",
   "emailProviders": {

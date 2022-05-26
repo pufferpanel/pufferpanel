@@ -16,12 +16,12 @@
   "CreateServers": "Tworzenie nowych serwerów",
   "DeleteServers": "Usuwanie serwerów",
   "EditServerAdmin": "Edycja ustawień serwera",
-  "ViewNodes": "Zobacz węzły",
-  "EditNodes": "Edytuj węzły",
-  "DeployNodes": "Dodaj nowe węzły",
+  "ViewNodes": "Wyświetl Maszyny",
+  "EditNodes": "Edytuj Maszyny",
+  "DeployNodes": "Dodaj nowe Maszyny",
   "ViewTemplates": "Zobacz szablony",
   "EditTemplates": "Edytuj szablony",
   "ViewUsers": "Zobacz wszystkich użytkowników",
   "EditUsers": "Edytuj innych użytkowników",
-  "PanelSettings": "Change panel settings"
+  "PanelSettings": "Zmień ustawienia panelu"
 }

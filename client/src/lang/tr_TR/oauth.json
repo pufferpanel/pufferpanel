@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "İki aşamalı doğrulama bilgileri",
+  "ClientId": "Kullanıcı ID",
+  "ClientSecret": "Kullanıcı anahtarı",
+  "NewClientWarning": "Kullanıcı anahtarınızı lütfen kaydedin, bu sayfayı kapattıktan sonra anahtar kesinlikle tekrar gösterilemez.",
+  "Create": "Yeni iki aşamalı doğrulama oluştur",
+  "UnnamedClient": "İsimsiz iki aşamalı doğrulama",
+  "Docs": "API dökümantasyonlarını görüntüle",
+  "DeleteWarning": "İki aşamalı doğrulamanın silinmesi geri alınamaz ve aynı bilgilerle başka bir doğrulama oluşturulamaz. Hâlâ bu doğrulamayı kullanan tüm entegrasyonlar, silindikten sonra bozulacak.",
+  "ConfirmDelete": "Bu iki aşamalı doğrulamanın silinmesinden kaynaklanabilecek sorunların farkındayım ve devam etmek istiyorum.",
+  "Delete": "{clientName} silinsin mi?",
+  "Clients": "İki aşamalı doğrulama",
+  "AccountDescription": "Burada listelenen iki aşamalı doğrulama tüm hesap izinlerini devralır",
+  "ServerDescription": "Burada listelenen iki aşamalı doğrulama yalnızca bu sunucudaki hesap izinlerini devralır"
 }
