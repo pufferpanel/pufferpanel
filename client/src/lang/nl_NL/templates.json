@@ -1,9 +1,9 @@
 {
-  "Templates": "Templates",
-  "NoTemplates": "Er zijn nog geen templates",
-  "Deleted": "Template verwijderd",
-  "New": "Maak nieuw template",
-  "Edit": "Bewerkt template",
+  "Templates": "Sjablonen",
+  "NoTemplates": "Er zijn nog geen sjablonen",
+  "Deleted": "Sjabloon verwijderd",
+  "New": "Nieuw sjabloon aanmaken",
+  "Edit": "Bewerkt sjabloon",
   "Editor": "Bewerker",
   "Json": "JSON",
   "Display": "Naam",
@@ -53,7 +53,7 @@
   "Convert": "Converteer",
   "OfferV1Convert": "Deze template json ziet eruit als een template voor PufferPanel 1.x, wilt u dit automatisch omzetten naar een template voor PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "Deze sjablonen worden gemaakt door de gemeenschap en geleverd zonder enige garanties",
     "OverrideWarning": "WAARSCHUWING: Geimporteerde templates overschrijven bestaande sjablonen met dezelfde ID",
     "Import": "Sjabloon importeren",
     "Tooltip": "Sjablonen importeren uit de officiële repository",
