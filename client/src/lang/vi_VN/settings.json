@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
+    "from": "Địa chỉ người gửi",
     "domain": "Tên miền",
     "key": "Khóa API",
     "host": "Máy chủ",
