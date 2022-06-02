@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Absenderadresse",
+    "from": "Absender Adresse",
     "domain": "Domain",
     "key": "API Schlüssel",
     "host": "Host",
