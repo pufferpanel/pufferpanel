@@ -17,7 +17,7 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Address",
+    "from": "Gönderen adresi",
     "domain": "Alan adı",
     "key": "API Anahtarı",
     "host": "Sunucu",
