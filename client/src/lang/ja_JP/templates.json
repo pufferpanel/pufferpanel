@@ -1,7 +1,7 @@
 {
   "Templates": "テンプレート一覧",
   "NoTemplates": "テンプレートがありません．",
-  "Deleted": "Template deleted",
+  "Deleted": "テンプレートを削除しました",
   "New": "新規テンプレート",
   "Edit": "テンプレートを編集",
   "Editor": "編集者",
@@ -28,10 +28,10 @@
   "ReleaseType": "リリースの種類",
   "AddFile": "ファイルを追加",
   "AddVariable": "変数を追加",
-  "Environment": "Environment",
-  "Environments": "Environments",
+  "Environment": "環境",
+  "Environments": "環境",
   "AddEnvironment": "使用環境の追加",
-  "DefaultEnvironment": "Default environment",
+  "DefaultEnvironment": "デフォルト環境",
   "AddEnvVar": "新規変数を追加",
   "EnvVars": "環境変数",
   "DockerImage": "Docker イメージ",
@@ -47,13 +47,13 @@
   "DeletePostStep": "ポストランステップを削除",
   "Shutdown": "シャットダウン",
   "Command": "コマンド",
-  "WorkingDirectory": "Working Directory",
+  "WorkingDirectory": "作業ディレクトリ",
   "Arguments": "引数",
   "AddArgument": "引数を追加",
-  "Convert": "Convert",
-  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
+  "Convert": "変換",
+  "OfferV1Convert": "このテンプレートjsonはPufferPanel 1.x用のテンプレートのようですが、これをPufferPanel 2.x用のテンプレートに自動変換しますか？",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "これらのテンプレートはコミュニティによって作られ、いかなる保証もなく提供されます",
     "OverrideWarning": "警告: インポートされたテンプレートは、同じIDの既存のテンプレートに上書きされます",
     "Import": "テンプレートをインポートします",
     "Tooltip": "公式リポジトリからテンプレートをインポートします",
@@ -69,43 +69,43 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Download",
-      "files": "Files"
+      "ProcessorName": "ダウンロード",
+      "files": "ファイル"
     },
     "command": {
-      "ProcessorName": "Run Command",
-      "commands": "Commands"
+      "ProcessorName": "コマンドを実行",
+      "commands": "コマンド"
     },
     "alterfile": {
-      "ProcessorName": "Change file",
-      "regex": "Treat search as RegEx",
-      "search": "Text to search",
-      "replace": "Replace with"
+      "ProcessorName": "ファイルを変更",
+      "regex": "検索を正規表現として処理",
+      "search": "検索するテキスト",
+      "replace": "置換テキスト"
     },
     "writefile": {
-      "ProcessorName": "Write to file",
-      "text": "Content"
+      "ProcessorName": "ファイルに書き込み",
+      "text": "内容"
     },
     "move": {
-      "ProcessorName": "Move File",
-      "source": "Source",
-      "target": "Target"
+      "ProcessorName": "ファイルを移動",
+      "source": "ソース",
+      "target": "ターゲット"
     },
     "mkdir": {
-      "ProcessorName": "Create Directory"
+      "ProcessorName": "ディレクトリを作成"
     },
     "mojangdl": {
-      "ProcessorName": "Download Minecraft"
+      "ProcessorName": "Minecraftをダウンロード"
     },
     "forgedl": {
-      "ProcessorName": "Download Minecraft Forge"
+      "ProcessorName": "Minecraft Forgeをダウンロード"
     },
     "spongeforgedl": {
-      "ProcessorName": "Download Minecraft SpongeForge",
-      "releaseType": "Release Type"
+      "ProcessorName": "Minecraft SpongeForgeをダウンロード",
+      "releaseType": "リリースの種類"
     },
     "fabricdl": {
-      "ProcessorName": "Download Minecraft Fabric"
+      "ProcessorName": "Minecraft Fabricをダウンロード"
     }
   }
 }
