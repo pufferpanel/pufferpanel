@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "이미 같은 이름의 노드가 있습니다",
   "ErrDirectoryUploadNotSupported": "폴더를 업로드할수 없음",
   "ErrDockerNotSupported": "이 노드에서는 Docker를 지원하지 않습니다",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrMissingBinary": "바이너리가 누락되었습니다( ${expected})",
+  "ErrUnsupportedOS": "지원되지 않는 OS입니다(현재 OS: ${actual}) 지원되는 OS: ( ${expected})",
   "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }
