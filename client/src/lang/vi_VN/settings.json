@@ -9,7 +9,7 @@
   "RegistrationEnabled": "Cho Phép Người Dùng Tự Đăng Kí",
   "RegistrationEnabledHint1": "Người dùng tự đăng kí không thể làm gì cho đến khi được trao quyền",
   "RegistrationEnabledHint2": "Tắt tính năng này chỉ ngăn chặn đăng kí trực tiếp, còn lời mời vào máy chủ và trang Người dùng sẽ không bị ảnh hưởng",
-  "EmailProvider": "Email của nhà cung cấp",
+  "EmailProvider": "Nhà cung cấp Email",
   "emailProviders": {
     "none": "Không có",
     "smtp": "Giao thức SMTP",
