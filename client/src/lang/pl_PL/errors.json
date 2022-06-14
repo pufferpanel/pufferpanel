@@ -42,6 +42,6 @@
   "ErrDirectoryUploadNotSupported": "Nie można przesłać folderów",
   "ErrDockerNotSupported": "Docker nie jest obsługiwany przez ten węzeł",
   "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedOS": "System operacyjny (${actual}) nie jest wspierany. Wspierane systemy operacyjne: ${expected}",
+  "ErrUnsupportedArch": "Architektura ${actual} nie jest wspierana. Wspierane Architektury: ${expected}"
 }
