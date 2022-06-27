@@ -43,7 +43,7 @@ func EnsureAccess(source string, prefix string) bool {
 	if err != nil && !os.IsNotExist(err) {
 		return false
 	}
-	replacement, err = filepath.Abs(source)
+	replacement, err = filepath.Abs(replacement)
 	if err != nil {
 		return false
 	}

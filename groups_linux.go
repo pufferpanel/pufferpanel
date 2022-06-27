@@ -14,6 +14,7 @@
 package pufferpanel
 
 import (
+	"fmt"
 	"os/user"
 )
 
@@ -23,18 +24,23 @@ func UserInGroup(groups ...string) bool {
 
 	u, err := user.Current()
 	if err != nil {
+		fmt.Println(err.Error())
 		return false
 	}
 
 	allowedIds := make([]string, 0)
 	for _, v := range groups {
-		if rootGroup, err := user.LookupGroup(v); err == nil {
+		rootGroup, err := user.LookupGroup(v)
+		if err != nil {
+			fmt.Println(err.Error())
+		} else {
 			allowedIds = append(allowedIds, rootGroup.Gid)
 		}
 	}
 
 	g, err := u.GroupIds()
 	if err != nil {
+		fmt.Println(err.Error())
 		return false
 	}
 
