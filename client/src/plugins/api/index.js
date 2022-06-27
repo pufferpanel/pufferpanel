@@ -22,7 +22,7 @@ class ApiClient extends EventEmitter {
   }
 
   updateCookie (token) {
-    Cookies.set('puffer_auth', token, { sameSite: 'strict' })
+    Cookies.set('puffer_auth', token, { sameSite: 'strict', secure: window.location.protocol === 'https:' })
   }
 
   saveLoginData (token, scopes = [], silent = false) {
