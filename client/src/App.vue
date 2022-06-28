@@ -292,6 +292,10 @@ export default {
       this.loggedIn = false
     }
     window.pufferpanel.showError = error => this.showError(error)
+
+    // make it possible to work around mobile browsers shitty scroll-out address bars
+    document.documentElement.style.setProperty('--inner-height', `${window.innerHeight}px`)
+    window.addEventListener('resize', () => document.documentElement.style.setProperty('--inner-height', `${window.innerHeight}px`))
   },
   methods: {
     async loadTheme () {

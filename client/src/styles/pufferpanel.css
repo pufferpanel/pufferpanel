@@ -76,3 +76,7 @@ pre {
 .dragHandle {
   cursor: move !important;
 }
+
+.v-navigation-drawer {
+  height: var(--inner-height) !important;
+}
