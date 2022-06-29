@@ -2,10 +2,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      createRelease:
-        description: 'Create a release?'
-        required: false
-        default: 'false'
       repo:
         description: 'What repo to push to'
         required: false
@@ -26,16 +22,26 @@ jobs:
         ruby-version: 2.6 # Not needed with a .ruby-version file
     
     - name: Install gems
-      run:
+      run: |
         gem install --no-doc package_cloud
     
     - name: Download AMD64 ZIP artifact
-      id: amd64zipdownload
+      id: linuxamd64zipdownload
       uses: pufferpanel/download-artifacts@v1
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_amd64.zip'
+        artifact-name: 'pufferpanel_*_linux_amd64'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
+        
+    - name: Download AMD64 ZIP artifact
+      id: windowsamd64zipdownload
+      uses: pufferpanel/download-artifacts@v1
+      with:
+        workflow-id: 'build.yml'
+        extract: 'false'
+        artifact-name: 'pufferpanel_*_windows_amd64'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -45,7 +51,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_armhf.zip'
+        artifact-name: 'pufferpanel_*_armhf'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
         
@@ -55,7 +61,7 @@ jobs:
       with:
         workflow-id: 'build.yml'
         extract: 'false'
-        artifact-name: 'pufferpanel_*_arm64.zip'
+        artifact-name: 'pufferpanel_*_arm64'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
     
@@ -108,10 +114,36 @@ jobs:
         artifact-name: 'pufferpanel*_installer.msi'
         authToken: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.event.inputs.branch }}
+
+    - name: Download Swagger
+      id: swagdownload
+      uses: pufferpanel/download-artifacts@v1
+      with:
+        workflow-id: 'build.yml'
+        extract: 'false'
+        artifact-name: 'pufferpanel_swagger'
+        authToken: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.event.inputs.branch }}
+        
+    - name: Debug list files
+      run: |
+        ls -l
+        echo Going to grab following
+        echo ${{ steps.windowsamd64zipdownload.outputs.file }}
+        echo ${{ steps.linuxamd64zipdownload.outputs.file }}
+        echo ${{ steps.armhfzipdownload.outputs.file }}
+        echo ${{ steps.armhfzipdownload.outputs.file }}
+        echo ${{ steps.arm64zipdownload.outputs.file }}
+        echo ${{ steps.armhfdebdownload.outputs.file }}
+        echo ${{ steps.amd64debdownload.outputs.file }}
+        echo ${{ steps.arm64debdownload.outputs.file }}
+        echo ${{ steps.amd64rpmdownload.outputs.file }}
+        echo ${{ steps.msidownload.outputs.file }}
+        echo ${{ steps.swagdownload.outputs.file }}
+        echo ${{ steps.windowsamd64zipdownload.outputs.file }}
         
     - name: Create Release	
-      id: create_release	
-      if: github.event.inputs.createRelease == 'true'
+      id: create_release
       uses: actions/create-release@v1.0.0	
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}	
@@ -120,21 +152,29 @@ jobs:
         release_name: ${{ github.event.inputs.branch }}
         draft: true	
         prerelease: true
-
+        
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.amd64zipdownload.outputs.file }}.zip
-        asset_name: ${{ steps.amd64zipdownload.outputs.file }}.zip
+        asset_path: ${{ steps.linuxamd64zipdownload.outputs.file }}.zip
+        asset_name: ${{ steps.linuxamd64zipdownload.outputs.file }}.zip
+        asset_content_type: application/zip
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.windowsamd64zipdownload.outputs.file }}.zip
+        asset_name: ${{ steps.windowsamd64zipdownload.outputs.file }}.zip
         asset_content_type: application/zip
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -145,7 +185,6 @@ jobs:
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -156,7 +195,6 @@ jobs:
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -167,7 +205,6 @@ jobs:
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -178,7 +215,6 @@ jobs:
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
-      if: github.event.inputs.createRelease == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -188,7 +224,6 @@ jobs:
         asset_content_type: application/vnd.debian.binary-package
 
     - name: Upload Release Asset
-      if: github.event.inputs.createRelease == 'true'
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -199,7 +234,6 @@ jobs:
         asset_content_type: application/zip
         
     - name: Upload Release Asset
-      if: github.event.inputs.createRelease == 'true'
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -209,36 +243,12 @@ jobs:
         asset_name: ${{ steps.msidownload.outputs.file }}
         asset_content_type: application/octet-stream
 
-    - name: Push to repo
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1.0.1
       env:
-        PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-      run: |        
-        #centos
-        package_cloud push ${{ github.event.inputs.repo }}/el/7 ${{ steps.amd64rpmdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/el/8 ${{ steps.amd64rpmdownload.outputs.file }}
-        
-        package_cloud push ${{ github.event.inputs.repo }}/fedora/33 ${{ steps.amd64rpmdownload.outputs.file }}
-        
-        #ubuntu AMD64
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoan ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.amd64debdownload.outputs.file }}
-        
-        #ubuntu ARM64
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.arm64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.arm64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.arm64debdownload.outputs.file }}
-        
-        #debian
-        package_cloud push ${{ github.event.inputs.repo }}/debian/jessie ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/debian/stretch ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.amd64debdownload.outputs.file }}
-        
-        #raspbian
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.arm64debdownload.outputs.file }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.swagdownload.outputs.file }}.zip
+        asset_name: ${{ steps.swagdownload.outputs.file }}.zip
+        asset_content_type: application/zip
