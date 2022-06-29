@@ -53,7 +53,7 @@
   "Convert": "转换",
   "OfferV1Convert": "此模板似乎为 PufferPanel 1.x 格式的模板，您想要将其自动更新为 2.x 版本的模板吗？",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "这些模板是由社区制作的，没有任何保证条款",
     "OverrideWarning": "警告：导入模板将覆盖相同 ID 的现有模板",
     "Import": "导入模板",
     "Tooltip": "从官方仓库导入模板",

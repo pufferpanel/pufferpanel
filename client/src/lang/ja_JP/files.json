@@ -9,11 +9,11 @@
   "Size": "サイズ",
   "NoFiles": "ファイルがありません。ページ上部のインストールボタンをクリックするなどしてファイルを作成してください",
   "FileLoadFailed": "ファイルの読み込みに失敗しました",
-  "Refresh": "Refresh",
-  "CreateFile": "Create file",
-  "CreateFolder": "Create folder",
-  "ArchiveCurrentFolder": "Create archive from current folder",
-  "ArchiveFolder": "Create archive from folder",
-  "ExtractArchive": "Extract archive",
-  "DropToUpload": "Drop files here to upload them"
+  "Refresh": "更新",
+  "CreateFile": "ファイルを作成",
+  "CreateFolder": "フォルダを作成",
+  "ArchiveCurrentFolder": "現在のフォルダからアーカイブを作成",
+  "ArchiveFolder": "フォルダからアーカイブを作成",
+  "ExtractArchive": "アーカイブを展開",
+  "DropToUpload": "ここへファイルをドラッグしてアップロード"
 }

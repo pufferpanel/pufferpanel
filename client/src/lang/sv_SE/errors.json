@@ -33,15 +33,15 @@
   "ErrPasswordsNotIdentical": "Lösenorden är inte likadana",
   "ErrSessionTimedOut": "Din session har gått ut, vänligen logga in igen",
   "ErrMissingScope": "Du har inte behörighet att utföra denna åtgärd",
-  "ErrInvalidJson": "Json-datan är ogiltiga",
-  "ErrSocketFailed": "WebSocket-anslutningen stötte på ett fel, vissa funktioner kan vara långsam eller trasig",
+  "ErrInvalidJson": "Json-datan är ogiltig",
+  "ErrSocketFailed": "WebSocket-anslutningen stötte på ett fel, vissa funktioner kan fungera långsamt eller inte alls",
   "ErrInviteLinkInvalid": "Din inbjudningslänk verkar vara ogiltig",
-  "ErrSavingInviteduser": "Ett fel uppstod vid skapandet av ditt konto",
+  "ErrSavingInviteduser": "Ett fel har uppstod vid registrering av ditt konto",
   "ErrDuplicateServerName": "En server med detta namn finns redan",
   "ErrDuplicateNodeName": "En nod med detta namn finns redan",
   "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker stöds inte på denna nod",
+  "ErrMissingBinary": "Saknar binär: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) stöds inte. OS som stöds: ${expected}",
+  "ErrUnsupportedArch": "Arkitektur ${actual} stöds inte. Arkitekturer: ${expected}"
 }

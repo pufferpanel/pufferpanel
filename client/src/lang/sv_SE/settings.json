@@ -1,7 +1,7 @@
 {
   "Settings": "Inställningar",
   "PanelSettings": "Panelinställningar",
-  "EmailSettings": "E-post inställningar",
+  "EmailSettings": "E-postinställningar",
   "MasterUrl": "Huvud-URL",
   "MasterUrlHint": "Bas-URL panelen kan nås under formatet http://localhost:8080",
   "CompanyName": "Företagsnamn",
