@@ -78,5 +78,5 @@ pre {
 }
 
 .v-navigation-drawer {
-  height: var(--inner-height) !important;
+  height: calc(var(--inner-height) - env(safe-area-inset-bottom)) !important;
 }
