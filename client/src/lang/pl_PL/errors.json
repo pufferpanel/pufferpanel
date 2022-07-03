@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Maszyna o tej nazwie już istnieje",
   "ErrDirectoryUploadNotSupported": "Nie można przesłać folderów",
   "ErrDockerNotSupported": "Docker nie jest obsługiwany przez ten węzeł",
-  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrMissingBinary": "Brakujący plik binarny: ${expected}",
   "ErrUnsupportedOS": "System operacyjny (${actual}) nie jest wspierany. Wspierane systemy operacyjne: ${expected}",
   "ErrUnsupportedArch": "Architektura ${actual} nie jest wspierana. Wspierane Architektury: ${expected}"
 }
