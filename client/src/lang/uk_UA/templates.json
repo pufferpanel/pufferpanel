@@ -53,7 +53,7 @@
   "Convert": "Конвертувати",
   "OfferV1Convert": "Цей шаблон json виглядає як шаблон для PufferPanel 1.x, ви хочете автоматично перетворити це в шаблон для PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "These templates are made by the community and provided without any warranties",
+    "CommunityWarning": "Ці шаблони створюються спільнотою тому вони без будь-яких гарантій",
     "OverrideWarning": "ПОПЕРЕДЖЕННЯ: імпортовані шаблони WILL перезаписувати існуючі шаблони з тим же ID",
     "Import": "імпортувати шаблони",
     "Tooltip": "Імпортувати шаблони з офіційного репозиторію",
