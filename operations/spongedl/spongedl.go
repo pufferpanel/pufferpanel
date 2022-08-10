@@ -192,6 +192,4 @@ func (op SpongeDl) getSpecificVersion(env pufferpanel.Environment, version strin
 
 	err = json.NewDecoder(response.Body).Decode(&data)
 	return data, err
-
-	return data, nil
 }
