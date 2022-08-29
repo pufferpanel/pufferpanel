@@ -1,13 +1,13 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
-  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
-  "CompanyName": "Company Name",
-  "DefaultTheme": "Default Theme",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "Settings": "Definições",
+  "PanelSettings": "Definições de painel",
+  "EmailSettings": "Configurações de e-mail",
+  "MasterUrl": "URL mestre",
+  "MasterUrlHint": "O URL base do painel pode ser alcançada no formato http://localhost:8080",
+  "CompanyName": "Nome de empresa",
+  "DefaultTheme": "Tema Padrão",
+  "RegistrationEnabled": "Permitir utilizadores registrem-se",
+  "RegistrationEnabledHint1": "Utilizadores auto registrados não conseguem fazer nada até receberem permissões",
   "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Email Provider",
   "emailProviders": {
@@ -17,11 +17,11 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
-    "domain": "Domain",
-    "key": "API Key",
+    "from": "Endereço de enviador",
+    "domain": "Domínio",
+    "key": "Chave API",
     "host": "Host",
-    "username": "Username",
-    "password": "Password"
+    "username": "Usuário",
+    "password": "Senha"
   }
 }
