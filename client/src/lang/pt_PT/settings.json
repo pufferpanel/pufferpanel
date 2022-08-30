@@ -8,10 +8,10 @@
   "DefaultTheme": "Tema Padrão",
   "RegistrationEnabled": "Permitir utilizadores registrem-se",
   "RegistrationEnabledHint1": "Utilizadores auto registrados não conseguem fazer nada até receberem permissões",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
-  "EmailProvider": "Email Provider",
+  "RegistrationEnabledHint2": "Desabilitar isto apenas impede o registro direto, convites para um servidor e a página de utilizadores não são afetados",
+  "EmailProvider": "Fornecedor de E-mail",
   "emailProviders": {
-    "none": "None",
+    "none": "Nenhum",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
