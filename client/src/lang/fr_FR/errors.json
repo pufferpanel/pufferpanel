@@ -43,5 +43,5 @@
   "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud",
   "ErrMissingBinary": "Missing binary: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architecture ${actual} non supportée. Architectures supportées : ${expected}"
 }
