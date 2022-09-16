@@ -1,8 +1,8 @@
 {
-  "Settings": "Settings",
-  "PanelSettings": "Panel Settings",
-  "EmailSettings": "Email Settings",
-  "MasterUrl": "Master URL",
+  "Settings": "Configurações",
+  "PanelSettings": "Configuração do painel",
+  "EmailSettings": "Configurações de email",
+  "MasterUrl": "URL principal",
   "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
   "CompanyName": "Company Name",
   "DefaultTheme": "Default Theme",
