@@ -17,10 +17,10 @@
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "Sender Adress",
+    "from": "送信者メールアドレス",
     "domain": "ドメイン",
     "key": "API キー",
-    "host": "ホスト",
+    "host": "ホスト名",
     "username": "ユーザー名",
     "password": "パスワード"
   }
