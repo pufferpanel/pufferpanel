@@ -137,7 +137,7 @@ func (e *BaseEnvironment) DisplayToConsole(daemon bool, msg string, data ...inte
 		if !strings.HasSuffix(format, "\n") {
 			format += "\n"
 		}
-		format = "[DAEMON] " + msg
+		format = "[DAEMON] " + format
 	}
 	if len(data) == 0 {
 		_, _ = fmt.Fprint(e.ConsoleBuffer, format)
