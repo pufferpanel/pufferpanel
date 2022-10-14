@@ -149,6 +149,13 @@ export const ServersApi = {
 
   getServerSocketUrl (id) {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'
+    if(window.location.host.split(':').length > 2) {
+      // IPv6
+      const splitHost = window.location.host.split(':')
+      const port = splitHost.pop()
+      const host = splitHost.join(':')
+      return `${protocol}://${host}:${port}/proxy/daemon/socket/${id}`
+    }
     return `${protocol}://${window.location.host}/proxy/daemon/socket/${id}`
   },
 
