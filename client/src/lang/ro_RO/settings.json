@@ -1,14 +1,14 @@
 {
-  "Settings": "Setari",
+  "Settings": "Setări",
   "PanelSettings": "Setări panou",
   "EmailSettings": "Setări Email",
   "MasterUrl": "URL principal",
   "MasterUrlHint": "Pagina URL de bază poate fi găsită în formatul http://localhost:8080",
   "CompanyName": "Nume Companie",
   "DefaultTheme": "Temă default",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Permite utilizatorilor să se înregistreze singuri",
+  "RegistrationEnabledHint1": "Utilizatorii care s-au înregistrat singuri nu pot face nimic până când nu primesc acces",
+  "RegistrationEnabledHint2": "Dezactivarea acestei opțiuni împiedică doar înregistrarea directă, invitațiile pe servere si pagina de Utilizatori nu sunt influențate",
   "EmailProvider": "Furnizor De E-Mail",
   "emailProviders": {
     "none": "Nimeni",
@@ -19,7 +19,7 @@
   "emailFields": {
     "from": "Sender Adress",
     "domain": "Domeniu",
-    "key": "API Key",
+    "key": "Cheie API",
     "host": "Host",
     "username": "Nume de utilizator",
     "password": "Parolă"

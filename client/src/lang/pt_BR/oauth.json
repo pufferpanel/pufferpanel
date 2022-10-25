@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "Credenciais do cliente OAuth 2.0",
+  "ClientId": "ID do Cliente",
+  "ClientSecret": "Segredo do Cliente",
+  "NewClientWarning": "Lembre-se que o segredo não será exibido mais depois que essa página for fechada. Perdendo ou esquecendo irá tornar este usuário completamente inutilizável.",
+  "Create": "Criar novo cliente OAuth2",
+  "UnnamedClient": "Cliente OAuth2 sem nome",
+  "Docs": "Ver documentação da API",
+  "DeleteWarning": "A exclusão de um cliente OAuth2 não pode ser desfeita nem um cliente novo pode ser criado com as mesmas credenciais. Todas as integrações que ainda estiverem utilizando este cliente serão excluídas após a exclusão.",
+  "ConfirmDelete": "Estou ciente dos efeitos que a exclusão desse cliente OAuth2 terá e desejo prosseguir.",
+  "Delete": "Excluir {clientName}?",
+  "Clients": "Clientes OAuth2",
+  "AccountDescription": "Os clientes OAuth2 listados aqui herdam todas as suas permissões das contas",
+  "ServerDescription": "Os clientes OAuth2 listados aqui apenas herdam suas permissões de contas neste servidor"
 }
