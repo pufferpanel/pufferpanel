@@ -1,7 +1,7 @@
 {
-  "Node": "Node",
-  "Nodes": "Nodes",
-  "Edit": "Edit Node",
+  "Node": "שרת",
+  "Nodes": "שרתים",
+  "Edit": "ערוך שרת",
   "Add": "Add Node",
   "Update": "Update Node",
   "Delete": "Delete Node",
