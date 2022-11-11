@@ -1,5 +1,5 @@
 {
-  "Credentials": "OAuth 2 -asiakasohjelman käyttäjätiedot",
+  "Credentials": "OAuth2-asiakasohjelman käyttäjätiedot",
   "ClientId": "Käyttäjän ID",
   "ClientSecret": "Asiakasohjelman salainen tunnus",
   "NewClientWarning": "Kirjoita muistiin asiakkaan salaisuus, tämän ikkunan sulkemisen jälkeen sitä ei enää koskaan näytetä uudestaan. Sen kadottaminen tai unohtaminen tekee tästä asiakkaasta täysin käyttökelvottoman.",
@@ -7,9 +7,9 @@
   "UnnamedClient": "Nimetön OAuth2-asiakasohjelma",
   "Docs": "Löydä API-dokumentaatio täältä",
   "DeleteWarning": "OAuth2-asiakkaan poistoa ei voida kumota, eikä samoilla tiedoilla voida luoda uutta asiakasta. Kaikki tätä asiakasta yhä käyttävät integraatiot rikkoutuvat sen poiston jälkeen.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
+  "ConfirmDelete": "Olen tietoinen tämän OAuth2-asiakkaan poistamisen vaikutuksista ja haluan jatkaa.",
   "Delete": "Poista {clientName}?",
-  "Clients": "OAuth2 Asiakasohjelmat",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Clients": "OAuth2-asiakasohjelmat",
+  "AccountDescription": "Täällä listatut OAuth2-asiakkaat perivät kaikki käyttäjätilisi käyttöoikeudet",
+  "ServerDescription": "Täällä listatut OAuth2-asiakkaat perivät käyttäjätilisi käyttöoikeudet vain tällä serverillä"
 }
