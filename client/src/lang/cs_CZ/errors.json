@@ -43,5 +43,5 @@
   "ErrDockerNotSupported": "Docker není v tomto uzlu podporován",
   "ErrMissingBinary": "Chybějící binární soubor: ${expected}",
   "ErrUnsupportedOS": "OS (${actual}) není podporován. Doporučen OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrUnsupportedArch": "Architektura ${actual} není podporována. Podporované architektury: ${expected}"
 }
