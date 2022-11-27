@@ -61,6 +61,12 @@ func LoginPost(c *gin.Context) {
 	data.Session = session
 	data.Scopes = perms.ToScopes()
 
+	secure := false
+	if c.Request.TLS != nil {
+		secure = true
+	}
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
+
 	c.JSON(http.StatusOK, data)
 }
 
@@ -85,7 +91,7 @@ func OtpPost(c *gin.Context) {
 		return
 	}
 
-	if timestamp < time.Now().Unix() - 300 {
+	if timestamp < time.Now().Unix()-300 {
 		userSession.Clear()
 		userSession.Save()
 		response.HandleError(c, pufferpanel.ErrSessionExpired, http.StatusBadRequest)
@@ -106,6 +112,12 @@ func OtpPost(c *gin.Context) {
 	data.Session = session
 	data.Scopes = perms.ToScopes()
 
+	secure := false
+	if c.Request.TLS != nil {
+		secure = true
+	}
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
+
 	c.JSON(http.StatusOK, data)
 }
 
@@ -119,7 +131,7 @@ type LoginOtpResponse struct {
 }
 
 type LoginResponse struct {
-	Session string        `json:"session"`
+	Session string              `json:"session"`
 	Scopes  []pufferpanel.Scope `json:"scopes,omitempty"`
 }
 

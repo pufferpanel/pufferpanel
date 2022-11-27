@@ -23,12 +23,9 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"net/http"
 )
 
 const VersionJsonUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json"
-
-var client = &http.Client{}
 
 type MojangDl struct {
 	Version string
@@ -36,7 +33,7 @@ type MojangDl struct {
 }
 
 func (op MojangDl) Run(env pufferpanel.Environment) error {
-	response, err := client.Get(VersionJsonUrl)
+	response, err := pufferpanel.HttpGet(VersionJsonUrl)
 	if err != nil {
 		return err
 	}
@@ -78,7 +75,7 @@ func (op MojangDl) Run(env pufferpanel.Environment) error {
 }
 
 func downloadServerFromJson(url, target string, env pufferpanel.Environment) error {
-	response, err := client.Get(url)
+	response, err := pufferpanel.HttpGet(url)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return err

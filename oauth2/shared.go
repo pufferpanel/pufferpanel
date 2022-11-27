@@ -20,12 +20,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"net/http"
 	"net/url"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -34,7 +34,6 @@ var atLocker = &sync.RWMutex{}
 var daemonToken string
 var lastRefresh time.Time
 var expiresIn int64
-var client = &http.Client{}
 
 func RefreshToken() bool {
 	atLocker.Lock()
@@ -45,13 +44,13 @@ func RefreshToken() bool {
 		return false
 	}
 
-	clientId := config.GetString("daemon.auth.clientId")
+	clientId := config.ClientId.Value()
 	if clientId == "" {
 		logging.Error.Printf("error talking to auth server: %s", errors.New("client id not specified"))
 		return false
 	}
 
-	clientSecret := config.GetString("daemon.auth.clientSecret")
+	clientSecret := config.ClientSecret.Value()
 	if clientSecret == "" {
 		logging.Error.Printf("error talking to auth server: %s", errors.New("client secret not specified"))
 		return false
@@ -61,21 +60,16 @@ func RefreshToken() bool {
 	data.Set("grant_type", "client_credentials")
 	data.Set("client_id", clientId)
 	data.Set("client_secret", clientSecret)
-	encodedData := data.Encode()
 
-	request := createRequest(encodedData)
-
-	request.Header.Add("Authorization", "Bearer "+daemonToken)
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
-	response, err := client.Do(request)
+	request := createRequest(data)
+	response, err := pufferpanel.Http().Do(request)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		logging.Error.Printf("error talking to auth server: %s", err)
 		return false
 	}
 
-	var responseData requestResponse
+	var responseData TokenResponse
 	err = json.NewDecoder(response.Body).Decode(&responseData)
 
 	if responseData.Error != "" {
@@ -100,14 +94,31 @@ func RefreshIfStale() {
 	}
 }
 
-func createRequest(encodedData string) (request *http.Request) {
-	authUrl := config.GetString("daemon.auth.url")
-	request, _ = http.NewRequest("POST", authUrl, bytes.NewBufferString(encodedData))
+func createRequest(data url.Values) (request *http.Request) {
+	authUrl := config.AuthUrl.Value()
+	request, _ = http.NewRequest("POST", authUrl, bytes.NewBufferString(data.Encode()))
+
+	RefreshIfStale()
+
+	atLocker.RLock()
+	request.Header.Add("Authorization", "Bearer "+daemonToken)
+	atLocker.RUnlock()
+	request.Header.Add("Content-Type", binding.MIMEPOSTForm)
 	return
 }
 
-type requestResponse struct {
-	AccessToken string `json:"access_token"`
-	ExpiresIn   int64  `json:"expires_in"`
-	Error       string `json:"error"`
+type TokenInfoResponse struct {
+	Active           bool   `json:"active"`
+	Scope            string `json:"scope,omitempty"`
+	Error            string `json:"error,omitempty"`
+	ErrorDescription string `json:"error_description,omitempty"`
+}
+
+type TokenResponse struct {
+	AccessToken      string `json:"access_token,omitempty"`
+	TokenType        string `json:"token_type,omitempty"`
+	ExpiresIn        int64  `json:"expires_in,omitempty"`
+	Scope            string `json:"scope"`
+	Error            string `json:"error,omitempty"`
+	ErrorDescription string `json:"error_description,omitempty"`
 }

@@ -40,10 +40,10 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 // @Description Easy way to tell if the daemon is running is by using this endpoint
 // @Accept json
 // @Produce json
-// @Success 200 {object} pufferpanel.PufferdRunning "Service running"
+// @Success 200 {object} pufferpanel.DaemonRunning "Service running"
 // @Router /daemon [get]
 func getStatusGET(c *gin.Context) {
-	c.JSON(http.StatusOK, &pufferpanel.PufferdRunning{Message: "pufferd is running"})
+	c.JSON(http.StatusOK, &pufferpanel.DaemonRunning{Message: "daemon is running"})
 }
 
 // @Summary Is daemon up

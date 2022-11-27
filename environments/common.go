@@ -24,7 +24,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -38,12 +37,10 @@ func DownloadFile(url, fileName string, env pufferpanel.Environment) error {
 		return err
 	}
 
-	client := &http.Client{}
-
 	logging.Info.Printf("Downloading: %s", url)
 	env.DisplayToConsole(true, "Downloading: "+url+"\n")
 
-	response, err := client.Get(url)
+	response, err := pufferpanel.HttpGet(url)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return err
@@ -66,11 +63,9 @@ func DownloadFileToCache(url, fileName string) error {
 		return err
 	}
 
-	client := &http.Client{}
-
 	logging.Info.Printf("Downloading: " + url)
 
-	response, err := client.Get(url)
+	response, err := pufferpanel.HttpGet(url)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		return err
@@ -81,7 +76,7 @@ func DownloadFileToCache(url, fileName string) error {
 }
 
 func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, error) {
-	localPath := path.Join(config.GetString("daemon.data.cache"), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
+	localPath := path.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
 		localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)
@@ -106,9 +101,8 @@ func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, 
 
 		actualHash := fmt.Sprintf("%x", h.Sum(nil))
 
-		client := &http.Client{}
 		logging.Info.Printf("Downloading hash from %s", sha1Url)
-		response, err := client.Get(sha1Url)
+		response, err := pufferpanel.HttpGet(sha1Url)
 		defer pufferpanel.CloseResponse(response)
 		if err != nil {
 			useCache = false

@@ -91,12 +91,6 @@ type ExecutionData struct {
 
 type ExecutionFunction func(steps ExecutionData) (err error)
 
-var ServerFolder string
-
-func InitEnvironment() {
-	ServerFolder = config.GetString("daemon.data.servers")
-}
-
 func (e *BaseEnvironment) Execute(steps ExecutionData) error {
 	err := e.ExecuteAsync(steps)
 	if err != nil {
@@ -158,7 +152,7 @@ func (e *BaseEnvironment) Delete() (err error) {
 }
 
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
-	if config.GetBool("daemon.console.forward") {
+	if config.ConsoleForward.Value() {
 		return io.MultiWriter(os.Stdout, e.ConsoleBuffer, e.WSManager)
 	}
 	return io.MultiWriter(e.ConsoleBuffer, e.WSManager)

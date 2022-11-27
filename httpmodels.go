@@ -43,6 +43,6 @@ type ServerDataAdmin struct {
 	*Server
 }
 
-type PufferdRunning struct {
+type DaemonRunning struct {
 	Message string `json:"message"`
 }

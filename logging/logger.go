@@ -25,13 +25,13 @@ import (
 var logFile io.WriteCloser
 var flags = log.LstdFlags
 
-var Error *log.Logger = log.New(os.Stderr, "[ERROR] ", flags)
-var Debug *log.Logger = log.New(os.Stdout, "[DEBUG] ", flags)
-var Info *log.Logger = log.New(os.Stdout, "[INFO] ", flags)
+var Error = log.New(os.Stderr, "[ERROR] ", flags)
+var Debug = log.New(os.Stdout, "[DEBUG] ", flags)
+var Info = log.New(os.Stdout, "[INFO] ", flags)
 
 func Initialize(useFiles bool) {
 	if useFiles {
-		directory := config.GetString("logs")
+		directory := config.LogsFolder.Value()
 		if directory == "" {
 			directory = "logs"
 		}

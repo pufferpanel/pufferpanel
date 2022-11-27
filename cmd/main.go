@@ -16,6 +16,7 @@ package main
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/spf13/cobra"
 	"os"
@@ -52,7 +53,7 @@ var workDir string
 func init() {
 	rootCmd.PersistentFlags().StringVar(&workDir, "workDir", "", "Set working directory")
 
-	cobra.OnInitialize(setWorkDir)
+	cobra.OnInitialize(setWorkDir, loadConfig)
 
 	rootCmd.AddCommand(
 		runCmd,
@@ -68,6 +69,13 @@ func setWorkDir() {
 		if err != nil {
 			panic(err)
 		}
+	}
+}
+
+func loadConfig() {
+	err := config.LoadConfigFile(workDir)
+	if err != nil {
+		fmt.Printf("Error loading config, this may impact features:\n%s\n", err.Error())
 	}
 }
 

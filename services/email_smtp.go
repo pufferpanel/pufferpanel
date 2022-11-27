@@ -22,20 +22,20 @@ import (
 )
 
 func SendEmailViaSMTP(to, subject, body string, async bool) error {
-	from := config.GetString("panel.email.from")
+	from := config.EmailFrom.Value()
 	if from == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
 	}
 
-	host := config.GetString("panel.email.host")
+	host := config.EmailHost.Value()
 	if host == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.host")
 	}
 
 	var auth smtp.Auth = nil
 
-	if username := config.GetString("panel.email.username"); username != "" {
-		auth = smtp.PlainAuth("", username, config.GetString("panel.email.password"), strings.Split(host, ":")[0])
+	if username := config.EmailUsername.Value(); username != "" {
+		auth = smtp.PlainAuth("", username, config.EmailPassword.Value(), strings.Split(host, ":")[0])
 	}
 
 	data := []byte("Subject: " + subject + "\nMIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" + body)

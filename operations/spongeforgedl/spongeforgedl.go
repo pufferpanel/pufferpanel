@@ -55,7 +55,7 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 	var versionData download
 
 	if op.ReleaseType == "latest" {
-		response, err := client.Get(DownloadApiUrl)
+		response, err := pufferpanel.HttpGet(DownloadApiUrl)
 		defer pufferpanel.CloseResponse(response)
 		if err != nil {
 			return err
@@ -73,7 +73,7 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 
 		versionData = all[0]
 	} else {
-		response, err := client.Get(RecommendedApiUrl)
+		response, err := pufferpanel.HttpGet(RecommendedApiUrl)
 		defer pufferpanel.CloseResponse(response)
 
 		if err != nil {
@@ -124,7 +124,7 @@ func (op SpongeForgeDl) Run(env pufferpanel.Environment) error {
 	}
 
 	//going to stick the spongeforge rename in, to assist with those modpacks
-	err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aspongeforge.jar"))
+	err = pufferpanel.CopyFile(file, path.Join(env.GetRootDirectory(), "mods", "_aaspongeforge.jar"))
 	if err != nil {
 		return err
 	}

@@ -19,9 +19,9 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
+	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"io"
 	path2 "path"
 	"reflect"
@@ -56,10 +56,11 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 		messageType := mapping["type"]
 		if message, ok := messageType.(string); ok {
 			switch strings.ToLower(message) {
-			case "replay": {
-				console, _ := server.GetEnvironment().GetConsole()
-				_ = pufferpanel.Write(conn, messages.Console{Logs: console})
-			}
+			case "replay":
+				{
+					console, _ := server.GetEnvironment().GetConsole()
+					_ = pufferpanel.Write(conn, messages.Console{Logs: console})
+				}
 			case "stat":
 				{
 					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStat) {
@@ -75,14 +76,15 @@ func listenOnSocket(conn *pufferpanel.Socket, server *programs.Program, scopes [
 						_ = pufferpanel.Write(conn, msg)
 					}
 				}
-			case "status": {
-				running, err := server.IsRunning()
-				if err != nil {
-					running = false
+			case "status":
+				{
+					running, err := server.IsRunning()
+					if err != nil {
+						running = false
+					}
+					msg := messages.Status{Running: running}
+					_ = pufferpanel.Write(conn, msg)
 				}
-				msg := messages.Status{Running:running}
-				_ = pufferpanel.Write(conn, msg)
-			}
 			case "start":
 				{
 					if pufferpanel.ContainsScope(scopes, pufferpanel.ScopeServersStart) {
@@ -205,7 +207,7 @@ func handleGetFile(conn *pufferpanel.Socket, server *programs.Program, path stri
 		_ = pufferpanel.Write(conn, messages.FileList{FileList: data.FileList, CurrentPath: path})
 	} else if data.Contents != nil {
 		//if the file is small enough, we'll send it over the websocket
-		if editMode && data.ContentLength < config.GetInt64("daemon.data.maxWSDownloadSize") {
+		if editMode && data.ContentLength < config.WebSocketFileLimit.Value() {
 			var buf bytes.Buffer
 			_, _ = io.Copy(&buf, data.Contents)
 			_ = pufferpanel.Write(conn, messages.FileList{Contents: buf.Bytes(), Filename: data.Name})

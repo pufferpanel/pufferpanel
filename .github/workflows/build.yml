@@ -54,7 +54,7 @@ jobs:
 
     - name: Download Go Binaries
       run: |
-        wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz
+        wget https://github.com/swaggo/swag/releases/download/v1.8.6/swag_1.8.6_Linux_x86_64.tar.gz
         mkdir -p ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
         rm -rf swag*.tar.gz
@@ -111,7 +111,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.18'
+        go-version: '^1.19'
 
     - uses: actions/download-artifact@v2
       with:
@@ -212,7 +212,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.18'
+        go-version: '^1.19'
 
     - name: Download APT packages
       if: steps.aptcache.outputs.cache-hit != 'true'
@@ -341,7 +341,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.18'
+        go-version: '^1.19'
 
     - uses: actions/download-artifact@v2
       with:
@@ -436,7 +436,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.18'
+        go-version: '^1.19'
 
     - uses: actions/download-artifact@v2
       with:

@@ -53,12 +53,12 @@ func RegisterRoutes(e *gin.Engine) {
 
 	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	if config.GetBool("daemon.enable") {
+	if config.DaemonEnabled.Value() {
 		daemon.RegisterDaemonRoutes(e.Group("/daemon", handlers.HasOAuth2Token))
 	}
 
-	if config.GetBool("panel.enable") {
-		ClientPath = config.GetString("panel.web.files")
+	if config.PanelEnabled.Value() {
+		ClientPath = config.WebRoot.Value()
 		IndexFile = ClientPath + "/index.html"
 
 		api.RegisterRoutes(e.Group("/api"))
@@ -134,20 +134,20 @@ func webManifest(c *gin.Context) {
 
 	for i, s := range iconSizes {
 		icons[i] = map[string]interface{}{
-			"src": fmt.Sprintf("img/appicons/%d.png", s),
+			"src":   fmt.Sprintf("img/appicons/%d.png", s),
 			"sizes": fmt.Sprintf("%dx%d", s, s),
-			"type": "image/png",
+			"type":  "image/png",
 		}
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"name": config.GetString("panel.settings.companyName"),
-		"short_name": config.GetString("panel.settings.companyName"),
+		"name":             config.CompanyName.Value(),
+		"short_name":       config.CompanyName.Value(),
 		"background_color": "#fff",
-		"display": "standalone",
-		"scope": "/",
-		"start_url": "/server",
-		"icons": icons,
+		"display":          "standalone",
+		"scope":            "/",
+		"start_url":        "/server",
+		"icons":            icons,
 	})
 }
 

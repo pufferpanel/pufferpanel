@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
-	"net/http"
 	"path"
 )
 
@@ -20,10 +19,8 @@ type FabricMetadata struct {
 }
 
 func (f *Fabricdl) Run(env pufferpanel.Environment) error {
-	var client = &http.Client{}
-
 	env.DisplayToConsole(true, "Downloading metadata from %s\n", FabricMetadataUrl)
-	response, err := client.Get(FabricMetadataUrl)
+	response, err := pufferpanel.HttpGet(FabricMetadataUrl)
 	if err != nil {
 		return err
 	}

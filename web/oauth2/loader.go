@@ -16,5 +16,12 @@ package oauth2
 import "github.com/gin-gonic/gin"
 
 func RegisterRoutes(rg *gin.RouterGroup) {
+	rg.Use(setHeaders)
+
 	registerTokens(rg)
+}
+
+func setHeaders(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
+	c.Header("Pragma", "no-cache")
 }

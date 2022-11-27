@@ -138,8 +138,8 @@ func CreateProgram() *Program {
 	return p
 }
 
-//Starts the program.
-//This includes starting the environment if it is not running.
+// Starts the program.
+// This includes starting the environment if it is not running.
 func (p *Program) Start() (err error) {
 	if !p.IsEnabled() {
 		logging.Error.Printf("Server %s is not enabled, cannot start", p.Id())
@@ -197,8 +197,8 @@ func (p *Program) Start() (err error) {
 	return
 }
 
-//Stops the program.
-//This will also stop the environment it is ran in.
+// Stops the program.
+// This will also stop the environment it is ran in.
 func (p *Program) Stop() (err error) {
 	if running, err := p.IsRunning(); !running || err != nil {
 		return err
@@ -219,8 +219,8 @@ func (p *Program) Stop() (err error) {
 	return
 }
 
-//Kills the program.
-//This will also stop the environment it is ran in.
+// Kills the program.
+// This will also stop the environment it is ran in.
 func (p *Program) Kill() (err error) {
 	logging.Info.Printf("Killing server %s", p.Id())
 	err = p.RunningEnvironment.Kill()
@@ -233,8 +233,8 @@ func (p *Program) Kill() (err error) {
 	return
 }
 
-//Creates any files needed for the program.
-//This includes creating the environment.
+// Creates any files needed for the program.
+// This includes creating the environment.
 func (p *Program) Create() (err error) {
 	logging.Info.Printf("Creating server %s", p.Id())
 	p.RunningEnvironment.DisplayToConsole(true, "Allocating server\n")
@@ -249,8 +249,8 @@ func (p *Program) Create() (err error) {
 	return
 }
 
-//Destroys the server.
-//This will delete the server, environment, and any files related to it.
+// Destroys the server.
+// This will delete the server, environment, and any files related to it.
 func (p *Program) Destroy() (err error) {
 	logging.Info.Printf("Destroying server %s", p.Id())
 	process, err := operations.GenerateProcess(p.Uninstallation, p.RunningEnvironment, p.DataToMap(), p.Execution.EnvironmentVariables)
@@ -383,7 +383,7 @@ func (p *Program) IsAutoStart() (isAutoStart bool) {
 func (p *Program) Save() (err error) {
 	logging.Info.Printf("Saving server %s", p.Id())
 
-	file := filepath.Join(pufferpanel.ServerFolder, p.Id()+".json")
+	file := filepath.Join(config.ServersFolder.Value(), p.Id()+".json")
 
 	if !p.valid() {
 		logging.Error.Printf("Server %s contained invalid data, this server is.... broken", p.Identifier)
@@ -478,7 +478,7 @@ func (p *Program) afterExit(graceful bool) {
 
 	if graceful && p.Execution.AutoRestartFromGraceful {
 		StartViaService(p)
-	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < config.GetInt("daemon.data.crashLimit") {
+	} else if !graceful && p.Execution.AutoRestartFromCrash && p.CrashCounter < config.CrashLimit.Value() {
 		p.CrashCounter++
 		StartViaService(p)
 	}

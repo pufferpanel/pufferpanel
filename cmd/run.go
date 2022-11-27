@@ -25,18 +25,16 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/database"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/programs"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/pufferpanel/pufferpanel/v2/sftp"
 	"github.com/pufferpanel/pufferpanel/v2/web"
-	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -48,23 +46,38 @@ var runCmd = &cobra.Command{
 	Run:   executeRun,
 }
 
-func executeRun(cmd *cobra.Command, args []string) {
-	c := make(chan error)
-	term := make(chan bool)
+var webService *manners.GracefulServer
 
-	internalRun(c, term)
-	err := <-c
-	if err != nil {
-		logging.Error.Printf("An error occurred: %s", err.Error())
+func executeRun(cmd *cobra.Command, args []string) {
+	term := make(chan bool, 10)
+
+	internalRun(term)
+	//wait for the termination signal, so we can shut down
+	<-term
+
+	//shut down everything
+	//all of these can be closed regardless of what type of install this is, as they all check if they are even being
+	//used
+	logging.Debug.Printf("stopping http server")
+	if webService != nil {
+		webService.Close()
 	}
+
+	logging.Debug.Printf("stopping sftp server")
+	sftp.Stop()
+
+	logging.Debug.Printf("stopping servers")
+	programs.ShutdownService()
+	for _, p := range programs.GetAll() {
+		_ = p.Stop()
+		p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
+	}
+
+	logging.Debug.Printf("stopping database connections")
+	database.Close()
 }
 
-func internalRun(c chan error, terminate chan bool) {
-	if err := config.LoadConfigFile(""); err != nil {
-		c <- err
-		return
-	}
-
+func internalRun(terminate chan bool) {
 	logging.Initialize(true)
 	signal.Ignore(syscall.SIGPIPE, syscall.SIGHUP)
 
@@ -86,150 +99,87 @@ func internalRun(c chan error, terminate chan bool) {
 	gin.DefaultErrorWriter = logging.Error.Writer()
 	pufferpanel.Engine = router
 
-	if config.GetBool("panel.enable") {
-		panel(c)
+	if config.PanelEnabled.Value() {
+		panel()
 
-		if config.GetString("panel.sessionKey") == "" {
-			if err := config.Set("panel.sessionKey", securecookie.GenerateRandomKey(32)); err != nil {
-				c <- err
+		if config.SessionKey.Value() == "" {
+			k := securecookie.GenerateRandomKey(32)
+			if err := config.SessionKey.Set(hex.EncodeToString(k), true); err != nil {
+				logging.Error.Printf("error saving session key: %s", err.Error())
+				terminate <- true
 				return
 			}
 		}
 
-		result, err := hex.DecodeString(config.GetString("panel.sessionKey"))
+		result, err := hex.DecodeString(config.SessionKey.Value())
 		if err != nil {
-			c <- err
+			logging.Error.Printf("error decoding session key: %s", err.Error())
+			terminate <- true
 			return
 		}
 		sessionStore := cookie.NewStore(result)
 		router.Use(sessions.Sessions("session", sessionStore))
 	}
 
-	if config.GetBool("daemon.enable") {
-		daemon(c)
+	if config.DaemonEnabled.Value() {
+		err := daemon()
+		if err != nil {
+			logging.Error.Printf("error starting daemon server: %s", err.Error())
+			terminate <- true
+			return
+		}
 	}
 
 	web.RegisterRoutes(router)
 
 	go func() {
-		l, err := net.Listen("tcp", config.GetString("web.host"))
+		l, err := net.Listen("tcp", config.WebHost.Value())
 		if err != nil {
-			c <- err
+			logging.Error.Printf("error starting http server: %s", err.Error())
+			terminate <- true
 			return
 		}
 
 		logging.Info.Printf("Listening for HTTP requests on %s", l.Addr().String())
-		err = manners.Serve(l, router)
+		webService = manners.NewWithServer(&http.Server{Handler: router})
+		err = webService.Serve(l)
 		if err != nil && err != http.ErrServerClosed {
-			c <- err
+			logging.Error.Printf("error listening for http requests: %s", err.Error())
 			terminate <- true
 		}
-	}()
-
-	go func() {
-		//wait for the termination signal, so we can shut down
-		<-terminate
-
-		//shut down everything
-		//all of these can be closed regardless of what type of install this is, as they all check if they are even being
-		//used
-
-		manners.Close()
-		sftp.Stop()
-		programs.ShutdownService()
-		database.Close()
-
-		for _, p := range programs.GetAll() {
-			_ = p.Stop()
-			p.RunningEnvironment.WaitForMainProcessFor(time.Minute) //wait 60 seconds
-		}
-
-		//return out, the upper layers know how to handle this
-		c <- nil
 	}()
 
 	return
 }
 
-func panel(ch chan error) {
-	services.ValidateTokenLoaded()
+func panel() {
 	services.LoadEmailService()
 
 	//if we have the web, then let's use our sftp auth instead
 	sftp.SetAuthorization(&services.DatabaseSFTPAuthorization{})
-
-	err := config.LoadConfigDatabase(database.GetConnector())
-	if err != nil {
-		logging.Error.Printf("Error loading config from database: %s", err.Error())
-	}
-
-	//validate local daemon is configured in this panel
-	if config.GetBool("daemon.enable") {
-		db, err := database.GetConnection()
-		if err != nil {
-			return
-		}
-		ns := &services.Node{DB: db}
-		nodes, err := ns.GetAll()
-		if err != nil {
-			logging.Error.Printf("Failed to get nodes: %s", err.Error())
-			return
-		}
-
-		if len(*nodes) == 0 {
-			logging.Info.Printf("Adding local node")
-			create := &models.Node{
-				Name:        "LocalNode",
-				PublicHost:  "127.0.0.1",
-				PrivateHost: "127.0.0.1",
-				PublicPort:  8080,
-				PrivatePort: 8080,
-				SFTPPort:    5657,
-				Secret:      strings.Replace(uuid.NewV4().String(), "-", "", -1),
-			}
-			nodeHost := config.GetString("web.host")
-			sftpHost := config.GetString("daemon.sftp.host")
-			hostParts := strings.SplitN(nodeHost, ":", 2)
-			sftpParts := strings.SplitN(sftpHost, ":", 2)
-
-			if len(hostParts) == 2 {
-				port, err := strconv.Atoi(hostParts[1])
-				if err == nil {
-					create.PublicPort = uint16(port)
-					create.PrivatePort = uint16(port)
-				}
-			}
-			if len(sftpParts) == 2 {
-				port, err := strconv.Atoi(sftpParts[1])
-				if err == nil {
-					create.SFTPPort = uint16(port)
-				}
-			}
-
-			err = ns.Create(create)
-			if err != nil {
-				logging.Error.Printf("Failed to add local node: %s", err.Error())
-			}
-		}
-	}
 }
 
-func daemon(ch chan error) {
+func daemon() error {
 	sftp.Run()
 
-	pufferpanel.InitEnvironment()
 	environments.LoadModules()
 	programs.Initialize()
 
 	var err error
 
-	if _, err = os.Stat(pufferpanel.ServerFolder); os.IsNotExist(err) {
-		logging.Error.Printf("No server directory found, creating")
-		err = os.MkdirAll(pufferpanel.ServerFolder, 0755)
+	if _, err = os.Stat(config.ServersFolder.Value()); os.IsNotExist(err) {
+		logging.Info.Printf("No server directory found, creating")
+		err = os.MkdirAll(config.ServersFolder.Value(), 0755)
 		if err != nil && !os.IsExist(err) {
-			ch <- err
-			return
+			return err
 		}
+	}
+
+	//update path to include our binary folder
+	newPath := os.Getenv("PATH")
+	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
+	if !strings.Contains(newPath, fullPath) {
+		_ = os.Setenv("PATH", newPath+":"+fullPath)
 	}
 
 	programs.LoadFromFolder()
@@ -246,4 +196,5 @@ func daemon(ch chan error) {
 			}
 		}
 	}
+	return nil
 }

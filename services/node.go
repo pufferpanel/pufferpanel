@@ -28,8 +28,6 @@ import (
 	"strings"
 )
 
-var nodeClient = http.Client{}
-
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -118,7 +116,7 @@ func (ns *Node) CallNode(node *models.Node, method string, path string, body io.
 		return w.Result(), err
 	}
 
-	response, err := nodeClient.Do(request)
+	response, err := pufferpanel.Http().Do(request)
 	return response, err
 }
 
@@ -183,8 +181,10 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		return false, err
 	}
 
+	cl := pufferpanel.Http()
+
 	request := &http.Request{Method: http.MethodOptions, URL: u}
-	_, err = nodeClient.Do(request)
+	_, err = cl.Do(request)
 
 	if err != nil {
 		u, err = url.Parse("http" + path)
@@ -193,7 +193,7 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		}
 
 		request = &http.Request{Method: http.MethodOptions, URL: u}
-		_, err = nodeClient.Do(request)
+		_, err = cl.Do(request)
 		return false, err
 	}
 

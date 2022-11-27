@@ -19,13 +19,11 @@ package oauth2
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"golang.org/x/crypto/ssh"
-	"io/ioutil"
+	"io"
 	"net/url"
-	"strconv"
 	"strings"
 )
 
@@ -42,19 +40,10 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 	data.Set("username", username)
 	data.Set("password", password)
 	data.Set("scope", "sftp")
-	encodedData := data.Encode()
 
-	request := createRequest(encodedData)
+	request := createRequest(data)
 
-	RefreshIfStale()
-
-	atLocker.RLock()
-	request.Header.Add("Authorization", "Bearer "+daemonToken)
-	atLocker.RUnlock()
-	request.Header.Add("Content-Type", binding.MIMEPOSTForm)
-	request.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
-
-	response, err := client.Do(request)
+	response, err := pufferpanel.Http().Do(request)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
 		logging.Error.Printf("error talking to auth server: %s", err)
@@ -70,7 +59,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 			}
 		}
 
-		msg, _ := ioutil.ReadAll(response.Body)
+		msg, _ := io.ReadAll(response.Body)
 
 		logging.Error.Printf("Error talking to auth server: [%d] [%s]", response.StatusCode, msg)
 		return nil, errors.New("invalid response from authorization server")
@@ -95,7 +84,7 @@ func validateSSH(username string, password string, recurse bool) (*ssh.Permissio
 		serverId := t[0]
 		scope := t[1]
 
-		if scope == string(pufferpanel.ScopeServersSFTP) {
+		if pufferpanel.ScopeServersSFTP.Matches(scope) {
 			sshPerms.Extensions = make(map[string]string)
 			sshPerms.Extensions["server_id"] = serverId
 			return sshPerms, nil

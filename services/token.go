@@ -180,7 +180,7 @@ func ValidateTokenLoaded() {
 	locker.Lock()
 	defer locker.Unlock()
 	//only load public if panel is disabled
-	if !config.GetBool("panel.enable") {
+	if !config.PanelEnabled.Value() {
 		if publicKey == nil || timer.Before(time.Now()) {
 			loadPublic()
 		}
@@ -191,7 +191,7 @@ func ValidateTokenLoaded() {
 
 func loadPrivate() {
 	var privKey *ecdsa.PrivateKey
-	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_RDONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.TokenPrivate.Value(), os.O_RDONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if os.IsNotExist(err) {
 		privKey, err = generatePrivateKey()
@@ -221,7 +221,7 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 	}
 
 	privKeyEncoded, _ := x509.MarshalECPrivateKey(privKey)
-	privKeyFile, err := os.OpenFile(config.GetString("token.private"), os.O_CREATE|os.O_WRONLY, 0600)
+	privKeyFile, err := os.OpenFile(config.TokenPrivate.Value(), os.O_CREATE|os.O_WRONLY, 0600)
 	defer pufferpanel.Close(privKeyFile)
 	if err != nil {
 		return
@@ -239,13 +239,13 @@ func generatePrivateKey() (privKey *ecdsa.PrivateKey, err error) {
 }
 
 func loadPublic() {
-	data, err := readPublicKey(config.GetString("token.public"))
+	data, err := readPublicKey(config.TokenPublic.Value())
 	if err != nil {
 		logging.Error.Printf("Internal error on token service: %s", err)
 		return
 	}
 
-	logging.Debug.Printf("Panel key pulled from %s: %s", config.GetString("token.public"), data)
+	logging.Debug.Printf("Panel key pulled from %s: %s", config.TokenPublic.Value(), data)
 
 	block, _ := pem.Decode(data)
 	if block == nil {

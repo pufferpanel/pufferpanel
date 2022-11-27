@@ -26,11 +26,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/extract"
 	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/forgedl"
+	"github.com/pufferpanel/pufferpanel/v2/operations/javadl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/move"
 	"github.com/pufferpanel/pufferpanel/v2/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v2/operations/spongeforgedl"
+	"github.com/pufferpanel/pufferpanel/v2/operations/steamgamedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/writefile"
 	"github.com/spf13/cast"
 )
@@ -181,6 +183,12 @@ func loadCoreModules() {
 
 	extractFactory := extract.Factory
 	commandMapping[extractFactory.Key()] = extractFactory
+
+	steamgamedlFactory := steamgamedl.Factory
+	commandMapping[steamgamedlFactory.Key()] = steamgamedlFactory
+
+	javadlFactory := javadl.Factory
+	commandMapping[javadlFactory.Key()] = javadlFactory
 
 	//programFactory := program.Factory
 	//commandMapping[programFactory.Key()] = programFactory

@@ -21,17 +21,17 @@ import (
 )
 
 func SendEmailViaMailgun(to, subject, body string, async bool) error {
-	domain := config.GetString("panel.email.domain")
+	domain := config.EmailDomain.Value()
 	if domain == "" {
 		return pufferpanel.ErrSettingNotConfigured("domain")
 	}
 
-	from := config.GetString("panel.email.from")
+	from := config.EmailFrom.Value()
 	if from == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
 	}
 
-	key := config.GetString("panel.email.key")
+	key := config.EmailKey.Value()
 	if key == "" {
 		return pufferpanel.ErrSettingNotConfigured("panel.email.key")
 	}

@@ -57,3 +57,11 @@ const (
 
 	ScopeSettings = Scope("panel.settings")
 )
+
+func (s Scope) String() string {
+	return string(s)
+}
+
+func (s Scope) Matches(string string) bool {
+	return string == s.String()
+}

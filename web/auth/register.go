@@ -26,7 +26,7 @@ import (
 )
 
 func RegisterPost(c *gin.Context) {
-	if !config.GetBool("panel.registrationEnabled") {
+	if !config.RegistrationEnabled.Value() {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

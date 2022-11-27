@@ -3,14 +3,14 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v2/config"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
 func panelConfig(c *gin.Context) {
 	themes := []string{}
-	files, err := ioutil.ReadDir(config.GetString("panel.web.files") + "/theme")
+	files, err := os.ReadDir(config.WebRoot.Value() + "/theme")
 	if err != nil {
 		themes = append(themes, "PufferPanel")
 	} else {
@@ -23,12 +23,28 @@ func panelConfig(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"themes": map[string]interface{}{
-			"active": config.GetString("panel.settings.defaultTheme"),
+			"active":    config.DefaultTheme.Value(),
 			"available": themes,
 		},
 		"branding": map[string]interface{}{
-			"name": config.GetString("panel.settings.companyName"),
+			"name": config.CompanyName.Value(),
 		},
-		"registrationEnabled": config.GetBool("panel.registrationEnabled"),
+		"registrationEnabled": config.RegistrationEnabled.Value(),
 	})
+}
+
+type EditableConfig struct {
+	Themes              ThemeConfig
+	Branding            BrandingConfig
+	RegistrationEnabled bool
+}
+
+type ThemeConfig struct {
+	Active    string
+	Settings  string
+	Available []string
+}
+
+type BrandingConfig struct {
+	Name string
 }

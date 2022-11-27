@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM golang:1.18-alpine AS builder
+FROM golang:1.19-alpine AS builder
 
 ARG tags=none
 ARG version=devel
@@ -17,7 +17,7 @@ ENV GOPROXY=$goproxy
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ && \
     mkdir /pufferpanel && \
-    wget https://github.com/swaggo/swag/releases/download/v1.6.7/swag_1.6.7_Linux_x86_64.tar.gz && \
+    wget https://github.com/swaggo/swag/releases/download/v1.8.6/swag_1.8.6_Linux_x86_64.tar.gz && \
     mkdir -p ~/go/bin && \
     tar -zxf swag*.tar.gz -C ~/go/bin && \
     rm -rf swag*.tar.gz

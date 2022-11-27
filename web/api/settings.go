@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/spf13/cast"
 	"net/http"
 )
 
@@ -17,7 +18,7 @@ func registerSettings(g *gin.RouterGroup) {
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 
-// @Summary Get a panel setting
+// @Summary Value a panel setting
 // @Description Gets the value currently being used for the specified config key
 // @Produce json
 // @Success 200 {object} models.SettingResponse
@@ -26,11 +27,28 @@ func registerSettings(g *gin.RouterGroup) {
 func getSetting(c *gin.Context) {
 	key := c.Param("key")
 
-	r := &models.SettingResponse{
-		Value: config.GetString(key),
+	for _, v := range editableStringEntries {
+		if v.Key() == key {
+			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			return
+		}
 	}
 
-	c.JSON(http.StatusOK, r)
+	for _, v := range editableBoolEntries {
+		if v.Key() == key {
+			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			return
+		}
+	}
+
+	for _, v := range editableIntEntries {
+		if v.Key() == key {
+			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
+			return
+		}
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 // @Summary Update a panel setting
@@ -47,11 +65,30 @@ func setSetting(c *gin.Context) {
 	key := c.Param("key")
 
 	var model models.ChangeSetting
-	if err := c.BindJSON(&model); response.HandleError(c, err, http.StatusBadRequest) {
+	var err error
+	if err = c.BindJSON(&model); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	if err := config.Set(key, model.Value); response.HandleError(c, err, http.StatusBadRequest) {
+	for _, v := range editableStringEntries {
+		if v.Key() == key {
+			err = v.Set(cast.ToString(model.Value), true)
+		}
+	}
+
+	for _, v := range editableBoolEntries {
+		if v.Key() == key {
+			err = v.Set(cast.ToBool(model.Value), true)
+		}
+	}
+
+	for _, v := range editableIntEntries {
+		if v.Key() == key {
+			err = v.Set(cast.ToInt(model.Value), true)
+		}
+	}
+
+	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
 
@@ -60,15 +97,51 @@ func setSetting(c *gin.Context) {
 
 func setSettings(c *gin.Context) {
 	var settings map[string]interface{}
-	if err := c.BindJSON(&settings); response.HandleError(c, err, http.StatusBadRequest) {
+	var err error
+	if err = c.BindJSON(&settings); response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
 
-	for k, v := range settings {
-		if err := config.Set(k, v); response.HandleError(c, err, http.StatusInternalServerError) {
+	for key, value := range settings {
+		for _, v := range editableStringEntries {
+			if v.Key() == key {
+				err = v.Set(cast.ToString(value), true)
+			}
+		}
+
+		for _, v := range editableBoolEntries {
+			if v.Key() == key {
+				err = v.Set(cast.ToBool(value), true)
+			}
+		}
+
+		for _, v := range editableIntEntries {
+			if v.Key() == key {
+				err = v.Set(cast.ToInt(value), true)
+			}
+		}
+		if response.HandleError(c, err, http.StatusInternalServerError) {
 			return
 		}
 	}
 
 	c.Status(http.StatusNoContent)
 }
+
+var editableStringEntries = []config.StringEntry{
+	config.EmailDomain,
+	config.EmailFrom,
+	config.EmailHost,
+	config.EmailKey,
+	config.EmailPassword,
+	config.EmailProvider,
+	config.EmailUsername,
+	config.CompanyName,
+	config.DefaultTheme,
+	config.ThemeSettings,
+	config.MasterUrl,
+}
+var editableBoolEntries = []config.BoolEntry{
+	config.RegistrationEnabled,
+}
+var editableIntEntries = []config.IntEntry{}

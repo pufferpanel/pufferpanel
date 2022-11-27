@@ -5,5 +5,5 @@ type ChangeSetting struct {
 }
 
 type SettingResponse struct {
-	Value string `json:"value"`
+	Value interface{} `json:"value"`
 }

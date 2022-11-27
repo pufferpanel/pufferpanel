@@ -46,11 +46,11 @@ func openConnection() (err error) {
 		return
 	}
 
-	dialect := config.GetString("panel.database.dialect")
+	dialect := config.DatabaseDialect.Value()
 	if dialect == "" {
 		dialect = "sqlite3"
 	}
-	connString := config.GetString("panel.database.url")
+	connString := config.DatabaseUrl.Value()
 	if connString == "" {
 		switch dialect {
 		case "mysql":
@@ -90,7 +90,7 @@ func openConnection() (err error) {
 		Colorful:                  false,
 	})
 
-	if config.GetBool("panel.database.log") {
+	if config.DatabaseLoggingEnabled.Value() {
 		logging.Info.Printf("Database logging enabled")
 		gormConfig.Logger.LogMode(logger.Info)
 	}
@@ -136,7 +136,6 @@ func migrateModels() error {
 		&models.Permissions{},
 		&models.Client{},
 		&models.UserSetting{},
-		&config.Setting{},
 	}
 
 	for _, v := range dbObjects {
@@ -145,7 +144,7 @@ func migrateModels() error {
 		}
 	}
 
-	dialect := config.GetString("panel.database.dialect")
+	dialect := config.DatabaseDialect.Value()
 	if dialect == "" || dialect == "sqlite3" {
 		//SQLite does not support creating FKs like this, so we can't just enable them...
 		/*var res = dbConn.Exec("PRAGMA foreign_keys = ON")
@@ -156,12 +155,6 @@ func migrateModels() error {
 		}*/
 		return nil
 	}
-
-	// Foreign keys are automatic now
-	//dbConn.Model(&models.Server{}).AddForeignKey("node_id", "nodes(id)", "RESTRICT", "RESTRICT")
-	//dbConn.Model(&models.Permissions{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-	//dbConn.Model(&models.Permissions{}).AddForeignKey("server_identifier", "servers(identifier)", "CASCADE", "CASCADE")
-	//dbConn.Model(&models.Permissions{}).AddForeignKey("client_id", "clients(id)", "CASCADE", "CASCADE")
 
 	return migrate(dbConn)
 }
@@ -179,14 +172,4 @@ func addConnectionSetting(connString, setting string) string {
 	connString += setting
 
 	return connString
-}
-
-type databaseConnector struct{}
-
-func (*databaseConnector) GetConnection() (*gorm.DB, error) {
-	return GetConnection()
-}
-
-func GetConnector() *databaseConnector {
-	return &databaseConnector{}
 }

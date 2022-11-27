@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package main
@@ -29,9 +30,8 @@ func (m *service) Execute(args []string, r <-chan svc.ChangeRequest, changes cha
 	changes <- svc.Status{State: svc.StartPending}
 	changes <- svc.Status{State: svc.Running, Accepts: cmdsAccepted}
 
-	ch := make(chan error)
 	term := make(chan bool)
-	internalRun(ch, term)
+	internalRun(term)
 
 loop:
 	for {
@@ -46,6 +46,5 @@ loop:
 	}
 	changes <- svc.Status{State: svc.StopPending}
 	term <- true
-	<-ch
 	return
 }

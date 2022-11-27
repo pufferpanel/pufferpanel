@@ -22,16 +22,12 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/operations/forgedl"
-	"net/http"
 	"os"
 	"path"
 	"strings"
 )
 
 const SpongeApiBaseUrl = "https://dl-api-new.spongepowered.org/api/v2/groups/org.spongepowered/artifacts/"
-
-var client = &http.Client{
-}
 
 type SpongeDl struct {
 	Recommended      bool
@@ -161,7 +157,7 @@ func (op SpongeDl) getLatestVersion(env pufferpanel.Environment) (SpongeApiV2Ver
 
 	var url = SpongeApiBaseUrl + op.SpongeType + "/versions" + params
 
-	response, err := client.Get(url)
+	response, err := pufferpanel.HttpGet(url)
 	if err != nil {
 		return data, err
 	}
@@ -180,7 +176,7 @@ func (op SpongeDl) getSpecificVersion(env pufferpanel.Environment, version strin
 
 	var url = SpongeApiBaseUrl + op.SpongeType + "/versions/" + version
 
-	response, err := client.Get(url)
+	response, err := pufferpanel.HttpGet(url)
 	if err != nil {
 		return data, err
 	}

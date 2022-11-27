@@ -38,7 +38,7 @@ type MemoryCache struct {
 }
 
 func CreateCache() *MemoryCache {
-	capacity := config.GetInt("daemon.console.buffer")
+	capacity := config.ConsoleBuffer.Value()
 	if capacity <= 0 {
 		capacity = 50
 	}

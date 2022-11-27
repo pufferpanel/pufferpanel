@@ -27,7 +27,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
 	"golang.org/x/crypto/ssh"
-	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
@@ -65,7 +64,7 @@ func runServer() error {
 		},
 	}
 
-	serverKeyFile := config.GetString("daemon.sftp.key")
+	serverKeyFile := config.SftpKey.Value()
 
 	_, e := os.Stat(serverKeyFile)
 
@@ -83,7 +82,7 @@ func runServer() error {
 			Headers: nil,
 			Bytes:   data,
 		}
-		e = ioutil.WriteFile(serverKeyFile, pem.EncodeToMemory(&block), 0700)
+		e = os.WriteFile(serverKeyFile, pem.EncodeToMemory(&block), 0700)
 		if e != nil {
 			return e
 		}
@@ -93,7 +92,7 @@ func runServer() error {
 
 	logging.Info.Printf("Loading existing key")
 	var data []byte
-	data, e = ioutil.ReadFile(serverKeyFile)
+	data, e = os.ReadFile(serverKeyFile)
 	if e != nil {
 		return e
 	}
@@ -106,7 +105,7 @@ func runServer() error {
 
 	serverConfig.AddHostKey(hkey)
 
-	bind := config.GetString("daemon.sftp.host")
+	bind := config.SftpHost.Value()
 
 	sftpServer, e = net.Listen("tcp", bind)
 	if e != nil {
@@ -180,7 +179,7 @@ func handleConn(conn net.Conn, serverConfig *ssh.ServerConfig) error {
 			}
 		}(requests)
 
-		fs := CreateRequestPrefix(filepath.Join(pufferpanel.ServerFolder, sc.Permissions.Extensions["server_id"]))
+		fs := CreateRequestPrefix(filepath.Join(config.ServersFolder.Value(), sc.Permissions.Extensions["server_id"]))
 
 		server := sftp.NewRequestServer(channel, fs)
 

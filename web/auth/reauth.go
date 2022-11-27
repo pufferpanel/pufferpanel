@@ -20,6 +20,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/response"
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
+	"time"
 )
 
 func Reauth(c *gin.Context) {
@@ -41,6 +42,12 @@ func Reauth(c *gin.Context) {
 	data := &LoginResponse{}
 	data.Session = session
 	data.Scopes = perms.ToScopes()
+
+	secure := false
+	if c.Request.TLS != nil {
+		secure = true
+	}
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
 
 	c.JSON(http.StatusOK, data)
 }
