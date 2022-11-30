@@ -65,7 +65,8 @@ func LoginPost(c *gin.Context) {
 	if c.Request.TLS != nil {
 		secure = true
 	}
-	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
+	//TODO: Change to httponly=true when UI is able to use it properly
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, false)
 
 	c.JSON(http.StatusOK, data)
 }
@@ -116,7 +117,8 @@ func OtpPost(c *gin.Context) {
 	if c.Request.TLS != nil {
 		secure = true
 	}
-	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, true)
+	//TODO: Change to httponly=true when UI is able to use it properly
+	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, false)
 
 	c.JSON(http.StatusOK, data)
 }

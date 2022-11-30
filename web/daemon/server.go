@@ -20,9 +20,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/itsjamie/gin-cors"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/middleware"
@@ -101,19 +101,18 @@ func RegisterServerRoutes(e *gin.RouterGroup) {
 
 		l.POST("/:id/archive/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
 		l.GET("/:id/extract/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
-
 	}
 
 	p := e.Group("/socket")
 	{
-		p.GET("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.Middleware(cors.Config{
-			Origins:     "*",
-			Credentials: true,
+		p.GET("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
+			AllowAllOrigins:  true,
+			AllowCredentials: true,
 		}), OpenSocket)
-		p.Handle("CONNECT", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), func(c *gin.Context) {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Credentials", "false")
-		})
+		p.Handle("CONNECT", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
+			AllowAllOrigins:  true,
+			AllowCredentials: true,
+		}))
 		p.OPTIONS("/:id", response.CreateOptions("GET"))
 	}
 

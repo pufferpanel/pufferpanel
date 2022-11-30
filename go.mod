@@ -10,6 +10,7 @@ require (
 	github.com/creack/pty v1.1.18
 	github.com/docker/docker v20.10.21+incompatible
 	github.com/docker/go-connections v0.4.0
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.8.1
@@ -18,7 +19,6 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/websocket v1.5.0
-	github.com/itsjamie/gin-cors v0.0.0-20220228161158-ef28d3d2a0a8
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mailjet/mailjet-apiv3-go/v3 v3.2.0
 	github.com/mholt/archiver v3.1.1+incompatible
