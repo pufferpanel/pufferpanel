@@ -264,22 +264,13 @@ jobs:
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.arm64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.arm64debdownload.outputs.file }}   
         
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.armhfdebdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.armhfdebdownload.outputs.file }}
-        
         #debians
         package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.amd64debdownload.outputs.file }}
         
-        package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.armhfdebdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.armhfdebdownload.outputs.file }}
-        
         package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.arm64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.arm64debdownload.outputs.file }}
         
-        #raspbian
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.armhfdebdownload.outputs.file }}
-        
+        #raspbian        
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.arm64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.arm64debdownload.outputs.file }}
