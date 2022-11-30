@@ -196,6 +196,18 @@ const processors = {
       label: 'templates.Filename',
       default: ''
     }
+  ],
+  steamgamedl: [
+    {
+      name: 'appId',
+      type: 'text'
+    }
+  ],
+  javadl: [
+    {
+      name: 'version',
+      type: 'int'
+    }
   ]
 }
 
