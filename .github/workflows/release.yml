@@ -257,32 +257,29 @@ jobs:
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
       run: |        
-        #centos
-        package_cloud push ${{ github.event.inputs.repo }}/el/7 ${{ steps.amd64rpmdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/el/8 ${{ steps.amd64rpmdownload.outputs.file }}
-        
-        package_cloud push ${{ github.event.inputs.repo }}/fedora/33 ${{ steps.amd64rpmdownload.outputs.file }}
-        
-        #ubuntu AMD64
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/bionic ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/cosmic ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/disco ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/eoan ${{ steps.amd64debdownload.outputs.file }}
+        #ubuntu
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.amd64debdownload.outputs.file }}        
         
-        #ubuntu ARM64
         package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.arm64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/groovy ${{ steps.arm64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.arm64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.arm64debdownload.outputs.file }}   
         
-        #debian
-        package_cloud push ${{ github.event.inputs.repo }}/debian/jessie ${{ steps.amd64debdownload.outputs.file }}
-        package_cloud push ${{ github.event.inputs.repo }}/debian/stretch ${{ steps.amd64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/focal ${{ steps.armhfdebdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/ubuntu/jammy ${{ steps.armhfdebdownload.outputs.file }}
+        
+        #debians
         package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.amd64debdownload.outputs.file }}
         package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.amd64debdownload.outputs.file }}
         
+        package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.armhfdebdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.armhfdebdownload.outputs.file }}
+        
+        package_cloud push ${{ github.event.inputs.repo }}/debian/buster ${{ steps.arm64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/debian/bullseye ${{ steps.arm64debdownload.outputs.file }}
+        
         #raspbian
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.armhfdebdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.armhfdebdownload.outputs.file }}
+        
         package_cloud push ${{ github.event.inputs.repo }}/raspbian/buster ${{ steps.arm64debdownload.outputs.file }}
+        package_cloud push ${{ github.event.inputs.repo }}/raspbian/bullseye ${{ steps.arm64debdownload.outputs.file }}
