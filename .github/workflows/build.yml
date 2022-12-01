@@ -44,6 +44,11 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ^${{ env.GO_VERSION }}
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
