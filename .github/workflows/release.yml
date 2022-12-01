@@ -10,6 +10,10 @@ on:
        description: 'Tag or other branch to pull artifacts from'
        required: false
        default: 'master'
+
+concurrency:
+  group: release
+  cancel-in-progress: true
         
 jobs:
   deploy:

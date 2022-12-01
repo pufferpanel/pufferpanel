@@ -6,12 +6,18 @@ env:
   SWAG_VERSION: "1.8.8"
   GO_VERSION: "1.19"
   NODE_VERSION: "14"
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
   
 jobs:
   build:
     name: Validate Builds
     runs-on: ubuntu-20.04
     if: startsWith(github.head_ref, 'l10n_master') == false
+
+    timeout-minutes: 5
     
     steps:
     - name: Set up Node 14
