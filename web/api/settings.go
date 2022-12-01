@@ -7,6 +7,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/middleware/handlers"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v2/services"
 	"github.com/spf13/cast"
 	"net/http"
 )
@@ -29,6 +30,11 @@ func getSetting(c *gin.Context) {
 
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
+			if v.Key() == config.MasterUrl.Key() {
+				//refresh the node because it's needing the new url to process
+				services.SyncNodeToConfig()
+			}
+
 			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
 			return
 		}

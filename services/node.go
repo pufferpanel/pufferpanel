@@ -40,6 +40,10 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func init() {
+	SyncNodeToConfig()
+}
+
+func SyncNodeToConfig() {
 	var masterUrl = strings.TrimSuffix(strings.TrimPrefix(strings.TrimPrefix(config.MasterUrl.Value(), "http://"), "https://"), "/")
 	var masterParts = strings.SplitN(masterUrl, ":", 2)
 	models.LocalNode.PublicHost = strings.Split(masterUrl, ":")[0]
