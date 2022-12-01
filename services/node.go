@@ -1,5 +1,5 @@
 /*
- Copyright 2018 Padduck, LLC
+ Copyright 2022 Padduck, LLC
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -15,9 +15,11 @@ package services
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
@@ -25,6 +27,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -36,32 +39,85 @@ var wsupgrader = websocket.Upgrader{
 	},
 }
 
+func init() {
+	var masterUrl = strings.TrimSuffix(strings.TrimPrefix(strings.TrimPrefix(config.MasterUrl.Value(), "http://"), "https://"), "/")
+	var masterParts = strings.SplitN(masterUrl, ":", 2)
+	models.LocalNode.PublicHost = strings.Split(masterUrl, ":")[0]
+	models.LocalNode.PrivateHost = strings.Split(masterUrl, ":")[0]
+
+	if len(masterParts) == 2 {
+		port, err := strconv.Atoi(masterParts[1])
+		if err == nil {
+			models.LocalNode.PublicPort = uint16(port)
+			models.LocalNode.PrivatePort = uint16(port)
+		}
+	} else {
+		//default port to 80 or 443 as the url doesn't have one, so we can assume one or other
+		if strings.HasPrefix(config.MasterUrl.Value(), "https://") {
+			models.LocalNode.PublicPort = 443
+			models.LocalNode.PrivatePort = 443
+		} else {
+			models.LocalNode.PublicPort = 80
+			models.LocalNode.PrivatePort = 80
+		}
+	}
+
+	sftpHost := config.SftpHost.Value()
+	sftpParts := strings.SplitN(sftpHost, ":", 2)
+
+	if len(sftpParts) == 2 {
+		port, err := strconv.Atoi(sftpParts[1])
+		if err == nil {
+			models.LocalNode.SFTPPort = uint16(port)
+		}
+	}
+}
+
 type Node struct {
 	DB *gorm.DB
 }
 
-func (ns *Node) GetAll() (*models.Nodes, error) {
-	nodes := &models.Nodes{}
+func (ns *Node) GetAll() ([]*models.Node, error) {
+	var nodes []*models.Node
 
-	res := ns.DB.Find(nodes)
+	res := ns.DB.Find(&nodes)
 
-	return nodes, res.Error
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	if config.PanelEnabled.Value() {
+		nodes = append(nodes, models.LocalNode)
+	}
+
+	return nodes, nil
 }
 
 func (ns *Node) Get(id uint) (*models.Node, error) {
 	model := &models.Node{}
 
-	res := ns.DB.First(model, id)
+	if id == models.LocalNode.ID && config.PanelEnabled.Value() {
+		return models.LocalNode, nil
+	}
 
+	res := ns.DB.First(model, id)
 	return model, res.Error
 }
 
 func (ns *Node) Update(model *models.Node) error {
+	if model.ID == models.LocalNode.ID && config.PanelEnabled.Value() {
+		return nil
+	}
+
 	res := ns.DB.Save(model)
 	return res.Error
 }
 
 func (ns *Node) Delete(id uint) error {
+	if id == models.LocalNode.ID && config.PanelEnabled.Value() {
+		return errors.New("cannot delete local node")
+	}
+
 	model := &models.Node{
 		ID: id,
 	}
@@ -181,10 +237,8 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		return false, err
 	}
 
-	cl := pufferpanel.Http()
-
 	request := &http.Request{Method: http.MethodOptions, URL: u}
-	_, err = cl.Do(request)
+	_, err = pufferpanel.Http().Do(request)
 
 	if err != nil {
 		u, err = url.Parse("http" + path)
@@ -193,7 +247,7 @@ func doesDaemonUseSSL(node *models.Node) (bool, error) {
 		}
 
 		request = &http.Request{Method: http.MethodOptions, URL: u}
-		_, err = cl.Do(request)
+		_, err = pufferpanel.Http().Do(request)
 		return false, err
 	}
 

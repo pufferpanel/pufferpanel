@@ -1,5 +1,5 @@
 /*
- Copyright 2018 Padduck, LLC
+ Copyright 2022 Padduck, LLC
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -15,8 +15,10 @@ package models
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	uuid "github.com/satori/go.uuid"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -35,8 +37,6 @@ type Node struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-type Nodes []*Node
-
 func (n *Node) IsValid() (err error) {
 	err = validator.New().Struct(n)
 	if err != nil {
@@ -51,5 +51,16 @@ func (n *Node) BeforeSave(*gorm.DB) (err error) {
 }
 
 func (n *Node) IsLocal() bool {
-	return (n.PrivateHost == "localhost" || n.PrivateHost == "127.0.0.1") && (n.PublicHost == "localhost" || n.PublicHost == "127.0.0.1")
+	return n.ID == LocalNode.ID
+}
+
+var LocalNode = &Node{
+	ID:          0,
+	Name:        "LocalNode",
+	PublicHost:  "127.0.0.1",
+	PrivateHost: "127.0.0.1",
+	PublicPort:  8080,
+	PrivatePort: 8080,
+	SFTPPort:    5657,
+	Secret:      strings.Replace(uuid.NewV4().String(), "-", "", -1),
 }

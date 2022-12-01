@@ -52,10 +52,10 @@ func FromServer(server *Server) *ServerView {
 	return model
 }
 
-func FromServers(servers *Servers) []*ServerView {
-	result := make([]*ServerView, len(*servers))
+func FromServers(servers []*Server) []*ServerView {
+	result := make([]*ServerView, len(servers))
 
-	for k, v := range *servers {
+	for k, v := range servers {
 		result[k] = FromServer(v)
 	}
 

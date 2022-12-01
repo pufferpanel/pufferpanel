@@ -20,13 +20,14 @@ import (
 )
 
 type NodeView struct {
-	Id          uint   `json:"id,omitempty"`
+	Id          uint   `json:"id"`
 	Name        string `json:"name,omitempty"`
 	PublicHost  string `json:"publicHost,omitempty"`
 	PrivateHost string `json:"privateHost,omitempty"`
 	PublicPort  uint16 `json:"publicPort,omitempty"`
 	PrivatePort uint16 `json:"privatePort,omitempty"`
 	SFTPPort    uint16 `json:"sftpPort,omitempty"`
+	Local       bool   `json:"isLocal"`
 }
 
 type NodesView []*NodeView
@@ -40,13 +41,14 @@ func FromNode(n *Node) *NodeView {
 		PublicPort:  n.PublicPort,
 		PrivatePort: n.PrivatePort,
 		SFTPPort:    n.SFTPPort,
+		Local:       n.IsLocal(),
 	}
 }
 
-func FromNodes(n *Nodes) *NodesView {
-	result := make(NodesView, len(*n))
+func FromNodes(n []*Node) *NodesView {
+	result := make(NodesView, len(n))
 
-	for k, v := range *n {
+	for k, v := range n {
 		result[k] = FromNode(v)
 	}
 

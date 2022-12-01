@@ -33,15 +33,17 @@ type ServerSearch struct {
 	Page     uint
 }
 
-func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, total int64, err error) {
-	records = &models.Servers{}
-
+func (ss *Server) Search(searchCriteria ServerSearch) (records []*models.Server, total int64, err error) {
 	query := ss.DB
 
 	if searchCriteria.NodeId != 0 {
 		query = query.Where(&models.Server{NodeID: searchCriteria.NodeId})
 	} else if searchCriteria.NodeName != "" {
-		query = query.Joins("JOIN nodes n ON servers.node_id = n.id AND n.name = ?", searchCriteria.NodeName)
+		if searchCriteria.NodeName == "LocalNode" {
+			query = query.Where(&models.Server{NodeID: 0})
+		} else {
+			query = query.Joins("JOIN nodes n ON servers.node_id = n.id AND n.name = ?", searchCriteria.NodeName)
+		}
 	}
 
 	if searchCriteria.Username != "" {
@@ -62,7 +64,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records *models.Servers, 
 		return nil, 0, err
 	}
 
-	err = query.Preload("Node").Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(records).Error
+	err = query.Preload("Node").Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(&records).Error
 
 	return
 }
