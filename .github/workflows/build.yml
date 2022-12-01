@@ -46,8 +46,6 @@ jobs:
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
-      with:
-        path: pufferpanel
 
     - name: Restore NPM cache
       uses: actions/cache@v3
@@ -64,6 +62,16 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+        
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
     - name: Download Go Binaries
       run: |
@@ -71,6 +79,7 @@ jobs:
         mkdir -p ~/go/bin
         tar -zxf swag*.tar.gz -C ~/go/bin
         rm -rf swag*.tar.gz
+        go get ./...
 
     - name: npm install, build
       run: |
@@ -148,6 +157,16 @@ jobs:
     - name: APT Install
       run: |
         sudo apt-get install -y gcc-mingw-w64
+
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
     - name: Build Windows
       run: |
@@ -246,6 +265,16 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_build_artifact
+
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
     - name: Build Linux
       run: |
@@ -384,6 +413,16 @@ jobs:
     - name: APT Install
       run: |
         sudo apt-get install -y gcc-aarch64-linux-gnu
+        
+    - name: Restore Go Modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ env.GO_VERSION }}
 
     - name: Build ARM64
       run: |
