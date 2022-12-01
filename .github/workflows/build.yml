@@ -40,17 +40,17 @@ jobs:
 
     steps:
     - name: Set up Node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
       with:
         path: pufferpanel
 
     - name: Restore NPM cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.npm
         key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/package-lock.json') }}
@@ -58,7 +58,7 @@ jobs:
           ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
 
     - name: Restore NPM cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: client/node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
@@ -85,7 +85,7 @@ jobs:
         ~/go/bin/swag init -o web/swagger -g web/loader.go
 
     - name: Upload Swagger docs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_swagger
         path: |
@@ -101,7 +101,7 @@ jobs:
         rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/www/js/*.map
 
     - name: Generate job artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_build_artifact
         path: .
@@ -124,7 +124,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ^${{ env.GO_VERSION }}
 
@@ -134,7 +134,7 @@ jobs:
 
     - name: Restore APT cache
       id: aptcache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: /var/cache/apt/archives
         key: ${{ runner.os }}-apt-windows
@@ -181,7 +181,7 @@ jobs:
         }
         echo VERSION=$VERSION | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
     
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: pufferpanel_${{ env.VERSION }}_windows_amd64
         path: binaries
@@ -191,7 +191,7 @@ jobs:
         Copy-Item -Recurse -Path binaries/* -Destination ..
         
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
       with:
         path: source
     
@@ -208,7 +208,7 @@ jobs:
         light *.wixobj -out pufferpanel.msi -b email -b www -ext WixUIExtension -ext WixFirewallExtension -cultures:en-us
         
     - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_${{ env.VERSION }}_installer.msi
         path: ../pufferpanel.msi
@@ -229,7 +229,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ^${{ env.GO_VERSION }}
 
@@ -327,7 +327,7 @@ jobs:
             libstdc++.i686
 
     - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_${{ env.VERSION }}_linux_amd64
         path: build-artifacts/
@@ -360,17 +360,17 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ^${{ env.GO_VERSION }}
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: pufferpanel_build_artifact
 
     - name: Restore APT cache
       id: aptcache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: /var/cache/apt/archives
         key: ${{ runner.os }}-apt-arm64
@@ -430,7 +430,7 @@ jobs:
             lib32gcc1
 
     - name: Publish Artifacts
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_${{ env.VERSION }}_linux_arm64
         path: build-artifacts
@@ -475,16 +475,16 @@ jobs:
         echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -536,22 +536,22 @@ jobs:
         echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build container
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: dockerfiles/massive
         push: true
@@ -599,22 +599,22 @@ jobs:
         echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Login to DockerHub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build container
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: dockerfiles/${{ matrix.variant }}
         push: true
