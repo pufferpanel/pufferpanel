@@ -145,16 +145,8 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: pufferpanel_build_artifact
-
-    - name: Restore APT cache
-      id: aptcache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{ runner.os }}-apt-windows
         
     - name: Download APT packages
-      if: steps.aptcache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install --download-only -y gcc-mingw-w64
@@ -209,23 +201,18 @@ jobs:
       with:
         name: pufferpanel_${{ env.VERSION }}_windows_amd64
         path: binaries
-        
-    - name: Generate MSI     
-      run: |
-        Copy-Item -Recurse -Path binaries/* -Destination ..
-        
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
+
+    - uses: actions/download-artifact@v2
       with:
-        path: source
+        name: pufferpanel_build_artifact
+        path: artifacts
     
     - name: Generate MSI     
       run: |
-        Copy-Item -Recurse -Path LICENSE.rtf -Destination ..
-        Copy-Item -Recurse -Path installer.wxs -Destination ..
-        cd ..
-        tree /f
-        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"      
+        Copy-Item -Recurse -Path binaries\* -Destination .
+        Copy-Item -Path artifacts\LICENSE.rtf -Destination .
+        Copy-Item -Path artifacts\installer.wxs -Destination .
+        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
         heat dir www -out www.wxs -gg -g1 -ke -nologo -cg WwwComponent -dr APPLICATIONROOTDIRECTORY
         heat dir email -out email.wxs -gg -g1 -ke -nologo -cg EmailComponent -dr APPLICATIONROOTDIRECTORY
         candle *.wxs -arch x64 -dProductVersion="${{ env.VERSION }}" -ext WixFirewallExtension
@@ -235,7 +222,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: pufferpanel_${{ env.VERSION }}_installer.msi
-        path: ../pufferpanel.msi
+        path: pufferpanel.msi
 
   build-linux-amd64-binaries:
     name: Build Binaries - Linux AMD64
@@ -258,7 +245,6 @@ jobs:
         go-version: ^${{ env.GO_VERSION }}
 
     - name: Download APT packages
-      if: steps.aptcache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install --download-only -y rpm
@@ -402,15 +388,7 @@ jobs:
       with:
         name: pufferpanel_build_artifact
 
-    - name: Restore APT cache
-      id: aptcache
-      uses: actions/cache@v3
-      with:
-        path: /var/cache/apt/archives
-        key: ${{ runner.os }}-apt-arm64
-
     - name: Download APT packages
-      if: steps.aptcache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install --download-only -y gcc-aarch64-linux-gnu
