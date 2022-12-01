@@ -14,7 +14,8 @@
             :loading="loading"
             hide-default-footer
             @click:row="rowClicked"
-          />
+          >
+          </v-data-table>
           <v-btn
             v-show="hasScope('nodes.deploy') || isAdmin()"
             color="primary"
@@ -31,14 +32,26 @@
         </v-sheet>
       </v-col>
     </v-row>
+    <ui-overlay
+        v-model="tryingToEditLocal"
+        card
+        closable
+        :title="$t('nodes.CannotEdit')"
+    >
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <span style="text-align: center; overflow-y: auto" v-html="markdown($t('nodes.LocalNodeInstructions'))"/>
+    </ui-overlay>
   </v-container>
 </template>
 
 <script>
+import markdown from '@/utils/markdown'
+
 export default {
   data () {
     return {
       loading: true,
+      tryingToEditLocal: false,
       nodes: [],
       headers: [
         {
@@ -79,8 +92,15 @@ export default {
       this.loading = false
     },
     rowClicked (item) {
-      if (this.hasScope('nodes.edit') || this.isAdmin()) this.$router.push({ name: 'Node', params: { id: item.id } })
-    }
+      if (this.hasScope('nodes.edit') || this.isAdmin()) {
+        if (item.isLocal) {
+          this.tryingToEditLocal = true
+        } else {
+          this.$router.push({ name: 'Node', params: { id: item.id } })
+        }
+      }
+    },
+    markdown
   }
 }
 </script>
