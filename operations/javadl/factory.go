@@ -14,8 +14,8 @@
 package javadl
 
 import (
-	"errors"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 	"strconv"
 )
 
@@ -27,9 +27,11 @@ func (of OperationFactory) Key() string {
 	return "javadl"
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	version, ok := op.OperationArgs["version"].(int)
-	if !ok {
-		return nil, errors.New("java version must be a number")
+	v := op.OperationArgs["version"]
+
+	version, err := cast.ToIntE(v)
+	if err != nil {
+		return nil, err
 	}
 
 	return JavaDl{Version: strconv.Itoa(version)}, nil
