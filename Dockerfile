@@ -1,7 +1,15 @@
 ###
 # Builder container
 ###
+FROM node:16-alpine AS node
 FROM golang:1.19-alpine AS builder
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+
 
 ARG tags=none
 ARG version=devel
@@ -16,7 +24,7 @@ ENV npm_config_registry=$npmproxy
 ENV GOPROXY=$goproxy
 
 RUN go version && \
-    apk add --update --no-cache gcc musl-dev git curl nodejs npm make gcc g++ && \
+    apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
     mkdir /pufferpanel && \
     wget https://github.com/swaggo/swag/releases/download/v${swagversion}/swag_${swagversion}_Linux_x86_64.tar.gz && \
     mkdir -p ~/go/bin && \
