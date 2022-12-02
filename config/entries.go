@@ -1,6 +1,9 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+	"path/filepath"
+)
 
 // Global options
 var LogsFolder = asString("logs", "logs")
@@ -39,7 +42,7 @@ var ClientId = asString("daemon.auth.clientId", "")
 var ClientSecret = asString("daemon.auth.clientSecret", "")
 var CacheFolder = asString("daemon.data.cache", "cache")
 var ServersFolder = asString("daemon.data.servers", "servers")
-var BinariesFolder = asString("daemon.data.binaries", "binaries")
+var BinariesFolder = asString("daemon.data.binaries", deriveForServers("binaries"))
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 
@@ -112,4 +115,8 @@ func asInt64(key string, def int64) Int64Entry {
 func as[T ValueType](key string, def T) entry[T] {
 	viper.SetDefault(key, def)
 	return entry[T]{key: key}
+}
+
+func deriveForServers(path string) string {
+	return filepath.Join(filepath.Base(ServersFolder.Value()), path)
 }

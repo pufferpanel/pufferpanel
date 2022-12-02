@@ -80,13 +80,13 @@ func (op JavaDl) Run(env pufferpanel.Environment) (err error) {
 		_ = os.Remove(mainCCommand)
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCommand)
-		err = os.Symlink(filepath.Join(rootBinaryFolder, file.ReleaseName, "bin", "java"), mainCommand)
+		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "java"), mainCommand)
 		if err != nil {
 			return
 		}
 
 		logging.Debug.Printf("Adding to path: %s\n", mainCCommand)
-		err = os.Symlink(filepath.Join(rootBinaryFolder, file.ReleaseName, "bin", "javac"), mainCCommand)
+		err = os.Symlink(filepath.Join(file.ReleaseName, "bin", "javac"), mainCCommand)
 		if err != nil {
 			return
 		}

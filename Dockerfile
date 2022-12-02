@@ -65,6 +65,7 @@ ENV PUFFER_LOGS=/etc/pufferpanel/logs \
     PUFFER_DAEMON_DATA_CACHE=/var/lib/pufferpanel/cache \
     PUFFER_DAEMON_DATA_SERVERS=/var/lib/pufferpanel/servers \
     PUFFER_DAEMON_DATA_MODULES=/var/lib/pufferpanel/modules \
+    PUFFER_DAEMON_DATA_BINARIES=/var/lib/pufferpanel/binaries \
     GIN_MODE=release
 
 WORKDIR /pufferpanel
