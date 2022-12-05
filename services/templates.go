@@ -24,8 +24,8 @@ import (
 	"strings"
 )
 
-const TemplateJson = "https://raw.githubusercontent.com/PufferPanel/templates/v2/{name}/{name}.json"
-const TemplateReadme = "https://raw.githubusercontent.com/PufferPanel/templates/v2/{name}/README.md"
+const TemplateJson = "https://raw.githubusercontent.com/PufferPanel/templates/v2.5/{name}/{name}.json"
+const TemplateReadme = "https://raw.githubusercontent.com/PufferPanel/templates/v2.5/{name}/README.md"
 
 var templateClient = http.Client{}
 
