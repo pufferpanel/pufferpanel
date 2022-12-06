@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 	"path/filepath"
 )
@@ -42,7 +43,7 @@ var ClientId = asString("daemon.auth.clientId", "")
 var ClientSecret = asString("daemon.auth.clientSecret", "")
 var CacheFolder = asString("daemon.data.cache", "cache")
 var ServersFolder = asString("daemon.data.servers", "servers")
-var BinariesFolder = asString("daemon.data.binaries", deriveForServers("binaries"))
+var BinariesFolder = asString("daemon.data.binaries", deriveFromServers("binaries"))
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 
@@ -74,24 +75,25 @@ type ValueType interface {
 }
 
 func (se StringEntry) Value() string {
-	return viper.GetString(se.Key())
+	return cast.ToString(se.get())
 }
+
 func (se BoolEntry) Value() bool {
-	return viper.GetBool(se.Key())
+	return cast.ToBool(se.get())
 }
 func (se IntEntry) Value() int {
-	return viper.GetInt(se.Key())
+	return cast.ToInt(se.get())
 }
 func (se Int64Entry) Value() int64 {
-	return viper.GetInt64(se.Key())
+	return cast.ToInt64(se.get())
 }
 
-func (e entry[T]) Key() string {
-	return e.key
+func (se entry[T]) Key() string {
+	return se.key
 }
 
-func (e entry[T]) Set(value T, save bool) error {
-	viper.Set(e.Key(), value)
+func (se entry[T]) Set(value T, save bool) error {
+	viper.Set(se.Key(), value)
 
 	if save {
 		return viper.WriteConfig()
@@ -113,10 +115,25 @@ func asInt64(key string, def int64) Int64Entry {
 }
 
 func as[T ValueType](key string, def T) entry[T] {
-	viper.SetDefault(key, def)
+	//We are not using viper for this, because it writes a giant config with the defaults,
+	//and we cannot do that to allow for changes in the future
+
+	//viper.SetDefault(key, def)
+	defaults[key] = def
 	return entry[T]{key: key}
 }
 
-func deriveForServers(path string) string {
+func deriveFromServers(path string) string {
 	return filepath.Join(filepath.Base(ServersFolder.Value()), path)
 }
+
+func (se entry[T]) get() interface{} {
+	val := viper.Get(se.Key())
+	if val == nil {
+		val = defaults[se.Key()]
+	}
+
+	return val
+}
+
+var defaults map[string]interface{}
