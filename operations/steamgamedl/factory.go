@@ -15,6 +15,7 @@ package steamgamedl
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -26,7 +27,9 @@ func (of OperationFactory) Key() string {
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
 	o := SteamGameDl{
-		AppId: op.OperationArgs["appId"].(string),
+		AppId:    cast.ToString(op.OperationArgs["appId"]),
+		Username: cast.ToString(op.OperationArgs["username"]),
+		Password: cast.ToString(op.OperationArgs["password"]),
 	}
 	return o, nil
 }

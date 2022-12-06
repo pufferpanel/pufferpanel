@@ -34,7 +34,9 @@ func init() {
 }
 
 type SteamGameDl struct {
-	AppId string
+	AppId    string
+	Username string
+	Password string
 }
 
 func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
@@ -46,11 +48,19 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		return err
 	}
 
+	var args = []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", env.GetRootDirectory()}
+	if c.Username != "" {
+		args = append(args, "-username", c.Username, "-remember-password")
+		if c.Password != "" {
+			args = append(args, "-password", c.Password)
+		}
+	}
+
 	var success bool
 	steps := pufferpanel.ExecutionData{
 		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
 		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
-		Arguments: []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", env.GetRootDirectory()},
+		Arguments: args,
 		Callback: func(exitCode bool) {
 			success = exitCode
 		},
