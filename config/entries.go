@@ -136,4 +136,4 @@ func (se entry[T]) get() interface{} {
 	return val
 }
 
-var defaults map[string]interface{}
+var defaults = make(map[string]interface{})
