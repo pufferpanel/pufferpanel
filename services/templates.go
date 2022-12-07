@@ -15,28 +15,38 @@ package services
 
 import (
 	"encoding/json"
+	"github.com/go-git/go-billy/v5"
+	"github.com/go-git/go-billy/v5/memfs"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/transport/client"
+	githttp "github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/go-git/go-git/v5/storage/memory"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
 	"io"
-	"net/http"
-	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 )
 
-const TemplateGithubUrl = "https://api.github.com/repos/pufferpanel/templates/git/trees/v2.5?recursive=true"
-
 var ignoredPaths = []string{".git", ".github"}
-var templateCache *pufferpanel.GithubFileList
-var templateCacheExpireAt time.Time
-var templateCacheLocker sync.Mutex
 
-var templateClient = http.Client{}
+var templateRepo *git.Repository
+var templateFiles billy.Filesystem
+var templateRepoExpiredAt time.Time
+var templateCacheLocker sync.Mutex
 
 type Template struct {
 	DB *gorm.DB
+}
+
+type templateFile struct {
+	Name       string
+	Path       string
+	ReadmePath string
 }
 
 func (t *Template) GetAll() (*models.Templates, error) {
@@ -77,49 +87,41 @@ func (t *Template) Save(template *models.Template) error {
 }
 
 func (t *Template) ImportFromRepo(templateName string) error {
-	files, err := t.callGithub()
+	files, err := t.getTemplateFiles()
 	if err != nil {
 		return err
 	}
 
-	var templateUrl string
-	var readmeUrl string
+	templateCacheLocker.Lock()
+	defer templateCacheLocker.Unlock()
 
-	var root string
-	for _, file := range files.Tree {
-		if strings.HasSuffix(file.Path, templateName+".json") {
-			templateUrl = file.Url
-			root = strings.TrimSuffix(file.Path, "/"+templateName+".json")
-		}
-		if strings.HasSuffix(file.Path, templateName+".md") {
-			readmeUrl = file.Url
-		}
-	}
-	//re-search, look for readme if not one for the specific template
-	if readmeUrl == "" {
-		for _, file := range files.Tree {
-			if file.Path == root+"/README.md" {
-				readmeUrl = file.Url
+	var template io.ReadCloser
+	var readme io.ReadCloser
+
+	defer pufferpanel.Close(template)
+	defer pufferpanel.Close(readme)
+
+	for _, file := range files {
+		if file.Name == templateName {
+			template, err = templateFiles.Open(file.Path)
+			if err != nil {
+				return err
 			}
+			if file.ReadmePath != "" {
+				readme, err = templateFiles.Open(file.ReadmePath)
+				if err != nil {
+					return err
+				}
+			}
+			break
 		}
 	}
 
-	response, err := templateClient.Get(templateUrl)
-	if err != nil {
-		return err
-	}
-	defer pufferpanel.Close(response.Body)
-
-	var readme io.Reader
-	if readmeUrl != "" {
-		readmeResponse, err := templateClient.Get(readmeUrl)
-		if err == nil && readmeResponse.StatusCode == 200 {
-			defer pufferpanel.Close(readmeResponse.Body)
-			readme = readmeResponse.Body
-		}
+	if template == nil {
+		return pufferpanel.ErrNoTemplate(templateName)
 	}
 
-	return t.ImportTemplate(templateName, response.Body, readme)
+	return t.ImportTemplate(templateName, template, readme)
 }
 
 func (t *Template) ImportTemplate(name string, template, readme io.Reader) error {
@@ -165,62 +167,103 @@ func (t *Template) Delete(name string) error {
 }
 
 func (t *Template) GetImportableTemplates() ([]string, error) {
-	d, err := t.callGithub()
+	files, err := t.getTemplateFiles()
 	if err != nil {
 		return nil, err
 	}
 
 	results := make([]string, 0)
-	for _, v := range d.Tree {
-		if v.Type == "blob" && strings.HasSuffix(v.Path, ".json") {
-			ignore := false
-			for _, i := range ignoredPaths {
-				if strings.HasPrefix(v.Path, i) {
-					ignore = true
-				}
-			}
-			if ignore {
-				continue
-			}
-			results = append(results, v.Path)
-		}
+	for _, f := range files {
+		results = append(results, f.Name)
 	}
+
 	return results, nil
 }
 
-func (t *Template) callGithub() (pufferpanel.GithubFileList, error) {
+func (t *Template) refreshGithub() (err error) {
 	templateCacheLocker.Lock()
 	defer templateCacheLocker.Unlock()
 
-	if templateCache != nil && templateCacheExpireAt.After(time.Now()) {
-		return *templateCache, nil
+	if templateRepo == nil {
+		client.InstallProtocol("https", githttp.NewClient(pufferpanel.Http()))
+
+		templateFiles = memfs.New()
+		templateRepo, err = git.Clone(memory.NewStorage(), templateFiles, &git.CloneOptions{
+			URL:           "https://github.com/PufferPanel/templates",
+			ReferenceName: "refs/heads/v2.5",
+		})
+
+		if err != nil {
+			return
+		}
 	}
 
-	var d pufferpanel.GithubFileList
-	u, err := url.Parse(TemplateGithubUrl)
+	if templateRepoExpiredAt.Before(time.Now()) {
+		err = templateRepo.Fetch(&git.FetchOptions{})
+		if err == git.NoErrAlreadyUpToDate {
+			err = nil
+		}
+
+		if err != nil {
+			return
+		}
+	}
+
+	templateRepoExpiredAt = time.Now().Add(time.Minute * 5)
+	return
+}
+
+func (t *Template) getTemplateFiles() ([]templateFile, error) {
+	err := t.refreshGithub()
 	if err != nil {
-		return d, err
+		return nil, err
 	}
 
-	request := &http.Request{
-		Method: "GET",
-		URL:    u,
-	}
-	if request.Header == nil {
-		request.Header = http.Header{}
-	}
+	templateCacheLocker.Lock()
+	defer templateCacheLocker.Unlock()
 
-	request.Header.Add("Accept", "application/vnd.github.v3+json")
-
-	res, err := pufferpanel.Http().Do(request)
+	directories, err := templateFiles.ReadDir("/")
 	if err != nil {
-		return d, err
+		return nil, err
 	}
-	defer pufferpanel.Close(res.Body)
 
-	err = json.NewDecoder(res.Body).Decode(&d)
+	results := make([]templateFile, 0)
 
-	templateCache = &d
-	templateCacheExpireAt = time.Now().Add(time.Minute * 5)
-	return d, err
+	for _, directory := range directories {
+		if !directory.IsDir() || pufferpanel.ContainsString(ignoredPaths, directory.Name()) {
+			continue
+		}
+
+		var files []os.FileInfo
+		files, err = templateFiles.ReadDir(directory.Name())
+		if err != nil {
+			return nil, err
+		}
+		for _, file := range files {
+			if file.IsDir() || !strings.HasSuffix(file.Name(), ".json") {
+				continue
+			}
+
+			var readme string
+
+			folder := filepath.Join("/", directory.Name())
+
+			testPath := filepath.Join(folder, strings.TrimSuffix(file.Name(), ".json")+".md")
+			if fi, err := templateFiles.Stat(testPath); err == nil && !fi.IsDir() {
+				readme = testPath
+			} else {
+				testPath = filepath.Join(folder, "README.md")
+				if fi, err = templateFiles.Stat(testPath); err == nil && !fi.IsDir() {
+					readme = testPath
+				}
+			}
+			results = append(results, templateFile{
+				Name:       strings.TrimSuffix(file.Name(), ".json"),
+				Path:       filepath.Join("/", directory.Name(), file.Name()),
+				ReadmePath: readme,
+			})
+		}
+	}
+
+	return results, nil
 }
