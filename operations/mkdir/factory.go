@@ -18,6 +18,7 @@ package mkdir
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -25,7 +26,7 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	target := op.OperationArgs["target"].(string)
+	target := cast.ToString(op.OperationArgs["target"])
 	return &Mkdir{TargetFile: target}, nil
 }
 

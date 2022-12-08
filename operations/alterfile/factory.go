@@ -15,6 +15,7 @@ package alterfile
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -22,10 +23,10 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	file := op.OperationArgs["file"].(string)
-	search := op.OperationArgs["search"].(string)
-	replace := op.OperationArgs["replace"].(string)
-	regex := op.OperationArgs["regex"].(bool)
+	file := cast.ToString(op.OperationArgs["file"])
+	search := cast.ToString(op.OperationArgs["search"])
+	replace := cast.ToString(op.OperationArgs["replace"])
+	regex := cast.ToBool(op.OperationArgs["regex"])
 	return AlterFile{TargetFile: file, Search: search, Replace: replace, Regex: regex}, nil
 }
 

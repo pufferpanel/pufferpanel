@@ -18,6 +18,7 @@ package mojangdl
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -25,8 +26,8 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	version := op.OperationArgs["version"].(string)
-	target := op.OperationArgs["target"].(string)
+	version := cast.ToString(op.OperationArgs["version"])
+	target := cast.ToString(op.OperationArgs["target"])
 
 	return MojangDl{Version: version, Target: target}, nil
 }

@@ -16,7 +16,10 @@
 
 package forgedl
 
-import "github.com/pufferpanel/pufferpanel/v2"
+import (
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
+)
 
 type OperationFactory struct {
 	pufferpanel.OperationFactory
@@ -26,8 +29,8 @@ func (of OperationFactory) Key() string {
 	return "forgedl"
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	version := op.OperationArgs["version"].(string)
-	filename := op.OperationArgs["target"].(string)
+	version := cast.ToString(op.OperationArgs["version"])
+	filename := cast.ToString(op.OperationArgs["target"])
 
 	return ForgeDl{Version: version, Filename: filename}, nil
 }

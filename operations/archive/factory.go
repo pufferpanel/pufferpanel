@@ -1,6 +1,9 @@
 package archive
 
-import "github.com/pufferpanel/pufferpanel/v2"
+import (
+	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
+)
 
 type OperationFactory struct {
 	pufferpanel.OperationFactory
@@ -10,8 +13,8 @@ func (of OperationFactory) Key() string {
 	return "archive"
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	source := op.OperationArgs["source"].([]string)
-	destination := op.OperationArgs["destination"].(string)
+	source := cast.ToStringSlice(op.OperationArgs["source"])
+	destination := cast.ToString(op.OperationArgs["destination"])
 
 	return Archive{
 		Source:      source,

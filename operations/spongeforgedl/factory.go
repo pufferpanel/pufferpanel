@@ -18,6 +18,7 @@ package spongeforgedl
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -28,8 +29,8 @@ func (of OperationFactory) Key() string {
 	return "spongeforgedl"
 }
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	releaseType, ok := op.OperationArgs["releaseType"].(string)
-	if !ok {
+	releaseType := cast.ToString(op.OperationArgs["releaseType"])
+	if releaseType == "" {
 		releaseType = "recommended"
 	}
 

@@ -18,6 +18,7 @@ package move
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -25,8 +26,8 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	source := op.OperationArgs["source"].(string)
-	target := op.OperationArgs["target"].(string)
+	source := cast.ToString(op.OperationArgs["source"])
+	target := cast.ToString(op.OperationArgs["target"])
 	return Move{SourceFile: source, TargetFile: target}, nil
 }
 

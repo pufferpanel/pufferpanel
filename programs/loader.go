@@ -247,6 +247,9 @@ func Create(program *Program) error {
 	}
 
 	program.RunningEnvironment, err = environments.Create(typeMap.Type, config.ServersFolder.Value(), program.Id(), program.Environment)
+	if err != nil {
+		return err
+	}
 
 	err = program.Create()
 	if err != nil {

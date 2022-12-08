@@ -15,6 +15,7 @@ package writefile
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/spf13/cast"
 )
 
 type OperationFactory struct {
@@ -22,8 +23,8 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	text := op.OperationArgs["text"].(string)
-	target := op.OperationArgs["target"].(string)
+	text := cast.ToString(op.OperationArgs["text"])
+	target := cast.ToString(op.OperationArgs["target"])
 	return WriteFile{TargetFile: target, Text: text}, nil
 }
 

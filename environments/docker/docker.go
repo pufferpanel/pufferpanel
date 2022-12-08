@@ -34,7 +34,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"io"
 	"os"
-	"path"
+	"path/filepath"
 	"runtime"
 	"syscall"
 	"time"
@@ -172,7 +172,7 @@ func (d *docker) Kill() (err error) {
 }
 
 func (d *docker) Create() error {
-	go func() {
+	/*go func() {
 		c, err := d.getClient()
 		if err != nil {
 			logging.Error.Printf("Error getting docker client: %s\n", err.Error())
@@ -185,7 +185,7 @@ func (d *docker) Create() error {
 			d.DisplayToConsole(true, "Error downloading image")
 			return
 		}
-	}()
+	}()*/
 	return os.Mkdir(d.RootDirectory, 0755)
 }
 
@@ -404,12 +404,12 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	dir := d.RootDirectory
 
 	//convert root dir to a full path, so we can bind it
-	if !path.IsAbs(dir) {
+	if !filepath.IsAbs(dir) {
 		pwd, err := os.Getwd()
 		if err != nil {
 			return err
 		}
-		dir = path.Join(pwd, dir)
+		dir = filepath.Join(pwd, dir)
 	}
 
 	hostConfig := &container.HostConfig{
