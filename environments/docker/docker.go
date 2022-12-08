@@ -32,11 +32,11 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
+	"github.com/spf13/cast"
 	"io"
 	"os"
 	"path/filepath"
 	"runtime"
-	"syscall"
 	"time"
 )
 
@@ -398,10 +398,10 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		Tty:             true,
 		OpenStdin:       true,
 		NetworkDisabled: false,
-		Cmd:             cmdSlice,
 		Image:           d.ImageName,
 		WorkingDir:      workDir,
 		Env:             newEnv,
+		Entrypoint:      cmdSlice,
 	}
 
 	if runtime.GOOS == "linux" {
@@ -464,7 +464,7 @@ func (d *docker) SendCode(code int) error {
 	}
 
 	ctx := context.Background()
-	return dockerClient.ContainerKill(ctx, d.ContainerId, syscall.Signal(code).String())
+	return dockerClient.ContainerKill(ctx, d.ContainerId, cast.ToString(code))
 }
 
 func calculateCPUPercent(v *types.StatsJSON) float64 {

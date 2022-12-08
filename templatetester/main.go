@@ -143,7 +143,7 @@ func main() {
 func runServer(prg *programs.Program) (err error) {
 	err = prg.Start()
 	panicIf(err)
-	<-time.After(time.Minute * 1)
+	<-time.After(time.Minute * 5)
 	err = prg.Stop()
 	panicIf(err)
 
