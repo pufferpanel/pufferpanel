@@ -142,8 +142,10 @@ func main() {
 
 func runServer(prg *programs.Program) (err error) {
 	err = prg.Start()
+	panicIf(err)
 	<-time.After(time.Minute * 1)
 	err = prg.Stop()
+	panicIf(err)
 
 	return prg.GetEnvironment().WaitForMainProcessFor(time.Minute * 3)
 }

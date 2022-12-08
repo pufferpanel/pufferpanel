@@ -110,12 +110,24 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		//because we use the auto-delete, we don't manually stop the container
 		//c, _ := d.getClient()
 		//err = c.ContainerStop(context.Background(), d.ContainerId, nil)
+		//if err != nil {
+		//	logging.Error.Printf("Error stopping container "+d.ContainerId, err)
+		//}
+
+		okChan, errChan := dockerClient.ContainerWait(ctx, d.ContainerId, container.WaitConditionRemoved)
 
 		// The container hasn't actually been removed yet, we're sending an explicit remove to wait for it finish
-		_ = dockerClient.ContainerRemove(ctx, d.ContainerId, types.ContainerRemoveOptions{})
+		err = dockerClient.ContainerRemove(ctx, d.ContainerId, types.ContainerRemoveOptions{})
 		d.Wait.Done()
 		if err != nil {
-			logging.Error.Printf("Error stopping container "+d.ContainerId, err)
+			logging.Error.Printf("Error removing container "+d.ContainerId, err)
+		}
+		select {
+		case _ = <-okChan:
+		case chanErr := <-errChan:
+			if chanErr != nil {
+				logging.Error.Printf("Error from error channel, awaiting exit `%v`\n", chanErr)
+			}
 		}
 
 		msg := messages.Status{Running: false}
