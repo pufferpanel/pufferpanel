@@ -38,10 +38,10 @@
   "ErrInviteLinkInvalid": "يبدو أن رابط دعوتك غير صالح",
   "ErrSavingInviteduser": "حدث خطأ أثناء إنشاء حسابك",
   "ErrDuplicateServerName": "يوجد خادم بهذا الاسم مسبقاً",
-  "ErrDuplicateNodeName": "A node with this name already exists",
+  "ErrDuplicateNodeName": "يوجد نود بالفعل بهذا الإسم",
   "ErrDirectoryUploadNotSupported": "لا يمكن تحميل المجلدات",
-  "ErrDockerNotSupported": "Docker is not supported on this node",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrDockerNotSupported": "Docker غير مدعوم في هذا النود",
+  "ErrMissingBinary": "هنالك شيء مفقود (ناقص): ${expected}",
+  "ErrUnsupportedOS": "النظام (${actual}) غير مدعوم. الأنظمة المدعومة: ${expected}",
+  "ErrUnsupportedArch": "معمارية ${actual} غير مدعومة. المعماريات المدعومة: ${expected}"
 }
