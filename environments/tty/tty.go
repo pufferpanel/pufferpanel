@@ -188,10 +188,14 @@ func (t *tty) handleClose(callback func(graceful bool)) {
 	err := t.mainProcess.Wait()
 
 	var success bool
-	if t.mainProcess == nil || t.mainProcess.ProcessState == nil || err != nil {
+	if t.mainProcess.ProcessState == nil || err != nil {
 		success = false
 	} else {
 		success = t.mainProcess.ProcessState.Success()
+	}
+
+	if err != nil {
+		t.Log(logging.Error, "Error waiting on process: %s\n", err)
 	}
 
 	if t.mainProcess != nil && t.mainProcess.ProcessState != nil {
