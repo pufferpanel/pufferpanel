@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"io"
+	"log"
 	"os"
 	"strings"
 	"sync"
@@ -79,6 +80,7 @@ type BaseEnvironment struct {
 	Wait              *sync.WaitGroup    `json:"-"`
 	ExecutionFunction ExecutionFunction  `json:"-"`
 	WaitFunction      func() (err error) `json:"-"`
+	ServerId          string             `json:"-"`
 }
 
 type ExecutionData struct {
@@ -153,11 +155,20 @@ func (e *BaseEnvironment) Delete() (err error) {
 
 func (e *BaseEnvironment) CreateWrapper() io.Writer {
 	if config.ConsoleForward.Value() {
-		return io.MultiWriter(os.Stdout, e.ConsoleBuffer, e.WSManager)
+		return io.MultiWriter(newLogger(e.ServerId).Writer(), e.ConsoleBuffer, e.WSManager)
 	}
 	return io.MultiWriter(e.ConsoleBuffer, e.WSManager)
 }
 
 func (e *BaseEnvironment) GetBase() *BaseEnvironment {
 	return e
+}
+
+func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {
+	msg := fmt.Sprintf("[%s] ", e.ServerId) + format
+	l.Printf(msg, obj...)
+}
+
+func newLogger(prefix string) *log.Logger {
+	return log.New(os.Stdout, "["+prefix+"] ", 0)
 }

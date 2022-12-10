@@ -119,7 +119,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		case _ = <-okChan:
 		case chanErr := <-errChan:
 			if chanErr != nil {
-				logging.Error.Printf("Error from error channel, awaiting exit `%v`\n", chanErr)
+				d.Log(logging.Error, "Error from error channel, awaiting exit `%v`\n", chanErr)
 			}
 		}
 
@@ -327,7 +327,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		exists = true
 	}
 
-	logging.Debug.Printf("Does image %v exist? %v", d.ImageName, exists)
+	d.Log(logging.Debug, "Does image %v exist? %v", d.ImageName, exists)
 
 	if exists && !force {
 		return nil
@@ -335,7 +335,7 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 
 	op := types.ImagePullOptions{}
 
-	logging.Debug.Printf("Downloading image %v", d.ImageName)
+	d.Log(logging.Debug, "Downloading image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloading image for container, please wait\n")
 
 	d.downloadingImage = true
@@ -356,13 +356,13 @@ func (d *docker) pullImage(client *client.Client, ctx context.Context, force boo
 		return err
 	}
 
-	logging.Debug.Printf("Downloaded image %v", d.ImageName)
+	d.Log(logging.Debug, "Downloaded image %v", d.ImageName)
 	d.DisplayToConsole(true, "Downloaded image for container\n")
 	return err
 }
 
 func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd string, args []string, env map[string]string, workDir string) error {
-	logging.Debug.Printf("Creating container")
+	d.Log(logging.Debug, "Creating container")
 	containerRoot := "/pufferpanel"
 	err := d.pullImage(client, ctx, false)
 
@@ -389,7 +389,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		workDir = containerRoot
 	}
 
-	logging.Debug.Printf("Container command: %s\n", cmdSlice)
+	d.Log(logging.Debug, "Container command: %s\n", cmdSlice)
 
 	containerConfig := &container.Config{
 		AttachStderr:    true,

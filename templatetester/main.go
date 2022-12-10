@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/go-git/go-git/v5"
+	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -44,6 +45,12 @@ func main() {
 	_ = os.MkdirAll(config.LogsFolder.Value(), 0755)
 	_ = os.MkdirAll(templateFolder, 0755)
 
+	newPath := os.Getenv("PATH")
+	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
+	if !strings.Contains(newPath, fullPath) {
+		_ = os.Setenv("PATH", newPath+":"+fullPath)
+	}
+
 	logging.Initialize(false)
 
 	//this may require a DB, so we are going to pretend we have one
@@ -82,11 +89,16 @@ func main() {
 			if strings.HasSuffix(file.Name(), ".json") {
 				tmp := &TestTemplate{}
 				tmp.Name = strings.TrimSuffix(file.Name(), ".json")
+
+				if pufferpanel.ContainsString(os.Args, tmp.Name) {
+					continue
+				}
+
 				tmp.Template, err = os.ReadFile(filePath)
 				panicIf(err)
 
 				var dataFile os.FileInfo
-				if dataFile, err = os.Stat(filepath.Join(templateFolder, folder.Name(), tmp.Name+".txt")); err == os.ErrNotExist {
+				if dataFile, err = os.Stat(filepath.Join(templateFolder, folder.Name(), tmp.Name+".txt")); os.IsNotExist(err) {
 					dataFile, _ = os.Stat(filepath.Join(templateFolder, folder.Name(), "data.txt"))
 				}
 				if dataFile != nil {
@@ -109,7 +121,7 @@ func main() {
 		prg := programs.CreateProgram()
 		err = json.NewDecoder(buf).Decode(prg)
 		panicIf(err)
-		prg.Identifier = template.Name
+		prg.Identifier = strings.ReplaceAll(template.Name, "+", "")
 
 		//use data file to fill in extra template data
 		if template.Data != nil {
@@ -143,7 +155,20 @@ func main() {
 func runServer(prg *programs.Program) (err error) {
 	err = prg.Start()
 	panicIf(err)
-	<-time.After(time.Minute * 5)
+
+	c := make(chan error, 1)
+	go func() {
+		c <- prg.RunningEnvironment.WaitForMainProcess()
+	}()
+	t := time.After(time.Minute * 1)
+
+	select {
+	case <-t:
+		break
+	case <-c:
+		break
+	}
+
 	err = prg.Stop()
 	panicIf(err)
 
