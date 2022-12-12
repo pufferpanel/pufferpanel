@@ -73,7 +73,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 		return
 	}
 	s.stdInWriter = pipe
-	logging.Info.Printf("Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
+	s.Log(logging.Info, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 	s.DisplayToConsole(true, "Starting process: %s %s", s.mainProcess.Path, strings.Join(s.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running: true}
@@ -83,10 +83,10 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	if err != nil && err.Error() != "exit status 1" {
 		msg := messages.Status{Running: false}
 		_ = s.WSManager.WriteMessage(msg)
-		logging.Info.Printf("Process failed to start: %s", err)
+		s.Log(logging.Info, "Process failed to start: %s", err)
 		return
 	} else {
-		logging.Info.Printf("Process started (%d)", s.mainProcess.Process.Pid)
+		s.Log(logging.Info, "Process started (%d)", s.mainProcess.Process.Pid)
 	}
 
 	go s.handleClose(steps.Callback)

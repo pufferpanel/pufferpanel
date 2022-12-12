@@ -56,19 +56,20 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		}
 	}
 
-	var success bool
+	ch := make(chan bool, 1)
 	steps := pufferpanel.ExecutionData{
 		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
 		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
 		Arguments: args,
 		Callback: func(exitCode bool) {
-			success = exitCode
+			ch <- exitCode
 		},
 	}
 	err = env.Execute(steps)
 	if err != nil {
 		return err
 	}
+	success := <-ch
 	if !success {
 		return errors.New("depotdownloader exited with non-zero code")
 	}

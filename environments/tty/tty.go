@@ -67,7 +67,7 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	pr.SysProcAttr = &syscall.SysProcAttr{Setctty: true, Setsid: true}
 	t.mainProcess = pr
 	t.DisplayToConsole(true, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
-	logging.Info.Printf("Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
+	t.Log(logging.Info, "Starting process: %s %s", t.mainProcess.Path, strings.Join(t.mainProcess.Args[1:], " "))
 
 	msg := messages.Status{Running: true}
 	_ = t.WSManager.WriteMessage(msg)
@@ -188,10 +188,18 @@ func (t *tty) handleClose(callback func(graceful bool)) {
 	err := t.mainProcess.Wait()
 
 	var success bool
-	if t.mainProcess == nil || t.mainProcess.ProcessState == nil || err != nil {
+	if t.mainProcess.ProcessState == nil || err != nil {
 		success = false
 	} else {
 		success = t.mainProcess.ProcessState.Success()
+	}
+
+	if err != nil {
+		t.Log(logging.Error, "Error waiting on process: %s\n", err)
+	}
+
+	if t.mainProcess != nil && t.mainProcess.ProcessState != nil {
+		t.Log(logging.Debug, "%s\n", t.mainProcess.ProcessState.String())
 	}
 
 	if t.mainProcess != nil && t.mainProcess.Process != nil {

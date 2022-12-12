@@ -29,7 +29,7 @@ type EnvironmentFactory struct {
 
 func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	s := &standard{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard"},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard", ServerId: id},
 	}
 	s.BaseEnvironment.ExecutionFunction = s.standardExecuteAsync
 	s.BaseEnvironment.WaitFunction = s.WaitForMainProcess

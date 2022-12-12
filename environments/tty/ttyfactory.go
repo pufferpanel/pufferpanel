@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 /*
@@ -28,7 +29,7 @@ type EnvironmentFactory struct {
 
 func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	t := &tty{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty"},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty", ServerId: id},
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
