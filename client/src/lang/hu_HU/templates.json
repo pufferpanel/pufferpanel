@@ -108,12 +108,12 @@
       "ProcessorName": "Minecraft Fabric Letöltése"
     },
     "javadl": {
-      "ProcessorName": "Download Java",
-      "version": "Version of Java to install (8, 16, 17)"
+      "ProcessorName": "Java letöltése",
+      "version": "Java verzió telepítése (8, 16, 17)"
     },
     "steamgamedl": {
-      "ProcessorName": "Download Game from Steam",
-      "appId": "App Id"
+      "ProcessorName": "Játék letöltése Steam-ről",
+      "appId": "Alkalmazásazonosító"
     }
   }
 }
