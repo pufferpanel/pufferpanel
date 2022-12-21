@@ -30,11 +30,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/sftp"
 	"github.com/pufferpanel/pufferpanel/v2/web"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -173,6 +175,11 @@ func daemon() error {
 		if err != nil && !os.IsExist(err) {
 			return err
 		}
+	}
+
+	//check if viper directly has a value for binaries, so we can migrate
+	if runtime.GOOS == "linux" && !viper.InConfig(config.BinariesFolder.Key()) {
+		_ = config.BinariesFolder.Set(filepath.Join(filepath.Base(config.ServersFolder.Value()), "binaries"), true)
 	}
 
 	//update path to include our binary folder

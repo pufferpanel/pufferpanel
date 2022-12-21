@@ -3,7 +3,6 @@ package config
 import (
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
-	"path/filepath"
 )
 
 // Global options
@@ -43,7 +42,7 @@ var ClientId = asString("daemon.auth.clientId", "")
 var ClientSecret = asString("daemon.auth.clientSecret", "")
 var CacheFolder = asString("daemon.data.cache", "cache")
 var ServersFolder = asString("daemon.data.servers", "servers")
-var BinariesFolder = asString("daemon.data.binaries", deriveFromServers("binaries"))
+var BinariesFolder = asString("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 
@@ -121,10 +120,6 @@ func as[T ValueType](key string, def T) entry[T] {
 	//viper.SetDefault(key, def)
 	defaults[key] = def
 	return entry[T]{key: key}
-}
-
-func deriveFromServers(path string) string {
-	return filepath.Join(filepath.Base(ServersFolder.Value()), path)
 }
 
 func (se entry[T]) get() interface{} {
