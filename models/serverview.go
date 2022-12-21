@@ -45,9 +45,7 @@ func FromServer(server *Server) *ServerView {
 		Type:       server.Type,
 	}
 
-	if server.Node.ID != 0 {
-		model.Node = FromNode(&server.Node)
-	}
+	model.Node = FromNode(&server.Node)
 
 	return model
 }
