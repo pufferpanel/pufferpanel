@@ -179,7 +179,7 @@ func daemon() error {
 
 	//check if viper directly has a value for binaries, so we can migrate
 	if runtime.GOOS == "linux" && !viper.InConfig(config.BinariesFolder.Key()) {
-		_ = config.BinariesFolder.Set(filepath.Join(filepath.Base(config.ServersFolder.Value()), "binaries"), true)
+		_ = config.BinariesFolder.Set(filepath.Join(filepath.Dir(config.ServersFolder.Value()), "binaries"), true)
 	}
 
 	//update path to include our binary folder
