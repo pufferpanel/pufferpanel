@@ -190,7 +190,7 @@ func (t *Template) refreshGithub() (err error) {
 		templateFiles = memfs.New()
 		templateRepo, err = git.Clone(memory.NewStorage(), templateFiles, &git.CloneOptions{
 			URL:           "https://github.com/PufferPanel/templates",
-			ReferenceName: "refs/heads/v2.5",
+			ReferenceName: "refs/heads/v2.6",
 		})
 
 		if err != nil {

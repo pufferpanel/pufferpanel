@@ -61,7 +61,7 @@ func main() {
 	//get all templates
 	_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
 		URL:           "https://github.com/PufferPanel/templates",
-		ReferenceName: "refs/heads/v2.5",
+		ReferenceName: "refs/heads/v2.6",
 	})
 	panicIf(err)
 
