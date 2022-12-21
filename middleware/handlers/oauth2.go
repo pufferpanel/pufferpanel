@@ -42,7 +42,6 @@ func HasOAuth2Token(c *gin.Context) {
 
 	if c.Request.Method == http.MethodOptions {
 		failure = false
-		c.Next()
 		return
 	}
 
@@ -78,7 +77,6 @@ func HasOAuth2Token(c *gin.Context) {
 
 	c.Set("token", token)
 	failure = false
-	c.Next()
 }
 
 func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.HandlerFunc {
@@ -210,6 +208,5 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 
 		c.Set("server", server)
 		c.Set("user", user)
-		c.Next()
 	}
 }
