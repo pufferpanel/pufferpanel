@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Noodi tällä nimellä on jo olemassa",
   "ErrDirectoryUploadNotSupported": "Kansioden siirtäminen palvelimelle epäonnistui",
   "ErrDockerNotSupported": "Tämä noodi ei tue Dockeria",
-  "ErrMissingBinary": "Puuttuva binääri: ${expected}",
-  "ErrUnsupportedOS": "Käyttöjärjestelmää (${actual}) ei tueta. Tuettu käyttöjärjestelmä: ${expected}",
-  "ErrUnsupportedArch": "Arkkitehtuuria ${actual} ei tueta. Tuetut arkkitehtuurit: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
