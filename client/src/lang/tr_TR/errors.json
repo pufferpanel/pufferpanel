@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Bu ada sahip bir düğüm zaten var",
   "ErrDirectoryUploadNotSupported": "Klasör yüklenemez",
   "ErrDockerNotSupported": "Bu düğümde Docker desteklenmiyor",
-  "ErrMissingBinary": "Missing binary: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
-  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
