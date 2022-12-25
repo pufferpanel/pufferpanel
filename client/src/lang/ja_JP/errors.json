@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "この名前のノードは既に存在しています",
   "ErrDirectoryUploadNotSupported": "フォルダをアップロードできません",
   "ErrDockerNotSupported": "Dockerはこのノードでサポートされていません",
-  "ErrMissingBinary": "バイナリがありません：${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) はサポートされていません。サポートOS：${expected}",
-  "ErrUnsupportedArch": "アーキテクチャ ${actual} はサポートされていません。サポートアーキテクチャ：${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
