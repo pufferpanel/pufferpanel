@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "يوجد نود بالفعل بهذا الإسم",
   "ErrDirectoryUploadNotSupported": "لا يمكن تحميل المجلدات",
   "ErrDockerNotSupported": "Docker غير مدعوم في هذا النود",
-  "ErrMissingBinary": "هنالك شيء مفقود (ناقص): ${expected}",
-  "ErrUnsupportedOS": "النظام (${actual}) غير مدعوم. الأنظمة المدعومة: ${expected}",
-  "ErrUnsupportedArch": "معمارية ${actual} غير مدعومة. المعماريات المدعومة: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
