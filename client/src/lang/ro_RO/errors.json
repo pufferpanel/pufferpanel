@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Un node cu acest nume există deja",
   "ErrDirectoryUploadNotSupported": "Nu se pot încărca fişierele",
   "ErrDockerNotSupported": "Docker nu este suportat pe acest node",
-  "ErrMissingBinary": "Program lipsă: ${expected}",
-  "ErrUnsupportedOS": "Sistemul de operare actual (${actual}) nu poate fi folosit. Sistem de operare suportat: ${expected}",
-  "ErrUnsupportedArch": "Arhitectura ${actual} nu poate fi folosită. Arhitecturi suportate: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
