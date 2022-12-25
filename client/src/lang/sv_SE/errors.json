@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "En nod med detta namn finns redan",
   "ErrDirectoryUploadNotSupported": "Kan inte ladda upp mappar",
   "ErrDockerNotSupported": "Docker stöds inte på denna nod",
-  "ErrMissingBinary": "Saknar binär: ${expected}",
-  "ErrUnsupportedOS": "OS (${actual}) stöds inte. OS som stöds: ${expected}",
-  "ErrUnsupportedArch": "Arkitektur ${actual} stöds inte. Arkitekturer: ${expected}"
+  "ErrMissingBinary": "Missing binary: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
 }
