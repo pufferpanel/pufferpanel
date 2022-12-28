@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Ein Knoten mit diesem Namen existiert bereits",
   "ErrDirectoryUploadNotSupported": "Dateien können nicht hochgeladen werden",
   "ErrDockerNotSupported": "Docker wird auf diesem Knoten nicht unterstützt",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "Fehlende Binärdatei: {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) nicht unterstützt. Unterstützt OS: {expected}",
+  "ErrUnsupportedArch": "Architektur {actual} wird nicht unterstützt. Unterstützte Architekturen: {expected}"
 }
