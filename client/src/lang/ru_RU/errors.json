@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Узел с таким именем уже существует",
   "ErrDirectoryUploadNotSupported": "Не удается загрузить папки",
   "ErrDockerNotSupported": "Docker не поддерживается на этом хосте",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "Отсутствует библиотека: {expected}",
+  "ErrUnsupportedOS": "Ваша ОС ({actual}) не поддерживается. Поддерживаемые ОС: {expected}",
+  "ErrUnsupportedArch": "Архитектура {actual} не поддерживается. Поддерживаемые архитектуры: {expected}"
 }
