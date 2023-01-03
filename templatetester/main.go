@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/go-git/go-git/v5"
-	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
@@ -14,6 +13,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -84,13 +84,21 @@ func main() {
 
 		files, err := os.ReadDir(filepath.Join(templateFolder, folder.Name()))
 		panicIf(err)
+
 		for _, file := range files {
 			filePath := filepath.Join(templateFolder, folder.Name(), file.Name())
 			if strings.HasSuffix(file.Name(), ".json") {
 				tmp := &TestTemplate{}
 				tmp.Name = strings.TrimSuffix(file.Name(), ".json")
 
-				if pufferpanel.ContainsString(os.Args, tmp.Name) {
+				skip := false
+				for _, v := range os.Args[1:] {
+					if match(v, tmp.Name) {
+						skip = true
+						break
+					}
+				}
+				if skip {
 					continue
 				}
 
@@ -179,6 +187,28 @@ func panicIf(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// wildCardToRegexp converts a wildcard pattern to a regular expression pattern.
+func wildCardToRegexp(pattern string) string {
+	var result strings.Builder
+	for i, literal := range strings.Split(pattern, "*") {
+
+		// Replace * with .*
+		if i > 0 {
+			result.WriteString(".*")
+		}
+
+		// Quote any regular expression meta characters in the
+		// literal text.
+		result.WriteString(regexp.QuoteMeta(literal))
+	}
+	return result.String()
+}
+
+func match(pattern string, value string) bool {
+	result, _ := regexp.MatchString(wildCardToRegexp(pattern), value)
+	return result
 }
 
 type TestTemplate struct {
