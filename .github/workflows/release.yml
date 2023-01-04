@@ -135,10 +135,7 @@ jobs:
         echo Going to grab following
         echo ${{ steps.windowsamd64zipdownload.outputs.file }}
         echo ${{ steps.linuxamd64zipdownload.outputs.file }}
-        echo ${{ steps.armhfzipdownload.outputs.file }}
-        echo ${{ steps.armhfzipdownload.outputs.file }}
         echo ${{ steps.arm64zipdownload.outputs.file }}
-        echo ${{ steps.armhfdebdownload.outputs.file }}
         echo ${{ steps.amd64debdownload.outputs.file }}
         echo ${{ steps.arm64debdownload.outputs.file }}
         echo ${{ steps.amd64rpmdownload.outputs.file }}
@@ -176,16 +173,6 @@ jobs:
         asset_path: ${{ steps.windowsamd64zipdownload.outputs.file }}.zip
         asset_name: ${{ steps.windowsamd64zipdownload.outputs.file }}.zip
         asset_content_type: application/zip
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.armhfzipdownload.outputs.file }}.zip
-        asset_name: ${{ steps.armhfzipdownload.outputs.file }}.zip
-        asset_content_type: application/zip
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
@@ -196,16 +183,6 @@ jobs:
         asset_path: ${{ steps.arm64zipdownload.outputs.file }}.zip
         asset_name: ${{ steps.arm64zipdownload.outputs.file }}.zip
         asset_content_type: application/zip
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.armhfdebdownload.outputs.file }}
-        asset_name: ${{ steps.armhfdebdownload.outputs.file }}
-        asset_content_type: application/vnd.debian.binary-package
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
