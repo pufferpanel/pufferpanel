@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package console
+package message
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -26,12 +26,12 @@ type OperationFactory struct {
 }
 
 func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	input := cast.ToString(op.OperationArgs["input"])
-	return &Console{Input: input}, nil
+	message := cast.ToString(op.OperationArgs["message"])
+	return &Console{Text: message}, nil
 }
 
 func (of OperationFactory) Key() string {
-	return "console"
+	return "message"
 }
 
 var Factory OperationFactory

@@ -21,10 +21,15 @@ import (
 )
 
 type Console struct {
-	Text string
+	Input string
 }
 
 func (d Console) Run(env pufferpanel.Environment) error {
-	env.DisplayToConsole(true, "Message: %s \n", d.Text)
-	return nil
+	running, err := env.IsRunning()
+	if !running || err != nil {
+		env.DisplayToConsole(true, "Must be running to send to console.")
+		return nil
+	}
+
+	return env.ExecuteInMainProcess(d.Input)
 }

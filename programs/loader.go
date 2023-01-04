@@ -19,7 +19,6 @@ package programs
 import (
 	"encoding/json"
 	"errors"
-	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/environments"
@@ -28,7 +27,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 var (
@@ -58,17 +56,6 @@ func LoadFromFolder() {
 		program, err = Load(id)
 		if err != nil {
 			logging.Error.Printf("Error loading server details from json (%s): %s", element.Name(), err)
-			continue
-		}
-		program.Scheduler = NewScheduler(program)
-		err = program.Scheduler.LoadMap(program.Tasks)
-		if err != nil {
-			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
-			continue
-		}
-		err = program.Scheduler.Start()
-		if err != nil {
-			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
 			continue
 		}
 		program.Scheduler = NewScheduler(program)
@@ -149,61 +136,6 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	environmentType := typeMap.Type
 	data.RunningEnvironment, err = environments.Create(environmentType, config.ServersFolder.Value(), id, data.Environment)
 	return data, nil
-}
-
-func startScheduler(program *Program) error {
-	s := gocron.NewScheduler(time.UTC)
-	for k, t := range program.Tasks {
-		if t.CronSchedule != "" {
-			_, err := s.Cron(t.CronSchedule).Do(executeTask, program, k)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	s.SetMaxConcurrentJobs(5, gocron.RescheduleMode)
-	s.StartAsync()
-	program.Scheduler.scheduler = s
-	return nil
-}
-
-func executeTask(p *Program, taskId string) (err error) {
-	task, ok := p.Tasks[taskId]
-	if !ok {
-		logging.Error.Printf("Execution of task %s on server %s requested, but task not found", taskId, p.Id())
-		return
-	}
-
-	ops := task.Operations
-	if len(ops) > 0 {
-		p.RunningEnvironment.DisplayToConsole(true, "Running task %s\n", task.Name)
-		var process operations.OperationProcess
-		process, err = operations.GenerateProcess(ops, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
-		if err != nil {
-			logging.Error.Printf("Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-
-		err = process.Run(p.RunningEnvironment)
-		if err != nil {
-			logging.Error.Printf("Error setting up tasks: %s", err)
-			p.RunningEnvironment.DisplayToConsole(true, "Failed to setup tasks\n")
-			p.RunningEnvironment.DisplayToConsole(true, "%s\n", err.Error())
-			return
-		}
-		p.RunningEnvironment.DisplayToConsole(true, "Task %s finished\n", task.Name)
-	}
-	return
-}
-
-func ExecuteTask(programId string, taskId string) error {
-	program := GetFromCache(programId)
-	if program == nil {
-		return errors.New("no server with given id")
-	}
-	return executeTask(program, taskId)
 }
 
 func Create(program *Program) error {

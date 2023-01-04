@@ -1,5 +1,5 @@
 /*
- Copyright 2019 Padduck, LLC
+ Copyright 2016 Padduck, LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,24 +14,17 @@
  limitations under the License.
 */
 
-package console
+package message
 
 import (
 	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/spf13/cast"
 )
 
-type OperationFactory struct {
-	pufferpanel.OperationFactory
+type Console struct {
+	Text string
 }
 
-func (of OperationFactory) Create(op pufferpanel.CreateOperation) (pufferpanel.Operation, error) {
-	input := cast.ToString(op.OperationArgs["input"])
-	return &Console{Input: input}, nil
+func (d Console) Run(env pufferpanel.Environment) error {
+	env.DisplayToConsole(true, "Message: %s \n", d.Text)
+	return nil
 }
-
-func (of OperationFactory) Key() string {
-	return "console"
-}
-
-var Factory OperationFactory

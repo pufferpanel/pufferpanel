@@ -27,6 +27,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/operations/fabricdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/forgedl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/javadl"
+	"github.com/pufferpanel/pufferpanel/v2/operations/message"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v2/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v2/operations/move"
@@ -175,8 +176,8 @@ func loadCoreModules() {
 	sleepFactory := sleep.Factory
 	commandMapping[sleepFactory.Key()] = sleepFactory
 
-	consoleFactory := console.Factory
-	commandMapping[consoleFactory.Key()] = consoleFactory
+	messageFactory := message.Factory
+	commandMapping[messageFactory.Key()] = messageFactory
 
 	archiveFactory := archive.Factory
 	commandMapping[archiveFactory.Key()] = archiveFactory
@@ -189,6 +190,9 @@ func loadCoreModules() {
 
 	javadlFactory := javadl.Factory
 	commandMapping[javadlFactory.Key()] = javadlFactory
+
+	consoleFactory := console.Factory
+	commandMapping[consoleFactory.Key()] = consoleFactory
 
 	//programFactory := program.Factory
 	//commandMapping[programFactory.Key()] = programFactory
