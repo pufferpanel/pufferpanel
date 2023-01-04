@@ -17,8 +17,6 @@
 package sftp
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"github.com/pkg/sftp"
@@ -26,6 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/oauth2"
+	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 	"net"
 	"os"
@@ -70,19 +69,22 @@ func runServer() error {
 
 	if e != nil && os.IsNotExist(e) {
 		logging.Info.Printf("Generating new key")
-		var key *rsa.PrivateKey
-		key, e = rsa.GenerateKey(rand.Reader, 2048)
+		var key ed25519.PrivateKey
+		_, key, e = ed25519.GenerateKey(nil)
 		if e != nil {
 			return e
 		}
 
-		data := x509.MarshalPKCS1PrivateKey(key)
-		block := pem.Block{
-			Type:    "RSA PRIVATE KEY",
-			Headers: nil,
-			Bytes:   data,
+		data, e := x509.MarshalPKCS8PrivateKey(key)
+		block := &pem.Block{
+			Type:  "PRIVATE KEY",
+			Bytes: data,
 		}
-		e = os.WriteFile(serverKeyFile, pem.EncodeToMemory(&block), 0700)
+		if e != nil {
+			return e
+		}
+
+		e = os.WriteFile(serverKeyFile, pem.EncodeToMemory(block), 0700)
 		if e != nil {
 			return e
 		}
