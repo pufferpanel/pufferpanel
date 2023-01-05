@@ -182,6 +182,11 @@ func daemon() error {
 		_ = config.BinariesFolder.Set(filepath.Join(filepath.Dir(config.ServersFolder.Value()), "binaries"), true)
 	}
 
+	err = os.MkdirAll(config.BinariesFolder.Value(), 0755)
+	if err != nil {
+		logging.Error.Printf("Error creating binaries folder: %s", err.Error())
+	}
+
 	//update path to include our binary folder
 	newPath := os.Getenv("PATH")
 	fullPath, _ := filepath.Abs(config.BinariesFolder.Value())
