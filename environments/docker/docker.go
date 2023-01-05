@@ -30,6 +30,7 @@ import (
 	"github.com/docker/go-connections/nat"
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v2/config"
 	"github.com/pufferpanel/pufferpanel/v2/logging"
 	"github.com/pufferpanel/pufferpanel/v2/messages"
 	"github.com/spf13/cast"
@@ -389,6 +390,19 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		workDir = containerRoot
 	}
 
+	binaryFolder := config.BinariesFolder.Value()
+	if !filepath.IsAbs(binaryFolder) {
+		var ef error
+		binaryFolder, ef = filepath.Abs(binaryFolder)
+		if ef != nil {
+			logging.Error.Printf("Failed to resolve binary folder to absolute path: %s", ef)
+			binaryFolder = ""
+		}
+	}
+	if binaryFolder != "" {
+		newEnv = append(newEnv, fmt.Sprintf("PATH=%s:%s", "$PATH", binaryFolder))
+	}
+
 	d.Log(logging.Debug, "Container command: %s\n", cmdSlice)
 
 	containerConfig := &container.Config{
@@ -419,11 +433,16 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		dir = filepath.Join(pwd, dir)
 	}
 
+	bindDirs := []string{dir + ":" + containerRoot}
+	if binaryFolder != "" {
+		bindDirs = append(bindDirs, binaryFolder+":"+binaryFolder)
+	}
+
 	hostConfig := &container.HostConfig{
 		AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
-		Binds:        []string{dir + ":" + containerRoot},
+		Binds:        bindDirs,
 		PortBindings: nat.PortMap{},
 	}
 
