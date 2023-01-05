@@ -371,14 +371,6 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		return err
 	}
 
-	cmdSlice := strslice.StrSlice{}
-
-	cmdSlice = append(cmdSlice, cmd)
-
-	for _, v := range args {
-		cmdSlice = append(cmdSlice, v)
-	}
-
 	//newEnv := os.Environ()
 	newEnv := []string{"HOME=" + containerRoot}
 
@@ -399,8 +391,11 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 			binaryFolder = ""
 		}
 	}
-	if binaryFolder != "" {
-		newEnv = append(newEnv, fmt.Sprintf("PATH=%s:%s", "$PATH", binaryFolder))
+
+	cmdSlice := strslice.StrSlice{}
+	cmdSlice = append(cmdSlice, cmd)
+	for _, v := range args {
+		cmdSlice = append(cmdSlice, v)
 	}
 
 	d.Log(logging.Debug, "Container command: %s\n", cmdSlice)
@@ -416,6 +411,9 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 		WorkingDir:      workDir,
 		Env:             newEnv,
 		Entrypoint:      cmdSlice,
+		Labels: map[string]string{
+			"pufferpanel.server": d.ContainerId,
+		},
 	}
 
 	if runtime.GOOS == "linux" {
