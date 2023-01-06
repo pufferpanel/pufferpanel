@@ -61,7 +61,10 @@ func RefreshToken() bool {
 	data.Set("client_id", clientId)
 	data.Set("client_secret", clientSecret)
 
-	request := createRequest(data)
+	authUrl := config.AuthUrl.Value()
+	request, _ := http.NewRequest("POST", authUrl, bytes.NewBufferString(data.Encode()))
+	request.Header.Add("Content-Type", binding.MIMEPOSTForm)
+
 	response, err := pufferpanel.Http().Do(request)
 	defer pufferpanel.CloseResponse(response)
 	if err != nil {
@@ -73,6 +76,7 @@ func RefreshToken() bool {
 	err = json.NewDecoder(response.Body).Decode(&responseData)
 
 	if responseData.Error != "" {
+		logging.Error.Printf("error talking to auth server: %s", responseData.Error)
 		return false
 	}
 

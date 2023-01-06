@@ -15,6 +15,7 @@ package oauth2
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v2"
@@ -225,7 +226,7 @@ func handleTokenRequest(c *gin.Context) {
 			})
 		}
 	default:
-		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "unsupported_grant_type"})
+		c.JSON(http.StatusBadRequest, &oauth2TokenResponse{Error: "unsupported_grant_type", ErrorDescription: fmt.Sprintf("[%s] is not a valid grant type", request.GrantType)})
 	}
 }
 
@@ -241,7 +242,7 @@ type oauth2TokenResponse struct {
 	AccessToken      string `json:"access_token,omitempty"`
 	TokenType        string `json:"token_type,omitempty"`
 	ExpiresIn        int64  `json:"expires_in,omitempty"`
-	Scope            string `json:"scope"`
+	Scope            string `json:"scope,omitempty"`
 	Error            string `json:"error,omitempty"`
 	ErrorDescription string `json:"error_description,omitempty"`
 }
