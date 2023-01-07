@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Já existe uma nó com esse nome",
   "ErrDirectoryUploadNotSupported": "Não é possível enviar pastas",
   "ErrDockerNotSupported": "O Docker não é compatível com este nó",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "Binário ausente: {expected}",
+  "ErrUnsupportedOS": "Sistema Operacional ({actual}) não suportado. Sistemas Operacionais Suportados: {expected}",
+  "ErrUnsupportedArch": "Arquitetura {actual} não suportada. Arquiteturas Suportadas: {expected}"
 }
