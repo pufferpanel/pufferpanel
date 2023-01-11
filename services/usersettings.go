@@ -16,6 +16,7 @@ package services
 import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserSettings struct {
@@ -55,9 +56,9 @@ func (uss *UserSettings) Update(model *models.UserSetting) error {
 	}
 
 	if err != nil {
-		err = uss.DB.Create(model).Error
+		err = uss.DB.Omit(clause.Associations).Create(model).Error
 	} else {
-		err = uss.DB.Save(model).Error
+		err = uss.DB.Omit(clause.Associations).Save(model).Error
 	}
 
 	return err

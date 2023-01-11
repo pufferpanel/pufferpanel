@@ -17,6 +17,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/models"
 	uuid2 "github.com/satori/go.uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"strings"
 )
 
@@ -64,7 +65,7 @@ func (ss *Server) Search(searchCriteria ServerSearch) (records []*models.Server,
 		return nil, 0, err
 	}
 
-	err = query.Preload("Node").Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(&records).Error
+	err = query.Preload(clause.Associations).Offset(int((searchCriteria.Page - 1) * searchCriteria.PageSize)).Limit(int(searchCriteria.PageSize)).Order("servers.name").Find(&records).Error
 
 	return
 }
@@ -77,7 +78,7 @@ func (ss *Server) Get(id string) (*models.Server, error) {
 		Identifier: id,
 	}
 
-	err := ss.DB.Where(model).Preload("Node").First(model).Error
+	err := ss.DB.Where(model).Preload(clause.Associations).First(model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +87,7 @@ func (ss *Server) Get(id string) (*models.Server, error) {
 }
 
 func (ss *Server) Update(model *models.Server) error {
-	res := ss.DB.Save(model)
+	res := ss.DB.Omit(clause.Associations).Save(model)
 	return res.Error
 }
 
@@ -123,7 +124,7 @@ func (ss *Server) Create(model *models.Server) (err error) {
 		model.Identifier = generatedId
 	}
 
-	res := ss.DB.Create(model)
+	res := ss.DB.Omit(clause.Associations).Create(model)
 	if res.Error != nil {
 		err = res.Error
 		return
