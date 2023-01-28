@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 Client Credentials",
-  "ClientId": "Client ID",
-  "ClientSecret": "Client Secret",
-  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
-  "Create": "Create new OAuth2 Client",
-  "UnnamedClient": "Unnamed OAuth2 Client",
-  "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
-  "Clients": "OAuth2 Clients",
-  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
-  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
+  "Credentials": "Údaje OAuth2 klienta",
+  "ClientId": "ID klienta",
+  "ClientSecret": "Tajomstvo klienta",
+  "NewClientWarning": "Zapíšte si tajomstvo klienta, po zatvorení tohto dialógového okna sa toto dialógové okno už nikdy nezobrazí. Ak ho stratíte alebo zabudnete, tento klient bude úplne nepoužiteľný.",
+  "Create": "Vytvoriť nový OAuth2 klient",
+  "UnnamedClient": "Nepomenovaný OAuth2 klient",
+  "Docs": "Dokumentáciu API nájdete tu",
+  "DeleteWarning": "Odstránenie klienta OAuth2 nie je možné vrátiť späť, ani nie je možné vytvoriť nového klienta s rovnakými povereniami. Všetky integrácie, ktoré stále používajú tohto klienta, sa po jeho odstránení prerušia.",
+  "ConfirmDelete": "Som si vedomý účinkov, ktoré bude mať odstránenie klienta OAuth2, a chcem pokračovať.",
+  "Delete": "Vymazať {clientName}?",
+  "Clients": "OAuth2 klienti",
+  "AccountDescription": "Tu uvedení klienti OAuth2 zdieľajú všetky oprávnenia vašich účtov",
+  "ServerDescription": "Tu uvedení klienti OAuth2 zdieľajú len oprávnenia vašich účtov na tomto serveri"
 }
