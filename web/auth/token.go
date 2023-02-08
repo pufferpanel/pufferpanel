@@ -7,8 +7,8 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/services"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/services"
 )
 
 func GetToken(c *gin.Context) {

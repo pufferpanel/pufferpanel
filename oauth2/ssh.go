@@ -19,8 +19,8 @@ package oauth2
 import (
 	"encoding/json"
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"golang.org/x/crypto/ssh"
 	"io"
 	"net/url"

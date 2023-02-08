@@ -4,7 +4,7 @@
 package main
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/spf13/cobra"
 	"golang.org/x/sys/windows/svc"
 )

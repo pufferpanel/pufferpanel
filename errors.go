@@ -15,7 +15,7 @@ package pufferpanel
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"gopkg.in/go-playground/validator.v9"
 	"runtime/debug"
 	"strings"

@@ -17,7 +17,7 @@
 package pufferpanel
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/messages"
+	"github.com/pufferpanel/pufferpanel/v3/messages"
 )
 
 func Write(c *Socket, msg messages.Message) error {

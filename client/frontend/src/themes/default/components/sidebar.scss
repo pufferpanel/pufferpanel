@@ -1,0 +1,123 @@
+.sidebar {
+  a {
+    color: var(--text);
+  }
+
+  .sidebar-content-top {
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: auto;
+  }
+
+  .sidebar-content-bottom {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .list {
+    @include baselist;
+  }
+
+  @include raised;
+  position: fixed;
+  top: 64px;
+  width: 256px;
+  transition: width 0.1s ease-in-out;
+  height: calc(var(--inner-height) - env(safe-area-inset-bottom) - 64px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  z-index: 5;
+}
+
+.sidebar.left {
+  left: 0;
+}
+
+.sidebar.right {
+  right: 0;
+}
+
+@include breakpoint(lg) {
+  .sidebar.mini {
+    width: 46px;
+    .list-item-content {
+      transition: opacity 0.1s ease-in-out;
+      opacity: 0;
+    }
+  }
+
+  .mini-sidebar-hover-on {
+    .sidebar.mini:hover {
+      width: 256px;
+      .list-item-content {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.sidebar.closed {
+  width: 0;
+}
+
+
+// Main content area
+.main {
+  @include row;
+  transition: padding 0.1s ease-in-out;
+  padding-top: 64px;
+  padding-bottom: 1em;
+}
+
+.sidebar ~ .main {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+@include breakpoint(lg) {
+  .sidebar.open.left ~ .main {
+    padding-left: calc(256px + 1em);
+  }
+
+  .sidebar.open.right ~ .main {
+    padding-right: calc(256px + 1em);
+  }
+
+  .sidebar.open.left.mini ~ .main {
+    padding-left: calc(46px + 1em);
+  }
+
+  .sidebar.open.right.mini ~ .main {
+    padding-right: calc(46px + 1em);
+  }
+}
+
+@include breakpoint-down(md) {
+  .main::before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 4;
+    pointer-events: none;
+    background-color: var(--text-disabled);
+    content: '';
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .sidebar.open ~ .main::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .collapse-toggle {
+    display: none !important;
+  }
+}
+
+html[dir="rtl"] .sidebar-content-bottom .list .list-item:first-child .icon::before {
+  transform: rotate(180deg);
+}

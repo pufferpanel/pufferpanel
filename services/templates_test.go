@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"testing"

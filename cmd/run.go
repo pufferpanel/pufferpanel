@@ -20,15 +20,14 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/config"
-	"github.com/pufferpanel/pufferpanel/v2/database"
-	"github.com/pufferpanel/pufferpanel/v2/environments"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/programs"
-	"github.com/pufferpanel/pufferpanel/v2/services"
-	"github.com/pufferpanel/pufferpanel/v2/sftp"
-	"github.com/pufferpanel/pufferpanel/v2/web"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/database"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/programs"
+	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/pufferpanel/pufferpanel/v3/sftp"
+	"github.com/pufferpanel/pufferpanel/v3/web"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"net"
@@ -164,7 +163,6 @@ func panel() {
 func daemon() error {
 	sftp.Run()
 
-	environments.LoadModules()
 	programs.Initialize()
 
 	var err error

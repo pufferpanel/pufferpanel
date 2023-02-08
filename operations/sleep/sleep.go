@@ -17,7 +17,7 @@
 package sleep
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"time"
 )
 

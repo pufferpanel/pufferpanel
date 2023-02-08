@@ -2,7 +2,6 @@ package spongedl
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
 	"os"
 	"time"
 )

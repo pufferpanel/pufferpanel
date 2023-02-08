@@ -6,9 +6,9 @@
   "MasterUrlHint": "La URL base en la cual se puede acceder al panel en formato http://localhost:8080",
   "CompanyName": "Nombre de la Empresa",
   "DefaultTheme": "Tema por defecto",
-  "RegistrationEnabled": "Permitir que los usuarios se puedan registrar",
-  "RegistrationEnabledHint1": "Los usuarios autorregistrados no pueden hacer nada hasta que se den los permisos",
-  "RegistrationEnabledHint2": "Desactivar esto sólo previene el registro directo, la invitación a un servidor y la página de usuarios no se ven afectados",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
   "EmailProvider": "Proveedor de Correo Electronico",
   "emailProviders": {
     "none": "Ninguno",

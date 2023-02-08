@@ -40,8 +40,8 @@
   "ErrDuplicateServerName": "服务器名称已存在",
   "ErrDuplicateNodeName": "该文件夹名称已经存在",
   "ErrDirectoryUploadNotSupported": "无法上传文件夹",
-  "ErrDockerNotSupported": "此节点不支持 Docker",
-  "ErrMissingBinary": "缺少二进制: ${expected}",
-  "ErrUnsupportedOS": "不支持操作系统 (${actual})，支持操作系统: ${expected}",
-  "ErrUnsupportedArch": "架构 ${actual} 不支持,支持的架构： ${expected}"
+  "ErrDockerNotSupported": "Docker is not supported on this node",
+  "ErrMissingBinary": "Missing binary: ${expected}",
+  "ErrUnsupportedOS": "OS (${actual}) not supported. Supported OS: ${expected}",
+  "ErrUnsupportedArch": "Architecture ${actual} not supported. Supported Architectures: ${expected}"
 }

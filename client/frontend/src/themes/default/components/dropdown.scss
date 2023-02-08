@@ -1,0 +1,123 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 12px 0;
+  left: 0;
+}
+
+.dropdown label {
+  position: absolute;
+  left: 0.75rem;
+  top: -0.625rem;
+  background-color: var(--background);
+  color: var(--text);
+  padding: 0 .25rem;
+  transform-origin: top left;
+  transform: scale(.9);
+  transition: all 0.1s ease-in-out;
+}
+
+.dropdown label.dropdown-open {
+  color: var(--primary);
+}
+
+.dropdown label.dropdown-placeholder {
+  top: 1.05rem;
+  transform: scale(1);
+  color: var(--text-disabled);
+}
+
+.dropdown-wrapper {
+  .hint {
+    display: block;
+    margin-top: -6px;
+    margin-left: 1em;
+    margin-bottom: 12px;
+    p {
+      margin: 0;
+      color: var(--text-disabled);
+    }
+  }
+
+  .error {
+    color: var(--error);
+    border-color: var(--error);
+  }
+
+  span.error {
+    display: block;
+    margin-top: -6px;
+    margin-left: 1em;
+    margin-bottom: 12px;
+  }
+}
+
+html[dir="rtl"] {
+  .dropdown {
+    right: 0;
+    left: unset;
+  }
+
+  .dropdown label {
+    right: 0.75rem;
+    left: unset;
+    transform-origin: top right;
+  }
+
+  .dropdown-wrapper {
+    .hint {
+      margin-right: 1em;
+      margin-left: unset;
+    }
+
+    span.error {
+      margin-right: 1em;
+      margin-left: unset;
+    }
+  }
+
+  .multiselect-multiple-label,
+  .multiselect-single-label {
+    right: 0;
+    left: unset;
+  }
+
+  .multiselect-tag {
+    padding: 0.125rem 0.5rem 0.125rem 0;
+    margin-left: 0.15rem;
+    margin-right: unset;
+    &.is-disabled {
+      padding-left: 0.5rem;
+      padding-right: unset;
+    }
+  }
+}
+
+.dropdown.error {
+  .multiselect {
+    border-color: var(--error);
+  
+    .multiselect-multiple-label,
+    .multiselect-single-label {
+      color: var(--error);
+    }
+  }
+
+  .multiselect.is-active {
+    border-color: var(--primary);
+
+    .multiselect-multiple-label,
+    .multiselect-single-label {
+      color: var(--text);
+    }
+  }
+
+  label.dropdown-closed {
+    color: var(--error);
+  }
+
+  label.dropdown-open {
+    color: var(--primary);
+  }
+}

@@ -1,0 +1,203 @@
+@use "sass:map";
+@use "sass:list";
+
+
+// Breakpoints
+$breakpoints: (
+  xs: (0px, 767px),
+  md: (768px, 1199px),
+  lg: (1200px, 9999999999px)
+);
+
+@mixin breakpoint($b) {
+  $s: map.get($breakpoints, $b);
+  @media(min-width: list.nth($s, 1)) {
+    @content
+  }
+}
+
+@mixin breakpoint-down($b) {
+  $s: map.get($breakpoints, $b);
+  @media(max-width: list.nth($s, 2)) {
+    @content
+  }
+}
+
+@mixin breakpoint-only($b) {
+  $s: map.get($breakpoints, $b);
+  @media((min-width: list.nth($s, 1)) and max-width: list.nth($s, 2)) {
+    @content
+  }
+}
+
+
+// Grid
+@mixin row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 1em;
+  gap: 1em;
+  max-width: 72em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin cols($cols, $breakpoint: null, $offset: null) {
+  $start: if($offset == null, unset, $offset + 1);
+  @if $breakpoint == null {
+    grid-column-end: span $cols;
+    grid-column-start: $start;
+  } @else {
+    @include breakpoint($breakpoint) {
+      grid-column-end: span $cols;
+      grid-column-start: $start;
+    }
+  }
+}
+
+
+// Lists
+@mixin baselist {
+  .list-header {
+    margin: 0;
+    padding: 0.75em 0.5em;
+    display: flex;
+    align-items: center;
+    transition: background 0.1s ease-in-out;
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-bottom: 0;
+    }
+  }
+
+  .list-item {
+    margin: 0;
+    padding: 0.75em 0.5em;
+    display: flex;
+    align-items: center;
+    transition: background 0.1s ease-in-out;
+
+    a {
+      color: var(--text);
+    }
+
+    .subline {
+      font-size: 0.85em;
+      color: var(--text-disabled);
+    }
+  }
+
+  .active .list-item, .active.list-item, .list-item.clickable:hover, a .list-item:hover {
+    background-color: var(--primary-hover);
+  }
+
+  .list-item-icon {
+    margin-left: 0.05em;
+    margin-right: 0.5em;
+    .icon {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+html[dir="rtl"] .list-item .list-item-icon {
+  margin-right: 0.1em;
+  margin-left: 0.5em;
+}
+
+@mixin gridlist {
+  @include row;
+
+  .list-header {
+    @include cols(12);
+    margin-bottom: 0;
+  }
+
+  .list-item {
+    @include cols(12);
+    @include cols(4, md);
+
+    a {
+      color: var(--text);
+    }
+
+    .subline {
+      font-size: 0.85em;
+      color: var(--text-disabled);
+    }
+  }
+
+  .active .list-item, .active.list-item, .list-item.clickable:hover, a .list-item:hover {
+    background-color: var(--primary-hover);
+  }
+
+  .list-item-icon {
+    margin-right: 0.5em;
+    .icon {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+
+// Card
+@mixin card {
+  @include raised;
+  margin-top: 24px;
+  padding: 1em;
+  border-radius: var(--border-radius);
+  background-color: var(--background);
+  transition: background 0.1s ease-in-out;
+
+  h1:first-child {
+    margin-top: 0;
+  }
+
+  .avatar ~ div:not(:first-child) {
+    display: inline-block;
+    margin-left: 12px;
+    margin-right: 12px;
+    position: relative;
+    top: -6px;
+    width: calc(100% - 40px - 24px);
+  }
+}
+
+
+// Utility
+@mixin raised {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.raised {
+  @include raised;
+}
+
+@mixin clickable {
+  cursor: pointer;
+}
+
+.clickable {
+  @include clickable;
+}
+
+@mixin link {
+  &:hover {
+    background-color: var(--primary-hover);
+  }
+}
+
+.link {
+  @include link;
+}
+
+@mixin icon {
+  // copied from mdi because it doesn't expose a mixin and extending causes trouble occasionally
+  display: inline-block;
+  font: normal normal normal #{$mdi-font-size-base}/1 '#{$mdi-font-name}';
+  font-size: inherit;
+  text-rendering: auto;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

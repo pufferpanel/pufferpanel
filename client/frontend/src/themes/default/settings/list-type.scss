@@ -1,0 +1,130 @@
+.list-type-grid {
+  .main .list {
+    @include breakpoint(md) {
+      @include gridlist;
+    }
+
+    @include breakpoint-only(xs) {
+      @include baselist;
+    }
+  }
+
+  @each $t in ('server', 'node', 'user', 'template') {
+    .#{$t}list {
+      @include card;
+      @include cols(12);
+      max-width: calc(100% - 2em);
+      .list {
+        .list-item a:focus-visible {
+          outline: none;
+          .#{$t}, .createLink {
+            outline: 3px solid var(--primary);
+            outline-offset: -3px;
+          }
+        }
+        @include breakpoint(md) {
+          @include gridlist;
+          .#{$t} {
+            @include card;
+            margin-top: 0;
+          }
+          .#{$t}:not(.disabled) {
+            @include link;
+          }
+          .#{$t}.disabled {
+            background-color: var(--backdrop);
+          }
+        }
+
+        @include breakpoint-only(xs) {
+          @include baselist;
+          .list-item {
+            padding: 0;
+            a {
+              width: 100%;
+            }
+          }
+          .#{$t} {
+            @include link;
+            padding: 1em;
+          }
+          .createLink {
+            margin-top: 1em;
+          }
+        }
+      }
+
+      .list-item {
+        min-width: 0;
+      }
+
+      .#{$t} {
+        .title, .subline {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .title {
+          display: inline-block;
+        }
+
+        .subline {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.list-type-list {
+  .main .list {
+    @include baselist;
+  }
+
+  @each $t in ('server', 'node', 'user', 'template') {
+    .#{$t}list {
+      @include card;
+      @include cols(12);
+      max-width: calc(100% - 2em);
+      .list {
+        @include baselist;
+        .list-item {
+          padding: 0;
+          a {
+            width: 100%;
+          }
+        }
+        .#{$t} {
+          @include link;
+          padding: 1em;
+        }
+        .createLink {
+          margin-top: 1em;
+        }
+      }
+
+      .list-item {
+        min-width: 0;
+      }
+
+      .#{$t} {
+        .title, .subline {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .title {
+          display: inline-block;
+        }
+
+        .subline {
+          display: block;
+        }
+      }
+    }
+  }
+}

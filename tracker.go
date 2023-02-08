@@ -18,8 +18,8 @@ package pufferpanel
 
 import (
 	"encoding/json"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
-	"github.com/pufferpanel/pufferpanel/v2/messages"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"sync"
 )
 
@@ -30,7 +30,7 @@ type Tracker struct {
 
 type connection struct {
 	socket *Socket
-	lock sync.Mutex
+	lock   sync.Mutex
 }
 
 func CreateTracker() *Tracker {

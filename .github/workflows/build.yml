@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - master
+    - v3
     tags:
     - v2.*
     - v3.*
@@ -52,19 +53,22 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
-    - name: Restore NPM cache
-      uses: actions/cache@v3
+    - name: Restore yarn cache
+      uses: actions/cache@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/package-lock.json') }}
+        path: ~/.yarn
+        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
 
-    - name: Restore NPM cache
-      uses: actions/cache@v3
+    - name: Restore yarn cache
+      uses: actions/cache@v2
       with:
-        path: client/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
+        path: |
+          client/node_modules
+          client/api/node_modules
+          client/frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-node-
         
@@ -86,10 +90,10 @@ jobs:
         rm -rf swag*.tar.gz
         go get ./...
 
-    - name: npm install, build
+    - name: yarn install, build
       run: |
-        npm install
-        npm run build
+        yarn install
+        yarn build
       env:
         CI: true
       working-directory: client
@@ -167,7 +171,7 @@ jobs:
 
     - name: Build Windows
       run: |
-        go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel.exe -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
       env:
         GOOS: windows
         GOARCH: amd64
@@ -269,7 +273,7 @@ jobs:
 
     - name: Build Linux
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
       env:
         GOOS: linux
         GOARCH: amd64
@@ -308,9 +312,6 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
-          suggested-packages: |
-            java-runtime-headless
-            lib32gcc1
 
     - name: Build Package RPM AMD64
       id: rpmamd64
@@ -343,11 +344,6 @@ jobs:
           config: |
             /etc/pufferpanel/email/*
             /etc/pufferpanel/config.json:noreplace
-          suggested-packages: |
-            jre-1.8.0-headless
-            jre-11-headless
-            glibc.i686
-            libstdc++.i686
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
@@ -412,7 +408,7 @@ jobs:
 
     - name: Build ARM64
       run: |
-        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v2.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v2.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o build-artifacts/pufferpanel -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=${{ github.sha }}' -X 'github.com/pufferpanel/pufferpanel/v3.Version=${{ env.VERSION }}'" -v github.com/pufferpanel/pufferpanel/v3/cmd
       env:
         GOOS: linux
         GOARCH: arm64
@@ -451,9 +447,6 @@ jobs:
           after-purge: systemd/scripts/purge.sh
           user: pufferpanel
           group: pufferpanel
-          suggested-packages: |
-            java-runtime-headless
-            lib32gcc1
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
@@ -469,7 +462,7 @@ jobs:
 
   build-docker-image-base:
     runs-on: ubuntu-20.04
-    name: "Build Docker images"
+    name: "Build Docker image"
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: latest
@@ -524,129 +517,4 @@ jobs:
         build-args: |
           sha: ${{ github.sha }}
           version: ${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
-
-  build-docker-image-master:
-    runs-on: ubuntu-20.04
-    name: "Build Docker massive images"
-    needs: [ "build-docker-image-base" ]
-    env:
-      REPO: pufferpanel/pufferpanel
-      VERSION: base
-
-    timeout-minutes: 5
-
-    strategy:
-      matrix:
-        platform: [ "linux/amd64" ]
-
-    steps:
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "TAG=$REPO:devel" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "VERSION=devel" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "TAG=$REPO:${GITHUB_REF/refs\/tags\/v/},$REPO:latest" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build container
-      uses: docker/build-push-action@v3
-      with:
-        context: dockerfiles/massive
-        push: true
-        tags: ${{ env.TAG }}
-        build-args: |
-          sha: ${{ github.sha }}
-          version: ${{ env.VERSION }}
-          DOCKER_TAG: base-${{ env.VERSION }}
-        platforms: ${{ matrix.platform }}
-
-  build-docker-image-children:
-    runs-on: ubuntu-20.04
-    name: "Build Docker child images"
-    needs: ["build-docker-image-base"]
-    env:
-      REPO: pufferpanel/pufferpanel
-      VERSION: devel
-
-    timeout-minutes: 5
-
-    strategy:
-      matrix:
-        variant: ["java", "java8", "java16", "java17", "nodejs", "srcds"]
-        platform: ["linux/amd64"]
-
-    steps:
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "TAG=$REPO:${{ matrix.variant }}-devel" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-      run:
-        echo "VERSION=devel" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "TAG=$REPO:${{ matrix.variant }}-${GITHUB_REF/refs\/tags\/v/},$REPO:${{ matrix.variant }}" >> $GITHUB_ENV
-
-    - name: Get the version
-      if: startsWith(github.ref, 'refs/tags/v')
-      run:
-        echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v3
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build container
-      uses: docker/build-push-action@v3
-      with:
-        context: dockerfiles/${{ matrix.variant }}
-        push: true
-        tags: ${{ env.TAG }}
-        build-args: |
-          sha: ${{ github.sha }}
-          version: ${{ env.VERSION }}
-          DOCKER_TAG: base-${{ env.VERSION }}
         platforms: ${{ matrix.platform }}

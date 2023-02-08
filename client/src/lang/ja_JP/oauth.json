@@ -1,15 +1,15 @@
 {
-  "Credentials": "OAuth2 クライアント認証情報",
-  "ClientId": "クライアント ID",
-  "ClientSecret": "クライアントシークレット",
-  "NewClientWarning": "クライアントシークレットをメモしてください。このダイアログを閉じた後は二度と表示されません。これを紛失したり忘れたりすると、このクライアントは完全に使用できなくなります。",
-  "Create": "新しい OAuth2 クライアントを作成",
-  "UnnamedClient": "名前なしOAuth2クライアント",
-  "Docs": "APIドキュメントはこちら",
-  "DeleteWarning": "OAuth2クライアントを削除すると、元に戻すことも、同じ認証情報で新しいクライアントを作成することもできません。このクライアントを使用している全てのインテグレーションは、削除後機能しなくなります。",
-  "ConfirmDelete": "このOAuth2クライアントを削除することによる影響を理解しており、続行します。",
-  "Delete": "{clientName} を削除しますか？",
-  "Clients": "OAuth2クライアント",
-  "AccountDescription": "このOAuth2クライアントは、あなたのアカウントのすべての権限を継承します",
-  "ServerDescription": "このOAuth2クライアントは、このサーバー上のあなたのアカウントの権限のみ継承します"
+  "Credentials": "OAuth2 Client Credentials",
+  "ClientId": "Client ID",
+  "ClientSecret": "Client Secret",
+  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
+  "Create": "Create new OAuth2 Client",
+  "UnnamedClient": "Unnamed OAuth2 Client",
+  "Docs": "Find API documentation here",
+  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
+  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
+  "Delete": "Delete {clientName}?",
+  "Clients": "OAuth2 Clients",
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
+  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }

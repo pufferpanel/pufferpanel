@@ -1,0 +1,33 @@
+.key-value-input {
+  .label {
+    font-family: var(--headline-font);
+    font-weight: bold;
+    font-size: 1.4em;
+  }
+
+  .hint {
+    color: var(--text-disabled);
+  }
+
+  .error {
+    color: var(--error);
+  }
+
+  .entry {
+    .fields {
+      @include row;
+      display: inline-grid;
+      width: calc(100% - 4em);
+      max-width: unset;
+      margin-left: unset;
+      margin-right: 1em;
+      .input-field-wrapper {
+        @include cols(6);
+      }
+    }
+
+    .button {
+      display: inline-block;
+    }
+  }
+}

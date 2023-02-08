@@ -1,0 +1,18 @@
+.createLink {
+  @include clickable;
+  @include link;
+  border: 2px dashed var(--primary);
+  color: var(--primary);
+  padding: 1.5em;
+  border-radius: var(--border-radius);
+  transition: background 0.1s ease-in-out;
+  .icon::before {
+    color: var(--primary);
+    margin-right: 1.5em;
+  }
+}
+
+html[dir="rtl"] .createLink .icon {
+  margin-left: 1.5em;
+  margin-right: unset;
+}

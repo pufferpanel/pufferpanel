@@ -1,27 +1,27 @@
 {
-  "Settings": "設定",
-  "PanelSettings": "パネル設定",
-  "EmailSettings": "メール設定",
-  "MasterUrl": "マスターURL",
-  "MasterUrlHint": "パネルのベースURLは、http://localhost:8080 の形式でアクセスすることができます",
-  "CompanyName": "会社名",
-  "DefaultTheme": "デフォルトテーマ",
-  "RegistrationEnabled": "ユーザーが自分自身を登録できるようにする",
-  "RegistrationEnabledHint1": "自己登録ユーザーは、権限が与えられるまで何もできません",
-  "RegistrationEnabledHint2": "これを無効にすると直接登録ができなくなりますが、サーバーへの招待やユーザーページは影響を受けません",
-  "EmailProvider": "メールプロバイダー",
+  "Settings": "Settings",
+  "PanelSettings": "Panel Settings",
+  "EmailSettings": "Email Settings",
+  "MasterUrl": "Master URL",
+  "MasterUrlHint": "The base URL the panel can be reached under in the format http://localhost:8080",
+  "CompanyName": "Company Name",
+  "DefaultTheme": "Default Theme",
+  "RegistrationEnabled": "Allow users to register themselves",
+  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
+  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "EmailProvider": "Email Provider",
   "emailProviders": {
-    "none": "なし",
+    "none": "None",
     "smtp": "SMTP",
     "mailgun": "Mailgun",
     "mailjet": "Mailjet"
   },
   "emailFields": {
-    "from": "送信者メールアドレス",
-    "domain": "ドメイン",
-    "key": "API キー",
-    "host": "ホスト名",
-    "username": "ユーザー名",
-    "password": "パスワード"
+    "from": "Sender Adress",
+    "domain": "Domain",
+    "key": "API Key",
+    "host": "Host",
+    "username": "Username",
+    "password": "Password"
   }
 }

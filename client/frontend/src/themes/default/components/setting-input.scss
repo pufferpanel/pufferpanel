@@ -1,0 +1,7 @@
+.setting-input-wrapper {
+  @include row;
+
+  .setting-input {
+    @include cols(12);
+  }
+}

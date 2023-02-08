@@ -16,9 +16,7 @@
 
 package console
 
-import (
-	"github.com/pufferpanel/pufferpanel/v2"
-)
+import "github.com/pufferpanel/pufferpanel/v3"
 
 type Console struct {
 	Text string

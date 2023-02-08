@@ -18,8 +18,7 @@ package program
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/programs"
+	"github.com/pufferpanel/pufferpanel/v3/programs"
 )
 
 type Program struct {

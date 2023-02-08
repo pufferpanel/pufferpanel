@@ -1,0 +1,70 @@
+.locale-select {
+  @function str-split($string, $separator) {
+    $split-arr: ();
+    $index: str-index($string, $separator);
+    @while $index != null {
+      $item: str-slice($string, 1, $index - 1);
+      $split-arr: append($split-arr, $item);
+      $string: str-slice($string, $index + 1);
+      $index: str-index($string, $separator);
+    }
+    $split-arr: append($split-arr, $string);
+    @return $split-arr;
+  }
+
+  @mixin flag ($locale) {
+    $c: to-lower-case(list.nth(str-split($locale, '_'), 2));
+    $c: if($c == 'sp', 'rs', $c);
+    $c: if($locale == 'es_419', 'es', $c);
+    span[data-locale=#{$locale}] {
+      height: 2em;
+      width: 32px;
+      margin-right: 0.5em;
+      background: url('/img/flags/' + $c + '.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+  }
+
+  @include flag('ar_SA');
+  @include flag('cs_CZ');
+  @include flag('da_DK');
+  @include flag('de_DE');
+  @include flag('el_GR');
+  @include flag('en_US');
+  @include flag('es_419');
+  @include flag('es_ES');
+  @include flag('et_EE');
+  @include flag('fi_FI');
+  @include flag('fr_FR');
+  @include flag('he_IL');
+  @include flag('hu_HU');
+  @include flag('id_ID');
+  @include flag('it_IT');
+  @include flag('ja_JP');
+  @include flag('ko_KR');
+  @include flag('nl_NL');
+  @include flag('no_NO');
+  @include flag('pl_PL');
+  @include flag('pt_BR');
+  @include flag('pt_PT');
+  @include flag('ro_RO');
+  @include flag('ru_RU');
+  @include flag('sk_SK');
+  @include flag('sr_SP');
+  @include flag('sv_SE');
+  @include flag('tr_TR');
+  @include flag('uk_UA');
+  @include flag('vi_VN');
+  @include flag('zh_CN');
+  @include flag('zh_HK');
+  @include flag('zh_TW');
+}
+
+html[dir="rtl"] {
+  .locale-select span[data-locale] {
+    margin-left: 0.5em;
+    margin-right: unset;
+  }
+}

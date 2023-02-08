@@ -1,0 +1,32 @@
+.list-input {
+  .label {
+    font-weigth: bold;
+    font-size: 2em;
+  }
+
+  .hint {
+    color: var(--text-disabled);
+  }
+
+  .error {
+    color: var(--error);
+  }
+
+  .entry {
+    .input-field-wrapper {
+      display: inline-block;
+      width: calc(100% - 4em);
+      max-width: unset;
+      margin-left: unset;
+      margin-right: 1em;
+    }
+
+    &.swap .input-field-wrapper {
+      width: calc(100% - 10em);
+    }
+
+    .button {
+      display: inline-block;
+    }
+  }
+}

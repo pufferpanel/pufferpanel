@@ -1,0 +1,38 @@
+.suggestions .input-field {
+  transition: border-radius 0.1s ease-in-out;
+}
+
+.suggestions.open {
+  position: relative;
+
+  .input-field {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+  }
+
+  .suggestions-list {
+    @include card;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    margin-top: 0;
+    top: calc(4em + 3px);
+    position: absolute;
+    width: 100%;
+    padding: 0;
+    background-color: var(--background);
+    z-index: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 16em;
+
+    .suggestion {
+      @include clickable;
+      @include link;
+      padding: 1em;
+    }
+  }
+}
+
+.suggestions.closed {
+  .suggestions-list {
+    display: none;
+  }
+}

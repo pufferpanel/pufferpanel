@@ -15,14 +15,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/spf13/cobra"
 )
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number of PufferPanel",
-	Run: executeVersion,
+	Run:   executeVersion,
 }
 
 func executeVersion(cmd *cobra.Command, args []string) {

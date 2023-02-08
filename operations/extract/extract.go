@@ -2,7 +2,7 @@ package extract
 
 import (
 	"github.com/mholt/archiver/v3"
-	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v3"
 )
 
 type Extract struct {

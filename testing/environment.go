@@ -19,8 +19,7 @@ package test
 import (
 	"fmt"
 	"github.com/creack/pty"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cast"
 	"io"

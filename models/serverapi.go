@@ -14,8 +14,8 @@
 package models
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/response"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/response"
 )
 
 type ServerCreation struct {

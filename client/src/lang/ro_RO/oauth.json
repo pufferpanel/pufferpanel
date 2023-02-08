@@ -1,15 +1,15 @@
 {
-  "Credentials": "Date acces Client OAuth2",
-  "ClientId": "ID Client",
-  "ClientSecret": "Cod Secret Client",
-  "NewClientWarning": "Salvează codul secret al clientului, după ce închizi acest dialog nu va mai putea fi văzut niciodată. Dacă îl uiți sau îl pierzi, acesta va deveni inutilizabil.",
-  "Create": "Creează un nou Client OAuth2",
-  "UnnamedClient": "Client OAuth2 nedenumit",
-  "Docs": "Găsește documentația API aici",
-  "DeleteWarning": "Ștergerea unui client OAuth2 nu poate să fie dată înapoi și nici nu se poate crea un nou client cu aceleași detalii de acces. Toate integrațiile care folosesc acest client nu vor mai funcționa după ștergere.",
-  "ConfirmDelete": "Am luat la cunoștință efectele ștergerii acestui client OAuth2 și vreau să continui.",
-  "Delete": "Vrei să ștergi {clientName}?",
-  "Clients": "Clienți OAuth2",
-  "AccountDescription": "Clienții OAuth2 listați aici preiau toate permisiunile contului tău",
-  "ServerDescription": "Clienții OAuth2 listați aici preiau permisiunile contului tău doar de pe acest server"
+  "Credentials": "OAuth2 Client Credentials",
+  "ClientId": "Client ID",
+  "ClientSecret": "Client Secret",
+  "NewClientWarning": "Note down the client secret, after closing this dialog it will never be shown again. Losing or forgetting it will render this client completely unusable.",
+  "Create": "Create new OAuth2 Client",
+  "UnnamedClient": "Unnamed OAuth2 Client",
+  "Docs": "Find API documentation here",
+  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
+  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
+  "Delete": "Delete {clientName}?",
+  "Clients": "OAuth2 Clients",
+  "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
+  "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }

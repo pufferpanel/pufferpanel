@@ -17,8 +17,8 @@
 package forgedl
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/environments"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"path"
 	"strings"
 )

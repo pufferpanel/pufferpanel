@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
-	"github.com/pufferpanel/pufferpanel/v2/models"
+	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
 )
 

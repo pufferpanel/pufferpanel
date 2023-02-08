@@ -13,9 +13,7 @@
 
 package response
 
-import (
-	"github.com/pufferpanel/pufferpanel/v2"
-)
+import "github.com/pufferpanel/pufferpanel/v3"
 
 type Error struct {
 	Error *pufferpanel.Error `json:"error"`

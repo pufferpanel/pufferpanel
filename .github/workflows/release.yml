@@ -151,8 +151,8 @@ jobs:
       with:
         tag_name: ${{ github.event.inputs.branch }}
         release_name: ${{ github.event.inputs.branch }}
-        draft: true	
-        prerelease: true
+        draft: false
+        prerelease: false
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1

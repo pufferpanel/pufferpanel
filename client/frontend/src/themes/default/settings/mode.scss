@@ -1,0 +1,53 @@
+@mixin dark {
+  --success-bg: #4caf5040;
+  --success: #4caf50;
+  --info-bg: #3b8db840;
+  --info: #3b8db8;
+  --warning-bg: #fbac0040;
+  --warning: #fbac00;
+  --error-bg: #fe424240;
+  --error: #fe4242;
+  --backdrop: #292929;
+  --background: #333;
+  --code-background: #1d1d1d;
+  --text: rgba(240, 240, 240, 0.87);
+  --text-disabled: rgba(240, 240, 240, 0.5);
+  --servertype-icon-filter: brightness(0.625);
+  --ace-theme: monokai;
+  --apex-background-color: var(--background);
+  --apex-text-color: var(--text);
+}
+
+@mixin light {
+  --success-bg: #4caf5040;
+  --success: #4caf50;
+  --info-bg: #21a1de40;
+  --info: #21a1de;
+  --warning-bg: #fb8c0040;
+  --warning: #fb8c00;
+  --error-bg: #dc313140;
+  --error: #dc3131;
+  --backdrop: #eee;
+  --background: #fff;
+  --code-background: #d9d9d9;
+  --text: rgba(16, 16, 16, 0.75);
+  --text-disabled: rgba(16, 16, 16, 0.5);
+  --servertype-icon-filter: saturate(0.85);
+  --ace-theme: github;
+  --apex-background-color: var(--background);
+  --apex-text-color: var(--text);
+}
+
+.mode-dark {
+  @include dark;
+}
+
+.mode-light, .mode-auto {
+  @include light;
+}
+
+.mode-auto {
+  @media (prefers-color-scheme: dark) {
+    @include dark;
+  }
+}

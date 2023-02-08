@@ -53,7 +53,7 @@
   "Convert": "Konvertera",
   "OfferV1Convert": "Denna mall json ser ut som en mall för PufferPanel 1.x, vill du automatiskt konvertera detta till en mall för PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "Dessa mallar skapas av gemenskapen och tillhandahålls utan några garantier",
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "VARNING: Importerade mallar skriver över befintliga mallar med samma ID",
     "Import": "Importera mallar",
     "Tooltip": "Importera mallar från det officiella arkivet",

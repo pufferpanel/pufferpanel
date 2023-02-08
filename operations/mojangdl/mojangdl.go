@@ -20,9 +20,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/environments"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/environments"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 const VersionJsonUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json"

@@ -18,8 +18,8 @@ package command
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 )
 
 type Command struct {
@@ -33,8 +33,8 @@ func (c Command) Run(env pufferpanel.Environment) error {
 		env.DisplayToConsole(true, fmt.Sprintf("Executing: %s\n", cmd))
 		cmdToExec, args := pufferpanel.SplitArguments(cmd)
 		err := env.Execute(pufferpanel.ExecutionData{
-			Command: cmdToExec,
-			Arguments: args,
+			Command:     cmdToExec,
+			Arguments:   args,
 			Environment: c.Env,
 		})
 		if err != nil {

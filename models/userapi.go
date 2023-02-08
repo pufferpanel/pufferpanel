@@ -13,7 +13,7 @@
 
 package models
 
-import "github.com/pufferpanel/pufferpanel/v2/response"
+import "github.com/pufferpanel/pufferpanel/v3/response"
 
 type UserSearch struct {
 	Username  string `form:"username"`

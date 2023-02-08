@@ -1,0 +1,133 @@
+.server .type {
+  display: none;
+}
+
+.server-type-none .server {
+  position: relative;
+  padding-right: 4em !important;
+
+  @mixin status-indicator {
+    @include icon-base;
+    position: absolute;
+    top: 0.15em;
+    right: 0.2em;
+    display: block;
+    font-size: 3em;
+  }
+
+  &[data-online="online"]::before {
+    @include status-indicator;
+    @include icon-name-base(play-circle);
+    color: var(--primary);
+  }
+
+  &[data-online="offline"]::before {
+    @include status-indicator;
+    @include icon-name-base(stop-circle);
+    color: var(--text-disabled);
+  }
+
+  &[data-online="loading"]::before {
+    @include status-indicator;
+    @include icon-name-base(loading);
+    @include icon-spin-base;
+  }
+}
+
+$serverTypes: ('7days', 'ark', 'csgo', 'css', 'dontstarvetogether', 'factorio', 'minecraft-bedrock', 'minecraft-java', 'terraria');
+
+.server-type-icon .server {
+  position: relative;
+
+  @mixin server-type-icon($url) {
+    padding-right: 4em !important;
+    filter: saturate(0.75);
+    .chip { display: none }
+    &::after {
+      content: '';
+      background: url($url);
+      height: 3em;
+      width: 3em;
+      display: block;
+      background-size: contain;
+      color: transparent;
+      position: absolute;
+      top: 0.625em;
+      right: 0.625em;
+      filter: var(--servertype-icon-filter);
+    }
+  }
+
+  @each $type in $serverTypes {
+    &.server-#{$type} {
+      @include server-type-icon('/img/icons/' + $type + '.png');
+    }
+  }
+
+  @mixin status-indicator {
+    @include icon-base;
+    position: absolute;
+    top: 0.25em;
+    right: 0.25em;
+    font-size: 1.5em;
+    line-height: 1em;
+    height: 1em;
+    width: 1em;
+    z-index: 1;
+    background-color: var(--background);
+    border-radius: 0.75em;
+  }
+
+  &[data-online="online"]::before {
+    @include status-indicator;
+    @include icon-name-base(play-circle);
+    color: var(--primary);
+  }
+
+  &[data-online="offline"]::before {
+    @include status-indicator;
+    @include icon-name-base(stop-circle);
+    color: var(--text-disabled);
+  }
+
+  &[data-online="loading"]::before {
+    @include status-indicator;
+    @include icon-name-base(loading);
+    @include icon-spin-base;
+  }
+}
+
+html[dir="rtl"] {
+  .server-type-none .server {
+    padding-left: 4em;
+    &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
+      left: 0.2em;
+      right: unset;
+    }
+  }
+
+  .server-type-icon .server {
+    @mixin server-type-icon {
+      padding-left: 4em;
+      &::after {
+        left: 0.625em;
+        right: unset;
+      }
+    }
+
+    @each $type in $serverTypes {
+      &.server-#{$type} {
+        @include server-type-icon;
+      }
+    }
+
+    @mixin status-indicator {
+      left: 0.25em;
+      right: unset;
+    }
+
+    &[data-online="online"]::before, &[data-online="offline"]::before, &[data-online="loading"]::before {
+      @include status-indicator;
+    }
+  }
+}

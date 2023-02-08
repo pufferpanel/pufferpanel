@@ -14,8 +14,8 @@
 package javadl
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2/config"
-	test "github.com/pufferpanel/pufferpanel/v2/testing"
+	"github.com/pufferpanel/pufferpanel/v3/config"
+	test "github.com/pufferpanel/pufferpanel/v3/testing"
 	"os"
 	"os/exec"
 	"testing"

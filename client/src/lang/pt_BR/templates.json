@@ -1,7 +1,7 @@
 {
   "Templates": "Modelos",
   "NoTemplates": "Não há modelos disponíveis",
-  "Deleted": "Modelo excluido",
+  "Deleted": "Template deleted",
   "New": "Criar novo modelo",
   "Edit": "Editar modelo",
   "Editor": "Editor",
@@ -28,10 +28,10 @@
   "ReleaseType": "Tipo de lançamento",
   "AddFile": "Adicionar arquivo",
   "AddVariable": "Adicionar variável",
-  "Environment": "Ambiente",
-  "Environments": "Ambientes",
+  "Environment": "Environment",
+  "Environments": "Environments",
   "AddEnvironment": "Adicionar ambiente",
-  "DefaultEnvironment": "Ambiente padrão",
+  "DefaultEnvironment": "Default environment",
   "AddEnvVar": "Adicionar variável de ambiente",
   "EnvVars": "Variáveis de ambiente",
   "DockerImage": "Imagem Docker",
@@ -47,13 +47,13 @@
   "DeletePostStep": "Excluir etapa de pré-execução",
   "Shutdown": "Desligar",
   "Command": "Comando",
-  "WorkingDirectory": "Diretório de execução",
+  "WorkingDirectory": "Working Directory",
   "Arguments": "Argumentos",
   "AddArgument": "Adicionar argumento",
-  "Convert": "Converter",
-  "OfferV1Convert": "Esse modelo json se parece com um modelo para o PufferPanel 1.x, você deseja converter automaticamente para um modelo para o PufferPanel 2.x?",
+  "Convert": "Convert",
+  "OfferV1Convert": "This template json looks like a template for PufferPanel 1.x, do you want to automatically convert this to a template for PufferPanel 2.x?",
   "import": {
-    "CommunityWarning": "Estes modelos são feitos pela comunidade e sem qualquer garantia de pleno funcionamento",
+    "CommunityWarning": "These templates are made by the community and provided without any warranties",
     "OverrideWarning": "AVISO: Modelos importados substituirão modelos existentes com o mesmo ID",
     "Import": "Importar modelos",
     "Tooltip": "Importar modelos do repositório oficial",
@@ -69,40 +69,40 @@
   },
   "processors": {
     "download": {
-      "ProcessorName": "Baixar",
-      "files": "Arquivos"
+      "ProcessorName": "Download",
+      "files": "Files"
     },
     "command": {
-      "ProcessorName": "Executar comando",
-      "commands": "Comandos"
+      "ProcessorName": "Run Command",
+      "commands": "Commands"
     },
     "alterfile": {
-      "ProcessorName": "Alterar arquivo",
-      "regex": "Tratar a pesquisa com RegEx",
-      "search": "Texto para procurar",
-      "replace": "Substituir por"
+      "ProcessorName": "Change file",
+      "regex": "Treat search as RegEx",
+      "search": "Text to search",
+      "replace": "Replace with"
     },
     "writefile": {
-      "ProcessorName": "Gravar ao arquivo",
-      "text": "Conteúdo"
+      "ProcessorName": "Write to file",
+      "text": "Content"
     },
     "move": {
-      "ProcessorName": "Mover arquivo",
-      "source": "Origem",
-      "target": "Destino"
+      "ProcessorName": "Move File",
+      "source": "Source",
+      "target": "Target"
     },
     "mkdir": {
-      "ProcessorName": "Criar diretório"
+      "ProcessorName": "Create Directory"
     },
     "mojangdl": {
-      "ProcessorName": "Baixe Minecraft"
+      "ProcessorName": "Download Minecraft"
     },
     "forgedl": {
-      "ProcessorName": "Baixe Minecraft Fabric"
+      "ProcessorName": "Download Minecraft Forge"
     },
     "spongeforgedl": {
-      "ProcessorName": "Baixe Minecraft SpongeForge",
-      "releaseType": "Tipo de lançamento"
+      "ProcessorName": "Download Minecraft SpongeForge",
+      "releaseType": "Release Type"
     },
     "fabricdl": {
       "ProcessorName": "Baixar Minecraft Fabric"

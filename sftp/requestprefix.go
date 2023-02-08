@@ -19,8 +19,8 @@ package sftp
 import (
 	"errors"
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"os"
 	"path/filepath"

@@ -1,0 +1,99 @@
+.button {
+  border: none;
+  width: 100%;
+  border-radius: var(--border-radius);
+  font-family: var(--standard-font);
+  font-size: 1.125rem;
+  height: 48px;
+  margin: 12px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 26px;
+  cursor: pointer;
+  touch-action: manipulation;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.1s ease-in-out;
+  &:not(.icon) .icon::before {
+    font-size: 1.5em;
+    padding: 0 0.25rem;
+  }
+}
+
+#toasts .toast .button.toast, .alert .button {
+  width: unset;
+  margin: 0 0 0 1em;
+  padding: 0 1em;
+}
+
+html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
+  margin: 0 1em 0 0;
+}
+
+.button.neutral {
+  background-color: var(--backdrop);
+  color: var(--text);
+  .icon::before {
+    color: var(--text);
+  }
+}
+
+.button.primary {
+  background-color: var(--primary);
+  color: var(--text-primary);
+  .icon::before {
+    color: var(--text-primary);
+  }
+}
+
+.button.primary:hover {
+  filter: brightness(0.9);
+}
+
+.button.error {
+  background-color: var(--error);
+  color: var(--text-primary);
+  .icon::before {
+    color: var(--text-primary);
+  }
+}
+
+.button.error:hover {
+  filter: brightness(0.9);
+}
+
+.button.text {
+  background-color: transparent;
+}
+
+.button.text:hover {
+  background-color: var(--primary-hover);
+}
+
+.button.disabled:not(.icon) {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  color: var(--text-disabled) !important;
+  box-shadow: none !important;
+  .icon::before {
+    color: var(--text-disabled) !important;
+  }
+}
+
+.button.icon {
+  width: 48px;
+  padding: 9px;
+  margin: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  font-size: 1.5em;
+}
+
+.button.icon:not(.disabled):hover {
+  background-color: var(--primary-hover);
+}
+
+.button.icon.disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -1,0 +1,33 @@
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #4448;
+  z-index: 10;
+  .overlay {
+    @include card;
+    position: absolute;
+    top: 10vh;
+    left: 10vw;
+    right: 10vw;
+    margin-top: 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    .overlay-header {
+      display: flex;
+      flex-direction: row;
+      .title {
+        flex-grow: 1;
+      }
+      .button.text {
+        width: unset;
+        margin-top: 0;
+        margin-right: 0.5rem;
+        font-weight: normal;
+      }
+    }
+  }
+}

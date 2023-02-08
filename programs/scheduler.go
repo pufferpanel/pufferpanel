@@ -3,7 +3,7 @@ package programs
 import (
 	"errors"
 	"github.com/go-co-op/gocron"
-	"github.com/pufferpanel/pufferpanel/v2"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"time"
 )
 

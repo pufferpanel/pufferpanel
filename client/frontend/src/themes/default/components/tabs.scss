@@ -1,0 +1,117 @@
+.tabs {
+  max-width: calc(100vw - 4em);
+  position: relative;
+
+  .scroll-left {
+    @media (hover: none) and (pointer: coarse) {
+      display: none;
+    }
+
+    @include icon;
+    @include icon-name(chevron-left);
+    @include raised;
+    @include clickable;
+    background-color: var(--background);
+    width: 1.125em;
+    height: 1.125em;
+    border-radius: 50%;
+    position: absolute;
+    left: -0.325em;
+    top: 0.625em;
+    z-index: 2;
+    text-align: center;
+    font-size: 1.8em;
+    &:hover::after {
+      content: '';
+      display: inline-block;
+      background-color: var(--primary-hover);
+      width: 1.125em;
+      height: 1.125em;
+      border-radius: 50%;
+      position: relative;
+      left: 0;
+      top: -1.125em;
+    }
+  }
+
+  .scroll-right {
+    @media (hover: none) and (pointer: coarse) {
+      display: none;
+    }
+
+    @include icon;
+    @include icon-name(chevron-right);
+    @include raised;
+    @include clickable;
+    background-color: var(--background);
+    width: 1.125em;
+    height: 1.125em;
+    border-radius: 50%;
+    position: absolute;
+    right: -0.325em;
+    top: 0.625em;
+    z-index: 1;
+    text-align: center;
+    font-size: 1.8em;
+    &:hover::after {
+      content: '';
+      display: inline-block;
+      background-color: var(--primary-hover);
+      width: 1.125em;
+      height: 1.125em;
+      border-radius: 50%;
+      position: relative;
+      right: 0;
+      top: -1.125em;
+    }
+  }
+
+  .tab.inactive {
+    display: none;
+  }
+
+  .tab.active {
+    display: revert;
+  }
+}
+
+.tab-buttons {
+  display: flex;
+  margin-bottom: 1em;
+  overflow-x: auto;
+
+  -ms-overflow-style: none;  /* hide scrollbar on IE and Edge */
+  scrollbar-width: none;     /* hide scrollbar on Firefox */
+  &::-webkit-scrollbar {     /* hide scrollbar on Chrome */
+    display: none;
+  }
+
+  .tab-button {
+    @include clickable;
+    flex-basis: 0;
+    flex-grow: 1;
+    color: var(--text);
+    text-align: center;
+    padding: 0.5em;
+    font-size: 1.25em;
+    border-bottom: 3px solid var(--primary-hover);
+    white-space: nowrap;
+    &.active {
+      border-bottom: 3px solid var(--primary);
+    }
+    &:hover {
+      background-color: var(--primary-hover);
+    }
+
+    &.has-icon {
+      display: flex;
+      flex-direction: column;
+      .icon {
+        font-size: 1.5em;
+      }
+      .title {
+        font-size: 0.8em;
+      }
+    }
+  }
+}

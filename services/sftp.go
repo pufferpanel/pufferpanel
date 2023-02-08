@@ -15,8 +15,8 @@ package services
 
 import (
 	"errors"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/database"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/database"
 	"golang.org/x/crypto/ssh"
 	"strings"
 )

@@ -19,10 +19,6 @@
 
 package tty
 
-import (
-	"github.com/pufferpanel/pufferpanel/v2"
-)
-
 type EnvironmentFactory struct {
 	pufferpanel.EnvironmentFactory
 }

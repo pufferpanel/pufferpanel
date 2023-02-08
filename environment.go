@@ -18,7 +18,7 @@ package pufferpanel
 
 import (
 	"fmt"
-	"github.com/pufferpanel/pufferpanel/v2/config"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"io"
 	"log"
 	"os"

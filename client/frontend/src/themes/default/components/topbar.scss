@@ -1,0 +1,71 @@
+.topbar {
+  @include raised;
+  position: fixed;
+  width: 100%;
+  height: 64px;
+  color: var(--text-primary);
+  background-color: var(--primary);
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  .name {
+    flex-grow: 1;
+  }
+  .name:not([data-name="PufferPanel"]) {
+    font-family: var(--title-font);
+    margin: 0 16px;
+    line-height: 64px;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--text-primary);
+  }
+  .name[data-name="PufferPanel"] {
+    height: 32px;
+    margin: 16px 16px;
+    color: transparent;
+    background-color: var(--text-primary);
+    -webkit-mask: url('/img/logo.svg') no-repeat left center;
+    mask: url('/img/logo.svg') no-repeat left center;
+    user-select: none;
+  }
+  .avatar {
+    margin: 12px;
+    border: 2px solid var(--text-primary);
+    transition: filter 0.1s ease-in-out;
+  }
+  .avatar:hover, a:focus-visible .avatar {
+    filter: brightness(0.8);
+  }
+}
+
+.sidebar-toggle {
+  display: none;
+}
+
+.topbar.sidebar-exists {
+  @include breakpoint-down(md) {
+    .sidebar-toggle {
+      @include clickable;
+      display: inline-block;
+      font-size: 34px;
+      padding: 12px 6px;
+      margin-right: -12px;
+      &::before {
+        color: var(--text-primary);
+      }
+    }
+  }
+}
+
+html[dir="rtl"] {
+  .topbar {
+    .name[data-name="PufferPanel"] {
+      mask-position: right;
+    }
+
+    .sidebar-toggle {
+      margin-right: 0;
+      margin-left: -12px;
+    }
+  }
+}

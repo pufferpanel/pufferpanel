@@ -1,0 +1,39 @@
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/Quicksand.woff2);
+}
+
+@font-face {
+  font-family: 'Comfortaa';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/Comfortaa.woff2);
+}
+
+@font-face {
+  font-family: 'Ubuntu Bold';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/Ubuntu-Bold.woff2);
+}
+
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/UbuntuMono-Regular.woff2);
+}
+
+:root {
+  --standard-font: 'Quicksand', sans-serif;
+  --headline-font: 'Comfortaa', sans-serif;
+  --monospace-font: 'Ubuntu Mono', monospace;
+  --title-font: 'Ubuntu Bold';
+  --apex-font: var(--standard-font);
+}

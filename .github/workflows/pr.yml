@@ -33,19 +33,22 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
-    - name: Restore NPM cache
-      uses: actions/cache@v3
+    - name: Restore yarn cache
+      uses: actions/cache@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-pr-${{ hashFiles('client/package-lock.json') }}
+        path: ~/.yarn
+        key: ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}-pr
-          
-    - name: Restore NPM cache
-      uses: actions/cache@v3
+          ${{ runner.os }}-nodemodules-${{ env.NODE_VERSION }}
+
+    - name: Restore yarn cache
+      uses: actions/cache@v2
       with:
-        path: client/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}
+        path: |
+          client/node_modules
+          client/api/node_modules
+          client/frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('client/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-node-
           
@@ -67,7 +70,7 @@ jobs:
         
     - name: Build Linux
       run: |
-        go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
         go test -v ./...
       env:
         GOOS: linux
@@ -75,7 +78,7 @@ jobs:
         
     - name: Build Windows
       run: |
-        go build -o pufferpanel.exe -buildvcs=false -v github.com/pufferpanel/pufferpanel/v2/cmd
+        go build -o pufferpanel.exe -buildvcs=false -v github.com/pufferpanel/pufferpanel/v3/cmd
       env:
         GOOS: windows
         GOARCH: amd64
@@ -83,10 +86,10 @@ jobs:
         CXX: x86_64-w64-mingw32-g++
         CGO_ENABLED: 1
         
-    - name: npm install, build
+    - name: yarn install, build
       run: |
-        npm install
-        npm run build
+        yarn install
+        yarn build
       env:
         CI: true
       working-directory: client

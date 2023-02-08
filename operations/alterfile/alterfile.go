@@ -18,8 +18,8 @@ package alterfile
 
 import (
 	"bytes"
-	"github.com/pufferpanel/pufferpanel/v2"
-	"github.com/pufferpanel/pufferpanel/v2/logging"
+	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"

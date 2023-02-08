@@ -17,7 +17,6 @@
 package program
 
 import (
-	"github.com/pufferpanel/pufferpanel/v2"
 	"github.com/spf13/cast"
 )
 

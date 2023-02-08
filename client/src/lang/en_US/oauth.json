@@ -6,10 +6,9 @@
   "Create": "Create new OAuth2 Client",
   "UnnamedClient": "Unnamed OAuth2 Client",
   "Docs": "Find API documentation here",
-  "DeleteWarning": "Deleting an OAuth2 client cannot be undone nor can a new client be created with the same credentials. All integrations still using this client will break after its deletion.",
-  "ConfirmDelete": "I am aware of the effects that deleting this OAuth2 client will have and wish to proceed.",
-  "Delete": "Delete {clientName}?",
   "Clients": "OAuth2 Clients",
+  "Delete": "Delete OAuth2 Client",
+  "ConfirmDelete": "Do you really want to delete the OAuth2 client {name}? You will not be able to recreate it with the same credentials!",
   "AccountDescription": "The OAuth2 Clients listed here inherit all of your accounts permissions",
   "ServerDescription": "The OAuth2 Clients listed here only inherit your accounts permissions on this server"
 }

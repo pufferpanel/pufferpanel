@@ -1,0 +1,1199 @@
+@use "sass:list";
+@import "@csstools/normalize.css";
+@import "./fonts";
+@import "./mixins";
+@import "./icons";
+@import "./settings";
+@import "./components";
+
+
+// Global defaults
+#app {
+  --border-radius: 16px;
+}
+
+#root {
+  --apex-series-colors: var(--primary), var(--primary-complement);
+}
+
+* {
+  font-family: var(--standard-font);
+  text-rendering: optimizelegibility;
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6, .server-header .name {
+  font-family: var(--headline-font);
+}
+
+.ace {
+  min-height: 20em;
+}
+
+.ace, .ace * {
+  font-family: var(--monospace-font);
+  font-size: 1rem;
+}
+
+body {
+  margin: 0;
+  overflow-y: scroll;
+}
+
+#root {
+  min-height: 100vh;
+  background: var(--backdrop);
+}
+
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+a {
+  @include clickable;
+  text-decoration: none;
+  color: var(--primary);
+}
+
+a[target="_blank"]:not(.dl-link)::after {
+  @include icon-base;
+  @include icon-name-base(launch);
+  font-size: 0.75em;
+  color: var(--text-disabled);
+  vertical-align: top;
+}
+
+code {
+  font-family: var(--monospace-font);
+  background-color: var(--code-background);
+  padding: 0.25em;
+  border-radius: 8px;
+}
+
+pre {
+  font-family: var(--monospace-font);
+  border: 1px solid var(--text-disabled);
+  padding: 0.5em;
+  border-radius: var(--border-radius);
+  overflow: auto;
+  outline: none;
+  background-color: var(--background);
+  code {
+    background-color: var(--background);
+  }
+}
+
+b {
+  font-family: var(--standard-font);
+  font-weight: 900;
+}
+
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px solid var(--text-disabled);
+  opacity: 0.3;
+}
+
+::selection {
+  background-color: var(--primary);
+  color: var(--text-primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+}
+
+
+.hotkey-list {
+  @include row;
+  max-width: unset;
+
+  .contextual h3 {
+    margin-top: 0;
+  }
+
+  @include breakpoint(md) {
+    h3 {
+      margin-top: 0;
+    }
+  }
+
+  .global {
+    @include cols(12);
+    @include cols(6, md);
+    @include breakpoint(md) {
+      order: 1;
+    }
+  }
+
+  .contextual {
+    @include cols(12);
+    @include cols(6, md);
+    @include breakpoint(md) {
+      order: 2;
+    }
+  }
+}
+
+.hotkey {
+  margin-top: 1em;
+  .key {
+    border: 1px solid var(--text-disabled);
+    border-radius: 4px;
+    margin-right: 0.5em;
+    display: inline-flex;
+    padding: 0 0.25em;
+    min-width: 1.5em;
+    height: 1.5em;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--backdrop);
+    box-sizing: border-box;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  .keys {
+    display: inline-block;
+    width: 8em;
+  }
+  .description {
+    height: 1.5em;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+
+
+.apexcharts-tooltip, .apexcharts-xaxistooltip {
+  font-family: var(--standard-font) !important;
+  background-color: var(--background) !important;
+  color: var(--text) !important;
+}
+
+
+
+#template-json {
+  height: calc(100vh - 56px - 16em);
+}
+
+
+.main .operators, .main .variables {
+  .list {
+    gap: 0.25em;
+    grid-gap: 0.25em;
+    .list-item {
+      @include cols(12);
+    }
+  }
+}
+
+.templatecreate, .templateview, .serverview #admin .server-definition {
+  .actions {
+    @include row;
+    grid-gap: 0 1em;
+    gap: 0 1em;
+    max-width: unset;
+    .button {
+      @include cols(12);
+      @include cols(6, md);
+      margin-bottom: 0;
+    }
+  }
+
+  .list {
+    @include baselist;
+    .list-item-content {
+      display: flex;
+      width: 100%;
+      span {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  }
+
+  h2 {
+    display: unset;
+  }
+
+  .overlay .operator {
+    min-height: 0;
+    transition: min-height 0.1s ease-in-out;
+    &.typeselect-open {
+      min-height: 475px;
+    }
+  }
+
+  .environment {
+    @include row;
+    h2 {
+      @include cols(12);
+      @include cols(6, md);
+    }
+    .switch-wrapper {
+      @include cols(11);
+      @include cols(5, md);
+      @include breakpoint(md) {
+        display: flex;
+        justify-self: end;
+        .label {
+          align-self: center;
+          padding-top: 8px;
+        }
+      }
+    }
+    .button.icon {
+      @include cols(1);
+    }
+    .environment-config {
+      @include cols(12);
+    }
+  }
+
+  .environment.default .button.icon:nth-child(3) {
+    opacity: 1;
+    .icon::before {
+      color: var(--warning);
+    }
+  }
+
+  .hint {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--text-disabled);
+  }
+}
+
+// Server Components
+.status {
+  @include icon;
+
+  &.unknown {
+    @include icon-name(loading);
+    @include icon-spin;
+    &::before {
+      color: var(--text-disabled);
+    }
+  }
+
+  &.online {
+    @include icon-name(play-circle);
+    &::before {
+      color: var(--primary);
+    }
+  }
+
+  &.offline {
+    @include icon-name(stop-circle);
+    &::before {
+      color: var(--text-disabled);
+    }
+  }
+}
+
+.server-controls {
+  position: relative;
+  white-space: nowrap;
+  .button {
+    box-shadow: none;
+    display: inline-block;
+    background-color: transparent;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    margin: unset;
+    padding: unset;
+
+    .text {
+      display: none;
+    }
+
+    &:hover {
+      background-color: var(--primary-hover);
+    }
+  }
+
+  .kill, .install, .menu.closed {
+    display: none;
+  }
+
+  .menu.open {
+    @include card;
+    z-index: 2;
+    padding: 0.25em;
+    position: absolute;
+    top: -0.75em;
+    right: 0;
+    .button {
+      padding-right: 1em;
+      display: block;
+      width: 100%;
+      text-align: left;
+      border-radius: var(--border-radius);
+      .icon::before {
+        margin-top: 2px;
+      }
+      .text {
+        display: inline-block;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        line-height: 2em;
+        vertical-align: top;
+      }
+    }
+  }
+
+  .start .icon::before {
+    color: var(--success);
+  }
+
+  .stop .icon::before {
+    color: var(--warning);
+  }
+
+  .kill .icon::before {
+    color: var(--error);
+  }
+}
+
+html[dir="rtl"] .menu.open {
+  left: 0;
+  right: unset;
+  .button {
+    text-align: right;
+    padding-left: 1em;
+    padding-right: 0.5em;
+  }
+}
+
+.server-header {
+  display: flex;
+  max-width: calc(100vw - 2em);
+  margin-bottom: 0.25em;
+  .name {
+    display: flex;
+    flex-grow: 1;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    .button {
+      margin: -4px 0.5rem 0;
+      font-size: 2rem;
+    }
+  }
+}
+
+
+
+
+.upload-file-name {
+  margin-top: 0.5em;
+}
+.progress {
+  position: relative;
+  margin-top: 1em;
+  span {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: var(--text);
+    margin-top: 0.5em;
+  }
+  progress, progress::-webkit-progress-bar {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0px solid transparent;
+    background-color: var(--backdrop);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    height: 2em;
+  }
+  @keyframes animate-stripes { 0% { background-position: -7em 0; } }
+  progress::-moz-progress-bar {
+    background-color: var(--primary);
+    background-image: -moz-linear-gradient(145deg, transparent, transparent 30%, rgba(0,0,0,.1) 30%, rgba(0,0,0,.1) 66%, transparent 66%), -moz-linear-gradient(left, var(--primary), var(--primary));
+    background-size: 3.5em 2em, 100% 100%, 100% 100%;
+    animation: animate-stripes 5s linear infinite;
+  }
+  progress::-webkit-progress-value {
+    background-color: var(--primary);
+    background-image: -webkit-linear-gradient(145deg, transparent, transparent 30%, rgba(0,0,0,.1) 30%, rgba(0,0,0,.1) 66%, transparent 66%), -webkit-linear-gradient(left, var(--primary), var(--primary));
+    background-size: 3.5em 2em, 100% 100%, 100% 100%;
+    animation: animate-stripes 5s linear infinite;
+  }
+}
+
+
+
+.color-input {
+  position: relative;
+  margin: 12px 0;
+  display: inline-flex;
+  flex-direction: row;
+  border: 1px solid;
+  border-radius: var(--border-radius);
+  width: 100%;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  .label {
+    position: absolute;
+    top: -1.6rem;
+    left: 0.75rem;
+    font-size: 0.85em;
+    margin: 1rem 0;
+    pointer-events: none;
+    transition: all 0.1s ease-in-out;
+    span {
+      position: relative;
+      padding: 0 .35em;
+    }
+    &::before {
+      background-color: var(--background);
+      content: '';
+      position: absolute;
+      height: 65%;
+      width: 100%;
+    }
+  }
+  input {
+    width: 100%;
+    padding: 0;
+    appearence: none;
+    border: none;
+    cursor: pointer;
+    margin: 0.5em;
+    height: 3em;
+    background: none;
+    &::-moz-color-swatch {
+      border: none;
+      border-radius: 16px;
+    }
+    &::-webkit-color-swatch {
+      border: none;
+    }
+  }
+}
+
+
+
+
+
+.alert {
+  @include cols(12);
+  margin-bottom: 1em;
+  padding: 0.75em;
+  border-radius: var(--border-radius);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  &::after {
+    height: 5px;
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  @include icon;
+  &::before {
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: 0.3em;
+  }
+  span {
+    flex-grow: 1;
+  }
+}
+
+.alert.success {
+  background-color: var(--success-bg);
+  &::before {
+    color: var(--success);
+  }
+  &::after {
+    background-color: var(--success);
+  }
+  @include icon-name(check-circle-outline);
+}
+
+.alert.info {
+  background-color: var(--info-bg);
+  &::before {
+    color: var(--info);
+  }
+  &::after {
+    background-color: var(--info);
+  }
+  @include icon-name(information-outline);
+}
+
+.alert.warning {
+  background-color: var(--warning-bg);
+  &::before {
+    color: var(--warning);
+  }
+  &::after {
+    background-color: var(--warning);
+  }
+  @include icon-name(alert-outline);
+}
+
+.alert.error {
+  background-color: var(--error-bg);
+  &::before {
+    color: var(--error);
+  }
+  &::after {
+    background-color: var(--error);
+  }
+  @include icon-name(alert-outline);
+}
+
+
+
+.confirm-overlay .actions {
+  @include row;
+  grid-gap: 0 1em;
+  gap: 0 1em;
+  max-width: unset;
+
+  .button {
+    @include cols(12);
+    @include cols(6, md);
+  }
+}
+
+
+
+
+
+
+// Pages
+.login, .register {
+  @include card;
+  @include cols(12);
+  @include cols(6, md, 3);
+  @include breakpoint-only(xs) {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+}
+
+.self.loading {
+  @include cols(12);
+  @include row;
+  .loader {
+    @include cols(12);
+  }
+}
+
+.self:not(.loading) {
+  @include cols(12);
+  @include card;
+
+  h1 {
+    display: none;
+  }
+
+  .overlay h1 {
+    display: unset;
+  }
+
+  .mfa {
+    position: relative;
+
+    .overlay h1 {
+      display: inline-block;
+    }
+
+    .description {
+      display: block;
+    }
+
+    .otp-enroll-content, .otp-enroll-actions, .otp-deactivation-actions {
+      @include row;
+      max-width: unset;
+    }
+
+    .otp-enroll-qr {
+      @include cols(12);
+      @include cols(6, md);
+      @include cols(4, lg);
+      display: flex;
+      justify-content: center;
+    }
+
+    .otp-enroll-info {
+      @include cols(12);
+      @include cols(6, md);
+      @include cols(8, lg);
+    }
+
+    .otp-enroll-actions .button, .otp-deactivation-actions .button {
+      @include cols(12);
+      @include cols(6, md);
+    }
+  }
+}
+
+html[dir="rtl"] {
+  .self .mfa .otp-toggle {
+    left: 1em;
+    right: unset;
+  }
+}
+
+.userview {
+  @include cols(12);
+  @include row;
+  margin: unset;
+  .details, .permissions {
+    @include cols(12);
+    @include cols(6, md);
+    @include card;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+}
+
+.settings {
+  @include cols(12);
+  @include row;
+  margin: unset;
+  .panel, .email {
+    @include cols(12);
+    @include cols(6, md);
+    @include card;
+    height: -moz-fit-content;
+    height: fit-content;
+    .master-url {
+      position: relative;
+      .input-field-wrapper {
+        display: inline-block;
+        width: calc(100% - 3em);
+      }
+      .icon {
+        @include clickable;
+        margin-left: 0.5em;
+        font-size: 2em;
+        position: absolute;
+        top: 0.5em;
+      }
+    }
+    .switch-wrapper .hint {
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+    }
+  }
+}
+
+html[dir="rtl"] .settings .panel .master-url .icon {
+  margin-right: 0.5em;
+  margin-left: unset;
+}
+
+.nodeview, .nodecreate {
+  @include cols(12);
+  @include row;
+  @include card;
+  margin: unset;
+  margin-top: 1.5em;
+  grid-gap: 0 1em;
+  gap: 0 1em;
+
+  h1, .name, .button, .sftp-port, .private-toggle, .public-host, .private-host, .public-port, .private-port {
+    @include cols(12);
+  }
+
+  .public-host, .private-host {
+    @include cols(8, md);
+  }
+
+  .public-port, .private-port {
+    @include cols(4, md);
+  }
+}
+
+.servercreate {
+  @include cols(12);
+  @include card;
+
+  .progress {
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
+
+    &::before {
+      display: block;
+      content: '';
+      height: 0.25em;
+      background-color: var(--primary);
+      position: absolute;
+      left: 0;
+      top: calc(50% - 0.125em);
+      transition: width 0.1s ease-in-out;
+    }
+
+    &::after {
+      display: block;
+      content: '';
+      height: 0.25em;
+      background-color: var(--primary-hover);
+      position: absolute;
+      right: 0;
+      top: calc(50% - 0.125em);
+      transition: width 0.1s ease-in-out;
+    }
+
+    .step {
+      @include icon;
+      @include icon-name(check);
+      font-size: 1.5em;
+      line-height: 2rem;
+      text-align: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 1rem;
+      background-color: var(--primary);
+      z-index: 1;
+      &::before {
+        color: var(--text-primary);
+      }
+    }
+
+    @mixin step-icons {
+      &.step-template {
+        @include icon-name(file-code);
+      }
+      &.step-environment {
+        @include icon-name(cube-outline);
+      }
+      &.step-users {
+        @include icon-name(account-multiple);
+      }
+      &.step-settings {
+        @include icon-name(cog);
+      }
+    }
+
+    .step-current {
+      @include raised;
+      @include step-icons;
+      background-color: var(--backdrop);
+      &::before {
+        color: var(--text);
+      }
+    }
+
+    .step-current ~ .step {
+      @include step-icons;
+      background-color: var(--backdrop);
+      &::before {
+        color: var(--text);
+      }
+    }
+
+    &.on-step-template {
+      &::before {
+        width: 20%;
+      }
+      &::after {
+        width: 80%;
+      }
+    }
+
+    &.on-step-environment {
+      &::before {
+        width: 40%;
+      }
+      &::after {
+        width: 60%;
+      }
+    }
+
+    &.on-step-users {
+      &::before {
+        width: 60%;
+      }
+      &::after {
+        width: 40%;
+      }
+    }
+
+    &.on-step-settings {
+      &::before {
+        width: 80%;
+      }
+      &::after {
+        width: 20%;
+      }
+    }
+  }
+
+  .select-template {
+    @include row;
+
+    h2, h3 {
+      @include cols(12);
+    }
+
+    .list {
+      @include cols(12);
+      width: 100%;
+    }
+
+    .template {
+      @include cols(12);
+      @include cols(4, md);
+      @include card;
+      @include clickable;
+      @include link;
+      margin-top: 0;
+    }
+
+    .overlay .actions {
+      @include row;
+      grid-gap: 0 1em;
+      gap: 0 1em;
+      max-width: unset;
+
+      .button {
+        @include cols(12);
+        @include cols(6, md);
+      }
+    }
+
+    .overlay .readme {
+      max-height: 50vh;
+      overflow-y: auto;
+      word-break: break-word;
+    }
+
+    .overlay .readme ul {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+  }
+
+  .environment, .users, .settings {
+    @include row;
+    grid-gap: 0 1em;
+    gap: 0 1em;
+    margin-top: 1.5rem;
+
+    div {
+      @include cols(12);
+    }
+
+    .button {
+      @include cols(12);
+      @include cols(6, md);
+    }
+  }
+
+  .users .multiselect {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.serverview, .usercreate, .templatecreate, .templateview {
+  @include cols(12);
+  @include card;
+}
+
+.serverview {
+  max-width: calc(100% - 2em);
+  h2 {
+    display: none;
+  }
+}
+
+.file-manager {
+  .header {
+    display: flex;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    h3 {
+      color: var(--text-disabled);
+      font-size: 0.9em;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+    .spacer {
+      flex-grow: 1;
+    }
+    .icon {
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .file-list {
+    .file {
+      @include clickable;
+      @include link;
+      padding: 0.5em;
+      display: flex;
+      .details {
+        flex-grow: 1;
+        padding-left: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .size {
+          color: var(--text-disabled);
+          font-size: 0.9em;
+        }
+      }
+      .icon, .button {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  .file-editor {
+    height: 70vh;
+  }
+
+  .file-viewer {
+    max-width: 100%;
+    max-height: 70vh;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  audio.file-viewer {
+    width: 100%;
+    top: 50%;
+  }
+
+  .editor .overlay {
+    > div {
+      height: 100%;
+    }
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.console-wrapper {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  background-color: #000;
+  padding: 0.5em;
+  height: calc(100vh - 64px - 19em);
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.console div, .console div span {
+  color: #fff;
+  font-family: var(--monospace-font);
+  word-break: break-all;
+}
+
+.console .daemon-marker::before {
+  background-color: #eee;
+  color: #000;
+  border-radius: 0.5em;
+  padding-left: 0.5ch;
+  padding-right: 0.5ch;
+  content: attr(data-name);
+}
+
+#console .input-field-wrapper .input-field {
+  margin-bottom: 0;
+}
+
+#console {
+  position:relative;
+  .icon-clear-console::before {
+    @include clickable;
+    color: #fff;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    font-size: 1.5em;
+    background-color: #000;
+    z-index: 1;
+  }
+
+  .command {
+    .input-field-wrapper {
+      display: inline-block;
+      width: calc(100% - 3em);
+    }
+    .icon-send {
+      @include clickable;
+      margin-left: 0.5em;
+      font-size: 2em;
+      vertical-align: middle;
+    }
+  }
+}
+
+html[dir="rtl"] #console .command .icon-send {
+  margin-right: 0.5em;
+  margin-left: unset;
+}
+
+#users {
+  .no-users {
+    text-align: center;
+  }
+
+  .user {
+    @include row;
+    grid-gap: 0;
+    gap: 0;
+
+    &.open {
+      @include card;
+    }
+
+    h3 {
+      @include clickable;
+      position: relative;
+      font-size: 1.5em;
+      margin-top: 0;
+      margin-bottom: 0.5em;
+
+      &::after {
+        position: absolute;
+        right: 0;
+        content: '+';
+      }
+    }
+
+    &.open h3::after {
+      content: '-';
+    }
+
+    h3, .button {
+      @include cols(12);
+    }
+
+    .switch-wrapper {
+      @include cols(12);
+      @include cols(6, md);
+      margin-bottom: 0;
+    }
+
+    &.closed .switch-wrapper, &.closed .button {
+      display: none;
+    }
+  }
+
+  .invite {
+    @include row;
+    .input-field-wrapper {
+      @include cols(12);
+      @include cols(8, md);
+
+      .input-field {
+        margin-bottom: 0;
+      }
+    }
+    .button {
+      @include cols(12);
+      @include cols(4, md);
+
+      @include breakpoint-only(xs) {
+        margin-top: 0;
+      }
+
+      height: 56px;
+      margin-bottom: 0;
+    }
+  }
+}
+
+html[dir="rtl"] #users .user h3::after {
+  left: 0;
+  right: unset;
+}
+
+#sftp {
+  .copied {
+    border-radius: var(--border-radius);
+    background-color: var(--success);
+    padding: 0.5rem;
+  }
+
+  .button.icon {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    display: inline-flex;
+  }
+
+  b {
+    line-height: 3rem;
+  }
+}
+
+.oauth {
+  .info {
+    margin-bottom: 2em;
+  }
+
+  .oauth-client {
+    display: flex;
+    .details {
+      width: calc(100% - 3em);
+    }
+    div {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .overlay {
+    @include row;
+    div {
+      @include cols(12);
+    }
+    .button {
+      @include cols(12);
+      @include cols(6, md);
+    }
+  }
+
+  .name {
+    font-family: var(--standard-font);
+    font-weight: 900;
+  }
+
+  .value {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}

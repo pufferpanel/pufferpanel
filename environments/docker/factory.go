@@ -16,10 +16,6 @@
 
 package docker
 
-import (
-	"github.com/pufferpanel/pufferpanel/v2"
-)
-
 type EnvironmentFactory struct {
 	pufferpanel.EnvironmentFactory
 }

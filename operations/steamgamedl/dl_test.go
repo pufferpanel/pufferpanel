@@ -14,7 +14,7 @@
 package steamgamedl
 
 import (
-	test "github.com/pufferpanel/pufferpanel/v2/testing"
+	test "github.com/pufferpanel/pufferpanel/v3/testing"
 	"testing"
 )
 
