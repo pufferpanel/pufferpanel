@@ -114,7 +114,7 @@ jobs:
     - name: Generate folders and remove excess files
       run: |
         mkdir -p build-artifacts/www
-        mv client/dist/* build-artifacts/www
+        mv client/frontend/dist/* build-artifacts/www
         mv assets/email build-artifacts
         rm -rf .git .github client web/swagger/swagger.json web/swagger/swagger.yaml build-artifacts/www/js/*.map
 
