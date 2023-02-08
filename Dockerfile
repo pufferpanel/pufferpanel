@@ -20,7 +20,7 @@ ARG swagversion=1.8.8
 
 ENV CGOENABLED=1
 
-ENV npm_config_registry=$npmproxy
+ENV YARN_REGISTRY=$npmproxy
 ENV GOPROXY=$goproxy
 
 RUN go version && \
@@ -41,9 +41,9 @@ RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
     go build -v -buildvcs=false -tags $tags -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
     mv assets/email /pufferpanel/email && \
     cd client && \
-    npm install && \
-    npm run build && \
-    mv dist /pufferpanel/www/
+    yarn install && \
+    yarn build && \
+    mv frontend/dist /pufferpanel/www/
 
 ###
 # Generate final image

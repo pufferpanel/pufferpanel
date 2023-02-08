@@ -92,7 +92,7 @@ func openConnection() (err error) {
 
 	if config.DatabaseLoggingEnabled.Value() {
 		logging.Info.Printf("Database logging enabled")
-		gormConfig.Logger.LogMode(logger.Info)
+		gormConfig.Logger = gormConfig.Logger.LogMode(logger.Info)
 	}
 
 	// Sqlite doesn't implement constraints see  https://github.com/go-gorm/gorm/wiki/GORM-V2-Release-Note-Draft#all-new-migratolease-Note-Draft#all-new-migrator
@@ -136,6 +136,8 @@ func migrateModels() error {
 		&models.Permissions{},
 		&models.Client{},
 		&models.UserSetting{},
+		&models.Session{},
+		&models.TemplateRepo{},
 	}
 
 	for _, v := range dbObjects {
@@ -143,19 +145,6 @@ func migrateModels() error {
 			return err
 		}
 	}
-
-	dialect := config.DatabaseDialect.Value()
-	if dialect == "" || dialect == "sqlite3" {
-		//SQLite does not support creating FKs like this, so we can't just enable them...
-		/*var res = dbConn.Exec("PRAGMA foreign_keys = ON")
-		if res.RowsAffected == 0 {
-			logging.Error.Println("SQLite does not support FKs")
-		} else {
-			logging.Debug.Printf("%v\n", res.Value)
-		}*/
-		return nil
-	}
-
 	return migrate(dbConn)
 }
 

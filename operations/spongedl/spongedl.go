@@ -19,6 +19,7 @@ package spongedl
 import (
 	"encoding/json"
 	"errors"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
 	"os"

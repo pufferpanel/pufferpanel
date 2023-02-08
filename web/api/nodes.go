@@ -18,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -29,20 +29,20 @@ import (
 )
 
 func registerNodes(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getAllNodes)
-	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), createNode)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getAllNodes)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), createNode)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesView, false), getNode)
-	g.Handle("PUT", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), updateNode)
-	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeNodesEdit, false), deleteNode)
-	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getNode)
+	g.Handle("PUT", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), updateNode)
+	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), deleteNode)
+	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "DELETE"))
 
-	g.Handle("GET", "/:id/deployment", handlers.OAuth2Handler(pufferpanel.ScopeNodesDeploy, false), deployNode)
+	g.Handle("GET", "/:id/deployment", middleware.RequiresPermission(pufferpanel.ScopeNodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
 }
 
-// @Summary Get nodes
+// @Summary Value nodes
 // @Description Gets all nodes registered to the panel
 // @Accept json
 // @Produce json
@@ -54,7 +54,7 @@ func registerNodes(g *gin.RouterGroup) {
 // @Router /api/nodes [get]
 func getAllNodes(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var nodes []*models.Node
@@ -62,10 +62,11 @@ func getAllNodes(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.FromNodes(nodes))
+	data := models.FromNodes(nodes)
+	c.JSON(http.StatusOK, data)
 }
 
-// @Summary Get node
+// @Summary Value node
 // @Description Gets information about a single node
 // @Accept json
 // @Produce json
@@ -78,7 +79,7 @@ func getAllNodes(c *gin.Context) {
 // @Router /api/nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -107,7 +108,7 @@ func getNode(c *gin.Context) {
 // @Router /api/nodes [post]
 func createNode(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	model := &models.NodeView{}
@@ -143,7 +144,7 @@ func createNode(c *gin.Context) {
 // @Router /api/nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	viewModel := &models.NodeView{}
@@ -186,7 +187,7 @@ func updateNode(c *gin.Context) {
 // @Router /api/nodes/{id} [delete]
 func deleteNode(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -220,7 +221,7 @@ func deleteNode(c *gin.Context) {
 // @Router /api/nodes/{id}/deployment [get]
 func deployNode(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -246,7 +247,7 @@ func validateId(c *gin.Context) (uint, bool) {
 
 	id, err := strconv.Atoi(param)
 
-	if response.HandleError(c, err, http.StatusBadRequest) || id < 0 {
+	if response.HandleError(c, err, http.StatusBadRequest) || id <= 0 {
 		response.HandleError(c, pufferpanel.ErrFieldTooSmall("id", 0), http.StatusBadRequest)
 		return 0, false
 	}

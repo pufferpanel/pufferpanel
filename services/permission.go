@@ -24,25 +24,25 @@ type Permission struct {
 }
 
 func (ps *Permission) GetForUser(id uint) ([]*models.Permissions, error) {
-	allPerms := &models.MultiplePermissions{}
+	var allPerms []*models.Permissions
 	permissions := &models.Permissions{
 		UserId: &id,
 	}
 
 	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
-	return *allPerms, err
+	return allPerms, err
 }
 
 func (ps *Permission) GetForServer(serverId string) ([]*models.Permissions, error) {
-	allPerms := &models.MultiplePermissions{}
+	var allPerms []*models.Permissions
 	permissions := &models.Permissions{
 		ServerIdentifier: &serverId,
 	}
 
 	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
-	return *allPerms, err
+	return allPerms, err
 }
 
 func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*models.Permissions, error) {
@@ -61,15 +61,14 @@ func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*model
 }
 
 func (ps *Permission) GetForClient(id uint) ([]*models.Permissions, error) {
-	allPerms := &models.MultiplePermissions{}
-
+	var allPerms []*models.Permissions
 	permissions := &models.Permissions{
 		ClientId: &id,
 	}
 
 	err := ps.DB.Preload(clause.Associations).Where(permissions).Find(&allPerms).Error
 
-	return *allPerms, err
+	return allPerms, err
 }
 
 func (ps *Permission) GetForClientAndServer(id uint, serverId *string) (*models.Permissions, error) {
@@ -92,11 +91,11 @@ func (ps *Permission) UpdatePermissions(perms *models.Permissions) error {
 		return ps.DB.Save(perms).Error
 	}*/
 
-	return ps.DB.Save(perms).Error
+	return ps.DB.Omit(clause.Associations).Save(perms).Error
 }
 
 func (ps *Permission) Remove(perms *models.Permissions) error {
 	//update oauth2 with new information
 
-	return ps.DB.Delete(perms).Error
+	return ps.DB.Omit(clause.Associations).Delete(perms).Error
 }

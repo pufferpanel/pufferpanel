@@ -63,8 +63,6 @@ type Permissions struct {
 	PutServerFiles    bool `gorm:"NOT NULL;DEFAULT:0" json:"-" oneOf:""`
 }
 
-type MultiplePermissions []*Permissions
-
 func (p *Permissions) BeforeSave(*gorm.DB) error {
 	if p.ServerIdentifier != nil && *p.ServerIdentifier == "" {
 		p.ServerIdentifier = nil

@@ -29,6 +29,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	v1 "github.com/opencontainers/image-spec/specs-go/v1"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
@@ -129,7 +130,11 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		_ = d.WSManager.WriteMessage(msg)
 
 		if steps.Callback != nil {
-			steps.Callback(err == nil)
+			if err == nil {
+				steps.Callback(0)
+			} else {
+				steps.Callback(1)
+			}
 		}
 	}()
 

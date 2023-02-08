@@ -24,12 +24,12 @@ import (
 func SendEmailViaSMTP(to, subject, body string, async bool) error {
 	from := config.EmailFrom.Value()
 	if from == "" {
-		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
+		return pufferpanel.ErrSettingNotConfigured(config.EmailFrom.Key())
 	}
 
 	host := config.EmailHost.Value()
 	if host == "" {
-		return pufferpanel.ErrSettingNotConfigured("panel.email.host")
+		return pufferpanel.ErrSettingNotConfigured(config.EmailHost.Key())
 	}
 
 	var auth smtp.Auth = nil

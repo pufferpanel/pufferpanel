@@ -17,7 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -27,21 +27,21 @@ import (
 )
 
 func registerUsers(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), searchUsers)
-	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), createUser)
+	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeUsersView, false), searchUsers)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeUsersEdit, false), createUser)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "POST"))
 
-	g.Handle("GET", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), getUser)
-	g.Handle("POST", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), updateUser)
-	g.Handle("DELETE", "/:id", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), deleteUser)
+	g.Handle("GET", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUsersView, false), getUser)
+	g.Handle("POST", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUsersEdit, false), updateUser)
+	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeUsersEdit, false), deleteUser)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("GET", "POST", "DELETE"))
 
-	g.Handle("GET", "/:id/perms", handlers.OAuth2Handler(pufferpanel.ScopeUsersView, false), getUserPerms)
-	g.Handle("PUT", "/:id/perms", handlers.OAuth2Handler(pufferpanel.ScopeUsersEdit, false), setUserPerms)
+	g.Handle("GET", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUsersView, false), getUserPerms)
+	g.Handle("PUT", "/:id/perms", middleware.RequiresPermission(pufferpanel.ScopeUsersEdit, false), setUserPerms)
 	g.Handle("OPTIONS", "/:id/perms", response.CreateOptions("PUT", "GET"))
 }
 
-// @Summary Get users
+// @Summary Value users
 // @Description Gets users, and allowing for filtering of users. * is a wildcard that can be used for text inputs
 // @Accept json
 // @Produce json
@@ -54,7 +54,7 @@ func registerUsers(g *gin.RouterGroup) {
 // @Router /api/users [get]
 func searchUsers(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	search := newUserSearch()
@@ -67,7 +67,7 @@ func searchUsers(c *gin.Context) {
 		search.PageLimit = MaxPageSize
 	}
 
-	var results *models.Users
+	var results []*models.User
 	var total int64
 	if results, total, err = us.Search(search.Username, search.Email, search.PageLimit, search.Page); response.HandleError(c, err, http.StatusInternalServerError) {
 		return
@@ -96,7 +96,7 @@ func searchUsers(c *gin.Context) {
 // @Router /api/users [post]
 func createUser(c *gin.Context) {
 	var err error
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
@@ -125,7 +125,7 @@ func createUser(c *gin.Context) {
 	c.JSON(http.StatusOK, resultModel)
 }
 
-// @Summary Get a user
+// @Summary Value a user
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.UserView
@@ -136,7 +136,7 @@ func createUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [get]
 func getUser(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -169,7 +169,7 @@ func getUser(c *gin.Context) {
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
 func updateUser(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -216,7 +216,7 @@ func updateUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [delete]
 func deleteUser(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -252,7 +252,7 @@ func deleteUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id}/perms [get]
 func getUserPerms(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -291,7 +291,7 @@ func getUserPerms(c *gin.Context) {
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
 func setUserPerms(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 

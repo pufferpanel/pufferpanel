@@ -84,7 +84,8 @@ func (us *User) Login(email string, password string) (user *models.User, session
 		return
 	}
 
-	sessionToken, err = GenerateSession(user.ID)
+	ss := &Session{DB: us.DB}
+	sessionToken, err = ss.CreateForUser(user)
 	return
 }
 
@@ -109,7 +110,8 @@ func (us *User) LoginOtp(email string, token string) (user *models.User, session
 		return
 	}
 
-	sessionToken, err = GenerateSession(user.ID)
+	ss := &Session{DB: us.DB}
+	sessionToken, err = ss.CreateForUser(user)
 	return
 }
 
@@ -138,6 +140,7 @@ func (us *User) Delete(model *models.User) (err error) {
 	return us.DB.Transaction(func(tx *gorm.DB) error {
 		us.DB.Delete(models.Permissions{}, "user_id = ?", model.ID)
 		us.DB.Delete(models.Client{}, "user_id = ?", model.ID)
+		us.DB.Delete(models.Session{}, "user_id = ?", model.ID)
 		us.DB.Delete(models.User{}, "id = ?", model.ID)
 		return nil
 	})
@@ -171,7 +174,7 @@ func (us *User) GetOtpStatus(userId uint) (enabled bool, err error) {
 	return
 }
 
-func (us *User) StartOtpEnroll(userId uint) (secret string, img string, err error) {
+func (us *User) StartOtpEnroll(userId uint) (secret string, imgStr string, err error) {
 	user, err := us.GetById(userId)
 	if err != nil {
 		return
@@ -194,14 +197,14 @@ func (us *User) StartOtpEnroll(userId uint) (secret string, img string, err erro
 	}
 
 	var buf bytes.Buffer
-	var image image.Image
-	image, err = key.Image(256, 256)
+	var img image.Image
+	img, err = key.Image(256, 256)
 	if err != nil {
 		return
 	}
-	png.Encode(&buf, image)
-	img = "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
+	png.Encode(&buf, img)
 
+	imgStr = "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
 	secret = key.Secret()
 	return
 }
@@ -235,8 +238,8 @@ func (us *User) DisableOtp(userId uint, token string) error {
 	return us.Update(user)
 }
 
-func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) (*models.Users, int64, error) {
-	users := &models.Users{}
+func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) ([]*models.User, int64, error) {
+	var users []*models.User
 
 	query := us.DB
 
@@ -258,7 +261,7 @@ func (us *User) Search(usernameFilter, emailFilter string, pageSize, page uint) 
 		return nil, 0, err
 	}
 
-	res := query.Offset(int((page - 1) * pageSize)).Limit(int(pageSize)).Find(users)
+	res := query.Offset(int((page - 1) * pageSize)).Limit(int(pageSize)).Find(&users)
 
 	return users, count, res.Error
 }

@@ -4,18 +4,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
-	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/spf13/cast"
 	"net/http"
 )
 
 func registerSettings(g *gin.RouterGroup) {
-	g.Handle("GET", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), getSetting)
-	g.Handle("PUT", "/:key", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), setSetting)
-	g.Handle("POST", "", handlers.OAuth2Handler(pufferpanel.ScopeSettings, false), setSettings)
+	g.Handle("GET", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), getSetting)
+	g.Handle("PUT", "/:key", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSetting)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeSettings, false), setSettings)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET", "PUT"))
 }
 
@@ -30,11 +29,6 @@ func getSetting(c *gin.Context) {
 
 	for _, v := range editableStringEntries {
 		if v.Key() == key {
-			if v.Key() == config.MasterUrl.Key() {
-				//refresh the node because it's needing the new url to process
-				services.SyncNodeToConfig()
-			}
-
 			c.JSON(http.StatusOK, models.SettingResponse{Value: v.Value()})
 			return
 		}

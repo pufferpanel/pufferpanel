@@ -11,7 +11,7 @@
   limitations under the License.
 */
 
-package middleware
+package panelmiddleware
 
 import (
 	"github.com/gin-gonic/gin"
@@ -36,8 +36,6 @@ func NeedsDatabase(c *gin.Context) {
 	}
 
 	c.Set("db", db)
-
-	c.Next()
 }
 
 func GetDatabase(c *gin.Context) *gorm.DB {
@@ -50,4 +48,30 @@ func GetDatabase(c *gin.Context) *gorm.DB {
 		return nil
 	}
 	return casted
+}
+
+func HasTransaction(c *gin.Context) {
+	db := GetDatabase(c)
+
+	if db == nil {
+		NeedsDatabase(c)
+		db = GetDatabase(c)
+		if db == nil {
+			response.HandleError(c, pufferpanel.ErrDatabaseNotAvailable, http.StatusInternalServerError)
+			return
+		}
+	}
+
+	db = db.Begin()
+
+	c.Set("db", db)
+
+	c.Next()
+
+	isBadStatus := c.Writer.Status() >= 400
+	if c.Errors != nil || isBadStatus {
+		db.Rollback()
+	} else {
+		db.Commit()
+	}
 }

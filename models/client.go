@@ -44,8 +44,6 @@ type CreatedClient struct {
 	ClientSecret string `json:"secret"`
 }
 
-type Clients []*Client
-
 func (c *Client) SetClientSecret(secret string) error {
 	res, err := bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)
 

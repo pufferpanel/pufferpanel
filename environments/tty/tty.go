@@ -1,6 +1,3 @@
-//go:build !windows
-// +build !windows
-
 /*
  Copyright 2020 Padduck, LLC
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +16,7 @@ package tty
 import (
 	"fmt"
 	"github.com/creack/pty"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"
@@ -183,14 +181,14 @@ func (t *tty) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (t *tty) handleClose(callback func(graceful bool)) {
+func (t *tty) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
-	var success bool
+	var exitCode int
 	if t.mainProcess.ProcessState == nil || err != nil {
-		success = false
+		exitCode = 1
 	} else {
-		success = t.mainProcess.ProcessState.Success()
+		exitCode = t.mainProcess.ProcessState.ExitCode()
 	}
 
 	if err != nil {
@@ -211,6 +209,6 @@ func (t *tty) handleClose(callback func(graceful bool)) {
 	_ = t.WSManager.WriteMessage(msg)
 
 	if callback != nil {
-		callback(success)
+		callback(exitCode)
 	}
 }

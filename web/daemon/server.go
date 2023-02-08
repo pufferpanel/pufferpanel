@@ -1,5 +1,5 @@
 /*
- Copyright 2016 Padduck, LLC
+ Copyright 2022 (c) PufferPanel
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -49,92 +49,78 @@ var wsupgrader = websocket.Upgrader{
 func RegisterServerRoutes(e *gin.RouterGroup) {
 	l := e.Group("/server")
 	{
-		l.PUT("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
-		l.DELETE("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersDelete, true), DeleteServer)
-		l.GET("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
-		l.POST("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
-		l.OPTIONS("/:id", response.CreateOptions("PUT", "DELETE", "GET"))
+		l.PUT("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), CreateServer)
+		l.DELETE("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), DeleteServer)
+		l.GET("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), GetServerAdmin)
+		l.POST("/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), EditServerAdmin)
+		l.OPTIONS("/:serverId", response.CreateOptions("PUT", "DELETE", "GET"))
 
-		l.GET("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerData)
-		l.POST("/:id/data", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerData)
-		l.OPTIONS("/:id/data", response.CreateOptions("GET", "POST"))
+		l.GET("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerData)
+		l.POST("/:serverId/data", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerData)
+		l.OPTIONS("/:serverId/data", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), GetServerTasks)
-		l.POST("/:id/tasks", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), CreateServerTask)
-		l.PUT("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), EditServerTask)
-		l.DELETE("/:id/tasks/:taskId", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
-		l.OPTIONS("/:id/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
+		l.GET("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), GetServerTasks)
+		l.POST("/:serverId/tasks", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), CreateServerTask)
+		l.PUT("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), EditServerTask)
+		l.DELETE("/:serverId/tasks/:taskId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), DeleteServerTask)
+		l.OPTIONS("/:serverId/tasks", response.CreateOptions("GET", "POST", "PUT", "DELETE"))
 
-		//l.POST("/:id/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
-		l.OPTIONS("/:id/tasks/:taskId/run", response.CreateOptions("POST"))
+		//l.POST("/:serverId/tasks/:taskId/run", middleware.OAuth2Handler(pufferpanel.ScopeServersEdit, true), RunServerTask)
+		l.OPTIONS("/:serverId/tasks/:taskId/run", response.CreateOptions("POST"))
 
-		l.POST("/:id/reload", middleware.OAuth2Handler(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
-		l.OPTIONS("/:id/reload", response.CreateOptions("POST"))
+		l.POST("/:serverId/reload", middleware.RequiresPermission(pufferpanel.ScopeServersEditAdmin, true), ReloadServer)
+		l.OPTIONS("/:serverId/reload", response.CreateOptions("POST"))
 
-		l.POST("/:id/start", middleware.OAuth2Handler(pufferpanel.ScopeServersStart, true), StartServer)
-		l.OPTIONS("/:id/start", response.CreateOptions("POST"))
+		l.POST("/:serverId/start", middleware.RequiresPermission(pufferpanel.ScopeServersStart, true), StartServer)
+		l.OPTIONS("/:serverId/start", response.CreateOptions("POST"))
 
-		l.POST("/:id/stop", middleware.OAuth2Handler(pufferpanel.ScopeServersStop, true), StopServer)
-		l.OPTIONS("/:id/stop", response.CreateOptions("POST"))
+		l.POST("/:serverId/stop", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), StopServer)
+		l.OPTIONS("/:serverId/stop", response.CreateOptions("POST"))
 
-		l.POST("/:id/kill", middleware.OAuth2Handler(pufferpanel.ScopeServersStop, true), KillServer)
-		l.OPTIONS("/:id/kill", response.CreateOptions("POST"))
+		l.POST("/:serverId/kill", middleware.RequiresPermission(pufferpanel.ScopeServersStop, true), KillServer)
+		l.OPTIONS("/:serverId/kill", response.CreateOptions("POST"))
 
-		l.POST("/:id/install", middleware.OAuth2Handler(pufferpanel.ScopeServersInstall, true), InstallServer)
-		l.OPTIONS("/:id/install", response.CreateOptions("POST"))
+		l.POST("/:serverId/install", middleware.RequiresPermission(pufferpanel.ScopeServersInstall, true), InstallServer)
+		l.OPTIONS("/:serverId/install", response.CreateOptions("POST"))
 
-		l.GET("/:id/file/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesGet, true), GetFile)
-		l.PUT("/:id/file/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), PutFile)
-		l.DELETE("/:id/file/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), DeleteFile)
-		l.POST("/:id/file/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), response.NotImplemented)
-		l.OPTIONS("/:id/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
+		l.GET("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesGet, true), GetFile)
+		l.PUT("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), PutFile)
+		l.DELETE("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), DeleteFile)
+		l.POST("/:serverId/file/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), response.NotImplemented)
+		l.OPTIONS("/:serverId/file/*filename", response.CreateOptions("GET", "PUT", "DELETE", "POST"))
 
-		l.GET("/:id/console", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), GetLogs)
-		l.POST("/:id/console", middleware.OAuth2Handler(pufferpanel.ScopeServersConsoleSend, true), PostConsole)
-		l.OPTIONS("/:id/console", response.CreateOptions("GET", "POST"))
+		l.GET("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), GetLogs)
+		l.POST("/:serverId/console", middleware.RequiresPermission(pufferpanel.ScopeServersConsoleSend, true), PostConsole)
+		l.OPTIONS("/:serverId/console", response.CreateOptions("GET", "POST"))
 
-		l.GET("/:id/stats", middleware.OAuth2Handler(pufferpanel.ScopeServersStat, true), GetStats)
-		l.OPTIONS("/:id/stats", response.CreateOptions("GET"))
+		l.GET("/:serverId/stats", middleware.RequiresPermission(pufferpanel.ScopeServersStat, true), GetStats)
+		l.OPTIONS("/:serverId/stats", response.CreateOptions("GET"))
 
-		l.GET("/:id/status", middleware.OAuth2Handler(pufferpanel.ScopeServersView, true), GetStatus)
-		l.OPTIONS("/:id/status", response.CreateOptions("GET"))
+		l.GET("/:serverId/status", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), GetStatus)
+		l.OPTIONS("/:serverId/status", response.CreateOptions("GET"))
 
-		l.POST("/:id/archive/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Archive)
-		l.GET("/:id/extract/*filename", middleware.OAuth2Handler(pufferpanel.ScopeServersFilesPut, true), Extract)
-	}
+		l.POST("/:serverId/archive/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), Archive)
+		l.GET("/:serverId/extract/*filename", middleware.RequiresPermission(pufferpanel.ScopeServersFilesPut, true), Extract)
 
-	p := e.Group("/socket")
-	{
-		p.GET("/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
+		l.GET("/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
 			AllowAllOrigins:  true,
 			AllowCredentials: true,
 		}), OpenSocket)
-		p.Handle("CONNECT", "/:id", middleware.OAuth2Handler(pufferpanel.ScopeServersConsole, true), cors.New(cors.Config{
-			AllowAllOrigins:  true,
-			AllowCredentials: true,
-		}))
-		p.OPTIONS("/:id", response.CreateOptions("GET"))
+
+		l.Handle("CONNECT", "/:serverId/socket", middleware.RequiresPermission(pufferpanel.ScopeServersConsole, true), func(c *gin.Context) {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Credentials", "false")
+		})
+		l.OPTIONS("/:serverId/socket", response.CreateOptions("GET", "CONNECT"))
+
 	}
 
-	l.POST("", middleware.OAuth2Handler(pufferpanel.ScopeServersCreate, false), CreateServer)
+	l.POST("", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), CreateServer)
 	l.OPTIONS("", response.CreateOptions("POST"))
 }
 
-// @Summary Starts server
-// @Description Starts the given server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Server started"
-// @Success 202 {object} response.Empty "Start has been queued"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param wait query bool false "Wait for the operation to complete"
-// @Router /daemon/server/{id}/start [post]
 func StartServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	_, wait := c.GetQuery("wait")
@@ -156,21 +142,8 @@ func StartServer(c *gin.Context) {
 	}
 }
 
-// @Summary Stop server
-// @Description Stops the given server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Server stopped"
-// @Success 202 {object} response.Empty "Stop has been queued"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param wait query bool false "Wait for the operation to complete"
-// @Router /daemon/server/{id}/stop [post]
 func StopServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	_, wait := c.GetQuery("wait")
@@ -191,19 +164,8 @@ func StopServer(c *gin.Context) {
 	}
 }
 
-// @Summary Kill server
-// @Description Stops the given server forcefully
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Server killed"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/kill [post]
 func KillServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	err := server.Kill()
@@ -213,20 +175,8 @@ func KillServer(c *gin.Context) {
 	}
 }
 
-// @Summary Create server
-// @Description Creates the server
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerIdResponse "Server created"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param server body pufferpanel.Server true "Server to create"
-// @Router /daemon/server/{id} [put]
 func CreateServer(c *gin.Context) {
-	serverId := c.Param("id")
+	serverId := c.Param("serverId")
 	if serverId == "" {
 		id := uuid.NewV4()
 		serverId = id.String()
@@ -274,19 +224,8 @@ func CreateServer(c *gin.Context) {
 	c.JSON(200, &pufferpanel.ServerIdResponse{Id: serverId})
 }
 
-// @Summary Deletes server
-// @Description Deletes the given server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Server deleted"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id} [delete]
 func DeleteServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 	err := programs.Delete(prg.Id())
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -295,20 +234,8 @@ func DeleteServer(c *gin.Context) {
 	}
 }
 
-// @Summary Installs server
-// @Description installs the given server
-// @Accept json
-// @Produce json
-// @Success 202 {object} response.Empty "Install has been queued"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param wait query bool false "Wait for the operation to complete"
-// @Router /daemon/server/{id}/install [post]
 func InstallServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	_, wait := c.GetQuery("wait")
@@ -328,20 +255,8 @@ func InstallServer(c *gin.Context) {
 	}
 }
 
-// @Summary Edit server data
-// @Description Edits the given server data
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Server edited"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param data body pufferpanel.ServerData true "Server data"
-// @Router /daemon/server/{id}/data [post]
 func EditServerData(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	data := &pufferpanel.ServerData{}
@@ -358,7 +273,7 @@ func EditServerData(c *gin.Context) {
 }
 
 func CreateServerTask(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	var task pufferpanel.Task
@@ -374,7 +289,7 @@ func CreateServerTask(c *gin.Context) {
 }
 
 func EditServerTask(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	var task pufferpanel.Task
@@ -394,7 +309,7 @@ func EditServerTask(c *gin.Context) {
 }
 
 func DeleteServerTask(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	taskName := c.Param("taskName")
@@ -406,19 +321,8 @@ func DeleteServerTask(c *gin.Context) {
 	}
 }
 
-// @Summary Reload server
-// @Description Reloads the server from disk
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Reloaded server"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/reload [post]
 func ReloadServer(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	err := programs.Reload(prg.Id())
@@ -428,19 +332,8 @@ func ReloadServer(c *gin.Context) {
 	}
 }
 
-// @Summary Gets server data
-// @Description Gets the given server data
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerData "Data for this server"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/data [get]
 func GetServerData(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	data := server.GetData()
@@ -459,40 +352,18 @@ func GetServerData(c *gin.Context) {
 }
 
 func GetServerTasks(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	c.JSON(200, &pufferpanel.ServerTasks{Tasks: server.Tasks})
 }
 
-// @Summary Gets server data as admin
-// @Description Gets the given server data from an admin's view
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerDataAdmin "Data for this server"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id} [get]
 func GetServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*programs.Program)
 
 	c.JSON(200, &pufferpanel.ServerDataAdmin{Server: &item.Server})
 }
 
-// @Summary Updates a server
-// @Description Updates a server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id} [post]
 func EditServerAdmin(c *gin.Context) {
 	item, _ := c.MustGet("server").(*programs.Program)
 	server := &item.Server
@@ -524,22 +395,8 @@ func EditServerAdmin(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Get file/list
-// @Description Gets a file or a file list from the server
-// @Accept json
-// @Produce json
-// @Produce octet-stream
-// @Success 200 {object} string "File"
-// @Success 200 {object} messages.FileDesc "File List"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param filename path string true "File name"
-// @Router /daemon/server/{id}/file/{filename} [get]
 func GetFile(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	targetPath := c.Param("filename")
@@ -579,22 +436,8 @@ func GetFile(c *gin.Context) {
 	}
 }
 
-// @Summary Put file/folder
-// @Description Puts a file or folder on the server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "If file/folder was created"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param filename path string true "File name"
-// @Param folder path bool true "If this is a folder"
-// @Param file formData file false "File to place"
-// @Router /daemon/server/{id}/file/{filename} [put]
 func PutFile(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	targetPath := c.Param("filename")
@@ -637,20 +480,8 @@ func PutFile(c *gin.Context) {
 	}
 }
 
-// @Summary Delete file
-// @Description Deletes a file from the server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "If file was deleted"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param filename path string true "File name"
-// @Router /daemon/server/{id}/file/{filename} [delete]
 func DeleteFile(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	targetPath := c.Param("filename")
@@ -662,20 +493,8 @@ func DeleteFile(c *gin.Context) {
 	}
 }
 
-// @Summary Run command
-// @Description Runs a command in the server
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "If command was ran"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param commands body string true "Command to run"
-// @Router /daemon/server/{id}/console [post]
 func PostConsole(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	prg := item.(*programs.Program)
 
 	d, _ := ioutil.ReadAll(c.Request.Body)
@@ -687,19 +506,8 @@ func PostConsole(c *gin.Context) {
 	}
 }
 
-// @Summary Gets server stats
-// @Description Gets the given server stats
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerStats "Stats for this server"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/stats [get]
 func GetStats(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	svr := item.(*programs.Program)
 
 	results, err := svr.GetEnvironment().GetStats()
@@ -709,20 +517,8 @@ func GetStats(c *gin.Context) {
 	}
 }
 
-// @Summary Gets server logs
-// @Description Gets the given server logs since a certain time period
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerLogs "Logs for this server"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param time query int false "Only get data from after this UNIX timestamp" default(0)
-// @Router /daemon/server/{id}/console [get]
 func GetLogs(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	program := item.(*programs.Program)
 
 	time := c.DefaultQuery("time", "0")
@@ -745,19 +541,8 @@ func GetLogs(c *gin.Context) {
 	})
 }
 
-// @Summary Gets server status
-// @Description Gets the given server status
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.ServerRunning
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Router /daemon/server/{id}/status [get]
 func GetStatus(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	program := item.(*programs.Program)
 
 	running, err := program.IsRunning()
@@ -768,19 +553,8 @@ func GetStatus(c *gin.Context) {
 	}
 }
 
-// @Summary Archive file(s)
-// @Description Archives file(s) with the
-// @Accept json
-// @Success 204 {object} response.Empty "If file(s) was archived"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param filename path string true "Destination"
-// @Router /daemon/server/{id}/archive/{filename} [post]
 func Archive(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 	var files []string
 
@@ -800,21 +574,8 @@ func Archive(c *gin.Context) {
 	}
 }
 
-// @Summary Extract files
-// @Description Extracts files from an archive
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "If file was extracted"
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Empty
-// @Failure 404 {object} response.Empty
-// @Failure 500 {object} response.Error
-// @Param id path string true "Server Identifier"
-// @Param filename path string true "File name"
-// @Param destination path string true "Destination directory (URI Parameter)"
-// @Router /daemon/server/{id}/extract/{filename} [get]
 func Extract(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	server := item.(*programs.Program)
 
 	targetPath := c.Param("filename")
@@ -828,7 +589,7 @@ func Extract(c *gin.Context) {
 }
 
 func OpenSocket(c *gin.Context) {
-	item, _ := c.Get("server")
+	item, _ := c.Get("program")
 	program := item.(*programs.Program)
 
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)

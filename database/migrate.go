@@ -18,6 +18,16 @@ func migrate(dbConn *gorm.DB) error {
 			Rollback: nil,
 		},
 		{
+			ID: "1658926619",
+			Migrate: func(db *gorm.DB) error {
+				return db.Create(&models.TemplateRepo{
+					Name:   "community",
+					Url:    "https://github.com/pufferpanel/templates",
+					Branch: "v2",
+				}).Error
+			},
+		},
+		{
 			ID: "1665609381",
 			Migrate: func(db *gorm.DB) error {
 				var nodes []*models.Node
@@ -27,9 +37,9 @@ func migrate(dbConn *gorm.DB) error {
 				}
 
 				var local *models.Node
-				for _, n := range nodes {
-					if (n.PrivateHost == "localhost" || n.PrivateHost == "127.0.0.1") && (n.PublicHost == "localhost" || n.PublicHost == "127.0.0.1") {
-						local = n
+				for _, v := range nodes {
+					if v.Name == "LocalNode" {
+						local = v
 					}
 				}
 

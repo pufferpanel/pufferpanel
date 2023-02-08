@@ -43,9 +43,8 @@ func FromServer(server *Server) *ServerView {
 		IP:         server.IP,
 		Port:       server.Port,
 		Type:       server.Type,
+		Node:       FromNode(&server.Node),
 	}
-
-	model.Node = FromNode(&server.Node)
 
 	return model
 }

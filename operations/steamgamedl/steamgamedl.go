@@ -66,12 +66,12 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		}
 	}
 
-	ch := make(chan bool, 1)
+	ch := make(chan int, 1)
 	steps := pufferpanel.ExecutionData{
 		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
 		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
 		Arguments: args,
-		Callback: func(exitCode bool) {
+		Callback: func(exitCode int) {
 			ch <- exitCode
 		},
 	}
@@ -79,9 +79,9 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 	if err != nil {
 		return err
 	}
-	success := <-ch
-	if !success {
-		return errors.New("depotdownloader exited with non-zero code")
+	exitCode := <-ch
+	if exitCode != 0 {
+		return errors.New(fmt.Sprintf("depotdownloader exited with non-zero code %d", exitCode))
 	}
 
 	//for some steam games, there's a binary we can instant-mark

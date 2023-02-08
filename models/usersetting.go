@@ -5,5 +5,3 @@ type UserSetting struct {
 	UserID uint   `gorm:"NOT NULL;primaryKey;AUTO_INCREMENT:false"`
 	Value  string `gorm:"NOT NULL;type:text"`
 }
-
-type UserSettings []*UserSetting

@@ -1,6 +1,3 @@
-//go:build !windows
-// +build !windows
-
 /*
  Copyright 2019 Padduck, LLC
 
@@ -18,6 +15,8 @@
 */
 
 package tty
+
+import "github.com/pufferpanel/pufferpanel/v3"
 
 type EnvironmentFactory struct {
 	pufferpanel.EnvironmentFactory

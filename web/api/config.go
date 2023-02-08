@@ -9,7 +9,7 @@ import (
 )
 
 func panelConfig(c *gin.Context) {
-	themes := []string{}
+	var themes []string
 	files, err := os.ReadDir(config.WebRoot.Value() + "/theme")
 	if err != nil {
 		themes = append(themes, "PufferPanel")
@@ -21,30 +21,31 @@ func panelConfig(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"themes": map[string]interface{}{
-			"active":    config.DefaultTheme.Value(),
-			"available": themes,
+	c.JSON(http.StatusOK, EditableConfig{
+		Themes: ThemeConfig{
+			Active:    config.DefaultTheme.Value(),
+			Settings:  config.ThemeSettings.Value(),
+			Available: themes,
 		},
-		"branding": map[string]interface{}{
-			"name": config.CompanyName.Value(),
+		Branding: BrandingConfig{
+			Name: config.CompanyName.Value(),
 		},
-		"registrationEnabled": config.RegistrationEnabled.Value(),
+		RegistrationEnabled: config.RegistrationEnabled.Value(),
 	})
 }
 
 type EditableConfig struct {
-	Themes              ThemeConfig
-	Branding            BrandingConfig
-	RegistrationEnabled bool
+	Themes              ThemeConfig    `json:"themes"`
+	Branding            BrandingConfig `json:"branding"`
+	RegistrationEnabled bool           `json:"registrationEnabled"`
 }
 
 type ThemeConfig struct {
-	Active    string
-	Settings  string
-	Available []string
+	Active    string   `json:"active"`
+	Settings  string   `json:"settings"`
+	Available []string `json:"available"`
 }
 
 type BrandingConfig struct {
-	Name string
+	Name string `json:"name"`
 }

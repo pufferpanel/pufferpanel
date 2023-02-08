@@ -18,6 +18,7 @@ package standard
 
 import (
 	"fmt"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"
@@ -186,18 +187,18 @@ func (s *standard) SendCode(code int) error {
 	return s.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (s *standard) handleClose(callback func(graceful bool)) {
+func (s *standard) handleClose(callback func(exitCode int)) {
 	err := s.mainProcess.Wait()
 	s.Wait.Done()
 
 	msg := messages.Status{Running: false}
 	_ = s.WSManager.WriteMessage(msg)
 
-	var graceful bool
+	var exitCode int
 	if s.mainProcess == nil || s.mainProcess.ProcessState == nil || err != nil {
-		graceful = false
+		exitCode = 1
 	} else {
-		graceful = s.mainProcess.ProcessState.Success()
+		exitCode = s.mainProcess.ProcessState.ExitCode()
 	}
 
 	if s.mainProcess != nil && s.mainProcess.Process != nil {
@@ -208,6 +209,6 @@ func (s *standard) handleClose(callback func(graceful bool)) {
 	s.stdInWriter = nil
 
 	if callback != nil {
-		callback(graceful)
+		callback(exitCode)
 	}
 }

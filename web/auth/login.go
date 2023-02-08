@@ -17,7 +17,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
-	"github.com/pufferpanel/pufferpanel/v3/middleware"
+	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"net/http"
@@ -25,7 +25,7 @@ import (
 )
 
 func LoginPost(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -45,7 +45,7 @@ func LoginPost(c *gin.Context) {
 		userSession := sessions.Default(c)
 		userSession.Set("user", user.Email)
 		userSession.Set("time", time.Now().Unix())
-		userSession.Save()
+		_ = userSession.Save()
 		c.JSON(http.StatusOK, &LoginOtpResponse{
 			OtpNeeded: true,
 		})
@@ -58,21 +58,24 @@ func LoginPost(c *gin.Context) {
 	}
 
 	data := &LoginResponse{}
-	data.Session = session
+	//data.Session = session
 	data.Scopes = perms.ToScopes()
 
 	secure := false
 	if c.Request.TLS != nil {
 		secure = true
 	}
-	//TODO: Change to httponly=true when UI is able to use it properly
-	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, false)
+
+	maxAge := int(time.Hour / time.Second)
+
+	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
+	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
 
 	c.JSON(http.StatusOK, data)
 }
 
 func OtpPost(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -94,7 +97,7 @@ func OtpPost(c *gin.Context) {
 
 	if timestamp < time.Now().Unix()-300 {
 		userSession.Clear()
-		userSession.Save()
+		_ = userSession.Save()
 		response.HandleError(c, pufferpanel.ErrSessionExpired, http.StatusBadRequest)
 		return
 	}
@@ -110,15 +113,18 @@ func OtpPost(c *gin.Context) {
 	}
 
 	data := &LoginResponse{}
-	data.Session = session
+	//data.Session = session
 	data.Scopes = perms.ToScopes()
 
 	secure := false
 	if c.Request.TLS != nil {
 		secure = true
 	}
-	//TODO: Change to httponly=true when UI is able to use it properly
-	c.SetCookie("puffer_auth", session, int(time.Hour/time.Second), "/", "", secure, false)
+
+	maxAge := int(time.Hour / time.Second)
+
+	c.SetCookie("puffer_auth", session, maxAge, "/", "", secure, true)
+	c.SetCookie("puffer_auth_expires", "", maxAge, "/", "", secure, false)
 
 	c.JSON(http.StatusOK, data)
 }
@@ -133,8 +139,7 @@ type LoginOtpResponse struct {
 }
 
 type LoginResponse struct {
-	Session string              `json:"session"`
-	Scopes  []pufferpanel.Scope `json:"scopes,omitempty"`
+	Scopes []pufferpanel.Scope `json:"scopes,omitempty"`
 }
 
 type OtpRequestData struct {

@@ -17,8 +17,8 @@ import "github.com/gin-gonic/gin"
 
 func RegisterRoutes(rg *gin.RouterGroup) {
 	rg.Use(setHeaders)
-
 	registerTokens(rg)
+	registerInfo(rg)
 }
 
 func setHeaders(c *gin.Context) {

@@ -18,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/handlers"
+	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -26,36 +26,39 @@ import (
 	"net/http"
 )
 
-var client = http.Client{}
-
 func registerTemplates(g *gin.RouterGroup) {
-	g.Handle("GET", "", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getAllTemplates)
-	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
+	g.Handle("GET", "/", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView, false), getRepos)
+	g.Handle("OPTIONS", "/", response.CreateOptions("GET"))
 
-	g.Handle("POST", "/import", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), getImportableTemplates)
-	g.Handle("POST", "/import/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), importTemplate)
+	g.Handle("GET", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView, false), getsTemplatesForRepo)
+	g.Handle("PUT", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), addRepo)
+	g.Handle("DELETE", "/:repo", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), deleteRepo)
+	g.Handle("OPTIONS", "/:repo", response.CreateOptions("GET", "PUT", "DELETE"))
 
-	g.Handle("GET", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), getTemplate)
-	g.Handle("DELETE", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesView, false), deleteTemplate)
-	g.Handle("PUT", "/:name", handlers.OAuth2Handler(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
-	g.Handle("OPTIONS", "/:name", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
+	g.Handle("GET", "/:repo/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesView, false), getTemplateFromRepo)
+	g.Handle("DELETE", "/local/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), deleteTemplate)
+	g.Handle("PUT", "/local/:name", middleware.RequiresPermission(pufferpanel.ScopeTemplatesEdit, false), putTemplate)
+	g.Handle("OPTIONS", "/:repo/:name", response.CreateOptions("GET"))
+	g.Handle("OPTIONS", "/local/:name", response.CreateOptions("GET", "DELETE", "PUT"))
 }
 
-// @Summary Get templates
-// @Description Gets all templates registered
-// @Accept json
-// @Produce json
-// @Success 200 {object} models.Templates
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
-// @Router /api/templates [get]
-func getAllTemplates(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+func getRepos(c *gin.Context) {
+	db := panelmiddleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	templates, err := ts.GetAll()
+	repos, err := ts.GetRepos()
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, repos)
+}
+
+func getsTemplatesForRepo(c *gin.Context) {
+	db := panelmiddleware.GetDatabase(c)
+	ts := &services.Template{DB: db}
+
+	templates, err := ts.GetAllFromRepo(c.Param("repo"))
 	if response.HandleError(c, err, http.StatusInternalServerError) {
 		return
 	}
@@ -63,7 +66,13 @@ func getAllTemplates(c *gin.Context) {
 	c.JSON(http.StatusOK, templates)
 }
 
-// @Summary Get single template
+func addRepo(c *gin.Context) {
+}
+
+func deleteRepo(c *gin.Context) {
+}
+
+// @Summary Value single template
 // @Description Gets a template if registered
 // @Accept json
 // @Produce json
@@ -73,11 +82,11 @@ func getAllTemplates(c *gin.Context) {
 // @Failure 404 {object} response.Error
 // @Failure 500 {object} response.Error
 // @Router /api/templates [get]
-func getTemplate(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+func getTemplateFromRepo(c *gin.Context) {
+	db := panelmiddleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
-	template, err := ts.Get(c.Param("name"))
+	template, err := ts.Get(c.Param("repo"), c.Param("name"))
 	if err != nil && err == gorm.ErrRecordNotFound {
 		c.AbortWithStatus(404)
 		return
@@ -100,7 +109,7 @@ func getTemplate(c *gin.Context) {
 // @Param name path string true "Template name"
 // @Router /api/templates/{name} [put]
 func putTemplate(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templateName := c.Param("name")
@@ -110,7 +119,7 @@ func putTemplate(c *gin.Context) {
 		return
 	}
 
-	template, err := ts.Get(templateName)
+	template, err := ts.Get("local", templateName)
 	if err != nil && err == gorm.ErrRecordNotFound {
 		template = &models.Template{
 			Name: templateName,
@@ -128,29 +137,6 @@ func putTemplate(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Import template from repo
-// @Description Imports the given template from our main repo
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
-// @Param name path string true "Template"
-// @Router /api/templates/import/{name} [post]
-func importTemplate(c *gin.Context) {
-	db := middleware.GetDatabase(c)
-	ts := &services.Template{DB: db}
-
-	err := ts.ImportFromRepo(c.Param("name"))
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	} else {
-		c.Status(http.StatusNoContent)
-	}
-}
-
 // @Summary Deletes template
 // @Description Deletes template
 // @Accept json
@@ -163,7 +149,7 @@ func importTemplate(c *gin.Context) {
 // @Param name path string true "Template"
 // @Router /api/templates/{name} [delete]
 func deleteTemplate(c *gin.Context) {
-	db := middleware.GetDatabase(c)
+	db := panelmiddleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	err := ts.Delete(c.Param("name"))
@@ -175,25 +161,4 @@ func deleteTemplate(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
-}
-
-// @Summary Gets importable templates
-// @Description Gets all templates which can be imported from https://github.com/PufferPanel/templates
-// @Accept json
-// @Produce json
-// @Success 200 {object} []string
-// @Failure 400 {object} response.Error
-// @Failure 403 {object} response.Error
-// @Failure 404 {object} response.Error
-// @Failure 500 {object} response.Error
-// @Param template body pufferpanel.Server true "Template"
-// @Router /api/templates/import [post]
-func getImportableTemplates(c *gin.Context) {
-	ts := &services.Template{}
-	results, err := ts.GetImportableTemplates()
-	if response.HandleError(c, err, http.StatusInternalServerError) {
-		return
-	}
-
-	c.JSON(200, results)
 }

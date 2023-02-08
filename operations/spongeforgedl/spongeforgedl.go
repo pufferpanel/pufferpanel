@@ -22,7 +22,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/operations/forgedl"
-	"net/http"
 	"os"
 	"path"
 	"strings"
@@ -30,8 +29,6 @@ import (
 
 const DownloadApiUrl = "https://dl-api.spongepowered.org/v1/org.spongepowered/spongeforge/downloads?type=stable&limit=1"
 const RecommendedApiUrl = "https://dl-api.spongepowered.org/v1/org.spongepowered/spongeforge/downloads/recommended"
-
-var client = &http.Client{}
 
 type SpongeForgeDl struct {
 	ReleaseType string

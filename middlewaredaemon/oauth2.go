@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package middleware
+package middlewaredaemon
 
 import (
 	"github.com/gin-gonic/gin"
@@ -22,7 +22,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/programs"
 	"github.com/pufferpanel/pufferpanel/v3/response"
-	"github.com/pufferpanel/pufferpanel/v3/services"
 	"net/http"
 	"runtime/debug"
 	"strings"
@@ -58,19 +57,9 @@ func OAuth2Handler(requiredScope pufferpanel.Scope, requireServer bool) gin.Hand
 			authToken = authArr[1]
 		}
 
-		token, err := services.ParseToken(authToken)
-		if response.HandleError(c, err, http.StatusForbidden) {
-			return
-		}
-
-		serverId := c.Param("id")
-		scopes := make([]pufferpanel.Scope, 0)
-		if token.Claims.PanelClaims.Scopes[serverId] != nil {
-			scopes = append(scopes, token.Claims.PanelClaims.Scopes[serverId]...)
-		}
-		if token.Claims.PanelClaims.Scopes[""] != nil {
-			scopes = append(scopes, token.Claims.PanelClaims.Scopes[""]...)
-		}
+		//TODO: we need to know what scopes you have....
+		var scopes []pufferpanel.Scope
+		var serverId string
 
 		if !pufferpanel.ContainsScope(scopes, requiredScope) {
 			response.HandleError(c, pufferpanel.CreateErrMissingScope(requiredScope), http.StatusForbidden)

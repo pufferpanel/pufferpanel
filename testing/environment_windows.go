@@ -1,5 +1,4 @@
 //go:build windows
-// +build windows
 
 /*
  Copyright 2016 Padduck, LLC
@@ -18,6 +17,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/messages"
 	"github.com/shirou/gopsutil/process"

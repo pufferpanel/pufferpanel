@@ -24,7 +24,7 @@ type UserSettings struct {
 }
 
 func (uss *UserSettings) GetAllForUser(userId uint) (models.UserSettingsView, error) {
-	records := &models.UserSettings{}
+	var records []*models.UserSetting
 
 	query := uss.DB
 
@@ -35,7 +35,7 @@ func (uss *UserSettings) GetAllForUser(userId uint) (models.UserSettingsView, er
 		return nil, err
 	}
 
-	err = query.Find(records).Error
+	err = query.Find(&records).Error
 	if err != nil {
 		return nil, err
 	}

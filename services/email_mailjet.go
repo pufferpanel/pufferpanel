@@ -10,17 +10,17 @@ import (
 func SendEmailViaMailjet(to, subject, body string, async bool) error {
 	domain := config.EmailDomain.Value()
 	if domain == "" {
-		return pufferpanel.ErrSettingNotConfigured("domain")
+		return pufferpanel.ErrSettingNotConfigured(config.EmailDomain.Key())
 	}
 
 	from := config.EmailFrom.Value()
 	if from == "" {
-		return pufferpanel.ErrSettingNotConfigured("panel.email.from")
+		return pufferpanel.ErrSettingNotConfigured(config.EmailFrom.Key())
 	}
 
 	key := config.EmailKey.Value()
 	if key == "" {
-		return pufferpanel.ErrSettingNotConfigured("panel.email.key")
+		return pufferpanel.ErrSettingNotConfigured(config.EmailKey.Key())
 	}
 
 	m := mailjet.NewMailjetClient(domain, key)

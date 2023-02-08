@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"github.com/go-git/go-git/v5"
 	"github.com/pufferpanel/pufferpanel/v3/config"
-	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations"
 	"github.com/pufferpanel/pufferpanel/v3/programs"
@@ -65,7 +64,6 @@ func main() {
 	})
 	panicIf(err)
 
-	environments.LoadModules()
 	operations.LoadOperations()
 
 	templateFolders, err := os.ReadDir(templateFolder)

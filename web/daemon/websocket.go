@@ -207,7 +207,7 @@ func handleGetFile(conn *pufferpanel.Socket, server *programs.Program, path stri
 		_ = pufferpanel.Write(conn, messages.FileList{FileList: data.FileList, CurrentPath: path})
 	} else if data.Contents != nil {
 		//if the file is small enough, we'll send it over the websocket
-		if editMode && data.ContentLength < config.WebSocketFileLimit.Value() {
+		if editMode && data.ContentLength < int64(config.WebSocketFileLimit.Value()) {
 			var buf bytes.Buffer
 			_, _ = io.Copy(&buf, data.Contents)
 			_ = pufferpanel.Write(conn, messages.FileList{Contents: buf.Bytes(), Filename: data.Name})

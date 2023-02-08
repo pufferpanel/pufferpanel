@@ -33,8 +33,6 @@ type User struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
-type Users []*User
-
 func (u *User) SetPassword(pw string) error {
 	res, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
 

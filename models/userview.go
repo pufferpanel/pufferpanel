@@ -36,10 +36,10 @@ func FromUser(model *User) *UserView {
 	}
 }
 
-func FromUsers(users *Users) []*UserView {
-	result := make([]*UserView, len(*users))
+func FromUsers(users []*User) []*UserView {
+	result := make([]*UserView, len(users))
 
-	for k, v := range *users {
+	for k, v := range users {
 		result[k] = FromUser(v)
 	}
 

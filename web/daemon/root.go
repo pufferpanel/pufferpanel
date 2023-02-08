@@ -1,5 +1,5 @@
 /*
- Copyright 2016 Padduck, LLC
+ Copyright 2022 (c) PufferPanel
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,33 +35,14 @@ func RegisterDaemonRoutes(e *gin.RouterGroup) {
 	RegisterServerRoutes(e)
 }
 
-// Root godoc
-// @Summary Is daemon up
-// @Description Easy way to tell if the daemon is running is by using this endpoint
-// @Accept json
-// @Produce json
-// @Success 200 {object} pufferpanel.DaemonRunning "Service running"
-// @Router /daemon [get]
 func getStatusGET(c *gin.Context) {
 	c.JSON(http.StatusOK, &pufferpanel.DaemonRunning{Message: "daemon is running"})
 }
 
-// @Summary Is daemon up
-// @Description Easy way to tell if the daemon is running is by using this endpoint
-// @Accept json
-// @Produce json
-// @Success 204 {object} response.Empty "Service running"
-// @Router /daemon [head]
 func getStatusHEAD(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// @Summary Get supported features
-// @Description Gets a list of features supported by the node
-// @Accept json
-// @Produce json
-// @Success 200 {object} daemon.Features "Features"
-// @Router /daemon [head]
 func getFeatures(c *gin.Context) {
 	features := []string{}
 

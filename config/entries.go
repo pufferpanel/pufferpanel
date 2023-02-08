@@ -46,12 +46,6 @@ var BinariesFolder = asString("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
 
-// Deprecated: Removed in v3
-var TokenPrivate = asString("token.private", "private.pem")
-
-// Deprecated: Removed in v3
-var TokenPublic = asString("token.public", "public.pem")
-
 type entry[T ValueType] struct {
 	key string
 }
