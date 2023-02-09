@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -23,7 +22,7 @@ func registerUserSettings(g *gin.RouterGroup) {
 // @Success 200 {object} models.UserSettingsView
 // @Router /api/userSettings [get]
 func getUserSettings(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
 
 	t, exists := c.Get("user")
@@ -54,7 +53,7 @@ func getUserSettings(c *gin.Context) {
 // @Router /api/userSettings/{key} [PUT]
 func setUserSetting(c *gin.Context) {
 	key := c.Param("key")
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	uss := &services.UserSettings{DB: db}
 
 	t, exists := c.Get("user")

@@ -18,7 +18,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -75,7 +74,7 @@ func getSelf(c *gin.Context) {
 // @Param user body models.User true "User information"
 // @Router /api/self [PUT]
 func updateSelf(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -145,7 +144,7 @@ func updateSelf(c *gin.Context) {
 }
 
 func getOtpStatus(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -167,7 +166,7 @@ func getOtpStatus(c *gin.Context) {
 }
 
 func startOtpEnroll(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -190,7 +189,7 @@ func startOtpEnroll(c *gin.Context) {
 }
 
 func validateOtpEnroll(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -225,7 +224,7 @@ func validateOtpEnroll(c *gin.Context) {
 }
 
 func disableOtp(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	t, exist := c.Get("user")
@@ -264,7 +263,7 @@ func disableOtp(c *gin.Context) {
 func getPersonalOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	clients, err := os.GetForUserAndServer(user.ID, "")
@@ -295,7 +294,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 func createPersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	var request models.Client
@@ -351,7 +350,7 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	clientId := c.Param("clientId")
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	client, err := os.Get(clientId)

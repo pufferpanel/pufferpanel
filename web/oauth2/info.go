@@ -3,7 +3,7 @@ package oauth2
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
+	"github.com/pufferpanel/pufferpanel/v3/middleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/response"
@@ -14,7 +14,7 @@ import (
 )
 
 func registerInfo(g *gin.RouterGroup) {
-	g.POST("/introspect", panelmiddleware.NeedsDatabase, handleInfoRequest)
+	g.POST("/introspect", middleware.NeedsDatabase, handleInfoRequest)
 	g.OPTIONS("/introspect", response.CreateOptions("POST"))
 }
 
@@ -31,7 +31,7 @@ func handleInfoRequest(c *gin.Context) {
 		return
 	}
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	nodeCreds := parts[1]
 
 	sessionService := &services.Session{DB: db}

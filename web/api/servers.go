@@ -26,7 +26,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/database"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -42,20 +41,20 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), panelmiddleware.HasTransaction, createServer)
+	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
-	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), panelmiddleware.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), panelmiddleware.HasTransaction, createServer)
-	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), panelmiddleware.HasTransaction, deleteServer)
-	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), panelmiddleware.HasTransaction, renameServer)
+	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
+	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
+	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
 
 	g.Handle("GET", "/:serverId/user", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
 	g.Handle("OPTIONS", "/:serverId/user", response.CreateOptions("GET"))
 
 	g.Handle("GET", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), getServerUsers)
-	g.Handle("PUT", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), panelmiddleware.HasTransaction, editServerUser)
-	g.Handle("DELETE", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), panelmiddleware.HasTransaction, removeServerUser)
+	g.Handle("PUT", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, editServerUser)
+	g.Handle("DELETE", "/:serverId/user/:email", middleware.RequiresPermission(pufferpanel.ScopeServersEditUsers, true), middleware.HasTransaction, removeServerUser)
 	g.Handle("OPTIONS", "/:serverId/user/:email", response.CreateOptions("GET", "PUT", "DELETE"))
 
 	g.Handle("GET", "/:serverId/oauth2", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getOAuth2Clients)
@@ -146,7 +145,7 @@ func registerServers(g *gin.RouterGroup) {
 // @Router /api/servers [get]
 func searchServers(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -300,7 +299,7 @@ func getServer(c *gin.Context) {
 // @Router /api/servers/{id} [put]
 func createServer(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 	us := &services.User{DB: db}
@@ -439,7 +438,7 @@ func createServer(c *gin.Context) {
 func deleteServer(c *gin.Context) {
 	var err error
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	ns := &services.Node{DB: db}
 
@@ -541,7 +540,7 @@ func deleteServer(c *gin.Context) {
 // @Router /api/servers/{id}/user [get]
 func getServerUsers(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ps := &services.Permission{DB: db}
 
 	t, exist := c.Get("server")
@@ -593,7 +592,7 @@ func getServerUsers(c *gin.Context) {
 // @Router /api/servers/{id}/users/{email} [put]
 func editServerUser(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -706,7 +705,7 @@ func editServerUser(c *gin.Context) {
 // @Router /api/servers/{id}/users/{email} [delete]
 func removeServerUser(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -869,7 +868,7 @@ func getOAuth2Clients(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	clients, err := os.GetForUserAndServer(user.ID, server.Identifier)
@@ -895,7 +894,7 @@ func createOAuth2Client(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	server := c.MustGet("server").(*models.Server)
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	var request models.Client
@@ -949,7 +948,7 @@ func deleteOAuth2Client(c *gin.Context) {
 	server := c.MustGet("server").(*models.Server)
 	clientId := c.Param("clientId")
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	os := &services.OAuth2{DB: db}
 
 	client, err := os.Get(clientId)
@@ -997,7 +996,7 @@ func editServerData(c *gin.Context) {
 	}
 	server.IP = ip.(string)
 
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
 	err = ss.Update(server)
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -1027,7 +1026,7 @@ func getFromDataOrDefault(variables map[string]pufferpanel.Variable, key string,
 }
 
 func proxyServerRequest(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var node *models.Node

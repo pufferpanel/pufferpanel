@@ -18,7 +18,6 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -43,7 +42,7 @@ func registerTemplates(g *gin.RouterGroup) {
 }
 
 func getRepos(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	repos, err := ts.GetRepos()
@@ -55,7 +54,7 @@ func getRepos(c *gin.Context) {
 }
 
 func getsTemplatesForRepo(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templates, err := ts.GetAllFromRepo(c.Param("repo"))
@@ -83,7 +82,7 @@ func deleteRepo(c *gin.Context) {
 // @Failure 500 {object} response.Error
 // @Router /api/templates [get]
 func getTemplateFromRepo(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	template, err := ts.Get(c.Param("repo"), c.Param("name"))
@@ -109,7 +108,7 @@ func getTemplateFromRepo(c *gin.Context) {
 // @Param name path string true "Template name"
 // @Router /api/templates/{name} [put]
 func putTemplate(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	templateName := c.Param("name")
@@ -149,7 +148,7 @@ func putTemplate(c *gin.Context) {
 // @Param name path string true "Template"
 // @Router /api/templates/{name} [delete]
 func deleteTemplate(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ts := &services.Template{DB: db}
 
 	err := ts.Delete(c.Param("name"))

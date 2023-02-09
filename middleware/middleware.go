@@ -19,7 +19,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/oauth2"
 	"github.com/pufferpanel/pufferpanel/v3/programs"
@@ -74,13 +73,13 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 
 	//we need to know what type of "instance" we are
 	if config.PanelEnabled.Value() {
-		panelmiddleware.NeedsDatabase(c)
+		NeedsDatabase(c)
 		if c.IsAborted() {
 			return
 		}
 
 		//defer to auth middleware to resolve this to a user, and check basic stuff
-		panelmiddleware.AuthMiddleware(c)
+		AuthMiddleware(c)
 		if c.IsAborted() {
 			return
 		}
@@ -93,7 +92,7 @@ func requiresPermission(c *gin.Context, perm pufferpanel.Scope, needsServer bool
 		}
 		ginClient, _ := c.Get("client")
 
-		db := panelmiddleware.GetDatabase(c)
+		db := GetDatabase(c)
 		ps := &services.Permission{DB: db}
 
 		var perms []models.Permissions

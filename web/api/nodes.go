@@ -18,7 +18,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -54,7 +53,7 @@ func registerNodes(g *gin.RouterGroup) {
 // @Router /api/nodes [get]
 func getAllNodes(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	var nodes []*models.Node
@@ -79,7 +78,7 @@ func getAllNodes(c *gin.Context) {
 // @Router /api/nodes/{id} [get]
 func getNode(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -108,7 +107,7 @@ func getNode(c *gin.Context) {
 // @Router /api/nodes [post]
 func createNode(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	model := &models.NodeView{}
@@ -144,7 +143,7 @@ func createNode(c *gin.Context) {
 // @Router /api/nodes/{id} [put]
 func updateNode(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	viewModel := &models.NodeView{}
@@ -187,7 +186,7 @@ func updateNode(c *gin.Context) {
 // @Router /api/nodes/{id} [delete]
 func deleteNode(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)
@@ -221,7 +220,7 @@ func deleteNode(c *gin.Context) {
 // @Router /api/nodes/{id}/deployment [get]
 func deployNode(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	ns := &services.Node{DB: db}
 
 	id, ok := validateId(c)

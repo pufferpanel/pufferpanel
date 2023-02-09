@@ -17,7 +17,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/middleware"
-	"github.com/pufferpanel/pufferpanel/v3/middleware/panelmiddleware"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
@@ -54,7 +53,7 @@ func registerUsers(g *gin.RouterGroup) {
 // @Router /api/users [get]
 func searchUsers(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	search := newUserSearch()
@@ -96,7 +95,7 @@ func searchUsers(c *gin.Context) {
 // @Router /api/users [post]
 func createUser(c *gin.Context) {
 	var err error
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var viewModel models.UserView
@@ -136,7 +135,7 @@ func createUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [get]
 func getUser(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -169,7 +168,7 @@ func getUser(c *gin.Context) {
 // @Param body body models.UserView true "New user information"
 // @Router /api/users/{id} [post]
 func updateUser(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -216,7 +215,7 @@ func updateUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id} [delete]
 func deleteUser(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 
 	var err error
@@ -252,7 +251,7 @@ func deleteUser(c *gin.Context) {
 // @Param id path uint true "User ID"
 // @Router /api/users/{id}/perms [get]
 func getUserPerms(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
@@ -291,7 +290,7 @@ func getUserPerms(c *gin.Context) {
 // @Param body body models.PermissionView true "New permissions"
 // @Router /api/users/{id}/perms [put]
 func setUserPerms(c *gin.Context) {
-	db := panelmiddleware.GetDatabase(c)
+	db := middleware.GetDatabase(c)
 	us := &services.User{DB: db}
 	ps := &services.Permission{DB: db}
 
