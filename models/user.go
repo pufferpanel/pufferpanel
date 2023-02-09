@@ -27,7 +27,7 @@ type User struct {
 	Email          string `gorm:"UNIQUE;NOT NULL;size:255" json:"-" validate:"required,email,max=255"`
 	HashedPassword string `gorm:"column:password;NOT NULL;size:200" json:"-" validate:"required,max=200"`
 	OtpSecret      string `gorm:"size:32" json:"-"`
-	OtpActive      bool   `gorm:"NOT NULL;DEFAULT:0" json"-"`
+	OtpActive      bool   `gorm:"NOT NULL;DEFAULT:0" json:"-"`
 
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`

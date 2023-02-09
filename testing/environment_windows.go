@@ -196,7 +196,7 @@ func (t *Environment) SendCode(code int) error {
 	return t.mainProcess.Process.Signal(syscall.Signal(code))
 }
 
-func (t *Environment) handleClose(callback func(exitCode bool)) {
+func (t *Environment) handleClose(callback func(exitCode int)) {
 	err := t.mainProcess.Wait()
 
 	var code int
@@ -213,7 +213,7 @@ func (t *Environment) handleClose(callback func(exitCode bool)) {
 	t.Wait.Done()
 
 	if callback != nil {
-		callback(code == 0)
+		callback(code)
 	}
 }
 
