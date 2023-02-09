@@ -12,9 +12,9 @@ on:
       - '.github/workflows/pr.yml'
 
 env:
-  SWAG_VERSION: "1.8.8"
+  SWAG_VERSION: "1.8.10"
   GO_VERSION: "1.19"
-  NODE_VERSION: "16"
+  NODE_VERSION: "18"
 
 concurrency:
   group: ${{ github.ref }}

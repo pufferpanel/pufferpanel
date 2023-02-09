@@ -1,7 +1,7 @@
 ###
 # Builder container
 ###
-FROM node:16-alpine AS node
+FROM node:18-alpine AS node
 FROM golang:1.19-alpine AS builder
 
 COPY --from=node /usr/lib /usr/lib
@@ -16,12 +16,11 @@ ARG version=devel
 ARG sha=devel
 ARG goproxy
 ARG npmproxy
-ARG swagversion=1.8.8
+ARG swagversion=1.8.10
 
-ENV CGOENABLED=1
-
-ENV YARN_REGISTRY=$npmproxy
-ENV GOPROXY=$goproxy
+ENV CGOENABLED=1 \
+    YARN_REGISTRY=$npmproxy \
+    GOPROXY=$goproxy
 
 RUN go version && \
     apk add --update --no-cache gcc musl-dev git curl make gcc g++ && \
