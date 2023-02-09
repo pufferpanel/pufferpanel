@@ -18,11 +18,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
 	"path"
-	"time"
+	"syscall"
 )
 
-var logFile io.WriteCloser
+var rotation *Rotator
 var flags = log.LstdFlags
 
 var Error = log.New(os.Stderr, "[ERROR] ", flags)
@@ -41,25 +42,43 @@ func Initialize(useFiles bool) {
 			panic(err)
 		}
 
-		logFile, err = os.OpenFile(path.Join(directory, time.Now().Format("2006-01-02T15-04-05")+".log"), os.O_WRONLY|os.O_CREATE, 0644)
+		logFile, err := os.OpenFile(path.Join(directory, "pufferpanel.log"), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			panic(err)
 		}
+
+		rotation = &Rotator{backer: logFile}
+
+		go func() {
+			sig := make(chan os.Signal, 1)
+			for {
+				signal.Notify(sig, syscall.SIGUSR1)
+
+				<-sig
+
+				newFile, err := os.OpenFile(path.Join(directory, "pufferpanel.log"), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+				if err != nil {
+					panic(err)
+				}
+
+				rotation.Rotate(newFile)
+			}
+		}()
 	}
 
 	//just create them ourselves.....
 
 	//first, create STDERR
 
-	stderr := MultiWriter(logFile, os.Stderr, CreateServiceLogger("error"))
+	stderr := MultiWriter(rotation, os.Stderr, CreateServiceLogger("error"))
 	Error = log.New(stderr, "[ERROR] ", flags)
 
 	//now, STDOUT
-	stdout := MultiWriter(logFile, os.Stdout, CreateServiceLogger("info"))
+	stdout := MultiWriter(rotation, os.Stdout, CreateServiceLogger("info"))
 	Info = log.New(stdout, "[INFO] ", flags)
 
 	//and now, a DEBUG
-	stddebug := MultiWriter(logFile, os.Stdout)
+	stddebug := MultiWriter(rotation, os.Stdout)
 	Debug = log.New(stddebug, "[DEBUG] ", flags)
 
 	log.SetOutput(Info.Writer())
@@ -81,7 +100,7 @@ func Initialize(useFiles bool) {
 }
 
 func Close() {
-	if logFile != nil {
-		_ = logFile.Close()
+	if rotation != nil {
+		_ = rotation.Close()
 	}
 }

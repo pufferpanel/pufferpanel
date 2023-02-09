@@ -19,6 +19,7 @@ package pufferpanel
 import (
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3/config"
+	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"io"
 	"log"
 	"os"
@@ -170,5 +171,5 @@ func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) 
 }
 
 func newLogger(prefix string) *log.Logger {
-	return log.New(os.Stdout, "["+prefix+"] ", 0)
+	return log.New(logging.Info.Writer(), "["+prefix+"] ", 0)
 }

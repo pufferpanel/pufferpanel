@@ -39,8 +39,11 @@ RUN go mod download && go mod verify
 COPY . .
 RUN ~/go/bin/swag init -o web/swagger -g web/loader.go && \
     go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/pufferpanel github.com/pufferpanel/pufferpanel/v3/cmd && \
-    mv assets/email /pufferpanel/email && \
-    cd client && \
+    mv assets/email /pufferpanel/email
+
+RUN cd client && \
+    rm -f frontend/src/lang && \
+    ln -s ../../src/lang frontend/src/lang && \
     yarn install && \
     yarn build && \
     mv frontend/dist /pufferpanel/www/
