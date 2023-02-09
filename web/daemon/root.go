@@ -21,6 +21,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"net/http"
 	"time"
@@ -46,11 +47,13 @@ func getStatusHEAD(c *gin.Context) {
 func getFeatures(c *gin.Context) {
 	features := []string{}
 
+	envs := environments.GetSupportedEnvironments()
+
 	if testDocker() {
 		features = append(features, "docker")
 	}
 
-	c.JSON(http.StatusOK, Features{Features: features})
+	c.JSON(http.StatusOK, Features{Features: features, Environments: envs})
 }
 
 func testDocker() bool {
@@ -70,5 +73,6 @@ func testDocker() bool {
 }
 
 type Features struct {
-	Features []string `json:"features"`
+	Features     []string `json:"features"`
+	Environments []string `json:"environments"`
 }
