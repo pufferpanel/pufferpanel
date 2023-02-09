@@ -31,7 +31,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
-	"github.com/pufferpanel/pufferpanel/v3/operations/spongeforgedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/writefile"
 	"github.com/spf13/cast"
@@ -162,9 +161,6 @@ func loadCoreModules() {
 
 	mojangFactory := mojangdl.Factory
 	commandMapping[mojangFactory.Key()] = mojangFactory
-
-	spongeforgeDlFactory := spongeforgedl.Factory
-	commandMapping[spongeforgeDlFactory.Key()] = spongeforgeDlFactory
 
 	forgeDlFactory := forgedl.Factory
 	commandMapping[forgeDlFactory.Key()] = forgeDlFactory
