@@ -40,7 +40,7 @@ func ExtractTar(stream io.Reader, directory string) error {
 	}
 
 	var header *tar.Header
-	for true {
+	for {
 		header, err = tarReader.Next()
 		if err == io.EOF {
 			break
@@ -123,7 +123,7 @@ func ExtractZip(name, directory string) error {
 	}
 	defer file.Close()
 	for _, f := range file.File {
-		err = unzipFile(f, directory)
+		err = unzipFile(f, directory, false)
 		if err != nil {
 			return err
 		}
@@ -131,9 +131,66 @@ func ExtractZip(name, directory string) error {
 	return nil
 }
 
-func unzipFile(f *zip.File, destination string) error {
+func ExtractZipIgnoreSingleDir(name, directory string) error {
+	file, err := zip.OpenReader(name)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	var fileList []string
+	for _, f := range file.File {
+		fileList = append(fileList, f.Name)
+	}
+
+	dirs := make(map[string]bool)
+	for _, f := range fileList {
+		folderName := filepath.Dir(f)
+		if folderName == ".." || folderName == "." || folderName == "/" {
+			folderName = "."
+		}
+		dirs[folderName] = true
+	}
+
+	isSingleDir := true
+	if len(dirs) > 0 {
+		var rootDir string
+		for k := range dirs {
+			if rootDir == "" {
+				firstPath := strings.SplitN(k, string(os.PathSeparator), 2)
+				rootDir = firstPath[0]
+			} else if rootDir != k && !strings.HasPrefix(k, rootDir+string(os.PathSeparator)) {
+				isSingleDir = false
+				break
+			}
+		}
+	}
+
+	for _, f := range file.File {
+		err = unzipFile(f, directory, isSingleDir)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func unzipFile(f *zip.File, destination string, skipLevel bool) error {
 	// 4. Check if file paths are not vulnerable to Zip Slip
-	filePath := filepath.Join(destination, f.Name)
+
+	fileName := f.Name
+	if skipLevel {
+		parts := strings.SplitN(fileName, "/", 2)
+		if len(parts) != 2 {
+			return nil
+		}
+		fileName = parts[1]
+		if fileName == "" {
+			return nil
+		}
+	}
+
+	filePath := filepath.Join(destination, fileName)
 	if !strings.HasPrefix(filePath, filepath.Clean(destination)+string(os.PathSeparator)) {
 		return fmt.Errorf("invalid file path: %s", filePath)
 	}

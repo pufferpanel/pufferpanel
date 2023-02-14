@@ -26,6 +26,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 	"sync"
 	"syscall"
@@ -38,13 +39,19 @@ type Environment struct {
 	stdInWriter io.Writer
 }
 
-func CreateEnvironment() *Environment {
+func CreateEnvironment(prefix string) *Environment {
+	rootDir := "C:\\Temp\\PufferPanel\\testing"
+	if prefix != "" {
+		rootDir = filepath.Join(rootDir, prefix)
+	}
+
 	t := &Environment{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard"},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard", RootDirectory: rootDir},
 	}
 	t.BaseEnvironment.ExecutionFunction = t.standardExecuteAsync
 	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
 	t.Wait = &sync.WaitGroup{}
+	t.WSManager = pufferpanel.CreateTracker()
 	return t
 }
 
@@ -229,6 +236,6 @@ func (*Environment) DisplayToConsole(prefix bool, msg string, data ...interface{
 	}
 }
 
-func (*Environment) GetRootDirectory() string {
-	return "C:\\Temp\\PufferPanel\\testing"
+func (t *Environment) GetRootDirectory() string {
+	return t.RootDirectory
 }

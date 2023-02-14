@@ -45,6 +45,9 @@ var ServersFolder = asString("daemon.data.servers", "servers")
 var BinariesFolder = asString("daemon.data.binaries", "binaries")
 var CrashLimit = asInt("daemon.data.crashLimit", 3)
 var WebSocketFileLimit = asInt64("daemon.data.maxWSDownloadSize", 1024*1024*20)
+var CurseForgeKey = asString("daemon.curseforge.key", _hiddenCurseforgeKey)
+
+var _hiddenCurseforgeKey = ""
 
 type entry[T ValueType] struct {
 	key string

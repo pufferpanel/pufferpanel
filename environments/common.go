@@ -25,13 +25,12 @@ import (
 	"io"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
 
 func DownloadFile(url, fileName string, env pufferpanel.Environment) error {
-	target, err := os.Create(path.Join(env.GetRootDirectory(), fileName))
+	target, err := os.Create(filepath.Join(env.GetRootDirectory(), fileName))
 	defer pufferpanel.Close(target)
 	if err != nil {
 		return err
@@ -76,7 +75,7 @@ func DownloadFileToCache(url, fileName string) error {
 }
 
 func DownloadViaMaven(downloadUrl string, env pufferpanel.Environment) (string, error) {
-	localPath := path.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
+	localPath := filepath.Join(config.CacheFolder.Value(), strings.TrimPrefix(strings.TrimPrefix(downloadUrl, "http://"), "https://"))
 
 	if os.PathSeparator != '/' {
 		localPath = strings.Replace(localPath, "/", string(os.PathSeparator), -1)
