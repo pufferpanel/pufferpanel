@@ -31,7 +31,6 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/operations/mkdir"
 	"github.com/pufferpanel/pufferpanel/v3/operations/mojangdl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/move"
-	"github.com/pufferpanel/pufferpanel/v3/operations/program"
 	"github.com/pufferpanel/pufferpanel/v3/operations/sleep"
 	"github.com/pufferpanel/pufferpanel/v3/operations/steamgamedl"
 	"github.com/pufferpanel/pufferpanel/v3/operations/writefile"
@@ -187,9 +186,6 @@ func loadCoreModules() {
 
 	javadlFactory := javadl.Factory
 	commandMapping[javadlFactory.Key()] = javadlFactory
-
-	programFactory := program.Factory
-	commandMapping[programFactory.Key()] = programFactory
 
 	curseforgeFactory := curseforge.Factory
 	commandMapping[curseforgeFactory.Key()] = curseforgeFactory
