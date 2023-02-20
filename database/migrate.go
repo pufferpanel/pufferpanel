@@ -51,7 +51,7 @@ func migrate(dbConn *gorm.DB) error {
 			},
 		},
 		{
-			ID: "1665609381",
+			ID: "1676911364",
 			Migrate: func(db *gorm.DB) error {
 				if !config.DaemonEnabled.Value() {
 					return nil
