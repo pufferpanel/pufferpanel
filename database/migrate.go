@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
 )
@@ -47,7 +48,43 @@ func migrate(dbConn *gorm.DB) error {
 					return nil
 				}
 
-				err = db.Table("servers").Where("node_id = ?", local.ID).Update("node_id", 0).Error
+				err = db.Table("servers").Where("node_id = ?", local.ID).Update("node_id", nil).Error
+				if err != nil {
+					return err
+				}
+				err = db.Delete(local).Error
+				if err != nil {
+					return err
+				}
+
+				return nil
+			},
+		},
+		{
+			ID: "1665609381",
+			Migrate: func(db *gorm.DB) error {
+				if !config.DaemonEnabled.Value() {
+					return nil
+				}
+
+				var nodes []*models.Node
+				err := db.Find(&nodes).Error
+				if err != nil {
+					return err
+				}
+
+				var local *models.Node
+				for _, n := range nodes {
+					if n.ID == 1 {
+						local = n
+					}
+				}
+
+				if local == nil {
+					return nil
+				}
+
+				err = db.Table("servers").Where("node_id = ?", local.ID).Update("node_id", nil).Error
 				if err != nil {
 					return err
 				}
