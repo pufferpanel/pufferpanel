@@ -24,8 +24,9 @@ type Server struct {
 	Name       string `gorm:"size:40;NOT NULL" json:"-" validate:"required,printascii"`
 	Identifier string `gorm:"UNIQUE;NOT NULL;primaryKey;size:8" json:"-" validate:"required,printascii"`
 
-	NodeID uint `gorm:"NOT NULL;default=0" json:"-" validate:"min=0"`
-	Node   Node `gorm:"ASSOCIATION_SAVE_REFERENCE:false" json:"-" validate:"-"`
+	RawNodeID *uint `gorm:"column:node_id" json:"-"`
+	NodeID    uint  `gorm:"-" json:"-" validate:"-"`
+	Node      Node  `gorm:"ASSOCIATION_SAVE_REFERENCE:false;foreignKey:RawNodeID" json:"-" validate:"-"`
 
 	IP   string `gorm:"" json:"-" validate:"omitempty,ip|fqdn"`
 	Port uint16 `gorm:"" json:"-" validate:"omitempty"`
@@ -46,11 +47,16 @@ func (s *Server) IsValid() (err error) {
 
 func (s *Server) BeforeSave(*gorm.DB) (err error) {
 	err = s.IsValid()
+	if s.NodeID == 0 {
+		s.RawNodeID = nil
+	} else {
+		s.RawNodeID = &s.NodeID
+	}
 	return
 }
 
 func (s *Server) AfterFind(*gorm.DB) (err error) {
-	if s.NodeID == LocalNode.ID {
+	if s.RawNodeID == nil || s.NodeID == LocalNode.ID {
 		s.Node = *LocalNode
 	}
 	return
