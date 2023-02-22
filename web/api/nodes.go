@@ -14,6 +14,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pufferpanel/pufferpanel/v3"
@@ -21,6 +22,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
+	"github.com/pufferpanel/pufferpanel/v3/web/daemon"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
 	"strconv"
@@ -36,6 +38,9 @@ func registerNodes(g *gin.RouterGroup) {
 	g.Handle("PUT", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), updateNode)
 	g.Handle("DELETE", "/:id", middleware.RequiresPermission(pufferpanel.ScopeNodesEdit, false), deleteNode)
 	g.Handle("OPTIONS", "/:id", response.CreateOptions("PUT", "GET", "DELETE"))
+
+	g.Handle("GET", "/:id/features", middleware.RequiresPermission(pufferpanel.ScopeNodesView, false), getFeatures)
+	g.Handle("OPTIONS", "/:id/features", response.CreateOptions("GET"))
 
 	g.Handle("GET", "/:id/deployment", middleware.RequiresPermission(pufferpanel.ScopeNodesDeploy, false), deployNode)
 	g.Handle("OPTIONS", "/:id/deployment", response.CreateOptions("GET"))
@@ -241,12 +246,53 @@ func deployNode(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+// @Summary Gets the features a node supports
+// @Description Gets the environments and if docker is supported on a node
+// @Accept json
+// @Produce json
+// @Success 200 {object} daemon.Features
+// @Failure 400 {object} response.Error
+// @Failure 403 {object} response.Error
+// @Failure 404 {object} response.Error
+// @Failure 500 {object} response.Error
+// @Param id path string true "Node Id"
+// @Router /api/nodes/{id}/features [get]
+func getFeatures(c *gin.Context) {
+	var err error
+	db := middleware.GetDatabase(c)
+	ns := &services.Node{DB: db}
+
+	id, ok := validateId(c)
+	if !ok {
+		return
+	}
+
+	node, err := ns.Get(id)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	res, err := ns.CallNode(node, "GET", "/daemon/features", nil, nil)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+	defer res.Body.Close()
+
+	features := &daemon.Features{}
+	err = json.NewDecoder(res.Body).Decode(&features)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	c.JSON(http.StatusOK, features)
+}
+
 func validateId(c *gin.Context) (uint, bool) {
 	param := c.Param("id")
 
 	id, err := strconv.Atoi(param)
 
-	if response.HandleError(c, err, http.StatusBadRequest) || id <= 0 {
+	if response.HandleError(c, err, http.StatusBadRequest) || id < 0 {
 		response.HandleError(c, pufferpanel.ErrFieldTooSmall("id", 0), http.StatusBadRequest)
 		return 0, false
 	}
