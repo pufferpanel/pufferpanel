@@ -18,6 +18,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3"
+	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
@@ -25,13 +26,19 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
-var existingPaths = make(map[string]string, 0)
+var existingPaths = make(map[string]repoCache, 0)
 var pathLock sync.Mutex
 
 type Template struct {
 	DB *gorm.DB
+}
+
+type repoCache struct {
+	LastRefreshed time.Time
+	Path          string
 }
 
 func (t *Template) GetRepos() ([]*models.TemplateRepo, error) {
@@ -71,7 +78,7 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 			Name: repo,
 		}
 
-		err = t.DB.Where(repoDb).First(repoDb).Error
+		err = t.DB.First(repoDb).Error
 		if err != nil {
 			return nil, err
 		}
@@ -97,15 +104,20 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 			}
 
 			for _, v := range jsonFolder {
-				templatePath := filepath.Join(path, folder.Name(), v.Name()+".json")
-				template, err := readTemplateFromDisk(v.Name(), templatePath)
+				if !strings.HasSuffix(v.Name(), ".json") {
+					continue
+				}
+
+				name := strings.TrimSuffix(v.Name(), ".json")
+				templatePath := filepath.Join(path, folder.Name(), v.Name())
+				template, err := readTemplateFromDisk(name, templatePath)
 				if err != nil {
 					logging.Error.Printf("Error reading template from %s: %s", templatePath, err.Error())
 					continue
 				}
 
 				templates = append(templates, &models.Template{
-					Name: v.Name(),
+					Name: name,
 					Server: pufferpanel.Server{
 						Display: template.Server.Display,
 						Type:    template.Server.Type,
@@ -123,7 +135,7 @@ func (t *Template) Get(repo, name string) (*models.Template, error) {
 		Name: name,
 	}
 	if repo == "local" {
-		err := t.DB.Where(template).First(template).Error
+		err := t.DB.First(template).Error
 		if err != nil {
 			return nil, err
 		}
@@ -132,7 +144,7 @@ func (t *Template) Get(repo, name string) (*models.Template, error) {
 			Name: repo,
 		}
 
-		err := t.DB.Where(repoDb).First(repoDb).Error
+		err := t.DB.First(repoDb).Error
 		if err != nil {
 			return nil, err
 		}
@@ -142,13 +154,42 @@ func (t *Template) Get(repo, name string) (*models.Template, error) {
 			return nil, err
 		}
 
-		templatePath := filepath.Join(path, name, name+".json")
+		var folderName string
+		var exists bool
+		folders, err := os.ReadDir(path)
+		if err != nil {
+			return nil, err
+		}
+		for _, folder := range folders {
+			if !folder.IsDir() || strings.HasPrefix(folder.Name(), ".") {
+				continue
+			}
+
+			jsonFolder, err := os.ReadDir(filepath.Join(path, folder.Name()))
+			if err != nil {
+				return nil, err
+			}
+
+			for _, v := range jsonFolder {
+				if v.Name() == name+".json" {
+					folderName = folder.Name()
+					exists = true
+					break
+				}
+			}
+		}
+
+		if !exists {
+			return nil, pufferpanel.ErrNoTemplate(name)
+		}
+
+		templatePath := filepath.Join(path, folderName, name+".json")
 		template, err = readTemplateFromDisk(name, templatePath)
 		if err != nil {
 			return nil, err
 		}
 
-		readmePath := filepath.Join(path, name, "README.md")
+		readmePath := filepath.Join(path, folderName, "README.md")
 		readme, err := os.ReadFile(readmePath)
 		if err != nil {
 			logging.Error.Printf("Error reading readme %s: %s", readmePath, err.Error())
@@ -200,10 +241,14 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 	pathLock.Lock()
 	defer pathLock.Unlock()
 
-	if path, exists := existingPaths[repo.Name]; exists {
-		logging.Debug.Printf("Updating local git repo for %s: %s", repo, path)
+	if cache, exists := existingPaths[repo.Name]; exists {
+		if cache.LastRefreshed.Add(time.Minute * 5).After(time.Now()) {
+			return cache.Path, nil
+		}
 
-		r, err := git.PlainOpen(path)
+		logging.Debug.Printf("Updating local git repo for %s: %s", repo, cache)
+
+		r, err := git.PlainOpen(cache.Path)
 		if err != nil {
 			return "", err
 		}
@@ -221,8 +266,23 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 		if err != nil && err != git.NoErrAlreadyUpToDate {
 			return "", err
 		}
+
+		existingPaths[repo.Name] = repoCache{
+			LastRefreshed: time.Now(),
+			Path:          cache.Path,
+		}
 	} else {
-		path, err := os.MkdirTemp("", "pufferpanel_repo_"+repo.Name)
+		path := filepath.Join(config.CacheFolder.Value(), "template-repos", repo.Name)
+
+		//if the directory already exists, we may need to nuke it
+		fi, err := os.Stat(path)
+		if err != nil && !os.IsNotExist(err) {
+			return "", err
+		} else if fi != nil {
+			_ = os.RemoveAll(path)
+		}
+
+		err = os.MkdirAll(path, 0755)
 		if err != nil && !os.IsExist(err) {
 			return "", err
 		}
@@ -237,8 +297,11 @@ func validateRepoOnDisk(repo *models.TemplateRepo) (string, error) {
 			return "", err
 		}
 
-		existingPaths[repo.Name] = path
+		existingPaths[repo.Name] = repoCache{
+			LastRefreshed: time.Now(),
+			Path:          path,
+		}
 	}
 
-	return existingPaths[repo.Name], nil
+	return existingPaths[repo.Name].Path, nil
 }
