@@ -50,7 +50,7 @@ func LoadFromFolder() {
 	}
 	var program *Program
 	for _, element := range programFiles {
-		if element.IsDir() {
+		if element.IsDir() || !strings.HasSuffix(element.Name(), ".json") {
 			continue
 		}
 		logging.Info.Printf("Attempting to load " + element.Name())
