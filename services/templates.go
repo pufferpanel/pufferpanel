@@ -21,9 +21,9 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/models"
 	"gorm.io/gorm"
-	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -43,7 +43,7 @@ func (t *Template) GetRepos() ([]*models.TemplateRepo, error) {
 }
 
 func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
-	templates := []*models.Template{}
+	var templates []*models.Template
 	var err error
 
 	if repo == "local" {
@@ -81,30 +81,37 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 			return nil, err
 		}
 
-		folders, err := ioutil.ReadDir(path)
+		folders, err := os.ReadDir(path)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, v := range folders {
-			if !v.IsDir() || v.Name() == ".git" || v.Name() == ".github" {
+		for _, folder := range folders {
+			if !folder.IsDir() || strings.HasPrefix(folder.Name(), ".") {
 				continue
 			}
 
-			templatePath := filepath.Join(path, v.Name(), v.Name()+".json")
-			template, err := readTemplateFromDisk(v.Name(), templatePath)
+			jsonFolder, err := os.ReadDir(filepath.Join(path, folder.Name()))
 			if err != nil {
-				logging.Error.Printf("Error reading template from %s: %s", templatePath, err.Error())
-				continue
+				return nil, err
 			}
 
-			templates = append(templates, &models.Template{
-				Name: v.Name(),
-				Server: pufferpanel.Server{
-					Display: template.Server.Display,
-					Type:    template.Server.Type,
-				},
-			})
+			for _, v := range jsonFolder {
+				templatePath := filepath.Join(path, folder.Name(), v.Name()+".json")
+				template, err := readTemplateFromDisk(v.Name(), templatePath)
+				if err != nil {
+					logging.Error.Printf("Error reading template from %s: %s", templatePath, err.Error())
+					continue
+				}
+
+				templates = append(templates, &models.Template{
+					Name: v.Name(),
+					Server: pufferpanel.Server{
+						Display: template.Server.Display,
+						Type:    template.Server.Type,
+					},
+				})
+			}
 		}
 	}
 
@@ -142,7 +149,7 @@ func (t *Template) Get(repo, name string) (*models.Template, error) {
 		}
 
 		readmePath := filepath.Join(path, name, "README.md")
-		readme, err := ioutil.ReadFile(readmePath)
+		readme, err := os.ReadFile(readmePath)
 		if err != nil {
 			logging.Error.Printf("Error reading readme %s: %s", readmePath, err.Error())
 		} else {

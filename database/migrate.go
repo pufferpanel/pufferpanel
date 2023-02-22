@@ -23,7 +23,7 @@ func migrate(dbConn *gorm.DB) error {
 				return db.Create(&models.TemplateRepo{
 					Name:   "community",
 					Url:    "https://github.com/pufferpanel/templates",
-					Branch: "v2",
+					Branch: "v2.6",
 				}).Error
 			},
 		},
