@@ -46,6 +46,9 @@ func (ps *Permission) GetForServer(serverId string) ([]*models.Permissions, erro
 }
 
 func (ps *Permission) GetForUserAndServer(userId uint, serverId *string) (*models.Permissions, error) {
+	if serverId != nil && *serverId == "" {
+		serverId = nil
+	}
 	permissions := &models.Permissions{
 		UserId:           &userId,
 		ServerIdentifier: serverId,
