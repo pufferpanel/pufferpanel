@@ -119,8 +119,9 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 				templates = append(templates, &models.Template{
 					Name: name,
 					Server: pufferpanel.Server{
-						Display: template.Server.Display,
-						Type:    template.Server.Type,
+						Display:     template.Server.Display,
+						Type:        template.Server.Type,
+						Environment: template.Server.Environment,
 					},
 				})
 			}
