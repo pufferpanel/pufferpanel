@@ -25,16 +25,15 @@ import (
 
 type Server struct {
 	Type
-	Variables             map[string]Variable `json:"data,omitempty"`
-	Display               string              `json:"display,omitempty"`
-	Environment           interface{}         `json:"environment,omitempty"`
-	SupportedEnvironments []interface{}       `json:"supportedEnvironments,omitempty"`
-	Installation          []interface{}       `json:"install,omitempty"`
-	Uninstallation        []interface{}       `json:"uninstall,omitempty"`
-	Identifier            string              `json:"id,omitempty"`
-	Execution             Execution           `json:"run,omitempty"`
-	Tasks                 map[string]Task     `json:"tasks,omitempty"`
-	Requirements          Requirements        `json:"requirements,omitempty"`
+	Variables      map[string]Variable `json:"data,omitempty"`
+	Display        string              `json:"display,omitempty"`
+	Environment    interface{}         `json:"environment,omitempty"`
+	Installation   []interface{}       `json:"install,omitempty"`
+	Uninstallation []interface{}       `json:"uninstall,omitempty"`
+	Identifier     string              `json:"id,omitempty"`
+	Execution      Execution           `json:"run,omitempty"`
+	Tasks          map[string]Task     `json:"tasks,omitempty"`
+	Requirements   Requirements        `json:"requirements,omitempty"`
 }
 
 type Task struct {
@@ -94,7 +93,6 @@ func (s *Server) CopyFrom(replacement *Server) {
 	s.Installation = replacement.Installation
 	s.Uninstallation = replacement.Uninstallation
 	s.Environment = replacement.Environment
-	s.SupportedEnvironments = replacement.SupportedEnvironments
 	s.Requirements = replacement.Requirements
 }
 
