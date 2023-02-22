@@ -299,6 +299,14 @@ hr {
   }
 }
 
+.status.online ~ .server-controls .start {
+  display: none;
+}
+
+.status.offline ~ .server-controls .stop, .status.offline ~ .server-controls .kill {
+  display: none;
+}
+
 .server-controls {
   position: relative;
   white-space: nowrap;
@@ -321,12 +329,13 @@ hr {
     }
   }
 
-  .kill, .install, .menu.closed {
+  .install, .menu.closed {
     display: none;
   }
 
   .menu.open {
     @include card;
+    opacity: 1;
     z-index: 2;
     padding: 0.25em;
     position: absolute;
