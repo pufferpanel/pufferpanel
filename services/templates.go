@@ -66,8 +66,9 @@ func (t *Template) GetAllFromRepo(repo string) ([]*models.Template, error) {
 			replacement[k] = &models.Template{
 				Name: v.Name,
 				Server: pufferpanel.Server{
-					Display: v.Server.Display,
-					Type:    v.Server.Type,
+					Display:     v.Server.Display,
+					Type:        v.Server.Type,
+					Environment: v.Server.Environment,
 				},
 			}
 		}
