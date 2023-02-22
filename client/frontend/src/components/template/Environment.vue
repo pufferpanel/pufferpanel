@@ -2,6 +2,7 @@
 import { ref, onUpdated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Btn from '@/components/ui/Btn.vue'
+import Dropdown from '@/components/ui/Dropdown.vue'
 import Icon from '@/components/ui/Icon.vue'
 import Toggle from '@/components/ui/Toggle.vue'
 import EnvironmentConfig from '@/components/ui/EnvironmentConfig.vue'
@@ -14,8 +15,11 @@ const emit = defineEmits(['update:modelValue'])
 
 const { t } = useI18n()
 const template = ref(JSON.parse(props.modelValue))
-const envs = ['standard', 'docker']
-if (hasTTY()) envs.push('tty')
+const envs = [
+  { value: 'standard', label: t('env.standard.name') },
+  { value: 'docker', label: t('env.docker.name') }
+]
+if (isTTY()) envs.push({ value: 'tty', label: t('env.tty.name') })
 const envDefaults = {
   standard: { type: 'standard' },
   tty: { type: 'tty' },
@@ -26,40 +30,18 @@ function update() {
   emit('update:modelValue', JSON.stringify(template.value, undefined, 4))
 }
 
-function isDefault(env) {
-  return env === template.value.environment.type
-}
-
-function setDefault(env) {
-  template.value.environment = template.value.supportedEnvironments.find(e => e.type === env)
+function envChanged(newEnv) {
+  template.value.environment = envDefaults[newEnv]
   update()
 }
 
-function isEnabled(env) {
-  return !!template.value.supportedEnvironments.find(e => e.type === env)
-}
-
-function toggleEnv(env) {
-  if (template.value.supportedEnvironments.find(e => e.type === env)) {
-    template.value.supportedEnvironments = template.value.supportedEnvironments.filter(e => e.type !== env)
-  } else {
-    template.value.supportedEnvironments.push(envDefaults[env])
-  }
+function envValueChanged(newEnv) {
+  template.value.environment = newEnv
   update()
 }
 
-function updateEnv(env, updated) {
-  const e = template.value.supportedEnvironments.find(e => e.type === env)
-  Object.keys(e).map(f => delete e[f])
-  Object.keys(updated).map(f => e[f] = updated[f])
-  if (isDefault(env)) {
-    template.value.environment = e
-  }
-  update()
-}
-
-function hasTTY() {
-  return !!template.value.supportedEnvironments.find(e => e.type === 'tty')
+function isTTY() {
+  return template.value.environment.type === 'tty'
 }
 
 onUpdated(() => {
@@ -76,13 +58,7 @@ onUpdated(() => {
 
 <template>
   <div class="environments">
-    <div v-for="env in envs" :key="env" :class="['environment', env, isDefault(env) ? 'default' : '']" :data-warn="env === 'tty' ? t('templates.TTYDeprecated') : undefined">
-      <h2 v-text="t(`env.${env}.name`)" />
-      <toggle :model-value="isEnabled(env)" :label="t('templates.EnvEnabled')" :disabled="isDefault(env)" @update:modelValue="toggleEnv(env)" />
-      <btn v-if="isEnabled(env)" variant="icon" :disabled="isDefault(env)" @click="setDefault(env)">
-        <icon name="default" />
-      </btn>
-      <environment-config v-if="isEnabled(env)" :model-value="template.supportedEnvironments.find(e => e.type === env)" @update:modelValue="updateEnv(env, $event)" />
-    </div>
+    <dropdown :options="envs" :model-value="template.environment.type" :label="t('templates.Environment')" @update:modelValue="envChanged" />
+    <environment-config :model-value="template.environment" @update:modelValue="envValueChanged" />
   </div>
 </template>
