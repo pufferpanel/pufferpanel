@@ -10,7 +10,8 @@ export default {
   props: {
     anchors: { type: Boolean, default: () => false }
   },
-  setup(props, { slots }) {
+  emits: ['tabChanged'],
+  setup(props, { slots, emit }) {
     const tabButtons = ref(null)
     const needsScroller = ref(false)
 
@@ -24,6 +25,9 @@ export default {
       if (props.anchors) {
         history.replaceState(history.state, '', '#' + key)
       }
+
+      // deferring emit to next tick to ensure the tab content has changed
+      nextTick(() => emit('tabChanged', key))
     }
 
     function onResize() {

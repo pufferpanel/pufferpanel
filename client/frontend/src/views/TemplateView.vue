@@ -30,6 +30,7 @@ const valid = ref({
   general: true,
   run: true
 })
+const ace = ref(null)
 
 onBeforeRouteLeave((to, from) => {
   if (unmodified === template.value) {
@@ -57,6 +58,7 @@ onBeforeRouteLeave((to, from) => {
 onMounted(async () => {
   const res = await api.template.get(route.params.repo, route.params.id)
   delete res.readme
+  if (!res.environment) res.environment = {}
   template.value = JSON.stringify(res, undefined, 4)
   setTimeout(() => {
     unmodified = template.value
@@ -105,6 +107,10 @@ function createLocalCopy() {
   sessionStorage.setItem('copiedTemplate', JSON.stringify(t))
   router.push({ name: 'TemplateCreate', query: { 'copy': true } })
 }
+
+function tabChanged(newTab) {
+  if (newTab === 'json' && ace.value) ace.value.refresh()
+}
 </script>
 
 <template>
@@ -115,7 +121,7 @@ function createLocalCopy() {
         <span v-text="t('templates.EditLocalOnly')" />
         <btn color="primary" @click="createLocalCopy()"><icon name="copy" />{{ t('templates.CreateLocalCopy') }}</btn>
       </div>
-      <tabs anchors>
+      <tabs anchors @tabChanged="tabChanged">
         <tab id="general" :title="t('templates.General')" icon="general" hotkey="t g">
           <general v-model="template" @valid="valid.general = $event" />
         </tab>
@@ -135,7 +141,7 @@ function createLocalCopy() {
           <environment v-model="template" />
         </tab>
         <tab id="json" :title="t('templates.Json')" icon="json" hotkey="t j">
-          <ace id="template-json" v-model="template" class="template-json-editor" mode="json" />
+          <ace ref="ace" id="template-json" v-model="template" class="template-json-editor" mode="json" />
         </tab>
       </tabs>
       <div v-if="route.params.repo === 'local'" class="actions">

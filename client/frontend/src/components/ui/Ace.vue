@@ -73,6 +73,12 @@ function init() {
     })
   })
 }
+
+defineExpose({
+  refresh: () => {
+    editor.resize()
+  }
+})
 </script>
 
 <template>
