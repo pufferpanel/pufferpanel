@@ -24,7 +24,7 @@ type EnvironmentFactory struct {
 
 func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	t := &tty{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "tty", ServerId: id},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 	}
 	t.BaseEnvironment.ExecutionFunction = t.ttyExecuteAsync
 	t.BaseEnvironment.WaitFunction = t.WaitForMainProcess
@@ -32,5 +32,5 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 }
 
 func (ef EnvironmentFactory) Key() string {
-	return "tty"
+	return "host"
 }

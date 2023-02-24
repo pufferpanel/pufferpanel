@@ -1,4 +1,4 @@
-//go:build !windows && tty
+//go:build !windows && host
 
 package environments
 
@@ -7,6 +7,5 @@ import (
 )
 
 func init() {
-	mapping["standard"] = tty.EnvironmentFactory{}
-	mapping["tty"] = tty.EnvironmentFactory{}
+	mapping["host"] = tty.EnvironmentFactory{}
 }

@@ -2,7 +2,9 @@ package database
 
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
+	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/models"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 )
 
@@ -54,6 +56,35 @@ func migrate(dbConn *gorm.DB) error {
 				err = db.Delete(local).Error
 				if err != nil {
 					return err
+				}
+
+				return nil
+			},
+		},
+		{
+			ID: "1677250619",
+			Migrate: func(db *gorm.DB) error {
+				var templates []*models.Template
+				err := db.Find(&templates).Error
+				if err != nil {
+					return err
+				}
+
+				for _, v := range templates {
+					rawMap := make(map[string]interface{})
+					err = pufferpanel.UnmarshalTo(v.Environment, &rawMap)
+					if err != nil {
+						return err
+					}
+					declaredEnv := cast.ToString(rawMap["type"])
+					if declaredEnv == "tty" || declaredEnv == "standard" {
+						rawMap["type"] = "host"
+						v.Environment = rawMap
+						err = db.Save(&v).Error
+						if err != nil {
+							return err
+						}
+					}
 				}
 
 				return nil

@@ -24,7 +24,7 @@ type EnvironmentFactory struct {
 
 func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 	s := &standard{
-		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: "standard", ServerId: id},
+		BaseEnvironment: &pufferpanel.BaseEnvironment{Type: ef.Key(), ServerId: id},
 	}
 	s.BaseEnvironment.ExecutionFunction = s.standardExecuteAsync
 	s.BaseEnvironment.WaitFunction = s.WaitForMainProcess
@@ -32,5 +32,5 @@ func (ef EnvironmentFactory) Create(id string) pufferpanel.Environment {
 }
 
 func (ef EnvironmentFactory) Key() string {
-	return "standard"
+	return "host"
 }

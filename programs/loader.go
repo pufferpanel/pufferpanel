@@ -19,6 +19,7 @@ package programs
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -60,18 +61,7 @@ func LoadFromFolder() {
 			logging.Error.Printf("Error loading server details from json (%s): %s", element.Name(), err)
 			continue
 		}
-		program.Scheduler = NewScheduler(program)
-		err = program.Scheduler.LoadMap(program.Tasks)
-		if err != nil {
-			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
-			continue
-		}
-		err = program.Scheduler.Start()
-		if err != nil {
-			logging.Error.Printf("Error starting server scheduler (%s): %s", element.Name(), err)
-			continue
-		}
-		program.Scheduler = NewScheduler(program)
+
 		err = program.Scheduler.LoadMap(program.Tasks)
 		if err != nil {
 			logging.Error.Printf("Error loading server tasks from json (%s): %s", element.Name(), err)
@@ -147,7 +137,28 @@ func LoadFromData(id string, source []byte) (*Program, error) {
 	}
 
 	environmentType := typeMap.Type
+
+	if environmentType == "standard" || environmentType == "tty" {
+		environmentType = "host"
+
+		tracker := make(map[string]interface{})
+		err = pufferpanel.UnmarshalTo(data.Environment, &tracker)
+		if err != nil {
+			return nil, err
+		}
+		tracker["type"] = "host"
+		data.Environment = tracker
+
+		err = data.Save()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	data.RunningEnvironment, err = environments.Create(environmentType, config.ServersFolder.Value(), id, data.Environment)
+	if data.RunningEnvironment == nil {
+		return nil, errors.New(fmt.Sprintf("unknown environment [%s]", environmentType))
+	}
 	return data, nil
 }
 

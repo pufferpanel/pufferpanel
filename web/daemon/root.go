@@ -24,6 +24,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/environments"
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -53,7 +54,7 @@ func getFeatures(c *gin.Context) {
 		features = append(features, "docker")
 	}
 
-	c.JSON(http.StatusOK, Features{Features: features, Environments: envs})
+	c.JSON(http.StatusOK, Features{Features: features, Environments: envs, OS: runtime.GOOS, Arch: runtime.GOARCH})
 }
 
 func testDocker() bool {
@@ -75,4 +76,6 @@ func testDocker() bool {
 type Features struct {
 	Features     []string `json:"features"`
 	Environments []string `json:"environments"`
+	OS           string   `json:"os"`
+	Arch         string   `json:"arch"`
 }
