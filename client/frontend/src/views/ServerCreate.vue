@@ -67,25 +67,28 @@ async function settingsConfirmed(settings) {
 <template>
   <div class="servercreate">
     <h1 v-text="t('servers.Create')" />
-    <div :class="['progress', 'on-step-' + step]">
-      <div :class="['step', 'step-environment', step === 'environment' ? 'step-current' : '']" />
-      <div :class="['step', 'step-template', step === 'template' ? 'step-current' : '']" />
-      <div :class="['step', 'step-settings', step === 'settings' ? 'step-current' : '']" />
+    <div v-if="$api.auth.hasScope('nodes.view') && $api.auth.hasScope('templates.view')">
+      <div :class="['progress', 'on-step-' + step]">
+        <div :class="['step', 'step-environment', step === 'environment' ? 'step-current' : '']" />
+        <div :class="['step', 'step-template', step === 'template' ? 'step-current' : '']" />
+        <div :class="['step', 'step-settings', step === 'settings' ? 'step-current' : '']" />
+      </div>
+      <environment v-if="step === 'environment'" :nouser="!$api.auth.hasScope('users.view')" @confirm="envConfirmed" />
+      <select-template
+        v-if="step === 'template'"
+        :env="environment.envConfig.type"
+        :os="environment.nodeOs"
+        :arch="environment.nodeArch"
+        @back="templateBack()"
+        @selected="templateSelected"
+      />
+      <settings
+        v-if="step === 'settings'"
+        :data="template.data"
+        @back="settingsBack()"
+        @confirm="settingsConfirmed"
+      />
     </div>
-    <environment v-if="step === 'environment'" @confirm="envConfirmed" />
-    <select-template
-      v-if="step === 'template'"
-      :env="environment.envConfig.type"
-      :os="environment.nodeOs"
-      :arch="environment.nodeArch"
-      @back="templateBack()"
-      @selected="templateSelected"
-    />
-    <settings
-      v-if="step === 'settings'"
-      :data="template.data"
-      @back="settingsBack()"
-      @confirm="settingsConfirmed"
-    />
+    <div v-else v-text="t('servers.CreateMissingPermissions')" />
   </div>
 </template>

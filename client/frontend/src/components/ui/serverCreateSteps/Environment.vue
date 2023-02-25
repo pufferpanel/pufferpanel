@@ -27,6 +27,10 @@ const msEnv = ref(null)
 const users = ref([])
 const msUsers = ref(null)
 
+const props = defineProps({
+  nouser: { type: Boolean, default: () => true }
+})
+
 onMounted(async () => {
   const self = await api.self.get()
   nextTick(() => {
@@ -154,6 +158,7 @@ function confirm() {
           :delay="500"
           :searchable="true"
           :options="searchUsers"
+          :disabled="nouser"
         />
         <label for="userselect" @click="msUsers.open()">{{ t('users.Users') }}</label>
       </div>

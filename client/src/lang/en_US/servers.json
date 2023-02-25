@@ -36,5 +36,6 @@
   "NoUsers": "This server does not have any associated users",
   "InviteUser": "Invite user",
   "EnvironmentEditHint": "Changes to these settings will only apply after reloading the server definition",
-  "Command": "Command"
+  "Command": "Command",
+  "CreateMissingPermissions": "You don't have permission to view nodes or templates, these are needed for server creation, please talk to your admin"
 }
