@@ -29,6 +29,11 @@ export class NodeApi {
     return res.data
   }
 
+  async features(id) {
+    const res = await this._api.get(`/api/nodes/${id}/features`)
+    return res.data
+  }
+
   async create(node) {
     await this._api.post('/api/nodes/', this.fixNode(node))
     try {

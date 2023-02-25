@@ -4,47 +4,36 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import SelectTemplate from '@/components/ui/serverCreateSteps/SelectTemplate.vue'
 import Environment from '@/components/ui/serverCreateSteps/Environment.vue'
-import Users from '@/components/ui/serverCreateSteps/Users.vue'
 import Settings from '@/components/ui/serverCreateSteps/Settings.vue'
 
 const router = useRouter()
 const { t } = useI18n()
 const api = inject('api')
-const step = ref('template')
-const template = ref({})
+const step = ref('environment')
 const environment = ref({})
 const users = ref([])
+const template = ref({})
 
-function templateSelected(selected) {
-  template.value = selected
-  step.value = 'environment'
-}
-
-function envBack() {
-  template.value = {}
-  environment.value = {}
+function envConfirmed(name, nodeId, nodeOs, nodeArch, envConfig, u) {
+  users.value = u
+  environment.value = { name, nodeId, nodeOs, nodeArch, envConfig }
   step.value = 'template'
 }
 
-function envConfirmed(name, nodeId, envConfig) {
-  environment.value = { name, nodeId, envConfig }
-  step.value = 'users'
-}
-
-function usersBack() {
+function templateBack() {
   environment.value = {}
   users.value = []
   step.value = 'environment'
 }
 
-function usersConfirmed(selected) {
-  users.value = selected
+function templateSelected(selected) {
+  template.value = selected
   step.value = 'settings'
 }
 
 function settingsBack() {
-  users.value = []
-  step.value = 'users'
+  template.value = {}
+  step.value = 'template'
 }
 
 async function settingsConfirmed(settings) {
@@ -79,14 +68,24 @@ async function settingsConfirmed(settings) {
   <div class="servercreate">
     <h1 v-text="t('servers.Create')" />
     <div :class="['progress', 'on-step-' + step]">
-      <div :class="['step', 'step-template', step === 'template' ? 'step-current' : '']" />
       <div :class="['step', 'step-environment', step === 'environment' ? 'step-current' : '']" />
-      <div :class="['step', 'step-users', step === 'users' ? 'step-current' : '']" />
+      <div :class="['step', 'step-template', step === 'template' ? 'step-current' : '']" />
       <div :class="['step', 'step-settings', step === 'settings' ? 'step-current' : '']" />
     </div>
-    <select-template v-if="step === 'template'" @selected="templateSelected" />
-    <environment v-if="step === 'environment'" :env="template.environment" :supported="template.supportedEnvironments" @back="envBack()" @confirm="envConfirmed" />
-    <users v-if="step === 'users'" @back="usersBack()" @confirm="usersConfirmed" />
-    <settings v-if="step === 'settings'" :data="template.data" @back="settingsBack()" @confirm="settingsConfirmed" />
+    <environment v-if="step === 'environment'" @confirm="envConfirmed" />
+    <select-template
+      v-if="step === 'template'"
+      :env="environment.envConfig.type"
+      :os="environment.nodeOs"
+      :arch="environment.nodeArch"
+      @back="templateBack()"
+      @selected="templateSelected"
+    />
+    <settings
+      v-if="step === 'settings'"
+      :data="template.data"
+      @back="settingsBack()"
+      @confirm="settingsConfirmed"
+    />
   </div>
 </template>

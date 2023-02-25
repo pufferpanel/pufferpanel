@@ -13,8 +13,6 @@ const firstEntry = ref(null)
 
 onMounted(async () => {
   loadTemplates()
-  // templates.value = await api.template.list()
-  // templatesLoaded.value = true
 })
 
 async function loadTemplates() {
@@ -43,6 +41,12 @@ function focusList() {
             <div class="template">
               <span class="title">{{template.display}}</span>
               <span class="subline">{{template.type}}</span>
+              <span v-if="template.environment" :class="['env-tag', template.environment.type]">
+                {{t(`env.${template.environment.type}.name`)}}
+              </span>
+              <span v-else class="env-tag missing">
+                {{t(`env.Missing`)}}
+              </span>
             </div>
           </router-link>
         </div>

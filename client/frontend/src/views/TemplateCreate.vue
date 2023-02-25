@@ -39,7 +39,7 @@ let unmodified = `{
         "environmentVars": {}
     },
     "environment": {
-        "type": "standard"
+        "type": "host"
     }
 }`
 const template = ref(unmodified)

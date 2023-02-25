@@ -16,13 +16,11 @@ const emit = defineEmits(['update:modelValue'])
 const { t } = useI18n()
 const template = ref(JSON.parse(props.modelValue))
 const envs = [
-  { value: 'standard', label: t('env.standard.name') },
+  { value: 'host', label: t('env.host.name') },
   { value: 'docker', label: t('env.docker.name') }
 ]
-if (isTTY()) envs.push({ value: 'tty', label: t('env.tty.name') })
 const envDefaults = {
-  standard: { type: 'standard' },
-  tty: { type: 'tty' },
+  host: { type: 'host' },
   docker: { type: 'docker', image: 'pufferpanel/generic' }
 }
 
@@ -38,10 +36,6 @@ function envChanged(newEnv) {
 function envValueChanged(newEnv) {
   template.value.environment = newEnv
   update()
-}
-
-function isTTY() {
-  return template.value.environment.type === 'tty'
 }
 
 onUpdated(() => {

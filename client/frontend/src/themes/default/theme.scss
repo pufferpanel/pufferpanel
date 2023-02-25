@@ -816,39 +816,30 @@ html[dir="rtl"] .settings .panel .master-url .icon {
       }
     }
 
-    &.on-step-template {
-      &::before {
-        width: 20%;
-      }
-      &::after {
-        width: 80%;
-      }
-    }
-
     &.on-step-environment {
       &::before {
-        width: 40%;
+        width: 25%;
       }
       &::after {
-        width: 60%;
+        width: 75%;
       }
     }
 
-    &.on-step-users {
+    &.on-step-template {
       &::before {
-        width: 60%;
+        width: 50%;
       }
       &::after {
-        width: 40%;
+        width: 50%;
       }
     }
 
     &.on-step-settings {
       &::before {
-        width: 80%;
+        width: 75%;
       }
       &::after {
-        width: 20%;
+        width: 25%;
       }
     }
   }
@@ -896,20 +887,24 @@ html[dir="rtl"] .settings .panel .master-url .icon {
       margin-left: 1em;
       margin-right: 1em;
     }
+
+    .button {
+      @include cols(12);
+    }
   }
 
-  .environment, .users, .settings {
+  .environment, .settings {
     @include row;
     grid-gap: 0 1em;
     gap: 0 1em;
     margin-top: 1.5rem;
-
-    div {
+    div, .button {
       @include cols(12);
     }
+  }
 
+  .settings {
     .button {
-      @include cols(12);
       @include cols(6, md);
     }
   }
@@ -923,6 +918,36 @@ html[dir="rtl"] .settings .panel .master-url .icon {
 .serverview, .usercreate, .templatecreate, .templateview {
   @include cols(12);
   @include card;
+}
+
+.env-tag {
+  font-size: 0.85em;
+  border-radius: 0.75em;
+  padding: 0.1em 0.35em;
+}
+
+.templatelist .template {
+  display: flex;
+  flex-flow: row wrap;
+  .title {
+    flex-basis: 100%;
+    flex-shrink: 0;
+  }
+  .subline {
+    flex-grow: 1;
+  }
+}
+
+.env-tag.docker {
+  background-color: #2496ed40;
+}
+
+.env-tag.host {
+  background-color: #4caf5040;
+}
+
+.env-tag.missing {
+  background-color: #dc313140;
 }
 
 .serverview {

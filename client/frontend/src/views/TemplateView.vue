@@ -141,7 +141,7 @@ function tabChanged(newTab) {
           <environment v-model="template" />
         </tab>
         <tab id="json" :title="t('templates.Json')" icon="json" hotkey="t j">
-          <ace ref="ace" id="template-json" v-model="template" class="template-json-editor" mode="json" />
+          <ace id="template-json" ref="ace" v-model="template" class="template-json-editor" mode="json" />
         </tab>
       </tabs>
       <div v-if="route.params.repo === 'local'" class="actions">

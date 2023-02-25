@@ -1,7 +1,6 @@
 <script>
 const fields = {
-  standard: [],
-  tty: [],
+  host: [],
   docker: [
     {
       name: 'image',
