@@ -21,51 +21,13 @@ import (
 	"github.com/pufferpanel/pufferpanel/v2/services"
 	"net/http"
 	"strconv"
-	"strings"
 )
-
-var noLogin = []string{"/auth/", "/error/", "/daemon/", "/api/"}
-var assetFiles = []string{".js", ".css", ".img", ".ico", ".png", ".gif"}
-var overrideRequireLogin = []string{"/auth/reauth"}
 
 const WWWAuthenticateHeader = "WWW-Authenticate"
 const WWWAuthenticateHeaderContents = "Bearer realm=\"\""
 
 func AuthMiddleware(c *gin.Context) {
-	for _, v := range noLogin {
-		if strings.HasPrefix(c.Request.URL.Path, v) {
-			//and now we see if it's actually one we override
-			skip := false
-			for _, o := range overrideRequireLogin {
-				if o == c.Request.URL.Path {
-					skip = true
-					break
-				}
-			}
-			if !skip {
-				c.Next()
-				return
-			}
-		}
-	}
-
 	cookie, err := c.Cookie("puffer_auth")
-
-	if err != nil || cookie == "" {
-		//determine if it's an asset, otherwise, we can redirect if it's a GET
-		//dev only requirement?
-		if c.Request.Method == "GET" && strings.Count(c.Request.URL.Path, "/") == 1 {
-			for _, v := range assetFiles {
-				if strings.HasSuffix(c.Request.URL.Path, v) {
-					return
-				}
-			}
-		}
-
-		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
 
 	db, err := database.GetConnection()
 	if response.HandleError(c, err, http.StatusInternalServerError) {
@@ -85,12 +47,12 @@ func AuthMiddleware(c *gin.Context) {
 	}
 
 	us := services.User{DB: db}
-	subject_Id, err := strconv.ParseUint(token.Claims.Subject, 10, 64)
+	subjectId, err := strconv.ParseUint(token.Claims.Subject, 10, 64)
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
 	}
-	user, err := us.GetById(uint(subject_Id))
+	user, err := us.GetById(uint(subjectId))
 	if response.HandleError(c, err, http.StatusUnauthorized) {
 		c.Header(WWWAuthenticateHeader, WWWAuthenticateHeaderContents)
 		return
