@@ -49,7 +49,7 @@ func (o *OAuth2) GetForUserAndServer(userId uint, serverId string) ([]*models.Cl
 		UserId: userId,
 		ServerId: sql.NullString{
 			String: serverId,
-			Valid:  serverId == "",
+			Valid:  serverId != "",
 		},
 	}
 
@@ -58,11 +58,9 @@ func (o *OAuth2) GetForUserAndServer(userId uint, serverId string) ([]*models.Cl
 }
 
 func (o *OAuth2) Update(client *models.Client) error {
-	o.DB.Save(client)
-	return nil
+	return o.DB.Save(client).Error
 }
 
 func (o *OAuth2) Delete(client *models.Client) error {
-	o.DB.Where(client).Delete(client)
-	return nil
+	return o.DB.Where(client).Delete(client).Error
 }

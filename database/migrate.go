@@ -50,7 +50,7 @@ func migrate(dbConn *gorm.DB) error {
 			},
 		},
 		{
-			ID: "client-add-nullable",
+			ID: "1677519979",
 			Migrate: func(db *gorm.DB) error {
 				err := db.Migrator().AlterColumn(&models.Client{}, "ServerId")
 				if err != nil {
@@ -61,7 +61,7 @@ func migrate(dbConn *gorm.DB) error {
 			},
 		},
 		{
-			ID: "servers-add-nullable",
+			ID: "1677519987",
 			Migrate: func(db *gorm.DB) error {
 				err := db.Migrator().AlterColumn(&models.Server{}, "RawNodeID")
 				if err != nil {

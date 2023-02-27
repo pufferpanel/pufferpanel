@@ -81,7 +81,7 @@ func (c *Client) BeforeSave(*gorm.DB) (err error) {
 	}
 	c.RawScopes = strings.Join(scopes, " ")
 
-	c.ServerId.Valid = c.ServerId.String == ""
+	c.ServerId.Valid = c.ServerId.String != ""
 	return
 }
 
@@ -98,6 +98,6 @@ func (c *Client) AfterFind(*gorm.DB) (err error) {
 		c.Scopes[i] = pufferpanel.Scope(v)
 	}
 
-	c.ServerId.Valid = c.ServerId.String == ""
+	c.ServerId.Valid = c.ServerId.String != ""
 	return
 }
