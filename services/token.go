@@ -79,11 +79,17 @@ func GenerateOAuthForClient(client *models.Client) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-		PanelClaims: pufferpanel.PanelClaims{
-			Scopes: map[string][]pufferpanel.Scope{
-				client.ServerId: client.Scopes,
-			},
-		},
+		PanelClaims: pufferpanel.PanelClaims{},
+	}
+
+	if !client.ServerId.Valid {
+		claims.PanelClaims.Scopes = map[string][]pufferpanel.Scope{
+			"": client.Scopes,
+		}
+	} else {
+		claims.PanelClaims.Scopes = map[string][]pufferpanel.Scope{
+			client.ServerId.String: client.Scopes,
+		}
 	}
 
 	if client.UserId != 0 {

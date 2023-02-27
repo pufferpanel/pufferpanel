@@ -14,6 +14,7 @@
 package models
 
 import (
+	"database/sql"
 	"github.com/pufferpanel/pufferpanel/v2"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
@@ -29,8 +30,8 @@ type Client struct {
 	UserId uint  `gorm:"NOT NULL" json:"-"`
 	User   *User `json:"-"`
 
-	ServerId string  `gorm:"NOT NULL" json:"-"`
-	Server   *Server `json:"-"`
+	ServerId sql.NullString `gorm:"" json:"-"`
+	Server   *Server        `json:"-"`
 
 	Scopes    []pufferpanel.Scope `gorm:"-" json:"-"`
 	RawScopes string              `gorm:"column:scopes;NOT NULL;size:4000" json:"-"`
@@ -80,6 +81,7 @@ func (c *Client) BeforeSave(*gorm.DB) (err error) {
 	}
 	c.RawScopes = strings.Join(scopes, " ")
 
+	c.ServerId.Valid = c.ServerId.String == ""
 	return
 }
 
@@ -96,5 +98,6 @@ func (c *Client) AfterFind(*gorm.DB) (err error) {
 		c.Scopes[i] = pufferpanel.Scope(v)
 	}
 
+	c.ServerId.Valid = c.ServerId.String == ""
 	return
 }

@@ -49,6 +49,29 @@ func migrate(dbConn *gorm.DB) error {
 				return nil
 			},
 		},
+		{
+			ID: "client-add-nullable",
+			Migrate: func(db *gorm.DB) error {
+				err := db.Migrator().AlterColumn(&models.Client{}, "ServerId")
+				if err != nil {
+					return err
+				}
+				err = db.Table("clients").Where("server_id = ?", "").Update("server_id", nil).Error
+				return err
+			},
+		},
+		{
+			ID: "servers-add-nullable",
+			Migrate: func(db *gorm.DB) error {
+				err := db.Migrator().AlterColumn(&models.Server{}, "RawNodeID")
+				if err != nil {
+					return err
+				}
+
+				err = db.Table("servers").Where("node_id = ?", 0).Update("node_id", nil).Error
+				return err
+			},
+		},
 	})
 
 	return m.Migrate()

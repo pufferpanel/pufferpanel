@@ -113,8 +113,8 @@ func handleTokenRequest(c *gin.Context) {
 				if len(client.Scopes) == 0 {
 					ps := &services.Permission{DB: db}
 					var serverId *string
-					if client.ServerId != "" {
-						serverId = &client.ServerId
+					if client.ServerId.Valid {
+						serverId = &client.ServerId.String
 					}
 					perms, err := ps.GetForUserAndServer(client.UserId, serverId)
 					if err != nil {

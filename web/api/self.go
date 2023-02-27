@@ -280,7 +280,7 @@ func getPersonalOAuth2Clients(c *gin.Context) {
 
 	data := make([]*models.Client, 0)
 	for _, v := range clients {
-		if v.ServerId == "" {
+		if !v.ServerId.Valid {
 			data = append(data, v)
 		}
 	}
@@ -366,7 +366,7 @@ func deletePersonalOAuth2Client(c *gin.Context) {
 	}
 
 	//ensure the client id is specific for this server, and this user
-	if client.UserId != user.ID || client.ServerId != "" {
+	if client.UserId != user.ID || client.ServerId.Valid {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
