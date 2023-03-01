@@ -47,7 +47,7 @@ func (s *Server) IsValid() (err error) {
 
 func (s *Server) BeforeSave(*gorm.DB) (err error) {
 	err = s.IsValid()
-	if s.NodeID == 0 {
+	if s.NodeID == LocalNode.ID {
 		s.RawNodeID = nil
 	} else {
 		s.RawNodeID = &s.NodeID
@@ -56,10 +56,10 @@ func (s *Server) BeforeSave(*gorm.DB) (err error) {
 }
 
 func (s *Server) AfterFind(*gorm.DB) (err error) {
-	if s.RawNodeID != nil {
-		return
+	if s.Node.ID == 0 {
+		s.Node = *LocalNode
 	}
 
-	s.Node = *LocalNode
+	s.NodeID = s.Node.ID
 	return
 }
