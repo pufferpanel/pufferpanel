@@ -17,6 +17,9 @@ type multiWriter struct {
 
 func (t *multiWriter) Write(p []byte) (n int, err error) {
 	for _, w := range t.writers {
+		if w == nil {
+			continue
+		}
 		n, err = w.Write(p)
 		if err != nil {
 			return
@@ -60,7 +63,7 @@ func (t *multiWriter) WriteString(s string) (n int, err error) {
 // If a listed writer returns an error, that overall write operation
 // stops and returns the error; it does not continue down the list.
 func MultiWriter(writers ...io.Writer) io.Writer {
-	allWriters := make([]io.Writer, 0)
+	allWriters := make([]io.Writer, len(writers))
 	for _, w := range writers {
 		if w == nil {
 			continue

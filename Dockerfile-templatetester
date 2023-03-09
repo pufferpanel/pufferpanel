@@ -1,0 +1,56 @@
+###
+# Builder container
+###
+FROM golang:1.19 AS builder
+
+ARG tags=docker,tty
+ARG version=devel
+ARG sha=devel
+ARG goproxy
+ARG npmproxy
+ARG swagversion=1.8.10
+
+ENV CGOENABLED=1 \
+    YARN_REGISTRY=$npmproxy \
+    GOPROXY=$goproxy
+
+RUN go version && \
+    apt update && \
+    apt install -y build-essential git curl && \
+    mkdir /pufferpanel
+
+WORKDIR /build/pufferpanel
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+RUN go build -v -buildvcs=false -tags "$tags" -ldflags "-X 'github.com/pufferpanel/pufferpanel/v3.Hash=$sha' -X 'github.com/pufferpanel/pufferpanel/v3.Version=$version'" -o /pufferpanel/templatetester github.com/pufferpanel/pufferpanel/v3/templatetester
+
+###
+# Generate final image
+###
+
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+    apt install -y zip unzip tar git wget curl xz-utils dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main' && \
+    dpkg --add-architecture i386 && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+RUN apt update && \
+    apt install -y nodejs lib32gcc1 mono-complete
+
+RUN apt-get clean
+
+
+COPY --from=builder /pufferpanel /pufferpanel
+WORKDIR /pufferpanel
+
+ENTRYPOINT ["/pufferpanel/templatetester"]
+CMD ["--gitref=refs/heads/v2.6"]

@@ -8,10 +8,16 @@ type Rotator struct {
 }
 
 func (r *Rotator) Write(p []byte) (n int, err error) {
+	if r == nil || r.backer == nil {
+		return len(p), nil
+	}
 	return r.backer.Write(p)
 }
 
 func (r *Rotator) Close() error {
+	if r == nil || r.backer == nil {
+		return nil
+	}
 	return r.backer.Close()
 }
 

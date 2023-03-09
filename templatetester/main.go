@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"flag"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
 	"github.com/pufferpanel/pufferpanel/v3/operations"
@@ -17,6 +19,9 @@ import (
 	"time"
 )
 
+var templatesToSkip []string
+var mustTest []string
+
 // The purpose of this is to simply test all templates in our repo to the best of our ability
 // This will download all the templates, spin up a fake server using it, and attempt to run everything
 // For now, it will just test that we can create, install, start, and stop the server
@@ -25,6 +30,17 @@ import (
 // Arguments are templates to ignore, for ones which require data that we cannot actually safely test
 // such as ones which need Steam credentials or to actually own the game
 func main() {
+	var gitRef string
+	var skipStr string
+	var requiredStr string
+	flag.StringVar(&gitRef, "gitref", "refs/heads/v2.6", "")
+	flag.StringVar(&skipStr, "skip", "", "")
+	flag.StringVar(&requiredStr, "required", "", "")
+	flag.Parse()
+
+	templatesToSkip = strings.Split(skipStr, ",")
+	mustTest = strings.Split(requiredStr, ",")
+
 	tmpDir, err := os.MkdirTemp("", "puffertemplatetest")
 	panicIf(err)
 	defer os.RemoveAll(tmpDir)
@@ -58,9 +74,10 @@ func main() {
 	//panicIf(err)
 
 	//get all templates
+	log.Printf("Cloning template repo")
 	_, err = git.PlainClone(templateFolder, false, &git.CloneOptions{
 		URL:           "https://github.com/PufferPanel/templates",
-		ReferenceName: "refs/heads/v2.6",
+		ReferenceName: plumbing.ReferenceName(gitRef),
 	})
 	panicIf(err)
 
@@ -90,14 +107,23 @@ func main() {
 				tmp.Name = strings.TrimSuffix(file.Name(), ".json")
 
 				skip := false
-				for _, v := range os.Args[1:] {
+				for _, v := range templatesToSkip {
 					if match(v, tmp.Name) {
 						skip = true
 						break
 					}
 				}
 				if skip {
-					continue
+					for _, v := range mustTest {
+						if match(v, tmp.Name) {
+							skip = false
+							break
+						}
+					}
+
+					if skip {
+						continue
+					}
 				}
 
 				tmp.Template, err = os.ReadFile(filePath)

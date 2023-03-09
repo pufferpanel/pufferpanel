@@ -10,3 +10,5 @@
 LICENSE
 azure-pipelines.yml
 crowdin.yml
+Dockerfile
+Dockerfile*
