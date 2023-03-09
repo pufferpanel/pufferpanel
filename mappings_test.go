@@ -255,7 +255,7 @@ func TestGetStringArrayOrNull(t *testing.T) {
 			name: "Test for invalid type",
 			args: args{
 				data: mappingTest,
-				key:  mappingIntArrayKey,
+				key:  mappingMapKey,
 			},
 			want: nil,
 		},
