@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - '.github/workflows/release.yml'
       - '.github/workflows/pr.yml'
+      - '.github/workflows/tester.yml'
 
 env:
   SWAG_VERSION: "1.8.10"
