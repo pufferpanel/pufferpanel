@@ -38,8 +38,12 @@ func main() {
 	flag.StringVar(&requiredStr, "required", "", "")
 	flag.Parse()
 
-	templatesToSkip = strings.Split(skipStr, ",")
-	mustTest = strings.Split(requiredStr, ",")
+	if skipStr != "" {
+		templatesToSkip = strings.Split(skipStr, ",")
+	}
+	if requiredStr != "" {
+		mustTest = strings.Split(requiredStr, ",")
+	}
 
 	tmpDir, err := os.MkdirTemp("", "puffertemplatetest")
 	panicIf(err)
@@ -122,6 +126,7 @@ func main() {
 					}
 
 					if skip {
+						log.Printf("Skipping %s", tmp.Name)
 						continue
 					}
 				}
