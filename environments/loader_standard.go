@@ -6,4 +6,5 @@ import "github.com/pufferpanel/pufferpanel/v3/environments/standard"
 
 func init() {
 	mapping["host"] = standard.EnvironmentFactory{}
+	mapping["standard"] = standard.EnvironmentFactory{}
 }

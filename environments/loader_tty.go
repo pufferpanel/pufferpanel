@@ -8,4 +8,6 @@ import (
 
 func init() {
 	mapping["host"] = tty.EnvironmentFactory{}
+	mapping["tty"] = tty.EnvironmentFactory{}
+	mapping["standard"] = tty.EnvironmentFactory{}
 }
