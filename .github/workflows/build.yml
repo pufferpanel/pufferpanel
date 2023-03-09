@@ -471,6 +471,7 @@ jobs:
   build-docker-image-base:
     runs-on: ubuntu-20.04
     name: "Build Docker image"
+    if: "startsWith(github.ref, 'refs/tags/v') || !(contains(github.event.head_commit.message, '[skip]') || startsWith(github.head_ref, 'l10n_master'))"
     env:
       REPO: pufferpanel/pufferpanel
       VERSION: latest
