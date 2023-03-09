@@ -3,7 +3,7 @@
 ###
 FROM golang:1.19 AS builder
 
-ARG tags=docker,tty
+ARG tags="docker tty"
 ARG version=devel
 ARG sha=devel
 ARG goproxy
