@@ -152,10 +152,10 @@ func (t *tty) WaitForMainProcess() error {
 	return t.WaitForMainProcessFor(0)
 }
 
-func (t *tty) WaitForMainProcessFor(timeout time.Duration) (err error) {
+func (t *tty) WaitForMainProcessFor(timeout time.Duration) error {
 	running, err := t.IsRunning()
 	if err != nil {
-		return
+		return err
 	}
 	if running {
 		if timeout > 0 {
@@ -168,7 +168,7 @@ func (t *tty) WaitForMainProcessFor(timeout time.Duration) (err error) {
 			t.Wait.Wait()
 		}
 	}
-	return
+	return err
 }
 
 func (t *tty) SendCode(code int) error {

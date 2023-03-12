@@ -202,7 +202,8 @@ func runServer(prg *programs.Program) (err error) {
 	select {
 	case <-t:
 		break
-	case <-c:
+	case err = <-c:
+		panicIf(err)
 		break
 	}
 
