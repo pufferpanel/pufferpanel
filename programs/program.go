@@ -143,12 +143,15 @@ func CreateProgram() *Program {
 
 // Starts the program.
 // This includes starting the environment if it is not running.
-func (p *Program) Start() (err error) {
+func (p *Program) Start() error {
 	if !p.IsEnabled() {
 		p.Log(logging.Error, "Server %s is not enabled, cannot start", p.Id())
 		return pufferpanel.ErrServerDisabled
 	}
-	if running, err := p.IsRunning(); running || err != nil {
+	if r, err := p.IsRunning(); r || err != nil {
+		if err == nil {
+			err = pufferpanel.ErrServerRunning
+		}
 		return err
 	}
 
@@ -161,14 +164,14 @@ func (p *Program) Start() (err error) {
 	if err != nil {
 		p.Log(logging.Error, "Error generating pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
-		return
+		return err
 	}
 
 	err = process.Run(p.RunningEnvironment)
 	if err != nil {
 		p.Log(logging.Error, "Error running pre-execution steps: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error running pre execute\n")
-		return
+		return err
 	}
 
 	commandLine := pufferpanel.ReplaceTokens(p.Execution.Command, data)
@@ -180,7 +183,7 @@ func (p *Program) Start() (err error) {
 	if !pufferpanel.EnsureAccess(path.Join(p.RunningEnvironment.GetRootDirectory(), workDir), p.RunningEnvironment.GetRootDirectory()) {
 		p.Log(logging.Error, "Working directory is invalid for server: %s", workDir)
 		p.RunningEnvironment.DisplayToConsole(true, "Working directory is invalid for server: %s", workDir)
-		return
+		return err
 	}
 
 	cmd, args := pufferpanel.SplitArguments(commandLine)
@@ -197,13 +200,14 @@ func (p *Program) Start() (err error) {
 		p.RunningEnvironment.DisplayToConsole(true, " Failed to start server\n")
 	}
 
-	return
+	return err
 }
 
 // Stops the program.
 // This will also stop the environment it is ran in.
-func (p *Program) Stop() (err error) {
-	if running, err := p.IsRunning(); !running || err != nil {
+func (p *Program) Stop() error {
+	var err error
+	if r, err := p.IsRunning(); !r || err != nil {
 		return err
 	}
 
@@ -219,7 +223,7 @@ func (p *Program) Stop() (err error) {
 	} else {
 		p.RunningEnvironment.DisplayToConsole(true, "Server was told to stop\n")
 	}
-	return
+	return err
 }
 
 // Kills the program.
@@ -288,28 +292,28 @@ func (p *Program) Destroy() (err error) {
 	return
 }
 
-func (p *Program) Install() (err error) {
+func (p *Program) Install() error {
 	if !p.IsEnabled() {
 		p.Log(logging.Error, "Server %s is not enabled, cannot install", p.Id())
 		return pufferpanel.ErrServerDisabled
 	}
 
 	p.Log(logging.Info, "Installing server %s", p.Id())
-	running, err := p.IsRunning()
+	r, err := p.IsRunning()
 	if err != nil {
 		p.Log(logging.Error, "Error checking server status: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Error on checking to see if server is running\n")
-		return
+		return err
 	}
 
-	if running {
+	if r {
 		err = p.Stop()
 	}
 
 	if err != nil {
 		p.Log(logging.Error, "Error stopping server: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to stop server\n")
-		return
+		return err
 	}
 
 	p.RunningEnvironment.DisplayToConsole(true, "Installing server\n")
@@ -318,11 +322,12 @@ func (p *Program) Install() (err error) {
 	if err != nil && !os.IsExist(err) {
 		p.Log(logging.Error, "Error creating server directory: %s", err)
 		p.RunningEnvironment.DisplayToConsole(true, "Failed to create server directory\n")
-		return
+		return err
 	}
 
 	if len(p.Installation) > 0 {
-		process, err := operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
+		var process operations.OperationProcess
+		process, err = operations.GenerateProcess(p.Installation, p.GetEnvironment(), p.DataToMap(), p.Execution.EnvironmentVariables)
 		if err != nil {
 			p.Log(logging.Error, "Error installing server: %s", err)
 			p.RunningEnvironment.DisplayToConsole(true, "Failed to install server\n")
@@ -338,12 +343,11 @@ func (p *Program) Install() (err error) {
 	}
 
 	p.RunningEnvironment.DisplayToConsole(true, "Server installed\n")
-	return
+	return nil
 }
 
-func (p *Program) IsRunning() (isRunning bool, err error) {
-	isRunning, err = p.RunningEnvironment.IsRunning()
-	return
+func (p *Program) IsRunning() (bool, error) {
+	return p.RunningEnvironment.IsRunning()
 }
 
 func (p *Program) Execute(command string) (err error) {

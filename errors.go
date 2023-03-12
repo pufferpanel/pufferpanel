@@ -56,6 +56,7 @@ var ErrSessionExpired = CreateError("session expired", "ErrSessionExpired")
 var ErrTaskNotFound = CreateError("task not found", "ErrTaskNotFound")
 var ErrNotImplemented = CreateError("not implemented", "ErrNotImplemented")
 var ErrDockerNotSupported = CreateError("docker not supported", "ErrDockerNotSupported")
+var ErrServerRunning = CreateError("server running", "ErrServerRunning")
 
 func CreateErrMissingScope(scope Scope) *Error {
 	return CreateError(ErrMissingScope.Message, ErrMissingScope.Code).Metadata(map[string]interface{}{"scope": scope})
