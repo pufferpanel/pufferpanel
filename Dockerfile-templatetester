@@ -43,5 +43,7 @@ RUN apt-get clean
 COPY --from=builder /pufferpanel /pufferpanel
 WORKDIR /pufferpanel
 
+USER pufferpanel
+
 ENTRYPOINT ["/pufferpanel/templatetester"]
 CMD ["--gitref=refs/heads/v2.6"]
