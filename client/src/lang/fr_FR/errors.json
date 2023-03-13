@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Un nœud avec ce nom existe déjà",
   "ErrDirectoryUploadNotSupported": "Impossible d'envoyer des dossiers",
   "ErrDockerNotSupported": "Docker n'est pas pris en charge sur ce nœud",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "Binaires manquantes : {expected}",
+  "ErrUnsupportedOS": "OS ({actual}) non supporté. OS pris en charge : {expected}",
+  "ErrUnsupportedArch": "Architecture {actual} non supportée. Architectures supportées : {expected}"
 }
