@@ -190,6 +190,7 @@ func (t *tty) handleClose(callback func(exitCode int)) {
 	} else {
 		exitCode = t.mainProcess.ProcessState.ExitCode()
 	}
+	t.LastExitCode = exitCode
 
 	if err != nil {
 		t.Log(logging.Error, "Error waiting on process: %s\n", err)

@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
+	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/pufferpanel/pufferpanel/v3/config"
@@ -183,6 +185,10 @@ func main() {
 
 		err = runServer(prg)
 		panicIf(err)
+
+		if prg.RunningEnvironment.GetLastExitCode() != 0 {
+			panicIf(errors.New(fmt.Sprintf("exit code status %d", prg.RunningEnvironment.GetLastExitCode())))
+		}
 
 		err = prg.Destroy()
 		panicIf(err)

@@ -200,6 +200,7 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 	} else {
 		exitCode = s.mainProcess.ProcessState.ExitCode()
 	}
+	s.LastExitCode = exitCode
 
 	if s.mainProcess != nil && s.mainProcess.Process != nil {
 		_ = s.mainProcess.Process.Release()

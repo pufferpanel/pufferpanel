@@ -108,17 +108,17 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		defer d.connection.Close()
 		wrapper := d.CreateWrapper()
 		_, _ = io.Copy(wrapper, d.connection.Reader)
-		//because we use the auto-delete, we don't manually stop the container
-		//c, _ := d.getClient()
-		//err = c.ContainerStop(context.Background(), d.ContainerId, nil)
-		//if err != nil {
-		//	logging.Error.Printf("Error stopping container "+d.ContainerId, err)
-		//}
+	}()
+
+	go func() {
+		var exitCode int
 
 		okChan, errChan := dockerClient.ContainerWait(ctx, d.ContainerId, container.WaitConditionRemoved)
 		select {
-		case _ = <-okChan:
+		case info := <-okChan:
+			exitCode = cast.ToInt(info.StatusCode)
 		case chanErr := <-errChan:
+			exitCode = 1
 			if chanErr != nil {
 				d.Log(logging.Error, "Error from error channel, awaiting exit `%v`\n", chanErr)
 			}
@@ -130,11 +130,7 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		_ = d.WSManager.WriteMessage(msg)
 
 		if steps.Callback != nil {
-			if err == nil {
-				steps.Callback(0)
-			} else {
-				steps.Callback(1)
-			}
+			steps.Callback(exitCode)
 		}
 	}()
 
@@ -441,7 +437,7 @@ func (d *docker) createContainer(client *client.Client, ctx context.Context, cmd
 	}
 
 	hostConfig := &container.HostConfig{
-		AutoRemove:   true,
+		//AutoRemove:   true,
 		NetworkMode:  container.NetworkMode(d.NetworkMode),
 		Resources:    d.Resources,
 		Binds:        bindDirs,

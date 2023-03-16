@@ -70,6 +70,8 @@ type Environment interface {
 	SendCode(code int) error
 
 	GetBase() *BaseEnvironment
+
+	GetLastExitCode() int
 }
 
 type BaseEnvironment struct {
@@ -82,6 +84,7 @@ type BaseEnvironment struct {
 	ExecutionFunction ExecutionFunction  `json:"-"`
 	WaitFunction      func() (err error) `json:"-"`
 	ServerId          string             `json:"-"`
+	LastExitCode      int                `json:"-"`
 }
 
 type ExecutionData struct {
@@ -163,6 +166,10 @@ func (e *BaseEnvironment) CreateWrapper() io.Writer {
 
 func (e *BaseEnvironment) GetBase() *BaseEnvironment {
 	return e
+}
+
+func (e *BaseEnvironment) GetLastExitCode() int {
+	return e.LastExitCode
 }
 
 func (e *BaseEnvironment) Log(l *log.Logger, format string, obj ...interface{}) {
