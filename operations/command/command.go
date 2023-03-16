@@ -49,6 +49,9 @@ func (c Command) Run(env pufferpanel.Environment) error {
 			return err
 		}
 		err = <-ch
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
