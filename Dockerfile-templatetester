@@ -26,7 +26,7 @@ FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN groupadd -r pufferpanel && useradd -r -g pufferpanel pufferpanel
+RUN useradd pufferpanel
 
 RUN apt update && \
     apt install -y zip unzip tar git wget curl xz-utils dirmngr gnupg apt-transport-https ca-certificates software-properties-common
