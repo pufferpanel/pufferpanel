@@ -26,8 +26,6 @@ FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN useradd pufferpanel
-
 RUN apt update && \
     apt install -y zip unzip tar git wget curl xz-utils dirmngr gnupg apt-transport-https ca-certificates software-properties-common
 
@@ -37,9 +35,12 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 RUN apt update && \
-    apt install -y nodejs lib32gcc1 mono-complete
+    apt install -y nodejs lib32gcc1 mono-complete && \
+    apt-get clean
 
-RUN apt-get clean
+RUN useradd pufferpanel && \
+    mkdir /home/pufferpanel && \
+    chown -R pufferpanel:pufferpanel /home/pufferpanel
 
 
 COPY --from=builder /pufferpanel /pufferpanel
