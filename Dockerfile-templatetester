@@ -35,7 +35,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E03280
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 RUN apt update && \
-    apt install -y nodejs lib32gcc1 mono-complete && \
+    apt install -y nodejs lib32gcc1 libstdc++6 mono-complete && \
     apt-get clean
 
 RUN useradd pufferpanel && \
