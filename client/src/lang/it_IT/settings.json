@@ -6,9 +6,9 @@
   "MasterUrlHint": "L'URL di base che il pannello può essere raggiunto nel formato http://localhost:8080",
   "CompanyName": "Nome Azienda",
   "DefaultTheme": "Tema Predefinito",
-  "RegistrationEnabled": "Allow users to register themselves",
-  "RegistrationEnabledHint1": "Self registered users can't do anything until given permissions",
-  "RegistrationEnabledHint2": "Disabling this only prevents direct registration, invitation to a server and the Users page are not affected",
+  "RegistrationEnabled": "Permetti agli utenti di registrarsi",
+  "RegistrationEnabledHint1": "Gli utenti registrati non possono fare nulla fino a quando non sono stati concessi i permessi",
+  "RegistrationEnabledHint2": "Disabilitare questo impedisce solo la registrazione diretta, l'invito a un server e la pagina Utenti non sono interessati",
   "EmailProvider": "Provider Email",
   "emailProviders": {
     "none": "Nessuno",
@@ -19,7 +19,7 @@
   "emailFields": {
     "from": "Sender Adress",
     "domain": "Dominio",
-    "key": "API Key",
+    "key": "Chiave API",
     "host": "Host",
     "username": "Nome utente",
     "password": "Password"
