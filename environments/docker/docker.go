@@ -65,8 +65,6 @@ func (d *docker) dockerExecuteAsync(steps pufferpanel.ExecutionData) error {
 		return pufferpanel.ErrContainerRunning
 	}
 
-	d.Wait.Wait()
-
 	if d.downloadingImage {
 		return pufferpanel.ErrImageDownloading
 	}
