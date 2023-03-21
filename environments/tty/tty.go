@@ -45,7 +45,6 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 		err = pufferpanel.ErrProcessRunning
 		return
 	}
-	t.Wait.Wait()
 
 	pr := exec.Command(steps.Command, steps.Arguments...)
 	pr.Dir = path.Join(t.GetRootDirectory(), steps.WorkingDirectory)
@@ -69,15 +68,16 @@ func (t *tty) ttyExecuteAsync(steps pufferpanel.ExecutionData) (err error) {
 	msg := messages.Status{Running: true}
 	_ = t.WSManager.WriteMessage(msg)
 
-	tty, err := pty.Start(pr)
+	processTty, err := pty.Start(pr)
 	if err != nil {
+		t.Wait.Done()
 		return
 	}
 
-	t.stdInWriter = tty
+	t.stdInWriter = processTty
 
 	go func(proxy io.Writer) {
-		_, _ = io.Copy(proxy, tty)
+		_, _ = io.Copy(proxy, processTty)
 	}(wrapper)
 
 	go t.handleClose(steps.Callback)

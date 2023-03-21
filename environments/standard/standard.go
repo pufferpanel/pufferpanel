@@ -48,7 +48,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 		err = pufferpanel.ErrProcessRunning
 		return
 	}
-	s.Wait.Wait()
+
 	s.Wait.Add(1)
 	s.mainProcess = exec.Command(steps.Command, steps.Arguments...)
 	s.mainProcess.Dir = path.Join(s.GetRootDirectory(), steps.WorkingDirectory)
@@ -67,6 +67,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 	s.mainProcess.Stderr = wrapper
 	pipe, err := s.mainProcess.StdinPipe()
 	if err != nil {
+		s.Wait.Done()
 		return
 	}
 	s.stdInWriter = pipe
@@ -78,6 +79,7 @@ func (s *standard) standardExecuteAsync(steps pufferpanel.ExecutionData) (err er
 
 	err = s.mainProcess.Start()
 	if err != nil && err.Error() != "exit status 1" {
+		s.Wait.Done()
 		msg := messages.Status{Running: false}
 		_ = s.WSManager.WriteMessage(msg)
 		s.Log(logging.Info, "Process failed to start: %s", err)
@@ -189,7 +191,6 @@ func (s *standard) SendCode(code int) error {
 
 func (s *standard) handleClose(callback func(exitCode int)) {
 	err := s.mainProcess.Wait()
-	s.Wait.Done()
 
 	msg := messages.Status{Running: false}
 	_ = s.WSManager.WriteMessage(msg)
@@ -208,6 +209,8 @@ func (s *standard) handleClose(callback func(exitCode int)) {
 
 	s.mainProcess = nil
 	s.stdInWriter = nil
+
+	s.Wait.Done()
 
 	if callback != nil {
 		callback(exitCode)
