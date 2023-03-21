@@ -42,6 +42,6 @@
   "ErrDirectoryUploadNotSupported": "Impossibile caricare i file",
   "ErrDockerNotSupported": "Docker non è supportato in questo nodo",
   "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
+  "ErrUnsupportedOS": "Il tuo sistema operativo ({actual}) non è supportato. I sistemi operativi supportati sono: {expected}",
   "ErrUnsupportedArch": "L'architettura {actual} non è supportata. Le architetture supportate sono: {expected}"
 }
