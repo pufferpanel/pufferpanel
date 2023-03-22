@@ -29,7 +29,7 @@
   "ErrNoNodes": "Ingen tilgængelige nodes",
   "ErrNoTemplates": "Der er ingen tilgængelige skabeloner",
   "ErrPasswordRequirements": "Adgangskoden skal være mindst 8 tegn",
-  "ErrUsernameRequirements": "Brugernavn skal være mindst 3 tegn og kun indeholde alfanumeriske oplysninger, _, eller -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Adgangskoder matcher ikke",
   "ErrSessionTimedOut": "Din session er udløbet. Log venligst ind igen",
   "ErrMissingScope": "Du har ikke tilladelse til at udføre denne handling",
