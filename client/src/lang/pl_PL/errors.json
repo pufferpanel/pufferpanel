@@ -29,7 +29,7 @@
   "ErrNoNodes": "Węzły nie są dostępne",
   "ErrNoTemplates": "Brak dostępnych szablonów",
   "ErrPasswordRequirements": "Hasło musi zawierać co najmniej {min} znaków",
-  "ErrUsernameRequirements": "Nazwa użytkownika musi mieć co najmniej {min} znaki i zawierać tylko znaki alfanumeryczne, _ lub -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Hasła nie są takie same",
   "ErrSessionTimedOut": "Twoja sesja wygasła, proszę zalogować się jeszcze raz",
   "ErrMissingScope": "Nie masz uprawnień do wykonywania tej czynności",
