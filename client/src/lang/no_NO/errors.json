@@ -29,7 +29,7 @@
   "ErrNoNodes": "Ingen noder tilgjengelig",
   "ErrNoTemplates": "Ingen maler tilgjengelig",
   "ErrPasswordRequirements": "Passordet må inneholde minst 8 tegn",
-  "ErrUsernameRequirements": "Brukernavnet må være minst 3 tegn og bare inneholde alfanumeriske, _, eller -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Passord er ikke det samme",
   "ErrSessionTimedOut": "Økten ble tidsavbrutt, vennligst logg inn igjen",
   "ErrMissingScope": "Du har ikke tilgang til å utføre denne handlingen",
