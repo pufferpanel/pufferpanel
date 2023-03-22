@@ -29,7 +29,7 @@
   "ErrNoNodes": "Noodeja ei ole saatavilla",
   "ErrNoTemplates": "Sivupohjia ei ole saatavilla",
   "ErrPasswordRequirements": "Salasanan pitää olla vähintään 8 merkkiä pitkä",
-  "ErrUsernameRequirements": "Käyttäjänimen pitää olla vähintään 3 merkkiä pitkä ja sisältää vain kirjaimia, _ tai -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Salasanat eivät täsmää",
   "ErrSessionTimedOut": "Istuntosi aikakatkaistiin. Ole hyvä ja kirjaudu uudelleen",
   "ErrMissingScope": "Sinulla ei ole oikeutta tämän toiminnon suorittamiseen",
