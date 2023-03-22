@@ -29,7 +29,7 @@
   "ErrNoNodes": "Tidak ada node yang tersedia",
   "ErrNoTemplates": "Tidak ada template yang tersedia",
   "ErrPasswordRequirements": "Kata sandi minimal harus sepanjang {min} karakter",
-  "ErrUsernameRequirements": "Nama penguna harus sepanjang {min} karakter",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Kata sandi tidak sama",
   "ErrSessionTimedOut": "Sesi anda telah habis, silahkan masuk kembali",
   "ErrMissingScope": "Anda tidak di ijinkan melakukan aksi ini",
