@@ -29,7 +29,7 @@
   "ErrNoNodes": "Nessun nodo disponibile",
   "ErrNoTemplates": "Nessun modello disponibile",
   "ErrPasswordRequirements": "La password deve essere di almeno {min} caratteri",
-  "ErrUsernameRequirements": "Il nome utente deve essere lunga almeno {min} caratteri e contenere solo alfanumerici, _, o -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Le password non sono uguali",
   "ErrSessionTimedOut": "La tua sessione è scaduta, sei pregato di accedere di nuovo",
   "ErrMissingScope": "Non sei autorizzato a praticare quest'azione",
