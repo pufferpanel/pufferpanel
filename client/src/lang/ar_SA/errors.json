@@ -29,7 +29,7 @@
   "ErrNoNodes": "لا يوجد Nodes متوفرة",
   "ErrNoTemplates": "لا يوجد نماذج متوفرة",
   "ErrPasswordRequirements": "يجب على كلمة المرور أن تكون على الاقل 8 أحرف",
-  "ErrUsernameRequirements": "يجب أن يكون اسم المستخدم 3 أحرف على الأقل وأن يحتوي فقط على حروف أبجدية، _، أو -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "كلمات المرور ليست متطابقة",
   "ErrSessionTimedOut": "انتهى وقت الجلسة الخاصة بك، يرجى تسجيل الدخول مرة أخرى",
   "ErrMissingScope": "ليس لديك صلاحية لتقوم بهذا الإجراء",
