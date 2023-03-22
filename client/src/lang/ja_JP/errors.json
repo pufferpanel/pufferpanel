@@ -29,7 +29,7 @@
   "ErrNoNodes": "利用可能なノードがありません",
   "ErrNoTemplates": "利用可能なテンプレートがありません",
   "ErrPasswordRequirements": "パスワードは最低8文字以上である必要があります",
-  "ErrUsernameRequirements": "ユーザー名は3文字以上で英数字、または「_」、「-」を含む必要があります。",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "パスワードが一致しません",
   "ErrSessionTimedOut": "セッションが時間切れです。再度ログインしてください。",
   "ErrMissingScope": "この操作を実行する権限をもっていません。",
