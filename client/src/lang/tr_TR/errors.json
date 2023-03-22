@@ -29,7 +29,7 @@
   "ErrNoNodes": "Düğüm mevcut değil",
   "ErrNoTemplates": "Şablon mevcut değil",
   "ErrPasswordRequirements": "Şifre en az 8 karakterden oluşmalıdır",
-  "ErrUsernameRequirements": "Kullanıcı adı en az 3 karakter olmalıdır. (Sadece Sayı, _, - içerebilir)",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Şifreler aynı değil",
   "ErrSessionTimedOut": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın",
   "ErrMissingScope": "Bu işlemi gerçekleştirmek için yetkiniz yok",
