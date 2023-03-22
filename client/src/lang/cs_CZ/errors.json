@@ -29,7 +29,7 @@
   "ErrNoNodes": "Žádné uzly nejsou k dispozici",
   "ErrNoTemplates": "Žádné šablony nejsou k dispozici",
   "ErrPasswordRequirements": "Heslo musí být nejméně 8 znaků dlouhé",
-  "ErrUsernameRequirements": "Uživatelské jméno musí mít alespoň 3 znaky a obsahovat pouze alfanumerické znaky, _, nebo -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Hesla nejsou stejná",
   "ErrSessionTimedOut": "Vypršel časový limit relace, přihlaste se prosím znovu",
   "ErrMissingScope": "Nemáte oprávnění k provedení této akce",
