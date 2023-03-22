@@ -29,7 +29,7 @@
   "ErrNoNodes": "Nenhuma node disponível",
   "ErrNoTemplates": "Nenhum modelo disponível",
   "ErrPasswordRequirements": "Palavra-passe deve ter pelo menos 8 caracteres",
-  "ErrUsernameRequirements": "O nome de utilizador deve ter pelo menos 3 caracteres e conter apenas caracteres alfanuméricos, _, ou -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "As palavra-passes não correspondem",
   "ErrSessionTimedOut": "A tua sessão expirou, por favor inicia sessão novamente",
   "ErrMissingScope": "Não tens autorização para realizar esta ação",
