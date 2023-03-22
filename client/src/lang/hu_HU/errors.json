@@ -29,7 +29,7 @@
   "ErrNoNodes": "Nincs elérhető csomópont",
   "ErrNoTemplates": "Nincs elérhető sablon",
   "ErrPasswordRequirements": "A jelszónak minimum 8 karakternek kell lennie",
-  "ErrUsernameRequirements": "A felhasználónév legalább 3 karakternek kell lenni, és csak alfanumerikus számokat, _, vagy - karaktert tartalmazhat",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "A jelszavak nem egyeznek",
   "ErrSessionTimedOut": "Lejárt a munkamenet, kérünk lépj be újra",
   "ErrMissingScope": "Nincs jogod a művelet végrehajtásához",
