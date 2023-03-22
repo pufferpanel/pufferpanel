@@ -29,7 +29,7 @@
   "ErrNoNodes": "Geen nodes beschikbaar",
   "ErrNoTemplates": "Geen sjablonen beschikbaar",
   "ErrPasswordRequirements": "Wachtwoord moet ten minste 8 tekens bevatten",
-  "ErrUsernameRequirements": "Gebruikersnaam moet ten minste 3 tekens bevatten en mag alleen _, - of alfanumerieke tekens bevatten",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Wachtwoorden komen niet overeen",
   "ErrSessionTimedOut": "Je sessie is verlopen, log opnieuw in",
   "ErrMissingScope": "Je bent niet bevoegd om deze actie uit te voeren",
