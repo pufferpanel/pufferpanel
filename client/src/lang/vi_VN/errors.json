@@ -29,7 +29,7 @@
   "ErrNoNodes": "Không có Node sẵn có",
   "ErrNoTemplates": "Không tìm thấy mẫu nào",
   "ErrPasswordRequirements": "Mật khẩu phải có ít nhất 8 ký tự",
-  "ErrUsernameRequirements": "Tên người dùng phải có ít nhất 3 kí tự và chỉ chứa số và chữ cái, _ hoặc -",
+  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
   "ErrPasswordsNotIdentical": "Mật khẩu không khớp",
   "ErrSessionTimedOut": "Phiên làm việc hết hạn. Xin vui lòng đăng nhập lại",
   "ErrMissingScope": "Bạn không có quyền để thực hiện hành động này",
