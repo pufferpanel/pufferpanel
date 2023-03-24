@@ -29,7 +29,7 @@
   "ErrNoNodes": "Węzły nie są dostępne",
   "ErrNoTemplates": "Brak dostępnych szablonów",
   "ErrPasswordRequirements": "Hasło musi zawierać co najmniej {min} znaków",
-  "ErrUsernameRequirements": "Username must be at least 5 characters and only contain alphanumerics, _, or -",
+  "ErrUsernameRequirements": "Nazwa użytkownika musi mieć co najmniej 5 znaków długości i zawierać tylko znaki alfanumeryczne, _ lub -",
   "ErrPasswordsNotIdentical": "Hasła nie są takie same",
   "ErrSessionTimedOut": "Twoja sesja wygasła, proszę zalogować się jeszcze raz",
   "ErrMissingScope": "Nie masz uprawnień do wykonywania tej czynności",
@@ -41,7 +41,7 @@
   "ErrDuplicateNodeName": "Maszyna o tej nazwie już istnieje",
   "ErrDirectoryUploadNotSupported": "Nie można przesłać folderów",
   "ErrDockerNotSupported": "Docker nie jest obsługiwany przez ten węzeł",
-  "ErrMissingBinary": "Missing binary: {expected}",
-  "ErrUnsupportedOS": "OS ({actual}) not supported. Supported OS: {expected}",
-  "ErrUnsupportedArch": "Architecture {actual} not supported. Supported Architectures: {expected}"
+  "ErrMissingBinary": "Brakujące wartości binarne: {expected}",
+  "ErrUnsupportedOS": "System operacyjny ({actual}) nie jest wspierany. Wspierane systemy operacyjne: {expected}",
+  "ErrUnsupportedArch": "Architektura {actual} nie jest wspierana. Wspierane Architektury: {expected}"
 }
