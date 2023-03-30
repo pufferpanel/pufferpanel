@@ -33,6 +33,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -113,6 +114,8 @@ type FileData struct {
 func (p *Program) DataToMap() map[string]interface{} {
 	var result = p.Server.DataToMap()
 	result["rootDir"] = p.RunningEnvironment.GetRootDirectory()
+	result["core:os"] = runtime.GOOS
+	result["core:arch"] = runtime.GOARCH
 
 	return result
 }
