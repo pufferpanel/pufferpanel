@@ -30,6 +30,7 @@ import (
 	"github.com/pufferpanel/pufferpanel/v3/response"
 	"github.com/pufferpanel/pufferpanel/v3/services"
 	"github.com/satori/go.uuid"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 	"io"
 	"net/http"
@@ -41,10 +42,9 @@ func registerServers(g *gin.RouterGroup) {
 	g.Handle("GET", "", middleware.RequiresPermission(pufferpanel.ScopeServersView, false), searchServers)
 	g.Handle("OPTIONS", "", response.CreateOptions("GET"))
 
-	g.Handle("POST", "", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
 	g.Handle("GET", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersView, true), getServer)
 	g.Handle("PUT", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersCreate, false), middleware.HasTransaction, createServer)
-	g.Handle("POST", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, createServer)
+	g.Handle("POST", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, editServer)
 	g.Handle("DELETE", "/:serverId", middleware.RequiresPermission(pufferpanel.ScopeServersDelete, true), middleware.HasTransaction, deleteServer)
 	g.Handle("PUT", "/:serverId/name/:name", middleware.RequiresPermission(pufferpanel.ScopeServersEdit, true), middleware.HasTransaction, renameServer)
 	g.Handle("OPTIONS", "/:serverId", response.CreateOptions("PUT", "GET", "POST", "DELETE"))
@@ -344,8 +344,8 @@ func createServer(c *gin.Context) {
 		Name:       postBody.Name,
 		Identifier: postBody.Identifier,
 		NodeID:     node.ID,
-		IP:         ip.(string),
-		Port:       port.(uint16),
+		IP:         cast.ToString(ip),
+		Port:       cast.ToUint16(port),
 		Type:       postBody.Type.Type,
 	}
 
@@ -422,6 +422,68 @@ func createServer(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &models.CreateServerResponse{Id: serverId})
+}
+
+func editServer(c *gin.Context) {
+	var err error
+	db := middleware.GetDatabase(c)
+	ss := &services.Server{DB: db}
+	ns := &services.Node{DB: db}
+
+	server := c.MustGet("server").(*models.Server)
+
+	postBody := &pufferpanel.Server{}
+	err = c.Bind(postBody)
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+
+	postBody.Identifier = server.Identifier
+
+	port, err := getFromDataOrDefault(postBody.Variables, "port", uint16(0))
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	server.Port = cast.ToUint16(port)
+
+	ip, err := getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0")
+	if response.HandleError(c, err, http.StatusBadRequest) {
+		return
+	}
+	server.IP = cast.ToString(ip)
+
+	err = ss.Update(server)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	data, _ := json.Marshal(postBody)
+	reader := io.NopCloser(bytes.NewReader(data))
+
+	nodeResponse, err := ns.CallNode(&server.Node, "PUT", "/daemon/server/"+postBody.Identifier, reader, c.Request.Header)
+	defer pufferpanel.CloseResponse(nodeResponse)
+	if response.HandleError(c, err, http.StatusInternalServerError) {
+		return
+	}
+
+	if nodeResponse.StatusCode != http.StatusOK {
+		resData, err := io.ReadAll(nodeResponse.Body)
+		if err != nil {
+			logging.Error.Printf("Failed to parse response from daemon\n%s", err.Error())
+		}
+		logging.Error.Printf("Unexpected response from daemon: %+v\n%s", nodeResponse.StatusCode, string(resData))
+		//assume daemon gives us a valid response, directly forward to client
+		c.Header("Content-Type", "application/json")
+		c.Status(nodeResponse.StatusCode)
+		_, _ = c.Writer.Write(resData)
+		c.Abort()
+		return
+	}
+
+	if response.HandleError(c, db.Commit().Error, http.StatusInternalServerError) {
+		return
+	}
+	c.Status(http.StatusAccepted)
 }
 
 // @Summary Deletes a server
@@ -988,13 +1050,13 @@ func editServerData(c *gin.Context) {
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	server.Port = port.(uint16)
+	server.Port = cast.ToUint16(port)
 
 	ip, err := getFromDataOrDefault(postBody.Variables, "ip", "0.0.0.0")
 	if response.HandleError(c, err, http.StatusBadRequest) {
 		return
 	}
-	server.IP = ip.(string)
+	server.IP = cast.ToString(ip)
 
 	db := middleware.GetDatabase(c)
 	ss := &services.Server{DB: db}
