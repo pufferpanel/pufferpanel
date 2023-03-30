@@ -14,16 +14,20 @@
 package steamgamedl
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/pufferpanel/pufferpanel/v3"
 	"github.com/pufferpanel/pufferpanel/v3/config"
 	"github.com/pufferpanel/pufferpanel/v3/logging"
+	"github.com/spf13/cast"
 	"io"
+	"math/rand"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 )
 
@@ -33,15 +37,11 @@ const DepotDownloaderLink = "https://github.com/SteamRE/DepotDownloader/releases
 const SteamMetadataServerLink = "https://media.steampowered.com/client/"
 const SteamMetadataLinuxLink = SteamMetadataServerLink + "steam_cmd_linux"
 
-//const SteamMetadataWindowsLink = SteamMetadataServerLink + "steam_cmd_win32"
-
-func init() {
-}
-
 type SteamGameDl struct {
-	AppId    string
-	Username string
-	Password string
+	AppId     string
+	Username  string
+	Password  string
+	ExtraArgs []string
 }
 
 func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
@@ -58,7 +58,16 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		return err
 	}
 
-	var args = []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", env.GetRootDirectory()}
+	//generate a login id
+	//this is a 32-bit id, which Steam derives from private IP
+	//as such, we can kinda send anything we want
+	//our approach will be we hash the server id
+	loginId := cast.ToString(rand.Int31())
+
+	manifestFolder := filepath.Join(env.GetRootDirectory(), ".manifest")
+	_ = os.RemoveAll(manifestFolder)
+
+	args := []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", manifestFolder, "-loginid", loginId, "-manifest-only"}
 	if c.Username != "" {
 		args = append(args, "-username", c.Username, "-remember-password")
 		if c.Password != "" {
@@ -68,7 +77,6 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 
 	ch := make(chan int, 1)
 	steps := pufferpanel.ExecutionData{
-		//Command:          fmt.Sprintf("%s%c%s", ".", filepath.Separator, "dotnet"),
 		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
 		Arguments: args,
 		Callback: func(exitCode int) {
@@ -84,10 +92,49 @@ func (c SteamGameDl) Run(env pufferpanel.Environment) (err error) {
 		return errors.New(fmt.Sprintf("depotdownloader exited with non-zero code %d", exitCode))
 	}
 
-	//for some steam games, there's a binary we can instant-mark
-	fi, err := os.Stat(filepath.Join(env.GetRootDirectory(), "srcds_run"))
-	if err == nil && !fi.IsDir() {
-		_ = os.Chmod(filepath.Join(env.GetRootDirectory(), "srcds_run"), 0755)
+	//download game itself now
+	args = []string{filepath.Join(rootBinaryFolder, "depotdownloader", "DepotDownloader.dll"), "-app", c.AppId, "-dir", env.GetRootDirectory(), "-loginid", loginId, "-validate"}
+	if c.Username != "" {
+		args = append(args, "-username", c.Username, "-remember-password")
+		if c.Password != "" {
+			args = append(args, "-password", c.Password)
+		}
+	}
+
+	if c.ExtraArgs != nil && len(c.ExtraArgs) > 0 {
+		args = append(args, c.ExtraArgs...)
+	}
+
+	steps = pufferpanel.ExecutionData{
+		Command:   filepath.Join(rootBinaryFolder, "dotnet-runtime", "dotnet"),
+		Arguments: args,
+		Callback: func(exitCode int) {
+			ch <- exitCode
+		},
+	}
+	err = env.Execute(steps)
+	if err != nil {
+		return err
+	}
+	exitCode = <-ch
+	if exitCode != 0 {
+		return errors.New(fmt.Sprintf("depotdownloader exited with non-zero code %d", exitCode))
+	}
+
+	//for each file we download, we need to just... chmod +x the files
+	//we rely on the manifests for this
+	manifests, err := os.ReadDir(manifestFolder)
+	if err != nil {
+		return err
+	}
+	for _, manifest := range manifests {
+		if manifest.Type().IsDir() || !strings.HasSuffix(manifest.Name(), ".txt") {
+			continue
+		}
+		err = walkManifest(env.GetRootDirectory(), manifest.Name())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -163,10 +210,6 @@ func downloadMetadata(env pufferpanel.Environment) error {
 
 	downloadOs := "linux"
 	link := SteamMetadataLinuxLink
-	/*if runtime.GOOS == "windows" {
-		downloadOs = "win32"
-		link = SteamMetadataWindowsLink
-	}*/
 
 	response, err := pufferpanel.HttpGet(link)
 	defer pufferpanel.CloseResponse(response)
@@ -198,4 +241,35 @@ func downloadMetadata(env pufferpanel.Environment) error {
 
 	err = os.Rename(filepath.Join(env.GetRootDirectory(), ".steam", "linux64"), filepath.Join(env.GetRootDirectory(), ".steam", "sdk64"))
 	return err
+}
+
+func walkManifest(folder, filename string) error {
+	file, err := os.Open(filename)
+	defer pufferpanel.Close(file)
+	if err != nil {
+		return err
+	}
+	data := bufio.NewScanner(file)
+	skipCounter := 8
+	for data.Scan() {
+		line := data.Text()
+		if skipCounter > 0 {
+			skipCounter--
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) > 5 {
+			//the filename at the end has spaces, we need to consolidate
+			parts[4] = strings.Join(parts[5:], " ")
+			parts = parts[0:4]
+		}
+
+		//we will only work on 0 files, because this mean no other flags were told
+		if parts[3] == "0" {
+			fileToUpdate := parts[4]
+			_ = os.Chmod(filepath.Join(folder, fileToUpdate), 755)
+		}
+	}
+
+	return nil
 }
